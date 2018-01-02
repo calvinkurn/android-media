@@ -46,6 +46,9 @@ public class ResponseIsReserveDomain implements Parcelable {
         this.userData = userData;
     }
 
+    public ResponseIsReserveDomain() {
+    }
+  
     public boolean isDomainAlreadyReserved() {
         return reserveStatus != 0;
     }
@@ -60,9 +63,6 @@ public class ResponseIsReserveDomain implements Parcelable {
         dest.writeLong(this.reserveStatus);
         dest.writeParcelable(this.shipment, flags);
         dest.writeParcelable(this.userData, flags);
-    }
-
-    public ResponseIsReserveDomain() {
     }
 
     protected ResponseIsReserveDomain(Parcel in) {

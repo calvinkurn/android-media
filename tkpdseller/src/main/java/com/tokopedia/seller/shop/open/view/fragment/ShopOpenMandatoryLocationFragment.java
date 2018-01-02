@@ -18,6 +18,8 @@ import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Add
 import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Token;
 import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationContract;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.logistic.LogisticRouter;
 import com.tokopedia.seller.R;
@@ -25,6 +27,7 @@ import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.logistic.GetOpenShopLocationPassUseCase;
 import com.tokopedia.seller.logistic.GetOpenShopTokenUseCase;
+import com.tokopedia.seller.shop.common.exception.ShopException;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
 import com.tokopedia.seller.shop.open.view.holder.LocationHeaderViewHolder;
@@ -62,9 +65,6 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
     private static final String TAG = "ShopOpenMandatoryLocati";
     private LocationShippingViewHolder locationShippingViewHolder;
     private LocationMapViewHolder locationMapViewHolder;
-
-    @Inject
-    GetOpenShopTokenUseCase getOpenShopTokenUseCase;
 
     @Inject
     ShopOpenLocPresenterImpl shopOpenLocPresenter;
@@ -123,43 +123,50 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
         root.findViewById(R.id.button_submit).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                GoogleLocationViewModel googleLocationViewModel = locationMapViewHolder.getGoogleLocationViewModel();
-
-                RequestParams requestParams = ShopOpenSaveLocationUseCase.createRequestParams(
-                        googleLocationViewModel == null ? "" : googleLocationViewModel.getLongitude(),
-                        googleLocationViewModel == null ? "" : googleLocationViewModel.getLatitude(),
-                        googleLocationViewModel == null ? "" : googleLocationViewModel.getCheckSum(),
-                        locationShippingViewHolder.getLocationComplete(),
-                        locationShippingViewHolder.getDistrictName(),
-                        locationMapViewHolder.getManualAddress(),
-                        locationShippingViewHolder.getPostalCode(),
-                        locationShippingViewHolder.getDistrictId()
-                );
-
-                shopOpenLocPresenter.submitData(requestParams);
+                onNextButtonClicked();
             }
         });
 
         if(stepperListener.getStepperModel()!=null){
             Shipment shipment = stepperListener.getStepperModel().getResponseIsReserveDomain().getShipment();
             UserData userData = stepperListener.getStepperModel().getResponseIsReserveDomain().getUserData();
-
-            locationShippingViewHolder.updateDistrictId(Integer.toString(shipment.getDistrictId()));
-            locationShippingViewHolder.updateZipCodes(Integer.toString(shipment.getPostal()));
             locationShippingViewHolder.updateLocationData(userData.getLocComplete(), userData.getLocation());
 
-            GoogleLocationViewModel googleLocationViewModel
-                    = new GoogleLocationViewModel();
-            googleLocationViewModel.setGeneratedAddress(shipment.getAddrStreet());
-            googleLocationViewModel.setManualAddress(shipment.getAddrStreet());
-            googleLocationViewModel.setLongitude(shipment.getLongitude());
-            googleLocationViewModel.setLatitude(shipment.getLatitude());
-            googleLocationViewModel.setCheckSum(shipment.getGeolocationChecksum());
+            if(shipment != null) {
+                locationShippingViewHolder.updateDistrictId(Integer.toString(shipment.getDistrictId()));
+                locationShippingViewHolder.updateZipCodes(Integer.toString(shipment.getPostal()));
 
-            locationMapViewHolder.setFromReserveDomain(true);
+                GoogleLocationViewModel googleLocationViewModel
+                        = new GoogleLocationViewModel();
+                googleLocationViewModel.setGeneratedAddress(shipment.getAddrStreet());
+                googleLocationViewModel.setManualAddress(shipment.getAddrStreet());
+                googleLocationViewModel.setLongitude(shipment.getLongitude());
+                googleLocationViewModel.setLatitude(shipment.getLatitude());
+                googleLocationViewModel.setCheckSum(shipment.getGeolocationChecksum());
 
-            locationMapViewHolder.setLocationText(googleLocationViewModel);
+
+                locationMapViewHolder.setFromReserveDomain(true);
+
+                locationMapViewHolder.setLocationText(googleLocationViewModel);
+            }
         }
+    }
+
+    protected void onNextButtonClicked() {
+        GoogleLocationViewModel googleLocationViewModel = locationMapViewHolder.getGoogleLocationViewModel();
+
+        RequestParams requestParams = ShopOpenSaveLocationUseCase.createRequestParams(
+                googleLocationViewModel == null ? "" : googleLocationViewModel.getLongitude(),
+                googleLocationViewModel == null ? "" : googleLocationViewModel.getLatitude(),
+                googleLocationViewModel == null ? "" : googleLocationViewModel.getCheckSum(),
+                locationShippingViewHolder.getLocationComplete(),
+                locationShippingViewHolder.getDistrictName(),
+                locationMapViewHolder.getManualAddress(),
+                locationShippingViewHolder.getPostalCode(),
+                locationShippingViewHolder.getDistrictId()
+        );
+
+        shopOpenLocPresenter.submitData(requestParams);
     }
 
 
@@ -297,5 +304,26 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
     @Override
     protected String getScreenName() {
         return null;
+    }
+
+    @Override
+    public void onErrorGetReserveDomain(Throwable e) {
+        NetworkErrorHelper.showSnackbar(getActivity(), ErrorHandler.getErrorMessage(e, getActivity()));
+    }
+
+    @Override
+    public void onFailedSaveInfoShop(Throwable t) {
+        String errorMessage;
+        if(t instanceof ShopException){
+            errorMessage = t.getMessage();
+        }else{
+            errorMessage = ErrorHandler.getErrorMessage(t, getActivity());
+        }
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                onNextButtonClicked();
+            }
+        }).showRetrySnackbar();
     }
 }

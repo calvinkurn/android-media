@@ -11,7 +11,7 @@
         android:layout_marginBottom="0dp" />
 
     <TextView
-        style="@style/TextView.ShopSettingTitleShop"
+        style="@style/TextView.Title"
         android:layout_gravity="center_horizontal"
         android:text="@string/shipping_location_text"
         android:layout_marginTop="24dp" />
@@ -38,8 +38,10 @@
         >
         <TextView
             android:id="@+id/btn_choose_from_address"
-            android:textSize="13sp"
-            style="@style/TextView.ShopSettingHint.LabelBrowseImage"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:gravity="center"
+            style="@style/TextView.Caption"
             android:text="@string/choose_from_address_list"
              />
     </FrameLayout>

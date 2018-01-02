@@ -18,14 +18,15 @@
 
         <TextView
             android:id="@+id/welcome_shop_label"
-            style="@style/TextView.ShopSettingTitleShop"
+            style="@style/TextView.Title"
+            android:layout_marginBottom="@dimen/margin_sm"
+            android:gravity="center"
             android:text="@string/hello_x" />
 
         <TextView
-            style="@style/TextView.ShopSettingTitleShop.Content"
+            android:layout_marginBottom="@dimen/margin_large"
+            style="@style/TextView.Subheading"
             android:text="@string/label_shop_open_info_title_shop" />
-
-
 
         <com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout
             android:id="@+id/shop_slogan_input_layout"
@@ -64,7 +65,9 @@
         </com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout>
 
         <TextView
-            style="@style/TextView.ShopSettingHint.Logo"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_gravity="start"
+            style="@style/TextView.Caption.BlackSecondary"
             android:text="@string/label_shop_setting_logo" />
 
         <RelativeLayout
@@ -89,33 +92,25 @@
                 android:layout_toRightOf="@+id/image_picker_container">
 
                 <TextView
-                    style="@style/TextView.ShopSettingHint.InfoPickImageTitle"
+                    android:textStyle="bold"
+                    style="@style/TextView.Caption.BlackDisabled"
                     android:text="@string/label_shop_setting_info_max_file_size" />
 
                 <TextView
-                    style="@style/TextView.ShopSettingHint.InfoPickImageContent"
+                    android:layout_marginBottom="@dimen/margin_ms"
+                    style="@style/TextView.Caption.BlackDisabled"
                     android:text="@string/label_shop_setting_info_size_image" />
 
                 <TextView
-                    style="@style/TextView.ShopSettingHint.InfoPickImageTitle"
+                    android:textStyle="bold"
+                    style="@style/TextView.Caption.BlackDisabled"
                     android:text="@string/label_shop_setting_info_allowed_file" />
 
                 <TextView
-                    style="@style/TextView.ShopSettingHint.InfoPickImageContent"
+                    style="@style/TextView.Caption.BlackDisabled"
                     android:text="@string/label_shop_setting_type_file_image" />
 
             </LinearLayout>
-
-            <FrameLayout
-                android:id="@+id/container_browse_file"
-                style="@style/View.ShopSetting.BrowseImage"
-                android:layout_alignBottom="@+id/image_picker_container"
-                android:layout_alignLeft="@id/container_info_picker_image">
-
-                <TextView
-                    style="@style/TextView.ShopSettingHint.LabelBrowseImage"
-                    android:text="@string/label_shop_setting_browse_file" />
-            </FrameLayout>
 
         </RelativeLayout>
 
