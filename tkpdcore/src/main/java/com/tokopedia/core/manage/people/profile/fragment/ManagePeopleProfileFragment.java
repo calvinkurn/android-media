@@ -332,7 +332,7 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
             }
 
             if (resultCode == RESULT_EMAIL_SENT) {
-
+                contactSection.checkEmailInfo.setVisibility(View.VISIBLE);
             }
         }
     }

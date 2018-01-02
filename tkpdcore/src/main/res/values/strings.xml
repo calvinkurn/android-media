@@ -575,6 +575,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_change_email">Anda telah mengirim permintaan untuk mengubah alamat email Anda. Sebuah email konfirmasi telah dikirim ke Email Anda untuk melanjutkan perubahan. Silakan periksa email baru Anda untuk informasi lebih lanjut.</string>
     <string name="title_sort_by">Urutkan</string>
     <string name="success_change_phone_number">Nomor Ponsel Berhasil Diubah</string>
+    <string name="check_email_change_phone_number">Segera konfirmasi perubahan nomor ponsel melalui email Anda.</string>
     <!-- Strings related Manage People -->
 
 
