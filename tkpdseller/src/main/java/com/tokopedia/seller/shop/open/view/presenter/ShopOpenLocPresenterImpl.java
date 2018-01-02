@@ -83,7 +83,7 @@ public class ShopOpenLocPresenterImpl extends BaseDaggerPresenter<ShopOpenLocVie
         });
     }
 
-    public void openDistrictRecommendation((RequestParams requestParams){
+    public void openDistrictRecommendation(RequestParams requestParams){
         getOpenShopTokenUseCase.execute(requestParams, new Subscriber<Token>() {
             @Override
             public void onCompleted() {
