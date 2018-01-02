@@ -8,8 +8,8 @@ import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Token;
 import com.tokopedia.seller.logistic.GetOpenShopLocationPassUseCase;
 import com.tokopedia.seller.logistic.GetOpenShopTokenUseCase;
+import com.tokopedia.seller.shop.open.domain.interactor.ShopOpenSaveLocationUseCase;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLocationFragment;
-import com.tokopedia.seller.shop.setting.domain.interactor.ShopOpenSaveLocationUseCase;
 
 import javax.inject.Inject;
 
@@ -83,7 +83,7 @@ public class ShopOpenLocPresenterImpl extends BaseDaggerPresenter<ShopOpenLocVie
         });
     }
 
-    public void openDistrictRecommendation((RequestParams requestParams){
+    public void openDistrictRecommendation(RequestParams requestParams){
         getOpenShopTokenUseCase.execute(requestParams, new Subscriber<Token>() {
             @Override
             public void onCompleted() {
