@@ -1,7 +1,7 @@
 package com.tokopedia.seller.shop.di.component;
 
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.seller.shop.ShopEditorActivity;
+import com.tokopedia.seller.shopsettings.edit.view.ShopEditorActivity;
 import com.tokopedia.seller.shop.di.scope.DeleteCacheScope;
 import com.tokopedia.seller.shopsettings.address.activity.ManageShopAddress;
 

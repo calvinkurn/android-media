@@ -1,4 +1,4 @@
-package com.tokopedia.seller.shop.presenter;
+package com.tokopedia.seller.shop.open.view.presenter;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;

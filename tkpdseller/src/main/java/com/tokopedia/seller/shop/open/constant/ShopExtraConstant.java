@@ -1,4 +1,4 @@
-package com.tokopedia.seller.shop.constant;
+package com.tokopedia.seller.shop.open.constant;
 
 /**
  * Created by Hendry on 3/22/2017.
