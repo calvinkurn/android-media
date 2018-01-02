@@ -46,6 +46,20 @@
                 android:text="@string/description_shop_setting_logistic"
                 android:textAlignment="center" />
 
+            <TextView
+                android:id="@+id/tv_pickup_location"
+                style="@style/TextView.Caption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/margin_large"
+                android:layout_marginRight="@dimen/margin_large"
+                android:layout_marginTop="@dimen/margin_ms"
+                android:layout_marginBottom="@dimen/margin_ms"
+                android:gravity="center"
+                android:text="@string/openshop_make_sure_pickup_location"
+                android:textAlignment="center" />
+
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

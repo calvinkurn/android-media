@@ -27,7 +27,9 @@ import java.util.List;
  * Created by Nathaniel on 3/16/2017.
  */
 
-public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepperModel> implements HasComponent<ShopOpenDomainComponent> {
+public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepperModel>
+        implements HasComponent<ShopOpenDomainComponent>,
+        ShopOpenMandatoryLogisticFragment.OnShopOpenLogisticFragmentListener{
 
     public static final String EXTRA_RESPONSE_IS_RESERVE_DOMAIN = "EXTRA_RESPONSE_IS_RESERVE_DOMAIN";
     private List<Fragment> fragmentList;
@@ -101,6 +103,11 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepp
     public ShopOpenDomainComponent getComponent() {
         initComponent();
         return component;
+    }
+
+    @Override
+    public void goToPickupLocation() {
+        onBackPressed();
     }
 
 }

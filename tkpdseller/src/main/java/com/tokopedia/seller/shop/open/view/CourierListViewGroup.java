@@ -109,9 +109,9 @@ public class CourierListViewGroup extends LinearLayout implements ShopCourierExp
     }
 
     @Override
-    public void onInfoIconClicked(String title, String description) {
+    public void onCourierServiceInfoIconClicked(String title, String description) {
         if (onShopCourierExpandableOptionListener != null) {
-            onShopCourierExpandableOptionListener.onInfoIconClicked(title, description);
+            onShopCourierExpandableOptionListener.onCourierServiceInfoIconClicked(title, description);
         }
     }
 }

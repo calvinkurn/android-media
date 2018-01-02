@@ -37,7 +37,7 @@ public class ShopCourierExpandableOption extends BaseExpandableOption implements
 
     public interface OnShopCourierExpandableOptionListener {
         void onDisabledHeaderClicked();
-        void onInfoIconClicked(String title, String description);
+        void onCourierServiceInfoIconClicked(String title, String description);
     }
 
     public void setOnShopCourierExpandableOptionListener(OnShopCourierExpandableOptionListener onShopCourierExpandableOptionListener) {
@@ -153,7 +153,7 @@ public class ShopCourierExpandableOption extends BaseExpandableOption implements
     @Override
     public void onInfoIconClicked(String title, String description) {
         if (onShopCourierExpandableOptionListener!= null) {
-            onShopCourierExpandableOptionListener.onInfoIconClicked(title, description);
+            onShopCourierExpandableOptionListener.onCourierServiceInfoIconClicked(title, description);
         }
     }
 

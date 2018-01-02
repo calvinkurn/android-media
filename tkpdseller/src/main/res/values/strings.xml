@@ -173,8 +173,8 @@
     <string name="domain_name">Nama Domain</string>
     <string name="fill_domain_and_shop">Isi nama dan domain toko!</string>
     <string name="hello_x">Halo, <![CDATA[<b>%1$s</b>]]></string>
-    <string name="openshop_terms_and_conditions">Dengan menekan Lanjut, Anda telah menyetujui\n
-        Syarat dan Ketentuan serta Kebijakan Privasi Tokopedia.</string>
+    <string name="openshop_make_sure_pickup_location">Pastikan Lokasi Pickup Anda telah sesuai untuk jasa pengiriman Go-JEK, Grab &amp; Ninja Express</string>
+    <string name="label_pickup_location">Lokasi Pickup</string>
 
     <!-- Shop Setting -->
     <string name="label_shop_open_welcome">Halo,</string>

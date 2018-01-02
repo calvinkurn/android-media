@@ -9,8 +9,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +50,12 @@ import javax.inject.Inject;
 
 public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implements ShopSettingLogisticView, ShopCourierExpandableOption.OnShopCourierExpandableOptionListener {
     private StepperListener<ShopOpenStepperModel> onShopStepperListener;
+    private OnShopOpenLogisticFragmentListener onShopOpenLogisticFragmentListener;
+    private TextView tvMakeSurePickupLoc;
+
+    public interface OnShopOpenLogisticFragmentListener{
+        void goToPickupLocation();
+    }
 
     private CourierServiceIdWrapper selectedCourierServiceIdWrapper;
 
@@ -86,6 +98,8 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
         LayoutTransition layoutTransition = ((ViewGroup) vContent).getLayoutTransition();
         layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
 
+        tvMakeSurePickupLoc = view.findViewById(R.id.tv_pickup_location);
+
         courierListViewGroup = view.findViewById(R.id.vg_courier_list);
         courierListViewGroup.setCourierList(null, selectedCourierServiceIdWrapper);
         courierListViewGroup.setOnShopCourierExpandableOptionListener(this);
@@ -97,6 +111,8 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
                 onContinueButtonClicked();
             }
         });
+
+        setPickupLocationText();
 
         return view;
     }
@@ -116,6 +132,27 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     public void updateLogistic() {
         showLoading();
         presenter.getCouriers(getDistrictId());
+    }
+
+    private void setPickupLocationText(){
+        SpannableString spannableString = new SpannableString(getString(R.string.openshop_make_sure_pickup_location));
+        final String locationPickUpString = getString(R.string.label_pickup_location);
+        ClickableSpan clickablePickup = new ClickableSpan() {
+            @Override
+            public void onClick(View view) {
+                onShopOpenLogisticFragmentListener.goToPickupLocation();
+            }
+        };
+        int locationPickUpStringIndex = spannableString.toString().indexOf(locationPickUpString);
+        spannableString.setSpan(clickablePickup,
+                locationPickUpStringIndex, locationPickUpStringIndex + locationPickUpString.length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannableString.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getActivity(),
+                R.color.tkpd_main_green)), locationPickUpStringIndex,
+                locationPickUpStringIndex + locationPickUpString.length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        tvMakeSurePickupLoc.setMovementMethod(LinkMovementMethod.getInstance());
+        tvMakeSurePickupLoc.setText(spannableString);
     }
 
     private int getDistrictId(){
@@ -187,7 +224,7 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     }
 
     @Override
-    public void onInfoIconClicked(String title, String description) {
+    public void onCourierServiceInfoIconClicked(String title, String description) {
         BottomSheetDialog dialog = new BottomSheetDialog(getActivity());
         dialog.setContentView(R.layout.shipping_info_bottom_sheet);
 
@@ -279,6 +316,7 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
 
     protected void onAttachListener(Context context){
         onShopStepperListener = (StepperListener<ShopOpenStepperModel>) context;
+        onShopOpenLogisticFragmentListener = (OnShopOpenLogisticFragmentListener) context;
     }
 
 }
