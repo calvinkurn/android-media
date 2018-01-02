@@ -18,18 +18,21 @@ public class ChangePhoneNumberInputActivity extends BasePresenterActivity
         implements ChangePhoneNumberInputActivityListener.View, HasComponent {
     public static final String PARAM_PHONE_NUMBER = "phone_number";
     public static final String PARAM_WARNING_LIST = "warning_list";
+    public static final String PARAM_EMAIL = "email";
 
     private String phoneNumber;
     private ArrayList<String> warningList;
+    private String email;
 
     public static Intent newInstance(Context context) {
         return new Intent(context, ChangePhoneNumberInputActivity.class);
     }
 
-    public static Intent newInstance(Context context, String phoneNumber, ArrayList<String> warningList) {
+    public static Intent newInstance(Context context, String phoneNumber, String email, ArrayList<String> warningList) {
         Intent intent = new Intent(context, ChangePhoneNumberInputActivity.class);
         intent.putExtra(PARAM_PHONE_NUMBER, phoneNumber);
         intent.putExtra(PARAM_WARNING_LIST, warningList);
+        intent.putExtra(PARAM_EMAIL, email);
         return intent;
     }
 
@@ -42,6 +45,7 @@ public class ChangePhoneNumberInputActivity extends BasePresenterActivity
     protected void setupBundlePass(Bundle extras) {
         phoneNumber = extras.getString(PARAM_PHONE_NUMBER);
         warningList = extras.getStringArrayList(PARAM_WARNING_LIST);
+        email = extras.getString(PARAM_EMAIL);
     }
 
     @Override
@@ -77,7 +81,7 @@ public class ChangePhoneNumberInputActivity extends BasePresenterActivity
     @Override
     public void inflateFragment() {
         String TAG = ChangePhoneNumberInputFragment.class.getSimpleName();
-        ChangePhoneNumberInputFragment fragment = ChangePhoneNumberInputFragment.newInstance(phoneNumber, warningList);
+        ChangePhoneNumberInputFragment fragment = ChangePhoneNumberInputFragment.newInstance(phoneNumber, email, warningList);
 
         if (getSupportFragmentManager().findFragmentByTag(TAG) != null) {
             getSupportFragmentManager().beginTransaction()

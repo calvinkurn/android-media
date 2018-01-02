@@ -1,5 +1,6 @@
 package com.tokopedia.session.changephonenumber.view.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,6 +16,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.deposit.activity.WithdrawActivity;
 import com.tokopedia.core.deposit.presenter.DepositFragmentPresenterImpl;
+import com.tokopedia.core.manage.people.profile.fragment.ManagePeopleProfileFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.di.SessionComponent;
@@ -33,6 +35,7 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+import static com.tokopedia.core.manage.people.profile.fragment.ManagePeopleProfileFragment.RESULT_EMAIL_SENT;
 import static com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel.ACTION_EMAIL;
 import static com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel.ACTION_OTP;
 import static com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel.EMPTY_BALANCE;
@@ -44,7 +47,9 @@ import static com.tokopedia.session.changephonenumber.view.viewmodel.WarningView
 public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment implements ChangePhoneNumberWarningFragmentListener.View {
     public static final String PARAM_EMAIL = "email";
     public static final String PARAM_PHONE_NUMBER = "phone_number";
-    public static final int REQUEST_WITHDRAW_CODE = 1;
+    private static final int REQUEST_CHANGE_PHONE_NUMBER = 1;
+    private static final int REQUEST_SEND_EMAIL = 2;
+    private static final int REQUEST_WITHDRAW_TOKOPEDIA_BALANCE = 99;
 
     @Inject
     WarningListAdapter adapter;
@@ -125,7 +130,7 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
                 bundle.putString(DepositFragmentPresenterImpl.BUNDLE_TOTAL_BALANCE_INT,
                         viewModel.getTokopediaBalance().replaceAll("[^\\d]", ""));
                 intent.putExtras(bundle);
-                startActivityForResult(intent, REQUEST_WITHDRAW_CODE);
+                startActivityForResult(intent, REQUEST_WITHDRAW_TOKOPEDIA_BALANCE);
             }
         });
     }
@@ -232,17 +237,40 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
 
     private void goToNextActivity() {
         if (viewModel.getAction().equalsIgnoreCase(ACTION_EMAIL)) {
-            startActivity(
-                    ChangePhoneNumberEmailActivity.newInstance(getContext(), email)
+            startActivityForResult(
+                    ChangePhoneNumberEmailActivity.newInstance(getContext(), email),
+                    REQUEST_SEND_EMAIL
             );
         } else if (viewModel.getAction().equalsIgnoreCase(ACTION_OTP)) {
-            startActivity(
+            startActivityForResult(
                     ChangePhoneNumberInputActivity.newInstance(
                             getContext(),
                             phoneNumber,
+                            email,
                             new ArrayList<>(viewModel.getWarningList())
-                    )
+                    ),
+                    REQUEST_CHANGE_PHONE_NUMBER
             );
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case REQUEST_CHANGE_PHONE_NUMBER:
+                    getActivity().setResult(resultCode);
+                    getActivity().finish();
+                    break;
+                case REQUEST_SEND_EMAIL:
+                    getActivity().setResult(ManagePeopleProfileFragment.RESULT_EMAIL_SENT);
+                    getActivity().finish();
+                    break;
+                case REQUEST_WITHDRAW_TOKOPEDIA_BALANCE:
+                    break;
+            }
         }
     }
 

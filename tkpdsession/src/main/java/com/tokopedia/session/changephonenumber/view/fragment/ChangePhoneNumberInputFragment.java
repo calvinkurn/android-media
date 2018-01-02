@@ -1,5 +1,7 @@
 package com.tokopedia.session.changephonenumber.view.fragment;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Editable;
@@ -14,13 +16,20 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.database.CacheUtil;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.util.CustomPhoneNumberUtil;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.di.SessionComponent;
 import com.tokopedia.di.SessionModule;
+import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
+import com.tokopedia.otp.cotp.view.viewmodel.MethodItem;
+import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
+import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.session.R;
 import com.tokopedia.session.changephonenumber.view.customview.BottomSheetInfo;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberInputFragmentListener;
@@ -39,6 +48,8 @@ import butterknife.Unbinder;
 public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implements ChangePhoneNumberInputFragmentListener.View {
     public static final String PARAM_PHONE_NUMBER = "phone_number";
     public static final String PARAM_WARNING_LIST = "warning_list";
+    public static final String PARAM_EMAIL = "email";
+    public static final int REQUEST_VERIFY_CODE = 1;
 
     @Inject
     ChangePhoneNumberInputFragmentListener.Presenter presenter;
@@ -47,15 +58,17 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
     private TextView nextButton;
     private String phoneNumber;
     private ArrayList<String> warningList;
+    private String email;
     private Unbinder unbinder;
     private BottomSheetInfo bottomSheetInfo;
     private TextWatcher phoneNumberTextWatcher;
 
-    public static ChangePhoneNumberInputFragment newInstance(String phoneNumber, ArrayList<String> warningList) {
+    public static ChangePhoneNumberInputFragment newInstance(String phoneNumber, String email, ArrayList<String> warningList) {
         ChangePhoneNumberInputFragment fragment = new ChangePhoneNumberInputFragment();
         Bundle bundle = new Bundle();
         bundle.putString(PARAM_PHONE_NUMBER, phoneNumber);
         bundle.putStringArrayList(PARAM_WARNING_LIST, warningList);
+        bundle.putString(PARAM_EMAIL, email);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -109,8 +122,7 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO do something here
-                Log.d("milhamj", "Halooooo");
+                goToVerification();
             }
         });
     }
@@ -118,6 +130,7 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
     private void initVar() {
         phoneNumber = getArguments().getString(PARAM_PHONE_NUMBER);
         warningList = getArguments().getStringArrayList(PARAM_WARNING_LIST);
+        email = getArguments().getString(PARAM_EMAIL);
 
         oldPhoneNumber.setText(CustomPhoneNumberUtil.transform(phoneNumber));
     }
@@ -184,5 +197,49 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
         newPhoneNumber.setText(newNumber);
         newPhoneNumber.setSelection(newNumber.length());
         newPhoneNumber.addTextChangedListener(phoneNumberTextWatcher);
+    }
+
+    private void goToVerification() {
+        GlobalCacheManager cacheManager = new GlobalCacheManager();
+
+        String newPhoneNumberString = newPhoneNumber.getText().toString();
+        VerificationPassModel passModel = new VerificationPassModel(newPhoneNumberString, email,
+                getListAvailableMethod(newPhoneNumberString), RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION);
+        cacheManager.setKey(VerificationActivity.PASS_MODEL);
+        cacheManager.setValue(CacheUtil.convertModelToString(passModel,
+                new TypeToken<VerificationPassModel>() {
+                }.getType()));
+        cacheManager.store();
+
+
+        Intent intent = VerificationActivity.getCallingIntent(getActivity(),
+                VerificationActivity.TYPE_SMS);
+        startActivityForResult(intent, REQUEST_VERIFY_CODE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_VERIFY_CODE && resultCode == Activity.RESULT_OK) {
+            getActivity().setResult(resultCode);
+            getActivity().finish();
+        }
+    }
+
+    private ArrayList<MethodItem> getListAvailableMethod(String phone) {
+        ArrayList<MethodItem> list = new ArrayList<>();
+        list.add(new MethodItem(
+                VerificationActivity.TYPE_SMS,
+                com.tokopedia.session.R.drawable.ic_verification_sms,
+                MethodItem.getSmsMethodText(phone)
+        ));
+        list.add(new MethodItem(
+                VerificationActivity.TYPE_PHONE_CALL,
+                com.tokopedia.session.R.drawable.ic_verification_call,
+                MethodItem.getCallMethodText(phone)
+        ));
+
+        return list;
     }
 }

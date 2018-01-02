@@ -60,6 +60,8 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
     private static final String IMAGE_PATH_DATA = "IMAGE_PATH_DATA";
     private static final String PROFILE_DATA = "PROFILE_DATA";
     public static final int REQUEST_VERIFY_PHONE = 123;
+    public static final int REQUEST_CHANGE_PHONE_NUMBER = 13;
+    public static final int RESULT_EMAIL_SENT = 111;
 
     @BindView(R2.id.layout_main)
     View layoutMain;
@@ -323,6 +325,16 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
                         });
             }
         }
+
+        if (requestCode == REQUEST_CHANGE_PHONE_NUMBER) {
+            if (resultCode == Activity.RESULT_OK) {
+                NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.success_change_phone_number));
+            }
+
+            if (resultCode == RESULT_EMAIL_SENT) {
+
+            }
+        }
     }
 
     @Override
@@ -503,13 +515,14 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
 
     @Override
     public void startChangePhoneNumber() {
-        startActivity(
+        startActivityForResult(
                 ((TkpdCoreRouter) getActivity().getApplicationContext())
                         .getChangePhoneNumberIntent(
                                 getActivity(),
                                 profileData.getDataUser().getUserEmail(),
                                 profileData.getDataUser().getUserPhone()
-                        )
+                        ),
+                REQUEST_CHANGE_PHONE_NUMBER
         );
     }
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.session.changephonenumber.view.fragment;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -75,6 +76,7 @@ public class ChangePhoneNumberEmailFragment extends BaseDaggerFragment implement
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                getActivity().setResult(Activity.RESULT_OK);
                 getActivity().finish();
             }
         });
