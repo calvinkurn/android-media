@@ -30,8 +30,8 @@ import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.design.quickfilter.QuickFilterAdapter;
 import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.historytokocash.data.mapper.FilterHistoryTokoCashMapper;
-import com.tokopedia.tokocash.historytokocash.di.DaggerHistoryTokoCashComponent;
-import com.tokopedia.tokocash.historytokocash.di.HistoryTokoCashComponent;
+import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
+import com.tokopedia.tokocash.di.TokoCashComponent;
 import com.tokopedia.tokocash.historytokocash.domain.GetHistoryDataUseCase;
 import com.tokopedia.tokocash.historytokocash.presentation.DatePickerTokoCashUtil;
 import com.tokopedia.tokocash.historytokocash.presentation.adapter.HistoryTokoCashAdapter;
@@ -54,7 +54,7 @@ import javax.inject.Inject;
  */
 
 public class HistoryTokoCashActivity extends TActivity implements TokoCashHistoryContract.View,
-        HasComponent<HistoryTokoCashComponent> {
+        HasComponent<TokoCashComponent> {
 
     private static final int SELECTION_TYPE_PERIOD_DATE = 0;
     private static final int EXTRA_INTENT_DATE_PICKER = 50;
@@ -96,7 +96,7 @@ public class HistoryTokoCashActivity extends TActivity implements TokoCashHistor
     private String stateDataAfterFilter = "";
 
     private TokoCashHistoryData tokoCashHistoryData;
-    private HistoryTokoCashComponent historyTokoCashComponent;
+    private TokoCashComponent tokoCashComponent;
     private int oldScrollY = 0;
 
     @Inject
@@ -452,16 +452,16 @@ public class HistoryTokoCashActivity extends TActivity implements TokoCashHistor
     }
 
     @Override
-    public HistoryTokoCashComponent getComponent() {
-        if (historyTokoCashComponent == null) initInjector();
-        return historyTokoCashComponent;
+    public TokoCashComponent getComponent() {
+        if (tokoCashComponent == null) initInjector();
+        return tokoCashComponent;
     }
 
     private void initInjector() {
-        historyTokoCashComponent = DaggerHistoryTokoCashComponent.builder()
+        tokoCashComponent = DaggerTokoCashComponent.builder()
                 .appComponent(getApplicationComponent())
                 .build();
-        historyTokoCashComponent.inject(this);
+        tokoCashComponent.inject(this);
     }
 
     @Override

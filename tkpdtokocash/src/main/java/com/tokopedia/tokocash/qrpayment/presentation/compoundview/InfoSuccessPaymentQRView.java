@@ -1,4 +1,4 @@
-package com.tokopedia.tokocash.qrpayment.presentation;
+package com.tokopedia.tokocash.qrpayment.presentation.compoundview;
 
 import android.content.Context;
 import android.support.annotation.Nullable;

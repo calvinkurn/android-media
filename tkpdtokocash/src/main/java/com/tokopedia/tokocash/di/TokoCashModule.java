@@ -1,4 +1,4 @@
-package com.tokopedia.tokocash.historytokocash.di;
+package com.tokopedia.tokocash.di;
 
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
@@ -16,26 +16,26 @@ import dagger.Provides;
  * Created by nabillasabbaha on 12/27/17.
  */
 @Module
-public class HistoryTokoCashModule {
+public class TokoCashModule {
 
-    public HistoryTokoCashModule() {
+    public TokoCashModule() {
 
     }
 
     @Provides
-    @HistoryTokoCashScope
+    @TokoCashScope
     WalletService provideWalletService() {
         return new WalletService(SessionHandler.getAccessTokenTokoCash());
     }
 
     @Provides
-    @HistoryTokoCashScope
+    @TokoCashScope
     WalletDataSourceFactory provideWalletDataSourceFactory(WalletService walletService) {
         return new WalletDataSourceFactory(walletService);
     }
 
     @Provides
-    @HistoryTokoCashScope
+    @TokoCashScope
     GetHistoryDataUseCase provideGetHistoryDataUseCase(ThreadExecutor threadExecutor,
                                                        PostExecutionThread postExecutionThread,
                                                        WalletRepository walletRepository) {
@@ -43,7 +43,7 @@ public class HistoryTokoCashModule {
     }
 
     @Provides
-    @HistoryTokoCashScope
+    @TokoCashScope
     GetReasonHelpDataUseCase provideGetReasonHelpDataUseCase(ThreadExecutor threadExecutor,
                                                              PostExecutionThread postExecutionThread,
                                                              WalletRepository walletRepository) {

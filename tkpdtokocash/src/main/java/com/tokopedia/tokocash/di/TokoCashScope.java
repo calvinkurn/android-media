@@ -1,4 +1,4 @@
-package com.tokopedia.tokocash.historytokocash.di;
+package com.tokopedia.tokocash.di;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -10,5 +10,5 @@ import javax.inject.Scope;
  */
 @Scope
 @Retention(RetentionPolicy.CLASS)
-public @interface HistoryTokoCashScope {
+public @interface TokoCashScope {
 }

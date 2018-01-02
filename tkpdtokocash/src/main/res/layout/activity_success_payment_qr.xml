@@ -17,7 +17,7 @@
         app:lottie_fileName="success_payment_tokocash.json"
         app:lottie_loop="true"/>
 
-    <com.tokopedia.tokocash.qrpayment.presentation.InfoSuccessPaymentQRView
+    <com.tokopedia.tokocash.qrpayment.presentation.compoundview.InfoSuccessPaymentQRView
         android:id="@+id/info_success_payment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

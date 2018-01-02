@@ -1,4 +1,4 @@
-package com.tokopedia.tokocash.qrpayment.presentation;
+package com.tokopedia.tokocash.qrpayment.presentation.activity;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,6 +7,7 @@ import android.view.animation.AnimationUtils;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.tokocash.R;
+import com.tokopedia.tokocash.qrpayment.presentation.compoundview.InfoSuccessPaymentQRView;
 
 /**
  * Created by nabillasabbaha on 12/18/17.

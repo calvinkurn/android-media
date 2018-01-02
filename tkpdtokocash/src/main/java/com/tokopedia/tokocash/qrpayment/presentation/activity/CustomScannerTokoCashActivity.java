@@ -1,4 +1,4 @@
-package com.tokopedia.tokocash.qrpayment.presentation;
+package com.tokopedia.tokocash.qrpayment.presentation.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -46,6 +46,11 @@ public class CustomScannerTokoCashActivity extends BaseScannerQRActivity {
     @Override
     protected int getColorDownScannerLaser() {
         return R.drawable.digital_gradient_green_down;
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 
     @Override
