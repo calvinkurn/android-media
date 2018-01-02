@@ -4,8 +4,8 @@ import android.os.Parcel;
 import android.text.TextUtils;
 
 import com.tokopedia.seller.base.view.model.StepperModel;
-import com.tokopedia.seller.shop.setting.data.model.response.ResponseIsReserveDomain;
-import com.tokopedia.seller.shop.setting.data.model.response.Shipment;
+import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
+import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.Shipment;
 
 import org.json.JSONArray;
 import org.json.JSONException;

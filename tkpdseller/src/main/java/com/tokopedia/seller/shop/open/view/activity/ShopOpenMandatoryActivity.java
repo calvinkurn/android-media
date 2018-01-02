@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.router.SessionRouter;
@@ -17,9 +16,9 @@ import com.tokopedia.seller.shop.open.di.module.ShopOpenDomainModule;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLocationFragment;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLogisticFragment;
 import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
-import com.tokopedia.seller.shop.setting.data.model.response.ResponseIsReserveDomain;
+import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
 import com.tokopedia.seller.shop.open.di.component.DaggerShopOpenDomainComponent;
-import com.tokopedia.seller.shop.setting.view.fragment.ShopSettingInfoFragment;
+import com.tokopedia.seller.shop.open.view.fragment.ShopOpenInfoFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,7 +73,7 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepp
     protected List<Fragment> getListFragment() {
         if (fragmentList == null) {
             fragmentList = new ArrayList<>();
-            fragmentList.add(ShopSettingInfoFragment.createInstance());
+            fragmentList.add(ShopOpenInfoFragment.createInstance());
             fragmentList.add(ShopOpenMandatoryLocationFragment.getInstance());
             fragmentList.add(ShopOpenMandatoryLogisticFragment.newInstance());
             return fragmentList;

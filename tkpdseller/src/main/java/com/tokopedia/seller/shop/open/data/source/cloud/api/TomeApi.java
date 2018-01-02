@@ -1,12 +1,13 @@
 package com.tokopedia.seller.shop.open.data.source.cloud.api;
 
 import com.tokopedia.seller.shop.constant.ShopOpenNetworkConstant;
-import com.tokopedia.seller.shop.setting.data.model.response.ResponseCheckDomain;
-import com.tokopedia.seller.shop.setting.data.model.response.ResponseCheckShop;
-import com.tokopedia.seller.shop.setting.data.model.response.ResponseCreateShop;
-import com.tokopedia.seller.shop.setting.data.model.response.ResponseIsReserveDomain;
-import com.tokopedia.seller.shop.setting.data.model.response.ResponseReserveDomain;
-import com.tokopedia.seller.shop.setting.data.model.response.ResponseSaveShopDesc;
+import com.tokopedia.seller.shop.open.data.model.response.ResponseCheckDomainName;
+import com.tokopedia.seller.shop.open.data.model.response.ResponseCheckShopName;
+import com.tokopedia.seller.shop.open.data.model.response.ResponseCreateShop;
+import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseSaveShopDesc;
+import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
+import com.tokopedia.seller.shop.open.data.model.response.ResponseReserveDomain;
+import com.tokopedia.seller.shop.open.data.model.response.DataResponse;
 
 import java.util.Map;
 
@@ -26,28 +27,28 @@ import rx.Observable;
 public interface TomeApi {
 
     @GET(ShopOpenNetworkConstant.PATH_DOMAIN_CHECK)
-    Observable<Response<ResponseCheckDomain>> getDomainCheck(
+    Observable<Response<DataResponse<ResponseCheckDomainName>>> getDomainCheck(
             @Query(ShopOpenNetworkConstant.PARAM_SHOP_DOMAIN) String domainName);
 
     @GET(ShopOpenNetworkConstant.PATH_DOMAIN_CHECK)
-    Observable<Response<ResponseCheckShop>> getShopCheck(
+    Observable<Response<DataResponse<ResponseCheckShopName>>> getShopCheck(
             @Query(ShopOpenNetworkConstant.PARAM_SHOP_NAME) String shopName);
 
     @FormUrlEncoded
     @POST(ShopOpenNetworkConstant.PATH_RESERVE_DOMAIN)
-    Observable<Response<ResponseReserveDomain>> reserveDomain(
+    Observable<Response<DataResponse<ResponseReserveDomain>>> reserveDomain(
             @Field(ShopOpenNetworkConstant.PARAM_SHOP_NAME) String shopName,
             @Field(ShopOpenNetworkConstant.PARAM_SHOP_DOMAIN) String shopDomain);
 
     @GET(ShopOpenNetworkConstant.PATH_IS_RESERVE_DOMAIN)
-    Observable<Response<ResponseIsReserveDomain>> isReserveDomain();
+    Observable<Response<DataResponse<ResponseIsReserveDomain>>> isReserveDomain();
 
 
     @FormUrlEncoded
     @POST(ShopOpenNetworkConstant.PATH_RESERVE_SHOP_DESC_INFO)
-    Observable<Response<ResponseSaveShopDesc>> reserveShopDescInfo(@FieldMap Map<String, String> params);
+    Observable<Response<DataResponse<ResponseSaveShopDesc>>> reserveShopDescInfo(@FieldMap Map<String, String> params);
 
     @FormUrlEncoded
     @POST(ShopOpenNetworkConstant.PATH_CREATE_SHOP)
-    Observable<Response<ResponseCreateShop>> createShop();
+    Observable<Response<DataResponse<ResponseCreateShop>>> createShop();
 }

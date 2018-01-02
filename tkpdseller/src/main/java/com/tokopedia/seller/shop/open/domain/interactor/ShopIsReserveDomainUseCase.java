@@ -5,11 +5,8 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
-import com.tokopedia.seller.shop.constant.ShopExtraConstant;
 import com.tokopedia.seller.shop.open.data.repository.ShopOpenRepository;
-import com.tokopedia.seller.shop.setting.data.model.response.ResponseIsReserveDomain;
+import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
 
 import javax.inject.Inject;
 

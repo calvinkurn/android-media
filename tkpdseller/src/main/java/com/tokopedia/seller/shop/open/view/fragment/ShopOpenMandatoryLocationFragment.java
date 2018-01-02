@@ -27,12 +27,15 @@ import com.tokopedia.seller.logistic.GetOpenShopLocationPassUseCase;
 import com.tokopedia.seller.logistic.GetOpenShopTokenUseCase;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
- import com.tokopedia.seller.shop.open.di.component.DaggerShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.view.holder.LocationHeaderViewHolder;
 import com.tokopedia.seller.shop.open.view.holder.LocationMapViewHolder;
 import com.tokopedia.seller.shop.open.view.holder.LocationShippingViewHolder;
 import com.tokopedia.seller.shop.open.view.model.DestinationViewModel;
 import com.tokopedia.seller.shop.open.view.model.GoogleLocationViewModel;
+import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
+import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.Shipment;
+import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.UserData;
+import com.tokopedia.seller.shop.open.domain.interactor.ShopOpenSaveLocationUseCase;
 import com.tokopedia.seller.shop.open.view.model.LocationViewModel;
 import com.tokopedia.seller.shop.open.view.presenter.ShopOpenLocPresenterImpl;
 import com.tokopedia.seller.shop.open.view.presenter.ShopOpenLocView;
@@ -142,8 +145,8 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
         });
 
         if(stepperListener.getStepperModel()!=null){
-            Shipment shipment = stepperListener.getStepperModel().getResponseIsReserveDomain().getData().getShipment();
-            UserData userData = stepperListener.getStepperModel().getResponseIsReserveDomain().getData().getUserData();
+            Shipment shipment = stepperListener.getStepperModel().getResponseIsReserveDomain().getShipment();
+            UserData userData = stepperListener.getStepperModel().getResponseIsReserveDomain().getUserData();
 
             locationShippingViewHolder.updateDistrictId(Integer.toString(shipment.getDistrictId()));
             locationShippingViewHolder.updateZipCodes(Integer.toString(shipment.getPostal()));
@@ -197,7 +200,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
 
             ResponseIsReserveDomain responseIsReserveDomain = stepperListener.getStepperModel().getResponseIsReserveDomain();
 
-            Shipment shipment = responseIsReserveDomain.getData().getShipment();
+            Shipment shipment = responseIsReserveDomain.getShipment();
             shipment.setAddrStreet(googleLocationViewModel.getGeneratedAddress());
             shipment.setLongitude(googleLocationViewModel.getLongitude());
             shipment.setLatitude(googleLocationViewModel.getLatitude());
@@ -206,12 +209,12 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
             shipment.setPostal(Integer.valueOf(locationShippingViewHolder.getPostalCode()));
 
 
-            UserData userData = responseIsReserveDomain.getData().getUserData();
+            UserData userData = responseIsReserveDomain.getUserData();
             userData.setLocComplete(locationShippingViewHolder.getLocationComplete());
             userData.setLocation(locationShippingViewHolder.getDistrictName());
 
-            responseIsReserveDomain.getData().setShipment(shipment);
-            responseIsReserveDomain.getData().setUserData(userData);
+            responseIsReserveDomain.setShipment(shipment);
+            responseIsReserveDomain.setUserData(userData);
 
             stepperListener.getStepperModel().setResponseIsReserveDomain(responseIsReserveDomain);
         }

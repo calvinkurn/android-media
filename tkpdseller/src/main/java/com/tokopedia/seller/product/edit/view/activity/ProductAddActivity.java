@@ -21,6 +21,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.utils.ApplinkUtils;
@@ -277,7 +278,7 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             deleteNotUsedTkpdCacheImage();
-                            ProductAddActivity.super.onBackPressed();
+                            backPressedHandleTaskRoot();
                         }
                     }).setNegativeButton(getString(R.string.label_cancel), new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface arg0, int arg1) {
@@ -291,12 +292,22 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
                     if (!doSave) {
                         UnifyTracking.eventClickAddProduct(AppEventTracking.Category.ADD_PRODUCT,
                                 AppEventTracking.EventLabel.SAVE_DRAFT);
-                        ProductAddActivity.super.onBackPressed();
+                        backPressedHandleTaskRoot();
                     }
                 }
             });
             AlertDialog dialog = alertDialogBuilder.create();
             dialog.show();
+        } else {
+            backPressedHandleTaskRoot();
+        }
+    }
+
+    private void backPressedHandleTaskRoot(){
+        if (isTaskRoot()) {
+            Intent homeIntent = ((TkpdCoreRouter) getApplication()).getHomeIntent(this);
+            startActivity(homeIntent);
+            finish();
         } else {
             super.onBackPressed();
         }

@@ -1,8 +1,7 @@
 package com.tokopedia.seller.shop.open.data.source;
 
-import com.tokopedia.seller.shop.setting.data.model.response.ResponseIsReserveDomain;
-import com.tokopedia.seller.shop.setting.data.model.response.ResponseReserveDomain;
-import com.tokopedia.seller.shop.setting.data.source.cache.ShopOpenDataCache;
+import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
+import com.tokopedia.seller.shop.open.data.model.response.ResponseReserveDomain;
 import com.tokopedia.seller.shop.open.data.source.cloud.ShopOpenDataCloud;
 
 import javax.inject.Inject;
@@ -14,12 +13,10 @@ import rx.Observable;
  */
 
 public class ShopOpenDataSource {
-    private final ShopOpenDataCache shopOpenDataCache;
     private final ShopOpenDataCloud shopOpenDataCloud;
 
     @Inject
-    public ShopOpenDataSource(ShopOpenDataCache shopOpenDataCache, ShopOpenDataCloud shopOpenDataCloud) {
-        this.shopOpenDataCache = shopOpenDataCache;
+    public ShopOpenDataSource(ShopOpenDataCloud shopOpenDataCloud) {
         this.shopOpenDataCloud = shopOpenDataCloud;
     }
 

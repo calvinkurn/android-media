@@ -5,7 +5,7 @@ import com.tokopedia.seller.shop.open.domain.interactor.CheckDomainNameUseCase;
 import com.tokopedia.seller.shop.open.domain.interactor.CheckShopNameUseCase;
 import com.tokopedia.seller.shop.open.domain.interactor.ReserveShopNameDomainUseCase;
 import com.tokopedia.seller.shop.open.view.listener.ShopOpenDomainView;
-import com.tokopedia.seller.shop.setting.data.model.response.ResponseReserveDomain;
+import com.tokopedia.seller.shop.open.data.model.response.ResponseReserveDomain;
 
 import java.util.concurrent.TimeUnit;
 

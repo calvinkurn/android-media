@@ -15,7 +15,7 @@ import com.tokopedia.seller.shop.open.view.activity.ShopOpenDomainActivity;
 import com.tokopedia.seller.shop.open.view.activity.ShopOpenMandatoryActivity;
 import com.tokopedia.seller.shop.open.view.listener.ShopCheckDomainView;
 import com.tokopedia.seller.shop.open.view.presenter.ShopCheckIsReservePresenterImpl;
-import com.tokopedia.seller.shop.setting.data.model.response.ResponseIsReserveDomain;
+import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
 
 import javax.inject.Inject;
 
@@ -63,7 +63,7 @@ public class ShopOpenRoutingFragment extends BaseDaggerFragment implements ShopC
 
     @Override
     public void onSuccessCheckReserveDomain(ResponseIsReserveDomain responseIsReserveDomain) {
-        boolean isReservingDomain = responseIsReserveDomain.getData().isDomainAlreadyReserved();
+        boolean isReservingDomain = responseIsReserveDomain.isDomainAlreadyReserved();
         if (isReservingDomain) {
             goToShopOpenMandatory(responseIsReserveDomain);
         } else {

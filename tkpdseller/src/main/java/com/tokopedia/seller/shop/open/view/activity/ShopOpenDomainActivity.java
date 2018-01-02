@@ -2,9 +2,7 @@ package com.tokopedia.seller.shop.open.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.SellerModuleRouter;
@@ -13,7 +11,6 @@ import com.tokopedia.seller.shop.open.di.component.DaggerShopOpenDomainComponent
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.di.module.ShopOpenDomainModule;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenDomainFragment;
-import com.tokopedia.seller.shop.setting.data.model.response.ResponseIsReserveDomain;
 
 /**
  * Created by Nathaniel on 3/16/2017.

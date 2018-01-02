@@ -1,8 +1,8 @@
 package com.tokopedia.seller.shop.open.data.repository;
 
 import com.tokopedia.seller.shop.open.data.source.ShopOpenDataSource;
-import com.tokopedia.seller.shop.setting.data.model.response.ResponseIsReserveDomain;
-import com.tokopedia.seller.shop.setting.data.model.response.ResponseReserveDomain;
+import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
+import com.tokopedia.seller.shop.open.data.model.response.ResponseReserveDomain;
 
 import rx.Observable;
 
