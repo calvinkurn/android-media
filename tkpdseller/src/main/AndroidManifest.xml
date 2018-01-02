@@ -97,7 +97,7 @@
             android:theme="@style/Theme.Tokopedia3" />
 
         <activity
-            android:name=".shop.ShopEditorActivity"
+            android:name=".shopsettings.edit.view.ShopEditorActivity"
             android:label="@string/shop_setting"
             android:theme="@style/ShopAppTheme" />
 
@@ -328,7 +328,7 @@
             android:name=".selling.SellingService"
             android:exported="false" />
         <service
-            android:name=".shop.ShopEditService"
+            android:name=".shopsettings.edit.view.ShopEditService"
             android:exported="false" />
 
         <service

@@ -48,7 +48,7 @@ public class ResponseIsReserveDomain implements Parcelable {
 
     public ResponseIsReserveDomain() {
     }
-
+  
     public boolean isDomainAlreadyReserved() {
         return reserveStatus != 0;
     }

@@ -42,7 +42,6 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepp
         intent.putExtra(EXTRA_RESPONSE_IS_RESERVE_DOMAIN, responseIsReserveDomain);
         return intent;
     }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
