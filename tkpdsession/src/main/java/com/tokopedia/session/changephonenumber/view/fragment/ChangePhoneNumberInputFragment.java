@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.util.CustomPhoneNumberUtil;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.di.SessionComponent;
@@ -37,7 +38,6 @@ import butterknife.Unbinder;
 
 public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implements ChangePhoneNumberInputFragmentListener.View {
     public static final String PARAM_PHONE_NUMBER = "phone_number";
-    public static final String PARAM_HAS_TOKOCASH = "has_tokocash";
     public static final String PARAM_WARNING_LIST = "warning_list";
 
     @Inject
@@ -46,17 +46,15 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
     private EditText newPhoneNumber;
     private TextView nextButton;
     private String phoneNumber;
-    private boolean hasTokocash;
     private ArrayList<String> warningList;
     private Unbinder unbinder;
     private BottomSheetInfo bottomSheetInfo;
     private TextWatcher phoneNumberTextWatcher;
 
-    public static ChangePhoneNumberInputFragment newInstance(String phoneNumber, boolean hasTokocash, ArrayList<String> warningList) {
+    public static ChangePhoneNumberInputFragment newInstance(String phoneNumber, ArrayList<String> warningList) {
         ChangePhoneNumberInputFragment fragment = new ChangePhoneNumberInputFragment();
         Bundle bundle = new Bundle();
         bundle.putString(PARAM_PHONE_NUMBER, phoneNumber);
-        bundle.putBoolean(PARAM_HAS_TOKOCASH, hasTokocash);
         bundle.putStringArrayList(PARAM_WARNING_LIST, warningList);
         fragment.setArguments(bundle);
         return fragment;
@@ -119,14 +117,13 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
 
     private void initVar() {
         phoneNumber = getArguments().getString(PARAM_PHONE_NUMBER);
-        hasTokocash = getArguments().getBoolean(PARAM_HAS_TOKOCASH, false);
         warningList = getArguments().getStringArrayList(PARAM_WARNING_LIST);
 
-        oldPhoneNumber.setText(phoneNumber);
+        oldPhoneNumber.setText(CustomPhoneNumberUtil.transform(phoneNumber));
     }
 
     private void createBottomSheetView() {
-        bottomSheetInfo = new BottomSheetInfo(getContext(), hasTokocash, warningList);
+        bottomSheetInfo = new BottomSheetInfo(getContext(), warningList);
     }
 
     @Override

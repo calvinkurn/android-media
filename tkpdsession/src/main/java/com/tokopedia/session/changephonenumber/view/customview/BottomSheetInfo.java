@@ -22,21 +22,18 @@ import javax.inject.Inject;
  */
 
 public class BottomSheetInfo extends BottomSheetDialog {
+    @Inject
+    WarningListAdapter adapter;
     private Context context;
-    private boolean hasTokocash;
     private List<String> viewModelList;
     private RecyclerView warningRecyclerView;
     private ImageView closeIcon;
 
-    @Inject
-    WarningListAdapter adapter;
-
-    public BottomSheetInfo(@NonNull Context context, boolean hasTokocash, @NonNull List<String> viewModelList) {
+    public BottomSheetInfo(@NonNull Context context, @NonNull List<String> viewModelList) {
         super(context);
         if (viewModelList.size() < 1)
             throw new IllegalStateException("You have to provide the list of warnings!");
         this.context = context;
-        this.hasTokocash = hasTokocash;
         this.viewModelList = viewModelList;
         init();
     }
@@ -68,7 +65,7 @@ public class BottomSheetInfo extends BottomSheetDialog {
         warningRecyclerView.setLayoutManager(mLayoutManager);
 
         WarningListAdapter adapter = new WarningListAdapter();
-        adapter.addData(hasTokocash, viewModelList);
+        adapter.addData(viewModelList);
         warningRecyclerView.setAdapter(adapter);
     }
 }

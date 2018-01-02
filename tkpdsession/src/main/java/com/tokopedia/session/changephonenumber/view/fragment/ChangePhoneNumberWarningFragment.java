@@ -55,7 +55,6 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
     private WarningViewModel viewModel;
     private String email;
     private String phoneNumber;
-    private boolean hasTokocash;
     private View mainView;
     private View loadingView;
     private Unbinder unbinder;
@@ -159,7 +158,6 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
     @Override
     public void onGetWarningSuccess(WarningViewModel warningViewModel) {
         this.viewModel = warningViewModel;
-        this.hasTokocash = !isNullOrEmpty(viewModel.getTokocash());
         if (isNullOrEmpty(viewModel.getTokocash()) && isNullOrEmpty(viewModel.getTokopediaBalance())) {
             goToNextActivity();
             getActivity().finish();
@@ -211,7 +209,6 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
                     ChangePhoneNumberInputActivity.newInstance(
                             getContext(),
                             phoneNumber,
-                            hasTokocash,
                             new ArrayList<>(viewModel.getWarningList())
                     )
             );
@@ -227,7 +224,7 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
             if (viewModel.getWarningList() != null && viewModel.getWarningList().size() > 0) {
                 LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
                 warningRecyclerView.setLayoutManager(mLayoutManager);
-                adapter.addData(hasTokocash, viewModel.getWarningList());
+                adapter.addData(viewModel.getWarningList());
                 warningRecyclerView.setAdapter(adapter);
             }
         }

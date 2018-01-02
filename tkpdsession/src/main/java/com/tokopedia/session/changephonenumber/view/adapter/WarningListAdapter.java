@@ -19,7 +19,6 @@ import javax.inject.Inject;
  */
 
 public class WarningListAdapter extends RecyclerView.Adapter<WarningListAdapter.WarningListViewHolder> {
-    private boolean hasTokocash;
     private List<String> warningList;
 
     @Inject
@@ -38,12 +37,13 @@ public class WarningListAdapter extends RecyclerView.Adapter<WarningListAdapter.
     public void onBindViewHolder(WarningListViewHolder warningListViewHolder, int i) {
         String warning = warningList.get(i);
         if (!isNullOrEmpty(warning)) {
-            warningListViewHolder.warning.setText(MethodChecker.fromHtml(warning));
+            CharSequence warningHtml = MethodChecker.fromHtml(warning);
+            warningHtml = trimTrailingWhitespace(warningHtml);
+            warningListViewHolder.warning.setText(warningHtml);
             warningListViewHolder.warning.setVisibility(View.VISIBLE);
         } else {
             warningListViewHolder.warning.setVisibility(View.GONE);
         }
-        warningListViewHolder.note.setVisibility(isLastItem(i) && hasTokocash ? View.VISIBLE : View.GONE);
         warningListViewHolder.separator.setVisibility(isLastItem(i) ? View.GONE : View.VISIBLE);
     }
 
@@ -55,10 +55,22 @@ public class WarningListAdapter extends RecyclerView.Adapter<WarningListAdapter.
         return (position == getItemCount() - 1);
     }
 
-    public void addData(boolean hasTokocash, List<String> warningList) {
-        this.hasTokocash = hasTokocash;
+    public void addData(List<String> warningList) {
         this.warningList.addAll(warningList);
         notifyItemRangeInserted(0, warningList.size());
+    }
+
+    private CharSequence trimTrailingWhitespace(CharSequence source) {
+        if (source == null)
+            return "";
+
+        int i = source.length();
+
+        // loop back to the first non-whitespace character
+        while (--i >= 0 && Character.isWhitespace(source.charAt(i))) {
+        }
+
+        return source.subSequence(0, i + 1);
     }
 
     @Override
@@ -68,13 +80,11 @@ public class WarningListAdapter extends RecyclerView.Adapter<WarningListAdapter.
 
     public class WarningListViewHolder extends RecyclerView.ViewHolder {
         TextView warning;
-        TextView note;
         View separator;
 
         public WarningListViewHolder(View itemView) {
             super(itemView);
             warning = itemView.findViewById(R.id.warning);
-            note = itemView.findViewById(R.id.note);
             separator = itemView.findViewById(R.id.separator);
         }
     }
