@@ -17,6 +17,7 @@ import okhttp3.ResponseBody;
  */
 public class TkpdErrorResponseInterceptor implements Interceptor {
     private static final int BYTE_COUNT = 2048;
+    public static final int SERVER_ERROR_CODE = 422;
 
     Class<? extends BaseResponseError> responseErrorClass;
     BaseResponseError responseError;
@@ -31,7 +32,7 @@ public class TkpdErrorResponseInterceptor implements Interceptor {
 
         ResponseBody responseBody = null;
         String responseBodyString = "";
-        if (null != response && response.isSuccessful()) {
+        if (null != response && (response.isSuccessful() || response.code() == SERVER_ERROR_CODE)) {
             responseBody = response.peekBody(BYTE_COUNT);
             responseBodyString = responseBody.string();
 

@@ -26,22 +26,20 @@ import com.tokopedia.core.gallery.GallerySelectedFragment;
 import com.tokopedia.core.gallery.GalleryType;
 import com.tokopedia.core.gallery.MediaItem;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
+import com.tokopedia.seller.shop.open.util.ShopErrorHandler;
 import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
 import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
 import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.UserData;
-import com.tokopedia.seller.shop.common.exception.ShopException;
 import com.tokopedia.seller.shop.open.di.component.DaggerShopSettingInfoComponent;
 import com.tokopedia.seller.shop.open.di.component.ShopSettingInfoComponent;
 import com.tokopedia.seller.shop.open.view.listener.ShopOpenInfoView;
 import com.tokopedia.seller.shop.open.view.presenter.ShopOpenInfoPresenter;
-import com.tokopedia.seller.shop.open.view.fragment.ShopOpenInfoFragmentPermissionsDispatcher;
 
 import java.io.File;
 
@@ -187,12 +185,7 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
 
     @Override
     public void onFailedSaveInfoShop(Throwable t) {
-        String errorMessage;
-        if(t instanceof ShopException){
-            errorMessage = t.getMessage();
-        }else{
-            errorMessage = ErrorHandler.getErrorMessage(t, getActivity());
-        }
+        String errorMessage = ShopErrorHandler.getErrorMessage(t);
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
@@ -210,7 +203,7 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
 
     @Override
     public void onErrorGetReserveDomain(Throwable e) {
-        NetworkErrorHelper.showSnackbar(getActivity(), ErrorHandler.getErrorMessage(e, getActivity()));
+        NetworkErrorHelper.showSnackbar(getActivity(), ShopErrorHandler.getErrorMessage(e));
     }
 
     private void onClickBrowseImage() {
