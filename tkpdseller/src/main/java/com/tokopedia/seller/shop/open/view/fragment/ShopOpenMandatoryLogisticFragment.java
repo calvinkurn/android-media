@@ -18,11 +18,11 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.shop.open.data.model.OpenShopCouriersModel;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
+import com.tokopedia.seller.shop.open.util.ShopErrorHandler;
 import com.tokopedia.seller.shop.open.view.model.CourierServiceIdWrapper;
 import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
 import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
@@ -125,7 +125,7 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
         if (responseIsReserveDomain == null) {
             return DEFAULT_DISTRICT_ID;
         }
-        Shipment shipment = responseIsReserveDomain.getData().getShipment();
+        Shipment shipment = responseIsReserveDomain.getShipment();
         if (shipment == null) {
             return DEFAULT_DISTRICT_ID;
         }
@@ -193,7 +193,7 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     @Override
     public void onErrorLoadLogistic(Throwable t) {
         hideLoading();
-        String message = ErrorHandler.getErrorMessage(t);
+        String message = ShopErrorHandler.getErrorMessage(t);
         if (!TextUtils.isEmpty(message)) {
             showMessageError(message);
         }
@@ -203,7 +203,7 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     public void onErrorSaveCourier(Throwable t) {
         hideSubmitLoading();
         SnackbarRetry snackbarSubmitRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(),
-                ErrorHandler.getErrorMessage(t), new NetworkErrorHelper.RetryClickedListener() {
+                ShopErrorHandler.getErrorMessage(t), new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
                         onContinueButtonClicked();

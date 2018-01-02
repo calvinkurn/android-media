@@ -5,7 +5,6 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.seller.shop.common.exception.model.Header;
 
 /**
  * Created by zulfikarrahman on 11/4/16.
@@ -13,27 +12,42 @@ import com.tokopedia.seller.shop.common.exception.model.Header;
 
 public class ResponseIsReserveDomain implements Parcelable {
 
-    @SerializedName("header")
+    @SerializedName("reserve_status")
     @Expose
-    private Header header;
-    @SerializedName("data")
+    private long reserveStatus;
+    @SerializedName("shipment")
     @Expose
-    private Data data;
+    private Shipment shipment;
+    @SerializedName("user_data")
+    @Expose
+    private UserData userData;
 
-    public Header getHeader() {
-        return header;
+    public long getReserveStatus() {
+        return reserveStatus;
     }
 
-    public void setHeader(Header header) {
-        this.header = header;
+    public void setReserveStatus(long reserveStatus) {
+        this.reserveStatus = reserveStatus;
     }
 
-    public Data getData() {
-        return data;
+    public Shipment getShipment() {
+        return shipment;
     }
 
-    public void setData(Data data) {
-        this.data = data;
+    public void setShipment(Shipment shipment) {
+        this.shipment = shipment;
+    }
+
+    public UserData getUserData() {
+        return userData;
+    }
+
+    public void setUserData(UserData userData) {
+        this.userData = userData;
+    }
+
+    public boolean isDomainAlreadyReserved() {
+        return reserveStatus != 0;
     }
 
     @Override
@@ -43,16 +57,18 @@ public class ResponseIsReserveDomain implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(this.header, flags);
-        dest.writeParcelable(this.data, flags);
+        dest.writeLong(this.reserveStatus);
+        dest.writeParcelable(this.shipment, flags);
+        dest.writeParcelable(this.userData, flags);
     }
 
     public ResponseIsReserveDomain() {
     }
 
     protected ResponseIsReserveDomain(Parcel in) {
-        this.header = in.readParcelable(Header.class.getClassLoader());
-        this.data = in.readParcelable(Data.class.getClassLoader());
+        this.reserveStatus = in.readLong();
+        this.shipment = in.readParcelable(Shipment.class.getClassLoader());
+        this.userData = in.readParcelable(UserData.class.getClassLoader());
     }
 
     public static final Creator<ResponseIsReserveDomain> CREATOR = new Creator<ResponseIsReserveDomain>() {

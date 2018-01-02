@@ -221,7 +221,7 @@
     <string name="body_tooltip_reputation_multiplier">Ini adalah Nilai Kelipatan Reputasi. Reputasi dari pesanan ini akan dikalikan dengan Nilai Kelipatan Reputasi.</string>
 
     <string name="getting_shop_step">Mengambil Informasi Toko</string>
-    <string name="shipping_location_text">Lokasi Pengiriman</string>
+    <string name="shipping_location_text"><b>Lokasi Pengiriman</b></string>
     <string name="shipping_location_text_desc">Lengkapi informasi lokasi pengiriman untuk memilih kurir yang tersedia di lokasi Anda.</string>
     <string name="shipping_location_text_choose_desc">Pilih dari Daftar Alamat jika alamat pengiriman sama dengan alamat pembelian yang pernah Anda isi</string>
     <string name="choose_from_address_list">Pilih dari Daftar Alamat</string>
@@ -234,7 +234,9 @@
     <string name="fill_width_address_desc">Isi dengan jalan, nomor rumah, kecamatan, nama gedung, landmark dekat lokasi dan detail lainnya.</string>
     <string name="title_next_and_continue_later">Simpan dan lanjutkan Nanti</string>
     <string name="shop_name_must_be_filled">Nama Toko harus diisi</string>
+    <string name="shop_name_min_char">Nama Toko minimum 3 karakter</string>
     <string name="domain_name_must_be_filled">Nama domain harus diisi</string>
+    <string name="domain_name_min_char">Nama domain minimum 3 karakter</string>
     <string name="loading_reserve_shop_name_domain">Mereservasi nama toko dan domain</string>
     <string name="shop_name_or_domain_has_been_reserved">Nama atau domain toko sudah terpakai</string>
     <string name="shop_domain">Domain Toko</string>
@@ -248,4 +250,6 @@
     <string name="courier_cannot_activate_title">Kurir tidak tersedia di daerah Anda</string>
     <string name="min_1_courier_must_be_selected">Minimal 1 layanan kurir harus dipilih.</string>
     <string name="shop_has_been_active">Toko Anda sudah aktif!</string>
+    <string name="shop_create_success_ask_add_product">Jangan sampai toko Anda kosong begitu saja.\nTambahkan produk pertamamu dan mulai berjualan sekarang.</string>
+    <string name="go_to_shop_page">Ke Halaman Toko Saya</string>
 </resources>

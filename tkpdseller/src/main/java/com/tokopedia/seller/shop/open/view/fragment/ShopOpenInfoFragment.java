@@ -26,22 +26,20 @@ import com.tokopedia.core.gallery.GallerySelectedFragment;
 import com.tokopedia.core.gallery.GalleryType;
 import com.tokopedia.core.gallery.MediaItem;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
+import com.tokopedia.seller.shop.open.util.ShopErrorHandler;
 import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
 import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
 import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.UserData;
-import com.tokopedia.seller.shop.common.exception.ShopException;
 import com.tokopedia.seller.shop.open.di.component.DaggerShopSettingInfoComponent;
 import com.tokopedia.seller.shop.open.di.component.ShopSettingInfoComponent;
 import com.tokopedia.seller.shop.open.view.listener.ShopOpenInfoView;
 import com.tokopedia.seller.shop.open.view.presenter.ShopOpenInfoPresenter;
-import com.tokopedia.seller.shop.open.view.fragment.ShopOpenInfoFragmentPermissionsDispatcher;
 
 import java.io.File;
 
@@ -119,16 +117,16 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
             if(onShopStepperListener.getStepperModel().getResponseIsReserveDomain() == null){
                 presenter.getisReserveDomain();
             }else{
-                if(onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getData().getUserData() != null) {
-                    UserData userData = onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getData().getUserData();
+                if(onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData() != null) {
+                    UserData userData = onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData();
                     if(userData.getShopName()!= null) {
                         String helloName = getString(R.string.hello_x, userData.getShopName());
                         welcomeText.setText(MethodChecker.fromHtml(helloName));
                     }
-                    shopDescEditText.setText(onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getData().getUserData().getShortDesc());
-                    shopSloganEditText.setText(onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getData().getUserData().getTagLine());
+                    shopDescEditText.setText(onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData().getShortDesc());
+                    shopSloganEditText.setText(onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData().getTagLine());
                     ImageHandler.loadImage(getActivity(), imagePicker,
-                            onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getData().getUserData().getLogo(), R.drawable.ic_add_photo_box);
+                            onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData().getLogo(), R.drawable.ic_add_photo_box);
                 }
             }
         }
@@ -157,8 +155,8 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
 
     protected void onNextButtonClicked() {
         if(TextUtils.isEmpty(uriPathImage) && onShopStepperListener.getStepperModel().getResponseIsReserveDomain()!= null
-        && onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getData().getUserData() != null) {
-            UserData userData = onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getData().getUserData();
+        && onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData() != null) {
+            UserData userData = onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData();
             presenter.submitShopInfo(userData.getLogo(), shopSloganEditText.getText().toString(),
                     shopDescEditText.getText().toString(), userData.getLogo(),
                     userData.getServerId(), userData.getPhotoObj());
@@ -187,12 +185,7 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
 
     @Override
     public void onFailedSaveInfoShop(Throwable t) {
-        String errorMessage;
-        if(t instanceof ShopException){
-            errorMessage = t.getMessage();
-        }else{
-            errorMessage = ErrorHandler.getErrorMessage(t, getActivity());
-        }
+        String errorMessage = ShopErrorHandler.getErrorMessage(t);
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
@@ -210,7 +203,7 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
 
     @Override
     public void onErrorGetReserveDomain(Throwable e) {
-        NetworkErrorHelper.showSnackbar(getActivity(), ErrorHandler.getErrorMessage(e, getActivity()));
+        NetworkErrorHelper.showSnackbar(getActivity(), ShopErrorHandler.getErrorMessage(e));
     }
 
     private void onClickBrowseImage() {
