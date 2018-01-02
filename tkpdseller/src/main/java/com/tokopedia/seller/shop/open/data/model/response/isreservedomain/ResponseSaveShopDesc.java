@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Data implements Parcelable {
+public class ResponseSaveShopDesc implements Parcelable {
 
     @SerializedName("reserve_status")
     @Expose
@@ -54,24 +54,24 @@ public class Data implements Parcelable {
         dest.writeParcelable(this.userData, flags);
     }
 
-    public Data() {
+    public ResponseSaveShopDesc() {
     }
 
-    protected Data(Parcel in) {
+    protected ResponseSaveShopDesc(Parcel in) {
         this.reserveStatus = in.readLong();
         this.shipment = in.readParcelable(Shipment.class.getClassLoader());
         this.userData = in.readParcelable(UserData.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<Data> CREATOR = new Parcelable.Creator<Data>() {
+    public static final Parcelable.Creator<ResponseSaveShopDesc> CREATOR = new Parcelable.Creator<ResponseSaveShopDesc>() {
         @Override
-        public Data createFromParcel(Parcel source) {
-            return new Data(source);
+        public ResponseSaveShopDesc createFromParcel(Parcel source) {
+            return new ResponseSaveShopDesc(source);
         }
 
         @Override
-        public Data[] newArray(int size) {
-            return new Data[size];
+        public ResponseSaveShopDesc[] newArray(int size) {
+            return new ResponseSaveShopDesc[size];
         }
     };
 

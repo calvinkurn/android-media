@@ -5,7 +5,6 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.seller.shop.common.exception.model.Header;
 
 /**
  * Created by zulfikarrahman on 11/4/16.
@@ -68,15 +67,15 @@ public class ResponseIsReserveDomain implements Parcelable {
         this.userData = in.readParcelable(UserData.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<Data> CREATOR = new Parcelable.Creator<Data>() {
+    public static final Parcelable.Creator<ResponseSaveShopDesc> CREATOR = new Parcelable.Creator<ResponseSaveShopDesc>() {
         @Override
-        public Data createFromParcel(Parcel source) {
-            return new Data(source);
+        public ResponseSaveShopDesc createFromParcel(Parcel source) {
+            return new ResponseSaveShopDesc(source);
         }
 
         @Override
-        public Data[] newArray(int size) {
-            return new Data[size];
+        public ResponseSaveShopDesc[] newArray(int size) {
+            return new ResponseSaveShopDesc[size];
         }
     };
 

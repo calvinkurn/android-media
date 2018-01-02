@@ -1,17 +1,15 @@
 package com.tokopedia.seller.shop.open.data.source.cloud;
 
-import com.tokopedia.core.common.mapper.SimpleResponseMapper;
-import com.tokopedia.seller.common.data.mapper.SimpleDataResponseMapper;
+import com.tokopedia.seller.common.data.mapper.DataResponseMapper;
 import com.tokopedia.seller.shop.common.di.ShopQualifier;
-import com.tokopedia.seller.shop.open.data.source.cloud.api.TomeApi;
 import com.tokopedia.seller.shop.open.data.model.response.ResponseCheckDomainName;
 import com.tokopedia.seller.shop.open.data.model.response.ResponseCheckShopName;
-import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
 import com.tokopedia.seller.shop.open.data.model.response.ResponseReserveDomain;
+import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
+import com.tokopedia.seller.shop.open.data.source.cloud.api.TomeApi;
 
 import javax.inject.Inject;
 
-import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -29,7 +27,7 @@ public class ShopOpenDataCloud {
 
     public Observable<Boolean> checkDomainName(String domainName) {
         return api.getDomainCheck(domainName)
-                .map(new SimpleDataResponseMapper<ResponseCheckDomainName>())
+                .map(new DataResponseMapper<ResponseCheckDomainName>())
                 .flatMap(new Func1<ResponseCheckDomainName, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(ResponseCheckDomainName responseCheckDomainName) {
@@ -43,7 +41,7 @@ public class ShopOpenDataCloud {
     }
 
     public Observable<Boolean> checkShopName(String shopName) {
-        return api.getShopCheck(shopName).map(new SimpleDataResponseMapper<ResponseCheckShopName>())
+        return api.getShopCheck(shopName).map(new DataResponseMapper<ResponseCheckShopName>())
                 .flatMap(new Func1<ResponseCheckShopName, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(ResponseCheckShopName responseCheckShopName) {
@@ -58,7 +56,7 @@ public class ShopOpenDataCloud {
 
     public Observable<ResponseIsReserveDomain> isReserveDomainResponseObservable() {
         return api.isReserveDomain()
-                .map(new SimpleDataResponseMapper<ResponseIsReserveDomain>())
+                .map(new DataResponseMapper<ResponseIsReserveDomain>())
                 .flatMap(new Func1<ResponseIsReserveDomain, Observable<ResponseIsReserveDomain>>() {
                     @Override
                     public Observable<ResponseIsReserveDomain> call(ResponseIsReserveDomain responseIsReserveDomain) {
@@ -73,7 +71,7 @@ public class ShopOpenDataCloud {
 
     public Observable<ResponseReserveDomain> reserveShopNameDomain(String shopName, String shopDomainName) {
         return api.reserveDomain(shopName, shopDomainName)
-                .map(new SimpleDataResponseMapper<ResponseReserveDomain>())
+                .map(new DataResponseMapper<ResponseReserveDomain>())
                 .flatMap(new Func1<ResponseReserveDomain, Observable<ResponseReserveDomain>>() {
                     @Override
                     public Observable<ResponseReserveDomain> call(ResponseReserveDomain responseReserveDomain) {
