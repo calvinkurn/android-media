@@ -21,8 +21,10 @@ public class GallerySelectedFragment extends Fragment implements AlbumMediaColle
 
     private static final String ARG_PARAM_ALBUM = "ARG_PARAM_ALBUM";
     public static final String EXTRA_RESULT_SELECTION = "EXTRA_RESULT_SELECTION";
+    public static final String ARG_TYPE_GALLERY = "TYPE_GALLERY";
 
     private AlbumItem albumItem;
+    private int galeryType = GalleryType.ofAll();
     private RecyclerView recyclerview;
     private AlbumMediaAdapter adapter;
     private AlbumMediaCollection albumMediaCollection = new AlbumMediaCollection();
@@ -31,10 +33,11 @@ public class GallerySelectedFragment extends Fragment implements AlbumMediaColle
         // Required empty public constructor
     }
 
-    public static GallerySelectedFragment newInstance(AlbumItem albumItem) {
+    public static GallerySelectedFragment newInstance(AlbumItem albumItem, int typeGallery) {
         GallerySelectedFragment fragment = new GallerySelectedFragment();
         Bundle args = new Bundle();
         args.putParcelable(ARG_PARAM_ALBUM, albumItem);
+        args.putInt(ARG_TYPE_GALLERY, typeGallery);
         fragment.setArguments(args);
         return fragment;
     }
@@ -55,6 +58,7 @@ public class GallerySelectedFragment extends Fragment implements AlbumMediaColle
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         albumItem = getArguments().getParcelable(ARG_PARAM_ALBUM);
+        galeryType = getArguments().getInt(ARG_TYPE_GALLERY);
 
         adapter = new AlbumMediaAdapter(getActivity(), recyclerview);
         adapter.registerOnMediaClickListener(this);
@@ -65,6 +69,7 @@ public class GallerySelectedFragment extends Fragment implements AlbumMediaColle
         recyclerview.addItemDecoration(new MediaGridInset(3, spacing, false));
         recyclerview.setAdapter(adapter);
         albumMediaCollection.onCreate(getActivity(), this);
+        albumMediaCollection.setGaleryType(galeryType);
         albumMediaCollection.load(albumItem);
     }
 

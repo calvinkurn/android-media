@@ -158,7 +158,7 @@ public class GalleryActivity extends TActivity implements AlbumCollection.AlbumC
     }
 
     private void inflateFragment(AlbumItem albumItem) {
-        Fragment fragment = GallerySelectedFragment.newInstance(albumItem);
+        Fragment fragment = GallerySelectedFragment.newInstance(albumItem, typeGallery);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.container, fragment, TAG)
                 .commit();

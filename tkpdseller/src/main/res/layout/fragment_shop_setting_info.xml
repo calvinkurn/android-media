@@ -28,8 +28,6 @@
             style="@style/TextView.Subheading"
             android:text="@string/label_shop_open_info_title_shop" />
 
-
-
         <com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout
             android:id="@+id/shop_slogan_input_layout"
             android:layout_marginBottom="@dimen/margin_med"
@@ -110,24 +108,9 @@
 
                 <TextView
                     style="@style/TextView.Caption.BlackDisabled"
-                    android:layout_marginBottom="@dimen/margin_ms"
                     android:text="@string/label_shop_setting_type_file_image" />
 
             </LinearLayout>
-
-            <FrameLayout
-                android:id="@+id/container_browse_file"
-                style="@style/View.ShopSetting.BrowseImage"
-                android:layout_alignBottom="@+id/image_picker_container"
-                android:layout_alignLeft="@id/container_info_picker_image">
-
-                <TextView
-                    style="@style/TextView.Caption"
-                    android:textStyle="bold"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:text="@string/label_shop_setting_browse_file" />
-            </FrameLayout>
 
         </RelativeLayout>
 

@@ -67,7 +67,6 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
     private EditText shopDescEditText;
     private TkpdHintTextInputLayout shopSloganTextInputLayout;
     private EditText shopSloganEditText;
-    private View containerBrowseFile;
     private View containerImagePicker;
     private ImageView imagePicker;
     private TextView welcomeText;
@@ -104,7 +103,6 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
         shopDescEditText = (EditText) view.findViewById(R.id.shop_desc_input_text);
         shopSloganTextInputLayout = view.findViewById(R.id.shop_slogan_input_layout);
         shopSloganEditText = (EditText) view.findViewById(R.id.shop_slogan_input_text);
-        containerBrowseFile = view.findViewById(R.id.container_browse_file);
         containerImagePicker = view.findViewById(R.id.image_picker_container);
         imagePicker = (ImageView) view.findViewById(R.id.image_picker);
         buttonNext = (Button) view.findViewById(R.id.button_next);
@@ -119,26 +117,24 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
             }else{
                 if(onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData() != null) {
                     UserData userData = onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData();
-                    if(userData.getShopName()!= null) {
-                        String helloName = getString(R.string.hello_x, userData.getShopName());
-                        welcomeText.setText(MethodChecker.fromHtml(helloName));
-                    }
-                    shopDescEditText.setText(onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData().getShortDesc());
-                    shopSloganEditText.setText(onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData().getTagLine());
-                    ImageHandler.loadImage(getActivity(), imagePicker,
-                            onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData().getLogo(), R.drawable.ic_add_photo_box);
+                    updateView(userData);
                 }
             }
         }
     }
 
+    private void updateView(UserData userData) {
+        if(userData.getShopName()!= null) {
+            String helloName = getString(R.string.hello_x, userData.getShopName());
+            welcomeText.setText(MethodChecker.fromHtml(helloName));
+        }
+        shopDescEditText.setText(userData.getShortDesc());
+        shopSloganEditText.setText(userData.getTagLine());
+        ImageHandler.loadImage(getActivity(), imagePicker,
+                userData.getLogo(), R.drawable.ic_add_photo_box, R.drawable.ic_add_photo_box);
+    }
+
     private void setActionVar() {
-        containerBrowseFile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onClickBrowseImage();
-            }
-        });
         containerImagePicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -157,7 +153,7 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
         if(TextUtils.isEmpty(uriPathImage) && onShopStepperListener.getStepperModel().getResponseIsReserveDomain()!= null
         && onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData() != null) {
             UserData userData = onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData();
-            presenter.submitShopInfo(userData.getLogo(), shopSloganEditText.getText().toString(),
+            presenter.submitShopInfo(uriPathImage, shopSloganEditText.getText().toString(),
                     shopDescEditText.getText().toString(), userData.getLogo(),
                     userData.getServerId(), userData.getPhotoObj());
         }else{
@@ -199,6 +195,7 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
         if(onShopStepperListener != null) {
             onShopStepperListener.getStepperModel().setResponseIsReserveDomain(responseIsReserveDomain);
         }
+        updateView(responseIsReserveDomain.getUserData());
     }
 
     @Override
