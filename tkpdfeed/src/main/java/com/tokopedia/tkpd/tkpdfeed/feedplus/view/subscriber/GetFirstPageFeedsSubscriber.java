@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber;
 
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.FeedTracking;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
@@ -75,9 +76,14 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
     private final int page;
 
+    public static final String FEED_ENHANCE_ANALYTIC = "FEED_ENHANCE_ANALYTIC";
+    private static final String LAST_POSITION_ENHANCE_PRODUCT = "LAST_POSITION_ENHANCE_PRODUCT";
+    private final LocalCacheHandler cache;
+
     public GetFirstPageFeedsSubscriber(FeedPlus.View viewListener, int page) {
         this.viewListener = viewListener;
         this.page = page;
+        this.cache = new LocalCacheHandler(viewListener.getActivity(), FEED_ENHANCE_ANALYTIC);
     }
 
     @Override
@@ -91,8 +97,16 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 ErrorHandler.getErrorMessage(e));
     }
 
+    private void clearCacheFeedAnalytic() {
+        if (page == 1) {
+            LocalCacheHandler.clearCache(viewListener.getActivity(), FEED_ENHANCE_ANALYTIC);
+        }
+    }
+
     @Override
     public void onNext(FeedResult feedResult) {
+
+        clearCacheFeedAnalytic();
 
         if (feedResult.getDataSource() == FeedResult.SOURCE_CLOUD)
             viewListener.clearData();
@@ -205,9 +219,9 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
     private void addFeedData(ArrayList<Visitable> listFeedView,
                              List<DataFeedDomain> listFeedDomain) {
+        int positionFeedProductCard = cache.getInt(LAST_POSITION_ENHANCE_PRODUCT, 0);
         if (listFeedDomain != null)
-            for (int positionFeedCard = 0; positionFeedCard < listFeedDomain.size(); positionFeedCard++) {
-                DataFeedDomain domain = listFeedDomain.get(positionFeedCard);
+            for (DataFeedDomain domain : listFeedDomain) {
                 switch (domain.getContent().getType() != null ? domain.getContent().getType() : "") {
                     case TYPE_OS_CAMPAIGN:
                         if (domain.getContent().getOfficialStores() != null
@@ -227,16 +241,19 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                         }
                         break;
                     case TYPE_NEW_PRODUCT:
-                        ActivityCardViewModel model = convertToActivityViewModel(domain, positionFeedCard);
+                        ActivityCardViewModel model = convertToActivityViewModel(domain, positionFeedProductCard);
                         if (model.getListProduct() != null && !model.getListProduct().isEmpty()) {
-                            String eventLabel = String.format("%s - %s", "product", "product upload");
+                            String eventLabel = String.format("%s", "product upload");
                             model.setEventLabel(eventLabel);
                             listFeedView.add(model);
 
+                            positionFeedProductCard++;
                             FeedTracking.eventImpressionFeedUploadedProduct(
-                                    model.getListProductAsObjectDataLayer(eventLabel, SessionHandler.getLoginID(viewListener.getActivity()), positionFeedCard + 1),
+                                    model.getListProductAsObjectDataLayer(eventLabel, SessionHandler.getLoginID(viewListener.getActivity()), positionFeedProductCard),
                                     eventLabel
                             );
+                            cache.putInt(LAST_POSITION_ENHANCE_PRODUCT, positionFeedProductCard);
+                            cache.applyEditor();
                         }
                         break;
                     case TYPE_PROMOTION:
@@ -250,19 +267,22 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                             listFeedView.add(toppicks);
                         break;
                     case TYPE_INSPIRATION:
-                        InspirationViewModel inspirationViewModel = convertToInspirationViewModel(domain, positionFeedCard);
+                        InspirationViewModel inspirationViewModel = convertToInspirationViewModel(domain, positionFeedProductCard);
                         if (inspirationViewModel != null
                                 && inspirationViewModel.getListProduct() != null
                                 && !inspirationViewModel.getListProduct().isEmpty()) {
 
-                            String eventLabel = String.format("%s - %s", TYPE_INSPIRATION, "inspirasi_" + inspirationViewModel.getSource());
+                            String eventLabel = String.format("%s - %s", "inspirasi", inspirationViewModel.getSource());
                             inspirationViewModel.setEventLabel(eventLabel);
                             listFeedView.add(inspirationViewModel);
 
+                            positionFeedProductCard++;
                             FeedTracking.eventImpressionFeedInspiration(
-                                    inspirationViewModel.getListProductAsObjectDataLayer(eventLabel, SessionHandler.getLoginID(viewListener.getActivity()), positionFeedCard + 1),
+                                    inspirationViewModel.getListProductAsObjectDataLayer(eventLabel, SessionHandler.getLoginID(viewListener.getActivity()), positionFeedProductCard),
                                     eventLabel
                             );
+                            cache.putInt(LAST_POSITION_ENHANCE_PRODUCT, positionFeedProductCard);
+                            cache.applyEditor();
                         }
                         break;
                     case TYPE_TOPADS:
