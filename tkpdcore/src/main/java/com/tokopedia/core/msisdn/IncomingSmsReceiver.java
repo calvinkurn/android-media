@@ -12,6 +12,8 @@ import com.tokopedia.core.util.MethodChecker;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.inject.Inject;
+
 /**
  * Created by Nisie on 7/14/16.
  */
@@ -25,24 +27,29 @@ public class IncomingSmsReceiver extends BroadcastReceiver {
 
     ReceiveSMSListener listener;
 
+    @Inject
+    public IncomingSmsReceiver() {
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
 
         final Bundle bundle = intent.getExtras();
         if (bundle != null) {
             SmsMessage currentMessage;
-            currentMessage = MethodChecker.createSmsFromPdu(intent);
+            if (MethodChecker.createSmsFromPdu(intent) != null) {
+                currentMessage = MethodChecker.createSmsFromPdu(intent);
 
-            if (currentMessage != null && isTokopediaOtpSms(currentMessage)) {
+                if (isTokopediaOtpSms(currentMessage)) {
+                    String regexString = Pattern.quote("Tokopedia - ") + "(.*?)" + Pattern.quote("adalah");
+                    Pattern pattern = Pattern.compile(regexString);
+                    Matcher matcher = pattern.matcher(currentMessage.getDisplayMessageBody());
 
-                String regexString = Pattern.quote("Tokopedia - ") + "(.*?)" + Pattern.quote("adalah");
-                Pattern pattern = Pattern.compile(regexString);
-                Matcher matcher = pattern.matcher(currentMessage.getDisplayMessageBody());
-
-                while (matcher.find()) {
-                    String otpCode = matcher.group(1).trim();
-                    if (listener != null)
-                        listener.onReceiveOTP(otpCode);
+                    while (matcher.find()) {
+                        String otpCode = matcher.group(1).trim();
+                        if (listener != null)
+                            listener.onReceiveOTP(otpCode);
+                    }
                 }
             }
         }

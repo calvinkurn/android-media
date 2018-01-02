@@ -1,11 +1,18 @@
 package com.tokopedia.otp.cotp.view.fragment;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -27,8 +34,10 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.msisdn.IncomingSmsReceiver;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.cotp.view.presenter.VerificationPresenter;
@@ -36,17 +45,27 @@ import com.tokopedia.otp.cotp.view.viewlistener.Verification;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationViewModel;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
+import com.tokopedia.otp.phoneverification.view.fragment.PhoneVerificationFragment;
 import com.tokopedia.session.R;
 
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
+
 /**
  * @author by nisie on 11/30/17.
  */
 
-public class VerificationFragment extends BaseDaggerFragment implements Verification.View {
+@RuntimePermissions
+public class VerificationFragment extends BaseDaggerFragment implements Verification.View,
+        IncomingSmsReceiver.ReceiveSMSListener {
 
     private static final String ARGS_DATA = "ARGS_DATA";
 
@@ -81,6 +100,9 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
     @Inject
     GlobalCacheManager globalCacheManager;
+
+    @Inject
+    IncomingSmsReceiver smsReceiver;
 
     public static Fragment createInstance(Bundle bundle) {
         Fragment fragment = new VerificationFragment();
@@ -119,6 +141,65 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         }
 
         cacheHandler = new LocalCacheHandler(getActivity(), CACHE_OTP);
+        smsReceiver.setListener(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getArguments() != null
+                && getArguments().getInt(VerificationActivity.PARAM_DEFAULT_FRAGMENT_TYPE)
+                == VerificationActivity.TYPE_SMS) {
+            smsReceiver.registerSmsReceiver(getActivity());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                showCheckSMSPermission();
+            }
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (smsReceiver != null
+                && getArguments() != null
+                && getArguments().getInt(VerificationActivity.PARAM_DEFAULT_FRAGMENT_TYPE) ==
+                VerificationActivity.TYPE_SMS) {
+            getActivity().unregisterReceiver(smsReceiver);
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @TargetApi(Build.VERSION_CODES.M)
+    private void showCheckSMSPermission() {
+        if (ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.READ_SMS) == PackageManager.PERMISSION_DENIED
+                && !getActivity().shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)) {
+            new android.support.v7.app.AlertDialog.Builder(getActivity())
+                    .setMessage(
+                            RequestPermissionUtil
+                                    .getNeedPermissionMessage(Manifest.permission.READ_SMS)
+                    )
+                    .setPositiveButton(com.tokopedia.core.R.string.button_ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            VerificationFragmentPermissionsDispatcher
+                                    .checkSmsPermissionWithCheck(VerificationFragment.this);
+
+                        }
+                    })
+                    .setNegativeButton(com.tokopedia.core.R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            RequestPermissionUtil.onPermissionDenied(getActivity(),
+                                    Manifest.permission.READ_SMS);
+                        }
+                    })
+                    .show();
+        } else if (getActivity().shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS)) {
+            VerificationFragmentPermissionsDispatcher
+                    .checkSmsPermissionWithCheck(VerificationFragment.this);
+        }
     }
 
     private VerificationViewModel createViewModel(Bundle bundle) {
@@ -432,11 +513,49 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
             countDownTimer = null;
         }
         progressDialog = null;
-
         presenter.detachView();
     }
 
     public void setData(Bundle bundle) {
         viewModel = createViewModel(bundle);
+    }
+
+    @Override
+    public void onReceiveOTP(String otpCode) {
+        processOTPSMS(otpCode);
+    }
+
+    @NeedsPermission(Manifest.permission.READ_SMS)
+    public void processOTPSMS(String otpCode) {
+        if (inputOtp != null)
+            inputOtp.setText(otpCode);
+        presenter.verifyOtp(verificationPassModel, otpCode);
+    }
+
+    @NeedsPermission(Manifest.permission.READ_SMS)
+    public void checkSmsPermission() {
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        VerificationFragmentPermissionsDispatcher.onRequestPermissionsResult(
+                VerificationFragment.this, requestCode, grantResults);
+    }
+
+    @OnShowRationale(Manifest.permission.READ_SMS)
+    void showRationaleForReadSms(final PermissionRequest request) {
+        RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission.READ_SMS);
+    }
+
+    @OnPermissionDenied(Manifest.permission.READ_SMS)
+    void showDeniedForReadSms() {
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_SMS);
+    }
+
+    @OnNeverAskAgain(Manifest.permission.READ_SMS)
+    void showNeverAskForReadSms() {
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_SMS);
     }
 }
