@@ -1,4 +1,4 @@
-package com.tokopedia.seller.shop.fragment;
+package com.tokopedia.seller.shopsettings.edit.view;
 
 import android.Manifest;
 import android.annotation.TargetApi;
@@ -33,9 +33,9 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
 import com.tokopedia.seller.instoped.InstopedSellerCropperActivity;
 import com.tokopedia.seller.product.edit.view.dialog.ImageEditDialogFragment;
-import com.tokopedia.seller.shop.presenter.ShopEditorPresenter;
-import com.tokopedia.seller.shop.presenter.ShopEditorPresenterImpl;
-import com.tokopedia.seller.shop.presenter.ShopEditorView;
+import com.tokopedia.seller.shopsettings.edit.presenter.ShopEditorPresenter;
+import com.tokopedia.seller.shopsettings.edit.presenter.ShopEditorPresenterImpl;
+import com.tokopedia.seller.shopsettings.edit.presenter.ShopEditorView;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;

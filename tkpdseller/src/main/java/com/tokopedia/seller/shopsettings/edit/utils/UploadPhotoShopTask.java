@@ -1,8 +1,7 @@
-package com.tokopedia.seller.shop.utils;
+package com.tokopedia.seller.shopsettings.edit.utils;
 
 import android.os.AsyncTask;
 import android.os.Environment;
-import android.util.Log;
 
 import com.tokopedia.core.database.model.PictureDB;
 import com.tokopedia.core.myproduct.model.GenerateHostModel;
@@ -13,11 +12,7 @@ import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.util.Pair;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;

@@ -1,8 +1,9 @@
-package com.tokopedia.seller.shop.presenter;
+package com.tokopedia.seller.shopsettings.edit.presenter;
 
 import android.content.Context;
 
 import com.tokopedia.core.session.base.BaseImpl;
+import com.tokopedia.seller.shopsettings.edit.presenter.ShopCreateView;
 import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenShopData;
 
 /**

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.shop.constant;
+package com.tokopedia.seller.shopsettings.edit.constant;
 
 /**
  * Created by Toped18 on 5/24/2016.

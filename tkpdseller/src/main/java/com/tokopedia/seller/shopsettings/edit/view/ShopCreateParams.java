@@ -1,4 +1,4 @@
-package com.tokopedia.seller.shop;
+package com.tokopedia.seller.shopsettings.edit.view;
 
 import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenShopData;
 

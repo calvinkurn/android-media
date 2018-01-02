@@ -1,4 +1,4 @@
-package com.tokopedia.seller.shop.fragment;
+package com.tokopedia.seller.shopsettings.edit.view;
 
 import android.app.Dialog;
 
@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
-import android.text.Html;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
@@ -22,7 +21,7 @@ import com.tokopedia.core.shop.model.ShopScheduleModel;
 import com.tokopedia.core.shop.model.shopData.ClosedDetail;
 import com.tokopedia.core.shop.model.shopData.ClosedScheduleDetail;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.shop.presenter.ShopEditorPresenter;
+import com.tokopedia.seller.shopsettings.edit.presenter.ShopEditorPresenter;
 import com.tokopedia.core.util.MethodChecker;
 
 import org.parceler.Parcels;

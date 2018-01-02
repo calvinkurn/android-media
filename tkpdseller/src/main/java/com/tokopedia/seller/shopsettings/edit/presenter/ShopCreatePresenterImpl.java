@@ -1,4 +1,4 @@
-package com.tokopedia.seller.shop.presenter;
+package com.tokopedia.seller.shopsettings.edit.presenter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -21,12 +21,11 @@ import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
 import com.tokopedia.core.network.apiservices.shop.MyShopActService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenShopData;
-import com.tokopedia.seller.shop.ShopEditService;
-import com.tokopedia.seller.shop.ShopEditorActivity;
-import com.tokopedia.seller.shop.constant.ShopEditServiceConstant;
-import com.tokopedia.seller.shop.ShopCreateParams;
+import com.tokopedia.seller.shopsettings.edit.view.ShopEditService;
+import com.tokopedia.seller.shopsettings.edit.view.ShopEditorActivity;
+import com.tokopedia.seller.shopsettings.edit.constant.ShopEditServiceConstant;
+import com.tokopedia.seller.shopsettings.edit.view.ShopCreateParams;
 import com.tokopedia.core.shop.model.checkDomainShopName.CheckDomainShopName;
 import com.tokopedia.core.shop.model.openShopSubmitData.OpenShopSubmitData;
 import com.tokopedia.core.shop.model.openShopValidationData.OpenShopValidationData;
@@ -48,9 +47,9 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import static com.tokopedia.seller.shop.ShopEditService.RETRY_DATA;
-import static com.tokopedia.seller.shop.constant.ShopEditServiceConstant.OPEN_SHOP_VALIDATION_PARAM;
-import static com.tokopedia.seller.shop.constant.ShopEditServiceConstant.PIC_SRC;
+import static com.tokopedia.seller.shopsettings.edit.view.ShopEditService.RETRY_DATA;
+import static com.tokopedia.seller.shopsettings.edit.constant.ShopEditServiceConstant.OPEN_SHOP_VALIDATION_PARAM;
+import static com.tokopedia.seller.shopsettings.edit.constant.ShopEditServiceConstant.PIC_SRC;
 
 /**
  * Created by Sebast on 5/19/2016.

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.shop.fragment;
+package com.tokopedia.seller.shopsettings.edit.view;
 
 import android.Manifest;
 import android.annotation.TargetApi;
@@ -35,14 +35,12 @@ import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
 import com.tokopedia.seller.instoped.InstopedSellerCropperActivity;
 import com.tokopedia.seller.product.edit.view.dialog.ImageAddDialogFragment;
-import com.tokopedia.seller.product.edit.view.dialog.ImageEditDialogFragment;
 import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenShopData;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.shop.ShopEditorActivity;
-import com.tokopedia.seller.shop.presenter.ShopCreatePresenter;
-import com.tokopedia.seller.shop.presenter.ShopCreatePresenterImpl;
-import com.tokopedia.seller.shop.presenter.ShopCreateView;
+import com.tokopedia.seller.shopsettings.edit.presenter.ShopCreatePresenter;
+import com.tokopedia.seller.shopsettings.edit.presenter.ShopCreatePresenterImpl;
+import com.tokopedia.seller.shopsettings.edit.presenter.ShopCreateView;
 
 import java.io.File;
 
@@ -50,10 +48,10 @@ import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
 import static com.tokopedia.core.newgallery.GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE;
-import static com.tokopedia.seller.shop.presenter.ShopCreatePresenter.DESC_ERROR;
-import static com.tokopedia.seller.shop.presenter.ShopCreatePresenter.DOMAIN_ERROR;
-import static com.tokopedia.seller.shop.presenter.ShopCreatePresenter.NAME_ERROR;
-import static com.tokopedia.seller.shop.presenter.ShopCreatePresenter.TAG_ERROR;
+import static com.tokopedia.seller.shopsettings.edit.presenter.ShopCreatePresenter.DESC_ERROR;
+import static com.tokopedia.seller.shopsettings.edit.presenter.ShopCreatePresenter.DOMAIN_ERROR;
+import static com.tokopedia.seller.shopsettings.edit.presenter.ShopCreatePresenter.NAME_ERROR;
+import static com.tokopedia.seller.shopsettings.edit.presenter.ShopCreatePresenter.TAG_ERROR;
 
 /**
  * Created by Toped18 on 5/19/2016.
