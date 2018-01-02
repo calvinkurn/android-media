@@ -496,6 +496,7 @@ public class GTMContainer implements IGTMContainer {
 
     @Override
     public void clickCopyButtonHotlistPromo(String hotlistName, String promoName, String promoCode) {
+        clearEventTracking();
         GTMDataLayer.pushGeneral(
                 context,
                 DataLayer.mapOf(
@@ -509,6 +510,7 @@ public class GTMContainer implements IGTMContainer {
 
     @Override
     public void clickTncButtonHotlistPromo(String hotlistName, String promoName, String promoCode) {
+        clearEventTracking();
         GTMDataLayer.pushGeneral(
                 context,
                 DataLayer.mapOf(
@@ -516,6 +518,17 @@ public class GTMContainer implements IGTMContainer {
                         "eventCategory", "hotlist page",
                         "eventAction", "hotlist promo click syarat ketentuan",
                         "eventLabel", String.format("%s - %s - %s", hotlistName, promoName, promoCode)
+                )
+        );
+    }
+
+    private void clearEventTracking() {
+        GTMDataLayer.pushGeneral(
+                context,
+                DataLayer.mapOf("event", null,
+                        "eventCategory", null,
+                        "eventAction", null,
+                        "eventLabel", null
                 )
         );
     }
