@@ -7,12 +7,12 @@
     <style name="TextAppearance.Title.Collapsed" parent="android:TextAppearance">
         <item name="android:textColor">@color/black_70</item>
         <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
     <style name="TextAppearance.Title.Expanded" parent="android:TextAppearance">
         <item name="android:textColor">@color/black_70</item>
         <item name="android:textSize">24sp</item>
-        <item name="android:paddingLeft">-24dp</item>
-        <item name="android:layout_marginLeft">-24dp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 </resources>

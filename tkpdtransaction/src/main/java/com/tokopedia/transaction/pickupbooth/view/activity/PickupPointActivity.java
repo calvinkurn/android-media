@@ -2,6 +2,7 @@ package com.tokopedia.transaction.pickupbooth.view.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
@@ -19,6 +20,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tokopedia.core.app.BaseActivity;
@@ -72,6 +74,8 @@ public class PickupPointActivity extends BaseActivity
     LinearLayout llHeader;
     @BindView(R2.id.btn_choose_pickup_booth)
     Button btnChoosePickupBooth;
+    @BindView(R2.id.tv_expanded_title)
+    TextView tvExpandedTitle;
 
     @Inject
     PickupPointContract.Presenter presenter;
@@ -91,20 +95,22 @@ public class PickupPointActivity extends BaseActivity
         setContentView(R.layout.activity_pickup_point);
         ButterKnife.bind(this);
 
-        setSupportActionBar(toolbar);
+        setupToolbar();
 
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setElevation(0);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-            getSupportActionBar().setHomeAsUpIndicator(
-                    com.tokopedia.core.R.drawable.ic_webview_back_button
-            );
-        }
+        HashMap<String, String> params = (HashMap<String, String>) getIntent().getSerializableExtra(INTENT_DATA_PARAMS);
 
-        final HashMap<String, String> params =
-                (HashMap<String, String>) getIntent().getSerializableExtra(INTENT_DATA_PARAMS);
+        setupSearchView(params);
 
+        initializeInjector();
+
+        presenter.attachView(this);
+
+        setupRecycleView();
+
+        doQuery(params);
+    }
+
+    private void setupSearchView(final HashMap<String, String> params) {
         searchViewPickupBooth.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -126,12 +132,28 @@ public class PickupPointActivity extends BaseActivity
                 return true;
             }
         });
+    }
 
-        initializeInjector();
-        presenter.attachView(this);
-        setupRecycleView();
+    private void setupToolbar() {
+        setSupportActionBar(toolbar);
 
-        doQuery(params);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setElevation(0);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(
+                    com.tokopedia.core.R.drawable.ic_webview_back_button
+            );
+
+            appBar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+                @Override
+                public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                    float positiveVerticalOffset = verticalOffset * -1.0f;
+                    int color = Color.argb((int) positiveVerticalOffset, 255, 255, 255);
+                    toolbarLayout.setExpandedTitleColor(color);
+                }
+            });
+        }
     }
 
     @Override

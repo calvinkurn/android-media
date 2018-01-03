@@ -9,7 +9,7 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/app_bar_height"
+        android:layout_height="180dp"
         android:fitsSystemWindows="true"
         android:theme="@style/AppTheme.AppBarOverlay"
         app:elevation="0dp">
@@ -26,18 +26,21 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
             app:toolbarId="@+id/toolbar">
 
-            <!--<TextView-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="bottom"-->
-            <!--android:fitsSystemWindows="true"-->
-            <!--android:maxLines="2"-->
-            <!--android:text="@string/title_send_to_pick_up_booth"-->
-            <!--android:textColor="@color/black_70"-->
-            <!--android:textSize="24sp"-->
-            <!--app:layout_anchor="@+id/app_bar"-->
-            <!--app:layout_anchorGravity="bottom"-->
-            <!--app:layout_collapseMode="parallax" />-->
+            <TextView
+                android:id="@+id/tv_expanded_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_margin="@dimen/new_margin_med"
+                android:fitsSystemWindows="true"
+                android:fontFamily="sans-serif-medium"
+                android:maxLines="2"
+                android:text="@string/title_send_to_pick_up_booth"
+                android:textColor="@color/black_70"
+                android:textSize="24sp"
+                app:layout_anchor="@+id/app_bar"
+                app:layout_anchorGravity="bottom"
+                app:layout_collapseMode="parallax" />
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -45,6 +48,8 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/white"
                 app:contentInsetLeft="0dp"
+                app:contentInsetStart="0dp"
+                app:contentInsetStartWithNavigation="0dp"
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
 
