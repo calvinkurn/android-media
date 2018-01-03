@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,9 +15,11 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -37,8 +40,10 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import static com.tokopedia.transaction.pickupbooth.view.contract.PickupPointContract.Constant.INTENT_DATA_PARAMS;
+import static com.tokopedia.transaction.pickupbooth.view.contract.PickupPointContract.Constant.INTENT_DATA_STORE;
 
 public class PickupPointActivity extends BaseActivity
         implements PickupPointContract.View, PickupPointAdapter.Listener {
@@ -65,10 +70,13 @@ public class PickupPointActivity extends BaseActivity
     LinearLayout llEmptyResult;
     @BindView(R2.id.ll_header)
     LinearLayout llHeader;
+    @BindView(R2.id.btn_choose_pickup_booth)
+    Button btnChoosePickupBooth;
 
     @Inject
     PickupPointContract.Presenter presenter;
 
+    private Store selectedPickupBooth;
     private PickupPointAdapter pickupPointAdapter;
 
     public static Intent createInstance(Activity activity, HashMap<String, String> params) {
@@ -221,8 +229,16 @@ public class PickupPointActivity extends BaseActivity
     }
 
     @Override
-    public void onItemClick(Store store) {
-
+    public void onItemClick(Store store, boolean selected) {
+        if (selected) {
+            selectedPickupBooth = store;
+            btnChoosePickupBooth.setEnabled(true);
+            btnChoosePickupBooth.setBackgroundColor(ContextCompat.getColor(this, R.color.tkpd_main_green));
+        } else {
+            selectedPickupBooth = null;
+            btnChoosePickupBooth.setEnabled(false);
+            btnChoosePickupBooth.setBackgroundColor(ContextCompat.getColor(this, R.color.xco_button_color_disable));
+        }
     }
 
     @Override
@@ -234,8 +250,17 @@ public class PickupPointActivity extends BaseActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_MAP && resultCode == Activity.RESULT_OK) {
+            setResult(resultCode, data);
+            finish();
+        }
+    }
+
+    @OnClick(R2.id.btn_choose_pickup_booth)
+    public void onChoosePickupBooth() {
+        if (selectedPickupBooth != null) {
             Intent intent = new Intent();
-            setResult(resultCode, intent);
+            intent.putExtra(INTENT_DATA_STORE, selectedPickupBooth);
+            setResult(Activity.RESULT_OK, intent);
             finish();
         }
     }

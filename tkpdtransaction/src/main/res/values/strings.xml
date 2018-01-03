@@ -175,4 +175,6 @@
     <string name="label_pickup_booth_check_keyword">Periksa kembali kata kunci Anda</string>
     <string name="label_button_pick_pickup_booth">Pilih Gerai ini</string>
     <string name="label_show_map">Lihat Peta</string>
+    <string name="label_dialog_title_cancel_pickup">Batalkan Pengiriman ke Gerai Pengambilan</string>
+    <string name="label_dialog_message_cancel_pickup_booth">Apakah Anda yakin ingin membatalkan pengiriman ke Gerai Pengambilan</string>
 </resources>

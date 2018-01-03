@@ -13,7 +13,6 @@ import android.support.annotation.StringRes;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -25,9 +24,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -73,7 +70,7 @@ import com.tokopedia.transaction.addtocart.services.ATCIntentService;
 import com.tokopedia.transaction.addtocart.utils.KeroppiConstants;
 import com.tokopedia.transaction.pickupbooth.domain.model.Store;
 import com.tokopedia.transaction.pickupbooth.view.activity.PickupPointActivity;
-import com.tokopedia.transaction.pickupbooth.view.activity.PickupPointMapActivity;
+import com.tokopedia.transaction.pickupbooth.view.customview.PickupPointLayout;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -89,13 +86,14 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity.RESULT_NOT_SELECTED_DESTINATION;
+import static com.tokopedia.transaction.pickupbooth.view.contract.PickupPointContract.Constant.INTENT_DATA_STORE;
 
 /**
  * @author Angga.Prasetiyo on 11/03/2016.
  */
 public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         implements AddToCartViewListener, AdapterView.OnItemSelectedListener,
-        TextWatcher, ATCResultReceiver.Receiver {
+        TextWatcher, ATCResultReceiver.Receiver, PickupPointLayout.ViewListener {
     public static final int REQUEST_CHOOSE_ADDRESS = 0;
     public static final int REQUEST_CHOOSE_LOCATION = 2;
     public static final int REQUEST_CHOOSE_PICKUP_POINT = 3;
@@ -183,16 +181,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     TextView descMaxHour;
     @BindView(R2.id.img_insurance_info)
     ImageView imgInsuranceInfo;
-    @BindView(R2.id.tv_send_to_pick_up_booth)
-    TextView tvSendToPickUpBooth;
-    @BindView(R2.id.tv_pick_up_booth_name)
-    TextView tvPickUpBoothName;
-    @BindView(R2.id.btn_cancel_pick_up)
-    ImageButton btnCancelPickUp;
-    @BindView(R2.id.tv_pick_up_booth_address)
-    TextView tvPickUpBoothAddress;
-    @BindView(R2.id.tv_edit_pick_up_booth)
-    TextView tvEditPickUpBooth;
+    @BindView(R2.id.pickup_point_layout)
+    PickupPointLayout pickupPointLayout;
 
     private ATCResultReceiver atcReceiver;
     private Subscription subscription;
@@ -228,6 +218,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         progressInitDialog = new TkpdProgressDialog(this, TkpdProgressDialog.MAIN_PROGRESS);
         increaseButton.setOnTouchListener(onIncrementButtonTouchListener());
         decreaseButton.setOnTouchListener(onDecrementButtonTouchListener());
+        pickupPointLayout.setListener(this);
     }
 
     @Override
@@ -746,8 +737,11 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                     }
                     break;
                 case REQUEST_CHOOSE_PICKUP_POINT:
-                    Store store = data.getParcelableExtra(PickupPointMapActivity.INTENT_DATA_STORE);
-
+                    Store store = data.getParcelableExtra(INTENT_DATA_STORE);
+                    pickupPointLayout.setData(this, store);
+                    // TODO : set spinner to alfamart + regular
+                    // TODO : disable spinner alfamart
+                    // TODO : show view alfamart
                     break;
             }
         } else if (resultCode == RESULT_NOT_SELECTED_DESTINATION) {
@@ -847,12 +841,6 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         bottomSheetView.show();
     }
 
-    @OnClick(R2.id.tv_send_to_pick_up_booth)
-    void sendToPickUpBooth() {
-        startActivityForResult(PickupPointActivity.createInstance(this, presenter.getPickupPointParams()),
-                REQUEST_CHOOSE_PICKUP_POINT);
-    }
-
     private OrderData createFinalOrderData() {
         OrderData finalOrder = this.orderData;
         finalOrder.setNotes(etRemark.getText().toString());
@@ -925,23 +913,6 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 showBuyError(getString(R.string.msg_no_connection));
                 break;
         }
-    }
-
-    private void showCancelPickupBoothDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Batalkan Pengiriman ke Gerai Pengambilan");
-        builder.setMessage("Apakah Anda yakin ingin membatalkan pengiriman ke Gerai Pengambilan");
-        builder.setPositiveButton(R.string.title_yes, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-        builder.setNegativeButton(R.string.title_no, null);
-        AlertDialog alert = builder.create();
-        Button positiveButton = alert.getButton(DialogInterface.BUTTON_POSITIVE);
-        positiveButton.setTextColor(ContextCompat.getColor(this, R.color.tkpd_main_green));
-        alert.show();
     }
 
     @Override
@@ -1117,5 +1088,38 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     @Override
     protected boolean isLightToolbarThemes() {
         return true;
+    }
+
+    private void showCancelPickupBoothDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.label_dialog_title_cancel_pickup);
+        builder.setMessage(R.string.label_dialog_message_cancel_pickup_booth);
+        builder.setPositiveButton(R.string.title_yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                pickupPointLayout.unSetData(AddToCartActivity.this);
+            }
+        });
+        builder.setNegativeButton(R.string.title_no, null);
+        AlertDialog alert = builder.create();
+//        Button positiveButton = alert.getButton(DialogInterface.BUTTON_POSITIVE);
+//        positiveButton.setTextColor(ContextCompat.getColor(this, R.color.tkpd_main_green));
+        alert.show();
+    }
+
+    @Override
+    public void onChoosePickupPoint() {
+        startActivityForResult(PickupPointActivity.createInstance(this, presenter.getPickupPointParams()),
+                REQUEST_CHOOSE_PICKUP_POINT);
+    }
+
+    @Override
+    public void onClearPickupPoint(Store store) {
+        showCancelPickupBoothDialog();
+    }
+
+    @Override
+    public void onEditPickupPoint(Store store) {
+
     }
 }

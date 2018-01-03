@@ -101,4 +101,16 @@ public class Store implements Parcelable {
         dest.writeString(storeName);
         dest.writeString(storeCode);
     }
+
+    @Override
+    public String toString() {
+        return "Store{" +
+                "id=" + id +
+                ", districtId=" + districtId +
+                ", address='" + address + '\'' +
+                ", geolocation='" + geolocation + '\'' +
+                ", storeName='" + storeName + '\'' +
+                ", storeCode='" + storeCode + '\'' +
+                '}';
+    }
 }

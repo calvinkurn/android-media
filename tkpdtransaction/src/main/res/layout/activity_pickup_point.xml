@@ -120,7 +120,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:visibility="visible">
+                    android:visibility="gone">
 
                     <ImageView
                         android:layout_width="wrap_content"
@@ -175,7 +175,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:layout_margin="16dp"
-        android:background="@color/tkpd_main_green"
+        android:background="@color/xco_button_color_disable"
+        android:enabled="false"
         android:foreground="?selectableItemBackground"
         android:text="@string/label_button_pick_pickup_booth"
         android:textAllCaps="false"

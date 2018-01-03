@@ -20,9 +20,9 @@ import com.tokopedia.transaction.pickupbooth.domain.model.Store;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-public class PickupPointMapActivity extends BasePresenterActivity {
+import static com.tokopedia.transaction.pickupbooth.view.contract.PickupPointContract.Constant.INTENT_DATA_STORE;
 
-    public static final String INTENT_DATA_STORE = "store";
+public class PickupPointMapActivity extends BasePresenterActivity {
 
     interface MapRequestParam {
         String ZOOM = "17";
@@ -66,8 +66,9 @@ public class PickupPointMapActivity extends BasePresenterActivity {
 
     @Override
     protected void initView() {
-        if (getIntent().getStringExtra(INTENT_DATA_STORE) != null) {
+        if (getIntent().getParcelableExtra(INTENT_DATA_STORE) != null) {
             store = getIntent().getParcelableExtra(INTENT_DATA_STORE);
+            Log.e("Store1", store.toString());
             setupWebView();
         }
     }
@@ -134,9 +135,7 @@ public class PickupPointMapActivity extends BasePresenterActivity {
 
     @OnClick(R2.id.btn_choose_pickup_booth)
     public void onChoosePickupBooth() {
-        Intent intent = new Intent();
-        intent.putExtra(INTENT_DATA_STORE, store);
-        setResult(Activity.RESULT_OK, intent);
+        setResult(Activity.RESULT_OK, getIntent());
         finish();
     }
 

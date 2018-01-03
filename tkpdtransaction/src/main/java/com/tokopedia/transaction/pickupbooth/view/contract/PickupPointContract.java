@@ -40,5 +40,8 @@ public interface PickupPointContract {
 
     interface Constant {
         String INTENT_DATA_PARAMS = "params";
+
+        String INTENT_DATA_STORE = "store";
+
     }
 }

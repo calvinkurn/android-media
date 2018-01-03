@@ -61,22 +61,26 @@ public class PickupPointAdapter extends RecyclerView.Adapter<PickupPointAdapter.
             }
         });
 
-        holder.btnCheck.setOnClickListener(getItemClickListener(storeViewModel));
+        holder.btnCheck.setOnClickListener(getItemClickListener(storeViewModel, position));
 
-        holder.cvContainer.setOnClickListener(getItemClickListener(storeViewModel));
+        holder.cvContainer.setOnClickListener(getItemClickListener(storeViewModel, position));
 
     }
 
-    private View.OnClickListener getItemClickListener(final StoreViewModel storeViewModel){
+    private View.OnClickListener getItemClickListener(final StoreViewModel storeViewModel, final int position) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 for (StoreViewModel viewModel : stores) {
                     if (viewModel.getStore().getId() == storeViewModel.getStore().getId()) {
-                        if (viewModel.isChecked()) {
-                            viewModel.setChecked(false);
-                        } else {
-                            viewModel.setChecked(true);
+                        if (stores.size() > position && position >= 0) {
+                            if (viewModel.isChecked()) {
+                                viewModel.setChecked(false);
+                                listener.onItemClick(stores.get(position).getStore(), false);
+                            } else {
+                                viewModel.setChecked(true);
+                                listener.onItemClick(stores.get(position).getStore(), true);
+                            }
                         }
                     } else {
                         viewModel.setChecked(false);
@@ -93,12 +97,12 @@ public class PickupPointAdapter extends RecyclerView.Adapter<PickupPointAdapter.
     }
 
     public interface Listener {
-        void onItemClick(Store store);
+        void onItemClick(Store store, boolean selected);
 
         void onItemShowMapClick(Store store);
     }
 
-    protected class PickupPointViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    protected class PickupPointViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R2.id.cv_container)
         CardView cvContainer;
@@ -114,14 +118,7 @@ public class PickupPointAdapter extends RecyclerView.Adapter<PickupPointAdapter.
         PickupPointViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            itemView.setOnClickListener(this);
         }
 
-        @Override
-        public void onClick(View v) {
-            if (stores.size() > getAdapterPosition() && getAdapterPosition() >= 0) {
-                listener.onItemClick(stores.get(getAdapterPosition()).getStore());
-            }
-        }
     }
 }
