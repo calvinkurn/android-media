@@ -50,8 +50,6 @@ public interface ShopComponent {
 
     OkHttpClient.Builder getHttpClientBuilder();
 
-    HttpLoggingInterceptor getHttpLoggingInterceptor();
-
     BearerInterceptor bearerInterceptor();
 
     @DefaultAuthWithErrorHandler
