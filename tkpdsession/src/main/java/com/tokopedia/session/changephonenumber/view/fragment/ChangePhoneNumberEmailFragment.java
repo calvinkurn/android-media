@@ -1,6 +1,5 @@
 package com.tokopedia.session.changephonenumber.view.fragment;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -10,16 +9,13 @@ import android.widget.TextView;
 
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.manage.people.profile.fragment.ManagePeopleProfileFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.di.SessionComponent;
 import com.tokopedia.di.SessionModule;
 import com.tokopedia.session.R;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberEmailFragmentListener;
-import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberInputFragmentListener;
-import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberWarningFragmentListener;
-
-import org.w3c.dom.Text;
 
 import javax.inject.Inject;
 
@@ -41,6 +37,7 @@ public class ChangePhoneNumberEmailFragment extends BaseDaggerFragment implement
     private View loadingView;
     private TextView backButton;
     private TextView emailTV;
+    private boolean isEmailSent;
 
     public static ChangePhoneNumberEmailFragment newInstance(String email) {
         ChangePhoneNumberEmailFragment fragment = new ChangePhoneNumberEmailFragment();
@@ -76,10 +73,15 @@ public class ChangePhoneNumberEmailFragment extends BaseDaggerFragment implement
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getActivity().setResult(Activity.RESULT_OK);
-                getActivity().finish();
+                setResultAndFinish();
             }
         });
+    }
+
+    public void setResultAndFinish() {
+        if (isEmailSent)
+            getActivity().setResult(ManagePeopleProfileFragment.RESULT_EMAIL_SENT);
+        getActivity().finish();
     }
 
     private void initVar() {
@@ -124,7 +126,8 @@ public class ChangePhoneNumberEmailFragment extends BaseDaggerFragment implement
 
     @Override
     public void onSendEmailSuccess(Boolean isSuccess) {
-        if (isSuccess)
+        isEmailSent = isSuccess;
+        if (!isSuccess)
             showEmptyState(null);
         dismissLoading();
     }

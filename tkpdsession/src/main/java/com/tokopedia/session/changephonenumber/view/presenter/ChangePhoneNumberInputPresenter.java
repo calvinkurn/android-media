@@ -16,7 +16,7 @@ public class ChangePhoneNumberInputPresenter
     private static final int MINIMUM_NUMBER_LENGTH = 7;
     private static final int MAXIMUM_NUMBER_LENGTH = 15;
 
-    ChangePhoneNumberInputFragmentListener.View view;
+    private ChangePhoneNumberInputFragmentListener.View view;
 
     public ChangePhoneNumberInputPresenter() {
     }
@@ -36,6 +36,7 @@ public class ChangePhoneNumberInputPresenter
     public void onNewNumberTextChanged(Editable editable) {
         String newNumber = editable.toString().replaceAll("\\s+", "");
         newNumber = CustomPhoneNumberUtil.transform(newNumber);
+
         if (isNumberLengthValid(newNumber)) {
             view.enableNextButton();
         } else {
@@ -48,7 +49,7 @@ public class ChangePhoneNumberInputPresenter
     }
 
     private boolean isNumberLengthValid(String newNumber) {
-        newNumber = newNumber.replace("-","");
+        newNumber = newNumber.replace("-", "");
         return (newNumber.length() >= MINIMUM_NUMBER_LENGTH && newNumber.length() <= MAXIMUM_NUMBER_LENGTH);
     }
 }

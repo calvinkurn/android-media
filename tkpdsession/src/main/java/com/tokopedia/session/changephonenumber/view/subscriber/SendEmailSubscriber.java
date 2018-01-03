@@ -1,7 +1,6 @@
 package com.tokopedia.session.changephonenumber.view.subscriber;
 
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberEmailFragmentListener;
-import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberWarningFragmentListener;
 
 import rx.Subscriber;
 
@@ -30,7 +29,7 @@ public class SendEmailSubscriber extends Subscriber<Boolean> {
     }
 
     @Override
-    public void onNext(Boolean aBoolean) {
-        view.dismissLoading();
+    public void onNext(Boolean isSuccess) {
+        view.onSendEmailSuccess(isSuccess);
     }
 }

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -203,6 +202,7 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
         GlobalCacheManager cacheManager = new GlobalCacheManager();
 
         String newPhoneNumberString = newPhoneNumber.getText().toString();
+        newPhoneNumberString = newPhoneNumberString.replace("-", "");
         VerificationPassModel passModel = new VerificationPassModel(newPhoneNumberString, email,
                 getListAvailableMethod(newPhoneNumberString), RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION);
         cacheManager.setKey(VerificationActivity.PASS_MODEL);
@@ -221,9 +221,11 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == REQUEST_VERIFY_CODE && resultCode == Activity.RESULT_OK) {
+        if (requestCode == REQUEST_VERIFY_CODE) {
             getActivity().setResult(resultCode);
-            getActivity().finish();
+
+            if (resultCode == Activity.RESULT_OK)
+                getActivity().finish();
         }
     }
 

@@ -15,7 +15,7 @@ public class ChangePhoneNumberWarningPresenter
         implements ChangePhoneNumberWarningFragmentListener.Presenter {
 
     private final GetWarningUseCase getWarningUseCase;
-    ChangePhoneNumberWarningFragmentListener.View view;
+    private ChangePhoneNumberWarningFragmentListener.View view;
 
     public ChangePhoneNumberWarningPresenter(GetWarningUseCase getWarningUseCase) {
         this.getWarningUseCase = getWarningUseCase;

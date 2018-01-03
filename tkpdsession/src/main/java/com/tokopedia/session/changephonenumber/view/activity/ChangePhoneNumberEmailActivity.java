@@ -4,12 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.MenuItem;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.session.R;
 import com.tokopedia.session.changephonenumber.view.fragment.ChangePhoneNumberEmailFragment;
-import com.tokopedia.session.changephonenumber.view.fragment.ChangePhoneNumberInputFragment;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberEmailActivityListener;
 
 public class ChangePhoneNumberEmailActivity extends BasePresenterActivity
@@ -90,5 +90,26 @@ public class ChangePhoneNumberEmailActivity extends BasePresenterActivity
     @Override
     public Object getComponent() {
         return getApplicationComponent();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                break;
+        }
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        String TAG = ChangePhoneNumberEmailFragment.class.getSimpleName();
+        ChangePhoneNumberEmailFragment fragment = (ChangePhoneNumberEmailFragment) getSupportFragmentManager().findFragmentByTag(TAG);
+        if (fragment != null) {
+            fragment.setResultAndFinish();
+        } else {
+            super.onBackPressed();
+        }
     }
 }

@@ -16,7 +16,6 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.deposit.activity.WithdrawActivity;
 import com.tokopedia.core.deposit.presenter.DepositFragmentPresenterImpl;
-import com.tokopedia.core.manage.people.profile.fragment.ManagePeopleProfileFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.di.SessionComponent;
@@ -35,7 +34,6 @@ import javax.inject.Inject;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-import static com.tokopedia.core.manage.people.profile.fragment.ManagePeopleProfileFragment.RESULT_EMAIL_SENT;
 import static com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel.ACTION_EMAIL;
 import static com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel.ACTION_OTP;
 import static com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel.EMPTY_BALANCE;
@@ -48,7 +46,6 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
     public static final String PARAM_EMAIL = "email";
     public static final String PARAM_PHONE_NUMBER = "phone_number";
     private static final int REQUEST_CHANGE_PHONE_NUMBER = 1;
-    private static final int REQUEST_SEND_EMAIL = 2;
     private static final int REQUEST_WITHDRAW_TOKOPEDIA_BALANCE = 99;
 
     @Inject
@@ -185,7 +182,6 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
         this.viewModel = warningViewModel;
         if (isNullOrEmpty(viewModel.getTokocash()) && isNullOrEmpty(viewModel.getTokopediaBalance())) {
             goToNextActivity();
-            getActivity().finish();
         } else {
             loadDataToView();
             showOrHideWithdrawButton();
@@ -237,10 +233,10 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
 
     private void goToNextActivity() {
         if (viewModel.getAction().equalsIgnoreCase(ACTION_EMAIL)) {
-            startActivityForResult(
-                    ChangePhoneNumberEmailActivity.newInstance(getContext(), email),
-                    REQUEST_SEND_EMAIL
-            );
+            Intent intent = ChangePhoneNumberEmailActivity.newInstance(getContext(), email);
+            intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+            startActivity(intent);
+            getActivity().finish();
         } else if (viewModel.getAction().equalsIgnoreCase(ACTION_OTP)) {
             startActivityForResult(
                     ChangePhoneNumberInputActivity.newInstance(
@@ -258,19 +254,15 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == Activity.RESULT_OK) {
-            switch (requestCode) {
-                case REQUEST_CHANGE_PHONE_NUMBER:
-                    getActivity().setResult(resultCode);
+        switch (requestCode) {
+            case REQUEST_CHANGE_PHONE_NUMBER:
+                getActivity().setResult(resultCode);
+
+                if (resultCode == Activity.RESULT_OK)
                     getActivity().finish();
-                    break;
-                case REQUEST_SEND_EMAIL:
-                    getActivity().setResult(ManagePeopleProfileFragment.RESULT_EMAIL_SENT);
-                    getActivity().finish();
-                    break;
-                case REQUEST_WITHDRAW_TOKOPEDIA_BALANCE:
-                    break;
-            }
+                break;
+            case REQUEST_WITHDRAW_TOKOPEDIA_BALANCE:
+                break;
         }
     }
 

@@ -2,10 +2,8 @@ package com.tokopedia.session.changephonenumber.view.presenter;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.session.changephonenumber.domain.interactor.GetWarningUseCase;
 import com.tokopedia.session.changephonenumber.domain.interactor.SendEmailUseCase;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberEmailFragmentListener;
-import com.tokopedia.session.changephonenumber.view.subscriber.GetWarningSubscriber;
 import com.tokopedia.session.changephonenumber.view.subscriber.SendEmailSubscriber;
 
 import javax.inject.Inject;
@@ -19,7 +17,7 @@ public class ChangePhoneNumberEmailPresenter
         implements ChangePhoneNumberEmailFragmentListener.Presenter {
 
     private final SendEmailUseCase sendEmailUseCase;
-    ChangePhoneNumberEmailFragmentListener.View view;
+    private ChangePhoneNumberEmailFragmentListener.View view;
 
     @Inject
     public ChangePhoneNumberEmailPresenter(SendEmailUseCase sendEmailUseCase) {
@@ -39,6 +37,7 @@ public class ChangePhoneNumberEmailPresenter
 
     @Override
     public void sendEmail() {
+        view.showLoading();
         sendEmailUseCase.execute(RequestParams.create(),
                 new SendEmailSubscriber(view));
     }
