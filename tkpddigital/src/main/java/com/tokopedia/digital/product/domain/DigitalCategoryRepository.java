@@ -42,15 +42,6 @@ public class DigitalCategoryRepository implements IDigitalCategoryRepository {
                 .map(getFuncTransformCategoryData());
     }
 
-    @Override
-    public Observable<List<BannerData>> getBanner(
-            TKPDMapParam<String, String> param
-    ) {
-        return digitalEndpointService.getApi()
-                .getBanner(param)
-                .map(getFuncTransformBannerListData());
-    }
-
     @NonNull
     private Func1<Response<TkpdDigitalResponse>, CategoryData> getFuncTransformCategoryData() {
         return new Func1<Response<TkpdDigitalResponse>, CategoryData>() {
@@ -66,22 +57,4 @@ public class DigitalCategoryRepository implements IDigitalCategoryRepository {
         };
     }
 
-    @NonNull
-    private Func1<Response<TkpdDigitalResponse>, List<BannerData>> getFuncTransformBannerListData() {
-        return new Func1<Response<TkpdDigitalResponse>, List<BannerData>>() {
-            @Override
-            public List<BannerData> call(
-                    Response<TkpdDigitalResponse> tkpdDigitalResponseResponse
-            ) {
-                List<BannerData> bannerDataList = new ArrayList<>();
-                List<ResponseBanner> responseBannerList =
-                        tkpdDigitalResponseResponse.body()
-                                .convertDataList(ResponseBanner[].class);
-                for (ResponseBanner data : responseBannerList) {
-                    bannerDataList.add(productDigitalMapper.transformBannerData(data));
-                }
-                return bannerDataList;
-            }
-        };
-    }
 }

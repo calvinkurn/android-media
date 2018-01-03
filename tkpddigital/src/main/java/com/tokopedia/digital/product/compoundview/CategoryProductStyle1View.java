@@ -325,6 +325,9 @@ public class CategoryProductStyle1View extends
                         if (validClientNumber.startsWith(prefix)) {
                             operatorSelected = operator;
                             clientNumberInputView.enableImageOperator(operator.getImage());
+                            if (!TextUtils.isEmpty(operatorSelected.getRule().getButtonText())) {
+                                btnBuyDigital.setText(operatorSelected.getRule().getButtonText());
+                            }
                             if (operatorSelected.getRule().getProductViewStyle() == 99) {
                                 renderDefaultProductSelected();
                             } else {

@@ -263,6 +263,9 @@ public class CategoryProductStyle3View extends
             @Override
             public void onUpdateDataDigitalChooserSelectedRendered(Operator operator) {
                 operatorSelected = operator;
+                if (!TextUtils.isEmpty(operatorSelected.getRule().getButtonText())) {
+                    btnBuyDigital.setText(operatorSelected.getRule().getButtonText());
+                }
                 if (!operator.getClientNumberList().isEmpty()) {
                     renderClientNumberInputForm(operator);
                 } else {

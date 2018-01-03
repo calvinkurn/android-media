@@ -272,6 +272,9 @@ public class CategoryProductStyle2View extends
             @Override
             public void onUpdateDataDigitalRadioChooserSelectedRendered(Operator data) {
                 operatorSelected = data;
+                if (!TextUtils.isEmpty(operatorSelected.getRule().getButtonText())) {
+                    btnBuyDigital.setText(operatorSelected.getRule().getButtonText());
+                }
                 if (!data.getClientNumberList().isEmpty()) {
                     renderClientNumberInputForm(operatorSelected);
                 }

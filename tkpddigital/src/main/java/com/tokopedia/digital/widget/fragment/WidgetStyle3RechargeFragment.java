@@ -364,6 +364,7 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
             public void onCheckChangeOperator(Operator rechargeOperatorModel) {
                 selectedProduct = null;
                 selectedOperator = rechargeOperatorModel;
+                widgetWrapperBuyView.setBuyButtonText(selectedOperator.getAttributes().getRule().getButtonLabel());
                 selectedOperatorId = String.valueOf(rechargeOperatorModel.getId());
                 widgetClientNumberView.setFilterMaxLength(rechargeOperatorModel.getAttributes().getMaximumLength());
                 widgetClientNumberView.setInputType(rechargeOperatorModel.getAttributes().getRule().isAllowAphanumericNumber());
@@ -472,6 +473,7 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
     @Override
     public void renderOperator(Operator rechargeOperatorModel) {
         selectedOperator = rechargeOperatorModel;
+        widgetWrapperBuyView.setBuyButtonText(selectedOperator.getAttributes().getRule().getButtonLabel());
         UnifyTracking.eventSelectOperatorWidget(category.getAttributes().getName(),
                 selectedOperator.getAttributes().getName());
         selectedOperatorId = String.valueOf(selectedOperator.getId());

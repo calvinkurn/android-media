@@ -3,6 +3,7 @@ package com.tokopedia.digital.widget.compoundview;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -96,6 +97,10 @@ public class WidgetWrapperBuyView extends LinearLayout {
                 listener.trackingCheckInstantSaldo(isChecked);
             }
         };
+    }
+
+    public void setBuyButtonText(String text) {
+        if (!TextUtils.isEmpty(text)) buyButton.setText(text);
     }
 
     public boolean isCreditCheckboxChecked() {
