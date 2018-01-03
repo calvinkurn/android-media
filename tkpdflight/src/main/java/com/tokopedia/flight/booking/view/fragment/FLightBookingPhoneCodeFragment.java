@@ -4,9 +4,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
+import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.adapter.FlightBookingPhoneCodeAdapterTypeFactory;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPhoneCodePresenterImpl;
@@ -52,8 +55,17 @@ public class FLightBookingPhoneCodeFragment extends BaseSearchListFragment<Fligh
         flightBookingPhoneCodePresenter.attachView(this);
     }
 
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_flight_airport_picker, container, false);
+        view.requestFocus();
+        return view;
+    }
+
     @Override
     protected void setInitialActionVar() {
+        showLoading();
         flightBookingPhoneCodePresenter.getPhoneCodeList();
     }
 

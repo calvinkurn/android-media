@@ -1,7 +1,8 @@
 package com.tokopedia.flight.detail.presenter;
 
+import android.app.Activity;
+
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
-import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
@@ -28,7 +29,7 @@ public interface FlightDetailOrderContract {
 
         void updatePrice(List<SimpleViewModel> priceList, String totalPrice);
 
-        void updateOrderData(String transactionDate, String eTicketLink, String invoiceLink);
+        void updateOrderData(String transactionDate, String eTicketLink, String invoiceLink, String cancelUrl);
 
         String getString(int id, Object... args);
 
@@ -51,9 +52,23 @@ public interface FlightDetailOrderContract {
         void updateViewWaitingForThirdParty();
 
         void updateViewWaitingForTransfer();
+
+        Activity getActivity();
+
+        String getCancelUrl();
+
+        void navigateToWebview(String url);
+
+        void navigateToFlightHomePage();
     }
 
     interface Presenter extends CustomerPresenter<View> {
         void getDetail(String orderId, FlightOrderDetailPassData flightOrderDetailPassData);
+
+        void actionCancelOrderButtonClicked();
+
+        void onHelpButtonClicked();
+
+        void actionReorderButtonClicked();
     }
 }

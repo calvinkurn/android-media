@@ -59,9 +59,7 @@ public class FlightModule {
     public OkHttpClient provideOkHttpClient(@ApplicationContext Context context,  OkHttpClient.Builder okHttpClientBuilder,
                                             HttpLoggingInterceptor httpLoggingInterceptor,
                                             FlightAuthInterceptor flightAuthInterceptor) {
-        Interceptor fingerPrint = ((FlightModuleRouter) context).getFingerprintInterceptor();
         return okHttpClientBuilder
-                .addInterceptor(fingerPrint)
                 .addInterceptor(flightAuthInterceptor)
                 .addInterceptor(httpLoggingInterceptor)
                 .addInterceptor(new ErrorResponseInterceptor(FlightErrorResponse.class))

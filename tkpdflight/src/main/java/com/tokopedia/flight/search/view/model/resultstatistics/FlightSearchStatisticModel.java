@@ -21,6 +21,17 @@ import java.util.List;
  */
 
 public class FlightSearchStatisticModel implements Parcelable {
+    public static final Parcelable.Creator<FlightSearchStatisticModel> CREATOR = new Parcelable.Creator<FlightSearchStatisticModel>() {
+        @Override
+        public FlightSearchStatisticModel createFromParcel(Parcel source) {
+            return new FlightSearchStatisticModel(source);
+        }
+
+        @Override
+        public FlightSearchStatisticModel[] newArray(int size) {
+            return new FlightSearchStatisticModel[size];
+        }
+    };
     private int minPrice;
     private int maxPrice;
     private int minDuration;
@@ -179,6 +190,17 @@ public class FlightSearchStatisticModel implements Parcelable {
         });
     }
 
+    protected FlightSearchStatisticModel(Parcel in) {
+        this.minPrice = in.readInt();
+        this.maxPrice = in.readInt();
+        this.minDuration = in.readInt();
+        this.maxDuration = in.readInt();
+        this.transitTypeStatList = in.createTypedArrayList(TransitStat.CREATOR);
+        this.airlineStatList = in.createTypedArrayList(AirlineStat.CREATOR);
+        this.departureTimeStatList = in.createTypedArrayList(DepartureStat.CREATOR);
+        this.refundableTypeStatList = in.createTypedArrayList(RefundableStat.CREATOR);
+    }
+
     public int getMinPrice() {
         return minPrice;
     }
@@ -209,7 +231,7 @@ public class FlightSearchStatisticModel implements Parcelable {
                 }
             }
         }
-        return new FlightAirlineDB(airlineID, "","","");
+        return new FlightAirlineDB(airlineID, "", "", "", false);
     }
 
     public List<DepartureStat> getDepartureTimeStatList() {
@@ -240,27 +262,4 @@ public class FlightSearchStatisticModel implements Parcelable {
         dest.writeTypedList(this.departureTimeStatList);
         dest.writeTypedList(this.refundableTypeStatList);
     }
-
-    protected FlightSearchStatisticModel(Parcel in) {
-        this.minPrice = in.readInt();
-        this.maxPrice = in.readInt();
-        this.minDuration = in.readInt();
-        this.maxDuration = in.readInt();
-        this.transitTypeStatList = in.createTypedArrayList(TransitStat.CREATOR);
-        this.airlineStatList = in.createTypedArrayList(AirlineStat.CREATOR);
-        this.departureTimeStatList = in.createTypedArrayList(DepartureStat.CREATOR);
-        this.refundableTypeStatList = in.createTypedArrayList(RefundableStat.CREATOR);
-    }
-
-    public static final Parcelable.Creator<FlightSearchStatisticModel> CREATOR = new Parcelable.Creator<FlightSearchStatisticModel>() {
-        @Override
-        public FlightSearchStatisticModel createFromParcel(Parcel source) {
-            return new FlightSearchStatisticModel(source);
-        }
-
-        @Override
-        public FlightSearchStatisticModel[] newArray(int size) {
-            return new FlightSearchStatisticModel[size];
-        }
-    };
 }

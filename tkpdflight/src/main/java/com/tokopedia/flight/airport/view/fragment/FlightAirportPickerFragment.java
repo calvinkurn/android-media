@@ -44,18 +44,18 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAi
         return new FlightAirportPickerFragment();
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        flightAirportPickerPresenter.checkAirportVersion(((FlightModuleRouter)getActivity().getApplication()).getLongConfig(FLIGHT_AIRPORT));
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_flight_airport_picker, container, false);
         view.requestFocus();
         return view;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        flightAirportPickerPresenter.checkAirportVersion(((FlightModuleRouter)getActivity().getApplication()).getLongConfig(FLIGHT_AIRPORT));
     }
 
     @Override

@@ -12,6 +12,17 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class Attributes implements Parcelable {
+    public static final Creator<Attributes> CREATOR = new Creator<Attributes>() {
+        @Override
+        public Attributes createFromParcel(Parcel in) {
+            return new Attributes(in);
+        }
+
+        @Override
+        public Attributes[] newArray(int size) {
+            return new Attributes[size];
+        }
+    };
     @SerializedName("name")
     @Expose
     private String name;
@@ -21,6 +32,19 @@ public class Attributes implements Parcelable {
     @SerializedName("logo")
     @Expose
     private String logo;
+    @SerializedName("mandatory_dob")
+    @Expose
+    private boolean mandatoryDob;
+
+    protected Attributes(Parcel in) {
+        name = in.readString();
+        shortName = in.readString();
+        logo = in.readString();
+        mandatoryDob = in.readByte() != 0;
+    }
+
+    public Attributes() {
+    }
 
     public String getName() {
         if (TextUtils.isEmpty(shortName)) {
@@ -47,30 +71,14 @@ public class Attributes implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.name);
-        dest.writeString(this.shortName);
-        dest.writeString(this.logo);
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(name);
+        parcel.writeString(shortName);
+        parcel.writeString(logo);
+        parcel.writeByte((byte) (mandatoryDob ? 1 : 0));
     }
 
-    public Attributes() {
+    public boolean isMandatoryDob() {
+        return mandatoryDob;
     }
-
-    protected Attributes(Parcel in) {
-        this.name = in.readString();
-        this.shortName = in.readString();
-        this.logo = in.readString();
-    }
-
-    public static final Creator<Attributes> CREATOR = new Creator<Attributes>() {
-        @Override
-        public Attributes createFromParcel(Parcel source) {
-            return new Attributes(source);
-        }
-
-        @Override
-        public Attributes[] newArray(int size) {
-            return new Attributes[size];
-        }
-    };
 }
