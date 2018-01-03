@@ -51,7 +51,8 @@ public class FlightDetailFragment extends BaseListFragment<FlightDetailRouteView
     }
 
     @Override
-    protected void setInitialActionVar() {
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         List<Visitable> visitables = new ArrayList<>();
         visitables.addAll(flightDetailViewModel.getRouteList());
         getAdapter().addElement(visitables);
