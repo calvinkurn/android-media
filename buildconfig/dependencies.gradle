@@ -1,5 +1,5 @@
 ext {
-    supportLibraryVersion = '26.0.2'
+    supportLibraryVersion = '26.0.0'
     playServiceVersion = '11.0.4'
     butterKnifeVersion = '8.4.0'
     dbFlowVersion = '3.0.1'
@@ -31,7 +31,7 @@ ext {
     rulesVersion = "0.5"
     apolloVersion = '0.3.0'
     lottieVersion = '2.0.0-rc1'
-    reactNativeVersion = '0.46.4'
+    reactNativeVersion = '0.48.4'
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
