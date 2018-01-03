@@ -106,9 +106,10 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
     }
 
     @Override
-    public void processGetCategoryAndBannerData() {
-        String categoryId = view.getCategoryId();
-
+    public void processGetCategoryAndBannerData(
+            String categoryId, String operatorId, String productId, String clientNumber,
+            String utmSource, String utmMedium, String utmCampaign, String utmContent
+    ) {
         TKPDMapParam<String, String> paramQueryCategory = new TKPDMapParam<>();
         if (GlobalConfig.isSellerApp()) {
             paramQueryCategory.put(PARAM_IS_RESELLER, "1");
@@ -119,12 +120,19 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
 
         TKPDMapParam<String, String> paramQueryNumberList = new TKPDMapParam<>();
         paramQueryNumberList.put("category_id", categoryId);
-        paramQueryNumberList.put("sort", "label");
+//        paramQueryNumberList.put("operator_id", operatorId);
+//        paramQueryNumberList.put("product_id", productId);
+//        paramQueryNumberList.put("client_number", clientNumber);
+//        paramQueryNumberList.put("utm_source", utmSource);
+//        paramQueryNumberList.put("utm_medium", utmMedium);
+//        paramQueryNumberList.put("utm_campaign", utmCampaign);
+//        paramQueryNumberList.put("utm_content", utmContent);
+//        paramQueryNumberList.put("sort", "label");
 
         view.showInitialProgressLoading();
 
         productDigitalInteractor.getCategoryAndBanner(
-                view.getCategoryId(),
+                categoryId,
                 view.getGeneratedAuthParamNetwork(paramQueryCategory),
                 view.getGeneratedAuthParamNetwork(paramQueryBanner),
                 view.getGeneratedAuthParamNetwork(paramQueryNumberList),
@@ -320,12 +328,16 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
                 HistoryClientNumber historyClientNumber =
                         productDigitalData.getHistoryClientNumber();
                 if (historyClientNumber.getLastOrderClientNumber() == null) {
+                    String lastSelectedOperatorId = getLastOperatorSelected(categoryData.getCategoryId());
+                    String lastSelectedProductId = getLastProductSelected(categoryData.getCategoryId());
                     String lastTypedClientNumber = getLastClientNumberTyped(categoryData.getCategoryId());
                     String verifiedNumber = SessionHandler.getPhoneNumber();
                     if (!TextUtils.isEmpty(lastTypedClientNumber)) {
                         historyClientNumber.setLastOrderClientNumber(
                                 new OrderClientNumber.Builder()
                                         .clientNumber(lastTypedClientNumber)
+                                        .operatorId(lastSelectedOperatorId)
+                                        .productId(lastSelectedProductId)
                                         .build());
                     } else if (isPulsaOrPaketDataOrRoaming(categoryData.getCategoryId()) &
                             !TextUtils.isEmpty(verifiedNumber)) {

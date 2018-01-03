@@ -16,7 +16,10 @@ import java.util.List;
 public interface IProductDigitalPresenter {
     String TAG = IProductDigitalPresenter.class.getSimpleName();
 
-    void processGetCategoryAndBannerData();
+    void processGetCategoryAndBannerData(
+            String categoryId, String operatorId, String productId, String clientNumber,
+            String utmSource, String utmMedium, String utmCampaign, String utmContent
+    );
 
     void processStoreLastInputClientNumberByCategory(
             String lastClientNumber, String categoryId, String operatorId, String productId
