@@ -97,14 +97,14 @@ public class PickupPointLayout extends LinearLayout {
         tvPickUpBoothName.setText(store.getStoreName());
         tvPickUpBoothAddress.setText(store.getAddress());
         tvSendToPickUpBooth.setTextColor(ContextCompat.getColor(context, R.color.font_black_secondary_54));
-        tvSendToPickUpBooth.setCompoundDrawables(null, null, null, null);
+        tvSendToPickUpBooth.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
         tvSendToPickUpBooth.setOnClickListener(null);
         llContent.setVisibility(VISIBLE);
     }
 
     public void unSetData(Context context) {
         tvSendToPickUpBooth.setTextColor(ContextCompat.getColor(context, R.color.tkpd_main_green));
-        tvSendToPickUpBooth.setCompoundDrawables(null, null,
+        tvSendToPickUpBooth.setCompoundDrawablesWithIntrinsicBounds(null, null,
                 ContextCompat.getDrawable(context, R.drawable.ic_chevron_right), null);
         store = null;
         tvSendToPickUpBooth.setOnClickListener(new OnClickListener() {

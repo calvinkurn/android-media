@@ -177,4 +177,5 @@
     <string name="label_show_map">Lihat Peta</string>
     <string name="label_dialog_title_cancel_pickup">Batalkan Pengiriman ke Gerai Pengambilan</string>
     <string name="label_dialog_message_cancel_pickup_booth">Apakah Anda yakin ingin membatalkan pengiriman ke Gerai Pengambilan</string>
+    <string name="label_info_pickup_booth">Pesanan akan dikirim ke gerai pilihan Anda. \nTunjukkan pin code saat pengambilan</string>
 </resources>

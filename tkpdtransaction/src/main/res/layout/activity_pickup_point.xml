@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:context=".pickupbooth.view.pickuppoint.PickupPointActivity">
+    android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
@@ -22,6 +21,7 @@
             android:background="@color/white"
             app:collapsedTitleTextAppearance="@style/TextAppearance.Title.Collapsed"
             app:contentScrim="?attr/colorPrimary"
+            app:expandedTitleMarginStart="16dp"
             app:expandedTitleTextAppearance="@style/TextAppearance.Title.Expanded"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
             app:toolbarId="@+id/toolbar">

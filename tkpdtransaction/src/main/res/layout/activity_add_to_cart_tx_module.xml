@@ -286,7 +286,8 @@
                     <com.tokopedia.transaction.pickupbooth.view.customview.PickupPointLayout
                         android:id="@+id/pickup_point_layout"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:visibility="gone" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -426,6 +427,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/margin_small" />
+
+                <!-- Pickup booth -->
+
+                <include
+                    android:id="@+id/layout_pickup_booth_info"
+                    layout="@layout/layout_pickup_booth_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_small"
+                    android:visibility="gone" />
 
                 <!-- bagian perhitungan harga -->
 
