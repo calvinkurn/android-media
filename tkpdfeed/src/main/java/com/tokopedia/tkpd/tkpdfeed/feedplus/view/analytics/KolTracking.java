@@ -46,26 +46,26 @@ public class KolTracking {
             return DataLayer.mapOf(PROMOTIONS, createList(list));
         }
 
-        private static Object[] createList(List<Promotion> listPromotion) {
+        private static List<Object> createList(List<Promotion> listPromotion) {
             List<Map<String, Object>> list = new ArrayList<>();
             for (Promotion promo : listPromotion) {
                 Map<String, Object> map = createPromotionMap(promo);
                 list.add(map);
             }
-            return list.toArray();
+            return DataLayer.listOf(list.toArray(new Object[list.size()]));
         }
 
         private static Map<String, Object> createPromotionMap(Promotion promo) {
             Map<String, Object> map = new HashMap<>();
-            map.put(KEY_ID, promo.getId());
+            map.put(KEY_ID,  String.valueOf(promo.getId()));
             map.put(KEY_NAME, promo.getName());
             map.put(KEY_CREATIVE, promo.getCreative());
-            map.put(KEY_POSITION, promo.getPosition());
+            map.put(KEY_POSITION, String.valueOf(promo.getPosition()));
             map.put(KEY_CATEGORY, promo.getCategory());
-            map.put(KEY_PROMO_ID, promo.getPromoId());
+            map.put(KEY_PROMO_ID, String.valueOf(promo.getPromoId()));
             map.put(KEY_PROMO_CODE, promo.getPromoCode());
-            map.put(KEY_USER_ID, promo.getUserId());
-            map.put(KEY_USER_ID_MOD, promo.getUserIdMod50());
+            map.put(KEY_USER_ID, String.valueOf(promo.getUserId()));
+            map.put(KEY_USER_ID_MOD, String.valueOf(promo.getUserIdMod50()));
             return map;
         }
     }
