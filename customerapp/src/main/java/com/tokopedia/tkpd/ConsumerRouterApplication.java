@@ -209,11 +209,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Interceptor getFingerprintInterceptor() {
-        return new FingerprintInterceptor();
-    }
-
-    @Override
     public void gotToProductDetail(Context context) {
         Intent intent = ProductInfoActivity.createInstance(context);
         context.startActivity(intent);
