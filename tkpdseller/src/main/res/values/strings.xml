@@ -228,7 +228,8 @@
     <string name="optional_pinpoint_location_text">Pinpoint Lokasi (Opsional)</string>
     <string name="pin_pickup_location_text">Tandai lokasi pickup dalam peta jika Anda menggunakan kurir Express (seperti Go-Send) atau Cargo Service.</string>
     <string name="pin_location_pickup">Tandai Lokasi Pickup</string>
-    <string name="default_address_text">Wisma 77 Tower 2, Jalan Letjen S. Parman, Palmerah, 11410. Gunakan Alamat Ini</string>
+    <string name="default_address_text">Wisma 77 Tower 2, Jalan Letjen S. Parman, Palmerah, 11410.</string>
+    <string name="default_address_text_use_this">Gunakan Alamat Ini</string>
     <string name="pickup_location">Alamat Pick Up</string>
     <string name="write_address_text">Tulis jalan, nomor rumah, gedung/landmark</string>
     <string name="fill_width_address_desc">Isi dengan jalan, nomor rumah, kecamatan, nama gedung, landmark dekat lokasi dan detail lainnya.</string>

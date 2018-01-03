@@ -2,6 +2,7 @@ package com.tokopedia.seller.shop.open.view.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 /**
  * Created by normansyahputa on 12/21/17.
@@ -57,6 +58,21 @@ public class GoogleLocationViewModel implements Parcelable {
 
     public String getGeneratedAddress() {
         return generatedAddress;
+    }
+
+    public boolean isLatLongEmpty(){
+        return TextUtils.isEmpty(latitude) || TextUtils.isEmpty(longitude);
+    }
+
+    @Override
+    public String toString() {
+        return "GoogleLocationViewModel{" +
+                "latitude='" + latitude + '\'' +
+                ", longitude='" + longitude + '\'' +
+                ", manualAddress='" + manualAddress + '\'' +
+                ", generatedAddress='" + generatedAddress + '\'' +
+                ", checkSum='" + checkSum + '\'' +
+                '}';
     }
 
     public static class Builder {

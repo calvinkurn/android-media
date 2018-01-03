@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout;
 
 import java.util.ArrayList;
 
@@ -18,11 +19,11 @@ import java.util.ArrayList;
  */
 
 public class LocationShippingViewHolder {
-    private final TextInputLayout postalCodeTextInputLayout;
+    private final TkpdHintTextInputLayout postalCodeTextInputLayout;
     private final AutoCompleteTextView textEditPostalCode;
     private View root;
     ViewHolderListener2 viewHolderListener2;
-    TextInputLayout cityTextInputLayout;
+    TkpdHintTextInputLayout cityTextInputLayout;
     EditText textEditShippingCity;
     String hintTypePostalCode;
     private String districtName;

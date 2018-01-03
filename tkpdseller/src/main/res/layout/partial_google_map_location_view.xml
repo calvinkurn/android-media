@@ -9,20 +9,15 @@
     tools:showIn="@layout/fragment_shop_open_location">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="12sp"
-        android:fontFamily="sans-serif"
-        android:textStyle="normal"
-        android:textColor="@color/black_38"
+        style="@style/TextView.Caption.BlackDisabled"
         android:lineSpacingExtra="10sp"
         android:text="@string/optional_pinpoint_location_text"
-        android:layout_marginBottom="12dp"/>
+        android:layout_marginBottom="@dimen/margin_small"/>
 
     <FrameLayout
         android:id="@+id/empty_map_view"
         android:layout_width="match_parent"
-        android:layout_height="117.9dp">
+        android:layout_height="@dimen/image_width_xxxl">
 
         <android.support.v7.widget.AppCompatImageView
             android:layout_width="match_parent"
@@ -32,36 +27,27 @@
             />
 
         <TextView
-            android:layout_margin="15.2dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="11sp"
-            android:fontFamily="sans-serif"
-            android:textStyle="normal"
-            android:textColor="#89000000"
+            android:layout_margin="@dimen/margin_sm"
+            style="@style/TextView.Caption.BlackSecondary"
             android:lineSpacingExtra="5sp"
             android:gravity="center_horizontal"
             android:text="@string/pin_pickup_location_text" />
 
         <TextView
             android:id="@+id/pin_pickup_location"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:fontFamily="sans-serif"
+            style="@style/TextView.Caption.BlackSecondary"
             android:textStyle="bold"
-            android:textColor="#89000000"
             android:lineSpacingExtra="8sp"
             android:gravity="center_horizontal"
             android:text="@string/pin_location_pickup"
             android:layout_gravity="bottom|center_horizontal"
-            android:layout_marginBottom="15.2dp" />
+            android:layout_marginBottom="@dimen/margin_sm" />
     </FrameLayout>
 
     <LinearLayout
         android:id="@+id/mapview_container"
         android:layout_width="match_parent"
-        android:layout_height="117.9dp"
+        android:layout_height="@dimen/image_width_xxxl"
         android:orientation="vertical"
         android:visibility="gone">
 
@@ -77,13 +63,15 @@
 
     <TextView
         android:id="@+id/generated_location_open_shop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="12sp"
-        android:fontFamily="sans-serif"
-        android:textStyle="normal"
+        style="@style/TextView.Caption"
         android:lineSpacingExtra="6sp"
-        android:text="@string/default_address_text"
+        tools:text="@string/default_address_text"
         android:visibility="gone"/>
+    <TextView
+        android:id="@+id/generated_location_open_shop_copy"
+        style="@style/TextView.Caption.Green"
+        android:text="@string/default_address_text_use_this"
+        android:visibility="gone"
+        />
 
 </LinearLayout>
