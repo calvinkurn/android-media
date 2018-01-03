@@ -249,7 +249,6 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
     @Override
     public void loadInitialData() {
-        super.loadInitialData();
         actionFetchFlightSearchData();
     }
 
