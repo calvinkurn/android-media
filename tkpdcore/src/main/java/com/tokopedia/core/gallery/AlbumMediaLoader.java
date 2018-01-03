@@ -53,26 +53,32 @@ public class AlbumMediaLoader extends CursorLoader {
         super(context, uri, projection, selection, selectionArgs, sortOrder);
     }
 
-    public static CursorLoader newInstance(Context context, AlbumItem albumItem) {
-        if (albumItem.isAll()) {
-            return new AlbumMediaLoader(
-                    context,
-                    QUERY_URI,
-                    PROJECTION,
-                    SELECTION_ALL,
-                    SELECTION_ALL_ARGS,
-                    ORDER_BY
-            );
-        } else {
-            return new AlbumMediaLoader(
-                    context,
-                    QUERY_URI,
-                    PROJECTION,
-                    SELECTION_ALBUM,
-                    getSelectionAlbumArgs(albumItem.getmId()),
-                    ORDER_BY
-            );
+    public static CursorLoader newInstance(Context context, AlbumItem albumItem, int galeryType) {
+        String[] selectionArgs;
+        if(galeryType ==GalleryType.ofImageOnly()){
+            if (albumItem.isAll()) {
+                selectionArgs = new String[] {
+                        String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE)
+                };
+            }else{
+                selectionArgs = new String[] {
+                        String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE),
+                        albumItem.getmId()
+                };
+            }
+        }else {
+            if (albumItem.isAll()) {
+                selectionArgs = SELECTION_ALL_ARGS;
+            } else {
+                selectionArgs = getSelectionAlbumArgs(albumItem.getmId());
+            }
         }
+        return new AlbumMediaLoader(context,
+                QUERY_URI,
+                PROJECTION,
+                SELECTION_ALL,
+                selectionArgs,
+                ORDER_BY);
     }
 
     @Override

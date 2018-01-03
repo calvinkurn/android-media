@@ -9,8 +9,10 @@ import rx.functions.Func1;
 
 /**
  * Created by Hendry on 4/21/2017.
+ * use DataResponseMapper
  */
 
+@Deprecated
 public class SimpleDataResponseMapper<T> implements Func1<Response<DataResponse<T>>, T> {
     @Inject
     public SimpleDataResponseMapper() {

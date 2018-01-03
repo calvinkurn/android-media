@@ -53,12 +53,20 @@ public class ShopOpenSaveInfoUseCase extends UseCase<Boolean> {
                                                     String urlImageCloud, String serverId,
                                                     String picObj) {
         RequestParams params = RequestParams.create();
-        params.putString(PATH_FILE_IMAGE, uriPathImage);
+        if(uriPathImage != null) {
+            params.putString(PATH_FILE_IMAGE, uriPathImage);
+        }
         params.putString(SHOP_DESCRIPTION, description);
         params.putString(TAG_LINE_REQUEST_CLOUD, shopSlogan);
-        params.putString(URL_IMAGE_CLOUD, urlImageCloud);
-        params.putString(SERVER_ID, serverId);
-        params.putString(PHOTO_OBJ, picObj);
+        if(urlImageCloud != null) {
+            params.putString(URL_IMAGE_CLOUD, urlImageCloud);
+        }
+        if(serverId != null) {
+            params.putString(SERVER_ID, serverId);
+        }
+        if(picObj != null) {
+            params.putString(PHOTO_OBJ, picObj);
+        }
         return params;
     }
 

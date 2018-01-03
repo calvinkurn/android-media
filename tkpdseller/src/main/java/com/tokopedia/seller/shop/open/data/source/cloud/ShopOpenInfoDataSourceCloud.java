@@ -3,9 +3,10 @@ package com.tokopedia.seller.shop.open.data.source.cloud;
 import android.text.TextUtils;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.network.ErrorMessageException;
+import com.tokopedia.seller.common.data.mapper.DataResponseMapper;
 import com.tokopedia.seller.shop.common.di.ShopQualifier;
 import com.tokopedia.seller.shop.open.data.model.response.DataResponse;
+import com.tokopedia.seller.shop.open.data.model.response.ResponseCheckDomainName;
 import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseSaveShopDesc;
 import com.tokopedia.seller.shop.open.data.source.cloud.api.TomeApi;
 import com.tokopedia.seller.shop.open.view.model.CourierServiceId;
@@ -23,7 +24,6 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import retrofit2.Response;
-import retrofit2.adapter.rxjava.HttpException;
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -61,19 +61,20 @@ public class ShopOpenInfoDataSourceCloud {
 
     public Observable<Boolean> saveShopSetting(HashMap<String, String> paramsRequest) {
         return tomeApi.reserveShopDescInfo(paramsRequest)
-                .flatMap(new Func1<Response<DataResponse<ResponseSaveShopDesc>>, Observable<Boolean>>() {
+                .map(new DataResponseMapper<ResponseSaveShopDesc>())
+                .flatMap(new Func1<ResponseSaveShopDesc, Observable<Boolean>>() {
                     @Override
-                    public Observable<Boolean> call(Response<DataResponse<ResponseSaveShopDesc>> responseSaveShopDesc) {
-                        if(responseSaveShopDesc.isSuccessful() && (responseSaveShopDesc.body().getData().getReserveStatus()==SUCCESS)){
-                            return Observable.just(true);
-                        }else{
-                            return Observable.just(false);
+                    public Observable<Boolean> call(ResponseSaveShopDesc responseSaveShopDesc) {
+                        if (responseSaveShopDesc == null) {
+                            throw new RuntimeException();
+                        } else {
+                            return Observable.just(responseSaveShopDesc.getReserveStatus() == SUCCESS);
                         }
                     }
                 });
     }
 
-    public Observable<Boolean> saveShopSettingStep2(RequestParams requestParams){
+    public Observable<Boolean> saveShopSettingStep2(RequestParams requestParams) {
         Map<String, String> values = generateRequestMapParams(requestParams.getString(LONGITUDE, null),
                 requestParams.getString(LATITUDE, null),
                 requestParams.getString(GEOLOCATION_CHECKSUM, null),
@@ -84,13 +85,14 @@ public class ShopOpenInfoDataSourceCloud {
                 requestParams.getString(DISTRICT_ID, null));
 
         return tomeApi.reserveShopDescInfo(values)
-                .flatMap(new Func1<Response<DataResponse<ResponseSaveShopDesc>>, Observable<Boolean>>() {
+                .map(new DataResponseMapper<ResponseSaveShopDesc>())
+                .flatMap(new Func1<ResponseSaveShopDesc, Observable<Boolean>>() {
                     @Override
-                    public Observable<Boolean> call(Response<DataResponse<ResponseSaveShopDesc>> responseSaveShopDesc) {
-                        if(responseSaveShopDesc.isSuccessful() && (responseSaveShopDesc.body().getData().getReserveStatus()==SUCCESS)){
-                            return Observable.just(true);
-                        }else{
-                            return Observable.just(false);
+                    public Observable<Boolean> call(ResponseSaveShopDesc responseSaveShopDesc) {
+                        if (responseSaveShopDesc == null) {
+                            throw new RuntimeException();
+                        } else {
+                            return Observable.just(responseSaveShopDesc.getReserveStatus() == SUCCESS);
                         }
                     }
                 });
@@ -101,20 +103,11 @@ public class ShopOpenInfoDataSourceCloud {
         return tomeApi.reserveShopDescInfo(values)
                 .flatMap(new Func1<Response<DataResponse<ResponseSaveShopDesc>>, Observable<Boolean>>() {
                     @Override
-                    public Observable<Boolean> call(Response<DataResponse<ResponseSaveShopDesc>> responseSaveShopDesc) {
-                        if (responseSaveShopDesc.isSuccessful()) {
-                            if (responseSaveShopDesc.body().getData().getReserveStatus() == SUCCESS) {
-                                return Observable.just(true);
-                            } else {
-                                String errorString= responseSaveShopDesc.body().getHeader().getMessages().toString();
-                                if (TextUtils.isEmpty(errorString)) {
-                                    return Observable.error(new ErrorMessageException(errorString));
-                                } else {
-                                    return Observable.error(new HttpException(responseSaveShopDesc));
-                                }
-                            }
+                    public Observable<Boolean> call(Response<DataResponse<ResponseSaveShopDesc>> dataResponseResponse) {
+                        if (dataResponseResponse == null) {
+                            throw new RuntimeException();
                         } else {
-                            return Observable.error(new HttpException(responseSaveShopDesc));
+                            return Observable.just(dataResponseResponse.body().getData().getReserveStatus() == SUCCESS);
                         }
                     }
                 });
@@ -122,18 +115,14 @@ public class ShopOpenInfoDataSourceCloud {
 
     public Observable<Boolean> createShop() {
         return tomeApi.createShop()
-                .flatMap(new Func1<Response<DataResponse<ResponseCreateShop>>, Observable<Boolean>>() {
+                .map(new DataResponseMapper<ResponseCreateShop>())
+                .flatMap(new Func1<ResponseCreateShop, Observable<Boolean>>() {
                     @Override
-                    public Observable<Boolean> call(Response<DataResponse<ResponseCreateShop>> responseCreateShop) {
-                        if (responseCreateShop.isSuccessful()) {
-                            //TODO change this response format!
-                            if (responseCreateShop.body().getData().getReserveStatus().equals(SUCCESS)) {
-                                return Observable.just(true);
-                            } else {
-                                return Observable.error(new HttpException(responseCreateShop));
-                            }
+                    public Observable<Boolean> call(ResponseCreateShop responseCreateShop) {
+                        if (responseCreateShop == null) {
+                            throw new RuntimeException();
                         } else {
-                            return Observable.error(new HttpException(responseCreateShop));
+                            return Observable.just(responseCreateShop.getReserveStatus().equals(String.valueOf(SUCCESS)));
                         }
                     }
                 });
