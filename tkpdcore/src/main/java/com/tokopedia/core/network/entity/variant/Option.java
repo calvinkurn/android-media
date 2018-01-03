@@ -11,7 +11,7 @@ public class Option implements Parcelable {
 
     @SerializedName("id")
     @Expose
-    private long id;
+    private int id;
     @SerializedName("value")
     @Expose
     private String value;
@@ -28,11 +28,11 @@ public class Option implements Parcelable {
         enabled=true;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -70,7 +70,7 @@ public class Option implements Parcelable {
 
 
     protected Option(Parcel in) {
-        id = in.readLong();
+        id = in.readInt();
         value = in.readString();
         hex = in.readString();
         picture = (Picture) in.readValue(Picture.class.getClassLoader());
@@ -84,7 +84,7 @@ public class Option implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(id);
+        dest.writeInt(id);
         dest.writeString(value);
         dest.writeString(hex);
         dest.writeValue(picture);

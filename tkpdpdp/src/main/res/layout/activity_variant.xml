@@ -36,8 +36,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
-                    android:textSize="@dimen/font_small"
-                    android:textColor="@color/black_70"/>
+                    android:textSize="13sp"
+                    android:textColor="@color/checkbox_text"/>
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rv_variant_option_level1"
@@ -58,9 +58,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
-                    android:textSize="@dimen/font_small"
-                    android:visibility="gone"
-                    android:textColor="@color/black_70"/>
+                    android:textSize="13sp"
+                    android:textColor="@color/checkbox_text"
+                    android:visibility="gone"/>
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rv_variant_option_level2"

@@ -13,19 +13,19 @@ public class Child implements Parcelable {
 
     @SerializedName("product_id")
     @Expose
-    private long productId;
+    private int productId;
     @SerializedName("price")
     @Expose
-    private long price;
+    private int price;
     @SerializedName("stock")
     @Expose
-    private long stock;
+    private int stock;
     @SerializedName("sku")
     @Expose
     private String sku;
     @SerializedName("option_ids")
     @Expose
-    private List<Long> optionIds = null;
+    private List<Integer> optionIds = null;
     @SerializedName("enabled")
     @Expose
     private boolean enabled;
@@ -42,27 +42,27 @@ public class Child implements Parcelable {
     @Expose
     private String priceFmt;
 
-    public long getProductId() {
+    public int getProductId() {
         return productId;
     }
 
-    public void setProductId(long productId) {
+    public void setProductId(int productId) {
         this.productId = productId;
     }
 
-    public long getPrice() {
+    public int getPrice() {
         return price;
     }
 
-    public void setPrice(long price) {
+    public void setPrice(int price) {
         this.price = price;
     }
 
-    public long getStock() {
+    public int getStock() {
         return stock;
     }
 
-    public void setStock(long stock) {
+    public void setStock(int stock) {
         this.stock = stock;
     }
 
@@ -74,11 +74,11 @@ public class Child implements Parcelable {
         this.sku = sku;
     }
 
-    public List<Long> getOptionIds() {
+    public List<Integer> getOptionIds() {
         return optionIds;
     }
 
-    public void setOptionIds(List<Long> optionIds) {
+    public void setOptionIds(List<Integer> optionIds) {
         this.optionIds = optionIds;
     }
 
@@ -124,13 +124,13 @@ public class Child implements Parcelable {
 
 
     protected Child(Parcel in) {
-        productId = in.readLong();
-        price = in.readLong();
-        stock = in.readLong();
+        productId = in.readInt();
+        price = in.readInt();
+        stock = in.readInt();
         sku = in.readString();
         if (in.readByte() == 0x01) {
-            optionIds = new ArrayList<Long>();
-            in.readList(optionIds, Long.class.getClassLoader());
+            optionIds = new ArrayList<Integer>();
+            in.readList(optionIds, Integer.class.getClassLoader());
         } else {
             optionIds = null;
         }
@@ -148,9 +148,9 @@ public class Child implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(productId);
-        dest.writeLong(price);
-        dest.writeLong(stock);
+        dest.writeInt(productId);
+        dest.writeInt(price);
+        dest.writeInt(stock);
         dest.writeString(sku);
         if (optionIds == null) {
             dest.writeByte((byte) (0x00));

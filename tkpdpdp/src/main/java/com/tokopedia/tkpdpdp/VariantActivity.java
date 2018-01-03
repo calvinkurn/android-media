@@ -80,19 +80,23 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
 
 
     private void initView() {
-        topBarTitle = (TextView) findViewById(R.id.simple_top_bar_title);
-        productName = (TextView) findViewById(R.id.variant_product_name);
-        productPrice = (TextView) findViewById(R.id.variant_product_price);
-        productImage = (ImageView) findViewById(R.id.variant_image_title);
-        optionNameLevel1 = (TextView) findViewById(R.id.text_variant_option_level1);
-        optionRecyclerViewLevel1 = (RecyclerView) findViewById(R.id.rv_variant_option_level1);
-        optionNameLevel2 = (TextView) findViewById(R.id.text_variant_option_level2);
-        optionRecyclerViewLevel2 = (RecyclerView) findViewById(R.id.rv_variant_option_level2);
-        buttonSave = (FrameLayout) findViewById(R.id.button_save);
-        textButtonSave = (TextView) findViewById(R.id.text_button_save_variant);
-        textOriginalPrice = (TextView) findViewById(R.id.text_original_price);
-        textDiscount = (TextView) findViewById(R.id.text_discount);
+        topBarTitle = findViewById(R.id.simple_top_bar_title);
+        productName = findViewById(R.id.variant_product_name);
+        productPrice =  findViewById(R.id.variant_product_price);
+        productImage = findViewById(R.id.variant_image_title);
+        optionNameLevel1 = findViewById(R.id.text_variant_option_level1);
+        optionRecyclerViewLevel1 = findViewById(R.id.rv_variant_option_level1);
+        optionNameLevel2 = findViewById(R.id.text_variant_option_level2);
+        optionRecyclerViewLevel2 = findViewById(R.id.rv_variant_option_level2);
+        buttonSave = findViewById(R.id.button_save);
+        textButtonSave = findViewById(R.id.text_button_save_variant);
+        textOriginalPrice = findViewById(R.id.text_original_price);
+        textDiscount = findViewById(R.id.text_discount);
+        ImageHandler.LoadImage(productImage, productDetailData.getProductImages().get(0).getImageSrc300());
+        renderHeaderInfo();
+    }
 
+    private void renderHeaderInfo() {
         productName.setText(productDetailData.getInfo().getProductName());
         productPrice.setText(productDetailData.getInfo().getProductPrice());
         if(productDetailData.getProductCampaign() != null
@@ -101,7 +105,6 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             textOriginalPrice.setPaintFlags(
                     textOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
             );
-
             textDiscount.setText(String.format(
                     VariantActivity.this.getString(R.string.label_discount_percentage),
                     productDetailData.getProductCampaign().getPercentageAmount()
@@ -111,8 +114,6 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             textOriginalPrice.setVisibility(VISIBLE);
         }
 
-        ImageHandler.LoadImage(productImage, productDetailData.getProductImages().get(0).getImageSrc300());
-        //TODO bedges, promo
     }
 
     private void initViewListener() {
@@ -261,7 +262,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
 
     @Override
     public void onVariantChosen(Option option, int level) {
-        List<Long> combinations = productVariant.getCombinationFromSelectedVariant(option.getId());
+        List<Integer> combinations = productVariant.getCombinationFromSelectedVariant(option.getId());
         if (level==1) {
             if (combinations.size()==1 && productVariant.getVariant().size()>1) {
                 option.setEnabled(false);
@@ -296,5 +297,14 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
                 }
             }
         }
+        Child child = getProductDatumSelected();
+        if (child!=null) {
+            productDetailData.getInfo().setProductName(child.getName());
+            productDetailData.getInfo().setProductPrice(child.getPriceFmt());
+            if (!TextUtils.isEmpty(child.getPicture().getThumbnail()))  {
+                ImageHandler.LoadImage(productImage, child.getPicture().getThumbnail());
+            }
+        }
+        renderHeaderInfo();
     }
 }

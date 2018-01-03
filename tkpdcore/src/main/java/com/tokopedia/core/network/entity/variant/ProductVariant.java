@@ -14,10 +14,10 @@ public class ProductVariant implements Parcelable {
 
     @SerializedName("parent_id")
     @Expose
-    private long parentId;
+    private int parentId;
     @SerializedName("default_child")
     @Expose
-    private long defaultChild;
+    private int defaultChild;
     @SerializedName("variant")
     @Expose
     private List<Variant> variant = null;
@@ -29,19 +29,19 @@ public class ProductVariant implements Parcelable {
     private String sizechart;
 
 
-    public long getParentId() {
+    public int getParentId() {
         return parentId;
     }
 
-    public void setParentId(long parentId) {
+    public void setParentId(int parentId) {
         this.parentId = parentId;
     }
 
-    public long getDefaultChild() {
+    public int getDefaultChild() {
         return defaultChild;
     }
 
-    public void setDefaultChild(long defaultChild) {
+    public void setDefaultChild(int defaultChild) {
         this.defaultChild = defaultChild;
     }
 
@@ -71,8 +71,8 @@ public class ProductVariant implements Parcelable {
 
 
     protected ProductVariant(Parcel in) {
-        parentId = in.readLong();
-        defaultChild = in.readLong();
+        parentId = in.readInt();
+        defaultChild = in.readInt();
         if (in.readByte() == 0x01) {
             variant = new ArrayList<Variant>();
             in.readList(variant, Variant.class.getClassLoader());
@@ -95,8 +95,8 @@ public class ProductVariant implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(parentId);
-        dest.writeLong(defaultChild);
+        dest.writeInt(parentId);
+        dest.writeInt(defaultChild);
         if (variant == null) {
             dest.writeByte((byte) (0x00));
         } else {
@@ -125,10 +125,10 @@ public class ProductVariant implements Parcelable {
         }
     };
 
-    public List<Long> getCombinationFromSelectedVariant(long variantOptionId) {
-        List<Long> products = new ArrayList<>();
+    public List<Integer> getCombinationFromSelectedVariant(int variantOptionId) {
+        List<Integer> products = new ArrayList<>();
         for (Child child: getChildren()) {
-            if (child.getOptionIds().contains(variantOptionId) && child.isIsBuyable()) {
+            if (child.getOptionIds().contains(variantOptionId) && child.isEnabled()) {
                 products.addAll(child.getOptionIds());
             }
         }
@@ -144,7 +144,7 @@ public class ProductVariant implements Parcelable {
         return 0;
     }
 
-    public Child getChildFromProductId(long productId) {
+    public Child getChildFromProductId(int productId) {
         for (Child child: getChildren()) {
             if (child.getProductId()==productId)  return child;
         }
