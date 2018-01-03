@@ -32,6 +32,7 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
     private final MapView mapView;
     private final LinearLayout mapViewContainer;
     private final FrameLayout emptyMapView;
+    private final TextView generateLocationOpenShopCopy;
     private View root;
     private ViewHolderListener3 viewHolderListener3;
     private final AppCompatEditText shopAddressEdittext;
@@ -52,10 +53,12 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
         mapViewContainer = root.findViewById(R.id.mapview_container);
         emptyMapView = root.findViewById(R.id.empty_map_view);
 
+        generateLocationOpenShopCopy = root.findViewById(R.id.generated_location_open_shop_copy);
+
         pinPickupLocation = root.findViewById(R.id.pin_pickup_location);
         this.root = root;
         this.viewHolderListener3 = viewHolderListener3;
-        pinPickupLocation.setOnClickListener(new View.OnClickListener() {
+        mapViewContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(viewHolderListener3 != null){
@@ -81,16 +84,19 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
             mapViewContainer.setVisibility(View.VISIBLE);
         }
 
-
         if(googleLocationViewModel != null && !TextUtils.isEmpty(googleLocationViewModel.getGeneratedAddress())){
             generatedLocationOpenShop.setVisibility(View.VISIBLE);
+            generateLocationOpenShopCopy.setVisibility(View.VISIBLE);
             generatedLocationOpenShop.setText(getReverseGeocode(googleLocationViewModel));
-            generatedLocationOpenShop.setOnClickListener(new View.OnClickListener() {
+            generateLocationOpenShopCopy.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     shopAddressEdittext.setText(generatedLocationOpenShop.getText().toString());
                 }
             });
+        }else{
+            generatedLocationOpenShop.setVisibility(View.GONE);
+            generateLocationOpenShopCopy.setVisibility(View.GONE);
         }
 
         if(!isFromReserveDomain)
