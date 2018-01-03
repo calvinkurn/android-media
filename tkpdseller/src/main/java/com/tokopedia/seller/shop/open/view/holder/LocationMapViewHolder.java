@@ -1,6 +1,8 @@
 package com.tokopedia.seller.shop.open.view.holder;
 
 import android.support.v7.widget.AppCompatEditText;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -24,6 +26,7 @@ import com.tokopedia.seller.shop.open.view.model.GoogleLocationViewModel;
 
 public class LocationMapViewHolder implements OnMapReadyCallback {
 
+    private static final String TAG = "LocationMapViewHolder";
     private final TextView pinPickupLocation;
     private final TextView generatedLocationOpenShop;
     private final MapView mapView;
@@ -73,19 +76,22 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
     public void setLocationText(GoogleLocationViewModel googleLocationViewModel){
         this.googleLocationViewModel = googleLocationViewModel;
 
-        if(googleLocationViewModel == null)
-            return;
+        if(googleLocationViewModel != null && !googleLocationViewModel.isLatLongEmpty()) {
+            emptyMapView.setVisibility(View.GONE);
+            mapViewContainer.setVisibility(View.VISIBLE);
+        }
 
-        emptyMapView.setVisibility(View.GONE);
-        mapViewContainer.setVisibility(View.VISIBLE);
-        generatedLocationOpenShop.setVisibility(View.VISIBLE);
-        generatedLocationOpenShop.setText(getReverseGeocode(googleLocationViewModel));
-        generatedLocationOpenShop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                shopAddressEdittext.setText(generatedLocationOpenShop.getText().toString());
-            }
-        });
+
+        if(googleLocationViewModel != null && !TextUtils.isEmpty(googleLocationViewModel.getGeneratedAddress())){
+            generatedLocationOpenShop.setVisibility(View.VISIBLE);
+            generatedLocationOpenShop.setText(getReverseGeocode(googleLocationViewModel));
+            generatedLocationOpenShop.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    shopAddressEdittext.setText(generatedLocationOpenShop.getText().toString());
+                }
+            });
+        }
 
         if(!isFromReserveDomain)
             setGoogleMap(googleMap);
@@ -119,7 +125,7 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
     }
 
     private void setGoogleMap(GoogleMap googleMap) {
-        if (googleMap != null) {
+        if (googleMap != null && !googleLocationViewModel.isLatLongEmpty()) {
 
             double latitude = Double.parseDouble(googleLocationViewModel.getLatitude());
             double longitude = Double.parseDouble(googleLocationViewModel.getLongitude());
