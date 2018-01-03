@@ -28,7 +28,9 @@ import com.tokopedia.transaction.pickupbooth.di.PickupPointComponent;
 import com.tokopedia.transaction.pickupbooth.domain.model.Store;
 import com.tokopedia.transaction.pickupbooth.view.adapter.PickupPointAdapter;
 import com.tokopedia.transaction.pickupbooth.view.contract.PickupPointContract;
+import com.tokopedia.transaction.pickupbooth.view.model.StoreViewModel;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.inject.Inject;
@@ -92,11 +94,36 @@ public class PickupPointActivity extends BaseActivity
             );
         }
 
+        final HashMap<String, String> params =
+                (HashMap<String, String>) getIntent().getSerializableExtra(INTENT_DATA_PARAMS);
+
+        searchViewPickupBooth.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                doQuery(params);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                doQuery(params);
+                return true;
+            }
+        });
+
+        searchViewPickupBooth.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                resetSearchResult();
+                return true;
+            }
+        });
+
         initializeInjector();
         presenter.attachView(this);
         setupRecycleView();
 
-        doQuery((HashMap<String, String>) getIntent().getSerializableExtra(INTENT_DATA_PARAMS));
+        doQuery(params);
     }
 
     @Override
@@ -106,6 +133,7 @@ public class PickupPointActivity extends BaseActivity
     }
 
     private void doQuery(HashMap<String, String> param) {
+        llEmptyResult.setVisibility(View.GONE);
         presenter.queryPickupPoints(searchViewPickupBooth.getQuery().toString(), param);
     }
 
@@ -158,8 +186,22 @@ public class PickupPointActivity extends BaseActivity
     }
 
     @Override
-    public void showResult() {
+    public void showAllResult() {
         pickupPointAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void showSearchResult(ArrayList<StoreViewModel> storeViewModels) {
+        pickupPointAdapter = new PickupPointAdapter(storeViewModels, this);
+        rvPickupBooth.setAdapter(pickupPointAdapter);
+        if (storeViewModels.size() == 0) {
+            showNoResult();
+        }
+    }
+
+    private void resetSearchResult() {
+        llEmptyResult.setVisibility(View.GONE);
+        setupRecycleView();
     }
 
     @Override
@@ -185,6 +227,16 @@ public class PickupPointActivity extends BaseActivity
 
     @Override
     public void onItemShowMapClick(Store store) {
-        startActivityForResult(PickupPointMapActivity.createInstance(this, store.getGeolocation()), REQUEST_CODE_MAP);
+        startActivityForResult(PickupPointMapActivity.createInstance(this, store), REQUEST_CODE_MAP);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_MAP && resultCode == Activity.RESULT_OK) {
+            Intent intent = new Intent();
+            setResult(resultCode, intent);
+            finish();
+        }
     }
 }

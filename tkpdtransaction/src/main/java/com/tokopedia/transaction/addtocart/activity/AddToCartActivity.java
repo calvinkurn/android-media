@@ -71,7 +71,9 @@ import com.tokopedia.transaction.addtocart.presenter.AddToCartPresenterImpl;
 import com.tokopedia.transaction.addtocart.receiver.ATCResultReceiver;
 import com.tokopedia.transaction.addtocart.services.ATCIntentService;
 import com.tokopedia.transaction.addtocart.utils.KeroppiConstants;
+import com.tokopedia.transaction.pickupbooth.domain.model.Store;
 import com.tokopedia.transaction.pickupbooth.view.activity.PickupPointActivity;
+import com.tokopedia.transaction.pickupbooth.view.activity.PickupPointMapActivity;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -96,6 +98,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         TextWatcher, ATCResultReceiver.Receiver {
     public static final int REQUEST_CHOOSE_ADDRESS = 0;
     public static final int REQUEST_CHOOSE_LOCATION = 2;
+    public static final int REQUEST_CHOOSE_PICKUP_POINT = 3;
     private static final String EXTRA_STATE_ORDER_DATA = "orderData";
     private static final String EXTRA_STATE_DESTINATION_DATA = "destinationData";
     private static final String EXTRA_STATE_LOCATION_PASS_DATA = "locationPassData";
@@ -742,6 +745,10 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                         this.mLocationPass = locationPass;
                     }
                     break;
+                case REQUEST_CHOOSE_PICKUP_POINT:
+                    Store store = data.getParcelableExtra(PickupPointMapActivity.INTENT_DATA_STORE);
+
+                    break;
             }
         } else if (resultCode == RESULT_NOT_SELECTED_DESTINATION) {
             renderFormAddress(
@@ -842,7 +849,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
 
     @OnClick(R2.id.tv_send_to_pick_up_booth)
     void sendToPickUpBooth() {
-        startActivityForResult(PickupPointActivity.createInstance(this, presenter.getPickupPointParams()), 0);
+        startActivityForResult(PickupPointActivity.createInstance(this, presenter.getPickupPointParams()),
+                REQUEST_CHOOSE_PICKUP_POINT);
     }
 
     private OrderData createFinalOrderData() {

@@ -120,16 +120,18 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_ms"
                         android:src="@drawable/ic_search_empty_state" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_ms"
                         android:fontFamily="sans-serif-medium"
                         android:gravity="center_horizontal"
                         android:text="@string/label_no_pickup_booth_found"

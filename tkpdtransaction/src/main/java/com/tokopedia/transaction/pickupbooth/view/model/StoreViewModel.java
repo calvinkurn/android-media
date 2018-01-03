@@ -10,6 +10,7 @@ public class StoreViewModel {
 
     private Store store;
     private boolean checked;
+    private boolean visible;
 
     public Store getStore() {
         return store;
@@ -27,4 +28,11 @@ public class StoreViewModel {
         this.checked = checked;
     }
 
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
 }

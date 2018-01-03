@@ -5,10 +5,7 @@ import android.util.Log;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Token;
-import com.tokopedia.core.manage.general.districtrecommendation.domain.usecase.GetDistrictRequestUseCase;
 import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.pickupbooth.domain.model.PickupPointResponse;
 import com.tokopedia.transaction.pickupbooth.domain.model.Store;
@@ -54,48 +51,67 @@ public class PickupPointPresenter extends BaseDaggerPresenter<PickupPointContrac
     @Override
     public void detachView() {
         super.detachView();
+        getPickupPointsUseCase.unsubscribe();
     }
 
     @Override
     public void queryPickupPoints(String keyword, HashMap<String, String> param) {
         getView().showLoading();
-        getPickupPointsUseCase.execute(getParams(keyword, param), new Subscriber<PickupPointResponse>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-                if (isViewAttached()) {
-                    getView().hideLoading();
-                    String message;
-                    if (e instanceof UnknownHostException || e instanceof ConnectException ||
-                            e instanceof SocketTimeoutException) {
-                        message = getView().getActivity().getResources().getString(R.string.msg_no_connection);
-                    } else if (e instanceof UnProcessableHttpException) {
-                        message = TextUtils.isEmpty(e.getMessage()) ?
-                                getView().getActivity().getResources().getString(R.string.msg_no_connection) :
-                                e.getMessage();
-                    } else {
-                        message = getView().getActivity().getResources().getString(R.string.default_request_error_unknown);
-                    }
-                    getView().showNoConnection(message);
+        if (keyword != null && storeViewModels.size() > 0) {
+            ArrayList<StoreViewModel> searchResults = new ArrayList<>();
+            for (StoreViewModel storeViewModel : storeViewModels) {
+                if (storeViewModel.getStore().getStoreName().toLowerCase().contains(keyword.toLowerCase()) ||
+                        storeViewModel.getStore().getAddress().toLowerCase().contains(keyword.toLowerCase())) {
+                    searchResults.add(storeViewModel);
                 }
             }
-
-            @Override
-            public void onNext(PickupPointResponse pickupPointResponse) {
-                if (isViewAttached()) {
-                    getView().hideLoading();
-                    for (Store store : pickupPointResponse.getData().getStores()) {
-                        storeViewModels.add(pickupPointViewModelMapper.transform(store));
-                    }
-                    getView().showResult();
-                }
+            if (isViewAttached()) {
+                getView().hideLoading();
+                getView().showSearchResult(searchResults);
             }
-        });
+        } else {
+            getPickupPointsUseCase.execute(getParams(param), new Subscriber<PickupPointResponse>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    e.printStackTrace();
+                    if (isViewAttached()) {
+                        getView().hideLoading();
+                        String message;
+                        if (e instanceof UnknownHostException || e instanceof ConnectException ||
+                                e instanceof SocketTimeoutException) {
+                            message = getView().getActivity().getResources().getString(R.string.msg_no_connection);
+                        } else if (e instanceof UnProcessableHttpException) {
+                            message = TextUtils.isEmpty(e.getMessage()) ?
+                                    getView().getActivity().getResources().getString(R.string.msg_no_connection) :
+                                    e.getMessage();
+                        } else {
+                            message = getView().getActivity().getResources().getString(R.string.default_request_error_unknown);
+                        }
+                        getView().showNoConnection(message);
+                    }
+                }
+
+                @Override
+                public void onNext(PickupPointResponse pickupPointResponse) {
+                    if (isViewAttached()) {
+                        getView().hideLoading();
+                        for (Store store : pickupPointResponse.getData().getStores()) {
+                            storeViewModels.add(pickupPointViewModelMapper.transform(store));
+                        }
+                        if (storeViewModels.size() > 0) {
+                            getView().showAllResult();
+                        } else {
+                            getView().showNoResult();
+                        }
+                    }
+                }
+            });
+        }
     }
 
     @Override
@@ -103,10 +119,10 @@ public class PickupPointPresenter extends BaseDaggerPresenter<PickupPointContrac
         return storeViewModels;
     }
 
-    private RequestParams getParams(String keyword, HashMap<String, String> params) {
+    private RequestParams getParams(HashMap<String, String> params) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putAll(params);
-        requestParams.putString(GetPickupPointsUseCase.PARAM_QUERY, keyword);
+        requestParams.putString(GetPickupPointsUseCase.PARAM_QUERY, "");
 
         Log.e("PickupPointPresParams", "This");
         for (Map.Entry<String, String> entry : requestParams.getParamsAllValueInString().entrySet()) {

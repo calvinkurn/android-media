@@ -16,4 +16,16 @@
         android:layout_marginTop="-6dp"
         android:indeterminate="true" />
 
+    <Button
+        android:id="@+id/btn_choose_pickup_booth"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_margin="16dp"
+        android:background="@color/tkpd_main_green"
+        android:foreground="?selectableItemBackground"
+        android:text="@string/label_button_pick_pickup_booth"
+        android:textAllCaps="false"
+        android:textColor="@color/white" />
+
 </FrameLayout>

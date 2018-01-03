@@ -9,17 +9,20 @@ import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.ProgressBar;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
+import com.tokopedia.transaction.pickupbooth.domain.model.Store;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 public class PickupPointMapActivity extends BasePresenterActivity {
 
-    public static final String INTENT_DATA_GEOLOCATION = "geolocation";
+    public static final String INTENT_DATA_STORE = "store";
 
     interface MapRequestParam {
         String ZOOM = "17";
@@ -30,10 +33,14 @@ public class PickupPointMapActivity extends BasePresenterActivity {
     WebView webViewPickupBoothLocation;
     @BindView(R2.id.pb_loading)
     ProgressBar pbLoading;
+    @BindView(R2.id.btn_choose_pickup_booth)
+    Button btnChoosePickupBooth;
 
-    public static Intent createInstance(Activity activity, String geolocation) {
+    private Store store;
+
+    public static Intent createInstance(Activity activity, Store store) {
         Intent intent = new Intent(activity, PickupPointMapActivity.class);
-        intent.putExtra(INTENT_DATA_GEOLOCATION, geolocation);
+        intent.putExtra(INTENT_DATA_STORE, store);
         return intent;
     }
 
@@ -59,25 +66,28 @@ public class PickupPointMapActivity extends BasePresenterActivity {
 
     @Override
     protected void initView() {
-        if (getIntent().getStringExtra(INTENT_DATA_GEOLOCATION) != null) {
-            setupWebView(getIntent().getStringExtra(INTENT_DATA_GEOLOCATION));
+        if (getIntent().getStringExtra(INTENT_DATA_STORE) != null) {
+            store = getIntent().getParcelableExtra(INTENT_DATA_STORE);
+            setupWebView();
         }
     }
 
-    private void setupWebView(String geolocation) {
+    private void setupWebView() {
         int width = getResources().getDisplayMetrics().widthPixels;
         int height = getResources().getDisplayMetrics().heightPixels - toolbar.getHeight();
         Log.e(String.valueOf(width), String.valueOf(height));
         pbLoading.setVisibility(View.VISIBLE);
-        webViewPickupBoothLocation.setWebViewClient(new TermsAndConditionsWebViewClient());
-        webViewPickupBoothLocation.setWebChromeClient(new WebChromeClient());
-        webViewPickupBoothLocation.loadUrl("http://maps.googleapis.com/maps/api/staticmap?" +
-                "center=" + geolocation +
+        String url = "http://maps.googleapis.com/maps/api/staticmap?" +
+                "center=" + store.getGeolocation() +
                 "&zoom=" + MapRequestParam.ZOOM +
                 "&size=" + height + "x" + width +
                 "&maptype=" + MapRequestParam.MAP_TYPE +
-                "&markers=" + geolocation +
-                "key=" + getString(R.string.google_api_key));
+                "&markers=" + store.getGeolocation() +
+                "&key=" + getString(R.string.google_api_key);
+        Log.e("MapUrl", url);
+        webViewPickupBoothLocation.setWebViewClient(new TermsAndConditionsWebViewClient());
+        webViewPickupBoothLocation.setWebChromeClient(new WebChromeClient());
+        webViewPickupBoothLocation.loadUrl(url);
     }
 
     @Override
@@ -120,6 +130,14 @@ public class PickupPointMapActivity extends BasePresenterActivity {
             pbLoading.setVisibility(View.GONE);
         }
 
+    }
+
+    @OnClick(R2.id.btn_choose_pickup_booth)
+    public void onChoosePickupBooth() {
+        Intent intent = new Intent();
+        intent.putExtra(INTENT_DATA_STORE, store);
+        setResult(Activity.RESULT_OK, intent);
+        finish();
     }
 
 }

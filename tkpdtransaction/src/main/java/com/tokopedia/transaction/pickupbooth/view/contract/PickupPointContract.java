@@ -23,7 +23,9 @@ public interface PickupPointContract {
 
         void hideLoading();
 
-        void showResult();
+        void showAllResult();
+
+        void showSearchResult(ArrayList<StoreViewModel> storeViewModels);
 
         void showNoResult();
 
