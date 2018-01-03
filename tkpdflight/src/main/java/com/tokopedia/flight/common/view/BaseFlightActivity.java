@@ -4,7 +4,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.orderlist.view.FlightOrderListActivity;
 
 /**
@@ -24,12 +26,23 @@ public abstract class BaseFlightActivity extends BaseSimpleActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_promo) {
-
+            if (getApplication() instanceof FlightModuleRouter
+                    && ((FlightModuleRouter) getApplication())
+                    .getBannerWebViewIntent(this, FlightUrl.ALL_PROMO_LINK) != null) {
+                startActivity(((FlightModuleRouter) getApplication())
+                        .getBannerWebViewIntent(this, FlightUrl.ALL_PROMO_LINK));
+            }
             return true;
         } else if (item.getItemId() == R.id.menu_transaction_list) {
             startActivity(FlightOrderListActivity.getCallingIntent(this));
             return true;
         } else if (item.getItemId() == R.id.menu_help) {
+            if (getApplication() instanceof FlightModuleRouter
+                    && ((FlightModuleRouter) getApplication())
+                    .getBannerWebViewIntent(this, FlightUrl.CONTACT_US) != null) {
+                startActivity(((FlightModuleRouter) getApplication())
+                        .getBannerWebViewIntent(this, FlightUrl.CONTACT_US));
+            }
 
             return true;
         } else {

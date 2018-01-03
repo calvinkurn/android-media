@@ -177,4 +177,5 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile rootProject.ext.supportLibDependencies.design
     compile project(':tkpdflight')
+    compile rootProject.ext.debugToolsDependencies.stetho
 }

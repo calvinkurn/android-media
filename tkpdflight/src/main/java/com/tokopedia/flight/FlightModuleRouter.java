@@ -27,4 +27,6 @@ public interface FlightModuleRouter {
     Intent getBannerWebViewIntent(Activity activity, String url);
 
     Interceptor getFingerprintInterceptor();
+
+    Intent getHomeIntent(Context context);
 }
