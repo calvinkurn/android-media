@@ -13,13 +13,40 @@ public class KolFollowingResultViewModel implements Parcelable {
     private boolean isCanLoadMore;
     private String lastCursor;
     private List<KolFollowingViewModel> kolFollowingViewModelList;
+    private String buttonText;
+    private String buttonApplink;
 
-    public KolFollowingResultViewModel(boolean isCanLoadMore,
-                                       String lastCursor,
-                                       List<KolFollowingViewModel> kolFollowingViewModelList) {
+    public KolFollowingResultViewModel
+            (boolean isCanLoadMore,
+             String lastCursor,
+             List<KolFollowingViewModel> kolFollowingViewModelList,
+             String buttonText,
+             String buttonApplink) {
         this.isCanLoadMore = isCanLoadMore;
         this.lastCursor = lastCursor;
         this.kolFollowingViewModelList = kolFollowingViewModelList;
+        this.buttonText = buttonText;
+        this.buttonApplink = buttonApplink;
+    }
+
+    public String getButtonText() {
+        return buttonText;
+    }
+
+    public void setButtonText(String buttonText) {
+        this.buttonText = buttonText;
+    }
+
+    public String getButtonApplink() {
+        return buttonApplink;
+    }
+
+    public void setButtonApplink(String buttonApplink) {
+        this.buttonApplink = buttonApplink;
+    }
+
+    public static Creator<KolFollowingResultViewModel> getCREATOR() {
+        return CREATOR;
     }
 
     public boolean isCanLoadMore() {

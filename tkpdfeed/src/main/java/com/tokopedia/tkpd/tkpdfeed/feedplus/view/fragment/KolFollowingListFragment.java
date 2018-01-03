@@ -15,6 +15,7 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.KolFollowingListActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.KolFollowingAdapter;
@@ -38,7 +39,9 @@ public class KolFollowingListFragment extends BaseDaggerFragment
 
     private boolean isCanLoadMore;
     private String cursor;
+    private String emptyApplink;
     private int userId;
+
     private KolFollowingAdapter adapter;
     private LinearLayoutManager layoutManager;
     private View emptyState;
@@ -98,6 +101,11 @@ public class KolFollowingListFragment extends BaseDaggerFragment
     private void initView() {
         rvItem.setVisibility(View.GONE);
         emptyState.setVisibility(View.GONE);
+        layoutManager = new LinearLayoutManager(getActivity());
+        adapter = new KolFollowingAdapter(getActivity(), this);
+        rvItem.setLayoutManager(layoutManager);
+        rvItem.setHasFixedSize(true);
+        rvItem.setAdapter(adapter);
         showLoading();
         presenter.getKolFollowingList(userId);
     }
@@ -106,7 +114,10 @@ public class KolFollowingListFragment extends BaseDaggerFragment
         emptyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                if (!TextUtils.isEmpty(emptyApplink)) {
+                    ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity()
+                            , emptyApplink);
+                }
             }
         });
     }
@@ -158,19 +169,22 @@ public class KolFollowingListFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessGetKolFollowingList(KolFollowingResultViewModel viewModel) {
-        layoutManager = new LinearLayoutManager(getActivity());
         rvItem.setVisibility(View.VISIBLE);
-        adapter = new KolFollowingAdapter(getActivity(), this);
-        rvItem.setLayoutManager(layoutManager);
-        rvItem.setHasFixedSize(true);
-        rvItem.setAdapter(adapter);
-        adapter.setItemList(viewModel.getKolFollowingViewModelList());
+        updateView(viewModel);
         updateParams(viewModel);
     }
 
     @Override
     public void onSuccessGetKolFollowingListEmptyState() {
         emptyState.setVisibility(View.VISIBLE);
+    }
+
+    private void updateView(KolFollowingResultViewModel model) {
+        adapter.setItemList(model.getKolFollowingViewModelList());
+        if (model.getKolFollowingViewModelList() == null || model.getKolFollowingViewModelList().size() == 0) {
+            emptyButton.setText(model.getButtonText());
+            emptyApplink = model.getButtonApplink();
+        }
     }
 
     private void updateParams(KolFollowingResultViewModel viewModel) {

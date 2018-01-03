@@ -44,14 +44,16 @@ public class GetKolFollowingListSubscriber extends Subscriber<KolFollowingResult
         }
     }
 
-    private KolFollowingResultViewModel mappingViewModel(KolFollowingResultDomain domain) {
+    public static KolFollowingResultViewModel mappingViewModel(KolFollowingResultDomain domain) {
         return new KolFollowingResultViewModel(
                 domain.isCanLoadMore(),
                 domain.getLastCursor(),
-                mappingViewModels(domain.getKolFollowingDomainList()));
+                mappingViewModels(domain.getKolFollowingDomainList()),
+                domain.getButtonText(),
+                domain.getButtonApplink());
     }
 
-    private List<KolFollowingViewModel> mappingViewModels(List<KolFollowingDomain> domainList) {
+    private static List<KolFollowingViewModel> mappingViewModels(List<KolFollowingDomain> domainList) {
         List<KolFollowingViewModel> viewModelList = new ArrayList<>();
         for (KolFollowingDomain domain : domainList) {
             KolFollowingViewModel viewModel = new KolFollowingViewModel(

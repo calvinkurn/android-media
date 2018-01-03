@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:context="http://schemas.android.com/tools"
@@ -30,7 +29,7 @@
             android:layout_height="12dp"
             android:layout_gravity="center"
             android:layout_marginRight="@dimen/padding_small"
-            android:background="@color/tkpd_main_green"/>
+            android:src="@drawable/ic_influencer"/>
 
         <TextView
             android:id="@+id/tv_name"
