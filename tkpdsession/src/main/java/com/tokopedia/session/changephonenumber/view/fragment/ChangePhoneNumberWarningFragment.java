@@ -87,10 +87,15 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
         View parentView = inflater.inflate(R.layout.fragment_change_phone_number_warning, container, false);
         unbinder = ButterKnife.bind(this, parentView);
         presenter.attachView(this);
+        initVar();
         initView(parentView);
         setViewListener();
-        initVar();
         return parentView;
+    }
+
+    private void initVar() {
+        email = getArguments().getString(PARAM_EMAIL);
+        phoneNumber = getArguments().getString(PARAM_PHONE_NUMBER);
     }
 
     private void initView(View view) {
@@ -105,7 +110,6 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
         loadingView = view.findViewById(R.id.loading_view);
 
         warningRecyclerView.setFocusable(false);
-
         presenter.initView();
     }
 
@@ -130,11 +134,6 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
                 startActivityForResult(intent, REQUEST_WITHDRAW_TOKOPEDIA_BALANCE);
             }
         });
-    }
-
-    private void initVar() {
-        email = getArguments().getString(PARAM_EMAIL);
-        phoneNumber = getArguments().getString(PARAM_PHONE_NUMBER);
     }
 
     @Override

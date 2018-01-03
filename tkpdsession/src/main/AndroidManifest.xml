@@ -65,12 +65,12 @@
             android:label="@string/profile_completion_title"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
-
         <activity
             android:name="com.tokopedia.otp.cotp.view.activity.VerificationActivity"
             android:label="@string/title_verify"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize" />
+
         <service
             android:name=".session.intentservice.LoginService"
             android:exported="false" />
@@ -105,6 +105,7 @@
             android:label="@string/change_phone_number"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".changephonenumber.view.activity.ChangePhoneNumberEmailVerificationActivity"></activity>
     </application>
 
 </manifest>

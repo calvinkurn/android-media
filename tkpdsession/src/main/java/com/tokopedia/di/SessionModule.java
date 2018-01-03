@@ -17,6 +17,8 @@ import com.tokopedia.profilecompletion.data.mapper.EditUserInfoMapper;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepository;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
+import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberEmailVerificationFragmentListener;
+import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberEmailVerificationPresenter;
 import com.tokopedia.session.login.domain.mapper.MakeLoginMapper;
 import com.tokopedia.session.changephonenumber.data.repository.ChangePhoneNumberRepositoryImpl;
 import com.tokopedia.session.changephonenumber.data.source.CloudGetWarningSource;
@@ -135,6 +137,13 @@ SessionModule {
     ChangePhoneNumberEmailFragmentListener.Presenter ChangePhoneNumberEmailPresenter(SendEmailUseCase sendEmailUseCase) {
         return new ChangePhoneNumberEmailPresenter(sendEmailUseCase);
     }
+
+    @SessionScope
+    @Provides
+    ChangePhoneNumberEmailVerificationFragmentListener.Presenter ChangePhoneNumberEmailVerificationPresenter() {
+        return new ChangePhoneNumberEmailVerificationPresenter();
+    }
+
     @SessionScope
     @Provides
     OtpSource provideOtpSource(@Named(BEARER_SERVICE) AccountsService accountsService,

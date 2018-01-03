@@ -5,6 +5,7 @@ import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.cotp.view.fragment.ChooseVerificationMethodFragment;
 import com.tokopedia.otp.cotp.view.fragment.VerificationFragment;
 import com.tokopedia.session.changephonenumber.view.fragment.ChangePhoneNumberEmailFragment;
+import com.tokopedia.session.changephonenumber.view.fragment.ChangePhoneNumberEmailVerificationFragment;
 import com.tokopedia.session.changephonenumber.view.fragment.ChangePhoneNumberInputFragment;
 import com.tokopedia.session.changephonenumber.view.fragment.ChangePhoneNumberWarningFragment;
 
@@ -29,4 +30,6 @@ public interface SessionComponent {
     void inject(ChangePhoneNumberWarningFragment fragment);
 
     void inject(ChangePhoneNumberEmailFragment fragment);
+
+    void inject(ChangePhoneNumberEmailVerificationFragment fragment);
 }

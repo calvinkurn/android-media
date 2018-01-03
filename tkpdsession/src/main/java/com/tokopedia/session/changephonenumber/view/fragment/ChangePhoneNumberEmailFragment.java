@@ -54,10 +54,14 @@ public class ChangePhoneNumberEmailFragment extends BaseDaggerFragment implement
         View parentView = inflater.inflate(R.layout.fragment_change_phone_number_email, container, false);
         unbinder = ButterKnife.bind(this, parentView);
         presenter.attachView(this);
+        initVar();
         initView(parentView);
         setViewListener();
-        initVar();
         return parentView;
+    }
+
+    private void initVar() {
+        email = getArguments().getString(PARAM_EMAIL);
     }
 
     private void initView(View view) {
@@ -66,6 +70,7 @@ public class ChangePhoneNumberEmailFragment extends BaseDaggerFragment implement
         backButton = view.findViewById(R.id.back_button);
         emailTV = view.findViewById(R.id.email_value);
 
+        emailTV.setText(email);
         presenter.initView();
     }
 
@@ -84,16 +89,11 @@ public class ChangePhoneNumberEmailFragment extends BaseDaggerFragment implement
         getActivity().finish();
     }
 
-    private void initVar() {
-        email = getArguments().getString(PARAM_EMAIL);
-
-        emailTV.setText(email);
-    }
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+        presenter.detachView();
     }
 
     @Override

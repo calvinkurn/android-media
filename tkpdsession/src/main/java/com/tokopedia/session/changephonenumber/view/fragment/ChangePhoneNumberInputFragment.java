@@ -78,9 +78,10 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
 
         View parentView = inflater.inflate(R.layout.fragment_change_phone_number_input, container, false);
         unbinder = ButterKnife.bind(this, parentView);
+        presenter.attachView(this);
+        initVar();
         initView(parentView);
         setViewListener();
-        initVar();
 
         if (warningList != null) {
             if (warningList.size() > 0) {
@@ -89,14 +90,21 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
             }
         }
 
-        presenter.attachView(this);
         return parentView;
+    }
+
+    private void initVar() {
+        phoneNumber = getArguments().getString(PARAM_PHONE_NUMBER);
+        warningList = getArguments().getStringArrayList(PARAM_WARNING_LIST);
+        email = getArguments().getString(PARAM_EMAIL);
     }
 
     private void initView(View view) {
         oldPhoneNumber = view.findViewById(R.id.old_phone_number_value);
         newPhoneNumber = view.findViewById(R.id.new_phone_number_value);
         nextButton = view.findViewById(R.id.next_button);
+
+        oldPhoneNumber.setText(CustomPhoneNumberUtil.transform(phoneNumber));
     }
 
     private void setViewListener() {
@@ -126,14 +134,6 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
         });
     }
 
-    private void initVar() {
-        phoneNumber = getArguments().getString(PARAM_PHONE_NUMBER);
-        warningList = getArguments().getStringArrayList(PARAM_WARNING_LIST);
-        email = getArguments().getString(PARAM_EMAIL);
-
-        oldPhoneNumber.setText(CustomPhoneNumberUtil.transform(phoneNumber));
-    }
-
     private void createBottomSheetView() {
         bottomSheetInfo = new BottomSheetInfo(getContext(), warningList);
     }
@@ -156,6 +156,7 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+        presenter.detachView();
     }
 
     @Override
