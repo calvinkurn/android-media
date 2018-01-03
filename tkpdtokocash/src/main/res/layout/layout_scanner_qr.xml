@@ -12,11 +12,13 @@
         app:zxing_scanner_layout="@layout/layout_custom_qr">
     </com.journeyapps.barcodescanner.DecoratedBarcodeView>
 
-    <ToggleButton
+    <ImageView
         android:id="@+id/switch_flashlight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true" />
+        android:layout_alignParentBottom="true"
+        android:src="@drawable/ic_flash_turn_on"
+        android:layout_marginBottom="@dimen/margin_large"/>
 
 </RelativeLayout>

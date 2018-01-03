@@ -3,9 +3,13 @@ package com.tokopedia.tokocash.qrpayment.presentation.activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.view.View;
+import android.widget.ImageView;
 
 import com.journeyapps.barcodescanner.BarcodeResult;
+import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.base.domain.RequestParams;
@@ -30,6 +34,8 @@ public class CustomScannerTokoCashActivity extends BaseScannerQRActivity impleme
     private TokoCashComponent tokoCashComponent;
     private String resultScan = "";
     private TkpdProgressDialog progressDialog;
+    private ImageView torch;
+    private boolean isTorchOn;
 
     @Inject
     public InfoQrTokoCashPresenter presenter;
@@ -47,11 +53,6 @@ public class CustomScannerTokoCashActivity extends BaseScannerQRActivity impleme
     @Override
     protected int getIdDecoratedBarcodeView() {
         return R.id.zxing_barcode_scanner;
-    }
-
-    @Override
-    protected int getIdswitchTorch() {
-        return R.id.switch_flashlight;
     }
 
     @Override
@@ -79,6 +80,40 @@ public class CustomScannerTokoCashActivity extends BaseScannerQRActivity impleme
         initInjector();
         presenter.attachView(this);
         toolbar.setTitle(getString(R.string.title_scan_qr));
+
+        torch = (ImageView) findViewById(R.id.switch_flashlight);
+        torch.setVisibility(!hasFlash() ? View.GONE : View.VISIBLE);
+        decoratedBarcodeView.setTorchListener(getListener());
+        torch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isTorchOn) {
+                    isTorchOn = false;
+                    decoratedBarcodeView.setTorchOff();
+                    torch.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),
+                            R.drawable.ic_flash_turn_on));
+                } else {
+                    isTorchOn = true;
+                    decoratedBarcodeView.setTorchOn();
+                    torch.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),
+                            R.drawable.ic_flash_turn_off));
+                }
+            }
+        });
+    }
+
+    private DecoratedBarcodeView.TorchListener getListener() {
+        return new DecoratedBarcodeView.TorchListener() {
+            @Override
+            public void onTorchOn() {
+                isTorchOn = true;
+            }
+
+            @Override
+            public void onTorchOff() {
+                isTorchOn = false;
+            }
+        };
     }
 
     @Override

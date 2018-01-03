@@ -8,8 +8,6 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.TranslateAnimation;
-import android.widget.CompoundButton;
-import android.widget.ToggleButton;
 
 import com.google.zxing.ResultPoint;
 import com.journeyapps.barcodescanner.BarcodeCallback;
@@ -26,7 +24,6 @@ import java.util.List;
 public abstract class BaseScannerQRActivity extends TActivity {
 
     protected DecoratedBarcodeView decoratedBarcodeView;
-    protected ToggleButton switchTorch;
     protected View scannerLaser;
     private boolean repeatUp = true;
     private TranslateAnimation mAnimation;
@@ -37,31 +34,11 @@ public abstract class BaseScannerQRActivity extends TActivity {
         inflateView(getInflateViewId());
 
         decoratedBarcodeView = (DecoratedBarcodeView) findViewById(getIdDecoratedBarcodeView());
-        switchTorch = (ToggleButton) findViewById(getIdswitchTorch());
         scannerLaser = (View) findViewById(getIdScannerLaser());
         initView();
 
         animateScannerLaser();
         decoratedBarcodeView.decodeContinuous(getBarcodeCallback());
-        switchTorch.setVisibility(!hasFlash() ? View.GONE : View.VISIBLE);
-
-        setActionListener();
-    }
-
-    private void setActionListener() {
-        decoratedBarcodeView.setTorchListener(getListener());
-        switchTorch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if (isChecked) {
-                    switchTorch.setChecked(true);
-                    decoratedBarcodeView.setTorchOn();
-                } else {
-                    switchTorch.setChecked(false);
-                    decoratedBarcodeView.setTorchOff();
-                }
-            }
-        });
     }
 
     @Override
@@ -85,11 +62,6 @@ public abstract class BaseScannerQRActivity extends TActivity {
      * @return int to bind view DecoratedBarcodeView
      */
     protected abstract int getIdDecoratedBarcodeView();
-
-    /**
-     * @return int to bind view Torch
-     */
-    protected abstract int getIdswitchTorch();
 
     /**
      * @return int to bind view Scanner Laser
@@ -170,7 +142,7 @@ public abstract class BaseScannerQRActivity extends TActivity {
     /**
      * @return for checking when device have flash or not
      */
-    private boolean hasFlash() {
+    protected boolean hasFlash() {
         return getApplicationContext().getPackageManager()
                 .hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
     }
@@ -192,23 +164,6 @@ public abstract class BaseScannerQRActivity extends TActivity {
             @Override
             public void possibleResultPoints(List<ResultPoint> resultPoints) {
 
-            }
-        };
-    }
-
-    /**
-     * @return for listening when torch button in view on and off
-     */
-    private DecoratedBarcodeView.TorchListener getListener() {
-        return new DecoratedBarcodeView.TorchListener() {
-            @Override
-            public void onTorchOn() {
-                switchTorch.setChecked(true);
-            }
-
-            @Override
-            public void onTorchOff() {
-                switchTorch.setChecked(false);
             }
         };
     }
