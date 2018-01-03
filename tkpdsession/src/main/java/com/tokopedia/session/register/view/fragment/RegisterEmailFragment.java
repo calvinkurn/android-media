@@ -29,10 +29,12 @@ import android.widget.TextView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.CustomPhoneNumberUtil;
 import com.tokopedia.core.util.MethodChecker;
@@ -46,21 +48,17 @@ import com.tokopedia.session.register.data.model.RegisterViewModel;
 import com.tokopedia.session.register.view.adapter.AutoCompleteTextAdapter;
 import com.tokopedia.session.register.view.di.RegisterEmailDependencyInjector;
 import com.tokopedia.session.register.view.presenter.RegisterEmailPresenter;
+import com.tokopedia.session.register.view.util.RegisterUtil;
 import com.tokopedia.session.register.view.viewlistener.RegisterEmailViewListener;
 import com.tokopedia.session.register.view.viewmodel.RegisterEmailViewModel;
 import com.tokopedia.session.session.activity.Login;
 
-import net.hockeyapp.android.Tracking;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import butterknife.BindView;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
@@ -79,43 +77,30 @@ import static com.tokopedia.session.google.GoogleSignInActivity.RC_SIGN_IN_GOOGL
 public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPresenter>
         implements RegisterEmailViewListener, RegisterConstant {
 
-    @BindView(R2.id.container)
     View container;
 
-    @BindView(R2.id.redirect_reset_password)
     View redirectView;
 
-    @BindView(R2.id.register_email)
     AutoCompleteTextView email;
 
-    @BindView(R2.id.register_password)
     TextInputEditText registerPassword;
 
-    @BindView(R2.id.register_button)
     TextView registerButton;
 
-    @BindView(R2.id.register_next_phone_number)
     EditText phone;
 
-    @BindView(R2.id.wrapper_name)
     TextInputLayout wrapperName;
 
-    @BindView(R2.id.wrapper_email)
     TextInputLayout wrapperEmail;
 
-    @BindView(R2.id.wrapper_password)
     TextInputLayout wrapperPassword;
 
-    @BindView(R2.id.wrapper_phone)
     TextInputLayout wrapperPhone;
 
-    @BindView(R2.id.login_button)
     TextView loginButton;
 
-    @BindView(R2.id.name)
     EditText name;
 
-    @BindView(R2.id.register_next_detail_t_and_p)
     TextView registerNextTAndC;
 
     TkpdProgressDialog progressDialog;
@@ -172,6 +157,25 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
 
     @Override
     protected void initView(View view) {
+        container = view.findViewById(R.id.container);
+        redirectView = view.findViewById(R.id.redirect_reset_password);
+        email = view.findViewById(R.id.register_email);
+        registerPassword = view.findViewById(R.id.register_password);
+        registerButton = view.findViewById(R.id.register_button);
+        phone = view.findViewById(R.id.register_next_phone_number);
+        wrapperName = view.findViewById(R.id.wrapper_name);
+        wrapperEmail = view.findViewById(R.id.wrapper_email);
+        wrapperPassword = view.findViewById(R.id.wrapper_password);
+        wrapperPhone = view.findViewById(R.id.wrapper_phone);
+        loginButton = view.findViewById(R.id.login_button);
+        name = view.findViewById(R.id.name);
+        registerNextTAndC = view.findViewById(R.id.register_next_detail_t_and_p);
+
+        prepareView(view);
+
+    }
+
+    private void prepareView(View view) {
         final Typeface typeface = registerPassword.getTypeface();
 
         String sourceString = "Sudah punya akun? Masuk";
@@ -180,7 +184,6 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
 
         loginButton.setText(spannable, TextView.BufferType.SPANNABLE);
         showTermsAndOptionsTextView();
-
     }
 
     private Spannable getSpannable(String sourceString, String hyperlinkString) {
@@ -230,11 +233,161 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
     @Override
     public void onResume() {
         super.onResume();
-        email.addTextChangedListener(watcher(wrapperEmail));
-        registerPassword.addTextChangedListener(watcher(wrapperPassword));
-        name.addTextChangedListener(watcher(wrapperName));
-        phone.addTextChangedListener(watcher(wrapperPhone));
-        phone.addTextChangedListener(watcher(phone));
+        email.addTextChangedListener(emailWatcher(wrapperEmail));
+        registerPassword.addTextChangedListener(passwordWatcher(wrapperPassword));
+        name.addTextChangedListener(nameWatcher(wrapperName));
+        phone.addTextChangedListener(phoneWatcher(wrapperPhone));
+        phone.addTextChangedListener(phoneWatcher(phone));
+    }
+
+    private TextWatcher nameWatcher(final TextInputLayout wrapper) {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() > 0) {
+                    setWrapperError(wrapper, null);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() == 0) {
+                    setWrapperError(wrapper, getString(R.string.error_field_required));
+                    UnifyTracking.eventRegisterError(AppEventTracking.EventLabel.FULLNAME);
+                } else if (RegisterUtil.checkRegexNameLocal(name.getText().toString())) {
+                    setWrapperError(wrapper, getString(R.string.error_illegal_character));
+                    UnifyTracking.eventRegisterError(AppEventTracking.EventLabel.FULLNAME);
+                } else if (RegisterUtil.isExceedMaxCharacter(name.getText().toString())) {
+                    setWrapperError(wrapper, getString(R.string.error_max_35_character));
+                    UnifyTracking.eventRegisterError(AppEventTracking.EventLabel.FULLNAME);
+
+                }
+
+                checkIsValidForm();
+            }
+        };
+    }
+
+    private TextWatcher passwordWatcher(final TextInputLayout wrapper) {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() > 0) {
+                    setWrapperError(wrapper, null);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() == 0) {
+                    setWrapperError(wrapper, getString(R.string.error_field_required));
+                    UnifyTracking.eventRegisterError(AppEventTracking.EventLabel.PASSWORD);
+                } else if (registerPassword.getText().toString().length() < PASSWORD_MINIMUM_LENGTH) {
+                    setWrapperError(wrapper, getString(R.string.error_invalid_password));
+                    UnifyTracking.eventRegisterError(AppEventTracking.EventLabel.PASSWORD);
+
+                }
+
+                checkIsValidForm();
+            }
+        };
+    }
+
+    private TextWatcher emailWatcher(final TextInputLayout wrapper) {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() > 0) {
+                    setWrapperError(wrapper, null);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() == 0) {
+                    setWrapperError(wrapper, getString(R.string.error_field_required));
+                    UnifyTracking.eventRegisterError(AppEventTracking.EventLabel.EMAIL);
+                } else if (!CommonUtils.EmailValidation(email.getText().toString())) {
+                    setWrapperError(wrapper, getString(R.string.error_invalid_email));
+                    UnifyTracking.eventRegisterError(AppEventTracking.EventLabel.EMAIL);
+
+                }
+
+                checkIsValidForm();
+            }
+        };
+    }
+
+    private TextWatcher phoneWatcher(final EditText editText) {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String phone = CustomPhoneNumberUtil.transform(s.toString());
+                if (s.toString().length() != phone.length()) {
+                    editText.removeTextChangedListener(this);
+                    editText.setText(phone);
+                    editText.setSelection(phone.length());
+                    editText.addTextChangedListener(this);
+                }
+
+                checkIsValidForm();
+            }
+        };
+    }
+
+
+    private TextWatcher phoneWatcher(final TextInputLayout wrapper) {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() > 0) {
+                    setWrapperError(wrapper, null);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() == 0) {
+                    setWrapperError(wrapper, getString(R.string.error_field_required));
+                    UnifyTracking.eventRegisterError(AppEventTracking.EventLabel.HANDPHONE);
+                } else if (!RegisterUtil.isValidPhoneNumber(
+                        phone.getText().toString().replace("-", ""))) {
+                    setWrapperError(wrapper, getString(R.string.error_invalid_phone_number));
+                    UnifyTracking.eventRegisterError(AppEventTracking.EventLabel.HANDPHONE);
+
+                }
+
+                checkIsValidForm();
+            }
+        };
     }
 
     @NeedsPermission(Manifest.permission.GET_ACCOUNTS)
@@ -335,50 +488,28 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
 
     }
 
-    private TextWatcher watcher(final EditText editText) {
-        return new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String phone = CustomPhoneNumberUtil.transform(s.toString());
-                if (s.toString().length() != phone.length()) {
-                    editText.removeTextChangedListener(this);
-                    editText.setText(phone);
-                    editText.setSelection(phone.length());
-                    editText.addTextChangedListener(this);
-                }
-            }
-        };
+    private void checkIsValidForm() {
+        if (presenter.isCanRegister()) {
+            setRegisterButtonEnabled();
+        } else {
+            setRegisterButtonDisabled();
+        }
     }
 
-    private TextWatcher watcher(final TextInputLayout wrapper) {
-        return new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+    private void setRegisterButtonEnabled() {
+        MethodChecker.setBackground(registerButton, MethodChecker.getDrawable(MainApplication
+                .getAppContext(), R.drawable.green_button_rounded_unify));
+        registerButton.setTextColor(MethodChecker.getColor(MainApplication.getAppContext(),
+                R.color.white));
+        registerButton.setEnabled(true);
+    }
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 0) {
-                    setWrapperError(wrapper, null);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() == 0) {
-                    setWrapperError(wrapper, getString(R.string.error_field_required));
-                }
-            }
-        };
+    private void setRegisterButtonDisabled() {
+        MethodChecker.setBackground(registerButton, MethodChecker.getDrawable(MainApplication
+                .getAppContext(), R.drawable.grey_button_rounded));
+        registerButton.setTextColor(MethodChecker.getColor(MainApplication.getAppContext(),
+                R.color.grey_500));
+        registerButton.setEnabled(false);
     }
 
     private void setWrapperError(TextInputLayout wrapper, String s) {
@@ -553,7 +684,7 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
         return result;
     }
 
-    public void showInfo(){
+    public void showInfo() {
         dismissLoadingProgress();
         TextView view = (TextView) redirectView.findViewById(R.id.body);
         final String emailString = email.getText().toString();
@@ -561,8 +692,8 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
         String part = getString(R.string.account_registered_body_part);
         Spannable spannable = getSpannable(text, part);
         spannable.setSpan(new StyleSpan(Typeface.BOLD), text.indexOf(emailString)
-                                                        , text.indexOf(emailString)+emailString.length()
-                                                        , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                , text.indexOf(emailString) + emailString.length()
+                , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         view.setText(spannable, TextView.BufferType.SPANNABLE);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -620,7 +751,7 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
                 if (data != null) {
                     GoogleSignInAccount googleSignInAccount = data.getParcelableExtra(KEY_GOOGLE_ACCOUNT);
                     email.setText(googleSignInAccount.getEmail());
-                    if(googleSignInAccount.getDisplayName() != null
+                    if (googleSignInAccount.getDisplayName() != null
                             && !googleSignInAccount.getDisplayName().equals(googleSignInAccount.getEmail()))
                         name.setText(googleSignInAccount.getDisplayName());
                 }
