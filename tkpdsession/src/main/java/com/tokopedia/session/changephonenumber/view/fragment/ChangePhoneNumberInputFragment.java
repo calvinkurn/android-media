@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.gson.reflect.TypeToken;
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.database.CacheUtil;
@@ -61,6 +62,7 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
     private Unbinder unbinder;
     private BottomSheetInfo bottomSheetInfo;
     private TextWatcher phoneNumberTextWatcher;
+    TkpdProgressDialog progressDialog;
 
     public static ChangePhoneNumberInputFragment newInstance(String phoneNumber, String email, ArrayList<String> warningList) {
         ChangePhoneNumberInputFragment fragment = new ChangePhoneNumberInputFragment();
@@ -197,6 +199,22 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
         newPhoneNumber.setText(newNumber);
         newPhoneNumber.setSelection(newNumber.length());
         newPhoneNumber.addTextChangedListener(phoneNumberTextWatcher);
+    }
+
+    @Override
+    public void showLoading() {
+        if (progressDialog == null)
+            progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog
+                    .NORMAL_PROGRESS);
+
+        if (!progressDialog.isProgress())
+            progressDialog.showDialog();
+    }
+
+    @Override
+    public void dismissLoading() {
+        if (progressDialog != null)
+            progressDialog.dismiss();
     }
 
     private void goToVerification() {

@@ -17,6 +17,8 @@ import com.tokopedia.profilecompletion.data.mapper.EditUserInfoMapper;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepository;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
+import com.tokopedia.session.changephonenumber.data.source.CloudValidateNumberSource;
+import com.tokopedia.session.changephonenumber.domain.interactor.ValidateNumberUseCase;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberEmailVerificationFragmentListener;
 import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberEmailVerificationPresenter;
 import com.tokopedia.session.login.domain.mapper.MakeLoginMapper;
@@ -114,8 +116,8 @@ SessionModule {
 
     @SessionScope
     @Provides
-    ChangePhoneNumberInputFragmentListener.Presenter provideChangePhoneNumberInputPresenter() {
-        return new ChangePhoneNumberInputPresenter();
+    ChangePhoneNumberInputFragmentListener.Presenter provideChangePhoneNumberInputPresenter(ValidateNumberUseCase validateNumberUseCase) {
+        return new ChangePhoneNumberInputPresenter(validateNumberUseCase);
     }
 
 
@@ -128,8 +130,9 @@ SessionModule {
     @SessionScope
     @Provides
     ChangePhoneNumberRepository provideChangePhoneNumberRepository(CloudGetWarningSource cloudGetWarningSource,
-                                                                   CloudSendEmailSource cloudSendEmailSource) {
-        return new ChangePhoneNumberRepositoryImpl(cloudGetWarningSource, cloudSendEmailSource);
+                                                                   CloudSendEmailSource cloudSendEmailSource,
+                                                                   CloudValidateNumberSource cloudValidateNumberSource) {
+        return new ChangePhoneNumberRepositoryImpl(cloudGetWarningSource, cloudSendEmailSource, cloudValidateNumberSource);
     }
 
     @SessionScope

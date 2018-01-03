@@ -739,6 +739,7 @@ public class TkpdBaseURL {
         public class ChangeMSISDN {
             public static final String GET_WARNING = "/api/v1/change-msisdn/get-warning";
             public static final String SEND_EMAIL = "/api/v1/change-msisdn/update";
+            public static final String VALIDATE = "/api/v1/change-msisdn/validate";
         }
     }
 

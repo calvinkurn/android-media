@@ -153,4 +153,8 @@ public interface AccountsApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.Accounts.ChangeMSISDN.SEND_EMAIL)
     Observable<Response<TkpdResponse>> sendEmail(@FieldMap TKPDMapParam<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Accounts.ChangeMSISDN.VALIDATE)
+    Observable<Response<TkpdResponse>> validateNumber(@FieldMap TKPDMapParam<String, Object> params);
 }

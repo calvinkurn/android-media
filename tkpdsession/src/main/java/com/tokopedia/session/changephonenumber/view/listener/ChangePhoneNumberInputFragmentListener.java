@@ -16,11 +16,19 @@ public interface ChangePhoneNumberInputFragmentListener {
         void disableNextButton();
 
         void correctPhoneNumber(String newNumber);
+
+        void showLoading();
+
+        void dismissLoading();
     }
 
     public interface Presenter extends CustomerPresenter<View> {
         void initView();
 
         void onNewNumberTextChanged(Editable editable);
+
+        void validateNumber(String newPhoneNumber);
+
+        void submitNumber(String newPhoneNumber);
     }
 }
