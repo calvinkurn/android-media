@@ -12,7 +12,7 @@ import java.lang.annotation.RetentionPolicy;
 @IntDef({FlightBookingPassenger.ADULT, FlightBookingPassenger.CHILDREN, FlightBookingPassenger.INFANT})
 @Retention(RetentionPolicy.SOURCE)
 public @interface FlightBookingPassenger {
-    int ADULT = 1;
-    int CHILDREN = 2;
-    int INFANT = 3;
+    int ADULT = 0;
+    int CHILDREN = 1;
+    int INFANT = 2;
 }
