@@ -572,6 +572,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onRefresh() {
         presenter.resetPageFeed();
+        if (SessionHandler.isV4Login(getContext()) && feedLoadMoreTriggerListener != null) {
+            feedLoadMoreTriggerListener.resetState();
+            recyclerView.addOnScrollListener(feedLoadMoreTriggerListener);
+        }
         presenter.getHomeData();
         presenter.getHeaderData(false);
     }
