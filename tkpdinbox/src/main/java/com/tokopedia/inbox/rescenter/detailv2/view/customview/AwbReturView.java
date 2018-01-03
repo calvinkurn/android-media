@@ -80,15 +80,11 @@ public class AwbReturView extends BaseView<AwbData, DetailResCenterFragmentView>
 
     private String generateInformationText(AwbData data) {
         return getContext().getString(R.string.template_awb_additional_text,
-                formatDate(data.getAwbDateTimestamp()));
+                data.getAwbDateTimestamp());
     }
 
     private String generateShippingName(AwbData data) {
         return data.getShipmentName() + " - " + data.getShipmentRef();
-    }
-
-    private String formatDate(String awbDate) {
-        return DateFormatUtils.formatDateForResoChatV2(awbDate);
     }
 
     private class AwbViewOnClickListener implements OnClickListener {

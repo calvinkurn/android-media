@@ -18,18 +18,16 @@ import java.util.List;
 public class RechargeViewPagerAdapter extends FragmentStatePagerAdapter {
     private List<Category> categoryList;
     private int currentPosition = -1;
-    private boolean useCache;
 
-    public RechargeViewPagerAdapter(FragmentManager fm, List<Category> categoryList, boolean useCache) {
+    public RechargeViewPagerAdapter(FragmentManager fm, List<Category> categoryList) {
         super(fm);
-        this.useCache = useCache;
         this.categoryList = categoryList;
     }
 
     @Override
     public Fragment getItem(int position) {
         Category category = categoryList.get(position);
-        return WidgetFactory.buildFragment(category, position, useCache);
+        return WidgetFactory.buildFragment(category, position);
     }
 
     @Override

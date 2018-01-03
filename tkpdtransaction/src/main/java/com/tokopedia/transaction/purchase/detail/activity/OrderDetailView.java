@@ -51,7 +51,7 @@ public interface OrderDetailView {
 
     void hideMainViewLoadingPage();
 
-    void onViewComplaint(String resoId);
+    void onViewComplaint(OrderDetailData resoId);
 
     void showErrorSnackbar(String errorMessage);
 
