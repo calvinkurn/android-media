@@ -90,7 +90,11 @@ public class HeaderHomeView extends BaseCustomView {
         tvBalanceTokoPoint = view.findViewById(R.id.tv_balance_tokopoint);
         ivLogoTokoPoint = view.findViewById(R.id.iv_logo_tokopoint);
 
-        if (headerViewModel.getHomeHeaderWalletActionData() != null) renderTokocashLayoutListener();
+        if (headerViewModel.getHomeHeaderWalletActionData() != null) {
+            renderTokocashLayoutListener();
+            renderVisibilityTitleTokoCashWithTokoPoint(
+                    headerViewModel.getHomeHeaderWalletActionData().isVisibleActionButton());
+        }
         renderTokoPointLayoutListener();
     }
 
@@ -114,10 +118,20 @@ public class HeaderHomeView extends BaseCustomView {
         });
     }
 
+    private void renderVisibilityTitleTokoCashWithTokoPoint(boolean isVisibleButtonAction) {
+        if (isVisibleButtonAction) {
+            tvTitleTokocash.setVisibility(GONE);
+        } else {
+            tvTitleTokocash.setVisibility(VISIBLE);
+        }
+
+    }
+
     private void renderTokocashLayoutListener() {
         final HomeHeaderWalletAction homeHeaderWalletAction =
                 headerViewModel.getHomeHeaderWalletActionData();
 
+        tvTitleTokocash.setVisibility(GONE);
         tvTitleTokocash.setText(homeHeaderWalletAction.getLabelTitle());
         tvActionTokocash.setText(homeHeaderWalletAction.getLabelActionButton());
         tvActionTokocash.setVisibility(VISIBLE);
@@ -137,10 +151,8 @@ public class HeaderHomeView extends BaseCustomView {
 
             if (homeHeaderWalletAction.isVisibleActionButton()) {
                 tvActionTokocash.setVisibility(VISIBLE);
-                tvTitleTokocash.setVisibility(GONE);
             } else {
                 tvActionTokocash.setVisibility(GONE);
-                tvTitleTokocash.setVisibility(VISIBLE);
             }
 
             tvTitleTokocash.setOnClickListener(getOnClickTokocashBalance(homeHeaderWalletAction));
