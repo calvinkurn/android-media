@@ -32,7 +32,7 @@ public class ActivityCardViewModel extends ProductCardViewModel {
                                  String actionText,
                                  String feedId,
                                  int totalProduct,
-                                 String cursor, int positionFeedCard, int page) {
+                                 String cursor, int page) {
         this.listProduct = listProduct;
         this.productCardHeaderViewModel = productCardHeaderViewModel;
         this.shareUrl = shareUrl;
@@ -41,7 +41,6 @@ public class ActivityCardViewModel extends ProductCardViewModel {
         this.feedId = feedId;
         this.totalProduct = totalProduct;
         this.cursor = cursor;
-        this.positionFeedCard = positionFeedCard;
         this.page = page;
     }
 

@@ -241,13 +241,16 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                         }
                         break;
                     case TYPE_NEW_PRODUCT:
-                        ActivityCardViewModel model = convertToActivityViewModel(domain, positionFeedProductCard);
+                        ActivityCardViewModel model = convertToActivityViewModel(domain);
                         if (model.getListProduct() != null && !model.getListProduct().isEmpty()) {
+                            positionFeedProductCard++;
+
                             String eventLabel = String.format("%s", "product upload");
                             model.setEventLabel(eventLabel);
+                            model.setPositionFeedCard(positionFeedProductCard);
+
                             listFeedView.add(model);
 
-                            positionFeedProductCard++;
                             FeedTracking.eventImpressionFeedUploadedProduct(
                                     model.getListProductAsObjectDataLayer(eventLabel, SessionHandler.getLoginID(viewListener.getActivity()), positionFeedProductCard),
                                     eventLabel
@@ -267,16 +270,19 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                             listFeedView.add(toppicks);
                         break;
                     case TYPE_INSPIRATION:
-                        InspirationViewModel inspirationViewModel = convertToInspirationViewModel(domain, positionFeedProductCard);
+                        InspirationViewModel inspirationViewModel = convertToInspirationViewModel(domain);
                         if (inspirationViewModel != null
                                 && inspirationViewModel.getListProduct() != null
                                 && !inspirationViewModel.getListProduct().isEmpty()) {
 
+                            positionFeedProductCard++;
                             String eventLabel = String.format("%s - %s", "inspirasi", inspirationViewModel.getSource());
                             inspirationViewModel.setEventLabel(eventLabel);
+                            inspirationViewModel.setPositionFeedCard(positionFeedProductCard);
+
                             listFeedView.add(inspirationViewModel);
 
-                            positionFeedProductCard++;
+
                             FeedTracking.eventImpressionFeedInspiration(
                                     inspirationViewModel.getListProductAsObjectDataLayer(eventLabel, SessionHandler.getLoginID(viewListener.getActivity()), positionFeedProductCard),
                                     eventLabel
@@ -491,7 +497,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         );
     }
 
-    private InspirationViewModel convertToInspirationViewModel(DataFeedDomain domain, int positionFeedCard) {
+    private InspirationViewModel convertToInspirationViewModel(DataFeedDomain domain) {
         if (domain.getContent() != null
                 && !domain.getContent().getInspirationDomains().isEmpty()) {
             InspirationViewModel viewModel = new InspirationViewModel();
@@ -504,7 +510,6 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
             viewModel.setSource(
                     domain.getContent().getInspirationDomains().get(0).getSource()
             );
-            viewModel.setPositionFeedCard(positionFeedCard);
             return viewModel;
         } else {
             return null;
@@ -532,7 +537,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 recommendationDomain.getPriceInt());
     }
 
-    protected ActivityCardViewModel convertToActivityViewModel(DataFeedDomain domain, int positionFeedCard) {
+    protected ActivityCardViewModel convertToActivityViewModel(DataFeedDomain domain) {
         return new ActivityCardViewModel(
                 convertToProductCardHeaderViewModel(domain),
                 convertToProductListViewModel(domain),
@@ -542,7 +547,6 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 domain.getId(),
                 domain.getContent().getTotalProduct(),
                 domain.getCursor(),
-                positionFeedCard,
                 page);
     }
 
