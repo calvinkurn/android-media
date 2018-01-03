@@ -247,7 +247,6 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         loadInitialData();
     }
 
-    @Override
     public void loadInitialData() {
         actionFetchFlightSearchData();
     }
@@ -283,11 +282,6 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         if (onFlightSearchFragmentListener != null) {
             onFlightSearchFragmentListener.selectFlight(flightSearchViewModel.getId());
         }
-    }
-
-    @Override
-    protected void setInitialActionVar() {
-
     }
 
     private void actionFetchFlightSearchData() {

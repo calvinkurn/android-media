@@ -38,7 +38,8 @@ public class FlightDetailFacilityFragment extends BaseListFragment<FlightDetailR
     }
 
     @Override
-    protected void setInitialActionVar() {
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         getAdapter().addData(flightDetailViewModel.getRouteList());
     }
 

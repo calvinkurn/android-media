@@ -32,6 +32,15 @@ public abstract class EndlessRecyclerviewListener extends RecyclerView.OnScrollL
         visibleThreshold = visibleThreshold * layoutManager.getSpanCount();
     }
 
+    public EndlessRecyclerviewListener(RecyclerView.LayoutManager layoutManager) {
+        this.layoutManager = layoutManager;
+        if (layoutManager instanceof GridLayoutManager) {
+            visibleThreshold = visibleThreshold * ((GridLayoutManager)layoutManager).getSpanCount();
+        } else if (layoutManager instanceof StaggeredGridLayoutManager){
+            visibleThreshold = visibleThreshold * ((StaggeredGridLayoutManager)layoutManager).getSpanCount();
+        }
+    }
+
     public int getLastVisibleItem(int[] lastVisibleItemPositions) {
         int maxSize = 0;
         for (int i = 0; i < lastVisibleItemPositions.length; i++) {
