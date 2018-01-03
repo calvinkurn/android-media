@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.deeplink.activity;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
@@ -8,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v4.app.TaskStackBuilder;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,6 +20,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.discovery.catalog.listener.ICatalogActionFragment;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.product.intentservice.ProductInfoIntentService;
@@ -28,13 +31,16 @@ import com.tokopedia.core.product.listener.ReportFragmentListener;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.InboxRouter;
+import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.share.fragment.ProductShareFragment;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
+import com.tokopedia.inbox.inboxtalk.activity.InboxTalkActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenter;
@@ -139,6 +145,24 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.WebViewToolbarText);
         setSupportActionBar(toolbar);
         invalidateOptionsMenu();
+    }
+
+    @Override
+    public void goToActivity(Class<? extends Activity> activityClass, Bundle bundle) {
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this);
+
+        if (getApplicationContext() instanceof TkpdCoreRouter) {
+            taskStackBuilder.addNextIntent(
+                    ((TkpdCoreRouter) getApplicationContext()).getHomeIntent(this)
+            );
+        }
+
+        taskStackBuilder.addNextIntent(
+                new Intent(this, activityClass).putExtras(bundle)
+        );
+
+        taskStackBuilder.startActivities();
+        finish();
     }
 
     @Override

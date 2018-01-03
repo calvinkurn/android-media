@@ -11,8 +11,10 @@ import android.util.Log;
 
 import com.appsflyer.AppsFlyerConversionListener;
 import com.appsflyer.AppsFlyerLib;
+import com.google.gson.Gson;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.URLParser;
+import com.tkpdfeed.feeds.FeedQuery;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -33,6 +35,9 @@ import com.tokopedia.core.session.model.AccountsModel;
 import com.tokopedia.core.session.model.AccountsParameter;
 import com.tokopedia.core.session.model.InfoModel;
 import com.tokopedia.core.session.model.SecurityModel;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.shopinfo.facades.GetShopInfoRetrofit;
+import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.SessionHandler;
@@ -68,6 +73,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private final Activity context;
     private final DeepLinkView viewListener;
     SignInInteractor interactor;
+    private GetShopInfoRetrofit getShopInfoRetrofit;
 
     public DeepLinkPresenterImpl(DeepLinkActivity activity) {
         this.viewListener = activity;
@@ -358,9 +364,37 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         return encodedUrl;
     }
 
-    private void openShopInfo(List<String> linkSegment, Uri uriData) {
-        Fragment fragment = FragmentShopPreview.createInstanceForDeeplink(linkSegment.get(0), uriData.toString());
-        viewListener.inflateFragment(fragment, "SHOP_INFO");
+    private void openShopInfo(final List<String> linkSegment, final Uri uriData) {
+        getShopInfoRetrofit = new GetShopInfoRetrofit(context, "", linkSegment.get(0));
+        getShopInfoRetrofit.setGetShopInfoListener(new GetShopInfoRetrofit.OnGetShopInfoListener() {
+            @Override
+            public void onSuccess(String result) {
+                try {
+                    ShopModel shopModel = new Gson().fromJson(result, com.tokopedia.core.shopinfo.models.shopmodel.ShopModel.class);
+                    if (shopModel.info != null) {
+                        viewListener.goToActivity(
+                            ShopInfoActivity.class,
+                            ShopInfoActivity.createBundle(shopModel.info.getShopId(), linkSegment.get(0))
+                        );
+                    } else {
+                        prepareOpenWebView(uriData);
+                    }
+                } catch (Exception e) {
+                    prepareOpenWebView(uriData);
+                }
+            }
+
+            @Override
+            public void onError(String message) {
+                prepareOpenWebView(uriData);
+            }
+
+            @Override
+            public void onFailure() {
+                prepareOpenWebView(uriData);
+            }
+        });
+        getShopInfoRetrofit.getShopInfo();
     }
 
     private void openDetailProduct(List<String> linkSegment, Uri uriData) {

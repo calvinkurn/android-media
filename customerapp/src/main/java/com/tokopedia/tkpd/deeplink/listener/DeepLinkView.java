@@ -1,6 +1,8 @@
 package com.tokopedia.tkpd.deeplink.listener;
 
+import android.app.Activity;
 import android.app.Fragment;
+import android.os.Bundle;
 
 /**
  * Created by Angga.Prasetiyo on 14/12/2015.
@@ -16,4 +18,6 @@ public interface DeepLinkView {
     void hideActionBar();
 
     void actionChangeToolbarWithBackToNative();
+
+    void goToActivity(Class<? extends Activity> activityClass, Bundle bundle);
 }
