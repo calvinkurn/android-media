@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -17,10 +18,11 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.tokopedia.core.gcm.BuildAndShowNotification;
 import com.tokopedia.core.R;
+import com.tokopedia.core.gcm.BuildAndShowNotification;
 
 import java.io.File;
+import java.io.IOException;
 
 
 public class ImageHandler extends com.tokopedia.abstraction.utils.image.ImageHandler {
@@ -114,7 +116,7 @@ public class ImageHandler extends com.tokopedia.abstraction.utils.image.ImageHan
     }
 
     public static Bitmap getRoundedCornerBitmap(Bitmap bitmap, int pixels) {
-        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Config.ARGB_8888);
+        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
 
         final int color = 0xff424242;
@@ -130,7 +132,7 @@ public class ImageHandler extends com.tokopedia.abstraction.utils.image.ImageHan
         canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
         // Fill in bottom corners
 
-        paint.setXfermode(new PorterDuffXfermode(Mode.SRC_IN));
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
         canvas.drawBitmap(bitmap, rect, rect, paint);
 
         return output;
