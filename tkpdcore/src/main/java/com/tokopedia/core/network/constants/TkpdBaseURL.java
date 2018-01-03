@@ -61,6 +61,7 @@ public class TkpdBaseURL {
 
     public static String WALLET_DOMAIN = "https://wallet.tokopedia.id/";
     public static String TOKOPOINT_API_DOMAIN = "https://api.tokopedia.com/tokoplus/";
+    public static String PROMO_API_DOMAIN = "https://www.tokopedia.com/promo/";
 
     public static class Product {
         public static final String V4_PRODUCT = "v4/product/";
@@ -977,5 +978,10 @@ public class TkpdBaseURL {
     public class Purchase {
         public static final String PATH_ORDER_DETAIL = "/v4/order/detail";
         public static final String PATH_ORDER_HISTORY = "/v4/order/history";
+    }
+
+    public class Promo {
+        public static final String PATH_MENU_INDEX = "promo/wp-json/wp/v2/hmenu";
+        public static final String PATH_PROMO_LIST = "promo/wp-json/wp/v2/posts";
     }
 }
