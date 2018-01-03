@@ -37,29 +37,21 @@ public class GetHomeFeedsSubscriber extends Subscriber<FeedResult> {
 
     @Override
     public void onError(Throwable e) {
-        viewListener.shouldLoadTopAds(false);
         viewListener.onShowRetryGetFeed();
-        viewListener.hideTopAdsAdapterLoading();
     }
 
     @Override
     public void onNext(FeedResult feedResult) {
         ArrayList<Visitable> list = convertToViewModel(feedResult.getFeedDomain());
 
-        if (list.size() == 0) {
-            viewListener.onShowAddFeedMore();
-            viewListener.hideTopAdsAdapterLoading();
+        if (feedResult.isHasNext()) {
+            viewListener.updateCursor(getCurrentCursor(feedResult));
+        }
+
+        viewListener.onSuccessGetFeed(list);
+
+        if (!feedResult.isHasNext()) {
             viewListener.unsetEndlessScroll();
-        } else {
-            if (feedResult.isHasNext()) {
-                viewListener.updateCursor(getCurrentCursor(feedResult));
-                viewListener.onSuccessGetFeed(list);
-            } else {
-                viewListener.onSuccessGetFeed(list);
-                viewListener.onShowAddFeedMore();
-                viewListener.hideTopAdsAdapterLoading();
-                viewListener.unsetEndlessScroll();
-            }
         }
     }
 

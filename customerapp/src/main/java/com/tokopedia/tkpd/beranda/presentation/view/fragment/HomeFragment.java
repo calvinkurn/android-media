@@ -238,6 +238,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 if (isAllowLoadMore()) {
+                    recyclerView.removeOnScrollListener(feedLoadMoreTriggerListener);
                     adapter.showLoading();
                     presenter.fetchNextPageFeed();
                 }
@@ -774,6 +775,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         int posStart = adapter.getItemCount();
         adapter.addItems(visitables);
         adapter.notifyItemRangeInserted(posStart, visitables.size());
+        recyclerView.addOnScrollListener(feedLoadMoreTriggerListener);
     }
 
     @Override
