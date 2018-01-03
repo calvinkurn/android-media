@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -41,6 +42,7 @@ public class KolFollowingListFragment extends BaseDaggerFragment
     private KolFollowingAdapter adapter;
     private LinearLayoutManager layoutManager;
     private View emptyState;
+    private Button emptyButton;
 
     @Inject
     KolFollowingListPresenter presenter;
@@ -81,6 +83,7 @@ public class KolFollowingListFragment extends BaseDaggerFragment
         rvItem = (RecyclerView) parentView.findViewById(R.id.rv_item);
         progressBar = (ProgressBar) parentView.findViewById(R.id.progress_bar);
         emptyState = parentView.findViewById(R.id.view_empty_state);
+        emptyButton = (Button) parentView.findViewById(R.id.btn_empty);
         presenter.attachView(this);
         return parentView;
     }
@@ -89,6 +92,7 @@ public class KolFollowingListFragment extends BaseDaggerFragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initView();
+        initViewListener();
     }
 
     private void initView() {
@@ -96,6 +100,15 @@ public class KolFollowingListFragment extends BaseDaggerFragment
         emptyState.setVisibility(View.GONE);
         showLoading();
         presenter.getKolFollowingList(userId);
+    }
+
+    private void initViewListener() {
+        emptyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
     }
 
     @Override
