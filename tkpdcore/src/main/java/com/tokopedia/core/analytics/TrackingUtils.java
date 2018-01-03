@@ -651,7 +651,6 @@ public class TrackingUtils extends TrackingConfig {
     }
 
     public static void eventTrackingEnhancedEcommerce(Map<String, Object> trackingData) {
-        Log.d("NISNISTRACK", trackingData.toString());
         getGTMEngine().eventTrackingEnhancedEcommerce(trackingData);
     }
 }

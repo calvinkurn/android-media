@@ -311,11 +311,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
             KolViewModel kolViewModel = (KolViewModel) adapter.getlist().get(item.originalPos());
             List<KolTracking.Promotion> list = new ArrayList<>();
             list.add(new KolTracking.Promotion(
-                    kolViewModel.getUserId(),
+                    kolViewModel.getId(),
                     KolTracking.Promotion.createContentName(
                             kolViewModel.getTagsType(),
-                            kolViewModel.isFollowed(),
-                            kolViewModel.isTemporarilyFollowed())
+                            kolViewModel.getCardType())
                     ,
                     kolViewModel.getName().equals("") ? "-" : kolViewModel.getName(),
                     position,

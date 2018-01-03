@@ -339,7 +339,8 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 false,
                 kolPostDomain.getTagsType(),
                 kolPostDomain.getContentLink(),
-                kolPostDomain.getUserId()
+                kolPostDomain.getUserId(),
+                kolPostDomain.getCardType()
         );
     }
 

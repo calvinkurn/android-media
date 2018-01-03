@@ -140,18 +140,14 @@ public class KolTracking {
             return userId % 50;
         }
 
-        public static String createContentName(String contentName, boolean followed, boolean temporarilyFollowed) {
-            return CONTENT_FEED + " - "
-                    + getKolType(followed, temporarilyFollowed) + " - "
-                    + contentName;
-        }
-
-        private static String getKolType(boolean followed, boolean temporarilyFollowed) {
-            return (followed && !temporarilyFollowed) ? FOLLOWED_KOL_POST : KOL_POST;
-        }
-
         public static String createContentNameRecommendation() {
             return CONTENT_FEED + " - " + KOL_RECOMMENDATION + " - " + PROFILE;
+        }
+
+        public static String createContentName(String tagsType, String cardType) {
+            return CONTENT_FEED + " - "
+                    + cardType + " - "
+                    + tagsType;
         }
     }
 

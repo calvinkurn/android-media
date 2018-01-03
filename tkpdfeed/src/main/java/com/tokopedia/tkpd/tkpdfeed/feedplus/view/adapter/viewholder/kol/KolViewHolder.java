@@ -221,11 +221,10 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
                 UnifyTracking.eventKolContentCtaClick(element.isFollowed(), element.getTagsType());
                 List<KolTracking.Promotion> list = new ArrayList<>();
                 list.add(new KolTracking.Promotion(
-                        element.getUserId(),
+                        element.getId(),
                         KolTracking.Promotion.createContentName(
                                 element.getTagsType(),
-                                element.isFollowed(),
-                                element.isTemporarilyFollowed())
+                                element.getCardType())
                         ,
                         element.getName().equals("")? "-" : element.getName(),
                         getAdapterPosition(),
