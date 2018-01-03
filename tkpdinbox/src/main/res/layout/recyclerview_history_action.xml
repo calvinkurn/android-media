@@ -2,11 +2,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:context="http://schemas.android.com/tools"
     android:paddingLeft="@dimen/padding_small"
     android:paddingRight="@dimen/padding_small"
     android:background="@color/white">
 
     <TextView
+        android:layout_marginTop="@dimen/margin_vs"
         android:id="@+id/tv_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -28,7 +30,7 @@
         android:gravity="center_vertical"
         android:maxLines="2"
         android:ellipsize="end"
-        android:text="Produk telah dikirim kembali oleh pembeli. Menunggu konfirmasi Penjual."
+        context:text="Produk telah dikirim kembali oleh pembeli. Menunggu konfirmasi Penjual."
         android:textColor="@color/label_text_color"
         android:textSize="@dimen/fontvs"
         />

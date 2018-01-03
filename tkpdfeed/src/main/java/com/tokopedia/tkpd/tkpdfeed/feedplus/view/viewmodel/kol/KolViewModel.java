@@ -205,5 +205,9 @@ public class KolViewModel implements Visitable<FeedPlusTypeFactory> {
     public int getUserId() {
         return userId;
     }
+
+    public String getTagsType() {
+        return tagsType;
+    }
 }
 

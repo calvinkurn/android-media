@@ -72,6 +72,7 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
         super.setupLayout(savedInstanceState);
         swipeToRefresh = (SwipeToRefresh) findViewById(R.id.swipe_refresh_layout);
         progressDialog = new ProgressDialog(this);
+        progressDialog.setCancelable(false);
         progressDialog.setMessage(getString(R.string.title_loading));
         snackbarRetry = getSnackbarWithAction();
         tabLayout.addTab(tabLayout.newTab().setText(R.string.label_top_ads_impression));
@@ -207,7 +208,9 @@ public abstract class TopAdsStatisticActivity extends TopAdsDatePickerActivity<T
 
     @Override
     public void dismissLoading() {
-        progressDialog.dismiss();
+        if (!isFinishing() && progressDialog != null) {
+            progressDialog.dismiss();
+        }
         swipeToRefresh.setRefreshing(false);
     }
 

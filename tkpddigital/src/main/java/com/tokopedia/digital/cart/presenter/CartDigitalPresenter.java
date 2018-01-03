@@ -58,9 +58,9 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
     }
 
     @Override
-    public void processGetCartData() {
+    public void processGetCartData(String digitalCategoryId) {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put("category_id", view.getDigitalCategoryId());
+        param.put("category_id", digitalCategoryId);
         view.renderLoadingGetCartInfo();
         cartDigitalInteractor.getCartInfoData(
                 view.getGeneratedAuthParamNetwork(param),
@@ -69,16 +69,15 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
     }
 
     @Override
-    public void processGetCartDataAfterCheckout() {
+    public void processGetCartDataAfterCheckout(String digitalCategoryId) {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put("category_id", view.getDigitalCategoryId());
+        param.put("category_id", digitalCategoryId);
         view.showInitialProgressLoading();
         cartDigitalInteractor.getCartInfoData(
                 view.getGeneratedAuthParamNetwork(param),
                 getSubscriberCartInfoAfterCheckout()
         );
     }
-
 
     @Override
     public void processAddToCart() {
@@ -88,12 +87,11 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
         );
     }
 
-
     @Override
-    public void processCheckVoucher() {
+    public void processCheckVoucher(String voucherCode, String digitalCategoryId) {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put("voucher_code", view.getVoucherCode());
-        param.put("category_id", view.getDigitalCategoryId());
+        param.put("voucher_code", voucherCode);
+        param.put("category_id", digitalCategoryId);
         view.showProgressLoading();
         cartDigitalInteractor.checkVoucher(
                 view.getGeneratedAuthParamNetwork(param), getSubscriberCheckVoucher()
@@ -127,9 +125,8 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
         );
     }
 
-
     @Override
-    public void processPatchOtpCart() {
+    public void processPatchOtpCart(String digitalCategoryId) {
         CheckoutDataParameter checkoutDataParameter = view.getCheckoutData();
         RequestBodyOtpSuccess requestBodyOtpSuccess = new RequestBodyOtpSuccess();
         requestBodyOtpSuccess.setType("cart");
@@ -142,14 +139,13 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
         requestBodyOtpSuccess.setAttributes(attributes);
 
         TKPDMapParam<String, String> paramGetCart = new TKPDMapParam<>();
-        paramGetCart.put("category_id", view.getDigitalCategoryId());
+        paramGetCart.put("category_id", digitalCategoryId);
         view.renderLoadingGetCartInfo();
         cartDigitalInteractor.patchCartOtp(
                 requestBodyOtpSuccess,
                 view.getGeneratedAuthParamNetwork(paramGetCart),
                 getSubscriberCartInfo()
         );
-
     }
 
     @Override
@@ -270,28 +266,28 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
                 view.hideProgressLoading();
                 if (e instanceof UnknownHostException || e instanceof ConnectException) {
                     /* Ini kalau ga ada internet */
-                    view.renderErrorNoConnectionCheckVoucher(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-                    );
+//                    view.renderErrorNoConnectionCheckVoucher(
+//                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
+//                    );
                 } else if (e instanceof SocketTimeoutException) {
                     /* Ini kalau timeout */
-                    view.renderErrorTimeoutConnectionCheckVoucher(
-                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                    );
+//                    view.renderErrorTimeoutConnectionCheckVoucher(
+//                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+//                    );
                 } else if (e instanceof ResponseErrorException) {
                      /* Ini kalau error dari API kasih message error */
-                    view.renderErrorCheckVoucher(e.getMessage());
+//                    view.renderErrorCheckVoucher(e.getMessage());
                 } else if (e instanceof ResponseDataNullException) {
                     /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
-                    view.renderErrorCheckVoucher(e.getMessage());
+//                    view.renderErrorCheckVoucher(e.getMessage());
                 } else if (e instanceof HttpErrorException) {
                     /* Ini Http error, misal 403, 500, 404,
                      code http errornya bisa diambil
                      e.getErrorCode */
-                    view.renderErrorHttpCheckVoucher(e.getMessage());
+//                    view.renderErrorHttpCheckVoucher(e.getMessage());
                 } else {
                     /* Ini diluar dari segalanya hahahaha */
-                    view.renderErrorHttpCheckVoucher(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+//                    view.renderErrorHttpCheckVoucher(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
 
@@ -389,7 +385,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
             @Override
             public void onVerificationSuccess() {
                 view.hideProgressLoading();
-                processPatchOtpCart();
+                processPatchOtpCart(view.getPassData().getCategoryId());
             }
 
             @Override
@@ -515,6 +511,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
         }
         attributes.setIdentifier(view.getDigitalIdentifierParam());
         attributes.setShowSubscribeFlag(true);
+        attributes.setThankyouNative(true);
         requestBodyAtcDigital.setType("add_cart");
         requestBodyAtcDigital.setAttributes(attributes);
         return requestBodyAtcDigital;

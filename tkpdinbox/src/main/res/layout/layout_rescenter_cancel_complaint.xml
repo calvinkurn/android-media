@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:context="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:background="@drawable/bg_button_disable1"
+    android:layout_width="match_parent"
+    android:layout_marginLeft="@dimen/margin_small"
+    android:layout_marginRight="@dimen/margin_small"
+    android:layout_height="50dp">
+
+    <TextView
+        android:id="@+id/tv_button"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        context:text="asdasd"
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/font_small"/>
+
+</FrameLayout>

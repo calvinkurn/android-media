@@ -20,21 +20,10 @@
             android:layout_alignParentTop="true"
             android:src="@drawable/ic_icon_market_toped" />
 
-        <ImageView
-            android:id="@+id/layout_right"
-            android:layout_width="@dimen/img_thumb_s"
-            android:layout_height="@dimen/img_thumb_s"
-            android:src="@drawable/chevron_thin_right"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true" />
-
         <EditText
             android:id="@+id/value_location"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/layout_right"
-            android:layout_toStartOf="@id/layout_right"
             android:layout_toRightOf="@id/icon_map"
             android:layout_toEndOf="@id/icon_map"
             android:layout_marginStart="@dimen/margin_vs"

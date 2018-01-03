@@ -1,4 +1,4 @@
-include ':customerapp', ':exotelVerificationLibrary'
+include ':customerapp', ':tkpdloyalty'
 include ':tkpdreactnative'
 include ':tkpdride'
 include ':tkpdfeed'
@@ -16,3 +16,5 @@ include ':sellerapp'
 include ':tkpdseller'
 include ':tkpdtopads'
 include ':tkpdgm'
+include 'tkpdreputation'
+include ':exotelVerificationLibrary'i

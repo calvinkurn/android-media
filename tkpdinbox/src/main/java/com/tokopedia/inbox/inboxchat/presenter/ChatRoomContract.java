@@ -4,14 +4,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.inbox.inboxchat.WebSocketInterface;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomAdapter;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
+
+import java.util.List;
 
 /**
  * Created by stevenfredian on 9/14/17.
@@ -80,6 +82,10 @@ public class ChatRoomContract {
         boolean isCurrentThread(int msgId);
 
         boolean isMyMessage(int fromUid);
+
+        void setTemplate(List<Visitable> listTemplate);
+
+        void addTemplateString(String message);
     }
 
     interface Presenter extends CustomerPresenter<View>{

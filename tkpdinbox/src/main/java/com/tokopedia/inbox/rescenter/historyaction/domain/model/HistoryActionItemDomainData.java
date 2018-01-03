@@ -9,6 +9,20 @@ public class HistoryActionItemDomainData {
     private String actionByText;
     private String conversationID;
     private String date;
+    private String dateTimestamp;
+    private String month;
+    private String dateNumber;
+    private String createTimestampStr;
+    private String timeNumber;
+
+    public String getDateTimestamp() {
+        return dateTimestamp;
+    }
+
+    public void setDateTimestamp(String dateTimestamp) {
+        this.dateTimestamp = dateTimestamp;
+    }
+
     private String historyStr;
 
     public int getActionBy() {
@@ -49,5 +63,37 @@ public class HistoryActionItemDomainData {
 
     public String getHistoryStr() {
         return historyStr;
+    }
+
+    public String getMonth() {
+        return month;
+    }
+
+    public void setMonth(String month) {
+        this.month = month;
+    }
+
+    public String getDateNumber() {
+        return dateNumber;
+    }
+
+    public void setDateNumber(String dateNumber) {
+        this.dateNumber = dateNumber;
+    }
+
+    public String getCreateTimestampStr() {
+        return createTimestampStr;
+    }
+
+    public void setCreateTimestampStr(String createTimestampStr) {
+        this.createTimestampStr = createTimestampStr;
+    }
+
+    public String getTimeNumber() {
+        return timeNumber;
+    }
+
+    public void setTimeNumber(String timeNumber) {
+        this.timeNumber = timeNumber;
     }
 }

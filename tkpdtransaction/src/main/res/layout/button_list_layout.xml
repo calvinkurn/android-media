@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/margin_vs"
+    android:paddingTop="@dimen/margin_vs">
+
+    <Button
+        android:id="@+id/accept_order"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:layout_margin="@dimen/margin_small"
+        android:background="@drawable/green_button_rounded_unify"
+        android:text="@string/button_order_detail_accept_order"
+        android:textAllCaps="false"
+        android:textColor="@color/white" />
+
+    <Button
+        android:id="@+id/change_courier"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:layout_margin="@dimen/margin_small"
+        android:background="@drawable/green_button_rounded_unify"
+        android:text="@string/button_order_detail_change_courier"
+        android:textAllCaps="false"
+        android:textColor="@color/white" />
+
+    <Button
+        android:id="@+id/request_pickup"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:layout_margin="@dimen/margin_small"
+        android:background="@drawable/green_button_rounded_unify"
+        android:text="@string/button_order_detail_request_pickup"
+        android:textAllCaps="false"
+        android:textColor="@color/white" />
+
+    <Button
+        android:id="@+id/finish_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:layout_margin="@dimen/margin_small"
+        android:background="@drawable/green_button_rounded_unify"
+        android:text="@string/button_order_detail_finish"
+        android:textAllCaps="false"
+        android:textColor="@color/white" />
+
+    <Button
+        android:id="@+id/change_awb"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:layout_margin="@dimen/margin_small"
+        android:background="@drawable/green_button_rounded_unify"
+        android:text="@string/button_order_detail_change_awb"
+        android:textAllCaps="false"
+        android:textColor="@color/white" />
+
+    <Button
+        android:id="@+id/view_complaint_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:layout_margin="@dimen/margin_small"
+        android:background="@drawable/green_button_rounded_unify"
+        android:text="@string/button_order_detail_view_complaint"
+        android:textAllCaps="false"
+        android:textColor="@color/white" />
+
+    <Button
+        android:id="@+id/confirm_shipping"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:layout_margin="@dimen/margin_small"
+        android:background="@drawable/green_button_rounded_unify"
+        android:text="@string/button_order_detail_confirm_shipping"
+        android:textAllCaps="false"
+        android:textColor="@color/white" />
+
+    <Button
+        android:id="@+id/order_detail_track_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:layout_margin="@dimen/margin_small"
+        android:background="@drawable/white_button_rounded"
+        android:text="@string/button_order_detail_track"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/ask_seller_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:layout_margin="@dimen/margin_small"
+        android:background="@drawable/white_button_rounded"
+        android:text="@string/button_order_detail_ask_seller"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/ask_buyer_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:layout_margin="@dimen/margin_small"
+        android:background="@drawable/green_button_rounded_unify"
+        android:text="@string/button_order_detail_ask_buyer"
+        android:textAllCaps="false"
+        android:textColor="@color/white" />
+
+    <Button
+        android:id="@+id/reject_order_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:layout_margin="@dimen/margin_small"
+        android:background="@drawable/white_button_rounded"
+        android:text="@string/button_order_detail_reject_order"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/request_cancel_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:layout_margin="@dimen/margin_small"
+        android:background="@drawable/white_button_rounded"
+        android:text="@string/button_order_detail_request_cancel"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/complaint"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:layout_margin="@dimen/margin_small"
+        android:background="@drawable/white_button_rounded"
+        android:text="@string/button_order_detail_complaint"
+        android:textAllCaps="false" />
+
+
+    <Button
+        android:id="@+id/cancel_chance"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:layout_margin="@dimen/margin_small"
+        android:background="@drawable/white_button_rounded"
+        android:text="@string/button_order_detail_cancel_chance"
+        android:textAllCaps="false" />
+
+</LinearLayout>

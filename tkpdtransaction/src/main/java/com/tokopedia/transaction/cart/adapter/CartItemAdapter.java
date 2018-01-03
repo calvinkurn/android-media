@@ -30,6 +30,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.cart.model.CartInsurance;
@@ -116,6 +117,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         final CartItemEditable cartItemEditable = (CartItemEditable) dataList.get(position);
         cartItemEditable.setCartCourierPrices(cartCourierPrices);
         removeCartErrors(cartItemEditable);
+        cartItemEditable.setInsuranceUsedInfo(cartCourierPrices.getInsuranceUsedInfo());
     }
 
     private void removeCartErrors(CartItemEditable cartItemEditable) {
@@ -183,10 +185,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         holder.tvShipment.setText(String.format("%s - %s (Ubah)",
                 MethodChecker.fromHtml(cartData.getCartShipments().getShipmentName()),
                 MethodChecker.fromHtml(cartData.getCartShipments().getShipmentPackageName())));
-        if (cartItemEditable.getCartCourierPrices() == null) {
-            holder.holderDetailCartToggle.setVisibility(View.GONE);
-        } else {
-            holder.holderDetailCartToggle.setVisibility(View.VISIBLE);
+        if (cartItemEditable.getCartCourierPrices() != null) {
             holder.tvTotalPrice.setVisibility(View.VISIBLE);
             holder.tvShippingCost.setText(cartItemEditable.getCartCourierPrices()
                     .getShipmentPriceIdr());
@@ -194,13 +193,13 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     .getCartProductPriceIdr());
             holder.tvTotalPrice.setText(cartItemEditable.getCartCourierPrices()
                     .getCartSubtotalIdr());
-            if(cartItemEditable.isUseInsurance())
+            if (cartItemEditable.isUseInsurance())
                 holder.tvAdditionalCost.setText(cartItemEditable.getCartCourierPrices()
                         .getSumAdditionFeeInsuranceIdr());
-            else  holder.tvAdditionalCost.setText(cartItemEditable.getCartCourierPrices()
+            else holder.tvAdditionalCost.setText(cartItemEditable.getCartCourierPrices()
                     .getAdditionFeeIdr());
             holder.totalPriceProgressBar.setVisibility(View.GONE);
-            if(unEditable(cartData)) {
+            if (unEditable(cartData)) {
                 holder.tvShippingAddress.setText(MethodChecker
                         .fromHtml(cartData.getCartDestination().getReceiverName()));
                 holder.tvShipment.setText(String.format("%s - %s",
@@ -219,7 +218,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 holder.tvShippingAddress.setEnabled(true);
                 holder.tvShipment.setEnabled(true);
             }
-        }
+        } else holder.tvTotalPrice.setVisibility(View.GONE);
     }
 
     private void renderHolderViewListener(final ViewHolder holder, final CartItem cartData,
@@ -359,13 +358,13 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             holder.holderError.setVisibility(View.VISIBLE);
             holder.tvError1.setText(MessageFormat.format("{0}", cartData.getCartErrorMessage1()));
             holder.tvError2.setText(MessageFormat.format("{0}", cartData.getCartErrorMessage2()));
+
             holder.totalPriceLayout.setVisibility(View.GONE);
-            holder.holderDetailCartToggle.setVisibility(View.GONE);
-            holder.holderDetailCart.collapse();
+            holder.calculationLayout.setVisibility(View.GONE);
             holder.totalPriceProgressBar.setVisibility(View.GONE);
         } else {
+            holder.calculationLayout.setVisibility(View.VISIBLE);
             holder.totalPriceLayout.setVisibility(View.VISIBLE);
-            holder.holderDetailCartToggle.setVisibility(View.VISIBLE);
             holder.holderError.setVisibility(View.GONE);
         }
     }
@@ -585,17 +584,40 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
         });
 
-        if (cartData.getCartCannotInsurance() == 1 || (cartData.getCartForceInsurance() == 1
-                || isProductMustInsurance(cartData.getCartProducts()))) {
+        if (cartData.getCartCannotInsurance() == 1 ||
+                (cartData.getCartForceInsurance() == 1 ||
+                        isProductMustInsurance(cartData.getCartProducts()))) {
             holder.spUseInsurance.setEnabled(false);
-        } else if(unEditable(cartData)) {
+        }
+        else if (unEditable(cartData)) {
             holder.spUseInsurance.setEnabled(false);
-        }else {
+        } else {
             holder.spUseInsurance.setEnabled(true);
         }
 
         cartInsuranceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         holder.spUseInsurance.setAdapter(cartInsuranceAdapter);
+
+        if(cartItemEditable.getInsuranceUsedInfo() == null || cartItemEditable.getInsuranceUsedInfo().length() == 0){
+            holder.imgInsuranceInfo.setVisibility(View.GONE);
+        } else {
+            holder.imgInsuranceInfo.setVisibility(View.VISIBLE);
+        }
+        holder.imgInsuranceInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BottomSheetView bottomSheetView = new BottomSheetView(hostFragment.getActivity());
+                bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
+                        .BottomSheetFieldBuilder()
+                        .setTitle(hostFragment.getActivity().getString(R.string.title_bottomsheet_insurance))
+                        .setBody(cartItemEditable.getInsuranceUsedInfo())
+                        .setImg(R.drawable.ic_insurance)
+                        .build());
+
+                bottomSheetView.show();
+            }
+        });
+
     }
 
     private boolean isProductMustInsurance(List<CartProduct> cartProducts) {
@@ -748,6 +770,8 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     static class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R2.id.holder_container)
         LinearLayout holderContainer;
+        @BindView(R2.id.calculation_layout)
+        LinearLayout calculationLayout;
         @BindView(R2.id.tv_error_1)
         TextView tvError1;
         @BindView(R2.id.tv_error_2)
@@ -806,6 +830,8 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         LinearLayout totalPriceLayout;
         @BindView(R2.id.total_price_progress_bar)
         ProgressBar totalPriceProgressBar;
+        @BindView(R2.id.img_insurance_info)
+        ImageView imgInsuranceInfo;
 
         public ViewHolder(View itemView) {
             super(itemView);

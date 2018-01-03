@@ -22,4 +22,8 @@ public interface TokoCashHistoryListener {
     void renderErrorMessage(String message);
 
     void renderEmptyPage(String message);
+
+    void renderWaitingTransaction(TokoCashHistoryData tokoCashHistoryData);
+
+    void hideWaitingTransaction();
 }

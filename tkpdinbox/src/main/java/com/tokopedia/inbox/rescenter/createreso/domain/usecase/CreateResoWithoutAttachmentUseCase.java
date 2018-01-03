@@ -17,6 +17,7 @@ import rx.Observable;
 public class CreateResoWithoutAttachmentUseCase extends UseCase<CreateResoWithoutAttachmentDomain> {
     public static final String ORDER_ID = "order_id";
     public static final String PARAM_RESULT = "result";
+    public static final String PARAM_RESOLUTION_ID = "resolutionID";
 
     private CreateResoWithoutAttachmentRepository createResoWithoutAttachmentRepository;
 

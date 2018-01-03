@@ -17,7 +17,7 @@ public interface TxDetailPresenter {
 
     void processToShop(Context context, OrderShop orderShop);
 
-    void processShowComplain(Context context, OrderButton orderButton);
+    void processShowComplain(Context context, OrderButton orderButton, OrderShop orderShop);
 
     void processOpenDispute(Context context, OrderData orderData, int state);
 
