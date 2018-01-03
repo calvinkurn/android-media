@@ -221,8 +221,16 @@ public class TopAdsProductDetailDataSourceModel {
         this.toggle = toggle;
     }
 
+    public long getSuggestionBidValue() {
+        return suggestionBidValue;
+    }
+
     public void setSuggestionBidValue(long suggestionBidValue) {
         this.suggestionBidValue = suggestionBidValue;
+    }
+
+    public String getSuggestionBidButton() {
+        return suggestionBidButton;
     }
 
     public void setSuggestionBidButton(String suggestionBidButton) {
