@@ -26,6 +26,7 @@ public class ShopOpenLocPresenterImpl extends BaseDaggerPresenter<ShopOpenLocVie
     GetOpenShopTokenUseCase getOpenShopTokenUseCase;
 
     GetOpenShopLocationPassUseCase getOpenShopLocationPassUseCase;
+    private boolean isHitToken;
 
     @Inject
     public ShopOpenLocPresenterImpl(ShopOpenSaveLocationUseCase shopOpenSaveLocationUseCase,
@@ -48,7 +49,7 @@ public class ShopOpenLocPresenterImpl extends BaseDaggerPresenter<ShopOpenLocVie
                 if(!isViewAttached())
                     return;
 
-                getView().onErrorGetReserveDomain(e);
+                getView().onFailedSaveInfoShop(e);
             }
 
             @Override
@@ -63,24 +64,42 @@ public class ShopOpenLocPresenterImpl extends BaseDaggerPresenter<ShopOpenLocVie
     }
 
     public void openGoogleMap(RequestParams requestParams, final String generatedMap){
+        if(isHitToken)
+            return;
+
+        isHitToken = true;
+        if(isViewAttached()){
+            getView().showProgressDialog();
+        }
         getOpenShopLocationPassUseCase.execute(requestParams, new Subscriber<LocationPass>() {
             @Override
             public void onCompleted() {
-
             }
 
             @Override
             public void onError(Throwable e) {
+                isHitToken = false;
+
                 if(!isViewAttached())
                     return;
+
+                if(isViewAttached()){
+                    getView().dismissProgressDialog();
+                }
 
                 getView().onErrorGetReserveDomain(e);
             }
 
             @Override
             public void onNext(LocationPass locationPass) {
+                isHitToken = false;
+
                 if(!isViewAttached())
                     return;
+
+                if(isViewAttached()){
+                    getView().dismissProgressDialog();
+                }
 
                 getView().navigateToGoogleMap(generatedMap, locationPass);
             }
@@ -88,24 +107,43 @@ public class ShopOpenLocPresenterImpl extends BaseDaggerPresenter<ShopOpenLocVie
     }
 
     public void openDistrictRecommendation(RequestParams requestParams){
+        if(isHitToken)
+            return;
+
+        isHitToken = true;
+        if(isViewAttached()){
+            getView().showProgressDialog();
+        }
         getOpenShopTokenUseCase.execute(requestParams, new Subscriber<Token>() {
             @Override
             public void onCompleted() {
-
             }
 
             @Override
             public void onError(Throwable e) {
+                isHitToken = false;
+
+
                 if(!isViewAttached())
                     return;
 
-                getView().onFailedSaveInfoShop(e);
+                if(isViewAttached()){
+                    getView().dismissProgressDialog();
+                }
+
+                getView().onErrorGetReserveDomain(e);
             }
 
             @Override
             public void onNext(Token token) {
+                isHitToken = false;
+
                 if(!isViewAttached())
                     return;
+
+                if(isViewAttached()){
+                    getView().dismissProgressDialog();
+                }
 
                 getView().navigateToDistrictRecommendation(token);
             }
