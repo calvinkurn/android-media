@@ -29,6 +29,7 @@ public abstract class BaseScannerQRActivity extends TActivity {
     protected ToggleButton switchTorch;
     protected View scannerLaser;
     private boolean repeatUp = true;
+    private TranslateAnimation mAnimation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,42 +121,50 @@ public abstract class BaseScannerQRActivity extends TActivity {
      * please use getColorUpScannerLaser() and getColorDownScannerLaser()
      */
     protected void animateScannerLaser() {
-        final TranslateAnimation mAnimation = new TranslateAnimation(
-                TranslateAnimation.ABSOLUTE, 0f,
-                TranslateAnimation.ABSOLUTE, 0f,
-                TranslateAnimation.RELATIVE_TO_PARENT, -1.0f,
-                TranslateAnimation.RELATIVE_TO_PARENT, 1.0f);
-        mAnimation.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
+        if (mAnimation == null) {
+            mAnimation = new TranslateAnimation(
+                    TranslateAnimation.ABSOLUTE, 0f,
+                    TranslateAnimation.ABSOLUTE, 0f,
+                    TranslateAnimation.RELATIVE_TO_PARENT, -1.0f,
+                    TranslateAnimation.RELATIVE_TO_PARENT, 1.0f);
+            mAnimation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
 
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-                mAnimation.setStartOffset(0);
-                if (repeatUp) {
-                    scannerLaser.setBackground(ContextCompat
-                            .getDrawable(getApplicationContext(), getColorUpScannerLaser()));
-                    repeatUp = false;
-                } else {
-                    scannerLaser.setBackground(ContextCompat
-                            .getDrawable(getApplicationContext(), getColorDownScannerLaser()));
-                    repeatUp = true;
                 }
-            }
-        });
-        mAnimation.setFillAfter(true);
-        mAnimation.setDuration(1500);
-        mAnimation.setRepeatCount(-1);
-        mAnimation.setRepeatMode(Animation.REVERSE);
-        mAnimation.setInterpolator(new LinearInterpolator());
-        scannerLaser.setAnimation(mAnimation);
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+                    mAnimation.setStartOffset(0);
+                    if (repeatUp) {
+                        scannerLaser.setBackground(ContextCompat
+                                .getDrawable(getApplicationContext(), getColorUpScannerLaser()));
+                        repeatUp = false;
+                    } else {
+                        scannerLaser.setBackground(ContextCompat
+                                .getDrawable(getApplicationContext(), getColorDownScannerLaser()));
+                        repeatUp = true;
+                    }
+                }
+            });
+            mAnimation.setFillAfter(true);
+            mAnimation.setDuration(1500);
+            mAnimation.setRepeatCount(-1);
+            mAnimation.setRepeatMode(Animation.REVERSE);
+            mAnimation.setInterpolator(new LinearInterpolator());
+        }
+        scannerLaser.startAnimation(mAnimation);
+    }
+
+    protected void hideAnimation() {
+        if (scannerLaser.getAnimation() != null) {
+            scannerLaser.clearAnimation();
+        }
     }
 
     /**

@@ -1,9 +1,9 @@
 package com.tokopedia.tokocash.historytokocash.data.datasource;
 
 import com.google.gson.Gson;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.tokocash.apiservice.WalletService;
 import com.tokopedia.tokocash.historytokocash.data.entity.HelpHistoryTokoCashEntity;
 import com.tokopedia.tokocash.historytokocash.data.entity.OAuthInfoEntity;
 import com.tokopedia.tokocash.historytokocash.data.entity.ResponseHelpHistoryEntity;
@@ -13,9 +13,7 @@ import com.tokopedia.tokocash.historytokocash.presentation.Util;
 import com.tokopedia.tokocash.historytokocash.presentation.model.ParamsActionHistory;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -26,11 +24,6 @@ import rx.functions.Func1;
  */
 
 public class CloudWalletDataSource implements WalletDataSource {
-
-    private static final String TYPE = "type";
-    private static final String START_DATE = "start_date";
-    private static final String END_DATE = "end_date";
-    private static final String PAGE = "page";
 
     private static final String SUBJECT = "subject";
     private static final String MESSAGE = "message";

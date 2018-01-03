@@ -1,4 +1,4 @@
-package com.tokopedia.tokocash.historytokocash.data.datasource;
+package com.tokopedia.tokocash.apiservice;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
@@ -12,6 +12,7 @@ import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.QueryMap;
 import retrofit2.http.Url;
 import rx.Observable;
@@ -21,6 +22,8 @@ import rx.Observable;
  */
 
 public interface WalletApi {
+
+    String IDENTIFIER = "identifier";
 
     @GET(TkpdBaseURL.Wallet.GET_HISTORY)
     Observable<Response<TkpdDigitalResponse>> getHistoryTokocash(@QueryMap TKPDMapParam<String, Object> params);
@@ -38,4 +41,7 @@ public interface WalletApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.Wallet.REVOKE_ACCESS_TOKOCASH)
     Observable<Response<String>> revokeAccessAccountTokoCash(@FieldMap Map<String, String> params);
+
+    @GET(TkpdBaseURL.Wallet.QR_INFO)
+    Observable<Response<TkpdDigitalResponse>> getInfoQrTokoCash(@Path(IDENTIFIER) String identifier);
 }

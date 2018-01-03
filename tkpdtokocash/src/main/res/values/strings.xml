@@ -12,4 +12,9 @@
     <string name="range_date_last_month">Bulan Lalu</string>
     <string name="title_empty_page_tokocash">Belum ada Riwayat Transaksi</string>
 
+    <string name="title_scan_qr">Scan Kode QR</string>
+    <string name="title_dialog_wrong_scan">Oops!</string>
+    <string name="msg_dialog_wrong_scan">Kode QR yang Anda scan invalid.</string>
+    <string name="btn_dialog_wrong_scan">OK</string>
+
 </resources>

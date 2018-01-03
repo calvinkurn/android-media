@@ -1,11 +1,9 @@
-package com.tokopedia.tokocash.historytokocash.data.datasource;
+package com.tokopedia.tokocash.apiservice;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.core.RetrofitFactory;
 import com.tokopedia.core.network.retrofit.services.BearerService;
-
-import javax.inject.Inject;
 
 import retrofit2.Retrofit;
 
