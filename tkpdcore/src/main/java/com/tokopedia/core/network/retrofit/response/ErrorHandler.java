@@ -112,8 +112,7 @@ public class ErrorHandler {
                             context.getString(R.string.default_request_error_internal_server);
                 case ResponseStatus.SC_FORBIDDEN:
                     Log.d(TAG, getErrorInfo(code, FORBIDDEN_INFO));
-                    return
-                            context.getString(R.string.default_request_error_forbidden_auth);
+                    return context.getString(R.string.default_request_error_forbidden_auth);
                 case ResponseStatus.SC_BAD_GATEWAY:
                     Log.d(TAG, getErrorInfo(code, BAD_REQUEST_INFO));
                     return
