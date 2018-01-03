@@ -50,6 +50,7 @@ import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetHomeFeedsUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.GetFeedsSubscriber;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.GetHomeFeedsSubscriber;
 
 import java.util.List;
 
@@ -349,7 +350,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                         pagingHandler.getPage(),
                         sessionHandler,
                         currentCursor),
-                new GetFeedsSubscriber(feedListener, pagingHandler.getPage()));
+                new GetHomeFeedsSubscriber(feedListener, pagingHandler.getPage()));
     }
 
     public void setCursor(String currentCursor) {
