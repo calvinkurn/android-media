@@ -123,7 +123,7 @@ public class KolViewModel implements Visitable<FeedPlusTypeFactory> {
         return temporarilyFollowed;
     }
 
-    public int getProductId() {
+    public int getContentId() {
         return contentId;
     }
 

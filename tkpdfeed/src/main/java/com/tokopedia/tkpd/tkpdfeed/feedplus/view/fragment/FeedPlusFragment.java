@@ -65,6 +65,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.feed.FeedPl
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactoryImpl;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.productcard.AddFeedViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.FeedTrackingEventLabel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.KolTracking;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.FeedPlusPresenter;
@@ -74,6 +75,8 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsProductMod
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentHeaderViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentProductViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolRecommendItemViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ProductFeedViewModel;
@@ -96,8 +99,10 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.TopAdsViewModel
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ShopFeedViewModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
+
 /**
  * @author by nisie on 5/15/17.
  */
@@ -123,6 +128,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Inject
     FeedPlusPresenter presenter;
+
+    @Inject
+    SessionHandler sessionHandler;
 
     private LinearLayoutManager layoutManager;
     private FeedPlusAdapter adapter;
@@ -266,21 +274,21 @@ public class FeedPlusFragment extends BaseDaggerFragment
                             && layoutManager != null
                             && topAdsRecyclerAdapter != null
                             && topAdsRecyclerAdapter.getPlacer() != null) {
+                        int position = 0;
                         Item item = null;
                         if (itemIsFullScreen()) {
-                            item = topAdsRecyclerAdapter.getPlacer()
-                                    .getItem(layoutManager.findLastVisibleItemPosition());
+                            position = layoutManager.findLastVisibleItemPosition();
                         } else if (layoutManager.findFirstCompletelyVisibleItemPosition() != -1) {
-                            item = topAdsRecyclerAdapter.getPlacer()
-                                    .getItem(layoutManager.findFirstCompletelyVisibleItemPosition());
-
+                            position = layoutManager.findFirstCompletelyVisibleItemPosition();
                         } else if (layoutManager.findLastCompletelyVisibleItemPosition() != -1) {
-                            item = topAdsRecyclerAdapter.getPlacer()
-                                    .getItem(layoutManager.findLastCompletelyVisibleItemPosition());
+                            position = layoutManager.findLastCompletelyVisibleItemPosition();
                         }
 
-                        if (item != null && !isTopads(item)) {
-                            trackImpression(item);
+                        item = topAdsRecyclerAdapter.getPlacer()
+                                .getItem(position);
+
+                        if (position != 0 && item != null && !isTopads(item)) {
+                            trackImpression(item, position);
                         }
                     }
                 } catch (IndexOutOfBoundsException e) {
@@ -292,14 +300,58 @@ public class FeedPlusFragment extends BaseDaggerFragment
         });
     }
 
-    private void trackImpression(Item item) {
-        if (isInspirationItem(item))
+    private void trackImpression(Item item, int position) {
+        if (isInspirationItem(item)) {
             UnifyTracking.eventR3(AppEventTracking.Action.IMPRESSION,
                     FeedTrackingEventLabel.Impression.FEED_RECOMMENDATION);
-        else if (isPromoItem(item)) {
+        } else if (isPromoItem(item)) {
             UnifyTracking.eventFeedClick(AppEventTracking.Action.IMPRESSION,
                     FeedTrackingEventLabel.Impression.FEED_PROMOTION);
+        } else if (isKolItem(item)) {
+            KolViewModel kolViewModel = (KolViewModel) adapter.getlist().get(item.originalPos());
+            List<KolTracking.Promotion> list = new ArrayList<>();
+            list.add(new KolTracking.Promotion(
+                    kolViewModel.getUserId(),
+                    KolTracking.Promotion.createContentName(
+                            kolViewModel.getTagsType(),
+                            kolViewModel.isFollowed(),
+                            kolViewModel.isTemporarilyFollowed())
+                    ,
+                    kolViewModel.getName().equals("") ? "-" : kolViewModel.getName(),
+                    position,
+                    kolViewModel.getLabel().equals("") ? "-" : kolViewModel.getLabel(),
+                    kolViewModel.getContentId(),
+                    kolViewModel.getContentLink().equals("") ? "-" : kolViewModel.getContentLink(),
+                    Integer.parseInt(sessionHandler.getLoginID())));
+            TrackingUtils.eventTrackingEnhancedEcommerce(KolTracking.getKolImpressionTracking(list));
+        } else if (isKolRecommendationItem(item)) {
+            KolRecommendationViewModel kolRecomendationViewModel = (KolRecommendationViewModel) adapter.getlist()
+                    .get(item.originalPos());
+            List<KolTracking.Promotion> list = new ArrayList<>();
+            for (KolRecommendItemViewModel recItem : kolRecomendationViewModel.getListRecommend()) {
+                list.add(new KolTracking.Promotion(
+                        recItem.getId(),
+                        KolTracking.Promotion.createContentNameRecommendation(),
+                        recItem.getName().equals("") ? "-" : recItem.getName(),
+                        position,
+                        recItem.getLabel().equals("") ? "-" : recItem.getLabel(),
+                        recItem.getId(),
+                        recItem.getUrl().equals("") ? "-" : recItem.getUrl(),
+                        Integer.parseInt(sessionHandler.getLoginID())));
+            }
+            TrackingUtils.eventTrackingEnhancedEcommerce(KolTracking
+                    .getKolImpressionTracking(list));
         }
+    }
+
+    private boolean isKolRecommendationItem(Item item) {
+        return item instanceof ClientViewModel
+                && adapter.getlist().get(item.originalPos()) instanceof KolRecommendationViewModel;
+    }
+
+    private boolean isKolItem(Item item) {
+        return item instanceof ClientViewModel
+                && adapter.getlist().get(item.originalPos()) instanceof KolViewModel;
     }
 
     private boolean isPromoItem(Item item) {
