@@ -21,6 +21,11 @@ public class PickupPointMapActivity extends BasePresenterActivity {
 
     public static final String INTENT_DATA_GEOLOCATION = "geolocation";
 
+    interface MapRequestParam {
+        String ZOOM = "17";
+        String MAP_TYPE = "roadmap";
+    }
+
     @BindView(R2.id.web_view_pickup_booth_location)
     WebView webViewPickupBoothLocation;
     @BindView(R2.id.pb_loading)
@@ -62,15 +67,16 @@ public class PickupPointMapActivity extends BasePresenterActivity {
     private void setupWebView(String geolocation) {
         int width = getResources().getDisplayMetrics().widthPixels;
         int height = getResources().getDisplayMetrics().heightPixels - toolbar.getHeight();
+        Log.e(String.valueOf(width), String.valueOf(height));
         pbLoading.setVisibility(View.VISIBLE);
         webViewPickupBoothLocation.setWebViewClient(new TermsAndConditionsWebViewClient());
         webViewPickupBoothLocation.setWebChromeClient(new WebChromeClient());
-        webViewPickupBoothLocation.loadUrl("http://maps.googleapis.com/maps/api/staticmap?\n" +
-                "center=" + geolocation + "&\n" +
-                "zoom=17&\n" +
-                "size=" + width + "x" + height + "&\n" +
-                "maptype=roadmap&\n" +
-                "markers=" + geolocation + "&\n" +
+        webViewPickupBoothLocation.loadUrl("http://maps.googleapis.com/maps/api/staticmap?" +
+                "center=" + geolocation +
+                "&zoom=" + MapRequestParam.ZOOM +
+                "&size=" + height + "x" + width +
+                "&maptype=" + MapRequestParam.MAP_TYPE +
+                "&markers=" + geolocation +
                 "key=" + getString(R.string.google_api_key));
     }
 
