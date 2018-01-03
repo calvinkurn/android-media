@@ -21,6 +21,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.CustomPhoneNumberUtil;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.di.DaggerSessionComponent;
@@ -53,6 +54,7 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
 
     @Inject
     ChangePhoneNumberInputFragmentListener.Presenter presenter;
+    TkpdProgressDialog progressDialog;
     private TextView oldPhoneNumber;
     private EditText newPhoneNumber;
     private TextView nextButton;
@@ -62,7 +64,6 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
     private Unbinder unbinder;
     private BottomSheetInfo bottomSheetInfo;
     private TextWatcher phoneNumberTextWatcher;
-    TkpdProgressDialog progressDialog;
 
     public static ChangePhoneNumberInputFragment newInstance(String phoneNumber, String email, ArrayList<String> warningList) {
         ChangePhoneNumberInputFragment fragment = new ChangePhoneNumberInputFragment();
@@ -131,7 +132,7 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                goToVerification();
+                presenter.validateNumber(cleanPhoneNumber(newPhoneNumber));
             }
         });
     }
@@ -217,13 +218,62 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
             progressDialog.dismiss();
     }
 
+    @Override
+    public void onValidateNumberSuccess(Boolean isSuccess) {
+        if (isSuccess != null && isSuccess) {
+            goToVerification();
+        } else {
+            showErrorSnackbar();
+        }
+    }
+
+    @Override
+    public void onValidateNumberError(String message) {
+        showErrorSnackbar(message);
+    }
+
+    @Override
+    public void onValidateNumberFailed() {
+        showErrorSnackbar();
+    }
+
+    @Override
+    public void onSubmitNumberSuccess(Boolean isSuccess) {
+        if (isSuccess != null && isSuccess) {
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
+        } else {
+            showErrorSnackbar();
+        }
+    }
+
+    @Override
+    public void onSubmitNumberError(String message) {
+        showErrorSnackbar(message);
+    }
+
+    @Override
+    public void onSubmitNumberFailed() {
+        showErrorSnackbar();
+    }
+
+    private void showErrorSnackbar() {
+        showErrorSnackbar(null);
+    }
+
+    private void showErrorSnackbar(String message) {
+        if (message != null) {
+            NetworkErrorHelper.showSnackbar(getActivity(), message);
+        } else {
+            NetworkErrorHelper.showSnackbar(getActivity());
+        }
+    }
+
     private void goToVerification() {
         GlobalCacheManager cacheManager = new GlobalCacheManager();
 
-        String newPhoneNumberString = newPhoneNumber.getText().toString();
-        newPhoneNumberString = newPhoneNumberString.replace("-", "");
-        VerificationPassModel passModel = new VerificationPassModel(newPhoneNumberString, email,
-                getListAvailableMethod(newPhoneNumberString), RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION);
+        VerificationPassModel passModel = new VerificationPassModel(cleanPhoneNumber(newPhoneNumber), email,
+                getListAvailableMethod(cleanPhoneNumber(newPhoneNumber)), RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION);
         cacheManager.setKey(VerificationActivity.PASS_MODEL);
         cacheManager.setValue(CacheUtil.convertModelToString(passModel,
                 new TypeToken<VerificationPassModel>() {
@@ -240,11 +290,8 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == REQUEST_VERIFY_CODE) {
-            getActivity().setResult(resultCode);
-
-            if (resultCode == Activity.RESULT_OK)
-                getActivity().finish();
+        if (requestCode == REQUEST_VERIFY_CODE && resultCode == Activity.RESULT_OK) {
+            presenter.submitNumber(cleanPhoneNumber(newPhoneNumber));
         }
     }
 
@@ -262,5 +309,10 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
         ));
 
         return list;
+    }
+
+    private String cleanPhoneNumber(EditText newPhoneNumber) {
+        String newPhoneNumberString = newPhoneNumber.getText().toString();
+        return newPhoneNumberString.replace("-", "");
     }
 }

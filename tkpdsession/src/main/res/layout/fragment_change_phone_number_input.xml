@@ -70,7 +70,7 @@
                 android:id="@+id/new_phone_number_value"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="phone"
+                android:inputType="number"
                 android:paddingBottom="25dp"
                 android:theme="@style/PhoneNumberTextInput" />
 
@@ -78,6 +78,7 @@
                 android:id="@+id/next_button"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
+                android:layout_marginTop="37dp"
                 android:background="@drawable/grey_button_rounded"
                 android:clickable="false"
                 android:enabled="false"

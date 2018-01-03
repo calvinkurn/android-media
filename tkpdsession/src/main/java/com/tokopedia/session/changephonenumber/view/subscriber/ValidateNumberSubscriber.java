@@ -1,6 +1,5 @@
 package com.tokopedia.session.changephonenumber.view.subscriber;
 
-import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberEmailFragmentListener;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberInputFragmentListener;
 
 import rx.Subscriber;
@@ -23,11 +22,17 @@ public class ValidateNumberSubscriber extends Subscriber<Boolean> {
 
     @Override
     public void onError(Throwable e) {
-
+        view.dismissLoading();
+        if (e != null) {
+            view.onValidateNumberError(e.getMessage());
+        } else {
+            view.onValidateNumberFailed();
+        }
     }
 
     @Override
     public void onNext(Boolean aBoolean) {
-
+        view.dismissLoading();
+        view.onValidateNumberSuccess(aBoolean);
     }
 }

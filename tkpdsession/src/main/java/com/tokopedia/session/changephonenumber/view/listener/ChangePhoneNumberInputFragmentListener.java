@@ -20,6 +20,18 @@ public interface ChangePhoneNumberInputFragmentListener {
         void showLoading();
 
         void dismissLoading();
+
+        void onValidateNumberSuccess(Boolean isSuccess);
+
+        void onValidateNumberError(String message);
+
+        void onValidateNumberFailed();
+
+        void onSubmitNumberSuccess(Boolean isSuccess);
+
+        void onSubmitNumberError(String message);
+
+        void onSubmitNumberFailed();
     }
 
     public interface Presenter extends CustomerPresenter<View> {
