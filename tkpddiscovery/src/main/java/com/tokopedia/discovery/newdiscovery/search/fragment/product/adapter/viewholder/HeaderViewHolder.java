@@ -23,6 +23,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.SessionHandler;
@@ -45,6 +46,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.search_header_layout;
+    public static final String DEFAULT_ITEM_VALUE = "1";
     private LinearLayout suggestionContainer;
     private TopAdsBannerView adsBannerView;
     private Context context;
@@ -62,11 +64,14 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
     }
 
     private void initTopAds(Config topAdsConfig) {
+        TopAdsParams newParam = topAdsConfig.getTopAdsParams();
+        newParam.getParam().put(TopAdsParams.KEY_ITEM, DEFAULT_ITEM_VALUE);
+        newParam.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_SEARCH);
         Config newConfig = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
                 .setUserId(SessionHandler.getLoginID(context))
                 .setEndpoint(Endpoint.CPM)
-                .topAdsParams(topAdsConfig.getTopAdsParams())
+                .topAdsParams(newParam)
                 .build();
         adsBannerView.setConfig(newConfig);
         adsBannerView.loadTopAds();

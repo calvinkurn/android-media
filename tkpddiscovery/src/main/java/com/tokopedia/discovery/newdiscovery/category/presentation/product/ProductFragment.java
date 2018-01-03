@@ -1,6 +1,7 @@
 package com.tokopedia.discovery.newdiscovery.category.presentation.product;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -602,8 +603,13 @@ public class ProductFragment extends SearchSectionFragment
     @Override
     public void onBannerAdsClicked(String appLink) {
         if (!TextUtils.isEmpty(appLink)) {
-            ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity()
-                    , appLink);
+            Uri uri = Uri.parse(appLink);
+            if (appLink.contains("shop")) {
+                String shopId = uri.getPathSegments().get(1);
+                startActivity(ShopInfoActivity.getCallingIntent(getContext(), shopId));
+            } else {
+                startActivity(new Intent(Intent.ACTION_VIEW, uri));
+            }
         }
     }
 

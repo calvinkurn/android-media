@@ -1,7 +1,9 @@
 package com.tokopedia.topads.sdk.view;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.Nullable;
+import android.text.Html;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -55,8 +57,13 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         LinearLayout badgeContainer = (LinearLayout) findViewById(R.id.badges_container);
         imageLoader.loadImage(cpm.getCpmImage().getFullEcs(), cpm.getCpmImage().getFullUrl(), iconImg);
         promotedTxt.setText(cpm.getPromotedText());
-        nameTxt.setText(cpm.getName());
-        descriptionTxt.setText(cpm.getDecription());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            nameTxt.setText(Html.fromHtml(cpm.getName(), Html.FROM_HTML_MODE_LEGACY));
+            descriptionTxt.setText(Html.fromHtml(cpm.getDecription(), Html.FROM_HTML_MODE_LEGACY));
+        } else {
+            nameTxt.setText(Html.fromHtml(cpm.getName()));
+            descriptionTxt.setText(Html.fromHtml(cpm.getDecription()));
+        }
         badgeContainer.removeAllViews();
         for (Badge badge : cpm.getBadges()) {
             ImageView badgeImg = new ImageView(context);
@@ -73,8 +80,13 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         TextView nameTxt = (TextView) findViewById(R.id.name);
         TextView descriptionTxt = (TextView) findViewById(R.id.description);
         imageLoader.loadImage(cpm.getCpmImage().getFullEcs(), cpm.getCpmImage().getFullUrl(), iconImg);
-        nameTxt.setText(cpm.getName());
-        descriptionTxt.setText(cpm.getDecription());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            nameTxt.setText(Html.fromHtml(cpm.getName(), Html.FROM_HTML_MODE_LEGACY));
+            descriptionTxt.setText(Html.fromHtml(cpm.getDecription(), Html.FROM_HTML_MODE_LEGACY));
+        } else {
+            nameTxt.setText(Html.fromHtml(cpm.getName()));
+            descriptionTxt.setText(Html.fromHtml(cpm.getDecription()));
+        }
     }
 
     public void setConfig(Config config) {

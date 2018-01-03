@@ -42,6 +42,7 @@ public class CategoryDefaultHeaderViewHolder extends AbstractViewHolder<Category
 
     @LayoutRes
     public static final int LAYOUT = R.layout.default_category_header;
+    public static final String DEFAULT_ITEM_VALUE = "1";
 
     RecyclerView defaultCategoriesRecyclerView;
     LinearLayout expandLayout;
@@ -70,8 +71,9 @@ public class CategoryDefaultHeaderViewHolder extends AbstractViewHolder<Category
 
     private void initTopAds(String depId) {
         TopAdsParams adsParams = new TopAdsParams();
-        adsParams.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_HOTLIST);
+        adsParams.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_DIRECTORY);
         adsParams.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, depId);
+        adsParams.getParam().put(TopAdsParams.KEY_ITEM, DEFAULT_ITEM_VALUE);
 
         Config config = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))

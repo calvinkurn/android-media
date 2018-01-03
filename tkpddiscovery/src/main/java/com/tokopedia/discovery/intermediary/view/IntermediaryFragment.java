@@ -3,6 +3,7 @@ package com.tokopedia.discovery.intermediary.view;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -99,6 +100,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     public static final String TAG = "INTERMEDIARY_FRAGMENT";
     private static final long SLIDE_DELAY = 8000;
+    public static final String DEFAULT_ITEM_VALUE = "1";
 
     @BindView(R2.id.nested_intermediary)
     NestedScrollView nestedScrollView;
@@ -248,8 +250,9 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         topAdsView.loadTopAds();
 
         TopAdsParams adsBannerParams = new TopAdsParams();
-        adsBannerParams.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_HOTLIST);
+        adsBannerParams.getParam().put(TopAdsParams.KEY_SRC, SRC_INTERMEDIARY_VALUE);
         adsBannerParams.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, departmentId);
+        adsBannerParams.getParam().put(TopAdsParams.KEY_ITEM, DEFAULT_ITEM_VALUE);
 
         Config configAdsBanner = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
@@ -262,8 +265,13 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
             @Override
             public void onBannerAdsClicked(String applink) {
                 if (!TextUtils.isEmpty(applink)) {
-                    ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity()
-                            , applink);
+                    Uri uri = Uri.parse(applink);
+                    if (applink.contains("shop")) {
+                        String shopId = uri.getPathSegments().get(1);
+                        startActivity(ShopInfoActivity.getCallingIntent(getContext(), shopId));
+                    } else {
+                        startActivity(new Intent(Intent.ACTION_VIEW, uri));
+                    }
                 }
             }
         });

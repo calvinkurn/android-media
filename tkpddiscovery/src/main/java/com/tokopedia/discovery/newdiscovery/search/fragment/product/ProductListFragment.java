@@ -1,6 +1,7 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment.product;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
@@ -471,8 +472,13 @@ public class ProductListFragment extends SearchSectionFragment
     @Override
     public void onBannerAdsClicked(String appLink) {
         if (!TextUtils.isEmpty(appLink)) {
-            ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity()
-                    , appLink);
+            Uri uri = Uri.parse(appLink);
+            if (appLink.contains("shop")) {
+                String shopId = uri.getPathSegments().get(1);
+                startActivity(ShopInfoActivity.getCallingIntent(getContext(), shopId));
+            } else {
+                startActivity(new Intent(Intent.ACTION_VIEW, uri));
+            }
         }
     }
 
