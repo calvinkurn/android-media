@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_marginTop="16dp"
+    android:layout_marginTop="@dimen/margin_sm"
+    android:layout_marginBottom="@dimen/margin_vs"
     tools:showIn="@layout/fragment_shop_open_location">
 
     <TextView
@@ -17,6 +18,7 @@
     <FrameLayout
         android:id="@+id/empty_map_view"
         android:layout_width="match_parent"
+        android:clickable="true"
         android:layout_height="@dimen/image_width_xxxl">
 
         <android.support.v7.widget.AppCompatImageView

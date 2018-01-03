@@ -6,7 +6,8 @@
     <com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout
         android:id="@+id/shop_desc_input_layout"
         style="@style/HintTextInputLayout"
-        android:hint="@string/pickup_location">
+        android:hint="@string/pickup_location"
+        android:layout_marginTop="@dimen/margin_med">
 
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/open_shop_address_edittext"
