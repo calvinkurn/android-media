@@ -26,48 +26,6 @@ import java.util.List;
  */
 
 public class ProductDigitalMapper implements IProductDigitalMapper {
-//    @Override
-//    public BannerData transformBannerData(ResponseBanner responseBanner)
-//            throws MapperDataException {
-//        return new BannerData.Builder()
-//                .type(responseBanner.getType())
-//                .id(responseBanner.getId())
-//                .rechargeCmsbannerId(responseBanner.getAttributes().getRechargeCmsbannerId())
-//                .fileName(responseBanner.getAttributes().getFileName())
-//                .fileNameWebp(responseBanner.getAttributes().getFileNameWebp())
-//                .startDate(responseBanner.getAttributes().getStartDate())
-//                .endDate(responseBanner.getAttributes().getEndDate())
-//                .imgUrl(responseBanner.getAttributes().getImgUrl())
-//                .priority(responseBanner.getAttributes().getPriority())
-//                .status(responseBanner.getAttributes().getStatus())
-//                .title(responseBanner.getAttributes().getTitle())
-//                .subtitle(responseBanner.getAttributes().getSubtitle())
-//                .promocode(responseBanner.getAttributes().getPromocode())
-//                .dataTitle(responseBanner.getAttributes().getDataTitle())
-//                .build();
-//    }
-
-//    @Override
-//    public List<BannerData> transformBannerDataList(
-//            List<ResponseCategoryDetailIncluded> responseCategoryDetailIncludedList
-//    ) throws MapperDataException {
-//        List<BannerData> bannerDataList = new ArrayList<>();
-//        for (ResponseCategoryDetailIncluded data : responseCategoryDetailIncludedList) {
-//            if (data.getType().equalsIgnoreCase("banner")) {
-//                bannerDataList.add(
-//                        new BannerData.Builder()
-//                                .title(data.getAttributes().getTitle())
-//                                .subtitle(data.getAttributes().getSubtitle())
-//                                .promocode(data.getAttributes().getPromocode())
-//                                .image(data.getAttributes().getImage())
-//                                .dataTitle(data.getAttributes().getDataTitle())
-//                                .link(data.getAttributes().getLink())
-//                                .build()
-//                );
-//            }
-//        }
-//        return bannerDataList;
-//    }
 
     @Override
     public CategoryData transformCategoryData(
@@ -264,32 +222,6 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
         return categoryData;
     }
 
-//    @Override
-//    public OrderClientNumber transformOrderClientNumber(
-//            ResponseLastOrderData lastOrderData
-//    ) throws MapperDataException {
-//        return new OrderClientNumber.Builder()
-//                .clientNumber(lastOrderData.getAttributes().getClientNumber())
-//                .categoryId(lastOrderData.getAttributes().getCategoryId())
-//                .operatorId(lastOrderData.getAttributes().getOperatorId())
-//                .lastProduct(lastOrderData.getAttributes().getProductId())
-//                .build();
-//    }
-
-//    @Override
-//    public OrderClientNumber transformOrderClientNumber(
-//            ResponseRecentNumberData responseRecentNumberData
-//    ) throws MapperDataException {
-//        return new OrderClientNumber.Builder()
-//                .clientNumber(responseRecentNumberData.getAttributes().getClientNumber())
-//                .productId("")
-//                .categoryId(
-//                        responseRecentNumberData.getRelationships().getCategory().getData().getId()
-//                )
-//                .operatorId("")
-//                .build();
-//    }
-
     @Override
     public PulsaBalance transformPulsaBalance(
             ResponsePulsaBalance responsePulsaBalance) throws MapperDataException {
@@ -300,8 +232,4 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
                 .expireDate(responsePulsaBalance.getAttributes().getExpireDate()).build();
     }
 
-    public List<CategoryData> transformCategoryDataList(Object object) throws MapperDataException {
-        List<CategoryData> categoryDataList = new ArrayList<>();
-        return categoryDataList;
-    }
 }
