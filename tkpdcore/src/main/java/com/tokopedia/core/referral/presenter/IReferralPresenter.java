@@ -15,4 +15,10 @@ public interface IReferralPresenter {
     void copyVoucherCode(String code);
 
     String getReferralContents();
+
+    String getHowItWorks();
+
+    String getVoucherCodeFromCache();
+
+    Boolean isappShowReferralButtonActivated();
 }

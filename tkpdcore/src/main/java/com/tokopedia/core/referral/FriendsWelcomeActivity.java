@@ -12,6 +12,9 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.referral.fragment.FragmentReferralFriendsWelcome;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.core.var.TkpdCache;
 
 public class FriendsWelcomeActivity extends BasePresenterActivity   {
 
@@ -27,6 +30,14 @@ public class FriendsWelcomeActivity extends BasePresenterActivity   {
     @Override
     protected void setupURIPass(Uri data) {
 
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if(!isappShowReferralButtonActivated(this)){
+            finish();
+        }
     }
 
     @Override
@@ -95,5 +106,11 @@ public class FriendsWelcomeActivity extends BasePresenterActivity   {
     protected boolean isLightToolbarThemes() {
         return true;
     }
+
+    private   Boolean isappShowReferralButtonActivated(Context context){
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+        return remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_REFERRAL_BUTTON);
+    }
+
 
 }

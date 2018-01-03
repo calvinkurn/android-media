@@ -1,6 +1,7 @@
 package com.tokopedia.core.util;
 
 import android.app.Activity;
+import android.content.Context;
 
 import com.tokopedia.core.analytics.model.Product;
 import com.tokopedia.core.gcm.Constants;
@@ -69,9 +70,9 @@ public class BranchSdkUtils {
         String deeplinkPath;
         String desktopUrl = null;
         if (ShareData.PRODUCT_TYPE.equalsIgnoreCase(data.getType())) {
-            deeplinkPath = getApplinkPath(Constants.Applinks.PRODUCT_INFO, data.getId());//"product/" + data.getId();
-        } else if (ShareData.APP_SHARE_TYPE.equalsIgnoreCase(data.getType())) {
-            deeplinkPath = getApplinkPath(Constants.Applinks.REFERRAL_WELCOME, data.getId());//"home";
+            deeplinkPath = getApplinkPath(Constants.Applinks.PRODUCT_INFO, data.getId());
+        } else if (isappShowReferralButtonActivated(activity) && ShareData.APP_SHARE_TYPE.equalsIgnoreCase(data.getType())) {
+            deeplinkPath = getApplinkPath(Constants.Applinks.REFERRAL_WELCOME, data.getId());
             deeplinkPath = deeplinkPath.replaceFirst("\\{.*?\\} ?", SessionHandler.getLoginName(activity) == null ? "" : SessionHandler.getLoginName(activity));
 
         } else if (ShareData.SHOP_TYPE.equalsIgnoreCase(data.getType())) {
@@ -166,6 +167,11 @@ public class BranchSdkUtils {
             ex.printStackTrace();
         }
         return result;
+    }
+
+    public static Boolean isappShowReferralButtonActivated(Context context){
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+        return remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_REFERRAL_BUTTON);
     }
 
     public interface GenerateShareContents {

@@ -239,6 +239,7 @@ public class TkpdCache {
         public static final String APP_SHARE_WELCOME_MESSAGE = "app_share_welcome_message";
         public static final String APP_REFERRAL_TITLE = "app_referral_title";
         public static final String APP_REFERRAL_HOWITWORKS = "app_referral_howitworks";
+        public static final String APP_SHOW_REFERRAL_BUTTON = "app_show_referral_button";
     }
 
 }

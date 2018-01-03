@@ -57,11 +57,13 @@ public class ReferralPresenter implements IReferralPresenter {
     @Override
     public void initialize() {
         if (view.isUserLoggedIn()) {
-            if (view.isUserPhoneNumberVerified()) {
-                getReferralVoucherCode();
+            if(isappShowReferralButtonActivated()) {
+                if (view.isUserPhoneNumberVerified()) {
+                    getReferralVoucherCode();
 
-            } else {
-                view.showVerificationPhoneNumberPage();
+                } else {
+                    view.showVerificationPhoneNumberPage();
+                }
             }
         } else {
             view.navigateToLoginPage();
@@ -190,12 +192,20 @@ public class ReferralPresenter implements IReferralPresenter {
         return remoteConfig.getString(TkpdCache.RemoteConfigKey.APP_REFFERAL_CONTENT, "");
     }
 
+    @Override
     public String getHowItWorks() {
         return remoteConfig.getString(TkpdCache.RemoteConfigKey.APP_REFERRAL_HOWITWORKS, view.getActivity().getString(R.string.title_app_referral_howitworks));
     }
 
+    @Override
     public String getVoucherCodeFromCache() {
         LocalCacheHandler localCacheHandler = new LocalCacheHandler(view.getActivity(), TkpdCache.REFERRAL);
         return localCacheHandler.getString(TkpdCache.Key.REFERRAL_CODE, "");
+    }
+
+    @Override
+    public Boolean isappShowReferralButtonActivated(){
+        return remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_REFERRAL_BUTTON);
+
     }
 }

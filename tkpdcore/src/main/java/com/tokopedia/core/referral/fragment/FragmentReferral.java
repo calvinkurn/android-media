@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,6 +44,8 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
     TextView referralContentTextView;
     @BindView(R2.id.tv_referral_help_link)
     TextView TextViewHelpLink;
+    @BindView(R2.id.rl_referral_code)
+    RelativeLayout referralCodeLayout;
 
     private ProgressDialog progressBar;
     private static final int REFERRAL_PHONE_VERIFY_REQUEST_CODE = 1011;
@@ -104,20 +107,23 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
 
     @Override
     protected void initView(View view) {
-        TextViewHelpLink.setText(presenter.getHowItWorks());
         appShareButton.setOnClickListener(getButtonAppShareClickListner());
-
-        renderVoucherCode(presenter.getVoucherCodeFromCache());
-
         referralContentTextView.setText(presenter.getReferralContents());
-        TextViewHelpLink.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_HOW_IT_WORKS,"");
-                startActivity(ManageWebViewActivity.getCallingIntent(getActivity(), TkpdUrl.REFERRAL_URL, ((AppCompatActivity) getActivity()).getSupportActionBar().getTitle().toString()));
+        if (presenter.isappShowReferralButtonActivated()) {
+            referralCodeLayout.setVisibility(View.VISIBLE);
+            TextViewHelpLink.setText(presenter.getHowItWorks());
+            renderVoucherCode(presenter.getVoucherCodeFromCache());
+            TextViewHelpLink.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_HOW_IT_WORKS, "");
+                    startActivity(ManageWebViewActivity.getCallingIntent(getActivity(), TkpdUrl.REFERRAL_URL, ((AppCompatActivity) getActivity()).getSupportActionBar().getTitle().toString()));
 
-            }
-        });
+                }
+            });
+        }else{
+            referralCodeLayout.setVisibility(View.INVISIBLE);
+        }
 
     }
 
@@ -147,7 +153,7 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
             @Override
             public void onClick(View v) {
                 presenter.shareApp();
-                UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_SHARE_CODE,getReferralCodeFromTextView());
+                UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_SHARE_CODE, getReferralCodeFromTextView());
 
             }
         };
