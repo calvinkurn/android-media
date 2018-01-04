@@ -92,7 +92,7 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
         hotlistPromoView.renderData(hotlistPromo, new HotlistPromoView.CallbackListener() {
             @Override
             public void onTncButtonClick(String titlePromo, String voucherCode) {
-                TrackingUtils.clickCopyButtonHotlistPromo(hotlistTitle, titlePromo, voucherCode);
+                TrackingUtils.clickTnCButtonHotlistPromo(hotlistTitle, titlePromo, voucherCode);
             }
 
             @Override
