@@ -231,7 +231,7 @@ public class FlightSearchStatisticModel implements Parcelable {
                 }
             }
         }
-        return new FlightAirlineDB(airlineID, "", "", "", false);
+        return new FlightAirlineDB(airlineID, "", "", "", 0);
     }
 
     public List<DepartureStat> getDepartureTimeStatList() {

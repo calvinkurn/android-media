@@ -541,34 +541,17 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         getView().getCurrentBookingParamViewModel().setOrderDueTimestamp(timestamp);
     }
 
-    // Method untuk menambahkan Flight Id AirAsia, jadi seandainya nanti ada bertambah lagi, bisa langsung di tambah disini
-    private void initAirAsiaFlightId() {
-        if(this.airAsiaFlightIds == null) {
-            this.airAsiaFlightIds = new ArrayList<>();
-            this.airAsiaFlightIds.add("AK");
-            this.airAsiaFlightIds.add("FD");
-            this.airAsiaFlightIds.add("QZ");
-            this.airAsiaFlightIds.add("XJ");
-            this.airAsiaFlightIds.add("XT");
-        }
-    }
-
-    private boolean compareFlightIdWithAirAsia(String flightId) {
-        this.initAirAsiaFlightId();
-        return this.airAsiaFlightIds.contains(flightId);
-    }
-
     private boolean isAirAsiaAirline(FlightBookingCartData flightBookingCartData) {
 
         if(flightBookingCartData.getDepartureTrip() != null)
             for(FlightDetailRouteViewModel data : flightBookingCartData.getDepartureTrip().getRouteList()) {
-                if(this.compareFlightIdWithAirAsia(data.getAirlineCode()))
+                if(data.isAirlineMandatoryDOB() == 1)
                     return true;
             }
 
         if(flightBookingCartData.getReturnTrip() != null)
             for(FlightDetailRouteViewModel data : flightBookingCartData.getReturnTrip().getRouteList()) {
-                if(this.compareFlightIdWithAirAsia(data.getAirlineCode()))
+                if(data.isAirlineMandatoryDOB() == 1)
                     return true;
             }
 

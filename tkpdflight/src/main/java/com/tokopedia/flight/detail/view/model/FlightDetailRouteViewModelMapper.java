@@ -1,5 +1,6 @@
 package com.tokopedia.flight.detail.view.model;
 
+import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.orderlist.data.cloud.entity.RouteEntity;
 import com.tokopedia.flight.search.data.cloud.model.response.Route;
 
@@ -45,12 +46,14 @@ public class FlightDetailRouteViewModelMapper {
         return flightDetailRouteViewModel;
     }
 
-    public List<FlightDetailRouteViewModel> transform(List<Route> routes) {
+    public List<FlightDetailRouteViewModel> transform(List<Route> routes, List<FlightAirlineDB> airlineList) {
         List<FlightDetailRouteViewModel> flightDetailRouteViewModels = new ArrayList<>();
         FlightDetailRouteViewModel flightDetailRouteViewModel;
         if (routes != null) {
             for (Route route : routes) {
+                int indexAirlineList = getIndexFromId(airlineList, route.getAirline());
                 flightDetailRouteViewModel = transform(route);
+                flightDetailRouteViewModel.setAirlineMandatoryDOB(airlineList.get(indexAirlineList).getMandatoryDob());
                 if (flightDetailRouteViewModel != null) {
                     flightDetailRouteViewModels.add(flightDetailRouteViewModel);
                 }
@@ -96,5 +99,16 @@ public class FlightDetailRouteViewModelMapper {
             }
         }
         return flightDetailRouteViewModels;
+    }
+
+    private int getIndexFromId(List<FlightAirlineDB> airlineDBList, String id) {
+        int index = -1;
+        for(FlightAirlineDB airlineDB : airlineDBList) {
+            index++;
+            if(airlineDB.getId().equals(id)) {
+                break;
+            }
+        }
+        return index;
     }
 }
