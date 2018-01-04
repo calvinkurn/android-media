@@ -3,6 +3,7 @@ package com.tokopedia.tkpd;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.SessionHandler;
 
 /**
@@ -12,9 +13,11 @@ import com.tokopedia.core.util.SessionHandler;
 public class UserSessionImpl implements UserSession {
 
     private SessionHandler sessionHandler;
+    private Context context;
 
     public UserSessionImpl(Context context) {
         this.sessionHandler = new SessionHandler(context);
+        this.context = context;
     }
 
     @Override
@@ -30,6 +33,11 @@ public class UserSessionImpl implements UserSession {
     @Override
     public String getUserId() {
         return sessionHandler.getLoginID();
+    }
+
+    @Override
+    public String getDeviceId() {
+        return GCMHandler.getRegistrationId(context);
     }
 
     @Override

@@ -85,7 +85,8 @@ public class FlightBookingAmenityFragment extends BaseListFragment<FlightBooking
     }
 
     @Override
-    protected void setInitialActionVar() {
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         getAdapter().addData(flightBookingAmenityViewModels);
     }
 

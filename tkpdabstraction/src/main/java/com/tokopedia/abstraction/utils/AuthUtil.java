@@ -42,6 +42,8 @@ public class AuthUtil {
     private static final String HEADER_PATH = "x-tkpd-path";
     private static final String X_TKPD_HEADER_AUTHORIZATION = "X-TKPD-Authorization";
     private static final String HEADER_X_MSISDN = "x-msisdn";
+    private static final String HEADER_OS_TYPE = "os-type";
+    private static final String HEADER_SESSION_ID = "tkpd-SessionId";
 
     private static final String PARAM_USER_ID = "user_id";
     private static final String PARAM_DEVICE_ID = "device_id";
@@ -92,6 +94,38 @@ public class AuthUtil {
         headerMap.put(HEADER_REQUEST_METHOD, method);
         headerMap.put(HEADER_CONTENT_MD5, contentMD5);
         headerMap.put(HEADER_DATE, date);
+        headerMap.put(HEADER_AUTHORIZATION, "TKPD Tokopedia:" + signature.trim());
+        headerMap.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
+        headerMap.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
+        headerMap.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
+        headerMap.put(HEADER_USER_ID, userId);
+        headerMap.put(HEADER_X_TKPD_USER_ID, userId);
+        headerMap.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
+        return headerMap;
+    }
+
+    public static Map<String, String> generateHeadersWithXUserId(
+            String path, String strParam, String method, String authKey, String contentType, String userId, String deviceId
+    ) {
+        String date = generateDate(DATE_FORMAT);
+        String contentMD5 = generateContentMd5(strParam);
+
+        String authString = method
+                + "\n" + contentMD5
+                + "\n" + contentType
+                + "\n" + date
+                + "\n" + PARAM_X_TKPD_USER_ID + ":" + userId
+                + "\n" + path;
+        String signature = calculateRFC2104HMAC(authString, authKey);
+
+        Map<String, String> headerMap = new ArrayMap<>();
+        headerMap.put(HEADER_CONTENT_TYPE, contentType != null ? contentType : CONTENT_TYPE);
+        headerMap.put(HEADER_X_METHOD, method);
+        headerMap.put(HEADER_REQUEST_METHOD, method);
+        headerMap.put(HEADER_CONTENT_MD5, contentMD5);
+        headerMap.put(HEADER_DATE, date);
+        headerMap.put(HEADER_SESSION_ID, deviceId);
+        headerMap.put(HEADER_OS_TYPE, "1");
         headerMap.put(HEADER_AUTHORIZATION, "TKPD Tokopedia:" + signature.trim());
         headerMap.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
         headerMap.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());

@@ -90,11 +90,12 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
                 }
             });
         }
-
-        setInitialActionVar();
     }
 
-    protected abstract void setInitialActionVar();
+    protected void loadInitialData(){
+        //TODO need to load initial data?
+        adapter.clearData();
+    }
 
     protected void onLoadMoreCalled(int page, int totalItemsCount) {
 
@@ -118,10 +119,6 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
     protected void showLoading() {
         adapter.showLoading();
         hideSnackBarRetry();
-    }
-
-    public void loadInitialData() {
-        adapter.clearData();
     }
 
     public BaseListAdapter<T, F> getAdapter() {
@@ -169,7 +166,7 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
         showSnackBarRetry(new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-
+                //TODO adapter.loadNextPage();??
             }
         });
     }

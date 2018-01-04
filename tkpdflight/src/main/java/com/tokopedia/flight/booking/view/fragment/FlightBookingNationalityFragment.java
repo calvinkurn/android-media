@@ -2,6 +2,9 @@ package com.tokopedia.flight.booking.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.View;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
@@ -34,9 +37,9 @@ public class FlightBookingNationalityFragment extends BaseSearchListFragment<Fli
                 .inject(this);
     }
 
-
     @Override
-    protected void setInitialActionVar() {
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         showLoading();
         flightBookingPhoneCodePresenter.getPhoneCodeList();
     }

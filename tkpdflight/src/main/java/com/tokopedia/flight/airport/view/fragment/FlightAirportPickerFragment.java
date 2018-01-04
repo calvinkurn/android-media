@@ -59,7 +59,8 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAi
     }
 
     @Override
-    protected void setInitialActionVar() {
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         flightAirportPickerPresenter.getAirportList(searchInputView.getSearchText());
     }
 
