@@ -90,7 +90,7 @@
 
     <style name="eo_text_option_style_flight" parent="TextView.Title.Bold">
         <item name="android:layout_centerVertical">true</item>
-        <item name="android:textSize">@dimen/font_subheading</item>
+        <item name="android:textSize">@dimen/font_title</item>
     </style>
 
     <style name="eo_header_style_flight_detail" parent="eo_header_style">
