@@ -303,7 +303,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             requestOtherProducts(context,
                                     NetworkParam.paramOtherProducts(productDetailData));
                             setGoldMerchantFeatures(context, productDetailData);
-                            getProductCampaign(context, productDetailData.getInfo().getProductId().toString());
+                            getProductCampaign(context, productDetailData.getInfo().getProductId().toString(),productDetailData.getInfo().getHasVariant());
                             getTalk(context, productDetailData.getInfo().getProductId().toString(), productDetailData.getShopInfo().getShopId());
                             getMostHelpfulReview(context, productDetailData.getInfo().getProductId
                                     ().toString(), productDetailData.getShopInfo().getShopId());
@@ -804,7 +804,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         viewListener.refreshMenu();
                         requestOtherProducts(context, NetworkParam.paramOtherProducts(data));
                         setGoldMerchantFeatures(context, data);
-                        getProductCampaign(context, data.getInfo().getProductId().toString());
+                        getProductCampaign(context, data.getInfo().getProductId().toString(), data.getInfo().getHasVariant());
                         getMostHelpfulReview(context, data.getInfo().getProductId().toString(),
                                 data.getShopInfo().getShopId());
                         getTalk(context, data.getInfo().getProductId().toString(), data.getShopInfo().getShopId());
@@ -933,18 +933,18 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         });
     }
 
-    public void getProductCampaign(final @NonNull Context context, final @NonNull String id) {
+    public void getProductCampaign(final @NonNull Context context, final @NonNull String id, final boolean hasVariant) {
         retrofitInteractor.getProductCampaign(context, id,
                 new RetrofitInteractor.ProductCampaignListener() {
                     @Override
                     public void onSucccess(ProductCampaign productCampaign) {
                         viewListener.showProductCampaign(productCampaign);
-                        getProductVariant(context,id);
+                        if (hasVariant) getProductVariant(context,id);
                     }
 
                     @Override
                     public void onError(String error) {
-                        getProductVariant(context,id);
+                        if (hasVariant) getProductVariant(context,id);
                     }
                 }
         );
