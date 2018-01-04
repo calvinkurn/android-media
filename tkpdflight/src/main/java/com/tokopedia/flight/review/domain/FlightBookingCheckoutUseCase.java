@@ -25,7 +25,8 @@ import rx.functions.Func1;
  */
 
 public class FlightBookingCheckoutUseCase extends UseCase<FlightCheckoutEntity> {
-    public static final String PARAM_FLIGHT_ID = "flight_id";
+    public static final String PARAM_CART_ID = "cart_id";
+    public static final String PARAM_FLIGHT_ID = "invoice_id";
     public static final String PARAM_PRICE = "price";
     public static final String PARAM_PROMOCODE = "promocode";
     private FlightRepository flightRepository;
@@ -61,6 +62,7 @@ public class FlightBookingCheckoutUseCase extends UseCase<FlightCheckoutEntity> 
         metaData.setFlightId(requestParams.getString(PARAM_FLIGHT_ID, ""));
         metaData.setIpAddress(FlightRequestUtil.getLocalIpAddress());
         metaData.setUserAgent(FlightRequestUtil.getUserAgentForApiCall());
+        metaData.setCartId(requestParams.getString(PARAM_CART_ID, ""));
         item.setMetaData(metaData);
         items.add(item);
         attributes.setItems(items);
@@ -73,17 +75,19 @@ public class FlightBookingCheckoutUseCase extends UseCase<FlightCheckoutEntity> 
         return Observable.just(checkoutRequest);
     }
 
-    public RequestParams createRequestParam(String flightId, int price, String promoCode) {
+    public RequestParams createRequestParam(String cartId, String flightId, int price, String promoCode) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putInt(PARAM_PRICE, price);
+        requestParams.putString(PARAM_CART_ID, cartId);
         requestParams.putString(PARAM_FLIGHT_ID, flightId);
         requestParams.putString(PARAM_PROMOCODE, promoCode);
         return requestParams;
     }
 
-    public RequestParams createRequestParam(String flightId, int price) {
+    public RequestParams createRequestParam(String cartId, String flightId, int price) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putInt(PARAM_PRICE, price);
+        requestParams.putString(PARAM_CART_ID, cartId);
         requestParams.putString(PARAM_FLIGHT_ID, flightId);
         return requestParams;
     }
