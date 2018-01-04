@@ -1,13 +1,9 @@
 package com.tokopedia.tkpdpdp;
 
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.graphics.Paint;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.TintableBackgroundView;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
@@ -18,14 +14,12 @@ import android.widget.TextView;
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.network.entity.variant.Child;
 import com.tokopedia.core.network.entity.variant.Option;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.network.entity.variant.Variant;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.tkpdpdp.adapter.VariantOptionAdapter;
-import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 
 import java.util.List;
 
@@ -148,7 +142,9 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     public void updateButton(Child child) {
         if (child.isIsBuyable() && productDetailData.getShopInfo().getShopStatus()==1) {
             buttonSave.setBackground(ContextCompat.getDrawable(VariantActivity.this,R.drawable.button_save_orange));
+            textButtonSave.setTextColor(ContextCompat.getColor(VariantActivity.this,R.color.href_link_rev));
             textButtonSave.setText(getResources().getString(R.string.title_buy));
+            buttonSave.setClickable(true);
             buttonSave.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -159,10 +155,14 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             });
         } else if (child.isIsBuyable()==false) {
             textButtonSave.setText(getResources().getString(R.string.title_warehouse));
-            buttonSave.setBackground(ContextCompat.getDrawable(VariantActivity.this,R.drawable.button_save_green));
+            textButtonSave.setTextColor(ContextCompat.getColor(VariantActivity.this,R.color.black_38));
+            buttonSave.setBackground(ContextCompat.getDrawable(VariantActivity.this,R.drawable.button_save_grey));
+            buttonSave.setClickable(false);
         } else {
             textButtonSave.setText(getResources().getString(R.string.title_buy));
-            buttonSave.setBackground(ContextCompat.getDrawable(VariantActivity.this,R.drawable.button_save_green));
+            textButtonSave.setTextColor(ContextCompat.getColor(VariantActivity.this,R.color.black_38));
+            buttonSave.setClickable(false);
+            buttonSave.setBackground(ContextCompat.getDrawable(VariantActivity.this,R.drawable.button_save_grey));
         }
     }
 

@@ -81,7 +81,7 @@
         android:layout_marginLeft="@dimen/margin_sm"
         android:layout_marginRight="@dimen/margin_sm"
         android:layout_marginBottom="@dimen/margin_sm"
-        android:background="@drawable/button_save_green"
+        android:background="@drawable/button_save_grey"
         android:layout_alignParentBottom="true"
         android:orientation="vertical">
 
