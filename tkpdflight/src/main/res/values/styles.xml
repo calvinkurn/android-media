@@ -81,6 +81,11 @@
         <item name="eo_text_option_style">@style/eo_text_option_style_flight</item>
     </style>
 
+    <style name="style_expandable_flight.Bold" parent="style_expandable_option_default">
+        <item name="eo_header_style">@style/eo_header_style_flight</item>
+        <item name="eo_text_option_style">@style/eo_text_option_style_flight.Bold</item>
+    </style>
+
     <style name="eo_header_style_flight" parent="eo_header_style">
         <item name="android:paddingBottom">@dimen/padding_med</item>
         <item name="android:paddingLeft">0dp</item>
@@ -88,7 +93,12 @@
         <item name="android:paddingTop">@dimen/padding_med</item>
     </style>
 
-    <style name="eo_text_option_style_flight" parent="TextView.Title.Bold">
+    <style name="eo_text_option_style_flight" parent="TextView.Title">
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="eo_text_option_style_flight.Bold" parent="TextView.Title.Bold">
         <item name="android:layout_centerVertical">true</item>
         <item name="android:textSize">18sp</item>
     </style>
