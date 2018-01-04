@@ -94,7 +94,7 @@ public class FlightDetailViewModel implements ItemType, Parcelable {
             setInfantNumericPrice(flightSearchViewModel.getFare().getInfantNumeric());
             FlightDetailRouteInfoViewModelMapper flightDetailRouteInfoViewModelMapper = new FlightDetailRouteInfoViewModelMapper();
             FlightDetailRouteViewModelMapper mapper = new FlightDetailRouteViewModelMapper(flightDetailRouteInfoViewModelMapper);
-            setRouteList(mapper.transform(flightSearchViewModel.getRouteList()));
+            setRouteList(mapper.transform(flightSearchViewModel.getRouteList(), flightSearchViewModel.getAirlineList()));
             setDepartureTime(flightSearchViewModel.getDepartureTime());
             setArrivalTime(flightSearchViewModel.getArrivalTime());
             return this;
