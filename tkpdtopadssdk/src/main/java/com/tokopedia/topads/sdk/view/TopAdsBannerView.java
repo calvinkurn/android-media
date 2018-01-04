@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.text.Html;
+import android.text.Spanned;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -20,6 +22,8 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.presenter.BannerAdsPresenter;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
+
+import org.apache.commons.text.StringEscapeUtils;
 
 /**
  * Created by errysuprayogi on 12/28/17.
@@ -48,8 +52,12 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         init();
     }
 
-    private String eliminateSpecialCharacter(String s){
-        return s.replaceAll("&(?!.{2,4};)", "&amp;");
+    public static Spanned escapeHTML(String s) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return Html.fromHtml(StringEscapeUtils.unescapeHtml4(s), Html.FROM_HTML_MODE_LEGACY);
+        } else {
+            return Html.fromHtml(StringEscapeUtils.unescapeHtml4(s));
+        }
     }
 
     private void createViewCpmShop(Context context, CpmData.Cpm cpm) {
@@ -61,13 +69,8 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         LinearLayout badgeContainer = (LinearLayout) findViewById(R.id.badges_container);
         imageLoader.loadImage(cpm.getCpmImage().getFullEcs(), cpm.getCpmImage().getFullUrl(), iconImg);
         promotedTxt.setText(cpm.getPromotedText());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            nameTxt.setText(Html.fromHtml(eliminateSpecialCharacter(cpm.getName()), Html.FROM_HTML_MODE_LEGACY));
-            descriptionTxt.setText(Html.fromHtml(eliminateSpecialCharacter(cpm.getDecription()), Html.FROM_HTML_MODE_LEGACY));
-        } else {
-            nameTxt.setText(Html.fromHtml(eliminateSpecialCharacter(cpm.getName())));
-            descriptionTxt.setText(Html.fromHtml(eliminateSpecialCharacter(cpm.getDecription())));
-        }
+        nameTxt.setText(escapeHTML(cpm.getName()));
+        descriptionTxt.setText(escapeHTML(cpm.getDecription()));
         badgeContainer.removeAllViews();
         for (Badge badge : cpm.getBadges()) {
             ImageView badgeImg = new ImageView(context);
@@ -84,13 +87,8 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         TextView nameTxt = (TextView) findViewById(R.id.name);
         TextView descriptionTxt = (TextView) findViewById(R.id.description);
         imageLoader.loadImage(cpm.getCpmImage().getFullEcs(), cpm.getCpmImage().getFullUrl(), iconImg);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            nameTxt.setText(Html.fromHtml(eliminateSpecialCharacter(cpm.getName()), Html.FROM_HTML_MODE_LEGACY));
-            descriptionTxt.setText(Html.fromHtml(eliminateSpecialCharacter(cpm.getDecription()), Html.FROM_HTML_MODE_LEGACY));
-        } else {
-            nameTxt.setText(Html.fromHtml(eliminateSpecialCharacter(cpm.getName())));
-            descriptionTxt.setText(Html.fromHtml(eliminateSpecialCharacter(cpm.getDecription())));
-        }
+        nameTxt.setText(escapeHTML(cpm.getName()));
+        descriptionTxt.setText(escapeHTML(cpm.getDecription()));
     }
 
     public void setConfig(Config config) {

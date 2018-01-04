@@ -603,13 +603,7 @@ public class ProductFragment extends SearchSectionFragment
     @Override
     public void onBannerAdsClicked(String appLink) {
         if (!TextUtils.isEmpty(appLink)) {
-            Uri uri = Uri.parse(appLink);
-            if (appLink.contains("shop")) {
-                String shopId = uri.getLastPathSegment();
-                startActivity(ShopInfoActivity.getCallingIntent(getContext(), shopId));
-            } else {
-                startActivity(new Intent(Intent.ACTION_VIEW, uri));
-            }
+            ((TkpdCoreRouter) getActivity().getApplication()).actionApplink(getActivity(), appLink);
         }
     }
 

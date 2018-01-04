@@ -265,13 +265,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
             @Override
             public void onBannerAdsClicked(String applink) {
                 if (!TextUtils.isEmpty(applink)) {
-                    Uri uri = Uri.parse(applink);
-                    if (applink.contains("shop")) {
-                        String shopId = uri.getLastPathSegment();
-                        startActivity(ShopInfoActivity.getCallingIntent(getContext(), shopId));
-                    } else {
-                        startActivity(new Intent(Intent.ACTION_VIEW, uri));
-                    }
+                    ((TkpdCoreRouter) getActivity().getApplication()).actionApplink(getActivity(), applink);
                 }
             }
         });
