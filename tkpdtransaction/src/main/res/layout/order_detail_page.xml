@@ -17,6 +17,11 @@
 
             <include layout="@layout/order_detail_page_header" />
 
+            <include
+                android:id="@+id/layout_pickup_point_pin_code"
+                layout="@layout/layout_pickup_point_pin_code"
+                android:visibility="gone" />
+
             <include layout="@layout/order_detail_description" />
 
             <View

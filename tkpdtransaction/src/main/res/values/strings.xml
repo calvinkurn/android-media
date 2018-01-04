@@ -178,4 +178,8 @@
     <string name="label_dialog_title_cancel_pickup">Batalkan Pengiriman ke Gerai Pengambilan</string>
     <string name="label_dialog_message_cancel_pickup_booth">Apakah Anda yakin ingin membatalkan pengiriman ke Gerai Pengambilan</string>
     <string name="label_info_pickup_booth">Pesanan akan dikirim ke gerai pilihan Anda. \nTunjukkan pin code saat pengambilan</string>
+    <string name="label_pin_code">Kode Pin</string>
+    <string name="label_colon">:</string>
+    <string name="title_bottomsheet_pin_code_pickup_booth">Kode Pin</string>
+    <string name="message_bottomsheet_pin_code_pickup_booth">Tunjukkan Kode Pin untuk verifikasi pada saat pengambilan barang</string>
 </resources>
