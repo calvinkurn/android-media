@@ -474,7 +474,7 @@ public class ProductListFragment extends SearchSectionFragment
         if (!TextUtils.isEmpty(appLink)) {
             Uri uri = Uri.parse(appLink);
             if (appLink.contains("shop")) {
-                String shopId = uri.getPathSegments().get(1);
+                String shopId = uri.getLastPathSegment();
                 startActivity(ShopInfoActivity.getCallingIntent(getContext(), shopId));
             } else {
                 startActivity(new Intent(Intent.ACTION_VIEW, uri));

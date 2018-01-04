@@ -267,7 +267,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
                 if (!TextUtils.isEmpty(applink)) {
                     Uri uri = Uri.parse(applink);
                     if (applink.contains("shop")) {
-                        String shopId = uri.getPathSegments().get(1);
+                        String shopId = uri.getLastPathSegment();
                         startActivity(ShopInfoActivity.getCallingIntent(getContext(), shopId));
                     } else {
                         startActivity(new Intent(Intent.ACTION_VIEW, uri));
