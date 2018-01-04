@@ -931,7 +931,7 @@ public interface AppEventTracking {
         String CATEGORY_ADD_PRODUCT = "Add Product";
         String CATEGORY_EDIT_PRODUCT = "Edit Product";
         String EVENT_ACTION_ADD = "click add - optional fields used";
-        String EVENT_ACTION_EDIT = "Edit";
+        String EVENT_ACTION_EDIT = "click edit - optional fields used";
         String EVENT_ACTION_ADD_MORE = "click add more products - optional fields used";
         String EVENT_ACTION_ERROR = "click add error - field validation triggered";
         String EVENT_ACTION_ERROR_SERVER = "click add error - server validation triggered";
