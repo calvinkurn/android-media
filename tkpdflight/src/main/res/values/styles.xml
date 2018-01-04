@@ -83,8 +83,8 @@
 
     <style name="eo_header_style_flight" parent="eo_header_style">
         <item name="android:paddingBottom">@dimen/padding_med</item>
-        <item name="android:paddingLeft">@dimen/padding_med</item>
-        <item name="android:paddingRight">@dimen/padding_med</item>
+        <item name="android:paddingLeft">0dp</item>
+        <item name="android:paddingRight">0dp</item>
         <item name="android:paddingTop">@dimen/padding_med</item>
     </style>
 
