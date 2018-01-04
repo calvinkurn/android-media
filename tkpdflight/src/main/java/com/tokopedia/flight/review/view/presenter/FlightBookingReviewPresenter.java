@@ -76,7 +76,7 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
                 if (dataResponseVerify.getAttributesData().getCartItems() != null && dataResponseVerify.getAttributesData().getCartItems().size() > 0) {
                     CartItem verifyCartItem = dataResponseVerify.getAttributesData().getCartItems().get(0);
                     int totalPrice = verifyCartItem.getConfiguration().getPrice();
-                    String flightId = verifyCartItem.getMetaData().getFlightId();
+                    String flightId = verifyCartItem.getMetaData().getInvoiceId();
                     RequestParams requestParams;
                     if (dataResponseVerify.getAttributesData().getPromo() != null && dataResponseVerify.getAttributesData().getPromo().getCode().length() > 0) {
                         requestParams = flightBookingCheckoutUseCase.createRequestParam(flightId, totalPrice, dataResponseVerify.getAttributesData().getPromo().getCode());
