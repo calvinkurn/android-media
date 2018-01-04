@@ -338,7 +338,8 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
                                                     .replace("XXX",
                                                             orderShippingList.getOrderDetail()
                                                                     .getDetailPdfUri())).toString(),
-                                    TkpdInboxRouter.TX_ASK_BUYER);
+                                    TkpdInboxRouter.TX_ASK_BUYER,
+                                    orderShippingList.getOrderCustomer().getCustomerImage());
                     startActivity(intent);
                 }
             }
@@ -481,7 +482,7 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
 
     @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     public void onScanBarcode() {
-        startActivityForResult(CommonUtils.requestBarcodeScanner(), REQUEST_CODE_BARCODE);
+        startActivityForResult(CommonUtils.requestBarcodeScanner(getContext()), REQUEST_CODE_BARCODE);
     }
 
     public void cancelDialog() {
@@ -686,14 +687,27 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     }
 
     @Override
-    public void setData(int type, Bundle data) {
+    public void setData(final int type, Bundle data) {
         switch (type) {
             case SellingService.CONFIRM_SHIPPING:
             case SellingService.CANCEL_SHIPPING:
                 Data result = Parcels.unwrap(data.getParcelable(SellingService.MODEL_CONFIRM_SHIPPING_KEY));
+                progressDialog.dismiss();
                 if (result.getIsSuccess() == 1) {
-                    progressDialog.dismiss();
                     finishShipping(false);
+                }else{
+                    NetworkErrorHelper.showDialog(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            if (bundle != null) {
+                                if(type == SellingService.CONFIRM_SHIPPING) {
+                                    ((SellingDetailActivity) getActivity()).SellingAction(SellingService.CONFIRM_SHIPPING, bundle);
+                                }else{
+                                    ((SellingDetailActivity) getActivity()).SellingAction(SellingService.CANCEL_SHIPPING, bundle);
+                                }
+                            }
+                        }
+                    });
                 }
                 break;
         }

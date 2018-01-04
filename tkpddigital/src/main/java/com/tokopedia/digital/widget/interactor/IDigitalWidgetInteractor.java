@@ -1,5 +1,7 @@
 package com.tokopedia.digital.widget.interactor;
 
+import android.support.v4.util.Pair;
+
 import com.tokopedia.digital.widget.model.operator.Operator;
 import com.tokopedia.digital.widget.model.product.Product;
 
@@ -17,11 +19,16 @@ import rx.Subscriber;
 
 public interface IDigitalWidgetInteractor {
 
-    void getProductsFromPrefix(Subscriber<List<Product>> subscriber, int categoryId, String prefix, Boolean validatePrefix);
+    void getOperatorAndProductsFromPrefix(Subscriber<Pair<Operator, List<Product>>> subscriber, int categoryId, String prefix);
 
-    void getOperatorsFromCategory(Subscriber<List<Operator>> subscriber, int categoryId);
+    void getOperatorAndProductsFromPrefix2(Subscriber<Pair<Operator, List<Product>>> subscriber, int categoryId, String prefix);
 
-    void getProductsFromOperator(Subscriber<List<Product>> subscriber, int categoryId, String operatorId);
+    void getOperatorAndProductsByOperatorId(Subscriber<Pair<Operator, List<Product>>> subscriber,
+                                                  int categoryId, String operatorId);
+
+    void getOperatorsByCategoryId(Subscriber<List<Operator>> subscriber, int categoryId);
+
+    void getProductsByOperatorId(Subscriber<List<Product>> subscriber, int categoryId, String operatorId);
 
     void getOperatorById(Subscriber<Operator> subscriber, String operatorId);
 
@@ -29,5 +36,7 @@ public interface IDigitalWidgetInteractor {
 
     void getNumberList(Subscriber<DigitalNumberList> subscriber,
                        TKPDMapParam<String, String> param);
+
+    void setUseCacheToTrue();
 
 }

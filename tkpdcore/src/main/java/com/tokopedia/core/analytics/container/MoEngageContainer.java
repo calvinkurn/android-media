@@ -227,6 +227,8 @@ public class MoEngageContainer implements IMoengageContainer {
                 if(checkNull(value.getShopScore()))
                 helper.setUserAttribute(AppEventTracking.MOENGAGE.SHOP_SCORE, value.getShopScore());
 
+                if(checkNull(value.getGender()))
+                    helper.setGender(value.getGender().equals("1") ? "male" : "female");
             }
 
             @Override

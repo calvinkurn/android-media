@@ -18,7 +18,6 @@
                 android:id="@+id/manage_group"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:label_show_arrow="true"
                 app:content_color="@color/tkpd_main_green"
                 app:title="@string/label_manage_group" />
 

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tool="http://schemas.android.com/tools"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -23,22 +23,38 @@
             android:src="@drawable/ic_notebook"
             android:contentDescription="@string/home_fav_store" />
 
-        <TextView
-            android:id="@+id/shop_name"
+        <LinearLayout
+            android:id="@+id/layout_shop_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_small"
             android:layout_marginStart="@dimen/margin_small"
             android:layout_toRightOf="@+id/shop_avatar"
             android:layout_toEndOf="@+id/shop_avatar"
-            android:maxLines="1"
-            android:textColor="@color/href_link"
-            android:textSize="@dimen/fontvs" />
+            android:gravity="center"
+            android:maxLines="1">
+            <ImageView
+                android:id="@+id/image_badge"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                tool:src="@drawable/ic_shop_gold"
+                android:layout_marginRight="@dimen/margin_vs"
+                android:layout_marginEnd="@dimen/margin_vs"
+                android:visibility="gone">
+            </ImageView>
+            <TextView
+                android:id="@+id/shop_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/href_link"
+                android:textSize="@dimen/fontvs"
+                tool:text="Shop Name"/>
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/shop_name"
+            android:layout_below="@id/layout_shop_name"
             android:layout_marginLeft="@dimen/margin_small"
             android:layout_marginStart="@dimen/margin_small"
             android:layout_toRightOf="@+id/shop_avatar"

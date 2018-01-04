@@ -5,11 +5,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -28,26 +28,29 @@ import com.tokopedia.core.drawer2.view.databinder.DrawerHeaderDataBinder;
 import com.tokopedia.core.drawer2.view.databinder.DrawerItemDataBinder;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerGroup;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
+import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.loyaltysystem.LoyaltyDetail;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
+import com.tokopedia.core.router.wallet.IWalletRouter;
+import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
-import com.tokopedia.core.util.Drawer;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
+import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.remoteconfig.RemoteConfigFetcher;
 
 import java.util.ArrayList;
 
@@ -75,7 +78,7 @@ public class DrawerBuyerHelper extends DrawerHelper
     private SessionHandler sessionHandler;
     private GlobalCacheManager globalCacheManager;
 
-    FirebaseRemoteConfig firebaseRemoteConfig;
+    private RemoteConfig remoteConfig;
 
     public DrawerBuyerHelper(Activity activity,
                              SessionHandler sessionHandler,
@@ -101,7 +104,7 @@ public class DrawerBuyerHelper extends DrawerHelper
 
     @Override
     public ArrayList<DrawerItem> createDrawerData() {
-        fetchRemoteConfig();
+        initRemoteConfig();
         ArrayList<DrawerItem> data = new ArrayList<>();
 
         if (sessionHandler.isV4Login()) {
@@ -116,20 +119,8 @@ public class DrawerBuyerHelper extends DrawerHelper
         return data;
     }
 
-    private void fetchRemoteConfig() {
-        RemoteConfigFetcher remoteConfigFetcher = new RemoteConfigFetcher(context);
-        remoteConfigFetcher.fetch(new RemoteConfigFetcher.Listener() {
-            @Override
-            public void onComplete(FirebaseRemoteConfig instance) {
-                firebaseRemoteConfig = instance;
-            }
-
-            @Override
-            public void onError(Exception e) {
-
-            }
-        });
-        firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+    private void initRemoteConfig() {
+        remoteConfig = new FirebaseRemoteConfigImpl(context);
     }
 
     private void createDataGuest(ArrayList<DrawerItem> data) {
@@ -197,18 +188,18 @@ public class DrawerBuyerHelper extends DrawerHelper
                 true));
     }
 
-    private DrawerItem getGoldMerchantMenu(){
+    private DrawerItem getGoldMerchantMenu() {
         DrawerItem menu;
         boolean isGoldMerchant = SessionHandler.isGoldMerchant(context);
-        if(isGoldMerchant) {
+        if (isGoldMerchant) {
             menu = new DrawerGroup(context.getString(R.string.drawer_title_gold_merchant),
                     R.drawable.ic_goldmerchant_drawer,
                     TkpdState.DrawerPosition.GOLD_MERCHANT,
                     drawerCache.getBoolean(DrawerAdapter.IS_GM_OPENED, false),
                     0);
-            ((DrawerGroup)menu).add(new DrawerItem(context.getString(R.string.drawer_title_featured_product),
+            ((DrawerGroup) menu).add(new DrawerItem(context.getString(R.string.drawer_title_featured_product),
                     TkpdState.DrawerPosition.FEATURED_PRODUCT, false, true));
-        }else {
+        } else {
             menu = (new DrawerItem(context.getString(R.string.drawer_title_gold_merchant),
                     R.drawable.ic_goldmerchant_drawer,
                     TkpdState.DrawerPosition.GOLD_MERCHANT,
@@ -321,6 +312,10 @@ public class DrawerBuyerHelper extends DrawerHelper
                 TkpdState.DrawerPosition.RESOLUTION_CENTER,
                 drawerCache.getBoolean(IS_INBOX_OPENED, false),
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER)));
+        inboxMenu.add(new DrawerItem(context.getString(R.string.drawer_title_seller_info),
+                TkpdState.DrawerPosition.SELLER_INFO,
+                drawerCache.getBoolean(DrawerAdapter.IS_INBOX_OPENED, false),
+                drawerCache.getInt(DrawerNotification.CACHE_INBOX_SELLER_INFO)));
         return inboxMenu;
     }
 
@@ -517,6 +512,11 @@ public class DrawerBuyerHelper extends DrawerHelper
                         UnifyTracking.eventTopAdsSwitcher(AppEventTracking.Category.SWITCHER);
                     }
                     break;
+                case TkpdState.DrawerPosition.SELLER_INFO:
+                    UnifyTracking.eventClickMenuSellerInfo();
+                    intent = new Intent(context, SellerInfoActivity.class);
+                    context.startActivity(intent);
+                    break;
                 default:
                     super.onItemClicked(item);
             }
@@ -559,26 +559,41 @@ public class DrawerBuyerHelper extends DrawerHelper
     }
 
     @Override
-    public void onGoToTopCash(String topCashUrl) {
-        if (context.getApplication() instanceof IDigitalModuleRouter) {
-            IDigitalModuleRouter digitalModuleRouter = (IDigitalModuleRouter) context.getApplication();
-            context.startActivity(digitalModuleRouter.instanceIntentTokoCashActivation());
-        }
-
-    }
-
-    @Override
-    public void onGoToTopCashWithOtp(String topCashUrl) {
-        if (context.getApplication() instanceof TkpdCoreRouter) {
-            ((TkpdCoreRouter) context.getApplication())
-                    .goToWallet(context, topCashUrl);
-        }
-    }
-
-    @Override
     public void onGoToProfileCompletion() {
         Intent intent = new Intent(context, ProfileCompletionActivity.class);
         context.startActivity(intent);
+    }
+
+    @Override
+    public void onWalletBalanceClicked(String redirectUrlBalance, String appLinkBalance) {
+        WalletRouterUtil.navigateWallet(
+                context.getApplication(),
+                context,
+                IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
+                appLinkBalance,
+                redirectUrlBalance,
+                new Bundle()
+        );
+    }
+
+    @Override
+    public void onWalletActionButtonClicked(String redirectUrlActionButton, String appLinkActionButton) {
+        WalletRouterUtil.navigateWallet(
+                context.getApplication(),
+                context,
+                IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
+                appLinkActionButton,
+                redirectUrlActionButton,
+                new Bundle()
+        );
+    }
+
+    @Override
+    public void onTokoPointActionClicked(String mainPageUrl, String title) {
+        if (TextUtils.isEmpty(title))
+            context.startActivity(BannerWebView.getCallingIntent(context, mainPageUrl));
+        else
+            context.startActivity(BannerWebView.getCallingIntentWithTitle(context, mainPageUrl, title));
     }
 
     private void onGoToCreateShop() {
@@ -597,7 +612,7 @@ public class DrawerBuyerHelper extends DrawerHelper
     }
 
     private void showAppShareButton(ArrayList<DrawerItem> data) {
-        if(firebaseRemoteConfig.getBoolean(TkpdCache.Key.CONFIG_SHOW_HIDE_APP_SHARE_BUTTON)) {
+        if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.MAINAPP_SHOW_APP_SHARE_BUTTON)) {
             data.add(new DrawerItem(context.getString(R.string.drawer_title_appshare),
                     R.drawable.share_ke_teman,
                     TkpdState.DrawerPosition.APPSHARE,

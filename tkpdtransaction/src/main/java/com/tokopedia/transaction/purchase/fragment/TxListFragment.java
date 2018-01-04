@@ -267,6 +267,8 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
         else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
+
+
     @Override
     public void showDialog(Dialog dialog) {
         if (!dialog.isShowing()) dialog.show();
@@ -630,6 +632,11 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
             hideProgressLoading();
             onRefresh(getView());
         }
+    }
+
+    @Override
+    public void showToastSuccessMessage(String message) {
+        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
     }
 }
 

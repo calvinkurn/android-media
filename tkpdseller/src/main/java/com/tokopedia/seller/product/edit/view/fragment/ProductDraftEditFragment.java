@@ -97,6 +97,9 @@ public class ProductDraftEditFragment extends ProductDraftAddFragment {
     }
 
     private boolean processEditWholesale(List<ProductWholesaleViewModel> productWholesaleList, List<ProductWholesaleViewModel> productWholesaleBeforeEdit) {
+        if (productWholesaleList == null || productWholesaleBeforeEdit == null) {
+            return false;
+        }
         if (productWholesaleList.size() != productWholesaleBeforeEdit.size()) {
             return true;
         }
@@ -123,14 +126,16 @@ public class ProductDraftEditFragment extends ProductDraftAddFragment {
 
         // loop in photo before edit
         // if there is a photo without url existed in new photo list, the prepare it to be deleted
-        for (ImageProductInputViewModel viewModel : productPhotosBeforeEdit.getPhotos()) {
-            try {
-                findImage(viewModel, productPhotos.getPhotos());
-            } catch (RuntimeException e) {
-                viewModel.setStatus(ImageStatusTypeDef.WILL_BE_DELETED);
-                viewModel.setUrl("");
-                newPhotosList.add(viewModel);
-                isChanging = true;
+        if (productPhotosBeforeEdit != null) {
+            for (ImageProductInputViewModel viewModel : productPhotosBeforeEdit.getPhotos()) {
+                try {
+                    findImage(viewModel, productPhotos.getPhotos());
+                } catch (RuntimeException e) {
+                    viewModel.setStatus(ImageStatusTypeDef.WILL_BE_DELETED);
+                    viewModel.setUrl("");
+                    newPhotosList.add(viewModel);
+                    isChanging = true;
+                }
             }
         }
 

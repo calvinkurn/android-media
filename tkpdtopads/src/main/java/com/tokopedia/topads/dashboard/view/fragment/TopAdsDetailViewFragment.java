@@ -35,6 +35,7 @@ public abstract class TopAdsDetailViewFragment<T extends TopAdsDetailViewPresent
         TopAdsDetailFragment<T, V> implements TopAdsDetailViewListener<V>,
         CompoundButton.OnCheckedChangeListener {
 
+    private static final String TAG = "TopAdsDetailViewFragmen";
     protected LabelView name;
     protected LabelSwitch status;
 
@@ -66,12 +67,6 @@ public abstract class TopAdsDetailViewFragment<T extends TopAdsDetailViewPresent
             turnOnAd();
         } else {
             turnOffAd();
-        }
-    }
-
-    private void showLoading() {
-        if (!swipeToRefresh.isRefreshing()) {
-            progressDialog.show();
         }
     }
 
@@ -175,8 +170,6 @@ public abstract class TopAdsDetailViewFragment<T extends TopAdsDetailViewPresent
         });
         snackbarRetry.showRetrySnackbar();
     }
-
-    private static final String TAG = "TopAdsDetailViewFragmen";
 
     protected void updateMainView(V ad) {
         name.setContent(ad.getName());

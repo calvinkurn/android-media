@@ -314,7 +314,6 @@ public class Login extends BaseActivity implements SessionView
                     getIntent().getParcelableExtra(INTENT_EXTRA_PARAM_TOKEN_MODEL));
             LoginService.startLogin(this, loginReceiver, bundle, DownloadServiceConstant.LOGIN_UNIQUE_CODE);
         }
-
     }
 
 
@@ -345,7 +344,7 @@ public class Login extends BaseActivity implements SessionView
         } catch (IllegalStateException e) {
             e.printStackTrace();
         }
-        fragmentTransaction.commit();
+        fragmentTransaction.commitAllowingStateLoss();
     }
 
     @Override

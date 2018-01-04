@@ -45,6 +45,7 @@ import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.TopAdsView;
 
 import java.util.List;
@@ -199,10 +200,13 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
                     .setSessionId(GCMHandler.getRegistrationId(context))
                     .setUserId(SessionHandler.getLoginID(context))
                     .withPreferedCategory()
+                    .displayMode(DisplayMode.FEED)
                     .setEndpoint(Endpoint.PRODUCT)
                     .topAdsParams(params)
                     .build();
             topAdsView.setConfig(topAdsconfig);
+            topAdsView.setDisplayMode(DisplayMode.FEED);
+            topAdsView.setMaxItems(4);
             topAdsView.setAdsItemClickListener(this);
             actionBtn.setOnClickListener(clickListener);
         }
