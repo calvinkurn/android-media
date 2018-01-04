@@ -7,6 +7,9 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class Shipment implements Parcelable {
 
     @SerializedName("addr_street")
@@ -53,13 +56,13 @@ public class Shipment implements Parcelable {
     private int minWeightVal;
     @SerializedName("package_list")
     @Expose
-    private String packageList;
+    private Object packageList;
     @SerializedName("postal")
     @Expose
     private int postal;
     @SerializedName("shipment_options")
     @Expose
-    private String shipmentOptions;
+    private Object shipmentOptions;
     @SerializedName("shippings")
     @Expose
     private String shippings;
@@ -188,12 +191,13 @@ public class Shipment implements Parcelable {
         this.minWeightVal = minWeightVal;
     }
 
-    public String getPackageList() {
-        return packageList;
-    }
-
-    public void setPackageList(String packageList) {
-        this.packageList = packageList;
+    public JSONObject getPackageList() {
+        try {
+            return packageList == null ? null : new JSONObject(packageList.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public int getPostal() {
@@ -204,12 +208,13 @@ public class Shipment implements Parcelable {
         this.postal = postal;
     }
 
-    public String getShipmentOptions() {
-        return shipmentOptions;
-    }
-
-    public void setShipmentOptions(String shipmentOptions) {
-        this.shipmentOptions = shipmentOptions;
+    public JSONObject getShipmentOptions() {
+        try {
+            return shipmentOptions == null ? null : new JSONObject(shipmentOptions.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public String getShippings() {
@@ -273,9 +278,9 @@ public class Shipment implements Parcelable {
         dest.writeInt(this.minWeight);
         dest.writeString(this.minWeightFlag);
         dest.writeInt(this.minWeightVal);
-        dest.writeString(this.packageList);
+        dest.writeString(this.packageList==null?"":this.packageList.toString());
         dest.writeInt(this.postal);
-        dest.writeString(this.shipmentOptions);
+        dest.writeString(this.shipmentOptions==null?"":this.shipmentOptions.toString());
         dest.writeString(this.shippings);
         dest.writeInt(this.shopId);
         dest.writeString(this.tikiFeeFlag);
@@ -311,7 +316,7 @@ public class Shipment implements Parcelable {
         this.userId = in.readInt();
     }
 
-    public static final Parcelable.Creator<Shipment> CREATOR = new Parcelable.Creator<Shipment>() {
+    public static final Creator<Shipment> CREATOR = new Creator<Shipment>() {
         @Override
         public Shipment createFromParcel(Parcel source) {
             return new Shipment(source);

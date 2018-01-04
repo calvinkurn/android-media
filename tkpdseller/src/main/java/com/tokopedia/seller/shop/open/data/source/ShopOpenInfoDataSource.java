@@ -1,6 +1,7 @@
 package com.tokopedia.seller.shop.open.data.source;
 
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.seller.shop.open.data.model.response.ResponseCreateShop;
 import com.tokopedia.seller.shop.open.view.model.CourierServiceIdWrapper;
 import com.tokopedia.seller.shop.open.data.source.cloud.ShopOpenInfoDataSourceCloud;
 
@@ -32,7 +33,7 @@ public class ShopOpenInfoDataSource {
     public Observable<Boolean> saveShopSettingStep3(CourierServiceIdWrapper courierServiceIdWrapper){
         return shopOpenInfoDataSourceCloud.saveShopSettingStep3(courierServiceIdWrapper);
     }
-    public Observable<Boolean> createShop(){
+    public Observable<ResponseCreateShop> createShop(){
         return shopOpenInfoDataSourceCloud.createShop();
     }
 }

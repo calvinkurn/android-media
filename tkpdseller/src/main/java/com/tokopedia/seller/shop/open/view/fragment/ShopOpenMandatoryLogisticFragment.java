@@ -24,8 +24,12 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
+import com.tokopedia.core.util.AppWidgetUtil;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.shop.open.data.model.OpenShopCouriersModel;
@@ -270,8 +274,13 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     }
 
     @Override
-    public void onSuccessCreateShop() {
+    public void onSuccessCreateShop(int shopId) {
         hideSubmitLoading();
+        SessionHandler session = new SessionHandler(getContext());
+        session.setShopId(String.valueOf(shopId));
+        GlobalCacheManager globalCacheManager = new GlobalCacheManager();
+        globalCacheManager.delete(ProfileSourceFactory.KEY_PROFILE_DATA);
+        AppWidgetUtil.sendBroadcastToAppWidget(getActivity());
         onShopStepperListener.finishPage();
     }
 
