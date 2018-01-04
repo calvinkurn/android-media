@@ -1,6 +1,7 @@
 package com.tokopedia.core.router.digitalmodule;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -42,4 +43,6 @@ public interface IDigitalModuleRouter {
     Intent getIntentDeepLinkHandlerActivity();
 
     void actionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle);
+
+    Intent getLoginIntent(Context context);
 }

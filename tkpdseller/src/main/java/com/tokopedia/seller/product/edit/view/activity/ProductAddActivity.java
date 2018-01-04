@@ -21,12 +21,12 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.utils.ApplinkUtils;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.router.SellerAppRouter;
-import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.session.presenter.Session;
@@ -37,10 +37,10 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.seller.base.view.dialog.BaseTextPickerDialogFragment;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
 import com.tokopedia.seller.product.edit.view.dialog.AddWholeSaleDialog;
-import com.tokopedia.seller.base.view.dialog.BaseTextPickerDialogFragment;
 import com.tokopedia.seller.product.edit.view.fragment.ProductAddFragment;
 import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
 import com.tokopedia.seller.product.edit.view.model.wholesale.WholesaleModel;
@@ -123,7 +123,7 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
         imageUrls = new ArrayList<>();
         for (int i = 0; i < imagesCount; i++) {
             String imageUrl = oriImageUrls.get(i);
-            if(FileUtils.isInTkpdCache(new File(imageUrl))) {
+            if (FileUtils.isInTkpdCache(new File(imageUrl))) {
                 imageUrls.add(imageUrl);
             } else {
                 String fileNameToMove = FileUtils.generateUniqueFileName();
@@ -238,7 +238,8 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
                 return false;
             }
         } else {
-            Intent intentLogin = OldSessionRouter.getLoginActivityIntent(this);
+            Intent intentLogin = ((SellerModuleRouter) MainApplication.getAppContext())
+                    .getLoginIntent(ProductAddActivity.this);
             intentLogin.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
             startActivity(intentLogin);
             finish();
@@ -264,7 +265,7 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
         return new Intent(context, ProductAddActivity.class);
     }
 
-    protected int getCancelMessageRes(){
+    protected int getCancelMessageRes() {
         return R.string.product_draft_dialog_cancel_message;
     }
 
@@ -319,7 +320,7 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
         }
     }
 
-    protected boolean needDeleteCacheOnBack(){
+    protected boolean needDeleteCacheOnBack() {
         return true;
     }
 
@@ -429,10 +430,10 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
         finish();
     }
 
-    private void startUploadProductService(long productId){
+    private void startUploadProductService(long productId) {
         ProductAddFragment productAddFragment = getProductAddFragment();
         boolean isAdd = true;
-        if (productAddFragment!= null) {
+        if (productAddFragment != null) {
             isAdd = productAddFragment.getStatusUpload() == ProductStatus.ADD;
         }
         startService(UploadProductService.getIntent(this, productId, isAdd));

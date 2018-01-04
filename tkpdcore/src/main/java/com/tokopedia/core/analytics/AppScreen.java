@@ -1,7 +1,6 @@
 package com.tokopedia.core.analytics;
 
 import com.appsflyer.AFInAppEventType;
-import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 
 
@@ -11,6 +10,8 @@ import com.tokopedia.core.router.home.HomeRouter;
  */
 public final class AppScreen {
 
+    public static final String IDENTIFIER_REGISTER_NEWNEXT_FRAGMENT = "RegisterNewNextFragment";
+    public static final String IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT = "RegisterPassPhoneFragment";
 
     public static final String STATISTIC_PAGE = "Statistic Page";
     public static final String SCREEN_COPY_PRODUCT = "Salin Product Page";
@@ -288,7 +289,7 @@ public final class AppScreen {
     }
 
     public static String convertAFFragmentEvent(String tag) {
-        if (tag.equals(OldSessionRouter.IDENTIFIER_REGISTER_NEWNEXT_FRAGMENT) || tag.equals(OldSessionRouter.IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT)) {
+        if (tag.equals(IDENTIFIER_REGISTER_NEWNEXT_FRAGMENT) || tag.equals(IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT)) {
             return AFInAppEventType.COMPLETE_REGISTRATION;
         } else {
             return AFInAppEventType.CONTENT_VIEW;

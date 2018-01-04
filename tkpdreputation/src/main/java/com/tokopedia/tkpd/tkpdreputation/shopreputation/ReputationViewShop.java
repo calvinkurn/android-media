@@ -30,21 +30,20 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.tkpd.tkpdreputation.shopreputation.domain.ActReputationRetrofitInteractor;
-import com.tokopedia.tkpd.tkpdreputation.shopreputation.domain.ActReputationRetrofitInteractorImpl;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
-import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
-import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.LabelUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.ToolTipUtils;
-import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
+import com.tokopedia.tkpd.tkpdreputation.shopreputation.domain.ActReputationRetrofitInteractor;
+import com.tokopedia.tkpd.tkpdreputation.shopreputation.domain.ActReputationRetrofitInteractorImpl;
 import com.tokopedia.tkpd.tkpdreputation.shopreputation.domain.pojo.ActResult;
 import com.tokopedia.tkpd.tkpdreputation.shopreputation.view.adapter.ImageUploadAdapter;
 import com.tokopedia.tkpd.tkpdreputation.shopreputation.view.viewmodel.ActReviewPass;
@@ -66,6 +65,7 @@ public class ReputationViewShop extends TActivity {
     public static final int SMILEY_SMILE = 2;
 
     public static final String EXTRA_PRODUCT_ID = "product_id";
+    private static final int REQUEST_LOGIN = 101;
 
     public static class Model implements Serializable {
         public String reviewId;
@@ -550,10 +550,9 @@ public class ReputationViewShop extends TActivity {
         return new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Intent intent = OldSessionRouter.getLoginActivityIntent(ReputationViewShop.this);
-                intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
-                intent.putExtra("product_id", model.productId);
-                startActivity(intent);
+                Intent intent = ((ReputationRouter) MainApplication.getAppContext())
+                        .getLoginIntent(ReputationViewShop.this);
+                startActivityForResult(intent,REQUEST_LOGIN);
             }
         };
     }

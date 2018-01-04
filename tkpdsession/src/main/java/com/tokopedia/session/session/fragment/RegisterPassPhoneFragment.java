@@ -24,16 +24,18 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.TermPrivacy;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.router.OldSessionRouter;
-import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.customView.PasswordView;
+import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.base.BaseFragment;
-import com.tokopedia.core.session.model.OldCreatePasswordModel;
 import com.tokopedia.core.session.model.LoginViewModel;
+import com.tokopedia.core.session.model.OldCreatePasswordModel;
 import com.tokopedia.core.session.presenter.SessionView;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.session.session.presenter.RegisterNew;
 import com.tokopedia.session.session.presenter.RegisterNewImpl;
 import com.tokopedia.session.session.presenter.RegisterNewNextImpl;
@@ -41,8 +43,6 @@ import com.tokopedia.session.session.presenter.RegisterNewNextView;
 import com.tokopedia.session.session.presenter.RegisterPassPhoneImpl;
 import com.tokopedia.session.session.presenter.RegisterThird;
 import com.tokopedia.session.session.presenter.RegisterThirdView;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdState;
 
 import org.parceler.Parcels;
 
@@ -461,7 +461,7 @@ public class RegisterPassPhoneFragment extends BaseFragment<RegisterThird> imple
     public void onStart() {
         super.onStart();
         ScreenTracking.screen(getScreenName());
-        TrackingUtils.fragmentBasedAFEvent(OldSessionRouter.IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT);
+        TrackingUtils.fragmentBasedAFEvent(AppScreen.IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT);
     }
 
     private void sendGTMRegisterError(String label){

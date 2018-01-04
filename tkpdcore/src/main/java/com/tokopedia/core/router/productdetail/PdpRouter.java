@@ -38,4 +38,5 @@ public interface PdpRouter {
 
     Intent getProductReputationIntent(Context context);
 
+    Intent getLoginIntent(Context context);
 }

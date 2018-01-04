@@ -39,6 +39,7 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
@@ -47,15 +48,12 @@ import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
-import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.reactnative.IReactNativeRouter;
-import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.shopinfo.adapter.ShopTabPagerAdapter;
 import com.tokopedia.core.shopinfo.facades.ActionShopInfoRetrofit;
@@ -68,14 +66,12 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.Badge;
-import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.widgets.NonSwipeableViewPager;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
 
-import static com.tokopedia.core.router.InboxRouter.PARAM_OWNER_FULLNAME;
 import static com.tokopedia.core.shopinfo.models.shopmodel.Info.SHOP_OFFICIAL_VALUE;
 
 /**
@@ -832,9 +828,8 @@ public class ShopInfoActivity extends BaseActivity
                     holder.favorite.startAnimation(animateFav);
                     facadeAction.actionToggleFav();
                 } else {
-                    Intent intent = OldSessionRouter.getLoginActivityIntent(ShopInfoActivity.this);
-                    intent.putExtra(Session.WHICH_FRAGMENT_KEY,
-                            TkpdState.DrawerPosition.LOGIN);
+                    Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext())
+                            .getLoginIntent(ShopInfoActivity.this);
                     startActivityForResult(intent, ShopInfoActivity.FAVORITE_LOGIN_REQUEST_CODE);
                 }
             }
@@ -870,14 +865,10 @@ public class ShopInfoActivity extends BaseActivity
                                 shopModel.getInfo().getShopAvatar());
                 startActivity(intent);
             }
-        }
-        else {
+        } else {
             bundle.putBoolean("login", true);
-            intent = OldSessionRouter.getLoginActivityIntent(this);
-            intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
-            bundle.putString(InboxRouter.PARAM_SHOP_ID, shopModel.info.shopId);
-            bundle.putString(PARAM_OWNER_FULLNAME, shopModel.info.shopName);
-            intent.putExtras(bundle);
+            intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getLoginIntent
+                    (ShopInfoActivity.this);
             startActivityForResult(intent, REQ_RELOAD);
         }
     }
@@ -941,9 +932,8 @@ public class ShopInfoActivity extends BaseActivity
                 }
             } else {
                 redirectionUrl = url;
-                Intent intent = OldSessionRouter.getLoginActivityIntent(this);
-                intent.putExtra(Session.WHICH_FRAGMENT_KEY,
-                        TkpdState.DrawerPosition.LOGIN);
+                Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getLoginIntent
+                        (ShopInfoActivity.this);
                 startActivityForResult(intent, REQUEST_CODE_LOGIN);
             }
         } else {

@@ -1,17 +1,12 @@
 package com.tokopedia.core.welcome.presenter;
 
 import android.content.Context;
-import android.content.Intent;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.model.LoginProviderModel;
-import com.tokopedia.core.session.presenter.Session;
-import com.tokopedia.core.session.presenter.SessionView;
-import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.welcome.interactor.WelcomeInteractor;
 import com.tokopedia.core.welcome.interactor.WelcomeInteractorImpl;
 import com.tokopedia.core.welcome.view.WelcomeFragmentView;
