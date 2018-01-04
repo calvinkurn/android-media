@@ -1,5 +1,6 @@
 package com.tokopedia.core.gallery;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -23,13 +24,13 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import javax.annotation.Nonnull;
 
 public class GalleryActivity extends TActivity implements AlbumCollection.AlbumCallbacks, AdapterView
-        .OnItemSelectedListener {
+        .OnItemSelectedListener, GallerySelectedFragment.ListenerSelected {
 
     private static final String TAG = "hangnadi";
-    private static final String BUNDLE_GALLERY_TYPE = "bundle_gallery_type";
-    private static final String BUNDLE_MAX_SELECTION = "bundle_max_selection";
-    private static final int DEFAULT_MAX_SELECTION = 1;
-    private static final int DEFAULT_GALLERY_TYPE = GalleryType.ofImageOnly();
+    protected static final String BUNDLE_GALLERY_TYPE = "bundle_gallery_type";
+    protected static final String BUNDLE_MAX_SELECTION = "bundle_max_selection";
+    protected static final int DEFAULT_MAX_SELECTION = 1;
+    protected static final int DEFAULT_GALLERY_TYPE = GalleryType.ofImageOnly();
     private int typeGallery = GalleryType.ofAll();
     private int maxSelection;
 
@@ -183,6 +184,14 @@ public class GalleryActivity extends TActivity implements AlbumCollection.AlbumC
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
 
+    }
+
+    @Override
+    public void onSelectedImage(MediaItem item) {
+        Intent intent = new Intent();
+        intent.putExtra(GallerySelectedFragment.EXTRA_RESULT_SELECTION, item);
+        setResult(Activity.RESULT_OK, intent);
+        finish();
     }
 
     @Override
