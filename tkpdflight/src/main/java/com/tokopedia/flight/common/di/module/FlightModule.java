@@ -56,7 +56,7 @@ public class FlightModule {
 
     @FlightScope
     @Provides
-    public OkHttpClient provideOkHttpClient(@ApplicationContext Context context,  OkHttpClient.Builder okHttpClientBuilder,
+    public OkHttpClient provideOkHttpClient(OkHttpClient.Builder okHttpClientBuilder,
                                             HttpLoggingInterceptor httpLoggingInterceptor,
                                             FlightAuthInterceptor flightAuthInterceptor) {
         return okHttpClientBuilder

@@ -39,7 +39,8 @@ public class FlightAirlineDB extends BaseModel implements Parcelable {
     @Column(name = "logo")
     String logo;
     @Column(name = "mandatory_dob")
-    boolean mandatoryDob;
+    int mandatoryDob;
+
     public FlightAirlineDB(){
 
     }
@@ -49,10 +50,10 @@ public class FlightAirlineDB extends BaseModel implements Parcelable {
         this.name = airlineData.getAttributes().getFullName();
         this.shortName = airlineData.getAttributes().getShortName();
         this.logo = airlineData.getAttributes().getLogo();
-        this.mandatoryDob = airlineData.getAttributes().isMandatoryDob();
+        this.mandatoryDob = (airlineData.getAttributes().isMandatoryDob()) ? 1 : 0;
     }
 
-    public FlightAirlineDB(String id, String name, String shortName, String logo, boolean mandatoryDob) {
+    public FlightAirlineDB(String id, String name, String shortName, String logo, int mandatoryDob) {
         this.id = id;
         this.name = name;
         this.shortName = shortName;
@@ -65,7 +66,7 @@ public class FlightAirlineDB extends BaseModel implements Parcelable {
         name = in.readString();
         shortName = in.readString();
         logo = in.readString();
-        mandatoryDob = in.readByte() != 0;
+        mandatoryDob = in.readInt();
     }
 
     public String getId() {
@@ -91,7 +92,7 @@ public class FlightAirlineDB extends BaseModel implements Parcelable {
         return logo;
     }
 
-    public boolean isMandatoryDob() {
+    public int getMandatoryDob() {
         return mandatoryDob;
     }
 
@@ -106,6 +107,6 @@ public class FlightAirlineDB extends BaseModel implements Parcelable {
         parcel.writeString(name);
         parcel.writeString(shortName);
         parcel.writeString(logo);
-        parcel.writeByte((byte) (mandatoryDob ? 1 : 0));
+        parcel.writeInt(mandatoryDob);
     }
 }

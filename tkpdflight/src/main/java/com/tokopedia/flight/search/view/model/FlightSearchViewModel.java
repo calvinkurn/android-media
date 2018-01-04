@@ -141,13 +141,13 @@ public class FlightSearchViewModel implements ItemType, Parcelable, Visitable<Fi
                     String airlineNameFromMap = dbAirlineMaps.get(airlineID).getFullName();
                     String airlineShortNameFromMap = dbAirlineMaps.get(airlineID).getShortName();
                     String airlineLogoFromMap = dbAirlineMaps.get(airlineID).getLogo();
-                    boolean mandatory = dbAirlineMaps.get(airlineID).isMandatoryDob();
+                    int mandatory = dbAirlineMaps.get(airlineID).getMandatoryDob();
                     route.setAirlineName(airlineNameFromMap);
                     route.setAirlineLogo(airlineLogoFromMap);
                     addedAirlineIDList.add(airlineID);
                     airlineDBArrayList.add(new FlightAirlineDB(airlineID, airlineNameFromMap, airlineShortNameFromMap, airlineLogoFromMap, mandatory));
                 } else {
-                    airlineDBArrayList.add(new FlightAirlineDB(airlineID, "", "", "", false));
+                    airlineDBArrayList.add(new FlightAirlineDB(airlineID, "", "", "", 0));
                 }
             }
 
