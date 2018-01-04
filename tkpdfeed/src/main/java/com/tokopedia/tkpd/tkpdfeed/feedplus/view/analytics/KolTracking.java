@@ -7,6 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.KolTracking.Event.PROMO_CLICK;
+import static com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.KolTracking.Event.PROMO_VIEW;
+
 /**
  * @author by nisie on 1/2/18.
  */
@@ -18,13 +21,12 @@ public class KolTracking {
 
     public static class Event {
 
-        static final String IMPRESSION = "promoView";
-        static final String CLICK = "promoClick";
+        static final String PROMO_VIEW = "promoView";
+        static final String PROMO_CLICK = "promoClick";
     }
 
     public static class Ecommerce {
 
-        private static final String PROMO_VIEW = "promoView";
         private static final String PROMOTIONS = "promotions";
 
         private static final String KEY_ID = "id";
@@ -38,8 +40,13 @@ public class KolTracking {
         private static final String KEY_USER_ID_MOD = "userIdmodulo";
 
 
-        public static Map<String, Object> getKolContentEcommerce(List<Promotion> listPromotion) {
+        public static Map<String, Object> getKolContentEcommerceView(List<Promotion> listPromotion) {
             return DataLayer.mapOf(PROMO_VIEW, getListPromotions(listPromotion));
+        }
+
+        public static Map<String, Object> getKolContentEcommerceClick(List<Promotion> listPromotion) {
+            return DataLayer.mapOf(PROMO_CLICK, getListPromotions(listPromotion));
+
         }
 
         private static Map<String, Object> getListPromotions(List<Promotion> list) {
@@ -57,7 +64,7 @@ public class KolTracking {
 
         private static Map<String, Object> createPromotionMap(Promotion promo) {
             Map<String, Object> map = new HashMap<>();
-            map.put(KEY_ID,  String.valueOf(promo.getId()));
+            map.put(KEY_ID, String.valueOf(promo.getId()));
             map.put(KEY_NAME, promo.getName());
             map.put(KEY_CREATIVE, promo.getCreative());
             map.put(KEY_POSITION, String.valueOf(promo.getPosition()));
@@ -68,6 +75,7 @@ public class KolTracking {
             map.put(KEY_USER_ID_MOD, String.valueOf(promo.getUserIdMod50()));
             return map;
         }
+
     }
 
     public static class Promotion {
@@ -153,13 +161,13 @@ public class KolTracking {
 
     public static Map<String, Object> getKolImpressionTracking(List<Promotion> listPromotion) {
         return DataLayer.mapOf(
-                EVENT, Event.IMPRESSION,
-                ECOMMERCE, Ecommerce.getKolContentEcommerce(listPromotion));
+                EVENT, PROMO_VIEW,
+                ECOMMERCE, Ecommerce.getKolContentEcommerceView(listPromotion));
     }
 
     public static Map<String, Object> getKolClickTracking(List<Promotion> listPromotion) {
         return DataLayer.mapOf(
-                EVENT, Event.CLICK,
-                ECOMMERCE, Ecommerce.getKolContentEcommerce(listPromotion));
+                EVENT, PROMO_CLICK,
+                ECOMMERCE, Ecommerce.getKolContentEcommerceClick(listPromotion));
     }
 }
