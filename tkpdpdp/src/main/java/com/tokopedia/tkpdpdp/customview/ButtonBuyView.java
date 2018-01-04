@@ -99,7 +99,12 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
             }
             tvBuy.setBackgroundResource(R.drawable.btn_buy);
             tvPromoTopAds.setVisibility(GONE);
-            tvBuy.setOnClickListener(new ClickBuy(data));
+            tvBuy.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onBuyClick();
+                }
+            });
         }
 
         if ((data.getInfo().getProductStatus().equals(PRD_STATE_WAREHOUSE))
@@ -123,44 +128,4 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
         }
     }
 
-    private class ClickBuy implements OnClickListener {
-        private final ProductDetailData data;
-
-        ClickBuy(ProductDetailData data) {
-            this.data = data;
-        }
-
-        @Override
-        public void onClick(View v) {
-            if (SessionHandler.isV4Login(getContext())) {
-                String weightProduct = "";
-                switch (data.getInfo().getProductWeightUnit()) {
-                    case "gr":
-                        weightProduct = String.valueOf((Float.parseFloat(data.getInfo()
-                                .getProductWeight())) / 1000);
-                        break;
-                    case "kg":
-                        weightProduct = data.getInfo().getProductWeight();
-                        break;
-                }
-                ProductCartPass pass = ProductCartPass.Builder.aProductCartPass()
-                        .setImageUri(data.getProductImages().get(0).getImageSrc300())
-                        .setMinOrder(Integer.parseInt(data.getInfo().getProductMinOrder()))
-                        .setProductId(String.valueOf(data.getInfo().getProductId()))
-                        .setProductName(data.getInfo().getProductName())
-                        .setWeight(weightProduct)
-                        .setShopId(data.getShopInfo().getShopId())
-                        .setPrice(data.getInfo().getProductPrice())
-                        .build();
-                if (!data.getBreadcrumb().isEmpty())
-                    pass.setProductCategory(data.getBreadcrumb().get(0).getDepartmentName());
-
-                listener.onProductBuySessionLogin(pass);
-            } else {
-                Bundle bundle = new Bundle();
-                bundle.putBoolean("login", true);
-                listener.onProductBuySessionNotLogin(bundle);
-            }
-        }
-    }
 }

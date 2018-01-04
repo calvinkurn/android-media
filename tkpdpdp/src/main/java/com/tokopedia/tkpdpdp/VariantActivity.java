@@ -117,7 +117,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     }
 
     private void initViewListener() {
-        //TODO
+        //TODO SELLER MODE
        /* if (getIntent().getBooleanExtra(KEY_SELLER_MODE,false)) {
             textButtonSave.setText(getResources().getString(R.string.change_variant));
             buttonSave.setOnClickListener(new View.OnClickListener() {
@@ -130,7 +130,23 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
                     finish();
                 }
             });
-        } else if (getIntent().getBooleanExtra(KEY_BUY_MODE,false)) {
+        } */
+        findViewById(R.id.simple_top_bar_close_button)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Child childSelected = getProductDatumSelected();
+                        if (childSelected!=null) {
+                            setResult(VariantActivity.SELECTED_VARIANT_RESULT, generateExtraSelectedIntent());
+                            finish();
+                            VariantActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
+                        }
+                    }
+                });
+    }
+
+    public void updateButton(Child child) {
+        if (child.isIsBuyable() && productDetailData.getShopInfo().getShopStatus()==1) {
             buttonSave.setBackground(ContextCompat.getDrawable(VariantActivity.this,R.drawable.button_save_orange));
             textButtonSave.setText(getResources().getString(R.string.title_buy));
             buttonSave.setOnClickListener(new View.OnClickListener() {
@@ -141,38 +157,18 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
                     VariantActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
                 }
             });
-        } else {
+        } else if (child.isIsBuyable()==false) {
+            textButtonSave.setText(getResources().getString(R.string.title_warehouse));
             buttonSave.setBackground(ContextCompat.getDrawable(VariantActivity.this,R.drawable.button_save_green));
-            textButtonSave.setText(getResources().getString(R.string.title_save));
-            buttonSave.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Child childSelected = getProductDatumSelected();
-                    if (childSelected!=null && childSelected.getProductId()==productVariant.getParentId()) {
-                        setResult(VariantActivity.SELECTED_VARIANT_RESULT, generateExtraSelectedIntent());
-                        finish();
-                        VariantActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
-                    } else {
-                        Intent intent = ProductInfoActivity.createInstance(VariantActivity.this, Long.toString(childSelected.getProductId()));
-                        VariantActivity.this.startActivity(intent);
-                        setResult(VariantActivity.KILL_PDP_BACKGROUND, generateExtraSelectedIntent());
-                        finish();
-                    }
-                }
-            });
-        }*/
-        findViewById(R.id.simple_top_bar_close_button)
-                .setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        finish();
-                        VariantActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
-                    }
-                });
+        } else {
+            textButtonSave.setText(getResources().getString(R.string.title_buy));
+            buttonSave.setBackground(ContextCompat.getDrawable(VariantActivity.this,R.drawable.button_save_green));
+        }
     }
 
     private Intent generateExtraSelectedIntent() {
         Intent intent = new Intent();
+        intent.putExtra(KEY_PRODUCT_DETAIL_DATA,productDetailData);
         intent.putExtra(KEY_LEVEL1_SELECTED,variantOptionAdapterLevel1.getSelectedOption());
         if (productVariant.getVariant().size()>1)intent.putExtra(KEY_LEVEL2_SELECTED,variantOptionAdapterLevel2.getSelectedOption());
         return intent;
@@ -191,12 +187,18 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         optionRecyclerViewLevel1.setLayoutManager(chipsLayoutManager);
         optionRecyclerViewLevel1.setAdapter(variantOptionAdapterLevel1);
         optionNameLevel1.setText(variantLevel1.getName()+" :");
-        //TODO handle selected variant
         Option optionLevel1 = getIntent().getParcelableExtra(KEY_LEVEL1_SELECTED);
-        Child childProduct = productVariant.getChildFromProductId(productVariant.getDefaultChild());
+        Child defaultChild = productVariant.getChildFromProductId(productVariant.getDefaultChild());
         if (optionLevel1==null) {
             for (int i=0; i<variantOptionAdapterLevel1.getVariantOptions().size(); i++) {
-                if (childProduct.getOptionIds().get(0) == variantOptionAdapterLevel1.getVariantOptions().get(i).getId()) {
+                if (defaultChild.getOptionIds().get(0) == variantOptionAdapterLevel1.getVariantOptions().get(i).getId()) {
+                    variantOptionAdapterLevel1.setSelectedPosition(i);
+                    break;
+                }
+            }
+        } else {
+            for (int i=0; i<variantOptionAdapterLevel1.getVariantOptions().size(); i++) {
+                if (optionLevel1.getId() == variantOptionAdapterLevel1.getVariantOptions().get(i).getId()) {
                     variantOptionAdapterLevel1.setSelectedPosition(i);
                     break;
                 }
@@ -217,13 +219,19 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             optionRecyclerViewLevel2.setAdapter(variantOptionAdapterLevel2);
             optionNameLevel2.setText(variantLevel2.getName()+" :");
             variantOptionAdapterLevel1.notifyItemSelectedChange();
-            //TODO handle selected variant
             Option level2Selected = getIntent().getParcelableExtra(KEY_LEVEL2_SELECTED);
             if (level2Selected==null) {
-                childProduct = productVariant.getChildFromProductId(productVariant.getDefaultChild());
+                defaultChild = productVariant.getChildFromProductId(productVariant.getDefaultChild());
                 for (int i=0; i<variantOptionAdapterLevel2.getVariantOptions().size(); i++) {
-                    if (childProduct.getOptionIds().get(1) == variantOptionAdapterLevel2.getVariantOptions().get(i).getId()) {
+                    if (defaultChild.getOptionIds().get(1) == variantOptionAdapterLevel2.getVariantOptions().get(i).getId()) {
                         variantOptionAdapterLevel2.setSelectedPosition(i);
+                        break;
+                    }
+                }
+            } else {
+                for (int i=0; i<variantOptionAdapterLevel1.getVariantOptions().size(); i++) {
+                    if (level2Selected.getId() == variantOptionAdapterLevel1.getVariantOptions().get(i).getId()) {
+                        variantOptionAdapterLevel1.setSelectedPosition(i);
                         break;
                     }
                 }
@@ -302,9 +310,22 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             productDetailData.getInfo().setProductName(child.getName());
             productDetailData.getInfo().setProductPrice(child.getPriceFmt());
             if (!TextUtils.isEmpty(child.getPicture().getThumbnail()))  {
+                productDetailData.getProductImages().get(0).setImageSrc300(child.getPicture().getThumbnail());
+                productDetailData.getProductImages().get(0).setImageSrc(child.getPicture().getOriginal());
                 ImageHandler.LoadImage(productImage, child.getPicture().getThumbnail());
             }
+            updateButton(child);
         }
         renderHeaderInfo();
+    }
+
+    @Override
+    public void onBackPressed(){
+        Child childSelected = getProductDatumSelected();
+        if (childSelected!=null) {
+            setResult(VariantActivity.SELECTED_VARIANT_RESULT, generateExtraSelectedIntent());
+            finish();
+            VariantActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
+        }
     }
 }

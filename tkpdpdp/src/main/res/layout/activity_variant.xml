@@ -91,7 +91,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:gravity="center"
-            android:text="@string/title_save"
+            android:text="@string/title_buy"
             android:textColor="@color/href_link_rev"
             android:textSize="@dimen/fonts"
             android:textStyle="bold" />

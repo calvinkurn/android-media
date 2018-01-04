@@ -128,7 +128,7 @@ public class ProductVariant implements Parcelable {
     public List<Integer> getCombinationFromSelectedVariant(int variantOptionId) {
         List<Integer> products = new ArrayList<>();
         for (Child child: getChildren()) {
-            if (child.getOptionIds().contains(variantOptionId) && child.isEnabled()) {
+            if (child.getOptionIds().contains(variantOptionId) && child.isIsBuyable()) {
                 products.addAll(child.getOptionIds());
             }
         }

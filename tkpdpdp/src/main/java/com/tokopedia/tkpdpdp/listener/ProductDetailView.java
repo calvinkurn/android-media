@@ -64,6 +64,9 @@ public interface ProductDetailView extends ViewListener {
      */
     void onProductManagePromoteClicked(ProductDetailData productData);
 
+
+    void onBuyClick();
+
     /**
      * Pada saat gambar toko diklik
      *
