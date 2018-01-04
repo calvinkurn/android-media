@@ -307,6 +307,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         }
         Child child = getProductDatumSelected();
         if (child!=null) {
+            productDetailData.getInfo().setProductId(child.getProductId());
             productDetailData.getInfo().setProductName(child.getName());
             productDetailData.getInfo().setProductPrice(child.getPriceFmt());
             if (!TextUtils.isEmpty(child.getPicture().getThumbnail()))  {

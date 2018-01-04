@@ -67,6 +67,8 @@ public interface ProductDetailView extends ViewListener {
 
     void onBuyClick();
 
+    void onImageZoomClick(int position);
+
     /**
      * Pada saat gambar toko diklik
      *
@@ -178,13 +180,6 @@ public interface ProductDetailView extends ViewListener {
      * @param successResult data product detail
      */
     void onProductDetailLoaded(@NonNull ProductDetailData successResult);
-
-    /**
-     * Pada saat salah satu gambar product diklik
-     *
-     * @param bundle model yang dikirim
-     */
-    void onProductPictureClicked(@NonNull Bundle bundle);
 
     /**
      * Megisi/mengupdate UI dengan data product lainnya yang diterima

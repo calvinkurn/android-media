@@ -74,6 +74,7 @@ import com.tokopedia.tkpdpdp.DescriptionActivity;
 import com.tokopedia.tkpdpdp.DinkFailedActivity;
 import com.tokopedia.tkpdpdp.DinkSuccessActivity;
 import com.tokopedia.tkpdpdp.InstallmentActivity;
+import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.VariantActivity;
 import com.tokopedia.tkpdpdp.WholesaleActivity;
@@ -101,6 +102,8 @@ import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenter;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenterImpl;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import permissions.dispatcher.NeedsPermission;
@@ -184,6 +187,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     private ProductPass productPass;
     private ProductDetailData productData;
+    private ProductVariant productVariant;
     private List<ProductOther> productOthers;
     private VideoData videoData;
     private PromoAttributes promoAttributes;
@@ -419,6 +423,34 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         }
     }
 
+    public ArrayList<String> getImageURIPaths() {
+        ArrayList<String> arrayList = new ArrayList<>();
+        for (ProductImage productImage : productData.getProductImages()) {
+            arrayList.add(productImage.getImageSrc());
+        }
+        if (productVariant!=null && productVariant.getChildren()!=null) {
+            for (Child child: productVariant.getChildren()) {
+                if (!TextUtils.isEmpty(child.getPicture().getOriginal()) && child.getProductId()!=productData.getInfo().getProductId()) {
+                   arrayList.add(child.getPicture().getOriginal());
+                }
+            }
+            //arrayList.removeAll(Collections.singleton(productData.getProductImages().get(0).getImageSrc()));
+            //arrayList.add(0,productData.getProductImages().get(0).getImageSrc());
+        }
+
+        return arrayList;
+    }
+
+    @Override
+    public void onImageZoomClick(int position) {
+        Bundle bundle = new Bundle();
+        bundle.putStringArrayList(PreviewProductImageDetail.FILELOC, getImageURIPaths());
+        bundle.putString("product_name", MethodChecker.fromHtml(productData.getInfo().getProductName()).toString());
+        bundle.putString("product_price", MethodChecker.fromHtml(productData.getInfo().getProductPrice()).toString());
+        bundle.putInt(PreviewProductImageDetail.IMG_POSITION, position);
+        presenter.processToPicturePreview(context, bundle);
+    }
+
     @Override
     public void onProductManageToEtalaseClicked(int productId) {
         presenter.requestMoveToEtalase(context, productId);
@@ -566,11 +598,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         this.presenter.startIndexingApp(appIndexHandler, successResult);
         this.refreshMenu();
         this.updateWishListStatus(productData.getInfo().getProductAlreadyWishlist());
-    }
-
-    @Override
-    public void onProductPictureClicked(@NonNull Bundle bundle) {
-        presenter.processToPicturePreview(context, bundle);
     }
 
     @Override
@@ -1124,15 +1151,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void addProductVariant(ProductVariant productVariant) {
-        for (Child child: productVariant.getChildren()) {
-            if (!TextUtils.isEmpty(child.getPicture().getOriginal())) {
-                ProductImage imageVariant = new ProductImage();
-                imageVariant.setImageSrc(child.getPicture().getOriginal());
-                imageVariant.setImageSrc300(child.getPicture().getThumbnail());
-                imageVariant.setVariantChildId(child.getProductId());
-            }
-        }
-        this.priceSimulationView.addProductVariant(productVariant,productData);
+       this.productVariant=productVariant;
+       this.priceSimulationView.addProductVariant(productVariant,productData);
     }
 
     @Override
