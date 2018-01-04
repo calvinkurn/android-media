@@ -14,19 +14,36 @@ import com.tokopedia.flight.booking.view.adapter.FlightAmenityAdapterTypeFactory
 
 public class FlightBookingAmenityViewModel implements Parcelable, ItemType, ItemIdType, Visitable<FlightAmenityAdapterTypeFactory> {
     public static final int TYPE = 532;
+    public static final Creator<FlightBookingAmenityViewModel> CREATOR = new Creator<FlightBookingAmenityViewModel>() {
+        @Override
+        public FlightBookingAmenityViewModel createFromParcel(Parcel in) {
+            return new FlightBookingAmenityViewModel(in);
+        }
+
+        @Override
+        public FlightBookingAmenityViewModel[] newArray(int size) {
+            return new FlightBookingAmenityViewModel[size];
+        }
+    };
     private String id;
     private String title;
     private String price;
     private int priceNumeric;
     private String departureId;
     private String arrivalId;
-    private String amenityType;
+    private int amenityType;
 
     public FlightBookingAmenityViewModel() {
     }
 
-    public void setId(String id) {
-        this.id = id;
+    protected FlightBookingAmenityViewModel(Parcel in) {
+        id = in.readString();
+        title = in.readString();
+        price = in.readString();
+        priceNumeric = in.readInt();
+        departureId = in.readString();
+        arrivalId = in.readString();
+        amenityType = in.readInt();
     }
 
     public String getTitle() {
@@ -48,6 +65,10 @@ public class FlightBookingAmenityViewModel implements Parcelable, ItemType, Item
     @Override
     public String getId() {
         return String.valueOf(id);
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     @Override
@@ -78,12 +99,12 @@ public class FlightBookingAmenityViewModel implements Parcelable, ItemType, Item
         this.priceNumeric = priceNumeric;
     }
 
-    public void setDepartureId(String departureId) {
-        this.departureId = departureId;
-    }
-
     public String getDepartureId() {
         return departureId;
+    }
+
+    public void setDepartureId(String departureId) {
+        this.departureId = departureId;
     }
 
     public String getArrivalId() {
@@ -94,12 +115,17 @@ public class FlightBookingAmenityViewModel implements Parcelable, ItemType, Item
         this.arrivalId = arrivalId;
     }
 
-    public void setAmenityType(String amenityType) {
+    public int getAmenityType() {
+        return amenityType;
+    }
+
+    public void setAmenityType(int amenityType) {
         this.amenityType = amenityType;
     }
 
-    public String getAmenityType() {
-        return amenityType;
+    @Override
+    public int type(FlightAmenityAdapterTypeFactory typeFactory) {
+        return typeFactory.type(this);
     }
 
     @Override
@@ -108,40 +134,13 @@ public class FlightBookingAmenityViewModel implements Parcelable, ItemType, Item
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.id);
-        dest.writeString(this.title);
-        dest.writeString(this.price);
-        dest.writeInt(this.priceNumeric);
-        dest.writeString(this.departureId);
-        dest.writeString(this.arrivalId);
-        dest.writeString(this.amenityType);
-    }
-
-    protected FlightBookingAmenityViewModel(Parcel in) {
-        this.id = in.readString();
-        this.title = in.readString();
-        this.price = in.readString();
-        this.priceNumeric = in.readInt();
-        this.departureId = in.readString();
-        this.arrivalId = in.readString();
-        this.amenityType = in.readString();
-    }
-
-    public static final Creator<FlightBookingAmenityViewModel> CREATOR = new Creator<FlightBookingAmenityViewModel>() {
-        @Override
-        public FlightBookingAmenityViewModel createFromParcel(Parcel source) {
-            return new FlightBookingAmenityViewModel(source);
-        }
-
-        @Override
-        public FlightBookingAmenityViewModel[] newArray(int size) {
-            return new FlightBookingAmenityViewModel[size];
-        }
-    };
-
-    @Override
-    public int type(FlightAmenityAdapterTypeFactory typeFactory) {
-        return typeFactory.type(this);
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(id);
+        parcel.writeString(title);
+        parcel.writeString(price);
+        parcel.writeInt(priceNumeric);
+        parcel.writeString(departureId);
+        parcel.writeString(arrivalId);
+        parcel.writeInt(amenityType);
     }
 }
