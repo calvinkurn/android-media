@@ -93,20 +93,6 @@
         <item name="android:textSize">@dimen/font_subheading</item>
     </style>
 
-    <style name="style_expandable_flight_detail_order_title"  parent="TextView.Title.Bold">
-        <item name="android:paddingLeft">10dp</item>
-        <item name="android:paddingRight">10dp</item>
-        <item name="android:paddingBottom">10dp</item>
-        <item name="android:paddingTop">10dp</item>
-        <item name="android:layout_centerVertical">true</item>
-        <item name="android:textSize">@dimen/font_subheading</item>
-    </style>
-
-    <style name="style_expandable_flight_detail_order" parent="style_expandable_option_default">
-        <item name="eo_header_style">@style/eo_header_style_flight_detail</item>
-        <item name="eo_text_option_style">@style/eo_text_option_style_flight_detail</item>
-    </style>
-
     <style name="eo_header_style_flight_detail" parent="eo_header_style">
         <item name="android:paddingLeft">0dp</item>
         <item name="android:paddingRight">0dp</item>

@@ -25,22 +25,14 @@ public class FlightDetailOrderViewHolder extends AbstractViewHolder<FlightOrderJ
     public static final int LAYOUT = R.layout.item_flight_detail_order;
     private TextView flightCounter;
     private FlightExpandableOptionArrow journeyView;
-/*    private View journeyView;
-    private TextView titleJourney;
-    private AppCompatImageView imageJourney;*/
     private RecyclerView recyclerViewFlightJourney;
     private FlightDetailAdapter flightDetailAdapter;
     private FlightOrderJourney flightOrderJourney;
-
-    private boolean isFlightInfoShowed = true;
 
     public FlightDetailOrderViewHolder(final View layoutView) {
         super(layoutView);
         flightCounter = layoutView.findViewById(R.id.counter_flight);
         journeyView = layoutView.findViewById(R.id.title_journey_flight);
-/*        journeyView = layoutView.findViewById(R.id.layout_expendable_flight);
-        titleJourney = layoutView.findViewById(R.id.title_expendable_flight);
-        imageJourney = layoutView.findViewById(R.id.image_expendable_flight);*/
         recyclerViewFlightJourney = layoutView.findViewById(R.id.recycler_view_flight_detail_journey);
         FlightDetailRouteTypeFactory detailRouteTypeFactory = new FlightDetailAdapterTypeFactory(
                 new FlightDetailAdapterTypeFactory.OnFlightDetailListener() {
@@ -55,13 +47,6 @@ public class FlightDetailOrderViewHolder extends AbstractViewHolder<FlightOrderJ
         flightDetailAdapter = new FlightDetailAdapter(detailRouteTypeFactory, new ArrayList<Visitable>());
         recyclerViewFlightJourney.setAdapter(flightDetailAdapter);
 
-/*        journeyView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                imageJourney.startAnimation(AnimationUtils.loadAnimation(layoutView.getContext(), R.anim.rotate_reverse));
-                toggleFlightInfo();
-            }
-        });*/
     }
 
     @Override
@@ -74,25 +59,5 @@ public class FlightDetailOrderViewHolder extends AbstractViewHolder<FlightOrderJ
         visitables.addAll(this.flightOrderJourney.getRouteViewModels());
         flightDetailAdapter.addElement(visitables);
         flightDetailAdapter.notifyDataSetChanged();
-    }
-
-    private void toggleFlightInfo() {
-        if(isFlightInfoShowed) {
-            hideFlightInfo();
-        }else{
-            showFlightInfo();
-        }
-    }
-
-    private void hideFlightInfo() {
-        isFlightInfoShowed = false;
-        recyclerViewFlightJourney.setVisibility(View.GONE);
-//        imageJourney.setRotation(180);
-    }
-
-    private void showFlightInfo() {
-        isFlightInfoShowed = true;
-        recyclerViewFlightJourney.setVisibility(View.VISIBLE);
-//        imageJourney.setRotation(0);
     }
 }
