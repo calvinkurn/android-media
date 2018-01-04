@@ -276,6 +276,7 @@
     <string name="flight_review_checkout_loading_label">Sedang menyiapkan formulir pembayaran</string>
     <string name="di_sini">di sini</string>
     <string name="flight_booking_passenger_last_name_empty_error">Nama belakang minimal 2 karakter</string>
-    <string name="flight_order_cancel_prefix_label"><![CDATA[sid=1377&oid=flight&msg=Saya ingin membatalkan penerbangan untuk nama-nama dibawah ini:]]></string>
-    <string name="flight_order_flight_default_contact_us"><![CDATA[sid=1377&oid=flight]]></string>
+    <!--<string name="flight_order_cancel_prefix_label"><![CDATA[]]></string>-->
+    <string name="flight_order_flight_default_contact_us"><![CDATA[sid=1377]]></string>
+    <string name="flight_order_cancel_prefix_label"><![CDATA[sid=1377&oid=%s&msg=Saya ingin membatalkan penerbangan untuk nama-nama dibawah ini:]]></string>
 </resources>

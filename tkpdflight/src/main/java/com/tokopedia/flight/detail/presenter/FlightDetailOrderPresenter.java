@@ -99,7 +99,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     }
 
     private String generateCancelParam(FlightOrder flightOrder) {
-        StringBuilder result = new StringBuilder(getView().getActivity().getString(R.string.flight_order_cancel_prefix_label));
+        StringBuilder result = new StringBuilder(String.format(getView().getActivity().getString(R.string.flight_order_cancel_prefix_label), flightOrder.getId()));
         for (FlightOrderJourney flightOrderJourney : flightOrder.getJourneys()) {
             String item = flightOrderJourney.getDepartureAiportId() + "-" + flightOrderJourney.getArrivalAirportId() + " ";
             ArrayList<String> passengers = new ArrayList<>();
