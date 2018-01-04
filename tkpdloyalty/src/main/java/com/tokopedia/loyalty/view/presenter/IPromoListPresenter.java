@@ -6,7 +6,5 @@ package com.tokopedia.loyalty.view.presenter;
 
 public interface IPromoListPresenter {
 
-    void processGetPromoMenu();
-
     void processGetPromoList(String... subCategories);
 }

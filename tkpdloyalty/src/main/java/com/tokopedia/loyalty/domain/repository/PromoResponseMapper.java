@@ -33,7 +33,9 @@ public class PromoResponseMapper implements IPromoResponseMapper {
     public List<PromoMenuData> convertPromoMenuDataList(List<MenuPromoResponse> menuPromoResponseList) {
         List<PromoMenuData> promoMenuDataList = new ArrayList<>();
         for (MenuPromoResponse menuPromoResponse : menuPromoResponseList) {
-            promoMenuDataList.add(new PromoMenuData());
+            PromoMenuData promoMenuData = new PromoMenuData();
+            promoMenuData.setTitle(menuPromoResponse.getTitle());
+            promoMenuDataList.add(promoMenuData);
         }
         return promoMenuDataList;
     }

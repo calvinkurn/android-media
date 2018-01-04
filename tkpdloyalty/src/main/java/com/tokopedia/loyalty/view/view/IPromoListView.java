@@ -20,13 +20,4 @@ public interface IPromoListView extends IBaseView {
 
     void renderErrorTimeoutConnectionGetPromoDataListt(String message);
 
-    void renderPromoMenuDataList(List<PromoData> couponData);
-
-    void renderErrorGetPromoMenuDataList(String message);
-
-    void renderErrorHttpGetPromoMenuDataList(String message);
-
-    void renderErrorNoConnectionGetPromoMenuDataList(String message);
-
-    void renderErrorTimeoutConnectionGetPromoMenuDataListt(String message);
 }

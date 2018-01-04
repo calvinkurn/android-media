@@ -1,8 +1,8 @@
 package com.tokopedia.loyalty.di.component;
 
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.loyalty.di.PromoScope;
-import com.tokopedia.loyalty.di.module.PromoListViewModule;
+import com.tokopedia.loyalty.di.PromoFragmentScope;
+import com.tokopedia.loyalty.di.module.PromoListFragmentModule;
 import com.tokopedia.loyalty.view.fragment.PromoListFragment;
 
 import dagger.Component;
@@ -10,9 +10,9 @@ import dagger.Component;
 /**
  * @author anggaprasetiyo on 03/01/18.
  */
-@PromoScope
-@Component(modules = PromoListViewModule.class, dependencies = AppComponent.class)
-public interface PromoListComponent {
+@PromoFragmentScope
+@Component(modules = PromoListFragmentModule.class, dependencies = AppComponent.class)
+public interface PromoListFragmentComponent {
 
     void inject(PromoListFragment promoListFragment);
 }

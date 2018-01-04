@@ -1,45 +1,47 @@
 package com.tokopedia.loyalty.di.module;
 
-import com.tokopedia.loyalty.di.PromoScope;
+import com.tokopedia.loyalty.di.PromoActivityScope;
 import com.tokopedia.loyalty.domain.repository.IPromoRepository;
 import com.tokopedia.loyalty.view.interactor.IPromoInteractor;
 import com.tokopedia.loyalty.view.interactor.PromoInteractor;
-import com.tokopedia.loyalty.view.presenter.IPromoListPresenter;
-import com.tokopedia.loyalty.view.presenter.PromoListPresenter;
-import com.tokopedia.loyalty.view.view.IPromoListView;
+import com.tokopedia.loyalty.view.presenter.IPromoListActivityPresenter;
+import com.tokopedia.loyalty.view.presenter.PromoListActivityPresenter;
+import com.tokopedia.loyalty.view.view.IPromoListActivityView;
+
+import javax.inject.Inject;
 
 import dagger.Module;
 import dagger.Provides;
 import rx.subscriptions.CompositeSubscription;
 
 /**
- * @author anggaprasetiyo on 03/01/18.
+ * @author anggaprasetiyo on 04/01/18.
  */
 @Module(includes = {ServiceApiModule.class})
-public class PromoListViewModule {
+public class PromoListActivityModule {
+    private final IPromoListActivityView view;
 
-    private final IPromoListView view;
-
-    public PromoListViewModule(IPromoListView view) {
+    @Inject
+    public PromoListActivityModule(IPromoListActivityView view) {
         this.view = view;
     }
 
     @Provides
-    @PromoScope
+    @PromoActivityScope
     CompositeSubscription provideCompositeSubscription() {
         return new CompositeSubscription();
     }
 
     @Provides
-    @PromoScope
+    @PromoActivityScope
     IPromoInteractor provideIPromoInteractor(CompositeSubscription compositeSubscription,
                                              IPromoRepository promoRepository) {
         return new PromoInteractor(compositeSubscription, promoRepository);
     }
 
     @Provides
-    @PromoScope
-    IPromoListPresenter provideIPromoListPresenter(IPromoInteractor promoInteractor) {
-        return new PromoListPresenter(promoInteractor, view);
+    @PromoActivityScope
+    IPromoListActivityPresenter provideIPromoListActivityPresenter(IPromoInteractor promoInteractor) {
+        return new PromoListActivityPresenter(promoInteractor, view);
     }
 }

@@ -19,10 +19,6 @@ public class PromoListPresenter implements IPromoListPresenter {
         this.view = view;
     }
 
-    @Override
-    public void processGetPromoMenu() {
-
-    }
 
     @Override
     public void processGetPromoList(String... subCategories) {

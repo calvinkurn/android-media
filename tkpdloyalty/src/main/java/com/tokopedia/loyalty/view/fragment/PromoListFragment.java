@@ -9,18 +9,44 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.loyalty.R;
+import com.tokopedia.loyalty.di.component.DaggerPromoListFragmentComponent;
+import com.tokopedia.loyalty.di.component.PromoListFragmentComponent;
+import com.tokopedia.loyalty.di.module.PromoListFragmentModule;
 import com.tokopedia.loyalty.view.data.PromoData;
+import com.tokopedia.loyalty.view.presenter.IPromoListPresenter;
 import com.tokopedia.loyalty.view.view.IPromoListView;
 
 import java.util.List;
+
+import javax.inject.Inject;
+
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * @author anggaprasetiyo on 03/01/18.
  */
 
 public class PromoListFragment extends BasePresenterFragment implements IPromoListView {
+
+    @Inject
+    IPromoListPresenter dPresenter;
+    @Inject
+    CompositeSubscription compositeSubscription;
+
+
+    @Override
+    protected void initInjector() {
+        super.initInjector();
+        PromoListFragmentComponent promoListComponent = DaggerPromoListFragmentComponent.builder()
+                .appComponent((AppComponent) getComponent(AppComponent.class))
+                .promoListFragmentModule(new PromoListFragmentModule(this))
+                .build();
+        promoListComponent.inject(this);
+    }
+
     @Override
     public void renderPromoDataList(List<PromoData> couponData) {
 
@@ -43,31 +69,6 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
 
     @Override
     public void renderErrorTimeoutConnectionGetPromoDataListt(String message) {
-
-    }
-
-    @Override
-    public void renderPromoMenuDataList(List<PromoData> couponData) {
-
-    }
-
-    @Override
-    public void renderErrorGetPromoMenuDataList(String message) {
-
-    }
-
-    @Override
-    public void renderErrorHttpGetPromoMenuDataList(String message) {
-
-    }
-
-    @Override
-    public void renderErrorNoConnectionGetPromoMenuDataList(String message) {
-
-    }
-
-    @Override
-    public void renderErrorTimeoutConnectionGetPromoMenuDataListt(String message) {
 
     }
 
