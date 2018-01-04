@@ -150,8 +150,6 @@ public interface AppComponent {
 
     CacheApiClearAllUseCase cacheApiClearAllUseCase();
 
-    HttpLoggingInterceptor httpLoggingInterceptor();
-
     BearerInterceptor bearerInterceptor();
 
     OkHttpClient.Builder getHttpClientBuilder();
