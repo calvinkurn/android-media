@@ -21,6 +21,7 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.fragment.FragmentShopPreview;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
@@ -44,10 +45,13 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
+import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.session.session.interactor.SignInInteractor;
 import com.tokopedia.session.session.interactor.SignInInteractorImpl;
 import com.tokopedia.session.session.presenter.Login;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
+import com.tokopedia.tkpd.deeplink.di.DaggerDeeplinkComponent;
+import com.tokopedia.tkpd.deeplink.di.DeeplinkComponent;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.home.ReactNativeActivity;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
@@ -58,6 +62,10 @@ import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import javax.inject.Inject;
+
+import rx.Subscriber;
 
 
 /**
@@ -73,12 +81,16 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private final Activity context;
     private final DeepLinkView viewListener;
     SignInInteractor interactor;
-    private GetShopInfoRetrofit getShopInfoRetrofit;
+
+    @Inject
+    GetShopInfoUseCase getShopInfoUseCase;
 
     public DeepLinkPresenterImpl(DeepLinkActivity activity) {
         this.viewListener = activity;
         this.context = activity;
         this.interactor = SignInInteractorImpl.createInstance(activity);
+
+        initInjection(activity);
     }
 
     @Override
@@ -129,6 +141,13 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     @Override
     public void actionGotUrlFromApplink(Uri uriData) {
         prepareOpenWebView(uriData);
+    }
+
+    private void initInjection(DeepLinkActivity activity) {
+        DeeplinkComponent component = DaggerDeeplinkComponent.builder()
+                .appComponent(activity.getApplicationComponent())
+                .build();
+        component.inject(this);
     }
 
     public void processDeepLinkAction(Uri uriData) {
@@ -365,36 +384,31 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openShopInfo(final List<String> linkSegment, final Uri uriData) {
-        getShopInfoRetrofit = new GetShopInfoRetrofit(context, "", linkSegment.get(0));
-        getShopInfoRetrofit.setGetShopInfoListener(new GetShopInfoRetrofit.OnGetShopInfoListener() {
+        RequestParams params = RequestParams.create();
+        params.putString("shop_domain", linkSegment.get(0));
+        getShopInfoUseCase.execute(params, new Subscriber<ShopModel>() {
             @Override
-            public void onSuccess(String result) {
-                try {
-                    ShopModel shopModel = new Gson().fromJson(result, com.tokopedia.core.shopinfo.models.shopmodel.ShopModel.class);
-                    if (shopModel.info != null) {
-                        viewListener.goToActivity(
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                prepareOpenWebView(uriData);
+            }
+
+            @Override
+            public void onNext(ShopModel shopModel) {
+                if (shopModel != null && shopModel.info != null) {
+                    viewListener.goToActivity(
                             ShopInfoActivity.class,
                             ShopInfoActivity.createBundle(shopModel.info.getShopId(), linkSegment.get(0))
-                        );
-                    } else {
-                        prepareOpenWebView(uriData);
-                    }
-                } catch (Exception e) {
+                    );
+                } else {
                     prepareOpenWebView(uriData);
                 }
             }
-
-            @Override
-            public void onError(String message) {
-                prepareOpenWebView(uriData);
-            }
-
-            @Override
-            public void onFailure() {
-                prepareOpenWebView(uriData);
-            }
         });
-        getShopInfoRetrofit.getShopInfo();
     }
 
     private void openDetailProduct(List<String> linkSegment, Uri uriData) {
