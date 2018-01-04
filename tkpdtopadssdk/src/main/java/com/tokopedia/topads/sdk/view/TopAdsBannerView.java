@@ -48,6 +48,10 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         init();
     }
 
+    private String eliminateSpecialCharacter(String s){
+        return s.replaceAll("&(?!.{2,4};)", "&amp;");
+    }
+
     private void createViewCpmShop(Context context, CpmData.Cpm cpm) {
         inflate(getContext(), R.layout.layout_ads_banner_shop, this);
         ImageView iconImg = (ImageView) findViewById(R.id.icon);
@@ -58,11 +62,11 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         imageLoader.loadImage(cpm.getCpmImage().getFullEcs(), cpm.getCpmImage().getFullUrl(), iconImg);
         promotedTxt.setText(cpm.getPromotedText());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            nameTxt.setText(Html.fromHtml(cpm.getName(), Html.FROM_HTML_MODE_LEGACY));
-            descriptionTxt.setText(Html.fromHtml(cpm.getDecription(), Html.FROM_HTML_MODE_LEGACY));
+            nameTxt.setText(Html.fromHtml(eliminateSpecialCharacter(cpm.getName()), Html.FROM_HTML_MODE_LEGACY));
+            descriptionTxt.setText(Html.fromHtml(eliminateSpecialCharacter(cpm.getDecription()), Html.FROM_HTML_MODE_LEGACY));
         } else {
-            nameTxt.setText(Html.fromHtml(cpm.getName()));
-            descriptionTxt.setText(Html.fromHtml(cpm.getDecription()));
+            nameTxt.setText(Html.fromHtml(eliminateSpecialCharacter(cpm.getName())));
+            descriptionTxt.setText(Html.fromHtml(eliminateSpecialCharacter(cpm.getDecription())));
         }
         badgeContainer.removeAllViews();
         for (Badge badge : cpm.getBadges()) {
@@ -81,11 +85,11 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         TextView descriptionTxt = (TextView) findViewById(R.id.description);
         imageLoader.loadImage(cpm.getCpmImage().getFullEcs(), cpm.getCpmImage().getFullUrl(), iconImg);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            nameTxt.setText(Html.fromHtml(cpm.getName(), Html.FROM_HTML_MODE_LEGACY));
-            descriptionTxt.setText(Html.fromHtml(cpm.getDecription(), Html.FROM_HTML_MODE_LEGACY));
+            nameTxt.setText(Html.fromHtml(eliminateSpecialCharacter(cpm.getName()), Html.FROM_HTML_MODE_LEGACY));
+            descriptionTxt.setText(Html.fromHtml(eliminateSpecialCharacter(cpm.getDecription()), Html.FROM_HTML_MODE_LEGACY));
         } else {
-            nameTxt.setText(Html.fromHtml(cpm.getName()));
-            descriptionTxt.setText(Html.fromHtml(cpm.getDecription()));
+            nameTxt.setText(Html.fromHtml(eliminateSpecialCharacter(cpm.getName())));
+            descriptionTxt.setText(Html.fromHtml(eliminateSpecialCharacter(cpm.getDecription())));
         }
     }
 
