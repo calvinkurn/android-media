@@ -18,7 +18,7 @@
         android:id="@+id/iv_arrow"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        app:srcCompat="@drawable/ic_arrow_right" />
+        app:srcCompat="@drawable/ic_arrow_right_flight" />
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/tv_arrival_city"
