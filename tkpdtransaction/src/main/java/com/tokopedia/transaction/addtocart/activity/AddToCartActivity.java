@@ -812,9 +812,6 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     @OnClick(R2.id.btn_buy)
     void actionBuy() {
         if (presenter.isValidOrder(this, orderData)) {
-            if (pickupBooth != null) {
-                orderData.setStoreId(pickupBooth.getStoreCode());
-            }
             presenter.addToCartService(this, atcReceiver, createFinalOrderData());
             presenter.sendAppsFlyerATC(this, orderData);
 
