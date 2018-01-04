@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.transaction.pickupbooth.domain.model.Store;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -116,6 +117,11 @@ public class CartItem implements Parcelable {
     @SerializedName("cart_cat_id")
     @Expose
     private String cartCatId;
+
+    // Not confirmed yet
+    @SerializedName("store")
+    @Expose
+    private Store store;
 
     public String getCartTotalLogisticFeeIdr() {
         return cartTotalLogisticFeeIdr;
@@ -399,6 +405,14 @@ public class CartItem implements Parcelable {
         this.cartRatesString = cartRatesString;
     }
 
+    public Store getStore() {
+        return store;
+    }
+
+    public void setStore(Store store) {
+        this.store = store;
+    }
+
     public CartItem() {
     }
 
@@ -444,6 +458,7 @@ public class CartItem implements Parcelable {
         dest.writeString(this.cartString);
         dest.writeString(this.cartRatesString);
         dest.writeString(this.cartCatId);
+        dest.writeParcelable(this.store, flags);
     }
 
     protected CartItem(Parcel in) {
@@ -482,6 +497,7 @@ public class CartItem implements Parcelable {
         this.cartString = in.readString();
         this.cartRatesString = in.readString();
         this.cartCatId = in.readString();
+        this.store = in.readParcelable(Store.class.getClassLoader());
     }
 
     public static final Creator<CartItem> CREATOR = new Creator<CartItem>() {

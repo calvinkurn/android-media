@@ -97,7 +97,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         TextWatcher, ATCResultReceiver.Receiver, PickupPointLayout.ViewListener {
     public static final int REQUEST_CHOOSE_ADDRESS = 0;
     public static final int REQUEST_CHOOSE_LOCATION = 2;
-    public static final int REQUEST_CHOOSE_PICKUP_POINT = 3;
+    private static final int REQUEST_CHOOSE_PICKUP_POINT = 3;
     private static final String EXTRA_STATE_ORDER_DATA = "orderData";
     private static final String EXTRA_STATE_DESTINATION_DATA = "destinationData";
     private static final String EXTRA_STATE_LOCATION_PASS_DATA = "locationPassData";
@@ -866,7 +866,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     private OrderData createFinalOrderData() {
         OrderData finalOrder = this.orderData;
         if (pickupBooth != null) {
-            orderData.setStoreId(pickupBooth.getStoreCode());
+            orderData.setStoreId(pickupBooth.getId());
         }
         finalOrder.setNotes(etRemark.getText().toString());
         return finalOrder;

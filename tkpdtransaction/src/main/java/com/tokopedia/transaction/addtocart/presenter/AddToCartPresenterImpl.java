@@ -590,14 +590,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
 
     @Override
     public HashMap<String, String> getPickupPointParams() {
-        HashMap<String, String> params = new HashMap<>();
-        params.put(GetPickupPointsUseCase.PARAM_DISTRICT_ID, String.valueOf(atcFormData.getShop().getOriginId()));
-        params.put(GetPickupPointsUseCase.PARAM_PAGE, GetPickupPointsUseCase.DEFAULT_PAGE);
-        params.put(GetPickupPointsUseCase.PARAM_TOKEN,
-                atcFormData.getShop().getTokenPickup() != null ? atcFormData.getShop().getTokenPickup() : "");
-        params.put(GetPickupPointsUseCase.PARAM_UT, String.valueOf(atcFormData.getShop().getUt()));
-
-        return params;
+        return GetPickupPointsUseCase.generateParams(atcFormData);
     }
 
 }

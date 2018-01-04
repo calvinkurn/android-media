@@ -4,8 +4,12 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.transaction.addtocart.model.responseatcform.AtcFormData;
 import com.tokopedia.transaction.pickupbooth.data.repository.PickupPointRepository;
 import com.tokopedia.transaction.pickupbooth.domain.model.PickupPointResponse;
+import com.tokopedia.transaction.pickupbooth.domain.model.Store;
+
+import java.util.HashMap;
 
 import javax.inject.Inject;
 
@@ -37,6 +41,28 @@ public class GetPickupPointsUseCase extends UseCase<PickupPointResponse> {
     @Override
     public Observable<PickupPointResponse> createObservable(RequestParams requestParams) {
         return repository.getPickupPoints(requestParams.getParamsAllValueInString());
+    }
+
+    public static HashMap<String, String> generateParams(AtcFormData atcFormData){
+        HashMap<String, String> params = new HashMap<>();
+        params.put(GetPickupPointsUseCase.PARAM_DISTRICT_ID, String.valueOf(atcFormData.getShop().getOriginId()));
+        params.put(GetPickupPointsUseCase.PARAM_PAGE, GetPickupPointsUseCase.DEFAULT_PAGE);
+        params.put(GetPickupPointsUseCase.PARAM_TOKEN,
+                atcFormData.getShop().getTokenPickup() != null ? atcFormData.getShop().getTokenPickup() : "");
+        params.put(GetPickupPointsUseCase.PARAM_UT, String.valueOf(atcFormData.getShop().getUt()));
+
+        return params;
+    }
+
+    public static HashMap<String, String> generateParams(Store store){
+        HashMap<String, String> params = new HashMap<>();
+        params.put(GetPickupPointsUseCase.PARAM_DISTRICT_ID, String.valueOf(store.getDistrictId()));
+        params.put(GetPickupPointsUseCase.PARAM_PAGE, GetPickupPointsUseCase.DEFAULT_PAGE);
+//        params.put(GetPickupPointsUseCase.PARAM_TOKEN,
+//                atcFormData.getShop().getTokenPickup() != null ? atcFormData.getShop().getTokenPickup() : "");
+//        params.put(GetPickupPointsUseCase.PARAM_UT, String.valueOf(atcFormData.getShop().getUt()));
+
+        return params;
     }
 
 }
