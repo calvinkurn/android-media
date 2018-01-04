@@ -24,10 +24,6 @@ public class ChangePhoneNumberInputActivity extends BasePresenterActivity
     private ArrayList<String> warningList;
     private String email;
 
-    public static Intent newInstance(Context context) {
-        return new Intent(context, ChangePhoneNumberInputActivity.class);
-    }
-
     public static Intent newInstance(Context context, String phoneNumber, String email, ArrayList<String> warningList) {
         Intent intent = new Intent(context, ChangePhoneNumberInputActivity.class);
         intent.putExtra(PARAM_PHONE_NUMBER, phoneNumber);

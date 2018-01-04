@@ -22,6 +22,7 @@ import com.tokopedia.di.SessionComponent;
 import com.tokopedia.di.SessionModule;
 import com.tokopedia.session.R;
 import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberEmailActivity;
+import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberEmailVerificationActivity;
 import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberInputActivity;
 import com.tokopedia.session.changephonenumber.view.adapter.WarningListAdapter;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberWarningFragmentListener;
@@ -232,7 +233,11 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
 
     private void goToNextActivity() {
         if (viewModel.getAction().equalsIgnoreCase(ACTION_EMAIL)) {
-            Intent intent = ChangePhoneNumberEmailActivity.newInstance(getContext(), email);
+            Intent intent = ChangePhoneNumberEmailVerificationActivity.newInstance(
+                    getContext(),
+                    phoneNumber,
+                    email,
+                    viewModel.getWarningList() != null ? new ArrayList<>(viewModel.getWarningList()) : null);
             intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
             startActivity(intent);
             getActivity().finish();
@@ -242,10 +247,11 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
                             getContext(),
                             phoneNumber,
                             email,
-                            new ArrayList<>(viewModel.getWarningList())
+                            viewModel.getWarningList() != null ? new ArrayList<>(viewModel.getWarningList()) : null
                     ),
                     REQUEST_CHANGE_PHONE_NUMBER
             );
+
         }
     }
 

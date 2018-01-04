@@ -143,8 +143,8 @@ SessionModule {
 
     @SessionScope
     @Provides
-    ChangePhoneNumberEmailVerificationFragmentListener.Presenter ChangePhoneNumberEmailVerificationPresenter() {
-        return new ChangePhoneNumberEmailVerificationPresenter();
+    ChangePhoneNumberEmailVerificationFragmentListener.Presenter ChangePhoneNumberEmailVerificationPresenter(SendEmailUseCase sendEmailUseCase) {
+        return new ChangePhoneNumberEmailVerificationPresenter(sendEmailUseCase);
     }
 
     @SessionScope

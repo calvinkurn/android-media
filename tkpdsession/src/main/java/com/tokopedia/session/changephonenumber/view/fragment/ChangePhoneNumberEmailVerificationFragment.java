@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.ui.widget.PinEntryEditText;
+import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
@@ -91,7 +92,7 @@ public class ChangePhoneNumberEmailVerificationFragment extends BaseDaggerFragme
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View parentView = inflater.inflate(R.layout.fragment_change_phone_number_input, container, false);
+        View parentView = inflater.inflate(R.layout.fragment_change_phone_number_email_verification, container, false);
         unbinder = ButterKnife.bind(this, parentView);
         presenter.attachView(this);
         initVar();
@@ -149,7 +150,6 @@ public class ChangePhoneNumberEmailVerificationFragment extends BaseDaggerFragme
                 if (actionId == EditorInfo.IME_ACTION_DONE
                         && inputOtp.length() == 6) {
                     //TODO this
-                    Log.d("milhamj", "do something");
 //                    presenter.verifyOtp(verificationPassModel, inputOtp.getText().toString());
                     return true;
                 }
@@ -173,6 +173,10 @@ public class ChangePhoneNumberEmailVerificationFragment extends BaseDaggerFragme
             setLimitReachedCountdownText();
         }
 
+        String text = String.format("%s<br/><b>%s</b>",
+                getString(R.string.verification_code_sent_to),
+                email);
+        message.setText(MethodChecker.fromHtml(text));
         limitOtp.setVisibility(View.GONE);
     }
 
@@ -232,6 +236,25 @@ public class ChangePhoneNumberEmailVerificationFragment extends BaseDaggerFragme
         sessionComponent.inject(this);
     }
 
+    @Override
+    public void onSendEmailSuccess(Boolean isSuccess) {
+        startTimer();
+    }
+
+    @Override
+    public void onSendEmailError(String message) {
+
+    }
+
+    @Override
+    public void onSendEmailFailed() {
+
+    }
+
+    @Override
+    public void dropKeyboard() {
+        KeyboardHandler.DropKeyboard(getActivity(), getView());
+    }
 
     private void startTimer() {
         if (cacheHandler.isExpired() || !cacheHandler.getBoolean(HAS_TIMER, false)) {
@@ -267,8 +290,7 @@ public class ChangePhoneNumberEmailVerificationFragment extends BaseDaggerFragme
         resend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO this
-//                presenter.sendEmail();
+                presenter.sendEmail();
             }
         });
     }

@@ -12,6 +12,14 @@ public interface ChangePhoneNumberEmailVerificationFragmentListener {
         void showLoading();
 
         void dismissLoading();
+
+        void dropKeyboard();
+
+        void onSendEmailSuccess(Boolean isSuccess);
+
+        void onSendEmailError(String message);
+
+        void onSendEmailFailed();
     }
 
     public interface Presenter extends CustomerPresenter<ChangePhoneNumberEmailVerificationFragmentListener.View> {

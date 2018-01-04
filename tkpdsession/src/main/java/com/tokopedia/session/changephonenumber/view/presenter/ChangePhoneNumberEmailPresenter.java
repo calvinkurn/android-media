@@ -37,8 +37,9 @@ public class ChangePhoneNumberEmailPresenter
 
     @Override
     public void sendEmail() {
-        view.showLoading();
-        sendEmailUseCase.execute(RequestParams.create(),
-                new SendEmailSubscriber(view));
+        //TODO remove this class and old email views
+//        view.showLoading();
+//        sendEmailUseCase.execute(SendEmailUseCase.getSendEmailParam(),
+//                new SendEmailSubscriber(view));
     }
 }
