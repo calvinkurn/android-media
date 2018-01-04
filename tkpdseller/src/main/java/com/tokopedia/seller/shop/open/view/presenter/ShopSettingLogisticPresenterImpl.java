@@ -1,7 +1,10 @@
 package com.tokopedia.seller.shop.open.view.presenter;
 
+import android.text.TextUtils;
+
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.shop.open.data.model.OpenShopCouriersModel;
+import com.tokopedia.seller.shop.open.data.model.response.ResponseCreateShop;
 import com.tokopedia.seller.shop.open.view.model.CourierServiceIdWrapper;
 import com.tokopedia.seller.shop.open.domain.interactor.GetLogisticAvailableUseCase;
 import com.tokopedia.seller.shop.open.domain.interactor.ShopOpenCreateUseCase;
@@ -81,7 +84,7 @@ public class ShopSettingLogisticPresenterImpl extends ShopSettingLogisticPresent
     }
 
     private void createShop() {
-        shopOpenCreateUseCase.execute(null, new Subscriber<Boolean>() {
+        shopOpenCreateUseCase.execute(null, new Subscriber<ResponseCreateShop>() {
             @Override
             public void onCompleted() {
 
@@ -95,9 +98,9 @@ public class ShopSettingLogisticPresenterImpl extends ShopSettingLogisticPresent
             }
 
             @Override
-            public void onNext(Boolean aBoolean) {
-                if (aBoolean) {
-                    getView().onSuccessCreateShop();
+            public void onNext(ResponseCreateShop responseCreateShop) {
+                if (responseCreateShop.getShopId() > 0) {
+                    getView().onSuccessCreateShop(responseCreateShop.getShopId());
                 } else {
                     getView().onErrorCreateShop(null);
                 }

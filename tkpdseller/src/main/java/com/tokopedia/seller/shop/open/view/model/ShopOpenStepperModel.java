@@ -34,12 +34,11 @@ public class ShopOpenStepperModel implements StepperModel {
         if (shipment == null) {
             return courierServiceIdWrapper;
         }
-        String packageListString = shipment.getPackageList();
-        if (TextUtils.isEmpty(packageListString)) {
+        JSONObject jsonObject = shipment.getPackageList();
+        if (jsonObject == null) {
             return courierServiceIdWrapper;
         }
         try {
-            JSONObject jsonObject = new JSONObject(packageListString);
             Iterator<?> keys = jsonObject.keys();
             while( keys.hasNext() ) {
                 String key = (String)keys.next();

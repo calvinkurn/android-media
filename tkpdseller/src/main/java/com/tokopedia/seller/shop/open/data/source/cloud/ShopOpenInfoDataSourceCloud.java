@@ -113,16 +113,16 @@ public class ShopOpenInfoDataSourceCloud {
                 });
     }
 
-    public Observable<Boolean> createShop() {
+    public Observable<ResponseCreateShop> createShop() {
         return tomeApi.createShop()
                 .map(new DataResponseMapper<ResponseCreateShop>())
-                .flatMap(new Func1<ResponseCreateShop, Observable<Boolean>>() {
+                .flatMap(new Func1<ResponseCreateShop, Observable<ResponseCreateShop>>() {
                     @Override
-                    public Observable<Boolean> call(ResponseCreateShop responseCreateShop) {
+                    public Observable<ResponseCreateShop> call(ResponseCreateShop responseCreateShop) {
                         if (responseCreateShop == null) {
                             throw new RuntimeException();
                         } else {
-                            return Observable.just(responseCreateShop.getReserveStatus().equals(String.valueOf(SUCCESS)));
+                            return Observable.just(responseCreateShop);
                         }
                     }
                 });
@@ -181,7 +181,7 @@ public class ShopOpenInfoDataSourceCloud {
                 List<String> courierServiceStrIdList = courierServiceId.getCourierServiceIdList();
                 JSONArray jsonArray = new JSONArray();
                 for (int j = 0, sizej = courierServiceStrIdList.size(); j < sizej; j++) {
-                    jsonArray.put(courierServiceStrIdList.get(j));
+                    jsonArray.put(Integer.parseInt(courierServiceStrIdList.get(j)));
                 }
                 jsonObject.put(courierID, jsonArray);
             }

@@ -89,7 +89,6 @@ public class ShopModule {
                                                           ) {
         return okHttpClientBuilder
                 .addInterceptor(bearerInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
                 .addInterceptor(tkpdErrorResponseInterceptor)
                 .addInterceptor(httpLoggingInterceptor)
                 .build();

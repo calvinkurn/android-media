@@ -48,7 +48,6 @@ public interface TomeApi {
     @POST(ShopOpenNetworkConstant.PATH_RESERVE_SHOP_DESC_INFO)
     Observable<Response<DataResponse<ResponseSaveShopDesc>>> reserveShopDescInfo(@FieldMap Map<String, String> params);
 
-    @FormUrlEncoded
     @POST(ShopOpenNetworkConstant.PATH_CREATE_SHOP)
     Observable<Response<DataResponse<ResponseCreateShop>>> createShop();
 }
