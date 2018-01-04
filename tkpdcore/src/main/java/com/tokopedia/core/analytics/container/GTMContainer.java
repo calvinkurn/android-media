@@ -473,15 +473,7 @@ public class GTMContainer implements IGTMContainer {
 
     @Override
     public void impressionHotlistTracking(String hotlistName, String promoName, String promoCode) {
-        GTMDataLayer.pushGeneral(
-                context,
-                DataLayer.mapOf(
-                        "event", "clickHotlist",
-                        "eventCategory", "hotlist page",
-                        "eventAction", "hotlist promo impression",
-                        "eventLabel", String.format("%s - %s - %s", hotlistName, promoName, promoCode)
-                )
-        );
+        clearEventTracking();
         GTMDataLayer.pushGeneral(
                 context,
                 DataLayer.mapOf(
