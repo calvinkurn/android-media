@@ -23,14 +23,13 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.gallery.GalleryActivity;
-import com.tokopedia.core.gallery.GallerySelectedFragment;
 import com.tokopedia.core.gallery.GalleryType;
-import com.tokopedia.core.gallery.MediaItem;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.listener.StepperListener;
+import com.tokopedia.seller.common.gallery.GalleryCropActivity;
 import com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.util.ShopErrorHandler;
@@ -213,10 +212,9 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
         if(resultCode == Activity.RESULT_OK){
             switch (requestCode){
                 case REQUEST_CODE_IMAGE_PICKER:
-                    if (data != null && data.getParcelableExtra(GallerySelectedFragment.EXTRA_RESULT_SELECTION) != null) {
-                        MediaItem item = data.getParcelableExtra(GallerySelectedFragment.EXTRA_RESULT_SELECTION);
-                        uriPathImage = item.getRealPath();
-                        ImageHandler.loadImageFromFile(getActivity(), imagePicker, new File(item.getRealPath()));
+                    if (data != null && data.getStringExtra(GalleryCropActivity.RESULT_IMAGE_CROPPED) != null) {
+                        uriPathImage = data.getStringExtra(GalleryCropActivity.RESULT_IMAGE_CROPPED);
+                        ImageHandler.loadImageFromFile(getActivity(), imagePicker, new File(uriPathImage));
                     }
                     break;
                 default:
@@ -277,7 +275,7 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
     @TargetApi(16)
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void goToGallery() {
-        startActivityForResult(GalleryActivity.createIntent(getActivity(), GalleryType.ofImageOnly()), REQUEST_CODE_IMAGE_PICKER);
+        startActivityForResult(GalleryCropActivity.createIntent(getActivity(), GalleryType.ofImageOnly()), REQUEST_CODE_IMAGE_PICKER);
     }
 
     protected void onAttachListener(Context context){

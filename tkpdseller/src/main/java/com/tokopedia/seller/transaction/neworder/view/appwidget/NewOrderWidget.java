@@ -1,12 +1,15 @@
 package com.tokopedia.seller.transaction.neworder.view.appwidget;
 
 import android.app.PendingIntent;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.RemoteViews;
 
@@ -16,6 +19,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.selling.view.activity.ActivitySellingTransaction;
 import com.tokopedia.seller.transaction.neworder.view.model.DataOrderViewWidget;
 import com.tokopedia.seller.transaction.neworder.view.presenter.GetOrderService;
+import com.tokopedia.seller.transaction.neworder.view.presenter.OrderWidgetJobService;
 
 import java.util.ArrayList;
 
@@ -62,10 +66,17 @@ public class NewOrderWidget extends AppWidgetProvider {
     }
 
     public static void startActionGetOrder(Context context) {
-        Intent intent = new Intent(context, GetOrderService.class);
-        intent.setAction(GetOrderService.GET_ORDER_WIDGET_ACTION);
-        context.startService(intent);
-
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            ComponentName serviceComponent = new ComponentName(context, OrderWidgetJobService.class);
+            JobInfo.Builder builder = new JobInfo.Builder(0, serviceComponent);
+            builder.setMinimumLatency(1 * 1000); // wait at least
+            JobScheduler jobScheduler = context.getSystemService(JobScheduler.class);
+            jobScheduler.schedule(builder.build());
+        }else {
+            Intent intent = new Intent(context, GetOrderService.class);
+            intent.setAction(GetOrderService.GET_ORDER_WIDGET_ACTION);
+            context.startService(intent);
+        }
     }
 
     @Override
