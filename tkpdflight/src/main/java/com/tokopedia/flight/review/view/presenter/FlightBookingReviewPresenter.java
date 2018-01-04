@@ -73,7 +73,7 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
         ).flatMap(new Func1<DataResponseVerify, Observable<FlightCheckoutEntity>>() {
             @Override
             public Observable<FlightCheckoutEntity> call(DataResponseVerify dataResponseVerify) {
-                if (dataResponseVerify.getAttributesData().getCartItems().size() > 0) {
+                if (dataResponseVerify.getAttributesData().getCartItems() != null && dataResponseVerify.getAttributesData().getCartItems().size() > 0) {
                     CartItem verifyCartItem = dataResponseVerify.getAttributesData().getCartItems().get(0);
                     int totalPrice = verifyCartItem.getConfiguration().getPrice();
                     String flightId = verifyCartItem.getMetaData().getFlightId();
