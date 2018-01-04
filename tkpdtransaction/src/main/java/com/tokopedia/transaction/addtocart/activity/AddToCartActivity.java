@@ -223,6 +223,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         increaseButton.setOnTouchListener(onIncrementButtonTouchListener());
         decreaseButton.setOnTouchListener(onDecrementButtonTouchListener());
         pickupPointLayout.setListener(this);
+        pickupPointLayout.enableChooserButton(this);
     }
 
     @Override

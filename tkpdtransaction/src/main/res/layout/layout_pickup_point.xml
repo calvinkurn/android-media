@@ -14,7 +14,8 @@
         android:drawableRight="@drawable/ic_chevron_right"
         android:gravity="center_vertical"
         android:text="@string/label_send_to_pick_up_booth"
-        android:textColor="@color/tkpd_main_green" />
+        android:textColor="@color/tkpd_main_green"
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/ll_content"

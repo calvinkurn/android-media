@@ -44,6 +44,8 @@ import com.tokopedia.transaction.cart.model.cartdata.CartShop;
 import com.tokopedia.transaction.customview.expandablelayout.ExpandableLayoutListenerAdapter;
 import com.tokopedia.transaction.customview.expandablelayout.ExpandableLinearLayout;
 import com.tokopedia.transaction.customview.expandablelayout.Utils;
+import com.tokopedia.transaction.pickupbooth.domain.model.Store;
+import com.tokopedia.transaction.pickupbooth.view.customview.PickupPointLayout;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -55,7 +57,8 @@ import butterknife.ButterKnife;
 /**
  * @author anggaprasetiyo on 11/10/16.
  */
-public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
+        implements PickupPointLayout.ViewListener{
     private static final int TYPE_CART_ITEM = R.layout.holder_item_cart_tx_module;
     private static final int FIRST_PRODUCT_INDEX = 0;
     private static final int EDIT_MENU_INDEX = 0;
@@ -103,8 +106,13 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
             renderHolderViewListener(holderItemCart, cartData, adapterProduct, position);
             renderInsuranceOption(holderItemCart, cartItemEditable);
-
+            renderPickupPoint(holderItemCart, cartItemEditable);
         }
+    }
+
+    private void renderPickupPoint(ViewHolder holderItemCart, CartItemEditable cartItemEditable) {
+        holderItemCart.pickupPointLayout.setListener(this);
+        holderItemCart.pickupPointLayout.disableChooserButton(holderItemCart.pickupPointLayout.getContext());
     }
 
     private boolean unEditable(CartItem cartData) {
@@ -770,6 +778,21 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         holder.btnOverflow.setVisibility(isEditMode ? View.GONE : View.VISIBLE);
     }
 
+    @Override
+    public void onChoosePickupPoint() {
+
+    }
+
+    @Override
+    public void onClearPickupPoint(Store store) {
+
+    }
+
+    @Override
+    public void onEditPickupPoint(Store store) {
+
+    }
+
     static class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R2.id.holder_container)
         LinearLayout holderContainer;
@@ -833,6 +856,8 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         ProgressBar totalPriceProgressBar;
         @BindView(R2.id.img_insurance_info)
         ImageView imgInsuranceInfo;
+        @BindView(R2.id.pickup_point_layout)
+        PickupPointLayout pickupPointLayout;
 
         public ViewHolder(View itemView) {
             super(itemView);

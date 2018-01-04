@@ -88,6 +88,23 @@ public class PickupPointLayout extends LinearLayout {
         });
     }
 
+    public void enableChooserButton(Context context) {
+        tvSendToPickUpBooth.setTextColor(ContextCompat.getColor(context, R.color.tkpd_main_green));
+        tvSendToPickUpBooth.setCompoundDrawablesWithIntrinsicBounds(null, null,
+                ContextCompat.getDrawable(context, R.drawable.ic_chevron_right), null);
+        tvSendToPickUpBooth.setVisibility(VISIBLE);
+    }
+
+    public void disableChooserButton(Context context) {
+        tvSendToPickUpBooth.setTextColor(ContextCompat.getColor(context, R.color.font_black_secondary_54));
+        tvSendToPickUpBooth.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+        tvSendToPickUpBooth.setVisibility(VISIBLE);
+    }
+
+    public void hideChooserButton() {
+        tvSendToPickUpBooth.setVisibility(GONE);
+    }
+
     public void setListener(ViewListener listener) {
         this.listener = listener;
     }
@@ -96,16 +113,13 @@ public class PickupPointLayout extends LinearLayout {
         this.store = store;
         tvPickUpBoothName.setText(store.getStoreName());
         tvPickUpBoothAddress.setText(store.getAddress());
-        tvSendToPickUpBooth.setTextColor(ContextCompat.getColor(context, R.color.font_black_secondary_54));
-        tvSendToPickUpBooth.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+        disableChooserButton(context);
         tvSendToPickUpBooth.setOnClickListener(null);
         llContent.setVisibility(VISIBLE);
     }
 
     public void unSetData(Context context) {
-        tvSendToPickUpBooth.setTextColor(ContextCompat.getColor(context, R.color.tkpd_main_green));
-        tvSendToPickUpBooth.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                ContextCompat.getDrawable(context, R.drawable.ic_chevron_right), null);
+        enableChooserButton(context);
         store = null;
         tvSendToPickUpBooth.setOnClickListener(new OnClickListener() {
             @Override
