@@ -71,16 +71,6 @@ public class RideModule {
         return new BookingRideRepositoryData(bookingRideDataStoreFactory);
     }
 
-    @Provides
-    @RideScope
-    HttpLoggingInterceptor provideHttpLoggingInterceptor() {
-        HttpLoggingInterceptor.Level loggingLevel = HttpLoggingInterceptor.Level.NONE;
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            loggingLevel = HttpLoggingInterceptor.Level.BODY;
-        }
-        return new HttpLoggingInterceptor().setLevel(loggingLevel);
-    }
-
 
     @Provides
     @RideQualifier

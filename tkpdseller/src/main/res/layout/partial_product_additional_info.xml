@@ -8,11 +8,13 @@
     <LinearLayout
         style="@style/LabelLayout"
         android:layout_marginTop="@dimen/margin_med"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/text_input_layout_description"
             style="@style/TextInputLayout"
+            android:layout_width="0dp"
+            android:layout_weight="0.8"
             app:counterEnabled="true"
             app:counterMaxLength="@integer/product_max_character_description">
 
@@ -25,6 +27,20 @@
                 android:maxLength="@integer/product_max_character_description" />
 
         </android.support.design.widget.TextInputLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.1">
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/info_icon_add_product"
+                android:layout_width="@dimen/icon_prod_size"
+                android:layout_height="@dimen/icon_prod_size"
+                android:layout_gravity="center"
+                android:src="@drawable/info_icon"/>
+        </FrameLayout>
+
+
 
     </LinearLayout>
 
