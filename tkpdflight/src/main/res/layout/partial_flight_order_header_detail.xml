@@ -22,7 +22,8 @@
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/tv_order_date"
-            style="@style/TextView.Caption"
+            style="@style/TextView"
+            android:textSize="@dimen/font_paragraph_small"
             tools:text="9 Jan 2017" />
 
         <android.support.v7.widget.AppCompatTextView
