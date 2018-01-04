@@ -145,14 +145,20 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
 
         int otpType = passModel.getOtpType();
         switch (otpType) {
-            default:
+            case RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION:
                 validateOtpUseCase.execute(ValidateOtpUseCase.getParam(
                         sessionHandler.getTempLoginSession(MainApplication.getAppContext()),
                         passModel.getOtpType(),
                         otpCode
                 ), new VerifyOtpSubscriber(getView()));
                 break;
-
+            default:
+                validateOtpUseCase.execute(ValidateOtpUseCase.getParam(
+                        sessionHandler.getLoginID(),
+                        passModel.getOtpType(),
+                        otpCode
+                ), new VerifyOtpSubscriber(getView()));
+                break;
         }
     }
 }

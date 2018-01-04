@@ -33,6 +33,7 @@ public class RequestOtpUseCase extends UseCase<RequestOtpViewModel> {
 
     public static final int OTP_TYPE_SECURITY_QUESTION = 13;
     public static final int OTP_TYPE_PHONE_NUMBER_VERIFICATION = 11;
+    public static final int OTP_TYPE_CHANGE_PHONE_NUMBER = 20;
 
     protected final OtpSource otpSource;
 

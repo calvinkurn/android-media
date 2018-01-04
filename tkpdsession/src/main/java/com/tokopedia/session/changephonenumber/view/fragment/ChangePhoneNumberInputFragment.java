@@ -273,7 +273,7 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
         GlobalCacheManager cacheManager = new GlobalCacheManager();
 
         VerificationPassModel passModel = new VerificationPassModel(cleanPhoneNumber(newPhoneNumber), email,
-                getListAvailableMethod(cleanPhoneNumber(newPhoneNumber)), RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION);
+                getListAvailableMethod(cleanPhoneNumber(newPhoneNumber)), RequestOtpUseCase.OTP_TYPE_CHANGE_PHONE_NUMBER);
         cacheManager.setKey(VerificationActivity.PASS_MODEL);
         cacheManager.setValue(CacheUtil.convertModelToString(passModel,
                 new TypeToken<VerificationPassModel>() {
