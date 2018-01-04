@@ -17,6 +17,9 @@ import com.exotel.verification.exceptions.ClientBuilderException;
 import com.exotel.verification.exceptions.InvalidConfigException;
 import com.exotel.verification.exceptions.PermissionNotGrantedException;
 import com.exotel.verification.exceptions.VerificationAlreadyInProgressException;
+import com.logentries.logger.AndroidLogger;
+import com.tkpd.library.utils.AnalyticsLog;
+import com.tokopedia.digital.analytics.NOTPTracking;
 import com.tokopedia.digital.utils.DeviceUtil;
 
 import java.util.List;
@@ -33,6 +36,11 @@ public class NOTPExotelVerification {
     public static final String SECRET_KEY = "nulayukawoju";
     public static final String TAG = NOTPExotelVerification.class.getName();
 
+
+    public static final String FIREBASE_NOTP_REMOTE_CONFIG_KEY = "app_notp_enabled"; // For Dev Testing
+    public static final String FIREBASE_NOTP_TEST_REMOTE_CONFIG_KEY = "app_notp_test";
+
+
     private static NOTPVerificationListener verificationlistener;
     public static NOTPExotelVerification getmInstance() {
         return mInstance;
@@ -44,7 +52,6 @@ public class NOTPExotelVerification {
             verificationListener.onVerificationFail();
             return;
         }
-
         phoneNo = convertE164Fromat(phoneNo);
 
        /* Check if Truecaller installed
@@ -52,6 +59,9 @@ public class NOTPExotelVerification {
        *
        * */
 
+       if(istruecallerInstalled(context)) {
+           AnalyticsLog.printNOTPLog("NOTP_Verification True Caller Installed ");
+       }
         if(istruecallerInstalled(context) || !isNumberExistInPhone((Activity) context,phoneNo)) {
             verificationListener.onVerificationFail();
             return;
@@ -76,6 +86,7 @@ public class NOTPExotelVerification {
         } catch (ClientBuilderException e) {
             e.printStackTrace();
         }
+        final String finalPhoneNo = phoneNo;
         class VerifyListener implements VerificationListener {
             public void onVerificationStarted(VerificationStart verificationStart) {
                 Log.e(TAG,"start");
@@ -84,26 +95,37 @@ public class NOTPExotelVerification {
             public void onVerificationSuccess(VerificationSuccess
                                                       verificationSuccess) {
                 Log.e(TAG,"success");
+                AnalyticsLog.printNOTPLog("NOTP verification Success ");
                 verificationListener.onVerificationSuccess();
             }
 
             public void onVerificationFailed(VerificationFailed
                                                      verificationFailed) {
                 Log.e(TAG,"failed");
+                AnalyticsLog.printNOTPLog("NOTP verification Fail ");
                 verificationlistener.onVerificationFail();
             }
         }
 
         try {
-            Log.e(TAG,"intializationStart");
+            Log.e(TAG,"intializationStart "+phoneNo);
+            AnalyticsLog.printNOTPLog("NOTP Verification IntializationStart ");
+
+
             eVerification.initializeVerification(config);
-            Log.e(TAG,"intializationComplete");
+
+
+            AnalyticsLog.printNOTPLog("NOTP Verification IntializationComplete ");
+            Log.e(TAG,"intializationComplete "+phoneNo);
+
+
         } catch (PermissionNotGrantedException e) {
             e.printStackTrace();
         } catch (InvalidConfigException e) {
             e.printStackTrace();
         }
         try {
+            AnalyticsLog.printNOTPLog("NOTP Verification startVerification ");
             eVerification.startVerification(new VerifyListener(), phoneNo,WAIT_SECONDS);
         } catch (VerificationAlreadyInProgressException e) {
             e.printStackTrace();
@@ -126,6 +148,7 @@ public class NOTPExotelVerification {
     }
 
     private boolean isNumberExistInPhone(Activity context,String number) {
+
         List<SubscriptionInfo> subscriptionInfos = null;
         boolean result = true;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP_MR1) {
@@ -146,15 +169,23 @@ public class NOTPExotelVerification {
                 }
             }
         }
+        if(result) {
+            AnalyticsLog.printNOTPLog("NOTP Verification verification Number Exist in Phone or Empty "+ number);
+            NOTPTracking.eventNOTPConfiguration(false,false,true);
+
+        }
 
         return result;
     }
 
     private boolean istruecallerInstalled(Context context) {
+
         PackageManager pm = context.getPackageManager();
         try {
             pm.getPackageInfo("com.truecaller", PackageManager.GET_ACTIVITIES);
             Log.e(TAG,"true caller installed");
+            NOTPTracking.eventNOTPConfiguration(false,true,false);
+
             return true;
         } catch (PackageManager.NameNotFoundException e) {
         }

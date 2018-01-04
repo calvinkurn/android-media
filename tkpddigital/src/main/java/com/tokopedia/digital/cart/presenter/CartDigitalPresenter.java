@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.network.exception.HttpErrorException;
@@ -11,8 +12,11 @@ import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.digital.analytics.NOTPTracking;
 import com.tokopedia.digital.cart.data.entity.requestbody.atc.Attributes;
 import com.tokopedia.digital.cart.data.entity.requestbody.atc.Field;
 import com.tokopedia.digital.cart.data.entity.requestbody.atc.RequestBodyAtcDigital;
@@ -29,7 +33,6 @@ import com.tokopedia.digital.cart.model.CheckoutDigitalData;
 import com.tokopedia.digital.cart.model.InstantCheckoutData;
 import com.tokopedia.digital.cart.model.NOTPExotelVerification;
 import com.tokopedia.digital.cart.model.VoucherDigital;
-import com.tokopedia.digital.remoteconfig.RemoteConfigFetcher;
 import com.tokopedia.digital.utils.DeviceUtil;
 
 import java.net.ConnectException;
@@ -40,6 +43,9 @@ import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
 import rx.Subscriber;
+
+import static com.tokopedia.digital.cart.model.NOTPExotelVerification.FIREBASE_NOTP_REMOTE_CONFIG_KEY;
+import static com.tokopedia.digital.cart.model.NOTPExotelVerification.FIREBASE_NOTP_TEST_REMOTE_CONFIG_KEY;
 
 /**
  * @author anggaprasetiyo on 2/24/17.
@@ -54,7 +60,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
                                 ICartDigitalInteractor iCartDigitalInteractor) {
         this.view = view;
         this.cartDigitalInteractor = iCartDigitalInteractor;
-        fetchRemoteConfig();
+        initRemoteConfig();
     }
 
     @Override
@@ -348,49 +354,46 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
             }
         };
     }
-    FirebaseRemoteConfig firebaseRemoteConfig;
-
-    private void fetchRemoteConfig() {
-        RemoteConfigFetcher remoteConfigFetcher = new RemoteConfigFetcher(view.getActivity());
-        remoteConfigFetcher.fetch(new RemoteConfigFetcher.Listener() {
-            @Override
-            public void onComplete(FirebaseRemoteConfig firebaseRemoteConfig) {
-                CartDigitalPresenter.this.firebaseRemoteConfig = firebaseRemoteConfig;
-            }
-
-            @Override
-            public void onError(Exception e) {
-                e.printStackTrace();
-            }
-        });
+    private RemoteConfig remoteConfig;
+    private void initRemoteConfig() {
+        remoteConfig = new FirebaseRemoteConfigImpl(view.getActivity());
     }
 
 
 
+/*
+TO CHECK IF NOTP ENABLED FROM FIREBASE OR NOT
+ */
     private boolean isNOTPEnabled() {
         // add here different conditions
-             return (firebaseRemoteConfig != null
-                    && firebaseRemoteConfig.getBoolean(RemoteConfigFetcher.NOTP_ENABLE));
+             return remoteConfig.getBoolean(FIREBASE_NOTP_REMOTE_CONFIG_KEY,true);
 
     }
-
+/*
+TO CHECK IF NOTP ENABLED FROM FIREBASE OR NOT
+ */
 
     private void needToVerifyOTP() {
         if (!isNOTPEnabled()) {
+            Log.e(TAG,"nOTP Disabled");
+            NOTPTracking.eventNOTPConfiguration(true,false,false);
             view.interruptRequestTokenVerification();
             return;
         }
+        Log.e(TAG,"nOTP Enabled");
         view.showProgressLoading();
         NOTPExotelVerification.getmInstance().verifyNo(SessionHandler.getPhoneNumber(), view.getActivity(), new NOTPExotelVerification.NOTPVerificationListener() {
             @Override
             public void onVerificationSuccess() {
                 view.hideProgressLoading();
+                NOTPTracking.eventSuccessNOTPVerification(SessionHandler.getPhoneNumber());
                 processPatchOtpCart(view.getPassData().getCategoryId());
             }
 
             @Override
             public void onVerificationFail() {
                 view.hideProgressLoading();
+                NOTPTracking.eventFailNOTPVerification(SessionHandler.getPhoneNumber());
                 view.interruptRequestTokenVerification();
             }
         });

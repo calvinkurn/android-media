@@ -5,6 +5,7 @@ import android.content.Context;
 import com.logentries.logger.AndroidLogger;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.SessionHandler;
 
 import java.io.IOException;
@@ -49,5 +50,30 @@ public class AnalyticsLog {
         } catch (IOException e) {
            return null;
         }
+    }
+
+    private static AndroidLogger mInstance = null;
+    private static AndroidLogger getAndroidNOTPLogger() {
+        try {
+            if(mInstance == null) {
+                mInstance = AndroidLogger.createInstance(
+                        MainApplication.getAppContext(),
+                        false,
+                        true,
+                        false,
+                        null,
+                        0,
+                        "44ec54a0-bcc2-437e-a061-9c7b3e124165",
+                        true);
+            }
+            return mInstance;
+        } catch (IOException e) {
+            return null;
+        }
+    }
+
+    public static void printNOTPLog(String msg) {
+        getAndroidNOTPLogger().log(msg +" - Phone Number:-"+SessionHandler.getPhoneNumber()
+        + " - LoginID - "+ SessionHandler.getLoginID(MainApplication.getAppContext()));
     }
 }
