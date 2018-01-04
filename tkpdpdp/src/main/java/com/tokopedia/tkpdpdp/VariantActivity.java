@@ -52,6 +52,9 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     private TextView optionNameLevel2;
     private FrameLayout buttonSave;
     private TextView textButtonSave;
+    private View separator2;
+    private TextView selectedLevel1;
+    private TextView selectedLevel2;
 
     private VariantOptionAdapter variantOptionAdapterLevel2;
     private VariantOptionAdapter variantOptionAdapterLevel1;
@@ -86,6 +89,9 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         textButtonSave = findViewById(R.id.text_button_save_variant);
         textOriginalPrice = findViewById(R.id.text_original_price);
         textDiscount = findViewById(R.id.text_discount);
+        separator2 = findViewById(R.id.separator2);
+        selectedLevel1 = findViewById(R.id.selected_variant_level1);
+        selectedLevel2 = findViewById(R.id.selected_variant_level2);
         ImageHandler.LoadImage(productImage, productDetailData.getProductImages().get(0).getImageSrc300());
         renderHeaderInfo();
     }
@@ -238,6 +244,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             }
             optionNameLevel2.setVisibility(VISIBLE);
             optionRecyclerViewLevel2.setVisibility(VISIBLE);
+            separator2.setVisibility(VISIBLE);
             variantOptionAdapterLevel2.notifyItemSelectedChange();
         } else {
             variantOptionAdapterLevel1.notifyItemSelectedChange();
@@ -292,7 +299,8 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
                 }
                 variantOptionAdapterLevel2.notifyItemSelectedChange();
             }
-
+            selectedLevel1.setText(option.getValue());
+            selectedLevel1.setVisibility(VISIBLE);
         } else {
             if (!combinations.contains(variantOptionAdapterLevel1.getVariantOptions().get(variantOptionAdapterLevel1.getSelectedPosition()).getId())) {
                 combinations = productVariant.getCombinationFromSelectedVariant(variantOptionAdapterLevel1.getVariantOptions()
@@ -304,6 +312,8 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
                     }
                 }
             }
+            selectedLevel2.setText(option.getValue());
+            selectedLevel2.setVisibility(VISIBLE);
         }
         Child child = getProductDatumSelected();
         if (child!=null) {
