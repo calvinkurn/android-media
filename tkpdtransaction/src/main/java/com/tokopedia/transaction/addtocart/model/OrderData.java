@@ -34,6 +34,7 @@ public class OrderData implements Parcelable {
     private Shop shop;
     private List<Shipment> shipments;
     private String catId;
+    private String storeId;
 
     public OrderData() {
     }
@@ -166,6 +167,14 @@ public class OrderData implements Parcelable {
         this.catId = catId;
     }
 
+    public String getStoreId() {
+        return storeId;
+    }
+
+    public void setStoreId(String storeId) {
+        this.storeId = storeId;
+    }
+
     protected OrderData(Parcel in) {
         insurance = in.readString();
         notes = in.readString();
@@ -183,6 +192,7 @@ public class OrderData implements Parcelable {
         initWeight = in.readString();
         shipments = in.readArrayList(Shipment.class.getClassLoader());
         catId = in.readString();
+        storeId = in.readString();
     }
 
     @Override
@@ -208,6 +218,7 @@ public class OrderData implements Parcelable {
         dest.writeString(initWeight);
         dest.writeArray(shipments.toArray());
         dest.writeString(catId);
+        dest.writeString(storeId);
     }
 
     @SuppressWarnings("unused")

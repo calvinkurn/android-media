@@ -43,6 +43,7 @@ public class NetParamUtil {
         params.put("receiver_phone", orderData.getAddress().getReceiverPhone());
         params.put("shipping_id", orderData.getShipment());
         params.put("shipping_product", orderData.getShipmentPackage());
+        params.put("store_id", orderData.getStoreId());
 
         return params;
     }
