@@ -23,6 +23,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -851,8 +852,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
         super.setUserVisibleHint(isVisibleToUser);
         if (firstCursor == null)
             firstCursor = "";
-        if (isVisibleToUser && presenter != null) {
+        if (isVisibleToUser && isAdded()
+                && getActivity()!= null && presenter != null) {
             presenter.checkNewFeed(firstCursor);
+            ScreenTracking.screen(getScreenName());
         }
     }
 
