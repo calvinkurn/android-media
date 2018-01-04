@@ -41,7 +41,6 @@ import com.tokopedia.digital.widget.presenter.IDigitalWidgetStyle1Presenter;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Predicate;
 
 import butterknife.BindView;
 import rx.Observable;
@@ -388,7 +387,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
         PreCheckoutDigitalWidget preCheckoutDigitalWidget = new PreCheckoutDigitalWidget();
         preCheckoutDigitalWidget.setClientNumber(widgetClientNumberView.getText());
         preCheckoutDigitalWidget.setOperatorId(String.valueOf(selectedOperator.getId()));
-        preCheckoutDigitalWidget.setProductId(String.valueOf(selectedProduct.getId()));
+        preCheckoutDigitalWidget.setProductId(selectedProduct.getId());
         preCheckoutDigitalWidget.setPromoProduct(selectedProduct.getAttributes().getPromo() != null);
         preCheckoutDigitalWidget.setBundle(bundle);
         return preCheckoutDigitalWidget;
@@ -537,15 +536,16 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
         clearHolder(holderWidgetWrapperBuy);
         clearHolder(holderWidgetSpinnerProduct);
         removeRechargeEditTextCallback(widgetClientNumberView);
+
+        if (compositeSubscription != null && compositeSubscription.hasSubscriptions()) {
+            compositeSubscription.unsubscribe();
+        }
+
         super.onDestroyView();
     }
 
     @Override
     public void onStop() {
-        if (compositeSubscription != null && compositeSubscription.hasSubscriptions()) {
-            compositeSubscription.unsubscribe();
-        }
-
         super.onStop();
     }
 }

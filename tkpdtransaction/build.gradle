@@ -40,7 +40,7 @@ def getTkpdDesign() {
 
 def getTkpdLoyalty() {
     return project.hasProperty('isArtifact') ?
-            rootProject.ext.tkpdDependencies.design : project(':tkpdloyalty');
+            rootProject.ext.tkpdDependencies.loyalty : project(':tkpdloyalty');
 }
 
 publishing {
