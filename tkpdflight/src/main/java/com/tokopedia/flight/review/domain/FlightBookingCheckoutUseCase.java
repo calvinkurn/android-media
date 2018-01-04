@@ -5,6 +5,7 @@ import com.tokopedia.flight.common.util.FlightRequestUtil;
 import com.tokopedia.flight.review.data.model.FlightCheckoutEntity;
 import com.tokopedia.flight.review.domain.checkout.FlightCheckoutAttributes;
 import com.tokopedia.flight.review.domain.checkout.FlightCheckoutConfiguration;
+import com.tokopedia.flight.review.domain.checkout.FlightCheckoutData;
 import com.tokopedia.flight.review.domain.checkout.FlightCheckoutItem;
 import com.tokopedia.flight.review.domain.checkout.FlightCheckoutMetaData;
 import com.tokopedia.flight.review.domain.checkout.FlightCheckoutRequest;
@@ -45,8 +46,8 @@ public class FlightBookingCheckoutUseCase extends UseCase<FlightCheckoutEntity> 
     }
 
     private Observable<FlightCheckoutRequest> createRequest(RequestParams requestParams) {
-        FlightCheckoutRequest request = new FlightCheckoutRequest();
-        request.setType("checkout_cart");
+        FlightCheckoutData data = new FlightCheckoutData();
+        data.setType("checkout_cart");
         FlightCheckoutAttributes attributes = new FlightCheckoutAttributes();
         List<FlightCheckoutItem> items = new ArrayList<>();
         FlightCheckoutItem item = new FlightCheckoutItem();
@@ -66,8 +67,10 @@ public class FlightBookingCheckoutUseCase extends UseCase<FlightCheckoutEntity> 
         if (requestParams.getString(PARAM_PROMOCODE, null) == null) {
             attributes.setPromocode(requestParams.getString(PARAM_PROMOCODE, ""));
         }
-        request.setAttributes(attributes);
-        return Observable.just(request);
+        data.setAttributes(attributes);
+        FlightCheckoutRequest checkoutRequest = new FlightCheckoutRequest();
+        checkoutRequest.setData(data);
+        return Observable.just(checkoutRequest);
     }
 
     public RequestParams createRequestParam(String flightId, int price, String promoCode) {

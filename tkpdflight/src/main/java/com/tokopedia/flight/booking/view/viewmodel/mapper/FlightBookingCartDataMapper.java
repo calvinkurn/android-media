@@ -45,6 +45,8 @@ public class FlightBookingCartDataMapper {
                             break;
                         case Amenity.LUGGAGE:
                             FlightBookingAmenityMetaViewModel luggageMetaViewModel = new FlightBookingAmenityMetaViewModel();
+                            luggageMetaViewModel.setArrivalId(amenity.getArrivalId());
+                            luggageMetaViewModel.setDepartureId(amenity.getDepartureId());
                             luggageMetaViewModel.setKey(amenity.getKey());
                             luggageMetaViewModel.setJourneyId(amenity.getJourneyId());
                             luggageMetaViewModel.setDescription(amenity.getDescription());

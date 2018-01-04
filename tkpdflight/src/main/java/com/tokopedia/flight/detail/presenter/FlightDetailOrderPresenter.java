@@ -214,7 +214,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         List<SimpleViewModel> simpleViewModels = new ArrayList<>();
         for (FlightBookingAmenityViewModel flightBookingAmenityViewModel : amenities) {
             SimpleViewModel simpleViewModel = new SimpleViewModel();
-            simpleViewModel.setLabel(generateLabelPassenger(flightBookingAmenityViewModel.getAmenityType(), flightBookingAmenityViewModel.getDepartureId(),
+            simpleViewModel.setLabel(generateLabelPassenger(String.valueOf(flightBookingAmenityViewModel.getAmenityType()), flightBookingAmenityViewModel.getDepartureId(),
                     flightBookingAmenityViewModel.getArrivalId()));
             simpleViewModel.setDescription(flightBookingAmenityViewModel.getTitle());
             simpleViewModels.add(simpleViewModel);
