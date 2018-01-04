@@ -61,6 +61,8 @@ public interface DetailResCenterFragmentView {
 
     void setOnActionEditAddressClick();
 
+    void setOnFreeReturnClicked();
+
     void setOnActionProductClick(String productID, String productName);
 
     void setOnActionPeopleDetailClick(String buyerID);
@@ -91,7 +93,7 @@ public interface DetailResCenterFragmentView {
 
     void doOnTrackingFailed();
 
-    void doOnActionSucess();
+    void doOnActionSuccess(String action);
 
     void doOnActionError(String messageError);
 

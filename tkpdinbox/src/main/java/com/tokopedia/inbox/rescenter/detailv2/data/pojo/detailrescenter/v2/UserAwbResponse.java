@@ -23,6 +23,8 @@ public class UserAwbResponse {
     private String createTime;
     @SerializedName("createTimeStr")
     private String createTimeStr;
+    @SerializedName("createTimeFullStr")
+    private String createTimeFullStr;
     @SerializedName("attachments")
     private List<AttachmentResponse> attachments;
 
@@ -88,5 +90,13 @@ public class UserAwbResponse {
 
     public void setBy(ByResponse by) {
         this.by = by;
+    }
+
+    public String getCreateTimeFullStr() {
+        return createTimeFullStr;
+    }
+
+    public void setCreateTimeFullStr(String createTimeFullStr) {
+        this.createTimeFullStr = createTimeFullStr;
     }
 }

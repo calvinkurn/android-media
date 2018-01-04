@@ -53,6 +53,9 @@ public class FLightBookingPhoneCodeFragment extends BaseSearchListFragment<Fligh
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         flightBookingPhoneCodePresenter.attachView(this);
+
+        showLoading();
+        flightBookingPhoneCodePresenter.getPhoneCodeList();
     }
 
     @Nullable
@@ -61,12 +64,6 @@ public class FLightBookingPhoneCodeFragment extends BaseSearchListFragment<Fligh
         View view = inflater.inflate(R.layout.fragment_flight_airport_picker, container, false);
         view.requestFocus();
         return view;
-    }
-
-    @Override
-    protected void setInitialActionVar() {
-        showLoading();
-        flightBookingPhoneCodePresenter.getPhoneCodeList();
     }
 
     @Override

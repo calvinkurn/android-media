@@ -23,6 +23,7 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.activity.SendMessageActivity;
+import com.tokopedia.inbox.inboxchat.analytics.TopChatTrackingEventLabel;
 import com.tokopedia.inbox.inboxchat.di.DaggerInboxChatComponent;
 import com.tokopedia.inbox.inboxchat.listener.SendChat;
 import com.tokopedia.inbox.inboxchat.presenter.SendChatPresenter;
@@ -126,6 +127,10 @@ public class SendChatFragment extends BaseDaggerFragment
         attachButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventInsertAttachment(TopChatTrackingEventLabel.Category.CHAT_DETAIL,
+                        TopChatTrackingEventLabel.Action.CHAT_DETAIL_INSERT,
+                        TopChatTrackingEventLabel.Name.CHAT_DETAIL);
+
                 presenter.getAttachProductDialog(
                         getArguments().getString(SendMessageActivity
                                 .PARAM_SHOP_ID, ""),
@@ -143,6 +148,9 @@ public class SendChatFragment extends BaseDaggerFragment
 
     @Override
     public void addUrlToReply(String url) {
+        UnifyTracking.eventSendAttachment(TopChatTrackingEventLabel.Category.CHAT_DETAIL,
+                TopChatTrackingEventLabel.Action.CHAT_DETAIL_ATTACHMENT,
+                TopChatTrackingEventLabel.Name.CHAT_DETAIL);
         replyColumn.setText(replyColumn.getText() + "\n" + url);
         replyColumn.setSelection(replyColumn.length());
     }

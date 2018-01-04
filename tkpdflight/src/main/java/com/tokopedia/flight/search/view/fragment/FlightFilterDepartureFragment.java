@@ -2,6 +2,8 @@ package com.tokopedia.flight.search.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.view.View;
 
 import com.tokopedia.flight.search.view.adapter.FlightFilterDepartureTimeAdapterTypeFactory;
 import com.tokopedia.flight.search.view.fragment.base.BaseFlightFilterFragment;
@@ -83,7 +85,8 @@ public class FlightFilterDepartureFragment extends BaseFlightFilterFragment<Depa
     }
 
     @Override
-    protected void setInitialActionVar() {
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         List<DepartureStat> airlineStatList = listener.getFlightSearchStatisticModel().getDepartureTimeStatList();
         renderList(airlineStatList);
     }
