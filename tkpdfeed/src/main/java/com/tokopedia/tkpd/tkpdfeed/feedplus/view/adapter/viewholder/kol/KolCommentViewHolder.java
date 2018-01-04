@@ -72,14 +72,9 @@ public class KolCommentViewHolder extends AbstractViewHolder<KolCommentViewModel
         mainView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                viewListener.onDeleteCommentKol(element.getId(),
+                return viewListener.onDeleteCommentKol(element.getId(),
                         element.canDeleteComment(), getAdapterPosition());
-                if (element.canDeleteComment()) {
-                    showDeleteDialog(v, viewListener, element.getId(), getAdapterPosition());
-                    return true;
-                } else {
-                    return false;
-                }
+
             }
         });
 

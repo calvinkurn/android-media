@@ -41,7 +41,7 @@ public interface KolComment {
 
         void showProgressDialog();
 
-        void onDeleteCommentKol(int id, boolean b, int adapterPosition);
+        boolean onDeleteCommentKol(int id, boolean b, int adapterPosition);
 
         void onErrorDeleteComment(String errorMessage);
 

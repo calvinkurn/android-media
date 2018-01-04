@@ -265,6 +265,7 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
         UnifyTracking.eventKolCommentDetailSubmitComment();
         adapter.addItem(new KolCommentViewModel(
                 sendKolCommentDomain.getId(),
+                String.valueOf(sendKolCommentDomain.getDomainUser().getId()),
                 sendKolCommentDomain.getDomainUser().getPhoto(),
                 sendKolCommentDomain.getDomainUser().getName(),
                 sendKolCommentDomain.getComment(),
@@ -301,10 +302,13 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
     }
 
     @Override
-    public void onDeleteCommentKol(int id, boolean canDeleteComment, int
+    public boolean onDeleteCommentKol(int id, boolean canDeleteComment, int
             adapterPosition) {
         if (canDeleteComment || isInfluencer()) {
             showDeleteDialog(id, adapterPosition);
+            return true;
+        } else {
+            return false;
         }
     }
 

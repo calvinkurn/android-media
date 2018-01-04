@@ -53,6 +53,7 @@ public class KolCommentMapper implements Func1<GetKolComments.Data, KolComments>
             for (GetKolComments.Data.Comment comment : comments) {
                 list.add(new KolCommentViewModel(
                         comment.id() == null ? 0 : comment.id(),
+                        comment.userID() == null ? "" : comment.userID().toString(),
                         comment.userPhoto() == null ? "" : comment.userPhoto(),
                         comment.userName() == null ? "" : comment.userName(),
                         comment.comment() == null ? "" : comment.comment(),
