@@ -3,12 +3,12 @@ package com.tokopedia.flight.dashboard.view.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.support.v7.widget.AppCompatImageView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
 
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
@@ -59,7 +59,7 @@ public class TextInputView extends BaseCustomView {
 
     private void init() {
         View view = inflate(getContext(), R.layout.widget_text_input_view, this);
-        ImageView imageView = (ImageView) view.findViewById(R.id.image_view);
+        AppCompatImageView imageView = (AppCompatImageView) view.findViewById(R.id.image_view);
         textInputLayout = (TkpdHintTextInputLayout) view.findViewById(R.id.text_input_layout);
         EditText etText = textInputLayout.getEditText();
 
