@@ -12,7 +12,7 @@ import com.tokopedia.core.appupdate.model.DetailUpdate;
 import com.tokopedia.core.gcm.ApplinkUnsupported;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
-import com.tokopedia.design.BuildConfig;
+import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
 
 /**

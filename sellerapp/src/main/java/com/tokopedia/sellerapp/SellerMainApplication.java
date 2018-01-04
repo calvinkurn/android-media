@@ -17,12 +17,16 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.TkpdGMGeneratedDatabaseHolder;
 import com.raizlabs.android.dbflow.config.TkpdSellerGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
+import com.tokopedia.inbox.inboxchat.activity.SendMessageActivity;
+import com.tokopedia.inbox.inboxmessageold.activity.SendMessageActivityOld;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.utils.WhitelistUtils;
@@ -104,6 +108,8 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     @Override
     public void onCreate() {
         HockeyAppHelper.setEnableDistribution(BuildConfig.ENABLE_DISTRIBUTION);
+        HockeyAppHelper.setAllowAnonymousLogin(true);
+        HockeyAppHelper.setHockeyappKey(HockeyAppHelper.KEY_SELLERAPP);
         GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION;
         GlobalConfig.PACKAGE_APPLICATION = GlobalConfig.PACKAGE_SELLER_APP;
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
@@ -128,6 +134,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         TkpdBaseURL.BASE_DOMAIN = SellerAppBaseUrl.BASE_DOMAIN;
         TkpdBaseURL.ACE_DOMAIN = SellerAppBaseUrl.BASE_ACE_DOMAIN;
         TkpdBaseURL.CLOVER_DOMAIN = SellerAppBaseUrl.BASE_CLOVER_DOMAIN;
+        TkpdBaseURL.BASE_API_DOMAIN = SellerAppBaseUrl.BASE_API_DOMAIN;
         TkpdBaseURL.TOPADS_DOMAIN = SellerAppBaseUrl.BASE_TOPADS_DOMAIN;
         TkpdBaseURL.MOJITO_DOMAIN = SellerAppBaseUrl.BASE_MOJITO_DOMAIN;
         TkpdBaseURL.HADES_DOMAIN = SellerAppBaseUrl.BASE_HADES_DOMAIN;
@@ -173,7 +180,12 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     }
 
     @Override
-    public Intent getAskSellerIntent(Context context, String toShopId, String shopName, String customSubject, String customMessage, String source, String avatarUrl) {
-        return null;
+    public Intent getAskSellerIntent(Context context, String toShopId, String shopName, String customSubject, String customMessage, String source, String avatar) {
+        if(remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
+            return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName,
+                    customSubject, customMessage, source, avatar);
+        else
+            return SendMessageActivityOld.getAskSellerIntent(context, toShopId, shopName,
+                    customSubject, customMessage, source);
     }
 }

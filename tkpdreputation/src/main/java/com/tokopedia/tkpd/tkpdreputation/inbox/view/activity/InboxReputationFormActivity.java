@@ -207,4 +207,10 @@ public class InboxReputationFormActivity extends BasePresenterActivity
     protected boolean isLightToolbarThemes() {
         return true;
     }
+
+    @Override
+    protected void setupToolbar() {
+        super.setupToolbar();
+        toolbar.setPadding(0,0,30,0);
+    }
 }

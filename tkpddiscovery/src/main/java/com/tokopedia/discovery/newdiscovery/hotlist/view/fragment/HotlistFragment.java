@@ -112,14 +112,11 @@ public class HotlistFragment extends SearchSectionFragment
     }
 
     public static Fragment createInstanceUsingURL(String url) {
+        Bundle args = new Bundle();
+        args.putString(EXTRA_URL, url);
         HotlistFragment fragment = new HotlistFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(EXTRA_URL, url);
-        fragment.setArguments(bundle);
+        fragment.setArguments(args);
         return fragment;
-    }
-
-    public HotlistFragment() {
     }
 
     protected String getHotlistAlias() {
@@ -167,7 +164,9 @@ public class HotlistFragment extends SearchSectionFragment
                 .appComponent(getComponent(AppComponent.class))
                 .build();
         component.inject(this);
+        component.inject(presenter);
     }
+
 
     @Override
     public void onAttach(Context context) {
@@ -190,7 +189,7 @@ public class HotlistFragment extends SearchSectionFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
+//        setRetainInstance(true);
         if (getArguments() != null) {
             if (getArguments().getString(EXTRA_URL, "").isEmpty()) {
                 setHotlistAlias(getArguments().getString(EXTRA_ALIAS));
@@ -375,7 +374,6 @@ public class HotlistFragment extends SearchSectionFragment
         startActivity(intent);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -393,7 +391,6 @@ public class HotlistFragment extends SearchSectionFragment
         }
     }
 
-    @SuppressWarnings("UnusedParameters")
     private void onHandlingDataFromPDP(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE_GOTO_PRODUCT_DETAIL
                 && data != null

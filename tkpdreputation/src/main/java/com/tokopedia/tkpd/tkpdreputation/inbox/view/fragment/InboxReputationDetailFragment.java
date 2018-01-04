@@ -27,9 +27,11 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.router.productdetail.PdpRouter;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
@@ -78,13 +80,14 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     @Inject
     InboxReputationDetailPresenter presenter;
 
+    @Inject
+    GlobalCacheManager cacheManager;
+
     InboxReputationDetailPassModel passModel;
 
-    public static InboxReputationDetailFragment createInstance(InboxReputationDetailPassModel
-                                                                       model, int tab) {
+    public static InboxReputationDetailFragment createInstance(int tab) {
         InboxReputationDetailFragment fragment = new InboxReputationDetailFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable(InboxReputationDetailActivity.ARGS_PASS_DATA, model);
         bundle.putInt(InboxReputationDetailActivity.ARGS_TAB, tab);
         fragment.setArguments(bundle);
         return fragment;
@@ -109,21 +112,14 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getArguments() != null && getArguments().getParcelable(InboxReputationDetailActivity
-                .ARGS_PASS_DATA) != null)
-            passModel = getArguments().getParcelable(InboxReputationDetailActivity.ARGS_PASS_DATA);
-        else if (savedInstanceState != null && savedInstanceState.getParcelable
-                (InboxReputationDetailActivity.ARGS_PASS_DATA) != null)
-            passModel = savedInstanceState.getParcelable(InboxReputationDetailActivity
-                    .ARGS_PASS_DATA);
-        else
-            getActivity().finish();
-
         initVar();
     }
 
     private void initVar() {
+        if (cacheManager != null)
+            passModel = cacheManager.getConvertObjData(InboxReputationDetailActivity.CACHE_PASS_DATA,
+                    InboxReputationDetailPassModel.class);
+
         callbackManager = CallbackManager.Factory.create();
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         InboxReputationDetailTypeFactory typeFactory = new InboxReputationDetailTypeFactoryImpl
@@ -426,9 +422,16 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToProductDetail(String productId) {
+    public void onGoToProductDetail(String productId, String productAvatar, String productName) {
         if (getActivity().getApplication() instanceof PdpRouter) {
-            ((PdpRouter) getActivity().getApplication()).goToProductDetail(getActivity(), productId);
+            ((PdpRouter) getActivity().getApplication()).goToProductDetail(
+                    getActivity(),
+                    ProductPass.Builder.aProductPass()
+                            .setProductId(productId)
+                            .setProductImage(productAvatar)
+                            .setProductName(productName)
+                            .build()
+            );
         }
     }
 
@@ -449,12 +452,6 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
         Intent intent = new Intent(MainApplication.getAppContext(), ShopInfoActivity.class);
         intent.putExtras(ShopInfoActivity.createBundle(String.valueOf(shopId), ""));
         startActivity(intent);
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelable(InboxReputationDetailActivity.ARGS_PASS_DATA, passModel);
     }
 
     @Override
@@ -555,7 +552,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     public void showRatingDialog(Bundle bundle) {
-        if(bundle != null && bundle.getFloat(InboxReputationFormActivity.ARGS_RATING) >= 3.0) {
+        if (bundle != null && bundle.getFloat(InboxReputationFormActivity.ARGS_RATING) >= 3.0) {
             AppRatingDialog.show(getActivity());
         }
     }

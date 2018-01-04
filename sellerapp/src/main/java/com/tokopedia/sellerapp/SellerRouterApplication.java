@@ -40,6 +40,10 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResCenterActivity;
+import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
+import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
+import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
@@ -106,6 +110,7 @@ import com.tokopedia.topads.dashboard.di.module.TopAdsModule;
 import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
+import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -137,7 +142,7 @@ public abstract class SellerRouterApplication extends MainApplication
     private DaggerTopAdsComponent.Builder daggerTopAdsBuilder;
     private TopAdsComponent topAdsComponent;
 
-    private RemoteConfig remoteConfig;
+    protected RemoteConfig remoteConfig;
 
     @Override
     public void onCreate() {
@@ -673,6 +678,12 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public void goToOrderHistory(Context context, String orderId, int userMode) {
+        Intent intent = OrderHistoryActivity.createInstance(context, orderId, userMode);
+        context.startActivity(intent);
+    }
+
+    @Override
     public void goToUserPaymentList(Activity activity) {
         Intent intent = new Intent(activity, ListPaymentTypeActivity.class);
         activity.startActivity(intent);
@@ -709,6 +720,16 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void invalidateCategoryMenuData() {
 
+    }
+
+    @Override
+    public Intent getResolutionCenterIntent(Context context) {
+        return InboxResCenterActivity.createIntent(context);
+    }
+
+    @Override
+    public Intent getDetailResChatIntentBuyer(Context context, String resoId, String shopName) {
+        return DetailResChatActivity.newBuyerInstance(context, resoId, shopName);
     }
 
     @Override

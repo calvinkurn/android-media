@@ -42,7 +42,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     private Lock lock = new ReentrantLock();
 
     @Override
-    public Response intercept(Chain chain) throws IOException {
+    public Response intercept(Chain chain) throws IOException{
         final Request originRequest = chain.request();
         Request.Builder newRequest = chain.request().newBuilder();
 
@@ -84,7 +84,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
     protected Response checkShowForceLogout(Chain chain, Request newestRequest) throws IOException{
         Response response = chain.proceed(newestRequest);
-        if (isUnauthorized(newestRequest, response)) {
+        if (isUnauthorized(newestRequest, response) || isNeedRelogin(response)) {
             ServerErrorHandler.showForceLogoutDialog();
             ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
         }
@@ -330,7 +330,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         }
     }
 
-    private Request recreateRequestWithNewAccessToken(Chain chain) throws IOException{
+    private Request recreateRequestWithNewAccessToken(Chain chain) throws IOException {
         Request newest = chain.request();
         Request.Builder newestRequestBuilder = chain.request().newBuilder();
         generateHmacAuthRequest(newest, newestRequestBuilder);

@@ -75,7 +75,7 @@ public interface InboxReputationDetail {
 
         void onShareReview(String productName, String productAvatar, String productUrl, String review);
 
-        void onGoToProductDetail(String productId);
+        void onGoToProductDetail(String productId, String productAvatar, String productName);
 
         void onSmoothScrollToReplyView(int adapterPosition);
 
