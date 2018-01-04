@@ -109,12 +109,14 @@
     <string name="flight_booking_submit_button_label">Lanjut</string>
     <string name="flight_booking_total_price_label">Pembayaran Anda</string>
     <string name="flight_booking_contact_name_empty_error">Nama kontak tidak boleh kosong</string>
-    <string name="flight_booking_contact_name_max_length_error">Nama kontak maksimal 96 char</string>
+    <string name="flight_booking_contact_name_max_length_error">Nama kontak maksimal 20 char</string>
     <string name="flight_booking_contact_name_alpha_space_error">Nama harus terdiri alfabet dan space</string>
     <string name="flight_booking_contact_email_empty_error">Email kontak tidak boleh kosong</string>
     <string name="flight_booking_contact_email_invalid_error">Email kontak tidak valid</string>
     <string name="flight_booking_contact_phone_empty_error">Telepon Kontak tidak boleh kosong</string>
     <string name="flight_booking_contact_phone_invalid_error">Telepon Kontak tidak valid</string>
+    <string name="flight_booking_contact_phone_max_length_error">Telepon Kontak maksimal 13 digit</string>
+    <string name="flight_booking_contact_phone_min_length_error">Telepon Kontak minimal 9 digit</string>
     <string name="flight_booking_prefix_passenger">Penumpang</string>
     <string name="flight_booking_postfix_adult_passenger">Dewasa</string>
     <string name="flight_booking_postfix_children_passenger">Anak</string>
