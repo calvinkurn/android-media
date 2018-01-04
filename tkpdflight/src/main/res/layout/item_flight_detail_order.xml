@@ -9,13 +9,12 @@
         android:id="@+id/counter_flight"
         style="@style/TextView.Title.Bold"
         android:text="@string/flight_label_detail_order"
-        android:textSize="@dimen/font_subheading" />
+        android:textSize="18sp" />
 
     <com.tokopedia.flight.common.view.FlightExpandableOptionArrow
         android:id="@+id/title_journey_flight"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_med"
         android:background="@color/white"
         app:eo_checked="true"
         app:eo_image_arrow_down="@drawable/ic_arrow_down_flight_expandable"
