@@ -157,5 +157,6 @@
 
     <string name="title_waiting_transaction_tokocash">Transaksi Menunggu</string>
     <string name="back_to_top">Kembali ke Atas</string>
+    <string name="label_operator_not_support">Operator tidak tersedia</string>
 
 </resources>

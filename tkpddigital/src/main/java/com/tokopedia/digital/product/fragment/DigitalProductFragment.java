@@ -185,6 +185,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private ShowCaseDialog showCaseDialog;
     private int selectedSimIndex = 0;//start from 0
     private boolean ussdInProgress = false;
+    private final String noSognalsStr = "No Signals";
+    private final String noServiceStr = "No Service";
 
     public static Fragment newInstance(String categoryId) {
         Fragment fragment = new DigitalProductFragment();
@@ -440,10 +442,10 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                 if (ussdCode == null || "".equalsIgnoreCase(ussdCode.trim())) {
 
                     String carrierName = DeviceUtil.getOperatorName(getActivity(), i);
-                    error = "Operator tidak tersedia";
+                    error = getString(R.string.label_operator_not_support);
 
-                    if (carrierName != null && carrierName.contains("No service")) {
-                        error = "No Signals";
+                    if (presenter.isCarrierSignalsAvailable(carrierName)) {
+                        error = noSognalsStr;
                         carrierName = error;
                     } else {
                         if (!activeSim && i == 1) return;
@@ -729,7 +731,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             selectedCheckPulsaBalanceView = checkPulsaBalanceView;
             Operator operator = presenter.getSelectedUssdOperator(simPosition);
             String phoneNumber = presenter.getUssdPhoneNumberFromCache(simPosition);
-            if (!DeviceUtil.validateNumberAndMatchOperator(categoryDataState.getClientNumberList().get(0).getValidation(),
+            String carrierName = DeviceUtil.getOperatorName(getActivity(), simPosition);
+            if (presenter.isCarrierSignalsAvailable(carrierName)
+                    && !DeviceUtil.validateNumberAndMatchOperator(categoryDataState.getClientNumberList().get(0).getValidation(),
                     operator, phoneNumber)) {
                 presenter.storeUssdPhoneNumber(simPosition, "");
             }

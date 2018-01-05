@@ -646,5 +646,21 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
         }
         localCacheHandler.applyEditor();
     }
+
+    @Override
+    public boolean isCarrierSignalsAvailable( String carrierName) {
+        final String noSognalsStr = "No Signals";
+        final String noServiceStr = "No Service";
+        if (carrierName == null) {
+            return false;
+        }
+        carrierName = carrierName.toLowerCase();
+        if ((carrierName.contains(noServiceStr.toLowerCase()) || carrierName.contains(noSognalsStr.toLowerCase()))) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
 }
 
