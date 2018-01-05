@@ -104,7 +104,8 @@
                 android:backgroundTint="@color/widget_card_with_action_separator"
                 android:hint="@string/flight_booking_contact_telp_hint"
                 android:imeActionLabel="@string/label_done"
-                android:inputType="phone"
+                android:inputType="number"
+                android:digits="1234567890"
                 android:lines="1"
                 android:singleLine="true"
                 tools:text="81234567890" />
