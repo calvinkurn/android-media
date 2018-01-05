@@ -46,11 +46,28 @@
             android:layout_height="1dp"
             android:background="@color/separator_color"/>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:fontFamily="sans-serif"
+            android:textStyle="normal"
+            android:textColor="@color/black_70"
+            android:lineSpacingExtra="7sp"
+            android:text="@string/if_you_change_phone_number_then"
+            android:paddingTop="24dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            />
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/warning_rv"
             tools:listitem="@layout/item_change_phone_number_warning"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp"/>
+            android:paddingTop="8dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="16dp"/>
     </LinearLayout>
 </android.support.v4.widget.NestedScrollView>
