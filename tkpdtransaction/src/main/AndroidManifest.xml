@@ -66,11 +66,11 @@
             android:name=".purchase.detail.activity.OrderHistoryActivity"
             android:label="@string/title_activity_people_tx_details" />
         <activity
-            android:name=".pickupbooth.view.activity.PickupPointActivity"
+            android:name=".pickuppoint.view.activity.PickupPointActivity"
             android:label="@string/title_send_to_pick_up_booth"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".pickupbooth.view.activity.PickupPointMapActivity"
+            android:name=".pickuppoint.view.activity.PickupPointMapActivity"
             android:label="@string/title_send_to_pick_up_booth" />
 
         <service

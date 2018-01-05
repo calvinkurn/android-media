@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.transaction.pickupbooth.domain.model.Store;
+import com.tokopedia.transaction.pickuppoint.domain.model.Store;
 
 import java.util.ArrayList;
 import java.util.List;

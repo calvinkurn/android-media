@@ -28,7 +28,6 @@ import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.var.TkpdState;
@@ -50,7 +49,7 @@ import com.tokopedia.transaction.addtocart.receiver.ATCResultReceiver;
 import com.tokopedia.transaction.addtocart.services.ATCIntentService;
 import com.tokopedia.transaction.addtocart.utils.KeroppiParam;
 import com.tokopedia.transaction.addtocart.utils.NetParamUtil;
-import com.tokopedia.transaction.pickupbooth.domain.usecase.GetPickupPointsUseCase;
+import com.tokopedia.transaction.pickuppoint.domain.usecase.GetPickupPointsUseCase;
 
 import java.util.ArrayList;
 import java.util.HashMap;

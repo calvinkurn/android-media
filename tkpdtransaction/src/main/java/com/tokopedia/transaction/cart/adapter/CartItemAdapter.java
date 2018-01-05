@@ -44,8 +44,8 @@ import com.tokopedia.transaction.cart.model.cartdata.CartShop;
 import com.tokopedia.transaction.customview.expandablelayout.ExpandableLayoutListenerAdapter;
 import com.tokopedia.transaction.customview.expandablelayout.ExpandableLinearLayout;
 import com.tokopedia.transaction.customview.expandablelayout.Utils;
-import com.tokopedia.transaction.pickupbooth.domain.model.Store;
-import com.tokopedia.transaction.pickupbooth.view.customview.PickupPointLayout;
+import com.tokopedia.transaction.pickuppoint.domain.model.Store;
+import com.tokopedia.transaction.pickuppoint.view.customview.PickupPointLayout;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;

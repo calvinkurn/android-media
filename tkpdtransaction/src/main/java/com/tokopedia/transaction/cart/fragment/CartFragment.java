@@ -98,8 +98,8 @@ import com.tokopedia.transaction.cart.presenter.CartPresenter;
 import com.tokopedia.transaction.cart.presenter.ICartPresenter;
 import com.tokopedia.transaction.cart.receivers.TopPayBroadcastReceiver;
 import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
-import com.tokopedia.transaction.pickupbooth.domain.usecase.GetPickupPointsUseCase;
-import com.tokopedia.transaction.pickupbooth.view.activity.PickupPointActivity;
+import com.tokopedia.transaction.pickuppoint.domain.usecase.GetPickupPointsUseCase;
+import com.tokopedia.transaction.pickuppoint.view.activity.PickupPointActivity;
 import com.tokopedia.transaction.utils.LinearLayoutManagerNonScroll;
 import com.tokopedia.transaction.utils.ValueConverter;
 

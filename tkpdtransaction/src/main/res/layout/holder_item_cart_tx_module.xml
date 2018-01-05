@@ -213,7 +213,7 @@
                 android:textSize="@dimen/font_small"
                 tools:text="Test RPX" />
 
-            <com.tokopedia.transaction.pickupbooth.view.customview.PickupPointLayout
+            <com.tokopedia.transaction.pickuppoint.view.customview.PickupPointLayout
                 android:id="@+id/pickup_point_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
