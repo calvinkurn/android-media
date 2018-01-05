@@ -2,10 +2,14 @@ package com.tkpd.library.utils;
 
 import android.content.Context;
 
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.logentries.logger.AndroidLogger;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdCache;
 
 import java.io.IOException;
 
@@ -16,20 +20,31 @@ public class AnalyticsLog {
     private static AndroidLogger instance;
 
     public static void logForceLogout(String url) {
-        AndroidLogger logger = getAndroidLogger();
-        if (logger != null) {
-            logger.log("Force Logout! User: " + SessionHandler.getLoginID(MainApplication.getAppContext())
-                    + " Device ID: " + GCMHandler.getRegistrationId(MainApplication.getAppContext())
-                    + " Last Access Url: " + url);
-        }
+        AnalyticsLog.log("Force Logout! User: " + SessionHandler.getLoginID(MainApplication.getAppContext())
+                + " Device ID: " + GCMHandler.getRegistrationId(MainApplication.getAppContext())
+                + " Last Access Url: " + url);
     }
 
     public static void logNetworkError(String url, int errorCode) {
+        AnalyticsLog.log("Error Network! User: " + SessionHandler.getLoginID(MainApplication.getAppContext())
+                + " URL: " + url
+                + " Error Code: " + errorCode);
+    }
+
+    public static void logNotification(String notificationId, String notificationCode) {
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(MainApplication.getAppContext());
+        if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.NOTIFICATION_LOGGER, false)) {
+            AnalyticsLog.log("Notification Received. User: " + SessionHandler.getLoginID(MainApplication.getAppContext())
+                    + " Notification Id: " + notificationId
+                    + " Notification Code: " + notificationCode
+            );
+        }
+    }
+
+    private static void log(String message) {
         AndroidLogger logger = getAndroidLogger();
         if (logger != null) {
-            logger.log("Error Network! User: " + SessionHandler.getLoginID(MainApplication.getAppContext())
-                    + " URL: " + url
-                    + " Error Code: " + errorCode);
+            logger.log(message);
         }
     }
 

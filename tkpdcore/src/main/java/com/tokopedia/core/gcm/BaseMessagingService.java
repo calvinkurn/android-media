@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import com.google.firebase.messaging.RemoteMessage;
 import com.moengage.pushbase.push.MoEngageNotificationUtils;
+import com.tkpd.library.utils.AnalyticsLog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.base.BaseNotificationMessagingService;
@@ -28,42 +29,15 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
         Bundle data = convertMap(remoteMessage);
         CommonUtils.dumper("FCM " + data.toString());
 
-//        if (appNotificationReceiver == null) {
-        if (GlobalConfig.isSellerApp()) {
-//                appNotificationReceiver = SellerAppRouter.getAppNotificationReceiver();
+        if (appNotificationReceiver != null) {
+            appNotificationReceiver.init(getApplication());
 
-            CommonUtils.dumper("FCM get moengage NOTIFS");
-
-            if (appNotificationReceiver != null) {
-                appNotificationReceiver.init(getApplication());
-
-                if (MoEngageNotificationUtils.isFromMoEngagePlatform(remoteMessage.getData())) {
-                    appNotificationReceiver.onMoengageNotificationReceived(remoteMessage);
-                } else {
-                    appNotificationReceiver.onNotificationReceived(remoteMessage.getFrom(), data);
-                }
-            }
-        } else {
-//                appNotificationReceiver = HomeRouter.getAppNotificationReceiver();
-            if (appNotificationReceiver != null) {
-                appNotificationReceiver.init(getApplication());
-
-                if (MoEngageNotificationUtils.isFromMoEngagePlatform(remoteMessage.getData())) {
-                    appNotificationReceiver.onMoengageNotificationReceived(remoteMessage);
-                } else {
-                    appNotificationReceiver.onNotificationReceived(remoteMessage.getFrom(), data);
-                }
-
-            }
-        }
-        /*} else {
             if (MoEngageNotificationUtils.isFromMoEngagePlatform(remoteMessage.getData())) {
                 appNotificationReceiver.onMoengageNotificationReceived(remoteMessage);
             } else {
                 appNotificationReceiver.onNotificationReceived(remoteMessage.getFrom(), data);
-
             }
-        }*/
+        }
     }
 
     public static IAppNotificationReceiver createInstance() {
