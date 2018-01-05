@@ -8,27 +8,23 @@
         <item name="android:textColor">@color/font_black_primary_70</item>
     </style>
 
-    <style name="TextView.Display4">
-        <item name="android:textSize">@dimen/font_display4</item>
-    </style>
-
     <style name="TextView.Display3">
-        <item name="android:textSize">@dimen/font_display3</item>
+        <item name="android:textSize">@dimen/font_headline3</item>
     </style>
 
     <style name="TextView.Display2">
-        <item name="android:textSize">@dimen/font_display2</item>
+        <item name="android:textSize">@dimen/font_headline2</item>
     </style>
 
     <style name="TextView.Display1">
-        <item name="android:textSize">@dimen/font_display1</item>
+        <item name="android:textSize">@dimen/font_headline</item>
     </style>
     <style name="TextView.Display1.Green">
         <item name="android:textColor">@color/tkpd_main_green</item>
     </style>
 
     <style name="TextView.Headline">
-        <item name="android:textSize">@dimen/font_headline</item>
+        <item name="android:textSize">@dimen/font_sub_headline</item>
     </style>
     <style name="TextView.Headline.Green">
         <item name="android:textColor">@color/tkpd_main_green</item>
@@ -38,7 +34,7 @@
     </style>
 
     <style name="TextView.Title">
-        <item name="android:textSize">@dimen/font_title</item>
+        <item name="android:textSize">@dimen/font_title_big</item>
     </style>
     <style name="TextView.Title.Bold">
         <item name="android:textStyle">bold</item>
@@ -51,7 +47,7 @@
     </style>
 
     <style name="TextView.Subheading">
-        <item name="android:textSize">@dimen/font_subheading</item>
+        <item name="android:textSize">@dimen/font_title</item>
     </style>
     <style name="TextView.Subheading.Bold">
         <item name="android:textStyle">bold</item>
@@ -74,22 +70,6 @@
 
     <style name="TextView.Subheading.BlackSecondary">
         <item name="android:textColor">@color/font_black_secondary_54</item>
-    </style>
-
-    <style name="TextView.Body2">
-        <item name="android:textSize">@dimen/font_body2</item>
-    </style>
-
-    <style name="TextView.Body2.Black">
-        <item name="android:textColor">@color/font_black_primary_70</item>
-    </style>
-
-    <style name="TextView.Body2.BlackSecondary">
-        <item name="android:textColor">@color/font_black_secondary_54</item>
-    </style>
-
-    <style name="TextView.Body2.WhitePrimary">
-        <item name="android:textColor">@color/font_white_primary_70</item>
     </style>
 
     <style name="TextView.Body1">
@@ -121,6 +101,9 @@
     </style>
     <style name="TextView.Body1.BlackDisabled.Bold">
         <item name="android:textStyle">bold</item>
+    </style>
+    <style name="TextView.Body1.WhitePrimary">
+        <item name="android:textColor">@color/font_white_primary_70</item>
     </style>
     <style name="TextView.Body1.WhiteDisabled">
         <item name="android:textColor">@color/font_white_disabled_38</item>

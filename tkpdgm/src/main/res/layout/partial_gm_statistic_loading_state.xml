@@ -16,7 +16,7 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:layout_width="@dimen/font_loading_width_l"
-        android:layout_height="@dimen/font_display1"
+        android:layout_height="@dimen/font_headline"
         android:layout_marginTop="@dimen/padding_vs"
         app:use_gradient="true" />
 

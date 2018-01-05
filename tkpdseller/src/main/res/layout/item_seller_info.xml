@@ -51,7 +51,7 @@
             android:id="@+id/text_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/TextView.Body2.Black"
+            style="@style/TextView.Body1"
             android:layout_marginTop="@dimen/padding_vvs"
             android:layout_marginRight="@dimen/margin_sm"
             android:layout_marginEnd="@dimen/margin_sm"
