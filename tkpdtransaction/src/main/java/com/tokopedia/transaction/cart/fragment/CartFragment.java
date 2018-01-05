@@ -891,8 +891,10 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
                 // TODO : Request ke API stich,
                 // TODO : Jika result success, go to edit cart shipment, set first available logistic, jika failed show toast
-                navigateToActivityRequest(ShipmentCartActivity.createInstance(getActivity(), cartItem),
-                        ShipmentCartActivity.INTENT_REQUEST_CODE);
+                // renderInitialLoadingCartInfo();
+                // renderVisibleMainCartContainer();
+//                navigateToActivityRequest(ShipmentCartActivity.createInstance(getActivity(), cartItem),
+//                        ShipmentCartActivity.INTENT_REQUEST_CODE);
             }
         });
         builder.setNegativeButton(R.string.title_no, null);
@@ -1063,7 +1065,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                 cancelPromoLayout.setOnClickListener(onPromoCancelled());
             }
         } else if (requestCode == REQUEST_CHOOSE_PICKUP_POINT && resultCode == Activity.RESULT_OK) {
-
+            presenter.processUpdatePickupPoint();
         }
     }
 

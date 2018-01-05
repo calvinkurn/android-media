@@ -885,4 +885,14 @@ public class CartPresenter implements ICartPresenter {
     private void saveCartDataToCache(CheckoutData checkoutData, List<CartItem> cartItemList) {
         cartDataInteractor.saveCartDataToCache(checkoutData, cartItemList);
     }
+
+    @Override
+    public void processUpdatePickupPoint() {
+
+    }
+
+    @Override
+    public void processRemovePickupPoint() {
+
+    }
 }
