@@ -1,21 +1,16 @@
 package com.tokopedia.core.gcm;
 
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.widget.Toast;
 
 import com.google.firebase.messaging.RemoteMessage;
 import com.moengage.pushbase.push.MoEngageNotificationUtils;
 import com.tkpd.library.utils.AnalyticsLog;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.base.BaseNotificationMessagingService;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
-
-import java.util.Map;
 
 /**
  * Created by alvarisi on 3/17/17.
@@ -35,6 +30,7 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
             if (MoEngageNotificationUtils.isFromMoEngagePlatform(remoteMessage.getData())) {
                 appNotificationReceiver.onMoengageNotificationReceived(remoteMessage);
             } else {
+                AnalyticsLog.logNotification(remoteMessage.getFrom(), data.getString(Constants.ARG_NOTIFICATION_CODE, ""));
                 appNotificationReceiver.onNotificationReceived(remoteMessage.getFrom(), data);
             }
         }
