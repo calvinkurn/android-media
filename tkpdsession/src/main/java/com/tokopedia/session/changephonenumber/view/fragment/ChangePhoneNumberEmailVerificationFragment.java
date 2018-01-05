@@ -6,7 +6,6 @@ import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +20,7 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.di.SessionComponent;
@@ -149,8 +149,7 @@ public class ChangePhoneNumberEmailVerificationFragment extends BaseDaggerFragme
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE
                         && inputOtp.length() == 6) {
-                    //TODO this
-//                    presenter.verifyOtp(verificationPassModel, inputOtp.getText().toString());
+                    presenter.validateOtp(inputOtp.getText().toString());
                     return true;
                 }
                 return false;
@@ -160,8 +159,7 @@ public class ChangePhoneNumberEmailVerificationFragment extends BaseDaggerFragme
         verifyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO this
-//                presenter.verifyOtp(verificationPassModel, inputOtp.getText().toString());
+                presenter.validateOtp(inputOtp.getText().toString());
             }
         });
     }
@@ -243,12 +241,26 @@ public class ChangePhoneNumberEmailVerificationFragment extends BaseDaggerFragme
 
     @Override
     public void onSendEmailError(String message) {
-
+        if (message.contains(getString(R.string.limit_otp_reached))) {
+            limitOtp.setVisibility(View.VISIBLE);
+            setLimitReachedCountdownText();
+        } else {
+            NetworkErrorHelper.showSnackbar(getActivity(), message);
+            setFinishedCountdownText();
+        }
     }
 
     @Override
-    public void onSendEmailFailed() {
+    public void onValidateOtpSuccess(Boolean isSuccess) {
+        goToNextActivity();
+    }
 
+    @Override
+    public void onValidateOtpError(String message) {
+        inputOtp.setError(true);
+        errorOtp.setVisibility(View.VISIBLE);
+        inputOtp.setCompoundDrawables(null, null, MethodChecker.getDrawable
+                (getActivity(), R.drawable.ic_cancel_red), null);
     }
 
     @Override

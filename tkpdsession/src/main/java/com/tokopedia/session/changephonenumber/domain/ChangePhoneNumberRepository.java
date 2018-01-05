@@ -17,4 +17,6 @@ public interface ChangePhoneNumberRepository {
     Observable<Boolean> sendEmailOTP(TKPDMapParam<String, Object> parameters);
 
     Observable<Boolean> validateNumber(TKPDMapParam<String, Object> parameters);
+
+    Observable<Boolean> validateEmailCode(TKPDMapParam<String, Object> parameters);
 }

@@ -19,12 +19,16 @@ public interface ChangePhoneNumberEmailVerificationFragmentListener {
 
         void onSendEmailError(String message);
 
-        void onSendEmailFailed();
+        void onValidateOtpSuccess(Boolean isSuccess);
+
+        void onValidateOtpError(String message);
     }
 
     public interface Presenter extends CustomerPresenter<ChangePhoneNumberEmailVerificationFragmentListener.View> {
         void initView();
 
         void sendEmail();
+
+        void validateOtp(String otpCode);
     }
 }
