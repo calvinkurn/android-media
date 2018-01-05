@@ -69,6 +69,10 @@ public class AnalyticsMapper {
             }
         }
 
+        if(listOfFields.isEmpty()){
+            listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_EMPTY);
+        }
+
         return listOfFields;
     }
 }

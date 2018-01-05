@@ -957,6 +957,7 @@ public interface AppEventTracking {
         String FIELDS_OPTIONAL_VARIANT_LEVEL2 = "Variant Level 2";
         String FIELDS_OPTIONAL_VARIANT_LEVEL1_CUSTOM = "Variant Level 1 with Custom";
         String FIELDS_OPTIONAL_VARIANT_LEVEL2_CUSTOM = "Variant Level 2 with Custom";
+        String FIELDS_OPTIONAL_EMPTY = "no optional field used";
     }
 
     interface CustomDimension {
