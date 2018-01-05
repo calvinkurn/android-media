@@ -46,6 +46,8 @@ import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
+import com.tokopedia.core.router.productdetail.PdpRouter;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -681,7 +683,21 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onGoToProductDetailFromInspiration(int page, int rowNumber, String productId, String imageSource, String name, String price) {
+        goToProductDetail(productId, imageSource, name, price);
+    }
 
+    private void goToProductDetail(String productId, String imageSourceSingle, String name, String price) {
+        if (getActivity().getApplication() instanceof PdpRouter) {
+            ((PdpRouter) getActivity().getApplication()).goToProductDetail(
+                    getActivity(),
+                    ProductPass.Builder.aProductPass()
+                            .setProductId(productId)
+                            .setProductImage(imageSourceSingle)
+                            .setProductName(name)
+                            .setProductPrice(price)
+                            .build()
+            );
+        }
     }
 
     @Override
