@@ -255,7 +255,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
     @Override
     public void loadData(int page) {
-        // no op, since it has no page.
+        // no op, load data handled manually in onResume
     }
 
     @Override

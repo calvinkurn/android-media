@@ -15,8 +15,8 @@ public class ErrorNetworkModel implements Visitable<AdapterTypeFactory> {
     private int iconDrawableRes;
     private String errorMessage;
     @Override
-    public int type(AdapterTypeFactory favoriteTypeFactory) {
-        return favoriteTypeFactory.type(this);
+    public int type(AdapterTypeFactory adapterTypeFactory) {
+        return adapterTypeFactory.type(this);
     }
 
     public int getIconDrawableRes() {

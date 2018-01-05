@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerviewListener;
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewListener;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.quickfilter.QuickFilterAdapter;
@@ -49,7 +49,7 @@ public class FlightOrderListFragment extends BaseDaggerFragment implements Fligh
     private QuickFilterAdapter filterAdapter;
     private FlightOrderAdapter flightOrderAdapter;
 
-    private EndlessRecyclerviewListener endlessRecyclerviewListener;
+    private EndlessRecyclerViewListener endlessRecyclerViewListener;
     private boolean isLoadMore;
     private String selectedFilter;
 
@@ -80,7 +80,7 @@ public class FlightOrderListFragment extends BaseDaggerFragment implements Fligh
         LinearLayoutManager orderLayoutManager = new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.VERTICAL, false);
         ordersRecyclerView.setLayoutManager(orderLayoutManager);
-        endlessRecyclerviewListener = new EndlessRecyclerviewListener(orderLayoutManager) {
+        endlessRecyclerViewListener = new EndlessRecyclerViewListener(orderLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
                 if (!isLoadMore) {
@@ -89,7 +89,7 @@ public class FlightOrderListFragment extends BaseDaggerFragment implements Fligh
                 }
             }
         };
-        ordersRecyclerView.addOnScrollListener(endlessRecyclerviewListener);
+        ordersRecyclerView.addOnScrollListener(endlessRecyclerViewListener);
         FlightOrderTypeFactory flightOrderTypeFactory = new FlightOrderAdapterTypeFactory(this);
         flightOrderAdapter = new FlightOrderAdapter(flightOrderTypeFactory, new ArrayList<Visitable>());
         ordersRecyclerView.setAdapter(flightOrderAdapter);
@@ -215,7 +215,7 @@ public class FlightOrderListFragment extends BaseDaggerFragment implements Fligh
     public void selectFilter(String typeFilter) {
         selectedFilter = typeFilter;
         presenter.onFilterSelected();
-        endlessRecyclerviewListener.resetState();
+        endlessRecyclerViewListener.resetState();
     }
 
     @Override
