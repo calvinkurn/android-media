@@ -477,6 +477,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void renderErrorCheckVoucher(String message) {
+        NetworkErrorHelper.showSnackbar(getActivity(), message);
     }
 
     @Override
@@ -1051,7 +1052,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
             } else if (resultCode == LoyaltyActivity.COUPON_RESULT_CODE) {
                 Bundle bundle = data.getExtras();
                 promoResultLayout.setVisibility(View.VISIBLE);
-                labelPromoType.setText("Kode Kupon: ");
+                labelPromoType.setText(getString(R.string.title_coupon_code) + " : ");
                 promoVoucherCode.setText(bundle.getString(LoyaltyActivity.COUPON_TITLE, ""));
                 voucherDescription.setText(bundle.getString(LoyaltyActivity.COUPON_MESSAGE, ""));
 
@@ -1070,7 +1071,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                                         String amount,
                                         String description) {
         promoResultLayout.setVisibility(View.VISIBLE);
-        labelPromoType.setText("Kode Voucher: ");
+        labelPromoType.setText(getString(R.string.title_promo_code) + " : ");
         promoVoucherCode.setText(voucherCode);
         voucherDescription.setText(description);
 

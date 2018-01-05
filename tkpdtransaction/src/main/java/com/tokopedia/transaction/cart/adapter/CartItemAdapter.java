@@ -219,10 +219,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         holder.tvShipment.setText(String.format("%s - %s (Ubah)",
                 MethodChecker.fromHtml(cartData.getCartShipments().getShipmentName()),
                 MethodChecker.fromHtml(cartData.getCartShipments().getShipmentPackageName())));
-        if (cartItemEditable.getCartCourierPrices() == null) {
-            holder.holderDetailCartToggle.setVisibility(View.GONE);
-        } else {
-            holder.holderDetailCartToggle.setVisibility(View.VISIBLE);
+        if (cartItemEditable.getCartCourierPrices() != null) {
             holder.tvTotalPrice.setVisibility(View.VISIBLE);
             holder.tvShippingCost.setText(cartItemEditable.getCartCourierPrices()
                     .getShipmentPriceIdr());
@@ -255,7 +252,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 holder.tvShippingAddress.setEnabled(true);
                 holder.tvShipment.setEnabled(true);
             }
-        }
+        } else holder.tvTotalPrice.setVisibility(View.GONE);
     }
 
     private void renderHolderViewListener(final ViewHolder holder, final CartItem cartData,
@@ -395,13 +392,13 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             holder.holderError.setVisibility(View.VISIBLE);
             holder.tvError1.setText(MessageFormat.format("{0}", cartData.getCartErrorMessage1()));
             holder.tvError2.setText(MessageFormat.format("{0}", cartData.getCartErrorMessage2()));
+
             holder.totalPriceLayout.setVisibility(View.GONE);
-            holder.holderDetailCartToggle.setVisibility(View.GONE);
-            holder.holderDetailCart.collapse();
+            holder.calculationLayout.setVisibility(View.GONE);
             holder.totalPriceProgressBar.setVisibility(View.GONE);
         } else {
+            holder.calculationLayout.setVisibility(View.VISIBLE);
             holder.totalPriceLayout.setVisibility(View.VISIBLE);
-            holder.holderDetailCartToggle.setVisibility(View.VISIBLE);
             holder.holderError.setVisibility(View.GONE);
         }
     }
@@ -806,6 +803,8 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     static class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R2.id.holder_container)
         LinearLayout holderContainer;
+        @BindView(R2.id.calculation_layout)
+        LinearLayout calculationLayout;
         @BindView(R2.id.tv_error_1)
         TextView tvError1;
         @BindView(R2.id.tv_error_2)
