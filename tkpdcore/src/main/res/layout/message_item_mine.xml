@@ -66,13 +66,29 @@
         android:textAllCaps="true"
         android:textSize="@dimen/fontvs" />
 
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:layout_width="270dp"
+        tools:layout_height="270dp"
+        android:maxWidth="270dp"
+        android:maxHeight="270dp"
+        android:src="@color/red_100"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="@dimen/margin_vs"
+        android:layout_below="@id/name"
+        android:visibility="gone"
+        android:adjustViewBounds="true"
+        tools:visibility="visible"/>
+
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/name"
+        android:layout_below="@id/image"
         android:layout_marginTop="@dimen/margin_vs"
         android:background="@drawable/right_bubble"
         android:padding="@dimen/padding_small">
@@ -102,6 +118,7 @@
         android:layout_below="@+id/main"
         android:layout_alignTop="@+id/hour"
         android:layout_alignBottom="@+id/hour"
+        android:adjustViewBounds="true"
         tools:src="@drawable/checked_thin"/>
 
     <TextView

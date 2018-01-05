@@ -61,7 +61,6 @@ public class TemplateChatSettingPresenter extends BaseDaggerPresenter<TemplateCh
             @Override
             public void onNext(GetTemplateViewModel getTemplateViewModel) {
                 List<Visitable> temp = getTemplateViewModel.getListTemplate();
-                if(temp!=null) temp.add(new TemplateChatModel(false));
                 getView().setChecked(temp != null);
                 getView().setTemplate(temp);
             }

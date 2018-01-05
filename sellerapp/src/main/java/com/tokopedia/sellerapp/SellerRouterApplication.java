@@ -93,6 +93,7 @@ import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.sellerapp.remoteconfig.RemoteConfigFetcher;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.session.activity.Login;
+import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsComponent;
@@ -417,6 +418,13 @@ public abstract class SellerRouterApplication extends MainApplication
         Intent intent = ProductInfoActivity.createInstance(fragment.getContext(), productId,
                 adapterPosition);
         fragment.startActivityForResult(intent, requestCode);
+    }
+
+    @Override
+    public void goToPreviewProduct(Context context, Bundle bundle) {
+        Intent intent = new Intent(context, PreviewProductImageDetail.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     private void goToDefaultRoute(Context context) {

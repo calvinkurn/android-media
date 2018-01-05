@@ -22,17 +22,22 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.router.productdetail.PdpRouter;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketConstant;
 import com.tokopedia.inbox.inboxchat.InboxChatConstant;
 import com.tokopedia.inbox.inboxchat.WebSocketInterface;
+import com.tokopedia.inbox.inboxchat.activity.ChatMarketingThumbnailActivity;
 import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 import com.tokopedia.inbox.inboxchat.activity.TemplateChatActivity;
 import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
@@ -44,6 +49,7 @@ import com.tokopedia.inbox.inboxchat.adapter.TemplateChatTypeFactory;
 import com.tokopedia.inbox.inboxchat.adapter.TemplateChatTypeFactoryImpl;
 import com.tokopedia.inbox.inboxchat.analytics.TopChatTrackingEventLabel;
 import com.tokopedia.inbox.inboxchat.di.DaggerInboxChatComponent;
+import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
@@ -57,6 +63,9 @@ import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 
 import org.json.JSONException;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -82,6 +91,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     @Inject
     SessionHandler sessionHandler;
 
+    public static final String FILELOC = "fileloc";
     private RecyclerView recyclerView;
     private RecyclerView templateRecyclerView;
     private ProgressBar progressBar;
@@ -215,6 +225,27 @@ public class ChatRoomFragment extends BaseDaggerFragment
         Intent intent = TemplateChatActivity.createInstance(getActivity());
         startActivityForResult(intent, 100);
         getActivity().overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out);
+    }
+
+    @Override
+    public void onGoToGallery(Attachment attachment) {
+
+        Bundle bundle = new Bundle();
+        ArrayList<String> strings = new ArrayList<>();
+        strings.add(attachment.getAttributes().getImageUrl());
+        bundle.putStringArrayList(FILELOC, strings);
+        bundle.putString("product_name", "name");
+        bundle.putString("product_price", "price");
+        bundle.putStringArrayList("image_desc", new ArrayList<String>());
+        bundle.putInt("position", 1);
+
+        ((PdpRouter) getActivity().getApplication()).goToPreviewProduct(getActivity(), bundle);
+    }
+
+    @Override
+    public void onGoToWebView(String url) {
+        KeyboardHandler.DropKeyboard(getActivity(), getView());
+        startActivity(ChatMarketingThumbnailActivity.getCallingIntent(getActivity(), url));
     }
 
 

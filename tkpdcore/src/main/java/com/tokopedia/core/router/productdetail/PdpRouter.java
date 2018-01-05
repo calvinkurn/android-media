@@ -1,6 +1,7 @@
 package com.tokopedia.core.router.productdetail;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
@@ -29,4 +30,6 @@ public interface PdpRouter {
                                     String productId,
                                     int adapterPosition,
                                     int requestCode);
+
+    void goToPreviewProduct(Context context, Bundle bundle);
 }

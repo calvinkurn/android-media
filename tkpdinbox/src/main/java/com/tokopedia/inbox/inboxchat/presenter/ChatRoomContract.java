@@ -9,6 +9,7 @@ import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.inbox.inboxchat.WebSocketInterface;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomAdapter;
+import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
@@ -88,6 +89,10 @@ public class ChatRoomContract {
         void addTemplateString(String message);
 
         void goToSettingTemplate();
+
+        void onGoToGallery(Attachment attachment);
+
+        void onGoToWebView(String attachment);
     }
 
     interface Presenter extends CustomerPresenter<View>{

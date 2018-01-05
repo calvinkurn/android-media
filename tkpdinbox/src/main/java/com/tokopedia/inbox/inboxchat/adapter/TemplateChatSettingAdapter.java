@@ -75,7 +75,10 @@ public class TemplateChatSettingAdapter extends RecyclerView.Adapter<AbstractVie
 
     public void setList(List<Visitable> list) {
         this.list.clear();
-        this.list.addAll(list);
+        if(list != null){
+            this.list.addAll(list);
+        }
+        this.list.add(new TemplateChatModel(false));
         notifyDataSetChanged();
     }
 

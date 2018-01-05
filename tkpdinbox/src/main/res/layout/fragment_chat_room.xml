@@ -72,6 +72,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
+            android:visibility="gone"
             xmlns:android="http://schemas.android.com/apk/res/android">
 
             <android.support.v7.widget.RecyclerView

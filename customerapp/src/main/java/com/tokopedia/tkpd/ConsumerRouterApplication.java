@@ -97,6 +97,7 @@ import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpd.remoteconfig.RemoteConfigFetcher;
+import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
@@ -230,6 +231,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Intent intent = ProductInfoActivity.createInstance(fragment.getContext(), productId,
                 adapterPosition);
         fragment.startActivityForResult(intent, requestCode);
+    }
+
+    @Override
+    public void goToPreviewProduct(Context context, Bundle bundle) {
+        Intent intent = new Intent(context, PreviewProductImageDetail.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     @Override

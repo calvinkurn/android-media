@@ -61,6 +61,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="@drawable/cards_ui_2"
+            android:visibility="gone"
             android:padding="@dimen/activity_vertical_margin">
             <TextView
                 android:id="@+id/template_list"
