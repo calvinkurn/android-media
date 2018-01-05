@@ -50,6 +50,7 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
     @LayoutRes
     public static final int LAYOUT = R.layout.recyclerview_hotlist_banner;
     public static final String DEFAULT_ITEM_VALUE = "1";
+    public static final String HOTLIST_ADS_SRC = "hotlist";
 
     private final Context context;
     private final ItemClickListener mItemClickListener;
@@ -81,7 +82,7 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
 
     private void initTopAds() {
         TopAdsParams adsParams = new TopAdsParams();
-        adsParams.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_HOTLIST);
+        adsParams.getParam().put(TopAdsParams.KEY_SRC, HOTLIST_ADS_SRC);
         adsParams.getParam().put(TopAdsParams.KEY_QUERY, searchQuery);
         adsParams.getParam().put(TopAdsParams.KEY_ITEM, DEFAULT_ITEM_VALUE);
         Config config = new Config.Builder()
