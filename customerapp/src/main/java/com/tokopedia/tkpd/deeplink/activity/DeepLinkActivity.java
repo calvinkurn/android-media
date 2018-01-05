@@ -18,6 +18,8 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.base.data.executor.JobExecutor;
+import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.discovery.catalog.listener.ICatalogActionFragment;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.product.intentservice.ProductInfoIntentService;
@@ -36,6 +38,9 @@ import com.tokopedia.core.share.fragment.ProductShareFragment;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
 import com.tokopedia.tkpd.R;
+import com.tokopedia.tkpd.deeplink.data.repository.DeeplinkRepository;
+import com.tokopedia.tkpd.deeplink.data.repository.DeeplinkRepositoryImpl;
+import com.tokopedia.tkpd.deeplink.domain.interactor.MapUrlUseCase;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenter;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenterImpl;
@@ -92,7 +97,9 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
 
     @Override
     protected void initialPresenter() {
-        presenter = new DeepLinkPresenterImpl(this);
+        DeeplinkRepository deeplinkRepository = new DeeplinkRepositoryImpl(this);
+        MapUrlUseCase mapUrlUseCase = new MapUrlUseCase(new JobExecutor(), new UIThread(), deeplinkRepository);
+        presenter = new DeepLinkPresenterImpl(this, mapUrlUseCase);
     }
 
     @Override
@@ -238,7 +245,8 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         }
     }
 
-    private void initDeepLink() {
+    @Override
+    public void initDeepLink() {
         if (uriData != null || getIntent().getBooleanExtra(EXTRA_STATE_APP_WEB_VIEW, false)) {
             if (getIntent().getBooleanExtra(DeepLink.IS_DEEP_LINK, false)) {
                 Bundle bundle = getIntent().getExtras();
@@ -252,7 +260,6 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
                     presenter.processDeepLinkAction(uriData);
                 }
             }
-
         }
     }
 
@@ -356,7 +363,9 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
 
             @Override
             public void onNext(Void aVoid) {
-                initDeepLink();
+                if (uriData != null) {
+                    presenter.mapUrlToApplink(uriData);
+                }
             }
         };
     }

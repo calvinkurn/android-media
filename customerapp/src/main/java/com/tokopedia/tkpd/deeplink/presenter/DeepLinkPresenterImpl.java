@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -19,11 +18,13 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.fragment.FragmentShopPreview;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -42,11 +43,12 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivi
 import com.tokopedia.session.session.interactor.SignInInteractor;
 import com.tokopedia.session.session.interactor.SignInInteractorImpl;
 import com.tokopedia.session.session.presenter.Login;
+import com.tokopedia.tkpd.deeplink.Deeplink;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
+import com.tokopedia.tkpd.deeplink.domain.interactor.MapUrlUseCase;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.home.ReactNativeActivity;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
-import com.tokopedia.tkpd.home.ParentIndexHome;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -54,25 +56,32 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import rx.Subscriber;
+
 
 /**
  * @author by Angga.Prasetiyo on 14/12/2015.
  *         modified by Alvarisi
  */
 public class DeepLinkPresenterImpl implements DeepLinkPresenter {
+
     private static final String TAG = DeepLinkPresenterImpl.class.getSimpleName();
+
     private static final String FORMAT_UTF_8 = "UTF-8";
     private static final String AF_ONELINK_HOST = "tokopedia.onelink.me";
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
     private static final String OVERRIDE_URL = "override_url";
+
     private final Activity context;
     private final DeepLinkView viewListener;
-    SignInInteractor interactor;
+    private SignInInteractor interactor;
+    private MapUrlUseCase mapUrlUseCase;
 
-    public DeepLinkPresenterImpl(DeepLinkActivity activity) {
+    public DeepLinkPresenterImpl(DeepLinkActivity activity, MapUrlUseCase mapUrlUseCase) {
         this.viewListener = activity;
         this.context = activity;
         this.interactor = SignInInteractorImpl.createInstance(activity);
+        this.mapUrlUseCase = mapUrlUseCase;
     }
 
     @Override
@@ -123,6 +132,43 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     @Override
     public void actionGotUrlFromApplink(Uri uriData) {
         prepareOpenWebView(uriData);
+    }
+
+    @Override
+    public void mapUrlToApplink(Uri uri) {
+        final List<String> linkSegments = uri.getPathSegments();
+        StringBuilder finalSegments = new StringBuilder();
+        for (int i = 0; i < linkSegments.size(); i++) {
+            if (i != linkSegments.size() - 1) {
+                finalSegments.append(linkSegments.get(i)).append("/");
+            } else {
+                finalSegments.append(linkSegments.get(i));
+            }
+        }
+        mapUrlUseCase.execute(mapUrlUseCase.setRequestParam(finalSegments.toString()), mapUrlToApplinkSubscriber());
+    }
+
+    private Subscriber<Deeplink> mapUrlToApplinkSubscriber() {
+        return new Subscriber<Deeplink>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Deeplink deeplink) {
+                if (TextUtils.isEmpty(deeplink.applink)) {
+                    viewListener.initDeepLink();
+                } else {
+                    openDigitalPage(deeplink.applink);
+                }
+            }
+        };
     }
 
     public void processDeepLinkAction(Uri uriData) {
@@ -218,6 +264,15 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         }
     }
 
+    private void openDigitalPage(String applink) {
+        if (((IDigitalModuleRouter) context.getApplication())
+                .isSupportedDelegateDeepLink(applink)) {
+            Bundle bundle = new Bundle();
+            ((IDigitalModuleRouter) context.getApplication()).actionNavigateByApplinksUrl(context,
+                    applink, bundle);
+            context.finish();
+        }
+    }
 
     private void openPeluangPage() {
         Intent intent = SellerRouter.getActivitySellingTransactionOpportunity(context);
@@ -382,7 +437,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openHotProduct(List<String> linkSegment, Uri uriData) {
-
         if (isHotBrowse(linkSegment, uriData)) {
             return;
         }
@@ -406,11 +460,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openDiscoveryPage(String url) {
-      context.startActivity(ReactNativeActivity.createDiscoveryPageReactNativeActivity(
-              context,
-              ReactConst.Screen.DISCOVERY_PAGE,
-              "",
-              DeepLinkChecker.getDiscoveryPageId(url)));
+        context.startActivity(ReactNativeActivity.createDiscoveryPageReactNativeActivity(
+                context,
+                ReactConst.Screen.DISCOVERY_PAGE,
+                "",
+                DeepLinkChecker.getDiscoveryPageId(url)));
     }
 
     private void openHomepageHot() {
@@ -435,7 +489,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         }
         context.finish();
     }
-
 
     private void openBrowseProduct(List<String> linkSegment, Uri uriData) {
         Bundle bundle = new Bundle();
@@ -464,7 +517,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         }
     }
 
-
     private boolean isHotLink(List<String> linkSegment) {
         return (linkSegment.size() == 2);
     }
@@ -476,7 +528,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private boolean isHotAlias(Uri uri) {
         return uri.getQueryParameter("alk") != null;
     }
-
 
     private boolean isSearch(List<String> linkSegment) {
         return linkSegment.size() > 0 && linkSegment.get(0).equals("search");
@@ -575,4 +626,5 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             }
         });
     }
+
 }
