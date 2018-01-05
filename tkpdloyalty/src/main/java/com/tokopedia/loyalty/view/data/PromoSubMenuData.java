@@ -11,6 +11,15 @@ public class PromoSubMenuData implements Parcelable {
 
     private String id;
     private String title;
+    private boolean selected;
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
 
     public String getId() {
         return id;
@@ -29,6 +38,10 @@ public class PromoSubMenuData implements Parcelable {
     }
 
 
+    public PromoSubMenuData() {
+    }
+
+
     @Override
     public int describeContents() {
         return 0;
@@ -38,17 +51,16 @@ public class PromoSubMenuData implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.id);
         dest.writeString(this.title);
-    }
-
-    public PromoSubMenuData() {
+        dest.writeByte(this.selected ? (byte) 1 : (byte) 0);
     }
 
     protected PromoSubMenuData(Parcel in) {
         this.id = in.readString();
         this.title = in.readString();
+        this.selected = in.readByte() != 0;
     }
 
-    public static final Parcelable.Creator<PromoSubMenuData> CREATOR = new Parcelable.Creator<PromoSubMenuData>() {
+    public static final Creator<PromoSubMenuData> CREATOR = new Creator<PromoSubMenuData>() {
         @Override
         public PromoSubMenuData createFromParcel(Parcel source) {
             return new PromoSubMenuData(source);
