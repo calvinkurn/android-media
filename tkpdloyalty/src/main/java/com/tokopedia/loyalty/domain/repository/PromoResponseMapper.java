@@ -26,7 +26,18 @@ public class PromoResponseMapper implements IPromoResponseMapper {
     public List<PromoData> convertPromoDataList(List<PromoResponse> promoResponseList) {
         List<PromoData> promoDataList = new ArrayList<>();
         for (PromoResponse promoResponse : promoResponseList) {
-            promoDataList.add(new PromoData());
+            PromoData promoData = new PromoData();
+            promoData.setTitle(promoResponse.getTitle().getRendered());
+            promoData.setAppLink(promoResponse.getMeta().getAppLink());
+            promoData.setPeriodFormatted("Belum bikin logicnya yaa");
+            promoData.setPromoLink(promoResponse.getMeta().getPromoLink());
+            promoData.setThumbnailImage(promoResponse.getMeta().getThumbnailImage());
+            promoData.setMinTransaction(promoResponse.getMeta().getMinTransaction());
+            promoData.setStartDate(promoResponse.getMeta().getStartDate());
+            promoData.setEndDate(promoResponse.getMeta().getEndDate());
+            promoData.setMultiplePromo(promoResponse.getAcf().isMultiplePromoCode());
+            promoData.setPromoCode(promoResponse.getMeta().getPromoCode());
+            promoDataList.add(promoData);
         }
         return promoDataList;
     }
