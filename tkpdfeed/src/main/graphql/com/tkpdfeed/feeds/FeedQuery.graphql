@@ -213,6 +213,14 @@ query FeedQuery($userID: Int!, $limit: Int!, $cursor: String) {
                           subtitle_en
                           subtitle_id
               }
+              kol_cta {
+                  img_header
+                  title
+                  subtitle
+                  button_text
+                  click_url
+                  click_applink
+              }
             }
           }
           links {
