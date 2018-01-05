@@ -1,6 +1,8 @@
 package com.tokopedia.seller.shop.open.view.holder;
 
 import android.support.v7.widget.AppCompatEditText;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -24,11 +26,13 @@ import com.tokopedia.seller.shop.open.view.model.GoogleLocationViewModel;
 
 public class LocationMapViewHolder implements OnMapReadyCallback {
 
+    private static final String TAG = "LocationMapViewHolder";
     private final TextView pinPickupLocation;
     private final TextView generatedLocationOpenShop;
     private final MapView mapView;
     private final LinearLayout mapViewContainer;
     private final FrameLayout emptyMapView;
+    private final TextView generateLocationOpenShopCopy;
     private View root;
     private ViewHolderListener3 viewHolderListener3;
     private final AppCompatEditText shopAddressEdittext;
@@ -49,10 +53,12 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
         mapViewContainer = root.findViewById(R.id.mapview_container);
         emptyMapView = root.findViewById(R.id.empty_map_view);
 
+        generateLocationOpenShopCopy = root.findViewById(R.id.generated_location_open_shop_copy);
+
         pinPickupLocation = root.findViewById(R.id.pin_pickup_location);
         this.root = root;
         this.viewHolderListener3 = viewHolderListener3;
-        pinPickupLocation.setOnClickListener(new View.OnClickListener() {
+        mapViewContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(viewHolderListener3 != null){
@@ -73,19 +79,25 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
     public void setLocationText(GoogleLocationViewModel googleLocationViewModel){
         this.googleLocationViewModel = googleLocationViewModel;
 
-        if(googleLocationViewModel == null)
-            return;
+        if(googleLocationViewModel != null && !googleLocationViewModel.isLatLongEmpty()) {
+            emptyMapView.setVisibility(View.GONE);
+            mapViewContainer.setVisibility(View.VISIBLE);
+        }
 
-        emptyMapView.setVisibility(View.GONE);
-        mapViewContainer.setVisibility(View.VISIBLE);
-        generatedLocationOpenShop.setVisibility(View.VISIBLE);
-        generatedLocationOpenShop.setText(getReverseGeocode(googleLocationViewModel));
-        generatedLocationOpenShop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                shopAddressEdittext.setText(generatedLocationOpenShop.getText().toString());
-            }
-        });
+        if(googleLocationViewModel != null && !TextUtils.isEmpty(googleLocationViewModel.getGeneratedAddress())){
+            generatedLocationOpenShop.setVisibility(View.VISIBLE);
+            generateLocationOpenShopCopy.setVisibility(View.VISIBLE);
+            generatedLocationOpenShop.setText(getReverseGeocode(googleLocationViewModel));
+            generateLocationOpenShopCopy.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    shopAddressEdittext.setText(generatedLocationOpenShop.getText().toString());
+                }
+            });
+        }else{
+            generatedLocationOpenShop.setVisibility(View.GONE);
+            generateLocationOpenShopCopy.setVisibility(View.GONE);
+        }
 
         if(!isFromReserveDomain)
             setGoogleMap(googleMap);
@@ -119,7 +131,7 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
     }
 
     private void setGoogleMap(GoogleMap googleMap) {
-        if (googleMap != null) {
+        if (googleMap != null && !googleLocationViewModel.isLatLongEmpty()) {
 
             double latitude = Double.parseDouble(googleLocationViewModel.getLatitude());
             double longitude = Double.parseDouble(googleLocationViewModel.getLongitude());

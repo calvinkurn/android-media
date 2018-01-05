@@ -25,6 +25,8 @@
             android:id="@+id/button_submit"
             style="@style/Button.Submit.Green"
             android:text="@string/title_next"
+            android:layout_marginRight="0dp"
+            android:layout_marginLeft="0dp"
             android:layout_width="match_parent"/>
     </LinearLayout>
 

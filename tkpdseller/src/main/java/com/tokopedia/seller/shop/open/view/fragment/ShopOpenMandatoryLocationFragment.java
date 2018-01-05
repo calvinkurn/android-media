@@ -1,6 +1,7 @@
 package com.tokopedia.seller.shop.open.view.fragment;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -70,6 +71,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
     ShopOpenLocPresenterImpl shopOpenLocPresenter;
 
     RequestParams requestParams;
+    private ProgressDialog progressDialog;
 
     public static ShopOpenMandatoryLocationFragment getInstance(){
         return new ShopOpenMandatoryLocationFragment();
@@ -86,6 +88,9 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
     }
 
     private void initView(View root){
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage(getString(R.string.title_loading));
+
         new LocationHeaderViewHolder(root, new LocationHeaderViewHolder.ViewHolderListener() {
             @Override
             public void navigateToChooseAddressActivityRequest() {
@@ -233,6 +238,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
                         DestinationViewModel address = DestinationViewModel.convertFromBundle(
                                 data.getParcelableExtra(ManageAddressConstant.EXTRA_ADDRESS)
                         );
+                        locationShippingViewHolder.updateZipCodes(address.getPostalCode());
                         locationShippingViewHolder.updateDistrictId(address.getDistrictId()+"");
                         locationShippingViewHolder.updateLocationData(
                                 address.getProvinceName(),
@@ -243,7 +249,6 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
                 case REQUEST_CODE__EDIT_ADDRESS:
                     Address address = data.getParcelableExtra(DistrictRecommendationContract.Constant.INTENT_DATA_ADDRESS);
                     if(address != null){
-
                         locationShippingViewHolder.initializeZipCodes(address.getZipCodes());
                         locationShippingViewHolder.updateDistrictId(address.getDistrictId()+"");
                         locationShippingViewHolder.updateLocationData(
@@ -299,6 +304,13 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
     @Override
     protected void initInjector() {
         getComponent(ShopOpenDomainComponent.class).inject(this);
+        shopOpenLocPresenter.attachView(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        shopOpenLocPresenter.detachView();
     }
 
     @Override
@@ -325,5 +337,15 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
                 onNextButtonClicked();
             }
         }).showRetrySnackbar();
+    }
+
+    @Override
+    public void showProgressDialog() {
+        progressDialog.show();
+    }
+
+    @Override
+    public void dismissProgressDialog() {
+        progressDialog.dismiss();
     }
 }

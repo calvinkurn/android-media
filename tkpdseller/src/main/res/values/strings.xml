@@ -173,8 +173,8 @@
     <string name="domain_name">Nama Domain</string>
     <string name="fill_domain_and_shop">Isi nama dan domain toko!</string>
     <string name="hello_x">Halo, <![CDATA[<b>%1$s</b>]]></string>
-    <string name="openshop_terms_and_conditions">Dengan menekan Lanjut, Anda telah menyetujui\n
-        Syarat dan Ketentuan serta Kebijakan Privasi Tokopedia.</string>
+    <string name="openshop_make_sure_pickup_location">Pastikan Lokasi Pickup Anda telah sesuai untuk jasa pengiriman Go-JEK, Grab &amp; Ninja Express</string>
+    <string name="label_pickup_location">Lokasi Pickup</string>
 
     <!-- Shop Setting -->
     <string name="label_shop_open_welcome">Halo,</string>
@@ -228,7 +228,8 @@
     <string name="optional_pinpoint_location_text">Pinpoint Lokasi (Opsional)</string>
     <string name="pin_pickup_location_text">Tandai lokasi pickup dalam peta jika Anda menggunakan kurir Express (seperti Go-Send) atau Cargo Service.</string>
     <string name="pin_location_pickup">Tandai Lokasi Pickup</string>
-    <string name="default_address_text">Wisma 77 Tower 2, Jalan Letjen S. Parman, Palmerah, 11410. Gunakan Alamat Ini</string>
+    <string name="default_address_text">Wisma 77 Tower 2, Jalan Letjen S. Parman, Palmerah, 11410.</string>
+    <string name="default_address_text_use_this">Gunakan Alamat Ini</string>
     <string name="pickup_location">Alamat Pick Up</string>
     <string name="write_address_text">Tulis jalan, nomor rumah, gedung/landmark</string>
     <string name="fill_width_address_desc">Isi dengan jalan, nomor rumah, kecamatan, nama gedung, landmark dekat lokasi dan detail lainnya.</string>

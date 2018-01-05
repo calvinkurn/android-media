@@ -2,6 +2,7 @@ package com.tokopedia.seller.shop.open.view.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.CompoundButton;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.shop.open.data.model.CourierServiceModel;
+import com.tokopedia.seller.shop.open.view.ShopCourierExpandableOption;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +26,7 @@ public class ShopServiceCourierAdapter extends RecyclerView.Adapter<ShopServiceC
     public interface OnShopServiceCourierAdapterListener{
         void checkGroupFromChild();
         void unCheckGroupFromChild();
+        void onInfoIconClicked(String title, String description);
     }
 
     public ShopServiceCourierAdapter(Context context, List<CourierServiceModel> courierServiceModelList,
@@ -63,13 +66,18 @@ public class ShopServiceCourierAdapter extends RecyclerView.Adapter<ShopServiceC
         return courierServiceModelList.size();
     }
 
-    class ShopServiceCourierViewHolder extends RecyclerView.ViewHolder implements CompoundButton.OnCheckedChangeListener {
+    class ShopServiceCourierViewHolder extends RecyclerView.ViewHolder implements CompoundButton.OnCheckedChangeListener,
+    View.OnClickListener{
         private CheckBox checkBox;
+        private View vIconInfo;
 
         public ShopServiceCourierViewHolder(View itemView) {
             super(itemView);
             checkBox = itemView.findViewById(R.id.check_box);
             checkBox.setOnCheckedChangeListener(this);
+
+            vIconInfo = itemView.findViewById(R.id.iv_info);
+            vIconInfo.setOnClickListener(this);
         }
 
         public void bindView(CourierServiceModel courierServiceModel) {
@@ -78,6 +86,12 @@ public class ShopServiceCourierAdapter extends RecyclerView.Adapter<ShopServiceC
                 checkBox.setChecked(true);
             } else {
                 checkBox.setChecked(false);
+            }
+            String description = courierServiceModel.getDescription();
+            if (TextUtils.isEmpty(description)) {
+                vIconInfo.setVisibility(View.GONE);
+            } else {
+                vIconInfo.setVisibility(View.VISIBLE);
             }
 
         }
@@ -100,6 +114,14 @@ public class ShopServiceCourierAdapter extends RecyclerView.Adapter<ShopServiceC
                     onShopServiceCourierAdapterListener.unCheckGroupFromChild();
                 }
             }
+        }
+
+        @Override
+        public void onClick(View v) {
+            int position = getAdapterPosition();
+            CourierServiceModel courierServiceModel = courierServiceModelList.get(position);
+            onShopServiceCourierAdapterListener.onInfoIconClicked(courierServiceModel.getName(),
+                    courierServiceModel.getDescription());
         }
     }
 

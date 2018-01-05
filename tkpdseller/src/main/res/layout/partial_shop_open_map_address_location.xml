@@ -18,12 +18,7 @@
     </com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout>
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="11sp"
-        android:fontFamily="sans-serif"
-        android:textStyle="normal"
-        android:textColor="@color/black_38"
+        style="@style/TextView.Caption.BlackDisabled"
         android:lineSpacingExtra="5sp"
         android:text="@string/fill_width_address_desc" />
 </merge>

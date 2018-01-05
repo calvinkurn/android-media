@@ -20,4 +20,8 @@ public interface ShopOpenLocView extends CustomerView {
     void onErrorGetReserveDomain(Throwable e);
 
     void onFailedSaveInfoShop(Throwable t);
+
+    void showProgressDialog();
+
+    void dismissProgressDialog();
 }

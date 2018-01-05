@@ -8,16 +8,28 @@ import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetDialog;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
+import com.tokopedia.core.util.AppWidgetUtil;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.shop.open.data.model.OpenShopCouriersModel;
@@ -40,8 +52,14 @@ import javax.inject.Inject;
  * Created by nathan on 10/21/17.
  */
 
-public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implements ShopSettingLogisticView, ShopCourierExpandableOption.OnDisabledHeaderClickedListener {
+public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implements ShopSettingLogisticView, ShopCourierExpandableOption.OnShopCourierExpandableOptionListener {
     private StepperListener<ShopOpenStepperModel> onShopStepperListener;
+    private OnShopOpenLogisticFragmentListener onShopOpenLogisticFragmentListener;
+    private TextView tvMakeSurePickupLoc;
+
+    public interface OnShopOpenLogisticFragmentListener{
+        void goToPickupLocation();
+    }
 
     private CourierServiceIdWrapper selectedCourierServiceIdWrapper;
 
@@ -84,9 +102,11 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
         LayoutTransition layoutTransition = ((ViewGroup) vContent).getLayoutTransition();
         layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
 
+        tvMakeSurePickupLoc = view.findViewById(R.id.tv_pickup_location);
+
         courierListViewGroup = view.findViewById(R.id.vg_courier_list);
         courierListViewGroup.setCourierList(null, selectedCourierServiceIdWrapper);
-        courierListViewGroup.setOnDisabledHeaderClickedListener(this);
+        courierListViewGroup.setOnShopCourierExpandableOptionListener(this);
 
         View continueButton = view.findViewById(R.id.continue_button);
         continueButton.setOnClickListener(new View.OnClickListener() {
@@ -95,6 +115,8 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
                 onContinueButtonClicked();
             }
         });
+
+        setPickupLocationText();
 
         return view;
     }
@@ -114,6 +136,27 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     public void updateLogistic() {
         showLoading();
         presenter.getCouriers(getDistrictId());
+    }
+
+    private void setPickupLocationText(){
+        SpannableString spannableString = new SpannableString(getString(R.string.openshop_make_sure_pickup_location));
+        final String locationPickUpString = getString(R.string.label_pickup_location);
+        ClickableSpan clickablePickup = new ClickableSpan() {
+            @Override
+            public void onClick(View view) {
+                onShopOpenLogisticFragmentListener.goToPickupLocation();
+            }
+        };
+        int locationPickUpStringIndex = spannableString.toString().indexOf(locationPickUpString);
+        spannableString.setSpan(clickablePickup,
+                locationPickUpStringIndex, locationPickUpStringIndex + locationPickUpString.length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannableString.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getActivity(),
+                R.color.tkpd_main_green)), locationPickUpStringIndex,
+                locationPickUpStringIndex + locationPickUpString.length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        tvMakeSurePickupLoc.setMovementMethod(LinkMovementMethod.getInstance());
+        tvMakeSurePickupLoc.setText(spannableString);
     }
 
     private int getDistrictId(){
@@ -185,6 +228,19 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     }
 
     @Override
+    public void onCourierServiceInfoIconClicked(String title, String description) {
+        BottomSheetDialog dialog = new BottomSheetDialog(getActivity());
+        dialog.setContentView(R.layout.shipping_info_bottom_sheet);
+
+        TextView tvInfo = dialog.findViewById(R.id.courier_information);
+        TextView tvServiceName = dialog.findViewById(R.id.courier_name_service);
+
+        tvServiceName.setText(title);
+        tvInfo.setText(description);
+        dialog.show();
+    }
+
+    @Override
     public void onSuccessLoadLogistic(OpenShopCouriersModel openShopCouriersModel) {
         hideLoading();
         courierListViewGroup.setCourierList(openShopCouriersModel.getCourier(), selectedCourierServiceIdWrapper);
@@ -218,8 +274,13 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     }
 
     @Override
-    public void onSuccessCreateShop() {
+    public void onSuccessCreateShop(int shopId) {
         hideSubmitLoading();
+        SessionHandler session = new SessionHandler(getContext());
+        session.setShopId(String.valueOf(shopId));
+        GlobalCacheManager globalCacheManager = new GlobalCacheManager();
+        globalCacheManager.delete(ProfileSourceFactory.KEY_PROFILE_DATA);
+        AppWidgetUtil.sendBroadcastToAppWidget(getActivity());
         onShopStepperListener.finishPage();
     }
 
@@ -264,6 +325,7 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
 
     protected void onAttachListener(Context context){
         onShopStepperListener = (StepperListener<ShopOpenStepperModel>) context;
+        onShopOpenLogisticFragmentListener = (OnShopOpenLogisticFragmentListener) context;
     }
 
 }
