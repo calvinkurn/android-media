@@ -74,7 +74,7 @@ public class QuickFilterView extends BaseCustomView {
         };
     }
 
-    interface ActionListener {
+    public interface ActionListener {
         void clearFilter();
 
         void selectFilter();

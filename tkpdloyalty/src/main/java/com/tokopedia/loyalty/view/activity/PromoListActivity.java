@@ -12,6 +12,7 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +24,7 @@ import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.design.quickfilter.QuickFilterView;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.R2;
 import com.tokopedia.loyalty.di.component.DaggerPromoListActivityComponent;
@@ -97,6 +99,7 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
 
     @Override
     protected void initView() {
+
     }
 
     @Override

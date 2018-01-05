@@ -7,23 +7,30 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.design.quickfilter.QuickFilterItem;
+import com.tokopedia.design.quickfilter.QuickFilterView;
 import com.tokopedia.loyalty.R;
+import com.tokopedia.loyalty.R2;
 import com.tokopedia.loyalty.di.component.DaggerPromoListFragmentComponent;
 import com.tokopedia.loyalty.di.component.PromoListFragmentComponent;
 import com.tokopedia.loyalty.di.module.PromoListFragmentModule;
 import com.tokopedia.loyalty.view.data.PromoData;
 import com.tokopedia.loyalty.view.data.PromoMenuData;
+import com.tokopedia.loyalty.view.data.PromoSubMenuData;
 import com.tokopedia.loyalty.view.presenter.IPromoListPresenter;
 import com.tokopedia.loyalty.view.view.IPromoListView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import butterknife.BindView;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -33,13 +40,16 @@ import rx.subscriptions.CompositeSubscription;
 public class PromoListFragment extends BasePresenterFragment implements IPromoListView {
     private static final String ARG_EXTRA_PROMO_MENU_DATA = "ARG_EXTRA_PROMO_MENU_DATA";
 
+    @BindView(R2.id.quick_filter)
+    LinearLayout filterLayout;
+
     @Inject
     IPromoListPresenter dPresenter;
     @Inject
     CompositeSubscription compositeSubscription;
 
     private PromoMenuData promoMenuData;
-
+    private QuickFilterView quickFilterView;
 
     @Override
     protected void initInjector() {
@@ -193,6 +203,7 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
 
     @Override
     protected void initView(View view) {
+        quickFilterView = new QuickFilterView(getActivity());
 
     }
 
@@ -203,7 +214,33 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
 
     @Override
     protected void initialVar() {
+        clearHolderView(filterLayout);
+        quickFilterView.renderFilter(setQuickFilterItems(promoMenuData.getPromoSubMenuDataList()));
+        quickFilterView.setListener(new QuickFilterView.ActionListener() {
+            @Override
+            public void clearFilter() {
 
+            }
+
+            @Override
+            public void selectFilter() {
+
+            }
+        });
+        filterLayout.addView(quickFilterView);
+    }
+
+    private List<QuickFilterItem> setQuickFilterItems(List<PromoSubMenuData> promoSubMenuDataList) {
+        List<QuickFilterItem> quickFilterItemList = new ArrayList<>();
+        for (int i = 0; i < promoSubMenuDataList.size(); i++) {
+            QuickFilterItem quickFilterItem = new QuickFilterItem();
+            quickFilterItem.setName(promoSubMenuDataList.get(i).getTitle());
+            quickFilterItem.setType(promoSubMenuDataList.get(i).getId());
+            quickFilterItem.setSelected(promoSubMenuDataList.get(i).isSelected());
+            quickFilterItem.setColorBorder(R.color.grey_hint);
+            quickFilterItemList.add(quickFilterItem);
+        }
+        return quickFilterItemList;
     }
 
     @Override
@@ -217,5 +254,11 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
         bundle.putParcelable(ARG_EXTRA_PROMO_MENU_DATA, promoMenuData);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    private void clearHolderView(LinearLayout holderView) {
+        if (holderView.getChildCount() > 0) {
+            holderView.removeAllViews();
+        }
     }
 }
