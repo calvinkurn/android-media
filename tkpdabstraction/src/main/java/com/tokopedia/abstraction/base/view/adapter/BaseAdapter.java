@@ -59,24 +59,16 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
 
     public boolean isLoading() {
         //use last index for performance since loading is in the last item position
-        return visitables.lastIndexOf(loadingModel)!= -1;
+        return visitables.lastIndexOf(loadingModel) != -1;
     }
 
     public void showLoading() {
         //use last index for performance since loading is in the last item position
         // note: do not use flag, because loading model can be removed from anywhere
-        if (visitables.lastIndexOf(loadingModel)!= -1) {
+        if (visitables.lastIndexOf(loadingModel) != -1) {
             visitables.add(loadingModel);
             notifyItemInserted(visitables.size());
         }
-    }
-
-    public void setErrorNetworkModel(Visitable errorNetworkModel) {
-        this.errorNetworkModel = errorNetworkModel;
-    }
-
-    public void setLoadingModel(Visitable loadingModel) {
-        this.loadingModel = loadingModel;
     }
 
     public void hideLoading() {

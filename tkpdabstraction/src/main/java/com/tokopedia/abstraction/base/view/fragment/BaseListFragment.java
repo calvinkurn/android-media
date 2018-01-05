@@ -41,8 +41,6 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         adapter = createAdapterInstance();
-        adapter.setLoadingModel(getLoadingDataViewModel());
-        adapter.setErrorNetworkModel(getErrorNetworkModel());
     }
 
     @NonNull
@@ -200,14 +198,6 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
 
     protected Visitable getEmptyDataViewModel() {
         return new EmptyModel();
-    }
-
-    protected Visitable getLoadingDataViewModel(){
-        return new LoadingModel();
-    }
-
-    protected Visitable getErrorNetworkModel(){
-        return new ErrorNetworkModel();
     }
 
     @Override
