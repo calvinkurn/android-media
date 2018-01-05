@@ -14,7 +14,7 @@ public class ProductEntity {
     private AttributesEntity attributes;
     @SerializedName("id")
     @Expose
-    private int id;
+    private String id;
     @SerializedName("relationships")
     @Expose
     private RelationshipEntity relationships;
@@ -30,11 +30,11 @@ public class ProductEntity {
         this.attributes = attributes;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

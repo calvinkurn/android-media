@@ -342,7 +342,7 @@ public class CategoryProductStyle3View extends
             @Override
             public void onDigitalChooserClicked(List<Product> data) {
                 actionListener.onProductChooserStyle3Clicked(
-                        data, operatorSelected != null
+                        data, operatorSelected.getOperatorId(), operatorSelected != null
                                 ? operatorSelected.getRule().getProductText() : ""
                 );
             }
