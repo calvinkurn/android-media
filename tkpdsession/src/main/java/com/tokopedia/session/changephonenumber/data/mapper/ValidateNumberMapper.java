@@ -26,14 +26,17 @@ public class ValidateNumberMapper implements Func1<Response<TkpdResponse>, Boole
                     (tkpdResponseResponse.body().getErrorMessageJoined().isEmpty() ||
                             tkpdResponseResponse.body().getErrorMessages() == null)
                     ) {
-                ValidateNumberData data = tkpdResponseResponse.body().convertDataObj(ValidateNumberData.class);
+                ValidateNumberData data = tkpdResponseResponse.body().convertDataObj(
+                        ValidateNumberData.class);
                 model = (data.getIsSuccess() == 1);
             } else {
                 if (tkpdResponseResponse.body().getErrorMessages() != null &&
                         !tkpdResponseResponse.body().getErrorMessages().isEmpty()) {
-                    throw new ErrorMessageException(tkpdResponseResponse.body().getErrorMessageJoined());
+                    throw new ErrorMessageException(
+                            tkpdResponseResponse.body().getErrorMessageJoined());
                 } else {
-                    throw new ErrorMessageException(ErrorMessageException.DEFAULT_ERROR);
+                    throw new ErrorMessageException(
+                            ErrorMessageException.DEFAULT_ERROR);
                 }
             }
         } else {

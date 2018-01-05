@@ -26,14 +26,17 @@ public class SendEmailMapper implements Func1<Response<TkpdResponse>, Boolean> {
                     (tkpdResponseResponse.body().getErrorMessageJoined().isEmpty() ||
                             tkpdResponseResponse.body().getErrorMessages() == null)
                     ) {
-                SendEmailData data = tkpdResponseResponse.body().convertDataObj(SendEmailData.class);
+                SendEmailData data = tkpdResponseResponse.body().convertDataObj(
+                        SendEmailData.class);
                 model = (data.getIsSuccess() == 1);
             } else {
                 if (tkpdResponseResponse.body().getErrorMessages() != null &&
                         !tkpdResponseResponse.body().getErrorMessages().isEmpty()) {
-                    throw new ErrorMessageException(tkpdResponseResponse.body().getErrorMessageJoined());
+                    throw new ErrorMessageException(
+                            tkpdResponseResponse.body().getErrorMessageJoined());
                 } else {
-                    throw new ErrorMessageException(ErrorMessageException.DEFAULT_ERROR);
+                    throw new ErrorMessageException(
+                            ErrorMessageException.DEFAULT_ERROR);
                 }
             }
         } else {

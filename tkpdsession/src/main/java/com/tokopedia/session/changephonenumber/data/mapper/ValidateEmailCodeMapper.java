@@ -26,14 +26,17 @@ public class ValidateEmailCodeMapper implements Func1<Response<TkpdResponse>, Bo
                     (tkpdResponseResponse.body().getErrorMessageJoined().isEmpty() ||
                             tkpdResponseResponse.body().getErrorMessages() == null)
                     ) {
-                ValidateEmailCodeData data = tkpdResponseResponse.body().convertDataObj(ValidateEmailCodeData.class);
+                ValidateEmailCodeData data = tkpdResponseResponse.body().convertDataObj(
+                        ValidateEmailCodeData.class);
                 model = (data.getIsSuccess() == 1);
             } else {
                 if (tkpdResponseResponse.body().getErrorMessages() != null &&
                         !tkpdResponseResponse.body().getErrorMessages().isEmpty()) {
-                    throw new ErrorMessageException(tkpdResponseResponse.body().getErrorMessageJoined());
+                    throw new ErrorMessageException(
+                            tkpdResponseResponse.body().getErrorMessageJoined());
                 } else {
-                    throw new ErrorMessageException(ErrorMessageException.DEFAULT_ERROR);
+                    throw new ErrorMessageException(
+                            ErrorMessageException.DEFAULT_ERROR);
                 }
             }
         } else {

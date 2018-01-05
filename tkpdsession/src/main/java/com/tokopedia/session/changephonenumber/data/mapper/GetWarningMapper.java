@@ -27,7 +27,8 @@ public class GetWarningMapper implements Func1<Response<TkpdResponse>, WarningVi
                     (tkpdResponseResponse.body().getErrorMessageJoined().isEmpty() ||
                             tkpdResponseResponse.body().getErrorMessages() == null)
                     ) {
-                GetWarningData data = tkpdResponseResponse.body().convertDataObj(GetWarningData.class);
+                GetWarningData data = tkpdResponseResponse.body().convertDataObj(
+                        GetWarningData.class);
                 model.setAction(data.getAction());
                 model.setTokocash(data.getTokocash());
                 model.setTokopediaBalance(data.getSaldo());
@@ -36,9 +37,11 @@ public class GetWarningMapper implements Func1<Response<TkpdResponse>, WarningVi
             } else {
                 if (tkpdResponseResponse.body().getErrorMessages() != null &&
                         !tkpdResponseResponse.body().getErrorMessages().isEmpty()) {
-                    throw new ErrorMessageException(tkpdResponseResponse.body().getErrorMessageJoined());
+                    throw new ErrorMessageException(
+                            tkpdResponseResponse.body().getErrorMessageJoined());
                 } else {
-                    throw new ErrorMessageException(ErrorMessageException.DEFAULT_ERROR);
+                    throw new ErrorMessageException(
+                            ErrorMessageException.DEFAULT_ERROR);
                 }
             }
         } else {

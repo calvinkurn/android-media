@@ -26,7 +26,8 @@ public class ChangePhoneNumberRepositoryImpl implements ChangePhoneNumberReposit
     public ChangePhoneNumberRepositoryImpl(CloudGetWarningSource cloudGetWarningSource,
                                            CloudSendEmailSource cloudSendEmailSource,
                                            CloudValidateNumberSource cloudValidateNumberSource,
-                                           CloudValidateEmailCodeSource cloudValidateEmailCodeSource) {
+                                           CloudValidateEmailCodeSource
+                                                       cloudValidateEmailCodeSource) {
         this.cloudGetWarningSource = cloudGetWarningSource;
         this.cloudSendEmailSource = cloudSendEmailSource;
         this.cloudValidateNumberSource = cloudValidateNumberSource;
