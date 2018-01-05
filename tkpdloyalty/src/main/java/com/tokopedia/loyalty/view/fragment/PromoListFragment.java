@@ -16,6 +16,7 @@ import com.tokopedia.loyalty.di.component.DaggerPromoListFragmentComponent;
 import com.tokopedia.loyalty.di.component.PromoListFragmentComponent;
 import com.tokopedia.loyalty.di.module.PromoListFragmentModule;
 import com.tokopedia.loyalty.view.data.PromoData;
+import com.tokopedia.loyalty.view.data.PromoMenuData;
 import com.tokopedia.loyalty.view.presenter.IPromoListPresenter;
 import com.tokopedia.loyalty.view.view.IPromoListView;
 
@@ -30,11 +31,14 @@ import rx.subscriptions.CompositeSubscription;
  */
 
 public class PromoListFragment extends BasePresenterFragment implements IPromoListView {
+    private static final String ARG_EXTRA_PROMO_MENU_DATA = "ARG_EXTRA_PROMO_MENU_DATA";
 
     @Inject
     IPromoListPresenter dPresenter;
     @Inject
     CompositeSubscription compositeSubscription;
+
+    private PromoMenuData promoMenuData;
 
 
     @Override
@@ -179,7 +183,7 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
 
     @Override
     protected void setupArguments(Bundle arguments) {
-
+        this.promoMenuData = arguments.getParcelable(ARG_EXTRA_PROMO_MENU_DATA);
     }
 
     @Override
@@ -207,7 +211,11 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
 
     }
 
-    public static Fragment newInstance() {
-        return new PromoListFragment();
+    public static Fragment newInstance(PromoMenuData promoMenuData) {
+        Fragment fragment = new PromoListFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ARG_EXTRA_PROMO_MENU_DATA, promoMenuData);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 }

@@ -77,10 +77,7 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
 
     @Override
     protected void initView() {
-        Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
-        if (fragment == null || !(fragment instanceof PromoListFragment))
-            getFragmentManager().beginTransaction().replace(R.id.container,
-                    PromoListFragment.newInstance()).commit();
+
     }
 
     @Override
@@ -103,6 +100,7 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
         for (PromoMenuData promoMenuData : promoMenuDataList) {
             Toast.makeText(this, promoMenuData.getTitle(), Toast.LENGTH_SHORT).show();
         }
+        //TODO render tab, render view pager. use PromoListFragment, parsing PromoMenuData to fragment
     }
 
     @Override
