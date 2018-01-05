@@ -21,10 +21,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.gallery.GalleryType;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.seller.R;
@@ -133,8 +135,13 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
         }
         shopDescEditText.setText(userData.getShortDesc());
         shopSloganEditText.setText(userData.getTagLine());
-        ImageHandler.loadImageFit2(getActivity(), imagePicker,
-                userData.getLogo(), R.drawable.ic_add_photo_box, R.drawable.ic_add_photo_box);
+        Glide.with(imagePicker.getContext())
+                .load(userData.getLogo())
+                .dontAnimate()
+                .placeholder(R.drawable.ic_add_photo_box)
+                .error(R.drawable.ic_add_photo_box)
+                .centerCrop()
+                .into(imagePicker);
     }
 
     private void setActionVar() {
@@ -226,18 +233,25 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case REQUEST_CODE_IMAGE_PICKER:
-                    if (data != null && data.getStringExtra(GalleryCropActivity.RESULT_IMAGE_CROPPED) != null) {
-                        uriPathImage = data.getStringExtra(GalleryCropActivity.RESULT_IMAGE_CROPPED);
-                        ImageHandler.loadImageFromFile(getActivity(), imagePicker, new File(uriPathImage));
+                    if (resultCode == Activity.RESULT_OK) {
+                        if (data != null && data.getStringExtra(GalleryCropActivity.RESULT_IMAGE_CROPPED) != null) {
+                            uriPathImage = data.getStringExtra(GalleryCropActivity.RESULT_IMAGE_CROPPED);
+                            ImageHandler.loadImageFromFile(getActivity(), imagePicker, new File(uriPathImage));
+                        }
                     }
+                    break;
+                case com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY:
+                        String imageUrl = data.getStringExtra(GalleryActivity.IMAGE_URL);
+                        if (!TextUtils.isEmpty(imageUrl)) {
+                            uriPathImage = imageUrl;
+                            ImageHandler.loadImageFromFile(getActivity(), imagePicker, new File(uriPathImage));
+                        }
                     break;
                 default:
                     break;
             }
-        }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -308,13 +322,14 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
     @TargetApi(16)
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void goToGallery() {
-        startActivityForResult(GalleryCropActivity.createIntent(getActivity(), GalleryType.ofImageOnly(), true, false), REQUEST_CODE_IMAGE_PICKER);
+        startActivityForResult(GalleryCropActivity.createIntent(getActivity(), GalleryType.ofImageOnly(), true), REQUEST_CODE_IMAGE_PICKER);
     }
 
     @TargetApi(16)
     @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     public void goToCamera() {
-        startActivityForResult(GalleryCropActivity.createIntent(getActivity(), GalleryType.ofImageOnly(), true, true), REQUEST_CODE_IMAGE_PICKER);
+        startActivityForResult(com.tokopedia.seller.common.imageeditor.GalleryCropActivity.createIntent(getActivity(), 1, true, 1,true),
+                com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY);
     }
 
     protected void onAttachListener(Context context) {

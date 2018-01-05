@@ -44,7 +44,6 @@ public class GalleryActivity extends TActivity implements AlbumCollection.AlbumC
     protected static final int DEFAULT_MAX_SELECTION = 1;
     protected static final int DEFAULT_GALLERY_TYPE = GalleryType.ofImageOnly();
     public static final String COMPRESS_TO_TKPD = "COMPRESS_TO_TKPD";
-    public static final String OPEN_CAMERA = "OPEN_CAMERA";
     public static final String TOKOPEDIA = "Tokopedia";
     public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 873;
 
@@ -60,25 +59,21 @@ public class GalleryActivity extends TActivity implements AlbumCollection.AlbumC
     private AlbumsSpinner albumSpinner;
     private AlbumAdapter albumAdapter;
     private boolean compressToTkpd;
-    private boolean openCamera;
-    private String imagePathCamera;
 
     public static Intent createIntent(Context context) {
         return createIntent(context, DEFAULT_GALLERY_TYPE);
     }
 
     public static Intent createIntent(Context context, int galleryType) {
-        return createIntent(context, galleryType, DEFAULT_MAX_SELECTION, false, false);
+        return createIntent(context, galleryType, DEFAULT_MAX_SELECTION, false);
     }
 
-    public static Intent createIntent(Context context, int galleryType, int maxSelection, boolean compressToTkpd,
-                                      boolean openCamera) {
+    public static Intent createIntent(Context context, int galleryType, int maxSelection, boolean compressToTkpd) {
         Intent intent = new Intent(context, GalleryActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt(BUNDLE_GALLERY_TYPE, galleryType);
         bundle.putInt(BUNDLE_MAX_SELECTION, maxSelection);
         bundle.putBoolean(COMPRESS_TO_TKPD, compressToTkpd);
-        bundle.putBoolean(OPEN_CAMERA, openCamera);
         intent.putExtras(bundle);
         return intent;
     }
@@ -87,7 +82,6 @@ public class GalleryActivity extends TActivity implements AlbumCollection.AlbumC
         typeGallery = extras.getInt(BUNDLE_GALLERY_TYPE);
         maxSelection = extras.getInt(BUNDLE_MAX_SELECTION);
         compressToTkpd = extras.getBoolean(COMPRESS_TO_TKPD);
-        openCamera = extras.getBoolean(OPEN_CAMERA);
     }
 
     protected void initView() {
@@ -141,55 +135,6 @@ public class GalleryActivity extends TActivity implements AlbumCollection.AlbumC
         albumCollection.onRestoreInstanceState(savedInstanceState);
         albumCollection.setGalleryType(typeGallery);
         albumCollection.loadAlbums();
-
-        if (openCamera) {
-            startOpenCamera();
-        }
-    }
-
-    private void startOpenCamera() {
-        if (!Environment.getExternalStorageState().equals(
-                Environment.MEDIA_REMOVED)) {
-            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                File outputMediaFile = getOutputMediaFile();
-                if (outputMediaFile != null) {
-                    imagePathCamera = outputMediaFile.getAbsolutePath();
-                    Uri fileuri = MethodChecker.getUri(this, outputMediaFile);
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, fileuri);
-                    startActivityForResult(takePictureIntent,
-                            CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
-                }
-            }
-        } else {
-            WarningDialogNoMemory();
-        }
-    }
-
-    /**
-     * function to generate file when capture image from CAMERA
-     */
-    public static File getOutputMediaFile() {
-        File mediaStorageDir = new File(
-                Environment.getExternalStorageDirectory() + File.separator
-                        + TOKOPEDIA + File.separator);
-        if (!mediaStorageDir.exists()) {
-            if (!mediaStorageDir.mkdirs()) {
-                return null;
-            }
-        }
-        return new File(mediaStorageDir.getPath() + File.separator
-                + "IMG_" + System.currentTimeMillis() / 1000L + ".jpg");
-    }
-
-    public void WarningDialogNoMemory() {
-        AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(this);
-        myAlertDialog.setMessage(getString(R.string.dialog_no_memory_card));
-        myAlertDialog.setPositiveButton(getString(R.string.title_ok), null);
-
-        Dialog dialog = myAlertDialog.create();
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.show();
     }
 
     @Override
@@ -292,37 +237,5 @@ public class GalleryActivity extends TActivity implements AlbumCollection.AlbumC
     @Override
     protected boolean isLightToolbarThemes() {
         return true;
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
-            switch (resultCode) {
-                case RESULT_CANCELED:
-                    finish();
-                    break;
-                case RESULT_OK:
-                    if (imagePathCamera != null) {
-                        Intent intent = new Intent();
-                        if (compressToTkpd) {
-                            String fileNameToMove = FileUtils.generateUniqueFileName();
-                            File photo = FileUtils.writeImageToTkpdPath(
-                                    FileUtils.compressImage(imagePathCamera, DEF_WIDTH_CMPR, DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
-                                    fileNameToMove);
-                            if (photo != null) {
-                                FileUtils.deleteAllCacheTkpdFile(imagePathCamera);
-                                finishWithPathFile(photo.getAbsolutePath());
-                            } else {
-                                finishWithPathFile(imagePathCamera);
-                            }
-                        } else {
-                            finishWithPathFile(imagePathCamera);
-                        }
-                    }else{
-                        finish();
-                    }
-                    break;
-            }
-        }
     }
 }
