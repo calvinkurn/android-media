@@ -86,6 +86,6 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
     @Override
     public void onPromoAllClick() {
         UnifyTracking.eventClickViewAllPromo();
-        context.startActivity(new Intent(context, PromoListActivity.class));
+        context.startActivity(PromoListActivity.newInstance(context));
     }
 }

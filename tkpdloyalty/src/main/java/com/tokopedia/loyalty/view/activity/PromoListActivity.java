@@ -1,42 +1,62 @@
 package com.tokopedia.loyalty.view.activity;
 
 import android.app.Dialog;
-import android.app.Fragment;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tkpd.library.ui.widget.TouchViewPager;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.loyalty.R;
+import com.tokopedia.loyalty.R2;
 import com.tokopedia.loyalty.di.component.DaggerPromoListActivityComponent;
 import com.tokopedia.loyalty.di.component.PromoListActivityComponent;
 import com.tokopedia.loyalty.di.module.PromoListActivityModule;
+import com.tokopedia.loyalty.view.adapter.PromoPagerAdapter;
 import com.tokopedia.loyalty.view.data.PromoMenuData;
-import com.tokopedia.loyalty.view.fragment.PromoListFragment;
 import com.tokopedia.loyalty.view.presenter.IPromoListActivityPresenter;
 import com.tokopedia.loyalty.view.view.IPromoListActivityView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import butterknife.BindView;
 
 /**
  * @author anggaprasetiyo on 02/01/18.
  */
 
 public class PromoListActivity extends BasePresenterActivity implements HasComponent<AppComponent>, IPromoListActivityView {
+
+    @BindView(R2.id.view_pager)
+    TouchViewPager viewPager;
+    @BindView(R2.id.tab_layout)
+    TabLayout tabLayout;
+
+    private PromoPagerAdapter adapter;
+
     @Inject
     IPromoListActivityPresenter dPresenter;
 
-    private static Intent newInstance(Context context) {
+    public static Intent newInstance(Context context) {
         return new Intent(context, PromoListActivity.class);
     }
 
@@ -77,7 +97,6 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
 
     @Override
     protected void initView() {
-
     }
 
     @Override
@@ -100,7 +119,48 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
         for (PromoMenuData promoMenuData : promoMenuDataList) {
             Toast.makeText(this, promoMenuData.getTitle(), Toast.LENGTH_SHORT).show();
         }
-        //TODO render tab, render view pager. use PromoListFragment, parsing PromoMenuData to fragment
+        for (int i = 0; i < promoMenuDataList.size(); i++) {
+            tabLayout.addTab(tabLayout.newTab().setText(promoMenuDataList.get(i).getTitle()).setIcon(R.drawable.ic_action_send));
+        }
+        viewPager.setOffscreenPageLimit(promoMenuDataList.size());
+        adapter = new PromoPagerAdapter(getFragmentManager(), promoMenuDataList);
+        viewPager.setAdapter(adapter);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                viewPager.setCurrentItem(tab.getPosition());
+                tab.setIcon(R.drawable.ic_action_send);
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                tab.setIcon(R.drawable.ic_wishlist);
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        tabLayout.setTabMode(TabLayout.MODE_FIXED);
+        viewPager.setCurrentItem(0);
     }
 
     @Override
