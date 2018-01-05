@@ -16,12 +16,14 @@ import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 public class FlightSearchAdapter extends BaseListAdapter<FlightSearchViewModel, FilterSearchAdapterTypeFactory> {
 
     private OnBaseFlightSearchAdapterListener onBaseFlightSearchAdapterListener;
+    private ErrorNetworkModel.OnRetryListener onRetryListener;
     private ErrorNetworkModel errorNetworkModel;
     private boolean inFilterMode;
 
 
-    public FlightSearchAdapter(FilterSearchAdapterTypeFactory filterSearchAdapterTypeFactory) {
+    public FlightSearchAdapter(FilterSearchAdapterTypeFactory filterSearchAdapterTypeFactory, ErrorNetworkModel.OnRetryListener onRetryListener) {
         super(filterSearchAdapterTypeFactory);
+        this.onRetryListener = onRetryListener;
         setDefaultErrorNetwork();
         setDefaultLoading();
     }
@@ -39,6 +41,7 @@ public class FlightSearchAdapter extends BaseListAdapter<FlightSearchViewModel, 
     private void setDefaultErrorNetwork() {
         errorNetworkModel = new ErrorNetworkModel();
         errorNetworkModel.setIconDrawableRes(R.drawable.ic_flight_empty_state);
+        errorNetworkModel.setOnRetryListener(onRetryListener);
     }
 
     public void setErrorMessage(String message) {

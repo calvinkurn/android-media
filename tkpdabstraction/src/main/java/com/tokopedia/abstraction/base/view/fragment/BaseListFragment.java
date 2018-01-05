@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder;
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewListener;
 import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
@@ -27,7 +28,8 @@ import com.tokopedia.abstraction.utils.snackbar.SnackbarRetry;
 import java.util.List;
 
 public abstract class BaseListFragment<T extends Visitable, F extends AdapterTypeFactory> extends BaseDaggerFragment
-        implements BaseListViewListener<T>, BaseListAdapter.OnAdapterInteractionListener<T> {
+        implements BaseListViewListener<T>, BaseListAdapter.OnAdapterInteractionListener<T>,
+        ErrorNetworkModel.OnRetryListener{
 
     private BaseListAdapter<T, F> adapter;
     private SwipeRefreshLayout swipeToRefresh;
@@ -90,9 +92,7 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
             swipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
-                    hideSnackBarRetry();
-                    swipeToRefresh.setRefreshing(true);
-                    loadInitialData();
+                    onSwipeRefresh();
                 }
             });
         }
@@ -101,6 +101,12 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
             showLoading();
             loadInitialData();
         }
+    }
+
+    public void onSwipeRefresh(){
+        hideSnackBarRetry();
+        swipeToRefresh.setRefreshing(true);
+        loadInitialData();
     }
 
     protected void loadInitialData() {
@@ -154,6 +160,14 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
         adapter.removeErrorNetwork();
         adapter.showLoading();
         hideSnackBarRetry();
+    }
+
+    protected void showSwipeLoading(){
+        adapter.removeErrorNetwork();
+        hideSnackBarRetry();
+        if (swipeToRefresh!=null) {
+            swipeToRefresh.setRefreshing(true);
+        }
     }
 
     public BaseListAdapter<T, F> getAdapter() {
@@ -218,7 +232,7 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
     }
 
     private void onGetListErrorWithEmptyData() {
-        adapter.showErrorNetwork();
+        adapter.showErrorNetwork(this);
         if (swipeToRefresh != null) {
             swipeToRefresh.setEnabled(false);
         }
@@ -236,6 +250,12 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
                 }
             }
         });
+    }
+
+    @Override
+    public void onRetryClicked() {
+        showLoading();
+        loadInitialData();
     }
 
     protected void hideLoading() {

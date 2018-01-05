@@ -21,7 +21,6 @@ public class ErrorNetworkViewHolder extends AbstractViewHolder<ErrorNetworkModel
     private TextView tvMessage;
     private TextView tvSubMessage;
     private TextView tvRetryButton;
-    private OnRetryListener onRetryListener;
 
     public ErrorNetworkViewHolder(View itemView) {
         super(itemView);
@@ -31,17 +30,8 @@ public class ErrorNetworkViewHolder extends AbstractViewHolder<ErrorNetworkModel
         tvRetryButton = itemView.findViewById(R.id.button_retry);
     }
 
-    public ErrorNetworkViewHolder(View itemView, OnRetryListener onRetryListener) {
-        super(itemView);
-        ivIcon = itemView.findViewById(R.id.iv_icon);
-        tvMessage = itemView.findViewById(R.id.message_retry);
-        tvSubMessage = itemView.findViewById(R.id.sub_message_retry);
-        tvRetryButton = itemView.findViewById(R.id.button_retry);
-        this.onRetryListener = onRetryListener;
-    }
-
     @Override
-    public void bind(ErrorNetworkModel element) {
+    public void bind(final ErrorNetworkModel element) {
         if (element.getIconDrawableRes() != 0) {
             ivIcon.setImageResource(element.getIconDrawableRes());
         }
@@ -51,8 +41,9 @@ public class ErrorNetworkViewHolder extends AbstractViewHolder<ErrorNetworkModel
         tvRetryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (onRetryListener != null) {
-                    onRetryListener.onRetryClicked();
+                ErrorNetworkModel.OnRetryListener listener = element.getOnRetryListener();
+                if (listener != null) {
+                    listener.onRetryClicked();
                 }
             }
         });

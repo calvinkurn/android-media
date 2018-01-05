@@ -39,7 +39,7 @@ public class FilterSearchAdapterTypeFactory extends BaseAdapterTypeFactory imple
         } else if (type == EmptyResultViewHolder.LAYOUT) {
             return new EmptyResultViewHolder(parent);
         } else if (type == ErrorNetworkViewHolder.LAYOUT) {
-            return new ErrorNetworkViewHolder(parent, this);
+            return new ErrorNetworkViewHolder(parent);
         } else {
             return super.createViewHolder(parent, type);
         }

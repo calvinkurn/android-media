@@ -181,7 +181,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     @NonNull
     @Override
     protected BaseListAdapter<FlightSearchViewModel, FilterSearchAdapterTypeFactory> createAdapterInstance() {
-        adapter = new FlightSearchAdapter(getAdapterTypeFactory());
+        adapter = new FlightSearchAdapter(getAdapterTypeFactory(), this);
         adapter.setOnBaseFlightSearchAdapterListener(this);
         adapter.setOnAdapterInteractionListener(this);
         return adapter;

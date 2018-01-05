@@ -2,6 +2,7 @@ package com.tokopedia.abstraction.base.view.adapter;
 
 import android.view.View;
 
+import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 
 import java.util.ArrayList;

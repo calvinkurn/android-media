@@ -29,7 +29,8 @@ import javax.inject.Inject;
  * Created by nathan on 10/19/17.
  */
 
-public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAirportDB, FlightAirportAdapterTypeFactory> implements FlightAirportPickerView, FlightAirportViewHolder.FilterTextListener {
+public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAirportDB, FlightAirportAdapterTypeFactory>
+        implements FlightAirportPickerView, FlightAirportViewHolder.FilterTextListener {
 
     public static final String EXTRA_SELECTED_AIRPORT = "extra_selected_aiport";
     public static final String FLIGHT_AIRPORT = "flight_airport";

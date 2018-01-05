@@ -21,8 +21,8 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
 
     protected List<Visitable> visitables;
     private F adapterTypeFactory;
-    protected Visitable loadingModel = new LoadingModel();
-    private Visitable errorNetworkModel = new ErrorNetworkModel();
+    protected LoadingModel loadingModel = new LoadingModel();
+    protected ErrorNetworkModel errorNetworkModel = new ErrorNetworkModel();
 
     public BaseAdapter(F adapterTypeFactory, List<Visitable> visitables) {
         this.adapterTypeFactory = adapterTypeFactory;
@@ -65,7 +65,8 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
     public void showLoading() {
         //use last index for performance since loading is in the last item position
         // note: do not use flag, because loading model can be removed from anywhere
-        if (visitables.lastIndexOf(loadingModel) != -1) {
+        if (visitables.lastIndexOf(loadingModel) == -1) {
+            loadingModel.setFullScreen(visitables.size() == 0);
             visitables.add(loadingModel);
             notifyItemInserted(visitables.size());
         }
@@ -93,6 +94,11 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
         visitables.clear();
         visitables.add(errorNetworkModel);
         notifyDataSetChanged();
+    }
+
+    public void showErrorNetwork(ErrorNetworkModel.OnRetryListener onRetryListener) {
+        errorNetworkModel.setOnRetryListener(onRetryListener);
+        showErrorNetwork();
     }
 
     public void removeErrorNetwork() {
