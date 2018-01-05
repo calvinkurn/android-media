@@ -104,7 +104,7 @@
                         android:layout_marginEnd="@dimen/margin_vvs"
                         android:layout_marginRight="@dimen/margin_vvs"
                         android:text="@string/flight_label_order_id_detail"
-                        android:textSize="@dimen/font_caption" />
+                        android:textSize="@dimen/font_body1" />
 
                     <TextView
                         android:id="@+id/order_id_detail"
