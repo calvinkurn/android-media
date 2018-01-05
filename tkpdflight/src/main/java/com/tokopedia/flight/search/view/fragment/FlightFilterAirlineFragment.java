@@ -82,8 +82,7 @@ public class FlightFilterAirlineFragment extends BaseFlightFilterFragment<Airlin
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void loadData(int page) {
         List<AirlineStat> airlineStatList = listener.getFlightSearchStatisticModel().getAirlineStatList();
         renderList(airlineStatList);
     }

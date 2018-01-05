@@ -38,9 +38,7 @@ public class FlightBookingNationalityFragment extends BaseSearchListFragment<Fli
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        showLoading();
+    public void loadData(int page) {
         flightBookingPhoneCodePresenter.getPhoneCodeList();
     }
 

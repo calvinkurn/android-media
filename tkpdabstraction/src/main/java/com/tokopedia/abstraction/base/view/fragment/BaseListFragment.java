@@ -29,9 +29,10 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
     private BaseListAdapter<T, F> adapter;
     private SwipeRefreshLayout swipeToRefresh;
     private SnackbarRetry snackBarRetry;
-    private boolean isLoadMoreState;
-    private boolean isAvailableLoadMore = true;
     private EndlessRecyclerviewListener endlessRecyclerviewListener;
+    private RecyclerView recyclerView;
+
+    private boolean isLoadingInitialData;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,21 +63,23 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        RecyclerView recyclerView = getRecyclerView(view);
-        LinearLayoutManager linearLayoutManager = getRecyclerViewLayoutManager();
-        endlessRecyclerviewListener = new EndlessRecyclerviewListener(linearLayoutManager) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                if (!isLoadMoreState && isAvailableLoadMore) {
-                    isLoadMoreState = true;
-                    onLoadMoreCalled(page, totalItemsCount);
-                }
+        recyclerView = getRecyclerView(view);
+        RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
+        if (layoutManager == null) {
+            layoutManager = getRecyclerViewLayoutManager();
+            if (layoutManager != null) {
+                recyclerView.setLayoutManager(layoutManager);
             }
-        };
-        recyclerView.addOnScrollListener(endlessRecyclerviewListener);
+        }
+
+        if (isLoadMoreEnabledByDefault()) {
+            enableLoadMore();
+        } else {
+            disableLoadMore();
+        }
+
         swipeToRefresh = getSwipeRefreshLayout(view);
         if (adapter != null) {
-            adapter.setOnAdapterInteractionListener(this);
             recyclerView.setAdapter(adapter);
         }
 
@@ -90,26 +93,54 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
                 }
             });
         }
+
+        if (callInitialLoadAutomatically()) {
+            showLoading();
+            loadInitialData();
+        }
     }
 
-    protected void loadInitialData(){
-        //TODO need to load initial data?
-        adapter.clearData();
+    protected void loadInitialData() {
+        // Note that we don't clear data when load initial
+        // instead, we just set the flag, so that the data is still there
+        // do this flag check on renderList.
+        isLoadingInitialData = true;
+        loadData(1);
     }
 
-    protected void onLoadMoreCalled(int page, int totalItemsCount) {
+    /**
+     * need for data with paging, page = 1 is initial load
+     */
+    public abstract void loadData(int page);
 
+    protected boolean callInitialLoadAutomatically() {
+        return true;
     }
 
-    protected void enableLoadMore() {
-        isAvailableLoadMore = true;
+    protected boolean isLoadMoreEnabledByDefault() {
+        return true;
     }
 
-    protected void disableLoadMore() {
-        isAvailableLoadMore = true;
+    public void enableLoadMore() {
+        if (endlessRecyclerviewListener == null) {
+            endlessRecyclerviewListener = new EndlessRecyclerviewListener(recyclerView.getLayoutManager()) {
+                @Override
+                public void onLoadMore(int page, int totalItemsCount) {
+                    showLoading();
+                    loadData(page);
+                }
+            };
+        }
+        recyclerView.addOnScrollListener(endlessRecyclerviewListener);
     }
 
-    protected LinearLayoutManager getRecyclerViewLayoutManager() {
+    public void disableLoadMore() {
+        if (endlessRecyclerviewListener != null) {
+            recyclerView.removeOnScrollListener(endlessRecyclerviewListener);
+        }
+    }
+
+    protected RecyclerView.LayoutManager getRecyclerViewLayoutManager() {
         return new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.VERTICAL, false);
     }
@@ -117,6 +148,7 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
     protected abstract F getAdapterTypeFactory();
 
     protected void showLoading() {
+        adapter.removeErrorNetwork();
         adapter.showLoading();
         hideSnackBarRetry();
     }
@@ -126,13 +158,38 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
     }
 
     @Override
-    public void renderList(@NonNull List<T> list) {
-        adapter.clearData();
-        if (list.size() == 0) {
+    public void renderList(@NonNull List<T> list, boolean hasNextPage) {
+        hideLoading();
+        // remove all unneeded element (empty/retry/loading/etc)
+        if (isLoadingInitialData ) {
+            adapter.clearAllElements();
+        } else {
+            adapter.clearAllNonDataElement();
+        }
+        adapter.addElement(list);
+        // update the load more state (paging/can loadmore)
+        if (endlessRecyclerviewListener != null) {
+            endlessRecyclerviewListener.updateStateAfterGetData();
+            endlessRecyclerviewListener.setHasNextPage(hasNextPage);
+        }
+
+        if (adapter.getItemCount() == 0) {
+            // Note: add element should be the last in line.
             adapter.addElement(getEmptyDataViewModel());
         } else {
-            adapter.addData(list);
+            //set flag to false, indicate that the initial data has been set.
+            isLoadingInitialData = false;
         }
+    }
+
+    /**
+     * default hasNextData for this function is false.
+     *
+     * @param list
+     */
+    @Override
+    public void renderList(@NonNull List<T> list) {
+        renderList(list, false);
     }
 
     protected Visitable getEmptyDataViewModel() {
@@ -140,14 +197,15 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
     }
 
     @Override
-    public void renderAddList(@NonNull List<T> list) {
-        adapter.hideLoading();
-        adapter.addData(list);
-    }
-
-    @Override
     public void showGetListError(String message) {
-        adapter.hideLoading();
+        hideLoading();
+
+        // update the load more state (paging/can loadmore)
+        if (endlessRecyclerviewListener != null) {
+            endlessRecyclerviewListener.updateStateAfterGetData();
+        }
+
+        // Note: add element should be the last in line.
         if (adapter.getItemCount() > 0) {
             onGetListErrorWithExistingData();
         } else {
@@ -166,7 +224,12 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
         showSnackBarRetry(new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                //TODO adapter.loadNextPage();??
+                showLoading();
+                if (endlessRecyclerviewListener != null) {
+                    endlessRecyclerviewListener.loadMore();
+                } else {
+                    loadInitialData();
+                }
             }
         });
     }
@@ -195,8 +258,4 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
         }
     }
 
-    @Override
-    public void onItemClicked(T object) {
-
-    }
 }

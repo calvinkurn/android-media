@@ -16,7 +16,6 @@ import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 public class FlightSearchAdapter extends BaseListAdapter<FlightSearchViewModel, FilterSearchAdapterTypeFactory> {
 
     private OnBaseFlightSearchAdapterListener onBaseFlightSearchAdapterListener;
-    private FilterSearchAdapterTypeFactory filterSearchAdapterTypeFactory;
     private ErrorNetworkModel errorNetworkModel;
     private boolean inFilterMode;
 
@@ -25,7 +24,6 @@ public class FlightSearchAdapter extends BaseListAdapter<FlightSearchViewModel, 
         super(filterSearchAdapterTypeFactory);
         setDefaultErrorNetwork();
         setDefaultLoading();
-        this.filterSearchAdapterTypeFactory = filterSearchAdapterTypeFactory;
     }
 
     private void setDefaultLoading() {

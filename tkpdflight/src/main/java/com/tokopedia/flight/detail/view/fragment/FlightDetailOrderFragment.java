@@ -257,13 +257,13 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Override
     public void updateFlightList(List<FlightOrderJourney> journeys) {
-        flightDetailOrderAdapter.addData(journeys);
+        flightDetailOrderAdapter.addElement(journeys);
         flightDetailOrderAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void updatePassengerList(List<FlightDetailPassenger> flightDetailPassengers) {
-        flightBookingReviewPassengerAdapter.addData(flightDetailPassengers);
+        flightBookingReviewPassengerAdapter.addElement(flightDetailPassengers);
         flightBookingReviewPassengerAdapter.notifyDataSetChanged();
     }
 

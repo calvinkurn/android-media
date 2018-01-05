@@ -183,6 +183,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     protected BaseListAdapter<FlightSearchViewModel, FilterSearchAdapterTypeFactory> createAdapterInstance() {
         adapter = new FlightSearchAdapter(getAdapterTypeFactory());
         adapter.setOnBaseFlightSearchAdapterListener(this);
+        adapter.setOnAdapterInteractionListener(this);
         return adapter;
     }
 
@@ -247,8 +248,19 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         loadInitialData();
     }
 
+    @Override
     public void loadInitialData() {
         actionFetchFlightSearchData();
+    }
+
+    @Override
+    public void loadData(int page) {
+        // no op, since it has no page.
+    }
+
+    @Override
+    protected boolean callInitialLoadAutomatically() {
+        return false;
     }
 
     @Override
@@ -433,7 +445,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     public void onSuccessGetDataFromCache(List<FlightSearchViewModel> flightSearchViewModelList) {
         hideLoading();
         addToolbarElevation();
-        adapter.clearData();
+        adapter.clearAllElements();
         if (flightSearchViewModelList.size() == 0) {
             if (progress < MAX_PROGRESS) {
                 adapter.showLoading();
@@ -441,7 +453,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
                 adapter.addElement(getEmptyDataViewModel());
             }
         } else {
-            adapter.addData(flightSearchViewModelList);
+            adapter.addElement(flightSearchViewModelList);
         }
 
 
@@ -549,7 +561,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         progress = 0;
         filterAndSortBottomAction.setVisibility(View.GONE);
 
-        adapter.clearData();
+        adapter.clearAllElements();
         adapter.notifyDataSetChanged();
 
         flightSearchPresenter.attachView(this);
@@ -605,7 +617,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
     @Override
     public void onRetryClicked() {
-        adapter.clearData();
+        adapter.clearAllElements();
         actionFetchFlightSearchData();
     }
 

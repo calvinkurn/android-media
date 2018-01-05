@@ -82,7 +82,7 @@ public class FlightOrderListFragment extends BaseDaggerFragment implements Fligh
         ordersRecyclerView.setLayoutManager(orderLayoutManager);
         endlessRecyclerviewListener = new EndlessRecyclerviewListener(orderLayoutManager) {
             @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+            public void onLoadMore(int page, int totalItemsCount) {
                 if (!isLoadMore) {
                     isLoadMore = true;
                     presenter.onOrderLoadMore(selectedFilter, page);
@@ -134,7 +134,7 @@ public class FlightOrderListFragment extends BaseDaggerFragment implements Fligh
 
     @Override
     public void renderOrders(List<Visitable> visitables) {
-        flightOrderAdapter.clearData();
+        flightOrderAdapter.clearAllElements();
         flightOrderAdapter.addElement(visitables);
     }
 
@@ -160,7 +160,7 @@ public class FlightOrderListFragment extends BaseDaggerFragment implements Fligh
 
     @Override
     public void showEmptyView() {
-        flightOrderAdapter.clearData();
+        flightOrderAdapter.clearAllElements();
         flightOrderAdapter.addElement(new EmptyModel());
     }
 

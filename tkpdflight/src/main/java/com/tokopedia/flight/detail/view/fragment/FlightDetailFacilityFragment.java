@@ -38,9 +38,8 @@ public class FlightDetailFacilityFragment extends BaseListFragment<FlightDetailR
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        getAdapter().addData(flightDetailViewModel.getRouteList());
+    public void loadData(int page) {
+        renderList(flightDetailViewModel.getRouteList());
     }
 
     @Override
@@ -64,4 +63,8 @@ public class FlightDetailFacilityFragment extends BaseListFragment<FlightDetailR
         flightDetailViewModel = getArguments().getParcelable(EXTRA_FLIGHT_DETAIL_MODEL);
     }
 
+    @Override
+    public void onItemClicked(FlightDetailRouteViewModel flightDetailRouteViewModel) {
+
+    }
 }
