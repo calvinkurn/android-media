@@ -154,4 +154,14 @@ public class FlightGetOrdersUseCase extends UseCase<List<FlightOrder>> {
         requestParams.putInt(PARAM_PER_PAGE, DEFAULT_PER_PAGE_VALUE);
         return requestParams;
     }
+
+    public RequestParams createRequestParam(int page, String status, int perPage) {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putInt(PARAM_PAGE, page);
+        if (!TextUtils.isEmpty(status)) {
+            requestParams.putString(PARAM_STATUS, status);
+        }
+        requestParams.putInt(PARAM_PER_PAGE, perPage == 0 ? DEFAULT_PER_PAGE_VALUE : perPage);
+        return requestParams;
+    }
 }

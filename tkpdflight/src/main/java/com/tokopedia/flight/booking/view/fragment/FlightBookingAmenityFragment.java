@@ -85,9 +85,8 @@ public class FlightBookingAmenityFragment extends BaseListFragment<FlightBooking
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        getAdapter().addData(flightBookingAmenityViewModels);
+    public void loadData(int page) {
+        renderList(flightBookingAmenityViewModels);
     }
 
     @Override

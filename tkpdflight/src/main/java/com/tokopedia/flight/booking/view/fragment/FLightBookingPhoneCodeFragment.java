@@ -50,11 +50,8 @@ public class FLightBookingPhoneCodeFragment extends BaseSearchListFragment<Fligh
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void loadData(int page) {
         flightBookingPhoneCodePresenter.attachView(this);
-
-        showLoading();
         flightBookingPhoneCodePresenter.getPhoneCodeList();
     }
 
