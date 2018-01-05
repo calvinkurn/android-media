@@ -9,9 +9,9 @@ import java.util.List;
  */
 public interface BaseListViewListener<T> extends CustomerView {
 
-    void renderList(@NonNull List<T> list);
+    void renderList(@NonNull List<T> list, boolean hasNextPage);
 
-    void renderAddList(@NonNull List<T> list);
+    void renderList(@NonNull List<T> list);
 
     void showGetListError(String message);
 

@@ -30,7 +30,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
-import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.activity.FlightBookingPassengerActivity;
@@ -372,10 +371,8 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
 
     @Override
     public void renderPassengersList(List<FlightBookingPassengerViewModel> passengerViewModels) {
-        List<Visitable> visitables = new ArrayList<>();
-        visitables.addAll(passengerViewModels);
-        adapter.clearData();
-        adapter.addElement(visitables);
+        adapter.clearAllElements();
+        adapter.addElement(passengerViewModels);
     }
 
     @Override

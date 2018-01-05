@@ -16,8 +16,8 @@ public class LoadingModel implements Visitable<AdapterTypeFactory> {
     }
 
     @Override
-    public int type(AdapterTypeFactory favoriteTypeFactory) {
-        return favoriteTypeFactory.type(this);
+    public int type(AdapterTypeFactory adapterTypeFactory) {
+        return adapterTypeFactory.type(this);
     }
 
     public boolean isFullScreen() {

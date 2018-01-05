@@ -4,11 +4,13 @@ import android.support.annotation.StringRes;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+
 
 /**
  * @author kulomady on 1/24/17.
  */
-public abstract class AbstractViewHolder<T> extends RecyclerView.ViewHolder {
+public abstract class AbstractViewHolder<T extends Visitable> extends RecyclerView.ViewHolder {
 
     public AbstractViewHolder(View itemView) {
         super(itemView);

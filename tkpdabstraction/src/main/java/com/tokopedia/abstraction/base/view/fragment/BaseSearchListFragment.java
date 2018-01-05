@@ -49,18 +49,18 @@ public abstract class BaseSearchListFragment<T extends Visitable, F extends Adap
     }
 
     @Override
-    public void renderAddList(@NonNull List<T> list) {
-        super.renderAddList(list);
+    public void renderList(@NonNull List<T> list) {
+        this.renderList(list, false);
+    }
+
+    @Override
+    public void renderList(@NonNull List<T> list, boolean hasNextPage) {
+        super.renderList(list, hasNextPage);
         if (list.size() == 0) {
             showSearchView(false);
         } else {
             showSearchView(true);
         }
-    }
-
-    @Override
-    public void renderList(@NonNull List<T> list) {
-        super.renderList(list);
     }
 
     @Override

@@ -19,6 +19,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingViewholder
 
 public class BaseAdapterTypeFactory implements AdapterTypeFactory {
 
+    public BaseAdapterTypeFactory() {
+    }
+
     @Override
     public int type(EmptyModel viewModel) {
         return EmptyViewHolder.LAYOUT;

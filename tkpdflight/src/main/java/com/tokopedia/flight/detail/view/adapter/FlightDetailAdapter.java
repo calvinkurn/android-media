@@ -15,31 +15,10 @@ import java.util.List;
  * Created by zulfikarrahman on 10/30/17.
  */
 
-public class FlightDetailAdapter extends BaseAdapter {
-    private FlightDetailRouteTypeFactory flightDetailRouteTypeFactory;
+public class FlightDetailAdapter extends BaseAdapter<FlightDetailRouteTypeFactory> {
 
     public FlightDetailAdapter(FlightDetailRouteTypeFactory adapterTypeFactory, List<Visitable> visitables) {
         super(adapterTypeFactory, visitables);
-        flightDetailRouteTypeFactory = adapterTypeFactory;
-    }
-
-    @Override
-    public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
-        View view = LayoutInflater.from(context).inflate(viewType, parent, false);
-        return flightDetailRouteTypeFactory.createViewHolder(view, viewType);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public void onBindViewHolder(AbstractViewHolder holder, int position) {
-        holder.bind(visitables.get(position));
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public int getItemViewType(int position) {
-        return visitables.get(position).type(flightDetailRouteTypeFactory);
     }
 
 }
