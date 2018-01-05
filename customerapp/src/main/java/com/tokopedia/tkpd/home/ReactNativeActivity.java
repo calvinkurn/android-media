@@ -25,9 +25,9 @@ import com.tokopedia.tkpdreactnative.react.app.ReactNativeView;
 public class ReactNativeActivity extends BasePresenterActivity implements ReactNativeView {
     public static final String USER_ID = "User_ID";
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
-    public static final String EXTRA_URL = "EXTRA_URL";
+//    public static final String EXTRA_URL = "EXTRA_URL";
     public static final String PAGE_ID = "page_id";
-    public static final String OS_PROMO_PAGE = "OS Promo Page";
+//    public static final String OS_PROMO_PAGE = "OS Promo Page";
 
     @DeepLink({Constants.Applinks.OFFICIAL_STORES})
     public static Intent getOfficialStoresApplinkCallingIntent(Context context, Bundle bundle) {
@@ -37,33 +37,33 @@ public class ReactNativeActivity extends BasePresenterActivity implements ReactN
         ).putExtras(bundle);
     }
 
-    @DeepLink({Constants.Applinks.OFFICIAL_STORES_PROMO})
-    public static Intent getOfficialStoresPromoApplinkCallingIntent(Context context, Bundle bundle) {
-        ScreenTracking.screen(OS_PROMO_PAGE);
-        return ReactNativeActivity.createBannerReactNativeActivity(
-                context, ReactConst.Screen.PROMO,
-                bundle.getString("slug")
-        ).putExtras(bundle);
-    }
-
-    @DeepLink({Constants.Applinks.OFFICIAL_STORE_PROMO})
-    public static Intent getOfficialStorePromoApplinkCallingIntent(Context context, Bundle bundle) {
-        ScreenTracking.screen(OS_PROMO_PAGE);
-        return ReactNativeActivity.createBannerReactNativeActivity(
-                context, ReactConst.Screen.PROMO,
-                bundle.getString("slug")
-        ).putExtras(bundle);
-    }
-
-    @DeepLink({Constants.Applinks.OFFICIAL_STORES_PROMO_TERMS})
-    public static Intent getOffiicialStoreTermsIntent(Context context, Bundle bundle) {
-        return ReactNativeActivity.createOfficialStoreTerms(
-                context,
-                ReactConst.Screen.PROMO,
-                context.getString(R.string.official_store_term_conditions_title),
-                bundle
-        );
-    }
+//    @DeepLink({Constants.Applinks.OFFICIAL_STORES_PROMO})
+//    public static Intent getOfficialStoresPromoApplinkCallingIntent(Context context, Bundle bundle) {
+//        ScreenTracking.screen(OS_PROMO_PAGE);
+//        return ReactNativeActivity.createBannerReactNativeActivity(
+//                context, ReactConst.Screen.PROMO,
+//                bundle.getString("slug")
+//        ).putExtras(bundle);
+//    }
+//
+//    @DeepLink({Constants.Applinks.OFFICIAL_STORE_PROMO})
+//    public static Intent getOfficialStorePromoApplinkCallingIntent(Context context, Bundle bundle) {
+//        ScreenTracking.screen(OS_PROMO_PAGE);
+//        return ReactNativeActivity.createBannerReactNativeActivity(
+//                context, ReactConst.Screen.PROMO,
+//                bundle.getString("slug")
+//        ).putExtras(bundle);
+//    }
+//
+//    @DeepLink({Constants.Applinks.OFFICIAL_STORES_PROMO_TERMS})
+//    public static Intent getOffiicialStoreTermsIntent(Context context, Bundle bundle) {
+//        return ReactNativeActivity.createOfficialStoreTerms(
+//                context,
+//                ReactConst.Screen.PROMO,
+//                context.getString(R.string.official_store_term_conditions_title),
+//                bundle
+//        );
+//    }
 
     @DeepLink({Constants.Applinks.DISCOVERY_PAGE})
     public static Intent getDiscoveryPaageIntent(Context context, Bundle bundle) {
@@ -85,26 +85,26 @@ public class ReactNativeActivity extends BasePresenterActivity implements ReactN
         return intent;
     }
 
-    public static Intent createBannerReactNativeActivity(Context context,
-                                                         String reactScreenName,
-                                                         String url) {
-        Intent intent = new Intent(context, ReactNativeActivity.class);
-        Bundle extras = new Bundle();
-        extras.putString(ReactConst.KEY_SCREEN, reactScreenName);
-        extras.putString(EXTRA_TITLE, "");
-        extras.putString(EXTRA_URL, url);
-        intent.putExtras(extras);
-        return intent;
-    }
+//    public static Intent createBannerReactNativeActivity(Context context,
+//                                                         String reactScreenName,
+//                                                         String url) {
+//        Intent intent = new Intent(context, ReactNativeActivity.class);
+//        Bundle extras = new Bundle();
+//        extras.putString(ReactConst.KEY_SCREEN, reactScreenName);
+//        extras.putString(EXTRA_TITLE, "");
+//        extras.putString(EXTRA_URL, url);
+//        intent.putExtras(extras);
+//        return intent;
+//    }
 
-    private static Intent createOfficialStoreTerms(Context context, String reactScreenName, String title, Bundle extras) {
-        Intent intent = new Intent(context, ReactNativeActivity.class);
-        extras.putString(ReactConst.KEY_SCREEN, reactScreenName);
-        extras.putString(ReactConst.SUB_PAGE, ReactConst.Screen.PROMO_TERMS);
-        extras.putString(EXTRA_TITLE, title);
-        intent.putExtras(extras);
-        return intent;
-    }
+//    private static Intent createOfficialStoreTerms(Context context, String reactScreenName, String title, Bundle extras) {
+//        Intent intent = new Intent(context, ReactNativeActivity.class);
+//        extras.putString(ReactConst.KEY_SCREEN, reactScreenName);
+//        extras.putString(ReactConst.SUB_PAGE, ReactConst.Screen.PROMO_TERMS);
+//        extras.putString(EXTRA_TITLE, title);
+//        intent.putExtras(extras);
+//        return intent;
+//    }
 
     public static Intent createDiscoveryPageReactNativeActivity(Context context,
                                                                  String reactScreenName,
