@@ -428,6 +428,16 @@ public class ImageHandler {
                 .into(imageView);
     }
 
+    public static void loadImageFit2(Context context, ImageView imageView, String url, int placeHolder, int errorImage) {
+        Glide.with(context)
+                .load(url)
+                .dontAnimate()
+                .placeholder(placeHolder)
+                .error(errorImage)
+                .centerCrop()
+                .into(imageView);
+    }
+
     public static void loadImageFitTransformation(Context context, ImageView imageView, String url,
         BitmapTransformation transformation){
         Glide.with(context)
