@@ -5,11 +5,8 @@ import android.text.Editable;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.util.CustomPhoneNumberUtil;
-import com.tokopedia.otp.domainold.RequestOtpUseCase;
-import com.tokopedia.session.changephonenumber.domain.interactor.SendEmailUseCase;
 import com.tokopedia.session.changephonenumber.domain.interactor.ValidateNumberUseCase;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberInputFragmentListener;
-import com.tokopedia.session.changephonenumber.view.subscriber.SendEmailSubscriber;
 import com.tokopedia.session.changephonenumber.view.subscriber.SubmitNumberSubscriber;
 import com.tokopedia.session.changephonenumber.view.subscriber.ValidateNumberSubscriber;
 
@@ -62,7 +59,8 @@ public class ChangePhoneNumberInputPresenter
 
     private boolean isNumberLengthValid(String newNumber) {
         newNumber = newNumber.replace("-", "");
-        return (newNumber.length() >= MINIMUM_NUMBER_LENGTH && newNumber.length() <= MAXIMUM_NUMBER_LENGTH);
+        return (newNumber.length() >= MINIMUM_NUMBER_LENGTH && newNumber.length() <=
+                MAXIMUM_NUMBER_LENGTH);
     }
 
     @Override

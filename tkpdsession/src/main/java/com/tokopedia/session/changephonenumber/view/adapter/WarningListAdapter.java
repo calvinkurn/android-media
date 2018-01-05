@@ -18,7 +18,8 @@ import javax.inject.Inject;
  * Created by milhamj on 19/12/17.
  */
 
-public class WarningListAdapter extends RecyclerView.Adapter<WarningListAdapter.WarningListViewHolder> {
+public class WarningListAdapter extends RecyclerView.Adapter<WarningListAdapter
+        .WarningListViewHolder> {
     private List<String> warningList;
 
     @Inject

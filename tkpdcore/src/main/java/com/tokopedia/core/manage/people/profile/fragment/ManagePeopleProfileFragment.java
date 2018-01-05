@@ -328,6 +328,8 @@ public class ManagePeopleProfileFragment extends BasePresenterFragment<ManagePeo
 
         if (requestCode == REQUEST_CHANGE_PHONE_NUMBER) {
             if (resultCode == Activity.RESULT_OK) {
+                getProfileData().getDataUser().setUserPhone(SessionHandler.getPhoneNumber());
+                renderData();
                 NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.success_change_phone_number));
             }
 

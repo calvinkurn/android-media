@@ -24,6 +24,7 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.CustomPhoneNumberUtil;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.di.SessionComponent;
 import com.tokopedia.di.SessionModule;
@@ -39,14 +40,12 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-
 /**
  * Created by milhamj on 20/12/17.
  */
 
-public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implements ChangePhoneNumberInputFragmentListener.View {
+public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implements
+        ChangePhoneNumberInputFragmentListener.View {
     public static final String PARAM_PHONE_NUMBER = "phone_number";
     public static final String PARAM_WARNING_LIST = "warning_list";
     public static final String PARAM_EMAIL = "email";
@@ -61,11 +60,11 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
     private String phoneNumber;
     private ArrayList<String> warningList;
     private String email;
-    private Unbinder unbinder;
     private BottomSheetInfo bottomSheetInfo;
     private TextWatcher phoneNumberTextWatcher;
 
-    public static ChangePhoneNumberInputFragment newInstance(String phoneNumber, String email, ArrayList<String> warningList) {
+    public static ChangePhoneNumberInputFragment newInstance(String phoneNumber, String email,
+                                                             ArrayList<String> warningList) {
         ChangePhoneNumberInputFragment fragment = new ChangePhoneNumberInputFragment();
         Bundle bundle = new Bundle();
         bundle.putString(PARAM_PHONE_NUMBER, phoneNumber);
@@ -77,10 +76,11 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable
+            Bundle savedInstanceState) {
 
-        View parentView = inflater.inflate(R.layout.fragment_change_phone_number_input, container, false);
-        unbinder = ButterKnife.bind(this, parentView);
+        View parentView = inflater.inflate(R.layout.fragment_change_phone_number_input,
+                container, false);
         presenter.attachView(this);
         initVar();
         initView(parentView);
@@ -158,7 +158,6 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
         presenter.detachView();
     }
 
@@ -182,7 +181,8 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
     public void enableNextButton() {
         nextButton.setClickable(true);
         nextButton.setEnabled(true);
-        nextButton.setBackground(MethodChecker.getDrawable(getContext(), R.drawable.green_button_rounded_unify));
+        nextButton.setBackground(MethodChecker.getDrawable(getContext(), R.drawable
+                .green_button_rounded_unify));
         nextButton.setTextColor(MethodChecker.getColor(getContext(), R.color.white));
     }
 
@@ -190,7 +190,8 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
     public void disableNextButton() {
         nextButton.setClickable(false);
         nextButton.setEnabled(false);
-        nextButton.setBackground(MethodChecker.getDrawable(getContext(), R.drawable.grey_button_rounded));
+        nextButton.setBackground(MethodChecker.getDrawable(getContext(), R.drawable
+                .grey_button_rounded));
         nextButton.setTextColor(MethodChecker.getColor(getContext(), R.color.black_12));
     }
 
@@ -219,12 +220,8 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public void onValidateNumberSuccess(Boolean isSuccess) {
-        if (isSuccess != null && isSuccess) {
-            goToVerification();
-        } else {
-            showErrorSnackbar();
-        }
+    public void onValidateNumberSuccess() {
+        goToVerification();
     }
 
     @Override
@@ -233,32 +230,16 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public void onValidateNumberFailed() {
-        showErrorSnackbar();
-    }
+    public void onSubmitNumberSuccess() {
+        SessionHandler.setPhoneNumber(cleanPhoneNumber(newPhoneNumber));
 
-    @Override
-    public void onSubmitNumberSuccess(Boolean isSuccess) {
-        if (isSuccess != null && isSuccess) {
-            getActivity().setResult(Activity.RESULT_OK);
-            getActivity().finish();
-        } else {
-            showErrorSnackbar();
-        }
+        getActivity().setResult(Activity.RESULT_OK);
+        getActivity().finish();
     }
 
     @Override
     public void onSubmitNumberError(String message) {
         showErrorSnackbar(message);
-    }
-
-    @Override
-    public void onSubmitNumberFailed() {
-        showErrorSnackbar();
-    }
-
-    private void showErrorSnackbar() {
-        showErrorSnackbar(null);
     }
 
     private void showErrorSnackbar(String message) {
@@ -272,8 +253,10 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
     private void goToVerification() {
         GlobalCacheManager cacheManager = new GlobalCacheManager();
 
-        VerificationPassModel passModel = new VerificationPassModel(cleanPhoneNumber(newPhoneNumber), email,
-                getListAvailableMethod(cleanPhoneNumber(newPhoneNumber)), RequestOtpUseCase.OTP_TYPE_CHANGE_PHONE_NUMBER);
+        VerificationPassModel passModel = new VerificationPassModel(cleanPhoneNumber
+                (newPhoneNumber), email,
+                getListAvailableMethod(cleanPhoneNumber(newPhoneNumber)), RequestOtpUseCase
+                .OTP_TYPE_CHANGE_PHONE_NUMBER);
         cacheManager.setKey(VerificationActivity.PASS_MODEL);
         cacheManager.setValue(CacheUtil.convertModelToString(passModel,
                 new TypeToken<VerificationPassModel>() {

@@ -27,15 +27,13 @@ import com.tokopedia.di.SessionComponent;
 import com.tokopedia.di.SessionModule;
 import com.tokopedia.session.R;
 import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberInputActivity;
-import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberEmailVerificationFragmentListener;
+import com.tokopedia.session.changephonenumber.view.listener
+        .ChangePhoneNumberEmailVerificationFragmentListener;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 /**
  * Created by milhamj on 03/01/18.
@@ -69,11 +67,14 @@ public class ChangePhoneNumberEmailVerificationFragment extends BaseDaggerFragme
     private String phoneNumber;
     private ArrayList<String> warningList;
     private String email;
-    private Unbinder unbinder;
     private boolean isRunningTimer = false;
 
-    public static ChangePhoneNumberEmailVerificationFragment newInstance(String phoneNumber, String email, ArrayList<String> warningList) {
-        ChangePhoneNumberEmailVerificationFragment fragment = new ChangePhoneNumberEmailVerificationFragment();
+    public static ChangePhoneNumberEmailVerificationFragment newInstance(String phoneNumber,
+                                                                         String email,
+                                                                         ArrayList<String>
+                                                                                 warningList) {
+        ChangePhoneNumberEmailVerificationFragment fragment = new
+                ChangePhoneNumberEmailVerificationFragment();
         Bundle bundle = new Bundle();
         bundle.putString(PARAM_PHONE_NUMBER, phoneNumber);
         bundle.putStringArrayList(PARAM_WARNING_LIST, warningList);
@@ -91,9 +92,10 @@ public class ChangePhoneNumberEmailVerificationFragment extends BaseDaggerFragme
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View parentView = inflater.inflate(R.layout.fragment_change_phone_number_email_verification, container, false);
-        unbinder = ButterKnife.bind(this, parentView);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable
+            Bundle savedInstanceState) {
+        View parentView = inflater.inflate(R.layout
+                .fragment_change_phone_number_email_verification, container, false);
         presenter.attachView(this);
         initVar();
         initView(parentView);
@@ -198,7 +200,6 @@ public class ChangePhoneNumberEmailVerificationFragment extends BaseDaggerFragme
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
         presenter.detachView();
     }
 
@@ -235,7 +236,7 @@ public class ChangePhoneNumberEmailVerificationFragment extends BaseDaggerFragme
     }
 
     @Override
-    public void onSendEmailSuccess(Boolean isSuccess) {
+    public void onSendEmailSuccess() {
         startTimer();
     }
 
@@ -251,7 +252,7 @@ public class ChangePhoneNumberEmailVerificationFragment extends BaseDaggerFragme
     }
 
     @Override
-    public void onValidateOtpSuccess(Boolean isSuccess) {
+    public void onValidateOtpSuccess() {
         goToNextActivity();
     }
 
@@ -276,7 +277,8 @@ public class ChangePhoneNumberEmailVerificationFragment extends BaseDaggerFragme
         }
 
         if (!isRunningTimer) {
-            countDownTimer = new CountDownTimer(cacheHandler.getRemainingTime() * INTERVAL, INTERVAL) {
+            countDownTimer = new CountDownTimer(cacheHandler.getRemainingTime() * INTERVAL,
+                    INTERVAL) {
                 public void onTick(long millisUntilFinished) {
                     isRunningTimer = true;
                     setRunningCountdownText(String.valueOf(TimeUnit.MILLISECONDS.toSeconds
@@ -332,7 +334,8 @@ public class ChangePhoneNumberEmailVerificationFragment extends BaseDaggerFragme
     }
 
     private void goToNextActivity() {
-        Intent intent = ChangePhoneNumberInputActivity.newInstance(getActivity(), phoneNumber, email, warningList);
+        Intent intent = ChangePhoneNumberInputActivity.newInstance(getActivity(), phoneNumber,
+                email, warningList);
         intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         startActivity(intent);
         getActivity().finish();

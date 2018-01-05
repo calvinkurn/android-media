@@ -1,6 +1,8 @@
 package com.tokopedia.session.changephonenumber.view.subscriber;
 
-import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberWarningFragmentListener;
+import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.session.changephonenumber.view.listener
+        .ChangePhoneNumberWarningFragmentListener;
 import com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel;
 
 import rx.Subscriber;
@@ -23,10 +25,7 @@ public class GetWarningSubscriber extends Subscriber<WarningViewModel> {
 
     @Override
     public void onError(Throwable e) {
-        if (e != null)
-            view.onGetWarningError(e.getMessage());
-        else
-            view.onGetWarningFailed();
+        view.onGetWarningError(ErrorHandler.getErrorMessage(e));
     }
 
     @Override

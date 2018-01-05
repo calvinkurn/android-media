@@ -9,7 +9,8 @@ import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.session.R;
 import com.tokopedia.session.changephonenumber.view.fragment.ChangePhoneNumberWarningFragment;
-import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberWarningActivityListener;
+import com.tokopedia.session.changephonenumber.view.listener
+        .ChangePhoneNumberWarningActivityListener;
 
 public class ChangePhoneNumberWarningActivity extends BasePresenterActivity
         implements ChangePhoneNumberWarningActivityListener.View, HasComponent {
@@ -70,7 +71,8 @@ public class ChangePhoneNumberWarningActivity extends BasePresenterActivity
     @Override
     public void inflateFragment() {
         String TAG = ChangePhoneNumberWarningFragment.class.getSimpleName();
-        ChangePhoneNumberWarningFragment fragment = ChangePhoneNumberWarningFragment.newInstance(email, phoneNumber);
+        ChangePhoneNumberWarningFragment fragment = ChangePhoneNumberWarningFragment.newInstance
+                (email, phoneNumber);
 
         if (getSupportFragmentManager().findFragmentByTag(TAG) != null) {
             getSupportFragmentManager().beginTransaction()

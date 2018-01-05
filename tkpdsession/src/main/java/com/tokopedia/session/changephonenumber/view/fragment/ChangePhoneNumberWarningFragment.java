@@ -21,19 +21,17 @@ import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.di.SessionComponent;
 import com.tokopedia.di.SessionModule;
 import com.tokopedia.session.R;
-import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberEmailActivity;
-import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberEmailVerificationActivity;
+import com.tokopedia.session.changephonenumber.view.activity
+        .ChangePhoneNumberEmailVerificationActivity;
 import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberInputActivity;
 import com.tokopedia.session.changephonenumber.view.adapter.WarningListAdapter;
-import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberWarningFragmentListener;
+import com.tokopedia.session.changephonenumber.view.listener
+        .ChangePhoneNumberWarningFragmentListener;
 import com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel;
 
 import java.util.ArrayList;
 
 import javax.inject.Inject;
-
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 import static com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel.ACTION_EMAIL;
 import static com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel.ACTION_OTP;
@@ -43,7 +41,8 @@ import static com.tokopedia.session.changephonenumber.view.viewmodel.WarningView
  * Created by milhamj on 18/12/17.
  */
 
-public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment implements ChangePhoneNumberWarningFragmentListener.View {
+public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
+        implements ChangePhoneNumberWarningFragmentListener.View {
     public static final String PARAM_EMAIL = "email";
     public static final String PARAM_PHONE_NUMBER = "phone_number";
     private static final int REQUEST_CHANGE_PHONE_NUMBER = 1;
@@ -65,7 +64,6 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
     private String phoneNumber;
     private View mainView;
     private View loadingView;
-    private Unbinder unbinder;
 
     public static ChangePhoneNumberWarningFragment newInstance(String email, String phoneNumber) {
         ChangePhoneNumberWarningFragment fragment = new ChangePhoneNumberWarningFragment();
@@ -83,10 +81,13 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
 
-        View parentView = inflater.inflate(R.layout.fragment_change_phone_number_warning, container, false);
-        unbinder = ButterKnife.bind(this, parentView);
+        View parentView = inflater.inflate(R.layout.fragment_change_phone_number_warning,
+                container,
+                false);
         presenter.attachView(this);
         initVar();
         initView(parentView);
@@ -140,7 +141,6 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
         presenter.detachView();
     }
 
@@ -180,7 +180,8 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
     @Override
     public void onGetWarningSuccess(WarningViewModel warningViewModel) {
         this.viewModel = warningViewModel;
-        if (isNullOrEmpty(viewModel.getTokocash()) && isNullOrEmpty(viewModel.getTokopediaBalance())) {
+        if (isNullOrEmpty(viewModel.getTokocash()) && isNullOrEmpty(viewModel.getTokopediaBalance
+                ())) {
             goToNextActivity();
         } else {
             loadDataToView();
@@ -202,12 +203,6 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
     @Override
     public void onGetWarningError(String message) {
         showEmptyState(message);
-        dismissLoading();
-    }
-
-    @Override
-    public void onGetWarningFailed() {
-        showEmptyState(null);
         dismissLoading();
     }
 
@@ -237,7 +232,8 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
                     getContext(),
                     phoneNumber,
                     email,
-                    viewModel.getWarningList() != null ? new ArrayList<>(viewModel.getWarningList()) : null);
+                    viewModel.getWarningList() != null ? new ArrayList<>(viewModel.getWarningList
+                            ()) : null);
             intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
             startActivity(intent);
             getActivity().finish();
@@ -247,7 +243,8 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
                             getContext(),
                             phoneNumber,
                             email,
-                            viewModel.getWarningList() != null ? new ArrayList<>(viewModel.getWarningList()) : null
+                            viewModel.getWarningList() != null ? new ArrayList<>(viewModel
+                                    .getWarningList()) : null
                     ),
                     REQUEST_CHANGE_PHONE_NUMBER
             );
@@ -272,13 +269,16 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment impleme
     }
 
     private boolean isNullOrEmpty(String string) {
-        return (string == null || string.equalsIgnoreCase("null") || string.isEmpty() || string.equalsIgnoreCase(EMPTY_BALANCE));
+        return (string == null || string.equalsIgnoreCase("null")
+                || string.isEmpty()
+                || string.equalsIgnoreCase(EMPTY_BALANCE));
     }
 
     private void populateRecyclerView() {
         if (viewModel != null) {
             if (viewModel.getWarningList() != null && viewModel.getWarningList().size() > 0) {
-                LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+                LinearLayoutManager mLayoutManager = new LinearLayoutManager(getActivity(),
+                        LinearLayoutManager.VERTICAL, false);
                 warningRecyclerView.setLayoutManager(mLayoutManager);
                 adapter.addData(viewModel.getWarningList());
                 warningRecyclerView.setAdapter(adapter);

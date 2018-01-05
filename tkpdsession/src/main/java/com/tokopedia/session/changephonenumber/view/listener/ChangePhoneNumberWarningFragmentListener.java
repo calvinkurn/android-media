@@ -17,8 +17,6 @@ public interface ChangePhoneNumberWarningFragmentListener {
         void onGetWarningSuccess(WarningViewModel warningViewModel);
 
         void onGetWarningError(String message);
-
-        void onGetWarningFailed();
     }
 
     public interface Presenter extends CustomerPresenter<View> {

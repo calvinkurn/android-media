@@ -23,11 +23,9 @@ import com.tokopedia.session.changephonenumber.domain.interactor.GetWarningUseCa
 import com.tokopedia.session.changephonenumber.domain.interactor.SendEmailUseCase;
 import com.tokopedia.session.changephonenumber.domain.interactor.ValidateEmailCodeUseCase;
 import com.tokopedia.session.changephonenumber.domain.interactor.ValidateNumberUseCase;
-import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberEmailFragmentListener;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberEmailVerificationFragmentListener;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberInputFragmentListener;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberWarningFragmentListener;
-import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberEmailPresenter;
 import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberEmailVerificationPresenter;
 import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberInputPresenter;
 import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberWarningPresenter;
@@ -134,12 +132,6 @@ SessionModule {
                 cloudSendEmailSource,
                 cloudValidateNumberSource,
                 cloudValidateEmailCodeSource);
-    }
-
-    @SessionScope
-    @Provides
-    ChangePhoneNumberEmailFragmentListener.Presenter ChangePhoneNumberEmailPresenter(SendEmailUseCase sendEmailUseCase) {
-        return new ChangePhoneNumberEmailPresenter(sendEmailUseCase);
     }
 
     @SessionScope

@@ -15,16 +15,16 @@ public interface ChangePhoneNumberEmailVerificationFragmentListener {
 
         void dropKeyboard();
 
-        void onSendEmailSuccess(Boolean isSuccess);
+        void onSendEmailSuccess();
 
         void onSendEmailError(String message);
 
-        void onValidateOtpSuccess(Boolean isSuccess);
+        void onValidateOtpSuccess();
 
         void onValidateOtpError(String message);
     }
 
-    public interface Presenter extends CustomerPresenter<ChangePhoneNumberEmailVerificationFragmentListener.View> {
+    public interface Presenter extends CustomerPresenter<View> {
         void initView();
 
         void sendEmail();

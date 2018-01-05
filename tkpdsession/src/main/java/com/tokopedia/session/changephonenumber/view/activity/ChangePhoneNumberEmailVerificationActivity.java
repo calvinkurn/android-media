@@ -8,13 +8,15 @@ import android.os.Bundle;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.session.R;
-import com.tokopedia.session.changephonenumber.view.fragment.ChangePhoneNumberEmailVerificationFragment;
-import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberEmailActivityListener;
+import com.tokopedia.session.changephonenumber.view.fragment
+        .ChangePhoneNumberEmailVerificationFragment;
+import com.tokopedia.session.changephonenumber.view.listener
+        .ChangePhoneNumberEmailVerificationActivityListener;
 
 import java.util.ArrayList;
 
 public class ChangePhoneNumberEmailVerificationActivity extends BasePresenterActivity
-        implements ChangePhoneNumberEmailActivityListener.View, HasComponent {
+        implements ChangePhoneNumberEmailVerificationActivityListener.View, HasComponent {
     public static final String PARAM_PHONE_NUMBER = "phone_number";
     public static final String PARAM_WARNING_LIST = "warning_list";
     public static final String PARAM_EMAIL = "email";
@@ -23,7 +25,8 @@ public class ChangePhoneNumberEmailVerificationActivity extends BasePresenterAct
     private ArrayList<String> warningList;
     private String email;
 
-    public static Intent newInstance(Context context, String phoneNumber, String email, ArrayList<String> warningList) {
+    public static Intent newInstance(Context context, String phoneNumber, String email,
+                                     ArrayList<String> warningList) {
         Intent intent = new Intent(context, ChangePhoneNumberEmailVerificationActivity.class);
         intent.putExtra(PARAM_PHONE_NUMBER, phoneNumber);
         intent.putExtra(PARAM_WARNING_LIST, warningList);
@@ -81,7 +84,10 @@ public class ChangePhoneNumberEmailVerificationActivity extends BasePresenterAct
     @Override
     public void inflateFragment() {
         String TAG = ChangePhoneNumberEmailVerificationFragment.class.getSimpleName();
-        ChangePhoneNumberEmailVerificationFragment fragment = ChangePhoneNumberEmailVerificationFragment.newInstance(phoneNumber, email, warningList);
+        ChangePhoneNumberEmailVerificationFragment fragment =
+                ChangePhoneNumberEmailVerificationFragment.newInstance(phoneNumber,
+                        email,
+                        warningList);
 
         if (getSupportFragmentManager().findFragmentByTag(TAG) != null) {
             getSupportFragmentManager().beginTransaction()

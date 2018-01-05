@@ -21,17 +21,13 @@ public interface ChangePhoneNumberInputFragmentListener {
 
         void dismissLoading();
 
-        void onValidateNumberSuccess(Boolean isSuccess);
+        void onValidateNumberSuccess();
 
         void onValidateNumberError(String message);
 
-        void onValidateNumberFailed();
-
-        void onSubmitNumberSuccess(Boolean isSuccess);
+        void onSubmitNumberSuccess();
 
         void onSubmitNumberError(String message);
-
-        void onSubmitNumberFailed();
     }
 
     public interface Presenter extends CustomerPresenter<View> {

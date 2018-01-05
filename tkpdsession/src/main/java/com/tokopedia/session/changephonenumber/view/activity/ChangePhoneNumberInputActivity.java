@@ -24,7 +24,8 @@ public class ChangePhoneNumberInputActivity extends BasePresenterActivity
     private ArrayList<String> warningList;
     private String email;
 
-    public static Intent newInstance(Context context, String phoneNumber, String email, ArrayList<String> warningList) {
+    public static Intent newInstance(Context context, String phoneNumber, String email,
+                                     ArrayList<String> warningList) {
         Intent intent = new Intent(context, ChangePhoneNumberInputActivity.class);
         intent.putExtra(PARAM_PHONE_NUMBER, phoneNumber);
         intent.putExtra(PARAM_WARNING_LIST, warningList);
@@ -77,7 +78,8 @@ public class ChangePhoneNumberInputActivity extends BasePresenterActivity
     @Override
     public void inflateFragment() {
         String TAG = ChangePhoneNumberInputFragment.class.getSimpleName();
-        ChangePhoneNumberInputFragment fragment = ChangePhoneNumberInputFragment.newInstance(phoneNumber, email, warningList);
+        ChangePhoneNumberInputFragment fragment = ChangePhoneNumberInputFragment.newInstance
+                (phoneNumber, email, warningList);
 
         if (getSupportFragmentManager().findFragmentByTag(TAG) != null) {
             getSupportFragmentManager().beginTransaction()

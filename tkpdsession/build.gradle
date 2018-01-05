@@ -18,12 +18,6 @@ def getTkpdCore() {
             rootProject.ext.tkpdDependencies.core : project(':tkpdcore');
 }
 
-// TODO remove this tkpddesign
-def getTkpdDesign() {
-    return project.hasProperty('isArtifact') ?
-            rootProject.ext.tkpdDependencies.design : project(':tkpddesign');
-}
-
 publishing {
     publications {
         aar(MavenPublication) {
@@ -112,11 +106,8 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
     compile getTkpdCore()
-    // TODO remove this tkpddesign
-    compile getTkpdDesign()
 
     compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
     apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
 
     provided rootProject.ext.miscDependencies.javaxAnnotation

@@ -1,7 +1,9 @@
 package com.tokopedia.session.changephonenumber.view.subscriber;
 
+import com.tokopedia.core.network.retrofit.response.ErrorCode;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberEmailVerificationFragmentListener;
+import com.tokopedia.session.changephonenumber.view.listener
+        .ChangePhoneNumberEmailVerificationFragmentListener;
 
 import rx.Subscriber;
 
@@ -12,7 +14,8 @@ import rx.Subscriber;
 public class ValidateEmailCodeSubscriber extends Subscriber<Boolean> {
     private final ChangePhoneNumberEmailVerificationFragmentListener.View view;
 
-    public ValidateEmailCodeSubscriber(ChangePhoneNumberEmailVerificationFragmentListener.View view) {
+    public ValidateEmailCodeSubscriber(ChangePhoneNumberEmailVerificationFragmentListener.View
+                                               view) {
         this.view = view;
     }
 
@@ -30,6 +33,10 @@ public class ValidateEmailCodeSubscriber extends Subscriber<Boolean> {
     @Override
     public void onNext(Boolean isSuccess) {
         view.dismissLoading();
-        view.onValidateOtpSuccess(isSuccess);
+        if (isSuccess)
+            view.onValidateOtpSuccess();
+        else
+            view.onValidateOtpError(ErrorHandler.getDefaultErrorCodeMessage(
+                    ErrorCode.UNSUPPORTED_FLOW));
     }
 }

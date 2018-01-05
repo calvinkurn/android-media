@@ -3,7 +3,8 @@ package com.tokopedia.session.changephonenumber.view.presenter;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.session.changephonenumber.domain.interactor.SendEmailUseCase;
 import com.tokopedia.session.changephonenumber.domain.interactor.ValidateEmailCodeUseCase;
-import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberEmailVerificationFragmentListener;
+import com.tokopedia.session.changephonenumber.view.listener
+        .ChangePhoneNumberEmailVerificationFragmentListener;
 import com.tokopedia.session.changephonenumber.view.subscriber.SendEmailSubscriber;
 import com.tokopedia.session.changephonenumber.view.subscriber.ValidateEmailCodeSubscriber;
 
@@ -23,7 +24,8 @@ public class ChangePhoneNumberEmailVerificationPresenter
 
     @Inject
     public ChangePhoneNumberEmailVerificationPresenter(SendEmailUseCase sendEmailUseCase,
-                                                       ValidateEmailCodeUseCase validateEmailCodeUseCase) {
+                                                       ValidateEmailCodeUseCase
+                                                               validateEmailCodeUseCase) {
         this.sendEmailUseCase = sendEmailUseCase;
         this.validateEmailCodeUseCase = validateEmailCodeUseCase;
     }

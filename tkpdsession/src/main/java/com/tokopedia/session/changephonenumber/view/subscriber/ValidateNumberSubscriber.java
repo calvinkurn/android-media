@@ -1,5 +1,7 @@
 package com.tokopedia.session.changephonenumber.view.subscriber;
 
+import com.tokopedia.core.network.retrofit.response.ErrorCode;
+import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberInputFragmentListener;
 
 import rx.Subscriber;
@@ -23,16 +25,16 @@ public class ValidateNumberSubscriber extends Subscriber<Boolean> {
     @Override
     public void onError(Throwable e) {
         view.dismissLoading();
-        if (e != null) {
-            view.onValidateNumberError(e.getMessage());
-        } else {
-            view.onValidateNumberFailed();
-        }
+        view.onValidateNumberError(ErrorHandler.getErrorMessage(e));
     }
 
     @Override
-    public void onNext(Boolean aBoolean) {
+    public void onNext(Boolean isSuccess) {
         view.dismissLoading();
-        view.onValidateNumberSuccess(aBoolean);
+        if (isSuccess)
+            view.onValidateNumberSuccess();
+        else
+            view.onValidateNumberError(ErrorHandler.getDefaultErrorCodeMessage(
+                    ErrorCode.UNSUPPORTED_FLOW));
     }
 }

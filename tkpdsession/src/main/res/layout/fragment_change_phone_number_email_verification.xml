@@ -54,7 +54,7 @@
                 android:layout_height="@dimen/verification_icon"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/margin_large"
-                tools:src="@drawable/ic_14_google" />
+                android:src="@drawable/ic_verification_email" />
 
             <TextView
                 android:layout_width="wrap_content"
