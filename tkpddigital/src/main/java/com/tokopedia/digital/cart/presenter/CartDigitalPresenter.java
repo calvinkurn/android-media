@@ -108,7 +108,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
     public void processToCheckout() {
         CheckoutDataParameter checkoutData = view.getCheckoutData();
         if (checkoutData.isNeedOtp()) {
-            view.checkCallPermissionForNOTP();
+            startOTPProcess();
             return;
         }
         view.showProgressLoading();
@@ -122,7 +122,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
     public void processToInstantCheckout() {
         CheckoutDataParameter checkoutData = view.getCheckoutData();
         if (checkoutData.isNeedOtp()) {
-            view.checkCallPermissionForNOTP();
+            startOTPProcess();
             return;
         }
         cartDigitalInteractor.instantCheckout(
@@ -347,12 +347,27 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
                 if (cartDigitalInfoData.getAttributes().isNeedOtp()) {
                     view.clearContentRendered();
                     view.setCartDigitalInfo(cartDigitalInfoData);
-                    view.checkCallPermissionForNOTP();
+                    startOTPProcess();
                 } else {
                     view.renderAddToCartData(cartDigitalInfoData);
                 }
             }
         };
+    }
+
+
+    private void startOTPProcess() {
+        if(GlobalConfig.isSellerApp() && isNOTPEnabled()) {
+            Log.e(TAG,"nOTP Enabled");
+            view.checkCallPermissionForNOTP();
+        }else {
+
+            if(GlobalConfig.isSellerApp())
+                Log.e(TAG,"nOTP Disabled");
+
+            NOTPTracking.eventNOTPConfiguration(true,false,false);
+            view.interruptRequestTokenVerification();
+        }
     }
     private RemoteConfig remoteConfig;
     private void initRemoteConfig() {
@@ -374,14 +389,9 @@ TO CHECK IF NOTP ENABLED FROM FIREBASE OR NOT
  */
 
     private void needToVerifyOTP() {
-        if (!isNOTPEnabled()) {
-            Log.e(TAG,"nOTP Disabled");
-            NOTPTracking.eventNOTPConfiguration(true,false,false);
-            view.interruptRequestTokenVerification();
-            return;
-        }
-        Log.e(TAG,"nOTP Enabled");
+
         view.showProgressLoading();
+
         NOTPExotelVerification.getmInstance().verifyNo(SessionHandler.getPhoneNumber(), view.getActivity(), new NOTPExotelVerification.NOTPVerificationListener() {
             @Override
             public void onVerificationSuccess() {

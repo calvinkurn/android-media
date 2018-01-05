@@ -34,7 +34,7 @@ public class NOTPExotelVerification {
     public static final String APPLICATION_ID = "2d3a8f96d9e7436a9a5f93cae8d5ddd3";
     public static final String ACCOUNT_SID ="tokopedianotp";
     public static final String SECRET_KEY = "nulayukawoju";
-    public static final String TAG = NOTPExotelVerification.class.getName();
+    public static final String TAG = "NOTPVerification";//.class.getName();
 
 
     public static final String FIREBASE_NOTP_REMOTE_CONFIG_KEY = "app_notp_enabled"; // For Dev Testing
