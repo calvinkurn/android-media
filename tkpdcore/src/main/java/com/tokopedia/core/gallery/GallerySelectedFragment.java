@@ -25,6 +25,7 @@ public class GallerySelectedFragment extends Fragment implements AlbumMediaColle
     private static final String ARG_PARAM_ALBUM = "ARG_PARAM_ALBUM";
     public static final String EXTRA_RESULT_SELECTION = "EXTRA_RESULT_SELECTION";
     public static final String ARG_TYPE_GALLERY = "TYPE_GALLERY";
+    public static final String EXTRA_RESULT_SELECTION_PATH = "EXTRA_RESULT_SELECTION_PATH";
 
     private AlbumItem albumItem;
     private int galeryType = GalleryType.ofAll();

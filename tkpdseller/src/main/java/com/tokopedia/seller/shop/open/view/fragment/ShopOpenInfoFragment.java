@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +23,6 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.gallery.GalleryActivity;
 import com.tokopedia.core.gallery.GalleryType;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
@@ -31,17 +31,20 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.common.gallery.GalleryCropActivity;
 import com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout;
-import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
-import com.tokopedia.seller.shop.open.util.ShopErrorHandler;
-import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
+import com.tokopedia.seller.product.edit.view.dialog.ImageEditDialogFragment;
 import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
 import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.UserData;
 import com.tokopedia.seller.shop.open.di.component.DaggerShopSettingInfoComponent;
+import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.di.component.ShopSettingInfoComponent;
+import com.tokopedia.seller.shop.open.util.ShopErrorHandler;
 import com.tokopedia.seller.shop.open.view.listener.ShopOpenInfoView;
+import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
 import com.tokopedia.seller.shop.open.view.presenter.ShopOpenInfoPresenter;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -99,7 +102,7 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
     }
 
     private void initView(View view) {
-        shopDescTextInputLayout =  view.findViewById(R.id.shop_desc_input_layout);
+        shopDescTextInputLayout = view.findViewById(R.id.shop_desc_input_layout);
         shopDescEditText = (EditText) view.findViewById(R.id.shop_desc_input_text);
         shopSloganTextInputLayout = view.findViewById(R.id.shop_slogan_input_layout);
         shopSloganEditText = (EditText) view.findViewById(R.id.shop_slogan_input_text);
@@ -111,11 +114,11 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
 
-        if(onShopStepperListener != null ){
-            if(onShopStepperListener.getStepperModel().getResponseIsReserveDomain() == null){
+        if (onShopStepperListener != null) {
+            if (onShopStepperListener.getStepperModel().getResponseIsReserveDomain() == null) {
                 presenter.getisReserveDomain();
-            }else{
-                if(onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData() != null) {
+            } else {
+                if (onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData() != null) {
                     UserData userData = onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData();
                     updateView(userData);
                 }
@@ -124,13 +127,13 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
     }
 
     private void updateView(UserData userData) {
-        if(userData.getShopName()!= null) {
+        if (userData.getShopName() != null) {
             String helloName = getString(R.string.hello_x, userData.getShopName());
             welcomeText.setText(MethodChecker.fromHtml(helloName));
         }
         shopDescEditText.setText(userData.getShortDesc());
         shopSloganEditText.setText(userData.getTagLine());
-        ImageHandler.loadImage(getActivity(), imagePicker,
+        ImageHandler.loadImageFit2(getActivity(), imagePicker,
                 userData.getLogo(), R.drawable.ic_add_photo_box, R.drawable.ic_add_photo_box);
     }
 
@@ -150,13 +153,13 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
     }
 
     protected void onNextButtonClicked() {
-        if(TextUtils.isEmpty(uriPathImage) && onShopStepperListener.getStepperModel().getResponseIsReserveDomain()!= null
-        && onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData() != null) {
+        if (TextUtils.isEmpty(uriPathImage) && onShopStepperListener.getStepperModel().getResponseIsReserveDomain() != null
+                && onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData() != null) {
             UserData userData = onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData();
             presenter.submitShopInfo(uriPathImage, shopSloganEditText.getText().toString(),
                     shopDescEditText.getText().toString(), userData.getLogo(),
                     userData.getServerId(), userData.getPhotoObj());
-        }else{
+        } else {
             presenter.submitShopInfo(uriPathImage, shopSloganEditText.getText().toString(),
                     shopDescEditText.getText().toString(), "", "", "");
         }
@@ -174,7 +177,7 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
 
     @Override
     public void onSuccessSaveInfoShop() {
-        if(onShopStepperListener != null) {
+        if (onShopStepperListener != null) {
             onShopStepperListener.goToNextPage(null);
         }
     }
@@ -192,7 +195,7 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
 
     @Override
     public void onSuccessGetReserveDomain(ResponseIsReserveDomain responseIsReserveDomain) {
-        if(onShopStepperListener != null) {
+        if (onShopStepperListener != null) {
             onShopStepperListener.getStepperModel().setResponseIsReserveDomain(responseIsReserveDomain);
         }
         updateView(responseIsReserveDomain.getUserData());
@@ -204,13 +207,27 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
     }
 
     private void onClickBrowseImage() {
-        ShopOpenInfoFragmentPermissionsDispatcher.goToGalleryWithCheck(ShopOpenInfoFragment.this);
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        ImageEditDialogFragment dialogFragment = ImageEditDialogFragment.newInstance(0);
+        dialogFragment.show(fm, ImageEditDialogFragment.FRAGMENT_TAG);
+        dialogFragment.setOnImageEditListener(new ImageEditDialogFragment.OnImageEditListener() {
+
+            @Override
+            public void clickEditProductFromCamera(int position) {
+                ShopOpenInfoFragmentPermissionsDispatcher.goToCameraWithCheck(ShopOpenInfoFragment.this);
+            }
+
+            @Override
+            public void clickEditProductFromGallery(int position) {
+                ShopOpenInfoFragmentPermissionsDispatcher.goToGalleryWithCheck(ShopOpenInfoFragment.this);
+            }
+        });
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode == Activity.RESULT_OK){
-            switch (requestCode){
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
                 case REQUEST_CODE_IMAGE_PICKER:
                     if (data != null && data.getStringExtra(GalleryCropActivity.RESULT_IMAGE_CROPPED) != null) {
                         uriPathImage = data.getStringExtra(GalleryCropActivity.RESULT_IMAGE_CROPPED);
@@ -261,24 +278,46 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
     }
 
     @TargetApi(16)
+    @OnPermissionDenied(Manifest.permission.CAMERA)
+    void showDeniedForCamera() {
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.CAMERA);
+    }
+
+    @TargetApi(16)
     @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showNeverAskForExternalStorage() {
         RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
     @TargetApi(16)
-    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showRationaleForExternalStorage(final PermissionRequest request) {
-        request.proceed();
+    @OnNeverAskAgain(Manifest.permission.CAMERA)
+    void showNeverAskForCamera() {
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.CAMERA);
+    }
+
+    @TargetApi(16)
+    @OnShowRationale({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA})
+    void showRationale(final PermissionRequest request) {
+        List<String> listPermission = new ArrayList<>();
+        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        listPermission.add(Manifest.permission.CAMERA);
+
+        RequestPermissionUtil.onShowRationale(getActivity(), request, listPermission);
     }
 
     @TargetApi(16)
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
     public void goToGallery() {
-        startActivityForResult(GalleryCropActivity.createIntent(getActivity(), GalleryType.ofImageOnly()), REQUEST_CODE_IMAGE_PICKER);
+        startActivityForResult(GalleryCropActivity.createIntent(getActivity(), GalleryType.ofImageOnly(), true, false), REQUEST_CODE_IMAGE_PICKER);
     }
 
-    protected void onAttachListener(Context context){
+    @TargetApi(16)
+    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    public void goToCamera() {
+        startActivityForResult(GalleryCropActivity.createIntent(getActivity(), GalleryType.ofImageOnly(), true, true), REQUEST_CODE_IMAGE_PICKER);
+    }
+
+    protected void onAttachListener(Context context) {
         onShopStepperListener = (StepperListener<ShopOpenStepperModel>) context;
     }
 

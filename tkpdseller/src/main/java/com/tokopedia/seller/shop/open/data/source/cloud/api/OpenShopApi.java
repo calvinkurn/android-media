@@ -5,6 +5,7 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.seller.common.data.response.DataResponse;
 import com.tokopedia.seller.shop.open.data.model.OpenShopCouriersModel;
+import com.tokopedia.seller.shop.open.data.model.response.ResponseOpenShopPicture;
 
 import java.util.Map;
 
@@ -14,6 +15,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.QueryMap;
+import retrofit2.http.Url;
 import rx.Observable;
 
 /**
@@ -42,4 +44,8 @@ public interface OpenShopApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.Shop.PATH_MY_SHOP_SHIPMENT_ACTION + TkpdBaseURL.Shop.PATH_UPDATE_SHIPPING_INFO)
     Observable<Response<TkpdResponse>> updateShipmentInfo(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST()
+    Observable<Response<ResponseOpenShopPicture>> openShopPicture(@Url String urlHelper, @FieldMap Map<String, String> params);
 }

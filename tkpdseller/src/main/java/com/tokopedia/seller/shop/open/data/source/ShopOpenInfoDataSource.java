@@ -35,4 +35,8 @@ public class ShopOpenInfoDataSource {
     public Observable<Boolean> createShop(){
         return shopOpenInfoDataSourceCloud.createShop();
     }
+
+    public Observable<String> openShopPicture(String picSrc, String serverId, String url) {
+        return shopOpenInfoDataSourceCloud.openShopPicture(picSrc, serverId, url);
+    }
 }
