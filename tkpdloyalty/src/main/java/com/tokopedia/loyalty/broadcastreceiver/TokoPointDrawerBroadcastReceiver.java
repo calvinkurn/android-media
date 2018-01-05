@@ -61,6 +61,14 @@ public class TokoPointDrawerBroadcastReceiver extends BroadcastReceiver {
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
+                Intent intentHomeFragment = new Intent(
+                        HomeFragmentBroadcastReceiverConstant.INTENT_ACTION
+                );
+                intentHomeFragment.putExtra(
+                        HomeFragmentBroadcastReceiverConstant.EXTRA_ACTION_RECEIVER,
+                        HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOPOINT_DATA_ERROR
+                );
+                context.sendBroadcast(intentHomeFragment);
             }
 
             @Override

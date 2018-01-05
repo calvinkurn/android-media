@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
+import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.Window;
@@ -28,6 +30,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
 import com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity;
+import com.tokopedia.inbox.rescenter.createreso.view.activity.FreeReturnActivity;
 import com.tokopedia.inbox.rescenter.createreso.view.activity.SolutionListActivity;
 import com.tokopedia.inbox.rescenter.detail.dialog.ConfirmationDialog;
 import com.tokopedia.inbox.rescenter.detailv2.di.component.DaggerResolutionDetailComponent;
@@ -43,6 +46,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.customview.AwbReturView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.ButtonView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.CancelComplaintView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.DetailView;
+import com.tokopedia.inbox.rescenter.detailv2.view.customview.FreeReturnView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.HistoryView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.ListProductView;
 import com.tokopedia.inbox.rescenter.detailv2.view.customview.ProveView;
@@ -82,13 +86,22 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     private static final int REQUEST_CHOOSE_ADDRESS_ACCEPT_ADMIN_SOLUTION = 890;
     private static final int REQUEST_EDIT_ADDRESS = 901;
 
+    public static final String ACTION_FINISH = "finish";
+    public static final String ACTION_HELP = "help";
+    public static final String ACTION_ACCEPT = "accept";
+    public static final String ACTION_CANCEL = "cancel";
+    public static final String ACTION_INPUT_AWB = "input_awb";
+    public static final String ACTION_EDIT_AWB = "edit_awb";
+    public static final String ACTION_INPUT_ADDRESS = "input_address";
+    public static final String ACTION_EDIT_ADDRESS = "edit_address";
+
     public static final int STATUS_FINISHED = 500;
     public static final int STATUS_CANCEL = 0;
 
     protected Bundle savedState;
 
     View loading;
-    View mainView;
+    NestedScrollView mainView;
     ButtonView buttonView;
     CardView cvNextStep, cvDiscussion;
     AwbReturView awbReturView;
@@ -98,6 +111,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     ListProductView listProductView;
     SolutionView solutionView;
     ProveView proveView;
+    FreeReturnView freeReturnView;
     HistoryView historyView;
     CancelComplaintView cancelComplaintView;
     TextView tvNextStep;
@@ -223,6 +237,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
         cvDiscussion = view.findViewById(R.id.cv_discussion);
         ivNextStepStatic = view.findViewById(R.id.iv_next_step_static);
         glowingView = view.findViewById(R.id.view_glowing);
+        freeReturnView = view.findViewById(R.id.free_return_view);
 
         normalLoading = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         cvNextStep.setVisibility(View.GONE);
@@ -242,6 +257,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
         solutionView.setListener(this);
         proveView.setListener(this);
         historyView.setListener(this);
+        freeReturnView.setListener(this);
         cancelComplaintView.setListener(this);
 
         cvNextStep.setOnClickListener(new View.OnClickListener() {
@@ -330,6 +346,7 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     }
 
     private void renderData() {
+        timeView.setVisibility(View.GONE);
         glowingView.setVisibility(View.GONE);
         ivNextStepStatic.setVisibility(View.GONE);
         cvNextStep.setVisibility(View.VISIBLE);
@@ -360,7 +377,6 @@ public class DetailResCenterFragment extends BaseDaggerFragment
             } else {
                 timeView.setVisibility(View.GONE);
             }
-            timeView.invalidate();
             if (getViewData().getDetailData().getResolutionStatus() == STATUS_FINISHED
                     || getViewData().getDetailData().getResolutionStatus() == STATUS_CANCEL) {
                 ivNextStepStatic.setVisibility(View.VISIBLE);
@@ -384,6 +400,10 @@ public class DetailResCenterFragment extends BaseDaggerFragment
         if (getViewData().getHistoryData() != null) {
             historyView.renderData(getViewData().getHistoryData());
         }
+        if (getViewData().getFreeReturnData() != null
+                && getViewData().getFreeReturnData().isFreeReturnShow()) {
+            freeReturnView.renderData(getViewData().getFreeReturnData());
+        }
     }
 
 
@@ -403,21 +423,25 @@ public class DetailResCenterFragment extends BaseDaggerFragment
         switch (requestCode) {
             case REQUEST_EDIT_SOLUTION:
                 if (resultCode == Activity.RESULT_OK) {
+                    showSnackBar(getActivity().getString(R.string.string_success_edit_solution));
                     presenter.refreshPage();
                 }
                 break;
             case REQUEST_APPEAL_SOLUTION:
                 if (resultCode == Activity.RESULT_OK) {
+                    showSnackBar(getActivity().getString(R.string.string_success_appeal));
                     presenter.refreshPage();
                 }
                 break;
             case REQUEST_EDIT_SHIPPING:
                 if (resultCode == Activity.RESULT_OK) {
+                    showSnackBar(getActivity().getString(R.string.string_success_edit_awb));
                     presenter.refreshPage();
                 }
                 break;
             case REQUEST_INPUT_SHIPPING:
                 if (resultCode == Activity.RESULT_OK) {
+                    showSnackBar(getActivity().getString(R.string.string_success_input_awb));
                     presenter.refreshPage();
                 }
                 break;
@@ -502,9 +526,8 @@ public class DetailResCenterFragment extends BaseDaggerFragment
 
     @Override
     public void setOnActionAcceptSolutionClick() {
-        showAcceptActionDialog(getViewData().getButtonData().getAcceptLabel(),
+        showActionDialog(getViewData().getButtonData().getAcceptLabel(),
                 getViewData().getButtonData().getAcceptTextLite(),
-                getViewData().getSolutionData().getSolutionText(),
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -641,6 +664,12 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void setOnFreeReturnClicked() {
+        startActivity(FreeReturnActivity
+                .newInstance(getActivity(), getViewData().getFreeReturnData().getFreeReturnLink()));
+    }
+
+    @Override
     public void setOnActionProductClick(String productID, String productName) {
         startActivity(ProductDetailActivity.newInstance(getActivity(), getResolutionID(), productID, productName));
     }
@@ -721,8 +750,15 @@ public class DetailResCenterFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void doOnActionSucess() {
+    public void doOnActionSuccess(String action) {
         showLoadingDialog(false);
+
+        String message = "";
+        if (action.equals(ACTION_HELP)) message = getResources().getString(R.string.string_success_help);
+        else if (action.equals(ACTION_FINISH)) message = getResources().getString(R.string.string_success_finish);
+        else if (action.equals(ACTION_ACCEPT)) message = getResources().getString(R.string.string_success_accept);
+        else if (action.equals(ACTION_CANCEL)) message = getResources().getString(R.string.string_success_cancel);
+        if (!TextUtils.isEmpty(message)) showSnackBar(message);
         presenter.refreshPage();
     }
 
@@ -762,36 +798,6 @@ public class DetailResCenterFragment extends BaseDaggerFragment
         String newTitle = title + "?";
         tvTitle.setText(newTitle);
         tvSolution.setText(MethodChecker.fromHtml(solution));
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                resCenterDialog.dismiss();
-            }
-        });
-        ivClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                resCenterDialog.dismiss();
-            }
-        });
-        btnAccept.setOnClickListener(action);
-        resCenterDialog.show();
-    }
-
-    private void showAcceptActionDialog(String title, String solutionTitle, String solution, View.OnClickListener action) {
-        resCenterDialog = new Dialog(getActivity());
-        resCenterDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        resCenterDialog.setContentView(R.layout.layout_rescenter_accept_dialog);
-        TextView tvTitle = resCenterDialog.findViewById(R.id.tv_title);
-        TextView tvSolutionTitle = resCenterDialog.findViewById(R.id.tv_solution_title);
-        TextView tvSolution = resCenterDialog.findViewById(R.id.tv_solution);
-        ImageView ivClose = resCenterDialog.findViewById(R.id.iv_close);
-        Button btnBack = resCenterDialog.findViewById(R.id.btn_back);
-        Button btnAccept = resCenterDialog.findViewById(R.id.btn_yes);
-        String newTitle = title + "?";
-        tvTitle.setText(newTitle);
-        tvSolution.setText(MethodChecker.fromHtml(solution));
-        tvSolutionTitle.setText(MethodChecker.fromHtml(solutionTitle));
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

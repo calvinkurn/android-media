@@ -12,6 +12,7 @@ public class Attributes implements Parcelable {
     private String desc;
     private String detail;
     private String detailUrl;
+    private String detailUrlText;
     private String info;
     private String price;
     private long pricePlain;
@@ -87,6 +88,14 @@ public class Attributes implements Parcelable {
 
     public void setDetailUrl(String detailUrl) {
         this.detailUrl = detailUrl;
+    }
+
+    public String getDetailUrlText() {
+        return detailUrlText;
+    }
+
+    public void setDetailUrlText(String detailUrlText) {
+        this.detailUrlText = detailUrlText;
     }
 
     public String getInfo() {

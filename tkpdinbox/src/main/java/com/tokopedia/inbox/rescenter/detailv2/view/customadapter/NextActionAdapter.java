@@ -107,7 +107,7 @@ public class NextActionAdapter extends RecyclerView.Adapter<NextActionAdapter.It
 
     private void setTextStyle(TextView textView, boolean isCurrentTypeface) {
         if (isCurrentTypeface) {
-            textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, context.getResources().getDimension(R.dimen.fontxl));
+            textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, context.getResources().getDimension(R.dimen.fontl));
             textView.setTypeface(null, Typeface.BOLD);
             textView.setTextColor(context.getResources().getColor(R.color.black_70b));
         } else {

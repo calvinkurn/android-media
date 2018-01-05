@@ -107,7 +107,6 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
             public void onNext(List<Product> products) {
                 if (!products.isEmpty()) {
                     view.renderDataProducts(products);
-                    widgetInteractor.setUseCacheToTrue();
                 } else {
                     view.renderEmptyProduct(context.getString(R.string.error_message_product));
                 }

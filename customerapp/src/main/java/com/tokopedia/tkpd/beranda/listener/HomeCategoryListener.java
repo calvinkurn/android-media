@@ -48,4 +48,6 @@ public interface HomeCategoryListener {
     void actionTokoPointClicked(String tokoPointUrl, String pageTitle);
 
     boolean isMainViewVisible();
+
+    void showNetworkError(String message);
 }

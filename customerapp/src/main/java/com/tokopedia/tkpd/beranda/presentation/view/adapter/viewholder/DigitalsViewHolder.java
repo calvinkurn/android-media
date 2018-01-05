@@ -61,7 +61,7 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
     private HomeCategoryListener listener;
     private RechargeCategoryPresenter rechargeCategoryPresenter;
     private FragmentManager fragmentManager;
-
+    private List<Category> mRechargeCategory;
 
     public DigitalsViewHolder(FragmentManager fragmentManager, View itemView, HomeCategoryListener listener) {
         super(itemView);
@@ -69,6 +69,7 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
         this.listener = listener;
         this.context = itemView.getContext();
         this.fragmentManager = fragmentManager;
+        this.mRechargeCategory = new ArrayList<>();
         cacheHandler = new LocalCacheHandler(context, TkpdCache.CACHE_RECHARGE_WIDGET_TAB_SELECTION);
 
         rechargeCategoryPresenter = new RechargeCategoryPresenterImpl(context, this,
@@ -81,29 +82,28 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
     }
 
     @Override
-    public void renderDataRechargeCategory(List<Category> rechargeCategory, boolean bool) {
+    public void renderDataRechargeCategory(List<Category> rechargeCategory) {
+        this.mRechargeCategory = rechargeCategory;
         List<Integer> newRechargePositions = new ArrayList<>();
-
-        if (rechargeCategory.size() == 0) {
+        if (mRechargeCategory.size() == 0) {
             return;
         }
 
         showDigitalWidget();
         tabLayout.removeAllTabs();
-        addChildTablayout(rechargeCategory, newRechargePositions);
+        addChildTablayout(mRechargeCategory, newRechargePositions);
         getPositionFlagNewRecharge(newRechargePositions);
-        setModeScrollerWidget(rechargeCategory.size());
+        setModeScrollerWidget(mRechargeCategory.size());
 
         if (rechargeViewPagerAdapter == null) {
-            rechargeViewPagerAdapter = new RechargeViewPagerAdapter(fragmentManager, rechargeCategory, bool);
+            rechargeViewPagerAdapter = new RechargeViewPagerAdapter(fragmentManager, mRechargeCategory);
             viewPager.setAdapter(rechargeViewPagerAdapter);
         } else {
-            rechargeViewPagerAdapter.addFragments(rechargeCategory);
+            rechargeViewPagerAdapter.addFragments(mRechargeCategory);
         }
         addTablayoutListener(rechargeViewPagerAdapter);
-        viewPager.setOffscreenPageLimit(rechargeCategory.size());
-//        viewPager.setOffscreenPageLimit(1);
-        setTabSelected(rechargeCategory.size());
+        viewPager.setOffscreenPageLimit(mRechargeCategory.size());
+        setTabSelected(mRechargeCategory.size());
         rechargeViewPagerAdapter.notifyDataSetChanged();
     }
 
@@ -199,7 +199,7 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
 
     @Override
     public void renderErrorNetwork() {
-
+        listener.showNetworkError(context.getString(R.string.msg_network_error));
     }
 
     @Override
@@ -210,10 +210,13 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
     @Override
     public void bind(DigitalsViewModel element) {
         titleTxt.setText(element.getTitle());
+        if (mRechargeCategory.isEmpty()) {
+            rechargeCategoryPresenter.fetchDataRechargeCategory();
+        }
     }
 
     @OnClick(R.id.see_more)
-    void onSeeMore(){
+    void onSeeMore() {
         listener.onDigitalMoreClicked(getAdapterPosition());
     }
 
