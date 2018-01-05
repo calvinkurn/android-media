@@ -23,8 +23,10 @@ import com.tkpd.library.ui.widget.PinEntryEditText;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.analytics.LoginPhoneNumberAnalytics;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -195,6 +197,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE
                         && inputOtp.length() == 6) {
+                    UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getVerifyTracking());
                     presenter.verifyOtp(viewModel.getPhoneNumber(), inputOtp.getText().toString());
                     return true;
                 }
@@ -205,6 +208,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         verifyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getVerifyTracking());
                 presenter.verifyOtp(viewModel.getPhoneNumber(), inputOtp.getText().toString());
             }
         });
@@ -352,6 +356,8 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         resend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getResendVerificationTracking
+                        ());
                 presenter.requestOTP(viewModel);
             }
         });

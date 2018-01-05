@@ -14,8 +14,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.analytics.LoginPhoneNumberAnalytics;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.di.DaggerSessionComponent;
@@ -104,6 +106,7 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 boolean handled = false;
                 if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                    UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getLoginWithPhoneTracking());
                     presenter.loginWithPhoneNumber(phoneNumber.getText().toString());
                     handled = true;
                 }
@@ -115,6 +118,7 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getLoginWithPhoneTracking());
                 presenter.loginWithPhoneNumber(phoneNumber.getText().toString());
             }
         });
