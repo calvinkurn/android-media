@@ -14,6 +14,7 @@ import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.otp.cotp.view.fragment.ChooseVerificationMethodFragment;
+import com.tokopedia.otp.cotp.view.fragment.InterruptVerificationFragment;
 import com.tokopedia.otp.cotp.view.fragment.VerificationFragment;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
 import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
@@ -66,13 +67,22 @@ public class VerificationActivity extends TActivity implements HasComponent {
         if (getIntent().getExtras() != null)
             bundle.putAll(getIntent().getExtras());
 
-        Fragment fragment;
-        fragment = getFragment(getIntent().getExtras().getInt(PARAM_DEFAULT_FRAGMENT_TYPE, -1), bundle);
-
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.add(R.id.container, fragment, FIRST_FRAGMENT_TAG);
-        fragmentTransaction.addToBackStack(FIRST_FRAGMENT_TAG);
+        Fragment fragment;
+
+        if (passModel.getInterruptModel() != null) {
+            fragment = InterruptVerificationFragment.createInstance(bundle);
+            fragmentTransaction.replace(R.id.container, fragment, InterruptVerificationFragment
+                    .class.getSimpleName());
+        } else {
+            fragment =
+                    getFragment(getIntent().getExtras().getInt(PARAM_DEFAULT_FRAGMENT_TYPE, -1), bundle);
+            fragmentTransaction.add(R.id.container, fragment, FIRST_FRAGMENT_TAG);
+            fragmentTransaction.addToBackStack(FIRST_FRAGMENT_TAG);
+        }
+
         fragmentTransaction.commit();
+
     }
 
     private void setupPassdata() {
@@ -121,25 +131,26 @@ public class VerificationActivity extends TActivity implements HasComponent {
         return getApplicationComponent();
     }
 
-    public static Intent getSecurityQuestionVerificationIntent(Context context, int
-            typeSecurityQuestion) {
-        Intent intent = new Intent(context, VerificationActivity.class);
-        Bundle bundle = new Bundle();
-        if (typeSecurityQuestion == LoginFragment.TYPE_SQ_PHONE) {
-            bundle.putInt(PARAM_DEFAULT_FRAGMENT_TYPE, TYPE_SMS);
-        } else {
-            bundle.putInt(PARAM_DEFAULT_FRAGMENT_TYPE, TYPE_EMAIL);
-        }
-        intent.putExtras(bundle);
-        return intent;
-    }
-
     public void goToSelectVerificationMethod() {
         if (!(getSupportFragmentManager().findFragmentById(R.id.container) instanceof
                 ChooseVerificationMethodFragment)) {
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
             Fragment fragment = ChooseVerificationMethodFragment.createInstance(getIntent().getExtras());
+            fragmentTransaction.setCustomAnimations(com.tokopedia.core.R.animator.slide_in_left, 0, 0, com
+                    .tokopedia.core.R.animator.slide_out_right);
+            fragmentTransaction.add(R.id.container, fragment, CHOOSE_FRAGMENT_TAG);
+            fragmentTransaction.addToBackStack(CHOOSE_FRAGMENT_TAG);
+            fragmentTransaction.commit();
+        }
+    }
+
+    public void goToVerificationPage(int type) {
+        if (!(getSupportFragmentManager().findFragmentById(R.id.container) instanceof
+                VerificationFragment)) {
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+
+            Fragment fragment = getFragment(type, getIntent().getExtras());
             fragmentTransaction.setCustomAnimations(com.tokopedia.core.R.animator.slide_in_left, 0, 0, com
                     .tokopedia.core.R.animator.slide_out_right);
             fragmentTransaction.add(R.id.container, fragment, CHOOSE_FRAGMENT_TAG);
@@ -254,5 +265,19 @@ public class VerificationActivity extends TActivity implements HasComponent {
         } else {
             finish();
         }
+    }
+
+
+    public static Intent getSecurityQuestionVerificationIntent(Context context, int
+            typeSecurityQuestion) {
+        Intent intent = new Intent(context, VerificationActivity.class);
+        Bundle bundle = new Bundle();
+        if (typeSecurityQuestion == LoginFragment.TYPE_SQ_PHONE) {
+            bundle.putInt(PARAM_DEFAULT_FRAGMENT_TYPE, TYPE_SMS);
+        } else {
+            bundle.putInt(PARAM_DEFAULT_FRAGMENT_TYPE, TYPE_EMAIL);
+        }
+        intent.putExtras(bundle);
+        return intent;
     }
 }

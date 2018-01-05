@@ -12,7 +12,7 @@ public class VerificationPassModel {
     ArrayList<MethodItem> listAvailableMethods;
     private String email;
     private int otpType;
-
+    InterruptVerificationViewModel interruptModel;
 
     public VerificationPassModel(String phoneNumber,
                                  String email,
@@ -21,6 +21,19 @@ public class VerificationPassModel {
         this.email = email;
         this.listAvailableMethods = listAvailableMethods;
         this.otpType = otpType;
+        this.interruptModel = null;
+    }
+
+    public VerificationPassModel(String phoneNumber,
+                                 String email,
+                                 ArrayList<MethodItem> listAvailableMethods,
+                                 int otpType,
+                                 InterruptVerificationViewModel interruptModel) {
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.listAvailableMethods = listAvailableMethods;
+        this.otpType = otpType;
+        this.interruptModel = interruptModel;
     }
 
     public String getPhoneNumber() {
@@ -41,5 +54,9 @@ public class VerificationPassModel {
 
     public int getOtpType() {
         return otpType;
+    }
+
+    public InterruptVerificationViewModel getInterruptModel() {
+        return interruptModel;
     }
 }

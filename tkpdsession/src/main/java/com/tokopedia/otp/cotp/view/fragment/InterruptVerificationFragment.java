@@ -1,0 +1,122 @@
+package com.tokopedia.otp.cotp.view.fragment;
+
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.di.DaggerSessionComponent;
+import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
+import com.tokopedia.otp.cotp.view.viewmodel.InterruptVerificationViewModel;
+import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
+import com.tokopedia.session.R;
+
+import javax.inject.Inject;
+
+/**
+ * @author by nisie on 1/4/18.
+ */
+
+public class InterruptVerificationFragment extends BaseDaggerFragment {
+
+    InterruptVerificationViewModel viewModel;
+    ImageView icon;
+    TextView name;
+    TextView message;
+    TextView requestOtpButton;
+
+    @Inject
+    GlobalCacheManager globalCacheManager;
+
+
+    public static Fragment createInstance(Bundle bundle) {
+        Fragment fragment = new InterruptVerificationFragment();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        ScreenTracking.screen(getScreenName());
+    }
+
+    @Override
+    protected String getScreenName() {
+        if (viewModel != null && !TextUtils.isEmpty(viewModel.getAppScreenName())) {
+            return viewModel.getAppScreenName();
+        } else
+            return AppScreen.SCREEN_INTERRUPT_VERIFICATION_DEFAULT;
+    }
+
+    @Override
+    protected void initInjector() {
+        AppComponent appComponent = getComponent(AppComponent.class);
+
+        DaggerSessionComponent daggerSessionComponent = (DaggerSessionComponent)
+                DaggerSessionComponent.builder()
+                        .appComponent(appComponent)
+                        .build();
+
+        daggerSessionComponent.inject(this);
+    }
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (globalCacheManager != null
+                && globalCacheManager.getConvertObjData(VerificationActivity.PASS_MODEL, VerificationPassModel.class) != null
+                && globalCacheManager.getConvertObjData(VerificationActivity.PASS_MODEL,
+                VerificationPassModel.class).getInterruptModel() != null) {
+            VerificationPassModel passModel = globalCacheManager.getConvertObjData(VerificationActivity.PASS_MODEL,
+                    VerificationPassModel.class);
+            viewModel = passModel.getInterruptModel();
+        } else {
+            getActivity().finish();
+        }
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle
+            savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_interrupt_verification, parent, false);
+        icon = view.findViewById(R.id.icon);
+        message = view.findViewById(R.id.message);
+        name = view.findViewById(R.id.name);
+        requestOtpButton = view.findViewById(R.id.request_otp_button);
+        prepareView();
+        return view;
+    }
+
+    private void prepareView() {
+        ImageHandler.loadImageWithIdWithoutPlaceholder(icon, viewModel.getIconId());
+        message.setText(MethodChecker.fromHtml(viewModel.getPromptText()));
+        String greeting = getString(R.string.hi) + " " + viewModel.getUserName();
+        name.setText(greeting);
+        requestOtpButton.setText(viewModel.getButtonText());
+
+        requestOtpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (getActivity() instanceof VerificationActivity) {
+                    ((VerificationActivity) getActivity()).goToVerificationPage(viewModel.getType());
+                }
+            }
+        });
+    }
+}

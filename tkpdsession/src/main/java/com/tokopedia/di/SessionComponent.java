@@ -3,6 +3,7 @@ package com.tokopedia.di;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.cotp.view.fragment.ChooseVerificationMethodFragment;
+import com.tokopedia.otp.cotp.view.fragment.InterruptVerificationFragment;
 import com.tokopedia.otp.cotp.view.fragment.VerificationFragment;
 import com.tokopedia.otp.phoneverification.view.fragment.ChangePhoneNumberFragment;
 import com.tokopedia.otp.phoneverification.view.fragment.PhoneVerificationFragment;
@@ -46,6 +47,8 @@ public interface SessionComponent {
     void inject(VerificationActivity loginFragment);
 
     void inject(VerificationFragment verificationFragment);
+
+    void inject(InterruptVerificationFragment interruptVerificationFragment);
 
     void inject(ChooseVerificationMethodFragment chooseVerificationMethodFragment);
 

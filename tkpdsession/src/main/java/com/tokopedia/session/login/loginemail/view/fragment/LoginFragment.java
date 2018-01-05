@@ -49,6 +49,7 @@ import com.tokopedia.core.profile.model.GetUserInfoDomainData;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
+import com.tokopedia.otp.cotp.view.viewmodel.InterruptVerificationViewModel;
 import com.tokopedia.otp.cotp.view.viewmodel.MethodItem;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
 import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
@@ -501,14 +502,20 @@ public class LoginFragment extends BaseDaggerFragment
     public void onGoToSecurityQuestion(SecurityDomain securityDomain, String fullName,
                                        String email, String phone) {
 
-        VerificationPassModel passModel = new VerificationPassModel(phone, email,
-                getListAvailableMethod(securityDomain, phone), RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION);
+        InterruptVerificationViewModel interruptVerificationViewModel =
+                InterruptVerificationViewModel.createDefaultSmsInterruptPage(fullName, phone);
+
+        VerificationPassModel passModel = new
+                VerificationPassModel(phone, email,
+                getListAvailableMethod(securityDomain, phone),
+                RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION,
+                interruptVerificationViewModel
+        );
         cacheManager.setKey(VerificationActivity.PASS_MODEL);
         cacheManager.setValue(CacheUtil.convertModelToString(passModel,
                 new TypeToken<VerificationPassModel>() {
                 }.getType()));
         cacheManager.store();
-
 
         Intent intent = VerificationActivity.getSecurityQuestionVerificationIntent(getActivity(),
                 securityDomain.getUserCheckSecurity2());
