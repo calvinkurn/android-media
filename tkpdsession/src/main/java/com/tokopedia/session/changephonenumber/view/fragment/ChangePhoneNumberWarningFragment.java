@@ -180,8 +180,8 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
     @Override
     public void onGetWarningSuccess(WarningViewModel warningViewModel) {
         this.viewModel = warningViewModel;
-        if (isNullOrEmpty(viewModel.getTokocash()) && isNullOrEmpty(viewModel.getTokopediaBalance
-                ())) {
+        if (isNullOrEmpty(viewModel.getTokocash())
+                && isNullOrEmpty(viewModel.getTokopediaBalance())) {
             goToNextActivity();
         } else {
             loadDataToView();
@@ -232,8 +232,8 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
                     getContext(),
                     phoneNumber,
                     email,
-                    viewModel.getWarningList() != null ? new ArrayList<>(viewModel.getWarningList
-                            ()) : null);
+                    viewModel.getWarningList() != null ?
+                            new ArrayList<>(viewModel.getWarningList()) : null);
             intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
             startActivity(intent);
             getActivity().finish();
@@ -243,8 +243,8 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
                             getContext(),
                             phoneNumber,
                             email,
-                            viewModel.getWarningList() != null ? new ArrayList<>(viewModel
-                                    .getWarningList()) : null
+                            viewModel.getWarningList() != null ?
+                                    new ArrayList<>(viewModel.getWarningList()) : null
                     ),
                     REQUEST_CHANGE_PHONE_NUMBER
             );

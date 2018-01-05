@@ -196,6 +196,7 @@ public class VerificationActivity extends TActivity implements HasComponent {
     }
 
     private Bundle createEmailBundle(String email) {
+        //TODO milhamj
         Bundle bundle = new Bundle();
         bundle.putInt(PARAM_DEFAULT_FRAGMENT_TYPE, TYPE_EMAIL);
         bundle.putInt(PARAM_IMAGE, R.drawable.ic_verification_sms);

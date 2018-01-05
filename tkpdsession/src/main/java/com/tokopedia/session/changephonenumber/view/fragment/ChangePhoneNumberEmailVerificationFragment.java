@@ -103,6 +103,14 @@ public class ChangePhoneNumberEmailVerificationFragment extends BaseDaggerFragme
         return parentView;
     }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        prepareView();
+        presenter.initView();
+    }
+
     private void initVar() {
         phoneNumber = getArguments().getString(PARAM_PHONE_NUMBER);
         warningList = getArguments().getStringArrayList(PARAM_WARNING_LIST);
@@ -119,9 +127,6 @@ public class ChangePhoneNumberEmailVerificationFragment extends BaseDaggerFragme
         errorOtp = view.findViewById(R.id.error_otp);
         finishCountdownView = view.findViewById(R.id.finish_countdown);
         noCodeText = view.findViewById(R.id.no_code);
-
-        prepareView();
-        presenter.initView();
     }
 
     private void setViewListener() {
@@ -182,16 +187,16 @@ public class ChangePhoneNumberEmailVerificationFragment extends BaseDaggerFragme
 
     private void disableVerifyButton() {
         verifyButton.setEnabled(false);
-        verifyButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.grey_500));
-        MethodChecker.setBackground(verifyButton, MethodChecker.getDrawable(getActivity(), R
+        verifyButton.setTextColor(MethodChecker.getColor(getContext(), R.color.grey_500));
+        MethodChecker.setBackground(verifyButton, MethodChecker.getDrawable(getContext(), R
                 .drawable.grey_button_rounded));
         inputOtp.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
     }
 
     private void enableVerifyButton() {
         verifyButton.setEnabled(true);
-        verifyButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
-        MethodChecker.setBackground(verifyButton, MethodChecker.getDrawable(getActivity(), R
+        verifyButton.setTextColor(MethodChecker.getColor(getContext(), R.color.white));
+        MethodChecker.setBackground(verifyButton, MethodChecker.getDrawable(getContext(), R
                 .drawable.green_button_rounded));
         inputOtp.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         errorOtp.setVisibility(View.INVISIBLE);
@@ -211,7 +216,7 @@ public class ChangePhoneNumberEmailVerificationFragment extends BaseDaggerFragme
     @Override
     public void showLoading() {
         if (progressDialog == null)
-            progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog
+            progressDialog = new TkpdProgressDialog(getContext(), TkpdProgressDialog
                     .NORMAL_PROGRESS);
 
         if (!progressDialog.isProgress())
@@ -261,12 +266,12 @@ public class ChangePhoneNumberEmailVerificationFragment extends BaseDaggerFragme
         inputOtp.setError(true);
         errorOtp.setVisibility(View.VISIBLE);
         inputOtp.setCompoundDrawables(null, null, MethodChecker.getDrawable
-                (getActivity(), R.drawable.ic_cancel_red), null);
+                (getContext(), R.drawable.ic_cancel_red), null);
     }
 
     @Override
     public void dropKeyboard() {
-        KeyboardHandler.DropKeyboard(getActivity(), getView());
+        KeyboardHandler.DropKeyboard(getContext(), getView());
     }
 
     private void startTimer() {
@@ -281,13 +286,15 @@ public class ChangePhoneNumberEmailVerificationFragment extends BaseDaggerFragme
                     INTERVAL) {
                 public void onTick(long millisUntilFinished) {
                     isRunningTimer = true;
-                    setRunningCountdownText(String.valueOf(TimeUnit.MILLISECONDS.toSeconds
+                    if (getContext() != null)
+                        setRunningCountdownText(String.valueOf(TimeUnit.MILLISECONDS.toSeconds
                             (millisUntilFinished)));
                 }
 
                 public void onFinish() {
                     isRunningTimer = false;
-                    setFinishedCountdownText();
+                    if (getContext() != null)
+                        setFinishedCountdownText();
                 }
 
             }.start();
@@ -321,7 +328,7 @@ public class ChangePhoneNumberEmailVerificationFragment extends BaseDaggerFragme
         finishCountdownView.setVisibility(View.GONE);
         noCodeText.setVisibility(View.GONE);
 
-        countdownText.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_38));
+        countdownText.setTextColor(MethodChecker.getColor(getContext(), R.color.black_38));
 
         String text = String.format("%s <b> %s %s</b> %s",
                 getString(R.string.please_wait_in),
@@ -334,7 +341,7 @@ public class ChangePhoneNumberEmailVerificationFragment extends BaseDaggerFragme
     }
 
     private void goToNextActivity() {
-        Intent intent = ChangePhoneNumberInputActivity.newInstance(getActivity(), phoneNumber,
+        Intent intent = ChangePhoneNumberInputActivity.newInstance(getContext(), phoneNumber,
                 email, warningList);
         intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         startActivity(intent);
