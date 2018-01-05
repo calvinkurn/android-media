@@ -193,6 +193,10 @@ public class ImageEditorWatermarkFragment extends ImageEditorFragment implements
         watermarkView.setText(watermarkText);
     }
 
+    public boolean isUseWatermark() {
+        return isUseWatermark;
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.main_action_watermark) {

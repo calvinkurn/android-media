@@ -107,6 +107,8 @@ public interface TkpdCoreRouter {
 
     Intent getInboxReputationIntent(Context context);
 
+    Intent getResolutionCenterIntent(Context context);
+
     Intent getPhoneVerificationProfileIntent(Context context);
 
     Intent getPhoneVerificationActivationIntent(Context context);

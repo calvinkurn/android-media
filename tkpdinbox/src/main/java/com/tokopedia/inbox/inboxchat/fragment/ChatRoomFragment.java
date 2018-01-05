@@ -207,6 +207,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     @Override
     public void addTemplateString(String message) {
+        UnifyTracking.eventClickTemplate(TopChatTrackingEventLabel.Category.INBOX_CHAT,
+                TopChatTrackingEventLabel.Action.TEMPLATE_CHAT_CLICK,
+                TopChatTrackingEventLabel.Name.INBOX_CHAT);
         replyColumn.setText(String.format("%s %s", replyColumn.getText(), message));
         replyColumn.setSelection(replyColumn.getText().length());
     }

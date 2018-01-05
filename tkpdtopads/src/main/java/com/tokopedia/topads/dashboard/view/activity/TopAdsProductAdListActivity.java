@@ -36,89 +36,76 @@ public class TopAdsProductAdListActivity extends BaseSimpleActivity
     @Override
     public void startShowCase() {
         final String showCaseTag = TopAdsProductAdListActivity.class.getName();
-        if (ShowCasePreference.hasShown(this, showCaseTag)){
+        if (ShowCasePreference.hasShown(this, showCaseTag)) {
             return;
         }
         if (showCaseDialog != null) {
             return;
         }
         final TopAdsProductAdListFragment topAdsProductAdListFragment =
-                (TopAdsProductAdListFragment) getSupportFragmentManager().findFragmentByTag(TopAdsProductAdListFragment.class.getSimpleName());
+                (TopAdsProductAdListFragment) getSupportFragmentManager().findFragmentByTag(TAG);
         if (topAdsProductAdListFragment == null || topAdsProductAdListFragment.getView() == null) {
             return;
         }
 
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        if (toolbar.getHeight() > 0) {
-            final ArrayList<ShowCaseObject> showCaseList = new ArrayList<>();
-            int height = toolbar.getHeight();
-            int width = toolbar.getWidth() ;
+        final ArrayList<ShowCaseObject> showCaseList = new ArrayList<>();
 
-            showCaseList.add(
-                    new ShowCaseObject(
-                            topAdsProductAdListFragment.getSearchView(),
-                            getString(R.string.topads_showcase_product_list_title_1),
-                            getString(R.string.topads_showcase_product_list_desc_1),
-                            ShowCaseContentPosition.UNDEFINED,
-                            Color.WHITE));
+        showCaseList.add(
+                new ShowCaseObject(
+                        topAdsProductAdListFragment.getSearchView(),
+                        getString(R.string.topads_showcase_product_list_title_1),
+                        getString(R.string.topads_showcase_product_list_desc_1),
+                        ShowCaseContentPosition.UNDEFINED,
+                        Color.WHITE));
 
-            showCaseList.add(
-                    new ShowCaseObject(
-                            topAdsProductAdListFragment.getFilterView(),
-                            getString(R.string.topads_showcase_product_list_title_2),
-                            getString(R.string.topads_showcase_product_list_desc_2),
-                            ShowCaseContentPosition.UNDEFINED));
+        showCaseList.add(
+                new ShowCaseObject(
+                        topAdsProductAdListFragment.getFilterView(),
+                        getString(R.string.topads_showcase_product_list_title_2),
+                        getString(R.string.topads_showcase_product_list_desc_2),
+                        ShowCaseContentPosition.UNDEFINED));
 
-            RecyclerView recyclerView = topAdsProductAdListFragment.getRecyclerView();
-            recyclerView.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (topAdsProductAdListFragment.getView() == null) {
-                        return;
-                    }
-                    View dateView = topAdsProductAdListFragment.getDateView();
-                    if (dateView != null) {
-                        dateView.setVisibility(View.VISIBLE);
-                        showCaseList.add(
-                                new ShowCaseObject(
-                                        dateView,
-                                        getString(R.string.topads_showcase_product_list_title_3),
-                                        getString(R.string.topads_showcase_product_list_desc_3)));
-                    }
-
-                    View itemView = topAdsProductAdListFragment.getItemRecyclerView();
-                    if (itemView != null) {
-                        showCaseList.add(
-                                new ShowCaseObject(
-                                        itemView,
-                                        getString(R.string.topads_showcase_product_list_title_4),
-                                        getString(R.string.topads_showcase_product_list_desc_4),
-                                        ShowCaseContentPosition.UNDEFINED,
-                                        Color.WHITE));
-                    }
-
-                    showCaseDialog = ShowCaseDialogFactory.createTkpdShowCase();
-                    showCaseDialog.show(TopAdsProductAdListActivity.this, showCaseTag, showCaseList);
+        RecyclerView recyclerView = topAdsProductAdListFragment.getRecyclerView();
+        recyclerView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (topAdsProductAdListFragment.getView() == null) {
+                    return;
                 }
-            }, 300);
-
-        } else {
-            toolbar.getViewTreeObserver().addOnGlobalLayoutListener(new OneUseGlobalLayoutListener(toolbar, new OneUseGlobalLayoutListener.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    startShowCase();
+                View dateView = topAdsProductAdListFragment.getDateView();
+                if (dateView != null) {
+                    dateView.setVisibility(View.VISIBLE);
+                    showCaseList.add(
+                            new ShowCaseObject(
+                                    dateView,
+                                    getString(R.string.topads_showcase_product_list_title_3),
+                                    getString(R.string.topads_showcase_product_list_desc_3)));
                 }
-            }));
-        }
+
+                View itemView = topAdsProductAdListFragment.getItemRecyclerView();
+                if (itemView != null) {
+                    showCaseList.add(
+                            new ShowCaseObject(
+                                    itemView,
+                                    getString(R.string.topads_showcase_product_list_title_4),
+                                    getString(R.string.topads_showcase_product_list_desc_4),
+                                    ShowCaseContentPosition.UNDEFINED,
+                                    Color.WHITE));
+                }
+
+                showCaseDialog = ShowCaseDialogFactory.createTkpdShowCase();
+                showCaseDialog.show(TopAdsProductAdListActivity.this, showCaseTag, showCaseList);
+            }
+        }, 300);
 
     }
 
     @Override
     protected Fragment getNewFragment() {
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(getTagFragment());
-        if(fragment != null){
+        if (fragment != null) {
             return fragment;
-        }else{
+        } else {
             GroupAd groupAd = getIntent().getParcelableExtra(TopAdsExtraConstant.EXTRA_GROUP);
             fragment = TopAdsProductAdListFragment.createInstance(groupAd);
             return fragment;

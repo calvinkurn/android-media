@@ -84,7 +84,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
     protected Response checkShowForceLogout(Chain chain, Request newestRequest) throws IOException{
         Response response = chain.proceed(newestRequest);
-        if (isUnauthorized(newestRequest, response)) {
+        if (isUnauthorized(newestRequest, response) || isNeedRelogin(response)) {
             ServerErrorHandler.showForceLogoutDialog();
             ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
         }

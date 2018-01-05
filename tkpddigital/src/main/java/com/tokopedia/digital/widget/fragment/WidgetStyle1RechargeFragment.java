@@ -90,12 +90,11 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
         void onQueryChanged(String query);
     }
 
-    public static WidgetStyle1RechargeFragment newInstance(Category category, int position, boolean useCache) {
+    public static WidgetStyle1RechargeFragment newInstance(Category category, int position) {
         WidgetStyle1RechargeFragment fragment = new WidgetStyle1RechargeFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_PARAM_CATEGORY, category);
         bundle.putInt(ARG_TAB_INDEX_POSITION, position);
-        bundle.putBoolean(ARG_USE_CACHE, useCache);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -110,8 +109,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
                 new ProductMapper(),
                 new OperatorMapper(),
                 new JobExecutor(),
-                new UIThread(),
-                useCache);
+                new UIThread());
 
         presenter = new DigitalWidgetStyle1Presenter(getActivity(), interactor, this);
     }
@@ -271,7 +269,9 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
         return new WidgetClientNumberView.RechargeEditTextListener() {
             @Override
             public void onRechargeTextChanged(CharSequence s, int start, int before, int count) {
-                queryListener.onQueryChanged(s.toString());
+                if (queryListener != null) {
+                    queryListener.onQueryChanged(s.toString());
+                }
             }
 
             @Override
@@ -384,7 +384,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
         PreCheckoutDigitalWidget preCheckoutDigitalWidget = new PreCheckoutDigitalWidget();
         preCheckoutDigitalWidget.setClientNumber(widgetClientNumberView.getText());
         preCheckoutDigitalWidget.setOperatorId(String.valueOf(selectedOperator.getId()));
-        preCheckoutDigitalWidget.setProductId(String.valueOf(selectedProduct.getId()));
+        preCheckoutDigitalWidget.setProductId(selectedProduct.getId());
         preCheckoutDigitalWidget.setPromoProduct(selectedProduct.getAttributes().getPromo() != null);
         preCheckoutDigitalWidget.setBundle(bundle);
         return preCheckoutDigitalWidget;
@@ -533,9 +533,16 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
         clearHolder(holderWidgetWrapperBuy);
         clearHolder(holderWidgetSpinnerProduct);
         removeRechargeEditTextCallback(widgetClientNumberView);
-        if (compositeSubscription != null && compositeSubscription.hasSubscriptions())
+
+        if (compositeSubscription != null && compositeSubscription.hasSubscriptions()) {
             compositeSubscription.unsubscribe();
+        }
+
         super.onDestroyView();
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
 }

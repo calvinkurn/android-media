@@ -700,12 +700,12 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
-    public void onProductChooserStyle1Clicked(List<Product> productListData, String titleChooser) {
+    public void onProductChooserStyle1Clicked(List<Product> productListData, String operatorId, String titleChooser) {
         UnifyTracking.eventSelectProduct(categoryDataState.getName(), categoryDataState.getName());
 
         startActivityForResult(
                 DigitalChooserActivity.newInstanceProductChooser(
-                        getActivity(), productListData, titleChooser
+                        getActivity(), categoryId, operatorId, titleChooser
                 ),
                 IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER
         );
@@ -717,7 +717,19 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
         startActivityForResult(
                 DigitalChooserActivity.newInstanceProductChooser(
-                        getActivity(), productListData, titleChooser
+                        getActivity(), categoryId, operatorSelectedState.getOperatorId(), titleChooser
+                ),
+                IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER
+        );
+    }
+
+    @Override
+    public void onProductChooserStyle3Clicked(List<Product> productListData, String operatorId, String titleChooser) {
+        UnifyTracking.eventSelectProduct(categoryDataState.getName(), categoryDataState.getName());
+
+        startActivityForResult(
+                DigitalChooserActivity.newInstanceProductChooser(
+                        getActivity(), categoryId, operatorId, titleChooser
                 ),
                 IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER
         );
@@ -729,23 +741,11 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
         startActivityForResult(
                 DigitalChooserActivity.newInstanceOperatorChooser(
-                        getActivity(), operatorListData, titleChooser,
+                        getActivity(), categoryId, titleChooser,
                         categoryDataState.getOperatorLabel(),
                         categoryDataState.getName()
                 ),
                 IDigitalModuleRouter.REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER
-        );
-    }
-
-    @Override
-    public void onProductChooserStyle3Clicked(List<Product> productListData, String titleChooser) {
-        UnifyTracking.eventSelectProduct(categoryDataState.getName(), categoryDataState.getName());
-
-        startActivityForResult(
-                DigitalChooserActivity.newInstanceProductChooser(
-                        getActivity(), productListData, titleChooser
-                ),
-                IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER
         );
     }
 
@@ -838,7 +838,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             case IDigitalModuleRouter.REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER:
                 if (resultCode == Activity.RESULT_OK && data != null)
                     handleCallBackOperatorChooser(
-                            (Operator) data.getParcelableExtra(
+                            (com.tokopedia.digital.widget.model.operator.Operator) data.getParcelableExtra(
                                     DigitalChooserActivity.EXTRA_CALLBACK_OPERATOR_DATA
                             )
                     );
@@ -1074,8 +1074,12 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         digitalProductView.renderUpdateProductSelected(product);
     }
 
-    private void handleCallBackOperatorChooser(Operator operator) {
-        digitalProductView.renderUpdateOperatorSelected(operator);
+    private void handleCallBackOperatorChooser(com.tokopedia.digital.widget.model.operator.Operator operatorWidget) {
+        for (Operator operator : categoryDataState.getOperatorList()) {
+            if (operator.getOperatorId().equals(String.valueOf(operatorWidget.getId()))) {
+                digitalProductView.renderUpdateOperatorSelected(operator);
+            }
+        }
     }
 
     @Override

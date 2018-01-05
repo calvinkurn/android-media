@@ -2521,6 +2521,11 @@ public class UnifyTracking extends TrackingUtils {
                 event, category, action, "").getEvent());
     }
 
+    public static void eventClickTemplate(String category, String action, String event) {
+        sendGTMEvent(new EventTracking(
+                event, category, action, "").getEvent());
+    }
+
     public static void eventPDPSendChat() {
         sendGTMEvent(new EventTracking(AppEventTracking.Event.PRODUCT_PAGE
                                     , AppEventTracking.Category.PRODUCT_PAGE
