@@ -109,12 +109,14 @@
     <string name="flight_booking_submit_button_label">Lanjut</string>
     <string name="flight_booking_total_price_label">Pembayaran Anda</string>
     <string name="flight_booking_contact_name_empty_error">Nama kontak tidak boleh kosong</string>
-    <string name="flight_booking_contact_name_max_length_error">Nama kontak maksimal 96 char</string>
+    <string name="flight_booking_contact_name_max_length_error">Nama kontak maksimal 20 char</string>
     <string name="flight_booking_contact_name_alpha_space_error">Nama harus terdiri alfabet dan space</string>
     <string name="flight_booking_contact_email_empty_error">Email kontak tidak boleh kosong</string>
     <string name="flight_booking_contact_email_invalid_error">Email kontak tidak valid</string>
     <string name="flight_booking_contact_phone_empty_error">Telepon Kontak tidak boleh kosong</string>
     <string name="flight_booking_contact_phone_invalid_error">Telepon Kontak tidak valid</string>
+    <string name="flight_booking_contact_phone_max_length_error">Telepon Kontak maksimal 13 digit</string>
+    <string name="flight_booking_contact_phone_min_length_error">Telepon Kontak minimal 9 digit</string>
     <string name="flight_booking_prefix_passenger">Penumpang</string>
     <string name="flight_booking_postfix_adult_passenger">Dewasa</string>
     <string name="flight_booking_postfix_children_passenger">Anak</string>
@@ -276,6 +278,7 @@
     <string name="flight_review_checkout_loading_label">Sedang menyiapkan formulir pembayaran</string>
     <string name="di_sini">di sini</string>
     <string name="flight_booking_passenger_last_name_empty_error">Nama belakang minimal 2 karakter</string>
-    <string name="flight_order_cancel_prefix_label"><![CDATA[sid=1377&oid=flight&msg=Saya ingin membatalkan penerbangan untuk nama-nama dibawah ini:]]></string>
-    <string name="flight_order_flight_default_contact_us"><![CDATA[sid=1377&oid=flight]]></string>
+    <!--<string name="flight_order_cancel_prefix_label"><![CDATA[]]></string>-->
+    <string name="flight_order_flight_default_contact_us"><![CDATA[sid=1377]]></string>
+    <string name="flight_order_cancel_prefix_label"><![CDATA[sid=1377&oid=%s&msg=Saya ingin membatalkan penerbangan untuk nama-nama dibawah ini:]]></string>
 </resources>

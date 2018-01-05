@@ -451,7 +451,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         if (getView().getContactName().length() == 0) {
             isValid = false;
             getView().showContactNameEmptyError(R.string.flight_booking_contact_name_empty_error);
-        } else if (getView().getContactName().length() > 48) {
+        } else if (getView().getContactName().length() > 20) {
             isValid = false;
             getView().showContactNameInvalidError(R.string.flight_booking_contact_name_max_length_error);
         } else if (getView().getContactName().length() > 0 && !isAlphabetAndSpaceOnly(getView().getContactName())) {
@@ -469,6 +469,12 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         } else if (getView().getContactPhoneNumber().length() > 0 && !isNumericOnly(getView().getContactPhoneNumber())) {
             isValid = false;
             getView().showContactPhoneNumberInvalidError(R.string.flight_booking_contact_phone_invalid_error);
+        } else if (getView().getContactPhoneNumber().length() > 13) {
+            isValid = false;
+            getView().showContactPhoneNumberInvalidError(R.string.flight_booking_contact_phone_max_length_error);
+        } else if (getView().getContactPhoneNumber().length() < 9) {
+            isValid = false;
+            getView().showContactPhoneNumberInvalidError(R.string.flight_booking_contact_phone_min_length_error);
         } else if (!isAllPassengerFilled(getView().getCurrentBookingParamViewModel().getPassengerViewModels())) {
             isValid = false;
             getView().showPassengerInfoNotFullfilled(R.string.flight_booking_passenger_not_fullfilled_error);
@@ -541,34 +547,17 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         getView().getCurrentBookingParamViewModel().setOrderDueTimestamp(timestamp);
     }
 
-    // Method untuk menambahkan Flight Id AirAsia, jadi seandainya nanti ada bertambah lagi, bisa langsung di tambah disini
-    private void initAirAsiaFlightId() {
-        if(this.airAsiaFlightIds == null) {
-            this.airAsiaFlightIds = new ArrayList<>();
-            this.airAsiaFlightIds.add("AK");
-            this.airAsiaFlightIds.add("FD");
-            this.airAsiaFlightIds.add("QZ");
-            this.airAsiaFlightIds.add("XJ");
-            this.airAsiaFlightIds.add("XT");
-        }
-    }
-
-    private boolean compareFlightIdWithAirAsia(String flightId) {
-        this.initAirAsiaFlightId();
-        return this.airAsiaFlightIds.contains(flightId);
-    }
-
     private boolean isAirAsiaAirline(FlightBookingCartData flightBookingCartData) {
 
         if(flightBookingCartData.getDepartureTrip() != null)
             for(FlightDetailRouteViewModel data : flightBookingCartData.getDepartureTrip().getRouteList()) {
-                if(this.compareFlightIdWithAirAsia(data.getAirlineCode()))
+                if(data.isAirlineMandatoryDOB() == 1)
                     return true;
             }
 
         if(flightBookingCartData.getReturnTrip() != null)
             for(FlightDetailRouteViewModel data : flightBookingCartData.getReturnTrip().getRouteList()) {
-                if(this.compareFlightIdWithAirAsia(data.getAirlineCode()))
+                if(data.isAirlineMandatoryDOB() == 1)
                     return true;
             }
 

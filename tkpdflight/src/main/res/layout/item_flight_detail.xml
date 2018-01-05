@@ -40,6 +40,7 @@
                 android:layout_height="@dimen/image_width_xxxs"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
+                android:layout_marginTop="6dp"
                 android:layout_marginRight="@dimen/margin_sm"
                 android:src="@drawable/selector_flight_detail" />
 
@@ -63,6 +64,7 @@
                 android:layout_height="@dimen/image_width_xxxs"
                 android:layout_alignBottom="@+id/arrival_time"
                 android:layout_alignLeft="@+id/departure_time_circle"
+                android:layout_marginBottom="@dimen/margin_vs"
                 android:layout_marginRight="@dimen/margin_sm"
                 android:src="@drawable/selector_flight_detail" />
 

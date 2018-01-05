@@ -430,6 +430,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                 case REQUEST_CODE_AIRPORT_CLASSES:
                     FlightClassViewModel viewModel = data.getParcelableExtra(FlightClassesActivity.EXTRA_FLIGHT_CLASS);
                     presenter.onFlightClassesChange(viewModel);
+
                     break;
                 case REQUEST_CODE_AIRPORT_PASSENGER:
                     FlightPassengerViewModel passengerViewModel = data.getParcelableExtra(FlightSelectPassengerActivity.EXTRA_PASS_DATA);
@@ -451,8 +452,10 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                     presenter.onLoginResultReceived();
                     break;
             }
+            KeyboardHandler.hideSoftKeyboard(getActivity());
         }else if(resultCode == Activity.RESULT_CANCELED && requestCode == REQUEST_CODE_LOGIN) {
             presenter.onLoginResultReceived();
+            KeyboardHandler.hideSoftKeyboard(getActivity());
         }
     }
 

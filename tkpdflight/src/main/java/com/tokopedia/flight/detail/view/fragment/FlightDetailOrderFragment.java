@@ -32,6 +32,7 @@ import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
+import com.tokopedia.flight.common.view.FlightExpandableOptionArrow;
 import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderContract;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderPresenter;
@@ -62,9 +63,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     private View containerDownloadEticket;
     private TextView orderStatus;
     private TextView transactionDate;
-    private View layoutExpendablePassenger;
-    private TextView titleExpendablePassenger;
-    private AppCompatImageView imageExpendablePassenger;
+    private FlightExpandableOptionArrow layoutExpandablePassenger;
     private VerticalRecyclerView recyclerViewFlight;
     private VerticalRecyclerView recyclerViewPassenger;
     private RecyclerView recyclerViewPrice;
@@ -83,8 +82,6 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     private String eticketLink = "";
     private String invoiceLink = "";
     private String cancelLink = "";
-
-    private boolean isPassengerInfoShowed = true;
 
     public static Fragment createInstance(FlightOrderDetailPassData flightOrderDetailPassData) {
         FlightDetailOrderFragment flightDetailOrderFragment = new FlightDetailOrderFragment();
@@ -120,9 +117,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         containerDownloadEticket = view.findViewById(R.id.container_download_eticket);
         orderStatus = view.findViewById(R.id.status_ticket);
         transactionDate = view.findViewById(R.id.transaction_date);
-        layoutExpendablePassenger = view.findViewById(R.id.layout_expendable_passenger);
-        titleExpendablePassenger = view.findViewById(R.id.title_expendable_passenger);
-        imageExpendablePassenger = view.findViewById(R.id.image_expendable_passenger);
+        layoutExpandablePassenger = view.findViewById(R.id.title_journey_flight);
         recyclerViewFlight = view.findViewById(R.id.recycler_view_flight);
         recyclerViewPassenger = view.findViewById(R.id.recycler_view_data_passenger);
         recyclerViewPrice = view.findViewById(R.id.recycler_view_detail_price);
@@ -225,14 +220,6 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
                 flightDetailOrderPresenter.actionReorderButtonClicked();
             }
         });
-
-        layoutExpendablePassenger.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                imageExpendablePassenger.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.rotate_reverse));
-                togglePassengerInfo();
-            }
-        });
     }
 
     @Override
@@ -330,26 +317,6 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     @Override
     public void updateViewWaitingForTransfer() {
         updateViewStatus(R.string.flight_label_waiting_payment, R.color.deep_orange_500, false, false, false, false);
-    }
-
-    private void togglePassengerInfo() {
-        if (isPassengerInfoShowed) {
-            hidePassengerInfo();
-        } else {
-            showPassengerInfo();
-        }
-    }
-
-    private void hidePassengerInfo() {
-        isPassengerInfoShowed = false;
-        recyclerViewPassenger.setVisibility(View.GONE);
-        imageExpendablePassenger.setRotation(180);
-    }
-
-    private void showPassengerInfo() {
-        isPassengerInfoShowed = true;
-        recyclerViewPassenger.setVisibility(View.VISIBLE);
-        imageExpendablePassenger.setRotation(0);
     }
 
     void updateViewStatus(int orderStatusString, int color, boolean isTicketVisible, boolean isScheduleVisible,

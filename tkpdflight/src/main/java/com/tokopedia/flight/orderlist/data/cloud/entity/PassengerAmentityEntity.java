@@ -16,7 +16,7 @@ public class PassengerAmentityEntity {
     private String arrivalAirportId;
     @SerializedName("amenity_type")
     @Expose
-    private String amenityType;
+    private int amenityType;
     @SerializedName("price")
     @Expose
     private String price;
@@ -38,7 +38,7 @@ public class PassengerAmentityEntity {
         return arrivalAirportId;
     }
 
-    public String getAmenityType() {
+    public int getAmenityType() {
         return amenityType;
     }
 
