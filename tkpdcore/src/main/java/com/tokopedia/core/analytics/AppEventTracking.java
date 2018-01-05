@@ -421,7 +421,7 @@ public interface AppEventTracking {
         String CLICK_SAVE_EDIT = "click save edit";
 
         String CLICK_PRODUCT_PROBLEM = "click barang & masalah";
-        String CLICK_SOLUTION = "click solusi";
+        String CLICK_SOLUTION = "click solution";
         String CLICK_PROVE = "click bukti & keterangan";
         String CLICK_CREATE_RESO = "click buat komplain";
         String CLICK_CREATE_RESO_ABANDON = "click abandon";
