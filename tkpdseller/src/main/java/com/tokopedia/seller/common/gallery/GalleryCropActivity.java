@@ -20,20 +20,19 @@ public class GalleryCropActivity extends GalleryActivity {
     public static final String RESULT_IMAGE_CROPPED = "RESULT_IMAGE_CROPPED";
 
     public static Intent createIntent(Context context) {
-        return createIntent(context, DEFAULT_GALLERY_TYPE, false, false);
+        return createIntent(context, DEFAULT_GALLERY_TYPE, false);
     }
 
-    public static Intent createIntent(Context context, int galleryType, boolean compressToTkpd, boolean openCamera) {
-        return createIntent(context, galleryType, DEFAULT_MAX_SELECTION, compressToTkpd, openCamera);
+    public static Intent createIntent(Context context, int galleryType, boolean compressToTkpd) {
+        return createIntent(context, galleryType, DEFAULT_MAX_SELECTION, compressToTkpd);
     }
 
-    public static Intent createIntent(Context context, int galleryType, int maxSelection, boolean compressToTkpd, boolean openCamera) {
+    public static Intent createIntent(Context context, int galleryType, int maxSelection, boolean compressToTkpd) {
         Intent intent = new Intent(context, GalleryCropActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt(BUNDLE_GALLERY_TYPE, galleryType);
         bundle.putInt(BUNDLE_MAX_SELECTION, maxSelection);
         bundle.putBoolean(COMPRESS_TO_TKPD, compressToTkpd);
-        bundle.putBoolean(OPEN_CAMERA, openCamera);
         intent.putExtras(bundle);
         return intent;
     }
