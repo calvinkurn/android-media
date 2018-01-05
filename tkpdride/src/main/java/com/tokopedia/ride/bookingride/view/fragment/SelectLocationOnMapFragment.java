@@ -31,7 +31,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 public class SelectLocationOnMapFragment extends BaseFragment implements SelectLocationOnMapContract.View, OnMapReadyCallback, TouchableWrapperLayout.OnDragListener {
-    private static final String EXTRA_SOURCE = "EXTRA_SOURCE";
+    private static final String EXTRA_DEFAULT_LOCATION = "EXTRA_DEFAULT_LOCATION";
     public static String EXTRA_MARKER_ID = "EXTRA_MARKER_ID";
 
     private static final float DEFAULT_MAP_ZOOM = 18;
@@ -55,6 +55,7 @@ public class SelectLocationOnMapFragment extends BaseFragment implements SelectL
     private OnFragmentInteractionListener mListener;
     private GoogleMap mGoogleMap;
     private PlacePassViewModel locationDragged;
+    private PlacePassViewModel initialLocation;
 
     @Override
     public void onLayoutDrag() {
@@ -76,10 +77,11 @@ public class SelectLocationOnMapFragment extends BaseFragment implements SelectL
     }
 
 
-    public static SelectLocationOnMapFragment newInstance(PlacePassViewModel source) {
+    public static SelectLocationOnMapFragment newInstance(PlacePassViewModel source,int markerId) {
         SelectLocationOnMapFragment fragment = new SelectLocationOnMapFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable(EXTRA_SOURCE, source);
+        bundle.putParcelable(EXTRA_DEFAULT_LOCATION, source);
+        bundle.putInt(EXTRA_MARKER_ID, markerId);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -126,6 +128,9 @@ public class SelectLocationOnMapFragment extends BaseFragment implements SelectL
 
         if (getArguments() != null && getArguments().getInt(EXTRA_MARKER_ID) != 0) {
             centerMarker.setImageDrawable(getResources().getDrawable(getArguments().getInt(EXTRA_MARKER_ID)));
+        }
+        if (getArguments() != null && getArguments().getParcelable(EXTRA_DEFAULT_LOCATION) != null) {
+            initialLocation = getArguments().getParcelable(EXTRA_DEFAULT_LOCATION);
         }
     }
 
@@ -195,7 +200,14 @@ public class SelectLocationOnMapFragment extends BaseFragment implements SelectL
         mGoogleMap.setPadding(0, 0, 400, 0);
         mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
         mGoogleMap.setMyLocationEnabled(true);
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(DEFAULT_LATLNG, DEFAULT_MAP_ZOOM));
+        if (initialLocation != null) {
+            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(initialLocation.getLatitude(), initialLocation.getLongitude()), DEFAULT_MAP_ZOOM));
+            mPresenter.actionMapDragStopped(initialLocation.getLatitude(), initialLocation.getLongitude());
+
+        } else {
+            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(DEFAULT_LATLNG, DEFAULT_MAP_ZOOM));
+
+        }
 
     }
 
@@ -300,5 +312,10 @@ public class SelectLocationOnMapFragment extends BaseFragment implements SelectL
     @OnClick(R2.id.cabs_autocomplete_back_icon)
     public void actionBackClicked() {
         mListener.backArrowClicked();
+    }
+
+    @Override
+    public PlacePassViewModel getDefaultLocation() {
+        return initialLocation;
     }
 }

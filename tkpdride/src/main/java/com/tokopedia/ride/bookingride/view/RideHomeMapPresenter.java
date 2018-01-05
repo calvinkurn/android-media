@@ -31,22 +31,22 @@ import com.google.android.gms.location.places.Places;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
+import com.tokopedia.ride.bookingride.domain.GetLocationAddressUseCase;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
 import com.tokopedia.ride.bookingride.domain.GetPeopleAddressesUseCase;
 import com.tokopedia.ride.bookingride.domain.GetUserAddressUseCase;
 import com.tokopedia.ride.bookingride.view.fragment.RideHomeMapFragment;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.configuration.MapConfiguration;
+import com.tokopedia.ride.common.place.data.entity.ReverseGeoCodeAddress;
 import com.tokopedia.ride.common.place.domain.model.OverviewPolyline;
 import com.tokopedia.ride.common.ride.domain.model.RideAddress;
 import com.tokopedia.ride.common.ride.utils.GoogleAPIClientObservable;
 import com.tokopedia.ride.common.ride.utils.PendingResultObservable;
 import com.tokopedia.ride.common.ride.utils.RideUtils;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -78,11 +78,14 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
     private boolean mSourceIsCurrentLocation;
     private MapConfiguration mapConfiguration;
     private boolean isDestinationPrefilledOnce;
+    private GetLocationAddressUseCase getLocationAddressUseCase;
+
 
     @Inject
-    public RideHomeMapPresenter(GetOverviewPolylineUseCase getOverviewPolylineUseCase, GetUserAddressUseCase getUserAddressUseCase) {
+    public RideHomeMapPresenter(GetOverviewPolylineUseCase getOverviewPolylineUseCase, GetUserAddressUseCase getUserAddressUseCase,GetLocationAddressUseCase getLocationAddressUseCase) {
         this.getOverviewPolylineUseCase = getOverviewPolylineUseCase;
         this.getUserAddressUseCase = getUserAddressUseCase;
+        this.getLocationAddressUseCase = getLocationAddressUseCase;
     }
 
     @Override
@@ -236,60 +239,110 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
 
         getView().moveMapToLocation(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
 
-        //set source as current location
-        Observable.create(new Observable.OnSubscribe<String>() {
-            @Override
-            public void call(Subscriber<? super String> subscriber) {
-                try {
-                    subscriber.onNext(GeoLocationUtils.reverseGeoCodeToShortAdd(getView().getActivity(),
-                            mCurrentLocation.getLatitude(),
-                            mCurrentLocation.getLongitude()
-                    ));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    subscriber.onNext(String.valueOf(mCurrentLocation.getLatitude()) + ", " + String.valueOf(mCurrentLocation.getLongitude()));
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(getLocationAddressUseCase.PARAM_LATITUDE,String.valueOf(mCurrentLocation.getLatitude()));
+        requestParams.putString(getLocationAddressUseCase.PARAM_LONGITUDE,String.valueOf(mCurrentLocation.getLongitude()));
 
-                    //if address not found and destination not selected keep looking for address using current current location
-                    if (!getView().isLaunchedWithLocation() && !getView().isAlreadySelectDestination()) {
-                        mRenderProductListBasedOnLocationUpdates = true;
+        getLocationAddressUseCase.execute(requestParams, new Subscriber<ReverseGeoCodeAddress>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                String sourceAddress = String.valueOf(mCurrentLocation.getLatitude()) +","+ String.valueOf(mCurrentLocation.getLongitude());
+
+                if (isViewAttached()) {
+                    PlacePassViewModel placeVm = new PlacePassViewModel();
+                    placeVm.setAddress(sourceAddress);
+                    placeVm.setAndFormatLatitude(mCurrentLocation.getLatitude());
+                    placeVm.setAndFormatLongitude(mCurrentLocation.getLongitude());
+                    placeVm.setTitle(sourceAddress);
+                    getView().setSourceLocation(placeVm);
+
+                    if (!isDestinationPrefilledOnce) {
+                        prefillDestinationFromRecentAddressList();
                     }
                 }
+
             }
-        }).onErrorReturn(new Func1<Throwable, String>() {
+
             @Override
-            public String call(Throwable throwable) {
-                return String.valueOf(mCurrentLocation.getLatitude()) + ", " + String.valueOf(mCurrentLocation.getLongitude());
+            public void onNext(ReverseGeoCodeAddress reverseGeoCodeAddres) {
+                String title =reverseGeoCodeAddres.getAddressComponents()[0].getShortName();
+                String address = reverseGeoCodeAddres.getFormattedAddress();
+
+                if (isViewAttached()) {
+                    PlacePassViewModel placeVm = new PlacePassViewModel();
+                    placeVm.setAddress(address);
+                    placeVm.setAndFormatLatitude(mCurrentLocation.getLatitude());
+                    placeVm.setAndFormatLongitude(mCurrentLocation.getLongitude());
+                    placeVm.setTitle(title);
+                    getView().setSourceLocation(placeVm);
+
+                    if (!isDestinationPrefilledOnce) {
+                        prefillDestinationFromRecentAddressList();
+                    }
+                }
+
             }
-        })
-                .subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<String>() {
-                    @Override
-                    public void onCompleted() {
+        });
 
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                    }
-
-                    @Override
-                    public void onNext(String sourceAddress) {
-                        if (isViewAttached()) {
-                            PlacePassViewModel placeVm = new PlacePassViewModel();
-                            placeVm.setAddress(sourceAddress);
-                            placeVm.setAndFormatLatitude(mCurrentLocation.getLatitude());
-                            placeVm.setAndFormatLongitude(mCurrentLocation.getLongitude());
-                            placeVm.setTitle(sourceAddress);
-                            getView().setSourceLocation(placeVm);
-
-                            if (!isDestinationPrefilledOnce) {
-                                prefillDestinationFromRecentAddressList();
-                            }
-                        }
-                    }
-                });
+//        //set source as current location
+//        Observable.create(new Observable.OnSubscribe<String>() {
+//            @Override
+//            public void call(Subscriber<? super String> subscriber) {
+//                try {
+//                    subscriber.onNext(GeoLocationUtils.reverseGeoCodeToShortAdd(getView().getActivity(),
+//                            mCurrentLocation.getLatitude(),
+//                            mCurrentLocation.getLongitude()
+//                    ));
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                    subscriber.onNext(String.valueOf(mCurrentLocation.getLatitude()) + ", " + String.valueOf(mCurrentLocation.getLongitude()));
+//
+//                    //if address not found and destination not selected keep looking for address using current current location
+//                    if (!getView().isLaunchedWithLocation() && !getView().isAlreadySelectDestination()) {
+//                        mRenderProductListBasedOnLocationUpdates = true;
+//                    }
+//                }
+//            }
+//        }).onErrorReturn(new Func1<Throwable, String>() {
+//            @Override
+//            public String call(Throwable throwable) {
+//                return String.valueOf(mCurrentLocation.getLatitude()) + ", " + String.valueOf(mCurrentLocation.getLongitude());
+//            }
+//        })
+//                .subscribeOn(Schedulers.newThread())
+//                .unsubscribeOn(Schedulers.newThread())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Subscriber<String>() {
+//                    @Override
+//                    public void onCompleted() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                    }
+//
+//                    @Override
+//                    public void onNext(String sourceAddress) {
+//                        if (isViewAttached()) {
+//                            PlacePassViewModel placeVm = new PlacePassViewModel();
+//                            placeVm.setAddress(sourceAddress);
+//                            placeVm.setAndFormatLatitude(mCurrentLocation.getLatitude());
+//                            placeVm.setAndFormatLongitude(mCurrentLocation.getLongitude());
+//                            placeVm.setTitle(sourceAddress);
+//                            getView().setSourceLocation(placeVm);
+//
+//                            if (!isDestinationPrefilledOnce) {
+//                                prefillDestinationFromRecentAddressList();
+//                            }
+//                        }
+//                    }
+//                });
     }
 
     private Location getFuzedLocation() {
@@ -429,46 +482,74 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
 
     @Override
     public void actionMapDragStopped(final double latitude, final double longitude) {
-        Observable.create(new Observable.OnSubscribe<String>() {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(getLocationAddressUseCase.PARAM_LATITUDE,String.valueOf(latitude));
+        requestParams.putString(getLocationAddressUseCase.PARAM_LONGITUDE,String.valueOf(longitude));
+
+        getLocationAddressUseCase.execute(requestParams, new Subscriber<ReverseGeoCodeAddress>() {
             @Override
-            public void call(Subscriber<? super String> subscriber) {
-                try {
-                    subscriber.onNext(GeoLocationUtils.reverseGeoCodeToShortAdd(getView().getActivity(),
-                            latitude,
-                            longitude
-                    ));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    subscriber.onNext(String.valueOf(latitude) + ", " + String.valueOf(longitude));
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (isViewAttached() && !isUnsubscribed()) {
+                    getView().renderDefaultPickupLocation(latitude, longitude, String.valueOf(latitude) +","+ String.valueOf(longitude));
                 }
             }
-        }).onErrorReturn(new Func1<Throwable, String>() {
+
             @Override
-            public String call(Throwable throwable) {
-                return String.valueOf(latitude) + ", " + String.valueOf(longitude);
+            public void onNext(ReverseGeoCodeAddress reverseGeoCodeAddres) {
+                String sourceAddress=reverseGeoCodeAddres.getAddressComponents()[0].getShortName();
+
+
+                if (isViewAttached() && !isUnsubscribed()) {
+                    getView().renderDefaultPickupLocation(latitude, longitude, sourceAddress);
+                }
             }
-        })
-                .subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<String>() {
-                    @Override
-                    public void onCompleted() {
+        });
 
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(String sourceAddress) {
-                        if (isViewAttached() && !isUnsubscribed()) {
-                            getView().renderDefaultPickupLocation(latitude, longitude, sourceAddress);
-                        }
-                    }
-                });
+//        Observable.create(new Observable.OnSubscribe<String>() {
+//            @Override
+//            public void call(Subscriber<? super String> subscriber) {
+//                try {
+//                    subscriber.onNext(GeoLocationUtils.reverseGeoCodeToShortAdd(getView().getActivity(),
+//                            latitude,
+//                            longitude
+//                    ));
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                    subscriber.onNext(String.valueOf(latitude) + ", " + String.valueOf(longitude));
+//                }
+//            }
+//        }).onErrorReturn(new Func1<Throwable, String>() {
+//            @Override
+//            public String call(Throwable throwable) {
+//                return String.valueOf(latitude) + ", " + String.valueOf(longitude);
+//            }
+//        })
+//                .subscribeOn(Schedulers.newThread())
+//                .unsubscribeOn(Schedulers.newThread())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Subscriber<String>() {
+//                    @Override
+//                    public void onCompleted() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                    @Override
+//                    public void onNext(String sourceAddress) {
+//                        if (isViewAttached() && !isUnsubscribed()) {
+//                            getView().renderDefaultPickupLocation(latitude, longitude, sourceAddress);
+//                        }
+//                    }
+//                });
     }
 
     @Override
