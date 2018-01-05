@@ -966,27 +966,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                     productData = data.getParcelableExtra(KEY_PRODUCT_DETAIL_DATA);
                     pictureView.renderData(productData);
                     headerInfoView.renderData(productData);
-                    if (data.getParcelableExtra(KEY_LEVEL1_SELECTED)!=null && data.getParcelableExtra(KEY_LEVEL1_SELECTED) instanceof Option) {
-                        variantLevel1 = data.getParcelableExtra(KEY_LEVEL1_SELECTED);
-                        String variantText = variantLevel1.getValue();
-                        if (data.getParcelableExtra(KEY_LEVEL2_SELECTED)!=null && data.getParcelableExtra(KEY_LEVEL2_SELECTED) instanceof Option)
-                        {
-                            variantLevel2 = data.getParcelableExtra(KEY_LEVEL2_SELECTED);
-                            variantText+= (", "+((Option) data.getParcelableExtra(KEY_LEVEL2_SELECTED)).getValue());
-                        }
-                        ProductCartPass pass = ProductCartPass.Builder.aProductCartPass()
-                                .setImageUri(productData.getProductImages().get(0).getImageSrc300())
-                                .setMinOrder(Integer.parseInt(productData.getInfo().getProductMinOrder()))
-                                .setProductId(String.valueOf(productData.getInfo().getProductId()))
-                                .setProductName(productData.getInfo().getProductName())
-                                .setWeight(productData.getInfo().getProductWeight())
-                                .setShopId(productData.getShopInfo().getShopId())
-                                .setPrice(productData.getInfo().getProductPrice())
-                                .build();
-                        if (!productData.getBreadcrumb().isEmpty()) pass.setProductCategory(productData.getBreadcrumb().get(0).getDepartmentName());
-                        pass.setNotes(variantText);
-                        presenter.processToCart(context, pass);
-                    }
+                    onBuyClick();
                 } else if (resultCode==VariantActivity.KILL_PDP_BACKGROUND) {
                     getActivity().finish();
                 }
