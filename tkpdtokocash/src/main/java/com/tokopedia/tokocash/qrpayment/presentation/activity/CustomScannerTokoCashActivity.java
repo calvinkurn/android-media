@@ -1,7 +1,6 @@
 package com.tokopedia.tokocash.qrpayment.presentation.activity;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -191,7 +190,7 @@ public class CustomScannerTokoCashActivity extends BaseScannerQRActivity impleme
 
     @Override
     public void directPageToPayment(InfoQrTokoCash infoQrTokoCash) {
-        startActivity(new Intent(getApplicationContext(), SuccessPaymentQRActivity.class));
+        startActivity(NominalQrPaymentActivity.newInstance(getApplicationContext(), resultScan, infoQrTokoCash));
         finish();
     }
 }

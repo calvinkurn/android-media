@@ -1,0 +1,198 @@
+package com.tokopedia.tokocash.qrpayment.presentation.activity;
+
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+
+import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.design.utils.CurrencyFormatHelper;
+import com.tokopedia.tokocash.R;
+import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
+import com.tokopedia.tokocash.di.TokoCashComponent;
+import com.tokopedia.tokocash.qrpayment.domain.PostQrPaymentUseCase;
+import com.tokopedia.tokocash.qrpayment.presentation.contract.QrPaymentContract;
+import com.tokopedia.tokocash.qrpayment.presentation.model.BalanceTokoCash;
+import com.tokopedia.tokocash.qrpayment.presentation.model.InfoQrTokoCash;
+import com.tokopedia.tokocash.qrpayment.presentation.model.QrPaymentTokoCash;
+import com.tokopedia.tokocash.qrpayment.presentation.presenter.QrPaymentPresenter;
+
+import javax.inject.Inject;
+
+/**
+ * Created by nabillasabbaha on 1/3/18.
+ */
+
+public class NominalQrPaymentActivity extends TActivity implements QrPaymentContract.View,
+        HasComponent<TokoCashComponent> {
+
+    private static final String INFO_QR = "info_qr";
+    private static final String IDENTIFIER = "identifier";
+
+    private TextView merchantName;
+    private TextView merchantPhone;
+    private EditText nominalValue;
+    private EditText notesValue;
+    private View separatorNominal;
+    private TextView tokocashValue;
+    private Button payButton;
+    private InfoQrTokoCash infoQrTokoCash;
+    private TokoCashComponent tokoCashComponent;
+    @Inject
+    QrPaymentPresenter presenter;
+
+    public static Intent newInstance(Context context, String identifier, InfoQrTokoCash infoQrTokoCash) {
+        Intent intent = new Intent(context, NominalQrPaymentActivity.class);
+        intent.putExtra(IDENTIFIER, identifier);
+        intent.putExtra(INFO_QR, infoQrTokoCash);
+        return intent;
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        inflateView(R.layout.activity_nominal_qr);
+        initInjector();
+        presenter.attachView(this);
+
+        toolbar.setTitle("Nominal Pembayaran");
+        infoQrTokoCash = getIntent().getParcelableExtra(INFO_QR);
+
+        initView();
+        setVar();
+        presenter.getBalanceTokoCash();
+    }
+
+    private void setVar() {
+        merchantName.setText(infoQrTokoCash.getName());
+        merchantPhone.setText(infoQrTokoCash.getPhoneNumber());
+        merchantPhone.setVisibility(!infoQrTokoCash.getPhoneNumber().equals("") ? View.VISIBLE : View.GONE);
+
+        if (infoQrTokoCash.getAmount() > 0) {
+            nominalValue.setEnabled(false);
+        } else {
+            nominalValue.setEnabled(true);
+        }
+
+        payButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.postQrPayment();
+            }
+        });
+    }
+
+    private int getColorNominal(int color) {
+        return ContextCompat.getColor(getApplicationContext(), color);
+    }
+
+    private void initView() {
+        merchantName = (TextView) findViewById(R.id.merchant_name);
+        merchantPhone = (TextView) findViewById(R.id.merchant_phone);
+        nominalValue = (EditText) findViewById(R.id.value_nominal);
+        notesValue = (EditText) findViewById(R.id.notes_value);
+        separatorNominal = (View) findViewById(R.id.separator);
+        tokocashValue = (TextView) findViewById(R.id.tokocash_value);
+        payButton = (Button) findViewById(R.id.pay_button);
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
+
+    @Override
+    public TokoCashComponent getComponent() {
+        if (tokoCashComponent == null) initInjector();
+        return tokoCashComponent;
+    }
+
+    private void initInjector() {
+        tokoCashComponent = DaggerTokoCashComponent.builder()
+                .appComponent(getApplicationComponent())
+                .build();
+        tokoCashComponent.inject(this);
+    }
+
+    @Override
+    public RequestParams getRequestParams() {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(PostQrPaymentUseCase.IDENTIFIER, getIntent().getStringExtra(IDENTIFIER));
+        requestParams.putString(PostQrPaymentUseCase.NOTE, notesValue.getText().toString());
+        requestParams.putLong(PostQrPaymentUseCase.AMOUNT, Long.parseLong(nominalValue.getText().toString()));
+        return requestParams;
+    }
+
+    @Override
+    public void directToSuccessPayment(QrPaymentTokoCash qrPaymentTokoCash) {
+        startActivity(SuccessPaymentQRActivity.newInstance(getApplicationContext(), qrPaymentTokoCash,
+                infoQrTokoCash.getName(), nominalValue.getText().toString(), true));
+        finish();
+    }
+
+    @Override
+    public void directToFailedPayment() {
+        startActivity(SuccessPaymentQRActivity.newInstance(getApplicationContext(), new QrPaymentTokoCash(),
+                infoQrTokoCash.getName(), nominalValue.getText().toString(), false));
+        finish();
+    }
+
+    @Override
+    public void renderBalanceTokoCash(final BalanceTokoCash balanceTokoCash) {
+        tokocashValue.setText("TokoCash Balance: " + balanceTokoCash.getBalance());
+
+        nominalValue.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (nominalValue.getText().toString().equals("")) {
+                    separatorNominal.setBackgroundColor(getColorNominal(R.color.separator_grey));
+                    tokocashValue.setTextColor(getColorNominal(R.color.separator_grey));
+                    payButton.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bg_grey_border_black));
+                    payButton.setTextColor(getColorNominal(R.color.grey_nonactive_text));
+                } else {
+                    if (Long.parseLong(charSequence.toString()) > Long.parseLong(balanceTokoCash.getRaw_balance())) {
+                        separatorNominal.setBackgroundColor(getColorNominal(R.color.separator_red));
+                        tokocashValue.setTextColor(getColorNominal(R.color.separator_red));
+                        payButton.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bg_grey_border_black));
+                        payButton.setTextColor(getColorNominal(R.color.grey_nonactive_text));
+                    } else {
+                        separatorNominal.setBackgroundColor(getColorNominal(R.color.separator_green));
+                        tokocashValue.setTextColor(getColorNominal(R.color.separator_green));
+                        payButton.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.orange_button_rounded));
+                        payButton.setTextColor(getColorNominal(R.color.white));
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+    }
+
+    @Override
+    public void showErrorBalanceTokoCash(String message) {
+        NetworkErrorHelper.createSnackbarWithAction(this, message,
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        presenter.getBalanceTokoCash();
+                    }
+                }).showRetrySnackbar();
+    }
+}

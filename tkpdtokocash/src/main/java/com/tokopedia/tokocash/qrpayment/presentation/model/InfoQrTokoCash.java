@@ -12,38 +12,17 @@ public class InfoQrTokoCash implements Parcelable {
     private String name;
     private String email;
     private String phoneNumber;
-    private Long amount;
+    private long amount;
 
     public InfoQrTokoCash() {
     }
+
 
     protected InfoQrTokoCash(Parcel in) {
         name = in.readString();
         email = in.readString();
         phoneNumber = in.readString();
-        if (in.readByte() == 0) {
-            amount = null;
-        } else {
-            amount = in.readLong();
-        }
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(name);
-        dest.writeString(email);
-        dest.writeString(phoneNumber);
-        if (amount == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeLong(amount);
-        }
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
+        amount = in.readLong();
     }
 
     public static final Creator<InfoQrTokoCash> CREATOR = new Creator<InfoQrTokoCash>() {
@@ -82,11 +61,24 @@ public class InfoQrTokoCash implements Parcelable {
         this.phoneNumber = phoneNumber;
     }
 
-    public Long getAmount() {
+    public long getAmount() {
         return amount;
     }
 
-    public void setAmount(Long amount) {
+    public void setAmount(long amount) {
         this.amount = amount;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(name);
+        parcel.writeString(email);
+        parcel.writeString(phoneNumber);
+        parcel.writeLong(amount);
     }
 }
