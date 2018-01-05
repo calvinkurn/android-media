@@ -20,7 +20,7 @@ public class InfoQrEntity {
     private String phoneNumber;
     @SerializedName("amount")
     @Expose
-    private Long amount;
+    private long amount;
 
     public String getName() {
         return name;
@@ -46,11 +46,11 @@ public class InfoQrEntity {
         this.phoneNumber = phoneNumber;
     }
 
-    public Long getAmount() {
+    public long getAmount() {
         return amount;
     }
 
-    public void setAmount(Long amount) {
+    public void setAmount(long amount) {
         this.amount = amount;
     }
 }

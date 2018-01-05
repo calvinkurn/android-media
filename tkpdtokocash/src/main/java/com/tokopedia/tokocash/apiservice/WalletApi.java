@@ -42,6 +42,12 @@ public interface WalletApi {
     @POST(TkpdBaseURL.Wallet.REVOKE_ACCESS_TOKOCASH)
     Observable<Response<String>> revokeAccessAccountTokoCash(@FieldMap Map<String, String> params);
 
-    @GET(TkpdBaseURL.Wallet.QR_INFO)
+    @GET(TkpdBaseURL.Wallet.GET_QR_INFO)
     Observable<Response<TkpdDigitalResponse>> getInfoQrTokoCash(@Path(IDENTIFIER) String identifier);
+
+    @POST(TkpdBaseURL.Wallet.POST_QR_PAYMENT)
+    Observable<Response<TkpdDigitalResponse>> postQrPaymentTokoCash(@Body TKPDMapParam<String, Object> params);
+
+    @GET(TkpdBaseURL.Wallet.GET_BALANCE)
+    Observable<Response<TkpdDigitalResponse>> getBalanceTokoCash(@QueryMap TKPDMapParam<String, Object> params);
 }

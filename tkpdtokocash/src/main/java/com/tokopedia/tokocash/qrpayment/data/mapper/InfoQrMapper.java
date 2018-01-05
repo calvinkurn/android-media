@@ -17,8 +17,8 @@ public class InfoQrMapper implements Func1<InfoQrEntity, InfoQrTokoCash> {
             InfoQrTokoCash infoQrTokoCash = new InfoQrTokoCash();
             infoQrTokoCash.setName(infoQrEntity.getName());
             infoQrTokoCash.setEmail(infoQrEntity.getEmail());
-            infoQrEntity.setPhoneNumber(infoQrEntity.getPhoneNumber());
-            infoQrEntity.setAmount(infoQrEntity.getAmount());
+            infoQrTokoCash.setPhoneNumber(infoQrEntity.getPhoneNumber());
+            infoQrTokoCash.setAmount(infoQrEntity.getAmount());
 
             return infoQrTokoCash;
         }
