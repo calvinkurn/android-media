@@ -1,31 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginBottom="@dimen/margin_vs"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
-
-    <RelativeLayout
-        android:id="@+id/banner_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <com.tkpd.library.ui.widget.TouchViewPager
-            android:id="@+id/view_pager_intermediary"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/item_revamp_category"/>
-
-        <com.tkpd.library.viewpagerindicator.CirclePageIndicator
-            android:id="@+id/indicator_intermediary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:padding="@dimen/padding_small"/>
-
-    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/image_header_container"
@@ -55,8 +32,8 @@
         android:id="@+id/view_child_category"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_vs"
-        android:layout_marginBottom="@dimen/margin_small"
+        android:paddingTop="@dimen/padding_small"
+        android:paddingBottom="@dimen/padding_small"
         android:visibility="gone">
 
         <android.support.v7.widget.RecyclerView
@@ -69,6 +46,7 @@
     </RelativeLayout>
 
     <TextView
+        xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/total_product"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -77,9 +55,11 @@
         android:textColor="@color/grey_600"
         android:textSize="@dimen/font_medium"
         android:layout_marginLeft="@dimen/margin_small"
-        android:layout_marginTop="@dimen/margin_vs"
+        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginBottom="@dimen/margin_small"
         android:textAlignment="viewStart"
-        android:visibility="gone"
+        android:visibility="visible"
+        tools:text="1.0000.0000 Produk"
         android:layout_weight="1"/>
 
 </LinearLayout>
