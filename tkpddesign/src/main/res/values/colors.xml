@@ -36,7 +36,6 @@
     <color name="font_white_disabled_38">#88FFFFFF</color>
 
     <color name="font_voucher">#8a000000</color>
-    <color name="font_voucher_caption">#61000000</color>
     <color name="separator_voucher">#1f000000</color>
     <color name="font_error_voucher">#dd191d</color>
 
