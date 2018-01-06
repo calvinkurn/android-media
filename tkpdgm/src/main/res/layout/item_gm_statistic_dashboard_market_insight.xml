@@ -7,7 +7,7 @@
 
     <TextView
         android:id="@+id/market_insight_keyword"
-        style="@style/TextView.Body1"
+        style="@style/TextView.Small"
         tools:text="@string/app_id" />
 
     <TextView

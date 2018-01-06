@@ -54,7 +54,7 @@
                     android:gravity="center"
                     android:padding="@dimen/padding_small"
                     android:text="@string/use_voucher"
-                    style="@style/TextView.Body1.WhitePrimary.Bold"/>
+                    style="@style/TextView.Small.WhitePrimary.Bold"/>
 
                 <EditText
                     android:id="@+id/edittext_voucher"
@@ -116,7 +116,7 @@
                     android:gravity="center"
                     android:padding="@dimen/padding_small"
                     android:text="@string/button_cancel_voucher"
-                    style="@style/TextView.Body1.BlackDisabled"/>
+                    style="@style/TextView.Small.BlackDisabled"/>
 
                 <TextView
                     android:id="@+id/textview_title_voucher"

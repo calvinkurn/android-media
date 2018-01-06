@@ -74,7 +74,7 @@
 
                     <TextView
                         android:id="@+id/text_view_gm_status"
-                        style="@style/TextView.Body1"
+                        style="@style/TextView.Small"
                         android:layout_gravity="center_vertical"
                         tools:text="Regular Merchant" />
                 </LinearLayout>
@@ -124,7 +124,7 @@
             android:foreground="?attr/selectableItemBackground">
 
             <TextView
-                style="@style/TextView.Body1.Bold.BlackSecondary"
+                style="@style/TextView.Small.Bold.BlackSecondary"
                 android:text="@string/shop_reputation" />
 
             <com.tokopedia.design.reputation.ShopReputationView
@@ -154,7 +154,7 @@
             android:foreground="?attr/selectableItemBackground">
 
             <TextView
-                style="@style/TextView.Body1.Bold.BlackSecondary"
+                style="@style/TextView.Small.Bold.BlackSecondary"
                 android:text="@string/transaction_success" />
 
             <TextView

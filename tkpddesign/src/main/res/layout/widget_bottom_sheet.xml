@@ -31,7 +31,7 @@
                 android:layout_marginBottom="@dimen/margin_small"
                 android:layout_marginLeft="@dimen/margin_small"
                 android:layout_marginStart="@dimen/margin_small"
-                style="@style/TextView.Body1"
+                style="@style/TextView.Small"
                 tools:text="Contoh deskripsi dari bottom sheet yang diberikan. Contoh deskripsi dari bottom sheet yang diberikan. Contoh deskripsi dari bottom sheet yang diberikan. "/>
 
             <TextView
@@ -39,7 +39,7 @@
                 android:layout_marginBottom="@dimen/margin_small"
                 android:layout_marginLeft="@dimen/margin_small"
                 android:layout_marginStart="@dimen/margin_small"
-                style="@style/TextView.Body1.Green"
+                style="@style/TextView.Small.Green"
                 tools:text="Lihat selengkapnya (Contoh)"/>
 
         </LinearLayout>

@@ -21,7 +21,7 @@
     <TextView
         android:lineSpacingExtra="7sp"
         android:text="@string/seller_reputation_given_by_buyer"
-        style="@style/TextView.Body1.BlackDisabled"
+        style="@style/TextView.Small.BlackDisabled"
         />
 
     <LinearLayout
@@ -43,7 +43,7 @@
         <TextView
             android:id="@+id/reputation_point"
             android:lineSpacingExtra="7sp"
-            style="@style/TextView.Body1.BlackDisabled"
+            style="@style/TextView.Small.BlackDisabled"
             tools:text="200 Poin"
             />
     </LinearLayout>
@@ -57,6 +57,6 @@
         android:gravity="center"
         android:lineSpacingExtra="7sp"
         android:text="@string/close"
-        style="@style/TextView.Body1.WhitePrimary"
+        style="@style/TextView.Small.WhitePrimary"
         />
 </LinearLayout>

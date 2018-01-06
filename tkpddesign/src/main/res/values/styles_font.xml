@@ -72,43 +72,43 @@
         <item name="android:textColor">@color/font_black_secondary_54</item>
     </style>
 
-    <style name="TextView.Body1">
+    <style name="TextView.Small">
         <item name="android:textSize">@dimen/font_small</item>
     </style>
-    <style name="TextView.Body1.Bold">
+    <style name="TextView.Small.Bold">
         <item name="android:textStyle">bold</item>
     </style>
-    <style name="TextView.Body1.Bold.BlackSecondary">
+    <style name="TextView.Small.Bold.BlackSecondary">
         <item name="android:textColor">@color/font_black_secondary_54</item>
     </style>
-    <style name="TextView.Body1.Green">
+    <style name="TextView.Small.Green">
         <item name="android:textColor">@color/tkpd_main_green</item>
     </style>
-    <style name="TextView.Body1.Green.Bold">
+    <style name="TextView.Small.Green.Bold">
         <item name="android:textStyle">bold</item>
     </style>
-    <style name="TextView.Body1.Orange">
+    <style name="TextView.Small.Orange">
         <item name="android:textColor">@color/tkpd_main_orange</item>
     </style>
-    <style name="TextView.Body1.BlackPrimary">
+    <style name="TextView.Small.BlackPrimary">
         <item name="android:textColor">@color/font_black_primary_70</item>
     </style>
-    <style name="TextView.Body1.BlackSecondary">
+    <style name="TextView.Small.BlackSecondary">
         <item name="android:textColor">@color/font_black_secondary_54</item>
     </style>
-    <style name="TextView.Body1.BlackDisabled">
+    <style name="TextView.Small.BlackDisabled">
         <item name="android:textColor">@color/font_black_disabled_38</item>
     </style>
-    <style name="TextView.Body1.BlackDisabled.Bold">
+    <style name="TextView.Small.BlackDisabled.Bold">
         <item name="android:textStyle">bold</item>
     </style>
-    <style name="TextView.Body1.WhitePrimary">
+    <style name="TextView.Small.WhitePrimary">
         <item name="android:textColor">@color/font_white_primary_70</item>
     </style>
-    <style name="TextView.Body1.WhitePrimary.Bold">
+    <style name="TextView.Small.WhitePrimary.Bold">
         <item name="android:textStyle">bold</item>
     </style>
-    <style name="TextView.Body1.WhiteDisabled">
+    <style name="TextView.Small.WhiteDisabled">
         <item name="android:textColor">@color/font_white_disabled_38</item>
     </style>
     <style name="TextView.Micro">

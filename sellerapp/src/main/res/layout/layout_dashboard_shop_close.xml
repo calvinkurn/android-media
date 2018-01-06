@@ -68,7 +68,7 @@
 
                 <TextView
                     android:id="@+id/tv_action"
-                    style="@style/TextView.Body1.Bold"
+                    style="@style/TextView.Small.Bold"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_ms"

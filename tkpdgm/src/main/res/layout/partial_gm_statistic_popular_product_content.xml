@@ -37,7 +37,7 @@
 
             <TextView
                 android:id="@+id/tv_popular_product"
-                style="@style/TextView.Body1"
+                style="@style/TextView.Small"
                 android:layout_marginTop="@dimen/margin_vs"
                 android:ellipsize="end"
                 android:maxLines="2"

@@ -8,7 +8,7 @@
 
     <TextView
         android:id="@+id/tv_subtitle"
-        style="@style/TextView.Body1"
+        style="@style/TextView.Small"
         android:layout_marginBottom="2dp"
         android:minWidth="100dp"
         tools:text="Total Pengeluaran TopAds" />
