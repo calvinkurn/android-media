@@ -53,7 +53,7 @@
 
                 <TextView
                     android:id="@+id/text_view_shop_name"
-                    style="@style/TextView.Subheading.Bold"
+                    style="@style/TextView.Title.Bold"
                     tools:text="Toko Kelontong Indonesia" />
 
                 <LinearLayout

@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:text="@string/top_ads_keyword_phrase_match"
-        style="@style/TextView.Subheading.Bold"/>
+        style="@style/TextView.Title.Bold"/>
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/text_keyword_desc"
         android:paddingTop="2dp"

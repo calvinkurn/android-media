@@ -42,7 +42,7 @@
 
             <TextView
                 android:id="@+id/text_view_title"
-                style="@style/TextView.Subheading"
+                style="@style/TextView.Title"
                 tools:text="@string/app_id" />
 
             <TextView

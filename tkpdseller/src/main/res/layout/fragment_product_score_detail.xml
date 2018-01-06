@@ -27,12 +27,12 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    style="@style/TextView.Subheading"
+                    style="@style/TextView.Title"
                     android:text="@string/product_score_label_title_score" />
 
                 <TextView
                     android:id="@+id/value_score_product"
-                    style="@style/TextView.Subheading"
+                    style="@style/TextView.Title"
                     android:textColor="@color/progress_score"
                     android:textStyle="bold"
                     tools:text=" Kurang" />
@@ -52,7 +52,7 @@
             android:background="@color/colorGray" />
 
         <TextView
-            style="@style/TextView.Subheading"
+            style="@style/TextView.Title"
             android:paddingBottom="32dp"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"

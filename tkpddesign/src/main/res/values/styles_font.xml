@@ -46,29 +46,29 @@
         <item name="android:textColor">@color/font_black_primary_70</item>
     </style>
 
-    <style name="TextView.Subheading">
+    <style name="TextView.Title">
         <item name="android:textSize">@dimen/font_title</item>
     </style>
-    <style name="TextView.Subheading.Bold">
+    <style name="TextView.Title.Bold">
         <item name="android:textStyle">bold</item>
     </style>
-    <style name="TextView.Subheading.Green">
+    <style name="TextView.Title.Green">
         <item name="android:textColor">@color/tkpd_main_green</item>
     </style>
-    <style name="TextView.Subheading.BlackSecondary.Bold">
+    <style name="TextView.Title.BlackSecondary.Bold">
         <item name="android:textColor">@color/font_black_secondary_54</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="TextView.Subheading.BlackPrimary">
+    <style name="TextView.Title.BlackPrimary">
         <item name="android:textColor">@color/font_black_primary_70</item>
     </style>
 
-    <style name="TextView.Subheading.BlackDisabled">
+    <style name="TextView.Title.BlackDisabled">
         <item name="android:textColor">@color/font_black_disabled_38</item>
     </style>
 
-    <style name="TextView.Subheading.BlackSecondary">
+    <style name="TextView.Title.BlackSecondary">
         <item name="android:textColor">@color/font_black_secondary_54</item>
     </style>
 
