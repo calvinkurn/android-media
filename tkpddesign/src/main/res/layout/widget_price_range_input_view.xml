@@ -93,7 +93,7 @@
             android:layout_width="match_parent"
             android:layout_height="4dp"
             android:layout_centerVertical="true"
-            app:foreColor="@color/medium_green"
+            app:foreColor="@color/tkpd_main_green"
             app:backColor="@color/grey_300"
             />
 

@@ -69,11 +69,11 @@ public class AlphabeticalSideBar extends View {
         contentTextPaint.setTextSize(itemTextSize);
         contentTextPaint.setTypeface(Typeface.DEFAULT_BOLD);
         contentTextPaint.setTextAlign(Paint.Align.CENTER);
-        contentTextPaint.setColor(getContext().getResources().getColor(R.color.medium_green));
+        contentTextPaint.setColor(getContext().getResources().getColor(R.color.tkpd_main_green));
         contentTextPaint.setStyle(Paint.Style.FILL_AND_STROKE);
 
         magnifierBackPaint = new Paint();
-        magnifierBackPaint.setColor(getContext().getResources().getColor(R.color.medium_green));
+        magnifierBackPaint.setColor(getContext().getResources().getColor(R.color.tkpd_main_green));
         magnifierBackPaint.setStyle(Paint.Style.FILL_AND_STROKE);
 
         magnifierTextPaint = new Paint();
