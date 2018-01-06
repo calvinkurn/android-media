@@ -52,7 +52,7 @@
 
                 <TextView
                     android:id="@+id/tv_no_of_selling"
-                    style="@style/TextView.Headline"
+                    style="@style/TextView.SubHeadline"
                     tools:text="@string/app_id" />
 
                 <TextView

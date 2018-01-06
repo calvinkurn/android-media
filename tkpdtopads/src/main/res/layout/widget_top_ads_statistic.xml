@@ -15,7 +15,7 @@
 
     <TextView
         android:id="@+id/text_view_content"
-        style="@style/TextView.Display1.Green"
+        style="@style/TextView.Headline.Green"
         android:text="@string/top_ads_statistic_info_default_value"/>
 </LinearLayout>
 

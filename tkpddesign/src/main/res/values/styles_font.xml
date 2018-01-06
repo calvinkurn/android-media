@@ -16,20 +16,20 @@
         <item name="android:textSize">@dimen/font_headline2</item>
     </style>
 
-    <style name="TextView.Display1">
-        <item name="android:textSize">@dimen/font_headline</item>
-    </style>
-    <style name="TextView.Display1.Green">
-        <item name="android:textColor">@color/tkpd_main_green</item>
-    </style>
-
     <style name="TextView.Headline">
-        <item name="android:textSize">@dimen/font_sub_headline</item>
+        <item name="android:textSize">@dimen/font_headline</item>
     </style>
     <style name="TextView.Headline.Green">
         <item name="android:textColor">@color/tkpd_main_green</item>
     </style>
-    <style name="TextView.Headline.BlackSecondary">
+
+    <style name="TextView.SubHeadline">
+        <item name="android:textSize">@dimen/font_sub_headline</item>
+    </style>
+    <style name="TextView.SubHeadline.Green">
+        <item name="android:textColor">@color/tkpd_main_green</item>
+    </style>
+    <style name="TextView.SubHeadline.BlackSecondary">
         <item name="android:textColor">@color/font_black_secondary_54</item>
     </style>
 
