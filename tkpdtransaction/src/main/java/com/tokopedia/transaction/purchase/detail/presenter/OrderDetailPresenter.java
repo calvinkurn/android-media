@@ -3,6 +3,7 @@ package com.tokopedia.transaction.purchase.detail.presenter;
 import android.content.Context;
 
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailView;
+import com.tokopedia.transaction.purchase.detail.model.detail.editmodel.OrderDetailShipmentModel;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
 
 /**
@@ -48,6 +49,18 @@ public interface OrderDetailPresenter {
     void processRejectOrder(Context context, OrderDetailData data);
 
     void processCancelSearch(Context context, OrderDetailData data);
+
+    void acceptOrder(Context context, String orderId);
+
+    void partialOrder(Context context, OrderDetailData data, String reason, String quantityAccept);
+
+    void rejectOrder(Context context, OrderDetailData data);
+
+    void processShipping(Context context,
+                         OrderDetailData data,
+                         OrderDetailShipmentModel shipmentModel);
+
+    void retryOrder(Context context, OrderDetailData data);
 
     void processFinish(Context context, String orderId, String orderStatus);
 

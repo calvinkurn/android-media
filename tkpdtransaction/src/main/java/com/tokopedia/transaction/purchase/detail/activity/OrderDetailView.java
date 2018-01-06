@@ -37,6 +37,8 @@ public interface OrderDetailView {
 
     void onAcceptOrder(OrderDetailData data);
 
+    void onAcceptOrderPartially(OrderDetailData data);
+
     void onRequestPickup(OrderDetailData data);
 
     void onChangeCourier(OrderDetailData data);

@@ -32,6 +32,8 @@ import com.tokopedia.transaction.purchase.detail.adapter.OrderItemAdapter;
 import com.tokopedia.transaction.purchase.detail.customview.OrderDetailButtonLayout;
 import com.tokopedia.transaction.purchase.detail.di.DaggerOrderDetailComponent;
 import com.tokopedia.transaction.purchase.detail.di.OrderDetailComponent;
+import com.tokopedia.transaction.purchase.detail.dialog.AcceptOrderDialog;
+import com.tokopedia.transaction.purchase.detail.dialog.AcceptPartialOrderDialog;
 import com.tokopedia.transaction.purchase.detail.dialog.ComplaintDialog;
 import com.tokopedia.transaction.purchase.detail.dialog.FinishOrderDialog;
 import com.tokopedia.transaction.purchase.detail.fragment.CancelOrderFragment;
@@ -50,7 +52,8 @@ public class OrderDetailActivity extends TActivity
         FinishOrderDialog.FinishOrderDialogListener,
         ComplaintDialog.ComplaintDialogListener,
         CancelOrderFragment.CancelOrderListener,
-        CancelSearchFragment.CancelSearchReplacementListener {
+        CancelSearchFragment.CancelSearchReplacementListener,
+        AcceptOrderDialog.AcceptOrderListener {
 
     public static final int REQUEST_CODE_ORDER_DETAIL = 111;
     private static final String VALIDATION_FRAGMENT_TAG = "validation_fragments";
@@ -347,7 +350,14 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void onAcceptOrder(OrderDetailData data) {
-        //TODO Bundle important things here, dont put entire model in the bundle!!
+        AcceptOrderDialog dialog = AcceptOrderDialog.createDialog(data.getOrderId());
+        dialog.show(getFragmentManager(), dialog.getClass().getSimpleName());
+    }
+
+    @Override
+    public void onAcceptOrderPartially(OrderDetailData data) {
+        AcceptPartialOrderDialog dialog = AcceptPartialOrderDialog.createDialog(data);
+        dialog.show(getFragmentManager(), dialog.getClass().getSimpleName());
     }
 
     @Override
@@ -363,6 +373,7 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void onRejectOrder(OrderDetailData data) {
         //TODO Bundle important things here, dont put entire model in the bundle!!
+
     }
 
     @Override
@@ -484,5 +495,10 @@ public class OrderDetailActivity extends TActivity
             getFragmentManager().beginTransaction().remove(getFragmentManager()
                     .findFragmentByTag(VALIDATION_FRAGMENT_TAG)).commit();
         } else super.onBackPressed();
+    }
+
+    @Override
+    public void onAcceptOrder(String orderId) {
+        presenter.acceptOrder(this, orderId);
     }
 }

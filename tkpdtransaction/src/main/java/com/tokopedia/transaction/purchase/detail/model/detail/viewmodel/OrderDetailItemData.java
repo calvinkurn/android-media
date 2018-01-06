@@ -1,10 +1,13 @@
 package com.tokopedia.transaction.purchase.detail.model.detail.viewmodel;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by kris on 11/2/17. Tokopedia
  */
 
-public class OrderDetailItemData {
+public class OrderDetailItemData implements Parcelable{
 
     private String productId;
 
@@ -17,6 +20,45 @@ public class OrderDetailItemData {
     private String description;
 
     private String imageUrl;
+
+    public OrderDetailItemData() {
+    }
+
+    protected OrderDetailItemData(Parcel in) {
+        productId = in.readString();
+        itemName = in.readString();
+        itemQuantity = in.readString();
+        price = in.readString();
+        description = in.readString();
+        imageUrl = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(productId);
+        dest.writeString(itemName);
+        dest.writeString(itemQuantity);
+        dest.writeString(price);
+        dest.writeString(description);
+        dest.writeString(imageUrl);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<OrderDetailItemData> CREATOR = new Creator<OrderDetailItemData>() {
+        @Override
+        public OrderDetailItemData createFromParcel(Parcel in) {
+            return new OrderDetailItemData(in);
+        }
+
+        @Override
+        public OrderDetailItemData[] newArray(int size) {
+            return new OrderDetailItemData[size];
+        }
+    };
 
     public String getProductId() {
         return productId;

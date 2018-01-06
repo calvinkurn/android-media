@@ -73,6 +73,33 @@ public class OrderDetailInteractorImpl implements OrderDetailInteractor {
                 .subscribe(subscriber));
     }
 
+    @Override
+    public void processOrder(Subscriber<String> subscriber, TKPDMapParam<String, String> params) {
+        compositeSubscription.add(orderDetailRepository.processOrder(params)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .subscribe(subscriber));
+    }
+
+    @Override
+    public void confirmShipping(Subscriber<String> subscriber, TKPDMapParam<String, String> params) {
+        compositeSubscription.add(orderDetailRepository.processShipping(params)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .subscribe(subscriber));
+    }
+
+    @Override
+    public void retryPickup(Subscriber<String> subscriber, TKPDMapParam<String, String> params) {
+        compositeSubscription.add(orderDetailRepository.retryPickup(params)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .subscribe(subscriber));
+    }
+
 
     @Override
     public void onActivityClosed() {

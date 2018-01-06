@@ -1,10 +1,13 @@
 package com.tokopedia.transaction.purchase.detail.model.detail.viewmodel;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by kris on 11/13/17. Tokopedia
  */
 
-public class ButtonData {
+public class ButtonData implements Parcelable{
 
     private int askSellerVisibility;
 
@@ -37,6 +40,40 @@ public class ButtonData {
     private int trackVisibility;
 
     private int viewComplaint;
+
+    public ButtonData() {
+    }
+
+    protected ButtonData(Parcel in) {
+        askSellerVisibility = in.readInt();
+        requestCancelVisibility = in.readInt();
+        receiveConfirmationVisibility = in.readInt();
+        finishOrderVisibility = in.readInt();
+        complaintVisibility = in.readInt();
+        cancelPeluangVisibility = in.readInt();
+        orderDetailVisibility = in.readInt();
+        askBuyerVisibility = in.readInt();
+        acceptOrderVisibility = in.readInt();
+        rejectOrderVisibility = in.readInt();
+        confirmShippingVisibility = in.readInt();
+        requestPickupVisibility = in.readInt();
+        changeAwbVisibility = in.readInt();
+        changeCourier = in.readInt();
+        trackVisibility = in.readInt();
+        viewComplaint = in.readInt();
+    }
+
+    public static final Creator<ButtonData> CREATOR = new Creator<ButtonData>() {
+        @Override
+        public ButtonData createFromParcel(Parcel in) {
+            return new ButtonData(in);
+        }
+
+        @Override
+        public ButtonData[] newArray(int size) {
+            return new ButtonData[size];
+        }
+    };
 
     public int getAskSellerVisibility() {
         return askSellerVisibility;
@@ -164,5 +201,30 @@ public class ButtonData {
 
     public void setViewComplaint(int viewComplaint) {
         this.viewComplaint = viewComplaint;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(askSellerVisibility);
+        parcel.writeInt(requestCancelVisibility);
+        parcel.writeInt(receiveConfirmationVisibility);
+        parcel.writeInt(finishOrderVisibility);
+        parcel.writeInt(complaintVisibility);
+        parcel.writeInt(cancelPeluangVisibility);
+        parcel.writeInt(orderDetailVisibility);
+        parcel.writeInt(askBuyerVisibility);
+        parcel.writeInt(acceptOrderVisibility);
+        parcel.writeInt(rejectOrderVisibility);
+        parcel.writeInt(confirmShippingVisibility);
+        parcel.writeInt(requestPickupVisibility);
+        parcel.writeInt(changeAwbVisibility);
+        parcel.writeInt(changeCourier);
+        parcel.writeInt(trackVisibility);
+        parcel.writeInt(viewComplaint);
     }
 }

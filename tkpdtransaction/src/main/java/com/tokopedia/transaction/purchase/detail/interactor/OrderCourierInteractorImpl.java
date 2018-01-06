@@ -1,0 +1,36 @@
+package com.tokopedia.transaction.purchase.detail.interactor;
+
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.transaction.purchase.detail.domain.OrderCourierRepository;
+import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.ListCourierViewModel;
+
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
+
+/**
+ * Created by kris on 1/3/18. Tokopedia
+ */
+
+public class OrderCourierInteractorImpl implements OrderCourierInteractor{
+
+    private CompositeSubscription compositeSubscription;
+    private OrderCourierRepository repository;
+
+    public OrderCourierInteractorImpl(CompositeSubscription compositeSubscription,
+                                      OrderCourierRepository repository) {
+        this.compositeSubscription = compositeSubscription;
+        this.repository = repository;
+    }
+
+    @Override
+    public void onGetCourierList(TKPDMapParam<String, String> params,
+                                 Subscriber<ListCourierViewModel> subscriber) {
+        compositeSubscription.add(repository.onOrderCourierRepository(params)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .subscribe(subscriber));
+    }
+}

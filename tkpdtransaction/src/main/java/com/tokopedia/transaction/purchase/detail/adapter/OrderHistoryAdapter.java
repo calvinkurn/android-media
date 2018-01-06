@@ -74,13 +74,13 @@ public class OrderHistoryAdapter extends RecyclerView
         OrderHistoryViewHolder(View itemView) {
             super(itemView);
 
-            orderHistoryTitle = (TextView) itemView.findViewById(R.id.history_title);
+            orderHistoryTitle = itemView.findViewById(R.id.history_title);
 
-            orderHistoryDescription = (TextView) itemView.findViewById(R.id.history_description);
+            orderHistoryDescription = itemView.findViewById(R.id.history_description);
 
-            orderHistoryTime = (TextView) itemView.findViewById(R.id.history_date);
+            orderHistoryTime = itemView.findViewById(R.id.history_date);
 
-            dot = (ImageView) itemView.findViewById(R.id.dot_image);
+            dot = itemView.findViewById(R.id.dot_image);
 
             dotTrail = itemView.findViewById(R.id.dot_trail);
 

@@ -6,7 +6,11 @@ import com.tokopedia.transaction.exception.ResponseRuntimeException;
 import com.tokopedia.transaction.purchase.detail.model.detail.response.Buttons;
 import com.tokopedia.transaction.purchase.detail.model.detail.response.Data;
 import com.tokopedia.transaction.purchase.detail.model.detail.response.OrderDetailResponse;
+import com.tokopedia.transaction.purchase.detail.model.detail.response.courierlist.CourierResponse;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.ButtonData;
+import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.CourierServiceModel;
+import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.CourierViewModel;
+import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.ListCourierViewModel;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailItemData;
 import com.tokopedia.transaction.purchase.detail.model.history.response.History;
@@ -146,6 +150,28 @@ public class OrderDetailMapper {
         }
         viewData.setOrderListData(historyListData);
         return viewData;
+    }
+
+    public ListCourierViewModel getCourierServiceModel(CourierResponse response) {
+        ListCourierViewModel listCourierViewModel = new ListCourierViewModel();
+        List<CourierViewModel> viewModelList = new ArrayList<>();
+        for (int i = 0; i < response.getShipment().size(); i++) {
+            CourierViewModel courierViewModel = new CourierViewModel();
+            courierViewModel.setCourierId(response.getShipment().get(i).getShipmentId());
+            courierViewModel.setCourierName(response.getShipment().get(i).getShipmentName());
+            courierViewModel.setCourierImageUrl(response.getShipment().get(i).getShipmentImage());
+            List<CourierServiceModel> courierServiceModelList = new ArrayList<>();
+            for(int j = 0; j < response.getShipment().get(i).getShipmentPackage().size(); j++) {
+                CourierServiceModel courierServiceModel = new CourierServiceModel();
+                courierServiceModel.setServiceId(response.getShipment().get(i).getShipmentId());
+                courierServiceModel.setServiceName(response.getShipment().get(i).getShipmentName());
+                courierServiceModelList.add(courierServiceModel);
+            }
+            courierViewModel.setCourierServiceList(courierServiceModelList);
+            viewModelList.add(courierViewModel);
+        }
+        listCourierViewModel.setCourierViewModelList(viewModelList);
+        return listCourierViewModel;
     }
 
     private String getPartialOrderStatus(int partialOrder) {

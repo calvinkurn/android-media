@@ -23,4 +23,10 @@ public interface IOrderDetailRepository {
 
     Observable<String> confirmDelivery(TKPDMapParam<String, String> params);
 
+    Observable<String> processOrder(TKPDMapParam<String, String> param);
+
+    Observable<String> processShipping(TKPDMapParam<String, String> param);
+
+    Observable<String> retryPickup(TKPDMapParam<String, String> param);
+
 }

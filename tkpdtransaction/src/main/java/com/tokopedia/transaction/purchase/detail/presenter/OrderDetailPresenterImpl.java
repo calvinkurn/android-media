@@ -8,6 +8,7 @@ import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailView;
 import com.tokopedia.transaction.purchase.detail.interactor.OrderDetailInteractor;
+import com.tokopedia.transaction.purchase.detail.model.detail.editmodel.OrderDetailShipmentModel;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
 
 import rx.Subscriber;
@@ -135,6 +136,64 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
     }
 
     @Override
+    public void acceptOrder(Context context, String orderId) {
+        mainView.showProgressDialog();
+        TKPDMapParam<String, String> acceptOrderParam = new TKPDMapParam<>();
+        acceptOrderParam.put("action_type", "accept");
+        acceptOrderParam.put("order_id", orderId);
+        orderDetailInteractor.processOrder(sellerActionSubscriber(),
+                AuthUtil.generateParamsNetwork(context, acceptOrderParam));
+
+    }
+
+    @Override
+    public void partialOrder(Context context,
+                             OrderDetailData data,
+                             String reason,
+                             String quantityAccept) {
+        mainView.showProgressDialog();
+        TKPDMapParam<String, String> partialParam = new TKPDMapParam<>();
+        partialParam.put("action_type", "partial");
+        partialParam.put("order_id", data.getOrderId());
+        partialParam.put("reason", reason);
+        partialParam.put("qty_accept", quantityAccept);
+        orderDetailInteractor.processOrder(sellerActionSubscriber(),
+                AuthUtil.generateParamsNetwork(context, partialParam));
+    }
+
+    @Override
+    public void rejectOrder(Context context, OrderDetailData data) {
+        mainView.showProgressDialog();
+        TKPDMapParam<String, String> rejectOrderParam = new TKPDMapParam<>();
+        rejectOrderParam.put("action_type", "reject");
+        rejectOrderParam.put("order_id", data.getOrderId());
+        orderDetailInteractor.processOrder(sellerActionSubscriber(),
+                AuthUtil.generateParamsNetwork(context, rejectOrderParam));
+    }
+
+    @Override
+    public void processShipping(Context context,
+                                OrderDetailData data,
+                                OrderDetailShipmentModel shipmentModel) {
+        mainView.showProgressDialog();
+        TKPDMapParam<String, String> processShippingParam = new TKPDMapParam<>();
+        processShippingParam.put("action_type", "reject");
+        processShippingParam.put("order_id", data.getOrderId());
+        processShippingParam.put("shipping_ref", shipmentModel.getShippingRef());
+        processShippingParam.put("shipment_id", shipmentModel.getShipmentId());
+        processShippingParam.put("shipment_name", shipmentModel.getShipmentName());
+        processShippingParam.put("sp_id", shipmentModel.getPackageId());
+        orderDetailInteractor.processOrder(sellerActionSubscriber(),
+                AuthUtil.generateParamsNetwork(context, processShippingParam));
+
+    }
+
+    @Override
+    public void retryOrder(Context context, OrderDetailData data) {
+
+    }
+
+    @Override
     public void cancelOrder(Context context, String orderId, String notes) {
         mainView.showProgressDialog();
         TKPDMapParam<String, String> cancelOrderParam = new TKPDMapParam<>();
@@ -236,6 +295,27 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
             public void onNext(String s) {
                 mainView.dismissProgressDialog();
                 mainView.onOrderCancelled(s);
+            }
+        };
+    }
+
+    private Subscriber<String> sellerActionSubscriber() {
+        return new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                mainView.dismissProgressDialog();
+                mainView.showErrorSnackbar(e.getMessage());
+            }
+
+            @Override
+            public void onNext(String s) {
+                mainView.dismissProgressDialog();
+                //TODO put action to finish activity and refresh
             }
         };
     }

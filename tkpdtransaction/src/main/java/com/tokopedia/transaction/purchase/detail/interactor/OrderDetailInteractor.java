@@ -22,5 +22,11 @@ public interface OrderDetailInteractor {
 
     void cancelReplacement(Subscriber<String> subscriber, TKPDMapParam<String, Object> params);
 
+    void processOrder(Subscriber<String> subscriber, TKPDMapParam<String, String> params);
+
+    void confirmShipping(Subscriber<String> subscriber, TKPDMapParam<String, String> params);
+
+    void retryPickup(Subscriber<String> subscriber, TKPDMapParam<String, String> params);
+
     void onActivityClosed();
 }
