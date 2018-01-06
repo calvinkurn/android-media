@@ -7,7 +7,7 @@
 
     <TextView
         android:id="@+id/string_picker_dialog_title"
-        style="@style/TextView.Title"
+        style="@style/TextView.TitleBig"
         android:layout_marginBottom="@dimen/margin_sm"
         android:text="@string/product_manage_menu_set_price" />
 

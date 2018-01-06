@@ -22,7 +22,7 @@
 
     <TextView
         android:id="@+id/retry_text"
-        style="@style/TextView.Title.Bold"
+        style="@style/TextView.TitleBig.Bold"
         android:layout_margin="@dimen/margin_vs"
         android:gravity="center"
         android:text="@string/msg_network_error_1" />

@@ -33,16 +33,16 @@
         <item name="android:textColor">@color/font_black_secondary_54</item>
     </style>
 
-    <style name="TextView.Title">
+    <style name="TextView.TitleBig">
         <item name="android:textSize">@dimen/font_title_big</item>
     </style>
-    <style name="TextView.Title.Bold">
+    <style name="TextView.TitleBig.Bold">
         <item name="android:textStyle">bold</item>
     </style>
-    <style name="TextView.Title.BlackSecondary">
+    <style name="TextView.TitleBig.BlackSecondary">
         <item name="android:textColor">@color/font_black_secondary_54</item>
     </style>
-    <style name="TextView.Title.Bold.BlackPrimary">
+    <style name="TextView.TitleBig.Bold.BlackPrimary">
         <item name="android:textColor">@color/font_black_primary_70</item>
     </style>
 
