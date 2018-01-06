@@ -111,19 +111,19 @@
     <style name="TextView.Body1.WhiteDisabled">
         <item name="android:textColor">@color/font_white_disabled_38</item>
     </style>
-    <style name="TextView.Caption">
+    <style name="TextView.Micro">
         <item name="android:textSize">@dimen/font_micro</item>
     </style>
-    <style name="TextView.Caption.Green">
+    <style name="TextView.Micro.Green">
         <item name="android:textColor">@color/tkpd_main_green</item>
     </style>
-    <style name="TextView.Caption.BlackSecondary">
+    <style name="TextView.Micro.BlackSecondary">
         <item name="android:textColor">@color/font_black_secondary_54</item>
     </style>
-    <style name="TextView.Caption.BlackDisabled">
+    <style name="TextView.Micro.BlackDisabled">
         <item name="android:textColor">@color/font_black_disabled_38</item>
     </style>
-    <style name="TextView.Caption.WhitePrimary">
+    <style name="TextView.Micro.WhitePrimary">
         <item name="android:textColor">@color/font_white_primary_70</item>
     </style>
     <style name="TextView.Button">

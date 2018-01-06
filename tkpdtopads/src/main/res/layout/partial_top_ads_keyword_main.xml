@@ -12,7 +12,7 @@
 
     <TextView
         android:id="@+id/title_keyword_type_description"
-        style="@style/TextView.Caption.BlackDisabled"
+        style="@style/TextView.Micro.BlackDisabled"
         tools:text="@string/app_name" />
 
     <LinearLayout

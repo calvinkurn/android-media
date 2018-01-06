@@ -62,7 +62,7 @@
 
             <TextView
                 android:text="@string/gmsubscribe_auto_package_title"
-                style="@style/TextView.Caption.BlackSecondary" />
+                style="@style/TextView.Micro.BlackSecondary" />
 
             <TextView
                 android:id="@+id/text_view_current_auto_package_title"
@@ -70,7 +70,7 @@
                 style="@style/TextView.Body1.BlackSecondary"/>
 
             <TextView
-                style="@style/TextView.Caption.BlackSecondary"
+                style="@style/TextView.Micro.BlackSecondary"
                 android:text="@string/gmsubscribe_auto_package_price"/>
 
             <TextView
@@ -79,7 +79,7 @@
                 style="@style/TextView.Body1.BlackSecondary"/>
 
             <TextView
-                style="@style/TextView.Caption.BlackSecondary"
+                style="@style/TextView.Micro.BlackSecondary"
                 android:text="@string/gmsubscribe_auto_package_next_subscribe"/>
 
             <TextView
@@ -89,7 +89,7 @@
 
             <TextView
                 android:text="@string/gmsubscribe_auto_package_payment_method"
-                style="@style/TextView.Caption.BlackSecondary"/>
+                style="@style/TextView.Micro.BlackSecondary"/>
 
             <TextView
                 android:id="@+id/text_view_current_auto_package_payment_method"

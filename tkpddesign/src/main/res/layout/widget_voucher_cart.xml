@@ -85,7 +85,7 @@
                     android:layout_marginBottom="@dimen/margin_small"
                     android:layout_marginTop="@dimen/margin_small"
                     android:text="@string/notes_voucher"
-                    style="@style/TextView.Caption.BlackDisabled"
+                    style="@style/TextView.Micro.BlackDisabled"
                     android:visibility="gone"/>
 
             </RelativeLayout>

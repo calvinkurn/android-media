@@ -40,7 +40,7 @@
 
             <TextView
                 android:id="@+id/content_desc_scoring"
-                style="@style/TextView.Caption.BlackSecondary"
+                style="@style/TextView.Micro.BlackSecondary"
                 android:text="@string/product_score_label_desc_detail"
                 android:textColor="@color/font_black_disabled_38" />
 

@@ -11,7 +11,7 @@
 
     <TextView
         android:id="@+id/text_view_title"
-        style="@style/TextView.Caption"
+        style="@style/TextView.Micro"
         tools:text="@string/app_id" />
 
     <TextView

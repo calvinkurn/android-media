@@ -10,7 +10,7 @@
 
     <TextView
         android:id="@+id/text_view_title"
-        style="@style/TextView.Caption.BlackSecondary"
+        style="@style/TextView.Micro.BlackSecondary"
         tools:text="@string/app_name"/>
 
     <TextView
