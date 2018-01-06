@@ -47,17 +47,13 @@
 
         <TextView
             android:id="@+id/score_good"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/margin_small"
             android:layout_toRightOf="@id/smiley_good"
             android:fontFamily="sans-serif"
             android:lineSpacingExtra="6sp"
-            android:textColor="@color/font_black_disabled_38"
-            android:textSize="@dimen/font_caption"
-            android:textStyle="normal"
             tools:text="248"
+            style="@style/TextView.Caption.BlackDisabled"
             />
 
         <ImageView
@@ -73,16 +69,12 @@
 
         <TextView
             android:id="@+id/score_netral"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/margin_small"
             android:layout_toRightOf="@id/smiley_neutral"
             android:fontFamily="sans-serif"
             android:lineSpacingExtra="6sp"
-            android:textColor="@color/font_black_disabled_38"
-            android:textSize="@dimen/font_caption"
-            android:textStyle="normal"
+            style="@style/TextView.Caption.BlackDisabled"
             tools:text="2"
             />
 
@@ -99,16 +91,12 @@
 
         <TextView
             android:id="@+id/score_bad"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/margin_small"
             android:layout_toRightOf="@id/smiley_bad"
             android:fontFamily="sans-serif"
             android:lineSpacingExtra="6sp"
-            android:textColor="@color/font_black_disabled_38"
-            android:textSize="@dimen/font_caption"
-            android:textStyle="normal"
+            style="@style/TextView.Caption.BlackDisabled"
             tools:text="0"
             />
 

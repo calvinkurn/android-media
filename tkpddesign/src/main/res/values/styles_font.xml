@@ -112,7 +112,7 @@
         <item name="android:textColor">@color/font_white_disabled_38</item>
     </style>
     <style name="TextView.Caption">
-        <item name="android:textSize">@dimen/font_caption</item>
+        <item name="android:textSize">@dimen/font_micro</item>
     </style>
     <style name="TextView.Caption.Green">
         <item name="android:textColor">@color/tkpd_main_green</item>

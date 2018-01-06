@@ -5,7 +5,7 @@
     </style>
 
     <style name="TextAppearence.App.TextInputLayout.VerySmall">
-        <item name="android:textSize">@dimen/font_caption</item>
+        <item name="android:textSize">@dimen/font_micro</item>
     </style>
 
     <style name="TextAppearence.App.TextInputLayout.Small">

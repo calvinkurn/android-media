@@ -29,7 +29,7 @@
                 android:buttonTint="@color/tkpd_main_green"
                 android:gravity="center"
                 android:textColor="@color/font_voucher"
-                android:textSize="@dimen/font_caption"
+                android:textSize="@dimen/font_micro"
                 android:textStyle="bold"
                 tools:ignore="UnusedAttribute"/>
 
