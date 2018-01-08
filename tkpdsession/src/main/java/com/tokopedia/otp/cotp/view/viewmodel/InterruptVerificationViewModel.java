@@ -1,6 +1,7 @@
 package com.tokopedia.otp.cotp.view.viewmodel;
 
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.session.R;
 
@@ -16,14 +17,14 @@ public class InterruptVerificationViewModel {
     String userName;
     String promptText;
     String buttonText;
+    private boolean hasOtherMethod;
 
 
     public InterruptVerificationViewModel(int type, String appScreenName, int iconId,
-                                          String userName, String promptText, String buttonText) {
+                                          String promptText, String buttonText) {
         this.type = type;
         this.appScreenName = appScreenName;
         this.iconId = iconId;
-        this.userName = userName;
         this.promptText = promptText;
         this.buttonText = buttonText;
     }
@@ -52,14 +53,33 @@ public class InterruptVerificationViewModel {
         return buttonText;
     }
 
-    public static InterruptVerificationViewModel createDefaultSmsInterruptPage(String fullName, String phone) {
+    public static InterruptVerificationViewModel createDefaultSmsInterruptPage(String phone) {
         return new InterruptVerificationViewModel(
                 VerificationActivity.TYPE_SMS,
                 AppScreen.SCREEN_INTERRUPT_VERIFICATION_SMS,
                 R.drawable.ic_verification_sms,
-                fullName,
-                "Kami akan mengirimkan SMS kode verifikasi ke nomor <b>" + phone + "</b>.",
-                "Kirim SMS Verifikasi"
+                MainApplication.getAppContext().getString(R.string.to_verify_sms)
+                        + " <font color=\"#b3000000\">" + phone + "</font>.",
+                MainApplication.getAppContext().getString(R.string.send_sms_verification)
         );
+    }
+
+    public static InterruptVerificationViewModel createDefaultEmailInterruptPage(String email) {
+        return new InterruptVerificationViewModel(
+                VerificationActivity.TYPE_EMAIL,
+                AppScreen.SCREEN_INTERRUPT_VERIFICATION_EMAIL,
+                R.drawable.ic_verification_email,
+                MainApplication.getAppContext().getString(R.string.to_verify_email)
+                        + " <font color=\"#b3000000\">" + email + "</font>.",
+                MainApplication.getAppContext().getString(R.string.send_email_verification)
+        );
+    }
+
+    public void setHasOtherMethod(boolean hasOtherMethod) {
+        this.hasOtherMethod = hasOtherMethod;
+    }
+
+    public boolean isHasOtherMethod() {
+        return hasOtherMethod;
     }
 }

@@ -33,9 +33,10 @@ public class InterruptVerificationFragment extends BaseDaggerFragment {
 
     InterruptVerificationViewModel viewModel;
     ImageView icon;
-    TextView name;
     TextView message;
     TextView requestOtpButton;
+    TextView chooseOtherMethod;
+
 
     @Inject
     GlobalCacheManager globalCacheManager;
@@ -85,6 +86,7 @@ public class InterruptVerificationFragment extends BaseDaggerFragment {
             VerificationPassModel passModel = globalCacheManager.getConvertObjData(VerificationActivity.PASS_MODEL,
                     VerificationPassModel.class);
             viewModel = passModel.getInterruptModel();
+            viewModel.setHasOtherMethod(passModel.getListAvailableMethods().size() > 1);
         } else {
             getActivity().finish();
         }
@@ -97,8 +99,8 @@ public class InterruptVerificationFragment extends BaseDaggerFragment {
         View view = inflater.inflate(R.layout.fragment_interrupt_verification, parent, false);
         icon = view.findViewById(R.id.icon);
         message = view.findViewById(R.id.message);
-        name = view.findViewById(R.id.name);
         requestOtpButton = view.findViewById(R.id.request_otp_button);
+        chooseOtherMethod = view.findViewById(R.id.choose_other_method);
         prepareView();
         return view;
     }
@@ -106,8 +108,6 @@ public class InterruptVerificationFragment extends BaseDaggerFragment {
     private void prepareView() {
         ImageHandler.loadImageWithIdWithoutPlaceholder(icon, viewModel.getIconId());
         message.setText(MethodChecker.fromHtml(viewModel.getPromptText()));
-        String greeting = getString(R.string.hi) + " " + viewModel.getUserName();
-        name.setText(greeting);
         requestOtpButton.setText(viewModel.getButtonText());
 
         requestOtpButton.setOnClickListener(new View.OnClickListener() {
@@ -118,5 +118,19 @@ public class InterruptVerificationFragment extends BaseDaggerFragment {
                 }
             }
         });
+
+        if (viewModel.isHasOtherMethod()) {
+            chooseOtherMethod.setVisibility(View.VISIBLE);
+            chooseOtherMethod.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (getActivity() instanceof VerificationActivity) {
+                        ((VerificationActivity) getActivity()).goToSelectVerificationMethod();
+                    }
+                }
+            });
+        } else {
+            chooseOtherMethod.setVisibility(View.GONE);
+        }
     }
 }

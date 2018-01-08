@@ -282,6 +282,7 @@ public final class AppScreen {
     public static final String SCREEN_CHANGE_PHONE_NUMBER = "Change Phone Number Page";
     public static final String SCREEN_INTERRUPT_VERIFICATION_DEFAULT = "Verification Interrupt Page";
     public static final String SCREEN_INTERRUPT_VERIFICATION_SMS = "Verification Interrupt Sms";
+    public static final String SCREEN_INTERRUPT_VERIFICATION_EMAIL = "Verification Interrupt Email";
 
     private AppScreen() {
 

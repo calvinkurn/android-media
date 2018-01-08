@@ -502,8 +502,14 @@ public class LoginFragment extends BaseDaggerFragment
     public void onGoToSecurityQuestion(SecurityDomain securityDomain, String fullName,
                                        String email, String phone) {
 
-        InterruptVerificationViewModel interruptVerificationViewModel =
-                InterruptVerificationViewModel.createDefaultSmsInterruptPage(fullName, phone);
+        InterruptVerificationViewModel interruptVerificationViewModel;
+        if (securityDomain.getUserCheckSecurity2() == TYPE_SQ_PHONE) {
+            interruptVerificationViewModel = InterruptVerificationViewModel
+                    .createDefaultSmsInterruptPage(phone);
+        } else {
+            interruptVerificationViewModel = InterruptVerificationViewModel
+                    .createDefaultEmailInterruptPage(email);
+        }
 
         VerificationPassModel passModel = new
                 VerificationPassModel(phone, email,
