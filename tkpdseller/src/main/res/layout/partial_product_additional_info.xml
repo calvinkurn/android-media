@@ -32,14 +32,23 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.072">
-            <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/info_icon_add_product"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:scaleType="fitXY"
-                android:layout_gravity="center_vertical|right"
-                android:foregroundGravity="center_vertical|right"
-                android:src="@drawable/ic_info"/>
+
+            <FrameLayout
+                android:id="@+id/info_icon_add_product_container"
+                android:layout_width="match_parent"
+                android:layout_height="109dp"
+                android:layout_gravity="center"
+                android:foregroundGravity="center">
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/info_icon_add_product"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:scaleType="fitXY"
+                    android:layout_gravity="center_vertical|right"
+                    android:foregroundGravity="center_vertical|right"
+                    android:src="@drawable/ic_info"/>
+            </FrameLayout>
+
         </FrameLayout>
 
     </LinearLayout>
