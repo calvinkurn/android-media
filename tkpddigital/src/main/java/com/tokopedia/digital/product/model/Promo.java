@@ -12,7 +12,7 @@ public class Promo implements Parcelable {
     private String bonusText;
     private String id;
     private String newPrice;
-    private int newPricePlain;
+    private long newPricePlain;
     private String tag;
     private String terms;
     private String valueText;
@@ -41,11 +41,11 @@ public class Promo implements Parcelable {
         this.newPrice = newPrice;
     }
 
-    public int getNewPricePlain() {
+    public long getNewPricePlain() {
         return newPricePlain;
     }
 
-    public void setNewPricePlain(int newPricePlain) {
+    public void setNewPricePlain(long newPricePlain) {
         this.newPricePlain = newPricePlain;
     }
 
@@ -84,7 +84,7 @@ public class Promo implements Parcelable {
         dest.writeString(this.bonusText);
         dest.writeString(this.id);
         dest.writeString(this.newPrice);
-        dest.writeInt(this.newPricePlain);
+        dest.writeLong(this.newPricePlain);
         dest.writeString(this.tag);
         dest.writeString(this.terms);
         dest.writeString(this.valueText);
@@ -97,7 +97,7 @@ public class Promo implements Parcelable {
         this.bonusText = in.readString();
         this.id = in.readString();
         this.newPrice = in.readString();
-        this.newPricePlain = in.readInt();
+        this.newPricePlain = in.readLong();
         this.tag = in.readString();
         this.terms = in.readString();
         this.valueText = in.readString();
