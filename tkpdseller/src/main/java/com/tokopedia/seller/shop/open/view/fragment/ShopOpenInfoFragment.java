@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.gallery.GalleryType;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -184,6 +185,7 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
 
     @Override
     public void onSuccessSaveInfoShop() {
+        UnifyTracking.eventOpenShopFormSuccess();
         if (onShopStepperListener != null) {
             onShopStepperListener.goToNextPage(null);
         }
@@ -192,6 +194,7 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
     @Override
     public void onFailedSaveInfoShop(Throwable t) {
         String errorMessage = ShopErrorHandler.getErrorMessage(t);
+        UnifyTracking.eventOpenShopFormError(errorMessage);
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, Snackbar.LENGTH_LONG, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {

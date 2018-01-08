@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.MethodChecker;
@@ -175,6 +176,7 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
     @Override
     public void onErrorCheckShopName(Throwable t) {
         textInputShopName.setError(ShopErrorHandler.getErrorMessage(t));
+        UnifyTracking.eventOpenShopBiodataNameError(ShopErrorHandler.getErrorMessage(t));
     }
 
     @Override
@@ -190,6 +192,7 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
     @Override
     public void onErrorCheckShopDomain(Throwable t) {
         textInputDomainName.setError(ShopErrorHandler.getErrorMessage(t));
+        UnifyTracking.eventOpenShopBiodataDomainError(ShopErrorHandler.getErrorMessage(t));
     }
 
     @Override
@@ -216,12 +219,14 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
                     }
                 });
         snackbarRetry.showRetrySnackbar();
+        UnifyTracking.eventOpenShopBiodataError(getString(R.string.shop_name_or_domain_has_been_reserved));
     }
 
     @Override
     public void onSuccessReserveShop() {
         hideSubmitLoading();
         goToShopOpenMandatory();
+        UnifyTracking.eventOpenShopBiodataSuccess();
     }
 
     private void checkEnableSubmit() {

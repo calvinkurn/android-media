@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
@@ -229,6 +230,7 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
 
     @Override
     public void onCourierServiceInfoIconClicked(String title, String description) {
+        UnifyTracking.eventOpenShopShippingServices(title);
         BottomSheetDialog dialog = new BottomSheetDialog(getActivity());
         dialog.setContentView(R.layout.shipping_info_bottom_sheet);
 
@@ -258,6 +260,7 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     @Override
     public void onErrorSaveCourier(Throwable t) {
         hideSubmitLoading();
+        UnifyTracking.eventOpenShopShippingError(ShopErrorHandler.getErrorMessage(t));
         SnackbarRetry snackbarSubmitRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(),
                 ShopErrorHandler.getErrorMessage(t), new NetworkErrorHelper.RetryClickedListener() {
                     @Override
@@ -281,6 +284,7 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
         GlobalCacheManager globalCacheManager = new GlobalCacheManager();
         globalCacheManager.delete(ProfileSourceFactory.KEY_PROFILE_DATA);
         AppWidgetUtil.sendBroadcastToAppWidget(getActivity());
+        UnifyTracking.eventOpenShopShippingSuccess();
         onShopStepperListener.finishPage();
     }
 

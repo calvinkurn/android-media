@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
@@ -61,6 +62,7 @@ public class ShopOpenCreateSuccessFragment extends BasePresenterFragment impleme
         buttonAddProduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventOpenShopThanksClickAddProduct();
                 ProductAddActivity.start(getActivity());
                 getActivity().finish();
             }
@@ -68,6 +70,7 @@ public class ShopOpenCreateSuccessFragment extends BasePresenterFragment impleme
         buttonToShopPage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventOpenShopThanksGoToMyShop();
                 Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
                 startActivity(intent);
                 getActivity().finish();
