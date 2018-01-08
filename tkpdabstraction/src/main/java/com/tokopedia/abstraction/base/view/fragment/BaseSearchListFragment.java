@@ -55,8 +55,8 @@ public abstract class BaseSearchListFragment<T extends Visitable, F extends Adap
     }
 
     @Override
-    public void showGetListError(String message) {
-        super.showGetListError(message);
+    public void showGetListError(Throwable throwable) {
+        super.showGetListError(throwable);
         if (getAdapter().getItemCount() > 0) {
             showSearchView(true);
         } else {

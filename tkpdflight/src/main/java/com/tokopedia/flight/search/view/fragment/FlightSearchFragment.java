@@ -22,6 +22,7 @@ import android.widget.DatePicker;
 
 import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
@@ -45,8 +46,9 @@ import com.tokopedia.flight.search.presenter.FlightSearchPresenter;
 import com.tokopedia.flight.search.view.FlightSearchView;
 import com.tokopedia.flight.search.view.activity.FlightSearchFilterActivity;
 import com.tokopedia.flight.search.view.adapter.FilterSearchAdapterTypeFactory;
-import com.tokopedia.flight.search.view.adapter.FlightSearchAdapter;
+import com.tokopedia.flight.search.view.adapter.viewholder.EmptyResultViewHolder;
 import com.tokopedia.flight.search.view.model.AirportCombineModelList;
+import com.tokopedia.flight.search.view.model.EmptyResultViewModel;
 import com.tokopedia.flight.search.view.model.FlightAirportCombineModel;
 import com.tokopedia.flight.search.view.model.FlightSearchApiRequestModel;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
@@ -67,7 +69,7 @@ import javax.inject.Inject;
  */
 
 public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel, FilterSearchAdapterTypeFactory> implements FlightSearchView,
-        FlightSearchAdapter.OnBaseFlightSearchAdapterListener {
+        FilterSearchAdapterTypeFactory.OnFlightSearchListener{
 
     public static final String TAG = FlightSearchFragment.class.getSimpleName();
     public static final int MAX_PROGRESS = 100;
@@ -91,8 +93,9 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     private OnFlightSearchFragmentListener onFlightSearchFragmentListener;
     private AirportCombineModelList airportCombineModelList;
     private SwipeToRefresh swipeToRefresh;
-    private FlightSearchAdapter adapter;
     private boolean needRefreshFromCache;
+
+    private boolean inFilterMode = false;
 
     public static FlightSearchFragment newInstance(FlightSearchPassDataViewModel passDataViewModel) {
         Bundle args = new Bundle();
@@ -181,14 +184,11 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     @NonNull
     @Override
     protected BaseListAdapter<FlightSearchViewModel, FilterSearchAdapterTypeFactory> createAdapterInstance() {
-        adapter = new FlightSearchAdapter(getAdapterTypeFactory(), this);
-        adapter.setOnBaseFlightSearchAdapterListener(this);
-        adapter.setOnAdapterInteractionListener(this);
-        return adapter;
-    }
-
-    @Override
-    public FlightSearchAdapter getAdapter() {
+        BaseListAdapter<FlightSearchViewModel, FilterSearchAdapterTypeFactory> adapter = super.createAdapterInstance();
+        ErrorNetworkModel errorNetworkModel = adapter.getErrorNetworkModel();
+        errorNetworkModel.setIconDrawableRes(R.drawable.ic_flight_empty_state);
+        errorNetworkModel.setOnRetryListener(this);
+        adapter.setErrorNetworkModel(errorNetworkModel);
         return adapter;
     }
 
@@ -383,10 +383,10 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     private void setUIMarkFilter() {
         if (flightFilterModel.hasFilter(flightSearchStatisticModel)) {
             filterAndSortBottomAction.setMarkLeft(true);
-            getAdapter().setInFilterMode(true);
+            inFilterMode = true;
         } else {
             filterAndSortBottomAction.setMarkLeft(false);
-            getAdapter().setInFilterMode(false);
+            inFilterMode = false;
         }
     }
 
@@ -445,15 +445,15 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     public void onSuccessGetDataFromCache(List<FlightSearchViewModel> flightSearchViewModelList) {
         hideLoading();
         addToolbarElevation();
-        adapter.clearAllElements();
+        getAdapter().clearAllElements();
         if (flightSearchViewModelList.size() == 0) {
             if (progress < MAX_PROGRESS) {
-                adapter.showLoading();
+                getAdapter().showLoading();
             } else {
-                adapter.addElement(getEmptyDataViewModel());
+                getAdapter().addElement(getEmptyDataViewModel());
             }
         } else {
-            adapter.addElement(flightSearchViewModelList);
+            getAdapter().addElement(flightSearchViewModelList);
         }
 
 
@@ -561,18 +561,17 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         progress = 0;
         filterAndSortBottomAction.setVisibility(View.GONE);
 
-        adapter.clearAllElements();
-        adapter.notifyDataSetChanged();
+        getAdapter().clearAllElements();
+        getAdapter().notifyDataSetChanged();
 
         flightSearchPresenter.attachView(this);
         loadInitialData();
     }
 
     @Override
-    public void showGetListError(String message) {
+    public void showGetListError(Throwable t) {
         this.addToolbarElevation();
-        super.showGetListError(message);
-        adapter.setErrorMessage(message);
+        super.showGetListError(t);
     }
 
     private int divideTo(int number, int pieces) {
@@ -607,6 +606,11 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     }
 
     @Override
+    protected String getMessageFromThrowable(Context context, Throwable t) {
+        return FlightErrorUtil.getMessageFromException(context, t);
+    }
+
+    @Override
     public void onDetailClicked(FlightSearchViewModel flightSearchViewModel) {
         FlightDetailViewModel flightDetailViewModel = new FlightDetailViewModel();
         flightDetailViewModel.build(flightSearchViewModel);
@@ -617,11 +621,10 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
     @Override
     public void onRetryClicked() {
-        adapter.clearAllElements();
+        getAdapter().clearAllElements();
         actionFetchFlightSearchData();
     }
 
-    @Override
     public void onResetFilterClicked() {
         flightFilterModel = new FlightFilterModel();
         showLoading();
@@ -629,7 +632,6 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         reloadDataFromCache();
     }
 
-    @Override
     public void onChangeDateClicked() {
         final String dateInput = flightSearchPassDataViewModel.getDate(isReturning());
         Date date = FlightDateUtil.stringToDate(dateInput);
@@ -708,7 +710,43 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
     @Override
     protected Visitable getEmptyDataViewModel() {
-        return adapter.getEmptyViewModel();
+        EmptyResultViewModel emptyResultViewModel;
+        if (inFilterMode) {
+            emptyResultViewModel = new EmptyResultViewModel();
+            emptyResultViewModel.setIconRes(R.drawable.ic_flight_empty_state);
+            emptyResultViewModel.setContentRes(R.string.flight_there_is_zero_flight_for_the_filter);
+            emptyResultViewModel.setButtonTitleRes(R.string.reset_filter);
+            emptyResultViewModel.setCallback(new EmptyResultViewHolder.Callback() {
+                @Override
+                public void onEmptyContentItemTextClicked() {
+
+                }
+
+                @Override
+                public void onEmptyButtonClicked() {
+                    onResetFilterClicked();
+                }
+            });
+
+
+        } else {
+            emptyResultViewModel = new EmptyResultViewModel();
+            emptyResultViewModel.setIconRes(R.drawable.ic_flight_empty_state);
+            emptyResultViewModel.setContentRes(R.string.flight_there_is_no_flight_available);
+            emptyResultViewModel.setButtonTitleRes(R.string.change_date);
+            emptyResultViewModel.setCallback(new EmptyResultViewHolder.Callback() {
+                @Override
+                public void onEmptyContentItemTextClicked() {
+
+                }
+
+                @Override
+                public void onEmptyButtonClicked() {
+                    onChangeDateClicked();
+                }
+            });
+        }
+        return emptyResultViewModel;
     }
 
     public interface OnFlightSearchFragmentListener {

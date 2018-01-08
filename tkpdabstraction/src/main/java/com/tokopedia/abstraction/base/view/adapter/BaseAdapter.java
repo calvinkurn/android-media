@@ -96,7 +96,16 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
         notifyDataSetChanged();
     }
 
-    public void showErrorNetwork(ErrorNetworkModel.OnRetryListener onRetryListener) {
+    public ErrorNetworkModel getErrorNetworkModel() {
+        return errorNetworkModel;
+    }
+
+    public void setErrorNetworkModel(ErrorNetworkModel errorNetworkModel) {
+        this.errorNetworkModel = errorNetworkModel;
+    }
+
+    public void showErrorNetwork(String message, ErrorNetworkModel.OnRetryListener onRetryListener) {
+        errorNetworkModel.setErrorMessage(message);
         errorNetworkModel.setOnRetryListener(onRetryListener);
         showErrorNetwork();
     }

@@ -1,5 +1,6 @@
 package com.tokopedia.abstraction.base.view.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,6 +20,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
+import com.tokopedia.abstraction.utils.ErrorHandler;
 import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.utils.snackbar.SnackbarRetry;
 
@@ -44,7 +46,9 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
 
     @NonNull
     protected BaseListAdapter<T, F> createAdapterInstance() {
-        return new BaseListAdapter<>(getAdapterTypeFactory(), this);
+        BaseListAdapter<T,F> baseListAdapter = new BaseListAdapter<>(getAdapterTypeFactory(), this);
+        baseListAdapter.setOnAdapterInteractionListener(this);
+        return baseListAdapter;
     }
 
     @Nullable
@@ -212,7 +216,7 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
     }
 
     @Override
-    public void showGetListError(String message) {
+    public void showGetListError(Throwable throwable) {
         hideLoading();
 
         // update the load more state (paging/can loadmore)
@@ -222,21 +226,22 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
 
         // Note: add element should be the last in line.
         if (adapter.getItemCount() > 0) {
-            onGetListErrorWithExistingData();
+            onGetListErrorWithExistingData(throwable);
         } else {
-            onGetListErrorWithEmptyData();
+            onGetListErrorWithEmptyData(throwable);
         }
     }
 
-    private void onGetListErrorWithEmptyData() {
-        adapter.showErrorNetwork(this);
+    private void onGetListErrorWithEmptyData(Throwable throwable) {
+        String message = getMessageFromThrowable(getView().getContext(), throwable);
+        adapter.showErrorNetwork(message, this);
         if (swipeToRefresh != null) {
             swipeToRefresh.setEnabled(false);
         }
     }
 
-    private void onGetListErrorWithExistingData() {
-        showSnackBarRetry(new NetworkErrorHelper.RetryClickedListener() {
+    private void onGetListErrorWithExistingData(Throwable throwable) {
+        showSnackBarRetry(throwable, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
                 showLoading();
@@ -264,9 +269,10 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
         hideSnackBarRetry();
     }
 
-    private void showSnackBarRetry(NetworkErrorHelper.RetryClickedListener listener) {
+    private void showSnackBarRetry(Throwable throwable, NetworkErrorHelper.RetryClickedListener listener) {
         if (snackBarRetry == null) {
-            snackBarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), listener);
+            String message = getMessageFromThrowable(getView().getContext(), throwable);
+            snackBarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), message, listener);
             snackBarRetry.setColorActionRetry(ContextCompat.getColor(getActivity(), R.color.green_400));
         }
         snackBarRetry.showRetrySnackbar();
@@ -277,6 +283,10 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
             snackBarRetry.hideRetrySnackbar();
             snackBarRetry = null;
         }
+    }
+
+    protected String getMessageFromThrowable(Context context, Throwable t){
+        return ErrorHandler.getErrorMessage(context, t);
     }
 
 }
