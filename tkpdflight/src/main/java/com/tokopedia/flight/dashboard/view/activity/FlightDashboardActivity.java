@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatDelegate;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.di.component.HasComponent;
-import com.tokopedia.abstraction.utils.Constants;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.applink.ApplinkConstant;
 import com.tokopedia.flight.common.view.BaseFlightActivity;
