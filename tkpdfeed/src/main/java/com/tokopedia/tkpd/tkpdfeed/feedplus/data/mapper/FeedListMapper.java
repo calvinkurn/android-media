@@ -263,7 +263,9 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
                         = convertToKolRecommendationDomain(datum.content().kolrecommendation());
                 FavoriteCtaDomain favoriteCta
                         = convertToFavoriteCtaDomain(datum.content().favorite_cta());
-                KolCtaDomain kolCtaDomain = convertToKolCtaDomain(datum.content().kol_cta());
+                KolCtaDomain kolCtaDomain = datum.content().kol_cta() != null ?
+                        convertToKolCtaDomain(datum.content().kol_cta()) :
+                        null;
                 ContentFeedDomain contentFeedDomain = createContentFeedDomain(
                         datum.content(),
                         productFeedDomains,
@@ -353,7 +355,8 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
                     kolpost.userInfo() == null ? "" : kolpost.userInfo(),
                     kolpost.headerTitle() == null ? "" : kolpost.headerTitle(),
                     kolpost.userUrl() == null ? "" : kolpost.userUrl(),
-                    kolpost.userId() == null ? 0 : kolpost.userId());
+                    kolpost.userId() == null ? 0 : kolpost.userId(),
+                    true);
         } else if (datum.content().followedkolpost() != null) {
             FeedQuery.Data.Followedkolpost kolpost = datum.content()
                     .followedkolpost();
@@ -379,7 +382,8 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
                     kolpost.userInfo() == null ? "" : kolpost.userInfo(),
                     "",
                     kolpost.userUrl() == null ? "" : kolpost.userUrl(),
-                    kolpost.userId() == null ? 0 : kolpost.userId());
+                    kolpost.userId() == null ? 0 : kolpost.userId(),
+                    true);
         } else {
             return null;
         }
