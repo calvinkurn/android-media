@@ -284,7 +284,19 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void setProductList(List<Visitable> list) {
+        sendProductImpressionTrackingEvent(list);
         adapter.appendItems(list);
+    }
+
+    private void sendProductImpressionTrackingEvent(List<Visitable> list) {
+        String userId = SessionHandler.isV4Login(getContext()) ? SessionHandler.getLoginID(getContext()) : "";
+        List<Object> dataLayerList = new ArrayList<>();
+        for(Visitable object : list) {
+            if (object instanceof ProductItem) {
+                dataLayerList.add(((ProductItem) object).getProductAsObjectDataLayer(userId));
+            }
+        }
+        SearchTracking.eventImpressionSearchResultProduct(dataLayerList, getQueryKey());
     }
 
     @Override

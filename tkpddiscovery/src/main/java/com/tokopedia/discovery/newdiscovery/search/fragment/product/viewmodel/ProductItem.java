@@ -168,7 +168,7 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
         return typeFactory.type(this);
     }
 
-    public Object getListProductAsObjectDataLayer(String userId) {
+    public Object getProductAsObjectDataLayer(String userId) {
         return DataLayer.mapOf(
                 "name", getProductName(),
                 "id", getProductID(),
