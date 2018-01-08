@@ -84,7 +84,7 @@
                 android:enabled="false"
                 android:fontFamily="sans-serif"
                 android:gravity="center"
-                android:text="@string/change_phone_number"
+                android:text="@string/button_continue"
                 android:textColor="@color/black_12"
                 android:textSize="13sp"
                 android:textStyle="bold" />
