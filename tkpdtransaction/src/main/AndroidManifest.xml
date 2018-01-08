@@ -50,7 +50,7 @@
             android:label="@string/toko_cash_info" />
         <activity
             android:name=".bcaoneklik.activity.CreditCardAuthenticationActivity"
-            android:label="Pengaturan Autentikasi" />
+            android:label="@string/menu_credit_card_authentication" />
         <activity android:name=".bcaoneklik.BcaOneClickActivity" />
         <activity android:name=".bcaoneklik.BcaOneClickEditActivity" />
         <activity

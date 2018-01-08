@@ -234,7 +234,7 @@ public class PaymentSettingMainAdapter extends RecyclerView.Adapter<RecyclerView
         }
 
         void bindCreditCardItem(CreditCardModelItem item) {
-            cardNumber.setText(item.getMaskedNumber());
+            cardNumber.setText(" * * * * " + item.getMaskedNumber().substring(12));
             ImageHandler.LoadImage(cardImage, item.getCardTypeImage());
         }
     }

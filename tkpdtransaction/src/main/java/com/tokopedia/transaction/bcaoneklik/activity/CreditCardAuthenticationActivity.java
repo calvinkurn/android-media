@@ -2,9 +2,11 @@ package com.tokopedia.transaction.bcaoneklik.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Toast;
 
@@ -107,5 +109,39 @@ public class CreditCardAuthenticationActivity extends TActivity
     public void showErrorMessage(String errorMessage) {
         dialog.dismiss();
         NetworkErrorHelper.showSnackbar(this, errorMessage);
+    }
+
+    @Override
+    protected void setupToolbar() {
+        toolbar = (Toolbar) findViewById(com.tokopedia.core.R.id.app_bar);
+        toolbar.setTitle(getTitle());
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
+        if (isLightToolbarThemes()) {
+            setLightToolbarStyle();
+        }
+    }
+
+    private void setLightToolbarStyle() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.setBackgroundResource(com.tokopedia.core.R.color.white);
+        } else {
+            toolbar.setBackgroundResource(com.tokopedia.core.R.drawable.bg_white_toolbar_drop_shadow);
+        }
+
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_black_24dp);
+
+        toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.WebViewToolbarText);
+        toolbar.setSubtitleTextAppearance(this, com.tokopedia.core.R.style
+                .WebViewToolbarSubtitleText);
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }
