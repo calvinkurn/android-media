@@ -394,28 +394,36 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     public void onBuyClick() {
         if (SessionHandler.isV4Login(getActivity())) {
-            String weightProduct = "";
-            switch (productData.getInfo().getProductWeightUnit()) {
-                case "gr":
-                    weightProduct = String.valueOf((Float.parseFloat(productData.getInfo()
-                            .getProductWeight())) / 1000);
-                    break;
-                case "kg":
-                    weightProduct = productData.getInfo().getProductWeight();
-                    break;
+            if (variantLevel1!=null) {
+                String weightProduct = "";
+                switch (productData.getInfo().getProductWeightUnit()) {
+                    case "gr":
+                        weightProduct = String.valueOf((Float.parseFloat(productData.getInfo()
+                                .getProductWeight())) / 1000);
+                        break;
+                    case "kg":
+                        weightProduct = productData.getInfo().getProductWeight();
+                        break;
+                }
+                ProductCartPass pass = ProductCartPass.Builder.aProductCartPass()
+                        .setImageUri(productData.getProductImages().get(0).getImageSrc300())
+                        .setMinOrder(Integer.parseInt(productData.getInfo().getProductMinOrder()))
+                        .setProductId(String.valueOf(productData.getInfo().getProductId()))
+                        .setProductName(productData.getInfo().getProductName())
+                        .setWeight(weightProduct)
+                        .setShopId(productData.getShopInfo().getShopId())
+                        .setPrice(productData.getInfo().getProductPrice())
+                        .build();
+                if (!productData.getBreadcrumb().isEmpty())
+                    pass.setProductCategory(productData.getBreadcrumb().get(0).getDepartmentName());
+                onProductBuySessionLogin(pass);
+            } else {
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(VariantActivity.KEY_VARIANT_DATA, productVariant);
+                bundle.putParcelable(VariantActivity.KEY_PRODUCT_DETAIL_DATA, productData);
+                onVariantClicked(bundle);
             }
-            ProductCartPass pass = ProductCartPass.Builder.aProductCartPass()
-                    .setImageUri(productData.getProductImages().get(0).getImageSrc300())
-                    .setMinOrder(Integer.parseInt(productData.getInfo().getProductMinOrder()))
-                    .setProductId(String.valueOf(productData.getInfo().getProductId()))
-                    .setProductName(productData.getInfo().getProductName())
-                    .setWeight(weightProduct)
-                    .setShopId(productData.getShopInfo().getShopId())
-                    .setPrice(productData.getInfo().getProductPrice())
-                    .build();
-            if (!productData.getBreadcrumb().isEmpty())
-                pass.setProductCategory(productData.getBreadcrumb().get(0).getDepartmentName());
-            onProductBuySessionLogin(pass);
+
         } else {
             Bundle bundle = new Bundle();
             bundle.putBoolean("login", true);
