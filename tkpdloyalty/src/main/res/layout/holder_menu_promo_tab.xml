@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="75dp"
+              android:gravity="center"
+              android:orientation="vertical"
+              android:padding="5dp">
+
+    <com.tokopedia.core.customwidget.SquareImageView
+        android:id="@+id/iv_icon"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_gravity="center"
+        tools:src="@drawable/ic_tokocash_icon"/>
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:maxLines="1"
+        android:paddingTop="3dp"
+        android:textColor="@color/grey_600"
+        android:textSize="11sp"
+        tools:text="Jual Beli"/>
+</LinearLayout>

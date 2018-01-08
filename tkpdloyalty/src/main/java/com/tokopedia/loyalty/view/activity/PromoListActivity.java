@@ -7,13 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -22,20 +16,18 @@ import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.design.quickfilter.QuickFilterView;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.R2;
 import com.tokopedia.loyalty.di.component.DaggerPromoListActivityComponent;
 import com.tokopedia.loyalty.di.component.PromoListActivityComponent;
 import com.tokopedia.loyalty.di.module.PromoListActivityModule;
 import com.tokopedia.loyalty.view.adapter.PromoPagerAdapter;
+import com.tokopedia.loyalty.view.compoundview.MenuPromoTab;
 import com.tokopedia.loyalty.view.data.PromoMenuData;
 import com.tokopedia.loyalty.view.presenter.IPromoListActivityPresenter;
 import com.tokopedia.loyalty.view.view.IPromoListActivityView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -123,7 +115,9 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
             Toast.makeText(this, promoMenuData.getTitle(), Toast.LENGTH_SHORT).show();
         }
         for (int i = 0; i < promoMenuDataList.size(); i++) {
-            tabLayout.addTab(tabLayout.newTab().setText(promoMenuDataList.get(i).getTitle()).setIcon(R.drawable.ic_action_send));
+            MenuPromoTab menuPromoTab = new MenuPromoTab(this);
+            menuPromoTab.renderData(promoMenuDataList.get(i));
+            tabLayout.addTab(tabLayout.newTab().setCustomView(menuPromoTab));
         }
         viewPager.setOffscreenPageLimit(promoMenuDataList.size());
         adapter = new PromoPagerAdapter(getFragmentManager(), promoMenuDataList);
@@ -148,12 +142,16 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());
-                tab.setIcon(R.drawable.ic_action_send);
+                if (tab.getCustomView() != null) {
+                    ((MenuPromoTab) tab.getCustomView()).renderActiveState();
+                }
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                tab.setIcon(R.drawable.ic_wishlist);
+                if (tab.getCustomView() != null) {
+                    ((MenuPromoTab) tab.getCustomView()).renderNormalState();
+                }
             }
 
             @Override
