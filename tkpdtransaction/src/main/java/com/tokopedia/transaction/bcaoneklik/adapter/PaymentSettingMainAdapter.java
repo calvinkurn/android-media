@@ -169,48 +169,19 @@ public class PaymentSettingMainAdapter extends RecyclerView.Adapter<RecyclerView
 
         private View addCreditCardLayout;
 
-        private View overflowButton;
-
         CreditCardAdderViewHolder(View itemView) {
             super(itemView);
 
             addCreditCardLayout = itemView.findViewById(R.id.add_credit_card_layout);
 
-            overflowButton = itemView.findViewById(R.id.credit_card_menu_button);
         }
 
         void bindCreditCardHeader(List<CreditCardModelItem> listOfCreditCards) {
-            overflowButton.setOnClickListener(onCreditCardMenuClickedListener());
             if(listOfCreditCards.size() == 0) {
                 addCreditCardLayout.setVisibility(View.VISIBLE);
-                overflowButton.setVisibility(View.GONE);
             } else {
                 addCreditCardLayout.setVisibility(View.GONE);
             }
-        }
-
-        private View.OnClickListener onCreditCardMenuClickedListener() {
-            return new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    PopupMenu popupMenu = new PopupMenu(context, v);
-                    popupMenu
-                            .getMenuInflater()
-                            .inflate(R.menu.menu_payment_setting_credit_card, popupMenu.getMenu());
-
-                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem item) {
-                            if(item.getItemId() == R.id.credit_card_edit_authentication) {
-                                presenter.checkCreditCardWhiteList();
-                                return true;
-                            }
-                            return false;
-                        }
-                    });
-                    popupMenu.show();
-                }
-            };
         }
 
     }

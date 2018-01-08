@@ -18,7 +18,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/small_dp"
             android:layout_marginStart="@dimen/small_dp"
-            android:text="@string/title_credit_card"
+            android:text="Autentikasi Pembayaran Kartu Kredit"
             android:textSize="@dimen/font_medium" />
 
         <ImageView
@@ -32,7 +32,7 @@
             android:paddingLeft="@dimen/small_dp"
             android:paddingRight="@dimen/small_dp"
             android:paddingStart="@dimen/small_dp"
-            android:src="@drawable/ic_new_action_overflow_black" />
+            android:src="@drawable/ic_chevron_right" />
 
     </RelativeLayout>
 
