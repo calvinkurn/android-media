@@ -32,6 +32,7 @@ import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.listener.StepperListener;
+import com.tokopedia.seller.shop.common.tracking.TrackingOpenShop;
 import com.tokopedia.seller.shop.open.data.model.OpenShopCouriersModel;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.util.ShopErrorHandler;
@@ -72,6 +73,9 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     private View vLoading;
     private CourierListViewGroup courierListViewGroup;
     private TkpdProgressDialog tkpdProgressDialog;
+
+    @Inject
+    TrackingOpenShop trackingOpenShop;
 
     public static ShopOpenMandatoryLogisticFragment newInstance() {
         return new ShopOpenMandatoryLogisticFragment();
@@ -229,6 +233,7 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
 
     @Override
     public void onCourierServiceInfoIconClicked(String title, String description) {
+        trackingOpenShop.eventOpenShopShippingServices(title);
         BottomSheetDialog dialog = new BottomSheetDialog(getActivity());
         dialog.setContentView(R.layout.shipping_info_bottom_sheet);
 
@@ -258,6 +263,7 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     @Override
     public void onErrorSaveCourier(Throwable t) {
         hideSubmitLoading();
+        trackingOpenShop.eventOpenShopShippingError(ShopErrorHandler.getErrorMessage(t));
         SnackbarRetry snackbarSubmitRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(),
                 ShopErrorHandler.getErrorMessage(t), new NetworkErrorHelper.RetryClickedListener() {
                     @Override
@@ -281,6 +287,7 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
         GlobalCacheManager globalCacheManager = new GlobalCacheManager();
         globalCacheManager.delete(ProfileSourceFactory.KEY_PROFILE_DATA);
         AppWidgetUtil.sendBroadcastToAppWidget(getActivity());
+        trackingOpenShop.eventOpenShopShippingSuccess();
         onShopStepperListener.finishPage();
     }
 

@@ -17,6 +17,7 @@ import com.tokopedia.seller.shop.common.di.ShopQualifier;
 import com.tokopedia.seller.shop.common.di.ShopScope;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
+import com.tokopedia.seller.shop.common.tracking.TrackingOpenShop;
 import com.tokopedia.seller.shop.open.data.source.cloud.api.TomeApi;
 
 import dagger.Component;
@@ -59,4 +60,6 @@ public interface ShopComponent {
     Retrofit baseDomainRetrofit();
 
     ShopInfoRepository shopInfoRepository();
+
+    TrackingOpenShop trackingOpenShop();
 }
