@@ -503,10 +503,10 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     }
 
     @Override
-    public void renderDefaultPickupLocation(double latitude, double longitude, String sourceAddress) {
+    public void renderDefaultPickupLocation(double latitude, double longitude, String title, String sourceAddress) {
         source = new PlacePassViewModel();
         source.setAddress(sourceAddress);
-        source.setTitle(sourceAddress);
+        source.setTitle(title);
         source.setAndFormatLatitude(latitude);
         source.setAndFormatLongitude(longitude);
         proccessToRenderRideProduct();

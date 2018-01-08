@@ -23,6 +23,7 @@ public interface PlaceApi {
     @GET("/maps/api/distancematrix/{output}")
     Observable<DistanceMatrixEntity> getDistanceMatrix(@Path("output") String output, @QueryMap Map<String, Object> params);
 
-    @GET("https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyCRkgwGBe8ZxjcK07Cnl3Auf72BpgA6lLo")
-    Observable<JsonObject> getAddressFromGoogleAPI(@Query("address") String address);
+    //@GET("https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyCRkgwGBe8ZxjcK07Cnl3Auf72BpgA6lLo")
+    @GET("https://maps.googleapis.com/maps/api/geocode/json")
+    Observable<JsonObject> getAddressFromGoogleAPI(@Query("key") String key, @Query("address") String address);
 }

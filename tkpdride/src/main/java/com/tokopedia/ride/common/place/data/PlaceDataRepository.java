@@ -47,17 +47,17 @@ public class PlaceDataRepository implements PlaceRepository {
     }
 
     @Override
-    public Observable<ReverseGeoCodeAddress> getAddressFromGoogleAPI(final String address) {
+    public Observable<ReverseGeoCodeAddress> getAddressFromGoogleAPI(final String key, final String address) {
         return placeDataStoreFactory.createCloudPlaceDataStore()
-                .getAddressFromGoogleAPI(address).map(new Func1<JsonObject, ReverseGeoCodeAddress>() {
+                .getAddressFromGoogleAPI(key, address).map(new Func1<JsonObject, ReverseGeoCodeAddress>() {
                     @Override
                     public ReverseGeoCodeAddress call(JsonObject jsonObject) {
-                       JsonArray jsonElements= jsonObject.getAsJsonArray("results");
-                        ReverseGeoCodeAddress reverseGeoCodeAddress=new ReverseGeoCodeAddress();
-                       if(jsonElements!=null && jsonElements.size()>0) {
-                           Gson gson = new Gson();
+                        JsonArray jsonElements = jsonObject.getAsJsonArray("results");
+                        ReverseGeoCodeAddress reverseGeoCodeAddress = new ReverseGeoCodeAddress();
+                        if (jsonElements != null && jsonElements.size() > 0) {
+                            Gson gson = new Gson();
                             reverseGeoCodeAddress = (ReverseGeoCodeAddress) gson.fromJson(jsonElements.get(0), ReverseGeoCodeAddress.class);
-                           }
+                        }
 
                         return reverseGeoCodeAddress;
                     }

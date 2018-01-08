@@ -16,6 +16,6 @@ public interface PlaceDataStore {
 
     Observable<DistanceMatrixEntity> getDistanceMarix(String output, TKPDMapParam<String, Object> param);
 
-    Observable<JsonObject> getAddressFromGoogleAPI(String address);
+    Observable<JsonObject> getAddressFromGoogleAPI(String key, String address);
 
 }

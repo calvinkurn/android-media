@@ -17,10 +17,11 @@ public class GetLocationAddressUseCase extends UseCase<ReverseGeoCodeAddress> {
     private final PlaceRepository placeRepository;
     public static String PARAM_LATITUDE = "latitude";
     public static String PARAM_LONGITUDE = "longitude";
+    public static final String PARAM_KEY = "key";
 
     public GetLocationAddressUseCase(ThreadExecutor threadExecutor,
-                                    PostExecutionThread postExecutionThread,
-                                    PlaceRepository placeRepository) {
+                                     PostExecutionThread postExecutionThread,
+                                     PlaceRepository placeRepository) {
         super(threadExecutor, postExecutionThread);
         this.placeRepository = placeRepository;
     }
@@ -28,9 +29,11 @@ public class GetLocationAddressUseCase extends UseCase<ReverseGeoCodeAddress> {
 
     @Override
     public Observable<ReverseGeoCodeAddress> createObservable(RequestParams requestParams) {
-        String address=requestParams.getString(PARAM_LATITUDE , "")
-                + "," + requestParams.getString(PARAM_LONGITUDE , "");
+        String address = requestParams.getString(PARAM_LATITUDE, "")
+                + "," + requestParams.getString(PARAM_LONGITUDE, "");
 
-        return placeRepository.getAddressFromGoogleAPI(address);
+        String key = requestParams.getString(PARAM_KEY, "");
+
+        return placeRepository.getAddressFromGoogleAPI(key, address);
     }
 }

@@ -22,10 +22,15 @@ import com.google.android.gms.maps.model.LatLng;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.base.presentation.BaseFragment;
+import com.tokopedia.ride.bookingride.di.BookingRideComponent;
+import com.tokopedia.ride.bookingride.di.DaggerBookingRideComponent;
 import com.tokopedia.ride.bookingride.view.SelectLocationOnMapContract;
 import com.tokopedia.ride.bookingride.view.SelectLocationOnMapPresenter;
 import com.tokopedia.ride.bookingride.view.TouchableWrapperLayout;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
+import com.tokopedia.ride.common.ride.di.RideComponent;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -51,7 +56,9 @@ public class SelectLocationOnMapFragment extends BaseFragment implements SelectL
     @BindView(R2.id.btn_done)
     TextView doneBtn;
 
-    private SelectLocationOnMapContract.Presenter mPresenter;
+    @Inject
+    SelectLocationOnMapPresenter mPresenter;
+
     private OnFragmentInteractionListener mListener;
     private GoogleMap mGoogleMap;
     private PlacePassViewModel locationDragged;
@@ -77,7 +84,7 @@ public class SelectLocationOnMapFragment extends BaseFragment implements SelectL
     }
 
 
-    public static SelectLocationOnMapFragment newInstance(PlacePassViewModel source,int markerId) {
+    public static SelectLocationOnMapFragment newInstance(PlacePassViewModel source, int markerId) {
         SelectLocationOnMapFragment fragment = new SelectLocationOnMapFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_DEFAULT_LOCATION, source);
@@ -102,7 +109,12 @@ public class SelectLocationOnMapFragment extends BaseFragment implements SelectL
 
     @Override
     protected void initInjector() {
-
+        RideComponent component = getComponent(RideComponent.class);
+        BookingRideComponent bookingRideComponent = DaggerBookingRideComponent
+                .builder()
+                .rideComponent(component)
+                .build();
+        bookingRideComponent.inject(this);
     }
 
     @Override
@@ -184,7 +196,7 @@ public class SelectLocationOnMapFragment extends BaseFragment implements SelectL
     }
 
     private void setInitialVariable() {
-        mPresenter = new SelectLocationOnMapPresenter();
+        //mPresenter = new SelectLocationOnMapPresenter();
     }
 
     private void setMapViewListener() {

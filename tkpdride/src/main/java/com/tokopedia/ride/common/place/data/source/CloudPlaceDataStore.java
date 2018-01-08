@@ -31,7 +31,7 @@ public class CloudPlaceDataStore implements PlaceDataStore {
     }
 
     @Override
-    public Observable<JsonObject> getAddressFromGoogleAPI(String address) {
-        return this.placeApi.getAddressFromGoogleAPI(address);
+    public Observable<JsonObject> getAddressFromGoogleAPI(String key, String address) {
+        return this.placeApi.getAddressFromGoogleAPI(key, address);
     }
 }

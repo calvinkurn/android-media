@@ -18,6 +18,6 @@ public interface PlaceRepository {
 
     Observable<DistanceMatrixEntity> getDistanceMatrix(TKPDMapParam<String, Object> param);
 
-    Observable<ReverseGeoCodeAddress> getAddressFromGoogleAPI(String address);
+    Observable<ReverseGeoCodeAddress> getAddressFromGoogleAPI(String key, String address);
 
 }
