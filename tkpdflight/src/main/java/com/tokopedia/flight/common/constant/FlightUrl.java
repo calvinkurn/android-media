@@ -20,8 +20,9 @@ public class FlightUrl {
     public static String BASE_URL = "https://api-staging.tokopedia.com";
     public static String WEB_DOMAIN = "https://www.tokopedia.com/";
     public static String ALL_PROMO_LINK = WEB_DOMAIN + "promo/";
-    public static String CONTACT_US_FLIGHT = WEB_DOMAIN + "contact-us";
-    public static String PULSA_BASE_URL = "https://pulsa-api.tokopedia.com/";
+    public static String CONTACT_US = WEB_DOMAIN + "contact-us";
+    public static String CONTACT_US_FLIGHT_PREFIX = WEB_DOMAIN + "contact-us?ep=";
+    public static String PULSA_BASE_URL = "https://pulsa-api-staging.tokopedia.com/";
     public static String BANNER_PATH = PULSA_BASE_URL + "v1.4/banner";
 
     public static String getUrlPdf(String orderId){

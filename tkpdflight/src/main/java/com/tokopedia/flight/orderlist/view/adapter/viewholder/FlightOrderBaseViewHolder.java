@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.PopupMenu;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
@@ -29,7 +30,7 @@ import java.util.List;
  * Created by alvarisi on 12/13/17.
  */
 
-public abstract class FlightOrderBaseViewHolder<T> extends AbstractViewHolder<T> {
+public abstract class FlightOrderBaseViewHolder<T extends Visitable> extends AbstractViewHolder<T> {
     private AppCompatImageView ivOverflow;
     private AppCompatImageView ivJourneyArrow;
     private RecyclerView rvDepartureSchedule;
@@ -65,7 +66,7 @@ public abstract class FlightOrderBaseViewHolder<T> extends AbstractViewHolder<T>
     }
 
     protected void setSingleArrow() {
-        ivJourneyArrow.setImageResource(R.drawable.ic_arrow_right);
+        ivJourneyArrow.setImageResource(R.drawable.ic_arrow_right_flight);
     }
 
     protected CharSequence getAirportTextForView(String airportId, String cityCode, String cityName) {

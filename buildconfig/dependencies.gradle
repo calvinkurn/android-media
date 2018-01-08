@@ -23,6 +23,7 @@ ext {
     tkpdDesignVersion = '1.+'
     tkpdFeedVersion = '1.+'
     tkpdRideVersion = '1.+'
+    tkpdLoyaltyVersion = '1.+'
     tkpdReactNativeVersion = '1.+'
     tkpdFlightVersion = '1.+'
     compileSdkVersion = 26
@@ -192,12 +193,13 @@ ext {
             feed       : "com.tokopedia.feed:feed:${tkpdFeedVersion}",
             ride       : "com.tokopedia.ride:ride:${tkpdRideVersion}",
             reactNative: "com.tokopedia.tkpdreactnative:reactnative:${tkpdReactNativeVersion}",
+            loyalty    : "com.tokopedia.loyalty:loyalty:${tkpdLoyaltyVersion}",
             flight     : "com.tokopedia.flight:flight:${tkpdFlightVersion}",
             flightNoOp : "com.tokopedia.flight:flight-no-op:${tkpdFlightVersion}",
     ]
 
     tkpdLibDependencies = [
-            expandableOption: "com.tokopedia.tkpdlib:expandableoption:0.5.9",
+            expandableOption: "com.tokopedia.tkpdlib:expandableoption:0.6.1",
             showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.5.11"
     ]
 

@@ -12,5 +12,7 @@ public interface UserSession {
 
     String getUserId();
 
+    String getDeviceId();
+
     boolean isLoggedIn();
 }

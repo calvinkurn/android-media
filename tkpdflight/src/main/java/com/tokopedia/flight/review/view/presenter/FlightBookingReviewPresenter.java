@@ -73,15 +73,16 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
         ).flatMap(new Func1<DataResponseVerify, Observable<FlightCheckoutEntity>>() {
             @Override
             public Observable<FlightCheckoutEntity> call(DataResponseVerify dataResponseVerify) {
-                if (dataResponseVerify.getAttributesData().getCartItems().size() > 0) {
+                if (dataResponseVerify.getAttributesData().getCartItems() != null && dataResponseVerify.getAttributesData().getCartItems().size() > 0) {
                     CartItem verifyCartItem = dataResponseVerify.getAttributesData().getCartItems().get(0);
                     int totalPrice = verifyCartItem.getConfiguration().getPrice();
-                    String flightId = verifyCartItem.getMetaData().getFlightId();
+                    String flightId = verifyCartItem.getMetaData().getInvoiceId();
+                    String cartId = verifyCartItem.getMetaData().getCartId();
                     RequestParams requestParams;
                     if (dataResponseVerify.getAttributesData().getPromo() != null && dataResponseVerify.getAttributesData().getPromo().getCode().length() > 0) {
-                        requestParams = flightBookingCheckoutUseCase.createRequestParam(flightId, totalPrice, dataResponseVerify.getAttributesData().getPromo().getCode());
+                        requestParams = flightBookingCheckoutUseCase.createRequestParam(cartId, flightId, totalPrice, dataResponseVerify.getAttributesData().getPromo().getCode());
                     } else {
-                        requestParams = flightBookingCheckoutUseCase.createRequestParam(flightId, totalPrice);
+                        requestParams = flightBookingCheckoutUseCase.createRequestParam(cartId, flightId, totalPrice);
                     }
                     return flightBookingCheckoutUseCase.createObservable(requestParams);
                 }

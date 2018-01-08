@@ -29,8 +29,8 @@ public class FlightSearchViewModel implements ItemType, Parcelable, Visitable<Fi
     public static final int ONE_HOURS_DAY = 2400;
     public static final Creator<FlightSearchViewModel> CREATOR = new Creator<FlightSearchViewModel>() {
         @Override
-        public FlightSearchViewModel createFromParcel(Parcel source) {
-            return new FlightSearchViewModel(source);
+        public FlightSearchViewModel createFromParcel(Parcel in) {
+            return new FlightSearchViewModel(in);
         }
 
         @Override
@@ -101,32 +101,30 @@ public class FlightSearchViewModel implements ItemType, Parcelable, Visitable<Fi
     }
 
     protected FlightSearchViewModel(Parcel in) {
-        this.id = in.readString();
-        this.type = in.readString();
-        this.term = in.readString();
-        this.departureAirport = in.readString();
-        this.departureAirportName = in.readString();
-        this.departureAirportCity = in.readString();
-        this.departureTime = in.readString();
-        this.departureTimeInt = in.readInt();
-        this.arrivalAirport = in.readString();
-        this.arrivalTime = in.readString();
-        this.arrivalAirportName = in.readString();
-        this.arrivalAirportCity = in.readString();
-        this.arrivalTimeInt = in.readInt();
-        this.totalTransit = in.readInt();
-        this.addDayArrival = in.readInt();
-        this.duration = in.readString();
-        this.durationMinute = in.readInt();
-        this.total = in.readString();
-        this.totalNumeric = in.readInt();
-        this.beforeTotal = in.readString();
-        int tmpIsRefundable = in.readInt();
-        this.isRefundable = tmpIsRefundable == -1 ? null : RefundableEnum.values()[tmpIsRefundable];
-        this.isReturning = in.readByte() != 0;
-        this.fare = in.readParcelable(Fare.class.getClassLoader());
-        this.routeList = in.createTypedArrayList(Route.CREATOR);
-        this.airlineDataList = in.createTypedArrayList(FlightAirlineDB.CREATOR);
+        term = in.readString();
+        id = in.readString();
+        type = in.readString();
+        departureAirport = in.readString();
+        departureAirportName = in.readString();
+        departureAirportCity = in.readString();
+        departureTime = in.readString();
+        departureTimeInt = in.readInt();
+        arrivalAirport = in.readString();
+        arrivalTime = in.readString();
+        arrivalAirportName = in.readString();
+        arrivalAirportCity = in.readString();
+        arrivalTimeInt = in.readInt();
+        totalTransit = in.readInt();
+        addDayArrival = in.readInt();
+        duration = in.readString();
+        durationMinute = in.readInt();
+        total = in.readString();
+        totalNumeric = in.readInt();
+        beforeTotal = in.readString();
+        isReturning = in.readByte() != 0;
+        fare = in.readParcelable(Fare.class.getClassLoader());
+        routeList = in.createTypedArrayList(Route.CREATOR);
+        airlineDataList = in.createTypedArrayList(FlightAirlineDB.CREATOR);
     }
 
     public void mergeWithAirportAndAirlines(HashMap<String, FlightAirlineDB> dbAirlineMaps,
@@ -143,12 +141,13 @@ public class FlightSearchViewModel implements ItemType, Parcelable, Visitable<Fi
                     String airlineNameFromMap = dbAirlineMaps.get(airlineID).getFullName();
                     String airlineShortNameFromMap = dbAirlineMaps.get(airlineID).getShortName();
                     String airlineLogoFromMap = dbAirlineMaps.get(airlineID).getLogo();
+                    int mandatory = dbAirlineMaps.get(airlineID).getMandatoryDob();
                     route.setAirlineName(airlineNameFromMap);
                     route.setAirlineLogo(airlineLogoFromMap);
                     addedAirlineIDList.add(airlineID);
-                    airlineDBArrayList.add(new FlightAirlineDB(airlineID, airlineNameFromMap, airlineShortNameFromMap, airlineLogoFromMap));
+                    airlineDBArrayList.add(new FlightAirlineDB(airlineID, airlineNameFromMap, airlineShortNameFromMap, airlineLogoFromMap, mandatory));
                 } else {
-                    airlineDBArrayList.add(new FlightAirlineDB(airlineID, "", "", ""));
+                    airlineDBArrayList.add(new FlightAirlineDB(airlineID, "", "", "", 0));
                 }
             }
 
@@ -320,41 +319,40 @@ public class FlightSearchViewModel implements ItemType, Parcelable, Visitable<Fi
     }
 
     @Override
+    public int type(FilterSearchAdapterTypeFactory typeFactory) {
+        return typeFactory.type(this);
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.id);
-        dest.writeString(this.type);
-        dest.writeString(this.term);
-        dest.writeString(this.departureAirport);
-        dest.writeString(this.departureAirportName);
-        dest.writeString(this.departureAirportCity);
-        dest.writeString(this.departureTime);
-        dest.writeInt(this.departureTimeInt);
-        dest.writeString(this.arrivalAirport);
-        dest.writeString(this.arrivalTime);
-        dest.writeString(this.arrivalAirportName);
-        dest.writeString(this.arrivalAirportCity);
-        dest.writeInt(this.arrivalTimeInt);
-        dest.writeInt(this.totalTransit);
-        dest.writeInt(this.addDayArrival);
-        dest.writeString(this.duration);
-        dest.writeInt(this.durationMinute);
-        dest.writeString(this.total);
-        dest.writeInt(this.totalNumeric);
-        dest.writeString(this.beforeTotal);
-        dest.writeInt(this.isRefundable == null ? -1 : this.isRefundable.ordinal());
-        dest.writeByte(this.isReturning ? (byte) 1 : (byte) 0);
-        dest.writeParcelable(this.fare, flags);
-        dest.writeTypedList(this.routeList);
-        dest.writeTypedList(this.airlineDataList);
-    }
-
-    @Override
-    public int type(FilterSearchAdapterTypeFactory typeFactory) {
-        return typeFactory.type(this);
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(term);
+        parcel.writeString(id);
+        parcel.writeString(type);
+        parcel.writeString(departureAirport);
+        parcel.writeString(departureAirportName);
+        parcel.writeString(departureAirportCity);
+        parcel.writeString(departureTime);
+        parcel.writeInt(departureTimeInt);
+        parcel.writeString(arrivalAirport);
+        parcel.writeString(arrivalTime);
+        parcel.writeString(arrivalAirportName);
+        parcel.writeString(arrivalAirportCity);
+        parcel.writeInt(arrivalTimeInt);
+        parcel.writeInt(totalTransit);
+        parcel.writeInt(addDayArrival);
+        parcel.writeString(duration);
+        parcel.writeInt(durationMinute);
+        parcel.writeString(total);
+        parcel.writeInt(totalNumeric);
+        parcel.writeString(beforeTotal);
+        parcel.writeByte((byte) (isReturning ? 1 : 0));
+        parcel.writeParcelable(fare, i);
+        parcel.writeTypedList(routeList);
+        parcel.writeTypedList(airlineDataList);
     }
 }

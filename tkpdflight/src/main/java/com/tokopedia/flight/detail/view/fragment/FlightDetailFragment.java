@@ -51,10 +51,8 @@ public class FlightDetailFragment extends BaseListFragment<FlightDetailRouteView
     }
 
     @Override
-    protected void setInitialActionVar() {
-        List<Visitable> visitables = new ArrayList<>();
-        visitables.addAll(flightDetailViewModel.getRouteList());
-        getAdapter().addElement(visitables);
+    public void loadData(int page) {
+        renderList(flightDetailViewModel.getRouteList());
     }
 
     @Override
@@ -72,5 +70,10 @@ public class FlightDetailFragment extends BaseListFragment<FlightDetailRouteView
     @Override
     public int getItemCount() {
         return getAdapter().getItemCount();
+    }
+
+    @Override
+    public void onItemClicked(FlightDetailRouteViewModel flightDetailRouteViewModel) {
+
     }
 }

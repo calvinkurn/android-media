@@ -8,29 +8,15 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class FlightCheckoutRequest {
-    @SerializedName("type")
+    @SerializedName("data")
     @Expose
-    private String type;
-    @SerializedName("attributes")
-    @Expose
-    private FlightCheckoutAttributes attributes;
+    private FlightCheckoutData data;
 
-    public FlightCheckoutRequest() {
+    public FlightCheckoutData getData() {
+        return data;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public FlightCheckoutAttributes getAttributes() {
-        return attributes;
-    }
-
-    public void setAttributes(FlightCheckoutAttributes attributes) {
-        this.attributes = attributes;
+    public void setData(FlightCheckoutData data) {
+        this.data = data;
     }
 }

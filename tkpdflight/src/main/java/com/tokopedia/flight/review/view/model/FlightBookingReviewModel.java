@@ -23,7 +23,7 @@ import java.util.List;
  * Created by zulfikarrahman on 11/23/17.
  */
 
-public class FlightBookingReviewModel implements Parcelable {
+public class FlightBookingReviewModel implements Parcelable{
 
     private String id;
     private FlightDetailViewModel detailViewModelListDeparture;
@@ -76,6 +76,43 @@ public class FlightBookingReviewModel implements Parcelable {
         setDepartureDate(flightBookingParamViewModel.getSearchParam().getDepartureDate());
         setReturnDate(flightBookingParamViewModel.getSearchParam().getReturnDate());
     }
+
+    protected FlightBookingReviewModel(Parcel in) {
+        id = in.readString();
+        detailViewModelListDeparture = in.readParcelable(FlightDetailViewModel.class.getClassLoader());
+        detailViewModelListReturn = in.readParcelable(FlightDetailViewModel.class.getClassLoader());
+        detailPassengers = in.createTypedArrayList(FlightDetailPassenger.CREATOR);
+        flightReviewFares = in.createTypedArrayList(SimpleViewModel.CREATOR);
+        dateFinishTime = in.readString();
+        totalPrice = in.readString();
+        totalPriceNumeric = in.readInt();
+        detailPassengersData = in.createTypedArrayList(FlightBookingPassengerViewModel.CREATOR);
+        phoneCodeViewModel = in.readParcelable(FlightBookingPhoneCodeViewModel.class.getClassLoader());
+        contactName = in.readString();
+        contactEmail = in.readString();
+        contactPhone = in.readString();
+        farePrices = in.createTypedArrayList(NewFarePrice.CREATOR);
+        adult = in.readInt();
+        children = in.readInt();
+        infant = in.readInt();
+        returnTripId = in.readString();
+        flightClass = in.readParcelable(FlightClassViewModel.class.getClassLoader());
+        departureDate = in.readString();
+        returnDate = in.readString();
+        departureTripId = in.readString();
+    }
+
+    public static final Creator<FlightBookingReviewModel> CREATOR = new Creator<FlightBookingReviewModel>() {
+        @Override
+        public FlightBookingReviewModel createFromParcel(Parcel in) {
+            return new FlightBookingReviewModel(in);
+        }
+
+        @Override
+        public FlightBookingReviewModel[] newArray(int size) {
+            return new FlightBookingReviewModel[size];
+        }
+    };
 
     public FlightBookingPhoneCodeViewModel getPhoneCodeViewModel() {
         return phoneCodeViewModel;
@@ -308,65 +345,27 @@ public class FlightBookingReviewModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.id);
-        dest.writeParcelable(this.detailViewModelListDeparture, flags);
-        dest.writeParcelable(this.detailViewModelListReturn, flags);
-        dest.writeTypedList(this.detailPassengers);
-        dest.writeTypedList(this.flightReviewFares);
-        dest.writeString(this.dateFinishTime);
-        dest.writeString(this.totalPrice);
-        dest.writeInt(this.totalPriceNumeric);
-        dest.writeTypedList(this.detailPassengersData);
-        dest.writeParcelable(this.phoneCodeViewModel, flags);
-        dest.writeString(this.contactName);
-        dest.writeString(this.contactEmail);
-        dest.writeString(this.contactPhone);
-        dest.writeList(this.farePrices);
-        dest.writeInt(this.adult);
-        dest.writeInt(this.children);
-        dest.writeInt(this.infant);
-        dest.writeString(this.returnTripId);
-        dest.writeParcelable(this.flightClass, flags);
-        dest.writeString(this.departureDate);
-        dest.writeString(this.returnDate);
-        dest.writeString(this.departureTripId);
+        dest.writeString(id);
+        dest.writeParcelable(detailViewModelListDeparture, flags);
+        dest.writeParcelable(detailViewModelListReturn, flags);
+        dest.writeTypedList(detailPassengers);
+        dest.writeTypedList(flightReviewFares);
+        dest.writeString(dateFinishTime);
+        dest.writeString(totalPrice);
+        dest.writeInt(totalPriceNumeric);
+        dest.writeTypedList(detailPassengersData);
+        dest.writeParcelable(phoneCodeViewModel, flags);
+        dest.writeString(contactName);
+        dest.writeString(contactEmail);
+        dest.writeString(contactPhone);
+        dest.writeTypedList(farePrices);
+        dest.writeInt(adult);
+        dest.writeInt(children);
+        dest.writeInt(infant);
+        dest.writeString(returnTripId);
+        dest.writeParcelable(flightClass, flags);
+        dest.writeString(departureDate);
+        dest.writeString(returnDate);
+        dest.writeString(departureTripId);
     }
-
-    protected FlightBookingReviewModel(Parcel in) {
-        this.id = in.readString();
-        this.detailViewModelListDeparture = in.readParcelable(FlightDetailViewModel.class.getClassLoader());
-        this.detailViewModelListReturn = in.readParcelable(FlightDetailViewModel.class.getClassLoader());
-        this.detailPassengers = in.createTypedArrayList(FlightDetailPassenger.CREATOR);
-        this.flightReviewFares = in.createTypedArrayList(SimpleViewModel.CREATOR);
-        this.dateFinishTime = in.readString();
-        this.totalPrice = in.readString();
-        this.totalPriceNumeric = in.readInt();
-        this.detailPassengersData = in.createTypedArrayList(FlightBookingPassengerViewModel.CREATOR);
-        this.phoneCodeViewModel = in.readParcelable(FlightBookingPhoneCodeViewModel.class.getClassLoader());
-        this.contactName = in.readString();
-        this.contactEmail = in.readString();
-        this.contactPhone = in.readString();
-        this.farePrices = new ArrayList<NewFarePrice>();
-        in.readList(this.farePrices, NewFarePrice.class.getClassLoader());
-        this.adult = in.readInt();
-        this.children = in.readInt();
-        this.infant = in.readInt();
-        this.returnTripId = in.readString();
-        this.flightClass = in.readParcelable(FlightClassViewModel.class.getClassLoader());
-        this.departureDate = in.readString();
-        this.returnDate = in.readString();
-        this.departureTripId = in.readString();
-    }
-
-    public static final Creator<FlightBookingReviewModel> CREATOR = new Creator<FlightBookingReviewModel>() {
-        @Override
-        public FlightBookingReviewModel createFromParcel(Parcel source) {
-            return new FlightBookingReviewModel(source);
-        }
-
-        @Override
-        public FlightBookingReviewModel[] newArray(int size) {
-            return new FlightBookingReviewModel[size];
-        }
-    };
 }

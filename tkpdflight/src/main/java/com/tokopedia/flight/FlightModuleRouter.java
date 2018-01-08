@@ -6,6 +6,8 @@ import android.content.Intent;
 
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 
+import okhttp3.Interceptor;
+
 public interface FlightModuleRouter {
 
     long getLongConfig(String flightAirport);
@@ -23,4 +25,6 @@ public interface FlightModuleRouter {
     int getTopPayPaymentCancelCode();
 
     Intent getBannerWebViewIntent(Activity activity, String url);
+
+    Intent getHomeIntent(Context context);
 }

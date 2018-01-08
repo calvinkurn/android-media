@@ -1,7 +1,11 @@
 package com.tokopedia.flight.booking.view.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.View;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
@@ -9,6 +13,7 @@ import com.tokopedia.flight.booking.view.adapter.FlightBookingNationalityAdapter
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPhoneCodePresenterImpl;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPhoneCodeView;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
+import com.tokopedia.flight.common.util.FlightErrorUtil;
 
 import javax.inject.Inject;
 
@@ -34,10 +39,8 @@ public class FlightBookingNationalityFragment extends BaseSearchListFragment<Fli
                 .inject(this);
     }
 
-
     @Override
-    protected void setInitialActionVar() {
-        showLoading();
+    public void loadData(int page) {
         flightBookingPhoneCodePresenter.getPhoneCodeList();
     }
 
@@ -63,5 +66,10 @@ public class FlightBookingNationalityFragment extends BaseSearchListFragment<Fli
     @Override
     public void onSearchTextChanged(String text) {
         flightBookingPhoneCodePresenter.getPhoneCodeList(text);
+    }
+
+    @Override
+    protected String getMessageFromThrowable(Context context, Throwable t) {
+        return FlightErrorUtil.getMessageFromException(context, t);
     }
 }

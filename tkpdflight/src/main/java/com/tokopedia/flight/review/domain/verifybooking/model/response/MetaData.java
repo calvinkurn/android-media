@@ -9,16 +9,16 @@ public class MetaData {
     @SerializedName("cart_id")
     @Expose
     private String cartId;
-    @SerializedName("flight_id")
+    @SerializedName("invoice_id")
     @Expose
-    private String flightId;
+    private String invoiceId;
 
 
     public String getCartId() {
         return cartId;
     }
 
-    public String getFlightId() {
-        return flightId;
+    public String getInvoiceId() {
+        return invoiceId;
     }
 }

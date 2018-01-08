@@ -9,6 +9,7 @@ import com.tokopedia.loyalty.domain.exception.TokoPointDBServiceException;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -59,20 +60,30 @@ public class TokoPointDBService implements ITokoPointDBService {
     public Observable<TokoPointDrawerDataResponse> storePointDrawer(
             TokoPointDrawerDataResponse tokoPointDrawerDataResponse
     ) {
-        return Observable.just(tokoPointDrawerDataResponse)
-                .map(new Func1<TokoPointDrawerDataResponse, TokoPointDrawerDataResponse>() {
-                    @Override
-                    public TokoPointDrawerDataResponse call(
-                            TokoPointDrawerDataResponse tokoPointDrawerDataResponse
-                    ) {
-                        if (tokoPointDrawerDataResponse.getHasNotif() != 1) {
-                            globalCacheManager.setCacheDuration(60);
-                            globalCacheManager.setKey(TkpdCache.Key.KEY_TOKOPOINT_DRAWER_DATA);
-                            globalCacheManager.setValue(gson.toJson(tokoPointDrawerDataResponse));
-                            globalCacheManager.store();
-                        }
-                        return tokoPointDrawerDataResponse;
-                    }
-                });
+        return Observable.just(tokoPointDrawerDataResponse).doOnNext(new Action1<TokoPointDrawerDataResponse>() {
+            @Override
+            public void call(TokoPointDrawerDataResponse tokoPointDrawerDataResponse) {
+                if (tokoPointDrawerDataResponse.getHasNotif() != 1) {
+                    globalCacheManager.setCacheDuration(60);
+                    globalCacheManager.setKey(TkpdCache.Key.KEY_TOKOPOINT_DRAWER_DATA);
+                    globalCacheManager.setValue(gson.toJson(tokoPointDrawerDataResponse));
+                    globalCacheManager.store();
+                }
+            }
+        });
+//                .map(new Func1<TokoPointDrawerDataResponse, TokoPointDrawerDataResponse>() {
+//                    @Override
+//                    public TokoPointDrawerDataResponse call(
+//                            TokoPointDrawerDataResponse tokoPointDrawerDataResponse
+//                    ) {
+//                        if (tokoPointDrawerDataResponse.getHasNotif() != 1) {
+//                            globalCacheManager.setCacheDuration(60);
+//                            globalCacheManager.setKey(TkpdCache.Key.KEY_TOKOPOINT_DRAWER_DATA);
+//                            globalCacheManager.setValue(gson.toJson(tokoPointDrawerDataResponse));
+//                            globalCacheManager.store();
+//                        }
+//                        return tokoPointDrawerDataResponse;
+//                    }
+//                });
     }
 }

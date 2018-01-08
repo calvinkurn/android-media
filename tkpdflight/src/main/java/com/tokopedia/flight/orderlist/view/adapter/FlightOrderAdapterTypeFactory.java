@@ -4,6 +4,7 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder;
 import com.tokopedia.flight.orderlist.view.adapter.viewholder.FlightOrderFailedViewHolder;
 import com.tokopedia.flight.orderlist.view.adapter.viewholder.FlightOrderInProgressViewHolder;
 import com.tokopedia.flight.orderlist.view.adapter.viewholder.FlightOrderRefundViewHolder;

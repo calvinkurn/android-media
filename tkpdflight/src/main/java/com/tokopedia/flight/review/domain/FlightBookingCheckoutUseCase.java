@@ -5,6 +5,7 @@ import com.tokopedia.flight.common.util.FlightRequestUtil;
 import com.tokopedia.flight.review.data.model.FlightCheckoutEntity;
 import com.tokopedia.flight.review.domain.checkout.FlightCheckoutAttributes;
 import com.tokopedia.flight.review.domain.checkout.FlightCheckoutConfiguration;
+import com.tokopedia.flight.review.domain.checkout.FlightCheckoutData;
 import com.tokopedia.flight.review.domain.checkout.FlightCheckoutItem;
 import com.tokopedia.flight.review.domain.checkout.FlightCheckoutMetaData;
 import com.tokopedia.flight.review.domain.checkout.FlightCheckoutRequest;
@@ -24,7 +25,8 @@ import rx.functions.Func1;
  */
 
 public class FlightBookingCheckoutUseCase extends UseCase<FlightCheckoutEntity> {
-    public static final String PARAM_FLIGHT_ID = "flight_id";
+    public static final String PARAM_CART_ID = "cart_id";
+    public static final String PARAM_FLIGHT_ID = "invoice_id";
     public static final String PARAM_PRICE = "price";
     public static final String PARAM_PROMOCODE = "promocode";
     private FlightRepository flightRepository;
@@ -45,8 +47,8 @@ public class FlightBookingCheckoutUseCase extends UseCase<FlightCheckoutEntity> 
     }
 
     private Observable<FlightCheckoutRequest> createRequest(RequestParams requestParams) {
-        FlightCheckoutRequest request = new FlightCheckoutRequest();
-        request.setType("checkout_cart");
+        FlightCheckoutData data = new FlightCheckoutData();
+        data.setType("checkout_cart");
         FlightCheckoutAttributes attributes = new FlightCheckoutAttributes();
         List<FlightCheckoutItem> items = new ArrayList<>();
         FlightCheckoutItem item = new FlightCheckoutItem();
@@ -60,27 +62,32 @@ public class FlightBookingCheckoutUseCase extends UseCase<FlightCheckoutEntity> 
         metaData.setFlightId(requestParams.getString(PARAM_FLIGHT_ID, ""));
         metaData.setIpAddress(FlightRequestUtil.getLocalIpAddress());
         metaData.setUserAgent(FlightRequestUtil.getUserAgentForApiCall());
+        metaData.setCartId(requestParams.getString(PARAM_CART_ID, ""));
         item.setMetaData(metaData);
         items.add(item);
         attributes.setItems(items);
         if (requestParams.getString(PARAM_PROMOCODE, null) == null) {
             attributes.setPromocode(requestParams.getString(PARAM_PROMOCODE, ""));
         }
-        request.setAttributes(attributes);
-        return Observable.just(request);
+        data.setAttributes(attributes);
+        FlightCheckoutRequest checkoutRequest = new FlightCheckoutRequest();
+        checkoutRequest.setData(data);
+        return Observable.just(checkoutRequest);
     }
 
-    public RequestParams createRequestParam(String flightId, int price, String promoCode) {
+    public RequestParams createRequestParam(String cartId, String flightId, int price, String promoCode) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putInt(PARAM_PRICE, price);
+        requestParams.putString(PARAM_CART_ID, cartId);
         requestParams.putString(PARAM_FLIGHT_ID, flightId);
         requestParams.putString(PARAM_PROMOCODE, promoCode);
         return requestParams;
     }
 
-    public RequestParams createRequestParam(String flightId, int price) {
+    public RequestParams createRequestParam(String cartId, String flightId, int price) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putInt(PARAM_PRICE, price);
+        requestParams.putString(PARAM_CART_ID, cartId);
         requestParams.putString(PARAM_FLIGHT_ID, flightId);
         return requestParams;
     }

@@ -10,22 +10,27 @@ import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author by erry on 02/02/17.
  */
 
-public class BaseAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
+public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adapter<AbstractViewHolder> {
 
     protected List<Visitable> visitables;
-    protected AdapterTypeFactory adapterTypeFactory;
-    protected Visitable loadingModel = new LoadingModel();
-    protected Visitable errorNetworkModel = new ErrorNetworkModel();
+    private F adapterTypeFactory;
+    protected LoadingModel loadingModel = new LoadingModel();
+    protected ErrorNetworkModel errorNetworkModel = new ErrorNetworkModel();
 
-    public BaseAdapter(AdapterTypeFactory adapterTypeFactory, List<Visitable> visitables) {
+    public BaseAdapter(F adapterTypeFactory, List<Visitable> visitables) {
         this.adapterTypeFactory = adapterTypeFactory;
         this.visitables = visitables;
+    }
+
+    public BaseAdapter(F adapterTypeFactory) {
+        this(adapterTypeFactory, new ArrayList<Visitable>());
     }
 
     @Override
@@ -53,20 +58,35 @@ public class BaseAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     }
 
     public boolean isLoading() {
-        return visitables.contains(loadingModel);
+        //use last index for performance since loading is in the last item position
+        return visitables.lastIndexOf(loadingModel) != -1;
     }
 
     public void showLoading() {
-        if (!visitables.contains(loadingModel)) {
+        //use last index for performance since loading is in the last item position
+        // note: do not use flag, because loading model can be removed from anywhere
+        if (visitables.lastIndexOf(loadingModel) == -1) {
+            loadingModel.setFullScreen(visitables.size() == 0);
             visitables.add(loadingModel);
-            notifyDataSetChanged();
+            notifyItemInserted(visitables.size());
         }
     }
 
     public void hideLoading() {
-        if (visitables.contains(loadingModel)) {
-            visitables.remove(loadingModel);
-            notifyItemRemoved(visitables.size());
+        //use last index for performance since loading is in the last item position
+        // note: do not use flag, because loading model can be removed from anywhere
+        int index = visitables.lastIndexOf(loadingModel);
+        if (index != -1) {
+            visitables.remove(index);
+            notifyItemRemoved(index);
+        }
+    }
+
+    public void clearElement(Visitable visitable) {
+        int index = visitables.indexOf(visitable);
+        if (index != -1) {
+            visitables.remove(index);
+            notifyItemRemoved(index);
         }
     }
 
@@ -76,12 +96,26 @@ public class BaseAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         notifyDataSetChanged();
     }
 
+    public ErrorNetworkModel getErrorNetworkModel() {
+        return errorNetworkModel;
+    }
+
+    public void setErrorNetworkModel(ErrorNetworkModel errorNetworkModel) {
+        this.errorNetworkModel = errorNetworkModel;
+    }
+
+    public void showErrorNetwork(String message, ErrorNetworkModel.OnRetryListener onRetryListener) {
+        errorNetworkModel.setErrorMessage(message);
+        errorNetworkModel.setOnRetryListener(onRetryListener);
+        showErrorNetwork();
+    }
+
     public void removeErrorNetwork() {
         visitables.remove(errorNetworkModel);
         notifyDataSetChanged();
     }
 
-    public void addElement(List<Visitable> visitables) {
+    public void addElement(List<? extends Visitable> visitables) {
         this.visitables.addAll(visitables);
         notifyDataSetChanged();
     }
@@ -91,7 +125,7 @@ public class BaseAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         notifyDataSetChanged();
     }
 
-    public void setElements(int position, List<Visitable> data) {
+    public void setElements(int position, List<? extends Visitable> data) {
         visitables.addAll(position, data);
         notifyDataSetChanged();
     }
@@ -106,18 +140,22 @@ public class BaseAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         notifyDataSetChanged();
     }
 
-    public void setElement(List<Visitable> data) {
+    public void setElement(List<? extends Visitable> data) {
         visitables.addAll(data);
         notifyDataSetChanged();
     }
 
-    public void clearData() {
+    public void clearAllElements() {
         visitables.clear();
     }
 
-    public void addMoreData(List<Visitable> data) {
-        final int positionStart = visitables.size() + 1;
+    public void addMoreData(List<? extends Visitable> data) {
+        final int positionStart = visitables.size();
         visitables.addAll(data);
-        notifyItemRangeInserted(positionStart, data.size());
+        if (positionStart == 0) {
+            notifyDataSetChanged();
+        } else {
+            notifyItemRangeInserted(positionStart, data.size());
+        }
     }
 }

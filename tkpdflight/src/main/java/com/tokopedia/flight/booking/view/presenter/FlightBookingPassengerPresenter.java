@@ -153,10 +153,17 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
     public void onLuggageDataChange(FlightBookingAmenityMetaViewModel flightBookingLuggageMetaViewModel) {
         List<FlightBookingAmenityMetaViewModel> viewModels = getView().getCurrentPassengerViewModel().getFlightBookingLuggageMetaViewModels();
         int index = viewModels.indexOf(flightBookingLuggageMetaViewModel);
-        if (index != -1) {
-            viewModels.set(index, flightBookingLuggageMetaViewModel);
+
+        if(flightBookingLuggageMetaViewModel.getAmenities().size() != 0) {
+            if (index != -1) {
+                viewModels.set(index, flightBookingLuggageMetaViewModel);
+            } else {
+                viewModels.add(flightBookingLuggageMetaViewModel);
+            }
         } else {
-            viewModels.add(flightBookingLuggageMetaViewModel);
+            if(index != -1) {
+                viewModels.remove(index);
+            }
         }
 
         getView().renderPassengerLuggages(getView().getLuggageViewModels(), viewModels);
@@ -166,10 +173,17 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
     public void onMealDataChange(FlightBookingAmenityMetaViewModel flightBookingAmenityMetaViewModel) {
         List<FlightBookingAmenityMetaViewModel> viewModels = getView().getCurrentPassengerViewModel().getFlightBookingMealMetaViewModels();
         int index = viewModels.indexOf(flightBookingAmenityMetaViewModel);
-        if (index != -1) {
-            viewModels.set(index, flightBookingAmenityMetaViewModel);
+
+        if(flightBookingAmenityMetaViewModel.getAmenities().size() != 0) {
+            if (index != -1) {
+                viewModels.set(index, flightBookingAmenityMetaViewModel);
+            } else {
+                viewModels.add(flightBookingAmenityMetaViewModel);
+            }
         } else {
-            viewModels.add(flightBookingAmenityMetaViewModel);
+            if(index != -1) {
+                viewModels.remove(index);
+            }
         }
 
         getView().renderPassengerMeals(getView().getMealViewModels(), viewModels);

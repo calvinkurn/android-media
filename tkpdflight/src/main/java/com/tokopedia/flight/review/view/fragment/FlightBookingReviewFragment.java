@@ -213,7 +213,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
         }
         FlightBookingReviewPassengerAdapterTypeFactory flightBookingReviewPassengerAdapterTypeFactory = new FlightBookingReviewPassengerAdapterTypeFactory();
         FlightBookingReviewPassengerAdapter flightBookingReviewPassengerAdapter2 = new FlightBookingReviewPassengerAdapter(flightBookingReviewPassengerAdapterTypeFactory);
-        flightBookingReviewPassengerAdapter2.addData(flightBookingReviewModel.getDetailPassengers());
+        flightBookingReviewPassengerAdapter2.addElement(flightBookingReviewModel.getDetailPassengers());
         recyclerViewDataPassenger.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewDataPassenger.setAdapter(flightBookingReviewPassengerAdapter2);
         flightBookingReviewPriceAdapter = new FlightSimpleAdapter();

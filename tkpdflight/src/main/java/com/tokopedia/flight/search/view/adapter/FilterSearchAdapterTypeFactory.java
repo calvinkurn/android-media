@@ -18,10 +18,16 @@ import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 
 public class FilterSearchAdapterTypeFactory extends BaseAdapterTypeFactory implements AdapterTypeFactory, ErrorNetworkViewHolder.OnRetryListener {
 
-    private FlightSearchAdapter.OnBaseFlightSearchAdapterListener baseFlightSearchAdapterListener;
+    private OnFlightSearchListener onFlightSearchListener;
 
-    public FilterSearchAdapterTypeFactory(FlightSearchAdapter.OnBaseFlightSearchAdapterListener baseFlightSearchAdapterListener) {
-        this.baseFlightSearchAdapterListener = baseFlightSearchAdapterListener;
+    public interface OnFlightSearchListener {
+        void onRetryClicked();
+
+        void onDetailClicked(FlightSearchViewModel flightSearchViewModel);
+    }
+
+    public FilterSearchAdapterTypeFactory(OnFlightSearchListener onFlightSearchListener) {
+        this.onFlightSearchListener = onFlightSearchListener;
     }
 
     public int type(EmptyResultViewModel viewModel) {
@@ -35,11 +41,11 @@ public class FilterSearchAdapterTypeFactory extends BaseAdapterTypeFactory imple
     @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
         if (type == FlightSearchViewHolder.LAYOUT) {
-            return new FlightSearchViewHolder(parent, baseFlightSearchAdapterListener);
+            return new FlightSearchViewHolder(parent, onFlightSearchListener);
         } else if (type == EmptyResultViewHolder.LAYOUT) {
             return new EmptyResultViewHolder(parent);
         } else if (type == ErrorNetworkViewHolder.LAYOUT) {
-            return new ErrorNetworkViewHolder(parent, this);
+            return new ErrorNetworkViewHolder(parent);
         } else {
             return super.createViewHolder(parent, type);
         }
@@ -47,7 +53,7 @@ public class FilterSearchAdapterTypeFactory extends BaseAdapterTypeFactory imple
 
     @Override
     public void onRetryClicked() {
-        baseFlightSearchAdapterListener.onRetryClicked();
+        onFlightSearchListener.onRetryClicked();
     }
 
     public int type(FlightSearchViewModel flightSearchViewModel) {

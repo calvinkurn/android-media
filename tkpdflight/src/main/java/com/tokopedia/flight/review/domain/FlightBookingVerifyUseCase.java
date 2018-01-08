@@ -106,7 +106,7 @@ public class FlightBookingVerifyUseCase extends UseCase<DataResponseVerify> {
                 amenityPassenger.setArrivalId(lugagge.getArrivalId());
                 amenityPassenger.setDepartureId(lugagge.getDepartureId());
                 amenityPassenger.setItemId(amenityViewModel.getId());
-                amenityPassenger.setAmenityType(amenityViewModel.getType());
+                amenityPassenger.setAmenityType(amenityViewModel.getAmenityType());
                 amenityPassenger.setJourneyId(lugagge.getJourneyId());
                 amenityPassengers.add(amenityPassenger);
             }
@@ -119,7 +119,7 @@ public class FlightBookingVerifyUseCase extends UseCase<DataResponseVerify> {
                 amenityPassenger.setArrivalId(meal.getArrivalId());
                 amenityPassenger.setDepartureId(meal.getDepartureId());
                 amenityPassenger.setItemId(amenityViewModel.getId());
-                amenityPassenger.setAmenityType(amenityViewModel.getType());
+                amenityPassenger.setAmenityType(amenityViewModel.getAmenityType());
                 amenityPassenger.setJourneyId(meal.getJourneyId());
                 amenityPassengers.add(amenityPassenger);
             }

@@ -5,8 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.flight.R;
+import com.tokopedia.flight.booking.view.adapter.viewholder.FlightBookingAmenityViewHolder;
 import com.tokopedia.flight.booking.view.fragment.FlightBookingAmenityFragment;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
@@ -41,5 +45,40 @@ public class FlightBookingAmenityActivity extends BaseSimpleActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         updateTitle(getIntent().getStringExtra(EXTRA_TITLE));
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_flight_amenity_info_reset, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_reset) {
+            onResetClicked();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void onResetClicked() {
+        Fragment f = getCurrentFragment();
+        if (f != null && f instanceof FlightBookingAmenityViewHolder.ListenerCheckedLuggage) {
+            ((FlightBookingAmenityViewHolder.ListenerCheckedLuggage) f).resetItemCheck();
+        }
+    }
+
+    private Fragment getCurrentFragment() {
+        List<Fragment> fragmentList = getSupportFragmentManager().getFragments();
+        for (int i = 0, sizei = fragmentList.size(); i < sizei; i++) {
+            Fragment fragment = fragmentList.get(i);
+            if (fragment.isAdded() && fragment.isVisible()) {
+                return fragment;
+            }
+        }
+        return null;
     }
 }

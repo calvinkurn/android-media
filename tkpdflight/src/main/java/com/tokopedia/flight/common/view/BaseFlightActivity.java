@@ -1,5 +1,6 @@
 package com.tokopedia.flight.common.view;
 
+import android.support.v7.app.AppCompatDelegate;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -14,6 +15,9 @@ import com.tokopedia.flight.orderlist.view.FlightOrderListActivity;
  */
 
 public abstract class BaseFlightActivity extends BaseSimpleActivity {
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -39,9 +43,9 @@ public abstract class BaseFlightActivity extends BaseSimpleActivity {
         } else if (item.getItemId() == R.id.menu_help) {
             if (getApplication() instanceof FlightModuleRouter
                     && ((FlightModuleRouter) getApplication())
-                    .getBannerWebViewIntent(this, FlightUrl.CONTACT_US_FLIGHT) != null) {
+                    .getBannerWebViewIntent(this, FlightUrl.CONTACT_US) != null) {
                 startActivity(((FlightModuleRouter) getApplication())
-                        .getBannerWebViewIntent(this, FlightUrl.CONTACT_US_FLIGHT));
+                        .getBannerWebViewIntent(this, FlightUrl.CONTACT_US));
             }
 
             return true;

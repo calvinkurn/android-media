@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,10 +26,14 @@ import android.widget.Toast;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
+import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
+import com.tokopedia.flight.common.view.FlightExpandableOptionArrow;
+import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderContract;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderPresenter;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderAdapter;
@@ -58,9 +63,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     private View containerDownloadEticket;
     private TextView orderStatus;
     private TextView transactionDate;
-    private View layoutExpendablePassenger;
-    private TextView titleExpendablePassenger;
-    private AppCompatImageView imageExpendablePassenger;
+    private FlightExpandableOptionArrow layoutExpandablePassenger;
     private VerticalRecyclerView recyclerViewFlight;
     private VerticalRecyclerView recyclerViewPassenger;
     private RecyclerView recyclerViewPrice;
@@ -78,8 +81,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     private String eticketLink = "";
     private String invoiceLink = "";
-
-    private boolean isPassengerInfoShowed = true;
+    private String cancelLink = "";
 
     public static Fragment createInstance(FlightOrderDetailPassData flightOrderDetailPassData) {
         FlightDetailOrderFragment flightDetailOrderFragment = new FlightDetailOrderFragment();
@@ -115,9 +117,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         containerDownloadEticket = view.findViewById(R.id.container_download_eticket);
         orderStatus = view.findViewById(R.id.status_ticket);
         transactionDate = view.findViewById(R.id.transaction_date);
-        layoutExpendablePassenger = view.findViewById(R.id.layout_expendable_passenger);
-        titleExpendablePassenger = view.findViewById(R.id.title_expendable_passenger);
-        imageExpendablePassenger = view.findViewById(R.id.image_expendable_passenger);
+        layoutExpandablePassenger = view.findViewById(R.id.title_journey_flight);
         recyclerViewFlight = view.findViewById(R.id.recycler_view_flight);
         recyclerViewPassenger = view.findViewById(R.id.recycler_view_data_passenger);
         recyclerViewPrice = view.findViewById(R.id.recycler_view_detail_price);
@@ -173,7 +173,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         buttonCancelTicket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                flightDetailOrderPresenter.actionCancelOrderButtonClicked();
             }
         });
 
@@ -211,21 +211,13 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         orderHelp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                flightDetailOrderPresenter.onHelpButtonClicked();
             }
         });
         buttonReorder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-            }
-        });
-
-        layoutExpendablePassenger.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                imageExpendablePassenger.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.rotate));
-                togglePassengerInfo();
+                flightDetailOrderPresenter.actionReorderButtonClicked();
             }
         });
     }
@@ -252,13 +244,13 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Override
     public void updateFlightList(List<FlightOrderJourney> journeys) {
-        flightDetailOrderAdapter.addData(journeys);
+        flightDetailOrderAdapter.addElement(journeys);
         flightDetailOrderAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void updatePassengerList(List<FlightDetailPassenger> flightDetailPassengers) {
-        flightBookingReviewPassengerAdapter.addData(flightDetailPassengers);
+        flightBookingReviewPassengerAdapter.addElement(flightDetailPassengers);
         flightBookingReviewPassengerAdapter.notifyDataSetChanged();
     }
 
@@ -270,10 +262,11 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     }
 
     @Override
-    public void updateOrderData(String transactionDate, String eTicketLink, String invoiceLink) {
+    public void updateOrderData(String transactionDate, String eTicketLink, String invoiceLink, String cancelUrl) {
         this.transactionDate.setText(transactionDate);
         this.eticketLink = eTicketLink;
         this.invoiceLink = invoiceLink;
+        this.cancelLink = FlightUrl.CONTACT_US_FLIGHT_PREFIX + cancelUrl;
     }
 
     @Override
@@ -326,26 +319,6 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         updateViewStatus(R.string.flight_label_waiting_payment, R.color.deep_orange_500, false, false, false, false);
     }
 
-    private void togglePassengerInfo() {
-        if(isPassengerInfoShowed) {
-            hidePassengerInfo();
-        }else{
-            showPassengerInfo();
-        }
-    }
-
-    private void hidePassengerInfo() {
-        isPassengerInfoShowed = false;
-        recyclerViewPassenger.setVisibility(View.GONE);
-        imageExpendablePassenger.setRotation(180);
-    }
-
-    private void showPassengerInfo() {
-        isPassengerInfoShowed = true;
-        recyclerViewPassenger.setVisibility(View.VISIBLE);
-        imageExpendablePassenger.setRotation(0);
-    }
-
     void updateViewStatus(int orderStatusString, int color, boolean isTicketVisible, boolean isScheduleVisible,
                           boolean isCancelVisible, boolean isReorderVisible) {
         orderStatus.setText(orderStatusString);
@@ -376,5 +349,34 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     public void onDestroy() {
         flightDetailOrderPresenter.detachView();
         super.onDestroy();
+    }
+
+    @Override
+    public String getCancelUrl() {
+        return cancelLink;
+    }
+
+    @Override
+    public void navigateToWebview(String url) {
+        if (getActivity().getApplication() instanceof FlightModuleRouter
+                && ((FlightModuleRouter) getActivity().getApplication())
+                .getBannerWebViewIntent(getActivity(), url) != null) {
+            startActivity(((FlightModuleRouter) getActivity().getApplication())
+                    .getBannerWebViewIntent(getActivity(), url));
+        }
+    }
+
+    @Override
+    public void navigateToFlightHomePage() {
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(getActivity());
+        if (getActivity().getApplication() instanceof FlightModuleRouter
+                && ((FlightModuleRouter) getActivity().getApplication())
+                .getHomeIntent(getActivity()) != null) {
+            Intent intent = ((FlightModuleRouter) getActivity().getApplication())
+                    .getHomeIntent(getActivity());
+            taskStackBuilder.addNextIntent(intent);
+        }
+        taskStackBuilder.addNextIntent(FlightDashboardActivity.getCallingIntent(getActivity()));
+        taskStackBuilder.startActivities();
     }
 }

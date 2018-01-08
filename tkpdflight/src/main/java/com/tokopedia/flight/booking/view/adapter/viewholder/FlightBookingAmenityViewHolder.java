@@ -20,6 +20,7 @@ public class FlightBookingAmenityViewHolder extends AbstractViewHolder<FlightBoo
 
     public interface ListenerCheckedLuggage {
         boolean isItemChecked(FlightBookingAmenityViewModel selectedItem);
+        void resetItemCheck();
     }
 
     private ListenerCheckedLuggage listenerCheckedLuggage;

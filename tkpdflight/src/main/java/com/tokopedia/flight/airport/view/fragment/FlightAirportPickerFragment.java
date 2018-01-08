@@ -29,7 +29,8 @@ import javax.inject.Inject;
  * Created by nathan on 10/19/17.
  */
 
-public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAirportDB, FlightAirportAdapterTypeFactory> implements FlightAirportPickerView, FlightAirportViewHolder.FilterTextListener {
+public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAirportDB, FlightAirportAdapterTypeFactory>
+        implements FlightAirportPickerView, FlightAirportViewHolder.FilterTextListener {
 
     public static final String EXTRA_SELECTED_AIRPORT = "extra_selected_aiport";
     public static final String FLIGHT_AIRPORT = "flight_airport";
@@ -44,12 +45,6 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAi
         return new FlightAirportPickerFragment();
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        flightAirportPickerPresenter.checkAirportVersion(((FlightModuleRouter)getActivity().getApplication()).getLongConfig(FLIGHT_AIRPORT));
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -59,7 +54,13 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAi
     }
 
     @Override
-    protected void setInitialActionVar() {
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        flightAirportPickerPresenter.checkAirportVersion(((FlightModuleRouter)getActivity().getApplication()).getLongConfig(FLIGHT_AIRPORT));
+    }
+
+    @Override
+    public void loadData(int page) {
         flightAirportPickerPresenter.getAirportList(searchInputView.getSearchText());
     }
 

@@ -1,5 +1,6 @@
 package com.tokopedia.abstraction.base.view.listener;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import java.util.List;
@@ -9,10 +10,12 @@ import java.util.List;
  */
 public interface BaseListViewListener<T> extends CustomerView {
 
+    void renderList(@NonNull List<T> list, boolean hasNextPage);
+
     void renderList(@NonNull List<T> list);
 
-    void renderAddList(@NonNull List<T> list);
+    void showGetListError(Throwable throwable);
 
-    void showGetListError(String message);
+    Context getContext();
 
 }

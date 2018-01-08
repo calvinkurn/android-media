@@ -1,8 +1,12 @@
 package com.tokopedia.flight.common.di.module;
 
+import android.content.Context;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
+import com.tokopedia.abstraction.di.qualifier.ApplicationContext;
+import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.airline.data.FlightAirlineDataListSource;
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListBackgroundSource;
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListSource;
@@ -29,6 +33,7 @@ import com.tokopedia.flight.search.data.db.FlightMetaDataDBSource;
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -54,8 +59,9 @@ public class FlightModule {
     public OkHttpClient provideOkHttpClient(OkHttpClient.Builder okHttpClientBuilder,
                                             HttpLoggingInterceptor httpLoggingInterceptor,
                                             FlightAuthInterceptor flightAuthInterceptor) {
-        return okHttpClientBuilder.addInterceptor(httpLoggingInterceptor)
+        return okHttpClientBuilder
                 .addInterceptor(flightAuthInterceptor)
+                .addInterceptor(httpLoggingInterceptor)
                 .addInterceptor(new ErrorResponseInterceptor(FlightErrorResponse.class))
                 .build();
     }

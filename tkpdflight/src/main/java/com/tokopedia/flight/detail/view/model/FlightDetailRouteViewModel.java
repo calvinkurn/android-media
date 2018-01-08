@@ -20,6 +20,7 @@ public class FlightDetailRouteViewModel implements ItemType, Parcelable, Visitab
     private String airlineName;
     private String airlineCode;
     private String airlineLogo;
+    private int airlineMandatoryDOB;
     private String flightNumber;
     private String departureTimestamp;
     private String departureAirportCity;
@@ -37,6 +38,40 @@ public class FlightDetailRouteViewModel implements ItemType, Parcelable, Visitab
 
     public FlightDetailRouteViewModel() {
     }
+
+    protected FlightDetailRouteViewModel(Parcel in) {
+        pnr = in.readString();
+        airlineName = in.readString();
+        airlineCode = in.readString();
+        airlineLogo = in.readString();
+        airlineMandatoryDOB = in.readInt();
+        flightNumber = in.readString();
+        departureTimestamp = in.readString();
+        departureAirportCity = in.readString();
+        departureAirportCode = in.readString();
+        departureAirportName = in.readString();
+        isRefundable = in.readByte() != 0;
+        duration = in.readString();
+        arrivalTimestamp = in.readString();
+        arrivalAirportCity = in.readString();
+        arrivalAirportCode = in.readString();
+        arrivalAirportName = in.readString();
+        layover = in.readString();
+        infos = in.createTypedArrayList(FlightDetailRouteInfoViewModel.CREATOR);
+        amenities = in.createTypedArrayList(Amenity.CREATOR);
+    }
+
+    public static final Creator<FlightDetailRouteViewModel> CREATOR = new Creator<FlightDetailRouteViewModel>() {
+        @Override
+        public FlightDetailRouteViewModel createFromParcel(Parcel in) {
+            return new FlightDetailRouteViewModel(in);
+        }
+
+        @Override
+        public FlightDetailRouteViewModel[] newArray(int size) {
+            return new FlightDetailRouteViewModel[size];
+        }
+    };
 
     public String getAirlineName() {
         return airlineName;
@@ -60,6 +95,14 @@ public class FlightDetailRouteViewModel implements ItemType, Parcelable, Visitab
 
     public void setAirlineLogo(String airlineLogo) {
         this.airlineLogo = airlineLogo;
+    }
+
+    public int isAirlineMandatoryDOB() {
+        return airlineMandatoryDOB;
+    }
+
+    public void setAirlineMandatoryDOB(int airlineMandatoryDOB) {
+        this.airlineMandatoryDOB = airlineMandatoryDOB;
     }
 
     public String getFlightNumber() {
@@ -188,67 +231,35 @@ public class FlightDetailRouteViewModel implements ItemType, Parcelable, Visitab
     }
 
     @Override
+    public int type(FlightDetailRouteTypeFactory typeFactory) {
+        return typeFactory.type(this);
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.pnr);
-        dest.writeString(this.airlineName);
-        dest.writeString(this.airlineCode);
-        dest.writeString(this.airlineLogo);
-        dest.writeString(this.flightNumber);
-        dest.writeString(this.departureTimestamp);
-        dest.writeString(this.departureAirportCity);
-        dest.writeString(this.departureAirportCode);
-        dest.writeString(this.departureAirportName);
-        dest.writeByte(this.isRefundable ? (byte) 1 : (byte) 0);
-        dest.writeString(this.duration);
-        dest.writeString(this.arrivalTimestamp);
-        dest.writeString(this.arrivalAirportCity);
-        dest.writeString(this.arrivalAirportCode);
-        dest.writeString(this.arrivalAirportName);
-        dest.writeString(this.layover);
-        dest.writeTypedList(this.infos);
-        dest.writeTypedList(this.amenities);
-    }
-
-    protected FlightDetailRouteViewModel(Parcel in) {
-        this.pnr = in.readString();
-        this.airlineName = in.readString();
-        this.airlineCode = in.readString();
-        this.airlineLogo = in.readString();
-        this.flightNumber = in.readString();
-        this.departureTimestamp = in.readString();
-        this.departureAirportCity = in.readString();
-        this.departureAirportCode = in.readString();
-        this.departureAirportName = in.readString();
-        this.isRefundable = in.readByte() != 0;
-        this.duration = in.readString();
-        this.arrivalTimestamp = in.readString();
-        this.arrivalAirportCity = in.readString();
-        this.arrivalAirportCode = in.readString();
-        this.arrivalAirportName = in.readString();
-        this.layover = in.readString();
-        this.infos = in.createTypedArrayList(FlightDetailRouteInfoViewModel.CREATOR);
-        this.amenities = in.createTypedArrayList(Amenity.CREATOR);
-    }
-
-    public static final Creator<FlightDetailRouteViewModel> CREATOR = new Creator<FlightDetailRouteViewModel>() {
-        @Override
-        public FlightDetailRouteViewModel createFromParcel(Parcel source) {
-            return new FlightDetailRouteViewModel(source);
-        }
-
-        @Override
-        public FlightDetailRouteViewModel[] newArray(int size) {
-            return new FlightDetailRouteViewModel[size];
-        }
-    };
-
-    @Override
-    public int type(FlightDetailRouteTypeFactory typeFactory) {
-        return typeFactory.type(this);
+        dest.writeString(pnr);
+        dest.writeString(airlineName);
+        dest.writeString(airlineCode);
+        dest.writeString(airlineLogo);
+        dest.writeInt(airlineMandatoryDOB);
+        dest.writeString(flightNumber);
+        dest.writeString(departureTimestamp);
+        dest.writeString(departureAirportCity);
+        dest.writeString(departureAirportCode);
+        dest.writeString(departureAirportName);
+        dest.writeByte((byte) (isRefundable ? 1 : 0));
+        dest.writeString(duration);
+        dest.writeString(arrivalTimestamp);
+        dest.writeString(arrivalAirportCity);
+        dest.writeString(arrivalAirportCode);
+        dest.writeString(arrivalAirportName);
+        dest.writeString(layover);
+        dest.writeTypedList(infos);
+        dest.writeTypedList(amenities);
     }
 }

@@ -342,6 +342,12 @@ public class ChooseAddressFragment extends BasePresenterFragment<ChooseAddressFr
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.onDestroyView();
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         if (getActivity().getIntent().getBooleanExtra("resolution_center", false)) {
             inflater.inflate(R.menu.manage_people_address, menu);

@@ -8,7 +8,10 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class FlightCheckoutMetaData {
-    @SerializedName("flight_id")
+    @SerializedName("cart_id")
+    @Expose
+    private String cartId;
+    @SerializedName("invoice_id")
     @Expose
     private String flightId;
     @SerializedName("ip_address")
@@ -54,5 +57,13 @@ public class FlightCheckoutMetaData {
 
     public void setDid(int did) {
         this.did = did;
+    }
+
+    public String getCartId() {
+        return cartId;
+    }
+
+    public void setCartId(String cartId) {
+        this.cartId = cartId;
     }
 }

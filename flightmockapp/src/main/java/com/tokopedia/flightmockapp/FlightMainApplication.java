@@ -161,4 +161,9 @@ public class FlightMainApplication extends BaseMainApplication implements Flight
     public Intent getBannerWebViewIntent(Activity activity, String url) {
         return null;
     }
+
+    @Override
+    public Intent getHomeIntent(Context context) {
+        return null;
+    }
 }

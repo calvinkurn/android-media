@@ -1,25 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/banner_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/margin_med"
     android:background="@color/background_apps"
-    android:orientation="vertical"
-    android:padding="@dimen/padding_med">
+    android:orientation="vertical">
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/banner_title"
         style="@style/TextView.Headline.Bold"
         android:layout_width="match_parent"
-        android:visibility="gone"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_sm"
-        android:text="@string/flight_title_promo" />
+        android:paddingRight="@dimen/padding_med"
+        android:paddingLeft="@dimen/padding_med"
+        android:paddingTop="@dimen/padding_med"
+        android:text="@string/flight_title_promo"
+        android:visibility="gone" />
 
     <com.tokopedia.design.banner.BannerView
         android:id="@+id/banner"
-        android:visibility="gone"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/padding_med"
+        android:paddingTop="@dimen/padding_med"
+        android:visibility="gone" />
 
 </LinearLayout>
