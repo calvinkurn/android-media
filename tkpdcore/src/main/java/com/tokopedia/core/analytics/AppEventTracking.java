@@ -270,6 +270,8 @@ public interface AppEventTracking {
         String APP_RATING = "Application Rating";
         String FEED_CONTENT_COMMENT_DETAIL = "content - comment detail";
         String ONBOARDING = "onboarding";
+        String SORT_BY = "sort by";
+        String FILTER_PRODUCT = "filter product";
     }
 
     interface Action {
@@ -420,6 +422,7 @@ public interface AppEventTracking {
         String CLICK_SAVE_EDIT = "click save edit";
         String CLICK_SHOP = "click - shop";
         String CLICK_WISHLIST = "click - wishlist";
+        String SORT_BY = "sort by";
     }
 
     interface ImageEditor{

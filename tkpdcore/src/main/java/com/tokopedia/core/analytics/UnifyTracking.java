@@ -1,5 +1,7 @@
 package com.tokopedia.core.analytics;
 
+import android.text.TextUtils;
+
 import com.appsflyer.AFInAppEventType;
 import com.moe.pushlibrary.PayloadBuilder;
 import com.tkpd.library.utils.CommonUtils;
@@ -3021,5 +3023,23 @@ public class UnifyTracking extends TrackingUtils {
     private static String generateWishlistClickEventLabel(boolean isWishlisted, String keyword) {
         String action = isWishlisted ? "add" : "remove";
         return action + " - " + keyword + " - " + new Date().toString();
+    }
+
+    public static void eventSearchResultSort(String screenName, String sortByValue) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH_RESULT,
+                AppEventTracking.Category.SORT_BY,
+                AppEventTracking.Action.SORT_BY + " - " + screenName,
+                sortByValue
+        ).setUserId().getEvent());
+    }
+
+    public static void eventSearchResultFilter(String screenName, Map<String, String> selectedFilter) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH_RESULT,
+                AppEventTracking.Category.FILTER_PRODUCT,
+                AppEventTracking.Action.FILTER + " - " + screenName,
+                TextUtils.join(", ", selectedFilter.keySet()) + " - " + TextUtils.join(", ", selectedFilter.values())
+        ).setUserId().getEvent());
     }
 }
