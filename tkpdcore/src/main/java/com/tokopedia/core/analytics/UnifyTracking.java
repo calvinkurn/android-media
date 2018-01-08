@@ -3005,7 +3005,7 @@ public class UnifyTracking extends TrackingUtils {
     public static void eventSearchResultShopItemClick(String keyword, String shopName) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.SEARCH_RESULT,
-                AppEventTracking.Category.SEARCH_RESULT,
+                AppEventTracking.Category.SEARCH_RESULT.toLowerCase(),
                 AppEventTracking.Action.CLICK_SHOP,
                 keyword + " - " + shopName
         ).setUserId().getEvent());
@@ -3014,7 +3014,7 @@ public class UnifyTracking extends TrackingUtils {
     public static void eventSearchResultProductWishlistClick(boolean isWishlisted, String keyword) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.PRODUCT_VIEW,
-                AppEventTracking.Category.SEARCH_RESULT,
+                AppEventTracking.Category.SEARCH_RESULT.toLowerCase(),
                 AppEventTracking.Action.CLICK_WISHLIST,
                 generateWishlistClickEventLabel(isWishlisted, keyword)
         ).setUserId().getEvent());
@@ -3038,7 +3038,7 @@ public class UnifyTracking extends TrackingUtils {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.SEARCH_RESULT,
                 AppEventTracking.Category.FILTER_PRODUCT,
-                AppEventTracking.Action.FILTER + " - " + screenName,
+                AppEventTracking.Action.FILTER.toLowerCase() + " - " + screenName,
                 TextUtils.join(", ", selectedFilter.keySet()) + " - " + TextUtils.join(", ", selectedFilter.values())
         ).setUserId().getEvent());
     }
