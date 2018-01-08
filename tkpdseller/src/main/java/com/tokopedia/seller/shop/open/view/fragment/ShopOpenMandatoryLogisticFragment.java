@@ -23,7 +23,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
@@ -33,6 +32,7 @@ import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.listener.StepperListener;
+import com.tokopedia.seller.shop.common.tracking.TrackingOpenShop;
 import com.tokopedia.seller.shop.open.data.model.OpenShopCouriersModel;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.util.ShopErrorHandler;
@@ -73,6 +73,9 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     private View vLoading;
     private CourierListViewGroup courierListViewGroup;
     private TkpdProgressDialog tkpdProgressDialog;
+
+    @Inject
+    TrackingOpenShop trackingOpenShop;
 
     public static ShopOpenMandatoryLogisticFragment newInstance() {
         return new ShopOpenMandatoryLogisticFragment();
@@ -230,7 +233,7 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
 
     @Override
     public void onCourierServiceInfoIconClicked(String title, String description) {
-        UnifyTracking.eventOpenShopShippingServices(title);
+        trackingOpenShop.eventOpenShopShippingServices(title);
         BottomSheetDialog dialog = new BottomSheetDialog(getActivity());
         dialog.setContentView(R.layout.shipping_info_bottom_sheet);
 
@@ -260,7 +263,7 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     @Override
     public void onErrorSaveCourier(Throwable t) {
         hideSubmitLoading();
-        UnifyTracking.eventOpenShopShippingError(ShopErrorHandler.getErrorMessage(t));
+        trackingOpenShop.eventOpenShopShippingError(ShopErrorHandler.getErrorMessage(t));
         SnackbarRetry snackbarSubmitRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(),
                 ShopErrorHandler.getErrorMessage(t), new NetworkErrorHelper.RetryClickedListener() {
                     @Override
@@ -284,7 +287,7 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
         GlobalCacheManager globalCacheManager = new GlobalCacheManager();
         globalCacheManager.delete(ProfileSourceFactory.KEY_PROFILE_DATA);
         AppWidgetUtil.sendBroadcastToAppWidget(getActivity());
-        UnifyTracking.eventOpenShopShippingSuccess();
+        trackingOpenShop.eventOpenShopShippingSuccess();
         onShopStepperListener.finishPage();
     }
 

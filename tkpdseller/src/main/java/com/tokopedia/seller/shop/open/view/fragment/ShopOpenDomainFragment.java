@@ -12,7 +12,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.MethodChecker;
@@ -21,6 +20,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.common.widget.PrefixEditText;
 import com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout;
+import com.tokopedia.seller.shop.common.tracking.TrackingOpenShop;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.util.ShopErrorHandler;
 import com.tokopedia.seller.shop.open.view.activity.ShopOpenMandatoryActivity;
@@ -48,6 +48,8 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
 
     @Inject
     ShopOpenDomainPresenterImpl shopOpenDomainPresenter;
+    @Inject
+    TrackingOpenShop trackingOpenShop;
 
     public static ShopOpenDomainFragment newInstance() {
         return new ShopOpenDomainFragment();
@@ -176,7 +178,7 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
     @Override
     public void onErrorCheckShopName(Throwable t) {
         textInputShopName.setError(ShopErrorHandler.getErrorMessage(t));
-        UnifyTracking.eventOpenShopBiodataNameError(ShopErrorHandler.getErrorMessage(t));
+        trackingOpenShop.eventOpenShopBiodataNameError(ShopErrorHandler.getErrorMessage(t));
     }
 
     @Override
@@ -192,7 +194,7 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
     @Override
     public void onErrorCheckShopDomain(Throwable t) {
         textInputDomainName.setError(ShopErrorHandler.getErrorMessage(t));
-        UnifyTracking.eventOpenShopBiodataDomainError(ShopErrorHandler.getErrorMessage(t));
+        trackingOpenShop.eventOpenShopBiodataDomainError(ShopErrorHandler.getErrorMessage(t));
     }
 
     @Override
@@ -219,14 +221,14 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
                     }
                 });
         snackbarRetry.showRetrySnackbar();
-        UnifyTracking.eventOpenShopBiodataError(getString(R.string.shop_name_or_domain_has_been_reserved));
+        trackingOpenShop.eventOpenShopBiodataError(getString(R.string.shop_name_or_domain_has_been_reserved));
     }
 
     @Override
     public void onSuccessReserveShop() {
         hideSubmitLoading();
         goToShopOpenMandatory();
-        UnifyTracking.eventOpenShopBiodataSuccess();
+        trackingOpenShop.eventOpenShopBiodataSuccess();
     }
 
     private void checkEnableSubmit() {

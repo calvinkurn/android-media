@@ -269,11 +269,6 @@ public interface AppEventTracking {
         String APP_RATING = "Application Rating";
         String FEED_CONTENT_COMMENT_DETAIL = "content - comment detail";
         String ONBOARDING = "onboarding";
-        String OPEN_SHOP_BIODATA_FORM = "open shop-shop biodata form";
-        String OPEN_SHOP_DOMAIN_RESERVE = "open shop-domain reserve";
-        String OPEN_SHOP_INFO_FORM = "open shop-shop info form";
-        String OPEN_SHOP_SHIPPING_FORM = "open shop-shipping service form";
-        String OPEN_SHOP_THANKS_PAGE = "open shop-thank you page";
     }
 
     interface Action {
@@ -422,18 +417,6 @@ public interface AppEventTracking {
 
         String CLICK_IMAGE_SETTINGS = "click image settings";
         String CLICK_SAVE_EDIT = "click save edit";
-
-        String OPEN_SHOP_SUCCESS = "click open shop success";
-        String OPEN_SHOP_ERROR = "click open shop error ";
-        String OPEN_SHOP_ERROR_DOMAIN = "domain error";
-        String OPEN_SHOP_ERROR_NAME = "name error";
-        String OPEN_SHOP_CLICK_NEXT_STEP = "click next step";
-        String OPEN_SHOP_CLICK_NEXT_STEP_SUCCESS = "click next step success";
-        String OPEN_SHOP_CLICK_NEXT_STEP_ERROR = "click next step error";
-        String OPEN_SHOP_CLICK_CARGO_SERVICES = "click cargo service rules";
-        String OPEN_SHOP_CLICK_LEARN_MORE = "click learn more";
-        String OPEN_SHOP_CLICK_ADD_PRODUCT = "click add product";
-        String OPEN_SHOP_CLICK_MY_SHOP_PAGE = "click my shop page";
     }
 
     interface ImageEditor{

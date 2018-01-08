@@ -23,7 +23,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.gallery.GalleryType;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -35,6 +34,7 @@ import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.common.gallery.GalleryCropActivity;
 import com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout;
 import com.tokopedia.seller.product.edit.view.dialog.ImageEditDialogFragment;
+import com.tokopedia.seller.shop.common.tracking.TrackingOpenShop;
 import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
 import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.UserData;
 import com.tokopedia.seller.shop.open.di.component.DaggerShopSettingInfoComponent;
@@ -80,6 +80,9 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
     private ProgressDialog progressDialog;
     private String uriPathImage = "";
     private StepperListener<ShopOpenStepperModel> onShopStepperListener;
+
+    @Inject
+    TrackingOpenShop trackingOpenShop;
 
     public static ShopOpenInfoFragment createInstance() {
         return new ShopOpenInfoFragment();
@@ -185,7 +188,7 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
 
     @Override
     public void onSuccessSaveInfoShop() {
-        UnifyTracking.eventOpenShopFormSuccess();
+        trackingOpenShop.eventOpenShopFormSuccess();
         if (onShopStepperListener != null) {
             onShopStepperListener.goToNextPage(null);
         }
@@ -194,7 +197,7 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
     @Override
     public void onFailedSaveInfoShop(Throwable t) {
         String errorMessage = ShopErrorHandler.getErrorMessage(t);
-        UnifyTracking.eventOpenShopFormError(errorMessage);
+        trackingOpenShop.eventOpenShopFormError(errorMessage);
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, Snackbar.LENGTH_LONG, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {

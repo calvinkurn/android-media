@@ -42,4 +42,5 @@ public interface SellerModuleRouter {
 
     Intent getInboxReputationIntent(Context context);
 
+    void sendEventTracking(String event, String category, String action, String label);
 }
