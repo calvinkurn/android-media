@@ -18,7 +18,7 @@ public class MenuPromoResponse {
     @SerializedName("title")
     @Expose
     private String title;
-    @SerializedName("childrenList")
+    @SerializedName("childrens")
     @Expose
     private List<Children> childrenList = new ArrayList<>();
     @SerializedName("icon")

@@ -6,9 +6,10 @@ import android.app.Fragment;
 import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -20,6 +21,7 @@ import com.tokopedia.loyalty.R2;
 import com.tokopedia.loyalty.di.component.DaggerPromoListFragmentComponent;
 import com.tokopedia.loyalty.di.component.PromoListFragmentComponent;
 import com.tokopedia.loyalty.di.module.PromoListFragmentModule;
+import com.tokopedia.loyalty.view.adapter.PromoListAdapter;
 import com.tokopedia.loyalty.view.data.PromoData;
 import com.tokopedia.loyalty.view.data.PromoMenuData;
 import com.tokopedia.loyalty.view.data.PromoSubMenuData;
@@ -43,6 +45,8 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
 
     @BindView(R2.id.quick_filter)
     LinearLayout filterLayout;
+    @BindView(R2.id.rv_promo_list)
+    RecyclerView rvPromoList;
 
     @Inject
     IPromoListPresenter dPresenter;
@@ -51,6 +55,7 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
 
     private PromoMenuData promoMenuData;
     private QuickFilterView quickFilterView;
+    private PromoListAdapter adapter;
 
     @Override
     protected void initInjector() {
@@ -63,8 +68,8 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
     }
 
     @Override
-    public void renderPromoDataList(List<PromoData> couponData) {
-        Toast.makeText(context, couponData.get(0).getPeriodFormatted(), Toast.LENGTH_SHORT).show();
+    public void renderPromoDataList(List<PromoData> promoDataList) {
+        adapter.addAllItems(promoDataList);
     }
 
     @Override
@@ -205,7 +210,9 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
     @Override
     protected void initView(View view) {
         quickFilterView = new QuickFilterView(getActivity());
-
+        adapter = new PromoListAdapter(new ArrayList<PromoData>());
+        rvPromoList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvPromoList.setAdapter(adapter);
     }
 
     @Override
@@ -220,17 +227,27 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
         quickFilterView.setListener(new QuickFilterView.ActionListener() {
             @Override
             public void clearFilter() {
-
+                for (int i = 0; i < promoMenuData.getPromoSubMenuDataList().size(); i++) {
+                    if (promoMenuData.getPromoSubMenuDataList().get(i).isSelected()) {
+                        promoMenuData.getPromoSubMenuDataList().get(i).setSelected(false);
+                    }
+                }
+                dPresenter.processGetPromoList(promoMenuData.getAllSubCategoryId());
             }
 
             @Override
-            public void selectFilter() {
-
+            public void selectFilter(String typeFilter) {
+                for (int i = 0; i < promoMenuData.getPromoSubMenuDataList().size(); i++) {
+                    if (typeFilter.equals(promoMenuData.getPromoSubMenuDataList().get(i).getId())) {
+                        promoMenuData.getPromoSubMenuDataList().get(i).setSelected(true);
+                    } else {
+                        promoMenuData.getPromoSubMenuDataList().get(i).setSelected(false);
+                    }
+                }
+                dPresenter.processGetPromoList(typeFilter);
             }
         });
         filterLayout.addView(quickFilterView);
-
-        dPresenter.processGetPromoList(promoMenuData.getAllSubCategoryId());
     }
 
     private List<QuickFilterItem> setQuickFilterItems(List<PromoSubMenuData> promoSubMenuDataList) {
@@ -240,7 +257,7 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
             quickFilterItem.setName(promoSubMenuDataList.get(i).getTitle());
             quickFilterItem.setType(promoSubMenuDataList.get(i).getId());
             quickFilterItem.setSelected(promoSubMenuDataList.get(i).isSelected());
-            quickFilterItem.setColorBorder(R.color.grey_hint);
+            quickFilterItem.setColorBorder(R.color.tkpd_main_green);
             quickFilterItemList.add(quickFilterItem);
         }
         return quickFilterItemList;
