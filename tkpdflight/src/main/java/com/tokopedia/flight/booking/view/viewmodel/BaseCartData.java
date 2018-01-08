@@ -9,6 +9,7 @@ import java.util.List;
  */
 
 public class BaseCartData implements Cloneable {
+    private String id;
     private int adult;
     private int child;
     private int infant;
@@ -76,5 +77,13 @@ public class BaseCartData implements Cloneable {
 
     public void setRefreshTime(int refreshTime) {
         this.refreshTime = refreshTime;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

@@ -477,6 +477,11 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     @Override
+    public void setCartId(String id) {
+        flightBookingCartData.setId(id);
+    }
+
+    @Override
     public void showPriceChangesDialog(String newTotalPrice, String oldTotalPrice) {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         Fragment previousDialog = getFragmentManager().findFragmentByTag(INTERRUPT_DIALOG_TAG);

@@ -18,7 +18,6 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewMod
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.mapper.FlightBookingCartDataMapper;
 import com.tokopedia.flight.common.util.FlightDateUtil;
-import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
@@ -517,6 +516,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     @Override
     protected BaseCartData getCurrentCartData() {
         BaseCartData baseCartData = new BaseCartData();
+        baseCartData.setId(getView().getCurrentCartPassData().getId());
         baseCartData.setNewFarePrices(getView().getCurrentCartPassData().getNewFarePrices());
         List<FlightBookingAmenityViewModel> amenityViewModels = new ArrayList<>();
         for (FlightBookingPassengerViewModel passengerViewModel : getView().getCurrentBookingParamViewModel().getPassengerViewModels()) {
