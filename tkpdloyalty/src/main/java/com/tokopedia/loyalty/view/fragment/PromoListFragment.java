@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -63,7 +64,7 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
 
     @Override
     public void renderPromoDataList(List<PromoData> couponData) {
-
+        Toast.makeText(context, couponData.get(0).getPeriodFormatted(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -228,6 +229,8 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
             }
         });
         filterLayout.addView(quickFilterView);
+
+        dPresenter.processGetPromoList(promoMenuData.getAllSubCategoryId());
     }
 
     private List<QuickFilterItem> setQuickFilterItems(List<PromoSubMenuData> promoSubMenuDataList) {

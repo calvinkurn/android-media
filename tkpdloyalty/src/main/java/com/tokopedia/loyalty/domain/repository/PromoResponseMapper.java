@@ -1,5 +1,7 @@
 package com.tokopedia.loyalty.domain.repository;
 
+import android.annotation.SuppressLint;
+
 import com.tokopedia.loyalty.domain.entity.response.promo.Children;
 import com.tokopedia.loyalty.domain.entity.response.promo.MenuPromoResponse;
 import com.tokopedia.loyalty.domain.entity.response.promo.PromoResponse;
@@ -7,8 +9,13 @@ import com.tokopedia.loyalty.view.data.PromoData;
 import com.tokopedia.loyalty.view.data.PromoMenuData;
 import com.tokopedia.loyalty.view.data.PromoSubMenuData;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -29,7 +36,16 @@ public class PromoResponseMapper implements IPromoResponseMapper {
             PromoData promoData = new PromoData();
             promoData.setTitle(promoResponse.getTitle().getRendered());
             promoData.setAppLink(promoResponse.getMeta().getAppLink());
-            promoData.setPeriodFormatted("Belum bikin logicnya yaa");
+            try {
+                promoData.setPeriodFormatted(
+                        getDatePeriodPromo(
+                                promoResponse.getMeta().getStartDate(),
+                                promoResponse.getMeta().getEndDate()
+                        )
+                );
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             promoData.setPromoLink(promoResponse.getMeta().getPromoLink());
             promoData.setThumbnailImage(promoResponse.getMeta().getThumbnailImage());
             promoData.setMinTransaction(promoResponse.getMeta().getMinTransaction());
@@ -40,6 +56,45 @@ public class PromoResponseMapper implements IPromoResponseMapper {
             promoDataList.add(promoData);
         }
         return promoDataList;
+    }
+
+    private String getDatePeriodPromo(String startDate, String endDate) throws ParseException {
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        Date dateStart = sdf.parse(startDate);
+        Calendar cStart = Calendar.getInstance();
+        cStart.setTime(dateStart);
+
+        Date dateEnd = sdf.parse(endDate);
+        Calendar cEnd = Calendar.getInstance();
+        cEnd.setTime(dateEnd);
+
+        int mStart = cStart.get(Calendar.MONTH);
+        int mEnd = cEnd.get(Calendar.MONTH);
+
+        String result;
+        Locale localeId = new Locale("id", "ID");
+        if (mStart == mEnd) {
+            result = cStart.get(Calendar.DAY_OF_MONTH)
+                    + " - "
+                    + cEnd.get(Calendar.DAY_OF_MONTH)
+                    + " "
+                    + cEnd.getDisplayName(Calendar.MONTH, Calendar.LONG, localeId)
+                    + " "
+                    + cEnd.get(Calendar.YEAR);
+        } else {
+            result = cStart.get(Calendar.DAY_OF_MONTH)
+                    + " "
+                    + cStart.getDisplayName(Calendar.MONTH, Calendar.LONG, localeId)
+                    + " - "
+                    + cEnd.get(Calendar.DAY_OF_MONTH)
+                    + " "
+                    + cEnd.getDisplayName(Calendar.MONTH, Calendar.LONG, localeId)
+                    + " "
+                    + cEnd.get(Calendar.YEAR);
+        }
+
+        return result;
     }
 
     @Override
