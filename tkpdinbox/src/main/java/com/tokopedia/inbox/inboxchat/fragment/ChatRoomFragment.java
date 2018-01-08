@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -22,6 +23,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
@@ -57,6 +59,7 @@ import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
 
 import org.json.JSONException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -257,6 +260,14 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 if (adapter.checkLoadMore(index)) {
                     presenter.onLoadMore();
                 }
+            }
+        });
+
+        recyclerView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                KeyboardHandler.hideSoftKeyboard(getActivity());
+                return false;
             }
         });
 
@@ -683,5 +694,20 @@ public class ChatRoomFragment extends BaseDaggerFragment
                         TopChatTrackingEventLabel.Name.CHAT_DETAIL);
             }
         };
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case 100:
+                if (resultCode == Activity.RESULT_OK) {
+                    ArrayList<String> strings = data.getStringArrayListExtra("string");
+                    templateAdapter.update(strings);
+                    break;
+                }
+            default:
+                break;
+        }
     }
 }

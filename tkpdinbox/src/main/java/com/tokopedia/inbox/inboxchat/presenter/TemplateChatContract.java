@@ -3,8 +3,10 @@ package com.tokopedia.inbox.inboxchat.presenter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.inbox.inboxchat.adapter.TemplateChatSettingAdapter;
 import com.tokopedia.inbox.inboxchat.viewholder.ItemTemplateChatViewHolder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,17 +21,37 @@ public class TemplateChatContract {
 
         void onDrag(ItemTemplateChatViewHolder ini);
 
-        void onEnter(String message);
+        void onEnter(String message, int adapterPosition);
 
         void setChecked(boolean b);
 
-        void reArrange(int from);
+        void reArrange(int from, int to);
+
+        ArrayList<String> getList();
+
+        boolean getSwitchChecked();
+
+        TemplateChatSettingAdapter getAdapter();
+
+        void successRearrange();
+
+        String getStringOf(int id);
+
+        void showError(String stringOf);
+
+        void successSwitch();
+
+        void showLoading();
+
+        void finishLoading();
+
+        void revertArrange(int from, int to);
     }
 
     interface Presenter extends CustomerPresenter<View> {
 
         void setArrange(boolean enabled);
 
-        void setArrange(int from);
+        void setArrange(boolean enabled, ArrayList<Integer> arrayList, int from, int to);
     }
 }

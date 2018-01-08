@@ -54,19 +54,8 @@ public class EditTemplateChatMapper implements Func1<Response<TkpdResponse>, Edi
 
     private EditTemplateViewModel convertToDomain(TemplateData data) {
         EditTemplateViewModel model = new EditTemplateViewModel();
-        if(data.isSuccess() && data.isIsEnable()){
-            List<Visitable> list = new ArrayList<>();
-            for (int i = 0; i < data.getTemplates().size(); i++) {
-                if(!data.getTemplates().get(i).equals("_")){
-                    TemplateChatModel templateChatModel = new TemplateChatModel();
-                    templateChatModel.setMessage(data.getTemplates().get(i));
-                    list.add(templateChatModel);
-                }
-            }
-            model.setSuccess(data.isSuccess());
-            model.setEnabled(data.isIsEnable());
-            model.setListTemplate(list);
-        }
+        model.setSuccess(data.isSuccess());
+        model.setEnabled(data.isIsEnable());
         return model;
     }
 

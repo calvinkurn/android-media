@@ -1,9 +1,7 @@
 package com.tokopedia.inbox.inboxchat.data.repository.template;
 
-import com.google.gson.JsonObject;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.inboxchat.viewmodel.EditTemplateViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.GetTemplateViewModel;
 
 import rx.Observable;
 
@@ -12,7 +10,9 @@ import rx.Observable;
  */
 
 public interface EditTemplateRepository {
-    Observable<EditTemplateViewModel> editTemplate(JsonObject parameters);
+    Observable<EditTemplateViewModel> editTemplate(int index, TKPDMapParam<String, Object> object);
 
-    Observable<EditTemplateViewModel> createTemplate(JsonObject object);
+    Observable<EditTemplateViewModel> createTemplate(TKPDMapParam<String, Object> object);
+
+    Observable<EditTemplateViewModel> deleteTemplate(int index);
 }

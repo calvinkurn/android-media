@@ -3,6 +3,7 @@ package com.tokopedia.inbox.inboxchat.presenter;
 import com.google.gson.JsonArray;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.inbox.inboxchat.domain.usecase.template.CreateTemplateUseCase;
+import com.tokopedia.inbox.inboxchat.domain.usecase.template.DeleteTemplateUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.template.EditTemplateUseCase;
 import com.tokopedia.inbox.inboxchat.viewmodel.EditTemplateViewModel;
 
@@ -22,11 +23,13 @@ public class EditTemplateChatPresenter extends BaseDaggerPresenter<EditTemplateC
 
     private final EditTemplateUseCase editTemplateUseCase;
     private final CreateTemplateUseCase createTemplateUseCase;
+    private final DeleteTemplateUseCase deleteTemplateUseCase;
 
     @Inject
-    EditTemplateChatPresenter(EditTemplateUseCase editTemplateUseCase, CreateTemplateUseCase createTemplateUseCase){
+    EditTemplateChatPresenter(EditTemplateUseCase editTemplateUseCase, CreateTemplateUseCase createTemplateUseCase, DeleteTemplateUseCase deleteTemplateUseCase){
         this.editTemplateUseCase = editTemplateUseCase;
         this.createTemplateUseCase = createTemplateUseCase;
+        this.deleteTemplateUseCase = deleteTemplateUseCase;
     }
 
     @Override
@@ -40,6 +43,7 @@ public class EditTemplateChatPresenter extends BaseDaggerPresenter<EditTemplateC
         super.detachView();
         editTemplateUseCase.unsubscribe();
         createTemplateUseCase.unsubscribe();
+        deleteTemplateUseCase.unsubscribe();
     }
 
     public void submitText(final String s, String text, List<String> list) {
@@ -48,31 +52,51 @@ public class EditTemplateChatPresenter extends BaseDaggerPresenter<EditTemplateC
         temp.addAll(list);
         if(index<0){
             temp.add(s);
+            createTemplateUseCase.execute(CreateTemplateUseCase.generateParam(s), new Subscriber<EditTemplateViewModel>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    getView().showError("create");
+                }
+
+                @Override
+                public void onNext(EditTemplateViewModel editTemplateViewModel) {
+                    if(editTemplateViewModel.isSuccess()) {
+                        getView().onResult(editTemplateViewModel, index, s);
+                        getView().finish();
+                    }else {
+                        getView().showError("");
+                    }
+                }
+            });
         }else {
             temp.set(index, s);
-        }
-        JsonArray array = toJsonArray(temp);
-        editTemplateUseCase.execute(EditTemplateUseCase.generateParam(array, true), new Subscriber<EditTemplateViewModel>() {
-            @Override
-            public void onCompleted() {
+            editTemplateUseCase.execute(EditTemplateUseCase.generateParam(index+1,s), new Subscriber<EditTemplateViewModel>() {
+                @Override
+                public void onCompleted() {
 
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(EditTemplateViewModel editTemplateViewModel) {
-                if(editTemplateViewModel == null){
-                    getView().onResult(editTemplateViewModel, index, s, false);
-                }else {
-                    getView().onResult(editTemplateViewModel, index, s, true);
                 }
-                getView().finish();
-            }
-        });
+
+                @Override
+                public void onError(Throwable e) {
+                    getView().showError("edit");
+                }
+
+                @Override
+                public void onNext(EditTemplateViewModel editTemplateViewModel) {
+                    if(editTemplateViewModel.isSuccess()) {
+                        getView().onResult(editTemplateViewModel, index, s);
+                        getView().finish();
+                    }else {
+                        getView().showError("");
+                    }
+                }
+            });
+        }
     }
 
     public JsonArray toJsonArray(List<String> yaml) {
@@ -84,7 +108,27 @@ public class EditTemplateChatPresenter extends BaseDaggerPresenter<EditTemplateC
     }
 
     @Override
-    public void deleteTemplate() {
+    public void deleteTemplate(final int index) {
+        deleteTemplateUseCase.execute(DeleteTemplateUseCase.generateParam(index+1), new Subscriber<EditTemplateViewModel>() {
+            @Override
+            public void onCompleted() {
 
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                getView().showError("delete");
+            }
+
+            @Override
+            public void onNext(EditTemplateViewModel editTemplateViewModel) {
+                if(editTemplateViewModel.isSuccess()) {
+                    getView().onResult(editTemplateViewModel, index);
+                    getView().finish();
+                }else {
+                    getView().showError("delete");
+                }
+            }
+        });
     }
 }

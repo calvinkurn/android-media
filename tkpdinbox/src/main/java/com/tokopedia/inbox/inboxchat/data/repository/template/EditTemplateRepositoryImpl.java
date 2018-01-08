@@ -1,6 +1,6 @@
 package com.tokopedia.inbox.inboxchat.data.repository.template;
 
-import com.google.gson.JsonObject;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.inboxchat.data.factory.template.EditTemplateChatFactory;
 import com.tokopedia.inbox.inboxchat.viewmodel.EditTemplateViewModel;
 
@@ -19,12 +19,17 @@ public class EditTemplateRepositoryImpl implements EditTemplateRepository{
     }
 
     @Override
-    public Observable<EditTemplateViewModel> editTemplate(JsonObject parameters) {
-        return templateChatFactory.createCloudEditTemplateDataSource().editTemplate(parameters);
+    public Observable<EditTemplateViewModel> editTemplate(int index, TKPDMapParam<String, Object> parameters) {
+        return templateChatFactory.createCloudEditTemplateDataSource().editTemplate(index, parameters);
     }
 
     @Override
-    public Observable<EditTemplateViewModel> createTemplate(JsonObject parameters) {
+    public Observable<EditTemplateViewModel> createTemplate(TKPDMapParam<String, Object> parameters) {
         return templateChatFactory.createCloudEditTemplateDataSource().createTemplate(parameters);
+    }
+
+    @Override
+    public Observable<EditTemplateViewModel> deleteTemplate(int index) {
+        return templateChatFactory.createCloudEditTemplateDataSource().deleteTemplate(index);
     }
 }

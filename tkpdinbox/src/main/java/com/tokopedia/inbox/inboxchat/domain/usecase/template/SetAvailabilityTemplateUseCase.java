@@ -1,5 +1,7 @@
 package com.tokopedia.inbox.inboxchat.domain.usecase.template;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
@@ -24,11 +26,18 @@ public class SetAvailabilityTemplateUseCase extends UseCase<GetTemplateViewModel
 
     @Override
     public Observable<GetTemplateViewModel> createObservable(RequestParams requestParams) {
-        return templateRepository.setAvailabilityTemplate(requestParams.getParameters());
+        JsonObject object = (JsonObject) requestParams.getParameters().get("json");
+        return templateRepository.setAvailabilityTemplate(object);
     }
 
-    public static RequestParams generateParam() {
+    public static RequestParams generateParam(JsonArray list, boolean isEnabled) {
         RequestParams requestParams = RequestParams.create();
+        JsonObject object = new JsonObject();
+        if(list!=null) {
+            object.add("position", list);
+        }
+        object.addProperty("is_enable", isEnabled);
+        requestParams.putObject("json", object);
         return requestParams;
     }
 }

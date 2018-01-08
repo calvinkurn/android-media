@@ -26,16 +26,12 @@ public class CreateTemplateUseCase extends UseCase<EditTemplateViewModel>{
 
     @Override
     public Observable<EditTemplateViewModel> createObservable(RequestParams requestParams) {
-        JsonObject object = (JsonObject) requestParams.getParameters().get("json");
-        return templateRepository.createTemplate(object);
+        return templateRepository.createTemplate(requestParams.getParameters());
     }
 
-    public static RequestParams generateParam(JsonArray list, boolean isEnabled) {
+    public static RequestParams generateParam(String value) {
         RequestParams requestParams = RequestParams.create();
-        JsonObject object = new JsonObject();
-        object.add("templates", list);
-        object.addProperty("is_enable", isEnabled);
-        requestParams.putObject("json", object);
+        requestParams.putString("value", value);
         return requestParams;
     }
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.inboxchat.data.source.template;
 
+import com.google.gson.JsonObject;
 import com.tokopedia.core.network.apiservices.chat.ChatService;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.inboxchat.data.mapper.template.TemplateChatMapper;
@@ -21,7 +22,7 @@ public class CloudSetTemplateChatDataSource {
         this.chatService = chatService;
     }
 
-    public Observable<GetTemplateViewModel> setTemplate(TKPDMapParam<String, Object> parameters) {
+    public Observable<GetTemplateViewModel> setTemplate(JsonObject parameters) {
         return chatService.getApi().setTemplate(parameters).map(templateChatMapper);
     }
 }

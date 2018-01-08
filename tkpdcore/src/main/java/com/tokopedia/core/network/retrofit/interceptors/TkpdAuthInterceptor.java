@@ -136,6 +136,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             case "PATCH":
             case "DELETE":
             case "POST":
+            case "PUT":
                 authHeaders = getHeaderMap(
                         originRequest.url().uri().getPath(),
                         generateParamBodyString(originRequest),

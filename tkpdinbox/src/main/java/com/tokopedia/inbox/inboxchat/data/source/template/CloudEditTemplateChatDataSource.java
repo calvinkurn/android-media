@@ -2,6 +2,7 @@ package com.tokopedia.inbox.inboxchat.data.source.template;
 
 import com.google.gson.JsonObject;
 import com.tokopedia.core.network.apiservices.chat.ChatService;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.inboxchat.data.mapper.template.EditTemplateChatMapper;
 import com.tokopedia.inbox.inboxchat.viewmodel.EditTemplateViewModel;
 
@@ -21,11 +22,15 @@ public class CloudEditTemplateChatDataSource {
         this.chatService = chatService;
     }
 
-    public Observable<EditTemplateViewModel> editTemplate(JsonObject parameters) {
-        return chatService.getApi().editTemplate(parameters).map(templateChatMapper);
+    public Observable<EditTemplateViewModel> editTemplate(int index, TKPDMapParam<String, Object> parameters) {
+        return chatService.getApi().editTemplate(index, parameters).map(templateChatMapper);
     }
 
-    public Observable<EditTemplateViewModel> createTemplate(JsonObject parameters) {
+    public Observable<EditTemplateViewModel> createTemplate(TKPDMapParam<String, Object> parameters) {
         return chatService.getApi().createTemplate(parameters).map(templateChatMapper);
+    }
+
+    public Observable<EditTemplateViewModel> deleteTemplate(int index) {
+        return chatService.getApi().deleteTemplate(index, new JsonObject()).map(templateChatMapper);
     }
 }
