@@ -321,9 +321,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     position,
                     kolViewModel.getLabel().equals("") ? "-" : kolViewModel.getLabel(),
                     kolViewModel.getContentId(),
-                    kolViewModel.getContentLink().equals("") ? "-" : kolViewModel.getContentLink(),
-                    Integer.parseInt(sessionHandler.getLoginID())));
-            TrackingUtils.eventTrackingEnhancedEcommerce(KolTracking.getKolImpressionTracking(list));
+                    kolViewModel.getContentLink().equals("") ? "-" : kolViewModel.getContentLink()
+            ));
+            TrackingUtils.eventTrackingEnhancedEcommerce(KolTracking.getKolImpressionTracking
+                    (list,  Integer.parseInt(SessionHandler.getLoginID(MainApplication.getAppContext()))));
         } else if (isKolRecommendationItem(item)) {
             KolRecommendationViewModel kolRecomendationViewModel = (KolRecommendationViewModel) adapter.getlist()
                     .get(item.originalPos());
@@ -336,11 +337,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
                         position,
                         recItem.getLabel().equals("") ? "-" : recItem.getLabel(),
                         recItem.getId(),
-                        recItem.getUrl().equals("") ? "-" : recItem.getUrl(),
-                        Integer.parseInt(sessionHandler.getLoginID())));
+                        recItem.getUrl().equals("") ? "-" : recItem.getUrl()
+                ));
             }
             TrackingUtils.eventTrackingEnhancedEcommerce(KolTracking
-                    .getKolImpressionTracking(list));
+                    .getKolImpressionTracking(list,
+                            Integer.parseInt(SessionHandler.getLoginID(MainApplication.getAppContext()))));
         }
     }
 

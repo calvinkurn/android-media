@@ -17,6 +17,8 @@ import static com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.KolTracking.Ev
 public class KolTracking {
 
     private static final String EVENT = "event";
+    private static final String KEY_USER_ID = "userId";
+    private static final String KEY_USER_ID_MOD = "userIdmodulo";
     private static final String ECOMMERCE = "ecommerce";
 
     public static class Event {
@@ -36,8 +38,6 @@ public class KolTracking {
         private static final String KEY_CATEGORY = "category";
         private static final String KEY_PROMO_ID = "promo_id";
         private static final String KEY_PROMO_CODE = "promo_code";
-        private static final String KEY_USER_ID = "userId";
-        private static final String KEY_USER_ID_MOD = "userIdmodulo";
 
 
         public static Map<String, Object> getKolContentEcommerceView(List<Promotion> listPromotion) {
@@ -71,8 +71,6 @@ public class KolTracking {
             map.put(KEY_CATEGORY, promo.getCategory());
             map.put(KEY_PROMO_ID, String.valueOf(promo.getPromoId()));
             map.put(KEY_PROMO_CODE, promo.getPromoCode());
-            map.put(KEY_USER_ID, String.valueOf(promo.getUserId()));
-            map.put(KEY_USER_ID_MOD, String.valueOf(promo.getUserIdMod50()));
             return map;
         }
 
@@ -92,10 +90,9 @@ public class KolTracking {
         String category;
         int promoId;
         String promoCode;
-        int userId;
 
         public Promotion(int id, String name, String creative, int position,
-                         String category, int promoId, String promoCode, int userId) {
+                         String category, int promoId, String promoCode) {
             this.id = id;
             this.name = name;
             this.creative = creative;
@@ -103,7 +100,6 @@ public class KolTracking {
             this.category = category;
             this.promoId = promoId;
             this.promoCode = promoCode;
-            this.userId = userId;
         }
 
         /**
@@ -140,14 +136,6 @@ public class KolTracking {
             return promoCode;
         }
 
-        public int getUserId() {
-            return userId;
-        }
-
-        public int getUserIdMod50() {
-            return userId % 50;
-        }
-
         public static String createContentNameRecommendation() {
             return CONTENT_FEED + " - " + KOL_RECOMMENDATION + " - " + PROFILE;
         }
@@ -159,15 +147,21 @@ public class KolTracking {
         }
     }
 
-    public static Map<String, Object> getKolImpressionTracking(List<Promotion> listPromotion) {
+    public static Map<String, Object> getKolImpressionTracking(List<Promotion> listPromotion, int
+            userId) {
         return DataLayer.mapOf(
                 EVENT, PROMO_VIEW,
+                KEY_USER_ID, String.valueOf(userId),
+                KEY_USER_ID_MOD, String.valueOf(userId % 50),
                 ECOMMERCE, Ecommerce.getKolContentEcommerceView(listPromotion));
     }
 
-    public static Map<String, Object> getKolClickTracking(List<Promotion> listPromotion) {
+    public static Map<String, Object> getKolClickTracking(List<Promotion> listPromotion, int
+            userId) {
         return DataLayer.mapOf(
                 EVENT, PROMO_CLICK,
+                KEY_USER_ID, String.valueOf(userId),
+                KEY_USER_ID_MOD, String.valueOf(userId % 50),
                 ECOMMERCE, Ecommerce.getKolContentEcommerceClick(listPromotion));
     }
 }

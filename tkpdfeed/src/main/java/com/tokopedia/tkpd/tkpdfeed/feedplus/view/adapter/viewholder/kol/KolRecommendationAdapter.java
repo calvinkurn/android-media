@@ -99,9 +99,11 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
                                 data.getRowNumber(),
                                 recItem.getLabel().equals("") ? "-" : recItem.getLabel(),
                                 recItem.getId(),
-                                recItem.getUrl().equals("") ? "-" : recItem.getUrl(),
-                                Integer.parseInt(SessionHandler.getLoginID(MainApplication.getAppContext()))));
-                        TrackingUtils.eventTrackingEnhancedEcommerce(KolTracking.getKolClickTracking(list));
+                                recItem.getUrl().equals("") ? "-" : recItem.getUrl()));
+                        TrackingUtils.eventTrackingEnhancedEcommerce(KolTracking
+                                .getKolClickTracking(list,
+                                        Integer.parseInt(SessionHandler.getLoginID(MainApplication.getAppContext()))
+                                ));
 
                         kolViewListener.onFollowKolFromRecommendationClicked(data.getPage(),
                                 data.getRowNumber(),
