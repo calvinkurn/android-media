@@ -16,7 +16,8 @@ public class VerificationPassModel {
 
     public VerificationPassModel(String phoneNumber,
                                  String email,
-                                 ArrayList<MethodItem> listAvailableMethods, int otpType) {
+                                 ArrayList<MethodItem> listAvailableMethods,
+                                 int otpType) {
         this.phoneNumber = phoneNumber;
         this.email = email;
         this.listAvailableMethods = listAvailableMethods;
@@ -46,10 +47,6 @@ public class VerificationPassModel {
 
     public String getEmail() {
         return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public int getOtpType() {

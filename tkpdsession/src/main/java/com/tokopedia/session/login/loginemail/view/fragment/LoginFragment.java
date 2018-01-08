@@ -537,12 +537,12 @@ public class LoginFragment extends BaseDaggerFragment
             list.add(new MethodItem(
                     VerificationActivity.TYPE_SMS,
                     R.drawable.ic_verification_sms,
-                    MethodItem.getSmsMethodText(phone)
+                    MethodItem.getSmsMethodText(MethodItem.getMaskedPhoneNumber(phone))
             ));
             list.add(new MethodItem(
                     VerificationActivity.TYPE_PHONE_CALL,
                     R.drawable.ic_verification_call,
-                    MethodItem.getCallMethodText(phone)
+                    MethodItem.getCallMethodText(MethodItem.getMaskedPhoneNumber(phone))
             ));
         }
         return list;

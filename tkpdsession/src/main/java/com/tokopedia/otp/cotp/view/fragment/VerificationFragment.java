@@ -484,6 +484,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
     private void setRunningCountdownText(String countdown) {
         countdownText.setVisibility(View.VISIBLE);
+        countdownText.setOnClickListener(null);
         finishCountdownView.setVisibility(View.GONE);
         noCodeText.setVisibility(View.GONE);
 

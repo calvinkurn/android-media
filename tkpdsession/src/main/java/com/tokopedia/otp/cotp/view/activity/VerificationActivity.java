@@ -16,6 +16,7 @@ import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.otp.cotp.view.fragment.ChooseVerificationMethodFragment;
 import com.tokopedia.otp.cotp.view.fragment.InterruptVerificationFragment;
 import com.tokopedia.otp.cotp.view.fragment.VerificationFragment;
+import com.tokopedia.otp.cotp.view.viewmodel.MethodItem;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
 import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.session.R;
@@ -47,8 +48,6 @@ public class VerificationActivity extends TActivity implements HasComponent {
 
     private static final String FIRST_FRAGMENT_TAG = "first";
     private static final String CHOOSE_FRAGMENT_TAG = "choose";
-
-    private static final int TYPE_SECURITY_QUESTION = 101;
 
     private VerificationPassModel passModel;
 
@@ -100,7 +99,8 @@ public class VerificationActivity extends TActivity implements HasComponent {
         switch (type) {
             case TYPE_SMS: {
                 String phoneNumber = passModel.getPhoneNumber();
-                fragment = VerificationFragment.createInstance(createSmsBundle(phoneNumber));
+                int otpType = passModel.getOtpType();
+                fragment = VerificationFragment.createInstance(createSmsBundle(phoneNumber, otpType));
                 break;
             }
             case TYPE_EMAIL: {
@@ -166,8 +166,9 @@ public class VerificationActivity extends TActivity implements HasComponent {
 
             getSupportFragmentManager().popBackStack(FIRST_FRAGMENT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             String phoneNumber = passModel.getPhoneNumber();
+            int otpType = passModel.getOtpType();
 
-            Fragment fragment = VerificationFragment.createInstance(createSmsBundle(phoneNumber));
+            Fragment fragment = VerificationFragment.createInstance(createSmsBundle(phoneNumber, otpType));
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.setCustomAnimations(com.tokopedia.core.R.animator.slide_in_left, 0, 0,
                     com.tokopedia.core.R.animator.slide_out_right);
@@ -184,8 +185,9 @@ public class VerificationActivity extends TActivity implements HasComponent {
 
             getSupportFragmentManager().popBackStack(FIRST_FRAGMENT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             String phoneNumber = passModel.getPhoneNumber();
+            int otpType = passModel.getOtpType();
 
-            Fragment fragment = VerificationFragment.createInstance(createCallBundle(phoneNumber));
+            Fragment fragment = VerificationFragment.createInstance(createCallBundle(phoneNumber, otpType));
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.setCustomAnimations(com.tokopedia.core.R.animator.slide_in_left, 0, 0,
                     com.tokopedia.core.R.animator.slide_out_right);
@@ -195,22 +197,22 @@ public class VerificationActivity extends TActivity implements HasComponent {
         }
     }
 
-    private Bundle createSmsBundle(String phoneNumber) {
+    private Bundle createSmsBundle(String phoneNumber, int otpType) {
         Bundle bundle = new Bundle();
         bundle.putInt(PARAM_DEFAULT_FRAGMENT_TYPE, TYPE_SMS);
         bundle.putInt(PARAM_IMAGE, R.drawable.ic_verification_sms);
         bundle.putString(PARAM_PHONE_NUMBER, phoneNumber);
-        bundle.putString(PARAM_MESSAGE, createSmsMessage(phoneNumber));
+        bundle.putString(PARAM_MESSAGE, createSmsMessage(phoneNumber, otpType));
         bundle.putString(PARAM_APP_SCREEN, AppScreen.SCREEN_COTP_SMS);
         return bundle;
     }
 
-    private Bundle createCallBundle(String phoneNumber) {
+    private Bundle createCallBundle(String phoneNumber, int otpType) {
         Bundle bundle = new Bundle();
         bundle.putInt(PARAM_DEFAULT_FRAGMENT_TYPE, TYPE_PHONE_CALL);
         bundle.putInt(PARAM_IMAGE, R.drawable.ic_verification_call);
         bundle.putString(PARAM_PHONE_NUMBER, phoneNumber);
-        bundle.putString(PARAM_MESSAGE, createCallMessage(phoneNumber));
+        bundle.putString(PARAM_MESSAGE, createCallMessage(phoneNumber, otpType));
         bundle.putString(PARAM_APP_SCREEN, AppScreen.SCREEN_COTP_CALL);
         return bundle;
     }
@@ -225,25 +227,30 @@ public class VerificationActivity extends TActivity implements HasComponent {
         return bundle;
     }
 
-    private String getMaskedPhone(String phoneNumber) {
-        String masked = String.valueOf(phoneNumber).replaceFirst("(\\d{4})(\\d{4})(\\d+)",
-                "$1-$2-$3");
-        return String.format(
-                ("<b>%s</b>"), masked);
+    private String getMaskedPhone(String phoneNumber, int otpType) {
+        if (otpType == RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION) {
+            return MethodItem.getMaskedPhoneNumber(phoneNumber);
+        } else {
+            String masked = String.valueOf(phoneNumber).replaceFirst("(\\d{4})(\\d{4})(\\d+)",
+                    "$1-$2-$3");
+            return String.format(
+                    ("<b>%s</b>"), masked);
+        }
     }
 
-    private String createSmsMessage(String phoneNumber) {
+    private String createSmsMessage(String phoneNumber, int otpType) {
         if (!TextUtils.isEmpty(phoneNumber)) {
-            return getString(R.string.verification_code_sent_to) + " " + getMaskedPhone(phoneNumber);
+            return getString(R.string.verification_code_sent_to) + " " + getMaskedPhone
+                    (phoneNumber, otpType);
         } else {
             return "";
         }
     }
 
-    private String createCallMessage(String phoneNumber) {
+    private String createCallMessage(String phoneNumber, int otpType) {
         if (!TextUtils.isEmpty(phoneNumber)) {
             return getString(R.string.verification_code_sent_to_call)
-                    + " " + getMaskedPhone(phoneNumber);
+                    + " " + getMaskedPhone(phoneNumber, otpType);
         } else {
             return "";
         }

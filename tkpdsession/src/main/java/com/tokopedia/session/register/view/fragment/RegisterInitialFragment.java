@@ -39,6 +39,7 @@ import com.tokopedia.core.profile.model.GetUserInfoDomainData;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
+import com.tokopedia.otp.cotp.view.viewmodel.InterruptVerificationViewModel;
 import com.tokopedia.otp.cotp.view.viewmodel.MethodItem;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
 import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
@@ -429,8 +430,19 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     @Override
     public void onGoToSecurityQuestion(SecurityDomain securityDomain, String fullName, String email, String phone) {
 
+        InterruptVerificationViewModel interruptVerificationViewModel;
+        if (securityDomain.getUserCheckSecurity2() == TYPE_SQ_PHONE) {
+            interruptVerificationViewModel = InterruptVerificationViewModel
+                    .createDefaultSmsInterruptPage(phone);
+        } else {
+            interruptVerificationViewModel = InterruptVerificationViewModel
+                    .createDefaultEmailInterruptPage(email);
+        }
+
         VerificationPassModel passModel = new VerificationPassModel(phone, email,
-                getListAvailableMethod(securityDomain, phone), RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION);
+                getListAvailableMethod(securityDomain, phone),
+                RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION,
+                interruptVerificationViewModel);
         cacheManager.setKey(VerificationActivity.PASS_MODEL);
         cacheManager.setValue(CacheUtil.convertModelToString(passModel,
                 new TypeToken<VerificationPassModel>() {
@@ -451,12 +463,12 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             list.add(new MethodItem(
                     VerificationActivity.TYPE_SMS,
                     R.drawable.ic_verification_sms,
-                    MethodItem.getSmsMethodText(phone)
+                    MethodItem.getSmsMethodText(MethodItem.getMaskedPhoneNumber(phone))
             ));
             list.add(new MethodItem(
                     VerificationActivity.TYPE_PHONE_CALL,
                     R.drawable.ic_verification_call,
-                    MethodItem.getCallMethodText(phone)
+                    MethodItem.getCallMethodText(MethodItem.getMaskedPhoneNumber(phone))
             ));
         }
         return list;
