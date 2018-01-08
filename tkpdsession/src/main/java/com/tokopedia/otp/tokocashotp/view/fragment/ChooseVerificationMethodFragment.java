@@ -9,8 +9,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.analytics.LoginPhoneNumberAnalytics;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.di.DaggerSessionComponent;
@@ -90,6 +92,8 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
         if (getActivity() instanceof VerificationActivity) {
             switch (type) {
                 case VerificationActivity.TYPE_SMS: {
+                    UnifyTracking.eventTracking(LoginPhoneNumberAnalytics
+                            .getChooseVerificationMethodTracking(VerificationActivity.TYPE_SMS));
                     ((VerificationActivity) getActivity()).goToSmsVerification();
                     break;
                 }

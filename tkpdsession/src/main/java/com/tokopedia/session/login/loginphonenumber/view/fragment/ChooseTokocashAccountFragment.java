@@ -18,8 +18,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.analytics.LoginPhoneNumberAnalytics;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -174,6 +176,9 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
 
     @Override
     public void onSuccessLogin() {
+        UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getSuccessLoginTracking());
+        UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getSuccessLoginTracking());
+
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
     }

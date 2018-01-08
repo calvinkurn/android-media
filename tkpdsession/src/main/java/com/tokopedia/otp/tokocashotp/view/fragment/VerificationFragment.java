@@ -7,7 +7,6 @@ import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
-import android.text.SpannedString;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -197,7 +196,8 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE
                         && inputOtp.length() == 6) {
-                    UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getVerifyTracking());
+                    UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getVerifyTracking
+                            (viewModel.getType()));
                     presenter.verifyOtp(viewModel.getPhoneNumber(), inputOtp.getText().toString());
                     return true;
                 }
@@ -208,7 +208,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         verifyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getVerifyTracking());
+                UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getVerifyTracking(viewModel.getType()));
                 presenter.verifyOtp(viewModel.getPhoneNumber(), inputOtp.getText().toString());
             }
         });
@@ -356,8 +356,9 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         resend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getResendVerificationTracking
-                        ());
+                UnifyTracking.eventTracking(
+                        LoginPhoneNumberAnalytics.getResendVerificationTracking(
+                                viewModel.getType()));
                 presenter.requestOTP(viewModel);
             }
         });
