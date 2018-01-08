@@ -23,6 +23,7 @@ import com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.util.ShopErrorHandler;
 import com.tokopedia.seller.shop.open.view.activity.ShopOpenMandatoryActivity;
+import com.tokopedia.seller.shop.open.view.activity.ShopOpenReserveDomainSuccessActivity;
 import com.tokopedia.seller.shop.open.view.listener.ShopOpenDomainView;
 import com.tokopedia.seller.shop.open.view.presenter.ShopOpenDomainPresenterImpl;
 import com.tokopedia.seller.shop.open.view.watcher.AfterTextWatcher;
@@ -141,11 +142,12 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
 
     private void onButtonSubmitClicked() {
         if (!isShopNameDomainValid()) {
+            buttonSubmit.setEnabled(false);
             return;
         }
         showSubmitLoading();
-        String shopName = editTextInputShopName.getText().toString();
-        String shopDomain = editTextInputDomainName.getTextWithoutPrefix();
+        String shopName = editTextInputShopName.getText().toString().trim();
+        String shopDomain = editTextInputDomainName.getTextWithoutPrefix().trim();
         shopOpenDomainPresenter.submitReserveNameAndDomainShop(shopName, shopDomain);
     }
 
@@ -195,7 +197,9 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
     @Override
     public void onErrorReserveShop(Throwable t) {
         hideSubmitLoading();
+        String message = ShopErrorHandler.getErrorMessage(t);
         snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(),
+                message,
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
@@ -206,22 +210,9 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
     }
 
     @Override
-    public void onFailedReserveShop() {
+    public void onSuccessReserveShop(String shopName) {
         hideSubmitLoading();
-        snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(),
-                getString(R.string.shop_name_or_domain_has_been_reserved), new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        onButtonSubmitClicked();
-                    }
-                });
-        snackbarRetry.showRetrySnackbar();
-    }
-
-    @Override
-    public void onSuccessReserveShop() {
-        hideSubmitLoading();
-        goToShopOpenMandatory();
+        goToShopOpenMandatory(shopName);
     }
 
     private void checkEnableSubmit() {
@@ -235,8 +226,8 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
                 textInputDomainName.isSuccessShown() && textInputShopName.isSuccessShown();
     }
 
-    private void goToShopOpenMandatory() {
-        Intent intent = ShopOpenMandatoryActivity.getIntent(getActivity());
+    private void goToShopOpenMandatory(String shopName) {
+        Intent intent = ShopOpenReserveDomainSuccessActivity.getIntent(getContext(),shopName);
         startActivity(intent);
         getActivity().finish();
     }
