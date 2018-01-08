@@ -411,6 +411,7 @@ public class ProductList extends V2BaseFragment {
                 etalaseAdapterModel.setEtalaseName(MethodChecker.fromHtml(etalaseModel.listOther.get(i).etalaseName).toString());
                 etalaseAdapterModel.setEtalaseId(etalaseModel.listOther.get(i).etalaseId);
                 etalaseAdapterModel.setUseAce(etalaseModel.listOther.get(i).useAce);
+                etalaseAdapterModel.setEtalaseBadge(etalaseModel.listOther.get(i).etalaseBadge);
                 etalaseList.add(etalaseAdapterModel);
             }
             for (int i = 0; i < totalEtalase; i++) {
@@ -418,6 +419,7 @@ public class ProductList extends V2BaseFragment {
                 etalaseAdapterModel.setEtalaseName(MethodChecker.fromHtml(etalaseModel.list.get(i).etalaseName).toString());
                 etalaseAdapterModel.setEtalaseId(etalaseModel.list.get(i).etalaseId);
                 etalaseAdapterModel.setUseAce(etalaseModel.list.get(i).useAce);
+                etalaseAdapterModel.setEtalaseBadge(etalaseModel.list.get(i).etalaseBadge);
                 etalaseList.add(etalaseAdapterModel);
             }
         } else {
