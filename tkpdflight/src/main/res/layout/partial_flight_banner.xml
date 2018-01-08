@@ -5,7 +5,8 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/margin_med"
     android:background="@color/background_apps"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/padding_med">
 
     <com.tokopedia.design.banner.BannerView
         android:id="@+id/banner"

@@ -21,9 +21,6 @@
 
             <include layout="@layout/partial_flight_dashboard_search" />
 
-            <!--Banner disini-->
-            <include layout="@layout/partial_flight_banner" />
-
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>

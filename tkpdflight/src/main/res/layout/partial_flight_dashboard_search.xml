@@ -135,9 +135,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
-        android:divider="@drawable/bg_line_separator_with_padding"
-        android:orientation="vertical"
-        android:showDividers="middle">
+        android:orientation="vertical">
 
         <com.tokopedia.flight.dashboard.view.widget.TextInputView
             android:id="@+id/text_input_view_date_departure"
@@ -151,6 +149,11 @@
             app:tiv_icon="@drawable/ic_calendar_general"
             app:tiv_remove_background="true"
             app:tiv_title_text="@string/flight_search_date_departure_title" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@drawable/bg_line_separator"/>
 
         <com.tokopedia.flight.dashboard.view.widget.TextInputView
             android:id="@+id/text_input_view_date_return"
@@ -167,6 +170,11 @@
             app:tiv_title_text="@string/flight_search_date_arrival_title"
             tools:visibility="visible" />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@drawable/bg_line_separator"/>
+
         <com.tokopedia.flight.dashboard.view.widget.TextInputView
             android:id="@+id/text_input_view_passenger"
             android:layout_width="match_parent"
@@ -179,6 +187,11 @@
             app:tiv_icon="@drawable/ic_flight_passenger"
             app:tiv_remove_background="true"
             app:tiv_title_text="@string/flight_search_passenger_title" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@drawable/bg_line_separator"/>
 
         <com.tokopedia.flight.dashboard.view.widget.TextInputView
             android:id="@+id/text_input_view_class"
@@ -193,10 +206,19 @@
             app:tiv_remove_background="true"
             app:tiv_title_text="@string/flight_search_passenger_class_title" />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@drawable/bg_line_separator"/>
+
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/button_search_ticket"
             style="@style/Button.Submit.Orange"
             android:layout_marginTop="@dimen/margin_med"
             android:text="@string/flight_search_search_ticket" />
+
+        <!--Banner disini-->
+        <include layout="@layout/partial_flight_banner" />
+
     </LinearLayout>
 </LinearLayout>
