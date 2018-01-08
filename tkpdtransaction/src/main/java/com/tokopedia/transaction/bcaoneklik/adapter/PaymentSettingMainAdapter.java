@@ -169,17 +169,22 @@ public class PaymentSettingMainAdapter extends RecyclerView.Adapter<RecyclerView
 
         private View addCreditCardLayout;
 
+        private View numberOfCreditCards;
+
         CreditCardAdderViewHolder(View itemView) {
             super(itemView);
 
             addCreditCardLayout = itemView.findViewById(R.id.add_credit_card_layout);
+            numberOfCreditCards = itemView.findViewById(R.id.credit_card_sub_title);
 
         }
 
         void bindCreditCardHeader(List<CreditCardModelItem> listOfCreditCards) {
             if(listOfCreditCards.size() == 0) {
                 addCreditCardLayout.setVisibility(View.VISIBLE);
+                numberOfCreditCards.setVisibility(View.GONE);
             } else {
+                numberOfCreditCards.setVisibility(View.VISIBLE);
                 addCreditCardLayout.setVisibility(View.GONE);
             }
         }
@@ -190,14 +195,19 @@ public class PaymentSettingMainAdapter extends RecyclerView.Adapter<RecyclerView
 
         private View authButton;
 
+        private View authFooter;
+
         CreditCardFooterViewHolder(View itemView) {
             super(itemView);
 
             authButton = itemView.findViewById(R.id.credit_card_auth);
+
+            authFooter = itemView.findViewById(R.id.credit_card_auth_footer);
         }
 
         void bindCreditCardHeader() {
             authButton.setOnClickListener(onCreditCardMenuClickedListener());
+            authFooter.setOnClickListener(onCreditCardMenuClickedListener());
         }
 
         private View.OnClickListener onCreditCardMenuClickedListener() {

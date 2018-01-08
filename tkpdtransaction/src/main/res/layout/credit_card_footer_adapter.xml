@@ -7,9 +7,9 @@
     android:orientation="vertical">
 
     <RelativeLayout
+        android:id="@+id/credit_card_auth_footer"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="@drawable/card_thick_edge"
         android:orientation="horizontal">
 
         <TextView
@@ -19,7 +19,8 @@
             android:layout_marginLeft="@dimen/small_dp"
             android:layout_marginStart="@dimen/small_dp"
             android:text="Autentikasi Pembayaran Kartu Kredit"
-            android:textSize="@dimen/font_medium" />
+            android:textSize="@dimen/font_medium"
+            android:textColor="@color/black_70" />
 
         <ImageView
             android:id="@+id/credit_card_auth"
@@ -32,8 +33,13 @@
             android:paddingLeft="@dimen/small_dp"
             android:paddingRight="@dimen/small_dp"
             android:paddingStart="@dimen/small_dp"
-            android:src="@drawable/ic_chevron_right" />
+            android:src="@drawable/ic_chevron_right_black_24dp" />
 
     </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#E0E0E0"/>
 
 </LinearLayout>
