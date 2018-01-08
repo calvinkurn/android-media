@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.deeplink.di;
+package com.tokopedia.tkpd.deeplink.di.scope;
 
 import javax.inject.Scope;
 

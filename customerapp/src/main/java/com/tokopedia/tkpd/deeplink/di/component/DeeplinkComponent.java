@@ -1,6 +1,8 @@
-package com.tokopedia.tkpd.deeplink.di;
+package com.tokopedia.tkpd.deeplink.di.component;
 
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.tkpd.deeplink.di.module.DeeplinkModule;
+import com.tokopedia.tkpd.deeplink.di.scope.DeeplinkScope;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenterImpl;
 
 import dagger.Component;
