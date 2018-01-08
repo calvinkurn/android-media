@@ -253,4 +253,9 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
     public void closeView() {
 
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }
