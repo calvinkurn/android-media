@@ -2998,4 +2998,22 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.EventLabel.ONBOARDING_START_LABEL
         ).getEvent());
     }
+
+    public static void eventClickChangePhoneNumber() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_CLICK_USER_PROFILE,
+                AppEventTracking.Category.MANAGE_PROFILE,
+                AppEventTracking.Action.CLICK_CHANGE_PHONE_NUMBER,
+                ""
+        ).getEvent());
+    }
+
+    public static void eventSuccessChangePhoneNumber() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_CLICK_USER_PROFILE,
+                AppEventTracking.Category.MANAGE_PROFILE,
+                AppEventTracking.Action.SUCCESS_CHANGE_PHONE_NUMBER,
+                ""
+        ).getEvent());
+    }
 }

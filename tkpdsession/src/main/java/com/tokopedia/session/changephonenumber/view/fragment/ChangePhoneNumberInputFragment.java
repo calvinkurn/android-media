@@ -17,6 +17,8 @@ import android.widget.TextView;
 
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.database.CacheUtil;
@@ -162,8 +164,14 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        ScreenTracking.screen(getScreenName());
+    }
+
+    @Override
     protected String getScreenName() {
-        return null;
+        return AppScreen.SCREEN_CHANGE_PHONE_NUMBER_INPUT;
     }
 
     @Override

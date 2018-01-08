@@ -18,6 +18,8 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.ui.widget.PinEntryEditText;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -203,6 +205,12 @@ public class ChangePhoneNumberEmailVerificationFragment extends BaseDaggerFragme
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        ScreenTracking.screen(getScreenName());
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         presenter.detachView();
@@ -210,7 +218,7 @@ public class ChangePhoneNumberEmailVerificationFragment extends BaseDaggerFragme
 
     @Override
     protected String getScreenName() {
-        return null;
+        return AppScreen.SCREEN_COTP_EMAIL;
     }
 
     @Override

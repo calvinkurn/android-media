@@ -266,10 +266,14 @@ public final class AppScreen {
     public static final String SCREEN_CHAT = "inbox-chat";
     public static final String SCREEN_CHAT_DETAIL = "chat detail";
     
-    public static final String SCREEN_SELECT_VERIFICATION_METHOD = "Select Verification Method Page";
-    public static final String SCREEN_COTP_DEFAULT = "Account Verification Page";
-    public static final String SCREEN_COTP_SMS = "Account Verification - SMS ";
-    public static final String SCREEN_COTP_CALL = "Account Verification - Call";
+    public static final String SCREEN_SELECT_VERIFICATION_METHOD = "change method";
+    public static final String SCREEN_COTP_DEFAULT = "Input OTP";
+    public static final String SCREEN_COTP_SMS = "Input OTP sms";
+    public static final String SCREEN_COTP_CALL = "Input OTP call";
+    public static final String SCREEN_COTP_EMAIL = "Input OTP email";
+
+    public static final String SCREEN_CHANGE_PHONE_NUMBER_WARNING = "Warning";
+    public static final String SCREEN_CHANGE_PHONE_NUMBER_INPUT = "Change Number";
 
     private AppScreen() {
 

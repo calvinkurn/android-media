@@ -269,6 +269,7 @@ public interface AppEventTracking {
         String APP_RATING = "Application Rating";
         String FEED_CONTENT_COMMENT_DETAIL = "content - comment detail";
         String ONBOARDING = "onboarding";
+        String MANAGE_PROFILE = "pengaturan profile";
     }
 
     interface Action {
@@ -417,6 +418,9 @@ public interface AppEventTracking {
 
         String CLICK_IMAGE_SETTINGS = "click image settings";
         String CLICK_SAVE_EDIT = "click save edit";
+
+        String CLICK_CHANGE_PHONE_NUMBER = "click on ubah";
+        String SUCCESS_CHANGE_PHONE_NUMBER = "success change phone number";
     }
 
     interface ImageEditor{

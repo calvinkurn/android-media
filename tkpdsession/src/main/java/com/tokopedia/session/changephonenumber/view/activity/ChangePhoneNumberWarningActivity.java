@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.session.R;
@@ -94,5 +95,10 @@ public class ChangePhoneNumberWarningActivity extends BasePresenterActivity
     @Override
     public Object getComponent() {
         return getApplicationComponent();
+    }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_CHANGE_PHONE_NUMBER_WARNING;
     }
 }

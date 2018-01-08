@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.deposit.activity.WithdrawActivity;
@@ -139,6 +141,12 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        ScreenTracking.screen(getScreenName());
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         presenter.detachView();
@@ -146,7 +154,7 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
 
     @Override
     protected String getScreenName() {
-        return null;
+        return AppScreen.SCREEN_CHANGE_PHONE_NUMBER_WARNING;
     }
 
     @Override
