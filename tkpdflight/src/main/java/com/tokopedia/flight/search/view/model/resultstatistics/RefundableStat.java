@@ -5,10 +5,9 @@ import android.os.Parcelable;
 
 import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
 
-public class RefundableStat implements ItemType, Parcelable, Visitable<BaseListCheckableTypeFactory<RefundableStat>> {
+public class RefundableStat implements Parcelable, Visitable<BaseListCheckableTypeFactory<RefundableStat>> {
     public static final Parcelable.Creator<RefundableStat> CREATOR = new Parcelable.Creator<RefundableStat>() {
         @Override
         public RefundableStat createFromParcel(Parcel source) {
@@ -55,11 +54,6 @@ public class RefundableStat implements ItemType, Parcelable, Visitable<BaseListC
 
     public void setMinPrice(int minPrice) {
         this.minPrice = minPrice;
-    }
-
-    @Override
-    public int getType() {
-        return 0;
     }
 
     @Override

@@ -120,6 +120,11 @@ public class FlightMainApplication extends BaseMainApplication implements Flight
             }
 
             @Override
+            public String getDeviceId() {
+                return "";
+            }
+
+            @Override
             public boolean isLoggedIn() {
                 return true;
             }

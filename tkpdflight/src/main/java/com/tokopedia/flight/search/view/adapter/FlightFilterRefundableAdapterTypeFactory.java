@@ -4,7 +4,7 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableTypeFactory;
-import com.tokopedia.abstraction.base.view.adapter.holder.CheckableBaseViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.flight.search.view.adapter.viewholder.FlightFilterRefundableViewHolder;
 import com.tokopedia.flight.search.view.model.resultstatistics.RefundableStat;
@@ -14,9 +14,9 @@ import com.tokopedia.flight.search.view.model.resultstatistics.RefundableStat;
  */
 
 public class FlightFilterRefundableAdapterTypeFactory extends BaseAdapterTypeFactory implements BaseListCheckableTypeFactory<RefundableStat> {
-    private CheckableBaseViewHolder.CheckableInteractionListener interactionListener;
+    private BaseCheckableViewHolder.CheckableInteractionListener interactionListener;
 
-    public FlightFilterRefundableAdapterTypeFactory(CheckableBaseViewHolder.CheckableInteractionListener interactionListener) {
+    public FlightFilterRefundableAdapterTypeFactory(BaseCheckableViewHolder.CheckableInteractionListener interactionListener) {
         this.interactionListener = interactionListener;
     }
 

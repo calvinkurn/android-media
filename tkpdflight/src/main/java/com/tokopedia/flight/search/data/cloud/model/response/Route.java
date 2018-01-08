@@ -5,7 +5,6 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
 
 import java.util.List;
 
@@ -13,8 +12,8 @@ import java.util.List;
  * Created by User on 10/26/2017.
  */
 
-public class Route implements ItemType, Parcelable {
-    public static final int TYPE = 893;
+public class Route implements Parcelable {
+
     @SerializedName("airline")
     @Expose
     private String airline;
@@ -148,11 +147,6 @@ public class Route implements ItemType, Parcelable {
 
     public String getArrivalAirportCity() {
         return arrivalAirportCity;
-    }
-
-    @Override
-    public int getType() {
-        return TYPE;
     }
 
     public Route() {

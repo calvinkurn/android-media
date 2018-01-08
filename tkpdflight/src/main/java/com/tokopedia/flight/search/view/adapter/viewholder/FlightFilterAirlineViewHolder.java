@@ -8,7 +8,7 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.base.view.adapter.holder.CheckableBaseViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder;
 import com.tokopedia.abstraction.utils.image.ImageHandler;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.search.view.model.resultstatistics.AirlineStat;
@@ -17,7 +17,7 @@ import com.tokopedia.flight.search.view.model.resultstatistics.AirlineStat;
  * Created by alvarisi on 12/21/17.
  */
 
-public class FlightFilterAirlineViewHolder extends CheckableBaseViewHolder<AirlineStat> implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+public class FlightFilterAirlineViewHolder extends BaseCheckableViewHolder<AirlineStat> implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.item_flight_airline_filter;

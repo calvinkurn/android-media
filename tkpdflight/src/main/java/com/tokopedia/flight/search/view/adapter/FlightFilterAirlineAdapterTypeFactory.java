@@ -4,7 +4,7 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableTypeFactory;
-import com.tokopedia.abstraction.base.view.adapter.holder.CheckableBaseViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.flight.search.view.adapter.viewholder.FlightFilterAirlineViewHolder;
 import com.tokopedia.flight.search.view.model.resultstatistics.AirlineStat;
@@ -14,9 +14,9 @@ import com.tokopedia.flight.search.view.model.resultstatistics.AirlineStat;
  */
 
 public class FlightFilterAirlineAdapterTypeFactory extends BaseAdapterTypeFactory implements BaseListCheckableTypeFactory<AirlineStat> {
-    private CheckableBaseViewHolder.CheckableInteractionListener interactionListener;
+    private BaseCheckableViewHolder.CheckableInteractionListener interactionListener;
 
-    public FlightFilterAirlineAdapterTypeFactory(CheckableBaseViewHolder.CheckableInteractionListener interactionListener) {
+    public FlightFilterAirlineAdapterTypeFactory(BaseCheckableViewHolder.CheckableInteractionListener interactionListener) {
         this.interactionListener = interactionListener;
     }
 

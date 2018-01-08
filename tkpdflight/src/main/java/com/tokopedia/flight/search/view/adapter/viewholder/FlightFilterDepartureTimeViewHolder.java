@@ -7,7 +7,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.base.view.adapter.holder.CheckableBaseViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.search.view.model.resultstatistics.DepartureStat;
 
@@ -15,7 +15,7 @@ import com.tokopedia.flight.search.view.model.resultstatistics.DepartureStat;
  * Created by alvarisi on 12/21/17.
  */
 
-public class FlightFilterDepartureTimeViewHolder extends CheckableBaseViewHolder<DepartureStat> implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+public class FlightFilterDepartureTimeViewHolder extends BaseCheckableViewHolder<DepartureStat> implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
     @LayoutRes
     public static final int LAYOUT = R.layout.item_flight_general_filter;
     TextView tvTitle;
