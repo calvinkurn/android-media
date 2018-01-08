@@ -33,7 +33,7 @@
         android:textSize="14sp"
         android:layout_marginLeft="@dimen/small_dp"
         android:layout_marginStart="@dimen/small_dp"
-        android:layout_marginTop="@dimen/small_dp"
+        android:layout_marginTop="18dp"
         android:textColor="@color/black_70" />
 
     <LinearLayout
@@ -41,7 +41,6 @@
         android:layout_width="match_parent"
         android:layout_height="115dp"
         android:layout_margin="@dimen/margin_vs"
-        android:background="@drawable/btn_plain"
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="gone"
