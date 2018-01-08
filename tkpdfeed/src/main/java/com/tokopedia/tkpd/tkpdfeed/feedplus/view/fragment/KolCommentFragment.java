@@ -25,7 +25,6 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.SendKolCommentDomain;
@@ -38,7 +37,6 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.KolComment;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.KolCommentPresenter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentHeaderViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentProductViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolComments;
 
@@ -302,7 +300,7 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
     }
 
     @Override
-    public boolean onDeleteCommentKol(int id, boolean canDeleteComment, int
+    public boolean onDeleteCommentKol(String id, boolean canDeleteComment, int
             adapterPosition) {
         if (canDeleteComment || isInfluencer()) {
             showDeleteDialog(id, adapterPosition);
@@ -319,7 +317,7 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
                 && sessionHandler.getLoginID().equals(header.getUserId());
     }
 
-    private void showDeleteDialog(final int id, final int adapterPosition) {
+    private void showDeleteDialog(final String id, final int adapterPosition) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         builder.setMessage(R.string.prompt_delete_comment_kol);
