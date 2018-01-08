@@ -137,7 +137,7 @@
         android:animateLayoutChanges="true"
         android:divider="@drawable/bg_line_separator_with_padding"
         android:orientation="vertical"
-        android:showDividers="middle|end">
+        android:showDividers="middle">
 
         <com.tokopedia.flight.dashboard.view.widget.TextInputView
             android:id="@+id/text_input_view_date_departure"
@@ -193,5 +193,10 @@
             app:tiv_remove_background="true"
             app:tiv_title_text="@string/flight_search_passenger_class_title" />
 
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/button_search_ticket"
+            style="@style/Button.Submit.Orange"
+            android:layout_marginTop="@dimen/margin_med"
+            android:text="@string/flight_search_search_ticket" />
     </LinearLayout>
 </LinearLayout>
