@@ -177,7 +177,6 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
     @Override
     public void onSuccessLogin() {
         UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getSuccessLoginTracking());
-        UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getSuccessLoginTracking());
 
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
