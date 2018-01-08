@@ -34,7 +34,7 @@ public class PromoListPresenter implements IPromoListPresenter {
     @Override
     public void processGetPromoList(String subCategories) {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
-
+        param.put("categories", subCategories);
         this.promoInteractor.getPromoList(param, new Subscriber<List<PromoData>>() {
             @Override
             public void onCompleted() {
