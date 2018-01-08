@@ -30,7 +30,7 @@
 
         <TextView
             android:id="@+id/text_suggestion_bid"
-            style="@style/TextView.Body1.BlackSecondary"
+            style="@style/TextView.Small.BlackSecondary"
             android:maxLines="3"
             android:text="@string/top_ads_label_price_desc" />
 

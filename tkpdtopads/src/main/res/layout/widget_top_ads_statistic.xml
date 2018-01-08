@@ -10,12 +10,12 @@
 
     <TextView
         android:id="@+id/text_view_title"
-        style="@style/TextView.Caption.BlackSecondary"
+        style="@style/TextView.Micro.BlackSecondary"
         tools:text="@string/app_name"/>
 
     <TextView
         android:id="@+id/text_view_content"
-        style="@style/TextView.Display1.Green"
+        style="@style/TextView.Headline.Green"
         android:text="@string/top_ads_statistic_info_default_value"/>
 </LinearLayout>
 

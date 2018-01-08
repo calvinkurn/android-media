@@ -7,7 +7,7 @@
 
     <TextView
         android:id="@+id/string_picker_dialog_title"
-        style="@style/TextView.Title"
+        style="@style/TextView.TitleBig"
         android:layout_marginBottom="@dimen/margin_sm"
         android:text="@string/product_manage_menu_set_price" />
 
@@ -29,7 +29,7 @@
 
         <TextView
             android:id="@+id/string_picker_dialog_confirm"
-            style="@style/TextView.Body1.Green"
+            style="@style/TextView.Small.Green"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_marginLeft="@dimen/margin_sm"
@@ -38,7 +38,7 @@
 
         <TextView
             android:id="@+id/string_picker_dialog_cancel"
-            style="@style/TextView.Body1.Green"
+            style="@style/TextView.Small.Green"
             android:layout_marginLeft="@dimen/margin_sm"
             android:layout_marginRight="@dimen/margin_sm"
             android:layout_toLeftOf="@id/string_picker_dialog_confirm"
