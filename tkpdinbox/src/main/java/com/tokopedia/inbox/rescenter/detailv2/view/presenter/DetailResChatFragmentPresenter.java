@@ -227,6 +227,9 @@ public class DetailResChatFragmentPresenter
     @Override
     public void sendIconPressed(String message, List<AttachmentViewModel> attachmentList) {
         if (message.length() >= PARAM_MIN_REPLY_CHAR_COUNT && message.length() <= PARAM_MAX_REPLY_CHAR_COUNT) {
+            getView().showDummyText();
+            mainView.showSnackBar(context.getResources().getString(R.string.string_sending_message));
+            mainView.disableIvSend();
             postReply(message, attachmentList);
         } else {
             mainView.errorInputMessage(context.getResources().getString(R.string.string_error_min_max_words));
@@ -297,7 +300,7 @@ public class DetailResChatFragmentPresenter
     }
 
     private void onFailedAddAttachment() {
-        mainView.showSnackBarError(context.getString(R.string.failed_upload_image));
+        mainView.showSnackBar(context.getString(R.string.failed_upload_image));
     }
 
     private void onAddImageAttachment(String fileLoc, int typeFile) {
@@ -317,12 +320,12 @@ public class DetailResChatFragmentPresenter
             }
         }
         if (!isExtensionAllow) {
-            mainView.showSnackBarError(context.getString(R.string.error_reply_discussion_resolution_file_not_allowed));
+            mainView.showSnackBar(context.getString(R.string.error_reply_discussion_resolution_file_not_allowed));
             return false;
         }
 
         if (item.isImage() && (item.height < 300 || item.width < 300)) {
-            mainView.showSnackBarError(context.getString(R.string.error_reply_discussion_resolution_min_size));
+            mainView.showSnackBar(context.getString(R.string.error_reply_discussion_resolution_min_size));
             return false;
         }
 
@@ -330,7 +333,7 @@ public class DetailResChatFragmentPresenter
             File file = new File(item.getRealPath());
             long length = file.length() / 1024;
             if (length >= 15000) {
-                mainView.showSnackBarError(context.getString(R.string.error_reply_discussion_resolution_reach_max_size_image));
+                mainView.showSnackBar(context.getString(R.string.error_reply_discussion_resolution_reach_max_size_image));
                 return false;
             }
         }
@@ -344,7 +347,7 @@ public class DetailResChatFragmentPresenter
             }
         }
         if (countVideoAlreadyAdded == MAXIMAL_VIDEO_CONTENT_ALLOW) {
-            mainView.showSnackBarError(context.getString(R.string.error_reply_discussion_resolution_reach_max));
+            mainView.showSnackBar(context.getString(R.string.error_reply_discussion_resolution_reach_max));
             return false;
         }
 
@@ -352,7 +355,7 @@ public class DetailResChatFragmentPresenter
             File file = new File(item.getRealPath());
             long length = file.length() / 1024;
             if (length >= 20000) {
-                mainView.showSnackBarError(context.getString(R.string.error_reply_discussion_resolution_reach_max_size_video));
+                mainView.showSnackBar(context.getString(R.string.error_reply_discussion_resolution_reach_max_size_video));
                 return false;
             }
         }

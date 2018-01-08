@@ -14,20 +14,19 @@ import rx.functions.Func1;
  * Modified by rizkyfadillah on 11/9/17
  */
 
-public class StatusMapper implements Func1<Pair<StatusEntity, Boolean>, Status> {
+public class StatusMapper implements Func1<StatusEntity, Status> {
 
     @Override
-    public Status call(Pair<StatusEntity, Boolean> pair) {
+    public Status call(StatusEntity statusEntity) {
         Status status = new Status();
-        status.setType(pair.first.getType());
+        status.setType(statusEntity.getType());
 
-        if (pair.first.getAttributes() != null) {
-            if (pair.first.getAttributes().getVersion() != null) {
-                status.setMinimunAndroidBuild(Integer.valueOf(pair.first.getAttributes().getVersion()
+        if (statusEntity.getAttributes() != null) {
+            if (statusEntity.getAttributes().getVersion() != null) {
+                status.setMinimunAndroidBuild(Integer.valueOf(statusEntity.getAttributes().getVersion()
                         .getMinimumAndroidBuild()));
             }
-            status.setMaintenance(pair.first.getAttributes().isMaintenance());
-            status.setUseCache(pair.second);
+            status.setMaintenance(statusEntity.getAttributes().isMaintenance());
         }
 
         return status;

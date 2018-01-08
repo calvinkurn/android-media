@@ -69,7 +69,6 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
         return bannerDataList;
     }
 
-
     @Override
     public CategoryData transformCategoryData(
             ResponseCategoryDetailData responseCategoryDetailData,
