@@ -34,7 +34,7 @@
     },
     {
       "applink" : "tokopedia://digital/form?category_id=1&operator_id=4",
-      "url" : "tri"
+      "url" : "3"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=1&operator_id=5",
@@ -833,8 +833,14 @@
 
 
 
-
-
+    {
+      "applink" : "tokopedia://digital/form?category_id=4&operator_id=13",
+      "url" : "bpjs"
+    },
+    {
+      "applink" : "tokopedia://digital/form?category_id=4&operator_id=13",
+      "url" : "bpjs/kesehtan"
+    },
     {
       "applink" : "tokopedia://digital/form?category_id=4&operator_id=13",
       "url" : "bpjs/kesehtan"

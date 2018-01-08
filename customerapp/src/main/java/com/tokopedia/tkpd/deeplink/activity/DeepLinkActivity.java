@@ -186,7 +186,6 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     public void onWebViewProgressLoad() {
     }
 
-
     @Override
     public void inflateFragment(Fragment fragment, String tag) {
         getFragmentManager().beginTransaction().add(R.id.main_view, fragment, tag).commit();
