@@ -2,7 +2,7 @@ package com.tokopedia.flight.dashboard.view.adapter;
 
 import android.view.View;
 
-import com.tokopedia.abstraction.base.view.adapter.BaseAdapterTypeFactory;
+import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.flight.dashboard.view.adapter.viewholder.FlightClassViewHolder;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;

@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.R;
-import com.tokopedia.abstraction.base.view.adapter.AdapterTypeFactory;
+import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.design.text.SearchInputView;
 

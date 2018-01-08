@@ -3,7 +3,7 @@ package com.tokopedia.abstraction.base.view.adapter.model;
 
 import android.support.annotation.IdRes;
 
-import com.tokopedia.abstraction.base.view.adapter.AdapterTypeFactory;
+import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 
 /**
