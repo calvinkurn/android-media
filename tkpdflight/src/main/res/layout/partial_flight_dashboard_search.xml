@@ -127,7 +127,7 @@
             android:layout_height="@dimen/image_width_m"
             android:layout_gravity="center"
             android:rotation="90"
-            app:srcCompat="@drawable/ic_flight_reverse"/>
+            app:srcCompat="@drawable/ic_flight_reverse" />
 
     </FrameLayout>
 
@@ -153,7 +153,9 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@drawable/bg_line_separator"/>
+            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginRight="@dimen/margin_small"
+            android:background="@drawable/bg_line_separator" />
 
         <com.tokopedia.flight.dashboard.view.widget.TextInputView
             android:id="@+id/text_input_view_date_return"
@@ -173,7 +175,10 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@drawable/bg_line_separator"/>
+            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginRight="@dimen/margin_small"
+            android:id="@+id/separator_date_return"
+            android:background="@drawable/bg_line_separator" />
 
         <com.tokopedia.flight.dashboard.view.widget.TextInputView
             android:id="@+id/text_input_view_passenger"
@@ -191,7 +196,9 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@drawable/bg_line_separator"/>
+            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginRight="@dimen/margin_small"
+            android:background="@drawable/bg_line_separator" />
 
         <com.tokopedia.flight.dashboard.view.widget.TextInputView
             android:id="@+id/text_input_view_class"
@@ -209,7 +216,9 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@drawable/bg_line_separator"/>
+            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginRight="@dimen/margin_small"
+            android:background="@drawable/bg_line_separator" />
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/button_search_ticket"

@@ -106,6 +106,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         classTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_class);
         departureDateTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_date_departure);
         returnDateTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_date_return);
+        returnDateSeparatorView = view.findViewById(R.id.separator_date_return);
         bannerLayout = view.findViewById(R.id.banner_layout);
         bannerView = view.findViewById(R.id.banner);
 
@@ -239,6 +240,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         oneWayTripAppCompatButton.setSelected(true);
         roundTripAppCompatButton.setSelected(false);
         returnDateTextInputView.setVisibility(View.GONE);
+        returnDateSeparatorView.setVisibility(View.GONE);
 
         departureDateTextInputView.setText(viewModel.getDepartureDateFmt());
         passengerTextInputView.setText(viewModel.getPassengerFmt());
@@ -268,6 +270,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         oneWayTripAppCompatButton.setSelected(false);
         roundTripAppCompatButton.setSelected(true);
         returnDateTextInputView.setVisibility(View.VISIBLE);
+        returnDateSeparatorView.setVisibility(View.VISIBLE);
 
         departureDateTextInputView.setText(viewModel.getDepartureDateFmt());
         returnDateTextInputView.setText(viewModel.getReturnDateFmt());
