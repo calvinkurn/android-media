@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.android.gms.tagmanager.DataLayer;
+import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
 
@@ -172,7 +173,7 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
         return DataLayer.mapOf(
                 "name", getProductName(),
                 "id", getProductID(),
-                "price", getPrice(),
+                "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(getPrice())),
                 "brand", "",
                 "category", "",
                 "variant", "",

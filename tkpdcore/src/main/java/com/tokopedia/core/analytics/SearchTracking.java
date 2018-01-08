@@ -1,5 +1,7 @@
 package com.tokopedia.core.analytics;
 
+import com.tkpd.library.utils.CurrencyFormatHelper;
+
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +29,7 @@ public class SearchTracking extends TrackingUtils {
         com.tokopedia.core.analytics.model.Product product = new com.tokopedia.core.analytics.model.Product();
         product.setName(name);
         product.setId(id);
-        product.setPrice(price);
+        product.setPrice(Integer.toString(CurrencyFormatHelper.convertRupiahToInt(price)));
         product.setBrand("");
         product.setCategoryId("");
         product.setCategoryName("");
