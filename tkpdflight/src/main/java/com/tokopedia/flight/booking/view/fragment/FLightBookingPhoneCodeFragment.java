@@ -1,6 +1,7 @@
 package com.tokopedia.flight.booking.view.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,6 +16,7 @@ import com.tokopedia.flight.booking.view.adapter.FlightBookingPhoneCodeAdapterTy
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPhoneCodePresenterImpl;
 import com.tokopedia.flight.booking.view.presenter.FlightBookingPhoneCodeView;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
+import com.tokopedia.flight.common.util.FlightErrorUtil;
 
 import javax.inject.Inject;
 
@@ -82,5 +84,10 @@ public class FLightBookingPhoneCodeFragment extends BaseSearchListFragment<Fligh
     public void onDestroyView() {
         flightBookingPhoneCodePresenter.onDestroyView();
         super.onDestroyView();
+    }
+
+    @Override
+    protected String getMessageFromThrowable(Context context, Throwable t) {
+        return FlightErrorUtil.getMessageFromException(context, t);
     }
 }
