@@ -99,7 +99,6 @@ public class OkHttpFactory {
                 .addInterceptor(new GlobalTkpdAuthInterceptor(authKey))
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
-                .addInterceptor(getHttpLoggingInterceptor())
                 .build();
     }
 
@@ -163,7 +162,6 @@ public class OkHttpFactory {
                 .addInterceptor(new TkpdAuthInterceptor())
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
-                .addInterceptor(getHttpLoggingInterceptor())
                 .build();
     }
 
@@ -173,7 +171,6 @@ public class OkHttpFactory {
                 .addInterceptor(new TkpdBaseInterceptor())
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
-                .addInterceptor(getHttpLoggingInterceptor())
                 .build();
     }
 
@@ -193,7 +190,6 @@ public class OkHttpFactory {
                 .addInterceptor(new StandardizedInterceptor(authorizationString))
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
-                .addInterceptor(getHttpLoggingInterceptor())
                 .build();
     }
 
@@ -203,7 +199,6 @@ public class OkHttpFactory {
                 .addInterceptor(new WalletAuthInterceptor(authKey))
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
-                .addInterceptor(getHttpLoggingInterceptor())
                 .build();
     }
 
@@ -212,7 +207,6 @@ public class OkHttpFactory {
                 .addInterceptor(new TkpdBearerWithAuthTypeJsonUtInterceptor())
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
-                .addInterceptor(getHttpLoggingInterceptor())
                 .build();
     }
 
@@ -223,7 +217,6 @@ public class OkHttpFactory {
                 .addInterceptor(getHttpLoggingInterceptor())
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
-                .addInterceptor(getHttpLoggingInterceptor())
                 .build();
     }
 
@@ -238,7 +231,6 @@ public class OkHttpFactory {
                 .addInterceptor(apiCacheInterceptor)
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(globalTkpdAuthInterceptor)
-                .addInterceptor(getHttpLoggingInterceptor())
                 .setOkHttpRetryPolicy(okHttpRetryPolicy);
 
         if (GlobalConfig.isAllowDebuggingTools()) {
@@ -259,7 +251,6 @@ public class OkHttpFactory {
                 .addInterceptor(apiCacheInterceptor)
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(tkpdAuthInterceptor)
-                .addInterceptor(getHttpLoggingInterceptor())
                 .setOkHttpRetryPolicy(okHttpRetryPolicy);
 
         if (GlobalConfig.isAllowDebuggingTools()) {
@@ -278,7 +269,6 @@ public class OkHttpFactory {
         TkpdOkHttpBuilder tkpdbBuilder = new TkpdOkHttpBuilder(builder)
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(standardizedInterceptor)
-                .addInterceptor(getHttpLoggingInterceptor())
                 .setOkHttpRetryPolicy(okHttpRetryPolicy);
 
         if (GlobalConfig.isAllowDebuggingTools()) {
@@ -299,7 +289,6 @@ public class OkHttpFactory {
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(tkpdBaseInterceptor)
                 .addInterceptor(apiCacheInterceptor)
-                .addInterceptor(getHttpLoggingInterceptor())
                 .setOkHttpRetryPolicy(okHttpRetryPolicy);
 
         if (GlobalConfig.isAllowDebuggingTools()) {
@@ -322,7 +311,6 @@ public class OkHttpFactory {
                 .addInterceptor(bearerWithAuthInterceptor)
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(tkpdBaseInterceptor)
-                .addInterceptor(getHttpLoggingInterceptor())
                 .addInterceptor(apiCacheInterceptor)
                 .setOkHttpRetryPolicy(okHttpRetryPolicy);
 
@@ -374,7 +362,6 @@ public class OkHttpFactory {
         TkpdOkHttpBuilder tkpdbBuilder = new TkpdOkHttpBuilder(builder)
                 .addInterceptor(tkpdBearerWithAuthTypeJsonUtInterceptor)
                 .addInterceptor(apiCacheInterceptor)
-                .addInterceptor(getHttpLoggingInterceptor())
                 .addInterceptor(new TkpdErrorResponseInterceptor(TkpdV4ResponseError.class))
                 .setOkHttpRetryPolicy(okHttpRetryPolicy);
 
@@ -396,7 +383,6 @@ public class OkHttpFactory {
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(tkpdAuthInterceptor)
                 .addInterceptor(tkpdErrorHandlerInterceptor)
-                .addInterceptor(getHttpLoggingInterceptor())
                 .setOkHttpRetryPolicy(okHttpRetryPolicy);
 
         if (GlobalConfig.isAllowDebuggingTools()) {
@@ -414,7 +400,6 @@ public class OkHttpFactory {
         TkpdOkHttpBuilder tkpdbBuilder = new TkpdOkHttpBuilder(builder)
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(resolutionInterceptor)
-                .addInterceptor(getHttpLoggingInterceptor())
                 .setOkHttpRetryPolicy(okHttpRetryPolicy);
 
         if (GlobalConfig.isAllowDebuggingTools()) {
@@ -429,7 +414,7 @@ public class OkHttpFactory {
                 .addInterceptor(new FingerprintInterceptor())
                 .addInterceptor(new MsisdnInterceptor(authKey))
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
-                .addInterceptor(getHttpLoggingInterceptor())
+
                 .addDebugInterceptor()
                 .build();
     }
@@ -440,7 +425,6 @@ public class OkHttpFactory {
                 .addInterceptor(new CreditCardInterceptor())
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
-                .addInterceptor(getHttpLoggingInterceptor())
                 .build();
     }
 
@@ -455,7 +439,6 @@ public class OkHttpFactory {
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(topAdsAuthInterceptor)
                 .addInterceptor(errorResponseInterceptor)
-                .addInterceptor(getHttpLoggingInterceptor())
                 .setOkHttpRetryPolicy(okHttpRetryPolicy)
                 .addDebugInterceptor()
                 .build();
