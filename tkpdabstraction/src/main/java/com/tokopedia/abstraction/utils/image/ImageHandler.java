@@ -1,6 +1,5 @@
 package com.tokopedia.abstraction.utils.image;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -515,4 +514,5 @@ public class ImageHandler {
                 .centerCrop()
                 .into(imageView);
     }
+
 }
