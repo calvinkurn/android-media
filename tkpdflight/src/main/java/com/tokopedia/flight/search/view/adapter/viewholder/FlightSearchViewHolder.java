@@ -11,7 +11,7 @@ import com.tokopedia.flight.R;
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.common.view.FlightMultiAirlineView;
 import com.tokopedia.flight.search.util.DurationUtil;
-import com.tokopedia.flight.search.view.adapter.FlightSearchAdapter;
+import com.tokopedia.flight.search.view.adapter.FilterSearchAdapterTypeFactory;
 import com.tokopedia.flight.search.view.model.Duration;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
@@ -37,9 +37,9 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightSearchViewM
     TextView savingPrice;
     TextView arrivalAddDay;
     View containerDetail;
-    private FlightSearchAdapter.OnBaseFlightSearchAdapterListener onBaseFlightSearchAdapterListener;
+    private FilterSearchAdapterTypeFactory.OnFlightSearchListener onFlightSearchListener;
 
-    public FlightSearchViewHolder(View itemView, FlightSearchAdapter.OnBaseFlightSearchAdapterListener onBaseFlightSearchAdapterListener) {
+    public FlightSearchViewHolder(View itemView, FilterSearchAdapterTypeFactory.OnFlightSearchListener onFlightSearchListener) {
         super(itemView);
         tvDeparture = (TextView) itemView.findViewById(R.id.departure_time);
         tvArrival = (TextView) itemView.findViewById(R.id.arrival_time);
@@ -51,7 +51,7 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightSearchViewM
         savingPrice = (TextView) itemView.findViewById(R.id.saving_price);
         arrivalAddDay = (TextView) itemView.findViewById(R.id.arrival_add_day);
         containerDetail = itemView.findViewById(R.id.container_detail);
-        this.onBaseFlightSearchAdapterListener = onBaseFlightSearchAdapterListener;
+        this.onFlightSearchListener = onFlightSearchListener;
     }
 
     @Override
@@ -64,7 +64,7 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightSearchViewM
         View.OnClickListener detailClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onBaseFlightSearchAdapterListener.onDetailClicked(flightSearchViewModel);
+                onFlightSearchListener.onDetailClicked(flightSearchViewModel);
             }
         };
         tvPrice.setOnClickListener(detailClickListener);

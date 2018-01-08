@@ -1,5 +1,6 @@
 package com.tokopedia.flight.orderlist.view;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,6 +17,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.design.quickfilter.QuickFilterAdapter;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.detail.view.activity.FlightDetailOrderActivity;
 import com.tokopedia.flight.orderlist.contract.FlightOrderListContract;
 import com.tokopedia.flight.orderlist.di.FlightOrderComponent;
@@ -163,5 +165,10 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
     @Override
     public void onItemClicked(Visitable visitable) {
 
+    }
+
+    @Override
+    protected String getMessageFromThrowable(Context context, Throwable t) {
+        return FlightErrorUtil.getMessageFromException(context, t);
     }
 }

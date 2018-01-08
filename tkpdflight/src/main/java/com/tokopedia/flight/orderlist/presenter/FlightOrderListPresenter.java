@@ -113,7 +113,7 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
             public void onError(Throwable e) {
                 e.printStackTrace();
                 if (isViewAttached()) {
-                    getView().showGetListError(FlightErrorUtil.getMessageFromException(getView().getActivity(), e));
+                    getView().showGetListError(e);
                 }
             }
 
