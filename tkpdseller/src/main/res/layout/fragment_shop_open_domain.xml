@@ -53,7 +53,7 @@
             android:layout_height="wrap_content"
             style="@style/TextView.Caption.BlackDisabled"
             android:text="@string/shop_domain"
-            android:layout_marginTop="@dimen/padding_vs"
+            android:layout_marginTop="@dimen/padding_med"
             android:layout_marginBottom="@dimen/padding_vs"/>
         <TextView
             android:layout_width="match_parent"

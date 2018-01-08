@@ -19,8 +19,12 @@
         <activity
             android:name=".shop.open.view.activity.ShopOpenCreateSuccessActivity"
             android:label="@string/title_shop_is_active"
-            android:screenOrientation="portrait"
-            android:exported="true"/>
+            android:screenOrientation="portrait"/>
+
+        <activity
+            android:name=".shop.open.view.activity.ShopOpenReserveDomainSuccessActivity"
+            android:label="@string/title_shop_is_active"
+            android:screenOrientation="portrait"/>
 
         <activity
             android:name=".shop.open.view.activity.ShopOpenDomainActivity"

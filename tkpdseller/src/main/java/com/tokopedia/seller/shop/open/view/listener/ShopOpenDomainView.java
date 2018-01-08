@@ -20,9 +20,7 @@ public interface ShopOpenDomainView extends CustomerView {
 
     void onErrorCheckShopDomain(Throwable t);
 
-    void onSuccessReserveShop();
-
-    void onFailedReserveShop();
+    void onSuccessReserveShop(String shopName);
 
     void onErrorReserveShop(Throwable t);
 }
