@@ -3,16 +3,15 @@ package com.tokopedia.flight.search.view.model.resultstatistics;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableTypeFactory;
+import com.tokopedia.abstraction.base.view.adapter.factory.BaseListCheckableTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 
 /**
  * Created by User on 11/1/2017.
  */
 
-public class AirlineStat implements Parcelable, ItemType, Visitable<BaseListCheckableTypeFactory<AirlineStat>> {
+public class AirlineStat implements Parcelable, Visitable<BaseListCheckableTypeFactory<AirlineStat>> {
     public static final Parcelable.Creator<AirlineStat> CREATOR = new Parcelable.Creator<AirlineStat>() {
         @Override
         public AirlineStat createFromParcel(Parcel source) {
@@ -70,11 +69,6 @@ public class AirlineStat implements Parcelable, ItemType, Visitable<BaseListChec
         dest.writeParcelable(this.airlineDB, flags);
         dest.writeInt(this.minPrice);
         dest.writeString(this.minPriceString);
-    }
-
-    @Override
-    public int getType() {
-        return 0;
     }
 
     @Override

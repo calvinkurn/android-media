@@ -8,7 +8,6 @@ import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
-import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
 import com.tokopedia.flight.common.database.TkpdFlightDatabase;
 import com.tokopedia.flight.search.data.cloud.model.response.Attributes;
 import com.tokopedia.flight.search.data.cloud.model.response.Fare;
@@ -22,7 +21,7 @@ import java.util.List;
  * @author sebastianuskh on 4/13/17.
  */
 @Table(database = TkpdFlightDatabase.class, insertConflict = ConflictAction.REPLACE, updateConflict = ConflictAction.REPLACE)
-public class FlightSearchSingleRouteDB extends BaseModel implements ItemType {
+public class FlightSearchSingleRouteDB extends BaseModel {
     public static final String ID = "id";
     public static final String TOTAL_NUMERIC = "total_numeric";
     public static final String ADULT_NUMERIC = "adult_numeric";
@@ -171,11 +170,6 @@ public class FlightSearchSingleRouteDB extends BaseModel implements ItemType {
         } else {
             this.isRefundable = RefundableEnum.PARTIAL_REFUNDABLE.getId();
         }
-    }
-
-    @Override
-    public int getType() {
-        return 0;
     }
 
     public String getTerm() {

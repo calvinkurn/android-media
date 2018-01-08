@@ -3,16 +3,15 @@ package com.tokopedia.flight.search.view.model.resultstatistics;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableTypeFactory;
+import com.tokopedia.abstraction.base.view.adapter.factory.BaseListCheckableTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
 import com.tokopedia.flight.search.view.model.filter.TransitEnum;
 
 /**
  * Created by User on 11/1/2017.
  */
 
-public class TransitStat implements ItemType, Parcelable, Visitable<BaseListCheckableTypeFactory<TransitStat>> {
+public class TransitStat implements Parcelable, Visitable<BaseListCheckableTypeFactory<TransitStat>> {
     public static final Parcelable.Creator<TransitStat> CREATOR = new Parcelable.Creator<TransitStat>() {
         @Override
         public TransitStat createFromParcel(Parcel source) {
@@ -59,11 +58,6 @@ public class TransitStat implements ItemType, Parcelable, Visitable<BaseListChec
 
     public void setMinPrice(int minPrice) {
         this.minPrice = minPrice;
-    }
-
-    @Override
-    public int getType() {
-        return 0;
     }
 
     @Override

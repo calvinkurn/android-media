@@ -1,4 +1,4 @@
-package com.tokopedia.abstraction.base.view.adapter;
+package com.tokopedia.abstraction.base.view.adapter.factory;
 
 import android.view.View;
 

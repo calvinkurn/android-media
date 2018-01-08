@@ -3,7 +3,6 @@ package com.tokopedia.flight.detail.view.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
@@ -14,9 +13,8 @@ import java.util.List;
  * Created by zulfikarrahman on 11/20/17.
  */
 
-public class FlightDetailViewModel implements ItemType, Parcelable {
+public class FlightDetailViewModel implements Parcelable {
 
-    public static final int TYPE = 834;
     public static final Creator<FlightDetailViewModel> CREATOR = new Creator<FlightDetailViewModel>() {
         @Override
         public FlightDetailViewModel createFromParcel(Parcel in) {
@@ -70,11 +68,6 @@ public class FlightDetailViewModel implements ItemType, Parcelable {
     }
 
     public FlightDetailViewModel() {
-    }
-
-    @Override
-    public int getType() {
-        return TYPE;
     }
 
     public FlightDetailViewModel build(FlightSearchViewModel flightSearchViewModel) {

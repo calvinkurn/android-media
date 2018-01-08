@@ -69,7 +69,7 @@ public class FlightAirportPickerPresenterImpl extends BaseDaggerPresenter<Flight
             public void onError(Throwable e) {
                 if (isViewAttached()) {
                     getView().hideGetAirportListLoading();
-                    getView().showGetListError(FlightErrorUtil.getMessageFromException(getView().getActivity(), e));
+                    getView().showGetListError(e);
                 }
             }
 

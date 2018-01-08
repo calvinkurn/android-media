@@ -1,9 +1,10 @@
-package com.tokopedia.abstraction.base.view.adapter;
+package com.tokopedia.abstraction.base.view.adapter.factory;
 
 import android.support.annotation.CallSuper;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.exception.TypeNotSupportedException;
+import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;

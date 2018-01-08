@@ -3,16 +3,15 @@ package com.tokopedia.flight.search.view.model.resultstatistics;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.abstraction.base.view.adapter.BaseListCheckableTypeFactory;
+import com.tokopedia.abstraction.base.view.adapter.factory.BaseListCheckableTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
 import com.tokopedia.flight.search.view.model.filter.DepartureTimeEnum;
 
 /**
  * Created by User on 11/1/2017.
  */
 
-public class DepartureStat implements Parcelable, ItemType, Visitable<BaseListCheckableTypeFactory<DepartureStat>> {
+public class DepartureStat implements Parcelable, Visitable<BaseListCheckableTypeFactory<DepartureStat>> {
     public static final Parcelable.Creator<DepartureStat> CREATOR = new Parcelable.Creator<DepartureStat>() {
         @Override
         public DepartureStat createFromParcel(Parcel source) {
@@ -71,11 +70,6 @@ public class DepartureStat implements Parcelable, ItemType, Visitable<BaseListCh
         dest.writeInt(this.departureTimeEnum == null ? -1 : this.departureTimeEnum.ordinal());
         dest.writeInt(this.minPrice);
         dest.writeString(this.minPriceString);
-    }
-
-    @Override
-    public int getType() {
-        return 0;
     }
 
     @Override

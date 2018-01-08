@@ -4,15 +4,13 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
 import com.tokopedia.flight.dashboard.view.adapter.FlightClassesAdapterTypeFactory;
-import com.tokopedia.flight.dashboard.view.adapter.viewholder.FlightClassViewHolder;
 
 /**
  * Created by alvarisi on 10/30/17.
  */
 
-public class FlightClassViewModel implements ItemType, Visitable<FlightClassesAdapterTypeFactory>, Parcelable {
+public class FlightClassViewModel implements Visitable<FlightClassesAdapterTypeFactory>, Parcelable {
     public static final Creator<FlightClassViewModel> CREATOR = new Creator<FlightClassViewModel>() {
         @Override
         public FlightClassViewModel createFromParcel(Parcel in) {
@@ -33,11 +31,6 @@ public class FlightClassViewModel implements ItemType, Visitable<FlightClassesAd
     protected FlightClassViewModel(Parcel in) {
         title = in.readString();
         id = in.readInt();
-    }
-
-    @Override
-    public int getType() {
-        return FlightClassViewHolder.LAYOUT;
     }
 
     public String getTitle() {

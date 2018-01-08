@@ -1,6 +1,6 @@
 package com.tokopedia.flight.review.view.adapter;
 
-import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.flight.review.view.model.FlightDetailPassenger;
 
 /**

@@ -6,7 +6,6 @@ import android.os.Parcelable;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.search.data.cloud.model.response.Fare;
@@ -25,7 +24,7 @@ import java.util.List;
  * Created by User on 10/30/2017.
  */
 
-public class FlightSearchViewModel implements ItemType, Parcelable, Visitable<FilterSearchAdapterTypeFactory> {
+public class FlightSearchViewModel implements Parcelable, Visitable<FilterSearchAdapterTypeFactory> {
     public static final int ONE_HOURS_DAY = 2400;
     public static final Creator<FlightSearchViewModel> CREATOR = new Creator<FlightSearchViewModel>() {
         @Override
@@ -183,11 +182,6 @@ public class FlightSearchViewModel implements ItemType, Parcelable, Visitable<Fi
             setArrivalAirportName(name);
             setArrivalAirportCity(city);
         }
-    }
-
-    @Override
-    public int getType() {
-        return 0;
     }
 
     public String getId() {

@@ -6,11 +6,11 @@ import android.widget.CompoundButton;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 
-public abstract class CheckableBaseViewHolder<T extends Visitable> extends AbstractViewHolder<T> implements CompoundButton.OnCheckedChangeListener {
+public abstract class BaseCheckableViewHolder<T extends Visitable> extends AbstractViewHolder<T> implements CompoundButton.OnCheckedChangeListener {
 
     private CheckableInteractionListener checkableInteractionListener;
 
-    public CheckableBaseViewHolder(View itemView, CheckableInteractionListener checkableInteractionListener) {
+    public BaseCheckableViewHolder(View itemView, CheckableInteractionListener checkableInteractionListener) {
         super(itemView);
         this.checkableInteractionListener = checkableInteractionListener;
     }
