@@ -2998,4 +2998,13 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.EventLabel.ONBOARDING_START_LABEL
         ).getEvent());
     }
+
+    public static void eventSearchResultShopItemClick(String keyword, String shopName) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.SEARCH_RESULT,
+                AppEventTracking.Category.SEARCH_RESULT,
+                AppEventTracking.Action.CLICK_SHOP,
+                keyword + " - " + shopName
+        ).setUserId().getEvent());
+    }
 }

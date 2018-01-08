@@ -35,6 +35,7 @@ import com.tokopedia.core.var.TkpdCache;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -469,5 +470,59 @@ public class GTMContainer implements IGTMContainer {
 
     public void event(String name, Map<String, Object> data) {
         GTMDataLayer.pushEvent(context, name, data);
+    }
+
+    @Override
+    public void enhanceClickSearchResultProduct(Map<String, Object> objects,
+                                                String keyword,
+                                                String actionField) {
+
+        clearEnhanceEcommerce();
+
+        GTMDataLayer.pushGeneral(
+                context,
+                DataLayer.mapOf("event", "productClick",
+                        "eventCategory", "search result",
+                        "eventAction", "click - product",
+                        "eventLabel", keyword,
+                        "ecommerce", DataLayer.mapOf("click",
+                                DataLayer.mapOf("actionField",
+                                        DataLayer.mapOf("list", actionField),
+                                        "products", DataLayer.listOf(objects)
+                                )
+                        )
+                )
+        );
+    }
+
+    @Override
+    public void enhanceImpressionSearchResultProduct(List<Object> objects, String keyword) {
+        clearEnhanceEcommerce();
+
+        GTMDataLayer.pushGeneral(
+                context,
+                DataLayer.mapOf("event", "productView",
+                        "eventCategory", "search result",
+                        "eventAction", "impression - product",
+                        "eventLabel", keyword,
+                        "ecommerce", DataLayer.mapOf(
+                                "currencyCode", "IDR",
+                                "impressions", DataLayer.listOf(
+                                        objects.toArray(new Object[objects.size()])
+                                ))
+                )
+        );
+    }
+
+    private void clearEnhanceEcommerce() {
+        GTMDataLayer.pushGeneral(
+                context,
+                DataLayer.mapOf("event", null,
+                        "eventCategory", null,
+                        "eventAction", null,
+                        "eventLabel", null,
+                        "ecommerce", null
+                )
+        );
     }
 }

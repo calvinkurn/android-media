@@ -12,6 +12,7 @@ import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.analytics.nishikino.model.Promotion;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -111,4 +112,10 @@ public interface IGTMContainer {
     void eventImpressionHotlistProductFeatured(Hotlist hotlist);
 
     void event(String name, Map<String, Object> data);
+
+    void enhanceClickSearchResultProduct(Map<String, Object> objects,
+                                         String keyword,
+                                         String actionField);
+
+    void enhanceImpressionSearchResultProduct(List<Object> objects, String keyword);
 }

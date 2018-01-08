@@ -417,6 +417,7 @@ public interface AppEventTracking {
 
         String CLICK_IMAGE_SETTINGS = "click image settings";
         String CLICK_SAVE_EDIT = "click save edit";
+        String CLICK_SHOP = "click - shop";
     }
 
     interface ImageEditor{

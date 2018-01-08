@@ -3,9 +3,11 @@ package com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,6 +30,7 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
     private boolean isWishlistButtonEnabled = true;
     private List<BadgeItem> badgesList;
     private List<LabelItem> labelList;
+    private int position;
 
     public void setProductID(String productID) {
         this.productID = productID;
@@ -149,6 +152,36 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
         return labelList;
     }
 
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
+    public ProductItem() {
+    }
+
+    @Override
+    public int type(ProductListTypeFactory typeFactory) {
+        return typeFactory.type(this);
+    }
+
+    public Object getListProductAsObjectDataLayer(String userId) {
+        return DataLayer.mapOf(
+                "name", getProductName(),
+                "id", getProductID(),
+                "price", getPrice(),
+                "brand", "",
+                "category", "",
+                "variant", "",
+                "list", "",
+                "position", Integer.toString(getPosition()),
+                "userId", userId
+        );
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -171,9 +204,7 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
         dest.writeByte(this.isWishlistButtonEnabled ? (byte) 1 : (byte) 0);
         dest.writeTypedList(this.badgesList);
         dest.writeTypedList(this.labelList);
-    }
-
-    public ProductItem() {
+        dest.writeInt(this.position);
     }
 
     protected ProductItem(Parcel in) {
@@ -192,9 +223,10 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
         this.isWishlistButtonEnabled = in.readByte() != 0;
         this.badgesList = in.createTypedArrayList(BadgeItem.CREATOR);
         this.labelList = in.createTypedArrayList(LabelItem.CREATOR);
+        this.position = in.readInt();
     }
 
-    public static final Parcelable.Creator<ProductItem> CREATOR = new Parcelable.Creator<ProductItem>() {
+    public static final Creator<ProductItem> CREATOR = new Creator<ProductItem>() {
         @Override
         public ProductItem createFromParcel(Parcel source) {
             return new ProductItem(source);
@@ -205,9 +237,4 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
             return new ProductItem[size];
         }
     };
-
-    @Override
-    public int type(ProductListTypeFactory typeFactory) {
-        return typeFactory.type(this);
-    }
 }

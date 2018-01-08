@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.SearchTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -459,7 +460,18 @@ public class ProductListFragment extends SearchSectionFragment
         bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
         intent.putExtras(bundle);
         intent.putExtra(ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition);
+        sendItemClickTrackingEvent(item);
         startActivityForResult(intent, REQUEST_CODE_GOTO_PRODUCT_DETAIL);
+    }
+
+    private void sendItemClickTrackingEvent(ProductItem item) {
+        SearchTracking.trackEventClickSearchResultProduct(
+                item.getProductName(),
+                item.getProductID(),
+                item.getPrice(),
+                item.getPosition(),
+                SessionHandler.isV4Login(getContext()) ? SessionHandler.getLoginID(getContext()) : "",
+                productViewModel.getQuery());
     }
 
     @Override

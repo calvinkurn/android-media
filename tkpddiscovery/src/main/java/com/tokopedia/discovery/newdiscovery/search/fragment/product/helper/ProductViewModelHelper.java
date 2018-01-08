@@ -46,12 +46,12 @@ public class ProductViewModelHelper {
         List<ProductItem> productItemList = new ArrayList<>();
 
         for (ProductModel productModel : productModels) {
-            productItemList.add(convertToProductItem(productModel));
+            productItemList.add(convertToProductItem(productModel, productModels.indexOf(productModel)));
         }
         return productItemList;
     }
 
-    private static ProductItem convertToProductItem(ProductModel productModel) {
+    private static ProductItem convertToProductItem(ProductModel productModel, int position) {
         ProductItem productItem = new ProductItem();
         productItem.setProductID(productModel.getProductID());
         productItem.setProductName(productModel.getProductName());
@@ -67,6 +67,7 @@ public class ProductViewModelHelper {
         productItem.setWishlisted(productModel.isWishlisted());
         productItem.setBadgesList(convertToBadgesItemList(productModel.getBadgesList()));
         productItem.setLabelList(convertToLabelsItemList(productModel.getLabelList()));
+        productItem.setPosition(position);
         return productItem;
     }
 
