@@ -32,12 +32,15 @@ public class PaymentSettingMainAdapter extends RecyclerView.Adapter<RecyclerView
             R.layout.credit_card_header_adapter;
     private static final int TYPE_HOLDER_CREDIT_CARD_ITEM =
             R.layout.credit_card_list_adapter;
+    private static final int TYPE_HOLDER_CREDIT_CARD_FOOTER =
+            R.layout.credit_card_footer_adapter;
     private static final int TYPE_HOLDER_BCA_ONE_CLICK_HEADER =
             R.layout.bca_one_click_header;
     private static final int TYPE_HOLDER_BCA_ONE_CLICK_ITEM =
             R.layout.bca_one_click_adapter;
 
     private static final int NUMBER_OF_HEADERS = 2;
+    private static final int NUMBER_OF_FOOTER = 1;
     private static final int CREDIT_CARD_HEADER_SIZE = 1;
     private static final int BCA_ONE_CLICK_HEADER_SIZE = 1;
 
@@ -69,6 +72,8 @@ public class PaymentSettingMainAdapter extends RecyclerView.Adapter<RecyclerView
             return new CreditCardAdderViewHolder(view);
         else if(viewType == TYPE_HOLDER_CREDIT_CARD_ITEM)
             return new CreditCardListViewHolder(view);
+        else if(viewType == TYPE_HOLDER_CREDIT_CARD_FOOTER)
+            return new CreditCardFooterViewHolder(view);
         else if(viewType == TYPE_HOLDER_BCA_ONE_CLICK_HEADER)
             return new BcaOneClickHeaderViewHolder(view);
         else if (viewType == TYPE_HOLDER_BCA_ONE_CLICK_ITEM)
@@ -86,7 +91,9 @@ public class PaymentSettingMainAdapter extends RecyclerView.Adapter<RecyclerView
             CreditCardModelItem creditCardItem = model
                     .getCreditCardResponse()
                     .getCreditCardList().get(position - CREDIT_CARD_HEADER_SIZE);
-            ((CreditCardListViewHolder)holder).bindCreditCardItem(creditCardItem);
+            ((CreditCardListViewHolder) holder).bindCreditCardItem(creditCardItem);
+        } else if(type == TYPE_HOLDER_CREDIT_CARD_FOOTER) {
+            ((CreditCardFooterViewHolder)holder).bindCreditCardHeader();
         } else if(type == TYPE_HOLDER_BCA_ONE_CLICK_HEADER) {
             ((BcaOneClickHeaderViewHolder) holder).bindBcaHeaderView(
                     model.getBcaOneClickModel()
@@ -118,7 +125,9 @@ public class PaymentSettingMainAdapter extends RecyclerView.Adapter<RecyclerView
         else if(position > 0
                 && position <= creditCardLastIndex())
             return TYPE_HOLDER_CREDIT_CARD_ITEM;
-        else if(position == creditCardLastIndex() + BCA_ONE_CLICK_HEADER_SIZE)
+        else if(position == creditCardLastIndex() + NUMBER_OF_FOOTER)
+            return TYPE_HOLDER_CREDIT_CARD_FOOTER;
+        else if(position == creditCardLastIndex() + NUMBER_OF_FOOTER + BCA_ONE_CLICK_HEADER_SIZE)
             return TYPE_HOLDER_BCA_ONE_CLICK_HEADER;
         else return TYPE_HOLDER_BCA_ONE_CLICK_ITEM;
     }
@@ -132,10 +141,11 @@ public class PaymentSettingMainAdapter extends RecyclerView.Adapter<RecyclerView
     public int getItemCount() {
         if(model == null) return 0;
         else if(bcaOneClickUnavailable()) {
-            return CREDIT_CARD_HEADER_SIZE + getCreditCardListSize();
+            return CREDIT_CARD_HEADER_SIZE + NUMBER_OF_FOOTER + getCreditCardListSize();
         }
         else {
             return NUMBER_OF_HEADERS
+                    + NUMBER_OF_FOOTER
                     + getBcaOneClickListSize()
                     + getCreditCardListSize();
         }
@@ -205,43 +215,50 @@ public class PaymentSettingMainAdapter extends RecyclerView.Adapter<RecyclerView
 
     }
 
+    private class CreditCardFooterViewHolder extends RecyclerView.ViewHolder {
+
+        private View authButton;
+
+        CreditCardFooterViewHolder(View itemView) {
+            super(itemView);
+
+            authButton = itemView.findViewById(R.id.credit_card_auth);
+        }
+
+        void bindCreditCardHeader() {
+            authButton.setOnClickListener(onCreditCardMenuClickedListener());
+        }
+
+        private View.OnClickListener onCreditCardMenuClickedListener() {
+            return new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    presenter.checkCreditCardWhiteList();
+                }
+            };
+        }
+
+    }
+
     private class CreditCardListViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView cardType;
-
         private TextView cardNumber;
-
-        private TextView expiryDate;
-
-        private TextView deleteButton;
 
         private ImageView cardImage;
 
         CreditCardListViewHolder(View itemView) {
             super(itemView);
-            cardType = (TextView) itemView.findViewById(R.id.card_type);
             cardNumber = (TextView) itemView.findViewById(R.id.card_number);
-            expiryDate = (TextView) itemView.findViewById(R.id.card_expiry_date);
             cardImage = (ImageView) itemView.findViewById(R.id.card_image);
-            deleteButton = (TextView) itemView.findViewById(R.id.delete_button);
         }
 
         void bindCreditCardItem(CreditCardModelItem item) {
-            cardType.setText(item.getCardType());
             cardNumber.setText(item.getMaskedNumber());
-            expiryDate.setText(item.getExpiryMonth()
-                    + "/"
-                    +item.getExpiryYear());
             ImageHandler.LoadImage(cardImage, item.getCardTypeImage());
-            deleteButton.setOnClickListener(onDeleteClickedListener(
-                    item.getTokenId(),
-                    item.getMaskedNumber()));
         }
     }
 
     private class BcaOneClickHeaderViewHolder extends RecyclerView.ViewHolder {
-
-        //private TextView quickPaymentTitle;
 
         private TextView bcaOneClickRegistrationButton;
 

@@ -39,16 +39,8 @@ public class CreditCardRecyclerViewAdapter extends RecyclerView.Adapter<
 
     @Override
     public void onBindViewHolder(CreditCardAdapterViewHolder holder, int position) {
-        holder.cardType.setText(listCreditCard.get(position).getCardType());
         holder.cardNumber.setText(listCreditCard.get(position).getMaskedNumber());
-        holder.expiryDate.setText(listCreditCard.get(position).getExpiryMonth()
-                + "/"
-                +listCreditCard.get(position).getExpiryYear());
         ImageHandler.LoadImage(holder.cardImage, listCreditCard.get(position).getCardTypeImage());
-        holder.deleteButton.setOnClickListener(onDeleteClickedListener(
-                listCreditCard.get(position).getTokenId(),
-                listCreditCard.get(position).getMaskedNumber())
-        );
     }
 
     @Override
@@ -58,24 +50,14 @@ public class CreditCardRecyclerViewAdapter extends RecyclerView.Adapter<
 
     class CreditCardAdapterViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView cardType;
-
         private TextView cardNumber;
-
-        private TextView expiryDate;
-
-        private TextView deleteButton;
 
         private ImageView cardImage;
 
         CreditCardAdapterViewHolder(View itemView) {
             super(itemView);
-
-            cardType = (TextView) itemView.findViewById(R.id.card_type);
             cardNumber = (TextView) itemView.findViewById(R.id.card_number);
-            expiryDate = (TextView) itemView.findViewById(R.id.card_expiry_date);
             cardImage = (ImageView) itemView.findViewById(R.id.card_image);
-            deleteButton = (TextView) itemView.findViewById(R.id.delete_button);
         }
     }
 
