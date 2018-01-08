@@ -51,7 +51,7 @@ public class FlightBookingPhoneCodePresenterImpl extends BaseDaggerPresenter<Fli
             @Override
             public void onError(Throwable e) {
                 if (isViewAttached()) {
-                    getView().showGetListError(FlightErrorUtil.getMessageFromException(getView().getActivity(), e));
+                    getView().showGetListError(e);
                 }
             }
 
