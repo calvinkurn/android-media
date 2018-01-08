@@ -203,6 +203,7 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
     public void onErrorReserveShop(Throwable t) {
         hideSubmitLoading();
         String message = ShopErrorHandler.getErrorMessage(t);
+        trackingOpenShop.eventOpenShopBiodataError(message);
         snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(),
                 message,
                 new NetworkErrorHelper.RetryClickedListener() {
@@ -217,6 +218,7 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
     @Override
     public void onSuccessReserveShop(String shopName) {
         hideSubmitLoading();
+        trackingOpenShop.eventOpenShopBiodataSuccess();
         goToShopOpenMandatory(shopName);
     }
 
