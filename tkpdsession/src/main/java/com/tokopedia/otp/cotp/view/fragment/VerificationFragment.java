@@ -395,11 +395,12 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
     private void setRunningCountdownText(String countdown) {
         countdownText.setVisibility(View.VISIBLE);
+        countdownText.setOnClickListener(null);
         finishCountdownView.setVisibility(View.GONE);
         noCodeText.setVisibility(View.GONE);
 
         countdownText.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_38));
-
+        countdownText.setEnabled(false);
         String text = String.format("%s <b> %s %s</b> %s",
                 getString(R.string.please_wait_in),
                 countdown,
