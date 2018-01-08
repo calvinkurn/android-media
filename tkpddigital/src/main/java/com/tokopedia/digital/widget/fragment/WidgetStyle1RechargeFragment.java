@@ -403,22 +403,16 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
             widgetClientNumberView.setFilterMaxLength(operatorModel.getAttributes().getMaximumLength());
             widgetClientNumberView.setImgOperator(operatorModel.getAttributes().getImage());
             widgetClientNumberView.setImgOperatorVisible();
-//            widgetClientNumberView.setInputType(operatorModel.getAttributes().getRule().isAllowAphanumericNumber());
             widgetProductChooserView.setTitleProduct(operatorModel.getAttributes().getRule().getProductText());
             widgetProductChooserView.setVisibilityProduct(operatorModel.getAttributes().getRule().isShowProduct());
-
-            if (!operatorModel.getAttributes().getRule().isShowProduct()) {
-                clearHolder(holderWidgetWrapperBuy);
-                holderWidgetWrapperBuy.addView(widgetWrapperBuyView);
-            }
         }
     }
 
     @Override
     public void renderDataProducts(List<Product> products, boolean showPrice) {
-        clearHolder(holderWidgetWrapperBuy);
         clearHolder(holderWidgetSpinnerProduct);
-        if (!TextUtils.isEmpty(widgetClientNumberView.getText())) {
+        clearHolder(holderWidgetWrapperBuy);
+        if (!TextUtils.isEmpty(widgetClientNumberView.getText()) & selectedOperator != null) {
             widgetProductChooserView.setListener(getProductChoserListener());
             widgetProductChooserView.renderDataView(products, showPrice, lastOrder, lastProductSelected);
             holderWidgetSpinnerProduct.addView(widgetProductChooserView);
