@@ -9,14 +9,14 @@
         android:id="@id/linWrapper"
         android:layout_width="110dp"
         android:layout_height="145dp"
-        android:background="@color/white_grey"
         android:gravity="center_horizontal|center_vertical"
         app:cardCornerRadius="4dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_vs"
+            android:padding="@dimen/padding_vs"
+            android:background="@color/white_grey"
             android:orientation="vertical">
 
             <ImageView

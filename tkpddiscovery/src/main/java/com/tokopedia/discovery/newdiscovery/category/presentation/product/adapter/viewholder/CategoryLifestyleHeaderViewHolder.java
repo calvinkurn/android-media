@@ -4,25 +4,21 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.LayoutRes;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.ChildCategoryLifestyleAdapter;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.RevampCategoryAdapter;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
-import com.tokopedia.discovery.view.CategoryHeaderTransformation;
 
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -134,12 +130,7 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
     }
 
     protected void renderSingleBanner(String headerImage, String categoryName) {
-        ImageHandler.loadImageFitTransformation(
-                context,
-                imageHeader,
-                headerImage,
-                new CategoryHeaderTransformation(context)
-        );
+        ImageHandler.LoadImage(imageHeader, headerImage);
         titleHeader.setText(categoryName);
         titleHeader.setShadowLayer(24, 0, 0, R.color.checkbox_text);
 
