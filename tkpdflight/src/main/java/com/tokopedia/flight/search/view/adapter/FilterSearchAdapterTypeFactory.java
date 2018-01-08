@@ -2,8 +2,8 @@ package com.tokopedia.flight.search.view.adapter;
 
 import android.view.View;
 
-import com.tokopedia.abstraction.base.view.adapter.AdapterTypeFactory;
-import com.tokopedia.abstraction.base.view.adapter.BaseAdapterTypeFactory;
+import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory;
+import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder;

@@ -4,14 +4,13 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
 import com.tokopedia.flight.booking.view.adapter.FlightBookingPhoneCodeAdapterTypeFactory;
 
 /**
  * Created by zulfikarrahman on 11/8/17.
  */
 
-public class FlightBookingPhoneCodeViewModel implements ItemType, Parcelable, Visitable<FlightBookingPhoneCodeAdapterTypeFactory> {
+public class FlightBookingPhoneCodeViewModel implements Parcelable, Visitable<FlightBookingPhoneCodeAdapterTypeFactory> {
 
     private String countryId;
     private String countryName;
@@ -39,13 +38,6 @@ public class FlightBookingPhoneCodeViewModel implements ItemType, Parcelable, Vi
 
     public void setCountryPhoneCode(String countryPhoneCode) {
         this.countryPhoneCode = countryPhoneCode;
-    }
-
-    public static final int TYPE = 932;
-
-    @Override
-    public int getType() {
-        return TYPE;
     }
 
     @Override

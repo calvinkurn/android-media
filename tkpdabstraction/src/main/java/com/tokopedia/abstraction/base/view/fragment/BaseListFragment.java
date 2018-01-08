@@ -13,9 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.R;
-import com.tokopedia.abstraction.base.view.adapter.AdapterTypeFactory;
-import com.tokopedia.abstraction.base.view.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
+import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
@@ -46,7 +46,7 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
 
     @NonNull
     protected BaseListAdapter<T, F> createAdapterInstance() {
-        BaseListAdapter<T,F> baseListAdapter = new BaseListAdapter<>(getAdapterTypeFactory(), this);
+        BaseListAdapter<T, F> baseListAdapter = new BaseListAdapter<>(getAdapterTypeFactory());
         baseListAdapter.setOnAdapterInteractionListener(this);
         return baseListAdapter;
     }

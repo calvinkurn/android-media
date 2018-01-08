@@ -1,7 +1,8 @@
-package com.tokopedia.abstraction.base.view.adapter;
+package com.tokopedia.abstraction.base.view.adapter.factory;
 
 import android.view.View;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 
 /**
@@ -9,6 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
  */
 
 public interface BaseListTypeFactory<T extends Visitable> {
+
     int type(T viewModel);
 
     AbstractViewHolder createViewHolder(View view, int viewType);

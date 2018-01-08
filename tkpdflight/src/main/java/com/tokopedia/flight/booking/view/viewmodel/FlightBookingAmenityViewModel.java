@@ -4,16 +4,14 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.adapter.type.ItemIdType;
-import com.tokopedia.abstraction.base.view.adapter.type.ItemType;
 import com.tokopedia.flight.booking.view.adapter.FlightAmenityAdapterTypeFactory;
 
 /**
  * Created by alvarisi on 11/7/17.
  */
 
-public class FlightBookingAmenityViewModel implements Parcelable, ItemType, ItemIdType, Visitable<FlightAmenityAdapterTypeFactory> {
-    public static final int TYPE = 532;
+public class FlightBookingAmenityViewModel implements Parcelable, Visitable<FlightAmenityAdapterTypeFactory> {
+
     public static final Creator<FlightBookingAmenityViewModel> CREATOR = new Creator<FlightBookingAmenityViewModel>() {
         @Override
         public FlightBookingAmenityViewModel createFromParcel(Parcel in) {
@@ -62,7 +60,6 @@ public class FlightBookingAmenityViewModel implements Parcelable, ItemType, Item
         this.price = price;
     }
 
-    @Override
     public String getId() {
         return String.valueOf(id);
     }
@@ -74,11 +71,6 @@ public class FlightBookingAmenityViewModel implements Parcelable, ItemType, Item
     @Override
     public String toString() {
         return title;
-    }
-
-    @Override
-    public int getType() {
-        return TYPE;
     }
 
     @Override

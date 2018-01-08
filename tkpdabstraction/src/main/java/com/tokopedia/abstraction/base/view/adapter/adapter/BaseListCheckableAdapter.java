@@ -1,4 +1,8 @@
-package com.tokopedia.abstraction.base.view.adapter;
+package com.tokopedia.abstraction.base.view.adapter.adapter;
+
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
+import com.tokopedia.abstraction.base.view.adapter.factory.BaseListCheckableTypeFactory;
 
 import java.util.ArrayList;
 import java.util.HashSet;
