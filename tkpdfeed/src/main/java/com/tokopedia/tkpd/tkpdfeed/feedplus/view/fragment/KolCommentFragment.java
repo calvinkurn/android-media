@@ -355,4 +355,10 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
         else
             ImageHandler.loadImageWithIdWithoutPlaceholder(wishlist, R.drawable.ic_wishlist);
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
+    }
 }

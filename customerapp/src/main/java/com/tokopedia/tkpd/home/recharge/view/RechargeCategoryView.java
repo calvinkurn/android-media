@@ -10,7 +10,7 @@ import java.util.List;
  */
 public interface RechargeCategoryView {
 
-    void renderDataRechargeCategory(List<Category> rechargeCategory, boolean bool);
+    void renderDataRechargeCategory(List<Category> rechargeCategory);
 
     void failedRenderDataRechargeCategory();
 
