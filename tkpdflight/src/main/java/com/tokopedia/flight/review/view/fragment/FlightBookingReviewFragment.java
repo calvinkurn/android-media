@@ -362,6 +362,11 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     }
 
     @Override
+    public void setCartId(String id) {
+        flightBookingReviewModel.setId(id);
+    }
+
+    @Override
     public void setTimeStamp(String timestamp) {
         flightBookingReviewModel.setDateFinishTime(FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_TIMESTAMP_FORMAT, timestamp));
     }
@@ -429,8 +434,8 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
 
     @Override
     public BaseCartData getCurrentCartData() {
-
         BaseCartData baseCartData = new BaseCartData();
+        baseCartData.setId(flightBookingReviewModel.getId());
         baseCartData.setNewFarePrices(flightBookingReviewModel.getFarePrices());
         List<FlightBookingAmenityViewModel> amenityViewModels = new ArrayList<>();
         for (FlightBookingPassengerViewModel passengerViewModel : flightBookingReviewModel.getDetailPassengersData()) {

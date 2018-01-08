@@ -18,7 +18,6 @@ import com.tokopedia.flight.common.constant.FlightErrorConstant;
 import com.tokopedia.flight.common.data.model.FlightError;
 import com.tokopedia.flight.common.data.model.FlightException;
 import com.tokopedia.flight.common.util.FlightDateUtil;
-import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.search.data.cloud.model.response.Fare;
 import com.tokopedia.usecase.RequestParams;
@@ -90,7 +89,7 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                         } else {
                             baseCartData.setNewFarePrices(new ArrayList<NewFarePrice>());
                         }
-
+                        baseCartData.setId(flightBookingCartData.getId());
                         baseCartData.setRefreshTime(flightBookingCartData.getRefreshTime());
                         return baseCartData;
                     }
@@ -120,7 +119,7 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                     @Override
                     public void onNext(BaseCartData baseCartData) {
                         getView().hideUpdatePriceLoading();
-
+                        getView().setCartId(baseCartData.getId());
                         Date expiredDate = FlightDateUtil.addTimeToCurrentDate(Calendar.SECOND, baseCartData.getRefreshTime());
                         getView().renderFinishTimeCountDown(expiredDate);
                         onCountDownTimestimeChanged(FlightDateUtil.dateToString(expiredDate, FlightDateUtil.DEFAULT_TIMESTAMP_FORMAT));
