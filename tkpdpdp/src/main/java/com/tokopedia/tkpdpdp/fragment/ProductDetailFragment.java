@@ -434,8 +434,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                    arrayList.add(child.getPicture().getOriginal());
                 }
             }
-            //arrayList.removeAll(Collections.singleton(productData.getProductImages().get(0).getImageSrc()));
-            //arrayList.add(0,productData.getProductImages().get(0).getImageSrc());
         }
 
         return arrayList;

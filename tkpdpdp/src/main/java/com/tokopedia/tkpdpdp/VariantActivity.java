@@ -19,8 +19,10 @@ import com.tokopedia.core.network.entity.variant.Option;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.network.entity.variant.Variant;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpdpdp.adapter.VariantOptionAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static android.view.View.VISIBLE;
@@ -55,6 +57,8 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     private View separator2;
     private TextView selectedLevel1;
     private TextView selectedLevel2;
+    private TextView sizeChartLevel1;
+    private TextView sizeChartLevel2;
 
     private VariantOptionAdapter variantOptionAdapterLevel2;
     private VariantOptionAdapter variantOptionAdapterLevel1;
@@ -92,7 +96,29 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         separator2 = findViewById(R.id.separator2);
         selectedLevel1 = findViewById(R.id.selected_variant_level1);
         selectedLevel2 = findViewById(R.id.selected_variant_level2);
+        sizeChartLevel1 = findViewById(R.id.sizechart_level1);
+        sizeChartLevel2 = findViewById(R.id.sizechart_level2);
         ImageHandler.LoadImage(productImage, productDetailData.getProductImages().get(0).getImageSrc300());
+        if (!TextUtils.isEmpty(productVariant.getSizechart()) &&
+                productVariant.getVariant().get(0).getIdentifier().equals("size")) {
+            sizeChartLevel1.setVisibility(VISIBLE);
+            sizeChartLevel1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    openSizeChart();
+                }
+            });
+        } else if (!TextUtils.isEmpty(productVariant.getSizechart()) &&
+                productVariant.getVariant().size()>0
+                && productVariant.getVariant().get(1).getIdentifier().equals("size")) {
+            sizeChartLevel2.setVisibility(VISIBLE);
+            sizeChartLevel2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    openSizeChart();
+                }
+            });
+        }
         renderHeaderInfo();
     }
 
@@ -116,21 +142,21 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
 
     }
 
+    private void openSizeChart() {
+        ArrayList<String> images = new ArrayList<>();
+        images.add(productVariant.getSizechart());
+        Bundle bundle = new Bundle();
+        bundle.putStringArrayList(PreviewProductImageDetail.FILELOC, images);
+        bundle.putInt(PreviewProductImageDetail.IMG_POSITION, 0);
+        Intent intent = new Intent(VariantActivity.this, PreviewProductImageDetail.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
     private void initViewListener() {
-        //TODO SELLER MODE
-       /* if (getIntent().getBooleanExtra(KEY_SELLER_MODE,false)) {
-            textButtonSave.setText(getResources().getString(R.string.change_variant));
-            buttonSave.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if(getApplication() instanceof TkpdCoreRouter){
-                        Intent intent = ((TkpdCoreRouter)getApplication()).goToEditProduct(VariantActivity.this, true, Long.toString(productVariant.getParentId()));
-                        startActivityForResult(intent, ProductDetailFragment.REQUEST_CODE_EDIT_PRODUCT);
-                    }
-                    finish();
-                }
-            });
-        } */
+        if (getIntent().getBooleanExtra(KEY_SELLER_MODE,false)) {
+           buttonSave.setVisibility(View.GONE);
+        }
         findViewById(R.id.simple_top_bar_close_button)
                 .setOnClickListener(new View.OnClickListener() {
                     @Override

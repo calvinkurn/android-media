@@ -61,6 +61,16 @@
                         android:textColor="@color/black_70"
                         android:visibility="gone"/>
 
+                    <TextView
+                        android:id="@+id/sizechart_level1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin_vs"
+                        android:textSize="13sp"
+                        android:textColor="@color/medium_green"
+                        android:text="Panduan Ukuran"
+                        android:visibility="gone"/>
+
 
                 </LinearLayout>
 
@@ -109,9 +119,17 @@
                         android:textColor="@color/black_70"
                         android:visibility="gone"/>
 
+                    <TextView
+                        android:id="@+id/sizechart_level2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin_vs"
+                        android:textSize="13sp"
+                        android:textColor="@color/medium_green"
+                        android:text="Panduan Ukuran"
+                        android:visibility="gone"/>
 
                 </LinearLayout>
-
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rv_variant_option_level2"
