@@ -45,7 +45,9 @@ public class MakeLoginDataSource {
                             String.valueOf(makeLoginDomain.getUserId()),
                             makeLoginDomain.getFullName(),
                             String.valueOf(makeLoginDomain.getShopId()),
-                            makeLoginDomain.isMsisdnVerified());
+                            makeLoginDomain.isMsisdnVerified(),
+                            makeLoginDomain.getShopName());
+                    sessionHandler.setEmail(sessionHandler.getTempEmail());
                     sessionHandler.setGoldMerchant(makeLoginDomain.getShopIsGold());
                     sessionHandler.setPhoneNumber(sessionHandler.getTempPhoneNumber
                             (MainApplication.getAppContext()));

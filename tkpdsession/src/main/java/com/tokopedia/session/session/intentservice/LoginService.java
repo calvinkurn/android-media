@@ -570,7 +570,7 @@ public class LoginService extends IntentService implements DownloadServiceConsta
         sessionHandler.setLoginSession(Boolean.parseBoolean(accountsModel.getIsLogin()),
                 accountsModel.getUserId() + "",
                 accountsModel.getFullName(), accountsModel.getShopId() + "",
-                accountsModel.getMsisdnIsVerifiedBoolean());
+                accountsModel.getMsisdnIsVerifiedBoolean(), makeLoginDomain.getShopName());
     }
 
     private void sendAuthenticateGTMEvent(@NonNull Object modelObject) {

@@ -2998,4 +2998,8 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.EventLabel.ONBOARDING_START_LABEL
         ).getEvent());
     }
+
+    public static void eventTracking(EventTracking eventTracking) {
+        sendGTMEvent(eventTracking.getEvent());
+    }
 }

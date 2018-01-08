@@ -49,6 +49,8 @@ public class CloudGetUserInfoSource {
                             ().getPhone());
                     sessionHandler.setTempLoginName(getUserInfoDomainModel
                             .getGetUserInfoDomainData().getFullName());
+                    sessionHandler.setTempLoginEmail(getUserInfoDomainModel
+                            .getGetUserInfoDomainData().getEmail());
                 } else {
 
                 }

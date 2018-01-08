@@ -79,9 +79,14 @@ public class SessionHandler {
     private static final String KEY_IV = "tokopedia1234567";
     private static final String TOKOCASH_SESSION = "TOKOCASH_SESSION";
     private static final String ACCESS_TOKEN_TOKOCASH = "ACCESS_TOKEN_TOKOCASH";
-
+    private static final String SHOP_NAME = "SHOP_NAME";
+    private static final String TEMP_EMAIL = "TEMP_EMAIL";
+    private static final String EMAIL = "EMAIL";
 
     private Context context;
+    private String email;
+    private String shopName;
+    private String tempLoginEmail;
 
 
     public SessionHandler(Context context) {
@@ -256,6 +261,12 @@ public class SessionHandler {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         domain = sharedPrefs.getString(SHOP_DOMAIN, "");
         return domain;
+    }
+
+    public String getShopName() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        String shopName = sharedPrefs.getString(SHOP_NAME, "");
+        return shopName;
     }
 
     public void setShopId(String shopId) {
@@ -467,6 +478,30 @@ public class SessionHandler {
         return sharedPrefs.getString(TEMP_NAME, "");
     }
 
+    public void setTempLoginEmail(String tempLoginEmail) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        Editor editor = sharedPrefs.edit();
+        editor.putString(TEMP_EMAIL, tempLoginEmail);
+        editor.apply();
+    }
+
+    public String getTempEmail() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(TEMP_EMAIL, "");
+    }
+
+    public void setEmail(String email) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        Editor editor = sharedPrefs.edit();
+        editor.putString(EMAIL, email);
+        editor.apply();
+    }
+
+    public String getEmail() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(EMAIL, "");
+    }
+
     public static String getAccessToken() {
         SharedPreferences sharedPrefs = MainApplication.getAppContext().getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         return sharedPrefs.getString(ACCESS_TOKEN, "");
@@ -523,7 +558,7 @@ public class SessionHandler {
         //return status;
     }
 
-    public void setLoginSession(boolean isLogin, String u_id, String u_name, String shop_id, boolean isMsisdnVerified) {
+    public void setLoginSession(boolean isLogin, String u_id, String u_name, String shop_id, boolean isMsisdnVerified, String shopName) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         Editor editor = sharedPrefs.edit();
         editor.putBoolean(IS_LOGIN, isLogin);
@@ -531,6 +566,7 @@ public class SessionHandler {
         editor.putString(GTM_LOGIN_ID, u_id);
         editor.putString(FULL_NAME, u_name);
         editor.putString(SHOP_ID, shop_id);
+        editor.putString(SHOP_NAME, shopName);
         editor.putBoolean(IS_MSISDN_VERIFIED, isMsisdnVerified);
         editor.apply();
         TrackingUtils.eventPushUserID();
@@ -696,6 +732,7 @@ public class SessionHandler {
         cache.putString(UUID_KEY, currUUID);
         cache.applyEditor();
     }
+
 
     public interface onLogoutListener {
         void onLogout(Boolean success);

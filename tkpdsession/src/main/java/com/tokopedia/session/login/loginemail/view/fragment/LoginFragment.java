@@ -37,8 +37,10 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customView.LoginTextView;
@@ -60,6 +62,7 @@ import com.tokopedia.session.activation.view.activity.ActivationActivity;
 import com.tokopedia.session.data.viewmodel.SecurityDomain;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.google.GoogleSignInActivity;
+import com.tokopedia.session.login.loginemail.LoginAnalytics;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.login.loginemail.view.presenter.LoginPresenter;
 import com.tokopedia.session.login.loginemail.view.viewlistener.Login;
@@ -297,6 +300,7 @@ public class LoginFragment extends BaseDaggerFragment
 
 
     private void goToRegisterInitial() {
+        UnifyTracking.eventTracking(LoginAnalytics.goToRegisterFromLogin());
         startActivity(RegisterInitialActivity.getCallingIntent(getActivity()));
         getActivity().finish();
     }
@@ -553,6 +557,42 @@ public class LoginFragment extends BaseDaggerFragment
         startActivity(intent);
     }
 
+    @Override
+    public void onSuccessLoginEmail() {
+        UnifyTracking.eventTracking(LoginAnalytics.getEventSuccessLoginEmail());
+        TrackingUtils.setMoEUserAttributesLogin(
+                sessionHandler.getLoginID(),
+                sessionHandler.getLoginName(),
+                sessionHandler.getEmail(),
+                sessionHandler.getPhoneNumber(),
+                sessionHandler.isGoldMerchant(MainApplication.getAppContext()),
+                sessionHandler.getShopName(),
+                sessionHandler.getShopID(),
+                !TextUtils.isEmpty(sessionHandler.getShopID()),
+                LoginAnalytics.Label.EMAIL
+        );
+
+        onSuccessLogin();
+    }
+
+    @Override
+    public void onSuccessLoginSosmed(String loginMethod) {
+        UnifyTracking.eventTracking(LoginAnalytics.getEventSuccessLoginSosmed(loginMethod));
+        TrackingUtils.setMoEUserAttributesLogin(
+                sessionHandler.getLoginID(),
+                sessionHandler.getLoginName(),
+                sessionHandler.getEmail(),
+                sessionHandler.getPhoneNumber(),
+                sessionHandler.isGoldMerchant(MainApplication.getAppContext()),
+                sessionHandler.getShopName(),
+                sessionHandler.getShopID(),
+                !TextUtils.isEmpty(sessionHandler.getShopID()),
+                loginMethod
+        );
+
+        onSuccessLogin();
+    }
+
     private void setDiscoverListener(final DiscoverItemViewModel discoverItemViewModel,
                                      LoginTextView tv) {
         if (discoverItemViewModel.getId().equalsIgnoreCase(FACEBOOK)) {
@@ -588,11 +628,9 @@ public class LoginFragment extends BaseDaggerFragment
     }
 
     private void onLoginWebviewClick(String name, String url) {
-        UnifyTracking.eventCTAAction(name);
-        UserAuthenticationAnalytics.setActiveAuthenticationMedium(name);
-
+        UnifyTracking.eventTracking(LoginAnalytics.getEventClickLoginWebview(name));
         WebViewLoginFragment newFragment = WebViewLoginFragment
-                .createInstance(url);
+                .createInstance(url, name);
         newFragment.setTargetFragment(this, REQUEST_LOGIN_WEBVIEW);
         newFragment.show(getFragmentManager().beginTransaction(), "dialog");
         getActivity().getWindow().setSoftInputMode(
@@ -600,7 +638,7 @@ public class LoginFragment extends BaseDaggerFragment
     }
 
     private void onLoginPhoneNumberClick() {
-        UnifyTracking.eventCTAAction(PHONE_NUMBER);
+        UnifyTracking.eventTracking(LoginAnalytics.getEventClickLoginPhoneNumber());
         Intent intent = LoginPhoneNumberActivity.getCallingIntent(getActivity());
         intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         startActivity(intent);
@@ -608,16 +646,13 @@ public class LoginFragment extends BaseDaggerFragment
     }
 
     private void onLoginGoogleClick() {
-        UnifyTracking.eventCTAAction(AppEventTracking.SOCIAL_MEDIA.GOOGLE_PLUS);
-        UserAuthenticationAnalytics.setActiveAuthenticationMedium(AppEventTracking.GTMCacheValue.GMAIL);
-
+        UnifyTracking.eventTracking(LoginAnalytics.getEventClickLoginGoogle());
         Intent intent = new Intent(getActivity(), GoogleSignInActivity.class);
         startActivityForResult(intent, RC_SIGN_IN_GOOGLE);
     }
 
     private void onLoginFacebookClick() {
-        UnifyTracking.eventCTAAction(AppEventTracking.SOCIAL_MEDIA.FACEBOOK);
-        UserAuthenticationAnalytics.setActiveAuthenticationMedium(AppEventTracking.GTMCacheValue.FACEBOOK);
+        UnifyTracking.eventTracking(LoginAnalytics.getEventClickLoginFacebook());
         presenter.getFacebookCredential(this, callbackManager);
     }
 

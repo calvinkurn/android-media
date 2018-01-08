@@ -288,6 +288,6 @@ public class SignInInteractorImpl implements SignInInteractor{
         sessionHandler.setLoginSession(Boolean.parseBoolean(accountsModel.getIsLogin()),
                 String.valueOf(accountsModel.getUserId()),
                 accountsModel.getFullName(), String.valueOf(accountsModel.getShopId()),
-                accountsModel.getMsisdnIsVerifiedBoolean());
+                accountsModel.getMsisdnIsVerifiedBoolean(), makeLoginDomain.getShopName());
     }
 }

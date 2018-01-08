@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -756,7 +755,7 @@ public class Login extends BaseActivity implements SessionView
                         session.sendGTMEvent(resultData, type);
                         session.sendAnalyticsEvent(resultData, type);
                         ((BaseView) fragment).setData(type, resultData);
-                        UserAuthenticationAnalytics.sendAnalytics(resultData);
+                        UserAuthenticationAnalytics.sendAnalytics();
                     }
                 }
                 break;

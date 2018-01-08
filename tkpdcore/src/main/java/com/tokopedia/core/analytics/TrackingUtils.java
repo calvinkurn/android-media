@@ -72,7 +72,7 @@ public class TrackingUtils extends TrackingConfig {
             CustomerWrapper customerWrapper = new CustomerWrapper.Builder()
                     .setFullName(profileData.getUserInfo().getUserName())
                     .setEmailAddress(profileData.getUserInfo().getUserEmail())
-                    .setPhoneNumber(normalizePhoneNumber(profileData.getUserInfo().getUserPhone()!= null ? profileData.getUserInfo().getUserPhone() : ""))
+                    .setPhoneNumber(normalizePhoneNumber(profileData.getUserInfo().getUserPhone() != null ? profileData.getUserInfo().getUserPhone() : ""))
                     .setCustomerId(profileData.getUserInfo().getUserId())
                     .setShopId(profileData.getShopInfo() != null ? profileData.getShopInfo().getShopId() : "")
                     .setSeller(profileData.getShopInfo() != null)
@@ -86,11 +86,10 @@ public class TrackingUtils extends TrackingConfig {
             PushManager.getInstance().refreshToken(MainApplication.getAppContext(), FCMCacheManager.getRegistrationId(MainApplication.getAppContext()));
     }
 
-    public static String getNetworkSpeed(Context context){
-        if(ConnectivityUtils.isConnected(context))
-        {
+    public static String getNetworkSpeed(Context context) {
+        if (ConnectivityUtils.isConnected(context)) {
             return ConnectivityUtils.getConnectionType(context);
-        }else{
+        } else {
             return ConnectivityUtils.CONN_UNKNOWN;
         }
     }
@@ -157,6 +156,34 @@ public class TrackingUtils extends TrackingConfig {
         }
     }
 
+    public static void setMoEUserAttributesLogin(String userId,
+                                            String fullName,
+                                            String emailAddress,
+                                            String phoneNumber,
+                                            boolean isGoldMerchant,
+                                            String shopName,
+                                            String shopId,
+                                            boolean isSeller,
+                                            String method) {
+
+            CustomerWrapper wrapper = new CustomerWrapper.Builder()
+                    .setCustomerId(userId)
+                    .setFullName(fullName)
+                    .setEmailAddress(emailAddress)
+                    .setPhoneNumber(normalizePhoneNumber(phoneNumber))
+                    .setGoldMerchant(isGoldMerchant)
+                    .setShopName(shopName)
+                    .setShopId(shopId)
+                    .setSeller(isSeller)
+                    .setFirstName(getFirstName(fullName))
+                    .setMethod(method)
+                    .build();
+
+            getMoEngine().setUserData(wrapper, "LOGIN");
+            sendMoEngageLoginEvent(wrapper);
+        }
+    }
+
     public static void eventMoEngageLogoutUser() {
         getMoEngine().logoutEvent();
     }
@@ -188,7 +215,7 @@ public class TrackingUtils extends TrackingConfig {
     }
 
     private static String normalizePhoneNumber(String phoneNum) {
-        if(!TextUtils.isEmpty(phoneNum))
+        if (!TextUtils.isEmpty(phoneNum))
             return phoneNum.replaceFirst("^0(?!$)", "62");
         else
             return "";
@@ -326,11 +353,11 @@ public class TrackingUtils extends TrackingConfig {
         builder.putAttrString(AppEventTracking.MOENGAGE.SHOP_NAME, model.info.shopName);
         builder.putAttrString(AppEventTracking.MOENGAGE.SHOP_ID, model.info.shopId);
         builder.putAttrString(AppEventTracking.MOENGAGE.SHOP_LOCATION, model.info.shopLocation);
-        builder.putAttrBoolean(AppEventTracking.MOENGAGE.IS_OFFICIAL_STORE, model.info.getShopIsOfficial()==1);
+        builder.putAttrBoolean(AppEventTracking.MOENGAGE.IS_OFFICIAL_STORE, model.info.getShopIsOfficial() == 1);
         getMoEngine().sendEvent(
                 builder.build(),
                 model.info.shopAlreadyFavorited == 0 ?
-                AppEventTracking.EventMoEngage.SELLER_ADDED_FAVORITE :
+                        AppEventTracking.EventMoEngage.SELLER_ADDED_FAVORITE :
                         AppEventTracking.EventMoEngage.SELLER_REMOVE_FAVORITE
         );
     }
@@ -395,7 +422,7 @@ public class TrackingUtils extends TrackingConfig {
         }
     }
 
-    public static void sendMoEngageClickedNewOrder(){
+    public static void sendMoEngageClickedNewOrder() {
         PayloadBuilder builder = new PayloadBuilder();
         getMoEngine().sendEvent(builder.build(), AppEventTracking.EventMoEngage.CLICKED_NEW_ORDER);
     }

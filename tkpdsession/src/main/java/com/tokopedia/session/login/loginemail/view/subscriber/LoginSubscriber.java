@@ -54,7 +54,7 @@ public class LoginSubscriber extends Subscriber<LoginEmailDomain> {
                 && !goToSecurityQuestion(loginEmailDomain.getLoginResult())
                 && (isMsisdnVerified(loginEmailDomain.getInfo()) || GlobalConfig.isSellerApp())) {
             view.setSmartLock();
-            view.onSuccessLogin();
+            view.onSuccessLoginEmail();
         } else if (!goToSecurityQuestion(loginEmailDomain.getLoginResult())
                 && !isMsisdnVerified(loginEmailDomain.getInfo())) {
             view.setSmartLock();

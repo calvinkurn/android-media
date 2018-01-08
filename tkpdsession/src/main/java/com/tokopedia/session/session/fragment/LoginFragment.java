@@ -58,7 +58,6 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customView.LoginTextView;
-import com.tokopedia.core.customView.PasswordView;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.model.LoginGoogleModel;
 import com.tokopedia.core.session.model.LoginProviderModel;
@@ -70,7 +69,6 @@ import com.tokopedia.session.activation.view.activity.ActivationActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.google.GoogleSignInActivity;
 import com.tokopedia.session.register.view.activity.SmartLockActivity;
-import com.tokopedia.session.session.google.GoogleActivity;
 import com.tokopedia.session.session.model.LoginModel;
 import com.tokopedia.session.session.presenter.Login;
 import com.tokopedia.session.session.presenter.LoginImpl;
@@ -707,7 +705,7 @@ LoginFragment extends Fragment implements LoginView {
 
     private void loginProvideOnClick(final String url, final String name) {
         WebViewLoginFragment newFragment = WebViewLoginFragment
-                .createInstance(url);
+                .createInstance(url, name);
         newFragment.setTargetFragment(LoginFragment.this, 100);
         newFragment.show(getFragmentManager().beginTransaction(), "dialog");
         getActivity().getWindow().setSoftInputMode(

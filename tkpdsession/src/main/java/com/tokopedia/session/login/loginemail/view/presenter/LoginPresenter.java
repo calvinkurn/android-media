@@ -17,15 +17,17 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.di.SessionModule;
 import com.tokopedia.session.R;
 import com.tokopedia.session.domain.interactor.DiscoverUseCase;
+import com.tokopedia.session.login.loginemail.LoginAnalytics;
 import com.tokopedia.session.login.loginemail.domain.interactor.LoginEmailUseCase;
 import com.tokopedia.session.login.loginemail.view.subscriber.LoginDiscoverSubscriber;
-import com.tokopedia.session.login.loginemail.view.subscriber.LoginSubscriber;
 import com.tokopedia.session.login.loginemail.view.subscriber.LoginSosmedSubscriber;
+import com.tokopedia.session.login.loginemail.view.subscriber.LoginSubscriber;
 import com.tokopedia.session.login.loginemail.view.viewlistener.Login;
 import com.tokopedia.session.register.domain.interactor.registerinitial.GetFacebookCredentialUseCase;
 import com.tokopedia.session.register.domain.interactor.registerinitial.LoginWebviewUseCase;
 import com.tokopedia.session.register.domain.interactor.registerinitial.LoginWithSosmedUseCase;
 import com.tokopedia.session.register.view.subscriber.registerinitial.GetFacebookCredentialSubscriber;
+import com.tokopedia.session.session.fragment.WebViewLoginFragment;
 
 import java.util.ArrayList;
 
@@ -148,10 +150,11 @@ public class LoginPresenter extends BaseDaggerPresenter<Login.View>
                 getView().onErrorLogin(bundle.getString(MESSAGE, ""), ErrorCode.WS_ERROR);
             } else if (bundle.getString(PATH, "").contains(CODE)) {
                 getView().showLoadingLogin();
+                String name = bundle.getString(WebViewLoginFragment.NAME, "");
                 loginWebviewUseCase.execute(LoginWebviewUseCase.getParamWebview(bundle.getString
                                 (CODE, ""), HTTPS + bundle.getString(SERVER) + bundle.getString
                                 (PATH)),
-                        new LoginSosmedSubscriber(getView(), ""));
+                        new LoginSosmedSubscriber(name, getView(), ""));
             } else if (bundle.getString(PATH, "").contains(ACTIVATION_SOCIAL)) {
                 getView().onErrorLogin(ErrorHandler.getDefaultErrorCodeMessage(ErrorCode.UNSUPPORTED_FLOW));
             }
@@ -164,7 +167,7 @@ public class LoginPresenter extends BaseDaggerPresenter<Login.View>
     public void loginGoogle(String accessToken, String email) {
         getView().showLoadingLogin();
         loginWithSosmedUseCase.execute(LoginWithSosmedUseCase.getParamGoogle(accessToken), new
-                LoginSosmedSubscriber(getView(), email));
+                LoginSosmedSubscriber(LoginAnalytics.Label.GPLUS, getView(), email));
     }
 
     @Override
@@ -179,7 +182,7 @@ public class LoginPresenter extends BaseDaggerPresenter<Login.View>
     public void loginFacebook(AccessToken accessToken, String email) {
         getView().showLoadingLogin();
         loginWithSosmedUseCase.execute(LoginWithSosmedUseCase.getParamFacebook(accessToken),
-                new LoginSosmedSubscriber(getView(), email));
+                new LoginSosmedSubscriber(LoginAnalytics.Label.FACEBOOK, getView(), email));
     }
 
     @Override

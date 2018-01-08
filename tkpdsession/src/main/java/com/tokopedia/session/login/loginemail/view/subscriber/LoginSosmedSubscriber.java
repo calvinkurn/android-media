@@ -20,10 +20,12 @@ public class LoginSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
     private static final String NOT_ACTIVATED = "belum diaktivasi";
     private final Login.View view;
     private final String email;
+    private final String loginMethodName;
 
-    public LoginSosmedSubscriber(Login.View view, String email) {
+    public LoginSosmedSubscriber(String loginMethodName, Login.View view, String email) {
         this.view = view;
         this.email = email;
+        this.loginMethodName = loginMethodName;
     }
 
     @Override
@@ -53,7 +55,7 @@ public class LoginSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
                 && !isGoToSecurityQuestion(loginSosmedDomain.getMakeLoginModel())
                 && (isMsisdnVerified(loginSosmedDomain.getInfo()) || GlobalConfig.isSellerApp())) {
             view.setSmartLock();
-            view.onSuccessLogin();
+            view.onSuccessLoginSosmed(loginMethodName);
         } else if (!isGoToSecurityQuestion(loginSosmedDomain.getMakeLoginModel())
                 && !isMsisdnVerified(loginSosmedDomain.getInfo())) {
             view.setSmartLock();

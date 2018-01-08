@@ -61,6 +61,10 @@ public interface Login {
         void onErrorLogin(String errorMessage, int codeError);
 
         void onGoToActivationPage(String email);
+
+        void onSuccessLoginEmail();
+
+        void onSuccessLoginSosmed(String loginMethod);
     }
 
     interface Presenter extends CustomerPresenter<View> {

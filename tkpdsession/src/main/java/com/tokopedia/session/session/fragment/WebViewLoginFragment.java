@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -28,8 +27,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
-import com.android.volley.NetworkError;
-import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorCode;
@@ -42,14 +39,17 @@ import java.util.Set;
  * Created by stevenfredian on 5/31/16.
  */
 public class WebViewLoginFragment extends DialogFragment {
+    public static final String NAME = "NAME";
     //private View pic;
 
     String url;
+    private String name;
 
 
-    public static WebViewLoginFragment createInstance(String url) {
+    public static WebViewLoginFragment createInstance(String url, String name) {
         WebViewLoginFragment fragment = new WebViewLoginFragment();
         fragment.url = url;
+        fragment.name = name;
         return fragment;
     }
 
@@ -154,6 +154,7 @@ public class WebViewLoginFragment extends DialogFragment {
             Bundle bundle = new Bundle();
             bundle.putString("server", server);
             bundle.putString("path", path);
+            bundle.putString(NAME, name);
             for (String arg : args) {
                 String limit = uri.getQueryParameter(arg);
                 bundle.putString(arg, limit);

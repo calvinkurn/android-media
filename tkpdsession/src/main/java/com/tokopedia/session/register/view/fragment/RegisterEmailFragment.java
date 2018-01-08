@@ -33,6 +33,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -649,6 +650,7 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
 
     @Override
     public void onSuccessRegister(RegisterEmailViewModel registerResult) {
+        UserAuthenticationAnalytics.sendAnalytics();
         dismissLoadingProgress();
         setActionsEnabled(true);
         presenter.startAction(registerResult);
