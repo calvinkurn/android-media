@@ -12,6 +12,7 @@ import com.tokopedia.core.var.ProductItem;
 import org.json.JSONArray;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -3006,5 +3007,19 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Action.CLICK_SHOP,
                 keyword + " - " + shopName
         ).setUserId().getEvent());
+    }
+
+    public static void eventSearchResultProductWishlistClick(boolean isWishlisted, String keyword) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.PRODUCT_VIEW,
+                AppEventTracking.Category.SEARCH_RESULT,
+                AppEventTracking.Action.CLICK_WISHLIST,
+                generateWishlistClickEventLabel(isWishlisted, keyword)
+        ).setUserId().getEvent());
+    }
+
+    private static String generateWishlistClickEventLabel(boolean isWishlisted, String keyword) {
+        String action = isWishlisted ? "add" : "remove";
+        return action + " - " + keyword + " - " + new Date().toString();
     }
 }

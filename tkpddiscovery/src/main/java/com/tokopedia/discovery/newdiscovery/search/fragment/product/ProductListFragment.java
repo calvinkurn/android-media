@@ -14,6 +14,7 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.SearchTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -498,6 +499,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void onSuccessAddWishlist(int adapterPosition) {
+        UnifyTracking.eventSearchResultProductWishlistClick(true, getQueryKey());
         adapter.updateWishlistStatus(adapterPosition, true);
         enableWishlistButton(adapterPosition);
         adapter.notifyItemChanged(adapterPosition);
@@ -512,6 +514,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void onSuccessRemoveWishlist(int adapterPosition) {
+        UnifyTracking.eventSearchResultProductWishlistClick(false, getQueryKey());
         adapter.updateWishlistStatus(adapterPosition, false);
         enableWishlistButton(adapterPosition);
         adapter.notifyItemChanged(adapterPosition);

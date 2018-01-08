@@ -159,6 +159,7 @@ public interface AppEventTracking {
         String EVENT_IMPRESSION_HOME_PAGE ="eventImpressionHomePage";
         String SELLER_INFO = "clickSellerInfo";
         String EVENT_ONBOARDING = "onBoardingEvent";
+        String PRODUCT_VIEW = "productView";
     }
 
     interface Category {
@@ -418,6 +419,7 @@ public interface AppEventTracking {
         String CLICK_IMAGE_SETTINGS = "click image settings";
         String CLICK_SAVE_EDIT = "click save edit";
         String CLICK_SHOP = "click - shop";
+        String CLICK_WISHLIST = "click - wishlist";
     }
 
     interface ImageEditor{
