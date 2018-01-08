@@ -622,6 +622,13 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     @Override
+    public void saveStateProductVariant(Bundle outState, String key, ProductVariant value) {
+        if (value != null) {
+            outState.putParcelable(key, value);
+        }
+    }
+
+    @Override
     public void saveStateProductOthers(Bundle outState, String key, List<ProductOther> values) {
         if (values != null) outState.putParcelableArrayList(key, new ArrayList<Parcelable>(values));
     }
@@ -654,6 +661,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                 .getParcelableArrayList(ProductDetailFragment.STATE_OTHER_PRODUCTS);
         VideoData videoData = savedInstanceState.getParcelable(ProductDetailFragment.STATE_VIDEO);
         PromoAttributes promoAttributes = savedInstanceState.getParcelable(ProductDetailFragment.STATE_PROMO_WIDGET);
+        ProductVariant productVariant = savedInstanceState.getParcelable(ProductDetailFragment.STATE_PRODUCT_VARIANT);
         boolean isAppBarCollapsed = savedInstanceState.getBoolean(ProductDetailFragment.STATE_APP_BAR_COLLAPSED);
 
         if (productData != null & productOthers != null) {
@@ -662,6 +670,10 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             if (videoData != null) {
                 viewListener.loadVideo(videoData);
             }
+        }
+
+        if (productVariant != null) {
+            viewListener.addProductVariant(productVariant);
         }
 
         if (productData.getProductCampaign() != null) {

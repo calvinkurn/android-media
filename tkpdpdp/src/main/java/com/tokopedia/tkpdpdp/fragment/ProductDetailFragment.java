@@ -140,6 +140,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public static final int REQUEST_VARIANT = 99;
 
     public static final String STATE_DETAIL_PRODUCT = "STATE_DETAIL_PRODUCT";
+    public static final String STATE_PRODUCT_VARIANT = "STATE_PRODUCT_VARIANT";
     public static final String STATE_OTHER_PRODUCTS = "STATE_OTHER_PRODUCTS";
     public static final String STATE_VIDEO = "STATE_VIDEO";
     public static final int INIT_REQUEST = 1;
@@ -874,6 +875,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public void onSaveState(Bundle outState) {
         Log.d(TAG, "onSaveState");
         presenter.saveStateProductDetail(outState, STATE_DETAIL_PRODUCT, productData);
+        presenter.saveStateProductVariant(outState, STATE_PRODUCT_VARIANT, productVariant);
         presenter.saveStateProductOthers(outState, STATE_OTHER_PRODUCTS, productOthers);
         presenter.saveStateVideoData(outState, STATE_VIDEO, videoData);
         presenter.saveStatePromoWidget(outState, STATE_PROMO_WIDGET, promoAttributes);
@@ -954,20 +956,20 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 presenter.requestProductDetail(context, productPass, RE_REQUEST, true);
                 break;
             case REQUEST_VARIANT:
+                if (data.getParcelableExtra(KEY_LEVEL1_SELECTED)!=null && data.getParcelableExtra(KEY_LEVEL1_SELECTED) instanceof Option) {
+                    variantLevel1 = data.getParcelableExtra(KEY_LEVEL1_SELECTED);
+                    String variantText = variantLevel1.getValue();
+                    if (data.getParcelableExtra(KEY_LEVEL2_SELECTED)!=null && data.getParcelableExtra(KEY_LEVEL2_SELECTED) instanceof Option)
+                    {
+                        variantLevel2 = data.getParcelableExtra(KEY_LEVEL2_SELECTED);
+                        variantText+= (", "+((Option) data.getParcelableExtra(KEY_LEVEL2_SELECTED)).getValue());
+                    }
+                    priceSimulationView.updateVariant(variantText);
+                }
                 if (resultCode==VariantActivity.SELECTED_VARIANT_RESULT) {
                     productData = data.getParcelableExtra(KEY_PRODUCT_DETAIL_DATA);
                     pictureView.renderData(productData);
                     headerInfoView.renderData(productData);
-                    if (data.getParcelableExtra(KEY_LEVEL1_SELECTED)!=null && data.getParcelableExtra(KEY_LEVEL1_SELECTED) instanceof Option) {
-                        variantLevel1 = data.getParcelableExtra(KEY_LEVEL1_SELECTED);
-                        String variantText = variantLevel1.getValue();
-                        if (data.getParcelableExtra(KEY_LEVEL2_SELECTED)!=null && data.getParcelableExtra(KEY_LEVEL2_SELECTED) instanceof Option)
-                        {
-                            variantLevel2 = data.getParcelableExtra(KEY_LEVEL2_SELECTED);
-                            variantText+= (", "+((Option) data.getParcelableExtra(KEY_LEVEL2_SELECTED)).getValue());
-                        }
-                        priceSimulationView.updateVariant(variantText);
-                    }
                 } else if (resultCode==VariantActivity.SELECTED_VARIANT_RESULT_TO_BUY) {
                     productData = data.getParcelableExtra(KEY_PRODUCT_DETAIL_DATA);
                     pictureView.renderData(productData);
@@ -1139,6 +1141,13 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public void addProductVariant(ProductVariant productVariant) {
        this.productVariant=productVariant;
        this.priceSimulationView.addProductVariant(productVariant,productData);
+        if (variantLevel1!=null && variantLevel1 instanceof Option) {
+            String variantText = variantLevel1.getValue();
+            if (variantLevel2!=null && variantLevel2 instanceof Option) {
+                variantText+= (", "+(variantLevel2).getValue());
+            }
+            priceSimulationView.updateVariant(variantText);
+        }
     }
 
     @Override

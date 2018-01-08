@@ -220,7 +220,8 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         optionRecyclerViewLevel1.setAdapter(variantOptionAdapterLevel1);
         optionNameLevel1.setText(variantLevel1.getName()+" :");
         Option optionLevel1 = getIntent().getParcelableExtra(KEY_LEVEL1_SELECTED);
-        Child defaultChild = productVariant.getChildFromProductId(productVariant.getDefaultChild());
+        Child defaultChild = productVariant.getChildFromProductId(productDetailData.getInfo().getProductId());
+        if (defaultChild==null) defaultChild = productVariant.getChildFromProductId(productVariant.getDefaultChild());
         if (optionLevel1==null) {
             for (int i=0; i<variantOptionAdapterLevel1.getVariantOptions().size(); i++) {
                 if (defaultChild.getOptionIds().get(0) == variantOptionAdapterLevel1.getVariantOptions().get(i).getId()) {
