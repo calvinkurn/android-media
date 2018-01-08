@@ -376,19 +376,6 @@ public class ImageHandler {
         }
     }
 
-    public static void LoadImageWGender(ImageView imageview, String url, Activity context, String gender) {
-        if (!url.equals("null")) {
-            loadImageCircle2(imageview.getContext(), imageview, url);
-//            ImageHandler.LoadImageCircle(imageview, url);
-        } else {
-            if (gender.equals("1")) {
-                imageview.setImageBitmap(getRoundedCornerBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_image_avatar_boy), 100));
-            } else {
-                imageview.setImageBitmap(getRoundedCornerBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_image_avatar_girl), 100));
-            }
-        }
-    }
-
     public static void loadImageFit2(Context context, ImageView imageView, String url) {
         Glide.with(context)
                 .load(url)
