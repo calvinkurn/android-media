@@ -6,6 +6,8 @@ import android.os.Parcelable;
 
 import com.tokopedia.events.data.entity.response.Form;
 
+import java.util.List;
+
 public class PackageViewModel implements Parcelable {
 
     private Integer id;
@@ -33,7 +35,8 @@ public class PackageViewModel implements Parcelable {
     private int selectedQuantity;
     private String timeRange;
     private String address;
-
+    private Form form;
+    private List<Form> forms;
 
     public String getTitle() {
         return title;
@@ -56,13 +59,9 @@ public class PackageViewModel implements Parcelable {
     public Form getForm() {
         return form;
     }
-
     public void setForm(Form form) {
         this.form = form;
     }
-
-    private Form form;
-
 
     public Integer getId() {
         return id;
@@ -259,6 +258,14 @@ public class PackageViewModel implements Parcelable {
         this.address = address;
     }
 
+    public List<Form> getForms() {
+        return forms;
+    }
+
+    public void setForms(List<Form> forms) {
+        this.forms = forms;
+    }
+
 
     public PackageViewModel() {
     }
@@ -295,8 +302,9 @@ public class PackageViewModel implements Parcelable {
         dest.writeInt(this.selectedQuantity);
         dest.writeString(this.timeRange);
         dest.writeString(this.address);
-        dest.writeValue(this.categoryId);
         dest.writeParcelable(this.form, flags);
+        dest.writeTypedList(this.forms);
+        dest.writeValue(this.categoryId);
     }
 
     protected PackageViewModel(Parcel in) {
@@ -325,8 +333,9 @@ public class PackageViewModel implements Parcelable {
         this.selectedQuantity = in.readInt();
         this.timeRange = in.readString();
         this.address = in.readString();
-        this.categoryId = (Integer) in.readValue(Integer.class.getClassLoader());
         this.form = in.readParcelable(Form.class.getClassLoader());
+        this.forms = in.createTypedArrayList(Form.CREATOR);
+        this.categoryId = (Integer) in.readValue(Integer.class.getClassLoader());
     }
 
     public static final Creator<PackageViewModel> CREATOR = new Creator<PackageViewModel>() {

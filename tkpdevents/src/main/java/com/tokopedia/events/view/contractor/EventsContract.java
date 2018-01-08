@@ -2,7 +2,10 @@ package com.tokopedia.events.view.contractor;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.view.View;
+import android.view.ViewGroup;
 
+import com.tkpd.library.ui.widget.TouchViewPager;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
@@ -27,6 +30,14 @@ public class EventsContract {
 
         RequestParams getParams();
 
+        int getBannerPosition();
+
+        android.view.View getRootView();
+
+        void showProgressBar();
+
+        void hideProgressBar();
+
     }
 
     public interface Presenter extends CustomerPresenter<View> {
@@ -34,5 +45,7 @@ public class EventsContract {
         void initialize();
 
         void onDestroy();
+
+        void startBannerSlide(TouchViewPager viewPager);
     }
 }

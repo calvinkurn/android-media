@@ -10,8 +10,9 @@
         <activity android:name=".view.activity.EventLocationActivity" />
         <activity android:name=".view.activity.EventDetailsActivity" />
         <activity android:name=".view.activity.EventBookTicketActivity" />
-        <activity android:name=".view.activity.ReviewTicketActivity"/>
-        <activity android:name=".view.activity.TopPayActivity"/>
+        <activity
+            android:name=".view.activity.ReviewTicketActivity"/>
+        <activity android:name=".view.activity.TopPayActivity" />
     </application>
 
 </manifest>

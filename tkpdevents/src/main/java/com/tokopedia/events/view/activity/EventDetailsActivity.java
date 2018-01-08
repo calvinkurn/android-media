@@ -22,6 +22,7 @@ import android.text.Spanned;
 import android.text.style.StyleSpan;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -90,6 +91,8 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     View progressBarLayout;
     @BindView(R2.id.prog_bar)
     ProgressBar progBar;
+    @BindView(R2.id.main_content)
+    FrameLayout mainContent;
 
     ImageTextViewHolder timeHolder;
     ImageTextViewHolder locationHolder;
@@ -253,6 +256,11 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     public void hideProgressBar() {
         progBar.setVisibility(View.GONE);
         progressBarLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public View getRootView() {
+        return mainContent;
     }
 
     public class ToolbarElevationOffsetListener implements AppBarLayout.OnOffsetChangedListener {

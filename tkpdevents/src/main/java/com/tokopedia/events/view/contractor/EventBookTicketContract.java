@@ -36,6 +36,11 @@ public class EventBookTicketContract {
 
         void hideProgressBar();
 
+        void initTablayout();
+
+        void renderSeatLayout(String url);
+        android.view.View getRootView();
+
     }
 
     public interface Presenter extends CustomerPresenter<EventBookTicketContract.EventBookTicketView> {

@@ -6,6 +6,7 @@ import android.util.Log;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.events.data.entity.response.seatlayoutresponse.SeatLayoutResponse;
 import com.tokopedia.events.domain.GetEventDetailsRequestUseCase;
 import com.tokopedia.events.domain.GetSeatLayoutUseCase;
@@ -33,7 +34,9 @@ public class EventsDetailsPresenter extends BaseDaggerPresenter<EventsDetailsCon
     GetEventDetailsRequestUseCase getEventDetailsRequestUseCase;
     GetSeatLayoutUseCase getSeatLayoutUseCase;
     EventsDetailsViewModel eventsDetailsViewModel;
+    String seatingURL = "empty";
     public static String EXTRA_EVENT_VIEWMODEL = "extraeventviewmodel";
+    public static String EXTRA_SEATING_URL = "extraseatingurl";
 
     @Inject
     public EventsDetailsPresenter(GetEventDetailsRequestUseCase eventDetailsRequestUseCase,
@@ -72,18 +75,27 @@ public class EventsDetailsPresenter extends BaseDaggerPresenter<EventsDetailsCon
             @Override
             public void onCompleted() {
                 CommonUtils.dumper("enter onCompleted");
-                getView().hideProgressBar();
+
             }
 
             @Override
             public void onError(Throwable e) {
                 CommonUtils.dumper("enter error");
                 e.printStackTrace();
+                getView().hideProgressBar();
+                NetworkErrorHelper.showEmptyState(getView().getActivity(),
+                        getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
+                            @Override
+                            public void onRetryClicked() {
+                                getEventDetails();
+                            }
+                        });
             }
 
             @Override
             public void onNext(EventDetailsDomain eventDetailEntities) {
                 getView().renderFromCloud(convertIntoEventDetailsViewModel(eventDetailEntities));   //TODO:should be chained using concatMap
+                getView().hideProgressBar();
                 CommonUtils.dumper("enter onNext");
             }
         });
@@ -108,11 +120,20 @@ public class EventsDetailsPresenter extends BaseDaggerPresenter<EventsDetailsCon
                     public void onError(Throwable e) {
                         CommonUtils.dumper("enter error in seatlayout usecase");
                         e.printStackTrace();
+                        getView().hideProgressBar();
+                        NetworkErrorHelper.showEmptyState(getView().getActivity(),
+                                getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
+                                    @Override
+                                    public void onRetryClicked() {
+                                        getView().showProgressBar();
+                                    }
+                                });
                     }
 
                     @Override
                     public void onNext(SeatLayoutResponse seatLayoutResponse) {
-                        getView().renderSeatLayout(seatLayoutResponse.getUrl());
+                        seatingURL = seatLayoutResponse.getUrl();
+                        getView().renderSeatLayout(seatingURL);
                         getView().hideProgressBar();
                     }
                 });
@@ -138,6 +159,7 @@ public class EventsDetailsPresenter extends BaseDaggerPresenter<EventsDetailsCon
         getView().showProgressBar();
         Intent bookTicketIntent = new Intent(getView().getActivity(), EventBookTicketActivity.class);
         bookTicketIntent.putExtra(EXTRA_EVENT_VIEWMODEL, eventsDetailsViewModel);
+        bookTicketIntent.putExtra(EXTRA_SEATING_URL,seatingURL);
         getView().navigateToActivityRequest(bookTicketIntent, 100);
     }
 

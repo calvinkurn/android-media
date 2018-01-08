@@ -2,6 +2,7 @@ package com.tokopedia.events.view.contractor;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.widget.EditText;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
@@ -29,8 +30,12 @@ public class EventReviewTicketsContractor {
 
         void hideProgressBar();
 
+        void initForms(String[] hintText, String[] regex);
+
 
         RequestParams getParams();
+
+        android.view.View getRootView();
     }
 
     public interface Presenter extends CustomerPresenter<EventReviewTicketsContractor.EventReviewTicketsView> {
@@ -42,5 +47,11 @@ public class EventReviewTicketsContractor {
         void proceedToPayment();
 
         void updatePromoCode(String code);
+
+        void validateEditText(EditText view);
+
+        void updateEmail(String email);
+
+        void updateNumber(String number);
     }
 }

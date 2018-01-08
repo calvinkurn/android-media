@@ -28,6 +28,7 @@
                 android:layout_height="@dimen/icon_size_small"
                 android:layout_gravity="center_vertical"
                 android:scaleType="fitXY"
+                android:visibility="gone"
                 android:src="@drawable/ic_keyboard_arrow_down_black_24dp" />
 
             <TextView

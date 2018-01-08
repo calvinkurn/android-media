@@ -38,6 +38,8 @@ public class EventsDetailsContract {
 
         void hideProgressBar();
 
+        android.view.View getRootView();
+
     }
 
     public interface Presenter extends CustomerPresenter<EventDetailsView> {

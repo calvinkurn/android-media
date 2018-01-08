@@ -87,7 +87,8 @@
         android:maxLines="3"
         android:text="@string/bigcontent"
         android:textSize="14sp"
-        app:animation_duration="300" />
+        app:animation_duration="300"
+        android:autoLink="web"/>
 
     <TextView
         android:id="@+id/seemorebutton"
