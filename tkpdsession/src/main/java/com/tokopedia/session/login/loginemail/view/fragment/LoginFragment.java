@@ -5,20 +5,20 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.text.style.ClickableSpan;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -42,6 +42,7 @@ import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customView.LoginTextView;
+import com.tokopedia.core.customView.TextDrawable;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -106,7 +107,6 @@ public class LoginFragment extends BaseDaggerFragment
     TextInputEditText passwordEditText;
     View loginView;
     View loadingView;
-    TextView registerButton;
     TextView forgotPass;
     LinearLayout loginLayout;
     TextView loginButton;
@@ -154,6 +154,32 @@ public class LoginFragment extends BaseDaggerFragment
         ScreenTracking.screen(getScreenName());
     }
 
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.add(Menu.NONE, R.id.action_register, 0, "");
+        MenuItem menuItem = menu.findItem(R.id.action_register);
+        menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        menuItem.setIcon(getDraw());
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    private Drawable getDraw() {
+        TextDrawable drawable = new TextDrawable(getActivity());
+        drawable.setText(getResources().getString(R.string.register));
+        drawable.setTextColor(R.color.black_70b);
+        return drawable;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_register) {
+            goToRegisterInitial();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -166,12 +192,12 @@ public class LoginFragment extends BaseDaggerFragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle
             savedInstanceState) {
+        setHasOptionsMenu(true);
         View view = inflater.inflate(R.layout.fragment_login, parent, false);
         emailEditText = view.findViewById(R.id.email_auto);
         passwordEditText = view.findViewById(R.id.password);
         loginView = view.findViewById(R.id.login_form);
         loadingView = view.findViewById(R.id.login_status);
-        registerButton = view.findViewById(R.id.register_button);
         forgotPass = view.findViewById(R.id.forgot_pass);
         loginLayout = view.findViewById(R.id.login_layout);
         loginButton = view.findViewById(R.id.accounts_sign_in);
@@ -183,36 +209,6 @@ public class LoginFragment extends BaseDaggerFragment
     }
 
     private void prepareView() {
-
-        String sourceString = getString(com.tokopedia.core.R.string.register_text_login);
-
-        Spannable spannable = new SpannableString(sourceString);
-
-        spannable.setSpan(new ClickableSpan() {
-                              @Override
-                              public void onClick(View view) {
-
-                              }
-
-                              @Override
-                              public void updateDrawState(TextPaint ds) {
-                                  ds.setColor(getResources().getColor(com.tokopedia.core.R.color.tkpd_main_green));
-                              }
-                          }
-                , sourceString.indexOf(getString(R.string.register))
-                , sourceString.length()
-                , 0);
-
-        registerButton.setText(spannable, TextView.BufferType.SPANNABLE);
-
-        registerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                UnifyTracking.eventRegisterThroughLogin();
-                goToRegisterInitial();
-            }
-        });
-
 
         passwordEditText.setOnEditorActionListener(
                 new TextView.OnEditorActionListener() {
@@ -341,16 +337,6 @@ public class LoginFragment extends BaseDaggerFragment
                     }
                 });
 
-        registerButton.animate().setDuration(shortAnimTime)
-                .alpha(isLoading ? 0 : 1)
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        //[END] save progress for rotation
-                        if (registerButton != null)
-                            registerButton.setVisibility(isLoading ? View.GONE : View.VISIBLE);
-                    }
-                });
     }
 
     @Override
@@ -436,15 +422,9 @@ public class LoginFragment extends BaseDaggerFragment
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(0, 20, 0, 15);
         for (int i = 0; i < listProvider.size(); i++) {
-            String color = listProvider.get(i).getColor();
-            int colorInt;
-            if (color == null) {
-                colorInt = Color.parseColor(COLOR_WHITE);
-            } else {
-                colorInt = Color.parseColor(color);
-            }
+            int colorInt = Color.parseColor(COLOR_WHITE);
             LoginTextView tv = new LoginTextView(getActivity(), colorInt);
-            tv.setTextLogin(listProvider.get(i).getName());
+            tv.setText(listProvider.get(i).getName());
             if (!TextUtils.isEmpty(listProvider.get(i).getImage())) {
                 tv.setImage(listProvider.get(i).getImage());
             } else if (listProvider.get(i).getImageResource() != 0) {

@@ -147,4 +147,5 @@
     <string name="to_verify_email">Untuk memastikan akun ini benar milik Anda, kami akan
         mengirimkan kode verifikasi melalui email ke</string>
     <string name="send_email_verification">Kirim Email Verifikasi</string>
+    <string name="or_login_with">Atau masuk dengan:</string>
 </resources>

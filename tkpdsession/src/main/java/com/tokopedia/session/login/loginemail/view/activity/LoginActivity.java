@@ -105,4 +105,10 @@ public class LoginActivity extends TActivity implements HasComponent {
         intent.putExtras(bundle);
         return intent;
     }
+
+    @Override
+    protected void setupToolbar() {
+        super.setupToolbar();
+        toolbar.setPadding(0,0,20,0);
+    }
 }
