@@ -7,7 +7,10 @@
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
     android:orientation="vertical"
-    android:padding="@dimen/padding_small">
+    android:paddingBottom="@dimen/padding_small"
+    android:paddingLeft="@dimen/padding_16"
+    android:paddingRight="@dimen/padding_16"
+    android:paddingTop="@dimen/padding_small">
 
     <android.support.v7.widget.AppCompatTextView
         style="@style/TextView.Title.Bold"
@@ -102,10 +105,10 @@
                 android:layout_marginLeft="@dimen/margin_sm"
                 android:layout_marginStart="@dimen/margin_sm"
                 android:backgroundTint="@color/widget_card_with_action_separator"
+                android:digits="1234567890"
                 android:hint="@string/flight_booking_contact_telp_hint"
                 android:imeActionLabel="@string/label_done"
                 android:inputType="number"
-                android:digits="1234567890"
                 android:lines="1"
                 android:singleLine="true"
                 tools:text="81234567890" />
