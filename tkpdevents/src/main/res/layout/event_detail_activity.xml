@@ -39,8 +39,7 @@
                 android:id="@+id/appbarlayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                app:elevation="20dp">
+                android:background="@android:color/transparent">
 
                 <android.support.design.widget.CollapsingToolbarLayout
                     android:id="@+id/collasing_toolbar_layout"
@@ -65,7 +64,7 @@
 
             <android.support.v4.widget.NestedScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:paddingBottom="50dp"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
@@ -92,7 +91,8 @@
 
                         <include
                             android:id="@+id/seating_layout_card"
-                            layout="@layout/seating_layout" />
+                            layout="@layout/seating_layout"
+                            android:visibility="gone"/>
                     </FrameLayout>
 
                     <View

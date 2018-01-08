@@ -39,10 +39,11 @@
                 android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
                 android:layout_height="76dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="2dp"
                 android:background="@color/white"
                 android:overScrollMode="ifContentScrolls"
-                android:paddingTop="8dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
                 app:tabGravity="center"
                 app:tabMaxWidth="0dp"
                 app:tabMode="scrollable"
@@ -52,8 +53,8 @@
             <android.support.v4.view.ViewPager
                 android:id="@+id/viewpager_book_ticket"
                 android:layout_width="match_parent"
-                android:layout_height="320dp"
-                android:layout_marginTop="8dp"
+                android:layout_height="480dp"
+                android:layout_marginTop="2dp"
                 android:background="@color/white" />
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>

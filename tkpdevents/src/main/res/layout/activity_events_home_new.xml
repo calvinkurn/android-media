@@ -49,17 +49,17 @@
                         <com.tkpd.library.ui.widget.TouchViewPager
                             android:id="@+id/event_bannerpager"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginBottom="5dp" />
+                            android:layout_height="match_parent" />
 
                         <com.tokopedia.events.view.utils.CirclePageIndicator
                             android:id="@+id/pager_indicator"
                             android:layout_width="100dp"
-                            android:layout_height="10dp"
+                            android:layout_height="12dp"
                             android:layout_alignParentBottom="true"
                             android:layout_alignParentLeft="true"
                             android:layout_marginBottom="5dp"
                             android:layout_marginLeft="8dp"
+                            app:fillColor="@color/orange_nob"
                             android:padding="2dp" />
                     </RelativeLayout>
 

@@ -37,7 +37,7 @@
                 android:paddingTop="@dimen/padding_vs"
                 android:text="The 90's Festival"
                 android:textColor="@color/black"
-                android:textSize="@dimen/font_medium" />
+                android:textSize="@dimen/font_small" />
 
             <!--<TextView-->
                 <!--android:id="@+id/btn_bookticket"-->
@@ -60,10 +60,11 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
                 android:padding="@dimen/padding_small"
                 android:text="Rp 552.00"
                 android:textColor="@color/orange"
-                android:textSize="12sp" />
+                android:textSize="14sp" />
 
             <LinearLayout
                 android:id="@+id/place_layout"
@@ -86,7 +87,7 @@
                     android:paddingEnd="@dimen/margin_default"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
+                    android:textSize="12sp"
                     android:textColor="@color/grey_700"
                     android:text="25 Nov 2017 Pukul"/>
             </LinearLayout>
@@ -113,7 +114,7 @@
                     android:paddingEnd="@dimen/margin_default"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
+                    android:textSize="12sp"
                     android:textColor="@color/grey_700"
                     android:text="25 Nov 2017 Pukul"/>
 

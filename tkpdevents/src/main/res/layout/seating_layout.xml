@@ -39,7 +39,7 @@
                 android:layout_marginStart="@dimen/margin_default"
                 android:text="@string/seating_layout"
                 android:textColor="@android:color/black"
-                android:textSize="16sp" />
+                android:textSize="14sp" />
 
         </LinearLayout>
 
