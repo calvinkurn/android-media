@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/white"
+              android:orientation="vertical">
+
+    <com.tokopedia.loyalty.view.compoundview.PromoImageView
+        android:id="@+id/iv_banner"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:visibility="gone"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="15dp">
+
+        <RelativeLayout
+            android:id="@+id/layout_period_promo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/iv_period_promo"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginRight="5dp"
+                android:padding="3dp"
+                android:src="@drawable/ic_period_promo"/>
+
+            <TextView
+                android:id="@+id/tv_label_period_promo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/iv_period_promo"
+                android:layout_toRightOf="@id/iv_period_promo"
+                android:text="Priode Promo"
+                android:textColor="@color/grey_600"
+                android:textSize="12sp"/>
+
+            <TextView
+                android:id="@+id/tv_period_promo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_label_period_promo"
+                android:layout_toRightOf="@id/iv_period_promo"
+                android:textColor="@color/grey_800"
+                android:textSize="14sp"
+                tools:text="1 - 27 Januari 2018"/>
+
+        </RelativeLayout>
+
+        <android.support.v4.widget.Space
+            android:layout_width="match_parent"
+            android:layout_height="15dp"/>
+
+        <RelativeLayout
+            android:id="@+id/layout_single_code_promo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            tools:visibility="gone">
+
+            <ImageView
+                android:id="@+id/iv_code_promo"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginRight="5dp"
+                android:padding="3dp"
+                android:src="@drawable/ic_coupon_promo"/>
+
+            <TextView
+                android:id="@+id/tv_label_code_promo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/iv_code_promo"
+                android:layout_toRightOf="@id/iv_code_promo"
+                android:drawableEnd="@drawable/info_icon"
+                android:drawablePadding="5dp"
+                android:drawableRight="@drawable/info_icon"
+                android:text="Kode Promo"
+                android:textColor="@color/grey_600"
+                android:textSize="12sp"/>
+
+            <TextView
+                android:id="@+id/tv_code_promo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_label_code_promo"
+                android:layout_toEndOf="@id/iv_code_promo"
+                android:layout_toRightOf="@id/iv_code_promo"
+                android:textColor="#ff5722"
+                android:textSize="14sp"
+                tools:text="ANGGAGANTENG"/>
+
+            <TextView
+                android:id="@+id/btn_copy_code_promo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/btn_cancel"
+                android:padding="5dp"
+                android:text="Salin Kode"
+                tools:ignore="RtlHardcoded"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/layout_multiple_code_promo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <ImageView
+                android:id="@+id/iv_multiple_code_promo"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginRight="5dp"
+                android:padding="3dp"
+                android:src="@drawable/ic_coupon_promo"/>
+
+            <TextView
+                android:id="@+id/tv_multiple_code_promo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@id/iv_multiple_code_promo"
+                android:layout_toRightOf="@id/iv_multiple_code_promo"
+                android:drawablePadding="5dp"
+                android:gravity="center_vertical"
+                android:textColor="@color/grey_600"
+                android:textSize="14sp"
+                tools:text="3 Kode Promo"/>
+
+
+        </RelativeLayout>
+    </LinearLayout>
+
+
+</LinearLayout>
