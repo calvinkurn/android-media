@@ -18,7 +18,7 @@ public class FlightUrl {
     public static final String FLIGHT_ORDERS = FLIGHT_PATH + "order/list";
     public static final String FLIGHT_ORDER = FLIGHT_PATH + "order/{id}";
     public static String BASE_URL = "https://api-staging.tokopedia.com";
-    public static String WEB_DOMAIN = "https://www.tokopedia.com/";
+    public static String WEB_DOMAIN = "https://staging.tokopedia.com/";
     public static String ALL_PROMO_LINK = WEB_DOMAIN + "promo/";
     public static String CONTACT_US = WEB_DOMAIN + "contact-us";
     public static String CONTACT_US_FLIGHT_PREFIX = WEB_DOMAIN + "contact-us?ep=";
