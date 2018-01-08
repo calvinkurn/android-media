@@ -216,7 +216,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                     @Override
                     public void onNext(SearchResultModel searchResultModel) {
                         if (isViewAttached()) {
-                            ProductViewModel productViewModel = ProductViewModelHelper.convertToProductViewModel(searchResultModel);
+                            ProductViewModel productViewModel = ProductViewModelHelper.convertToProductViewModelFirstPage(searchResultModel);
                             List<Visitable> list = new ArrayList<Visitable>();
                             if (productViewModel.getProductList().isEmpty()) {
                                 getView().setEmptyProduct();
