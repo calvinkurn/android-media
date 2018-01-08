@@ -31,6 +31,8 @@ public class KolCommentActivity extends TActivity implements HasComponent {
     public static final String ARGS_ID = "ARGS_ID";
     public static final String ARGS_POSITION = "ARGS_POSITION";
     public static final String ARGS_KOL_ID = "id";
+    public static final String ARGS_FROM_APPLINK = "isFromApplink";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +78,8 @@ public class KolCommentActivity extends TActivity implements HasComponent {
     public static Intent getCallingIntent(Context context, Bundle bundle) {
         Intent intent = new Intent(context, KolCommentActivity.class);
         Bundle args = new Bundle();
-        args.putString(ARGS_ID, bundle.getString(ARGS_KOL_ID));
+        args.putInt(ARGS_ID, Integer.valueOf(bundle.getString(ARGS_KOL_ID)));
+        args.putBoolean(ARGS_FROM_APPLINK, true);
         intent.putExtras(args);
         return intent;
     }
