@@ -20,8 +20,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 
-import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
@@ -747,6 +747,11 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
             });
         }
         return emptyResultViewModel;
+    }
+
+    @Override
+    protected boolean isLoadMoreEnabledByDefault() {
+        return false;
     }
 
     public interface OnFlightSearchFragmentListener {

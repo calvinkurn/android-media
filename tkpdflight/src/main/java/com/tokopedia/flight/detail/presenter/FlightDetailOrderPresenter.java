@@ -99,14 +99,18 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     }
 
     private String generateCancelParam(FlightOrder flightOrder) {
+        String newLine = "&#13;&#10;";
         StringBuilder result = new StringBuilder(String.format(getView().getActivity().getString(R.string.flight_order_cancel_prefix_label), flightOrder.getId()));
+        result.append(newLine);
         for (FlightOrderJourney flightOrderJourney : flightOrder.getJourneys()) {
             String item = flightOrderJourney.getDepartureAiportId() + "-" + flightOrderJourney.getArrivalAirportId() + " ";
+            item += newLine;
             ArrayList<String> passengers = new ArrayList<>();
             for (FlightOrderPassengerViewModel flightOrderPassengerViewModel : flightOrder.getPassengerViewModels()) {
-                passengers.add("Passenger " + flightOrderPassengerViewModel.getPassengerFirstName() + " " + flightOrderPassengerViewModel.getPassengerLastName());
+                passengers.add("Passenger " + flightOrderPassengerViewModel.getPassengerFirstName() + " " + flightOrderPassengerViewModel.getPassengerLastName() + "[ ]");
             }
             item += TextUtils.join(",", passengers);
+            item += newLine;
             result.append(item);
         }
         return Base64.encodeToString(result.toString().getBytes(), Base64.DEFAULT);
