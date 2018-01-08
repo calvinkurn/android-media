@@ -1,10 +1,8 @@
 package com.tokopedia.abstraction.base.view.adapter;
 
-import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 
 import java.util.ArrayList;
@@ -13,25 +11,30 @@ import java.util.List;
 /**
  * @author alvarisi
  */
-public class BaseListAdapter<T extends Visitable, F extends AdapterTypeFactory> extends BaseAdapter {
+public class BaseListAdapter<T extends Visitable, F extends AdapterTypeFactory> extends BaseAdapter<F> {
 
-    private OnAdapterInteractionListener onAdapterInteractionListener;
-    private F baseListAdapterTypeFactory;
+    private OnAdapterInteractionListener<T> onAdapterInteractionListener;
+    private boolean nonDataElementOnLastOnly = true;
+
+    public interface OnAdapterInteractionListener<T> {
+        void onItemClicked(T t);
+    }
 
     public BaseListAdapter(F baseListAdapterTypeFactory) {
-        super(baseListAdapterTypeFactory, new ArrayList<Visitable>());
-        this.baseListAdapterTypeFactory = baseListAdapterTypeFactory;
+        super(baseListAdapterTypeFactory);
     }
 
-    @Override
-    public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
-        View view = LayoutInflater.from(context).inflate(viewType, parent, false);
-        return baseListAdapterTypeFactory.createViewHolder(view, viewType);
-    }
-
-    public void setOnAdapterInteractionListener(OnAdapterInteractionListener onAdapterInteractionListener) {
+    public BaseListAdapter(F baseListAdapterTypeFactory, OnAdapterInteractionListener<T> onAdapterInteractionListener) {
+        super(baseListAdapterTypeFactory);
         this.onAdapterInteractionListener = onAdapterInteractionListener;
+    }
+
+    public void setOnAdapterInteractionListener(OnAdapterInteractionListener<T> onAdapterInteractionListener) {
+        this.onAdapterInteractionListener = onAdapterInteractionListener;
+    }
+
+    public void setNonDataElementOnLastOnly(boolean nonDataElementOnLastOnly) {
+        this.nonDataElementOnLastOnly = nonDataElementOnLastOnly;
     }
 
     @Override
@@ -41,19 +44,31 @@ public class BaseListAdapter<T extends Visitable, F extends AdapterTypeFactory> 
             public void onClick(View view) {
                 if (onAdapterInteractionListener != null) {
                     try {
-                        onAdapterInteractionListener.onItemClicked(visitables.get(holder.getAdapterPosition()));
+                        T item = (T) visitables.get(holder.getAdapterPosition());
+                        onAdapterInteractionListener.onItemClicked(item);
                     } catch (ClassCastException e) {
                         e.printStackTrace();
                     }
                 }
             }
         });
-        holder.bind(visitables.get(position));
+        super.onBindViewHolder(holder,position);
     }
 
-    public void addData(List<T> visitables) {
-        this.visitables.addAll(visitables);
-        notifyDataSetChanged();
+    /**
+     * this to remove loading/empty/error (all non T data) in adapter
+     */
+    public void clearAllNonDataElement() {
+        for (int i = visitables.size() - 1; i >= 0; i--) {
+            try {
+                T item = (T) visitables.get(i);
+                if (nonDataElementOnLastOnly) {
+                    break;
+                }
+            } catch (ClassCastException cce) {
+                visitables.remove(i);
+            }
+        }
     }
 
     public List<T> getData() {
@@ -69,12 +84,8 @@ public class BaseListAdapter<T extends Visitable, F extends AdapterTypeFactory> 
         return list;
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        return visitables.get(position).type(baseListAdapterTypeFactory);
+    public int getDataSize(){
+        return getData().size();
     }
 
-    public interface OnAdapterInteractionListener<T> {
-        void onItemClicked(T t);
-    }
 }

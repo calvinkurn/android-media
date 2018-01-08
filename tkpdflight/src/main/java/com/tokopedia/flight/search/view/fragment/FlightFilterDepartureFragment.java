@@ -85,8 +85,7 @@ public class FlightFilterDepartureFragment extends BaseFlightFilterFragment<Depa
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void loadData(int page) {
         List<DepartureStat> airlineStatList = listener.getFlightSearchStatisticModel().getDepartureTimeStatList();
         renderList(airlineStatList);
     }
