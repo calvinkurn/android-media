@@ -1,4 +1,4 @@
-package com.tokopedia.seller.shop.common.domain.interactor.util;
+package com.tokopedia.seller.shop.common.utils;
 
 import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -28,6 +28,9 @@ public class ShopWhiteList {
         // Shop info
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.BASE_DOMAIN,
                 TkpdBaseURL.Shop.PATH_SHOP + TkpdBaseURL.Shop.PATH_GET_SHOP_INFO, THREE_HOURS));
+        // Open Shop form
+        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.BASE_DOMAIN,
+                TkpdBaseURL.Shop.PATH_MY_SHOP + TkpdBaseURL.Shop.PATH_GET_OPEN_SHOP_FORM, ONE_HOUR));
 
         return cacheApiWhiteList;
     }
