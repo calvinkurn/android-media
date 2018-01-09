@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
@@ -55,6 +56,8 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
     LinearLayout filterLayout;
     @BindView(R2.id.rv_promo_list)
     RecyclerView rvPromoList;
+    @BindView(R2.id.container_list)
+    View containerList;
 
     @Inject
     IPromoListPresenter dPresenter;
@@ -78,27 +81,29 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
 
     @Override
     public void renderPromoDataList(List<PromoData> promoDataList) {
+        View errorView = containerList.findViewById(com.tokopedia.core.R.id.main_retry);
+        if (errorView != null) errorView.setVisibility(View.GONE);
         adapter.addAllItems(promoDataList);
     }
 
     @Override
     public void renderErrorGetPromoDataList(String message) {
-
+        handleErrorEmptyState(message);
     }
 
     @Override
     public void renderErrorHttpGetPromoDataList(String message) {
-
+        handleErrorEmptyState(message);
     }
 
     @Override
     public void renderErrorNoConnectionGetPromoDataList(String message) {
-
+        handleErrorEmptyState(message);
     }
 
     @Override
     public void renderErrorTimeoutConnectionGetPromoDataListt(String message) {
-
+        handleErrorEmptyState(message);
     }
 
     @Override
@@ -330,5 +335,16 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
         }
         bottomSheetViewInfoPromoCode.show();
 
+    }
+
+    private void handleErrorEmptyState(String message) {
+        NetworkErrorHelper.showEmptyState(
+                getActivity(), containerList, message,
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+
+                    }
+                });
     }
 }

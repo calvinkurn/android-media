@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent"
+              android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/quick_filter"
@@ -10,9 +10,16 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"/>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_promo_list"
+    <FrameLayout
+        android:id="@+id/container_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_promo_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </FrameLayout>
+
 
 </LinearLayout>
