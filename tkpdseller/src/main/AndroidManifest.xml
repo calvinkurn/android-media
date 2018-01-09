@@ -186,6 +186,11 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".product.edit.view.activity.ProductAddInfoActivity"
+            android:label="@string/product_desc_guide"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".product.edit.view.activity.YoutubeAddVideoActivity"
             android:label="@string/product_label_video"
             android:screenOrientation="portrait" />
