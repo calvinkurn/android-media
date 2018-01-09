@@ -1,5 +1,5 @@
 query HomeFeedQuery($userID: Int!, $limit: Int!, $cursor: String) {
-    feed(limit: $limit, cursor: $cursor, userID: $userID, source: "home") {
+    feed(limit: $limit, cursor: $cursor, userID: $userID) {
           data {
             id
             create_time
