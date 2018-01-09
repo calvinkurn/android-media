@@ -109,6 +109,6 @@ public class LoginActivity extends TActivity implements HasComponent {
     @Override
     protected void setupToolbar() {
         super.setupToolbar();
-        toolbar.setPadding(0,0,20,0);
+        toolbar.setPadding(0,0,30,0);
     }
 }

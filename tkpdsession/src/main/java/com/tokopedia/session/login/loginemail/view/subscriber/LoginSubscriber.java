@@ -33,26 +33,25 @@ public class LoginSubscriber extends Subscriber<LoginEmailDomain> {
 
     @Override
     public void onError(Throwable e) {
-        view.dismissLoadingLogin();
         if (e.getLocalizedMessage() != null
                 && e.getLocalizedMessage().toLowerCase().contains(NOT_ACTIVATED)
                 && !TextUtils.isEmpty(email)) {
             view.onGoToActivationPage(email);
         } else {
+            view.dismissLoadingLogin();
             view.onErrorLogin(ErrorHandler.getErrorMessage(e));
         }
     }
 
     @Override
     public void onNext(LoginEmailDomain loginEmailDomain) {
-        view.dismissLoadingLogin();
-
         if (!loginEmailDomain.getInfo().getGetUserInfoDomainData().isCreatedPassword()) {
             view.onGoToCreatePasswordPage(loginEmailDomain.getInfo()
                     .getGetUserInfoDomainData());
         } else if (loginEmailDomain.getLoginResult() != null
                 && !goToSecurityQuestion(loginEmailDomain.getLoginResult())
                 && (isMsisdnVerified(loginEmailDomain.getInfo()) || GlobalConfig.isSellerApp())) {
+            view.dismissLoadingLogin();
             view.setSmartLock();
             view.onSuccessLoginEmail();
         } else if (!goToSecurityQuestion(loginEmailDomain.getLoginResult())
@@ -67,6 +66,7 @@ public class LoginSubscriber extends Subscriber<LoginEmailDomain> {
                     loginEmailDomain.getInfo().getGetUserInfoDomainData().getEmail(),
                     loginEmailDomain.getInfo().getGetUserInfoDomainData().getPhone());
         } else {
+            view.dismissLoadingLogin();
             view.resetToken();
             view.onErrorLogin(ErrorHandler.getDefaultErrorCodeMessage(ErrorCode.UNSUPPORTED_FLOW));
         }

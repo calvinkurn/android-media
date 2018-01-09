@@ -218,12 +218,13 @@ public class ForgotPasswordFragment extends BasePresenterFragment<ForgotPassword
             }
         });
 
+
     }
 
     private void goToRegister() {
         Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).getRegisterIntent
                 (context);
-        intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
         getActivity().finish();
     }

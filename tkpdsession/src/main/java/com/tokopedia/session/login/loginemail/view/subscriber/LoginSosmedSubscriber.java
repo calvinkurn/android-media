@@ -35,25 +35,25 @@ public class LoginSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
 
     @Override
     public void onError(Throwable e) {
-        view.dismissLoadingLogin();
         if (e.getLocalizedMessage() != null
                 && e.getLocalizedMessage().toLowerCase().contains(NOT_ACTIVATED)
                 && !TextUtils.isEmpty(email)) {
             view.onGoToActivationPage(email);
         } else {
+            view.dismissLoadingLogin();
             view.onErrorLogin(ErrorHandler.getErrorMessage(e));
         }
     }
 
     @Override
     public void onNext(LoginSosmedDomain loginSosmedDomain) {
-        view.dismissLoadingLogin();
         if (!loginSosmedDomain.getInfo().getGetUserInfoDomainData().isCreatedPassword()) {
             view.onGoToCreatePasswordPage(loginSosmedDomain.getInfo()
                     .getGetUserInfoDomainData());
         } else if (loginSosmedDomain.getMakeLoginModel() != null
                 && !isGoToSecurityQuestion(loginSosmedDomain.getMakeLoginModel())
                 && (isMsisdnVerified(loginSosmedDomain.getInfo()) || GlobalConfig.isSellerApp())) {
+            view.dismissLoadingLogin();
             view.setSmartLock();
             view.onSuccessLoginSosmed(loginMethodName);
         } else if (!isGoToSecurityQuestion(loginSosmedDomain.getMakeLoginModel())
@@ -68,6 +68,7 @@ public class LoginSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
                     loginSosmedDomain.getInfo().getGetUserInfoDomainData().getEmail(),
                     loginSosmedDomain.getInfo().getGetUserInfoDomainData().getPhone());
         } else {
+            view.dismissLoadingLogin();
             view.resetToken();
             view.onErrorLogin(ErrorHandler.getDefaultErrorCodeMessage(ErrorCode.UNSUPPORTED_FLOW));
         }

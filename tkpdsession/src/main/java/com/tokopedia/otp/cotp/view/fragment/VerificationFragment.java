@@ -359,7 +359,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
     @Override
     public void onErrorGetOTP(String errorMessage) {
-        if (errorMessage.contains(getString(R.string.limit_otp_reached))) {
+        if (errorMessage.contains(getString(R.string.limit_otp_reached_many_times))) {
             limitOtp.setVisibility(View.VISIBLE);
             setLimitReachedCountdownText();
         } else {

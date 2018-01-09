@@ -71,8 +71,8 @@ public class VerificationActivity extends TActivity implements HasComponent {
 
         if (passModel.getInterruptModel() != null) {
             fragment = InterruptVerificationFragment.createInstance(bundle);
-            fragmentTransaction.replace(R.id.container, fragment, InterruptVerificationFragment
-                    .class.getSimpleName());
+            fragmentTransaction.add(R.id.container, fragment, FIRST_FRAGMENT_TAG);
+            fragmentTransaction.addToBackStack(FIRST_FRAGMENT_TAG);
         } else {
             fragment =
                     getFragment(getIntent().getExtras().getInt(PARAM_DEFAULT_FRAGMENT_TYPE, -1), bundle);
@@ -148,13 +148,15 @@ public class VerificationActivity extends TActivity implements HasComponent {
     public void goToVerificationPage(int type) {
         if (!(getSupportFragmentManager().findFragmentById(R.id.container) instanceof
                 VerificationFragment)) {
+
+            getSupportFragmentManager().popBackStack(FIRST_FRAGMENT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
             Fragment fragment = getFragment(type, getIntent().getExtras());
             fragmentTransaction.setCustomAnimations(com.tokopedia.core.R.animator.slide_in_left, 0, 0, com
                     .tokopedia.core.R.animator.slide_out_right);
-            fragmentTransaction.add(R.id.container, fragment, CHOOSE_FRAGMENT_TAG);
-            fragmentTransaction.addToBackStack(CHOOSE_FRAGMENT_TAG);
+            fragmentTransaction.add(R.id.container, fragment, FIRST_FRAGMENT_TAG);
+            fragmentTransaction.addToBackStack(FIRST_FRAGMENT_TAG);
             fragmentTransaction.commit();
         }
     }

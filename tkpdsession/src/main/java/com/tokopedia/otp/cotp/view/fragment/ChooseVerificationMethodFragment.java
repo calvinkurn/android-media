@@ -1,5 +1,6 @@
 package com.tokopedia.otp.cotp.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -20,6 +22,7 @@ import com.tokopedia.otp.cotp.view.adapter.VerificationMethodAdapter;
 import com.tokopedia.otp.cotp.view.viewlistener.SelectVerification;
 import com.tokopedia.otp.cotp.view.viewmodel.MethodItem;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
+import com.tokopedia.otp.securityquestion.view.activity.ChangePhoneNumberRequestActivity;
 import com.tokopedia.session.R;
 
 import java.util.ArrayList;
@@ -35,6 +38,7 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
 
     RecyclerView methodList;
     VerificationMethodAdapter adapter;
+    TextView changePhoneNumberButton;
 
     @Inject
     GlobalCacheManager cacheManager;
@@ -74,6 +78,7 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
             savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_choose_verification_method, parent, false);
         methodList = view.findViewById(R.id.method_list);
+        changePhoneNumberButton = view.findViewById(R.id.phone_inactive);
         prepareView();
         return view;
     }
@@ -83,6 +88,14 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
         methodList.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager
                 .VERTICAL, false));
         methodList.setAdapter(adapter);
+
+        changePhoneNumberButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = ChangePhoneNumberRequestActivity.getCallingIntent(getActivity());
+                startActivity(intent);
+            }
+        });
     }
 
     private ArrayList<MethodItem> getList() {

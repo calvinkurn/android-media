@@ -59,7 +59,7 @@ public class InterruptVerificationViewModel {
                 AppScreen.SCREEN_INTERRUPT_VERIFICATION_SMS,
                 R.drawable.ic_verification_sms,
                 MainApplication.getAppContext().getString(R.string.to_verify_sms)
-                        + " <font color='#b3000000'>" + MethodItem.getMaskedPhoneNumber(phone) +
+                        + "<br><font color='#b3000000'>" + MethodItem.getMaskedPhoneNumber(phone) +
                         "</font>.",
                 MainApplication.getAppContext().getString(R.string.send_sms_verification)
         );
@@ -71,7 +71,7 @@ public class InterruptVerificationViewModel {
                 AppScreen.SCREEN_INTERRUPT_VERIFICATION_EMAIL,
                 R.drawable.ic_verification_email,
                 MainApplication.getAppContext().getString(R.string.to_verify_email)
-                        + " <font color='#b3000000'>" + email + "</font>.",
+                        + "<br><font color='#b3000000'>" + email + "</font>.",
                 MainApplication.getAppContext().getString(R.string.send_email_verification)
         );
     }

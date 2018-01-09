@@ -101,6 +101,7 @@ public class LoginFragment extends BaseDaggerFragment
     private static final int REQUEST_SECURITY_QUESTION = 104;
     private static final int REQUEST_LOGIN_PHONE_NUMBER = 105;
     private static final int REQUESTS_CREATE_PASSWORD = 106;
+    private static final int REQUEST_ACTIVATE_ACCOUNT = 107;
 
     public static final int TYPE_SQ_PHONE = 1;
     public static final int TYPE_SQ_EMAIL = 2;
@@ -556,7 +557,7 @@ public class LoginFragment extends BaseDaggerFragment
         Intent intent = ActivationActivity.getCallingIntent(getActivity(),
                 email);
         intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_ACTIVATE_ACCOUNT);
     }
 
     @Override
@@ -729,18 +730,28 @@ public class LoginFragment extends BaseDaggerFragment
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
         } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_CANCELED) {
+            dismissLoadingLogin();
             getActivity().setResult(Activity.RESULT_CANCELED);
             sessionHandler.clearToken();
         } else if (requestCode == REQUEST_LOGIN_PHONE_NUMBER && resultCode == Activity.RESULT_OK) {
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
         } else if (requestCode == REQUEST_LOGIN_PHONE_NUMBER && resultCode == Activity.RESULT_CANCELED) {
+            dismissLoadingLogin();
             getActivity().setResult(Activity.RESULT_CANCELED);
             sessionHandler.clearToken();
         } else if (requestCode == REQUESTS_CREATE_PASSWORD && resultCode == Activity.RESULT_OK) {
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
         } else if (requestCode == REQUESTS_CREATE_PASSWORD && resultCode == Activity.RESULT_CANCELED) {
+            dismissLoadingLogin();
+            getActivity().setResult(Activity.RESULT_CANCELED);
+            sessionHandler.clearToken();
+        } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_OK) {
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
+        } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_CANCELED) {
+            dismissLoadingLogin();
             getActivity().setResult(Activity.RESULT_CANCELED);
             sessionHandler.clearToken();
         } else {
