@@ -53,11 +53,14 @@ public class ChangePhoneNumberInputPresenter
         }
 
         if (editable.toString().length() != newNumber.length()) {
-            int lengthDifference = Math.abs(editable.toString().length() - newNumber.length());
-            if (selection >= 0 && selection <= newNumber.length())
-                view.correctPhoneNumber(newNumber, selection + lengthDifference);
-            else
+            int lengthDifference = newNumber.length() - editable.toString().length();
+            if (selection + lengthDifference < 0)
+                view.correctPhoneNumber(newNumber, 0);
+            else if (selection > newNumber.length())
                 view.correctPhoneNumber(newNumber, newNumber.length());
+            else
+                view.correctPhoneNumber(newNumber, selection + lengthDifference);
+
         }
     }
 
