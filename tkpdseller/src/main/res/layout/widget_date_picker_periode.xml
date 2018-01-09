@@ -15,13 +15,13 @@
 
     <TextView
         android:id="@+id/text_view_title"
-        style="@style/TextView.Body1.BlackDisabled"
+        style="@style/TextView.Small.BlackDisabled"
         android:layout_toRightOf="@id/radio_button"
         tools:text="@string/app_name" />
 
     <TextView
         android:id="@+id/text_view_content"
-        style="@style/TextView.Subheading"
+        style="@style/TextView.Title"
         android:layout_below="@id/text_view_title"
         android:layout_toRightOf="@id/radio_button"
         tools:text="@string/app_name" />

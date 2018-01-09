@@ -7,12 +7,12 @@
 
     <TextView
         android:id="@+id/market_insight_keyword"
-        style="@style/TextView.Body1"
+        style="@style/TextView.Small"
         tools:text="@string/app_id" />
 
     <TextView
         android:id="@+id/market_insight_number"
-        style="@style/TextView.Caption.BlackDisabled"
+        style="@style/TextView.Micro.BlackDisabled"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         tools:text="@string/app_id" />
