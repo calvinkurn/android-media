@@ -48,7 +48,7 @@ public class FlightBookingAmenityViewHolder extends AbstractViewHolder<FlightBoo
             title.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.tkpd_main_green));
         } else {
             imageChecked.setVisibility(View.INVISIBLE);
-            title.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.black_seventy_percent_));
+            title.setTextColor(ContextCompat.getColor(itemView.getContext(), R.color.font_black_primary_70));
         }
     }
 }

@@ -14,8 +14,8 @@
 
         <ImageView
             android:id="@+id/no_result_image"
-            android:layout_width="@dimen/img_hotprod"
-            android:layout_height="@dimen/img_hotprod"
+            android:layout_width="@dimen/image_no_result"
+            android:layout_height="@dimen/image_no_result"
             android:layout_gravity="center"
             android:layout_marginBottom="@dimen/margin_vs"
             android:src="@drawable/status_no_result" />

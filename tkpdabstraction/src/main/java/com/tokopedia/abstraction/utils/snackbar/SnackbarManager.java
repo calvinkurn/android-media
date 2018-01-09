@@ -82,7 +82,7 @@ public class SnackbarManager {
             @Snackbar.Duration int duration) {
 
         return make(view, text, duration,
-                R.color.tkpd_main_green, R.color.black_seventy_percent_);
+                R.color.tkpd_main_green, R.color.font_black_primary_70);
     }
 
     public static Snackbar make(
