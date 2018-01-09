@@ -257,4 +257,5 @@
     <string name="shop_reserve_success_title">Lengkapi Informasi <![CDATA[<b>]]>%1$s<![CDATA[</b>]]> dan mulai berjualan sekarang!</string>
     <string name="shop_reserve_success_info">INFO: Toko akan otomatis dihapus dalam 7 hari jika Informasi Toko belum lengkap.</string>
     <string name="shop_open_create_success">Anda berhasil membuka toko!</string>
+    <string name="shop_location_must_be_filled">Lokasi pengiriman harus diisi</string>
 </resources>
