@@ -27,6 +27,12 @@ public class AlbumMediaLoader extends CursorLoader {
                     MediaStore.Files.FileColumns.MEDIA_TYPE,
                     MediaStore.MediaColumns.SIZE
             );
+    private static final String SELECTION_ALL_IMAGE_ONLY =
+            String.format("(%s=?) AND %s>0",
+                    MediaStore.Files.FileColumns.MEDIA_TYPE,
+                    MediaStore.MediaColumns.SIZE
+            );
+
     private static final String[] SELECTION_ALL_ARGS = {
             String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE),
             String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO),
@@ -34,6 +40,13 @@ public class AlbumMediaLoader extends CursorLoader {
     private static final String SELECTION_ALBUM =
             String.format("(%s=? OR %s=?) AND %s=? AND %s>0",
                     MediaStore.Files.FileColumns.MEDIA_TYPE,
+                    MediaStore.Files.FileColumns.MEDIA_TYPE,
+                    BUCKET_ID,
+                    MediaStore.MediaColumns.SIZE
+            );
+
+    private static final String SELECTION_ALBUM_IMAGE_ONLY =
+            String.format("(%s=?) AND %s=? AND %s>0",
                     MediaStore.Files.FileColumns.MEDIA_TYPE,
                     BUCKET_ID,
                     MediaStore.MediaColumns.SIZE
@@ -61,13 +74,13 @@ public class AlbumMediaLoader extends CursorLoader {
                 selectionArgs = new String[] {
                         String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE)
                 };
-                selectionAlbum = SELECTION_ALL;
+                selectionAlbum = SELECTION_ALL_IMAGE_ONLY;
             }else{
                 selectionArgs = new String[] {
                         String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE),
                         albumItem.getmId()
                 };
-                selectionAlbum = SELECTION_ALBUM;
+                selectionAlbum = SELECTION_ALBUM_IMAGE_ONLY;
             }
         }else {
             if (albumItem.isAll()) {
