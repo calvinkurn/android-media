@@ -9,6 +9,9 @@ import java.util.List;
  */
 
 public class GetTemplateViewModel {
+
+    boolean isEnabled;
+
     private List<Visitable> listTemplate;
 
     public void setListTemplate(List<Visitable> listTemplate) {
@@ -17,5 +20,13 @@ public class GetTemplateViewModel {
 
     public List<Visitable> getListTemplate() {
         return listTemplate;
+    }
+
+    public boolean isEnabled() {
+        return isEnabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
     }
 }

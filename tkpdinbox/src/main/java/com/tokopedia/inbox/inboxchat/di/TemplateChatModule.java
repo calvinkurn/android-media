@@ -12,6 +12,7 @@ import com.tokopedia.inbox.inboxchat.data.repository.template.EditTemplateReposi
 import com.tokopedia.inbox.inboxchat.data.repository.template.TemplateRepository;
 import com.tokopedia.inbox.inboxchat.data.repository.template.TemplateRepositoryImpl;
 import com.tokopedia.inbox.inboxchat.domain.usecase.template.CreateTemplateUseCase;
+import com.tokopedia.inbox.inboxchat.domain.usecase.template.DeleteTemplateUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.template.EditTemplateUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.template.GetTemplateUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.template.SetAvailabilityTemplateUseCase;
@@ -72,6 +73,14 @@ public class TemplateChatModule {
                                                      PostExecutionThread postExecutor,
                                                      EditTemplateRepository templateRepository) {
         return new CreateTemplateUseCase(threadExecutor, postExecutor, templateRepository);
+    }
+
+    @TemplateChatScope
+    @Provides
+    DeleteTemplateUseCase provideDeleteTemplateUseCase(ThreadExecutor threadExecutor,
+                                                       PostExecutionThread postExecutor,
+                                                       EditTemplateRepository templateRepository) {
+        return new DeleteTemplateUseCase(threadExecutor, postExecutor, templateRepository);
     }
 
     @TemplateChatScope

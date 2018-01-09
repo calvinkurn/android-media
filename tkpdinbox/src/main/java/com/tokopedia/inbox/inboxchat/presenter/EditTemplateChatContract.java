@@ -13,15 +13,19 @@ import com.tokopedia.inbox.inboxchat.viewmodel.EditTemplateViewModel;
 public class EditTemplateChatContract {
 
     public interface View extends CustomerView {
-        void onResult(EditTemplateViewModel editTemplateViewModel, int index, String s, boolean isSuccess);
+        void onResult(EditTemplateViewModel editTemplateViewModel, int index, String s);
 
         void finish();
 
         void dropKeyboard();
+
+        void showError(String error);
+
+        void onResult(EditTemplateViewModel editTemplateViewModel, int index);
     }
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void deleteTemplate();
+        void deleteTemplate(int index);
     }
 }

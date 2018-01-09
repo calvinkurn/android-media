@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.inboxchat.data.repository.template;
 
+import com.google.gson.JsonObject;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.inbox.inboxchat.data.factory.template.TemplateChatFactory;
 import com.tokopedia.inbox.inboxchat.viewmodel.GetTemplateViewModel;
@@ -24,7 +25,7 @@ public class TemplateRepositoryImpl implements TemplateRepository{
     }
 
     @Override
-    public Observable<GetTemplateViewModel> setAvailabilityTemplate(TKPDMapParam<String, Object> parameters) {
+    public Observable<GetTemplateViewModel> setAvailabilityTemplate(JsonObject parameters) {
         return templateChatFactory.createCloudSetTemplateDataSource().setTemplate(parameters);
     }
 }

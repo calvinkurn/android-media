@@ -24,7 +24,7 @@ import java.util.List;
  */
 
 public class TemplateChatSettingAdapter extends RecyclerView.Adapter<AbstractViewHolder>
-                                    implements ItemTouchHelperAdapter{
+        implements ItemTouchHelperAdapter {
 
     private final TemplateChatSettingTypeFactory typeFactory;
     private final TemplateChatContract.View view;
@@ -66,8 +66,8 @@ public class TemplateChatSettingAdapter extends RecyclerView.Adapter<AbstractVie
 
     public ArrayList<String> getListString() {
         this.listString.clear();
-        for (int i = 0; i < list.size()-1; i++) {
-            String temp = ((TemplateChatModel)list.get(i)).getMessage();
+        for (int i = 0; i < list.size() - 1; i++) {
+            String temp = ((TemplateChatModel) list.get(i)).getMessage();
             listString.add(temp);
         }
         return listString;
@@ -78,15 +78,7 @@ public class TemplateChatSettingAdapter extends RecyclerView.Adapter<AbstractVie
         if(list != null){
             this.list.addAll(list);
         }
-        this.list.add(new TemplateChatModel(false));
         notifyDataSetChanged();
-    }
-
-    @Override
-    public boolean onItemMove(int fromPosition, int toPosition) {
-        Collections.swap(list, fromPosition, toPosition);
-        notifyItemMoved(fromPosition, toPosition);
-        return true;
     }
 
     @Override
@@ -96,7 +88,7 @@ public class TemplateChatSettingAdapter extends RecyclerView.Adapter<AbstractVie
 
     @Override
     public void onReallyMoved(int from, int to) {
-        view.reArrange(from);
+        view.reArrange(from, to);
     }
 
     public void startDrag(ItemTemplateChatViewHolder ini) {
@@ -104,12 +96,37 @@ public class TemplateChatSettingAdapter extends RecyclerView.Adapter<AbstractVie
     }
 
     public void edit(int index, String string) {
-        if(index<0){
-            list.add(list.size()-2,new TemplateChatModel(string));
-            notifyItemRangeChanged(list.size()-2, 3);
-        }else {
-            ((TemplateChatModel) list.get(index)).setMessage(string);
-            notifyItemChanged(index);
-        }
+        ((TemplateChatModel) list.get(index)).setMessage(string);
+        notifyItemChanged(index);
+    }
+
+    public void delete(int index) {
+        list.remove(index);
+        notifyItemRemoved(index);
+        list.remove(list.size()-1);
+        notifyItemRemoved(list.size()-1);
+        list.add(new TemplateChatModel(false, list.size()));
+        notifyItemInserted(list.size());
+    }
+
+    public void add(String string) {
+        list.remove(list.size()-1);
+        notifyItemRemoved(list.size()-1);
+        list.add(new TemplateChatModel(string));
+        list.add(new TemplateChatModel(false, list.size()));
+        notifyItemRangeInserted(list.size(), 2);
+    }
+
+
+    @Override
+    public boolean onItemMove(int fromPosition, int toPosition) {
+        Collections.swap(list, fromPosition, toPosition);
+        notifyItemMoved(fromPosition, toPosition);
+        return true;
+    }
+
+    public void revertArrange(int fromPosition, int toPosition) {
+        Collections.swap(list, fromPosition, toPosition);
+        notifyItemMoved(fromPosition, toPosition);
     }
 }

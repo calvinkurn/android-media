@@ -11,6 +11,7 @@ public class TemplateChatModel implements Visitable<TemplateChatTypeFactory>{
 
     String message;
     boolean isIcon;
+    int size;
 
     public TemplateChatModel() {
         isIcon = false;
@@ -22,6 +23,15 @@ public class TemplateChatModel implements Visitable<TemplateChatTypeFactory>{
 
     public TemplateChatModel(boolean hasMessage) {
         isIcon = !hasMessage;
+    }
+
+    public TemplateChatModel(boolean hasMessage, int size) {
+        isIcon = !hasMessage;
+        this.size = size;
+    }
+
+    public int size() {
+        return size;
     }
 
     public String getMessage() {

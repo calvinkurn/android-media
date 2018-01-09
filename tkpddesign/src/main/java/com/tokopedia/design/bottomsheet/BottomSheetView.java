@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StyleRes;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.content.ContextCompat;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -109,6 +110,14 @@ public class BottomSheetView extends BottomSheetDialog {
                 dismiss();
             }
         };
+    }
+
+    public void setTitleTextSize(float dimension) {
+        titleBottomSheet.setTextSize(TypedValue.COMPLEX_UNIT_PX,dimension);
+    }
+
+    public void setBodyTextSize(float dimension) {
+        bodyBottomSheet.setTextSize(TypedValue.COMPLEX_UNIT_PX,dimension);
     }
 
     public static class BottomSheetField {

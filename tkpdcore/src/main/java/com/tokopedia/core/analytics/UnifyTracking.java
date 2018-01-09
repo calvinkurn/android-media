@@ -2517,6 +2517,17 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+
+//    public static void eventClickThumbnailMarketing() {
+//        sendGTMEvent(new EventTracking(AppEventTracking.Event.INBO
+//                , AppEventTracking.Category.SHOP_PAGE
+//                , AppEventTracking.Action.SHOP_PAGE
+//                , ""
+//        ).getEvent());
+//    }
+
+
+
     public static void eventSellerHomeDashboardClick(String main, String item) {
         sendGTMEvent(new EventTracking(
                         AppEventTracking.Event.HOME_DASHBOARD_CLICK_SELLER,

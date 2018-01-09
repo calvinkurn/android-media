@@ -46,10 +46,10 @@ public class ItemTemplateChatViewHolder extends AbstractViewHolder<TemplateChatM
                 return false;
             }
         });
-        edit.setOnClickListener(new View.OnClickListener() {
+        itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                viewListener.onEnter(element.getMessage());
+                viewListener.onEnter(element.getMessage(), getAdapterPosition());
             }
         });
     }

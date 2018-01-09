@@ -4,6 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
+    android:paddingTop="@dimen/new_margin_med"
+    android:paddingBottom="@dimen/new_margin_med"
     android:gravity="center_horizontal">
 
 
@@ -21,12 +23,11 @@
         android:id="@+id/caption"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/new_margin_med"
-        android:paddingTop="@dimen/new_margin_med"
         android:text="@string/add_template_chat"
         android:textSize="14sp"
         android:fontFamily="sans-serif-medium"
         android:textStyle="normal"
+        android:gravity="center"
         android:textColor="@color/medium_green" />
 
 </LinearLayout>

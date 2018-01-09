@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,6 +18,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.util.MethodChecker;
@@ -35,15 +37,23 @@ import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
+import static com.tokopedia.inbox.inboxchat.fragment.TemplateChatFragment.CREATE;
+import static com.tokopedia.inbox.inboxchat.fragment.TemplateChatFragment.DELETE;
 import static com.tokopedia.inbox.inboxmessage.InboxMessageConstant.PARAM_ALL;
 import static com.tokopedia.inbox.inboxmessage.InboxMessageConstant.PARAM_MESSAGE;
+import static com.tokopedia.inbox.inboxmessage.InboxMessageConstant.PARAM_MODE;
+import static com.tokopedia.inbox.inboxmessage.InboxMessageConstant.PARAM_NAV;
+import static com.tokopedia.inbox.inboxmessage.InboxMessageConstant.PARAM_POSITION;
 
 /**
  * Created by stevenfredian on 12/22/17.
  */
 
 public class EditTemplateChatFragment extends BaseDaggerFragment
-                    implements EditTemplateChatContract.View {
+        implements EditTemplateChatContract.View {
+
+    private static final int MAX_CHAR = 200;
+
     private TextView counter;
     private TextView error;
     private TextView submit;
@@ -66,7 +76,11 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
+        if (getArguments().getInt(PARAM_MODE) == CREATE || getArguments().getInt(PARAM_NAV) == 1) {
+            setHasOptionsMenu(false);
+        } else {
+            setHasOptionsMenu(true);
+        }
     }
 
 
@@ -87,7 +101,6 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
     }
 
 
-
     private void showDialogDelete() {
         new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.delete_chat_template)
@@ -95,7 +108,7 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
                 .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        presenter.deleteTemplate();
+                        presenter.deleteTemplate(getArguments().getInt(PARAM_POSITION));
                         dialog.dismiss();
                     }
 
@@ -130,8 +143,11 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
         message = getArguments().getString(PARAM_MESSAGE);
         list = getArguments().getStringArrayList(PARAM_ALL);
 
+
         editText.setText(message);
-        editText.setSelection(message.length());
+        if (message != null) {
+            editText.setSelection(message.length());
+        }
 
         counterObservable = Events.text(editText).map(new Func1<String, Integer>() {
             @Override
@@ -146,9 +162,8 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        canProceed(integer!=0, submit);
-                        showError(integer);
-                        counter.setText(integer + "/500");
+                        showErrorAndProceed(integer,submit);
+                        counter.setText(String.format("%d/%d", integer, MAX_CHAR));
                     }
                 });
             }
@@ -163,11 +178,20 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
         });
     }
 
-    private void showError(Integer integer) {
-        if(integer>0 && integer<5){
+    private void showErrorAndProceed(Integer integer, TextView proceed) {
+        if(integer==0){
+            canProceed(false, proceed);
+        } else if (integer > 0 && integer < 5) {
+            error.setText(getActivity().getString(R.string.minimal_char_template));
             error.setVisibility(View.VISIBLE);
-        }else {
+            canProceed(false, proceed);
+        } else if (integer > MAX_CHAR) {
+            error.setText(getActivity().getString(R.string.maximal_char_template, MAX_CHAR));
+            error.setVisibility(View.VISIBLE);
+            canProceed(false, proceed);
+        } else {
             error.setVisibility(View.GONE);
+            canProceed(true, proceed);
         }
     }
 
@@ -197,20 +221,20 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onResult(EditTemplateViewModel editTemplateViewModel, int index, String s, boolean isSuccess) {
+    public void onResult(EditTemplateViewModel editTemplateViewModel, int index, String s) {
         Intent intent = getActivity().getIntent();
         intent.putExtra("index", index);
         intent.putExtra("string", s);
         intent.putExtra("enabled", editTemplateViewModel.isEnabled());
-        if(isSuccess){
-            if(isAdd()){
-                intent.putExtra("note", getActivity().getString(R.string.success_add_template_chat));
-            }else {
-                intent.putExtra("note", getActivity().getString(R.string.success_edit_template_chat));
-            }
-        }else {
+        intent.putExtra("mode", getArguments().getInt(PARAM_MODE));
+        getActivity().setResult(Activity.RESULT_OK, intent);
+    }
 
-        }
+    @Override
+    public void onResult(EditTemplateViewModel editTemplateViewModel, int index) {
+        Intent intent = getActivity().getIntent();
+        intent.putExtra("index", index);
+        intent.putExtra("mode", DELETE);
         getActivity().setResult(Activity.RESULT_OK, intent);
     }
 
@@ -224,7 +248,9 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
         KeyboardHandler.DropKeyboard(getActivity(), getView());
     }
 
-    private boolean isAdd(){
-        return message == null;
+    @Override
+    public void showError(String error) {
+        SnackbarManager.make(getActivity(), getActivity().getString(R.string.default_request_error_bad_request), Snackbar.LENGTH_LONG).show();
     }
+
 }
