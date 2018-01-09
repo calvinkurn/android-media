@@ -17,6 +17,10 @@ public class GetWarningData {
     private String saldo;
     @SerializedName("tokocash")
     private String tokocash;
+    @SerializedName("saldo_number")
+    private long saldoNumber;
+    @SerializedName("tokocash_number")
+    private long tokocashNumber;
     @SerializedName("action")
     private String action;
     @SerializedName("have_bank_acct")
@@ -69,4 +73,21 @@ public class GetWarningData {
     public void setHasBankAccount(boolean hasBankAccount) {
         this.hasBankAccount = hasBankAccount;
     }
+
+    public long getSaldoNumber() {
+        return saldoNumber;
+    }
+
+    public void setSaldoNumber(long saldoNumber) {
+        this.saldoNumber = saldoNumber;
+    }
+
+    public long getTokocashNumber() {
+        return tokocashNumber;
+    }
+
+    public void setTokocashNumber(long tokocashNumber) {
+        this.tokocashNumber = tokocashNumber;
+    }
+
 }

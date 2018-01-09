@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.analytics.AppScreen;
@@ -37,6 +36,8 @@ import javax.inject.Inject;
 
 import static com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel.ACTION_EMAIL;
 import static com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel.ACTION_OTP;
+import static com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel
+        .BALANCE_THRESHOLD_FOR_WARNING;
 import static com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel.EMPTY_BALANCE;
 
 /**
@@ -188,8 +189,8 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
     @Override
     public void onGetWarningSuccess(WarningViewModel warningViewModel) {
         this.viewModel = warningViewModel;
-        if (isNullOrEmpty(viewModel.getTokocash())
-                && isNullOrEmpty(viewModel.getTokopediaBalance())) {
+        if (viewModel.getTokocashNumber() <= 0
+                && viewModel.getTokopediaBalanceNumber() < BALANCE_THRESHOLD_FOR_WARNING) {
             goToNextActivity();
         } else {
             loadDataToView();

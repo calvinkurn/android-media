@@ -12,11 +12,14 @@ import java.util.List;
 
 public class WarningViewModel implements Parcelable {
     public static final String EMPTY_BALANCE = "Rp  0";
+    public static final int BALANCE_THRESHOLD_FOR_WARNING = 15000;
     public static final String ACTION_EMAIL = "send_email";
     public static final String ACTION_OTP = "send_otp";
 
     private String tokopediaBalance;
     private String tokocash;
+    private long tokopediaBalanceNumber;
+    private long tokocashNumber;
     private String action;
     private List<String> warningList;
     private boolean hasBankAccount;
@@ -64,6 +67,22 @@ public class WarningViewModel implements Parcelable {
         this.hasBankAccount = hasBankAccount;
     }
 
+    public long getTokopediaBalanceNumber() {
+        return tokopediaBalanceNumber;
+    }
+
+    public void setTokopediaBalanceNumber(long tokopediaBalanceNumber) {
+        this.tokopediaBalanceNumber = tokopediaBalanceNumber;
+    }
+
+    public long getTokocashNumber() {
+        return tokocashNumber;
+    }
+
+    public void setTokocashNumber(long tokocashNumber) {
+        this.tokocashNumber = tokocashNumber;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -73,6 +92,8 @@ public class WarningViewModel implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.tokopediaBalance);
         dest.writeString(this.tokocash);
+        dest.writeLong(this.tokopediaBalanceNumber);
+        dest.writeLong(this.tokocashNumber);
         dest.writeString(this.action);
         dest.writeStringList(this.warningList);
         dest.writeByte(this.hasBankAccount ? (byte) 1 : (byte) 0);
@@ -81,6 +102,8 @@ public class WarningViewModel implements Parcelable {
     protected WarningViewModel(Parcel in) {
         this.tokopediaBalance = in.readString();
         this.tokocash = in.readString();
+        this.tokopediaBalanceNumber = in.readLong();
+        this.tokocashNumber = in.readLong();
         this.action = in.readString();
         this.warningList = in.createStringArrayList();
         this.hasBankAccount = in.readByte() != 0;

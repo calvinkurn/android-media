@@ -32,6 +32,8 @@ public class GetWarningMapper implements Func1<Response<TkpdResponse>, WarningVi
                 model.setAction(data.getAction());
                 model.setTokocash(data.getTokocash());
                 model.setTokopediaBalance(data.getSaldo());
+                model.setTokocashNumber(data.getTokocashNumber());
+                model.setTokopediaBalanceNumber(data.getSaldoNumber());
                 model.setWarningList(data.getWarning());
                 model.setHasBankAccount(data.getHasBankAccount());
             } else {
