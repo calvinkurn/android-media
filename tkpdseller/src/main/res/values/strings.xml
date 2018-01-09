@@ -178,7 +178,7 @@
 
     <!-- Shop Setting -->
     <string name="label_shop_open_welcome">Halo,</string>
-    <string name="label_shop_open_info_title_shop">Lengkapi informasi toko. Tampilan toko yang menarik buat pembeli tertarik</string>
+    <string name="label_shop_open_info_title_shop">Lengkapi informasi toko. Tampilan toko yang menarik, buat pembeli tertarik.</string>
     <string name="label_shop_setting_slogan">Slogan Toko</string>
     <string name="label_shop_setting_desc_shop">Deskripsi Toko</string>
     <string name="label_shop_setting_logo">Logo (Opsional)</string>
@@ -257,4 +257,6 @@
     <string name="shop_reserve_success_title">Lengkapi Informasi <![CDATA[<b>]]>%1$s<![CDATA[</b>]]> dan mulai berjualan sekarang!</string>
     <string name="shop_reserve_success_info">INFO: Toko akan otomatis dihapus dalam 7 hari jika Informasi Toko belum lengkap.</string>
     <string name="shop_open_create_success">Anda berhasil membuka toko!</string>
+    <string name="shop_open_label_picker_image_camera">Tambah gambar dari Kamera</string>
+    <string name="shop_open_label_picker_gallery">Tambah gambar dari Galeri</string>
 </resources>
