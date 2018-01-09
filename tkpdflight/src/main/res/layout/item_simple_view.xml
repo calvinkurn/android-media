@@ -9,7 +9,7 @@
 
     <TextView
         android:id="@+id/tv_title"
-        style="@style/TextView.Body1"
+        style="@style/TextView.Small"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:maxLines="1"
@@ -17,7 +17,7 @@
 
     <TextView
         android:id="@+id/tv_content"
-        style="@style/TextView.Body1"
+        style="@style/TextView.Small"
         android:layout_width="0dp"
         android:layout_marginLeft="@dimen/margin_ms"
         android:layout_marginRight="@dimen/margin_ms"

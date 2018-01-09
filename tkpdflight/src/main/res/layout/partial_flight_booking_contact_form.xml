@@ -10,7 +10,7 @@
     android:padding="@dimen/padding_small">
 
     <android.support.v7.widget.AppCompatTextView
-        style="@style/TextView.Title.Bold"
+        style="@style/TextView.TitleBig.Bold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_sm"
@@ -75,7 +75,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/flight_booking_contact_phone_number_label"
-            android:textSize="@dimen/font_caption" />
+            style="@style/TextView.Micro"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -92,7 +92,7 @@
                 android:drawablePadding="@dimen/padding_small"
                 android:drawableRight="@drawable/ic_arrow_down_grey"
                 android:gravity="center_vertical"
-                android:textSize="@dimen/font_subheading"
+                style="@style/TextView.Title"
                 tools:text="+62" />
 
             <android.support.v7.widget.AppCompatEditText

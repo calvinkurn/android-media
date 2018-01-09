@@ -24,7 +24,7 @@
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/tv_header"
-                style="@style/TextView.Title.Bold"
+                style="@style/TextView.TitleBig.Bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_vvs"
@@ -33,7 +33,7 @@
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/tv_subheader"
-                style="@style/TextView.Body1"
+                style="@style/TextView.Small"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_sm"
@@ -126,7 +126,7 @@
             tools:visibility="visible">
 
             <android.support.v7.widget.AppCompatTextView
-                style="@style/TextView.Title.Bold"
+                style="@style/TextView.TitleBig.Bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_sm"
@@ -152,7 +152,7 @@
             tools:visibility="visible">
 
             <android.support.v7.widget.AppCompatTextView
-                style="@style/TextView.Title.Bold"
+                style="@style/TextView.TitleBig.Bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_sm"

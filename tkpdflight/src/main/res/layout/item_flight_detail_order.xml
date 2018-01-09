@@ -7,7 +7,7 @@
 
     <TextView
         android:id="@+id/counter_flight"
-        style="@style/TextView.Title.Bold"
+        style="@style/TextView.TitleBig.Bold"
         android:text="@string/flight_label_detail_order"
         android:textSize="18sp" />
 

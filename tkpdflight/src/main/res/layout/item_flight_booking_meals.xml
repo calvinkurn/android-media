@@ -15,12 +15,12 @@
 
         <TextView
             android:id="@+id/meal_name"
-            style="@style/TextView.Subheading.Bold"
+            style="@style/TextView.Title.Bold"
             tools:text="Nasi Liwet" />
 
         <TextView
             android:id="@+id/meal_price"
-            style="@style/TextView.Caption.BlackSecondary"
+            style="@style/TextView.Micro.BlackSecondary"
             tools:text="Rp. 25.000" />
     </LinearLayout>
 

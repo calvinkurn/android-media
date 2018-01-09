@@ -63,7 +63,7 @@
                     android:layout_marginBottom="@dimen/margin_vvs"
                     android:gravity="left"
                     android:text="@string/flight_search_airport_departure_title"
-                    android:textSize="@dimen/font_caption" />
+                    style="@style/TextView.Micro"/>
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/tv_departure_airport_label"
@@ -75,7 +75,7 @@
                     android:hint="@string/flight_dashboard_departure_airport_hint"
                     android:maxLines="2"
                     android:textColorHint="@color/grey_400"
-                    android:textSize="@dimen/font_body2" />
+                    style="@style/TextView.Small" />
 
             </LinearLayout>
 
@@ -105,7 +105,7 @@
                     android:layout_marginBottom="@dimen/margin_vvs"
                     android:gravity="right"
                     android:text="@string/flight_search_airport_arrival_title"
-                    android:textSize="@dimen/font_caption" />
+                    style="@style/TextView.Micro" />
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/tv_arrival_airport_label"
@@ -116,7 +116,7 @@
                     android:hint="@string/flight_dashboard_arrival_airport_hint"
                     android:maxLines="2"
                     android:textColorHint="@color/grey_400"
-                    android:textSize="@dimen/font_body2" />
+                    style="@style/TextView.Small" />
 
             </LinearLayout>
         </LinearLayout>

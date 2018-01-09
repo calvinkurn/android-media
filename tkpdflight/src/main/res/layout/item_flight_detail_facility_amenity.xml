@@ -23,6 +23,6 @@
 
     <TextView
         android:id="@+id/text_amenity"
-        style="@style/TextView.Body1.BlackSecondary"
+        style="@style/TextView.Small.BlackSecondary"
         tools:text="Wi-fi" />
 </LinearLayout>

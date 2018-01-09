@@ -9,7 +9,7 @@
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/banner_title"
-        style="@style/TextView.Headline.Bold"
+        style="@style/TextView.SubHeadline.Bold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_sm"

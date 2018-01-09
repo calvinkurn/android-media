@@ -16,7 +16,7 @@
 
         <TextView
             android:id="@+id/tv_title"
-            style="@style/TextView.Body1"
+            style="@style/TextView.Small"
             android:layout_marginRight="@dimen/margin_vs"
             tools:text="Rp 0" />
 

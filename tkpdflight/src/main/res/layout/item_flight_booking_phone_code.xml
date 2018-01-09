@@ -10,11 +10,11 @@
     <TextView
         android:id="@+id/country_name"
         android:layout_marginRight="@dimen/margin_vs"
-        style="@style/TextView.Body1"
+        style="@style/TextView.Small"
         tools:text="Indonesia" />
 
     <TextView
         android:id="@+id/country_phone_code"
-        style="@style/TextView.Body1.Bold"
+        style="@style/TextView.Small.Bold"
         tools:text="(+62)" />
 </LinearLayout>

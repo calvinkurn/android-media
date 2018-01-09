@@ -31,7 +31,7 @@
                 app:driv_label_min="@string/flight_search_filter_price_min_label"
                 app:driv_typable="false"
                 app:driv_value_max_length="@integer/max_length_price_input"
-                app:driv_value_text_appearance="@style/TextView.Body1.Bold" />
+                app:driv_value_text_appearance="@style/TextView.Small.Bold" />
 
             <com.tokopedia.design.text.RangeInputView
                 android:id="@+id/duration_range_input_view"
@@ -42,7 +42,7 @@
                 app:driv_label_min="@string/flight_search_filter_duration_max_label"
                 app:driv_typable="false"
                 app:driv_value_max_length="@integer/max_length_duration_input"
-                app:driv_value_text_appearance="@style/TextView.Body1.Bold" />
+                app:driv_value_text_appearance="@style/TextView.Small.Bold" />
 
             <com.tokopedia.design.label.selection.text.SelectionTextLabelView
                 android:id="@+id/selection_text_label_layout_transit"

@@ -18,8 +18,7 @@
             style="@style/TextView.Micro.BlackSecondary"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:gravity="start"
-            tools:text="pmin label" />
+            android:gravity="start"/>
 
         <TextView
             android:id="@+id/max_label"
@@ -27,8 +26,7 @@
             style="@style/TextView.Micro.BlackSecondary"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:gravity="end"
-            tools:text="pmax label" />
+            android:gravity="end" />
 
     </LinearLayout>
 
@@ -44,7 +42,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             style="@style/TextView.Title.BlackPrimary"
-            tools:text="pmin"
             android:singleLine="true"
             android:layout_weight="1"
             android:digits="0123456789"
@@ -69,7 +66,6 @@
             android:layout_height="wrap_content"
             style="@style/TextView.Title.BlackPrimary"
             android:singleLine="true"
-            tools:text="pmax"
             android:layout_weight="1"
             android:digits="0123456789"
             android:gravity="end"

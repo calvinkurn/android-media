@@ -26,7 +26,7 @@
                 android:layout_gravity="center" />
 
             <android.support.v7.widget.AppCompatTextView
-                style="@style/TextView.Body1"
+                style="@style/TextView.Small"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_sm"
@@ -59,7 +59,7 @@
                     android:paddingTop="@dimen/padding_med">
 
                     <android.support.v7.widget.AppCompatTextView
-                        style="@style/TextView.Caption"
+                        style="@style/TextView.Micro"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -111,7 +111,7 @@
                     android:paddingTop="@dimen/padding_small">
 
                     <android.support.v7.widget.AppCompatTextView
-                        style="@style/TextView.Title.Bold"
+                        style="@style/TextView.TitleBig.Bold"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/margin_sm"
@@ -133,7 +133,7 @@
                     android:padding="@dimen/padding_small">
 
                     <android.support.v7.widget.AppCompatTextView
-                        style="@style/TextView.Title.Bold"
+                        style="@style/TextView.TitleBig.Bold"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/margin_sm"
@@ -159,7 +159,7 @@
                         android:orientation="horizontal">
 
                         <android.support.v7.widget.AppCompatTextView
-                            style="@style/TextView.Subheading.Bold"
+                            style="@style/TextView.Title.Bold"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -167,7 +167,7 @@
 
                         <android.support.v7.widget.AppCompatTextView
                             android:id="@+id/tv_total_price"
-                            style="@style/TextView.Subheading.Bold"
+                            style="@style/TextView.Title.Bold"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"

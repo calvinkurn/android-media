@@ -9,8 +9,6 @@
     <color name="white">#ffffff</color>
     <color name="holder_error">#FFADAD</color>
 
-    <color name="colorGreen">#42B459</color>
-    <color name="colorBlack">#494949</color>
     <color name="colorGray">#DDDDDD</color>
 
     <color name="label_text_color">#9b9b9b</color>
@@ -81,12 +79,6 @@
     <color name="colorAccent">#2BAF2B</color>
     <color name="text_error">#FFFF6E6E</color>
 
-    <color name="digital_voucher">#8a000000</color>
-    <color name="digital_voucher_notes">#61000000</color>
-    <color name="digital_separator">#1f000000</color>
-    <color name="digital_cancel">#1f000000</color>
-    <color name="digital_item_title">#b3000000</color>
-
     <color name="checkbox_text">#61000000</color>
     <color name="white_grey">#fbfbfb</color>
 
@@ -97,13 +89,4 @@
     <color name="grey_hint">#e0e0e0</color>
 
     <color name="color_complain_header">#c0000000</color>
-    <color name="color_complain_body">#8a000000</color>
-
-
-    <color name="color_free_return_stroke">#bce8f1</color>
-    <color name="color_free_return">#d5f9ff</color>
-    <color name="digital_ussd_light_yellow">#fff5dd</color>
-    <color name="sparator_btn_promote">#33AFAFAF</color>
-    <color name="hint_search_view">#4D727272</color>
-    <color name="devider">#c7c7c7</color>
 </resources>

@@ -8,14 +8,14 @@
 
     <TextView
         android:id="@+id/price_label"
-        style="@style/TextView.Body1"
+        style="@style/TextView.Small"
         android:layout_alignParentLeft="true"
         android:layout_toLeftOf="@+id/price_amount"
         tools:text="Garuda Indonesia Dewasa x1" />
 
     <TextView
         android:id="@+id/price_amount"
-        style="@style/TextView.Body1.BlackSecondary"
+        style="@style/TextView.Small.BlackSecondary"
         android:layout_alignParentRight="true"
         tools:text="Rp. 500.000" />
 </RelativeLayout>
