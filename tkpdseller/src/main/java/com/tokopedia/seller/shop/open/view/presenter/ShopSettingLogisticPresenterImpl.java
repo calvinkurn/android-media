@@ -1,6 +1,11 @@
 package com.tokopedia.seller.shop.open.view.presenter;
 
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
+import com.tokopedia.core.session.presenter.Session;
+import com.tokopedia.core.util.AppWidgetUtil;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.logistic.model.CouriersModel;
 import com.tokopedia.seller.shop.open.data.model.response.ResponseCreateShop;
 import com.tokopedia.seller.shop.open.view.model.CourierServiceIdWrapper;
@@ -21,14 +26,20 @@ public class ShopSettingLogisticPresenterImpl extends ShopSettingLogisticPresent
     private final GetLogisticAvailableUseCase getLogisticAvailableUseCase;
     private final ShopOpenSaveCourierUseCase shopOpenSaveCourierUseCase;
     private final ShopOpenCreateUseCase shopOpenCreateUseCase;
+    private final SessionHandler sessionHandler;
+    private final GlobalCacheManager globalCacheManager;
 
     @Inject
     public ShopSettingLogisticPresenterImpl(GetLogisticAvailableUseCase getLogisticAvailableUseCase,
                                             ShopOpenSaveCourierUseCase shopOpenSaveCourierUseCase,
-                                            ShopOpenCreateUseCase shopOpenCreateUseCase) {
+                                            ShopOpenCreateUseCase shopOpenCreateUseCase,
+                                            SessionHandler sessionHandler,
+                                            GlobalCacheManager globalCacheManager) {
         this.getLogisticAvailableUseCase = getLogisticAvailableUseCase;
         this.shopOpenSaveCourierUseCase = shopOpenSaveCourierUseCase;
         this.shopOpenCreateUseCase = shopOpenCreateUseCase;
+        this.sessionHandler = sessionHandler;
+        this.globalCacheManager = globalCacheManager;
     }
 
     @Override
@@ -98,7 +109,9 @@ public class ShopSettingLogisticPresenterImpl extends ShopSettingLogisticPresent
             @Override
             public void onNext(ResponseCreateShop responseCreateShop) {
                 if (responseCreateShop.getShopId() > 0) {
-                    getView().onSuccessCreateShop(responseCreateShop.getShopId());
+                    sessionHandler.setShopId(String.valueOf(responseCreateShop.getShopId()));
+                    globalCacheManager.delete(ProfileSourceFactory.KEY_PROFILE_DATA);
+                    getView().onSuccessCreateShop();
                 } else {
                     getView().onErrorCreateShop(null);
                 }
