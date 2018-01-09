@@ -165,7 +165,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         etBirthDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.onBirthdateClicked(departureDate);
+                presenter.onBirthdateClicked();
             }
         });
         return view;
@@ -426,6 +426,11 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     @Override
     public boolean isAirAsiaAirline() {
         return isAirAsiaAirlines;
+    }
+
+    @Override
+    public String getDepartureDateString() {
+        return departureDate;
     }
 
     @Override

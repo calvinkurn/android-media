@@ -28,7 +28,6 @@ public class FlightDetailFacilityViewHolder extends AbstractViewHolder<FlightDet
     @LayoutRes
     public static int LAYOUT = R.layout.item_flight_detail_facility;
 
-    public static final int NUMBER_OF_COLUMN_AMENITY = 3;
     private final ListInfoAdapter adapterInfo;
     private final RecyclerView listInfo;
     private final RecyclerView gridAmenity;
@@ -52,8 +51,9 @@ public class FlightDetailFacilityViewHolder extends AbstractViewHolder<FlightDet
         listInfo.setAdapter(adapterInfo);
         adapterAmenity = new AmenityAdapter();
         gridAmenity.setAdapter(adapterAmenity);
-        gridAmenity.setLayoutManager(new GridLayoutManager(itemView.getContext(), NUMBER_OF_COLUMN_AMENITY));
-        gridAmenity.addItemDecoration(new ItemGridDecorationDivider(itemView.getContext(), ItemGridDecorationDivider.GRID, NUMBER_OF_COLUMN_AMENITY));
+        gridAmenity.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.VERTICAL, false));
+//        gridAmenity.setLayoutManager(new GridLayoutManager(itemView.getContext(), NUMBER_OF_COLUMN_AMENITY));
+//        gridAmenity.addItemDecoration(new ItemGridDecorationDivider(itemView.getContext(), ItemGridDecorationDivider.GRID, NUMBER_OF_COLUMN_AMENITY));
     }
 
     @Override
@@ -79,7 +79,6 @@ public class FlightDetailFacilityViewHolder extends AbstractViewHolder<FlightDet
     public void setDefaultAmenities(FlightDetailRouteViewModel flightDetailRouteViewModel) {
         if (flightDetailRouteViewModel.getAmenities() != null && flightDetailRouteViewModel.getAmenities().size() > 0) {
             adapterAmenity.addData(flightDetailRouteViewModel.getAmenities());
-            gridAmenity.setLayoutManager(new GridLayoutManager(itemView.getContext(), adapterAmenity.getItemCount()));
         }
     }
 

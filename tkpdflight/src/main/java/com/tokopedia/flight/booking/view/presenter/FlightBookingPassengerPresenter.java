@@ -77,7 +77,7 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
     @Override
     public void onSaveButtonClicked() {
         getView().hideKeyboard();
-        if (validateFields()) {
+        if (validateFields(getView().getDepartureDateString())) {
             getView().getCurrentPassengerViewModel().setPassengerTitle(getView().getPassengerTitle());
             getView().getCurrentPassengerViewModel().setPassengerTitleId(getView().getPassengerTitleId());
             getView().getCurrentPassengerViewModel().setPassengerFirstName(getView().getPassengerFirstName());
@@ -90,10 +90,10 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
     }
 
     @Override
-    public void onBirthdateClicked(String departureDateString) {
+    public void onBirthdateClicked() {
 
         Date maxDate, minDate = null, selectedDate;
-        Date departureDate = FlightDateUtil.stringToDate(departureDateString);
+        Date departureDate = FlightDateUtil.stringToDate(getView().getDepartureDateString());
 
         if (isChildPassenger()) {
             minDate = FlightDateUtil.addTimeToSpesificDate(departureDate, Calendar.YEAR, -12);
@@ -224,9 +224,9 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         getView().navigateToMealPicker(viewModel.getAmenities(), existingSelected);
     }
 
-    private boolean validateFields() {
+    private boolean validateFields(String departureDateString) {
         boolean isValid = true;
-        Date twoYearsAgo = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, -2);
+        Date twoYearsAgo = FlightDateUtil.addTimeToSpesificDate(FlightDateUtil.stringToDate(departureDateString), Calendar.YEAR, -2);
         if (getView().getPassengerFirstName().isEmpty() || getView().getPassengerFirstName().length() == 0) {
             isValid = false;
             getView().showPassengerNameEmptyError(R.string.flight_booking_passenger_first_name_empty_error);
