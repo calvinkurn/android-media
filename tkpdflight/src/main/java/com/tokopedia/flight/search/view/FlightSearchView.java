@@ -5,7 +5,6 @@ import android.app.Activity;
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
 import com.tokopedia.flight.search.data.db.model.FlightMetaDataDB;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
-import com.tokopedia.flight.search.view.model.resultstatistics.FlightSearchStatisticModel;
 
 import java.util.List;
 
@@ -20,8 +19,6 @@ public interface FlightSearchView extends BaseListViewListener<FlightSearchViewM
     void showSortRouteLoading();
 
     void hideSortRouteLoading();
-
-    void onSuccessGetStatistic(FlightSearchStatisticModel flightSearchStatisticModel);
 
     void onSuccessGetDataFromCache(List<FlightSearchViewModel> flightSearchViewModelList);
 
