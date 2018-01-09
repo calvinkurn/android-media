@@ -216,8 +216,8 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
             viewHolder = new FeedTopadsViewHolder(view, topAdsItemClickListener);
         else if (type == FavoriteCtaViewHolder.LAYOUT)
             viewHolder = new FavoriteCtaViewHolder(view, viewListener);
-        else if (type == FavoriteCtaViewHolder.LAYOUT)
-            viewHolder = new FavoriteCtaViewHolder(view, viewListener);
+        else if (type == ContentProductViewHolder.LAYOUT)
+            viewHolder = new ContentProductViewHolder(view, viewListener);
         else
             viewHolder = super.createViewHolder(view, type);
         return viewHolder;
