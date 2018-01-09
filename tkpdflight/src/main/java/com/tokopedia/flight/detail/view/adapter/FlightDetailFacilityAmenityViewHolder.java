@@ -1,5 +1,6 @@
 package com.tokopedia.flight.detail.view.adapter;
 
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -15,15 +16,15 @@ import com.tokopedia.flight.search.data.cloud.model.response.Amenity;
 
 public class FlightDetailFacilityAmenityViewHolder extends RecyclerView.ViewHolder {
 
-    private ImageView imageAmenity;
+    private AppCompatImageView imageAmenity;
     private TextView textAmenity;
-    private ImageView defaultImage;
+    private AppCompatImageView defaultImage;
 
     public FlightDetailFacilityAmenityViewHolder(View itemView) {
         super(itemView);
-        imageAmenity = (ImageView) itemView.findViewById(R.id.image_amenity);
+        imageAmenity = (AppCompatImageView) itemView.findViewById(R.id.image_amenity);
         textAmenity = (TextView) itemView.findViewById(R.id.text_amenity);
-        defaultImage = (ImageView) itemView.findViewById(R.id.icon_default);
+        defaultImage = (AppCompatImageView) itemView.findViewById(R.id.icon_default);
     }
 
     public void bindData(Amenity amenity) {

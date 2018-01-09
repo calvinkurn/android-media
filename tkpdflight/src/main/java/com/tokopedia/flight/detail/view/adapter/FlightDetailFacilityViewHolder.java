@@ -1,6 +1,7 @@
 package com.tokopedia.flight.detail.view.adapter;
 
 import android.support.annotation.LayoutRes;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,7 +33,7 @@ public class FlightDetailFacilityViewHolder extends AbstractViewHolder<FlightDet
     private final RecyclerView listInfo;
     private final RecyclerView gridAmenity;
     private final AmenityAdapter adapterAmenity;
-    private final ImageView imageAirline;
+    private final AppCompatImageView imageAirline;
     private final TextView airlineName;
     private final TextView airlineCode;
     private TextView refundableInfo;
@@ -41,7 +42,7 @@ public class FlightDetailFacilityViewHolder extends AbstractViewHolder<FlightDet
         super(itemView);
         listInfo = (RecyclerView) itemView.findViewById(R.id.recycler_view_info);
         gridAmenity = (RecyclerView) itemView.findViewById(R.id.recycler_view_amenity);
-        imageAirline = (ImageView) itemView.findViewById(R.id.airline_icon);
+        imageAirline = (AppCompatImageView) itemView.findViewById(R.id.airline_icon);
         refundableInfo = (TextView) itemView.findViewById(R.id.airline_refundable_info);
         airlineName = (TextView) itemView.findViewById(R.id.airline_name);
         airlineCode = (TextView) itemView.findViewById(R.id.airline_code);

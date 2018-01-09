@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <TextView
@@ -17,8 +17,6 @@
         android:layout_height="wrap_content"
         android:background="@color/white"
         app:eo_checked="true"
-        app:eo_image_arrow_down="@drawable/ic_arrow_down_flight_expandable"
-        app:eo_image_arrow_up="@drawable/ic_arrow_up"
         app:eo_theme="@style/style_expandable_flight"
         app:eo_title="@string/flight_label_passenger_data"
         app:eo_use_rotate_animation="true">

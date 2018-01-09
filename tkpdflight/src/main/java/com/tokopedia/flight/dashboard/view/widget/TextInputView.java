@@ -1,14 +1,18 @@
 package com.tokopedia.flight.dashboard.view.widget;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v7.widget.AppCompatImageView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
@@ -19,6 +23,9 @@ import com.tokopedia.flight.R;
  */
 
 public class TextInputView extends BaseCustomView {
+
+    private static final String PNG_EXTENSION = "png";
+    private static final String SVG_EXTENSION = "xml";
 
     private TkpdHintTextInputLayout textInputLayout;
 
@@ -45,8 +52,17 @@ public class TextInputView extends BaseCustomView {
 
     private void init(AttributeSet attrs) {
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.TextInputView);
+
+        // get resource full name, to use later for checking is it png or vector
+        TypedValue value = new TypedValue();
+        getContext().getResources().getValue(styledAttributes.getResourceId(R.styleable.TextInputView_tiv_icon, R.drawable.ic_smiley_positive), value, true);
+
         try {
-            iconDrawable = styledAttributes.getDrawable(R.styleable.TextInputView_tiv_icon);
+            if (value.string.toString().contains(SVG_EXTENSION)) {
+                iconDrawable = VectorDrawableCompat.create(getContext().getResources(), styledAttributes.getResourceId(R.styleable.TextInputView_tiv_icon, R.drawable.ic_smiley_positive), getContext().getTheme());
+            } else if (value.string.toString().contains(PNG_EXTENSION)) {
+                iconDrawable = styledAttributes.getDrawable(R.styleable.TextInputView_tiv_icon);
+            }
             hintText = styledAttributes.getString(R.styleable.TextInputView_tiv_hint_text);
             titleText = styledAttributes.getString(R.styleable.TextInputView_tiv_title_text);
             allowInputManually = styledAttributes.getBoolean(R.styleable.TextInputView_allow_input_manually, false);

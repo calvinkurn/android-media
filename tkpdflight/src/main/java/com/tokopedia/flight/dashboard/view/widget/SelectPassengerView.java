@@ -6,10 +6,12 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.View;
 
 import com.tokopedia.design.base.BaseCustomView;
@@ -23,6 +25,8 @@ public class SelectPassengerView extends BaseCustomView {
     private static final int DEFAULT_VALUE = 0;
     private static final int DEFAULT_MIN_VALUE = 0;
     private static final int DEFAULT_MAX_VALUE = 100;
+    private static final String PNG_EXTENSION = "png";
+    private static final String SVG_EXTENSION = "xml";
 
     private AppCompatImageView passengerImageView;
     private AppCompatTextView titleTextView;
@@ -60,11 +64,21 @@ public class SelectPassengerView extends BaseCustomView {
     private void init(AttributeSet attrs) {
         init();
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.SelectPassengerView);
+
+        // get resource full name, to use later for checking is it png or vector
+        TypedValue value = new TypedValue();
+        getContext().getResources().getValue(styledAttributes.getResourceId(R.styleable.SelectPassengerView_spv_icon, R.drawable.ic_passenger_adult), value, true);
+
         try {
+            if (value.string.toString().contains(SVG_EXTENSION)) {
+                icon = VectorDrawableCompat.create(getContext().getResources(), styledAttributes.getResourceId(R.styleable.SelectPassengerView_spv_icon, R.drawable.ic_passenger_adult), getContext().getTheme());
+            } else if (value.string.toString().contains(PNG_EXTENSION)) {
+                icon = styledAttributes.getDrawable(R.styleable.SelectPassengerView_spv_icon);
+            }
+
             maxValue = styledAttributes.getInteger(R.styleable.SelectPassengerView_spv_max_value, DEFAULT_MAX_VALUE);
             minValue = styledAttributes.getInteger(R.styleable.SelectPassengerView_spv_min_value, DEFAULT_MIN_VALUE);
             selectedNumber = styledAttributes.getInteger(R.styleable.SelectPassengerView_spv_value, DEFAULT_VALUE);
-            icon = styledAttributes.getDrawable(R.styleable.SelectPassengerView_spv_icon);
             title = styledAttributes.getString(R.styleable.SelectPassengerView_spv_title);
             subtitle = styledAttributes.getString(R.styleable.SelectPassengerView_spv_subtitle);
         } finally {

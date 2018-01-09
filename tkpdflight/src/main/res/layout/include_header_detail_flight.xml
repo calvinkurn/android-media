@@ -11,14 +11,14 @@
         android:id="@+id/container_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <ImageView
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/airline_icon"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/image_width_m"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/margin_sm"
-            tools:src="@drawable/ic_badge_diamond" />
+            app:srcCompat="@drawable/ic_badge_diamond" />
 
         <RelativeLayout
             android:layout_width="wrap_content"
