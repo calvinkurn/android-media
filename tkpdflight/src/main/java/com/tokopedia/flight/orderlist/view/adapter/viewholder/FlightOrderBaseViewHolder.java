@@ -51,6 +51,13 @@ public abstract class FlightOrderBaseViewHolder<T extends Visitable> extends Abs
                 showPopup(view);
             }
         });
+
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onDetailOptionClicked();
+            }
+        });
     }
 
     protected void renderArrow(List<FlightOrderJourney> orderJourneys) {

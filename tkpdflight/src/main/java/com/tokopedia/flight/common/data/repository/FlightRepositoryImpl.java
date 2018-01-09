@@ -104,6 +104,11 @@ public class FlightRepositoryImpl implements FlightRepository {
     }
 
     @Override
+    public Observable<List<FlightAirportDB>> getPhoneCodeList(String query) {
+        return flightAirportDataListSource.getPhoneCodeList(query);
+    }
+
+    @Override
     public Observable<List<FlightAirlineDB>> getAirlineList() {
         return flightAirlineDataListSource.getAirlineList();
     }

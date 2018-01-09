@@ -2,6 +2,7 @@ package com.tokopedia.flight.orderlist.view;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.design.quickfilter.QuickFilterAdapter;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
@@ -65,6 +67,11 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
                 .inject(this);
     }
 
+    @NonNull
+    @Override
+    protected BaseListAdapter<Visitable, FlightOrderTypeFactory> createAdapterInstance() {
+        return new BaseListAdapter<>(getAdapterTypeFactory());
+    }
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -153,6 +160,11 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
     }
 
     @Override
+    public void onItemClicked(Visitable visitable) {
+
+    }
+
+    @Override
     public void onDestroyView() {
         presenter.onDestroyView();
         super.onDestroyView();
@@ -161,11 +173,6 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
     @Override
     public void onReBookingClicked(FlightOrderBaseViewModel item) {
         getActivity().finish();
-    }
-
-    @Override
-    public void onItemClicked(Visitable visitable) {
-
     }
 
     @Override

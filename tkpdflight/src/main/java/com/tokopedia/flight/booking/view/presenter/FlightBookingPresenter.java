@@ -57,8 +57,6 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     private FlightBookingGetPhoneCodeUseCase flightBookingGetPhoneCodeUseCase;
     private CompositeSubscription compositeSubscription;
 
-    private ArrayList<String> airAsiaFlightIds;
-
     @Inject
     public FlightBookingPresenter(FlightBookingGetSingleResultUseCase flightBookingGetSingleResultUseCase,
                                   FlightAddToCartUseCase flightAddToCartUseCase,
@@ -303,17 +301,11 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
 
     @NonNull
     private Observable<FlightBookingPhoneCodeViewModel> getDefaultPhoneDataObservable() {
-        return flightBookingGetPhoneCodeUseCase.createObservable(RequestParams.EMPTY)
+        return flightBookingGetPhoneCodeUseCase.createObservable(flightBookingGetPhoneCodeUseCase.createRequest("Indonesia"))
                 .flatMap(new Func1<List<FlightBookingPhoneCodeViewModel>, Observable<FlightBookingPhoneCodeViewModel>>() {
                     @Override
                     public Observable<FlightBookingPhoneCodeViewModel> call(List<FlightBookingPhoneCodeViewModel> flightBookingPhoneCodeViewModels) {
                         return Observable.from(flightBookingPhoneCodeViewModels);
-                    }
-                })
-                .filter(new Func1<FlightBookingPhoneCodeViewModel, Boolean>() {
-                    @Override
-                    public Boolean call(FlightBookingPhoneCodeViewModel flightBookingPhoneCodeViewModel) {
-                        return flightBookingPhoneCodeViewModel.getCountryId().equalsIgnoreCase(DEFAULT_COUNTRY_CODE_PHONE_NUMBER);
                     }
                 }).first();
     }
