@@ -15,42 +15,32 @@ import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.home.fragment.ReactNativeOfficialStorePromoFragment;
+import com.tokopedia.tkpd.home.fragment.ReactNativePromoSaleFragment;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.app.ReactNativeView;
 
-
 /**
- * Created by yogieputra on 05/01/18.
+ * Created by yogieputra on 08/01/18.
  */
 
-public class ReactNativeOfficialStorePromoActivity extends BasePresenterActivity implements ReactNativeView {
-    public static final String OS_PROMO_PAGE = "OS Promo Page";
+public class ReactNativePromoSaleActivity extends BasePresenterActivity implements ReactNativeView {
+    public static final String SALE_PROMO = "Promo Sale";
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
     public static final String EXTRA_URL = "EXTRA_URL";
 
 
-    @DeepLink({Constants.Applinks.OFFICIAL_STORES_PROMO})
-    public static Intent getOfficialStoresPromoApplinkCallingIntent(Context context, Bundle bundle){
-        ScreenTracking.screen(OS_PROMO_PAGE);
-        return ReactNativeOfficialStorePromoActivity.createBannerReactNativeActivity(
+    @DeepLink({Constants.Applinks.PROMO_SALE})
+    public static Intent getPromoSaleApplinkCallingIntent(Context context, Bundle bundle){
+        ScreenTracking.screen(SALE_PROMO);
+        return ReactNativePromoSaleActivity.createBannerReactNativeActivity(
                 context, ReactConst.Screen.PROMO,
                 bundle.getString("slug")
         ).putExtras(bundle);
     }
 
-    @DeepLink({Constants.Applinks.OFFICIAL_STORE_PROMO})
-    public static Intent getOfficialStorePromoApplinkCallingIntent(Context context, Bundle bundle){
-        ScreenTracking.screen(OS_PROMO_PAGE);
-        return ReactNativeOfficialStorePromoActivity.createBannerReactNativeActivity(
-                context, ReactConst.Screen.PROMO,
-                bundle.getString("slug")
-        ).putExtras(bundle);
-    }
-
-    @DeepLink({Constants.Applinks.OFFICIAL_STORES_PROMO_TERMS})
-    public static Intent getOfficialStoreTermsIntent(Context context, Bundle bundle){
-        return ReactNativeOfficialStorePromoActivity.createOfficialStoreTerms(
+    @DeepLink({Constants.Applinks.PROMO_SALE_TERMS})
+    public static Intent getPromoSaleTermsIntent(Context context, Bundle bundle){
+        return ReactNativePromoSaleActivity.createPromoSaleTerms(
                 context,
                 ReactConst.Screen.PROMO,
                 "Syarat & Ketentuan",
@@ -59,10 +49,8 @@ public class ReactNativeOfficialStorePromoActivity extends BasePresenterActivity
     }
 
 
-
-
     public static Intent createBannerReactNativeActivity(Context context, String reactScreenName, String url){
-        Intent intent = new Intent(context, ReactNativeOfficialStorePromoActivity.class);
+        Intent intent = new Intent(context, ReactNativePromoSaleActivity.class);
         Bundle extras = new Bundle();
         extras.putString(ReactConst.KEY_SCREEN, reactScreenName);
         extras.putString(EXTRA_TITLE, "");
@@ -71,8 +59,8 @@ public class ReactNativeOfficialStorePromoActivity extends BasePresenterActivity
         return intent;
     }
 
-    private static Intent createOfficialStoreTerms(Context context, String reactScreenName, String title, Bundle extras){
-        Intent intent = new Intent(context, ReactNativeOfficialStorePromoActivity.class);
+    private static Intent createPromoSaleTerms(Context context, String reactScreenName, String title, Bundle extras){
+        Intent intent = new Intent(context, ReactNativePromoSaleActivity.class);
         extras.putString(ReactConst.KEY_SCREEN, reactScreenName);
         extras.putString(ReactConst.SUB_PAGE, ReactConst.Screen.PROMO_TERMS);
         extras.putString(EXTRA_TITLE, title);
@@ -103,7 +91,6 @@ public class ReactNativeOfficialStorePromoActivity extends BasePresenterActivity
     }
 
 
-
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event){
         if (GlobalConfig.isAllowDebuggingTools()
@@ -119,6 +106,7 @@ public class ReactNativeOfficialStorePromoActivity extends BasePresenterActivity
     protected boolean isLightToolbarThemes() {
         return true;
     }
+
 
     @Override
     public void actionSetToolbarTitle(String title) {
@@ -149,9 +137,9 @@ public class ReactNativeOfficialStorePromoActivity extends BasePresenterActivity
     protected void initView() {
         setToolbar();
         Bundle initialProps = getReactNativeProps();
-        ReactNativeOfficialStorePromoFragment fragment = ReactNativeOfficialStorePromoFragment.createInstance(initialProps);
+        ReactNativePromoSaleFragment fragment = ReactNativePromoSaleFragment.createInstance(initialProps);
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        if (getFragmentManager().findFragmentById(R.id.container) == null) {
+        if (getFragmentManager().findFragmentById(R.id.container) == null){
             fragmentTransaction.add(R.id.container, fragment, fragment.getClass().getSimpleName());
         }
         fragmentTransaction.commit();
@@ -172,4 +160,3 @@ public class ReactNativeOfficialStorePromoActivity extends BasePresenterActivity
 
     }
 }
-

@@ -205,6 +205,9 @@
             android:name=".home.ReactNativeOfficialStorePromoActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".home.ReactNativePromoSaleActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".thankyou.view.ReactNativeThankYouPageActivity"
             android:screenOrientation="portrait" />
 
