@@ -21,11 +21,12 @@ import java.util.List;
 
 public abstract class BaseStepperActivity<T extends StepperModel> extends BaseToolbarActivity implements StepperListener<T> {
     public static final String STEPPER_MODEL_EXTRA = "STEPPER_MODEL_EXTRA";
+    public static final String SAVED_POSITION = "SVD_POS";
     private static final int START_PAGE_POSITION = 1;
 
     private RoundCornerProgressBar progressStepper;
 
-    private int currentPosition = START_PAGE_POSITION;
+    private int currentPosition;
     protected T stepperModel;
 
     @NonNull
@@ -33,16 +34,18 @@ public abstract class BaseStepperActivity<T extends StepperModel> extends BaseTo
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         if (savedInstanceState == null) {
             stepperModel = createNewStepperModel();
+            currentPosition = START_PAGE_POSITION;
         } else {
             stepperModel = savedInstanceState.getParcelable(STEPPER_MODEL_EXTRA);
+            currentPosition = savedInstanceState.getInt(SAVED_POSITION);
         }
+        super.onCreate(savedInstanceState);
         progressStepper = (RoundCornerProgressBar) findViewById(R.id.stepper_progress);
         progressStepper.setMax(getListFragment().size());
         progressStepper.setProgress(currentPosition);
-        updateToolbarTitle(START_PAGE_POSITION);
+        updateToolbarTitle(currentPosition);
     }
 
     public abstract T createNewStepperModel();
@@ -146,5 +149,6 @@ public abstract class BaseStepperActivity<T extends StepperModel> extends BaseTo
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(STEPPER_MODEL_EXTRA, stepperModel);
+        outState.putInt(SAVED_POSITION, currentPosition);
     }
 }

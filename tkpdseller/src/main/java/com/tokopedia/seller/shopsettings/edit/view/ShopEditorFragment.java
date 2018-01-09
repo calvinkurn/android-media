@@ -87,12 +87,6 @@ public class ShopEditorFragment extends BaseFragment<ShopEditorPresenter> implem
             public void clickEditProductFromGallery(int position) {
                 ShopEditorFragmentPermissionsDispatcher.goToGalleryWithCheck(ShopEditorFragment.this, 0);
             }
-
-            @Override
-            public void clickEditProductFromInstagram(int position) {
-                InstopedSellerCropperActivity.startInstopedActivityForResult(getActivity(),
-                        GalleryActivity.INSTAGRAM_SELECT_REQUEST_CODE, 1);
-            }
         });
     }
 

@@ -22,12 +22,12 @@
                 android:src="@drawable/ic_shop_setting_location" />
 
             <TextView
-                style="@style/TextView.Title"
+                style="@style/TextView.TitleBig"
                 android:layout_marginTop="24dp"
                 android:text="@string/title_shop_setting_location" />
 
             <TextView
-                style="@style/TextView.Subheading"
+                style="@style/TextView.Title"
                 android:layout_marginLeft="@dimen/margin_med"
                 android:layout_marginRight="@dimen/margin_med"
                 android:layout_marginTop="@dimen/margin_sm"
@@ -70,14 +70,14 @@
         </android.support.design.widget.TextInputLayout>
 
         <TextView
-            style="@style/TextView.Caption"
+            style="@style/TextView.Micro"
             android:layout_marginLeft="@dimen/margin_med"
             android:layout_marginRight="@dimen/margin_med"
             android:layout_marginTop="@dimen/margin_med"
             android:text="@string/title_shop_setting_location_pickup" />
 
         <TextView
-            style="@style/TextView.Caption"
+            style="@style/TextView.Micro"
             android:layout_marginBottom="@dimen/margin_med"
             android:layout_marginLeft="@dimen/margin_med"
             android:layout_marginRight="@dimen/margin_med"
@@ -96,7 +96,7 @@
 
             <TextView
                 android:id="@+id/text_view_shop_setting_location_pickup"
-                style="@style/TextView.Body1"
+                style="@style/TextView.Small"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:text="@string/action_shop_setting_location_pickup" />

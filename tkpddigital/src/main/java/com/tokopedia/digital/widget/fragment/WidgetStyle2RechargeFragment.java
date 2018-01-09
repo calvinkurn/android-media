@@ -40,8 +40,15 @@ import com.tokopedia.digital.widget.presenter.DigitalWidgetStyle2Presenter;
 import com.tokopedia.digital.widget.presenter.IDigitalWidgetStyle2Presenter;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -78,6 +85,12 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
     private CompositeSubscription compositeSubscription;
 
     private List<Operator> operators;
+
+    private QueryListener queryListener;
+
+    private interface QueryListener {
+        void onQueryChanged(String query);
+    }
 
     public static WidgetStyle2RechargeFragment newInstance(Category category, int position) {
         WidgetStyle2RechargeFragment fragment = new WidgetStyle2RechargeFragment();
@@ -153,6 +166,56 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
     protected void setViewListener() {
         setRechargeEditTextTouchCallback(widgetClientNumberView);
 
+        compositeSubscription.add(
+                Observable
+                        .create(new Observable.OnSubscribe<String>() {
+                            @Override
+                            public void call(final Subscriber<? super String> subscriber) {
+                                queryListener = new QueryListener() {
+                                    @Override
+                                    public void onQueryChanged(String query) {
+                                        subscriber.onNext(query);
+                                    }
+                                };
+                            }
+                        })
+                        .distinctUntilChanged()
+                        .debounce(300, TimeUnit.MILLISECONDS)
+                        .switchMap(new Func1<String, Observable<String>>() {
+                            @Override
+                            public Observable<String> call(String s) {
+                                return Observable.just(s);
+                            }
+                        })
+                        .subscribeOn(Schedulers.io())
+                        .unsubscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Action1<String>() {
+                            @Override
+                            public void call(String clientNumber) {
+                                if (selectedOperator != null) {
+                                    if (clientNumber.length() >= selectedOperator.getAttributes().getMinimumLength()) {
+                                        if (selectedOperator.getAttributes().getRule().isShowProduct()) {
+                                            if (selectedProduct == null) {
+                                                presenter.validateOperatorWithProducts(category.getId(),
+                                                        String.valueOf(selectedOperator.getId()));
+                                            }
+                                        } else {
+                                            clearHolder(holderWidgetWrapperBuy);
+                                            holderWidgetWrapperBuy.addView(widgetWrapperBuyView);
+                                        }
+                                    } else {
+                                        selectedProduct = null;
+                                        clearHolder(holderWidgetSpinnerProduct);
+                                        clearHolder(holderWidgetWrapperBuy);
+                                    }
+                                } else {
+                                    widgetClientNumberView.setEmptyString();
+                                }
+                            }
+                        })
+        );
+
         widgetClientNumberView.setButtonPickerListener(getButtonPickerListener());
         widgetClientNumberView.setRechargeEditTextListener(getEditTextListener());
         widgetWrapperBuyView.setListener(getBuyButtonListener());
@@ -181,27 +244,14 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
         return new WidgetClientNumberView.RechargeEditTextListener() {
             @Override
             public void onRechargeTextChanged(CharSequence s, int start, int before, int count) {
-                if (selectedOperator != null) {
-                    if (s.length() >= selectedOperator.getAttributes().getMinimumLength()) {
-                        if (selectedOperator.getAttributes().getRule().isShowProduct()) {
-                            presenter.validateOperatorWithProducts(category.getId(),
-                                    String.valueOf(selectedOperator.getId()));
-                        } else {
-                            clearHolder(holderWidgetWrapperBuy);
-                            holderWidgetWrapperBuy.addView(widgetWrapperBuyView);
-                        }
-                    } else if (selectedProduct != null) {
-                        selectedProduct = null;
-                        clearHolder(holderWidgetSpinnerProduct);
-                        clearHolder(holderWidgetWrapperBuy);
-                    }
-                }  else {
-                    widgetClientNumberView.setEmptyString();
+                if (queryListener != null) {
+                    queryListener.onQueryChanged(s.toString());
                 }
             }
 
             @Override
             public void onRechargeTextClear() {
+                selectedProduct = null;
                 clearHolder(holderWidgetSpinnerProduct);
                 clearHolder(holderWidgetWrapperBuy);
             }
@@ -340,7 +390,7 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
         PreCheckoutDigitalWidget preCheckoutDigitalWidget = new PreCheckoutDigitalWidget();
         preCheckoutDigitalWidget.setClientNumber(widgetClientNumberView.getText());
         preCheckoutDigitalWidget.setOperatorId(String.valueOf(selectedOperator.getId()));
-        preCheckoutDigitalWidget.setProductId(String.valueOf(selectedProduct.getId()));
+        preCheckoutDigitalWidget.setProductId(selectedProduct.getId());
         preCheckoutDigitalWidget.setPromoProduct(selectedProduct.getAttributes().getPromo() != null);
         preCheckoutDigitalWidget.setBundle(bundle);
         return preCheckoutDigitalWidget;
@@ -464,15 +514,16 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
         clearHolder(holderWidgetSpinnerProduct);
         clearHolder(holderWidgetSpinnerOperator);
         removeRechargeEditTextCallback(widgetClientNumberView);
+
+        if (compositeSubscription != null && compositeSubscription.hasSubscriptions()) {
+            compositeSubscription.unsubscribe();
+        }
+
         super.onDestroyView();
     }
 
     @Override
     public void onStop() {
-        if (compositeSubscription != null && compositeSubscription.hasSubscriptions()) {
-            compositeSubscription.unsubscribe();
-        }
-
         super.onStop();
     }
 }

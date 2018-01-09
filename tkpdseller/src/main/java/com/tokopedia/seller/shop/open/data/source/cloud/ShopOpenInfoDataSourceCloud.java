@@ -4,10 +4,14 @@ import android.text.TextUtils;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.common.data.mapper.DataResponseMapper;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 import com.tokopedia.seller.shop.common.di.ShopQualifier;
 import com.tokopedia.seller.shop.open.data.model.response.DataResponse;
+import com.tokopedia.seller.shop.open.data.model.response.ResponseOpenShopPicture;
 import com.tokopedia.seller.shop.open.data.model.response.ResponseCheckDomainName;
 import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseSaveShopDesc;
+import com.tokopedia.seller.shop.open.data.source.cloud.api.OpenShopApi;
 import com.tokopedia.seller.shop.open.data.source.cloud.api.TomeApi;
 import com.tokopedia.seller.shop.open.view.model.CourierServiceId;
 import com.tokopedia.seller.shop.open.view.model.CourierServiceIdWrapper;
@@ -23,7 +27,9 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import okhttp3.OkHttpClient;
 import retrofit2.Response;
+import retrofit2.Retrofit;
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -52,11 +58,18 @@ public class ShopOpenInfoDataSourceCloud {
     public static final String SHIPMENT_AGENCY = "shipment_agency";
     public static final String PACKAGE = "package";
     private static final int STEP_INFO_3 = 3;
+    public static final String SHOP_LOGO = "shop_logo";
+    public static final String HTTPS = "https://";
+
     private final TomeApi tomeApi;
+    private final Retrofit.Builder retrofitBuilder;
+    private final  OkHttpClient okHttpClient;
 
     @Inject
-    public ShopOpenInfoDataSourceCloud(@ShopQualifier TomeApi tomeApi) {
+    public ShopOpenInfoDataSourceCloud(@ShopQualifier TomeApi tomeApi, Retrofit.Builder retrofitBuilder, @DefaultAuthWithErrorHandler OkHttpClient okHttpClient) {
         this.tomeApi = tomeApi;
+        this.retrofitBuilder = retrofitBuilder;
+        this.okHttpClient = okHttpClient;
     }
 
     public Observable<Boolean> saveShopSetting(HashMap<String, String> paramsRequest) {
@@ -113,16 +126,16 @@ public class ShopOpenInfoDataSourceCloud {
                 });
     }
 
-    public Observable<Boolean> createShop() {
+    public Observable<ResponseCreateShop> createShop() {
         return tomeApi.createShop()
                 .map(new DataResponseMapper<ResponseCreateShop>())
-                .flatMap(new Func1<ResponseCreateShop, Observable<Boolean>>() {
+                .flatMap(new Func1<ResponseCreateShop, Observable<ResponseCreateShop>>() {
                     @Override
-                    public Observable<Boolean> call(ResponseCreateShop responseCreateShop) {
+                    public Observable<ResponseCreateShop> call(ResponseCreateShop responseCreateShop) {
                         if (responseCreateShop == null) {
                             throw new RuntimeException();
                         } else {
-                            return Observable.just(responseCreateShop.getReserveStatus().equals(String.valueOf(SUCCESS)));
+                            return Observable.just(responseCreateShop);
                         }
                     }
                 });
@@ -181,7 +194,7 @@ public class ShopOpenInfoDataSourceCloud {
                 List<String> courierServiceStrIdList = courierServiceId.getCourierServiceIdList();
                 JSONArray jsonArray = new JSONArray();
                 for (int j = 0, sizej = courierServiceStrIdList.size(); j < sizej; j++) {
-                    jsonArray.put(courierServiceStrIdList.get(j));
+                    jsonArray.put(Integer.parseInt(courierServiceStrIdList.get(j)));
                 }
                 jsonObject.put(courierID, jsonArray);
             }
@@ -191,5 +204,25 @@ public class ShopOpenInfoDataSourceCloud {
         }
         params.put(STEP, Integer.toString(STEP_INFO_3));
         return params;
+    }
+
+    public Observable<String> openShopPicture(String picSrc, String serverId, String url) {
+        Retrofit retrofit = retrofitBuilder.client(okHttpClient).build();
+        String urlFull = generateUrlOpenShopPicture(url);
+        Map<String, String> params = new HashMap<>();
+        params.put(SHOP_LOGO, picSrc);
+        params.put(SERVER_ID, serverId);
+        return retrofit.create(OpenShopApi.class)
+                .openShopPicture(urlFull, params)
+                .flatMap(new Func1<Response<ResponseOpenShopPicture>, Observable<String>>() {
+                    @Override
+                    public Observable<String> call(Response<ResponseOpenShopPicture> response) {
+                        return Observable.just(response.body().getData().getFile_uploaded());
+                    }
+                });
+    }
+
+    private String generateUrlOpenShopPicture(String urlHost) {
+        return HTTPS + urlHost + TkpdBaseURL.Upload.PATH_UPLOAD_IMAGE_HELPER + TkpdBaseURL.Upload.PATH_OPEN_SHOP_PICTURE;
     }
 }

@@ -98,7 +98,7 @@ public interface TkpdCoreRouter {
 
     ApplinkUnsupported getApplinkUnsupported(Activity activity);
 
-    Intent getIntentCreateEditShop(Context context);
+    Intent getIntentCreateShop(Context context);
 
     Intent getSplashScreenIntent(Context context);
 

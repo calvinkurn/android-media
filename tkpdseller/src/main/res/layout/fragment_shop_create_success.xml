@@ -46,19 +46,19 @@
                     tools:text="Nama Toko"
                     android:layout_marginTop="@dimen/margin_vs"
                     android:gravity="center_horizontal"
-                    style="@style/TextView.Title.Green"/>
+                    style="@style/TextView.TitleBig.Green"/>
             </LinearLayout>
         </com.tokopedia.design.loading.LoadingStateView>
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/appCompatTextView"
-            style="@style/TextView.Title"
+            style="@style/TextView.TitleBig"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/margin_med"
             android:text="@string/shop_has_been_active" />
 
         <android.support.v7.widget.AppCompatTextView
-            style="@style/TextView.Body1"
+            style="@style/TextView.Small"
             android:text="@string/shop_create_success_ask_add_product"
             android:layout_gravity="center"
             android:gravity="center"

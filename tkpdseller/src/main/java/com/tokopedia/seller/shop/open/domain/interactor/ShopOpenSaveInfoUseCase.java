@@ -9,6 +9,7 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.base.domain.interactor.UploadImageUseCase;
 import com.tokopedia.seller.base.domain.model.ImageUploadDomainModel;
 import com.tokopedia.seller.shop.open.domain.ShopOpenSaveInfoRepository;
+import com.tokopedia.seller.shop.open.domain.model.ShopOpenSaveInfoRequestDomainModel;
 import com.tokopedia.seller.shop.setting.constant.ShopSettingNetworkConstant;
 import com.tokopedia.seller.shop.open.data.model.UploadShopImageModel;
 
@@ -75,12 +76,29 @@ public class ShopOpenSaveInfoUseCase extends UseCase<Boolean> {
         if (!TextUtils.isEmpty(requestParams.getString(PATH_FILE_IMAGE, ""))) {
             return uploadImageUseCase.getExecuteObservable(uploadImageUseCase.createRequestParams(ShopSettingNetworkConstant.UPLOAD_SHOP_IMAGE_PATH,
                     requestParams.getString(PATH_FILE_IMAGE, "")))
-                    .flatMap(new Func1<ImageUploadDomainModel<UploadShopImageModel>, Observable<Boolean>>() {
+                    .flatMap(new Func1<ImageUploadDomainModel<UploadShopImageModel>, Observable<ShopOpenSaveInfoRequestDomainModel>>() {
                         @Override
-                        public Observable<Boolean> call(ImageUploadDomainModel<UploadShopImageModel> dataImageUploadDomainModel) {
+                        public Observable<ShopOpenSaveInfoRequestDomainModel> call(final ImageUploadDomainModel<UploadShopImageModel> dataImageUploadDomainModel) {
+                            return shopOpenSaveInfoRepository.openShopPicture(dataImageUploadDomainModel.getDataResultImageUpload().getData().getUpload().getSrc(),
+                                    dataImageUploadDomainModel.getServerId(), dataImageUploadDomainModel.getUrl())
+                                    .flatMap(new Func1<String, Observable<ShopOpenSaveInfoRequestDomainModel>>() {
+                                        @Override
+                                        public Observable<ShopOpenSaveInfoRequestDomainModel> call(String picUploaded) {
+                                            ShopOpenSaveInfoRequestDomainModel dataRequest = new ShopOpenSaveInfoRequestDomainModel();
+                                            dataRequest.setPicSrc(dataImageUploadDomainModel.getDataResultImageUpload().getData().getUpload().getSrc());
+                                            dataRequest.setPicUploaded(picUploaded);
+                                            dataRequest.setServerId(dataImageUploadDomainModel.getServerId());
+                                            return Observable.just(dataRequest);
+                                        }
+                                    });
+                        }
+                    })
+                    .flatMap(new Func1<ShopOpenSaveInfoRequestDomainModel, Observable<Boolean>>() {
+                        @Override
+                        public Observable<Boolean> call(ShopOpenSaveInfoRequestDomainModel shopOpenSaveInfoRequestDomainModel) {
                             return shopOpenSaveInfoRepository.saveShopSetting(getImageRequest(
-                                    dataImageUploadDomainModel.getDataResultImageUpload().getData().getUpload().getSrc(),
-                                    dataImageUploadDomainModel.getServerId(), "",
+                                    shopOpenSaveInfoRequestDomainModel.getPicSrc(),
+                                    shopOpenSaveInfoRequestDomainModel.getServerId(), shopOpenSaveInfoRequestDomainModel.getPicUploaded(),
                                     requestParams.getString(SHOP_DESCRIPTION, ""), requestParams.getString(TAG_LINE_REQUEST_CLOUD, "")));
                         }
                     });

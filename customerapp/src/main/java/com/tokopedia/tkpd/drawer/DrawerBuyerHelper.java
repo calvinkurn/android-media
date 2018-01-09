@@ -311,10 +311,13 @@ public class DrawerBuyerHelper extends DrawerHelper
                 TkpdState.DrawerPosition.RESOLUTION_CENTER,
                 drawerCache.getBoolean(IS_INBOX_OPENED, false),
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER)));
-        inboxMenu.add(new DrawerItem(context.getString(R.string.drawer_title_seller_info),
-                TkpdState.DrawerPosition.SELLER_INFO,
-                drawerCache.getBoolean(DrawerAdapter.IS_INBOX_OPENED, false),
-                drawerCache.getInt(DrawerNotification.CACHE_INBOX_SELLER_INFO)));
+
+        if(SessionHandler.isUserSeller(context)){
+            inboxMenu.add(new DrawerItem(context.getString(R.string.drawer_title_seller_info),
+                    TkpdState.DrawerPosition.SELLER_INFO,
+                    drawerCache.getBoolean(DrawerAdapter.IS_INBOX_OPENED, false),
+                    drawerCache.getInt(DrawerNotification.CACHE_INBOX_SELLER_INFO)));
+        }
         return inboxMenu;
     }
 

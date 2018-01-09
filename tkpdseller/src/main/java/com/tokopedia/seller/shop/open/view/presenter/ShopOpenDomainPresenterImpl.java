@@ -111,7 +111,7 @@ public class ShopOpenDomainPresenterImpl extends BaseDaggerPresenter<ShopOpenDom
             @Override
             public void onError(Throwable e) {
                 if (isViewAttached()) {
-                    getView().onErrorCheckShopDomain(e);
+                    getView().onErrorReserveShop(e);
                 }
             }
 
@@ -119,9 +119,9 @@ public class ShopOpenDomainPresenterImpl extends BaseDaggerPresenter<ShopOpenDom
             public void onNext(ResponseReserveDomain responseReserveDomain) {
                 if (SUCCESS.equals( responseReserveDomain.getShopDomainStatus()) &&
                         SUCCESS.equals( responseReserveDomain.getShopNameStatus())) {
-                    getView().onSuccessReserveShop();
+                    getView().onSuccessReserveShop(responseReserveDomain.getShopName());
                 } else {
-                    getView().onFailedReserveShop();
+                    getView().onErrorReserveShop(null);
                 }
             }
         };

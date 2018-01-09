@@ -253,4 +253,9 @@
     <string name="shop_has_been_active">Toko Anda sudah aktif!</string>
     <string name="shop_create_success_ask_add_product">Jangan sampai toko Anda kosong begitu saja.\nTambahkan produk pertamamu dan mulai berjualan sekarang.</string>
     <string name="go_to_shop_page">Ke Halaman Toko Saya</string>
+    <string name="complete_shop_information">Lengkapi Informasi Toko</string>
+    <string name="shop_reserve_success_title">Lengkapi Informasi <![CDATA[<b>]]>%1$s<![CDATA[</b>]]> dan mulai berjualan sekarang!</string>
+    <string name="shop_reserve_success_info">INFO: Toko akan otomatis dihapus dalam 7 hari jika Informasi Toko belum lengkap.</string>
+    <string name="shop_open_create_success">Anda berhasil membuka toko!</string>
+    <string name="shop_location_must_be_filled">Lokasi pengiriman harus diisi</string>
 </resources>

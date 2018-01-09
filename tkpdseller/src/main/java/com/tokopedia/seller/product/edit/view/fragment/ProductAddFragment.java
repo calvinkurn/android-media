@@ -266,28 +266,28 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     }
 
     private void sendAnalyticsAdd(UploadProductInputViewModel viewModel) {
-        if(getStatusUpload() == ProductStatus.ADD) {
-            UnifyTracking.eventAddProductAdd(
-                    AnalyticsMapper.mapViewToAnalytic(viewModel,
-                            Integer.parseInt(getString(R.string.product_free_return_values_active)),
-                            productAdditionalInfoViewHolder.isShare()
-                    ));
-        } else if(getStatusUpload() == ProductStatus.EDIT){
-            UnifyTracking.eventAddProductEdit(
-                    AnalyticsMapper.mapViewToAnalytic(viewModel,
-                            Integer.parseInt(getString(R.string.product_free_return_values_active)),
-                            productAdditionalInfoViewHolder.isShare()
-                    ));
+        List<String>  listLabelAnalytics = AnalyticsMapper.mapViewToAnalytic(viewModel,
+                Integer.parseInt(getString(R.string.product_free_return_values_active)),
+                productAdditionalInfoViewHolder.isShare()
+        );
+        for (String labelAnalytics : listLabelAnalytics){
+            if(getStatusUpload() == ProductStatus.ADD) {
+                UnifyTracking.eventAddProductAdd(labelAnalytics);
+            } else if(getStatusUpload() == ProductStatus.EDIT){
+                UnifyTracking.eventAddProductEdit(labelAnalytics);
+            }
         }
     }
 
     private void sendAnalyticsAddMore(UploadProductInputViewModel viewModel) {
-        if(getStatusUpload() == ProductStatus.ADD) {
-            UnifyTracking.eventAddProductAddMore(
-                    AnalyticsMapper.mapViewToAnalytic(viewModel,
-                            Integer.parseInt(getString(R.string.product_free_return_values_active)),
-                            productAdditionalInfoViewHolder.isShare()
-                    ));
+        List<String>  listLabelAnalytics = AnalyticsMapper.mapViewToAnalytic(viewModel,
+                Integer.parseInt(getString(R.string.product_free_return_values_active)),
+                productAdditionalInfoViewHolder.isShare()
+        );
+        for (String labelAnalytics : listLabelAnalytics){
+            if(getStatusUpload() == ProductStatus.ADD) {
+                UnifyTracking.eventAddProductAddMore(labelAnalytics);
+            }
         }
     }
 

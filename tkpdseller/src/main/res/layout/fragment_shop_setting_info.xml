@@ -7,7 +7,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:padding="16dp">
@@ -18,62 +18,62 @@
 
         <TextView
             android:id="@+id/welcome_shop_label"
-            style="@style/TextView.Title"
+            style="@style/TextView.TitleBig"
             android:layout_marginBottom="@dimen/margin_sm"
             android:gravity="center"
             android:text="@string/hello_x" />
 
         <TextView
+            style="@style/TextView.Title"
             android:layout_marginBottom="@dimen/margin_large"
-            style="@style/TextView.Subheading"
+            android:gravity="center"
             android:text="@string/label_shop_open_info_title_shop" />
 
         <com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout
             android:id="@+id/shop_slogan_input_layout"
-            android:layout_marginBottom="@dimen/margin_med"
             style="@style/HintTextInputLayout"
+            android:layout_marginBottom="@dimen/margin_med"
             android:hint="@string/label_shop_setting_slogan"
-            app:helperEnabled="true"
-            app:helper="@string/shop_open_label_slogan_info"
             app:counterEnabled="true"
-            app:counterMaxLength="@integer/open_shop_max_slogan_char">
+            app:counterMaxLength="@integer/open_shop_max_slogan_char"
+            app:helper="@string/shop_open_label_slogan_info"
+            app:helperEnabled="true">
 
             <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/shop_slogan_input_text"
                 style="@style/EditText.ShopSetting"
-                android:maxLength="@integer/open_shop_max_slogan_char"
-                android:layout_width="match_parent" />
-            ​
-        </com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout>
+                android:layout_width="match_parent"
+                android:maxLength="@integer/open_shop_max_slogan_char" />
+        ​</com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout>
 
         <com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout
             android:id="@+id/shop_desc_input_layout"
-            android:layout_marginBottom="@dimen/margin_med"
             style="@style/HintTextInputLayout"
+            android:layout_marginBottom="@dimen/margin_med"
             android:hint="@string/label_shop_setting_desc_shop"
-            app:helperEnabled="true"
-            app:helper="@string/shop_open_label_description_info"
             app:counterEnabled="true"
-            app:counterMaxLength="@integer/open_shop_max_desc_char">
+            app:counterMaxLength="@integer/open_shop_max_desc_char"
+            app:helper="@string/shop_open_label_description_info"
+            app:helperEnabled="true">
 
             <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/shop_desc_input_text"
                 style="@style/EditText.ShopSetting"
-                android:maxLength="@integer/open_shop_max_desc_char"
-                android:layout_width="match_parent" />
+                android:layout_width="match_parent"
+                android:maxLength="@integer/open_shop_max_desc_char" />
             ​
         </com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout>
 
         <TextView
-            android:layout_marginBottom="@dimen/margin_small"
+            style="@style/TextView.Micro.BlackSecondary"
             android:layout_gravity="start"
-            style="@style/TextView.Caption.BlackSecondary"
+            android:layout_marginBottom="@dimen/margin_small"
             android:text="@string/label_shop_setting_logo" />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp">
+            android:layout_marginBottom="@dimen/margin_large">
 
             <FrameLayout
                 android:id="@+id/image_picker_container"
@@ -92,22 +92,22 @@
                 android:layout_toRightOf="@+id/image_picker_container">
 
                 <TextView
-                    android:textStyle="bold"
-                    style="@style/TextView.Caption.BlackDisabled"
-                    android:text="@string/label_shop_setting_info_max_file_size" />
+                    style="@style/TextView.Micro.BlackDisabled"
+                    android:text="@string/label_shop_setting_info_max_file_size"
+                    android:textStyle="bold" />
 
                 <TextView
+                    style="@style/TextView.Micro.BlackDisabled"
                     android:layout_marginBottom="@dimen/margin_ms"
-                    style="@style/TextView.Caption.BlackDisabled"
                     android:text="@string/label_shop_setting_info_size_image" />
 
                 <TextView
-                    android:textStyle="bold"
-                    style="@style/TextView.Caption.BlackDisabled"
-                    android:text="@string/label_shop_setting_info_allowed_file" />
+                    style="@style/TextView.Micro.BlackDisabled"
+                    android:text="@string/label_shop_setting_info_allowed_file"
+                    android:textStyle="bold" />
 
                 <TextView
-                    style="@style/TextView.Caption.BlackDisabled"
+                    style="@style/TextView.Micro.BlackDisabled"
                     android:text="@string/label_shop_setting_type_file_image" />
 
             </LinearLayout>

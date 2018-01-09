@@ -1,6 +1,7 @@
 package com.tokopedia.seller.shop.open.data.repository;
 
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.seller.shop.open.data.model.response.ResponseCreateShop;
 import com.tokopedia.seller.shop.open.domain.ShopOpenSaveInfoRepository;
 import com.tokopedia.seller.shop.open.view.model.CourierServiceIdWrapper;
 import com.tokopedia.seller.shop.open.data.source.ShopOpenInfoDataSource;
@@ -36,7 +37,12 @@ public class ShopOpenSaveInfoRepositoryImpl implements ShopOpenSaveInfoRepositor
     }
 
     @Override
-    public Observable<Boolean> createShop() {
+    public Observable<ResponseCreateShop> createShop() {
         return shopOpenInfoDataSource.createShop();
+    }
+
+    @Override
+    public Observable<String> openShopPicture(String picSrc, String serverId, String url) {
+        return shopOpenInfoDataSource.openShopPicture(picSrc, serverId, url);
     }
 }

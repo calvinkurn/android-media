@@ -17,9 +17,12 @@ import android.support.v7.widget.Toolbar;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationDetailFragment;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailPassModel;
+
+import javax.inject.Inject;
 
 /**
  * @author by nisie on 8/19/17.
@@ -29,7 +32,10 @@ public class InboxReputationDetailActivity extends BasePresenterActivity impleme
 
     public static final String ARGS_POSITION = "ARGS_POSITION";
     public static final String ARGS_TAB = "ARGS_TAB";
-    public static final String ARGS_PASS_DATA = "ARGS_PASS_DATA";
+    public static final String CACHE_PASS_DATA = InboxReputationDetailActivity.class.getName() + "-passData";
+
+    @Inject
+    GlobalCacheManager cacheManager;
 
     @Override
     protected void setupURIPass(Uri data) {
@@ -53,13 +59,7 @@ public class InboxReputationDetailActivity extends BasePresenterActivity impleme
 
     @Override
     protected void initView() {
-        InboxReputationDetailPassModel model = null;
         int tab = -1;
-        if (getIntent().getExtras().getParcelable
-                (ARGS_PASS_DATA) != null) {
-            model = getIntent().getExtras().getParcelable
-                    (ARGS_PASS_DATA);
-        }
 
         if (getIntent().getExtras().getInt(ARGS_TAB, -1) != -1) {
             tab = getIntent().getExtras().getInt(ARGS_TAB);
@@ -68,7 +68,7 @@ public class InboxReputationDetailActivity extends BasePresenterActivity impleme
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(InboxReputationDetailFragment
                 .class.getSimpleName());
         if (fragment == null) {
-            fragment = InboxReputationDetailFragment.createInstance(model, tab);
+            fragment = InboxReputationDetailFragment.createInstance(tab);
         }
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.container,
@@ -99,11 +99,9 @@ public class InboxReputationDetailActivity extends BasePresenterActivity impleme
     }
 
     public static Intent getCallingIntent(Context context,
-                                          InboxReputationDetailPassModel inboxReputationDetailPassModel,
                                           int adapterPosition, int tab) {
         Intent intent = new Intent(context, InboxReputationDetailActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelable(InboxReputationDetailActivity.ARGS_PASS_DATA, inboxReputationDetailPassModel);
         bundle.putInt(InboxReputationDetailActivity.ARGS_POSITION, adapterPosition);
         bundle.putInt(InboxReputationDetailActivity.ARGS_TAB, tab);
         intent.putExtras(bundle);
@@ -113,16 +111,7 @@ public class InboxReputationDetailActivity extends BasePresenterActivity impleme
     @Override
     protected void setupToolbar() {
         super.setupToolbar();
-        if (getIntent().getExtras().getParcelable(InboxReputationDetailActivity.ARGS_PASS_DATA) !=
-                null) {
-            InboxReputationDetailPassModel model = getIntent().getExtras().getParcelable
-                    (InboxReputationDetailActivity.ARGS_PASS_DATA);
-
-            if (toolbar != null && model.getInvoice() != null)
-                toolbar.setTitle(model.getInvoice());
-            if (toolbar != null && model.getCreateTime() != null)
-                toolbar.setSubtitle(model.getCreateTime());
-        }
+        setToolbarData();
 
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources()
                 .getColor(R.color.white)));
@@ -140,6 +129,20 @@ public class InboxReputationDetailActivity extends BasePresenterActivity impleme
             upArrow.setColorFilter(ContextCompat.getColor(this, R.color.grey_700),
                     PorterDuff.Mode.SRC_ATOP);
             getSupportActionBar().setHomeAsUpIndicator(upArrow);
+        }
+    }
+
+    private void setToolbarData() {
+        if (cacheManager != null) {
+            InboxReputationDetailPassModel model = cacheManager.getConvertObjData
+                    (InboxReputationDetailActivity.CACHE_PASS_DATA,
+                            InboxReputationDetailPassModel.class);
+            if (model != null && toolbar != null) {
+                if (model.getInvoice() != null)
+                    toolbar.setTitle(model.getInvoice());
+                if (model.getCreateTime() != null)
+                    toolbar.setSubtitle(model.getCreateTime());
+            }
         }
     }
 

@@ -6,6 +6,7 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.base.domain.interactor.UploadImageUseCase;
 import com.tokopedia.seller.shop.open.data.model.UploadShopImageModel;
+import com.tokopedia.seller.shop.open.data.model.response.ResponseCreateShop;
 import com.tokopedia.seller.shop.open.domain.ShopOpenSaveInfoRepository;
 
 import javax.inject.Inject;
@@ -13,7 +14,7 @@ import javax.inject.Inject;
 import rx.Observable;
 
 
-public class ShopOpenCreateUseCase extends UseCase<Boolean> {
+public class ShopOpenCreateUseCase extends UseCase<ResponseCreateShop> {
 
     private final ShopOpenSaveInfoRepository shopOpenSaveInfoRepository;
 
@@ -27,7 +28,7 @@ public class ShopOpenCreateUseCase extends UseCase<Boolean> {
     }
 
     @Override
-    public Observable<Boolean> createObservable(RequestParams requestParams) {
+    public Observable<ResponseCreateShop> createObservable(RequestParams requestParams) {
         return shopOpenSaveInfoRepository.createShop();
     }
 }
