@@ -59,6 +59,8 @@ public class WidgetWrapperBuyView extends LinearLayout {
     private OnBuyButtonListener listener;
     private BottomSheetView bottomSheetView;
 
+    private String operatorLabel;
+
     public WidgetWrapperBuyView(Context context) {
         super(context);
         init();
@@ -90,9 +92,11 @@ public class WidgetWrapperBuyView extends LinearLayout {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 isInsant = isChecked;
-                buyButton.setText(
-                        isChecked ? getResources().getString(R.string.title_button_pay)
-                                : getResources().getString(R.string.title_buy));
+                if (isChecked) {
+                    buyButton.setText(getResources().getString(R.string.title_button_pay));
+                } else {
+                    buyButton.setText(operatorLabel);
+                }
 
                 listener.trackingCheckInstantSaldo(isChecked);
             }
@@ -100,8 +104,13 @@ public class WidgetWrapperBuyView extends LinearLayout {
     }
 
     public void setBuyButtonText(String text) {
-        if (!TextUtils.isEmpty(text)) buyButton.setText(text);
-        else buyButton.setText(getContext().getString(R.string.title_buy));
+        if (!TextUtils.isEmpty(text)) {
+            buyButton.setText(text);
+            this.operatorLabel = text;
+        } else{
+            buyButton.setText(getContext().getString(R.string.title_buy));
+            this.operatorLabel = getContext().getString(R.string.title_buy);
+        }
     }
 
     public boolean isCreditCheckboxChecked() {
@@ -117,7 +126,6 @@ public class WidgetWrapperBuyView extends LinearLayout {
         layoutCheckbox.setVisibility(
                 category.getAttributes().isInstantCheckoutAvailable() ? View.VISIBLE : View.GONE);
     }
-
 
     @OnClick(R2.id.btn_buy)
     public void buttonBuyClicked() {
@@ -197,6 +205,10 @@ public class WidgetWrapperBuyView extends LinearLayout {
                 bottomSheetView.show();
             }
         });
+    }
+
+    public void resetInstantCheckout() {
+        creditCheckbox.setChecked(false);
     }
 
     public interface OnBuyButtonListener {
