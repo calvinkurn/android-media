@@ -18,7 +18,6 @@
     <FrameLayout
         android:id="@+id/empty_map_view"
         android:layout_width="match_parent"
-        android:clickable="true"
         android:layout_height="@dimen/image_width_xxxl">
 
         <android.support.v7.widget.AppCompatImageView
@@ -35,15 +34,26 @@
             android:gravity="center_horizontal"
             android:text="@string/pin_pickup_location_text" />
 
-        <TextView
-            android:id="@+id/pin_pickup_location"
-            style="@style/TextView.Micro.BlackSecondary"
-            android:textStyle="bold"
-            android:lineSpacingExtra="8sp"
-            android:gravity="center_horizontal"
-            android:text="@string/pin_location_pickup"
+        <FrameLayout
+            android:id="@+id/pin_pickup_location_container"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin_vl"
+            android:background="@drawable/rect_white_rounded_stroke_gray"
             android:layout_gravity="bottom|center_horizontal"
-            android:layout_marginBottom="@dimen/margin_sm" />
+            android:layout_marginBottom="@dimen/margin_sm"
+            android:layout_marginRight="@dimen/margin_vl"
+            android:layout_marginLeft="@dimen/margin_vl">
+            <TextView
+                style="@style/TextView.Micro.BlackSecondary"
+                android:textStyle="bold"
+                android:lineSpacingExtra="8sp"
+                android:gravity="center_horizontal"
+                android:text="@string/pin_location_pickup"
+                android:layout_gravity="center"
+                />
+        </FrameLayout>
+
+
     </FrameLayout>
 
     <LinearLayout
