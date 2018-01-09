@@ -56,6 +56,10 @@
         <activity
             android:name=".bcaoneklik.activity.ListPaymentTypeActivity"
             android:label="@string/label_payment_setting" />
+
+        <activity android:name=".bcaoneklik.activity.CreditCardDetailActivity"
+            android:label="Kartu Kredit" />
+
         <activity
             android:name=".insurance.view.InsuranceTnCActivity"
             android:label="@string/title_term_and_condition"/>

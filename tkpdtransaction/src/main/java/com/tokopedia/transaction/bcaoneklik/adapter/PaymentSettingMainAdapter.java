@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.bcaoneklik.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,10 +9,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.bcaoneklik.activity.CreditCardDetailActivity;
 import com.tokopedia.transaction.bcaoneklik.listener.ListPaymentTypeView;
 import com.tokopedia.transaction.bcaoneklik.model.PaymentSettingModel;
 import com.tokopedia.transaction.bcaoneklik.model.bcaoneclick.BcaOneClickUserModel;
@@ -239,7 +240,8 @@ public class PaymentSettingMainAdapter extends RecyclerView.Adapter<RecyclerView
             cardBackground.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    
+                    Intent intent = new Intent(context, CreditCardDetailActivity.class);
+                    context.startActivity(intent);
                 }
             });
 
