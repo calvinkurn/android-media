@@ -22,12 +22,7 @@ public class TopAdsNewCostShopFragment extends TopAdsNewCostFragment<TopAdsCreat
 
     @Override
     protected void loadSuggestionBid() {
-
-    }
-
-    @Override
-    protected void onSuggestionTitleUseClick() {
-        // TODO what to do with this
+        // Do nothing
     }
 
     @Override

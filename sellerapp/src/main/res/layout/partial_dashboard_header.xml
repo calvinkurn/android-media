@@ -53,7 +53,7 @@
 
                 <TextView
                     android:id="@+id/text_view_shop_name"
-                    style="@style/TextView.Subheading.Bold"
+                    style="@style/TextView.Title.Bold"
                     tools:text="Toko Kelontong Indonesia" />
 
                 <LinearLayout
@@ -74,7 +74,7 @@
 
                     <TextView
                         android:id="@+id/text_view_gm_status"
-                        style="@style/TextView.Body1"
+                        style="@style/TextView.Small"
                         android:layout_gravity="center_vertical"
                         tools:text="Regular Merchant" />
                 </LinearLayout>
@@ -124,7 +124,7 @@
             android:foreground="?attr/selectableItemBackground">
 
             <TextView
-                style="@style/TextView.Body1.Bold.BlackSecondary"
+                style="@style/TextView.Small.Bold.BlackSecondary"
                 android:text="@string/shop_reputation" />
 
             <com.tokopedia.design.reputation.ShopReputationView
@@ -135,7 +135,7 @@
 
             <TextView
                 android:id="@+id/text_view_reputation_point"
-                style="@style/TextView.Caption.BlackDisabled"
+                style="@style/TextView.Micro.BlackDisabled"
                 android:layout_marginTop="@dimen/margin_vs"
                 android:text="@string/label_empty_value"
                 tools:text="50.000 poin"/>
@@ -154,12 +154,12 @@
             android:foreground="?attr/selectableItemBackground">
 
             <TextView
-                style="@style/TextView.Body1.Bold.BlackSecondary"
+                style="@style/TextView.Small.Bold.BlackSecondary"
                 android:text="@string/transaction_success" />
 
             <TextView
                 android:id="@+id/text_view_transaction_success"
-                style="@style/TextView.Display1"
+                style="@style/TextView.Headline"
                 android:text="@string/label_empty_value"
                 tools:text="80%"/>
         </LinearLayout>
