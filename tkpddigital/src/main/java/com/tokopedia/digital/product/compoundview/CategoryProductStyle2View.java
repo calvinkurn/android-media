@@ -274,6 +274,8 @@ public class CategoryProductStyle2View extends
                 operatorSelected = data;
                 if (!TextUtils.isEmpty(operatorSelected.getRule().getButtonText())) {
                     btnBuyDigital.setText(operatorSelected.getRule().getButtonText());
+                } else {
+                    btnBuyDigital.setText(context.getString(R.string.label_btn_buy_digital));
                 }
                 if (!data.getClientNumberList().isEmpty()) {
                     renderClientNumberInputForm(operatorSelected);
