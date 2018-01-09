@@ -93,6 +93,9 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
 
     private boolean topUpAvailable;
 
+    private String categoryId;
+    private String operatorId;
+
     @SuppressWarnings("unused")
     @DeepLink(Constants.Applinks.WALLET_HOME)
     public static Intent getcallingIntent(Context context, Bundle extras) {
@@ -265,6 +268,8 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
                 operatorSelected = operator;
             }
         }
+        categoryId = categoryData.getCategoryId();
+        operatorId = operatorSelected.getOperatorId();
         topUpTokoCashView.renderDataTopUp(categoryData, operatorSelected);
         topUpTokoCashView.setListener(getActionListenerTopUpView());
         if (topUpAvailable) topupTokoCashViewLayout.addView(topUpTokoCashView);
@@ -276,7 +281,7 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
             public void onDigitalChooserClicked(List<Product> productList, String productText) {
                 startActivityForResult(
                         DigitalChooserActivity.newInstanceProductChooser(
-                                TopUpTokoCashActivity.this, productList, productText
+                                TopUpTokoCashActivity.this, categoryId, operatorId, productText
                         ),
                         IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER
                 );
