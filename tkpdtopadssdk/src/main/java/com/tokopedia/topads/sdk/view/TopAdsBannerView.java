@@ -75,7 +75,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         promotedTxt.setText(cpm.getPromotedText());
         nameTxt.setText(escapeHTML(cpm.getName()));
 
-        String desc = String.format("%s %s", escapeHTML(cpm.getPromotedText()), cpm.getCta());
+        String desc = String.format("%s %s", escapeHTML(cpm.getDecription()), cpm.getCta());
         setTextColor(descriptionTxt, desc, cpm.getCta(), ContextCompat.getColor(context, R.color.tkpd_main_green));
         for (Badge badge : cpm.getBadges()) {
             ImageView badgeImg = new ImageView(context);
@@ -100,7 +100,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         TextView descriptionTxt = (TextView) findViewById(R.id.description);
         imageLoader.loadImage(cpm.getCpmImage().getFullEcs(), cpm.getCpmImage().getFullUrl(), iconImg);
         nameTxt.setText(escapeHTML(cpm.getName()));
-        String desc = String.format("%s %s", escapeHTML(cpm.getPromotedText()), cpm.getCta());
+        String desc = String.format("%s %s", escapeHTML(cpm.getDecription()), cpm.getCta());
         setTextColor(descriptionTxt, desc, cpm.getCta(), ContextCompat.getColor(context, R.color.tkpd_main_green));
     }
 
