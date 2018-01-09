@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.transaction.R;
@@ -235,6 +236,13 @@ public class PaymentSettingMainAdapter extends RecyclerView.Adapter<RecyclerView
 
         void bindCreditCardItem(CreditCardModelItem item) {
             cardBackground.setBackgroundResource(getBackgroundResource(item));
+            cardBackground.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    
+                }
+            });
+
             cardNumber.setText(" * * * * " + item.getMaskedNumber().substring(12));
             ImageHandler.LoadImage(cardImage, item.getCardTypeImage());
         }
