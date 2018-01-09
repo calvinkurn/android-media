@@ -59,7 +59,7 @@ public class TkpdBaseURL {
     public static String MAPS_DOMAIN = "https://gw.tokopedia.com/";
     public static String BASE_API_DOMAIN = "https://api.tokopedia.com/";
 
-    public static String WALLET_DOMAIN = "https://wallet.tokopedia.id/";
+    public static String WALLET_DOMAIN = "https://www.tokocash.com/";
     public static String TOKOPOINT_API_DOMAIN = "https://api.tokopedia.com/tokoplus/";
 
     public static class Product {
