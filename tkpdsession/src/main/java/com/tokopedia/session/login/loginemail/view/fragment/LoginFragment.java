@@ -247,8 +247,10 @@ public class LoginFragment extends BaseDaggerFragment
         forgotPass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(ForgotPasswordActivity.getCallingIntent(getActivity(), emailEditText.getText()
-                        .toString()));
+                Intent intent = ForgotPasswordActivity.getCallingIntent(getActivity(), emailEditText.getText()
+                        .toString());
+                intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+                startActivity(intent);
             }
         });
     }
@@ -301,7 +303,9 @@ public class LoginFragment extends BaseDaggerFragment
 
     private void goToRegisterInitial() {
         UnifyTracking.eventTracking(LoginAnalytics.goToRegisterFromLogin());
-        startActivity(RegisterInitialActivity.getCallingIntent(getActivity()));
+        Intent intent = RegisterInitialActivity.getCallingIntent(getActivity());
+        intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+        startActivity(intent);
         getActivity().finish();
     }
 

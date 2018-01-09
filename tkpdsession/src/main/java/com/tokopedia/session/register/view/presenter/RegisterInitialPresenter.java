@@ -11,6 +11,7 @@ import com.tokopedia.core.network.retrofit.response.ErrorCode;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.session.domain.interactor.DiscoverUseCase;
+import com.tokopedia.session.login.loginemail.LoginAnalytics;
 import com.tokopedia.session.register.domain.interactor.registerinitial.GetFacebookCredentialUseCase;
 import com.tokopedia.session.register.domain.interactor.registerinitial.LoginWebviewUseCase;
 import com.tokopedia.session.register.domain.interactor.registerinitial.LoginWithSosmedUseCase;
@@ -18,6 +19,7 @@ import com.tokopedia.session.register.view.subscriber.registerinitial.GetFaceboo
 import com.tokopedia.session.register.view.subscriber.registerinitial.RegisterDiscoverSubscriber;
 import com.tokopedia.session.register.view.subscriber.registerinitial.RegisterSosmedSubscriber;
 import com.tokopedia.session.register.view.viewlistener.RegisterInitial;
+import com.tokopedia.session.session.fragment.WebViewLoginFragment;
 
 import javax.inject.Inject;
 
@@ -83,10 +85,11 @@ public class RegisterInitialPresenter extends BaseDaggerPresenter<RegisterInitia
                 && bundle.getString(ARGS_PATH) != null
                 && bundle.getString(ARGS_CODE) != null
                 && bundle.getString(ARGS_SERVER) != null) {
+            String name = bundle.getString(WebViewLoginFragment.NAME, "");
             registerWebviewUseCase.execute(LoginWebviewUseCase.getParamWebview(
                     bundle.getString(ARGS_CODE),
                     HTTPS + bundle.getString(ARGS_SERVER) + bundle.getString(ARGS_PATH)
-            ), new RegisterSosmedSubscriber(getView()));
+            ), new RegisterSosmedSubscriber(name, getView()));
         } else {
             getView().dismissProgressBar();
             getView().onErrorRegisterSosmed(
@@ -110,7 +113,7 @@ public class RegisterInitialPresenter extends BaseDaggerPresenter<RegisterInitia
         getView().showProgressBar();
         loginSosmedUseCase.execute(
                 LoginWithSosmedUseCase.getParamFacebook(accessToken),
-                new RegisterSosmedSubscriber(getView())
+                new RegisterSosmedSubscriber(LoginAnalytics.Label.FACEBOOK, getView())
         );
     }
 
@@ -124,7 +127,7 @@ public class RegisterInitialPresenter extends BaseDaggerPresenter<RegisterInitia
         getView().showProgressBar();
         loginSosmedUseCase.execute(
                 LoginWithSosmedUseCase.getParamGoogle(accessToken),
-                new RegisterSosmedSubscriber(getView())
+                new RegisterSosmedSubscriber(LoginAnalytics.Label.GPLUS, getView())
         );
     }
 }

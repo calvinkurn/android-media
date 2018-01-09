@@ -1,23 +1,15 @@
 package com.tokopedia.session.register.view.activity;
 
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
+import android.support.v4.app.FragmentTransaction;
 
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.session.R;
 import com.tokopedia.session.register.view.fragment.RegisterEmailFragment;
 
@@ -25,7 +17,7 @@ import com.tokopedia.session.register.view.fragment.RegisterEmailFragment;
  * Created by nisie on 1/27/17.
  */
 
-public class RegisterEmailActivity extends BasePresenterActivity {
+public class RegisterEmailActivity extends BasePresenterActivity implements HasComponent{
 
     @Override
     protected void setupURIPass(Uri data) {
@@ -51,7 +43,7 @@ public class RegisterEmailActivity extends BasePresenterActivity {
     protected void initView() {
 
         RegisterEmailFragment fragment = RegisterEmailFragment.createInstance();
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         if (getFragmentManager().findFragmentById(R.id.container) == null) {
             fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
         }
@@ -93,5 +85,10 @@ public class RegisterEmailActivity extends BasePresenterActivity {
 
     public static Intent getCallingIntent(Context context) {
         return new Intent(context, RegisterEmailActivity.class);
+    }
+
+    @Override
+    public AppComponent getComponent() {
+        return getApplicationComponent();
     }
 }

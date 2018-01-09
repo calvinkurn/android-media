@@ -1,6 +1,5 @@
 package com.tokopedia.session.login.loginphonenumber.view.fragment;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -23,8 +22,8 @@ import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.tokocashotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.tokocashotp.view.viewmodel.MethodItem;
 import com.tokopedia.session.R;
+import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.login.loginphonenumber.view.activity.NotConnectedTokocashActivity;
-import com.tokopedia.session.session.activity.Login;
 
 import java.util.ArrayList;
 
@@ -166,7 +165,7 @@ public class NotConnectedTokocashFragment extends BaseDaggerFragment {
 
     private void goToLoginPage() {
         if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
-            Intent intentLogin = Login.getCallingIntent(getActivity());
+            Intent intentLogin = LoginActivity.getCallingIntent(getActivity());
             Intent intentHome = ((TkpdCoreRouter) MainApplication.getAppContext()).getHomeIntent
                     (getActivity());
             intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

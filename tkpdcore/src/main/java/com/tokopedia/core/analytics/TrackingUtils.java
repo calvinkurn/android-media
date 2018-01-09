@@ -157,32 +157,32 @@ public class TrackingUtils extends TrackingConfig {
     }
 
     public static void setMoEUserAttributesLogin(String userId,
-                                            String fullName,
-                                            String emailAddress,
-                                            String phoneNumber,
-                                            boolean isGoldMerchant,
-                                            String shopName,
-                                            String shopId,
-                                            boolean isSeller,
-                                            String method) {
+                                                 String fullName,
+                                                 String emailAddress,
+                                                 String phoneNumber,
+                                                 boolean isGoldMerchant,
+                                                 String shopName,
+                                                 String shopId,
+                                                 boolean isSeller,
+                                                 String method) {
 
-            CustomerWrapper wrapper = new CustomerWrapper.Builder()
-                    .setCustomerId(userId)
-                    .setFullName(fullName)
-                    .setEmailAddress(emailAddress)
-                    .setPhoneNumber(normalizePhoneNumber(phoneNumber))
-                    .setGoldMerchant(isGoldMerchant)
-                    .setShopName(shopName)
-                    .setShopId(shopId)
-                    .setSeller(isSeller)
-                    .setFirstName(getFirstName(fullName))
-                    .setMethod(method)
-                    .build();
+        CustomerWrapper wrapper = new CustomerWrapper.Builder()
+                .setCustomerId(userId)
+                .setFullName(fullName)
+                .setEmailAddress(emailAddress)
+                .setPhoneNumber(normalizePhoneNumber(phoneNumber))
+                .setGoldMerchant(isGoldMerchant)
+                .setShopName(shopName)
+                .setShopId(shopId)
+                .setSeller(isSeller)
+                .setFirstName(getFirstName(fullName))
+                .setMethod(method)
+                .build();
 
-            getMoEngine().setUserData(wrapper, "LOGIN");
-            sendMoEngageLoginEvent(wrapper);
-        }
+        getMoEngine().setUserData(wrapper, "LOGIN");
+        sendMoEngageLoginEvent(wrapper);
     }
+
 
     public static void eventMoEngageLogoutUser() {
         getMoEngine().logoutEvent();

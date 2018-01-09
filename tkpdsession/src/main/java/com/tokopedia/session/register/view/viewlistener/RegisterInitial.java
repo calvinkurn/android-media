@@ -2,7 +2,6 @@ package com.tokopedia.session.register.view.viewlistener;
 
 import android.content.Intent;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -36,7 +35,7 @@ public interface RegisterInitial {
 
         void onErrorRegisterSosmed(String errorMessage);
 
-        void onSuccessLogin();
+        void onSuccessRegisterSosmed(String methodName);
 
         void onGoToCreatePasswordPage(GetUserInfoDomainData userInfoDomainData);
 

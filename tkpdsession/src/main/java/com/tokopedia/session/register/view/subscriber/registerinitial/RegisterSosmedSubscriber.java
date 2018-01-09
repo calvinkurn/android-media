@@ -15,9 +15,11 @@ import rx.Subscriber;
 
 public class RegisterSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
     private final RegisterInitial.View viewListener;
+    private final String methodName;
 
-    public RegisterSosmedSubscriber(RegisterInitial.View viewListener) {
+    public RegisterSosmedSubscriber(String methodName, RegisterInitial.View viewListener) {
         this.viewListener = viewListener;
+        this.methodName = methodName;
     }
 
     @Override
@@ -40,7 +42,7 @@ public class RegisterSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
         } else if (registerSosmedDomain.getMakeLoginModel() != null
                 && !isGoToSecurityQuestion(registerSosmedDomain.getMakeLoginModel())
                 && isMsisdnVerified(registerSosmedDomain.getInfo())) {
-            viewListener.onSuccessLogin();
+            viewListener.onSuccessRegisterSosmed(methodName);
         } else if (!isGoToSecurityQuestion(registerSosmedDomain.getMakeLoginModel())
                 && !isMsisdnVerified(registerSosmedDomain.getInfo())) {
             viewListener.onGoToPhoneVerification();

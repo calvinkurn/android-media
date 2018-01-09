@@ -99,7 +99,6 @@ import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
-import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.datepicker.DatePickerUtil;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
@@ -519,12 +518,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         cacheApiClearAllUseCase.execute(RequestParams.EMPTY, new TkpdSellerLogout.EmptySubscriber());
 
         TkpdSellerLogout.onLogOut(appComponent);
-    }
-
-    @Override
-    public void goToRegister(Context context) {
-        Intent intent = Login.getRegisterIntent(context);
-        context.startActivity(intent);
     }
 
     @Override

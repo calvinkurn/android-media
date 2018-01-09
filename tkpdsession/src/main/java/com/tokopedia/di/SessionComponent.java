@@ -16,6 +16,7 @@ import com.tokopedia.session.login.loginphonenumber.view.fragment.ChooseTokocash
 import com.tokopedia.session.login.loginphonenumber.view.fragment.LoginPhoneNumberFragment;
 import com.tokopedia.session.login.loginphonenumber.view.fragment.NotConnectedTokocashFragment;
 import com.tokopedia.session.register.view.fragment.CreatePasswordFragment;
+import com.tokopedia.session.register.view.fragment.RegisterEmailFragment;
 import com.tokopedia.session.register.view.fragment.RegisterInitialFragment;
 
 import dagger.Component;
@@ -31,6 +32,8 @@ public interface SessionComponent {
     void inject(LoginFragment loginFragment);
 
     void inject(RegisterInitialFragment registerInitialFragment);
+
+    void inject(RegisterEmailFragment registerEmailFragment);
 
     void inject(CreatePasswordFragment createPasswordFragment);
 

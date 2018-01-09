@@ -3,10 +3,10 @@ package com.tokopedia.session.register.view.fragment;
 import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
@@ -20,8 +20,10 @@ import android.text.style.ClickableSpan;
 import android.text.style.StyleSpan;
 import android.util.Patterns;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
@@ -32,18 +34,23 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
-import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.CustomPhoneNumberUtil;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.session.R;
 import com.tokopedia.session.activation.view.activity.ActivationActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.google.GoogleSignInActivity;
+import com.tokopedia.session.login.loginemail.LoginAnalytics;
+import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.register.RegisterConstant;
 import com.tokopedia.session.register.data.model.RegisterViewModel;
 import com.tokopedia.session.register.view.adapter.AutoCompleteTextAdapter;
@@ -70,95 +77,70 @@ import permissions.dispatcher.RuntimePermissions;
 import static com.tokopedia.session.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT;
 import static com.tokopedia.session.google.GoogleSignInActivity.RC_SIGN_IN_GOOGLE;
 
+
 /**
  * Created by nisie on 1/27/17.
  */
 
 @RuntimePermissions
-public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPresenter>
+public class RegisterEmailFragment extends BaseDaggerFragment
         implements RegisterEmailViewListener, RegisterConstant {
 
     View container;
-
     View redirectView;
-
     AutoCompleteTextView email;
-
     TextInputEditText registerPassword;
-
     TextView registerButton;
-
     EditText phone;
-
     TextInputLayout wrapperName;
-
     TextInputLayout wrapperEmail;
-
     TextInputLayout wrapperPassword;
-
     TextInputLayout wrapperPhone;
-
     TextView loginButton;
-
     EditText name;
-
     TextView registerNextTAndC;
 
     TkpdProgressDialog progressDialog;
+    RegisterEmailPresenter presenter;
 
     public static RegisterEmailFragment createInstance() {
         return new RegisterEmailFragment();
     }
 
     @Override
-    protected boolean isRetainInstance() {
-        return true;
+    protected String getScreenName() {
+        return AppScreen.SCREEN_REGISTER;
     }
 
     @Override
-    protected void onFirstTimeLaunched() {
-        Intent intent = new Intent(getActivity(), GoogleSignInActivity.class);
-        startActivityForResult(intent, RC_SIGN_IN_GOOGLE);
+    public void onStart() {
+        super.onStart();
+        ScreenTracking.screen(getScreenName());
     }
 
     @Override
-    public void onSaveState(Bundle state) {
-
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
-
-    }
-
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
-    }
-
-    @Override
-    protected void initialPresenter() {
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         presenter = RegisterEmailDependencyInjector.getPresenter(this);
-    }
-
-    @Override
-    protected void initialListener(Activity activity) {
 
     }
 
     @Override
-    protected void setupArguments(Bundle arguments) {
+    protected void initInjector() {
+        AppComponent appComponent = getComponent(AppComponent.class);
 
+        DaggerSessionComponent daggerSessionComponent = (DaggerSessionComponent)
+                DaggerSessionComponent.builder()
+                        .appComponent(appComponent)
+                        .build();
+
+        daggerSessionComponent.inject(this);
     }
 
+    @Nullable
     @Override
-    protected int getFragmentLayout() {
-        return R.layout.fragment_register_email;
-    }
-
-    @Override
-    protected void initView(View view) {
-        container = view.findViewById(R.id.container);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_register_email, container, false);
         redirectView = view.findViewById(R.id.redirect_reset_password);
         email = view.findViewById(R.id.register_email);
         registerPassword = view.findViewById(R.id.register_password);
@@ -173,7 +155,14 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
         registerNextTAndC = view.findViewById(R.id.register_next_detail_t_and_p);
 
         prepareView(view);
+        setViewListener();
+        return view;
+    }
 
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        Intent intent = new Intent(getActivity(), GoogleSignInActivity.class);
+        startActivityForResult(intent, RC_SIGN_IN_GOOGLE);
     }
 
     private void prepareView(View view) {
@@ -210,9 +199,9 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
     }
 
     private void showTermsAndOptionsTextView() {
-        String joinString = context.getString(com.tokopedia.core.R.string.detail_term_and_privacy) +
-                " " + context.getString(com.tokopedia.core.R.string.link_term_condition) +
-                ", serta " + context.getString(com.tokopedia.core.R.string.link_privacy_policy);
+        String joinString = getString(com.tokopedia.core.R.string.detail_term_and_privacy) +
+                " " + getString(com.tokopedia.core.R.string.link_term_condition) +
+                ", serta " + getString(com.tokopedia.core.R.string.link_privacy_policy);
 
         registerNextTAndC.setText(MethodChecker.fromHtml(joinString));
         registerNextTAndC.setMovementMethod(LinkMovementMethod.getInstance());
@@ -431,8 +420,7 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
         return new ArrayList<>(listOfAddresses);
     }
 
-    @Override
-    protected void setViewListener() {
+    private void setViewListener() {
         email.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -474,19 +462,9 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
     private void goToLogin() {
         getActivity().finish();
 
-        startActivity(Login.getCallingIntent(
+        startActivity(LoginActivity.getCallingIntent(
                 getActivity())
         );
-    }
-
-    @Override
-    protected void initialVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
     }
 
     private void checkIsValidForm() {
@@ -605,8 +583,6 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
     @Override
     public void goToActivationPage(RegisterEmailViewModel viewModel) {
 
-        sendGTMRegisterEvent();
-
         dismissLoadingProgress();
         startActivity(ActivationActivity.getCallingIntent(getActivity(),
                 email.getText().toString()
@@ -650,7 +626,9 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
 
     @Override
     public void onSuccessRegister(RegisterEmailViewModel registerResult) {
-        UserAuthenticationAnalytics.sendAnalytics();
+
+        UnifyTracking.eventTracking(LoginAnalytics.getEventSuccessRegisterEmail());
+
         dismissLoadingProgress();
         setActionsEnabled(true);
         presenter.startAction(registerResult);
@@ -665,10 +643,6 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
         registerViewModel.setAgreedTermCondition(true);
         registerViewModel.setPassword(registerPassword.getText().toString());
         registerViewModel.setIsAutoVerify(isEmailAddressFromDevice() ? 1 : 0);
-    }
-
-    private void sendGTMRegisterEvent() {
-        UnifyTracking.eventRegisterSuccess(getString(com.tokopedia.core.R.string.title_email));
     }
 
     private boolean isEmailAddressFromDevice() {
@@ -700,7 +674,7 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(ForgotPasswordActivity.getCallingIntent(context, emailString));
+                startActivity(ForgotPasswordActivity.getCallingIntent(getActivity(), emailString));
             }
         });
         redirectView.setVisibility(View.VISIBLE);
@@ -733,7 +707,6 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        presenter.unsubscribeObservable();
     }
 
     @Override
@@ -760,4 +733,5 @@ public class RegisterEmailFragment extends BasePresenterFragment<RegisterEmailPr
                 break;
         }
     }
+
 }

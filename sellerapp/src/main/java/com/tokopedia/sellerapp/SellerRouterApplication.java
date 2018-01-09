@@ -40,11 +40,6 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResCenterActivity;
-import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
-import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
-import com.tokopedia.discovery.DiscoveryRouter;
-import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
@@ -68,6 +63,8 @@ import com.tokopedia.inbox.inboxchat.activity.SendMessageActivity;
 import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
 import com.tokopedia.inbox.inboxmessageold.activity.InboxMessageActivity;
 import com.tokopedia.inbox.inboxmessageold.activity.SendMessageActivityOld;
+import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
+import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationProfileActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
@@ -100,7 +97,8 @@ import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.sellerapp.truecaller.TruecallerActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
-import com.tokopedia.session.session.activity.Login;
+import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
+import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.activity.ReputationProduct;
 import com.tokopedia.tkpd.tkpdreputation.shopreputation.ShopReputationList;
@@ -389,12 +387,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void goToRegister(Context context) {
-        Intent intent = Login.getSellerRegisterIntent(context);
-        context.startActivity(intent);
-    }
-
-    @Override
     public Intent getLoginIntent(Context context) {
         Intent intent = LoginActivity.getCallingIntent(context);
         return intent;
@@ -402,7 +394,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getRegisterIntent(Context context) {
-        Intent intent = Login.getSellerRegisterIntent(context);
+        Intent intent = RegisterInitialActivity.getCallingIntent(context);
         return intent;
     }
 

@@ -45,7 +45,6 @@ import com.tokopedia.session.login.loginphonenumber.view.presenter.ChooseTokocas
 import com.tokopedia.session.login.loginphonenumber.view.viewlistener.ChooseTokocashAccount;
 import com.tokopedia.session.login.loginphonenumber.view.viewmodel.AccountTokocash;
 import com.tokopedia.session.login.loginphonenumber.view.viewmodel.ChooseTokoCashAccountViewModel;
-import com.tokopedia.session.session.activity.Login;
 
 import java.util.ArrayList;
 

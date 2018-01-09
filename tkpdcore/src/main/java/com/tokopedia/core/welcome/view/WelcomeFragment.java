@@ -49,6 +49,7 @@ import butterknife.BindView;
 public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresenter> implements WelcomeFragmentView {
 
     private static final int REQUEST_LOGIN = 101;
+    private static final int REQUEST_REGISTER = 102;
 
     @BindView(R2.id.background)
     ImageView background;
@@ -182,7 +183,9 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
         clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View view) {
-                ((TkpdCoreRouter) getActivity().getApplication()).goToRegister(getActivity());
+                Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).getRegisterIntent
+                        (getActivity());
+                startActivityForResult(intent, REQUEST_REGISTER);
             }
 
             @Override
@@ -289,8 +292,8 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(MainApplication.getAppContext() instanceof TkpdCoreRouter){
-                    Intent intent = ((TkpdCoreRouter)MainApplication.getAppContext())
+                if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
+                    Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext())
                             .getLoginWebviewIntent(getActivity(), listProvider.get(position)
                                     .getName(), listProvider.get(position).getUrl());
                     startActivityForResult(intent, REQUEST_LOGIN);
@@ -404,7 +407,8 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
         Log.d("NISNISLogin", "WelcomeFragment onActivityResult requestcode" + " " + requestCode +
                 " resultCode "
                 + resultCode);
-        if (requestCode == REQUEST_LOGIN && resultCode == Activity.RESULT_OK) {
+        if ((requestCode == REQUEST_LOGIN || requestCode == REQUEST_REGISTER)
+                && resultCode == Activity.RESULT_OK) {
             onSuccessLogin();
         }
     }

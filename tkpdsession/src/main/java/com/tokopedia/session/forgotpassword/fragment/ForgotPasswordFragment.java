@@ -2,6 +2,7 @@ package com.tokopedia.session.forgotpassword.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
@@ -220,7 +221,10 @@ public class ForgotPasswordFragment extends BasePresenterFragment<ForgotPassword
     }
 
     private void goToRegister() {
-        ((TkpdCoreRouter) getActivity().getApplication()).goToRegister(context);
+        Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).getRegisterIntent
+                (context);
+        intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+        startActivity(intent);
         getActivity().finish();
     }
 
