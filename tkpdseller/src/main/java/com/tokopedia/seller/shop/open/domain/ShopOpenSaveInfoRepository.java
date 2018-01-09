@@ -18,4 +18,5 @@ public interface ShopOpenSaveInfoRepository {
     Observable<Boolean> saveShopSettingStep2(RequestParams requestParams);
     Observable<Boolean> saveShopSettingStep3(CourierServiceIdWrapper courierServiceIdWrapper);
     Observable<ResponseCreateShop> createShop();
+    Observable<String> openShopPicture(String picSrc, String serverId, String url);
 }

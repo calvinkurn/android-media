@@ -20,6 +20,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.common.widget.PrefixEditText;
 import com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout;
+import com.tokopedia.seller.shop.common.tracking.TrackingOpenShop;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.util.ShopErrorHandler;
 import com.tokopedia.seller.shop.open.view.activity.ShopOpenMandatoryActivity;
@@ -48,6 +49,8 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
 
     @Inject
     ShopOpenDomainPresenterImpl shopOpenDomainPresenter;
+    @Inject
+    TrackingOpenShop trackingOpenShop;
 
     public static ShopOpenDomainFragment newInstance() {
         return new ShopOpenDomainFragment();
@@ -177,6 +180,7 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
     @Override
     public void onErrorCheckShopName(Throwable t) {
         textInputShopName.setError(ShopErrorHandler.getErrorMessage(t));
+        trackingOpenShop.eventOpenShopBiodataNameError(ShopErrorHandler.getErrorMessage(t));
     }
 
     @Override
@@ -192,12 +196,14 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
     @Override
     public void onErrorCheckShopDomain(Throwable t) {
         textInputDomainName.setError(ShopErrorHandler.getErrorMessage(t));
+        trackingOpenShop.eventOpenShopBiodataDomainError(ShopErrorHandler.getErrorMessage(t));
     }
 
     @Override
     public void onErrorReserveShop(Throwable t) {
         hideSubmitLoading();
         String message = ShopErrorHandler.getErrorMessage(t);
+        trackingOpenShop.eventOpenShopBiodataError(message);
         snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(),
                 message,
                 new NetworkErrorHelper.RetryClickedListener() {
@@ -212,6 +218,7 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
     @Override
     public void onSuccessReserveShop(String shopName) {
         hideSubmitLoading();
+        trackingOpenShop.eventOpenShopBiodataSuccess();
         goToShopOpenMandatory(shopName);
     }
 

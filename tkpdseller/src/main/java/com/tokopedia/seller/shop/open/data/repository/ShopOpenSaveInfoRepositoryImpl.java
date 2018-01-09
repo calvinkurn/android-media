@@ -40,4 +40,9 @@ public class ShopOpenSaveInfoRepositoryImpl implements ShopOpenSaveInfoRepositor
     public Observable<ResponseCreateShop> createShop() {
         return shopOpenInfoDataSource.createShop();
     }
+
+    @Override
+    public Observable<String> openShopPicture(String picSrc, String serverId, String url) {
+        return shopOpenInfoDataSource.openShopPicture(picSrc, serverId, url);
+    }
 }

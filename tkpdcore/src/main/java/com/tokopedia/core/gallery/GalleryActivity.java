@@ -1,27 +1,39 @@
 package com.tokopedia.core.gallery;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.MethodChecker;
+
+import java.io.File;
 
 import javax.annotation.Nonnull;
+
+import static com.tokopedia.core.newgallery.GalleryActivity.DEF_QLTY_COMPRESS;
+import static com.tokopedia.core.newgallery.GalleryActivity.DEF_WIDTH_CMPR;
 
 public class GalleryActivity extends TActivity implements AlbumCollection.AlbumCallbacks, AdapterView
         .OnItemSelectedListener, GallerySelectedFragment.ListenerSelected {
@@ -31,6 +43,10 @@ public class GalleryActivity extends TActivity implements AlbumCollection.AlbumC
     protected static final String BUNDLE_MAX_SELECTION = "bundle_max_selection";
     protected static final int DEFAULT_MAX_SELECTION = 1;
     protected static final int DEFAULT_GALLERY_TYPE = GalleryType.ofImageOnly();
+    public static final String COMPRESS_TO_TKPD = "COMPRESS_TO_TKPD";
+    public static final String TOKOPEDIA = "Tokopedia";
+    public static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 873;
+
     private int typeGallery = GalleryType.ofAll();
     private int maxSelection;
 
@@ -42,20 +58,22 @@ public class GalleryActivity extends TActivity implements AlbumCollection.AlbumC
     private final AlbumCollection albumCollection = new AlbumCollection();
     private AlbumsSpinner albumSpinner;
     private AlbumAdapter albumAdapter;
+    private boolean compressToTkpd;
 
     public static Intent createIntent(Context context) {
         return createIntent(context, DEFAULT_GALLERY_TYPE);
     }
 
     public static Intent createIntent(Context context, int galleryType) {
-        return createIntent(context, galleryType, DEFAULT_MAX_SELECTION);
+        return createIntent(context, galleryType, DEFAULT_MAX_SELECTION, false);
     }
 
-    public static Intent createIntent(Context context, int galleryType, int maxSelection) {
+    public static Intent createIntent(Context context, int galleryType, int maxSelection, boolean compressToTkpd) {
         Intent intent = new Intent(context, GalleryActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt(BUNDLE_GALLERY_TYPE, galleryType);
         bundle.putInt(BUNDLE_MAX_SELECTION, maxSelection);
+        bundle.putBoolean(COMPRESS_TO_TKPD, compressToTkpd);
         intent.putExtras(bundle);
         return intent;
     }
@@ -63,6 +81,7 @@ public class GalleryActivity extends TActivity implements AlbumCollection.AlbumC
     protected void setupBundlePass(@Nonnull Bundle extras) {
         typeGallery = extras.getInt(BUNDLE_GALLERY_TYPE);
         maxSelection = extras.getInt(BUNDLE_MAX_SELECTION);
+        compressToTkpd = extras.getBoolean(COMPRESS_TO_TKPD);
     }
 
     protected void initView() {
@@ -188,6 +207,27 @@ public class GalleryActivity extends TActivity implements AlbumCollection.AlbumC
 
     @Override
     public void onSelectedImage(MediaItem item) {
+        if (compressToTkpd) {
+            String fileNameToMove = FileUtils.generateUniqueFileName();
+            File photo = FileUtils.writeImageToTkpdPath(
+                    FileUtils.compressImage(item.getRealPath(), DEF_WIDTH_CMPR, DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
+                    fileNameToMove);
+            if (photo != null) {
+                finishWithPathFile(photo.getAbsolutePath());
+            }
+        } else {
+            finishWithMediaItem(item);
+        }
+    }
+
+    protected void finishWithPathFile(String absolutePath) {
+        Intent intent = new Intent();
+        intent.putExtra(GallerySelectedFragment.EXTRA_RESULT_SELECTION_PATH, absolutePath);
+        setResult(Activity.RESULT_OK, intent);
+        finish();
+    }
+
+    protected void finishWithMediaItem(MediaItem item) {
         Intent intent = new Intent();
         intent.putExtra(GallerySelectedFragment.EXTRA_RESULT_SELECTION, item);
         setResult(Activity.RESULT_OK, intent);

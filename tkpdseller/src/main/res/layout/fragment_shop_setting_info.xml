@@ -26,6 +26,7 @@
         <TextView
             style="@style/TextView.Subheading"
             android:layout_marginBottom="@dimen/margin_large"
+            android:gravity="center"
             android:text="@string/label_shop_open_info_title_shop" />
 
         <com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout

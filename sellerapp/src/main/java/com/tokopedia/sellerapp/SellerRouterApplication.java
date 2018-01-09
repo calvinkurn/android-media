@@ -17,6 +17,8 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.data.executor.JobExecutor;
@@ -853,5 +855,10 @@ public abstract class SellerRouterApplication extends MainApplication
     public void navigateToGeoLocationActivityRequest(final Fragment fragment, final int requestCode, final String generatedAddress, LocationPass locationPass) {
         Intent intent = GeolocationActivity.createInstance(fragment.getActivity(), locationPass);
         fragment.startActivityForResult(intent, requestCode);
+    }
+
+    @Override
+    public void sendEventTracking(String event, String category, String action, String label) {
+        UnifyTracking.sendGTMEvent(new EventTracking(event, category, action, label).getEvent());
     }
 }

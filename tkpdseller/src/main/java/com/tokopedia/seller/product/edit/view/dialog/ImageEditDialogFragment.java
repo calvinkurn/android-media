@@ -25,8 +25,6 @@ public class ImageEditDialogFragment extends DialogFragment {
         void clickEditProductFromCamera(int position);
 
         void clickEditProductFromGallery(int position);
-
-        void clickEditProductFromInstagram(int position);
     }
 
     public int position;
@@ -56,8 +54,7 @@ public class ImageEditDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         imageMenu = new CharSequence[]{
                 getString(R.string.edit_from_camera_text_description),
-                getString(R.string.edit_from_gallery_text_description),
-                getString(R.string.edit_from_instagram_text_description)};
+                getString(R.string.edit_from_gallery_text_description)};
         builder.setItems(imageMenu, getImageAddProductListener());
         return builder.create();
     }
@@ -72,8 +69,6 @@ public class ImageEditDialogFragment extends DialogFragment {
                         mListener.clickEditProductFromCamera(position);
                     } else if (stringClicked.equals(getString(R.string.edit_from_gallery_text_description))) {
                         mListener.clickEditProductFromGallery(position);
-                    } else if (stringClicked.equals(getString(R.string.edit_from_instagram_text_description))) {
-                        mListener.clickEditProductFromInstagram(position);
                     }
                 }
             }
