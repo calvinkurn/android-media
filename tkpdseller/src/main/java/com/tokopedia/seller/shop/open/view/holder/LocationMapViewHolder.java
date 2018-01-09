@@ -99,6 +99,9 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
                 @Override
                 public void onClick(View view) {
                     shopAddressEdittext.setText(generatedLocationOpenShop.getText().toString());
+                    if(viewHolderListener3 != null){
+                        viewHolderListener3.sendTrackingData();
+                    }
                 }
             });
         }else{
@@ -170,5 +173,6 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
 
     public interface ViewHolderListener3{
         void navigateToGeoLocationActivityRequest(String generatedMap);
+        void sendTrackingData();
     }
 }
