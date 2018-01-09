@@ -11,13 +11,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -30,15 +28,16 @@ import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
-import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.common.view.FlightExpandableOptionArrow;
+import com.tokopedia.flight.contactus.FlightContactUsActivity;
 import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderContract;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderPresenter;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderAdapter;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderTypeFactory;
 import com.tokopedia.flight.orderlist.di.FlightOrderComponent;
+import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapter;
@@ -78,10 +77,11 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     private FlightBookingReviewPassengerAdapter flightBookingReviewPassengerAdapter;
     private FlightSimpleAdapter flightBookingReviewPriceAdapter;
     private FlightOrderDetailPassData flightOrderDetailPassData;
+    private FlightOrder flightOrder;
 
     private String eticketLink = "";
     private String invoiceLink = "";
-    private String cancelLink = "";
+    private String cancelMessage = "";
 
     public static Fragment createInstance(FlightOrderDetailPassData flightOrderDetailPassData) {
         FlightDetailOrderFragment flightDetailOrderFragment = new FlightDetailOrderFragment();
@@ -262,11 +262,11 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     }
 
     @Override
-    public void updateOrderData(String transactionDate, String eTicketLink, String invoiceLink, String cancelUrl) {
+    public void updateOrderData(String transactionDate, String eTicketLink, String invoiceLink, String cancelMessage) {
         this.transactionDate.setText(transactionDate);
         this.eticketLink = eTicketLink;
         this.invoiceLink = invoiceLink;
-        this.cancelLink = FlightUrl.CONTACT_US_FLIGHT_PREFIX + cancelUrl;
+        this.cancelMessage = cancelMessage;
     }
 
     @Override
@@ -352,8 +352,8 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     }
 
     @Override
-    public String getCancelUrl() {
-        return cancelLink;
+    public String getCancelMessage() {
+        return cancelMessage;
     }
 
     @Override
@@ -378,5 +378,20 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         }
         taskStackBuilder.addNextIntent(FlightDashboardActivity.getCallingIntent(getActivity()));
         taskStackBuilder.startActivities();
+    }
+
+    @Override
+    public void renderFlightOrder(FlightOrder flightOrder) {
+        this.flightOrder = flightOrder;
+    }
+
+    @Override
+    public FlightOrder getFlightOrder() {
+        return flightOrder;
+    }
+
+    @Override
+    public void navigateToContactUs(FlightOrder flightOrder) {
+        startActivity(FlightContactUsActivity.createContactUsIntent(getActivity(), flightOrder.getId(), cancelMessage));
     }
 }
