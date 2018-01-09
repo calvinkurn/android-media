@@ -3,18 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <WebView
-        android:id="@+id/web_view_pickup_booth_location"
+    <com.google.android.gms.maps.MapView
+        xmlns:map="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/mapview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <ProgressBar
-        android:id="@+id/pb_loading"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="-6dp"
-        android:indeterminate="true" />
+        android:layout_height="match_parent"
+        android:clickable="false"
+        map:liteMode="true"
+        map:mapType="normal"
+        map:cameraZoom="17" />
 
     <Button
         android:id="@+id/btn_choose_pickup_booth"

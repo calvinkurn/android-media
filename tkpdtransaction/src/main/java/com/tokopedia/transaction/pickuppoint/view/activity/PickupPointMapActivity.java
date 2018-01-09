@@ -4,37 +4,34 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.webkit.WebChromeClient;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.Button;
-import android.widget.ProgressBar;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
+
+import java.util.Arrays;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
 import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_DATA_STORE;
 
-public class PickupPointMapActivity extends BasePresenterActivity {
+public class PickupPointMapActivity extends BasePresenterActivity implements OnMapReadyCallback {
 
-    private static final String MAP_PARAM_WIDTH = "640";
-    private static final String MAP_PARAM_HEIGHT = "640";
-    private static final String MAP_PARAM_ZOOM = "17";
-    private static final String MAP_PARAM_TYPE = "roadmap";
-
-    @BindView(R2.id.web_view_pickup_booth_location)
-    WebView webViewPickupBoothLocation;
-    @BindView(R2.id.pb_loading)
-    ProgressBar pbLoading;
     @BindView(R2.id.btn_choose_pickup_booth)
     Button btnChoosePickupBooth;
+    @BindView(R2.id.mapview)
+    MapView mapView;
 
     private Store store;
 
@@ -68,25 +65,44 @@ public class PickupPointMapActivity extends BasePresenterActivity {
     protected void initView() {
         if (getIntent().getParcelableExtra(INTENT_DATA_STORE) != null) {
             store = getIntent().getParcelableExtra(INTENT_DATA_STORE);
-            Log.e("Store1", store.toString());
-            setupWebView();
+            setupMapView();
         }
     }
 
-    private void setupWebView() {
-        webViewPickupBoothLocation.getSettings().setLoadWithOverviewMode(true);
-        webViewPickupBoothLocation.getSettings().setUseWideViewPort(true);
-        int width = getResources().getDisplayMetrics().widthPixels;
-        int height = getResources().getDisplayMetrics().heightPixels - toolbar.getHeight();
-        Log.e(String.valueOf(width), String.valueOf(height));
-        pbLoading.setVisibility(View.VISIBLE);
-        String url = String.format(getString(com.tokopedia.transaction.R.string.url_static_map),
-                store.getGeolocation(), MAP_PARAM_ZOOM, MAP_PARAM_HEIGHT, MAP_PARAM_WIDTH,
-                MAP_PARAM_TYPE, store.getGeolocation(), getString(R.string.google_api_key));
-        Log.e("MapUrl", url);
-        webViewPickupBoothLocation.setWebViewClient(new TermsAndConditionsWebViewClient());
-        webViewPickupBoothLocation.setWebChromeClient(new WebChromeClient());
-        webViewPickupBoothLocation.loadUrl(url);
+    private void setupMapView() {
+        if (mapView != null) {
+            mapView.onCreate(null);
+            mapView.onResume();
+            mapView.getMapAsync(this);
+        }
+    }
+
+    private void setGoogleMap(GoogleMap googleMap) {
+        if (googleMap != null) {
+            List<String> geolocation = Arrays.asList(store.getGeolocation().split(","));
+            double latitude = Double.parseDouble(geolocation.get(0));
+            double longitude = Double.parseDouble(geolocation.get(1));
+            LatLng latLng = new LatLng(latitude, longitude);
+
+            googleMap.getUiSettings().setMapToolbarEnabled(false);
+            googleMap.addMarker(new MarkerOptions().position(latLng)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_icon_pointer_toped))
+            ).setDraggable(true);
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                @Override
+                public void onMapClick(LatLng latLng) {
+                    // need this even it's not used
+                    // it's used to override default function of OnMapClickListener
+                    // which is navigate to default Google Map Apps
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        setGoogleMap(googleMap);
     }
 
     @Override
@@ -113,22 +129,6 @@ public class PickupPointMapActivity extends BasePresenterActivity {
     @Override
     protected boolean isLightToolbarThemes() {
         return true;
-    }
-
-    private class TermsAndConditionsWebViewClient extends WebViewClient {
-
-        @Override
-        public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            view.loadUrl(url);
-            return true;
-        }
-
-        @Override
-        public void onPageFinished(WebView view, String url) {
-            super.onPageFinished(view, url);
-            pbLoading.setVisibility(View.GONE);
-        }
-
     }
 
     @OnClick(R2.id.btn_choose_pickup_booth)
