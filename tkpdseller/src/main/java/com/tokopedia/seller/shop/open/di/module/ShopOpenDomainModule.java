@@ -5,14 +5,15 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.seller.logistic.GetOpenShopLocationPassUseCase;
 import com.tokopedia.seller.logistic.GetOpenShopTokenUseCase;
+import com.tokopedia.seller.logistic.data.source.cloud.api.WSLogisticApi;
 import com.tokopedia.seller.shop.open.data.repository.ShopOpenRepository;
 import com.tokopedia.seller.shop.open.data.repository.ShopOpenRepositoryImpl;
 import com.tokopedia.seller.shop.open.data.source.ShopOpenDataSource;
 import com.tokopedia.seller.shop.open.di.scope.ShopOpenDomainScope;
 import com.tokopedia.seller.shop.open.data.source.cloud.api.OpenShopApi;
-import com.tokopedia.seller.shop.open.data.repository.DistrictLogisticDataRepositoryImpl;
-import com.tokopedia.seller.shop.open.data.source.LogisticDataSource;
-import com.tokopedia.seller.shop.open.domain.DistrictLogisticDataRepository;
+import com.tokopedia.seller.logistic.data.repository.DistrictLogisticDataRepositoryImpl;
+import com.tokopedia.seller.logistic.data.source.LogisticDataSource;
+import com.tokopedia.seller.logistic.domain.DistrictLogisticDataRepository;
 
 import dagger.Module;
 import dagger.Provides;
@@ -38,6 +39,12 @@ public class ShopOpenDomainModule {
     @ShopOpenDomainScope
     public OpenShopApi provideOpenShopApi(@WsV4Qualifier Retrofit retrofit) {
         return retrofit.create(OpenShopApi.class);
+    }
+
+    @Provides
+    @ShopOpenDomainScope
+    public WSLogisticApi provideWSLogisticApi(@WsV4Qualifier Retrofit retrofit) {
+        return retrofit.create(WSLogisticApi.class);
     }
 
     @Provides

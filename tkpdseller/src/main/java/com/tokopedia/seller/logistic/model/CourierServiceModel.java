@@ -1,4 +1,4 @@
-package com.tokopedia.seller.shop.open.data.model;
+package com.tokopedia.seller.logistic.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

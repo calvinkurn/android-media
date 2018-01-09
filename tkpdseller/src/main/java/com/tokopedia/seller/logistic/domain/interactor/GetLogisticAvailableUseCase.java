@@ -1,11 +1,11 @@
-package com.tokopedia.seller.shop.open.domain.interactor;
+package com.tokopedia.seller.logistic.domain.interactor;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.seller.shop.open.data.model.OpenShopCouriersModel;
-import com.tokopedia.seller.shop.open.domain.DistrictLogisticDataRepository;
+import com.tokopedia.seller.logistic.model.CouriersModel;
+import com.tokopedia.seller.logistic.domain.DistrictLogisticDataRepository;
 
 import javax.inject.Inject;
 
@@ -15,7 +15,7 @@ import rx.Observable;
  * @author by sebastianuskh on 3/27/17.
  */
 
-public class GetLogisticAvailableUseCase extends UseCase<OpenShopCouriersModel> {
+public class GetLogisticAvailableUseCase extends UseCase<CouriersModel> {
 
     public static final String DISTRICT_CODE = "DISTRICT_CODE";
     public static final int UNSELECTED_DISTRICT = -1;
@@ -34,7 +34,7 @@ public class GetLogisticAvailableUseCase extends UseCase<OpenShopCouriersModel> 
     }
 
     @Override
-    public Observable<OpenShopCouriersModel> createObservable(RequestParams requestParams) {
+    public Observable<CouriersModel> createObservable(RequestParams requestParams) {
         int districtCode = requestParams.getInt(DISTRICT_CODE, UNSELECTED_DISTRICT);
         return districLogisticDataRepository.getAvailableCouriers(districtCode);
     }

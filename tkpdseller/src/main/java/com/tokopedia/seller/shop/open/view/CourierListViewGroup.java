@@ -11,7 +11,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.shop.open.data.model.Courier;
+import com.tokopedia.seller.logistic.model.Courier;
 import com.tokopedia.seller.shop.open.view.model.CourierServiceIdWrapper;
 
 import java.util.ArrayList;

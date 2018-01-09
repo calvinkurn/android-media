@@ -1,7 +1,7 @@
-package com.tokopedia.seller.shop.open.data.source;
+package com.tokopedia.seller.logistic.data.source;
 
-import com.tokopedia.seller.shop.open.data.model.OpenShopCouriersModel;
-import com.tokopedia.seller.shop.open.data.source.cloud.DistrictLogisticDataCloud;
+import com.tokopedia.seller.logistic.model.CouriersModel;
+import com.tokopedia.seller.logistic.data.source.cloud.DistrictLogisticDataCloud;
 
 
 import javax.inject.Inject;
@@ -20,7 +20,7 @@ public class LogisticDataSource {
         this.districLogisticDataCloud = districLogisticDataCloud;
     }
 
-    public Observable<OpenShopCouriersModel> getAvailableCouriers(final int districtCode) {
+    public Observable<CouriersModel> getAvailableCouriers(final int districtCode) {
         // already got the district from Cache API
         return districLogisticDataCloud.getAvailableCouriers(districtCode);
     }
