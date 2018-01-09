@@ -31,6 +31,23 @@ public class InboxMessageDetailActivity extends BasePresenterActivity
     private static final String TAG = "INBOX_MESSAGE_DETAIL_FRAGMENT";
     InboxMessageResultReceiver mReceiver;
 
+    @DeepLink(Constants.Applinks.MESSAGE_DETAIL)
+    public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
+        Intent homeIntent = null;
+        if (GlobalConfig.isSellerApp()) {
+            homeIntent = SellerAppRouter.getSellerHomeActivity(context);
+        } else {
+            homeIntent = HomeRouter.getHomeActivity(context);
+        }
+        Intent detailsIntent = new Intent(context, InboxMessageDetailActivity.class).putExtras(extras);
+        Intent parentIntent = new Intent(context, InboxMessageActivity.class);
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+        taskStackBuilder.addNextIntent(homeIntent);
+        taskStackBuilder.addNextIntent(parentIntent);
+        taskStackBuilder.addNextIntent(detailsIntent);
+        return taskStackBuilder;
+    }
+
     @Override
     public String getScreenName() {
         return AppScreen.SCREEN_INBOX_MESSAGE_DETAIL_VIEW;

@@ -273,7 +273,8 @@ public class GTMContainer implements IGTMContainer {
         GTMDataLayer.pushEvent(context, "authenticated", DataLayer.mapOf(
                 Authenticated.KEY_CONTACT_INFO, authenticated.getAuthDataLayar(),
                 Authenticated.KEY_SHOP_ID_SELLER, authenticated.getShopId(),
-                Authenticated.KEY_SHOP_TYPE, authenticated.getShopType()
+                Authenticated.KEY_SHOP_TYPE, authenticated.getShopType(),
+                Authenticated.KEY_NETWORK_SPEED, authenticated.getNetworkSpeed()
         ));
 
         return this;
@@ -457,13 +458,16 @@ public class GTMContainer implements IGTMContainer {
         GTMDataLayer.pushGeneral(context,
                 DataLayer.mapOf("event", AppEventTracking.Event.EVENT_INTERNAL_PROMO_MULTI,
                         "ecommerce", DataLayer.mapOf(
-                                "actionField", DataLayer.mapOf(
-                                        "list", "hotlist"),
+                                "actionField", DataLayer.mapOf("list", "hotlist"),
                                 "impressions",
                                 DataLayer.listOf(
                                         hotlist.getProduct().toArray(new Object[hotlist.getProduct().size()]))
                         )
                 )
         );
+    }
+
+    public void event(String name, Map<String, Object> data) {
+        GTMDataLayer.pushEvent(context, name, data);
     }
 }

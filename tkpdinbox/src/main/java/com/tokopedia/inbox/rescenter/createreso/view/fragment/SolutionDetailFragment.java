@@ -15,8 +15,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
@@ -173,6 +173,7 @@ public class SolutionDetailFragment extends BaseDaggerFragment implements Soluti
             @Override
             public void onClick(View view) {
                 presenter.onContinueButtonClicked();
+                UnifyTracking.eventCreateResoStep2Continue();
             }
         });
     }
@@ -208,7 +209,6 @@ public class SolutionDetailFragment extends BaseDaggerFragment implements Soluti
     @Override
     public void successEditSolution(String message) {
         hideLoading();
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
 

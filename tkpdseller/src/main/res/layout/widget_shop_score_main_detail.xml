@@ -13,23 +13,16 @@
         android:gravity="center_vertical">
 
         <TextView
-            style="@style/TextView.Body1.Bold.BlackSecondary"
+            style="@style/TextView.Small.Bold.BlackSecondary"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:text="@string/shop_score_title_widget_home" />
 
         <TextView
             android:id="@+id/text_view_shop_score"
-            style="@style/TextView.Body1.Green"
+            style="@style/TextView.Small.Green"
             tools:text="@string/label_empty_value" />
 
-        <ImageView
-            android:id="@+id/arrow_left"
-            android:layout_width="@dimen/image_width_xxxs"
-            android:layout_height="@dimen/image_width_xxs"
-            android:layout_marginLeft="@dimen/margin_vs"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_arrow_right" />
     </LinearLayout>
 
     <com.tokopedia.seller.shopscore.view.widget.ShopScoreMainProgressBarWithLimit

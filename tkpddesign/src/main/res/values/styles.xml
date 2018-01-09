@@ -5,11 +5,11 @@
     </style>
 
     <style name="TextAppearence.App.TextInputLayout.VerySmall">
-        <item name="android:textSize">@dimen/font_caption</item>
+        <item name="android:textSize">@dimen/font_micro</item>
     </style>
 
     <style name="TextAppearence.App.TextInputLayout.Small">
-        <item name="android:textSize">@dimen/font_body1</item>
+        <item name="android:textSize">@dimen/font_small</item>
     </style>
 
     <style name="EditText" parent="Widget.AppCompat.EditText">
@@ -33,7 +33,7 @@
     <style name="RadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">@dimen/font_subheading</item>
+        <item name="android:textSize">@dimen/font_title</item>
         <item name="android:padding">12dp</item>`
         <item name="android:button">@drawable/bg_radio_button</item>
         <item name="android:textColor">@color/font_black_primary_70</item>
@@ -45,7 +45,7 @@
         <item name="android:maxHeight">52dp</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:textColor">@android:color/white</item>
-        <item name="android:textSize">@dimen/font_button</item>
+        <item name="android:textSize">@dimen/font_small</item>
     </style>
 
     <style name="Button.Submit">
@@ -108,7 +108,7 @@
     </style>
 
     <style name="CheckBox" parent="Widget.AppCompat.CompoundButton.CheckBox">
-        <item name="android:textSize">@dimen/font_subheading</item>
+        <item name="android:textSize">@dimen/font_title</item>
         <item name="android:textColor">@color/font_black_primary_70</item>
     </style>
 
@@ -120,6 +120,14 @@
     <style name="CardViewWidget.Voucher" >
         <item name="cardBackgroundColor">@color/white</item>
         <item name="cardElevation">0dp</item>
+    </style>
+
+    <style name="CardViewWidget.InputVoucher">
+        <item name="cardBackgroundColor">@color/white</item>
+    </style>
+
+    <style name="CardViewWidget.UsedVoucher">
+        <item name="android:background">@drawable/bg_used_voucher</item>
     </style>
 
 </resources>

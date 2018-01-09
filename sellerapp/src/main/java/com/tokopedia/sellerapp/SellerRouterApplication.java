@@ -10,9 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.data.executor.JobExecutor;
@@ -25,14 +23,15 @@ import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.ApplinkUnsupported;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.inboxreputation.listener.SellerFragmentReputation;
+import com.tokopedia.core.gcm.model.NotificationPass;
+import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.product.model.share.ShareData;
-import com.tokopedia.core.router.RemoteConfigRouter;
-import com.tokopedia.core.router.TkpdFragmentWrapper;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
@@ -40,6 +39,10 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResCenterActivity;
+import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
+import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
+import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
@@ -90,9 +93,12 @@ import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
-import com.tokopedia.sellerapp.remoteconfig.RemoteConfigFetcher;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.session.activity.Login;
+import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
+import com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.activity.ReputationProduct;
+import com.tokopedia.tkpd.tkpdreputation.shopreputation.ShopReputationList;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.topads.TopAdsModuleRouter;
@@ -102,6 +108,7 @@ import com.tokopedia.topads.dashboard.di.module.TopAdsModule;
 import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
+import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,6 +116,7 @@ import java.util.Map;
 
 import rx.Observable;
 
+import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PARAM_PRODUCT_PASS_DATA;
 
@@ -117,8 +125,9 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PA
  */
 
 public abstract class SellerRouterApplication extends MainApplication
-        implements TkpdCoreRouter, SellerModuleRouter, SellerFragmentReputation, PdpRouter, GMModuleRouter, TopAdsModuleRouter,
-        IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter, RemoteConfigRouter {
+        implements TkpdCoreRouter, SellerModuleRouter, PdpRouter, GMModuleRouter, TopAdsModuleRouter,
+        IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter,
+        ReputationRouter {
     public static final String COM_TOKOPEDIA_SELLERAPP_HOME_VIEW_SELLER_HOME_ACTIVITY = "com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity";
     public static final String COM_TOKOPEDIA_CORE_WELCOME_WELCOME_ACTIVITY = "com.tokopedia.core.welcome.WelcomeActivity";
 
@@ -131,10 +140,17 @@ public abstract class SellerRouterApplication extends MainApplication
     private DaggerTopAdsComponent.Builder daggerTopAdsBuilder;
     private TopAdsComponent topAdsComponent;
 
+    protected RemoteConfig remoteConfig;
+
     @Override
     public void onCreate() {
         super.onCreate();
         initializeDagger();
+        initializeRemoteConfig();
+    }
+
+    private void initializeRemoteConfig() {
+        remoteConfig = new FirebaseRemoteConfigImpl(this);
     }
 
     private void initializeDagger() {
@@ -289,6 +305,44 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public Intent getHomeHotlistIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getInboxReputationIntent(Context context) {
+        return InboxReputationActivity.getCallingIntent(context);
+    }
+
+    @Override
+    public NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass, Bundle data, String notifTitle) {
+        mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(
+                ((ReputationRouter) MainApplication.getAppContext())
+                        .getInboxReputationIntent(MainApplication.getAppContext())
+        );
+        mNotificationPass.classParentStack = InboxReputationActivity.class;
+        mNotificationPass.title = notifTitle;
+        mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
+        mNotificationPass.description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
+        return mNotificationPass;
+    }
+
+    @Override
+    public Fragment getReputationHistoryFragment() {
+        return SellerReputationFragment.createInstance();
+    }
+
+    @Override
+    public android.app.Fragment getShopReputationFragment() {
+        return ShopReputationList.create();
+    }
+
+    @Override
+    public Intent getProductReputationIntent(Context context) {
+        return new Intent(context, ReputationProduct.class);
+    }
+
+    @Override
     public Intent getHomeIntent(Context context) {
         Intent intent = new Intent(context, WelcomeActivity.class);
         if (SessionHandler.isV4Login(context)) {
@@ -427,18 +481,18 @@ public abstract class SellerRouterApplication extends MainApplication
         startActivity(intent);
     }
 
+    @Override
+    public void openImagePreview(Context context, ArrayList<String> images,
+                                 ArrayList<String> imageDesc, int position) {
+        Intent intent = PreviewProductImageDetail.getCallingIntent(context, images, imageDesc,
+                position);
+        context.startActivity(intent);
+    }
+
     private void goToDefaultRoute(Context context) {
         Intent intent = DashboardActivity.createInstance((Activity) context);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
-    }
-
-    @Override
-    public TkpdFragmentWrapper getSellerReputationFragment(Context context) {
-        return new TkpdFragmentWrapper(
-                context.getString(R.string.header_review_reputation),
-                SellerReputationFragment.TAG,
-                SellerReputationFragment.createInstance());
     }
 
     @Override
@@ -540,8 +594,7 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getAskBuyerIntent(Context context, String toUserId, String customerName,
                                     String customSubject, String customMessage, String source,
                                     String avatar) {
-        if(MainApplication.getInstance() instanceof RemoteConfigRouter
-                && ((RemoteConfigRouter) MainApplication.getInstance()).getBooleanConfig(TkpdInboxRouter.ENABLE_TOPCHAT))
+        if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
             return SendMessageActivity.getAskBuyerIntent(context, toUserId, customerName,
                     customSubject, customMessage, source, avatar);
         else
@@ -552,8 +605,7 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName, String
             source, String avatar) {
-        if(MainApplication.getInstance() instanceof RemoteConfigRouter
-                && ((RemoteConfigRouter) MainApplication.getInstance()).getBooleanConfig(TkpdInboxRouter.ENABLE_TOPCHAT))
+        if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
             return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName, source, avatar);
         else
             return SendMessageActivityOld.getAskSellerIntent(context, toShopId, shopName, source);
@@ -564,8 +616,7 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getAskUserIntent(Context context, String userId, String userName, String
             source, String avatar) {
-        if(MainApplication.getInstance() instanceof RemoteConfigRouter
-                && ((RemoteConfigRouter) MainApplication.getInstance()).getBooleanConfig(TkpdInboxRouter.ENABLE_TOPCHAT))
+        if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
             return SendMessageActivity.getAskUserIntent(context, userId, userName, source, avatar);
         else
             return SendMessageActivityOld.getAskUserIntent(context, userId, userName, source);
@@ -631,6 +682,12 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public void goToOrderHistory(Context context, String orderId, int userMode) {
+        Intent intent = OrderHistoryActivity.createInstance(context, orderId, userMode);
+        context.startActivity(intent);
+    }
+
+    @Override
     public void goToUserPaymentList(Activity activity) {
         Intent intent = new Intent(activity, ListPaymentTypeActivity.class);
         activity.startActivity(intent);
@@ -658,8 +715,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getInboxMessageIntent(Context context) {
-        if(MainApplication.getInstance() instanceof RemoteConfigRouter
-                && ((RemoteConfigRouter) MainApplication.getInstance()).getBooleanConfig(TkpdInboxRouter.ENABLE_TOPCHAT))
+        if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
             return InboxChatActivity.getCallingIntent(context);
         else
             return InboxMessageActivity.getCallingIntent(context);
@@ -671,46 +727,12 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public boolean getBooleanConfig(String key) {
-        if(getFirebaseRemoteConfig() != null) {
-            return getFirebaseRemoteConfig().getBoolean(key);
-        }
-        return false;
+    public Intent getResolutionCenterIntent(Context context) {
+        return InboxResCenterActivity.createIntent(context);
     }
 
     @Override
-    public byte[] getByteArrayConfig(String key) {
-        if(getFirebaseRemoteConfig() != null) {
-            return getFirebaseRemoteConfig().getByteArray(key);
-        }
-        return new byte[0];
-    }
-
-    @Override
-    public double getDoubleConfig(String key) {
-        if(getFirebaseRemoteConfig() != null) {
-            return getFirebaseRemoteConfig().getDouble(key);
-        }
-        return 0.0D;
-    }
-
-    @Override
-    public long getLongConfig(String key) {
-        if(getFirebaseRemoteConfig() != null) {
-            return getFirebaseRemoteConfig().getLong(key);
-        }
-        return 0L;
-    }
-
-    @Override
-    public String getStringConfig(String key) {
-        if(getFirebaseRemoteConfig() != null) {
-            return getFirebaseRemoteConfig().getString(key);
-        }
-        return "";
-    }
-
-    private FirebaseRemoteConfig getFirebaseRemoteConfig() {
-        return RemoteConfigFetcher.initRemoteConfig(this);
+    public Intent getDetailResChatIntentBuyer(Context context, String resoId, String shopName) {
+        return DetailResChatActivity.newBuyerInstance(context, resoId, shopName);
     }
 }

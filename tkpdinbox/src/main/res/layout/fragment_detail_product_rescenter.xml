@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:context="http://schemas.android.com/tools">
 
     <ProgressBar
         android:layout_width="wrap_content"
@@ -10,144 +11,150 @@
         android:id="@+id/loading"
         android:layout_centerInParent="true" />
 
-    <LinearLayout
-        android:id="@+id/main_view"
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/padding_small"
-        android:background="@color/white"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/title_section_product_resolution"
-            android:textColor="#868686"
-            android:textSize="@dimen/font_small"
-            android:textStyle="bold"
-            />
-
-        <View
-            android:layout_width="50dp"
-            android:layout_height="1dp"
-            android:layout_marginTop="@dimen/margin_small"
-            android:layout_marginBottom="@dimen/margin_med"
-            android:background="@color/deep_orange_500"
-            />
-
-        <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/greyish_bg"
-            app:cardElevation="4dp">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/padding_small">
-
-                <ImageView
-                    android:id="@+id/iv_product_image"
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
-                    android:src="@drawable/remove_thin"
-                    android:contentDescription="@string/title_null"
-                    />
-
-                <TextView
-                    android:id="@+id/tv_product_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_vs"
-                    android:layout_marginBottom="@dimen/margin_vs"
-                    android:layout_marginLeft="@dimen/margin_small"
-                    android:layout_toRightOf="@id/iv_product_image"
-                    android:gravity="center_vertical"
-                    android:maxLines="2"
-                    android:text="Lihat Semua produk yang dikomplain"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/font_small"
-                    />
-
-                <TextView
-                    android:id="@+id/tv_product_price"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/tv_product_name"
-                    android:layout_marginLeft="@dimen/margin_small"
-                    android:layout_toRightOf="@id/iv_product_image"
-                    android:gravity="center_vertical"
-                    android:maxLines="2"
-                    android:text="Rp 1.275.000"
-                    android:textColor="@color/tkpd_dark_red"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/font_small"
-                    />
-
-            </RelativeLayout>
-
-        </android.support.v7.widget.CardView>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_med"
-            android:layout_marginBottom="@dimen/margin_vs"
-            android:text="@string/label_buyer_complaint"
-            android:textSize="@dimen/font_small"
-            android:textColor="@color/label_text_color"
-            />
-
-        <TextView
-            android:id="@+id/complaint_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_med"
-            android:text="Produk Rusak"
-            android:textSize="@dimen/font_small"
-            />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_vs"
-            android:text="@string/label_reason_complaint"
-            android:textSize="@dimen/font_small"
-            android:textColor="@color/label_text_color"
-            />
-
-        <TextView
-            android:id="@+id/complaint_reason"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_med"
-            android:text="Pas dicolok ga bisa bunyi, pas saya eh kenapa kenapa kabelnya"
-            android:textSize="@dimen/font_small"
-            />
+        android:layout_height="wrap_content">
 
         <LinearLayout
-            android:id="@+id/view_attachment"
+            android:id="@+id/main_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="@dimen/padding_small"
+            android:background="@color/white"
             android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_vs"
+                android:text="@string/title_section_product_resolution"
+                android:textColor="@color/black_70"
+                android:textSize="@dimen/text_size_s_medium"
+                />
+
+            <View
+                android:layout_width="20dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/margin_small"
+                android:layout_marginBottom="@dimen/margin_med"
+                android:background="@color/deep_orange_500"
+                />
+
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/greyish_bg"
+                app:cardElevation="4dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/padding_small">
+
+                    <ImageView
+                        android:id="@+id/iv_product_image"
+                        android:layout_width="72dp"
+                        android:layout_height="72dp"
+                        android:contentDescription="@string/title_null"
+                        />
+
+                    <TextView
+                        android:id="@+id/tv_product_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_vs"
+                        android:layout_marginBottom="@dimen/margin_vs"
+                        android:layout_marginLeft="@dimen/margin_small"
+                        android:layout_toRightOf="@id/iv_product_image"
+                        android:gravity="center_vertical"
+                        android:maxLines="2"
+                        context:text="Lihat Semua produk yang dikomplain"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/font_small"
+                        />
+
+                    <TextView
+                        android:id="@+id/tv_product_price"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_product_name"
+                        android:layout_marginLeft="@dimen/margin_small"
+                        android:layout_toRightOf="@id/iv_product_image"
+                        android:gravity="center_vertical"
+                        android:maxLines="2"
+                        context:text="Rp 1.275.000"
+                        android:textColor="@color/tkpd_dark_red"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/font_small"
+                        />
+
+                </RelativeLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_med"
+                android:layout_marginBottom="@dimen/margin_vs"
+                android:text="@string/label_buyer_complaint"
+                android:textSize="@dimen/font_small"
+                android:textColor="@color/label_text_color"
+                />
+
+            <TextView
+                android:id="@+id/complaint_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_med"
+                context:text="Produk Rusak"
+                android:textSize="@dimen/font_small"
+                />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_vs"
-                android:text="@string/label_complaint_attachment"
+                android:text="@string/label_reason_complaint"
                 android:textSize="@dimen/font_small"
                 android:textColor="@color/label_text_color"
                 />
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/attachment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/complaint_reason"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_med"
+                context:text="Pas dicolok ga bisa bunyi, pas saya eh kenapa kenapa kabelnya"
+                android:textSize="@dimen/font_small"
+                />
 
-            </android.support.v7.widget.RecyclerView>
+            <LinearLayout
+                android:id="@+id/view_attachment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_vs"
+                    android:text="@string/label_complaint_attachment"
+                    android:textSize="@dimen/font_small"
+                    android:textColor="@color/label_text_color"
+                    />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/attachment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                </android.support.v7.widget.RecyclerView>
+
+            </LinearLayout>
 
         </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
 
-    </LinearLayout>
 </RelativeLayout>

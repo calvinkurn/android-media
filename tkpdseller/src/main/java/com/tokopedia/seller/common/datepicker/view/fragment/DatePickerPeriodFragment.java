@@ -77,11 +77,13 @@ public class DatePickerPeriodFragment extends TkpdFragment implements DatePicker
 
     protected Intent getSubmittedIntent() {
         Intent intent = new Intent();
-        PeriodRangeModel selectedDate = adapter.getSelectedDate();
-        intent.putExtra(DatePickerConstant.EXTRA_START_DATE, selectedDate.getStartDate());
-        intent.putExtra(DatePickerConstant.EXTRA_END_DATE, selectedDate.getEndDate());
-        intent.putExtra(DatePickerConstant.EXTRA_SELECTION_PERIOD, adapter.getSelectedPosition());
-        intent.putExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, DatePickerConstant.SELECTION_TYPE_PERIOD_DATE);
+        PeriodRangeModel periodRangeModel = adapter.getSelectedDate();
+        if (periodRangeModel != null) {
+            intent.putExtra(DatePickerConstant.EXTRA_START_DATE, periodRangeModel.getStartDate());
+            intent.putExtra(DatePickerConstant.EXTRA_END_DATE, periodRangeModel.getEndDate());
+            intent.putExtra(DatePickerConstant.EXTRA_SELECTION_PERIOD, adapter.getSelectedPosition());
+            intent.putExtra(DatePickerConstant.EXTRA_SELECTION_TYPE, DatePickerConstant.SELECTION_TYPE_PERIOD_DATE);
+        }
         return intent;
     }
 

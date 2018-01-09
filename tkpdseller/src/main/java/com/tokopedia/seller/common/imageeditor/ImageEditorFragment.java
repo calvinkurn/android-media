@@ -20,6 +20,8 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.theartofdev.edmodo.cropper.CropImageView;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.seller.R;
 
@@ -43,6 +45,7 @@ public class ImageEditorFragment extends Fragment implements CropImageView.OnSet
 
     public interface OnImageEditorFragmentListener {
         void onSuccessCrop(String localPath);
+
         void addCroppedPath(String croppedPath);
     }
 
@@ -102,8 +105,24 @@ public class ImageEditorFragment extends Fragment implements CropImageView.OnSet
         if (item.getItemId() == R.id.main_action_crop) {
             // no need to crop if the rect is same and in local tkpd already
             if (checkIfSameWithPrevImage()) {
+                UnifyTracking.eventClickSaveEditImageProduct(AppEventTracking.ImageEditor.NO_ACTION);
                 onImageEditorFragmentListener.onSuccessCrop(localPath);
             } else {
+                boolean isRotate = mCropImageView.getRotatedDegrees() != 0;
+                boolean isCrop = !mCropImageView.getCropRect().equals(mCropImageView.getWholeImageRect());
+                if (isRotate) {
+                    UnifyTracking.eventClickSaveEditImageProduct(AppEventTracking.ImageEditor.ROTATE);
+                }
+                if (isCrop) {
+                    UnifyTracking.eventClickSaveEditImageProduct(AppEventTracking.ImageEditor.CROP);
+                }
+
+                if (this instanceof ImageEditorWatermarkFragment) {
+                    if (((ImageEditorWatermarkFragment)this).isUseWatermark()) {
+                        UnifyTracking.eventClickSaveEditImageProduct(AppEventTracking.ImageEditor.WATERMARK);
+                    }
+                }
+
                 File file = FileUtils.getTkpdImageCacheFile(FileUtils.generateUniqueFileName());
                 croppedPath = file.getAbsolutePath();
                 mCropImageView.startCropWorkerTask(0, 0, CropImageView.RequestSizeOptions.NONE,
@@ -117,7 +136,7 @@ public class ImageEditorFragment extends Fragment implements CropImageView.OnSet
         return super.onOptionsItemSelected(item);
     }
 
-    protected boolean checkIfSameWithPrevImage(){
+    protected boolean checkIfSameWithPrevImage() {
         return mCropImageView.getRotatedDegrees() == 0 &&
                 (mCropImageView.getCropRect() == null ||
                         mCropImageView.getCropRect().equals(mCropImageView.getWholeImageRect())) &&

@@ -98,7 +98,6 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ShopFeedViewModel;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
-
 /**
  * @author by nisie on 5/15/17.
  */
@@ -564,9 +563,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
         adapter.setList(listFeed);
         adapter.notifyDataSetChanged();
-        int positionStart = adapter.getItemCount();
-        adapter.showAddFeed();
-        adapter.notifyItemRangeInserted(positionStart, 1);
         topAdsRecyclerAdapter.unsetEndlessScrollListener();
     }
 
@@ -686,9 +682,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onShowAddFeedMore() {
         topAdsRecyclerAdapter.shouldLoadAds(false);
-        int positionStart = adapter.getItemCount();
-        adapter.showAddFeed();
-        adapter.notifyItemRangeInserted(positionStart, 1);
     }
 
     @Override
@@ -975,7 +968,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onGoToKolComment(int page, int rowNumber, KolViewModel model) {
         startActivityForResult(KolCommentActivity.getCallingIntent(getActivity(),
                 new KolCommentHeaderViewModel(model.getAvatar(), model.getName(), model.getReview
-                        (), model.getTime()),
+                        (), model.getTime(), String.valueOf(model.getUserId())),
                 new KolCommentProductViewModel(model.getKolImage(), model.getContentName(),
                         model.getProductPrice(), model.isWishlisted()),
                 model.getId(),

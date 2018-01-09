@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
@@ -47,6 +48,7 @@ public class KolRecommendationViewHolder extends AbstractViewHolder<KolRecommend
         seeAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventKolRecommendationViewAllClick();
                 kolViewListener.onGoToListKolRecommendation(element.getPage(), element
                         .getRowNumber(), element.getUrl());
             }

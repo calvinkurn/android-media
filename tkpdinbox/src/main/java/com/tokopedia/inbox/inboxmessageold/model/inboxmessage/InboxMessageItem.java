@@ -7,7 +7,7 @@ import android.text.Spanned;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.core.inboxreputation.model.inboxreputation.UserReputation;
+import com.tokopedia.inbox.inboxmessage.model.UserReputation;
 import com.tokopedia.core.util.MethodChecker;
 
 import java.text.ParseException;
