@@ -193,28 +193,27 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         textViewTitle.setText(homedata.getTitle());
         tvExpandableDescription.setText(Html.fromHtml(homedata.getLongRichDesc()));
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
             String tnc = homedata.getTnc();
-            tnc = tnc.replace("\n", "<br>").replace("\r" , "");
+//            tnc = tnc.replace("\n", "<br>").replace("\r" , "");
             String splitArray[] = tnc.split("~");
             int flag = 1;
 
-            StringBuffer tncBuffer = new StringBuffer();
+            StringBuilder tncBuffer = new StringBuilder();
 
             for (String line : splitArray) {
                 if (flag == 1) {
-                    tncBuffer.append("<i>" + line + "</i>");
+                    tncBuffer.append("<i>").append(line).append("</i>").append("<br>");
                     flag = 2;
                 } else {
-                    tncBuffer.append("<b>" + line + "</b>");
+                    tncBuffer.append("<b>").append(line).append("</b>").append("<br>");
                     flag = 1;
                 }
-
             }
             tvExpandableTermsNCondition.setText(Html.fromHtml(tncBuffer.toString()));
-        } else {
-            tvExpandableTermsNCondition.setText(Html.fromHtml(homedata.getTnc()));
-        }
+//        } else {
+//            tvExpandableTermsNCondition.setText(Html.fromHtml(homedata.getTnc()));
+//        }
         if(homedata.getDisplayTags().length()<3)
             tvDisplayTag.setVisibility(View.GONE);
         else
