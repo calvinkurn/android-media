@@ -118,6 +118,9 @@ public class PromoResponseMapper implements IPromoResponseMapper {
                 stringBuilder.append(children.getSubCategory().getTermId()).append(",");
             }
             String allCategoryIds = stringBuilder.toString();
+            if (allCategoryIds.length() > 0 && allCategoryIds.charAt(allCategoryIds.length() - 1) == ',') {
+                allCategoryIds = allCategoryIds.substring(0, allCategoryIds.length() - 1);
+            }
             promoMenuData.setAllSubCategoryId(allCategoryIds);
             promoMenuData.setPromoSubMenuDataList(promoSubMenuDataList);
             promoMenuDataList.add(promoMenuData);
