@@ -75,9 +75,9 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
     }
 
     @Override
-    public void onSaveButtonClicked(String departureDateString) {
+    public void onSaveButtonClicked() {
         getView().hideKeyboard();
-        if (validateFields(departureDateString)) {
+        if (validateFields(getView().getDepartureDateString())) {
             getView().getCurrentPassengerViewModel().setPassengerTitle(getView().getPassengerTitle());
             getView().getCurrentPassengerViewModel().setPassengerTitleId(getView().getPassengerTitleId());
             getView().getCurrentPassengerViewModel().setPassengerFirstName(getView().getPassengerFirstName());
@@ -90,10 +90,10 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
     }
 
     @Override
-    public void onBirthdateClicked(String departureDateString) {
+    public void onBirthdateClicked() {
 
         Date maxDate, minDate = null, selectedDate;
-        Date departureDate = FlightDateUtil.stringToDate(departureDateString);
+        Date departureDate = FlightDateUtil.stringToDate(getView().getDepartureDateString());
 
         if (isChildPassenger()) {
             minDate = FlightDateUtil.addTimeToSpesificDate(departureDate, Calendar.YEAR, -12);
