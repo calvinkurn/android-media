@@ -83,7 +83,7 @@
     <string name="cancel_replacement">Batalkan Pencarian</string>
     <string name="dialog_cancel_order">Apakah anda yakin ingin membatalkan pesanan?</string>
     <string name="alert_payment_canceled_transaction_module">Pembayaran dibatalkan</string>
-    <string name="title_driver_detail">Detil Driver</string>
+    <string name="title_driver_detail">Detail Driver</string>
     <string name="alert_payment_canceled_or_failed_transaction_module">Pembayaran tidak berhasil atau dibatalkan</string>
     <string name="message_payment_succeded_transaction_module">Pembayaran berhasil</string>
 
