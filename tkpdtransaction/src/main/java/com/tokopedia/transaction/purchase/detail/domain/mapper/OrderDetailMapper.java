@@ -68,7 +68,6 @@ public class OrderDetailMapper {
             viewData.setDropshipperName(responseData.getDetail().getDropShipper().getName());
             viewData.setDropshipperPhone(responseData.getDetail().getDropShipper().getPhone());
         }
-
         viewData.setShippingAddress(
                 responseData.getDetail().getReceiver().getName() + "\n"
                         + responseData.getDetail().getReceiver().getPhone() + "\n"
@@ -78,11 +77,17 @@ public class OrderDetailMapper {
                         + responseData.getDetail().getReceiver().getProvince() + " "
                         + responseData.getDetail().getReceiver().getPostal() + " "
         );
-
         viewData.setInvoiceNumber(responseData.getInvoice());
         viewData.setInvoiceUrl(responseData.getInvoiceUrl());
         viewData.setCourierName(responseData.getDetail().getShipment().getName() + " "
                 + responseData.getDetail().getShipment().getProductName());
+        viewData.setShipmentId(responseData.getDetail().getShipment().getId().toString());
+        viewData.setShipmentName(responseData.getDetail().getShipment().getName());
+        viewData.setShipmentServiceId(
+                responseData.getDetail().getShipment().getProductId().toString()
+        );
+        viewData.setShipmentServiceName(responseData.getDetail().getShipment().getProductName());
+        viewData.setAwb(responseData.getDetail().getShipment().getAwb());
 
         viewData.setTotalItemQuantity(String.valueOf(responseData.getSummary().getTotalItem()));
         viewData.setAdditionalFee(responseData.getSummary().getAdditionalPrice());
@@ -107,6 +112,7 @@ public class OrderDetailMapper {
         ButtonData buttonData = new ButtonData();
         Buttons buttons = responseData.getButtons();
         buttonData.setAcceptOrderVisibility(buttons.getAcceptOrder());
+        buttonData.setAcceptPartialOrderVisibility(buttons.getAcceptOrderPartial());
         buttonData.setAskBuyerVisibility(buttons.getAskBuyer());
         buttonData.setAskSellerVisibility(buttons.getAskSeller());
         buttonData.setCancelPeluangVisibility(buttons.getCancelPeluang());

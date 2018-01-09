@@ -132,6 +132,17 @@ public class OrderDetailRepository implements IOrderDetailRepository {
         });
     }
 
+    @Override
+    public Observable<String> changeAwb(TKPDMapParam<String, String> param) {
+        return shopService.getApi().editShippingRef(param)
+                .map(new Func1<Response<TkpdResponse>, String>() {
+            @Override
+            public String call(Response<TkpdResponse> tkpdResponseResponse) {
+                return displayMessageToUser(tkpdResponseResponse);
+            }
+        });
+    }
+
     private String displayMessageToUser(Response<TkpdResponse> tkpdResponseResponse) {
         if (tkpdResponseResponse.isSuccessful() && !tkpdResponseResponse.body().isError())
             return tkpdResponseResponse.body().getStatusMessageJoined();

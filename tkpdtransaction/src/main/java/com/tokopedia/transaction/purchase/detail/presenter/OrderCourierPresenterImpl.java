@@ -7,6 +7,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.purchase.detail.activity.ConfirmShippingView;
 import com.tokopedia.transaction.purchase.detail.interactor.OrderCourierInteractor;
 import com.tokopedia.transaction.purchase.detail.interactor.OrderCourierInteractorImpl;
+import com.tokopedia.transaction.purchase.detail.model.detail.editmodel.OrderDetailShipmentModel;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.ListCourierViewModel;
 
 import rx.Subscriber;
@@ -17,12 +18,24 @@ import rx.Subscriber;
 
 public class OrderCourierPresenterImpl implements OrderCourierPresenter {
 
+    private static final String ORDER_ID = "order_id";
+    private static final String ACTION_TYPE = "action_type";
+    private static final String SHIPMENT_ID = "shipment_id";
+    private static final String SHIPMENT_NAME = "shipment_name";
+    private static final String SHIPPING_REF = "shipping_ref";
+    private static final String SP_ID = "sp_id";
+
     private OrderCourierInteractor interactor;
 
     private ConfirmShippingView view;
 
     public OrderCourierPresenterImpl(OrderCourierInteractorImpl interactor) {
         this.interactor = interactor;
+    }
+
+    @Override
+    public void setView(ConfirmShippingView view) {
+        this.view = view;
     }
 
     @Override
@@ -42,8 +55,34 @@ public class OrderCourierPresenterImpl implements OrderCourierPresenter {
 
                     @Override
                     public void onNext(ListCourierViewModel courierViewModel) {
-                        view
-                    }
-                });
+                        view.receiveShipmentData(courierViewModel);
+                    }});
+    }
+
+    @Override
+    public void onConfirmShipping(OrderDetailShipmentModel editableModel) {
+        TKPDMapParam<String, String> params = new TKPDMapParam<>();
+        params.put(ACTION_TYPE, "confirm");
+        params.put(ORDER_ID, editableModel.getOrderId());
+        params.put(SHIPPING_REF, editableModel.getShippingRef());
+        params.put(SHIPMENT_ID, editableModel.getShipmentId());
+        params.put(SHIPMENT_NAME, editableModel.getShipmentName());
+        params.put(SP_ID, editableModel.getPackageId());
+        interactor.confirmShipping(params, new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(String s) {
+                view.onSuccessConfirm(s);
+            }
+        });
     }
 }

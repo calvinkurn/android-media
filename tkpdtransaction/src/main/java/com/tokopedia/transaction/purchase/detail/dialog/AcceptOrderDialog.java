@@ -47,7 +47,9 @@ public class AcceptOrderDialog extends DialogFragment {
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
         View view = inflater.inflate(R.layout.dialog_accept_order, container, false);
         TextView agreeButton = view.findViewById(R.id.agree_button);
+        TextView cancelButton = view.findViewById(R.id.cancel_button);
         agreeButton.setOnClickListener(onAgreeButtonClicked());
+        cancelButton.setOnClickListener(onCancelButtonClicked());
         return view;
     }
 
@@ -56,6 +58,15 @@ public class AcceptOrderDialog extends DialogFragment {
             @Override
             public void onClick(View view) {
                 listener.onAcceptOrder(getArguments().getString(ORDER_ID_EXTRA));
+            }
+        };
+    }
+
+    private View.OnClickListener onCancelButtonClicked() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismiss();
             }
         };
     }

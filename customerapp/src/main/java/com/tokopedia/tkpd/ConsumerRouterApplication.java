@@ -113,6 +113,7 @@ import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
+import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.transaction.wallet.WalletActivity;
 
@@ -593,6 +594,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void goToOrderHistory(Context context, String orderId, int userMode) {
         Intent intent = OrderHistoryActivity.createInstance(context, orderId, userMode);
         context.startActivity(intent);
+    }
+
+    @Override
+    public Intent goToOrderDetail(Context context, String orderId) {
+        return OrderDetailActivity.createSellerInstance(context, orderId);
+
     }
 
     @Override

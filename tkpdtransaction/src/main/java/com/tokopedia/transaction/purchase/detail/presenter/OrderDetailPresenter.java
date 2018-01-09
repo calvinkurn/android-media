@@ -42,6 +42,8 @@ public interface OrderDetailPresenter {
 
     void processAcceptOrder(Context context, OrderDetailData data);
 
+    void processAcceptPartialOrder(Context context, OrderDetailData data);
+
     void processRequestPickup(Context context, OrderDetailData data);
 
     void processChangeCourier(Context context, OrderDetailData data);
@@ -52,12 +54,13 @@ public interface OrderDetailPresenter {
 
     void acceptOrder(Context context, String orderId);
 
-    void partialOrder(Context context, OrderDetailData data, String reason, String quantityAccept);
+    void confirmChangeAwb(Context context, String orderId, String refNumber);
 
-    void rejectOrder(Context context, OrderDetailData data);
+    void partialOrder(Context context, String orderId, String reason, String quantityAccept);
+
+    void rejectOrder(Context context, String orderId, String reason);
 
     void processShipping(Context context,
-                         OrderDetailData data,
                          OrderDetailShipmentModel shipmentModel);
 
     void retryOrder(Context context, OrderDetailData data);

@@ -35,8 +35,10 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.session.baseFragment.BaseFragment;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.core.util.DateFormatUtils;
@@ -242,7 +244,10 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
                             getPaging().setPage(getPaging().getPage() - 1);
                             presenter.finishConnection();
                         }
-                        Intent intent = new Intent(getActivity(), SellingDetailActivity.class);
+                        Intent intent = ((TransactionRouter) MainApplication.getAppContext())
+                                .goToOrderDetail(
+                                        getActivity(),
+                                        model.OrderId);
                         intent.putExtra(SellingDetailActivity.DATA_EXTRA, Parcels.wrap(model));
                         intent.putExtra(SellingDetailActivity.TYPE_EXTRA, SellingDetailActivity.Type.TRANSACTION);
                         startActivity(intent);

@@ -24,6 +24,8 @@ public interface OrderDetailInteractor {
 
     void processOrder(Subscriber<String> subscriber, TKPDMapParam<String, String> params);
 
+    void confirmAwb(Subscriber<String> subscriber, TKPDMapParam<String, String> params);
+
     void confirmShipping(Subscriber<String> subscriber, TKPDMapParam<String, String> params);
 
     void retryPickup(Subscriber<String> subscriber, TKPDMapParam<String, String> params);

@@ -1,15 +1,20 @@
 package com.tokopedia.transaction.purchase.detail.di;
 
+import com.tokopedia.core.network.apiservices.shop.MyShopOrderService;
+import com.tokopedia.transaction.network.MyShopOrderActService;
+import com.tokopedia.transaction.purchase.detail.domain.OrderCourierRepository;
+import com.tokopedia.transaction.purchase.detail.domain.mapper.OrderDetailMapper;
 import com.tokopedia.transaction.purchase.detail.interactor.OrderCourierInteractorImpl;
 import com.tokopedia.transaction.purchase.detail.presenter.OrderCourierPresenterImpl;
 
+import dagger.Module;
 import dagger.Provides;
 import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by kris on 1/3/18. Tokopedia
  */
-
+@Module
 public class OrderCourierModule {
 
     public OrderCourierModule() {
@@ -23,14 +28,42 @@ public class OrderCourierModule {
 
     @Provides
     @OrderCourierScope
+    OrderDetailMapper provideOrderDetailMapper() {
+        return new OrderDetailMapper();
+    }
+
+    @Provides
+    @OrderCourierScope
+    MyShopOrderActService provideOrderActService() {
+        return new MyShopOrderActService();
+    }
+
+    @Provides
+    @OrderCourierScope
+    MyShopOrderService provideOrderService() {
+        return new MyShopOrderService();
+    }
+
+    @Provides
+    @OrderCourierScope
+    OrderCourierRepository provideOrderCourierRepository() {
+        return new OrderCourierRepository(
+                provideOrderDetailMapper(),
+                provideOrderService(),
+                provideOrderActService());
+    }
+
+    @Provides
+    @OrderCourierScope
     OrderCourierInteractorImpl provideOrderCourierInteractor() {
-        return new OrderCourierInteractorImpl();
+        return new OrderCourierInteractorImpl(provideCompositeSubsrciption(),
+                provideOrderCourierRepository());
     }
 
     @Provides
     @OrderCourierScope
     OrderCourierPresenterImpl provideOrderCourierPresenter() {
-        return new OrderCourierPresenterImpl();
+        return new OrderCourierPresenterImpl(provideOrderCourierInteractor());
     }
 
 }

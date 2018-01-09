@@ -37,7 +37,17 @@ public class OrderDetailData implements Parcelable{
 
     private String courierName;
 
+    private String shipmentName;
+
+    private String shipmentId;
+
+    private String shipmentServiceName;
+
+    private String shipmentServiceId;
+
     private String shippingAddress;
+
+    private String awb;
 
     private String partialOrderStatus;
 
@@ -89,7 +99,12 @@ public class OrderDetailData implements Parcelable{
         shopLogo = in.readString();
         buyerName = in.readString();
         courierName = in.readString();
+        shipmentName = in.readString();
+        shipmentId = in.readString();
+        shipmentServiceName = in.readString();
+        shipmentServiceId = in.readString();
         shippingAddress = in.readString();
+        awb = in.readString();
         partialOrderStatus = in.readString();
         preorderPeriod = in.readString();
         preorderPeriodText = in.readString();
@@ -123,7 +138,12 @@ public class OrderDetailData implements Parcelable{
         dest.writeString(shopLogo);
         dest.writeString(buyerName);
         dest.writeString(courierName);
+        dest.writeString(shipmentName);
+        dest.writeString(shipmentId);
+        dest.writeString(shipmentServiceName);
+        dest.writeString(shipmentServiceId);
         dest.writeString(shippingAddress);
+        dest.writeString(awb);
         dest.writeString(partialOrderStatus);
         dest.writeString(preorderPeriod);
         dest.writeString(preorderPeriodText);
@@ -255,12 +275,52 @@ public class OrderDetailData implements Parcelable{
         this.courierName = courierName;
     }
 
+    public String getShipmentName() {
+        return shipmentName;
+    }
+
+    public void setShipmentName(String shipmentName) {
+        this.shipmentName = shipmentName;
+    }
+
+    public String getShipmentId() {
+        return shipmentId;
+    }
+
+    public void setShipmentId(String shipmentId) {
+        this.shipmentId = shipmentId;
+    }
+
+    public String getShipmentServiceName() {
+        return shipmentServiceName;
+    }
+
+    public void setShipmentServiceName(String shipmentServiceName) {
+        this.shipmentServiceName = shipmentServiceName;
+    }
+
+    public String getShipmentServiceId() {
+        return shipmentServiceId;
+    }
+
+    public void setShipmentServiceId(String shipmentServiceId) {
+        this.shipmentServiceId = shipmentServiceId;
+    }
+
     public String getShippingAddress() {
         return shippingAddress;
     }
 
     public void setShippingAddress(String ShippingAddress) {
         this.shippingAddress = ShippingAddress;
+    }
+
+    public String getAwb() {
+        return awb;
+    }
+
+    public void setAwb(String awb) {
+        this.awb = awb;
     }
 
     public String getPartialOrderStatus() {

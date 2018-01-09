@@ -22,7 +22,7 @@ public class RejectOrderFragment extends TkpdFragment {
 
     private RejectOrderFragmentListener listener;
 
-    public static RejectOrderFragment createInstance(String orderId) {
+    public static RejectOrderFragment createFragment(String orderId) {
         RejectOrderFragment fragment = new RejectOrderFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ORDER_ID_ARGUMENT, orderId);

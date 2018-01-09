@@ -33,6 +33,9 @@ public class Buttons {
     @SerializedName("accept_order")
     @Expose
     private int acceptOrder;
+    @SerializedName("accept_partial")
+    @Expose
+    private int acceptPartial;
     @SerializedName("reject_order")
     @Expose
     private int rejectOrder;
@@ -89,6 +92,10 @@ public class Buttons {
 
     public int getAcceptOrder() {
         return acceptOrder;
+    }
+
+    public int getAcceptOrderPartial() {
+        return acceptPartial;
     }
 
     public int getRejectOrder() {

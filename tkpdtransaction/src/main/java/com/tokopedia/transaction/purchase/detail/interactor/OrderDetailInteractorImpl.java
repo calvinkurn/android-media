@@ -83,6 +83,15 @@ public class OrderDetailInteractorImpl implements OrderDetailInteractor {
     }
 
     @Override
+    public void confirmAwb(Subscriber<String> subscriber, TKPDMapParam<String, String> params) {
+        compositeSubscription.add(orderDetailRepository.changeAwb(params)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .subscribe(subscriber));
+    }
+
+    @Override
     public void confirmShipping(Subscriber<String> subscriber, TKPDMapParam<String, String> params) {
         compositeSubscription.add(orderDetailRepository.processShipping(params)
                 .subscribeOn(Schedulers.newThread())

@@ -9,6 +9,8 @@ import android.os.Parcelable;
 
 public class OrderDetailShipmentModel implements Parcelable{
 
+    private String orderId;
+
     private String shippingRef;
 
     private String shipmentId;
@@ -17,11 +19,18 @@ public class OrderDetailShipmentModel implements Parcelable{
 
     private String packageId;
 
+    private String packageName;
+
+    public OrderDetailShipmentModel() {
+    }
+
     protected OrderDetailShipmentModel(Parcel in) {
+        orderId = in.readString();
         shippingRef = in.readString();
         shipmentId = in.readString();
         shipmentName = in.readString();
         packageId = in.readString();
+        packageName = in.readString();
     }
 
     public static final Creator<OrderDetailShipmentModel> CREATOR = new Creator<OrderDetailShipmentModel>() {
@@ -35,6 +44,14 @@ public class OrderDetailShipmentModel implements Parcelable{
             return new OrderDetailShipmentModel[size];
         }
     };
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
 
     public String getShippingRef() {
         return shippingRef;
@@ -68,6 +85,14 @@ public class OrderDetailShipmentModel implements Parcelable{
         this.packageId = packageId;
     }
 
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -75,9 +100,11 @@ public class OrderDetailShipmentModel implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(orderId);
         parcel.writeString(shippingRef);
         parcel.writeString(shipmentId);
         parcel.writeString(shipmentName);
         parcel.writeString(packageId);
+        parcel.writeString(packageName);
     }
 }

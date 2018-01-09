@@ -152,6 +152,7 @@
     <string name="button_order_detail_cancel_chance">Batalkan Pencarian</string>
     <string name="title_cancellation_notes">Tulis Keterangan Anda di sini</string>
     <string name="label_explanation">Keterangan</string>
+    <string name="label_awb_number">Nomor Resi</string>
     <string name="title_replacement_cancellation">Pilih Alasan Pembatalan: </string>
     <string name="title_replacement_reason_1">Saya hanya berbelanja dari toko yang saya percaya</string>
     <string name="title_replacement_reason_2">Pencarian toko pengganti memakan waktu yang lama</string>
@@ -164,7 +165,8 @@
     <string name="body_dialog_finish_order">Pilih selesai apabila barang sudah diterima dan tidak bermasalah</string>
     <string name="cancel_search_replacement">Batalkan Pencarian</string>
     <string name="title_detail_transaction">Detil Transaksi</string>
-
+    <string name="title_change_awb_instruction">Mohon ubah nomor resi hanya jika resi Anda Invalid</string>
+    <string name="sub_title_change_awb_instruction">Karena kami tidak akan memproses resi invalid</string>
     <string name="title_term_and_condition">Syarat dan Ketentuan</string>
     <string name="title_bottomsheet_insurance">Asuransi Pengiriman</string>
 </resources>

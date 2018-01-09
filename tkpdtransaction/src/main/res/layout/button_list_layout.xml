@@ -18,6 +18,16 @@
         android:textColor="@color/white" />
 
     <Button
+        android:id="@+id/accept_order_patial"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:layout_margin="@dimen/margin_small"
+        android:background="@drawable/green_button_rounded_unify"
+        android:text="@string/button_order_detail_accept_order"
+        android:textAllCaps="false"
+        android:textColor="@color/white" />
+
+    <Button
         android:id="@+id/change_courier"
         android:layout_width="match_parent"
         android:layout_height="@dimen/btn_height"

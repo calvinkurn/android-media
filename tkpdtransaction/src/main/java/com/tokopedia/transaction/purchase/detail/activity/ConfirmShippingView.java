@@ -12,4 +12,7 @@ public interface ConfirmShippingView {
 
     void receiveShipmentData(ListCourierViewModel model);
 
+    void onSuccessConfirm(String successMessage);
+
+    void onShowError(String errorMessage);
 }

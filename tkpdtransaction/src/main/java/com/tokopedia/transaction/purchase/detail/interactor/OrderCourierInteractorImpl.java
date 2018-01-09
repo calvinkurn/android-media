@@ -33,4 +33,14 @@ public class OrderCourierInteractorImpl implements OrderCourierInteractor{
                 .unsubscribeOn(Schedulers.newThread())
                 .subscribe(subscriber));
     }
+
+    @Override
+    public void confirmShipping(TKPDMapParam<String, String> params,
+                                Subscriber<String> subscriber) {
+        compositeSubscription.add(repository.processShipping(params)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .subscribe(subscriber));
+    }
 }

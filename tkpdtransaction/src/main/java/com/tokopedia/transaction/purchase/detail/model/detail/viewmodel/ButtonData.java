@@ -27,6 +27,8 @@ public class ButtonData implements Parcelable{
 
     private int acceptOrderVisibility;
 
+    private int acceptPartialOrderVisibility;
+
     private int rejectOrderVisibility;
 
     private int confirmShippingVisibility;
@@ -54,6 +56,7 @@ public class ButtonData implements Parcelable{
         orderDetailVisibility = in.readInt();
         askBuyerVisibility = in.readInt();
         acceptOrderVisibility = in.readInt();
+        acceptPartialOrderVisibility = in.readInt();
         rejectOrderVisibility = in.readInt();
         confirmShippingVisibility = in.readInt();
         requestPickupVisibility = in.readInt();
@@ -147,6 +150,14 @@ public class ButtonData implements Parcelable{
         this.acceptOrderVisibility = acceptOrderVisibility;
     }
 
+    public int getAcceptPartialOrderVisibility() {
+        return acceptPartialOrderVisibility;
+    }
+
+    public void setAcceptPartialOrderVisibility(int acceptPartialOrderVisibility) {
+        this.acceptPartialOrderVisibility = acceptPartialOrderVisibility;
+    }
+
     public int getRejectOrderVisibility() {
         return rejectOrderVisibility;
     }
@@ -219,6 +230,7 @@ public class ButtonData implements Parcelable{
         parcel.writeInt(orderDetailVisibility);
         parcel.writeInt(askBuyerVisibility);
         parcel.writeInt(acceptOrderVisibility);
+        parcel.writeInt(acceptPartialOrderVisibility);
         parcel.writeInt(rejectOrderVisibility);
         parcel.writeInt(confirmShippingVisibility);
         parcel.writeInt(requestPickupVisibility);

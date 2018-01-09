@@ -15,4 +15,6 @@ public interface OrderCourierInteractor {
             TKPDMapParam<String, String> params, Subscriber<ListCourierViewModel> model
     );
 
+    void confirmShipping(TKPDMapParam<String, String> params, Subscriber<String> subscriber);
+
 }

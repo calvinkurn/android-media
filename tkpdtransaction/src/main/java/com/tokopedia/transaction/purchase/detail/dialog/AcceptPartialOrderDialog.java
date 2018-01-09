@@ -114,7 +114,7 @@ public class AcceptPartialOrderDialog extends DialogFragment{
                 }
                 generatedPartialOrder = partialDetailGenerator(newDialogPartialDetails);
                 if(Remark.length() > 0){
-                    listener.onAcceptPartialOrderCreated(Remark.getText().toString(), generatedPartialOrder);
+                    listener.onAcceptPartialOrderCreated(data.getOrderId(), Remark.getText().toString(), generatedPartialOrder);
                     dismiss();
                 }
                 else
@@ -143,7 +143,7 @@ public class AcceptPartialOrderDialog extends DialogFragment{
     }
 
     public interface PartialDialogListener{
-        void onAcceptPartialOrderCreated(String remark, String param);
+        void onAcceptPartialOrderCreated(String orderId, String remark, String param);
     }
 
 }

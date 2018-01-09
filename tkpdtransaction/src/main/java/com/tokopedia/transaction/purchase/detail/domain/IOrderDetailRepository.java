@@ -29,4 +29,5 @@ public interface IOrderDetailRepository {
 
     Observable<String> retryPickup(TKPDMapParam<String, String> param);
 
+    Observable<String> changeAwb(TKPDMapParam<String, String> param);
 }

@@ -13,4 +13,6 @@ public interface IOrderCourierRepository {
 
     Observable<ListCourierViewModel> onOrderCourierRepository(TKPDMapParam<String, String> params);
 
+    Observable<String> processShipping(TKPDMapParam<String, String> param);
+
 }

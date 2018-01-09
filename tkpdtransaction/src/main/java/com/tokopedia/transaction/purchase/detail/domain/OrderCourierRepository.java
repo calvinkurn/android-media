@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.tokopedia.core.network.apiservices.shop.MyShopOrderService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.transaction.exception.ResponseRuntimeException;
 import com.tokopedia.transaction.network.MyShopOrderActService;
 import com.tokopedia.transaction.purchase.detail.domain.mapper.OrderDetailMapper;
 import com.tokopedia.transaction.purchase.detail.model.detail.response.courierlist.CourierResponse;
@@ -23,9 +24,14 @@ public class OrderCourierRepository implements IOrderCourierRepository{
 
     private MyShopOrderService service;
 
-    public OrderCourierRepository(OrderDetailMapper mapper, MyShopOrderService shopService) {
+    private MyShopOrderActService actionService;
+
+    public OrderCourierRepository(OrderDetailMapper mapper,
+                                  MyShopOrderService shopService,
+                                  MyShopOrderActService actionService) {
         this.mapper = mapper;
         this.service = shopService;
+        this.actionService = actionService;
     }
 
     @Override
@@ -41,5 +47,25 @@ public class OrderCourierRepository implements IOrderCourierRepository{
                 );
             }
         });
+    }
+
+    @Override
+    public Observable<String> processShipping(TKPDMapParam<String, String> param) {
+        return actionService.getApi().proceedShipping(param)
+                .map(new Func1<Response<TkpdResponse>, String>() {
+                    @Override
+                    public String call(Response<TkpdResponse> tkpdResponseResponse) {
+                        return displayMessageToUser(tkpdResponseResponse);
+                    }
+                });
+    }
+
+    private String displayMessageToUser(Response<TkpdResponse> tkpdResponseResponse) {
+        if (tkpdResponseResponse.isSuccessful() && !tkpdResponseResponse.body().isError())
+            return tkpdResponseResponse.body().getStatusMessageJoined();
+        else
+            throw new ResponseRuntimeException(
+                    tkpdResponseResponse.body().getErrorMessageJoined()
+            );
     }
 }

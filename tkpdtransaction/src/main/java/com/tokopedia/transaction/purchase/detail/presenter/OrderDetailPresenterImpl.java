@@ -116,6 +116,11 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
     }
 
     @Override
+    public void processAcceptPartialOrder(Context context, OrderDetailData data) {
+        mainView.onAcceptOrderPartially(data);
+    }
+
+    @Override
     public void processRequestPickup(Context context, OrderDetailData data) {
         mainView.onRequestPickup(data);
     }
@@ -147,14 +152,24 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
     }
 
     @Override
+    public void confirmChangeAwb(Context context, String orderId, String refNumber) {
+        mainView.showProgressDialog();
+        TKPDMapParam<String, String> changeAwbParam = new TKPDMapParam<>();
+        changeAwbParam.put("order_id", orderId);
+        changeAwbParam.put("ref_number", refNumber);
+        orderDetailInteractor.confirmAwb(sellerActionSubscriber(),
+                AuthUtil.generateParamsNetwork(context, changeAwbParam));
+    }
+
+    @Override
     public void partialOrder(Context context,
-                             OrderDetailData data,
+                             String orderId,
                              String reason,
                              String quantityAccept) {
         mainView.showProgressDialog();
         TKPDMapParam<String, String> partialParam = new TKPDMapParam<>();
         partialParam.put("action_type", "partial");
-        partialParam.put("order_id", data.getOrderId());
+        partialParam.put("order_id", orderId);
         partialParam.put("reason", reason);
         partialParam.put("qty_accept", quantityAccept);
         orderDetailInteractor.processOrder(sellerActionSubscriber(),
@@ -162,23 +177,22 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
     }
 
     @Override
-    public void rejectOrder(Context context, OrderDetailData data) {
+    public void rejectOrder(Context context, String orderId, String reason) {
         mainView.showProgressDialog();
         TKPDMapParam<String, String> rejectOrderParam = new TKPDMapParam<>();
         rejectOrderParam.put("action_type", "reject");
-        rejectOrderParam.put("order_id", data.getOrderId());
+        rejectOrderParam.put("reason", orderId);
         orderDetailInteractor.processOrder(sellerActionSubscriber(),
                 AuthUtil.generateParamsNetwork(context, rejectOrderParam));
     }
 
     @Override
     public void processShipping(Context context,
-                                OrderDetailData data,
                                 OrderDetailShipmentModel shipmentModel) {
         mainView.showProgressDialog();
         TKPDMapParam<String, String> processShippingParam = new TKPDMapParam<>();
-        processShippingParam.put("action_type", "reject");
-        processShippingParam.put("order_id", data.getOrderId());
+        processShippingParam.put("action_type", "confirm");
+        processShippingParam.put("order_id", shipmentModel.getOrderId());
         processShippingParam.put("shipping_ref", shipmentModel.getShippingRef());
         processShippingParam.put("shipment_id", shipmentModel.getShipmentId());
         processShippingParam.put("shipment_name", shipmentModel.getShipmentName());

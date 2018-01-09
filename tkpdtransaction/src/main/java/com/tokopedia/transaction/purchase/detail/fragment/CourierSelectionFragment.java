@@ -58,5 +58,8 @@ public class CourierSelectionFragment extends Fragment implements OrderCourierAd
     public void onCourierSelected(CourierViewModel courierViewModel) {
         ServiceSelectionFragment serviceSelectionFragment = ServiceSelectionFragment
                 .createFragment(courierViewModel);
+        getFragmentManager().beginTransaction()
+                .replace(0, serviceSelectionFragment)
+                .commit();
     }
 }

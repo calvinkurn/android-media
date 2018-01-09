@@ -100,6 +100,11 @@ public class OrderDetailButtonLayout extends LinearLayout{
         acceptOrder.setOnClickListener(onAcceptOrder(context, presenter, data));
         switchVisibilty(acceptOrder, buttonData.getAcceptOrderVisibility());
 
+        Button acceptOrderPartial;
+        acceptOrderPartial = mainView.findViewById(R.id.accept_order_patial);
+        acceptOrderPartial.setOnClickListener(onAcceptOrder(context, presenter, data));
+        switchVisibilty(acceptOrder, buttonData.getAcceptPartialOrderVisibility());
+
         Button confirmShipping;
         confirmShipping = mainView.findViewById(R.id.confirm_shipping);
         confirmShipping.setOnClickListener(onConfirmShipping(context, presenter, data));
@@ -190,6 +195,17 @@ public class OrderDetailButtonLayout extends LinearLayout{
             @Override
             public void onClick(View v) {
                 presenter.processAcceptOrder(context, data);
+            }
+        };
+    }
+
+    private View.OnClickListener onAcceptOrderPartial(final Context context,
+                                               final OrderDetailPresenter presenter,
+                                               final OrderDetailData data) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.processAcceptPartialOrder(context, data);
             }
         };
     }
@@ -319,6 +335,7 @@ public class OrderDetailButtonLayout extends LinearLayout{
                                                 int confirmButtonVisibility) {
         if(acceptOrderButtonVisibility == 0 && confirmButtonVisibility == 0) {
             button.setBackgroundResource(R.drawable.white_button_rounded);
+            button.setTextColor(getResources().getColor(R.color.black));
         }
     }
 

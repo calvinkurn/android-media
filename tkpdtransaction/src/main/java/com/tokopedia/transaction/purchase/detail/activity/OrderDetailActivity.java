@@ -38,6 +38,8 @@ import com.tokopedia.transaction.purchase.detail.dialog.ComplaintDialog;
 import com.tokopedia.transaction.purchase.detail.dialog.FinishOrderDialog;
 import com.tokopedia.transaction.purchase.detail.fragment.CancelOrderFragment;
 import com.tokopedia.transaction.purchase.detail.fragment.CancelSearchFragment;
+import com.tokopedia.transaction.purchase.detail.fragment.ChangeAwbFragment;
+import com.tokopedia.transaction.purchase.detail.fragment.RejectOrderFragment;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
 import com.tokopedia.transaction.purchase.detail.presenter.OrderDetailPresenterImpl;
 
@@ -53,12 +55,16 @@ public class OrderDetailActivity extends TActivity
         ComplaintDialog.ComplaintDialogListener,
         CancelOrderFragment.CancelOrderListener,
         CancelSearchFragment.CancelSearchReplacementListener,
-        AcceptOrderDialog.AcceptOrderListener {
+        AcceptOrderDialog.AcceptOrderListener,
+        RejectOrderFragment.RejectOrderFragmentListener,
+        AcceptPartialOrderDialog.PartialDialogListener,
+        ChangeAwbFragment.ChangeAwbListener{
 
     public static final int REQUEST_CODE_ORDER_DETAIL = 111;
     private static final String VALIDATION_FRAGMENT_TAG = "validation_fragments";
     private static final String EXTRA_ORDER_ID = "EXTRA_ORDER_ID";
     private static final String EXTRA_USER_MODE = "EXTRA_USER_MODE";
+    private static final int CONFIRM_SHIPMENT_REQUEST_CODE = 16;
     private static final int BUYER_MODE = 1;
     private static final int SELLER_MODE = 2;
 
@@ -345,7 +351,8 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void onSellerConfirmShipping(OrderDetailData data) {
-        //TODO Bundle important things here, dont put entire model in the bundle!!
+        Intent intent = ConfirmShippingActivity.createInstance(this, data);
+        startActivityForResult(intent, CONFIRM_SHIPMENT_REQUEST_CODE);
     }
 
     @Override
@@ -367,18 +374,33 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void onChangeCourier(OrderDetailData data) {
-        //TODO Bundle important things here, dont put entire model in the bundle!!
+        //TODO Check Again Later
+        Intent intent = ConfirmShippingActivity.createInstance(this, data);
+        startActivityForResult(intent, CONFIRM_SHIPMENT_REQUEST_CODE);
     }
 
     @Override
     public void onRejectOrder(OrderDetailData data) {
-        //TODO Bundle important things here, dont put entire model in the bundle!!
-
+        if (getFragmentManager().findFragmentByTag(VALIDATION_FRAGMENT_TAG) == null) {
+            RejectOrderFragment rejectOrderFragment = RejectOrderFragment
+                    .createFragment(data.getOrderId());
+            getFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.animator.enter_bottom, R.animator.enter_bottom)
+                    .add(R.id.main_view, rejectOrderFragment, VALIDATION_FRAGMENT_TAG)
+                    .commit();
+        }
     }
 
     @Override
     public void onChangeAwb(OrderDetailData data) {
-        //TODO Bundle important things here, dont put entire model in the bundle!!
+        if (getFragmentManager().findFragmentByTag(VALIDATION_FRAGMENT_TAG) == null) {
+            ChangeAwbFragment changeAwbFragment = ChangeAwbFragment
+                    .createFragment(data.getOrderId(), data.getAwb());
+            getFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.animator.enter_bottom, R.animator.enter_bottom)
+                    .add(R.id.main_view, changeAwbFragment, VALIDATION_FRAGMENT_TAG)
+                    .commit();
+        }
     }
 
     @Override
@@ -500,5 +522,20 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void onAcceptOrder(String orderId) {
         presenter.acceptOrder(this, orderId);
+    }
+
+    @Override
+    public void onReject(String reason, String orderId) {
+        presenter.rejectOrder(this, orderId, reason);
+    }
+
+    @Override
+    public void changeAwb(String orderId, String refNumber) {
+        presenter.confirmChangeAwb(this, orderId, refNumber);
+    }
+
+    @Override
+    public void onAcceptPartialOrderCreated(String orderId, String remark, String param) {
+        presenter.partialOrder(this, orderId, remark, param);
     }
 }
