@@ -103,7 +103,7 @@ public class DetailInfoView extends BaseView<ProductDetailData, ProductDetailVie
                 && !data.getInfo().getProductCatalogUrl().equals("0")) {
             catalogView.setVisibility(VISIBLE);
             tvCatalog.setText(MethodChecker.fromHtml(data.getInfo().getProductCatalogName()));
-            tvCategory.setTextColor(ContextCompat.getColor(getContext(), listener.isSellerApp() ? R.color.font_black_primary_70 : R.color.tkpd_main_green));
+            tvCatalog.setTextColor(ContextCompat.getColor(getContext(), listener.isSellerApp() ? R.color.font_black_primary_70 : R.color.tkpd_main_green));
             tvCatalog.setOnClickListener(new CatalogClick(data));
         } else {
             catalogView.setVisibility(GONE);
