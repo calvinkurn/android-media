@@ -4,16 +4,24 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.IntentService;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.QuickFilterView;
 import com.tokopedia.loyalty.R;
@@ -40,7 +48,7 @@ import rx.subscriptions.CompositeSubscription;
  * @author anggaprasetiyo on 03/01/18.
  */
 
-public class PromoListFragment extends BasePresenterFragment implements IPromoListView {
+public class PromoListFragment extends BasePresenterFragment implements IPromoListView, PromoListAdapter.ActionListener {
     private static final String ARG_EXTRA_PROMO_MENU_DATA = "ARG_EXTRA_PROMO_MENU_DATA";
 
     @BindView(R2.id.quick_filter)
@@ -56,6 +64,7 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
     private PromoMenuData promoMenuData;
     private QuickFilterView quickFilterView;
     private PromoListAdapter adapter;
+    private BottomSheetView bottomSheetViewInfoPromoCode;
 
     @Override
     protected void initInjector() {
@@ -129,7 +138,8 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
 
     @Override
     public void showToastMessage(String message) {
-
+        if (getView() != null) Snackbar.make(getView(), message, Snackbar.LENGTH_SHORT).show();
+        else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -210,7 +220,7 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
     @Override
     protected void initView(View view) {
         quickFilterView = new QuickFilterView(getActivity());
-        adapter = new PromoListAdapter(new ArrayList<PromoData>());
+        adapter = new PromoListAdapter(new ArrayList<PromoData>(), this);
         rvPromoList.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvPromoList.setAdapter(adapter);
     }
@@ -280,5 +290,45 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
         if (holderView.getChildCount() > 0) {
             holderView.removeAllViews();
         }
+    }
+
+    @Override
+    public void onItemPromoCodeCopyClipboardClicked(String promoCode) {
+        ClipboardManager clipboard = (ClipboardManager)
+                context.getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText(
+                "CLIP_DATA_LABEL_VOUCHER_PROMO", promoCode
+        );
+        if (clipboard != null) {
+            clipboard.setPrimaryClip(clip);
+        }
+        showToastMessage("Kode Voucher telah tersalin");
+    }
+
+    @Override
+    public void onItemPromoClicked(PromoData promoData) {
+        String appLink = promoData.getAppLink();
+        String redirectUrl = promoData.getPromoLink();
+        if (getActivity().getApplication() instanceof TkpdCoreRouter) {
+            TkpdCoreRouter tkpdCoreRouter = (TkpdCoreRouter) getActivity().getApplication();
+            if (!TextUtils.isEmpty(appLink) && tkpdCoreRouter.isSupportedDelegateDeepLink(appLink))
+                tkpdCoreRouter.actionAppLink(getActivity(), appLink);
+            else tkpdCoreRouter.actionOpenGeneralWebView(getActivity(), redirectUrl);
+        }
+    }
+
+    @Override
+    public void onItemPromoCodeTooltipClicked() {
+        if (bottomSheetViewInfoPromoCode == null) {
+            bottomSheetViewInfoPromoCode = new BottomSheetView(getActivity());
+            bottomSheetViewInfoPromoCode.renderBottomSheet(new BottomSheetView.BottomSheetField
+                    .BottomSheetFieldBuilder()
+                    .setTitle("Kode Promo")
+                    .setBody("Masukan Kode Promo di halaman pembayaran")
+                    .setImg(R.drawable.ic_promo)
+                    .build());
+        }
+        bottomSheetViewInfoPromoCode.show();
+
     }
 }

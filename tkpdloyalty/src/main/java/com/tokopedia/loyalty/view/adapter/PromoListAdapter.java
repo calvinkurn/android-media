@@ -1,18 +1,13 @@
 package com.tokopedia.loyalty.view.adapter;
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.R2;
 import com.tokopedia.loyalty.view.compoundview.PromoImageView;
@@ -30,24 +25,17 @@ import butterknife.ButterKnife;
 
 public class PromoListAdapter extends RecyclerView.Adapter {
 
+    private final ActionListener actionListener;
     private List<PromoData> promoDataList;
-    private Context context;
-    private BottomSheetView bottomSheetView;
 
-    public PromoListAdapter(List<PromoData> promoDataList) {
+
+    public PromoListAdapter(List<PromoData> promoDataList, ActionListener actionListener) {
+        this.actionListener = actionListener;
         this.promoDataList = promoDataList;
-        bottomSheetView = new BottomSheetView(context);
-        bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
-                .BottomSheetFieldBuilder()
-                .setTitle("Kode Promo")
-                .setBody("Masukan Kode Promo di halaman pembayaran")
-                .setImg(R.drawable.ic_promo)
-                .build());
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        context = parent.getContext();
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.holder_item_promo_list, parent, false);
         return new ItemViewHolder(view);
@@ -72,21 +60,19 @@ public class PromoListAdapter extends RecyclerView.Adapter {
         itemViewHolder.tvLabelCodePromo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                bottomSheetView.show();
+                actionListener.onItemPromoCodeTooltipClicked();
             }
         });
         itemViewHolder.btnCopyCodePromo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ClipboardManager clipboard = (ClipboardManager)
-                        context.getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText(
-                        "CLIP_DATA_LABEL_VOUCHER_PROMO", promoData.getPromoCode()
-                );
-                if (clipboard != null) {
-                    clipboard.setPrimaryClip(clip);
-                }
-                Toast.makeText(context, "Kode Voucher telah tersalin", Toast.LENGTH_SHORT).show();
+                actionListener.onItemPromoCodeCopyClipboardClicked(promoData.getPromoCode());
+            }
+        });
+        itemViewHolder.ivBanner.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                actionListener.onItemPromoClicked(promoData);
             }
         });
     }
@@ -125,5 +111,13 @@ public class PromoListAdapter extends RecyclerView.Adapter {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+    }
+
+    public interface ActionListener {
+        void onItemPromoCodeCopyClipboardClicked(String promoCode);
+
+        void onItemPromoClicked(PromoData promoData);
+
+        void onItemPromoCodeTooltipClicked();
     }
 }
