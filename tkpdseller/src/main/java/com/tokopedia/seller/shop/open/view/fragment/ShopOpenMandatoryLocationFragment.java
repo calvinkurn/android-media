@@ -31,6 +31,7 @@ import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.logistic.GetOpenShopLocationPassUseCase;
 import com.tokopedia.seller.logistic.GetOpenShopTokenUseCase;
 import com.tokopedia.seller.shop.common.exception.ShopException;
+import com.tokopedia.seller.shop.common.tracking.TrackingOpenShop;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
 import com.tokopedia.seller.shop.open.view.holder.LocationHeaderViewHolder;
@@ -71,6 +72,9 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
 
     @Inject
     ShopOpenLocPresenterImpl shopOpenLocPresenter;
+
+    @Inject
+    TrackingOpenShop trackingOpenShop;
 
     RequestParams requestParams;
     private ProgressDialog progressDialog;
@@ -124,6 +128,11 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
                     return;
 
                 shopOpenLocPresenter.openGoogleMap(requestParams, generatedMap);
+            }
+
+            @Override
+            public void sendTrackingData() {
+                trackingOpenShop.eventOpenShopPinPointLocation();
             }
         });
 
@@ -202,6 +211,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
 
     @Override
     public void goToNextPage(Object object) {
+        trackingOpenShop.eventOpenShopLocationNext();
         if(stepperListener != null) {
             stepperListener.goToNextPage(null);
         }
@@ -252,6 +262,8 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
                                 address.getProvinceName(),
                                 address.getCityName(),
                                 address.getDistrictName());
+
+                        trackingOpenShop.eventOpenShopLocationForm(address.getAddressDetail());
                     }
                     break;
                 case REQUEST_CODE__EDIT_ADDRESS:
@@ -339,6 +351,9 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
         }else{
             errorMessage = ErrorHandler.getErrorMessage(t, getActivity());
         }
+
+        trackingOpenShop.eventOpenShopLocationError(errorMessage);
+
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
