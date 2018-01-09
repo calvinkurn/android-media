@@ -7,6 +7,7 @@ import com.tokopedia.transaction.purchase.detail.model.detail.response.Buttons;
 import com.tokopedia.transaction.purchase.detail.model.detail.response.Data;
 import com.tokopedia.transaction.purchase.detail.model.detail.response.OrderDetailResponse;
 import com.tokopedia.transaction.purchase.detail.model.detail.response.courierlist.CourierResponse;
+import com.tokopedia.transaction.purchase.detail.model.detail.response.courierlist.Shipment;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.ButtonData;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.CourierServiceModel;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.CourierViewModel;
@@ -123,6 +124,7 @@ public class OrderDetailMapper {
         buttonData.setConfirmShippingVisibility(buttons.getConfirmShipping());
         buttonData.setFinishOrderVisibility(buttons.getFinishOrder());
         buttonData.setRejectOrderVisibility(buttons.getRejectOrder());
+        buttonData.setRejectShipmentVisibility(buttons.getRejectShipment());
         buttonData.setRequestCancelVisibility(buttons.getRequestCancel());
         buttonData.setOrderDetailVisibility(buttons.getOrderDetail());
         buttonData.setReceiveConfirmationVisibility(buttons.getReceiveConfirmation());
@@ -169,8 +171,9 @@ public class OrderDetailMapper {
             List<CourierServiceModel> courierServiceModelList = new ArrayList<>();
             for(int j = 0; j < response.getShipment().get(i).getShipmentPackage().size(); j++) {
                 CourierServiceModel courierServiceModel = new CourierServiceModel();
-                courierServiceModel.setServiceId(response.getShipment().get(i).getShipmentId());
-                courierServiceModel.setServiceName(response.getShipment().get(i).getShipmentName());
+                Shipment courierShipment = response.getShipment().get(i);
+                courierServiceModel.setServiceId(courierShipment.getShipmentPackage().get(j).getSpId());
+                courierServiceModel.setServiceName(courierShipment.getShipmentPackage().get(j).getName());
                 courierServiceModelList.add(courierServiceModel);
             }
             courierViewModel.setCourierServiceList(courierServiceModelList);

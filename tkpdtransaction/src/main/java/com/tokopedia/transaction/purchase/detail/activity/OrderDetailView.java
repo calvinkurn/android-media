@@ -45,6 +45,8 @@ public interface OrderDetailView {
 
     void onRejectOrder(OrderDetailData data);
 
+    void onRejectShipment(OrderDetailData data);
+
     void onSearchCancelled(String message);
 
     void onChangeAwb(OrderDetailData data);
@@ -55,7 +57,9 @@ public interface OrderDetailView {
 
     void onViewComplaint(String resoId);
 
-    void showErrorSnackbar(String errorMessage);
+    void showSnackbar(String errorMessage);
+
+    void dismissSellerActionFragment();
 
     void showProgressDialog();
 

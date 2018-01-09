@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.transaction.R;
@@ -29,8 +31,10 @@ import javax.inject.Inject;
 public class ConfirmShippingActivity extends TActivity
         implements ConfirmShippingView, ServiceSelectionFragment.ServiceSelectionListener{
 
+    private static final int REQUEST_CODE_BARCODE = 1;
     private static final String EXTRA_ORDER_DETAIL_DATA = "EXTRA_ORDER_DETAIL_DATA";
     private static final String SELECT_COURIER_FRAGMENT_TAG = "select_courier";
+    public static final String SELECT_SERVICE_FRAGMENT_TAG = "select_service";
 
     private OrderDetailShipmentModel editableModel;
 
@@ -57,11 +61,13 @@ public class ConfirmShippingActivity extends TActivity
         editableModel.setShipmentName(orderDetailData.getShipmentName());
         editableModel.setPackageName(orderDetailData.getShipmentServiceName());
         EditText barcodeEditText = findViewById(R.id.barcode_edit_text);
+        ImageView barcodeScanner = findViewById(R.id.icon_scan);
         LinearLayout courierLayout = findViewById(R.id.courier_layout);
         TextView confirmButton = findViewById(R.id.confirm_button);
         courierLayout.setOnClickListener(onGetCourierButtonClickedListener());
         confirmButton.setOnClickListener(onConfirmButtonClickedListener(barcodeEditText));
         barcodeEditText.setText(orderDetailData.getAwb());
+        barcodeScanner.setOnClickListener(onBarcodeScanClickedListener());
     }
 
     @Override
@@ -71,13 +77,13 @@ public class ConfirmShippingActivity extends TActivity
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.animator.enter_bottom, R.animator.enter_bottom)
                 .add(R.id.main_view, courierSelectionFragment, SELECT_COURIER_FRAGMENT_TAG)
-                .addToBackStack(null)
                 .commit();
     }
 
     @Override
     public void onSuccessConfirm(String successMessage) {
-
+        Toast.makeText(this, successMessage, Toast.LENGTH_LONG).show();
+        finish();
     }
 
     @Override
@@ -87,6 +93,8 @@ public class ConfirmShippingActivity extends TActivity
 
     @Override
     public void onFinishSelectShipment(CourierSelectionModel courierSelectionModel) {
+        removeServiceSelectionFragment();
+        removeCourierSelectionFragment();
         editableModel.setShipmentName(courierSelectionModel.getCourierName());
         editableModel.setPackageName(courierSelectionModel.getServiceName());
         editableModel.setShipmentId(courierSelectionModel.getCourierId());
@@ -112,11 +120,43 @@ public class ConfirmShippingActivity extends TActivity
         };
     }
 
+    private View.OnClickListener onBarcodeScanClickedListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO initiate scan barcode here
+            }
+        };
+    }
+
     private void initInjector() {
         OrderCourierComponent component = DaggerOrderCourierComponent
                 .builder()
                 .appComponent(getApplicationComponent())
                 .build();
         component.inject(this);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(getFragmentManager().findFragmentByTag(SELECT_SERVICE_FRAGMENT_TAG) != null) {
+            removeServiceSelectionFragment();
+        } else if(getFragmentManager().findFragmentByTag(SELECT_COURIER_FRAGMENT_TAG) != null) {
+            removeCourierSelectionFragment();
+        } else super.onBackPressed();
+    }
+
+    private void removeCourierSelectionFragment() {
+        getFragmentManager()
+                .beginTransaction()
+                .remove(getFragmentManager()
+                        .findFragmentByTag(SELECT_COURIER_FRAGMENT_TAG)).commit();
+    }
+
+    private void removeServiceSelectionFragment() {
+        getFragmentManager()
+                .beginTransaction()
+                .remove(getFragmentManager()
+                        .findFragmentByTag(SELECT_SERVICE_FRAGMENT_TAG)).commit();
     }
 }

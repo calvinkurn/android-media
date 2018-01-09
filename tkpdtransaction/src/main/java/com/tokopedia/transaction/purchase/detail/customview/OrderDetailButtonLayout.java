@@ -102,8 +102,8 @@ public class OrderDetailButtonLayout extends LinearLayout{
 
         Button acceptOrderPartial;
         acceptOrderPartial = mainView.findViewById(R.id.accept_order_patial);
-        acceptOrderPartial.setOnClickListener(onAcceptOrder(context, presenter, data));
-        switchVisibilty(acceptOrder, buttonData.getAcceptPartialOrderVisibility());
+        acceptOrderPartial.setOnClickListener(onAcceptOrderPartial(context, presenter, data));
+        switchVisibilty(acceptOrderPartial, buttonData.getAcceptPartialOrderVisibility());
 
         Button confirmShipping;
         confirmShipping = mainView.findViewById(R.id.confirm_shipping);
@@ -111,13 +111,13 @@ public class OrderDetailButtonLayout extends LinearLayout{
         switchConfirmButtonMode(confirmShipping, buttonData.getConfirmShippingVisibility(),
                 buttonData.getChangeCourier());
 
-        Button changeCourier;
+        /*Button changeCourier;
         changeCourier = mainView.findViewById(R.id.change_courier);
         changeCourier.setOnClickListener(onChangeCourier(context, presenter, data));
         switchChangeCourierButtonColor(changeCourier,
                 buttonData.getAcceptOrderVisibility(),
                 buttonData.getConfirmShippingVisibility());
-        switchVisibilty(changeCourier, buttonData.getChangeCourier());
+        switchVisibilty(changeCourier, buttonData.getChangeCourier());*/
 
         Button requestPickup;
         requestPickup = mainView.findViewById(R.id.request_pickup);
@@ -138,6 +138,11 @@ public class OrderDetailButtonLayout extends LinearLayout{
         rejectOrder = mainView.findViewById(R.id.reject_order_button);
         rejectOrder.setOnClickListener(onRejectOrder(context, presenter, data));
         switchVisibilty(rejectOrder, buttonData.getRejectOrderVisibility());
+
+        Button rejectShipment;
+        rejectShipment = mainView.findViewById(R.id.reject_shipment_button);
+        rejectShipment.setOnClickListener(onRejectShipment(context, presenter, data));
+        switchVisibilty(rejectShipment, buttonData.getRejectShipmentVisibility());
 
         Button viewComplaint = mainView.findViewById(R.id.view_complaint_button);
         viewComplaint.setOnClickListener(onViewComplaintClicked(context, presenter, data));
@@ -276,6 +281,17 @@ public class OrderDetailButtonLayout extends LinearLayout{
         };
     }
 
+    private View.OnClickListener onRejectShipment(final Context context,
+                                               final OrderDetailPresenter presenter,
+                                               final OrderDetailData data) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.processRejectShipment(context, data);
+            }
+        };
+    }
+
     private View.OnClickListener onRequestCancellation(final Context context,
                                                        final OrderDetailPresenter presenter,
                                                        final OrderDetailData data) {
@@ -313,6 +329,7 @@ public class OrderDetailButtonLayout extends LinearLayout{
         if(responseVisibility == OrderDetailTypeDef.WHITE_BUTTON) {
             button.setVisibility(VISIBLE);
             button.setBackgroundResource(R.drawable.white_button_rounded);
+            button.setTextColor(getResources().getColor(R.color.black));
         } else if(responseVisibility == OrderDetailTypeDef.GREEN_BUTTON) {
             button.setVisibility(VISIBLE);
             button.setBackgroundResource(R.drawable.green_button_rounded_unify);
