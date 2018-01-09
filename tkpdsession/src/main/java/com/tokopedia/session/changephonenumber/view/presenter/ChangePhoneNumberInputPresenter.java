@@ -42,7 +42,7 @@ public class ChangePhoneNumberInputPresenter
     }
 
     @Override
-    public void onNewNumberTextChanged(Editable editable) {
+    public void onNewNumberTextChanged(Editable editable, int selection) {
         String newNumber = editable.toString().replaceAll("\\s+", "");
         newNumber = CustomPhoneNumberUtil.transform(newNumber);
 
@@ -53,7 +53,11 @@ public class ChangePhoneNumberInputPresenter
         }
 
         if (editable.toString().length() != newNumber.length()) {
-            view.correctPhoneNumber(newNumber);
+            int lengthDifference = Math.abs(editable.toString().length() - newNumber.length());
+            if (selection >= 0 && selection <= newNumber.length())
+                view.correctPhoneNumber(newNumber, selection + lengthDifference);
+            else
+                view.correctPhoneNumber(newNumber, newNumber.length());
         }
     }
 

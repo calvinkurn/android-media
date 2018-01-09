@@ -126,7 +126,7 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
 
             @Override
             public void afterTextChanged(Editable editable) {
-                presenter.onNewNumberTextChanged(editable);
+                presenter.onNewNumberTextChanged(editable, newPhoneNumber.getSelectionStart());
             }
         };
         newPhoneNumber.addTextChangedListener(phoneNumberTextWatcher);
@@ -204,10 +204,10 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public void correctPhoneNumber(String newNumber) {
+    public void correctPhoneNumber(String newNumber, int selection) {
         newPhoneNumber.removeTextChangedListener(phoneNumberTextWatcher);
         newPhoneNumber.setText(newNumber);
-        newPhoneNumber.setSelection(newNumber.length());
+        newPhoneNumber.setSelection(selection);
         newPhoneNumber.addTextChangedListener(phoneNumberTextWatcher);
     }
 

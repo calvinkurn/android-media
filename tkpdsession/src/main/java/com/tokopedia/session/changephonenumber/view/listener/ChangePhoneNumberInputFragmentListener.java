@@ -15,7 +15,7 @@ public interface ChangePhoneNumberInputFragmentListener {
 
         void disableNextButton();
 
-        void correctPhoneNumber(String newNumber);
+        void correctPhoneNumber(String newNumber, int selection);
 
         void showLoading();
 
@@ -33,7 +33,7 @@ public interface ChangePhoneNumberInputFragmentListener {
     public interface Presenter extends CustomerPresenter<View> {
         void initView();
 
-        void onNewNumberTextChanged(Editable editable);
+        void onNewNumberTextChanged(Editable editable, int selection);
 
         void validateNumber(String newPhoneNumber);
 
