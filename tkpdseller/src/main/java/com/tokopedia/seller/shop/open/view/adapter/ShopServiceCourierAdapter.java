@@ -10,8 +10,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.shop.open.data.model.CourierServiceModel;
-import com.tokopedia.seller.shop.open.view.ShopCourierExpandableOption;
+import com.tokopedia.seller.logistic.model.CourierServiceModel;
 
 import java.util.ArrayList;
 import java.util.List;

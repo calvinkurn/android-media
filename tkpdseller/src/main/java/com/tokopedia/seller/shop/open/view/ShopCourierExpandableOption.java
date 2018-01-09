@@ -19,7 +19,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.expandable.BaseExpandableOption;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.shop.open.data.model.CourierServiceModel;
+import com.tokopedia.seller.logistic.model.CourierServiceModel;
 import com.tokopedia.seller.shop.open.view.adapter.ShopServiceCourierAdapter;
 
 import java.util.List;

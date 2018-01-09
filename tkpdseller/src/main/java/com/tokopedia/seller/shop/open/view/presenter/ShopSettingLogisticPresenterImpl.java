@@ -1,12 +1,10 @@
 package com.tokopedia.seller.shop.open.view.presenter;
 
-import android.text.TextUtils;
-
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.seller.shop.open.data.model.OpenShopCouriersModel;
+import com.tokopedia.seller.logistic.model.CouriersModel;
 import com.tokopedia.seller.shop.open.data.model.response.ResponseCreateShop;
 import com.tokopedia.seller.shop.open.view.model.CourierServiceIdWrapper;
-import com.tokopedia.seller.shop.open.domain.interactor.GetLogisticAvailableUseCase;
+import com.tokopedia.seller.logistic.domain.interactor.GetLogisticAvailableUseCase;
 import com.tokopedia.seller.shop.open.domain.interactor.ShopOpenCreateUseCase;
 import com.tokopedia.seller.shop.open.domain.interactor.ShopOpenSaveCourierUseCase;
 
@@ -36,7 +34,7 @@ public class ShopSettingLogisticPresenterImpl extends ShopSettingLogisticPresent
     @Override
     public void getCouriers(int districtCode) {
         RequestParams requestParam = GetLogisticAvailableUseCase.generateParams(districtCode);
-        getLogisticAvailableUseCase.execute(requestParam, new Subscriber<OpenShopCouriersModel>() {
+        getLogisticAvailableUseCase.execute(requestParam, new Subscriber<CouriersModel>() {
             @Override
             public void onCompleted() {
 
@@ -50,8 +48,8 @@ public class ShopSettingLogisticPresenterImpl extends ShopSettingLogisticPresent
             }
 
             @Override
-            public void onNext(OpenShopCouriersModel openShopCouriersModel) {
-                getView().onSuccessLoadLogistic(openShopCouriersModel);
+            public void onNext(CouriersModel couriersModel) {
+                getView().onSuccessLoadLogistic(couriersModel);
             }
         });
     }

@@ -9,7 +9,6 @@ import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 import com.tokopedia.seller.shop.common.di.ShopQualifier;
 import com.tokopedia.seller.shop.open.data.model.response.DataResponse;
 import com.tokopedia.seller.shop.open.data.model.response.ResponseOpenShopPicture;
-import com.tokopedia.seller.shop.open.data.model.response.ResponseCheckDomainName;
 import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseSaveShopDesc;
 import com.tokopedia.seller.shop.open.data.source.cloud.api.OpenShopApi;
 import com.tokopedia.seller.shop.open.data.source.cloud.api.TomeApi;

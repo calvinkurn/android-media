@@ -1,4 +1,4 @@
-package com.tokopedia.seller.shop.open.data.model;
+package com.tokopedia.seller.logistic.model;
 
 import android.text.TextUtils;
 

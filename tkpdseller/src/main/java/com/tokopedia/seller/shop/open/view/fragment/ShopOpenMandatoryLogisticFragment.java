@@ -33,7 +33,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.shop.common.tracking.TrackingOpenShop;
-import com.tokopedia.seller.shop.open.data.model.OpenShopCouriersModel;
+import com.tokopedia.seller.logistic.model.CouriersModel;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.util.ShopErrorHandler;
 import com.tokopedia.seller.shop.open.view.model.CourierServiceIdWrapper;
@@ -246,9 +246,9 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     }
 
     @Override
-    public void onSuccessLoadLogistic(OpenShopCouriersModel openShopCouriersModel) {
+    public void onSuccessLoadLogistic(CouriersModel couriersModel) {
         hideLoading();
-        courierListViewGroup.setCourierList(openShopCouriersModel.getCourier(), selectedCourierServiceIdWrapper);
+        courierListViewGroup.setCourierList(couriersModel.getCourier(), selectedCourierServiceIdWrapper);
     }
 
     @Override
