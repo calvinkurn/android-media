@@ -18,6 +18,7 @@ import rx.Subscriber;
 
 public class ShopSettingLogisticPresenterImpl extends ShopSettingLogisticPresenter {
 
+    public static final String SUCCESS = "1";
     private final GetLogisticAvailableUseCase getLogisticAvailableUseCase;
     private final ShopOpenSaveCourierUseCase shopOpenSaveCourierUseCase;
     private final ShopOpenCreateUseCase shopOpenCreateUseCase;
@@ -97,10 +98,10 @@ public class ShopSettingLogisticPresenterImpl extends ShopSettingLogisticPresent
 
             @Override
             public void onNext(ResponseCreateShop responseCreateShop) {
-                if (responseCreateShop.getShopId() > 0) {
+                if (responseCreateShop.getReserveStatus().equals(SUCCESS)) {
                     getView().onSuccessCreateShop(responseCreateShop.getShopId());
                 } else {
-                    getView().onErrorCreateShop(null);
+                    getView().onErrorCreateShop(new Exception());
                 }
             }
         });
