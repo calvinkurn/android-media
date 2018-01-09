@@ -8,33 +8,32 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 /**
  * @author by erry on 02/02/17.
  */
-public abstract class EndlessRecyclerViewListener extends RecyclerView.OnScrollListener {
+public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnScrollListener {
 
+    private static final int STARTING_PAGE_INDEX = 0;
     private int visibleThreshold = 2;
     private int currentPage = 0;
     private int currentItemCount = 0;
     private boolean loading = false;
-    private static final int STARTING_PAGE_INDEX = 0;
-
     private boolean hasNextPage = true;
 
     private RecyclerView.LayoutManager layoutManager;
 
-    public EndlessRecyclerViewListener(LinearLayoutManager layoutManager) {
+    public EndlessRecyclerViewScrollListener(LinearLayoutManager layoutManager) {
         this.layoutManager = layoutManager;
     }
 
-    public EndlessRecyclerViewListener(GridLayoutManager layoutManager) {
-        this.layoutManager = layoutManager;
-        visibleThreshold = visibleThreshold * layoutManager.getSpanCount();
-    }
-
-    public EndlessRecyclerViewListener(StaggeredGridLayoutManager layoutManager) {
+    public EndlessRecyclerViewScrollListener(GridLayoutManager layoutManager) {
         this.layoutManager = layoutManager;
         visibleThreshold = visibleThreshold * layoutManager.getSpanCount();
     }
 
-    public EndlessRecyclerViewListener(RecyclerView.LayoutManager layoutManager) {
+    public EndlessRecyclerViewScrollListener(StaggeredGridLayoutManager layoutManager) {
+        this.layoutManager = layoutManager;
+        visibleThreshold = visibleThreshold * layoutManager.getSpanCount();
+    }
+
+    public EndlessRecyclerViewScrollListener(RecyclerView.LayoutManager layoutManager) {
         this.layoutManager = layoutManager;
         if (layoutManager instanceof GridLayoutManager) {
             visibleThreshold = visibleThreshold * ((GridLayoutManager)layoutManager).getSpanCount();

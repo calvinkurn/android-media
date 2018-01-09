@@ -1,5 +1,6 @@
 package com.tkpd.library.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -273,4 +274,15 @@ public class ImageHandler extends com.tokopedia.abstraction.utils.image.ImageHan
 
     }
 
+    public static void LoadImageWGender(ImageView imageview, String url, Activity context, String gender) {
+        if (!url.equals("null")) {
+            loadImageCircle2(imageview.getContext(), imageview, url);
+        } else {
+            if (gender.equals("1")) {
+                imageview.setImageBitmap(getRoundedCornerBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_image_avatar_boy), 100));
+            } else {
+                imageview.setImageBitmap(getRoundedCornerBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_image_avatar_girl), 100));
+            }
+        }
+    }
 }

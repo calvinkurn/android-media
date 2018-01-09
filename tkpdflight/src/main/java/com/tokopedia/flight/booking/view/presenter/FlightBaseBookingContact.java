@@ -36,6 +36,8 @@ public interface FlightBaseBookingContact {
         void showUpdateDataErrorStateLayout(Throwable t);
 
         void showExpireTransactionDialog();
+
+        void setCartId(String id);
     }
 
     interface Presenter<T extends View> extends CustomerPresenter<T> {

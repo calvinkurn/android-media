@@ -2,7 +2,6 @@ package com.tokopedia.flight.orderlist.view;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -90,13 +89,6 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
         RecyclerView recyclerView = view.findViewById(R.id.rv_orders);
         recyclerView.setHasFixedSize(true);
         return recyclerView;
-    }
-
-    @NonNull
-    @Override
-    protected BaseListAdapter<Visitable, FlightOrderTypeFactory> createAdapterInstance() {
-        FlightOrderTypeFactory flightOrderTypeFactory = new FlightOrderAdapterTypeFactory(this);
-        return new FlightOrderAdapter(flightOrderTypeFactory);
     }
 
     @Override
