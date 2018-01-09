@@ -3,9 +3,13 @@ package com.tokopedia.topads.sdk.view;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -70,7 +74,9 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         imageLoader.loadImage(cpm.getCpmImage().getFullEcs(), cpm.getCpmImage().getFullUrl(), iconImg);
         promotedTxt.setText(cpm.getPromotedText());
         nameTxt.setText(escapeHTML(cpm.getName()));
-        descriptionTxt.setText(escapeHTML(cpm.getDecription()));
+
+        String desc = String.format("%s %s", escapeHTML(cpm.getPromotedText()), cpm.getCta());
+        setTextColor(descriptionTxt, desc, cpm.getCta(), ContextCompat.getColor(context, R.color.tkpd_main_green));
         for (Badge badge : cpm.getBadges()) {
             ImageView badgeImg = new ImageView(context);
             badgeImg.setLayoutParams(new LayoutParams(context.getResources().getDimensionPixelSize(R.dimen.badge_size),
@@ -80,6 +86,13 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         }
     }
 
+    private void setTextColor(TextView view, String fulltext, String subtext, int color) {
+        view.setText(fulltext, TextView.BufferType.SPANNABLE);
+        Spannable str = (Spannable) view.getText();
+        int i = fulltext.indexOf(subtext);
+        str.setSpan(new ForegroundColorSpan(color), i, i + subtext.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+    }
+
     private void createViewCpmDigital(Context context, final CpmData.Cpm cpm) {
         inflate(getContext(), R.layout.layout_ads_banner_digital, this);
         ImageView iconImg = (ImageView) findViewById(R.id.icon);
@@ -87,7 +100,8 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         TextView descriptionTxt = (TextView) findViewById(R.id.description);
         imageLoader.loadImage(cpm.getCpmImage().getFullEcs(), cpm.getCpmImage().getFullUrl(), iconImg);
         nameTxt.setText(escapeHTML(cpm.getName()));
-        descriptionTxt.setText(escapeHTML(cpm.getDecription()));
+        String desc = String.format("%s %s", escapeHTML(cpm.getPromotedText()), cpm.getCta());
+        setTextColor(descriptionTxt, desc, cpm.getCta(), ContextCompat.getColor(context, R.color.tkpd_main_green));
     }
 
     public void setConfig(Config config) {

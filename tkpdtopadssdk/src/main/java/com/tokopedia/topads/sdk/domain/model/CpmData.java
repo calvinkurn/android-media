@@ -17,7 +17,7 @@ public class CpmData {
     private static final String KEY_AD_REF_KEY = "ad_ref_key";
     private static final String KEY_REDIRECT = "redirect";
     private static final String KEY_AD_CLICK_URL = "ad_click_url";
-    private static final String KEY_CPM = "cpm";
+    private static final String KEY_CPM = "headline";
     private static final String KEY_APPLINKS = "applinks";
 
     private int id;
@@ -100,12 +100,13 @@ public class CpmData {
 
         private static final String KEY_TEMPLATE_ID = "template_id";
         private static final String KEY_NAME = "name";
-        private static final String KEY_CPM_IMAGE = "image_cpm";
+        private static final String KEY_CPM_IMAGE = "image";
         private static final String KEY_BADGES = "badges";
         private static final String KEY_PROMOTED_TEXT = "promoted_text";
         private static final String KEY_DESCRIPTION = "description";
         private static final String KEY_URI = "uri";
         private static final String KEY_SHOP = "shop";
+        private static final String KEY_CTA_TEXT = "button_text";
 
         private int templateId;
         private String name;
@@ -115,6 +116,7 @@ public class CpmData {
         private String uri;
         private String decription;
         private CpmShop cpmShop;
+        private String cta;
 
         public Cpm(JSONObject object) throws JSONException {
             if(!object.isNull(KEY_TEMPLATE_ID)){
@@ -144,6 +146,17 @@ public class CpmData {
             if(!object.isNull(KEY_SHOP)){
                 setCpmShop(new CpmShop(object.getJSONObject(KEY_SHOP)));
             }
+            if(!object.isNull(KEY_CTA_TEXT)) {
+                setCta(object.getString(KEY_CTA_TEXT));
+            }
+        }
+
+        public String getCta() {
+            return cta;
+        }
+
+        public void setCta(String cta) {
+            this.cta = cta;
         }
 
         public String getDecription() {

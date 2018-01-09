@@ -27,6 +27,7 @@ public class CloudTopAdsDataSource implements TopAdsDataSource {
 
     private Context context;
     private static final String URL_DISPLAY_ADS = "v1.1/display/ads";
+    private static final String URL_DISPLAY_ADS_V1_2 = "v1.2/display/ads";
     private static final String URL_INFO_USER = "v1/info/user";
     private static final String URL_MERLIN = "https://merlin.tokopedia.com/v4/product/category/recommendation";
     private static final String TKPD_SESSION_ID = "Tkpd-SessionId";
@@ -47,7 +48,7 @@ public class CloudTopAdsDataSource implements TopAdsDataSource {
     @Override
     public CpmModel getTopAdsBanner(TKPDMapParam<String, String> params) {
         HttpRequest httpRequest = new HttpRequest.HttpRequestBuilder()
-                .setBaseUrl(config.getBaseUrl() + URL_DISPLAY_ADS)
+                .setBaseUrl(config.getBaseUrl() + URL_DISPLAY_ADS_V1_2)
                 .addHeader(TKPD_SESSION_ID, config.getSessionId())
                 .setMethod(HttpMethod.GET)
                 .addParameters(params)
