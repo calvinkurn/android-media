@@ -126,6 +126,7 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         now.set(Calendar.DATE, date);
         Date newReturnDate = now.getTime();
         String birthdateStr = FlightDateUtil.dateToString(newReturnDate, FlightDateUtil.DEFAULT_VIEW_FORMAT);
+        getView().hideKeyboard();
         getView().renderBirthdate(birthdateStr);
     }
 
