@@ -18,6 +18,7 @@ import com.tokopedia.loyalty.R2;
 import com.tokopedia.loyalty.view.compoundview.PromoImageView;
 import com.tokopedia.loyalty.view.data.PromoData;
 
+import java.text.MessageFormat;
 import java.util.List;
 
 import butterknife.BindView;
@@ -58,10 +59,16 @@ public class PromoListAdapter extends RecyclerView.Adapter {
         ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
         ImageHandler.LoadImage(itemViewHolder.ivBanner, promoData.getThumbnailImage());
         itemViewHolder.tvPeriodPromo.setText(promoData.getPeriodFormatted());
-        itemViewHolder.layoutMultipleCodePromo.setVisibility(promoData.isMultiplePromo() ? View.VISIBLE : View.GONE);
-        itemViewHolder.layoutSingleCodePromo.setVisibility(promoData.isMultiplePromo() ? View.GONE : View.VISIBLE);
+        itemViewHolder.layoutMultipleCodePromo.setVisibility(
+                promoData.isMultiplePromo() ? View.VISIBLE : View.GONE
+        );
+        itemViewHolder.layoutSingleCodePromo.setVisibility(
+                promoData.isMultiplePromo() ? View.GONE : View.VISIBLE
+        );
         itemViewHolder.tvCodePromo.setText(promoData.getPromoCode());
-        itemViewHolder.tvMultipleCodePromo.setText("3 Kode Promo");
+        itemViewHolder.tvMultipleCodePromo.setText(
+                MessageFormat.format("{0}Kode Promo", promoData.getMultiplePromoCodeCount())
+        );
         itemViewHolder.tvLabelCodePromo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -76,7 +83,9 @@ public class PromoListAdapter extends RecyclerView.Adapter {
                 ClipData clip = ClipData.newPlainText(
                         "CLIP_DATA_LABEL_VOUCHER_PROMO", promoData.getPromoCode()
                 );
-                clipboard.setPrimaryClip(clip);
+                if (clipboard != null) {
+                    clipboard.setPrimaryClip(clip);
+                }
                 Toast.makeText(context, "Kode Voucher telah tersalin", Toast.LENGTH_SHORT).show();
             }
         });

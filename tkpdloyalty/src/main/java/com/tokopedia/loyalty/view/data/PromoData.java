@@ -17,6 +17,7 @@ public class PromoData implements Parcelable {
     private String startDate;
     private String endDate;
     private boolean isMultiplePromo;
+    private int multiplePromoCodeCount;
     private String periodFormatted;
 
     public String getPeriodFormatted() {
@@ -25,6 +26,14 @@ public class PromoData implements Parcelable {
 
     public void setPeriodFormatted(String periodFormatted) {
         this.periodFormatted = periodFormatted;
+    }
+
+    public int getMultiplePromoCodeCount() {
+        return multiplePromoCodeCount;
+    }
+
+    public void setMultiplePromoCodeCount(int multiplePromoCodeCount) {
+        this.multiplePromoCodeCount = multiplePromoCodeCount;
     }
 
     public String getTitle() {

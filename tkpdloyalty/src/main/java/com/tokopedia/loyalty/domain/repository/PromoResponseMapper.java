@@ -36,6 +36,7 @@ public class PromoResponseMapper implements IPromoResponseMapper {
             PromoData promoData = new PromoData();
             promoData.setTitle(promoResponse.getTitle().getRendered());
             promoData.setAppLink(promoResponse.getMeta().getAppLink());
+            promoData.setMultiplePromoCodeCount(promoResponse.getAcf().getPromoCodeList().size());
             try {
                 promoData.setPeriodFormatted(
                         getDatePeriodPromo(
