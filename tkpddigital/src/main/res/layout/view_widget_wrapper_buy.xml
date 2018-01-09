@@ -37,6 +37,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/btn_height"
         android:layout_weight="0.40"
+        android:textAllCaps="true"
         android:minHeight="0dp"
         android:background="@drawable/btn_buy"
         android:text="@string/title_buy"

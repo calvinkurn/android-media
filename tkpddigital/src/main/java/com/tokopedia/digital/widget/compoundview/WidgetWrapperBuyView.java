@@ -101,6 +101,7 @@ public class WidgetWrapperBuyView extends LinearLayout {
 
     public void setBuyButtonText(String text) {
         if (!TextUtils.isEmpty(text)) buyButton.setText(text);
+        else buyButton.setText(getContext().getString(R.string.title_buy));
     }
 
     public boolean isCreditCheckboxChecked() {
