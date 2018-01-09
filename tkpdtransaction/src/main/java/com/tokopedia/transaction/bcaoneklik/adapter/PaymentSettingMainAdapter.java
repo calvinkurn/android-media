@@ -1,10 +1,8 @@
 package com.tokopedia.transaction.bcaoneklik.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -225,18 +223,33 @@ public class PaymentSettingMainAdapter extends RecyclerView.Adapter<RecyclerView
     private class CreditCardListViewHolder extends RecyclerView.ViewHolder {
 
         private TextView cardNumber;
-
         private ImageView cardImage;
+        private LinearLayout cardBackground;
 
         CreditCardListViewHolder(View itemView) {
             super(itemView);
+            cardBackground = itemView.findViewById(R.id.ll_cc_container);
             cardNumber = (TextView) itemView.findViewById(R.id.card_number);
             cardImage = (ImageView) itemView.findViewById(R.id.card_image);
         }
 
         void bindCreditCardItem(CreditCardModelItem item) {
+            cardBackground.setBackgroundResource(getBackgroundResource(item));
             cardNumber.setText(" * * * * " + item.getMaskedNumber().substring(12));
             ImageHandler.LoadImage(cardImage, item.getCardTypeImage());
+        }
+
+        private int getBackgroundResource(CreditCardModelItem item) {
+            switch (item.getCardType().toLowerCase()) {
+                case "visa":
+                    return R.drawable.visa_container_kecil;
+                case "mastercard":
+                    return R.drawable.mastercard_container_kecil;
+                case "jcb":
+                    return R.drawable.jcb_container_kecil;
+                default:
+                    return R.drawable.visa_container_kecil;
+            }
         }
     }
 

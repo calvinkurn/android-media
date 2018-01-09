@@ -34,6 +34,7 @@
         android:layout_marginLeft="@dimen/small_dp"
         android:layout_marginStart="@dimen/small_dp"
         android:layout_marginTop="18dp"
+        android:layout_marginBottom="@dimen/margin_small"
         android:textColor="@color/black_70" />
 
     <LinearLayout

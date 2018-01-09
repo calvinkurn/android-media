@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
@@ -51,11 +52,13 @@ public class CreditCardRecyclerViewAdapter extends RecyclerView.Adapter<
     class CreditCardAdapterViewHolder extends RecyclerView.ViewHolder {
 
         private TextView cardNumber;
-
         private ImageView cardImage;
+        private LinearLayout cardBackground;
 
         CreditCardAdapterViewHolder(View itemView) {
             super(itemView);
+
+            cardBackground = itemView.findViewById(R.id.ll_cc_container);
             cardNumber = (TextView) itemView.findViewById(R.id.card_number);
             cardImage = (ImageView) itemView.findViewById(R.id.card_image);
         }
