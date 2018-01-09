@@ -76,7 +76,7 @@ import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.HeaderView
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.LayoutSections;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
-import com.tokopedia.tkpd.home.ReactNativeActivity;
+import com.tokopedia.tkpd.home.ReactNativeOfficialStoreActivity;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 
 import java.util.ArrayList;
@@ -407,7 +407,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
         if (firebaseRemoteConfig.getBoolean(MAINAPP_SHOW_REACT_OFFICIAL_STORE)) {
             getActivity().startActivity(
-                    ReactNativeActivity.createOfficialStoresReactNativeActivity(
+                    ReactNativeOfficialStoreActivity.createCallingIntent(
                             getActivity(), ReactConst.Screen.OFFICIAL_STORE,
                             getString(R.string.react_native_banner_official_title))
             );

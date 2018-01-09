@@ -1,57 +1,52 @@
 package com.tokopedia.tkpd.home;
 
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.facebook.react.ReactApplication;
 import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.fragment.ReactNativePromoSaleFragment;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
+import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
 import com.tokopedia.tkpdreactnative.react.app.ReactNativeView;
 
 /**
  * Created by yogieputra on 08/01/18.
  */
 
-public class ReactNativePromoSaleActivity extends BasePresenterActivity implements ReactNativeView {
-    public static final String SALE_PROMO = "Promo Sale";
-    public static final String EXTRA_TITLE = "EXTRA_TITLE";
-    public static final String EXTRA_URL = "EXTRA_URL";
+public class ReactNativePromoSaleActivity extends ReactFragmentActivity<ReactNativePromoSaleFragment> {
+    private static final String SALE_PROMO = "Promo Sale";
+    private static final String EXTRA_TITLE = "EXTRA_TITLE";
+    private static final String EXTRA_URL = "EXTRA_URL";
+    private static final String KEY_SLUG = "slug";
 
 
     @DeepLink({Constants.Applinks.PROMO_SALE})
-    public static Intent getPromoSaleApplinkCallingIntent(Context context, Bundle bundle){
+    public static Intent getPromoSaleApplinkCallingIntent(Context context, Bundle bundle) {
         ScreenTracking.screen(SALE_PROMO);
         return ReactNativePromoSaleActivity.createBannerReactNativeActivity(
                 context,
                 ReactConst.Screen.PROMO,
-                bundle.getString("slug"),
+                bundle.getString(KEY_SLUG),
                 bundle
         );
     }
 
     @DeepLink({Constants.Applinks.PROMO_SALE_TERMS})
-    public static Intent getPromoSaleTermsIntent(Context context, Bundle bundle){
+    public static Intent getPromoSaleTermsIntent(Context context, Bundle bundle) {
         return ReactNativePromoSaleActivity.createPromoSaleTerms(
                 context,
                 ReactConst.Screen.PROMO,
-                "Syarat & Ketentuan",
+                context.getString(R.string.promo_title_terms),
                 bundle
         );
     }
 
-
-    public static Intent createBannerReactNativeActivity(Context context, String reactScreenName, String url, Bundle extras){
+    public static Intent createBannerReactNativeActivity(Context context, String reactScreenName, String url, Bundle extras) {
         Intent intent = new Intent(context, ReactNativePromoSaleActivity.class);
         extras.putString(ReactConst.KEY_SCREEN, reactScreenName);
         extras.putString(EXTRA_TITLE, "");
@@ -61,7 +56,7 @@ public class ReactNativePromoSaleActivity extends BasePresenterActivity implemen
         return intent;
     }
 
-    private static Intent createPromoSaleTerms(Context context, String reactScreenName, String title, Bundle extras){
+    private static Intent createPromoSaleTerms(Context context, String reactScreenName, String title, Bundle extras) {
         Intent intent = new Intent(context, ReactNativePromoSaleActivity.class);
         extras.putString(ReactConst.KEY_SCREEN, reactScreenName);
         extras.putString(ReactConst.SUB_PAGE, ReactConst.Screen.PROMO_TERMS);
@@ -71,95 +66,17 @@ public class ReactNativePromoSaleActivity extends BasePresenterActivity implemen
         return intent;
     }
 
-    private void setToolbar(){
-        if (getIntent() != null && getIntent().getExtras() != null){
-            String title = getIntent().getExtras().getString(EXTRA_TITLE);
-            if (!TextUtils.isEmpty(title)){
-                toolbar.setTitle(title);
-            }
+    @Override
+    protected ReactNativePromoSaleFragment getReactNativeFragment() {
+        return ReactNativePromoSaleFragment.createInstance(getReactNativeProps());
+    }
+
+    @Override
+    protected String getToolbarTitle() {
+        if (getIntent() != null && getIntent().getExtras() != null) {
+            return getIntent().getExtras().getString(EXTRA_TITLE);
         }
-    }
 
-    private Bundle getReactNativeProps(){
-        Bundle bundle = getIntent().getExtras();
-        Bundle newBundle = new Bundle();
-        for (String key : bundle.keySet()){
-            if (!key.equalsIgnoreCase("is_deep_link_flag") &&
-                    !key.equalsIgnoreCase("android.intent.extra.REFERRER") &&
-                    !key.equalsIgnoreCase("deep_link_uri")){
-                newBundle.putString(key, bundle.getString(key));
-            }
-        }
-        return newBundle;
-    }
-
-
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event){
-        if (GlobalConfig.isAllowDebuggingTools()
-                && keyCode == KeyEvent.KEYCODE_MENU
-                && ((ReactApplication) getApplication()).getReactNativeHost().getReactInstanceManager() != null){
-            ((ReactApplication) getApplication()).getReactNativeHost().getReactInstanceManager().showDevOptionsDialog();
-            return true;
-        }
-        return super.onKeyUp(keyCode, event);
-    }
-
-    @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
-    }
-
-
-    @Override
-    public void actionSetToolbarTitle(String title) {
-        toolbar.setTitle(title);
-    }
-
-    @Override
-    protected void setupURIPass(Uri data) {
-
-    }
-
-    @Override
-    protected void setupBundlePass(Bundle extras) {
-
-    }
-
-    @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_react_native_official_stores;
-    }
-
-    @Override
-    protected void initView() {
-        setToolbar();
-        Bundle initialProps = getReactNativeProps();
-        ReactNativePromoSaleFragment fragment = ReactNativePromoSaleFragment.createInstance(initialProps);
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        if (getFragmentManager().findFragmentById(R.id.container) == null){
-            fragmentTransaction.add(R.id.container, fragment, fragment.getClass().getSimpleName());
-        }
-        fragmentTransaction.commit();
-    }
-
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
+        return "";
     }
 }

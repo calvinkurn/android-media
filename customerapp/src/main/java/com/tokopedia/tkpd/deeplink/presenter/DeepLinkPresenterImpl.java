@@ -43,7 +43,7 @@ import com.tokopedia.session.session.interactor.SignInInteractorImpl;
 import com.tokopedia.session.session.presenter.Login;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
-import com.tokopedia.tkpd.home.ReactNativeActivity;
+import com.tokopedia.tkpd.home.ReactNativeDiscoveryActivity;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 
 import java.io.UnsupportedEncodingException;
@@ -404,11 +404,12 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openDiscoveryPage(String url) {
-      context.startActivity(ReactNativeActivity.createDiscoveryPageReactNativeActivity(
+      context.startActivity(ReactNativeDiscoveryActivity.createCallingIntent(
               context,
               ReactConst.Screen.DISCOVERY_PAGE,
               "",
-              DeepLinkChecker.getDiscoveryPageId(url)));
+              DeepLinkChecker.getDiscoveryPageId(url))
+      );
     }
 
     private void openHomepageHot() {
