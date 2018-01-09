@@ -98,6 +98,9 @@ public class LoginFragment extends BaseDaggerFragment
     private static final int REQUEST_SMART_LOCK = 101;
     private static final int REQUEST_SAVE_SMART_LOCK = 102;
     private static final int REQUEST_LOGIN_WEBVIEW = 103;
+    private static final int REQUEST_SECURITY_QUESTION = 104;
+    private static final int REQUEST_LOGIN_PHONE_NUMBER = 105;
+    private static final int REQUESTS_CREATE_PASSWORD = 106;
 
     public static final int TYPE_SQ_PHONE = 1;
     public static final int TYPE_SQ_EMAIL = 2;
@@ -304,7 +307,6 @@ public class LoginFragment extends BaseDaggerFragment
     private void goToRegisterInitial() {
         UnifyTracking.eventTracking(LoginAnalytics.goToRegisterFromLogin());
         Intent intent = RegisterInitialActivity.getCallingIntent(getActivity());
-        intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         startActivity(intent);
         getActivity().finish();
     }
@@ -473,9 +475,7 @@ public class LoginFragment extends BaseDaggerFragment
                         userInfoDomainData.getBdayDay(),
                         userInfoDomainData.getCreatePasswordList(),
                         String.valueOf(userInfoDomainData.getUserId())));
-        intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
-        startActivity(intent);
-        getActivity().finish();
+        startActivityForResult(intent, REQUESTS_CREATE_PASSWORD);
     }
 
     @Override
@@ -513,9 +513,7 @@ public class LoginFragment extends BaseDaggerFragment
 
         Intent intent = VerificationActivity.getSecurityQuestionVerificationIntent(getActivity(),
                 securityDomain.getUserCheckSecurity2());
-        intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
-        startActivity(intent);
-        getActivity().finish();
+        startActivityForResult(intent, REQUEST_SECURITY_QUESTION);
 
     }
 
@@ -644,9 +642,7 @@ public class LoginFragment extends BaseDaggerFragment
     private void onLoginPhoneNumberClick() {
         UnifyTracking.eventTracking(LoginAnalytics.getEventClickLoginPhoneNumber());
         Intent intent = LoginPhoneNumberActivity.getCallingIntent(getActivity());
-        intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
-        startActivity(intent);
-        getActivity().finish();
+        startActivityForResult(intent, REQUEST_LOGIN_PHONE_NUMBER);
     }
 
     private void onLoginGoogleClick() {
@@ -729,6 +725,24 @@ public class LoginFragment extends BaseDaggerFragment
             presenter.loginGoogle(accessToken, email);
         } else if (requestCode == REQUEST_LOGIN_WEBVIEW && resultCode == Activity.RESULT_OK) {
             presenter.loginWebview(data);
+        } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
+        } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_CANCELED) {
+            getActivity().setResult(Activity.RESULT_CANCELED);
+            sessionHandler.clearToken();
+        } else if (requestCode == REQUEST_LOGIN_PHONE_NUMBER && resultCode == Activity.RESULT_OK) {
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
+        } else if (requestCode == REQUEST_LOGIN_PHONE_NUMBER && resultCode == Activity.RESULT_CANCELED) {
+            getActivity().setResult(Activity.RESULT_CANCELED);
+            sessionHandler.clearToken();
+        } else if (requestCode == REQUESTS_CREATE_PASSWORD && resultCode == Activity.RESULT_OK) {
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
+        } else if (requestCode == REQUESTS_CREATE_PASSWORD && resultCode == Activity.RESULT_CANCELED) {
+            getActivity().setResult(Activity.RESULT_CANCELED);
+            sessionHandler.clearToken();
         } else {
             super.onActivityResult(requestCode, resultCode, data);
             callbackManager.onActivityResult(requestCode, resultCode, data);
