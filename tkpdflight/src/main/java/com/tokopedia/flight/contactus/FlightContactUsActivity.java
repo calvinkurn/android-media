@@ -52,10 +52,6 @@ public class FlightContactUsActivity extends BaseActivity implements FlightConta
         return intent;
     }
 
-    public static Intent createContactUsIntent(String orderId, int status) {
-
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         passData = getIntent().getParcelableExtra(EXTRA_PASS_DATA);
