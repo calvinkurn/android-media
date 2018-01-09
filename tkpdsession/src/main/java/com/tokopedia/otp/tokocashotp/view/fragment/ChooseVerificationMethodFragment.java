@@ -98,6 +98,8 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
                     break;
                 }
                 case VerificationActivity.TYPE_PHONE_CALL: {
+                    UnifyTracking.eventTracking(LoginPhoneNumberAnalytics
+                            .getChooseVerificationMethodTracking(VerificationActivity.TYPE_PHONE_CALL));
                     ((VerificationActivity) getActivity()).goToCallVerification();
                     break;
                 }
