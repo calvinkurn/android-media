@@ -54,8 +54,8 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
     WarningListAdapter adapter;
     @Inject
     ChangePhoneNumberWarningFragmentListener.Presenter presenter;
-    private RelativeLayout tokopediaBalanceLayout;
-    private RelativeLayout tokocashLayout;
+    private View tokopediaBalanceLayout;
+    private View tokocashLayout;
     private TextView tokopediaBalanceValue;
     private TextView tokocashValue;
     private RecyclerView warningRecyclerView;
