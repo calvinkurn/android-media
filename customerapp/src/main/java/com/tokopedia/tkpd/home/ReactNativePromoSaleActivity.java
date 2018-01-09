@@ -57,6 +57,7 @@ public class ReactNativePromoSaleActivity extends BasePresenterActivity implemen
         extras.putString(EXTRA_TITLE, "");
         extras.putString(EXTRA_URL, url);
         intent.putExtras(extras);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         return intent;
     }
 
@@ -66,6 +67,7 @@ public class ReactNativePromoSaleActivity extends BasePresenterActivity implemen
         extras.putString(ReactConst.SUB_PAGE, ReactConst.Screen.PROMO_TERMS);
         extras.putString(EXTRA_TITLE, title);
         intent.putExtras(extras);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         return intent;
     }
 

@@ -48,7 +48,6 @@ import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
-import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.digital.tokocash.model.CashBackData;
@@ -410,8 +409,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             getActivity().startActivity(
                     ReactNativeActivity.createOfficialStoresReactNativeActivity(
                             getActivity(), ReactConst.Screen.OFFICIAL_STORE,
-                            getString(R.string.react_native_banner_official_title)
-                    )
+                            getString(R.string.react_native_banner_official_title))
             );
         } else {
             openWebViewBrandsURL(TkpdBaseURL.OfficialStore.URL_WEBVIEW);

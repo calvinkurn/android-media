@@ -7,13 +7,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
-import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.facebook.react.ReactApplication;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.util.GlobalConfig;
@@ -30,9 +27,11 @@ public class ReactNativeActivity extends BasePresenterActivity implements ReactN
     @DeepLink({Constants.Applinks.OFFICIAL_STORES})
     public static Intent getOfficialStoresApplinkCallingIntent(Context context, Bundle bundle) {
         return ReactNativeActivity.createOfficialStoresReactNativeActivity(
-                context, ReactConst.Screen.OFFICIAL_STORE,
-                context.getString(com.tokopedia.tkpd.R.string.react_native_banner_official_title)
-        ).putExtras(bundle);
+                context,
+                ReactConst.Screen.OFFICIAL_STORE,
+                context.getString(com.tokopedia.tkpd.R.string.react_native_banner_official_title),
+                bundle
+        );
     }
 
     @DeepLink({Constants.Applinks.DISCOVERY_PAGE})
@@ -40,8 +39,21 @@ public class ReactNativeActivity extends BasePresenterActivity implements ReactN
         return ReactNativeActivity.createDiscoveryPageReactNativeActivity(
                 context, ReactConst.Screen.DISCOVERY_PAGE,
                 "",
-                bundle.getString(PAGE_ID)
-        ).putExtras(bundle);
+                bundle.getString(PAGE_ID),
+                bundle
+        );
+    }
+
+    public static Intent createOfficialStoresReactNativeActivity(Context context,
+                                                                 String reactScreenName,
+                                                                 String pageTitle,
+                                                                 Bundle extras) {
+        Intent intent = new Intent(context, ReactNativeActivity.class);
+        extras.putString(ReactConst.KEY_SCREEN, reactScreenName);
+        extras.putString(EXTRA_TITLE, pageTitle);
+        intent.putExtras(extras);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        return intent;
     }
 
     public static Intent createOfficialStoresReactNativeActivity(Context context,
@@ -52,13 +64,27 @@ public class ReactNativeActivity extends BasePresenterActivity implements ReactN
         extras.putString(ReactConst.KEY_SCREEN, reactScreenName);
         extras.putString(EXTRA_TITLE, pageTitle);
         intent.putExtras(extras);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         return intent;
     }
 
     public static Intent createDiscoveryPageReactNativeActivity(Context context,
-                                                                 String reactScreenName,
-                                                                 String pageTitle,
-                                                                 String pageId) {
+                                                                String reactScreenName,
+                                                                String pageTitle,
+                                                                String pageId,
+                                                                Bundle extras) {
+        Intent intent = new Intent(context, ReactNativeActivity.class);
+        extras.putString(ReactConst.KEY_SCREEN, reactScreenName);
+        extras.putString(EXTRA_TITLE, pageTitle);
+        extras.putString(PAGE_ID, pageId);
+        intent.putExtras(extras);
+        return intent;
+    }
+
+    public static Intent createDiscoveryPageReactNativeActivity(Context context,
+                                                                String reactScreenName,
+                                                                String pageTitle,
+                                                                String pageId) {
         Intent intent = new Intent(context, ReactNativeActivity.class);
         Bundle extras = new Bundle();
         extras.putString(ReactConst.KEY_SCREEN, reactScreenName);

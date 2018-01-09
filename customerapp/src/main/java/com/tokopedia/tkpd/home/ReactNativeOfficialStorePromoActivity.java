@@ -62,15 +62,13 @@ public class ReactNativeOfficialStorePromoActivity extends BasePresenterActivity
         );
     }
 
-
-
-
     public static Intent createBannerReactNativeActivity(Context context, String reactScreenName, String url, Bundle extras){
         Intent intent = new Intent(context, ReactNativeOfficialStorePromoActivity.class);
         extras.putString(ReactConst.KEY_SCREEN, reactScreenName);
         extras.putString(EXTRA_TITLE, "");
         extras.putString(EXTRA_URL, url);
         intent.putExtras(extras);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         return intent;
     }
 
@@ -80,6 +78,7 @@ public class ReactNativeOfficialStorePromoActivity extends BasePresenterActivity
         extras.putString(ReactConst.SUB_PAGE, ReactConst.Screen.PROMO_TERMS);
         extras.putString(EXTRA_TITLE, title);
         intent.putExtras(extras);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         return intent;
     }
 
