@@ -31,6 +31,9 @@ public class ShopWhiteList {
         // Open Shop form
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.BASE_DOMAIN,
                 TkpdBaseURL.Shop.PATH_MY_SHOP + TkpdBaseURL.Shop.PATH_GET_OPEN_SHOP_FORM, ONE_HOUR));
+        // Generate Host
+        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.BASE_DOMAIN,
+                TkpdBaseURL.Upload.V4_ACTION_GENERATE_HOST + TkpdBaseURL.Upload.PATH_GENERATE_HOST, THREE_HOURS));
 
         return cacheApiWhiteList;
     }

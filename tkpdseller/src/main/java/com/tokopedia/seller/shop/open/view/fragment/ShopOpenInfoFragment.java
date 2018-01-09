@@ -40,6 +40,7 @@ import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.UserDa
 import com.tokopedia.seller.shop.open.di.component.DaggerShopSettingInfoComponent;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.di.component.ShopSettingInfoComponent;
+import com.tokopedia.seller.shop.open.domain.model.ShopOpenSaveInfoResponseModel;
 import com.tokopedia.seller.shop.open.util.ShopErrorHandler;
 import com.tokopedia.seller.shop.open.view.listener.ShopOpenInfoView;
 import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
@@ -187,7 +188,12 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
     }
 
     @Override
-    public void onSuccessSaveInfoShop() {
+    public void onSuccessSaveInfoShop(ShopOpenSaveInfoResponseModel responseModel) {
+        if(onShopStepperListener != null && onShopStepperListener.getStepperModel().getResponseIsReserveDomain() != null){
+            onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData().setShortDesc(responseModel.getShopDesc());
+            onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData().setLogo(responseModel.getPicSrc());
+            onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData().setTagLine(responseModel.getShopTagLine());
+        }
         trackingOpenShop.eventOpenShopFormSuccess();
         if (onShopStepperListener != null) {
             onShopStepperListener.goToNextPage(null);
@@ -221,7 +227,7 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
 
     private void onClickBrowseImage() {
         FragmentManager fm = getActivity().getSupportFragmentManager();
-        ImageEditDialogFragment dialogFragment = ImageEditDialogFragment.newInstance(0);
+        ImageNewDialogFragment dialogFragment = ImageNewDialogFragment.newInstance(0);
         dialogFragment.show(fm, ImageEditDialogFragment.FRAGMENT_TAG);
         dialogFragment.setOnImageEditListener(new ImageEditDialogFragment.OnImageEditListener() {
 
