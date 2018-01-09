@@ -982,13 +982,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToKolCommentApplink(String kolId) {
-        String url = Constants.Applinks.KOLCOMMENT.replace("{id}", kolId);
-        ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity()
-                , url);
-    }
-
-    @Override
     public void onGoToListKolRecommendation(int page, int rowNumber, String url) {
         startActivity(KolProfileWebViewActivity.getCallingIntent(getActivity(), url));
     }

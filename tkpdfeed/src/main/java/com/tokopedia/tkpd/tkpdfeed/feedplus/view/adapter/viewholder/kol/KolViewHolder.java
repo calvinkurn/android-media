@@ -45,7 +45,6 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
     private View topSeparator;
     private View commentButton;
     private View likeButton;
-    private View commentButtonApplink;
 
     public KolViewHolder(View itemView, FeedPlus.View.Kol viewListener) {
         super(itemView);
@@ -67,7 +66,6 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
         topSeparator = itemView.findViewById(R.id.separator);
         commentButton = itemView.findViewById(R.id.comment_button);
         likeButton = itemView.findViewById(R.id.like_button);
-        commentButtonApplink = itemView.findViewById(R.id.comment_button_applink);
     }
 
     @Override
@@ -210,13 +208,6 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
             public void onClick(View v) {
                 UnifyTracking.eventKolContentCommentClick(element.isFollowed(), element.getTagsType());
                 viewListener.onGoToKolComment(element.getPage(), getAdapterPosition(), element);
-            }
-        });
-
-        commentButtonApplink.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                viewListener.onGoToKolCommentApplink(String.valueOf(element.getId()));
             }
         });
 

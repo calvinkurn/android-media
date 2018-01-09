@@ -179,40 +179,6 @@
                 />
 
         </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/comment_button_applink"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:gravity="center">
-
-            <ImageView
-                android:id="@+id/comment_icon_applink"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="@dimen/margin_small"
-                android:src="@drawable/ic_comment"
-                />
-
-            <TextView
-                android:id="@+id/comment_text_applink"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toEndOf="@id/comment_icon_applink"
-                android:layout_toRightOf="@id/comment_icon_applink"
-                android:fontFamily="sans-serif-medium"
-                android:lineSpacingExtra="6sp"
-                android:textColor="@color/black_54"
-                android:textSize="@dimen/text_size_medium"
-                android:textStyle="normal"
-                tools:text="935"
-                />
-
-        </RelativeLayout>
     </LinearLayout>
 
     <View
