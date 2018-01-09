@@ -34,18 +34,22 @@ public class ReactNativeOfficialStorePromoActivity extends BasePresenterActivity
     public static Intent getOfficialStoresPromoApplinkCallingIntent(Context context, Bundle bundle){
         ScreenTracking.screen(OS_PROMO_PAGE);
         return ReactNativeOfficialStorePromoActivity.createBannerReactNativeActivity(
-                context, ReactConst.Screen.PROMO,
-                bundle.getString("slug")
-        ).putExtras(bundle);
+                context,
+                ReactConst.Screen.PROMO,
+                bundle.getString("slug"),
+                bundle
+        );
     }
 
     @DeepLink({Constants.Applinks.OFFICIAL_STORE_PROMO})
     public static Intent getOfficialStorePromoApplinkCallingIntent(Context context, Bundle bundle){
         ScreenTracking.screen(OS_PROMO_PAGE);
         return ReactNativeOfficialStorePromoActivity.createBannerReactNativeActivity(
-                context, ReactConst.Screen.PROMO,
-                bundle.getString("slug")
-        ).putExtras(bundle);
+                context,
+                ReactConst.Screen.PROMO,
+                bundle.getString("slug"),
+                bundle
+        );
     }
 
     @DeepLink({Constants.Applinks.OFFICIAL_STORES_PROMO_TERMS})
@@ -61,9 +65,8 @@ public class ReactNativeOfficialStorePromoActivity extends BasePresenterActivity
 
 
 
-    public static Intent createBannerReactNativeActivity(Context context, String reactScreenName, String url){
+    public static Intent createBannerReactNativeActivity(Context context, String reactScreenName, String url, Bundle extras){
         Intent intent = new Intent(context, ReactNativeOfficialStorePromoActivity.class);
-        Bundle extras = new Bundle();
         extras.putString(ReactConst.KEY_SCREEN, reactScreenName);
         extras.putString(EXTRA_TITLE, "");
         extras.putString(EXTRA_URL, url);
