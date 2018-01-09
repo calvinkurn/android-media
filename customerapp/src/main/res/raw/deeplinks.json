@@ -495,11 +495,11 @@
       "path": "token-listrik"
     },
     {
-      "applink" : "tokopedia://digital/form?category_id=33&operator_id=18",
+      "applink" : "tokopedia://digital/form?category_id=3&operator_id=18",
       "path": "pln/tagihan-listrik"
     },
     {
-      "applink" : "tokopedia://digital/form?category_id=33&operator_id=18",
+      "applink" : "tokopedia://digital/form?category_id=3&operator_id=18",
       "path": "tagihan-listrik"
     },
 
