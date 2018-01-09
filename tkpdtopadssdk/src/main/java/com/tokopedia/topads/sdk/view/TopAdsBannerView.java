@@ -71,12 +71,11 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         promotedTxt.setText(cpm.getPromotedText());
         nameTxt.setText(escapeHTML(cpm.getName()));
         descriptionTxt.setText(escapeHTML(cpm.getDecription()));
-        badgeContainer.removeAllViews();
         for (Badge badge : cpm.getBadges()) {
             ImageView badgeImg = new ImageView(context);
             badgeImg.setLayoutParams(new LayoutParams(context.getResources().getDimensionPixelSize(R.dimen.badge_size),
                     context.getResources().getDimensionPixelSize(R.dimen.badge_size)));
-            imageLoader.loadImage(badge.getImageUrl(), badgeImg);
+            imageLoader.loadImageWithMemoryCache(badge.getImageUrl(), badgeImg);
             badgeContainer.addView(badgeImg);
         }
     }
