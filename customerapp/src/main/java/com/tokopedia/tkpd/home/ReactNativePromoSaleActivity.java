@@ -33,9 +33,11 @@ public class ReactNativePromoSaleActivity extends BasePresenterActivity implemen
     public static Intent getPromoSaleApplinkCallingIntent(Context context, Bundle bundle){
         ScreenTracking.screen(SALE_PROMO);
         return ReactNativePromoSaleActivity.createBannerReactNativeActivity(
-                context, ReactConst.Screen.PROMO,
-                bundle.getString("slug")
-        ).putExtras(bundle);
+                context,
+                ReactConst.Screen.PROMO,
+                bundle.getString("slug"),
+                bundle
+        );
     }
 
     @DeepLink({Constants.Applinks.PROMO_SALE_TERMS})
@@ -49,9 +51,8 @@ public class ReactNativePromoSaleActivity extends BasePresenterActivity implemen
     }
 
 
-    public static Intent createBannerReactNativeActivity(Context context, String reactScreenName, String url){
+    public static Intent createBannerReactNativeActivity(Context context, String reactScreenName, String url, Bundle extras){
         Intent intent = new Intent(context, ReactNativePromoSaleActivity.class);
-        Bundle extras = new Bundle();
         extras.putString(ReactConst.KEY_SCREEN, reactScreenName);
         extras.putString(EXTRA_TITLE, "");
         extras.putString(EXTRA_URL, url);
