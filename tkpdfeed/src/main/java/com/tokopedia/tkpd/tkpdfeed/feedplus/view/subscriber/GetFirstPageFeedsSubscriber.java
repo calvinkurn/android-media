@@ -1,5 +1,7 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber;
 
+import android.text.TextUtils;
+
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.InspirationItemDomain;
@@ -281,7 +283,8 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                                 && domain.getContent().getKolCtaDomain() != null) {
                             ContentProductViewModel contentProductViewModel =
                                     convertContentProductViewModel(domain.getContent().getKolCtaDomain());
-                            listFeedView.add(contentProductViewModel);
+                            if (contentProductViewModel.isContentProductShowing())
+                                listFeedView.add(contentProductViewModel);
                         }
                         break;
                     default:
@@ -562,12 +565,20 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     }
 
     private ContentProductViewModel convertContentProductViewModel(KolCtaDomain domain) {
+        if (!TextUtils.isEmpty(domain.getImageUrl())
+                || !TextUtils.isEmpty(domain.getApplink())
+                || !TextUtils.isEmpty(domain.getButtonTitle())
+                || !TextUtils.isEmpty(domain.getTextHeader())
+                || !TextUtils.isEmpty(domain.getTextDescription()))
+            return new ContentProductViewModel(
+                    domain.getImageUrl(),
+                    domain.getApplink(),
+                    domain.getButtonTitle(),
+                    domain.getTextHeader(),
+                    domain.getTextDescription(),
+                    true);
         return new ContentProductViewModel(
-                domain.getImageUrl(),
-                domain.getApplink(),
-                domain.getButtonTitle(),
-                domain.getTextHeader(),
-                domain.getTextDescription());
+                false);
     }
 
     private void addSeeMorePromo(DataFeedDomain dataFeedDomain, ArrayList<PromoViewModel> listPromo) {

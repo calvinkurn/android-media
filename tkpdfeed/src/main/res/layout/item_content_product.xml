@@ -10,6 +10,7 @@
     <ImageView
         android:id="@+id/iv_content_product"
         android:layout_width="match_parent"
+        android:scaleType="centerCrop"
         android:layout_height="100dp" />
 
     <FrameLayout
@@ -50,6 +51,8 @@
                 android:layout_width="110dp"
                 android:layout_height="35dp"
                 android:layout_marginTop="@dimen/margin_small"
+                android:layout_gravity="center"
+                android:gravity="center"
                 android:background="@drawable/bg_button_enable"
                 android:textAllCaps="false"
                 android:textColor="@color/white"

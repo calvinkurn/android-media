@@ -13,13 +13,23 @@ public class ContentProductViewModel implements Visitable<FeedPlusTypeFactory> {
     private String buttonTitle;
     private String textHeader;
     private String textDescription;
+    private boolean isContentProductShowing;
 
-    public ContentProductViewModel(String imageUrl, String applink, String buttonTitle, String textHeader, String textDescription) {
+    public ContentProductViewModel(String imageUrl, String applink, String buttonTitle, String textHeader, String textDescription, boolean isContentProductShowing) {
         this.imageUrl = imageUrl;
         this.applink = applink;
         this.buttonTitle = buttonTitle;
         this.textHeader = textHeader;
         this.textDescription = textDescription;
+        this.isContentProductShowing = isContentProductShowing;
+    }
+
+    public ContentProductViewModel(boolean isContentProductShowing) {
+        this.isContentProductShowing = isContentProductShowing;
+    }
+
+    public boolean isContentProductShowing() {
+        return isContentProductShowing;
     }
 
     public String getImageUrl() {

@@ -58,7 +58,7 @@ public class ContentProductViewHolder extends AbstractViewHolder<ContentProductV
         }
         if (!TextUtils.isEmpty(model.getTextDescription())) {
             tvDescription.setVisibility(View.VISIBLE);
-            tvDescription.setText(model.getTextHeader());
+            tvDescription.setText(model.getTextDescription());
         }
         if (!TextUtils.isEmpty(model.getImageUrl())) {
             ivHeader.setVisibility(View.VISIBLE);
