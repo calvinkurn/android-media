@@ -3,21 +3,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:padding="@dimen/padding_small">
 
-    <ImageView
+    <android.support.v7.widget.AppCompatImageView
         android:id="@+id/icon_default"
         android:layout_width="@dimen/image_width_m"
         android:layout_height="@dimen/image_width_m"
-        android:src="@drawable/image_circle"
+        app:srcCompat="@drawable/image_circle"
         android:visibility="gone" />
 
-    <ImageView
+    <android.support.v7.widget.AppCompatImageView
         android:id="@+id/image_amenity"
         android:layout_width="@dimen/image_width_xs"
         android:layout_height="@dimen/image_width_xs"
-        tools:src="@drawable/ic_badge_diamond" />
+        app:srcCompat="@drawable/ic_badge_diamond" />
 
     <TextView
         android:id="@+id/text_amenity"
