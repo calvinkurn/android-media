@@ -26,7 +26,6 @@ import rx.functions.Func1;
 public class DeeplinkRepositoryImpl implements DeeplinkRepository {
 
     private final String KEY_DEEPLINK = "KEY_DEEPLINK";
-    private final String KEY_DB_VERSION = "KEY_DB_VERSION";
 
     private Context context;
 
@@ -46,29 +45,22 @@ public class DeeplinkRepositoryImpl implements DeeplinkRepository {
     }
 
     private Observable<List<Deeplink>> getDeeplinksFromDb() {
-//        GlobalCacheManager globalCacheManager = new GlobalCacheManager();
-//        String dbVersion = globalCacheManager.getValueString(KEY_DB_VERSION);
-
-//        if (Integer.valueOf(dbVersion) < BuildConfig.VERSION_CODE) {
-//            return getDeeplinksFromFile();
-//        } else {
-            return Observable.just(new GlobalCacheManager())
-                    .map(new Func1<GlobalCacheManager, List<Deeplink>>() {
-                        @Override
-                        public List<Deeplink> call(GlobalCacheManager globalCacheManager) {
-                            String cache = globalCacheManager.getValueString(KEY_DEEPLINK);
-                            Gson gson = new Gson();
-                            Response response = gson.fromJson(cache, Response.class);
-                            return response.deeplinks;
-                        }
-                    })
-                    .onErrorReturn(new Func1<Throwable, List<Deeplink>>() {
-                        @Override
-                        public List<Deeplink> call(Throwable throwable) {
-                            return new ArrayList<>();
-                        }
-                    });
-//        }
+        return Observable.just(new GlobalCacheManager())
+                .map(new Func1<GlobalCacheManager, List<Deeplink>>() {
+                    @Override
+                    public List<Deeplink> call(GlobalCacheManager globalCacheManager) {
+                        String cache = globalCacheManager.getValueString(KEY_DEEPLINK);
+                        Gson gson = new Gson();
+                        Response response = gson.fromJson(cache, Response.class);
+                        return response.deeplinks;
+                    }
+                })
+                .onErrorReturn(new Func1<Throwable, List<Deeplink>>() {
+                    @Override
+                    public List<Deeplink> call(Throwable throwable) {
+                        return new ArrayList<>();
+                    }
+                });
     }
 
     private Observable<List<Deeplink>> getDeeplinksFromFile() {

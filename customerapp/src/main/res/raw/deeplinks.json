@@ -1,80 +1,81 @@
 {
+  "version" : "1.0",
   "deeplinks" : [
     {
       "applink" : "tokopedia://digital/form?category_id=1",
-      "url" : "pulsa"
+      "path": "pulsa"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=1&operator_id=1",
-      "url" : "pulsa/axis"
+      "path": "pulsa/axis"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=1&operator_id=1",
-      "url" : "axis"
+      "path": "axis"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=1&operator_id=2",
-      "url" : "pulsa/im3"
+      "path": "pulsa/im3"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=1&operator_id=2",
-      "url" : "im3"
+      "path": "im3"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=1&operator_id=3",
-      "url" : "pulsa/bolt"
+      "path": "pulsa/bolt"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=1&operator_id=3",
-      "url" : "bolt"
+      "path": "bolt"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=1&operator_id=4",
-      "url" : "pulsa/tri"
+      "path": "pulsa/tri"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=1&operator_id=4",
-      "url" : "3"
+      "path": "3"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=1&operator_id=5",
-      "url" : "pulsa/xl"
+      "path": "pulsa/xl"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=1&operator_id=5",
-      "url" : "pulsa-xl"
+      "path": "pulsa-xl"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=1&operator_id=7",
-      "url" : "pulsa/smartfren"
+      "path": "pulsa/smartfren"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=1&operator_id=7",
-      "url" : "pulsa-smartfren"
+      "path": "pulsa-smartfren"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=1&operator_id=12",
-      "url" : "pulsa/simpati"
+      "path": "pulsa/simpati"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=1&operator_id=12",
-      "url" : "simpati"
+      "path": "simpati"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=1&operator_id=15",
-      "url" : "pulsa/as"
+      "path": "pulsa/as"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=1&operator_id=15",
-      "url" : "as"
+      "path": "as"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=1&operator_id=17",
-      "url" : "pulsa/mentari"
+      "path": "pulsa/mentari"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=1&operator_id=17",
-      "url" : "mentari"
+      "path": "mentari"
     },
 
 
@@ -84,79 +85,79 @@
 
     {
       "applink" : "tokopedia://digital/form?category_id=2&operator_id=12",
-      "url" : "paket-data"
+      "path": "paket-data"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=2&operator_id=12",
-      "url" : "paket-internet/telkomsel"
+      "path": "paket-internet/telkomsel"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=2&operator_id=12",
-      "url" : "paket-internet-telkomsel"
+      "path": "paket-internet-telkomsel"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=2&operator_id=2",
-      "url" : "paket-internet/indosat"
+      "path": "paket-internet/indosat"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=2&operator_id=2",
-      "url" : "paket-internet-indosat"
+      "path": "paket-internet-indosat"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=2&operator_id=5",
-      "url" : "paket-internet/xl"
+      "path": "paket-internet/xl"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=2&operator_id=5",
-      "url" : "paket-internet-xl"
+      "path": "paket-internet-xl"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=2&operator_id=1",
-      "url" : "paket-internet/axis"
+      "path": "paket-internet/axis"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=2&operator_id=1",
-      "url" : "paket-internet-axis"
+      "path": "paket-internet-axis"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=2&operator_id=2",
-      "url" : "paket-internet/im3"
+      "path": "paket-internet/im3"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=2&operator_id=2",
-      "url" : "paket-internet-im3"
+      "path": "paket-internet-im3"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=2&operator_id=17",
-      "url" : "paket-internet/mentari"
+      "path": "paket-internet/mentari"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=2&operator_id=17",
-      "url" : "paket-internet-mentari"
+      "path": "paket-internet-mentari"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=2&operator_id=4",
-      "url" : "paket-internet/tri"
+      "path": "paket-internet/tri"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=2&operator_id=4",
-      "url" : "paket-internet-tri"
+      "path": "paket-internet-tri"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=2&operator_id=3",
-      "url" : "paket-internet/bolt"
+      "path": "paket-internet/bolt"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=2&operator_id=3",
-      "url" : "paket-internet-bolt"
+      "path": "paket-internet-bolt"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=2&operator_id=12",
-      "url" : "paket-internet/simpati"
+      "path": "paket-internet/simpati"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=2&operator_id=12",
-      "url" : "paket-internet-simpati"
+      "path": "paket-internet-simpati"
     },
 
 
@@ -165,19 +166,19 @@
 
     {
       "applink" : "tokopedia://digital/form?category_id=20",
-      "url" : "roaming"
+      "path": "roaming"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=20&operator_id=2",
-      "url" : "roaming/indosat"
+      "path": "roaming/indosat"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=20&operator_id=5",
-      "url" : "roaming/xl"
+      "path": "roaming/xl"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=20&operator_id=12",
-      "url" : "roaming/telkomsel"
+      "path": "roaming/telkomsel"
     },
 
 
@@ -187,139 +188,139 @@
 
     {
       "applink" : "tokopedia://digital/form?category_id=6",
-      "url" : "voucher-game"
+      "path": "voucher-game"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=6&operator_id=21",
-      "url" : "voucher-game/garena"
+      "path": "voucher-game/garena"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=6&operator_id=21",
-      "url" : "garena"
+      "path": "garena"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=6&operator_id=19",
-      "url" : "voucher-game/steam"
+      "path": "voucher-game/steam"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=6&operator_id=19",
-      "url" : "steam"
+      "path": "steam"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=6&operator_id=23",
-      "url" : "voucher-game/lyto"
+      "path": "voucher-game/lyto"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=6&operator_id=23",
-      "url" : "lyto"
+      "path": "lyto"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=6&operator_id=292",
-      "url" : "voucher-game/google-play"
+      "path": "voucher-game/google-play"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=6&operator_id=292",
-      "url" : "google-play"
+      "path": "google-play"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=6&operator_id=24",
-      "url" : "voucher-game/megaxus"
+      "path": "voucher-game/megaxus"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=6&operator_id=24",
-      "url" : "megaxus"
+      "path": "megaxus"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=6&operator_id=22",
-      "url" : "voucher-game/gemschool-voucher"
+      "path": "voucher-game/gemscool-voucher"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=6&operator_id=22",
-      "url" : "gemschool-voucher"
+      "path": "gemscool-voucher"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=6&operator_id=103",
-      "url" : "voucher-game/mol-point"
+      "path": "voucher-game/mol-point"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=6&operator_id=103",
-      "url" : "mol-point"
+      "path": "mol-point"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=6&operator_id=102",
-      "url" : "voucher-game/playstation-plus"
+      "path": "voucher-game/playstation-plus"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=6&operator_id=102",
-      "url" : "playstation-plus"
+      "path": "playstation-plus"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=6&operator_id=28",
-      "url" : "voucher-game/point-blank"
+      "path": "voucher-game/point-blank"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=6&operator_id=28",
-      "url" : "point-blank"
+      "path": "point-blank"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=6&operator_id=101",
-      "url" : "voucher-game/psn-card"
+      "path": "voucher-game/psn-card"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=6&operator_id=101",
-      "url" : "psn-card"
+      "path": "psn-card"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=6&operator_id=148",
-      "url" : "voucher-game/ragnarok"
+      "path": "voucher-game/ragnarok"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=6&operator_id=148",
-      "url" : "ragnarok"
+      "path": "ragnarok"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=6&operator_id=147",
-      "url" : "voucher-game/rf-online"
+      "path": "voucher-game/rf-online"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=6&operator_id=147",
-      "url" : "rf-online"
+      "path": "rf-online"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=6&operator_id=118",
-      "url" : "voucher-game/wavegame"
+      "path": "voucher-game/wavegame"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=6&operator_id=118",
-      "url" : "wavegame"
+      "path": "wavegame"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=6&operator_id=172",
-      "url" : "voucher-game/unipin"
+      "path": "voucher-game/unipin"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=6&operator_id=172",
-      "url" : "unipin"
+      "path": "unipin"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=6&operator_id=139",
-      "url" : "voucher-game/mmog-asia"
+      "path": "voucher-game/mmog-asia"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=6&operator_id=139",
-      "url" : "mmog-asia"
+      "path": "mmog-asia"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=6&operator_id=238",
-      "url" : "voucher-game/mobile-legends"
+      "path": "voucher-game/mobile-legends"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=6&operator_id=104",
-      "url" : "voucher-game/battlenet"
+      "path": "voucher-game/battlenet"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=6&operator_id=104",
-      "url" : "battlenet"
+      "path": "battlenet"
     },
 
 
@@ -329,87 +330,87 @@
 
     {
       "applink" : "tokopedia://digital/form?category_id=8&operator_id=243",
-      "url" : "tv-kabel"
+      "path": "tv-kabel"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=8&operator_id=120",
-      "url" : "tv-kabel/indovision"
+      "path": "tv-kabel/indovision"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=8&operator_id=120",
-      "url" : "indovision"
+      "path": "indovision"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=8&operator_id=125",
-      "url" : "tv-kabel/indihome"
+      "path": "tv-kabel/indihome"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=8&operator_id=125",
-      "url" : "indihome"
+      "path": "indihome"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=8&operator_id=121",
-      "url" : "tv-kabel/transvision"
+      "path": "tv-kabel/transvision"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=8&operator_id=121",
-      "url" : "transvision"
+      "path": "transvision"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=8&operator_id=100",
-      "url" : "tv-kabel/bigtv"
+      "path": "tv-kabel/bigtv"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=8&operator_id=100",
-      "url" : "bigtv"
+      "path": "bigtv"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=8&operator_id=158",
-      "url" : "tv-kabel/orangetv-prabayar"
+      "path": "tv-kabel/orangetv-prabayar"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=8&operator_id=158",
-      "url" : "orangetv-prepaid"
+      "path": "orangetv-prepaid"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=8&operator_id=157",
-      "url" : "tv-kabel/orangetv-pascabayar"
+      "path": "tv-kabel/orangetv-pascabayar"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=8&operator_id=157",
-      "url" : "orangetv-postpaid"
+      "path": "orangetv-postpaid"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=8&operator_id=173",
-      "url" : "tv-kabel/k-vision"
+      "path": "tv-kabel/k-vision"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=8&operator_id=173",
-      "url" : "k-vision"
+      "path": "k-vision"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=8&operator_id=144",
-      "url" : "tv-kabel/top-tv"
+      "path": "tv-kabel/top-tv"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=8&operator_id=144",
-      "url" : "top-tv"
+      "path": "top-tv"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=8&operator_id=159",
-      "url" : "tv-kabel/nexmedia"
+      "path": "tv-kabel/nexmedia"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=8&operator_id=159",
-      "url" : "nexmedia"
+      "path": "nexmedia"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=8&operator_id=143",
-      "url" : "tv-kabel/okevision"
+      "path": "tv-kabel/okevision"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=8&operator_id=143",
-      "url" : "okevision"
+      "path": "okevision"
     },
 
 
@@ -418,63 +419,63 @@
 
     {
       "applink" : "tokopedia://digital/form?category_id=13&operator_id=155",
-      "url" : "streaming"
+      "path": "streaming"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=13&operator_id=155",
-      "url" : "streaming/viu"
+      "path": "streaming/viu"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=13&operator_id=155",
-      "url" : "viu"
+      "path": "viu"
     },
     {
-      "applink" : "tokopedia://digital/form?category_id=13&operator_id=152",
-      "url" : "streaming/joox"
+      "applink" : "tokopedia://digital/form?category_id=13&operator_id=154",
+      "path": "streaming/joox"
     },
     {
-      "applink" : "tokopedia://digital/form?category_id=13&operator_id=152",
-      "url" : "joox"
+      "applink" : "tokopedia://digital/form?category_id=13&operator_id=154",
+      "path": "joox"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=13&operator_id=153",
-      "url" : "streaming/catchplay"
+      "path": "streaming/catchplay"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=13&operator_id=153",
-      "url" : "catchplay"
+      "path": "catchplay"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=13&operator_id=160",
-      "url" : "streaming/iflix"
+      "path": "streaming/iflix"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=13&operator_id=160",
-      "url" : "iflix"
+      "path": "iflix"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=13&operator_id=161",
-      "url" : "streaming/genflix"
+      "path": "streaming/genflix"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=13&operator_id=161",
-      "url" : "genflix"
+      "path": "genflix"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=13&operator_id=202",
-      "url" : "streaming/wifi-id"
+      "path": "streaming/wifi-id"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=13&operator_id=202",
-      "url" : "wifi-id"
+      "path": "wifi-id"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=13&operator_id=229",
-      "url" : "streaming/hooq"
+      "path": "streaming/hooq"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=13&operator_id=229",
-      "url" : "hooq"
+      "path": "hooq"
     },
 
 
@@ -483,23 +484,23 @@
 
     {
       "applink" : "tokopedia://digital/form?category_id=3",
-      "url" : "pln"
+      "path": "pln"
     },
     {
-      "applink" : "tokopedia://digital/form?category_id=33&operator_id=6",
-      "url" : "pln/token-listrik"
+      "applink" : "tokopedia://digital/form?category_id=3&operator_id=6",
+      "path": "pln/token-listrik"
     },
     {
-      "applink" : "tokopedia://digital/form?category_id=33&operator_id=6",
-      "url" : "token-listrik"
-    },
-    {
-      "applink" : "tokopedia://digital/form?category_id=33&operator_id=18",
-      "url" : "pln/tagihan-listrik"
+      "applink" : "tokopedia://digital/form?category_id=3&operator_id=6",
+      "path": "token-listrik"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=33&operator_id=18",
-      "url" : "tagihan-listrik"
+      "path": "pln/tagihan-listrik"
+    },
+    {
+      "applink" : "tokopedia://digital/form?category_id=33&operator_id=18",
+      "path": "tagihan-listrik"
     },
 
 
@@ -509,15 +510,15 @@
 
     {
       "applink" : "tokopedia://digital/form?category_id=12",
-      "url" : "dompet-online"
+      "path": "dompet-online"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=12&operator_id=97",
-      "url" : "dompet-dhuafa"
+      "path": "dompet-dhuafa"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=12",
-      "url" : "berbagi"
+      "path": "berbagi"
     },
 
 
@@ -527,63 +528,63 @@
 
     {
       "applink" : "tokopedia://digital/form?category_id=24",
-      "url" : "voucher"
+      "path": "voucher"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=24&operator_id=244",
-      "url" : "voucher/kfc"
+      "path": "voucher/kfc"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=24&operator_id=248",
-      "url" : "voucher/lotteria"
+      "path": "voucher/lotteria"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=24&operator_id=247",
-      "url" : "voucher/hop-hop"
+      "path": "voucher/hop-hop"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=24&operator_id=246",
-      "url" : "voucher/tous-les-jours"
+      "path": "voucher/tous-les-jours"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=24&operator_id=245",
-      "url" : "voucher/breadlife"
+      "path": "voucher/breadlife"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=24&operator_id=272",
-      "url" : "voucher/omiyago"
+      "path": "voucher/omiyago"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=24&operator_id=269",
-      "url" : "voucher/d-crepes"
+      "path": "voucher/d-crepes"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=24&operator_id=268",
-      "url" : "voucher/zen-rooms"
+      "path": "voucher/zen-rooms"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=24&operator_id=261",
-      "url" : "voucher/sharetea"
+      "path": "voucher/sharetea"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=24&operator_id=262",
-      "url" : "voucher/es-teler-77"
+      "path": "voucher/es-teler-77"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=24",
-      "url" : "gift-card"
+      "path": "gift-card"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=24&operator_id=256",
-      "url" : "gift-card/uber"
+      "path": "gift-card/uber"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=24&operator_id=25",
-      "url" : "gift-card/itunes"
+      "path": "gift-card/itunes"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=24&operator_id=25",
-      "url" : "itunes"
+      "path": "itunes"
     },
 
 
@@ -593,11 +594,11 @@
 
     {
       "applink" : "tokopedia://digital/form?category_id=22",
-      "url" : "pajak"
+      "path": "pajak"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=22",
-      "url" : "pajak/pbb"
+      "path": "pajak/pbb"
     },
 
 
@@ -607,7 +608,7 @@
 
     {
       "applink" : "tokopedia://digital/form?category_id=25",
-      "url" : "retribusi"
+      "path": "retribusi"
     },
 
 
@@ -617,11 +618,11 @@
 
     {
       "applink" : "tokopedia://digital/form?category_id=5&operator_id=230",
-      "url" : "pdam"
+      "path": "pdam"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=5&operator_id=230",
-      "url" : "tagihan/pdam"
+      "path": "tagihan/pdam"
     },
 
 
@@ -631,11 +632,11 @@
 
     {
       "applink" : "tokopedia://digital/form?category_id=21&operator_id=228",
-      "url" : "tokocash"
+      "path": "tokocash"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=21&operator_id=15",
-      "url" : "gift-card/tokopedia"
+      "path": "gift-card/tokopedia"
     },
 
 
@@ -645,159 +646,159 @@
 
     {
       "applink" : "tokopedia://digital/form?category_id=7",
-      "url" : "angsuran"
+      "path": "angsuran"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=7",
-      "url" : "angsuran/mobil"
+      "path": "angsuran/mobil"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=7",
-      "url" : "kredit-mobil"
+      "path": "kredit-mobil"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=7",
-      "url" : "angsuran/motor"
+      "path": "angsuran/motor"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=7",
-      "url" : "kredit-motor"
+      "path": "kredit-motor"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=7&operator_id=166",
-      "url" : "angsuran/aeon"
+      "path": "angsuran/aeon"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=7&operator_id=166",
-      "url" : "aeon-credit"
+      "path": "aeon-credit"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=7&operator_id=168",
-      "url" : "angsuran/astra"
+      "path": "angsuran/astra"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=7&operator_id=168",
-      "url" : "astra-credit"
+      "path": "astra-credit"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=7&operator_id=150",
-      "url" : "angsuran/kreditplus"
+      "path": "angsuran/kreditplus"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=7&operator_id=150",
-      "url" : "kreditplus"
+      "path": "kreditplus"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=7&operator_id=124",
-      "url" : "angsuran/mandiri-tunas-finance"
+      "path": "angsuran/mandiri-tunas-finance"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=7&operator_id=124",
-      "url" : "mandiri-tunas-finance"
+      "path": "mandiri-tunas-finance"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=7&operator_id=123",
-      "url" : "angsuran/arthaprima-finance"
+      "path": "angsuran/arthaprima-finance"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=7&operator_id=123",
-      "url" : "arthaprima-finance"
+      "path": "arthaprima-finance"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=7&operator_id=122",
-      "url" : "angsuran/woka-finance"
+      "path": "angsuran/woka-finance"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=7&operator_id=122",
-      "url" : "woka-finance"
+      "path": "woka-finance"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=7&operator_id=119",
-      "url" : "angsuran/mega-finance"
+      "path": "angsuran/mega-finance"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=7&operator_id=119",
-      "url" : "mega-finance"
+      "path": "mega-finance"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=7&operator_id=111",
-      "url" : "angsuran/al-ijarah-finance"
+      "path": "angsuran/al-ijarah-finance"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=7&operator_id=111",
-      "url" : "al-ijarah-finance"
+      "path": "al-ijarah-finance"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=7&operator_id=89",
-      "url" : "angsuran/bimafinance"
+      "path": "angsuran/bimafinance"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=7&operator_id=89",
-      "url" : "bimafinance"
+      "path": "bimafinance"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=7&operator_id=108",
-      "url" : "angsuran/mega-auto-finance"
+      "path": "angsuran/mega-auto-finance"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=7&operator_id=108",
-      "url" : "mega-auto-finance"
+      "path": "mega-auto-finance"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=7&operator_id=109",
-      "url" : "angsuran/mega-central-finance"
+      "path": "angsuran/mega-central-finance"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=7&operator_id=109",
-      "url" : "mega-central-finance"
+      "path": "mega-central-finance"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=7&operator_id=90",
-      "url" : "angsuran/mpm-finance"
+      "path": "angsuran/mpm-finance"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=7&operator_id=90",
-      "url" : "mpm-finance"
+      "path": "mpm-finance"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=7&operator_id=88",
-      "url" : "angsuran/radana-finance"
+      "path": "angsuran/radana-finance"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=7&operator_id=88",
-      "url" : "radana-finance"
+      "path": "radana-finance"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=7&operator_id=110",
-      "url" : "angsuran/smart-multi-finance"
+      "path": "angsuran/smart-multi-finance"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=7&operator_id=110",
-      "url" : "smart-multi-finance"
+      "path": "smart-multi-finance"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=7&operator_id=167",
-      "url" : "angsuran/nsc-finance"
+      "path": "angsuran/nsc-finance"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=7&operator_id=167",
-      "url" : "nsc-finance"
+      "path": "nsc-finance"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=7&operator_id=91",
-      "url" : "angsuran/baf"
+      "path": "angsuran/baf"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=7&operator_id=91",
-      "url" : "baf"
+      "path": "baf"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=7&operator_id=255",
-      "url" : "angsuran/indomobil-finance"
+      "path": "angsuran/indomobil-finance"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=7&operator_id=91",
-      "url" : "baf"
+      "path": "baf"
     },
 
 
@@ -806,7 +807,7 @@
 
     {
       "applink" : "tokopedia://digital/form?category_id=9&operator_id=113",
-      "url" : "pascabayar"
+      "path": "pascabayar"
     },
 
 
@@ -815,7 +816,7 @@
 
     {
       "applink" : "tokopedia://digital/form?category_id=10&operator_id=126",
-      "url" : "telepon"
+      "path": "telepon"
     },
 
 
@@ -824,38 +825,38 @@
 
     {
       "applink" : "tokopedia://digital/form?category_id=14&operator_id=156",
-      "url" : "tagihan/pgn"
+      "path": "tagihan/pgn"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=14&operator_id=156",
-      "url" : "pgn"
+      "path": "pgn"
     },
 
 
 
     {
       "applink" : "tokopedia://digital/form?category_id=4&operator_id=13",
-      "url" : "bpjs"
+      "path": "bpjs"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=4&operator_id=13",
-      "url" : "bpjs/kesehtan"
+      "path": "bpjs/kesehtan"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=4&operator_id=13",
-      "url" : "bpjs/kesehtan"
+      "path": "bpjs/kesehtan"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=4&operator_id=13",
-      "url" : "bpjs-kesehtan"
+      "path": "bpjs-kesehtan"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=4&operator_id=14",
-      "url" : "bpjs/ketenagakerjaan"
+      "path": "bpjs/ketenagakerjaan"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=4&operator_id=14",
-      "url" : "bpjs-ketenagakerjaan"
+      "path": "bpjs-ketenagakerjaan"
     },
 
 
@@ -864,11 +865,11 @@
 
     {
       "applink" : "tokopedia://digital/form?category_id=10",
-      "url" : "tagihan"
+      "path": "tagihan"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=10&operator_id=126",
-      "url" : "tagihan/telepon"
+      "path": "tagihan/telepon"
     },
 
 
@@ -876,11 +877,11 @@
 
     {
       "applink" : "tokopedia://digital/form?category_id=9&operator_id=113",
-      "url" : "pascabayar"
+      "path": "pascabayar"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=9&operator_id=113",
-      "url" : "tagihan/pascabayar"
+      "path": "tagihan/pascabayar"
     }
   ]
 }

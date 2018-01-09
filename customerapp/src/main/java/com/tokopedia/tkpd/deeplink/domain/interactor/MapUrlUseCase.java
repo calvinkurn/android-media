@@ -49,7 +49,7 @@ public class MapUrlUseCase extends UseCase<Deeplink> {
 
     private String findApplink(Deeplink deeplink, String finalSegments) {
         if (deeplink != null) {
-            if (deeplink.url.equals(finalSegments)) {
+            if (deeplink.path.equals(finalSegments)) {
                 return deeplink.applink;
             }
         }

@@ -5,11 +5,11 @@ package com.tokopedia.tkpd.deeplink;
  */
 
 public class Deeplink {
-    public String url;
+    public String path;
     public String applink;
 
-    public Deeplink(String url, String applink) {
-        this.url = url;
+    public Deeplink(String path, String applink) {
+        this.path = path;
         this.applink = applink;
     }
 }
