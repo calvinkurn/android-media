@@ -181,5 +181,7 @@
     <string name="transaction_value">Nilai Transaksi</string>
     <string name="title_tooltip_reputation_multiplier">Nilai Reputasi</string>
     <string name="body_tooltip_reputation_multiplier">Ini adalah Nilai Kelipatan Reputasi. Reputasi dari pesanan ini akan dikalikan dengan Nilai Kelipatan Reputasi.</string>
+    <string name="opportunity_reputation_value">Nilai Reputasi Peluang</string>
+    <string name="opportunity_reputation_detail">Ini adalah angka pengali nilai reputasi yang akan diperbaharui setiap 30 menit. Ayo ambil order peluang sebanyak-banyaknya dan tingkatkan reputasi tokomu!</string>
 
 </resources>

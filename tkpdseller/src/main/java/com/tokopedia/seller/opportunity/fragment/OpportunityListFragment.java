@@ -3,6 +3,7 @@ package com.tokopedia.seller.opportunity.fragment;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,6 +25,7 @@ import com.tokopedia.core.database.model.PagingHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.common.showcase.ShowCaseDialogFactory;
 import com.tokopedia.seller.opportunity.activity.OpportunityDetailActivity;
 import com.tokopedia.seller.opportunity.activity.OpportunityFilterActivity;
 import com.tokopedia.seller.opportunity.activity.OpportunitySortActivity;
@@ -39,6 +41,10 @@ import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.FilterPass;
 import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityFilterViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityItemViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityViewModel;
+import com.tokopedia.showcase.ShowCaseContentPosition;
+import com.tokopedia.showcase.ShowCaseDialog;
+import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.showcase.ShowCasePreference;
 
 import java.util.ArrayList;
 
@@ -80,6 +86,8 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     private OpportunityFilterViewModel filterData;
     private OpportunityFilterPassModel opportunityFilterPassModel;
 
+    private ShowCaseDialog showCaseDialog;
+
     public static Fragment newInstance() {
         return new OpportunityListFragment();
     }
@@ -87,6 +95,47 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     @Override
     protected boolean isRetainInstance() {
         return true;
+    }
+
+    public void startShowCase(){
+        final String showCaseTag = OpportunityListFragment.class.getName();
+        if (ShowCasePreference.hasShown(getActivity(), showCaseTag)){
+            return;
+        }
+        if (showCaseDialog != null){
+            return;
+        }
+
+        final ArrayList<ShowCaseObject> showCaseList = new ArrayList<>();
+
+        opportunityList.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(getView() == null){
+                    return;
+                }
+
+                View itemView = getItemRecyclerView();
+                if (itemView != null && itemView.findViewById(R.id.reputation_point) != null) {
+                    showCaseList.add(
+                            new ShowCaseObject(
+                                    itemView.findViewById(R.id.reputation_point),
+                                    getString(R.string.opportunity_reputation_value),
+                                    getString(R.string.opportunity_reputation_detail),
+                                    ShowCaseContentPosition.UNDEFINED,
+                                    Color.WHITE));
+                }
+
+                showCaseDialog = ShowCaseDialogFactory.createTkpdShowCase();
+                showCaseDialog.show(getActivity(), showCaseTag, showCaseList);
+            }
+        }, 300);
+    }
+
+    // for show case
+    public View getItemRecyclerView() {
+        int position = layoutManager.findFirstCompletelyVisibleItemPosition();
+        return layoutManager.findViewByPosition(position);
     }
 
     @Override
@@ -300,6 +349,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         enableView();
         finishLoadingList();
         adapter.setList(viewModel.getListOpportunity());
+
     }
 
     private void setPaging(PagingHandler.PagingHandlerModel pagingModel) {
@@ -431,7 +481,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
 
         enableView();
 
-
+        startShowCase();
     }
 
     private void enableView() {
