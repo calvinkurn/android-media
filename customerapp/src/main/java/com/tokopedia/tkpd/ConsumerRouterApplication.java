@@ -216,7 +216,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getIntentCreateEditShop(Context context){
+    public Intent getIntentCreateShop(Context context){
         return TkpdSeller.getIntentCreateEditShop(context, true, false);
     }
 

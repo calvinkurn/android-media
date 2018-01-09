@@ -1,8 +1,8 @@
-package com.tokopedia.seller.shop.open.data.repository;
+package com.tokopedia.seller.logistic.data.repository;
 
-import com.tokopedia.seller.shop.open.data.model.OpenShopCouriersModel;
-import com.tokopedia.seller.shop.open.data.source.LogisticDataSource;
-import com.tokopedia.seller.shop.open.domain.DistrictLogisticDataRepository;
+import com.tokopedia.seller.logistic.model.CouriersModel;
+import com.tokopedia.seller.logistic.data.source.LogisticDataSource;
+import com.tokopedia.seller.logistic.domain.DistrictLogisticDataRepository;
 
 import rx.Observable;
 
@@ -18,7 +18,7 @@ public class DistrictLogisticDataRepositoryImpl implements DistrictLogisticDataR
     }
 
     @Override
-    public Observable<OpenShopCouriersModel> getAvailableCouriers(int districtCode) {
+    public Observable<CouriersModel> getAvailableCouriers(int districtCode) {
         return logisticDataSource.getAvailableCouriers(districtCode);
     }
 }

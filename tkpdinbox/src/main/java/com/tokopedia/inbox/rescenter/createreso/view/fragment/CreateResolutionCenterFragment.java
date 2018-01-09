@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.R;
@@ -229,6 +230,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
             @Override
             public void onClick(View view) {
                 presenter.createResoClicked();
+                UnifyTracking.eventCreateResoPre();
             }
         });
     }
@@ -514,12 +516,14 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
+                UnifyTracking.eventCreateResoUnconfirm();
             }
         });
         ivClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
+                UnifyTracking.eventCreateResoUnconfirm();
             }
         });
 
@@ -530,6 +534,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
                     presenter.callCreateResolutionAPIWithAttachment();
                 else
                     presenter.callCreateResolutionAPI();
+                UnifyTracking.eventCreateResoConfirm();
                 dialog.dismiss();
             }
         });
@@ -560,4 +565,6 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
         super.onDestroy();
         presenter.detachView();
     }
+
+
 }

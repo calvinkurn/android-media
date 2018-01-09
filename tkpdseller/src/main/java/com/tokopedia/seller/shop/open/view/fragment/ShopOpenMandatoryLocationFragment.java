@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,7 @@ import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Tok
 import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationContract;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.logistic.LogisticRouter;
@@ -29,6 +31,7 @@ import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.logistic.GetOpenShopLocationPassUseCase;
 import com.tokopedia.seller.logistic.GetOpenShopTokenUseCase;
 import com.tokopedia.seller.shop.common.exception.ShopException;
+import com.tokopedia.seller.shop.common.tracking.TrackingOpenShop;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
 import com.tokopedia.seller.shop.open.view.holder.LocationHeaderViewHolder;
@@ -69,6 +72,9 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
 
     @Inject
     ShopOpenLocPresenterImpl shopOpenLocPresenter;
+
+    @Inject
+    TrackingOpenShop trackingOpenShop;
 
     RequestParams requestParams;
     private ProgressDialog progressDialog;
@@ -123,6 +129,11 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
 
                 shopOpenLocPresenter.openGoogleMap(requestParams, generatedMap);
             }
+
+            @Override
+            public void sendTrackingData() {
+                trackingOpenShop.eventOpenShopPinPointLocation();
+            }
         });
 
         root.findViewById(R.id.button_submit).setOnClickListener(new View.OnClickListener() {
@@ -160,6 +171,10 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
     protected void onNextButtonClicked() {
         GoogleLocationViewModel googleLocationViewModel = locationMapViewHolder.getGoogleLocationViewModel();
 
+        if (TextUtils.isEmpty(locationShippingViewHolder.getDistrictName())) {
+            NetworkErrorHelper.showCloseSnackbar(getActivity(), getString(R.string.shop_location_must_be_filled));
+            return;
+        }
         RequestParams requestParams = ShopOpenSaveLocationUseCase.createRequestParams(
                 googleLocationViewModel == null ? "" : googleLocationViewModel.getLongitude(),
                 googleLocationViewModel == null ? "" : googleLocationViewModel.getLatitude(),
@@ -196,6 +211,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
 
     @Override
     public void goToNextPage(Object object) {
+        trackingOpenShop.eventOpenShopLocationNext();
         if(stepperListener != null) {
             stepperListener.goToNextPage(null);
         }
@@ -209,13 +225,15 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
             ResponseIsReserveDomain responseIsReserveDomain = stepperListener.getStepperModel().getResponseIsReserveDomain();
 
             Shipment shipment = responseIsReserveDomain.getShipment();
+            if (shipment == null) {
+                shipment = new Shipment();
+            }
             shipment.setAddrStreet(googleLocationViewModel.getGeneratedAddress());
             shipment.setLongitude(googleLocationViewModel.getLongitude());
             shipment.setLatitude(googleLocationViewModel.getLatitude());
             shipment.setGeolocationChecksum(googleLocationViewModel.getCheckSum());
             shipment.setDistrictId(Integer.valueOf(locationShippingViewHolder.getDistrictId()));
             shipment.setPostal(Integer.valueOf(locationShippingViewHolder.getPostalCode()));
-
 
             UserData userData = responseIsReserveDomain.getUserData();
             userData.setLocComplete(locationShippingViewHolder.getLocationComplete());
@@ -244,6 +262,8 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
                                 address.getProvinceName(),
                                 address.getCityName(),
                                 address.getDistrictName());
+
+                        trackingOpenShop.eventOpenShopLocationForm(address.getAddressDetail());
                     }
                     break;
                 case REQUEST_CODE__EDIT_ADDRESS:
@@ -331,6 +351,9 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
         }else{
             errorMessage = ErrorHandler.getErrorMessage(t, getActivity());
         }
+
+        trackingOpenShop.eventOpenShopLocationError(errorMessage);
+
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {

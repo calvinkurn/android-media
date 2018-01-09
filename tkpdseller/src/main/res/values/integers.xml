@@ -2,6 +2,7 @@
 <resources>
 	<integer name="max_shop_name">24</integer>
     <integer name="max_domain_name">16</integer>
+    <integer name="max_domain_name_plus_tokopedia">33</integer> <!-- 17 + 16 -->
 
     <integer name="top_ads_keyword_max_length">70</integer>
     <integer name="top_ads_keyword_max_in_group">50</integer>

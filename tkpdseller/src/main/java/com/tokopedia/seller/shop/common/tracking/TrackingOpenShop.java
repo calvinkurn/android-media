@@ -116,4 +116,36 @@ public class TrackingOpenShop {
                 ""
         );
     }
+
+    public void eventOpenShopLocationForm(String addressDetail){
+        eventOpenShop(
+                ConstantTrackingOpenShop.OPEN_SHOP_SHOP_LOCATION_FORM,
+                ConstantTrackingOpenShop.OPEN_SHOP_CLICK_ADDRESS_LIST,
+                addressDetail
+        );
+    }
+
+    public void eventOpenShopPinPointLocation(){
+        eventOpenShop(
+                ConstantTrackingOpenShop.OPEN_SHOP_SHOP_LOCATION_FORM,
+                ConstantTrackingOpenShop.OPEN_SHOP_CLICK_PINPOINT_LOCATION,
+                ""
+        );
+    }
+
+    public void eventOpenShopLocationNext(){
+        eventOpenShop(
+                ConstantTrackingOpenShop.OPEN_SHOP_SHOP_LOCATION_FORM,
+                ConstantTrackingOpenShop.OPEN_SHOP_CLICK_NEXT_STEP_SUCCESS,
+                ""
+        );
+    }
+
+    public void eventOpenShopLocationError(String error){
+        eventOpenShop(
+                ConstantTrackingOpenShop.OPEN_SHOP_SHOP_LOCATION_FORM,
+                ConstantTrackingOpenShop.OPEN_SHOP_CLICK_NEXT_STEP_ERROR,
+                ""
+        );
+    }
 }

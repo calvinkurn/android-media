@@ -4,7 +4,7 @@ import com.tokopedia.core.network.apiservices.shop.apis.model.openshopdistrict.O
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.seller.common.data.response.DataResponse;
-import com.tokopedia.seller.shop.open.data.model.OpenShopCouriersModel;
+import com.tokopedia.seller.logistic.model.CouriersModel;
 import com.tokopedia.seller.shop.open.data.model.response.ResponseOpenShopPicture;
 
 import java.util.Map;
@@ -23,27 +23,6 @@ import rx.Observable;
  */
 
 public interface OpenShopApi {
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.Shop.PATH_MY_SHOP + TkpdBaseURL.Shop.PATH_GET_OPEN_SHOP_FORM)
-    Observable<Response<TkpdResponse>> getOpenShopForm(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.Shop.PATH_MY_SHOP + TkpdBaseURL.Shop.PATH_GET_OPEN_SHOP_FORM)
-    Observable<Response<OpenShopDistrictServiceModel>> fetchDistrictData(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.Shop.PATH_MY_SHOP + TkpdBaseURL.Shop.PATH_GET_OPEN_SHOP_FORM)
-    Observable<Response<DataResponse<OpenShopCouriersModel>>> getLogisticAvailable(@FieldMap Map<String, String> params);
-
-    @GET(TkpdBaseURL.Shop.PATH_MY_SHOP_SHIPMENT + TkpdBaseURL.Shop.PATH_GET_SHIPPING_INFO)
-    Observable<Response<TkpdResponse>> getShippingList(@QueryMap Map<String, String> params);
-
-    @GET(TkpdBaseURL.Shop.PATH_SHIPPING_WEBVIEW + TkpdBaseURL.Shop.PATH_GET_DETAIL_INFO_DETAIL)
-    Observable<String> getShippingWebViewDetail(@QueryMap Map<String, String> param);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.Shop.PATH_MY_SHOP_SHIPMENT_ACTION + TkpdBaseURL.Shop.PATH_UPDATE_SHIPPING_INFO)
-    Observable<Response<TkpdResponse>> updateShipmentInfo(@FieldMap Map<String, String> params);
 
     @FormUrlEncoded
     @POST()

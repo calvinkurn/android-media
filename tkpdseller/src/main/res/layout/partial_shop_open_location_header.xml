@@ -11,20 +11,20 @@
         android:layout_marginBottom="0dp" />
 
     <TextView
-        style="@style/TextView.Title"
+        style="@style/TextView.TitleBig"
         android:layout_gravity="center_horizontal"
         android:text="@string/shipping_location_text"
         android:layout_marginTop="24dp" />
 
     <TextView
-        style="@style/TextView.Body1"
+        style="@style/TextView.Small"
         android:lineSpacingExtra="6sp"
         android:gravity="center_horizontal"
         android:text="@string/shipping_location_text_desc"
         android:layout_marginTop="16dp" />
 
     <TextView
-        style="@style/TextView.Caption.BlackSecondary"
+        style="@style/TextView.Micro.BlackSecondary"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="32dp"
         android:text="@string/shipping_location_text_choose_desc" />
@@ -41,7 +41,7 @@
             android:textStyle="bold"
             android:layout_gravity="center"
             android:gravity="center"
-            style="@style/TextView.Caption"
+            style="@style/TextView.Micro"
             android:text="@string/choose_from_address_list"
              />
     </FrameLayout>

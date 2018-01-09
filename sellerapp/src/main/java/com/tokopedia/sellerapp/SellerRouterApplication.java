@@ -677,8 +677,10 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getIntentCreateEditShop(Context context) {
-        return TkpdSeller.getIntentCreateEditShop(context, true, true);
+    public Intent getIntentCreateShop(Context context) {
+        Intent intent = TkpdSeller.getIntentCreateEditShop(context, true, true);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        return intent;
     }
 
     @Override

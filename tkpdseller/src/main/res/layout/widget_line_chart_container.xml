@@ -8,14 +8,14 @@
 
     <TextView
         android:id="@+id/tv_subtitle"
-        style="@style/TextView.Body1"
+        style="@style/TextView.Small"
         android:layout_marginBottom="2dp"
         android:minWidth="100dp"
         tools:text="Total Pengeluaran TopAds" />
 
     <TextView
         android:id="@+id/tv_amount"
-        style="@style/TextView.Display1"
+        style="@style/TextView.Headline"
         android:layout_marginBottom="2dp"
         tools:text="Rp900.000" />
 

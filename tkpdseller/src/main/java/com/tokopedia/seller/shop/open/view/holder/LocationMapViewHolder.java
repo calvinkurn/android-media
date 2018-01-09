@@ -27,7 +27,6 @@ import com.tokopedia.seller.shop.open.view.model.GoogleLocationViewModel;
 public class LocationMapViewHolder implements OnMapReadyCallback {
 
     private static final String TAG = "LocationMapViewHolder";
-    private final TextView pinPickupLocation;
     private final TextView generatedLocationOpenShop;
     private final MapView mapView;
     private final LinearLayout mapViewContainer;
@@ -55,10 +54,18 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
 
         generateLocationOpenShopCopy = root.findViewById(R.id.generated_location_open_shop_copy);
 
-        pinPickupLocation = root.findViewById(R.id.pin_pickup_location);
         this.root = root;
         this.viewHolderListener3 = viewHolderListener3;
         mapViewContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(viewHolderListener3 != null){
+                    viewHolderListener3.navigateToGeoLocationActivityRequest(shopAddressEdittext.getText().toString());
+                }
+            }
+        });
+
+        root.findViewById(R.id.pin_pickup_location_container).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(viewHolderListener3 != null){
@@ -92,11 +99,18 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
                 @Override
                 public void onClick(View view) {
                     shopAddressEdittext.setText(generatedLocationOpenShop.getText().toString());
+                    if(viewHolderListener3 != null){
+                        viewHolderListener3.sendTrackingData();
+                    }
                 }
             });
         }else{
             generatedLocationOpenShop.setVisibility(View.GONE);
             generateLocationOpenShopCopy.setVisibility(View.GONE);
+        }
+
+        if(googleLocationViewModel != null && !TextUtils.isEmpty(googleLocationViewModel.getManualAddress())){
+            shopAddressEdittext.setText(googleLocationViewModel.getManualAddress());
         }
 
         if(!isFromReserveDomain)
@@ -159,5 +173,6 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
 
     public interface ViewHolderListener3{
         void navigateToGeoLocationActivityRequest(String generatedMap);
+        void sendTrackingData();
     }
 }

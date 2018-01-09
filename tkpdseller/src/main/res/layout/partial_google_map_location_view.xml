@@ -5,11 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_marginTop="16dp"
+    android:layout_marginTop="@dimen/margin_sm"
+    android:layout_marginBottom="@dimen/margin_vs"
     tools:showIn="@layout/fragment_shop_open_location">
 
     <TextView
-        style="@style/TextView.Caption.BlackDisabled"
+        style="@style/TextView.Micro.BlackDisabled"
         android:lineSpacingExtra="10sp"
         android:text="@string/optional_pinpoint_location_text"
         android:layout_marginBottom="@dimen/margin_small"/>
@@ -28,20 +29,31 @@
 
         <TextView
             android:layout_margin="@dimen/margin_sm"
-            style="@style/TextView.Caption.BlackSecondary"
+            style="@style/TextView.Micro.BlackSecondary"
             android:lineSpacingExtra="5sp"
             android:gravity="center_horizontal"
             android:text="@string/pin_pickup_location_text" />
 
-        <TextView
-            android:id="@+id/pin_pickup_location"
-            style="@style/TextView.Caption.BlackSecondary"
-            android:textStyle="bold"
-            android:lineSpacingExtra="8sp"
-            android:gravity="center_horizontal"
-            android:text="@string/pin_location_pickup"
+        <FrameLayout
+            android:id="@+id/pin_pickup_location_container"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin_vl"
+            android:background="@drawable/rect_white_rounded_stroke_gray"
             android:layout_gravity="bottom|center_horizontal"
-            android:layout_marginBottom="@dimen/margin_sm" />
+            android:layout_marginBottom="@dimen/margin_sm"
+            android:layout_marginRight="@dimen/margin_vl"
+            android:layout_marginLeft="@dimen/margin_vl">
+            <TextView
+                style="@style/TextView.Micro.BlackSecondary"
+                android:textStyle="bold"
+                android:lineSpacingExtra="8sp"
+                android:gravity="center_horizontal"
+                android:text="@string/pin_location_pickup"
+                android:layout_gravity="center"
+                />
+        </FrameLayout>
+
+
     </FrameLayout>
 
     <LinearLayout
@@ -63,13 +75,13 @@
 
     <TextView
         android:id="@+id/generated_location_open_shop"
-        style="@style/TextView.Caption"
+        style="@style/TextView.Micro"
         android:lineSpacingExtra="6sp"
         tools:text="@string/default_address_text"
         android:visibility="gone"/>
     <TextView
         android:id="@+id/generated_location_open_shop_copy"
-        style="@style/TextView.Caption.Green"
+        style="@style/TextView.Micro.Green"
         android:text="@string/default_address_text_use_this"
         android:visibility="gone"
         />
