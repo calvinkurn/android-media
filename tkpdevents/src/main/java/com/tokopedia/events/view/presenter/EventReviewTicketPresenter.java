@@ -101,7 +101,8 @@ public class EventReviewTicketPresenter
 
             @Override
             public void onError(Throwable throwable) {
-
+                Log.d("ProfileUseCase","ON ERROR");
+                throwable.printStackTrace();
             }
 
             @Override
@@ -282,7 +283,8 @@ public class EventReviewTicketPresenter
 
             @Override
             public void onError(Throwable throwable) {
-
+                Log.d("PaymentLinkUseCase","ON ERROR");
+                throwable.printStackTrace();
             }
 
             @Override
