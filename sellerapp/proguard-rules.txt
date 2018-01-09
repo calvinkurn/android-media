@@ -343,4 +343,4 @@
 
 -dontwarn android.content.pm.PackageManager
 -dontwarn com.crashlytics.android.answers.shim.**
--dontwarn com.google.i18n.phonenumbers
+-dontwarn com.google.i18n.phonenumbers.**
