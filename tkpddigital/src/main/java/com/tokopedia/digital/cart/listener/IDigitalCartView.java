@@ -1,5 +1,7 @@
 package com.tokopedia.digital.cart.listener;
 
+import android.content.Context;
+
 import com.tokopedia.digital.cart.model.CartDigitalInfoData;
 import com.tokopedia.digital.cart.model.CheckoutDataParameter;
 import com.tokopedia.digital.cart.model.CheckoutDigitalData;
@@ -96,5 +98,6 @@ public interface IDigitalCartView extends IBaseView {
 
     String getIdemPotencyKey();
 
+    Context getContext();
 
 }

@@ -3,6 +3,7 @@ package com.tokopedia.digital.cart.presenter;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
@@ -10,6 +11,7 @@ import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.cart.data.entity.requestbody.atc.Attributes;
 import com.tokopedia.digital.cart.data.entity.requestbody.atc.Field;
 import com.tokopedia.digital.cart.data.entity.requestbody.atc.RequestBodyAtcDigital;
@@ -472,6 +474,17 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
                 )))
         );
         return requestBodyCheckout;
+    }
+
+    @Override
+    public void autoApplyCouponIfAvailable(String digitalCategoryId) {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(view.getContext(), TkpdCache.CACHE_PROMO_CODE);
+        String savedCoupon = localCacheHandler.getString(TkpdCache.Key.KEY_CACHE_PROMO_CODE);
+       // savedCoupon="TOPED20";
+        if (savedCoupon != null && !"".equalsIgnoreCase(savedCoupon.trim())) {
+            processCheckVoucher(savedCoupon, digitalCategoryId);
+
+        }
     }
 
 }

@@ -2,6 +2,7 @@ package com.tokopedia.gm.subscribe.view.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -123,6 +124,8 @@ public class GmCheckoutFragment
         buttonContinueCheckout.setOnClickListener(getContinueCheckoutListener());
         presenter.attachView(this);
         progressDialog = new TkpdProgressDialog(context, TkpdProgressDialog.NORMAL_PROGRESS);
+
+        presenter.autoApplyCouponIfAvailable(selectedProduct);
     }
 
     @Override
@@ -285,6 +288,11 @@ public class GmCheckoutFragment
     @Override
     public void clearCacheShopInfo() {
         presenter.clearCacheShopInfo();
+    }
+
+    @Override
+    public Context getContext() {
+        return super.getContext();
     }
 }
 

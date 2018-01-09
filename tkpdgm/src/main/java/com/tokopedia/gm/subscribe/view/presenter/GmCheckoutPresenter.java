@@ -17,4 +17,7 @@ public interface GmCheckoutPresenter {
     void checkoutWithVoucherCheckGMSubscribe(Integer selectedProduct, Integer autoExtendSelectedProduct, String voucherCode);
 
     void clearCacheShopInfo();
+
+    void autoApplyCouponIfAvailable(Integer selectedProduct);
+
 }

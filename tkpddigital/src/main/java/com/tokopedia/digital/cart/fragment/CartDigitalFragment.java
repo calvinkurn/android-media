@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -359,6 +360,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
                 cartDigitalInfoData.isInstantCheckout()
         );
 
+        presenter.autoApplyCouponIfAvailable(passData.getCategoryId());
     }
 
     private void sendGTMAnalytics(String ec, String el, boolean analyticsKind) {
@@ -739,6 +741,11 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         super.onDestroy();
         if (compositeSubscription != null && compositeSubscription.hasSubscriptions())
             compositeSubscription.unsubscribe();
+    }
+
+    @Override
+    public Context getContext() {
+        return super.getContext();
     }
 
     public interface ActionListener {

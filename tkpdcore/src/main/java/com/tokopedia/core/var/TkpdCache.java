@@ -53,6 +53,8 @@ public class TkpdCache {
     public static final String DIGITAL_WIDGET_LAST_ORDER = "DIGITAL_WIDGET_LAST_ORDER";
     public static final String FIREBASE_REMOTE_CONFIG = "FIREBASE_REMOTE_CONFIG";
     public static final String APP_RATING = "APP_RATING";
+    public static final String CACHE_PROMO_CODE = "CACHE_PROMO_CODE";
+
 
     public static void clearAllCache(Context context) {
         LocalCacheHandler.clearCache(context, TkpdCache.USER_INFO);
@@ -225,6 +227,8 @@ public class TkpdCache {
         public static final String HOME_TICKER_CACHE = "HOME_TICKER_CACHE";
         public static final String KEY_TOKOPOINT_DRAWER_DATA = "KEY_TOKOPOINT_DRAWER_DATA";
         public static final String KEY_APP_RATING_VERSION = "APP_RATING_VERSION";
+        public static final String KEY_CACHE_PROMO_CODE = "KEY_CACHE_PROMO_CODE";
+
     }
 
     public class RemoteConfigKey {
