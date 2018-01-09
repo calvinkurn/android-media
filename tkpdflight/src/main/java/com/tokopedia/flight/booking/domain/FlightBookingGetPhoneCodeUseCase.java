@@ -32,7 +32,7 @@ public class FlightBookingGetPhoneCodeUseCase extends UseCase<List<FlightBooking
 
     @Override
     public Observable<List<FlightBookingPhoneCodeViewModel>> createObservable(RequestParams requestParams) {
-        return flightRepository.getAirportList(requestParams.getString(PARAM_QUERY, DEFAULT_PARAM))
+        return flightRepository.getPhoneCodeList(requestParams.getString(PARAM_QUERY, DEFAULT_PARAM))
                 .flatMap(new Func1<List<FlightAirportDB>, Observable<List<FlightBookingPhoneCodeViewModel>>>() {
                     @Override
                     public Observable<List<FlightBookingPhoneCodeViewModel>> call(List<FlightAirportDB> flightAirportDBs) {

@@ -68,4 +68,6 @@ public interface FlightRepository {
     Observable<FlightOrder> getOrder(String id);
 
     Observable<List<BannerDetail>> getBanners(Map<String, String> params);
+
+    Observable<List<FlightAirportDB>> getPhoneCodeList(String string);
 }
