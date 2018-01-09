@@ -6,16 +6,18 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.design.quickfilter.QuickFilterAdapter;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
+import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.detail.view.activity.FlightDetailOrderActivity;
 import com.tokopedia.flight.orderlist.contract.FlightOrderListContract;
@@ -139,8 +141,15 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
     }
 
     @Override
-    public void onHelpOptionClicked(String orderId) {
-
+    public void onHelpOptionClicked(String orderId, int status) {
+        String content = getString(R.string.flight_order_flight_default_contact_us_global_prefix) + orderId;
+        String url = FlightUrl.CONTACT_US_FLIGHT_PREFIX + Base64.encodeToString(content.getBytes(), Base64.DEFAULT);
+        if (getActivity().getApplication() instanceof FlightModuleRouter
+                && ((FlightModuleRouter) getActivity().getApplication())
+                .getBannerWebViewIntent(getActivity(), url) != null) {
+            startActivity(((FlightModuleRouter) getActivity().getApplication())
+                    .getBannerWebViewIntent(getActivity(), url));
+        }
     }
 
     @Override

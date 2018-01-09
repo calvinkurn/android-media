@@ -79,7 +79,7 @@ public class FlightOrderWaitingForPaymentViewHolder extends FlightOrderBaseViewH
 
     @Override
     protected void onHelpOptionClicked() {
-        adapterInteractionListener.onHelpOptionClicked(item.getId());
+        adapterInteractionListener.onHelpOptionClicked(item.getId(), item.getStatus());
     }
 
     @Override

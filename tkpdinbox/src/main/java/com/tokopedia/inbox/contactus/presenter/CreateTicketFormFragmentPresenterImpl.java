@@ -25,10 +25,10 @@ public class CreateTicketFormFragmentPresenterImpl implements CreateTicketFormFr
     ContactUsRetrofitInteractor networkInteractor;
     CreateTicketFormFragment.FinishContactUsListener listener;
 
-    public CreateTicketFormFragmentPresenterImpl(CreateTicketFormFragmentView viewListener) {
+    public CreateTicketFormFragmentPresenterImpl(CreateTicketFormFragmentView viewListener, CreateTicketFormFragment.FinishContactUsListener listener) {
         this.viewListener = viewListener;
         this.networkInteractor = new ContactUsRetrofitInteractorImpl();
-        this.listener = (ContactUsActivity) viewListener.getActivity();
+        this.listener = listener;
     }
 
     @Override
@@ -39,7 +39,9 @@ public class CreateTicketFormFragmentPresenterImpl implements CreateTicketFormFr
                 @Override
                 public void onSuccess() {
                     viewListener.finishLoading();
-                    listener.onFinishCreateTicket();
+                    if (listener != null) {
+                        listener.onFinishCreateTicket();
+                    }
                 }
 
                 @Override

@@ -1,17 +1,13 @@
 package com.tokopedia.flight.orderlist.presenter;
 
-import android.text.TextUtils;
-
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.orderlist.contract.FlightOrderListContract;
 import com.tokopedia.flight.orderlist.domain.FlightGetOrdersUseCase;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
 import com.tokopedia.flight.orderlist.view.viewmodel.mapper.FlightOrderViewModelMapper;
-import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,69 +33,6 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
         this.flightGetOrdersUseCase = flightGetOrdersUseCase;
         this.flightOrderViewModelMapper = flightOrderViewModelMapper;
     }
-
-
-//    @Override
-//    public void getInitialOrderData() {
-//        getView().showGetInitialOrderDataLoading();
-//        flightGetOrdersUseCase.execute(flightGetOrdersUseCase.createRequestParam(0), new Subscriber<List<FlightOrder>>() {
-//            @Override
-//            public void onCompleted() {
-//
-//            }
-//
-//            @Override
-//            public void onError(Throwable e) {
-//                e.printStackTrace();
-//                if (isViewAttached()) {
-//                    getView().hideGetInitialOrderDataLoading();
-//                    getView().showErrorGetInitialOrders(FlightErrorUtil.getMessageFromException(getView().getActivity(), e));
-//                }
-//            }
-//
-//            @Override
-//            public void onNext(List<FlightOrder> orderEntities) {
-//                buildAndRenderFilterList();
-//                getView().hideGetInitialOrderDataLoading();
-//                if (orderEntities.size() > 0) {
-//                    getView().renderOrders(flightOrderViewModelMapper.transform(orderEntities), true);
-//                } else {
-//                    getView().showEmptyView();
-//                }
-//            }
-//        });
-//    }
-
-//    @Override
-//    public void onFilterSelected() {
-//        getView().showGetInitialOrderDataLoading();
-//        flightGetOrdersUseCase.execute(flightGetOrdersUseCase.createRequestParam(0, getView().getSelectedFilter()), new Subscriber<List<FlightOrder>>() {
-//            @Override
-//            public void onCompleted() {
-//
-//            }
-//
-//            @Override
-//            public void onError(Throwable e) {
-//                e.printStackTrace();
-//                if (isViewAttached()) {
-//                    getView().hideGetInitialOrderDataLoading();
-//                    getView().showErrorGetOrderOnFilterChanged(e);
-//                }
-//            }
-//
-//            @Override
-//            public void onNext(List<FlightOrder> orderEntities) {
-//                buildAndRenderFilterList();
-//                getView().hideGetInitialOrderDataLoading();
-//                if (orderEntities.size() > 0) {
-//                    getView().renderOrders(flightOrderViewModelMapper.transform(orderEntities), true);
-//                } else {
-//                    getView().showEmptyView();
-//                }
-//            }
-//        });
-//    }
 
     @Override
     public void loadData(String selectedFilter, final int page, final int perPage) {
@@ -128,40 +61,6 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
         });
     }
 
-//    @Override
-//    public void onSwipeRefresh() {
-//        getView().showGetInitialOrderDataLoading();
-//        getView().disableSwipeRefresh();
-//        flightGetOrdersUseCase.execute(flightGetOrdersUseCase.createRequestParam(0, getView().getSelectedFilter()), new Subscriber<List<FlightOrder>>() {
-//            @Override
-//            public void onCompleted() {
-//
-//            }
-//
-//            @Override
-//            public void onError(Throwable e) {
-//                e.printStackTrace();
-//                if (isViewAttached()) {
-//                    getView().enableSwipeRefresh();
-//                    getView().hideGetInitialOrderDataLoading();
-//                    getView().showErrorGetInitialOrders(FlightErrorUtil.getMessageFromException(getView().getActivity(), e));
-//                }
-//            }
-//
-//            @Override
-//            public void onNext(List<FlightOrder> orderEntities) {
-//                getView().enableSwipeRefresh();
-//                buildAndRenderFilterList();
-//                getView().hideGetInitialOrderDataLoading();
-//                if (orderEntities.size() > 0) {
-//                    getView().renderOrders(flightOrderViewModelMapper.transform(orderEntities), true);
-//                } else {
-//                    getView().showEmptyView();
-//                }
-//            }
-//        });
-//    }
-
     @Override
     public void onDestroyView() {
         detachView();
@@ -178,9 +77,9 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
 
         Map<String, String> filtersMap = new HashMap<>();
         filtersMap.put("650", getView().getString(R.string.flight_order_status_refund_label));
-        filtersMap.put("100,102", getView().getString(R.string.flight_order_status_waiting_for_payment_label));
+        filtersMap.put("102", getView().getString(R.string.flight_order_status_waiting_for_payment_label));
         filtersMap.put("101,200,300", getView().getString(R.string.flight_order_status_in_progress_label));
-        filtersMap.put("0,600", getView().getString(R.string.flight_order_status_failed_label));
+        filtersMap.put("600", getView().getString(R.string.flight_order_status_failed_label));
         filtersMap.put("700,800", getView().getString(R.string.flight_order_status_success_label));
 
         List<QuickFilterItem> filterItems = new ArrayList<>();
