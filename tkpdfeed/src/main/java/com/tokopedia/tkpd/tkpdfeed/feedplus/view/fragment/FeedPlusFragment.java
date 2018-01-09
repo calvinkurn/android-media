@@ -968,7 +968,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onGoToKolComment(int page, int rowNumber, KolViewModel model) {
         startActivityForResult(KolCommentActivity.getCallingIntent(getActivity(),
                 new KolCommentHeaderViewModel(model.getAvatar(), model.getName(), model.getReview
-                        (), model.getTime()),
+                        (), model.getTime(), String.valueOf(model.getUserId())),
                 new KolCommentProductViewModel(model.getKolImage(), model.getContentName(),
                         model.getProductPrice(), model.isWishlisted()),
                 model.getId(),
