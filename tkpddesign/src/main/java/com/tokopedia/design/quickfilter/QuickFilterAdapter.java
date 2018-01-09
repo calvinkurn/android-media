@@ -25,6 +25,7 @@ public class QuickFilterAdapter extends RecyclerView.Adapter {
     private ActionListener listener;
     private Context context;
     private QuickFilterItem lastHeaderItemColor;
+    private int lastPosition = 0;
 
     public QuickFilterAdapter() {
         this.filterList = new ArrayList<>();
@@ -48,7 +49,7 @@ public class QuickFilterAdapter extends RecyclerView.Adapter {
     }
 
     private void renderItemViewHolder(final ItemViewFilter itemViewFilter, final QuickFilterItem filterItem) {
-        itemViewFilter.filterName.setText(setTextFilter(filterItem.getName()));
+        itemViewFilter.filterName.setText(filterItem.getName());
         itemViewFilter.layoutBorder.setBackgroundResource(R.drawable.bg_round_corner);
         itemViewFilter.layoutInside.setBackgroundResource(R.drawable.bg_round_corner);
         handleViewFilter(itemViewFilter, filterItem.isSelected(), filterItem);
@@ -66,28 +67,16 @@ public class QuickFilterAdapter extends RecyclerView.Adapter {
                         }
                         filterItem.setSelected(true);
                         if (lastHeaderItemColor != null) {
-                            filterList.get(itemViewFilter.getAdapterPosition()).setSelected(false);
-                            notifyItemChanged(itemViewFilter.getAdapterPosition());
+                            lastHeaderItemColor.setSelected(false);
+                            notifyItemChanged(lastPosition);
                         }
                         lastHeaderItemColor = filterItem;
-
+                        lastPosition = itemViewFilter.getAdapterPosition();
                     }
                     handleViewFilter(itemViewFilter, filterItem.isSelected(), filterItem);
                 }
 
         });
-    }
-
-    private String setTextFilter(String name) {
-        StringBuilder sb = new StringBuilder();
-        String[] splitName = name.split(" ");
-        for (int i = 0; i < splitName.length; i++) {
-            sb.append(splitName[i]);
-            if (i < splitName.length - 1) {
-                sb.append("\n");
-            }
-        }
-        return sb.toString();
     }
 
     /**

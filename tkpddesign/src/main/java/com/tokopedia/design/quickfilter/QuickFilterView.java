@@ -69,7 +69,7 @@ public class QuickFilterView extends BaseCustomView {
 
             @Override
             public void selectFilter(String typeFilter) {
-                listener.selectFilter();
+                listener.selectFilter(typeFilter);
             }
         };
     }
@@ -77,6 +77,6 @@ public class QuickFilterView extends BaseCustomView {
     public interface ActionListener {
         void clearFilter();
 
-        void selectFilter();
+        void selectFilter(String typeFilter);
     }
 }

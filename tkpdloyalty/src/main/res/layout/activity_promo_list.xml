@@ -16,6 +16,7 @@
         app:tabIndicatorHeight="3dp"
         app:tabMode="fixed"
         app:tabSelectedTextColor="@color/tkpd_main_green"
+        app:tabTextColor="@color/grey_600"
         app:tabTextAppearance="@style/CustomTitlePageIndicatorLoyalty" />
 
     

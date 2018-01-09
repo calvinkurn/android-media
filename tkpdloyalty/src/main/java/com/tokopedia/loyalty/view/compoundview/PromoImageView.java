@@ -26,6 +26,6 @@ public class PromoImageView extends android.support.v7.widget.AppCompatImageView
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
         int width = getMeasuredWidth();
-        setMeasuredDimension(width, width * 600 / 328);
+        setMeasuredDimension(width, width * 328 / 600);
     }
 }
