@@ -7,4 +7,8 @@ package com.tokopedia.loyalty.view.presenter;
 public interface IPromoListPresenter {
 
     void processGetPromoList(String subCategories);
+
+    void processGetPromoListLoadMore(String subCategories);
+
+    void setPage(int page);
 }

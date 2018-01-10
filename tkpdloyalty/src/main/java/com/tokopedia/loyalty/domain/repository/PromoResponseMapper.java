@@ -25,6 +25,9 @@ import javax.inject.Inject;
 
 public class PromoResponseMapper implements IPromoResponseMapper {
 
+    private static final String TYPE_FILTER_ALL = "all";
+    private static final String TITLE_FILTER_ALL = "Lihat Semua";
+
     @Inject
     public PromoResponseMapper() {
     }
@@ -122,7 +125,14 @@ public class PromoResponseMapper implements IPromoResponseMapper {
                 allCategoryIds = allCategoryIds.substring(0, allCategoryIds.length() - 1);
             }
             promoMenuData.setAllSubCategoryId(allCategoryIds);
+
+            PromoSubMenuData promoSubMenuData = new PromoSubMenuData();
+            promoSubMenuData.setId(TYPE_FILTER_ALL);
+            promoSubMenuData.setTitle(TITLE_FILTER_ALL);
+            promoSubMenuData.setSelected(true);
+            promoSubMenuDataList.add(0, promoSubMenuData);
             promoMenuData.setPromoSubMenuDataList(promoSubMenuDataList);
+
             promoMenuDataList.add(promoMenuData);
         }
         return promoMenuDataList;

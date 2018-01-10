@@ -14,17 +14,18 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
+import com.tokopedia.core.customView.EndLessScrollBehavior;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
-import com.tokopedia.design.quickfilter.QuickFilterView;
+import com.tokopedia.design.quickfilter.QuickSingleFilterView;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.R2;
 import com.tokopedia.loyalty.di.component.DaggerPromoListFragmentComponent;
@@ -51,9 +52,9 @@ import rx.subscriptions.CompositeSubscription;
 
 public class PromoListFragment extends BasePresenterFragment implements IPromoListView, PromoListAdapter.ActionListener {
     private static final String ARG_EXTRA_PROMO_MENU_DATA = "ARG_EXTRA_PROMO_MENU_DATA";
-
+    private static final String TYPE_FILTER_ALL = "all";
     @BindView(R2.id.quick_filter)
-    LinearLayout filterLayout;
+    QuickSingleFilterView quickSingleFilterView;
     @BindView(R2.id.rv_promo_list)
     RecyclerView rvPromoList;
     @BindView(R2.id.container_list)
@@ -65,9 +66,10 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
     CompositeSubscription compositeSubscription;
 
     private PromoMenuData promoMenuData;
-    private QuickFilterView quickFilterView;
     private PromoListAdapter adapter;
     private BottomSheetView bottomSheetViewInfoPromoCode;
+    private boolean isLoadMore;
+    private String filterSelected = "";
 
     @Override
     protected void initInjector() {
@@ -80,10 +82,20 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
     }
 
     @Override
-    public void renderPromoDataList(List<PromoData> promoDataList) {
+    public void renderPromoDataList(List<PromoData> promoDataList, boolean firstTimeLoad) {
         View errorView = containerList.findViewById(com.tokopedia.core.R.id.main_retry);
         if (errorView != null) errorView.setVisibility(View.GONE);
-        adapter.addAllItems(promoDataList);
+        if (firstTimeLoad) {
+            adapter.addAllItems(promoDataList);
+        } else {
+            adapter.addAllItemsLoadMore(promoDataList);
+        }
+    }
+
+    @Override
+    public void renderNextPage(boolean hasNextPage) {
+        this.isLoadMore = hasNextPage;
+        adapter.setHasNextPage(hasNextPage);
     }
 
     @Override
@@ -224,9 +236,17 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
 
     @Override
     protected void initView(View view) {
-        quickFilterView = new QuickFilterView(getActivity());
         adapter = new PromoListAdapter(new ArrayList<PromoData>(), this);
-        rvPromoList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        rvPromoList.setLayoutManager(layoutManager);
+        rvPromoList.addOnScrollListener(new EndlessRecyclerviewListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                if (isLoadMore) {
+                    dPresenter.processGetPromoListLoadMore(filterSelected);
+                }
+            }
+        });
         rvPromoList.setAdapter(adapter);
     }
 
@@ -237,32 +257,18 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
 
     @Override
     protected void initialVar() {
-        clearHolderView(filterLayout);
-        quickFilterView.renderFilter(setQuickFilterItems(promoMenuData.getPromoSubMenuDataList()));
-        quickFilterView.setListener(new QuickFilterView.ActionListener() {
-            @Override
-            public void clearFilter() {
-                for (int i = 0; i < promoMenuData.getPromoSubMenuDataList().size(); i++) {
-                    if (promoMenuData.getPromoSubMenuDataList().get(i).isSelected()) {
-                        promoMenuData.getPromoSubMenuDataList().get(i).setSelected(false);
-                    }
-                }
-                dPresenter.processGetPromoList(promoMenuData.getAllSubCategoryId());
-            }
-
+        List<QuickFilterItem> quickFilterItemList = setQuickFilterItems(promoMenuData.getPromoSubMenuDataList());
+        quickSingleFilterView.renderFilter(quickFilterItemList);
+        quickSingleFilterView.setDefaultItem(quickFilterItemList.get(0));
+        quickSingleFilterView.setListener(new QuickSingleFilterView.ActionListener() {
             @Override
             public void selectFilter(String typeFilter) {
-                for (int i = 0; i < promoMenuData.getPromoSubMenuDataList().size(); i++) {
-                    if (typeFilter.equals(promoMenuData.getPromoSubMenuDataList().get(i).getId())) {
-                        promoMenuData.getPromoSubMenuDataList().get(i).setSelected(true);
-                    } else {
-                        promoMenuData.getPromoSubMenuDataList().get(i).setSelected(false);
-                    }
-                }
-                dPresenter.processGetPromoList(typeFilter);
+                filterSelected = typeFilter.equals(TYPE_FILTER_ALL) ?
+                        promoMenuData.getAllSubCategoryId() : typeFilter;
+                dPresenter.setPage(10);
+                dPresenter.processGetPromoList(filterSelected);
             }
         });
-        filterLayout.addView(quickFilterView);
     }
 
     private List<QuickFilterItem> setQuickFilterItems(List<PromoSubMenuData> promoSubMenuDataList) {
@@ -289,12 +295,6 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
         bundle.putParcelable(ARG_EXTRA_PROMO_MENU_DATA, promoMenuData);
         fragment.setArguments(bundle);
         return fragment;
-    }
-
-    private void clearHolderView(LinearLayout holderView) {
-        if (holderView.getChildCount() > 0) {
-            holderView.removeAllViews();
-        }
     }
 
     @Override

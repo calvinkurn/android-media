@@ -10,7 +10,9 @@ import java.util.List;
 
 public interface IPromoListView extends IBaseView {
 
-    void renderPromoDataList(List<PromoData> couponData);
+    void renderPromoDataList(List<PromoData> couponData, boolean firstTimeLoad);
+
+    void renderNextPage(boolean hasNextPage);
 
     void renderErrorGetPromoDataList(String message);
 
