@@ -64,7 +64,8 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
     }
 
     private void initTopAds(Config topAdsConfig) {
-        TopAdsParams newParam = topAdsConfig.getTopAdsParams();
+        TopAdsParams newParam = new TopAdsParams();
+        newParam.getParam().putAll(topAdsConfig.getTopAdsParams().getParam());
         newParam.getParam().put(TopAdsParams.KEY_ITEM, DEFAULT_ITEM_VALUE);
         newParam.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_SEARCH);
         Config newConfig = new Config.Builder()
