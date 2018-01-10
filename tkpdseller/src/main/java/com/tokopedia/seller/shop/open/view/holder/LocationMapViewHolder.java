@@ -1,6 +1,7 @@
 package com.tokopedia.seller.shop.open.view.holder;
 
 import android.support.v7.widget.AppCompatEditText;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -16,9 +17,13 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.helper.KeyboardHelper;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout;
 import com.tokopedia.seller.shop.open.view.model.GoogleLocationViewModel;
+import com.tokopedia.seller.shop.open.view.watcher.AfterTextWatcher;
 
 /**
  * Created by normansyahputa on 12/21/17.
@@ -38,6 +43,7 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
     private GoogleMap googleMap;
 
     private boolean isFromReserveDomain;
+    private final TkpdHintTextInputLayout tilShopAddress;
 
     public void setFromReserveDomain(boolean fromReserveDomain) {
         isFromReserveDomain = fromReserveDomain;
@@ -46,7 +52,14 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
     private GoogleLocationViewModel googleLocationViewModel;
 
     public LocationMapViewHolder(View root, final ViewHolderListener3 viewHolderListener3) {
+        tilShopAddress = root.findViewById(R.id.shop_desc_input_layout);
         shopAddressEdittext = root.findViewById(R.id.open_shop_address_edittext);
+        shopAddressEdittext.addTextChangedListener(new AfterTextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                tilShopAddress.disableSuccessError();
+            }
+        });
 
         generatedLocationOpenShop = root.findViewById(R.id.generated_location_open_shop);
         mapViewContainer = root.findViewById(R.id.mapview_container);
@@ -92,7 +105,9 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
         }
 
         if(googleLocationViewModel != null && !TextUtils.isEmpty(googleLocationViewModel.getGeneratedAddress())){
-            googleMap.clear();
+            if (googleMap!= null){
+                googleMap.clear();
+            }
 
             generatedLocationOpenShop.setVisibility(View.VISIBLE);
             generateLocationOpenShopCopy.setVisibility(View.VISIBLE);
@@ -118,6 +133,19 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
         if(!isFromReserveDomain)
             setGoogleMap(googleMap);
     }
+
+    public boolean isDataInputValid(){
+        if (!TextUtils.isEmpty(generatedLocationOpenShop.getText().toString())) {
+            if (TextUtils.isEmpty(shopAddressEdittext.getText().toString())) {
+                shopAddressEdittext.setError(root.getContext().getString(R.string.shop_location_must_be_filled));
+                shopAddressEdittext.requestFocus();
+                CommonUtils.hideSoftKeyboard(root);
+                return false;
+            }
+        }
+        return true;
+    }
+
 
     public String getManualAddress(){
         return shopAddressEdittext.getText().toString();

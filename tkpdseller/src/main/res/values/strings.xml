@@ -260,5 +260,7 @@
     <string name="shop_open_label_picker_image_camera">Tambah gambar dari Kamera</string>
     <string name="shop_open_label_picker_gallery">Tambah gambar dari Galeri</string>
     <string name="shop_location_must_be_filled">Lokasi pengiriman harus diisi</string>
+    <string name="postal_code_must_be_filled">Kode Pos harus diisi</string>
+    <string name="postal_code_minimum_5_char">Kode Pos harus minimum 5 digit</string>
     <string name="hint_origin_destination">Tulis kota/kecamatan asal pengiriman</string>
 </resources>
