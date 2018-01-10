@@ -160,11 +160,15 @@ public class OrderDetailMapper {
         return viewData;
     }
 
-    public ListCourierViewModel getCourierServiceModel(CourierResponse response) {
+    public ListCourierViewModel getCourierServiceModel(CourierResponse response,
+                                                       String selectedCourierId) {
         ListCourierViewModel listCourierViewModel = new ListCourierViewModel();
         List<CourierViewModel> viewModelList = new ArrayList<>();
         for (int i = 0; i < response.getShipment().size(); i++) {
             CourierViewModel courierViewModel = new CourierViewModel();
+            courierViewModel.setSelected(
+                    selectedCourierId.equals(response.getShipment().get(i).getShipmentId())
+            );
             courierViewModel.setCourierId(response.getShipment().get(i).getShipmentId());
             courierViewModel.setCourierName(response.getShipment().get(i).getShipmentName());
             courierViewModel.setCourierImageUrl(response.getShipment().get(i).getShipmentImage());

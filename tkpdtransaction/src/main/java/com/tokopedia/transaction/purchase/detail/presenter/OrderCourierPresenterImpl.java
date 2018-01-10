@@ -9,6 +9,7 @@ import com.tokopedia.transaction.purchase.detail.interactor.OrderCourierInteract
 import com.tokopedia.transaction.purchase.detail.interactor.OrderCourierInteractorImpl;
 import com.tokopedia.transaction.purchase.detail.model.detail.editmodel.OrderDetailShipmentModel;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.ListCourierViewModel;
+import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
 
 import rx.Subscriber;
 
@@ -39,8 +40,10 @@ public class OrderCourierPresenterImpl implements OrderCourierPresenter {
     }
 
     @Override
-    public void onGetCourierList(Context context) {
+    public void onGetCourierList(Context context, OrderDetailData data) {
+        view.showLoading();
         interactor.onGetCourierList(
+                data.getShipmentId(),
                 AuthUtil.generateParamsNetwork(context, new TKPDMapParam<String, String>()),
                 new Subscriber<ListCourierViewModel>() {
                     @Override
@@ -50,17 +53,20 @@ public class OrderCourierPresenterImpl implements OrderCourierPresenter {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        view.hideLoading();
+                        view.onShowError(e.getMessage());
                     }
 
                     @Override
                     public void onNext(ListCourierViewModel courierViewModel) {
+                        view.hideLoading();
                         view.receiveShipmentData(courierViewModel);
-                    }});
+                    }
+                });
     }
 
     @Override
-    public void onConfirmShipping(OrderDetailShipmentModel editableModel) {
+    public void onConfirmShipping(Context context, OrderDetailShipmentModel editableModel) {
         TKPDMapParam<String, String> params = new TKPDMapParam<>();
         params.put(ACTION_TYPE, "confirm");
         params.put(ORDER_ID, editableModel.getOrderId());
@@ -68,21 +74,23 @@ public class OrderCourierPresenterImpl implements OrderCourierPresenter {
         params.put(SHIPMENT_ID, editableModel.getShipmentId());
         params.put(SHIPMENT_NAME, editableModel.getShipmentName());
         params.put(SP_ID, editableModel.getPackageId());
-        interactor.confirmShipping(params, new Subscriber<String>() {
-            @Override
-            public void onCompleted() {
+        interactor.confirmShipping(
+                AuthUtil.generateParamsNetwork(context, params),
+                new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
 
-            }
+                    }
 
-            @Override
-            public void onError(Throwable e) {
+                    @Override
+                    public void onError(Throwable e) {
+                        view.onShowError(e.getMessage());
+                    }
 
-            }
-
-            @Override
-            public void onNext(String s) {
-                view.onSuccessConfirm(s);
-            }
-        });
+                    @Override
+                    public void onNext(String s) {
+                        view.onSuccessConfirm(s);
+                    }
+                });
     }
 }

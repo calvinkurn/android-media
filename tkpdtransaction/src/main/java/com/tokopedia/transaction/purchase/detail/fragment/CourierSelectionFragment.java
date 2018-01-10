@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.purchase.detail.adapter.OrderCourierAdapter;
+import com.tokopedia.transaction.purchase.detail.model.detail.editmodel.CourierSelectionModel;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.CourierViewModel;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.ListCourierViewModel;
 
@@ -25,6 +26,8 @@ import static com.tokopedia.transaction.purchase.detail.activity.ConfirmShipping
 public class CourierSelectionFragment extends Fragment implements OrderCourierAdapter.OrderCourierAdapterListener{
 
     private static final String ORDER_COURIER_EXTRAS = "ORDER_COURIER_EXTRAS";
+
+    private OrderCourierFragmentListener listener;
 
     public static CourierSelectionFragment createInstance(ListCourierViewModel model) {
         CourierSelectionFragment fragment = new CourierSelectionFragment();
@@ -48,20 +51,37 @@ public class CourierSelectionFragment extends Fragment implements OrderCourierAd
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-
+        listener = (OrderCourierFragmentListener) context;
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        listener = (OrderCourierFragmentListener) activity;
     }
 
     @Override
     public void onCourierSelected(CourierViewModel courierViewModel) {
-        ServiceSelectionFragment serviceSelectionFragment = ServiceSelectionFragment
-                .createFragment(courierViewModel);
-        getFragmentManager().beginTransaction()
-                .add(R.id.main_view, serviceSelectionFragment, SELECT_SERVICE_FRAGMENT_TAG)
-                .commit();
+        if(courierViewModel.getCourierServiceList().size() > 1) {
+            ServiceSelectionFragment serviceSelectionFragment = ServiceSelectionFragment
+                    .createFragment(courierViewModel);
+            getFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.animator.slide_in_left, R.animator.slide_in_left)
+                    .add(R.id.main_view, serviceSelectionFragment, SELECT_SERVICE_FRAGMENT_TAG)
+                    .commit();
+        } else {
+            CourierSelectionModel model = new CourierSelectionModel();
+            model.setCourierName(courierViewModel.getCourierName());
+            model.setCourierId(courierViewModel.getCourierId());
+            model.setServiceId(courierViewModel.getCourierServiceList().get(0).getServiceId());
+            model.setServiceName(courierViewModel.getCourierServiceList().get(0).getServiceName());
+            listener.onCourierAdapterSelected(model);
+        }
+    }
+
+    public interface OrderCourierFragmentListener {
+
+        void onCourierAdapterSelected(CourierSelectionModel model);
+
     }
 }

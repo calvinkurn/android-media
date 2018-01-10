@@ -161,7 +161,7 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
         mainView.showProgressDialog();
         TKPDMapParam<String, String> changeAwbParam = new TKPDMapParam<>();
         changeAwbParam.put("order_id", orderId);
-        changeAwbParam.put("ref_number", refNumber);
+        changeAwbParam.put("shipping_ref", refNumber);
         orderDetailInteractor.confirmAwb(sellerActionSubscriber(),
                 AuthUtil.generateParamsNetwork(context, changeAwbParam));
     }

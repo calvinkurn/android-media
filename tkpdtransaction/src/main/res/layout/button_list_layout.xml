@@ -83,7 +83,7 @@
         android:layout_height="@dimen/btn_height"
         android:layout_margin="@dimen/margin_small"
         android:background="@drawable/green_button_rounded_unify"
-        android:text="@string/button_order_detail_confirm_shipping"
+        android:text="@string/button_order_detail_confirm_shipping_alternative"
         android:textAllCaps="false"
         android:textColor="@color/white" />
 

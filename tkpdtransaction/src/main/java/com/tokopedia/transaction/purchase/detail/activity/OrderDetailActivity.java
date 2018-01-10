@@ -469,6 +469,9 @@ public class OrderDetailActivity extends TActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == CONFIRM_SHIPMENT_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            presenter.fetchData(this, getExtraOrderId(), getExtraUserMode());
+        }
     }
 
     @Override

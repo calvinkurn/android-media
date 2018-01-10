@@ -25,9 +25,10 @@ public class OrderCourierInteractorImpl implements OrderCourierInteractor{
     }
 
     @Override
-    public void onGetCourierList(TKPDMapParam<String, String> params,
+    public void onGetCourierList(String selectedCourierId,
+                                 TKPDMapParam<String, String> params,
                                  Subscriber<ListCourierViewModel> subscriber) {
-        compositeSubscription.add(repository.onOrderCourierRepository(params)
+        compositeSubscription.add(repository.onOrderCourierRepository(selectedCourierId, params)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.newThread())

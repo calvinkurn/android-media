@@ -45,12 +45,8 @@ public class OrderCourierAdapter extends RecyclerView.Adapter<OrderCourierAdapte
         ImageHandler.LoadImage(holder.courierLogo, currentViewModel.getCourierImageUrl());
         holder.courierName.setText(currentViewModel.getCourierName());
         holder.courierCheckBox.setSelected(currentViewModel.isSelected());
-        holder.courierPlaceHolder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                listener.onCourierSelected(currentViewModel);
-            }
-        });
+        holder.courierPlaceHolder.setOnClickListener(onCourierSelectedListener(currentViewModel));
+        holder.courierCheckBox.setOnClickListener(onCourierSelectedListener(currentViewModel));
     }
 
     @Override
@@ -80,6 +76,15 @@ public class OrderCourierAdapter extends RecyclerView.Adapter<OrderCourierAdapte
             courierCheckBox = itemView.findViewById(R.id.courier_radio_button);
 
         }
+    }
+
+    private View.OnClickListener onCourierSelectedListener(final CourierViewModel courierViewModel) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onCourierSelected(courierViewModel);
+            }
+        };
     }
 
     public interface OrderCourierAdapterListener {

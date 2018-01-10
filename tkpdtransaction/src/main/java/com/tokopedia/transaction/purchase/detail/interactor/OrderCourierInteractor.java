@@ -12,7 +12,9 @@ import rx.Subscriber;
 public interface OrderCourierInteractor {
 
     void onGetCourierList(
-            TKPDMapParam<String, String> params, Subscriber<ListCourierViewModel> model
+            String selectedCourierId,
+            TKPDMapParam<String, String> params,
+            Subscriber<ListCourierViewModel> model
     );
 
     void confirmShipping(TKPDMapParam<String, String> params, Subscriber<String> subscriber);

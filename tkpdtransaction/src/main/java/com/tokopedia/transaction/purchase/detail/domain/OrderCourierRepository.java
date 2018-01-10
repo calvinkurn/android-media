@@ -36,6 +36,7 @@ public class OrderCourierRepository implements IOrderCourierRepository{
 
     @Override
     public Observable<ListCourierViewModel> onOrderCourierRepository(
+            final String selectedCourierId,
             TKPDMapParam<String, String> params
     ) {
         return service.getApi().getEditShippingForm(params).map(new Func1<Response<TkpdResponse>, ListCourierViewModel>() {
@@ -43,7 +44,8 @@ public class OrderCourierRepository implements IOrderCourierRepository{
             public ListCourierViewModel call(Response<TkpdResponse> tkpdResponseResponse) {
                 return mapper.getCourierServiceModel(
                         new Gson().fromJson(tkpdResponseResponse.body().getStringData(),
-                                CourierResponse.class)
+                                CourierResponse.class),
+                        selectedCourierId
                 );
             }
         });

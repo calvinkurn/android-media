@@ -140,7 +140,7 @@
     <string name="button_order_detail_request_pickup">Request Pickup</string>
     <string name="button_order_detail_confirm">Konfirmasi</string>
     <string name="button_order_detail_finish">Selesai</string>
-    <string name="button_order_detail_change_awb">Ganti Awb</string>
+    <string name="button_order_detail_change_awb">Ganti Resi</string>
     <string name="button_order_detail_view_complaint">Lihat Komplain</string>
     <string name="button_order_detail_confirm_shipping">Konfirmasi</string>
     <string name="button_order_detail_confirm_shipping_alternative">Konfirmasi/Ganti Kurir</string>

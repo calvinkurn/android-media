@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.purchase.detail.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.transaction.R;
@@ -30,7 +32,9 @@ import com.tokopedia.transaction.purchase.detail.presenter.OrderCourierPresenter
 import javax.inject.Inject;
 
 public class ConfirmShippingActivity extends TActivity
-        implements ConfirmShippingView, ServiceSelectionFragment.ServiceSelectionListener{
+        implements ConfirmShippingView,
+        ServiceSelectionFragment.ServiceSelectionListener,
+        CourierSelectionFragment.OrderCourierFragmentListener{
 
     private static final int REQUEST_CODE_BARCODE = 1;
     private static final String EXTRA_ORDER_DETAIL_DATA = "EXTRA_ORDER_DETAIL_DATA";
@@ -40,6 +44,8 @@ public class ConfirmShippingActivity extends TActivity
     private OrderDetailShipmentModel editableModel;
 
     private TextView courierName;
+
+    private TkpdProgressDialog progressDialog;
 
     @Inject
     OrderCourierPresenterImpl presenter;
@@ -57,22 +63,31 @@ public class ConfirmShippingActivity extends TActivity
         initInjector();
         presenter.setView(this);
         OrderDetailData orderDetailData = getIntent().getParcelableExtra(EXTRA_ORDER_DETAIL_DATA);
+        initateData(orderDetailData);
+        initiateView(orderDetailData);
+    }
+
+    private void initiateView(OrderDetailData orderDetailData) {
+        progressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
+        courierName = findViewById(R.id.courier_name);
+        EditText barcodeEditText = findViewById(R.id.barcode_edit_text);
+        ImageView barcodeScanner = findViewById(R.id.icon_scan);
+        LinearLayout courierLayout = findViewById(R.id.courier_layout);
+        TextView confirmButton = findViewById(R.id.confirm_button);
+        courierLayout.setOnClickListener(onGetCourierButtonClickedListener(orderDetailData));
+        confirmButton.setOnClickListener(onConfirmButtonClickedListener(barcodeEditText));
+        barcodeEditText.setText(orderDetailData.getAwb());
+        barcodeScanner.setOnClickListener(onBarcodeScanClickedListener());
+        courierName.setText(editableModel.getShipmentName() + " " + editableModel.getPackageName());
+    }
+
+    private void initateData(OrderDetailData orderDetailData) {
         editableModel = new OrderDetailShipmentModel();
         editableModel.setOrderId(orderDetailData.getOrderId());
         editableModel.setShipmentId(orderDetailData.getShipmentId());
         editableModel.setPackageId(orderDetailData.getShipmentServiceId());
         editableModel.setShipmentName(orderDetailData.getShipmentName());
         editableModel.setPackageName(orderDetailData.getShipmentServiceName());
-        courierName = findViewById(R.id.courier_name);
-        EditText barcodeEditText = findViewById(R.id.barcode_edit_text);
-        ImageView barcodeScanner = findViewById(R.id.icon_scan);
-        LinearLayout courierLayout = findViewById(R.id.courier_layout);
-        TextView confirmButton = findViewById(R.id.confirm_button);
-        courierLayout.setOnClickListener(onGetCourierButtonClickedListener());
-        confirmButton.setOnClickListener(onConfirmButtonClickedListener(barcodeEditText));
-        barcodeEditText.setText(orderDetailData.getAwb());
-        barcodeScanner.setOnClickListener(onBarcodeScanClickedListener());
-        courierName.setText(editableModel.getShipmentName() + " " + editableModel.getPackageName());
     }
 
     @Override
@@ -88,7 +103,19 @@ public class ConfirmShippingActivity extends TActivity
     @Override
     public void onSuccessConfirm(String successMessage) {
         Toast.makeText(this, successMessage, Toast.LENGTH_LONG).show();
+        //TODO REMOVE IF BUGGY
+        setResult(Activity.RESULT_OK);
         finish();
+    }
+
+    @Override
+    public void showLoading() {
+        progressDialog.showDialog();
+    }
+
+    @Override
+    public void hideLoading() {
+        progressDialog.dismiss();
     }
 
     @Override
@@ -100,18 +127,30 @@ public class ConfirmShippingActivity extends TActivity
     public void onFinishSelectShipment(CourierSelectionModel courierSelectionModel) {
         removeServiceSelectionFragment();
         removeCourierSelectionFragment();
-        editableModel.setShipmentName(courierSelectionModel.getCourierName());
-        editableModel.setPackageName(courierSelectionModel.getServiceName());
-        editableModel.setShipmentId(courierSelectionModel.getCourierId());
-        editableModel.setPackageId(courierSelectionModel.getServiceId());
-        courierName.setText(editableModel.getShipmentName() + " " + editableModel.getPackageName());
+        generateShipmentData(courierSelectionModel);
     }
 
-    private View.OnClickListener onGetCourierButtonClickedListener() {
+    @Override
+    public void onCourierAdapterSelected(CourierSelectionModel model) {
+        removeCourierSelectionFragment();
+        generateShipmentData(model);
+    }
+
+    private void generateShipmentData(CourierSelectionModel courierSelectionModel) {
+        editableModel.setShipmentName(courierSelectionModel.getCourierName());
+        editableModel.setPackageName(courierSelectionModel.getServiceName());
+        editableModel.setPackageId(courierSelectionModel.getServiceId());
+        editableModel.setShipmentId(courierSelectionModel.getCourierId());
+        courierName.setText(
+                editableModel.getShipmentName() + " " + editableModel.getPackageName()
+        );
+    }
+
+    private View.OnClickListener onGetCourierButtonClickedListener(final OrderDetailData data) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.onGetCourierList(ConfirmShippingActivity.this);
+                presenter.onGetCourierList(ConfirmShippingActivity.this, data);
             }
         };
     }
@@ -121,7 +160,7 @@ public class ConfirmShippingActivity extends TActivity
             @Override
             public void onClick(View view) {
                 editableModel.setShippingRef(barcodeEditText.getText().toString());
-                presenter.onConfirmShipping(editableModel);
+                presenter.onConfirmShipping(ConfirmShippingActivity.this, editableModel);
             }
         };
     }

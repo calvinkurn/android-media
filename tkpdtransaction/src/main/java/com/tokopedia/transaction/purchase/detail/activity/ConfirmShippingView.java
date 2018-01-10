@@ -14,5 +14,9 @@ public interface ConfirmShippingView {
 
     void onSuccessConfirm(String successMessage);
 
+    void showLoading();
+
+    void hideLoading();
+
     void onShowError(String errorMessage);
 }

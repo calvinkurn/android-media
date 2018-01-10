@@ -11,7 +11,8 @@ import rx.Observable;
 
 public interface IOrderCourierRepository {
 
-    Observable<ListCourierViewModel> onOrderCourierRepository(TKPDMapParam<String, String> params);
+    Observable<ListCourierViewModel> onOrderCourierRepository(String selectedCourierId,
+                                                              TKPDMapParam<String, String> params);
 
     Observable<String> processShipping(TKPDMapParam<String, String> param);
 
