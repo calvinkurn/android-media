@@ -20,16 +20,17 @@ public class ValidateOtpLoginSubscriber extends Subscriber<ValidateOtpLoginDomai
 
     @Override
     public void onCompleted() {
-        viewListener.dismissLoadingProgress();
     }
 
     @Override
     public void onError(Throwable e) {
+        viewListener.dismissLoadingProgress();
         viewListener.onErrorValidateOtp(ErrorHandler.getErrorMessage(e));
     }
 
     @Override
     public void onNext(ValidateOtpLoginDomain validateOTPLoginDomain) {
+        viewListener.dismissLoadingProgress();
         if (validateOTPLoginDomain.getValidateOtpDomain().isSuccess()
                 && validateOTPLoginDomain.getMakeLoginDomain().isLogin()
                 && !validateOTPLoginDomain.getMakeLoginDomain().isMsisdnVerified()) {

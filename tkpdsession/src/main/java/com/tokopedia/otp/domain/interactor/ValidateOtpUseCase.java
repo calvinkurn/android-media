@@ -32,8 +32,7 @@ public class ValidateOtpUseCase extends UseCase<ValidateOtpDomain> {
     @Inject
     public ValidateOtpUseCase(ThreadExecutor threadExecutor,
                               PostExecutionThread postExecutionThread,
-                              OtpSource otpSource,
-                              SessionHandler sessionHandler) {
+                              OtpSource otpSource) {
         super(threadExecutor, postExecutionThread);
         this.otpSource = otpSource;
     }
@@ -43,14 +42,11 @@ public class ValidateOtpUseCase extends UseCase<ValidateOtpDomain> {
         return otpSource.validateOtp(requestParams.getParameters());
     }
 
-
-    public static RequestParams getParam(int otpType, String otp, String userId) {
+    public static RequestParams getParam(String userId, int otpType, String otp) {
         RequestParams param = RequestParams.create();
-        param.putAll(AuthUtil.generateParamsNetwork2(MainApplication.getAppContext(),
-                RequestParams.EMPTY.getParameters()));
+        param.putString(PARAM_USER, userId);
         param.putInt(PARAM_OTP_TYPE, otpType);
         param.putString(PARAM_CODE, otp);
-        param.putString(PARAM_USER, userId);
         return param;
     }
 }

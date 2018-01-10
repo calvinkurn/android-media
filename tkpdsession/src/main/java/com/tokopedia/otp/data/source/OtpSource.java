@@ -54,4 +54,11 @@ public class OtpSource {
             }
         };
     }
+
+    public Observable<RequestOtpViewModel> requestOtpWithEmail(TKPDMapParam<String, Object> parameters) {
+        return accountsService.getApi()
+                .requestOtpToEmail((String) parameters.get(RequestOtpUseCase.PARAM_USER_ID),
+                        parameters)
+                .map(requestOTPMapper);
+    }
 }

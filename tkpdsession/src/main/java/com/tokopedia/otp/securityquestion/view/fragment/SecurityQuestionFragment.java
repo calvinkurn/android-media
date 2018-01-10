@@ -249,7 +249,7 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
             @Override
             public void onClick(View v) {
 
-                presenter.requestOTPWithPhoneCall();
+                presenter.requestOTPWithPhoneCall(securityQuestionViewModel.getPhone());
 
             }
         });
@@ -377,12 +377,12 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
         changeNumber.setVisibility(View.VISIBLE);
         vSendOtpCall.setVisibility(View.VISIBLE);
         if (isAutoRequestOTP()) {
-            presenter.requestOTPWithSMS();
+            presenter.requestOTPWithSMS(securityQuestionViewModel.getPhone());
         }
         vSendOtp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.requestOTPWithSMS();
+                presenter.requestOTPWithSMS(securityQuestionViewModel.getPhone());
             }
         });
     }
