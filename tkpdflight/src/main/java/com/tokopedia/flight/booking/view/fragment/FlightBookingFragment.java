@@ -350,13 +350,13 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         String tripInfo = "";
         if (returnTrip.getRouteList().size() > 1) {
             airLineSection = getString(R.string.flight_booking_multiple_airline_trip_card);
-            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format), returnTrip.getRouteList().size(), getString(R.string.flight_booking_transit_trip_card));
+            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format), returnTrip.getRouteList().size() - 1, getString(R.string.flight_booking_transit_trip_card));
         } else {
             tripInfo += String.format(getString(R.string.flight_booking_trip_info_format_without_count), getString(R.string.flight_booking_directly_trip_card));
             airLineSection = returnTrip.getRouteList().get(0).getAirlineName();
         }
         returnInfoView.setSubContent(airLineSection);
-        tripInfo += String.format(getString(R.string.flight_booking_trip_info_airport_format), returnTrip.getDepartureTime(), returnTrip.getArrivalTime());
+        tripInfo += " " + String.format(getString(R.string.flight_booking_trip_info_airport_format), returnTrip.getDepartureTime(), returnTrip.getArrivalTime());
         returnInfoView.setSubContentInfo(tripInfo);
     }
 
@@ -369,13 +369,13 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         String tripInfo = "";
         if (returnTrip.getRouteList().size() > 1) {
             airLineSection = getString(R.string.flight_booking_multiple_airline_trip_card);
-            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format), returnTrip.getRouteList().size(), getString(R.string.flight_booking_transit_trip_card));
+            tripInfo += String.format(getString(R.string.flight_booking_trip_info_format), returnTrip.getRouteList().size() - 1, getString(R.string.flight_booking_transit_trip_card));
         } else {
             tripInfo += String.format(getString(R.string.flight_booking_trip_info_format_without_count), getString(R.string.flight_booking_directly_trip_card));
             airLineSection = returnTrip.getRouteList().get(0).getAirlineName();
         }
         departureInfoView.setSubContent(airLineSection);
-        tripInfo += String.format(getString(R.string.flight_booking_trip_info_airport_format), returnTrip.getDepartureTime(), returnTrip.getArrivalTime());
+        tripInfo += " " + String.format(getString(R.string.flight_booking_trip_info_airport_format), returnTrip.getDepartureTime(), returnTrip.getArrivalTime());
         departureInfoView.setSubContentInfo(tripInfo);
     }
 
