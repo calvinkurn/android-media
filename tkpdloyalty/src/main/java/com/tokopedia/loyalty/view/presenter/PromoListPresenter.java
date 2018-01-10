@@ -23,7 +23,7 @@ import rx.Subscriber;
 public class PromoListPresenter implements IPromoListPresenter {
     private final IPromoInteractor promoInteractor;
     private final IPromoListView view;
-    private int perPage = 10;
+    private int page = 1;
 
     @Inject
     public PromoListPresenter(IPromoInteractor promoInteractor, IPromoListView view) {
@@ -32,8 +32,8 @@ public class PromoListPresenter implements IPromoListPresenter {
     }
 
     @Override
-    public void setPage(int perPage) {
-        this.perPage = perPage;
+    public void setPage(int page) {
+        this.page = page;
     }
 
     @Override
@@ -41,7 +41,7 @@ public class PromoListPresenter implements IPromoListPresenter {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put("categories", subCategories);
         param.put("categories_exclude", "30");
-        param.put("per_page", String.valueOf(perPage));
+        param.put("page", String.valueOf(page));
         this.promoInteractor.getPromoList(param, new Subscriber<List<PromoData>>() {
             @Override
             public void onCompleted() {
@@ -57,8 +57,10 @@ public class PromoListPresenter implements IPromoListPresenter {
             public void onNext(List<PromoData> promoData) {
                 if (promoData.size() > 0) {
                     if (promoData.size() == 10) {
-                        perPage += 10;
+                        page++;
                         view.renderNextPage(true);
+                    } else {
+                        view.renderNextPage(false);
                     }
                     view.renderPromoDataList(promoData, true);
                 } else {
@@ -73,7 +75,7 @@ public class PromoListPresenter implements IPromoListPresenter {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put("categories", subCategories);
         param.put("categories_exclude", "30");
-        param.put("per_page", String.valueOf(perPage));
+        param.put("page", String.valueOf(page));
         this.promoInteractor.getPromoList(param, new Subscriber<List<PromoData>>() {
             @Override
             public void onCompleted() {
@@ -89,14 +91,14 @@ public class PromoListPresenter implements IPromoListPresenter {
             public void onNext(List<PromoData> promoData) {
                 if (promoData.size() > 0) {
                     if (promoData.size() == 10) {
-                        perPage += 10;
+                        page++;
                         view.renderNextPage(true);
                     } else {
-                        perPage = 10;
+                        page = 1;
                         view.renderNextPage(false);
                     }
                 } else {
-                    perPage = 10;
+                    page = 1;
                     view.renderNextPage(false);
                 }
                 view.renderPromoDataList(promoData, false);

@@ -70,6 +70,7 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
     private BottomSheetView bottomSheetViewInfoPromoCode;
     private boolean isLoadMore;
     private String filterSelected = "";
+    private EndlessRecyclerviewListener endlessRecyclerviewListener;
 
     @Override
     protected void initInjector() {
@@ -239,14 +240,15 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
         adapter = new PromoListAdapter(new ArrayList<PromoData>(), this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         rvPromoList.setLayoutManager(layoutManager);
-        rvPromoList.addOnScrollListener(new EndlessRecyclerviewListener(layoutManager) {
+        endlessRecyclerviewListener = new EndlessRecyclerviewListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 if (isLoadMore) {
                     dPresenter.processGetPromoListLoadMore(filterSelected);
                 }
             }
-        });
+        };
+        rvPromoList.addOnScrollListener(endlessRecyclerviewListener);
         rvPromoList.setAdapter(adapter);
     }
 
@@ -265,7 +267,8 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
             public void selectFilter(String typeFilter) {
                 filterSelected = typeFilter.equals(TYPE_FILTER_ALL) ?
                         promoMenuData.getAllSubCategoryId() : typeFilter;
-                dPresenter.setPage(10);
+                endlessRecyclerviewListener.resetState();
+                dPresenter.setPage(1);
                 dPresenter.processGetPromoList(filterSelected);
             }
         });
@@ -343,7 +346,9 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
-
+                        endlessRecyclerviewListener.resetState();
+                        dPresenter.setPage(1);
+                        dPresenter.processGetPromoList(filterSelected);
                     }
                 });
     }
