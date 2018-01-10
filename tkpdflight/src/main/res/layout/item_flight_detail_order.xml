@@ -3,7 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:paddingBottom="@dimen/padding_16"
+    android:paddingLeft="@dimen/padding_small"
+    android:paddingRight="@dimen/padding_small"
+    android:paddingTop="@dimen/padding_16"
+    android:layout_marginTop="@dimen/margin_med">
 
     <TextView
         android:id="@+id/counter_flight"
@@ -11,21 +17,42 @@
         android:text="@string/flight_label_detail_order"
         android:textSize="18sp" />
 
-    <com.tokopedia.flight.common.view.FlightExpandableOptionArrow
-        android:id="@+id/title_journey_flight"
+    <LinearLayout
+        android:id="@+id/layout_expendable_flight"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/title_expendable_passenger"
+            style="@style/style_expandable_flight_detail_order_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/flight_label_passenger_data" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/image_expendable_passenger"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/medal_size"
+            android:layout_gravity="center_vertical"
+            app:srcCompat="@drawable/ic_arrow_up" />
+
+    </LinearLayout>
+
+    <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+        android:id="@+id/recycler_view_flight_detail_journey"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+    <TextView
+        style="@style/TextView.Caption.BlackDisabled"
+        android:layout_width="match_parent"
         android:background="@color/white"
-        app:eo_checked="true"
-        app:eo_theme="@style/style_expandable_flight"
-        app:eo_title="@string/flight_label_passenger_data"
-        app:eo_use_rotate_animation="true">
-
-        <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
-            android:id="@+id/recycler_view_flight_detail_journey"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-    </com.tokopedia.flight.common.view.FlightExpandableOptionArrow>
+        android:paddingTop="@dimen/padding_med"
+        android:paddingBottom="@dimen/padding_med"
+        android:paddingRight="@dimen/padding_med"
+        android:text="@string/flight_label_cek_t_and_c" />
 
 </LinearLayout>

@@ -112,4 +112,12 @@
         <item name="android:layout_centerVertical">true</item>
         <item name="android:textSize">@dimen/font_subheading</item>
     </style>
+
+    <style name="style_expandable_flight_detail_order_title" parent="TextView.Title.Bold">
+        <item name="android:paddingRight">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:textSize">@dimen/font_subheading</item>
+    </style>
 </resources>
