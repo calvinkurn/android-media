@@ -41,6 +41,7 @@ public class ProductManageListViewHolder extends BaseMultipleCheckViewHolder<Pro
     private CheckBox checkBoxProduct;
     private TextView tagEmptyStock;
     private View viewSuperVision;
+    private TextView textViewVariant;
     private ClickOptionCallbackHolder clickOptionCallbackHolder;
 
     public ProductManageListViewHolder(View layoutView) {
@@ -59,6 +60,7 @@ public class ProductManageListViewHolder extends BaseMultipleCheckViewHolder<Pro
         tagEmptyStock = (TextView) layoutView.findViewById(R.id.tag_empty_product);
         optionImageButton = layoutView.findViewById(R.id.image_button_option);
         viewSuperVision = layoutView.findViewById(R.id.view_product_on_supervision);
+        textViewVariant = layoutView.findViewById(R.id.text_view_variant);
     }
 
     @Override
@@ -135,6 +137,11 @@ public class ProductManageListViewHolder extends BaseMultipleCheckViewHolder<Pro
             stockTextView.setVisibility(View.GONE);
         }
         checkBoxProduct.setEnabled(!statusUnderSupervision);
+        if(productManageViewModel.getProductVariant() == 1){
+            textViewVariant.setVisibility(View.VISIBLE);
+        }else{
+            textViewVariant.setVisibility(View.GONE);
+        }
     }
 
     public void bindFeaturedProduct(boolean isFeaturedProduct) {
