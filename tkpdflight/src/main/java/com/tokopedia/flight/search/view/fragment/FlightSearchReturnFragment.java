@@ -1,28 +1,37 @@
 package com.tokopedia.flight.search.view.fragment;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.common.util.FlightDateUtil;
+import com.tokopedia.flight.search.di.DaggerFlightSearchComponent;
+import com.tokopedia.flight.search.presenter.FlightSearchReturnPresenter;
+import com.tokopedia.flight.search.view.FlightSearchReturnView;
 import com.tokopedia.flight.search.view.activity.FlightSearchReturnActivity;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
+
+import javax.inject.Inject;
 
 /**
  * Created by hendry on 10/26/2017.
  */
 
-public class FlightSearchReturnFragment extends FlightSearchFragment {
+public class FlightSearchReturnFragment extends FlightSearchFragment implements FlightSearchReturnView {
 
+    @Inject
+    FlightSearchReturnPresenter flightSearchReturnPresenter;
     private AppCompatTextView departureHeaderLabel;
     private TextView airlineName;
     private TextView duration;
-
     private String selectedFlightDeparture;
 
     public static FlightSearchReturnFragment newInstance(FlightSearchPassDataViewModel passDataViewModel, String selectedDepartureID) {
@@ -88,5 +97,51 @@ public class FlightSearchReturnFragment extends FlightSearchFragment {
         }
 
         departureHeaderLabel.setText(String.format("%s - %s", getString(R.string.flight_label_departure_flight), FlightDateUtil.formatToUi(flightSearchPassDataViewModel.getDepartureDate())));
+    }
+
+    @Override
+    public void onItemClicked(FlightSearchViewModel flightSearchViewModel) {
+        flightSearchReturnPresenter.onFlightSearchSelected(flightSearchPassDataViewModel.getDepartureDate(), flightSearchPassDataViewModel.getReturnDate(), selectedFlightDeparture, flightSearchViewModel);
+       /* if (onFlightSearchFragmentListener != null) {
+            onFlightSearchFragmentListener.selectFlight(flightSearchViewModel.getId());
+        }*/
+    }
+
+    @Override
+    protected final void initInjector() {
+        super.initInjector();
+        if (flightSearchComponent == null) {
+            flightSearchComponent =
+                    DaggerFlightSearchComponent.builder()
+                            .flightComponent(FlightComponentInstance.getFlightComponent(getActivity().getApplication()))
+                            .build();
+        }
+        flightSearchComponent
+                .inject(this);
+        flightSearchReturnPresenter.attachView(this);
+    }
+
+    @Override
+    public void showReturnTimeShouldGreaterThanArrivalDeparture() {
+        if (isAdded()) {
+            AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+            dialog.setMessage(R.string.flight_search_return_departure_should_greater_message);
+            dialog.setPositiveButton(getActivity().getString(R.string.title_ok),
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            dialog.setCancelable(false);
+            dialog.create().show();
+        }
+    }
+
+    @Override
+    public void navigateToCart(FlightSearchViewModel returnFlightSearchViewModel) {
+        if (onFlightSearchFragmentListener != null) {
+            onFlightSearchFragmentListener.selectFlight(returnFlightSearchViewModel.getId());
+        }
     }
 }

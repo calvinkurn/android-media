@@ -34,16 +34,22 @@ public class FlightFilterModel implements Parcelable, Cloneable {
     private List<RefundableEnum> refundableTypeList;
     private boolean isHasFilter = false;
 
-    protected FlightFilterModel(Parcel in) {
-        priceMin = in.readInt();
-        priceMax = in.readInt();
-        durationMin = in.readInt();
-        durationMax = in.readInt();
-        airlineList = in.createStringArrayList();
-        isHasFilter = in.readByte() != 0;
+    public FlightFilterModel() {
     }
 
-    public FlightFilterModel() {
+    protected FlightFilterModel(Parcel in) {
+        this.priceMin = in.readInt();
+        this.priceMax = in.readInt();
+        this.durationMin = in.readInt();
+        this.durationMax = in.readInt();
+        this.transitTypeList = new ArrayList<TransitEnum>();
+        in.readList(this.transitTypeList, TransitEnum.class.getClassLoader());
+        this.airlineList = in.createStringArrayList();
+        this.departureTimeList = new ArrayList<DepartureTimeEnum>();
+        in.readList(this.departureTimeList, DepartureTimeEnum.class.getClassLoader());
+        this.refundableTypeList = new ArrayList<RefundableEnum>();
+        in.readList(this.refundableTypeList, RefundableEnum.class.getClassLoader());
+        this.isHasFilter = in.readByte() != 0;
     }
 
     public int getPriceMin() {
@@ -192,20 +198,20 @@ public class FlightFilterModel implements Parcelable, Cloneable {
                 (this.refundableTypeList != null && this.refundableTypeList.size() > 0));
     }
 
-
-
     @Override
     public int describeContents() {
         return 0;
     }
 
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(priceMin);
-        parcel.writeInt(priceMax);
-        parcel.writeInt(durationMin);
-        parcel.writeInt(durationMax);
-        parcel.writeStringList(airlineList);
-        parcel.writeByte((byte) (isHasFilter ? 1 : 0));
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.priceMin);
+        dest.writeInt(this.priceMax);
+        dest.writeInt(this.durationMin);
+        dest.writeInt(this.durationMax);
+        dest.writeList(this.transitTypeList);
+        dest.writeStringList(this.airlineList);
+        dest.writeList(this.departureTimeList);
+        dest.writeList(this.refundableTypeList);
+        dest.writeByte((byte) (isHasFilter ? 1 : 0));
     }
 }

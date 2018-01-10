@@ -56,6 +56,7 @@ import com.tokopedia.flight.common.util.FlightRequestUtil;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.review.view.activity.FlightBookingReviewActivity;
+import com.tokopedia.flight.review.view.fragment.FlightBookingReviewFragment;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 
@@ -249,12 +250,21 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
 
                 break;
             case REQUEST_CODE_REVIEW:
+                boolean isCountdownRestarted = false;
                 if (data != null) {
-                    FlightFlowUtil.actionSetResultAndClose(getActivity(),
-                            getActivity().getIntent(),
-                            data.getIntExtra(FlightFlowExtraConstant.EXTRA_FLOW_DATA, 0)
-                    );
+                    if (data.getIntExtra(FlightFlowExtraConstant.EXTRA_FLOW_DATA, -1) != -1) {
+                        FlightFlowUtil.actionSetResultAndClose(getActivity(),
+                                getActivity().getIntent(),
+                                data.getIntExtra(FlightFlowExtraConstant.EXTRA_FLOW_DATA, 0)
+                        );
+                    } else {
+                        if (data.getBooleanExtra(FlightBookingReviewFragment.EXTRA_NEED_TO_REFRESH, false)) {
+                            isCountdownRestarted = true;
+                            presenter.onUpdateCart();
+                        }
+                    }
                 }
+                if (!isCountdownRestarted) countdownFinishTransactionView.start();
                 break;
         }
     }
@@ -479,6 +489,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     @Override
     public void setCartId(String id) {
         flightBookingCartData.setId(id);
+        getCurrentBookingParamViewModel().setId(id);
     }
 
     @Override
@@ -528,6 +539,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
 
     @Override
     public void navigateToReview(FlightBookingReviewModel flightBookingReviewModel) {
+        countdownFinishTransactionView.cancel();
         startActivityForResult(FlightBookingReviewActivity.createIntent(getActivity(), flightBookingReviewModel), REQUEST_CODE_REVIEW);
     }
 
