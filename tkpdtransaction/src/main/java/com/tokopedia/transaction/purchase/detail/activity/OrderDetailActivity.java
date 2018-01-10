@@ -1,7 +1,10 @@
 package com.tokopedia.transaction.purchase.detail.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -384,6 +387,7 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void onRejectOrder(OrderDetailData data) {
+        //TODO Change LATER
         if (getFragmentManager().findFragmentByTag(VALIDATION_FRAGMENT_TAG) == null) {
             RejectOrderFragment rejectOrderFragment = RejectOrderFragment
                     .createFragment(data.getOrderId());
