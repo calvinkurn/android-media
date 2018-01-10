@@ -33,7 +33,7 @@ public class ItemFilterViewHolder extends BaseItemFilterViewHolder {
         layoutBorder.setBackgroundResource(R.drawable.bg_round_corner);
         layoutInside.setBackgroundResource(R.drawable.bg_round_corner);
         handleViewFilter(filterItem.isSelected());
-        layoutBorder.setOnClickListener(new View.OnClickListener() {
+        itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 listener.selectFilter(filterItem);

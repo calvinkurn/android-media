@@ -1,6 +1,7 @@
 package com.tokopedia.design.quickfilter;
 
 import android.content.Context;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -104,6 +105,18 @@ public class QuickSingleFilterView extends BaseCustomView {
 
     public void setDefaultItem(QuickFilterItem defaultItem) {
         this.defaultItem = defaultItem;
+    }
+
+    public void actionSelect(final int position) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                View holderItem = recyclerView.findViewHolderForAdapterPosition(position).itemView;
+                if (holderItem != null) holderItem.performClick();
+
+            }
+        }, 100);
+
     }
 
     public interface ActionListener {
