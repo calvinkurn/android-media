@@ -81,12 +81,17 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
 
         String desc = String.format("%s %s", escapeHTML(cpm.getDecription()), cpm.getCta());
         setTextColor(descriptionTxt, desc, cpm.getCta(), ContextCompat.getColor(context, R.color.tkpd_main_green));
-        for (Badge badge : cpm.getBadges()) {
-            ImageView badgeImg = new ImageView(context);
-            badgeImg.setLayoutParams(new LayoutParams(context.getResources().getDimensionPixelSize(R.dimen.badge_size),
-                    context.getResources().getDimensionPixelSize(R.dimen.badge_size)));
-            Glide.with(context).load(badge.getImageUrl()).into(badgeImg);
-            badgeContainer.addView(badgeImg);
+        if(cpm.getBadges().size()>0) {
+            badgeContainer.setVisibility(VISIBLE);
+            for (Badge badge : cpm.getBadges()) {
+                ImageView badgeImg = new ImageView(context);
+                badgeImg.setLayoutParams(new LayoutParams(context.getResources().getDimensionPixelSize(R.dimen.badge_size),
+                        context.getResources().getDimensionPixelSize(R.dimen.badge_size)));
+                Glide.with(context).load(badge.getImageUrl()).into(badgeImg);
+                badgeContainer.addView(badgeImg);
+            }
+        } else {
+            badgeContainer.setVisibility(GONE);
         }
     }
 
