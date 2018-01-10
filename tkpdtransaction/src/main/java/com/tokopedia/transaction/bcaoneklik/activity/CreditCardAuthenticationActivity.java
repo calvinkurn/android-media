@@ -6,7 +6,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Toast;
 
@@ -62,7 +61,7 @@ public class CreditCardAuthenticationActivity extends TActivity
         dialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
         AuthenticatorPageModel authenticatorPageModel = getIntent()
                 .getParcelableExtra(CREDIT_CARD_STATUS_KEY);
-        RecyclerView mainRecyclerView = (RecyclerView) findViewById(R.id.main_recycler_view);
+        RecyclerView mainRecyclerView = findViewById(R.id.main_recycler_view);
         View submitButton = findViewById(R.id.cc_auth_setting_submit_button);
         submitButton.setOnClickListener(onSubmitButtonClickedListener(authenticatorPageModel));
         AuthenticationListAdapter adapter = new AuthenticationListAdapter(
@@ -113,7 +112,7 @@ public class CreditCardAuthenticationActivity extends TActivity
 
     @Override
     protected void setupToolbar() {
-        toolbar = (Toolbar) findViewById(com.tokopedia.core.R.id.app_bar);
+        toolbar = findViewById(com.tokopedia.core.R.id.app_bar);
         toolbar.setTitle(getTitle());
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

@@ -167,4 +167,10 @@
 
     <string name="title_term_and_condition">Syarat dan Ketentuan</string>
     <string name="title_bottomsheet_insurance">Asuransi Pengiriman</string>
+    <string name="delete_credit_card">Hapus kartu kredit?</string>
+    <string name="label_month_year">month/year</string>
+    <string name="label_button_delete_cc">Hapus Kartu</string>
+    <string name="header_title_pembayaran_kartu_kredit">Pembayaran Kartu Kredit</string>
+    <string name="sub_header_title_kartu_kredit_tersimpan">Kartu Kredit Tersimpan (0/4)</string>
+    <string name="text_cc_authentication">Autentikasi Pembayaran Kartu Kredit</string>
 </resources>

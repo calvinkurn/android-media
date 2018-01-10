@@ -44,6 +44,12 @@ public class PaymentSettingMainAdapter extends RecyclerView.Adapter<RecyclerView
     private static final int CREDIT_CARD_HEADER_SIZE = 1;
     private static final int BCA_ONE_CLICK_HEADER_SIZE = 1;
 
+    private static final String VISA = "visa";
+    private static final String MASTERCARD = "mastercard";
+    private static final String JCB = "jcb";
+
+    private static final String KEY_CC_ITEM = "credit_card_item";
+
     private ListPaymentTypePresenter presenter;
 
     private PaymentSettingModel model;
@@ -168,41 +174,35 @@ public class PaymentSettingMainAdapter extends RecyclerView.Adapter<RecyclerView
     private class CreditCardAdderViewHolder extends RecyclerView.ViewHolder {
 
         private View addCreditCardLayout;
-
         private TextView numberOfCreditCards;
 
         CreditCardAdderViewHolder(View itemView) {
             super(itemView);
 
             addCreditCardLayout = itemView.findViewById(R.id.add_credit_card_layout);
-            numberOfCreditCards = (TextView) itemView.findViewById(R.id.credit_card_sub_title);
-
+            numberOfCreditCards = itemView.findViewById(R.id.credit_card_sub_title);
         }
 
         void bindCreditCardHeader(List<CreditCardModelItem> listOfCreditCards) {
-            if(listOfCreditCards.size() == 0) {
+            if (listOfCreditCards.size() == 0) {
                 addCreditCardLayout.setVisibility(View.VISIBLE);
             } else {
                 addCreditCardLayout.setVisibility(View.GONE);
             }
 
             numberOfCreditCards.setText("Kartu Kredit Tersimpan (" + listOfCreditCards.size() + "/4)");
-
         }
-
     }
 
     private class CreditCardFooterViewHolder extends RecyclerView.ViewHolder {
 
         private View authButton;
-
         private View authFooter;
 
         CreditCardFooterViewHolder(View itemView) {
             super(itemView);
 
             authButton = itemView.findViewById(R.id.credit_card_auth);
-
             authFooter = itemView.findViewById(R.id.credit_card_auth_footer);
         }
 
@@ -219,7 +219,6 @@ public class PaymentSettingMainAdapter extends RecyclerView.Adapter<RecyclerView
                 }
             };
         }
-
     }
 
     private class CreditCardListViewHolder extends RecyclerView.ViewHolder {
@@ -230,9 +229,10 @@ public class PaymentSettingMainAdapter extends RecyclerView.Adapter<RecyclerView
 
         CreditCardListViewHolder(View itemView) {
             super(itemView);
+
             cardBackground = itemView.findViewById(R.id.ll_cc_container);
-            cardNumber = (TextView) itemView.findViewById(R.id.card_number);
-            cardImage = (ImageView) itemView.findViewById(R.id.card_image);
+            cardNumber = itemView.findViewById(R.id.card_number);
+            cardImage = itemView.findViewById(R.id.card_image);
         }
 
         void bindCreditCardItem(final CreditCardModelItem item) {
@@ -241,26 +241,33 @@ public class PaymentSettingMainAdapter extends RecyclerView.Adapter<RecyclerView
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(context, CreditCardDetailActivity.class);
-                    intent.putExtra("credit_card_item", item);
+                    intent.putExtra(KEY_CC_ITEM, item);
                     context.startActivity(intent);
                 }
             });
 
-            cardNumber.setText(" * * * * " + item.getMaskedNumber().substring(12));
+            cardNumber.setText(getMaskedNumberSubString(item.getMaskedNumber()));
             ImageHandler.LoadImage(cardImage, item.getCardTypeImage());
         }
 
         private int getBackgroundResource(CreditCardModelItem item) {
             switch (item.getCardType().toLowerCase()) {
-                case "visa":
+                case VISA:
                     return R.drawable.visa_container_kecil;
-                case "mastercard":
+                case MASTERCARD:
                     return R.drawable.mastercard_container_kecil;
-                case "jcb":
+                case JCB:
                     return R.drawable.jcb_container_kecil;
                 default:
                     return R.drawable.visa_container_kecil;
             }
+        }
+
+        private String getMaskedNumberSubString(String maskedNumber) {
+            final int LAST_NUMBERS = 4;
+            final String FOUR_STARS = " * * * * ";
+
+            return FOUR_STARS + maskedNumber.substring(maskedNumber.length() - LAST_NUMBERS);
         }
     }
 
@@ -272,21 +279,18 @@ public class PaymentSettingMainAdapter extends RecyclerView.Adapter<RecyclerView
 
         BcaOneClickHeaderViewHolder(View itemView) {
             super(itemView);
-            //quickPaymentTitle = (TextView) itemView.findViewById(R.id.quick_payment_title);
-            bcaOneClickRegisterLayout = (LinearLayout) itemView
-                    .findViewById(R.id.bca_one_click_register_layout);
-            bcaOneClickRegistrationButton = (TextView) itemView
-                    .findViewById(R.id.bca_one_click_register_button);
+
+            bcaOneClickRegisterLayout = itemView.findViewById(R.id.bca_one_click_register_layout);
+            bcaOneClickRegistrationButton = itemView.findViewById(R.id.bca_one_click_register_button);
         }
 
         void bindBcaHeaderView(PaymentListModel bcaOneClickModel) {
-            if(bcaOneClickModel == null || bcaOneClickModel.getBcaOneClickUserModels() == null) {
-                //quickPaymentTitle.setVisibility(View.GONE);
+            if (bcaOneClickModel == null || bcaOneClickModel.getBcaOneClickUserModels() == null) {
                 bcaOneClickRegisterLayout.setVisibility(View.GONE);
             } else {
                 //quickPaymentTitle.setVisibility(View.VISIBLE);
                 bcaOneClickRegisterLayout.setVisibility(View.VISIBLE);
-                if(bcaOneClickModel.getBcaOneClickUserModels().size() < 3) {
+                if (bcaOneClickModel.getBcaOneClickUserModels().size() < 3) {
                     bcaOneClickRegisterLayout.setVisibility(View.VISIBLE);
                 } else bcaOneClickRegisterLayout.setVisibility(View.GONE);
 
@@ -298,7 +302,6 @@ public class PaymentSettingMainAdapter extends RecyclerView.Adapter<RecyclerView
                 });
             }
         }
-
     }
 
     private class BcaOneClickListViewHolder extends RecyclerView.ViewHolder {
@@ -314,11 +317,11 @@ public class PaymentSettingMainAdapter extends RecyclerView.Adapter<RecyclerView
 
         BcaOneClickListViewHolder(View itemView) {
             super(itemView);
-            accountHolderName = (TextView) itemView.findViewById(R.id.account_holder_name);
-            dailyLimit = (TextView) itemView.findViewById(R.id.daily_limit);
-            accountNumber = (TextView) itemView.findViewById(R.id.account_number);
-            deleteButton = (TextView) itemView.findViewById(R.id.delete_button);
-            editButton = (TextView) itemView.findViewById(R.id.edit_button);
+            accountHolderName = itemView.findViewById(R.id.account_holder_name);
+            dailyLimit = itemView.findViewById(R.id.daily_limit);
+            accountNumber = itemView.findViewById(R.id.account_number);
+            deleteButton = itemView.findViewById(R.id.delete_button);
+            editButton = itemView.findViewById(R.id.edit_button);
         }
 
         void bindBcaOneClickItem(BcaOneClickUserModel item) {
@@ -326,6 +329,7 @@ public class PaymentSettingMainAdapter extends RecyclerView.Adapter<RecyclerView
             final String tokenId = item.getTokenId();
             final String credentialType = item.getCredentialType();
             final String credentialNumber = item.getCredentialNo();
+
             accountHolderName.setText(presenter.getUserLoginAccountName());
             dailyLimit.setText(item.getMaxLimit());
             accountNumber.setText(item.getCredentialNo());

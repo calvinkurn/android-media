@@ -18,7 +18,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/small_dp"
             android:layout_marginStart="@dimen/small_dp"
-            android:text="Pembayaran Kartu Kredit"
+            android:text="@string/header_title_pembayaran_kartu_kredit"
             android:textSize="@dimen/font_medium"
             android:textStyle="bold"
             android:textColor="@color/black_70" />
@@ -29,7 +29,7 @@
         android:id="@+id/credit_card_sub_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Kartu Kredit Tersimpan (0/4)"
+        android:text="@string/sub_header_title_kartu_kredit_tersimpan"
         android:textSize="14sp"
         android:layout_marginLeft="@dimen/small_dp"
         android:layout_marginStart="@dimen/small_dp"

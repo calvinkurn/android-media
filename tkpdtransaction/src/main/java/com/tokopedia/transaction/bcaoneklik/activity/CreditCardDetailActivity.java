@@ -28,6 +28,11 @@ import butterknife.OnClick;
 
 public class CreditCardDetailActivity extends TActivity implements DeleteCreditCardDialog.DeleteCreditCardDialogListener {
 
+    private static final String KEY_CC_ITEM = "credit_card_item";
+    private static final String VISA = "visa";
+    private static final String MASTERCARD = "mastercard";
+    private static final String JCB = "jcb";
+
     @BindView(R2.id.image_cc_big_size) ImageView mViewImageCc;
     @BindView(R2.id.input_credit_card_number) TextView mCreditCardNumber;
     @BindView(R2.id.card_expiry) TextView mCardExpiry;
@@ -45,11 +50,11 @@ public class CreditCardDetailActivity extends TActivity implements DeleteCreditC
 
         initInjector();
 
-        mCreditCardModelItem = (CreditCardModelItem) getIntent().getSerializableExtra("credit_card_item");
+        mCreditCardModelItem = (CreditCardModelItem) getIntent().getSerializableExtra(KEY_CC_ITEM);
 
         mViewImageCc.setBackgroundResource(getCcImageResource(mCreditCardModelItem));
         mCreditCardNumber.setText(getSpacedText(mCreditCardModelItem.getMaskedNumber()));
-        mCardExpiry.setText(mCreditCardModelItem.getExpiryMonth() + "/" + mCreditCardModelItem.getExpiryYear());
+        mCardExpiry.setText(getExpiredDate(mCreditCardModelItem));
         ImageHandler.LoadImage(mCreditCardLogo, mCreditCardModelItem.getCardTypeImage());
     }
 
@@ -60,7 +65,6 @@ public class CreditCardDetailActivity extends TActivity implements DeleteCreditC
                 .build();
         component.inject(this);
     }
-
 
     @Override
     protected void setupToolbar() {
@@ -98,11 +102,11 @@ public class CreditCardDetailActivity extends TActivity implements DeleteCreditC
 
     private int getCcImageResource(CreditCardModelItem item) {
         switch (item.getCardType().toLowerCase()) {
-            case "visa":
+            case VISA:
                 return R.drawable.image_cc_visa_plain_fullsize;
-            case "mastercard":
+            case MASTERCARD:
                 return R.drawable.image_cc_mastercard_plain_fullsize;
-            case "jcb":
+            case JCB:
                 return R.drawable.image_cc_jcb_plain_fullsize;
             default:
                 return R.drawable.image_cc_expired_plain_fullsize;
@@ -120,6 +124,10 @@ public class CreditCardDetailActivity extends TActivity implements DeleteCreditC
         }
 
         return builder.toString();
+    }
+
+    private String getExpiredDate(CreditCardModelItem item) {
+        return String.format("%s/%s", item.getExpiryMonth(), item.getExpiryYear());
     }
 
     @OnClick(R2.id.button_delete_cc)

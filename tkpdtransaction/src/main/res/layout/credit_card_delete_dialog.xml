@@ -16,7 +16,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Hapus kartu kredit?"
+            android:text="@string/delete_credit_card"
             android:gravity="center_horizontal"
             android:textSize="@dimen/text_size_medium"
             android:textColor="@color/black_70" />
@@ -36,9 +36,9 @@
                 android:layout_marginRight="@dimen/margin_large"
                 android:gravity="center"
                 android:background="@drawable/button_edge"
-                android:text="Ya"
+                android:text="@string/label_title_button_yes"
                 android:textAllCaps="false"
-                android:textSize="12sp"
+                android:textSize="@dimen/text_size_small"
                 android:textColor="@color/black_70" />
 
             <Button
@@ -49,8 +49,8 @@
                 android:layout_marginRight="@dimen/margin_med"
                 android:gravity="center"
                 android:background="@drawable/button_edge"
-                android:text="Tidak"
-                android:textSize="12sp"
+                android:text="@string/label_title_button_no"
+                android:textSize="@dimen/text_size_small"
                 android:textAllCaps="false"
                android:textColor="@color/black_70" />
         </LinearLayout>

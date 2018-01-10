@@ -35,8 +35,7 @@ import javax.inject.Inject;
  * Created by kris on 8/2/17. Tokopedia
  */
 
-public class ListPaymentTypeActivity extends TActivity
-        implements ListPaymentTypeView, BcaOneClickDeleteListener, DeleteCreditCardDialog.DeleteCreditCardDialogListener{
+public class ListPaymentTypeActivity extends TActivity implements ListPaymentTypeView, BcaOneClickDeleteListener {
 
     private RelativeLayout rootView;
 
@@ -48,8 +47,7 @@ public class ListPaymentTypeActivity extends TActivity
 
     private PaymentSettingMainAdapter paymentSettingsAdapter;
 
-    @Inject
-    ListPaymentTypePresenterImpl presenter;
+    @Inject ListPaymentTypePresenterImpl presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,9 +69,8 @@ public class ListPaymentTypeActivity extends TActivity
 
 
     protected void initView() {
-        rootView = (RelativeLayout) findViewById(R.id.payment_list_root_view);
-        RecyclerView paymentOptionMainRecyclerView = (RecyclerView)
-                findViewById(R.id.payment_option_main_recycler_view);
+        rootView = findViewById(R.id.payment_list_root_view);
+        RecyclerView paymentOptionMainRecyclerView = findViewById(R.id.payment_option_main_recycler_view);
         paymentSettingsAdapter = new PaymentSettingMainAdapter(presenter, this);
         paymentOptionMainRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         paymentOptionMainRecyclerView.setAdapter(paymentSettingsAdapter);
@@ -93,8 +90,6 @@ public class ListPaymentTypeActivity extends TActivity
 
     private void fetchData() {
         presenter.onGetAllPaymentList(this);
-        /*presenter.onGetCreditCardList(this);
-        presenter.onGetBcaOneClickList(paymentListModelSubscriber());*/
     }
 
     @Override
@@ -270,12 +265,6 @@ public class ListPaymentTypeActivity extends TActivity
                 refreshHandler.startRefresh();
             }
         };
-    }
-
-
-    @Override
-    public void onConfirmDelete(String tokenId) {
-        presenter.onCreditCardDeleted(this, tokenId);
     }
 
     @Override
