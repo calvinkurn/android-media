@@ -65,6 +65,8 @@ public interface FlightBookingReviewContract {
         void showErrorInSnackbar(String message);
 
         void showErrorInEmptyState(String message);
+
+        void setNeedToRefreshOnPassengerInfo();
     }
 
     interface Presenter extends FlightBaseBookingContact.Presenter<View>{

@@ -155,7 +155,8 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
 
     @Override
     public void onPaymentCancelled() {
-
+        getView().setNeedToRefreshOnPassengerInfo();
+        getView().showPaymentFailedErrorMessage(R.string.flight_review_cancel_checkout_message);
     }
 
     private Subscriber<DataResponseVerify> getSubscriberVerifyBooking() {
