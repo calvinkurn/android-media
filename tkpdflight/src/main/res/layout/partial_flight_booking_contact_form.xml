@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -60,8 +61,7 @@
             android:inputType="textEmailAddress"
             android:lines="1"
             android:nextFocusForward="@+id/et_phone_number"
-            android:singleLine="true"
-            tools:text="Isyana Saravati" />
+            android:singleLine="true" />
     </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
     <RelativeLayout
@@ -100,6 +100,7 @@
 
             <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/et_phone_number"
+                style="@style/HintTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin_sm"
@@ -110,8 +111,8 @@
                 android:imeActionLabel="@string/label_done"
                 android:inputType="number"
                 android:lines="1"
-                android:singleLine="true"
-                tools:text="81234567890" />
+                android:singleLine="true" />
+
         </LinearLayout>
     </RelativeLayout>
 
