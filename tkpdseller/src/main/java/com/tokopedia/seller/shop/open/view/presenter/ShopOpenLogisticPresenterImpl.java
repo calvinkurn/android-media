@@ -109,7 +109,7 @@ public class ShopOpenLogisticPresenterImpl extends ShopOpenLogisticPresenter {
 
             @Override
             public void onNext(ResponseCreateShop responseCreateShop) {
-                if (responseCreateShop.getShopId() > 0) {
+                if (responseCreateShop.getReserveStatus().equals(SUCCESS)) {
                     sessionHandler.setShopId(String.valueOf(responseCreateShop.getShopId()));
                     globalCacheManager.delete(ProfileSourceFactory.KEY_PROFILE_DATA);
                     getView().onSuccessCreateShop();
