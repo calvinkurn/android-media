@@ -28,7 +28,7 @@ public class FlightOrderJourneyMapper {
             flightOrderJourney.setDepartureAiportId(journeyEntity.getDepartureAirportId());
             flightOrderJourney.setDepartureTime(journeyEntity.getDepartureTime());
             flightOrderJourney.setArrivalTime(journeyEntity.getArrivalTime());
-            flightOrderJourney.setRouteViewModels(flightDetailRouteViewModelMapper.transformList(journeyEntity.getRoutes()));
+            flightOrderJourney.setRouteViewModels(flightDetailRouteViewModelMapper.transformList(journeyEntity, journeyEntity.getRoutes()));
             flightOrderJourney.setStatus(String.valueOf(journeyEntity.getStatus()));
         }
         return flightOrderJourney;

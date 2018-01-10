@@ -44,6 +44,9 @@ public class RouteEntity {
     @SerializedName("free_amenities")
     @Expose
     private AmenityEntity freeAmenities;
+    @SerializedName("pnr")
+    @Expose
+    private String pnr;
 
     public String getDepartureAirportCode() {
         return departureAirportCode;
@@ -91,5 +94,9 @@ public class RouteEntity {
 
     public AmenityEntity getFreeAmenities() {
         return freeAmenities;
+    }
+
+    public String getPnr() {
+        return pnr;
     }
 }
