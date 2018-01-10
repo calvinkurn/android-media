@@ -30,10 +30,11 @@
     <string name="show_tnc"><![CDATA[Syarat & Ketentuan]]></string>
     <string name="seating_layout">Seating Layout</string>
     <string name="book_ticket">Beli Tiket</string>
+    <string name="starting_from"> | Mulai Dari %1$s</string>
     <string name="rp_5980000"><strike>Rp 5980000</strike></string>
     <string name="total_tickets">%d Tiket</string>
     <string name="fare_breakup">Fare Breakup for %s</string>
-    <string name="pay_button">Pay Rp %s</string>
+    <string name="pay_button">Bayar Rp %s</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="monday_16_nov">Monday\n16 Nov</string>

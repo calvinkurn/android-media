@@ -194,7 +194,7 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
         eventTotalTickets.setText(String.format(getString(R.string.jumlah_tiket),
                 packageViewModel.getSelectedQuantity()));
 
-        tvTelephone.setText(SessionHandler.getPhoneNumber());
+//        tvTelephone.setText(SessionHandler.getPhoneNumber());
         tvProviderName.setText(String.format(getString(R.string.fare_breakup), packageViewModel.getTitle() + " " + packageViewModel.getDisplayName()));
         int baseFare = packageViewModel.getSelectedQuantity() * packageViewModel.getSalesPrice();
         tvBaseFare.setText("Rp " + CurrencyUtil.convertToCurrencyString(baseFare));
@@ -214,6 +214,12 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     public void setEmailID(String emailID) {
         tvVisitorNames.setText(emailID);
     }
+
+    @Override
+    public void setPhoneNumber(String number) {
+        tvTelephone.setText(number);
+    }
+
 
     @Override
     public void showProgressBar() {
@@ -339,5 +345,11 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
             R2.id.ed_form_4})
     void validateEditText(EditText view) {
         mPresenter.validateEditText(view);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mPresenter.getProfile();
     }
 }

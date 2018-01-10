@@ -62,6 +62,8 @@ public class EventBookTicketActivity extends TActivity implements EventBookTicke
     ImageView imgvSeatingLayout;
     @BindView(R2.id.main_content)
     FrameLayout mainContent;
+    @BindView(R2.id.seating_layout_card)
+    View seatLayout;
 //    @BindView(R2.id.event_address)
 //    View addressView;
 //    @BindView(R2.id.event_time)
@@ -243,8 +245,13 @@ public class EventBookTicketActivity extends TActivity implements EventBookTicke
 
     @Override
     public void renderSeatLayout(String url) {
-        ImageHandler.loadImageCover2(imgvSeatingLayout,url);
+        ImageHandler.loadImageCover2(imgvSeatingLayout, url);
 
+    }
+
+    @Override
+    public void hideSeatLayout() {
+        seatLayout.setVisibility(View.GONE);
     }
 
     @Override

@@ -6,8 +6,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.ViewPager;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
@@ -18,9 +19,6 @@ import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.router.SellerAppRouter;
-import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
 import com.tokopedia.events.di.DaggerEventComponent;
@@ -30,7 +28,6 @@ import com.tokopedia.events.view.adapter.CategoryFragmentPagerAdapter;
 import com.tokopedia.events.view.adapter.SlidingImageAdapter;
 import com.tokopedia.events.view.contractor.EventsContract;
 import com.tokopedia.events.view.customview.EventCategoryView;
-import com.tokopedia.events.view.customview.SearchInputView;
 import com.tokopedia.events.view.presenter.EventHomePresenter;
 import com.tokopedia.events.view.utils.CirclePageIndicator;
 import com.tokopedia.events.view.viewmodel.CategoryViewModel;
@@ -50,10 +47,12 @@ import butterknife.Unbinder;
  */
 public class EventsHomeActivity extends TActivity
         implements HasComponent<EventComponent>,
-        EventsContract.View, SearchInputView.Listener {
+        EventsContract.View {
 
     private Unbinder unbinder;
     public static final int REQUEST_CODE_EVENTLOCATIONACTIVITY = 101;
+    public static final int REQUEST_CODE_EVENTSEARCHACTIVITY = 901;
+
 
     EventComponent eventComponent;
     @Inject
@@ -191,21 +190,17 @@ public class EventsHomeActivity extends TActivity
 //
 //    }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.menu_event_home, menu);
-//        return super.onCreateOptionsMenu(menu);
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        int id = item.getItemId();
-//        if (id == R.id.action_menu_location) {
-//            navigateToActivityRequest(EventLocationActivity.getCallingIntent(EventsHomeActivity.this), REQUEST_CODE_EVENTLOCATIONACTIVITY);
-//            return true;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_event_home, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        return mPresenter.onOptionMenuClick(id);
+    }
 //
 //    @Override
 //    protected void initVar() {
@@ -267,6 +262,8 @@ public class EventsHomeActivity extends TActivity
                 }
 
                 break;
+            case REQUEST_CODE_EVENTSEARCHACTIVITY:
+                break;
         }
 
         super.onActivityResult(requestCode, resultCode, data);
@@ -283,7 +280,7 @@ public class EventsHomeActivity extends TActivity
             // EventCategoryView eventCategoryView = new EventCategoryView(this);
             //eventCategoryView.renderData(categoryViewModel.getItems(), categoryViewModel.getTitle());
             if ("carousel".equalsIgnoreCase(categoryViewModel.getName())) {
-                adapter = new SlidingImageAdapter(EventsHomeActivity.this, mPresenter.getCarouselImages(categoryViewModel.getItems()),mPresenter);
+                adapter = new SlidingImageAdapter(EventsHomeActivity.this, mPresenter.getCarouselImages(categoryViewModel.getItems()), mPresenter);
                 setViewPagerListener();
                 tabLayout.setViewPager(viewPager);
                 mPresenter.startBannerSlide(viewPager);
@@ -294,7 +291,8 @@ public class EventsHomeActivity extends TActivity
             }
         }
 
-        CategoryFragmentPagerAdapter categoryTabsPagerAdapter = new CategoryFragmentPagerAdapter(getSupportFragmentManager(), categoryList);
+        CategoryFragmentPagerAdapter categoryTabsPagerAdapter =
+                new CategoryFragmentPagerAdapter(getSupportFragmentManager(), categoryList);
         categoryViewPager.setAdapter(categoryTabsPagerAdapter);
         tabs.setupWithViewPager(categoryViewPager);
         categoryViewPager.setCurrentItem(0);
@@ -370,14 +368,5 @@ public class EventsHomeActivity extends TActivity
 //        setSupportActionBar(toolbar);
 //    }
 
-    @Override
-    public void onSearchTextChanged(String text) {
-
-    }
-
-    @Override
-    public void onSearchSubmitted(String text) {
-
-    }
 
 }

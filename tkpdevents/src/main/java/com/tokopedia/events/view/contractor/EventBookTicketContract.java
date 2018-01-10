@@ -39,6 +39,9 @@ public class EventBookTicketContract {
         void initTablayout();
 
         void renderSeatLayout(String url);
+
+        void hideSeatLayout();
+
         android.view.View getRootView();
 
     }

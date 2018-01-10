@@ -24,8 +24,11 @@ public class CategoryFragmentPagerAdapter extends FragmentStatePagerAdapter {
             CategoryViewModel model = this.categoryList.get(i);
             if(model.getTitle().equals("Carousel") ||
                     model.getName().equals("carousel") ||
-                    model.getItems().size()==0)
+                    model.getItems().size()==0) {
                 this.categoryList.remove(i);
+                i--;
+            }
+
         }
     }
 

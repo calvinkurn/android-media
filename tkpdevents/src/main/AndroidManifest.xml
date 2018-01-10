@@ -13,6 +13,7 @@
         <activity
             android:name=".view.activity.ReviewTicketActivity"/>
         <activity android:name=".view.activity.TopPayActivity" />
+        <activity android:name=".view.activity.EventSearchActivity"/>
     </application>
 
 </manifest>

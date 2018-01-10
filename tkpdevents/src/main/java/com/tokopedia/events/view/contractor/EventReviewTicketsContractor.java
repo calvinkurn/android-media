@@ -26,6 +26,8 @@ public class EventReviewTicketsContractor {
 
         void setEmailID(String emailID);
 
+        void setPhoneNumber(String number);
+
         void showProgressBar();
 
         void hideProgressBar();
@@ -53,5 +55,7 @@ public class EventReviewTicketsContractor {
         void updateEmail(String email);
 
         void updateNumber(String number);
+
+        void getProfile();
     }
 }

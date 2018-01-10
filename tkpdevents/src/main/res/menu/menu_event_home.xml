@@ -3,11 +3,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <item
-        android:id="@+id/action_menu_location"
+        android:id="@+id/action_menu_search"
         android:orderInCategory="100"
-        android:title="City"
+        android:title="Search"
         app:showAsAction="always"
-        android:icon="@drawable/ic_placeholder"
+        android:icon="@drawable/ic_search_icon"
         tools:ignore="AppCompatResource" />
-
+    <item
+        android:id="@+id/action_promo"
+        android:orderInCategory="50"
+        android:title="Promo"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_booked_history"
+        android:orderInCategory="50"
+        android:title="Daftar Transaksi"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_faq"
+        android:orderInCategory="50"
+        android:title="Bantuan"
+        app:showAsAction="never"/>
 </menu>

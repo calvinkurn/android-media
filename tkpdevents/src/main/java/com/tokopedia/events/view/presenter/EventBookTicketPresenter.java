@@ -71,6 +71,8 @@ public class EventBookTicketPresenter
         getView().renderFromDetails(dataModel);
         if (!seatingURL.equals("empty"))
             getView().renderSeatLayout(seatingURL);
+        else
+            getView().hideSeatLayout();
         if (!dataModel.getTimeRange().contains("1970"))
             getView().initTablayout();
         schedulesList = dataModel.getSchedulesViewModels();

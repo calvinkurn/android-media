@@ -5,14 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-        <android.support.v7.widget.Toolbar xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/app_bar"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:background="@color/tkpd_main_green"
-            android:minHeight="?attr/actionBarSize"
-            android:layout_gravity="top"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+    <android.support.v7.widget.Toolbar xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_gravity="top"
+        android:background="@color/tkpd_main_green"
+        android:minHeight="?attr/actionBarSize"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
     <android.support.design.widget.CoordinatorLayout xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
@@ -40,29 +40,13 @@
                     android:orientation="vertical"
                     app:layout_collapseMode="parallax">
 
-
-                    <RelativeLayout
+                    <com.tokopedia.events.view.customview.SearchInputView
+                        android:id="@+id/search_input_view"
                         android:layout_width="match_parent"
-                        android:layout_height="180dp"
-                        android:background="@color/white">
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="@dimen/margin_default"
+                        android:layout_marginRight="@dimen/margin_default"/>
 
-                        <com.tkpd.library.ui.widget.TouchViewPager
-                            android:id="@+id/event_bannerpager"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent" />
-
-                        <com.tokopedia.events.view.utils.CirclePageIndicator
-                            android:id="@+id/pager_indicator"
-                            android:layout_width="100dp"
-                            android:layout_height="12dp"
-                            android:layout_alignParentBottom="true"
-                            android:layout_alignParentLeft="true"
-                            android:layout_marginBottom="5dp"
-                            android:layout_marginLeft="8dp"
-                            app:fillColor="@color/orange_nob"
-                            app:radius="4dp"
-                            android:padding="2dp" />
-                    </RelativeLayout>
 
                 </LinearLayout>
             </android.support.design.widget.CollapsingToolbarLayout>

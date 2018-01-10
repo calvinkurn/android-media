@@ -5,6 +5,7 @@ import android.util.Log;
 import android.widget.EditText;
 
 import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
@@ -92,30 +93,8 @@ public class EventReviewTicketPresenter
                 new UIThread(),
                 profileRepository
         );
-
-        profileUseCase.execute(RequestParams.EMPTY, new Subscriber<ProfileModel>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                Log.d("ProfileUseCase","ON ERROR");
-                throwable.printStackTrace();
-            }
-
-            @Override
-            public void onNext(ProfileModel model) {
-                profileModel = model;
-                email = profileModel.getProfileData().getUserInfo().getUserEmail();
-                number = profileModel.getProfileData().getUserInfo().getUserPhone();
-                getView().setEmailID(profileModel.getProfileData().getUserInfo().getUserEmail());
-                getView().hideProgressBar();
-            }
-        });
-
     }
+
 
     @Override
     public void onDestroy() {
@@ -152,6 +131,36 @@ public class EventReviewTicketPresenter
     @Override
     public void updateNumber(String umber) {
         this.number = umber;
+    }
+
+    @Override
+    public void getProfile() {
+        profileUseCase.execute(RequestParams.EMPTY, new Subscriber<ProfileModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                Log.d("ProfileUseCase", "ON ERROR");
+                throwable.printStackTrace();
+                Intent intent = ((TkpdCoreRouter) getView().getActivity().getApplication()).
+                        getLoginIntent(getView().getActivity());
+                getView().getActivity().startActivity(intent);
+                getView().hideProgressBar();
+            }
+
+            @Override
+            public void onNext(ProfileModel model) {
+                profileModel = model;
+                email = profileModel.getProfileData().getUserInfo().getUserEmail();
+                number = profileModel.getProfileData().getUserInfo().getUserPhone();
+                getView().setEmailID(profileModel.getProfileData().getUserInfo().getUserEmail());
+                getView().setPhoneNumber(number);
+                getView().hideProgressBar();
+            }
+        });
     }
 
 
@@ -283,7 +292,7 @@ public class EventReviewTicketPresenter
 
             @Override
             public void onError(Throwable throwable) {
-                Log.d("PaymentLinkUseCase","ON ERROR");
+                Log.d("PaymentLinkUseCase", "ON ERROR");
                 throwable.printStackTrace();
             }
 
