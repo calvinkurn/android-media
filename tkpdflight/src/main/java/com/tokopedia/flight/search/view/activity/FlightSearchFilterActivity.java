@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -61,6 +62,7 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
 
     private String currentTag;
     private int count;
+    private boolean isCloseButton = true;
 
     public static Intent createInstance(Context context,
                                         boolean isReturning,
@@ -107,10 +109,14 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
 
     }
 
+    @Override
+    protected boolean isShowCloseButton() {
+        return isCloseButton;
+    }
+
+    @Override
     protected void setupFragment(Bundle savedInstance) {
-        /*if (savedInstance == null) {
-            inflateFragment();
-        }*/
+
     }
 
     @Override
@@ -201,17 +207,31 @@ public class FlightSearchFilterActivity extends BaseSimpleActivity
     public void setUpTitleByTag(String tag) {
         currentTag = tag;
         if (TextUtils.isEmpty(tag) || getTagFragment().equals(tag)) {
+            isCloseButton = true;
             toolbar.setTitle(getTitle());
         } else if (FlightFilterDepartureFragment.TAG.equals(tag)) {
             toolbar.setTitle(getString(R.string.flight_search_filter_departure_time));
+            isCloseButton = false;
         } else if (FlightFilterTransitFragment.TAG.equals(tag)) {
             toolbar.setTitle(getString(R.string.transit));
+            isCloseButton = false;
         } else if (FlightFilterAirlineFragment.TAG.equals(tag)) {
             toolbar.setTitle(getString(R.string.airline));
+            isCloseButton = false;
         } else if (FlightFilterRefundableFragment.TAG.equals(tag)) {
             toolbar.setTitle(getString(R.string.refundable_policy));
+            isCloseButton = false;
         }
+        updateToolbarBackIcon();
         updateButtonFilter(count);
+    }
+
+    private void updateToolbarBackIcon() {
+        if (getSupportActionBar() != null && isShowCloseButton()) {
+            getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, com.tokopedia.abstraction.R.drawable.ic_close));
+        } else {
+            getSupportActionBar().setHomeAsUpIndicator(null);
+        }
     }
 
     @Override
