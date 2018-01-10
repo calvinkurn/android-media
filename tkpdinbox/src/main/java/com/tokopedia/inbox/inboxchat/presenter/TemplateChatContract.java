@@ -50,7 +50,7 @@ public class TemplateChatContract {
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void setArrange(boolean enabled);
+        void switchTemplateAvailability(boolean enabled);
 
         void setArrange(boolean enabled, ArrayList<Integer> arrayList, int from, int to);
     }

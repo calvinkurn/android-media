@@ -272,5 +272,6 @@ yang ditemukan</string>
 
     <string name="title_info_list_template">"Kelola Template Pesan"</string>
     <string name="body_info_list_template">"Ubah dengan tekan tombol edit, atau atur urutan dengan tahan dan geser tombol drag."</string>
+    <string name="caption_switch_template">"Buat hingga 5 template untuk membantu Anda melakukan Chat tanpa perlu mengetik pesan yang sama berulang kali"</string>
 
 </resources>

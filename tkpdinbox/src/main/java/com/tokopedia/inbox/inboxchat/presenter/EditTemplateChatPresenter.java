@@ -2,6 +2,7 @@ package com.tokopedia.inbox.inboxchat.presenter;
 
 import com.google.gson.JsonArray;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.inbox.inboxchat.domain.usecase.template.CreateTemplateUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.template.DeleteTemplateUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.template.EditTemplateUseCase;
@@ -60,7 +61,7 @@ public class EditTemplateChatPresenter extends BaseDaggerPresenter<EditTemplateC
 
                 @Override
                 public void onError(Throwable e) {
-                    getView().showError("create");
+                    getView().showError(ErrorHandler.getErrorMessage(e));
                 }
 
                 @Override
@@ -83,7 +84,7 @@ public class EditTemplateChatPresenter extends BaseDaggerPresenter<EditTemplateC
 
                 @Override
                 public void onError(Throwable e) {
-                    getView().showError("edit");
+                    getView().showError(ErrorHandler.getErrorMessage(e));
                 }
 
                 @Override
@@ -117,7 +118,7 @@ public class EditTemplateChatPresenter extends BaseDaggerPresenter<EditTemplateC
 
             @Override
             public void onError(Throwable e) {
-                getView().showError("delete");
+                getView().showError(ErrorHandler.getErrorMessage(e));
             }
 
             @Override

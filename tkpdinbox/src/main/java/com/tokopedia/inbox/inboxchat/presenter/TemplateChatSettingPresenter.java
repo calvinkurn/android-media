@@ -5,6 +5,7 @@ import android.util.Log;
 import com.google.gson.JsonArray;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.domain.usecase.template.GetTemplateUseCase;
@@ -84,13 +85,13 @@ public class TemplateChatSettingPresenter extends BaseDaggerPresenter<TemplateCh
     }
 
     @Override
-    public void setArrange(final boolean enabled) {
+    public void switchTemplateAvailability(final boolean enabled) {
         JsonArray array = null;
-        ArrayList<Integer> arrayList = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            arrayList.add(i + 1);
-        }
-        array = toJsonArray(arrayList);
+//        ArrayList<Integer> arrayList = new ArrayList<>();
+//        for (int i = 0; i < 5; i++) {
+//            arrayList.add(i + 1);
+//        }
+//        array = toJsonArray(arrayList);
         getView().showLoading();
         setAvailabilityTemplateUseCase.execute(SetAvailabilityTemplateUseCase.generateParam(array, enabled), new Subscriber<GetTemplateViewModel>() {
             @Override
@@ -100,14 +101,16 @@ public class TemplateChatSettingPresenter extends BaseDaggerPresenter<TemplateCh
 
             @Override
             public void onError(Throwable e) {
-                getView().showError(getView().getStringOf(R.string.title_try_again));
+                getView().showError(ErrorHandler.getErrorMessage(e));
                 getView().setChecked(enabled);
                 getView().finishLoading();
             }
 
             @Override
             public void onNext(GetTemplateViewModel getTemplateViewModel) {
-                getView().successSwitch();
+                if(getTemplateViewModel.isSuccess()) {
+                    getView().successSwitch();
+                }
                 getView().finishLoading();
             }
         });
@@ -126,7 +129,7 @@ public class TemplateChatSettingPresenter extends BaseDaggerPresenter<TemplateCh
 
             @Override
             public void onError(Throwable e) {
-                getView().showError(getView().getStringOf(R.string.title_try_again));
+                getView().showError(ErrorHandler.getErrorMessage(e));
                 getView().revertArrange(from, to);
                 getView().finishLoading();
             }
