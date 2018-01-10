@@ -100,9 +100,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     }
 
     private String generateCancelMessage(FlightOrder flightOrder) {
-        String newLine = "&#13;&#10;";
-        String temp = "<![CDATA[sid=1377&oid=%s&msg=";
-//        StringBuilder result = new StringBuilder(String.format(getView().getActivity().getString(R.string.flight_order_cancel_prefix_label), flightOrder.getId()));
+        String newLine = "\n";
         StringBuilder result = new StringBuilder();
         result.append(newLine);
         for (FlightOrderJourney flightOrderJourney : flightOrder.getJourneys()) {

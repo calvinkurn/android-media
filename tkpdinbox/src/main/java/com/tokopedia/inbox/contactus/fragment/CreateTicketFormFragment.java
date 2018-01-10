@@ -197,9 +197,11 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_send)
+        if (item.getItemId() == R.id.action_send) {
             KeyboardHandler.DropKeyboard(getActivity(), getView());
-        presenter.sendTicket();
+            presenter.sendTicket();
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 

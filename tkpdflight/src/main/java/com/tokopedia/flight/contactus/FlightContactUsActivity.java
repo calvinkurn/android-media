@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
@@ -48,7 +49,7 @@ public class FlightContactUsActivity extends BaseActivity implements FlightConta
         passData.setAttachmentTitle(attachmentTitle);
         passData.setDescription(description);
         passData.setToolbarTitle(toolbarTitle);
-        intent.putExtra(EXTRA_PASS_DATA, attachmentTitle);
+        intent.putExtra(EXTRA_PASS_DATA, passData);
         return intent;
     }
 
@@ -57,6 +58,7 @@ public class FlightContactUsActivity extends BaseActivity implements FlightConta
         passData = getIntent().getParcelableExtra(EXTRA_PASS_DATA);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_flight_contact_us);
+        setupToolbar();
         if (getApplication() instanceof FlightModuleRouter) {
             Fragment fragment = ((FlightModuleRouter) getApplication()).getContactUsFragment(passData, this);
             getFragmentManager().beginTransaction()
@@ -69,5 +71,15 @@ public class FlightContactUsActivity extends BaseActivity implements FlightConta
     public void onFinishCreateTicket() {
         Toast.makeText(this, R.string.flight_contact_us_finish_message, Toast.LENGTH_SHORT).show();
         finish();
+    }
+
+    private void setupToolbar() {
+        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (mToolbar != null) {
+            mToolbar.setTitle(passData.getToolbarTitle());
+            setSupportActionBar(mToolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            invalidateOptionsMenu();
+        }
     }
 }
