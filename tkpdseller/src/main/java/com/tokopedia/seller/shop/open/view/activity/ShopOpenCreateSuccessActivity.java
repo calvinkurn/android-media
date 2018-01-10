@@ -7,15 +7,16 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenCreateSuccessFragment;
 
 
 public class ShopOpenCreateSuccessActivity extends BaseActivity {
 
     public static Intent getIntent(Context context) {
-        Intent intent = new Intent(context, ShopOpenCreateSuccessActivity.class);
-        return intent;
+        return new Intent(context, ShopOpenCreateSuccessActivity.class);
     }
 
     @Override
@@ -33,4 +34,10 @@ public class ShopOpenCreateSuccessActivity extends BaseActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent intent = ((TkpdCoreRouter)getApplication()).getHomeIntent(this);
+        startActivity(intent);
+        finish();
+    }
 }

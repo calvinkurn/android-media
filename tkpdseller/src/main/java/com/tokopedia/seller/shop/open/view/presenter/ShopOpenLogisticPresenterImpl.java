@@ -1,12 +1,15 @@
 package com.tokopedia.seller.shop.open.view.presenter;
 
-import android.text.TextUtils;
-
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.seller.shop.open.data.model.OpenShopCouriersModel;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
+import com.tokopedia.core.session.presenter.Session;
+import com.tokopedia.core.util.AppWidgetUtil;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.seller.logistic.model.CouriersModel;
 import com.tokopedia.seller.shop.open.data.model.response.ResponseCreateShop;
 import com.tokopedia.seller.shop.open.view.model.CourierServiceIdWrapper;
-import com.tokopedia.seller.shop.open.domain.interactor.GetLogisticAvailableUseCase;
+import com.tokopedia.seller.logistic.domain.interactor.GetLogisticAvailableUseCase;
 import com.tokopedia.seller.shop.open.domain.interactor.ShopOpenCreateUseCase;
 import com.tokopedia.seller.shop.open.domain.interactor.ShopOpenSaveCourierUseCase;
 
@@ -18,25 +21,32 @@ import rx.Subscriber;
  * Created by sebastianuskh on 3/23/17.
  */
 
-public class ShopSettingLogisticPresenterImpl extends ShopSettingLogisticPresenter {
+public class ShopOpenLogisticPresenterImpl extends ShopOpenLogisticPresenter {
 
+    public static final String SUCCESS = "1";
     private final GetLogisticAvailableUseCase getLogisticAvailableUseCase;
     private final ShopOpenSaveCourierUseCase shopOpenSaveCourierUseCase;
     private final ShopOpenCreateUseCase shopOpenCreateUseCase;
+    private final SessionHandler sessionHandler;
+    private final GlobalCacheManager globalCacheManager;
 
     @Inject
-    public ShopSettingLogisticPresenterImpl(GetLogisticAvailableUseCase getLogisticAvailableUseCase,
-                                            ShopOpenSaveCourierUseCase shopOpenSaveCourierUseCase,
-                                            ShopOpenCreateUseCase shopOpenCreateUseCase) {
+    public ShopOpenLogisticPresenterImpl(GetLogisticAvailableUseCase getLogisticAvailableUseCase,
+                                         ShopOpenSaveCourierUseCase shopOpenSaveCourierUseCase,
+                                         ShopOpenCreateUseCase shopOpenCreateUseCase,
+                                         SessionHandler sessionHandler,
+                                         GlobalCacheManager globalCacheManager) {
         this.getLogisticAvailableUseCase = getLogisticAvailableUseCase;
         this.shopOpenSaveCourierUseCase = shopOpenSaveCourierUseCase;
         this.shopOpenCreateUseCase = shopOpenCreateUseCase;
+        this.sessionHandler = sessionHandler;
+        this.globalCacheManager = globalCacheManager;
     }
 
     @Override
     public void getCouriers(int districtCode) {
         RequestParams requestParam = GetLogisticAvailableUseCase.generateParams(districtCode);
-        getLogisticAvailableUseCase.execute(requestParam, new Subscriber<OpenShopCouriersModel>() {
+        getLogisticAvailableUseCase.execute(requestParam, new Subscriber<CouriersModel>() {
             @Override
             public void onCompleted() {
 
@@ -50,8 +60,8 @@ public class ShopSettingLogisticPresenterImpl extends ShopSettingLogisticPresent
             }
 
             @Override
-            public void onNext(OpenShopCouriersModel openShopCouriersModel) {
-                getView().onSuccessLoadLogistic(openShopCouriersModel);
+            public void onNext(CouriersModel couriersModel) {
+                getView().onSuccessLoadLogistic(couriersModel);
             }
         });
     }
@@ -99,10 +109,12 @@ public class ShopSettingLogisticPresenterImpl extends ShopSettingLogisticPresent
 
             @Override
             public void onNext(ResponseCreateShop responseCreateShop) {
-                if (responseCreateShop.getShopId() > 0) {
-                    getView().onSuccessCreateShop(responseCreateShop.getShopId());
+                if (responseCreateShop.getReserveStatus().equals(SUCCESS)) {
+                    sessionHandler.setShopId(String.valueOf(responseCreateShop.getShopId()));
+                    globalCacheManager.delete(ProfileSourceFactory.KEY_PROFILE_DATA);
+                    getView().onSuccessCreateShop();
                 } else {
-                    getView().onErrorCreateShop(null);
+                    getView().onErrorCreateShop(new Exception());
                 }
             }
         });

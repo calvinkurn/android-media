@@ -1,20 +1,20 @@
-package com.tokopedia.seller.shop.common.tracking;
+package com.tokopedia.seller.shop.open.analytic;
 
 /**
  * Created by zulfikarrahman on 1/8/18.
  */
 
-public class ConstantTrackingOpenShop {
+public class ShopOpenTrackingConstant {
     //event
     public static String CLICK_CREATE_SHOP = "clickCreateShop";
 
     //category
-    public static String OPEN_SHOP_BIODATA_FORM = "open shop-shop biodata form";
-    public static String OPEN_SHOP_DOMAIN_RESERVE = "open shop-domain reserve";
-    public static String OPEN_SHOP_INFO_FORM = "open shop-shop info form";
-    public static String OPEN_SHOP_SHIPPING_FORM = "open shop-shipping service form";
-    public static String OPEN_SHOP_THANKS_PAGE = "open shop-thank you page";
-    public static String OPEN_SHOP_SHOP_LOCATION_FORM = "open shop-shop location form";
+    public static String OPEN_SHOP_BIODATA_FORM = "open shop - shop biodata form";
+    public static String OPEN_SHOP_DOMAIN_RESERVE = "open shop - domain reserve";
+    public static String OPEN_SHOP_INFO_FORM = "open shop - shop info form";
+    public static String OPEN_SHOP_SHIPPING_FORM = "open shop - shipping service form";
+    public static String OPEN_SHOP_THANKS_PAGE = "open shop - thank you page";
+    public static String OPEN_SHOP_SHOP_LOCATION_FORM = "open shop - shop location form";
 
     //action
     public static String OPEN_SHOP_SUCCESS = "click open shop success";

@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -32,18 +33,18 @@ import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.listener.StepperListener;
-import com.tokopedia.seller.shop.common.tracking.TrackingOpenShop;
-import com.tokopedia.seller.shop.open.data.model.OpenShopCouriersModel;
+import com.tokopedia.seller.shop.open.analytic.ShopOpenTracking;
+import com.tokopedia.seller.logistic.model.CouriersModel;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.util.ShopErrorHandler;
 import com.tokopedia.seller.shop.open.view.model.CourierServiceIdWrapper;
 import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
 import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
 import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.Shipment;
-import com.tokopedia.seller.shop.open.view.CourierListViewGroup;
-import com.tokopedia.seller.shop.open.view.ShopCourierExpandableOption;
-import com.tokopedia.seller.shop.open.view.listener.ShopSettingLogisticView;
-import com.tokopedia.seller.shop.open.view.presenter.ShopSettingLogisticPresenterImpl;
+import com.tokopedia.seller.shop.open.view.widget.ShopOpenCourierListViewGroup;
+import com.tokopedia.seller.shop.open.view.widget.ShopOpenCourierExpandableOption;
+import com.tokopedia.seller.shop.open.view.listener.ShopOpenLogisticView;
+import com.tokopedia.seller.shop.open.view.presenter.ShopOpenLogisticPresenterImpl;
 
 import java.util.List;
 
@@ -53,7 +54,7 @@ import javax.inject.Inject;
  * Created by nathan on 10/21/17.
  */
 
-public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implements ShopSettingLogisticView, ShopCourierExpandableOption.OnShopCourierExpandableOptionListener {
+public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implements ShopOpenLogisticView, ShopOpenCourierExpandableOption.OnShopCourierExpandableOptionListener {
     private StepperListener<ShopOpenStepperModel> onShopStepperListener;
     private OnShopOpenLogisticFragmentListener onShopOpenLogisticFragmentListener;
     private TextView tvMakeSurePickupLoc;
@@ -68,14 +69,14 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     public static final String SAVED_SELECTED_COURIER = "svd_sel_couriers";
 
     @Inject
-    public ShopSettingLogisticPresenterImpl presenter;
+    public ShopOpenLogisticPresenterImpl presenter;
     private View vContent;
     private View vLoading;
-    private CourierListViewGroup courierListViewGroup;
+    private ShopOpenCourierListViewGroup courierListViewGroup;
     private TkpdProgressDialog tkpdProgressDialog;
 
     @Inject
-    TrackingOpenShop trackingOpenShop;
+    ShopOpenTracking trackingOpenShop;
 
     public static ShopOpenMandatoryLogisticFragment newInstance() {
         return new ShopOpenMandatoryLogisticFragment();
@@ -246,9 +247,9 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     }
 
     @Override
-    public void onSuccessLoadLogistic(OpenShopCouriersModel openShopCouriersModel) {
+    public void onSuccessLoadLogistic(CouriersModel couriersModel) {
         hideLoading();
-        courierListViewGroup.setCourierList(openShopCouriersModel.getCourier(), selectedCourierServiceIdWrapper);
+        courierListViewGroup.setCourierList(couriersModel.getCourier(), selectedCourierServiceIdWrapper);
     }
 
     @Override
@@ -263,6 +264,7 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     @Override
     public void onErrorSaveCourier(Throwable t) {
         hideSubmitLoading();
+        Crashlytics.logException(t);
         trackingOpenShop.eventOpenShopShippingError(ShopErrorHandler.getErrorMessage(t));
         SnackbarRetry snackbarSubmitRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(),
                 ShopErrorHandler.getErrorMessage(t), new NetworkErrorHelper.RetryClickedListener() {
@@ -280,12 +282,8 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     }
 
     @Override
-    public void onSuccessCreateShop(int shopId) {
+    public void onSuccessCreateShop() {
         hideSubmitLoading();
-        SessionHandler session = new SessionHandler(getContext());
-        session.setShopId(String.valueOf(shopId));
-        GlobalCacheManager globalCacheManager = new GlobalCacheManager();
-        globalCacheManager.delete(ProfileSourceFactory.KEY_PROFILE_DATA);
         AppWidgetUtil.sendBroadcastToAppWidget(getActivity());
         trackingOpenShop.eventOpenShopShippingSuccess();
         onShopStepperListener.finishPage();

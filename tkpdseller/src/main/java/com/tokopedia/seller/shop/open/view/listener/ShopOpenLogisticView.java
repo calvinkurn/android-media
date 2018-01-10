@@ -1,15 +1,15 @@
 package com.tokopedia.seller.shop.open.view.listener;
 
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.seller.shop.open.data.model.OpenShopCouriersModel;
+import com.tokopedia.seller.logistic.model.CouriersModel;
 
 /**
  * Created by sebastianuskh on 3/23/17.
  */
 
-public interface ShopSettingLogisticView extends CustomerView {
+public interface ShopOpenLogisticView extends CustomerView {
 
-    void onSuccessLoadLogistic(OpenShopCouriersModel openShopCouriersModel);
+    void onSuccessLoadLogistic(CouriersModel couriersModel);
 
     void onErrorLoadLogistic(Throwable t);
 
@@ -17,6 +17,6 @@ public interface ShopSettingLogisticView extends CustomerView {
 
     void onErrorCreateShop(Throwable t);
 
-    void onSuccessCreateShop(int shopId);
+    void onSuccessCreateShop();
 
 }

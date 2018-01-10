@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -20,10 +21,10 @@ import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.common.imageeditor.view.WatermarkPresenterView;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
-import com.tokopedia.seller.shop.common.tracking.TrackingOpenShop;
+import com.tokopedia.seller.shop.open.analytic.ShopOpenTracking;
 import com.tokopedia.seller.shop.open.di.component.DaggerShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
-import com.tokopedia.seller.shop.open.view.presenter.ShopCreateSuccessPresenter;
+import com.tokopedia.seller.shop.open.view.presenter.ShopOpenCreateSuccessPresenter;
 
 import javax.inject.Inject;
 
@@ -32,13 +33,13 @@ public class ShopOpenCreateSuccessFragment extends BasePresenterFragment impleme
     public static final String TAG = ShopOpenCreateSuccessFragment.class.getSimpleName();
 
     @Inject
-    public ShopCreateSuccessPresenter shopCreateSuccessPresenter;
+    public ShopOpenCreateSuccessPresenter shopCreateSuccessPresenter;
     private ImageView shopIconImageView;
     private LoadingStateView loadingStateView;
     private TextView tvShopName;
 
     @Inject
-    TrackingOpenShop trackingOpenShop;
+    ShopOpenTracking trackingOpenShop;
 
     public static ShopOpenCreateSuccessFragment newInstance() {
         return new ShopOpenCreateSuccessFragment();
@@ -117,6 +118,7 @@ public class ShopOpenCreateSuccessFragment extends BasePresenterFragment impleme
 
     @Override
     public void onErrorGetShopInfo(Throwable t) {
+        Crashlytics.logException(t);
         loadingStateView.setErrorViewRes(R.layout.design_retry);
         View errorView = loadingStateView.getErrorView();
         errorView.findViewById(R.id.retry_but).setOnClickListener(new View.OnClickListener() {
