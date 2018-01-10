@@ -25,7 +25,6 @@ public class QuickFilterAdapter extends RecyclerView.Adapter {
     private ActionListener listener;
     private Context context;
     private QuickFilterItem lastHeaderItemColor;
-    private int lastPosition = 0;
 
     public QuickFilterAdapter() {
         this.filterList = new ArrayList<>();
@@ -67,11 +66,11 @@ public class QuickFilterAdapter extends RecyclerView.Adapter {
                         }
                         filterItem.setSelected(true);
                         if (lastHeaderItemColor != null) {
-                            lastHeaderItemColor.setSelected(false);
-                            notifyItemChanged(lastPosition);
+                            filterList.get(itemViewFilter.getAdapterPosition()).setSelected(false);
+                            notifyItemChanged(itemViewFilter.getAdapterPosition());
                         }
                         lastHeaderItemColor = filterItem;
-                        lastPosition = itemViewFilter.getAdapterPosition();
+
                     }
                     handleViewFilter(itemViewFilter, filterItem.isSelected(), filterItem);
                 }
