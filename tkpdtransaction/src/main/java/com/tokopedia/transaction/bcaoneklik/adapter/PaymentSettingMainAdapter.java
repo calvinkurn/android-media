@@ -235,12 +235,13 @@ public class PaymentSettingMainAdapter extends RecyclerView.Adapter<RecyclerView
             cardImage = (ImageView) itemView.findViewById(R.id.card_image);
         }
 
-        void bindCreditCardItem(CreditCardModelItem item) {
+        void bindCreditCardItem(final CreditCardModelItem item) {
             cardBackground.setBackgroundResource(getBackgroundResource(item));
             cardBackground.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(context, CreditCardDetailActivity.class);
+                    intent.putExtra("credit_card_item", item);
                     context.startActivity(intent);
                 }
             });

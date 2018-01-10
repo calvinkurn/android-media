@@ -1,10 +1,12 @@
 package com.tokopedia.transaction.bcaoneklik.model.creditcard;
 
+import java.io.Serializable;
+
 /**
  * Created by kris on 8/23/17. Tokopedia
  */
 
-public class CreditCardModelItem {
+public class CreditCardModelItem implements Serializable {
 
     private String tokenId;
 

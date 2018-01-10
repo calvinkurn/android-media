@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/credit_card_detail_root_view"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white" >
 
     <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="270dp"
+        android:layout_height="160dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/margin_large"
         android:layout_marginLeft="46dp"
@@ -20,66 +21,83 @@
             android:id="@+id/image_cc_big_size"
             android:layout_width="match_parent"
             android:layout_height="160dp"
-            android:src="@drawable/visa_cc_besar" />
-
-        <TextView
-            android:id="@+id/textView5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="80dp"
-            android:text="1 2 3 4   5 6 7 8  1 1 2 2   3 3 3 3"
-            android:textSize="16sp"
-            android:textColor="@color/white"
-            android:layout_gravity="center_horizontal" />
+            tools:src="@drawable/image_cc_visa_plain_fullsize" />
 
         <LinearLayout
+            android:layout_height="match_parent"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="110dp"
-            android:layout_marginStart="35dp"
-            android:layout_marginLeft="35dp"
-            android:layout_marginEnd="35dp"
-            android:layout_marginRight="35dp"
-            android:orientation="horizontal"
-            android:weightSum="1">
+            android:layout_marginTop="35dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginEnd="15dp"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:padding="3dp"
+                android:src="@drawable/ic_chip_bright"/>
+
+            <TextView
+                android:id="@+id/input_credit_card_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center_horizontal"
+                tools:text="1 2 3 4   5 6 7 8  1 1 2 2   3 3 3 3"
+                android:textSize="16sp"
+                android:textColor="@color/white" />
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_gravity="center_horizontal"
-                android:layout_weight="1">
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal"
+                android:weightSum="1">
 
-                <TextView
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="month/year"
-                    android:textColor="@color/white"
-                    android:textSize="10sp"
-                    android:gravity="start"/>
+                    android:orientation="vertical"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="1">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="01/20"
-                    android:textSize="16sp"
-                    android:textColor="@color/white" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="month/year"
+                        android:textColor="@color/white"
+                        android:textSize="10sp"
+                        android:gravity="start"/>
+
+                    <TextView
+                        android:id="@+id/card_expiry"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="01/20"
+                        android:textSize="16sp"
+                        android:textColor="@color/white" />
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/credit_card_logo"
+                    android:layout_width="60dp"
+                    android:layout_height="30dp"
+                    tools:src="@drawable/ic_creditcard_visa"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"/>
 
             </LinearLayout>
 
-            <ImageView
-                android:layout_width="60dp"
-                android:layout_height="30dp"
-                android:src="@drawable/ic_creditcard_visa"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"/>
-
         </LinearLayout>
+
     </FrameLayout>
 
     <Button
         android:id="@+id/button_delete_cc"
-        android:layout_width="match_parent"
+        android:layout_width="270dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="46dp"
         android:layout_marginStart="46dp"
