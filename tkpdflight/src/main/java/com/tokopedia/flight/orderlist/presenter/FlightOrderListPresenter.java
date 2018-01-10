@@ -4,15 +4,14 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.orderlist.contract.FlightOrderListContract;
 import com.tokopedia.flight.orderlist.domain.FlightGetOrdersUseCase;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
 import com.tokopedia.flight.orderlist.view.viewmodel.mapper.FlightOrderViewModelMapper;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -75,21 +74,21 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
         colorBorder[3] = R.color.filter_order_yellow;
         colorBorder[4] = R.color.filter_order_blue;
 
-        Map<String, String> filtersMap = new HashMap<>();
-        filtersMap.put("650", getView().getString(R.string.flight_order_status_refund_label));
-        filtersMap.put("102", getView().getString(R.string.flight_order_status_waiting_for_payment_label));
-        filtersMap.put("101,200,300", getView().getString(R.string.flight_order_status_in_progress_label));
-        filtersMap.put("600", getView().getString(R.string.flight_order_status_failed_label));
-        filtersMap.put("700,800", getView().getString(R.string.flight_order_status_success_label));
+        List<SimpleViewModel> filtersMap = new ArrayList<>();
+        filtersMap.add(new SimpleViewModel("700,800", getView().getString(R.string.flight_order_status_success_label)));
+        filtersMap.add(new SimpleViewModel("600", getView().getString(R.string.flight_order_status_failed_label)));
+        filtersMap.add(new SimpleViewModel("102", getView().getString(R.string.flight_order_status_waiting_for_payment_label)));
+        filtersMap.add(new SimpleViewModel("101,200,300", getView().getString(R.string.flight_order_status_in_progress_label)));
+        filtersMap.add(new SimpleViewModel("650", getView().getString(R.string.flight_order_status_refund_label)));
 
         List<QuickFilterItem> filterItems = new ArrayList<>();
         int colorInd = 0;
-        for (Map.Entry<String, String> entry : filtersMap.entrySet()) {
+        for (SimpleViewModel entry : filtersMap) {
             QuickFilterItem finishFilter = new QuickFilterItem();
-            finishFilter.setName(entry.getValue());
-            finishFilter.setType(entry.getKey());
+            finishFilter.setName(entry.getDescription());
+            finishFilter.setType(entry.getLabel());
             finishFilter.setColorBorder(colorBorder[colorInd]);
-            if (getView().getSelectedFilter().equalsIgnoreCase(entry.getKey())) {
+            if (getView().getSelectedFilter().equalsIgnoreCase(entry.getLabel())) {
                 finishFilter.setSelected(true);
             } else {
                 finishFilter.setSelected(false);
