@@ -12,22 +12,9 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/login_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:visibility="gone"
-            android:background="@color/grey_300"
-            android:gravity="center"
-            android:padding="@dimen/padding_med"
-            android:text="@string/already_has_account_sign_in"
-            android:textColor="@color/grey_500"/>
-
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@id/login_button"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
@@ -41,51 +28,27 @@
                 android:padding="@dimen/padding_med"
                 android:visibility="visible">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif"
-                    android:lineSpacingExtra="4sp"
-                    android:text="@string/title_email"
-                    android:layout_marginLeft="@dimen/margin_vvs"
-                    android:textColor="@color/black_54"
-                    android:textSize="12sp"
-                    android:textStyle="normal"
-                    />
-
-                <android.support.design.widget.TextInputLayout
+                <com.tokopedia.design.text.TkpdTextInputLayout
                     android:id="@+id/wrapper_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/margin_med"
-                    app:hintAnimationEnabled="false">
+                    >
 
                     <AutoCompleteTextView
                         android:id="@+id/register_email"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:ems="10"
-                        android:imeOptions="actionNext"
-                        android:textColor="@color/black_70"
                         android:layout_marginTop="-5dp"
+                        android:ems="10"
+                        android:hint="@string/title_email"
+                        android:imeOptions="actionNext"
                         android:inputType="textEmailAddress"
-                        android:maxLines="1"/>
-                </android.support.design.widget.TextInputLayout>
+                        android:maxLines="1"
+                        android:textColor="@color/black_70"/>
+                </com.tokopedia.design.text.TkpdTextInputLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif"
-                    android:lineSpacingExtra="4sp"
-                    android:text="@string/title_full_name"
-                    android:layout_marginLeft="@dimen/margin_vvs"
-
-                    android:textColor="@color/black_54"
-                    android:textSize="12sp"
-                    android:textStyle="normal"
-                    />
-
-                <android.support.design.widget.TextInputLayout
+                <com.tokopedia.design.text.TkpdTextInputLayout
                     android:id="@+id/wrapper_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -95,28 +58,16 @@
                         android:id="@+id/name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:imeOptions="actionNext"
-                        android:textColor="@color/black_70"
                         android:layout_marginTop="-5dp"
+                        android:hint="@string/title_full_name"
+                        android:imeOptions="actionNext"
                         android:inputType="textCapWords"
-                        android:maxLines="1"/>
+                        android:maxLines="1"
+                        android:textColor="@color/black_70"/>
 
-                </android.support.design.widget.TextInputLayout>
+                </com.tokopedia.design.text.TkpdTextInputLayout>
 
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif"
-                    android:lineSpacingExtra="4sp"
-                    android:text="@string/title_phone_number"
-                    android:layout_marginLeft="@dimen/margin_vvs"
-                    android:textColor="@color/black_54"
-                    android:textSize="12sp"
-                    android:textStyle="normal"
-                    />
-
-                <android.support.design.widget.TextInputLayout
+                <com.tokopedia.design.text.TkpdTextInputLayout
                     android:id="@+id/wrapper_phone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -126,11 +77,13 @@
                         android:id="@+id/register_next_phone_number"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/black_70"
                         android:layout_marginTop="-5dp"
+                        android:hint="@string/title_phone_number"
                         android:inputType="phone"
-                        android:maxLines="1"/>
-                </android.support.design.widget.TextInputLayout>
+                        android:maxLines="1"
+                        android:textColor="@color/black_70"/>
+
+                </com.tokopedia.design.text.TkpdTextInputLayout>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -138,27 +91,14 @@
                     android:layout_marginBottom="@dimen/margin_med"
                     android:layout_marginLeft="@dimen/margin_vvs"
                     android:fontFamily="sans-serif"
-                    android:lineSpacingExtra="6sp"
-
+                    android:lineSpacingExtra="4sp"
                     android:text="@string/make_sure_phone_is_active"
                     android:textColor="@color/black_38"
                     android:textSize="12sp"
                     android:textStyle="normal"
                     />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif"
-                    android:lineSpacingExtra="4sp"
-                    android:text="@string/prompt_password"
-                    android:layout_marginLeft="@dimen/margin_vvs"
-                    android:textColor="@color/black_54"
-                    android:textSize="12sp"
-                    android:textStyle="normal"
-                    />
-
-                <android.support.design.widget.TextInputLayout
+                <com.tokopedia.design.text.TkpdTextInputLayout
                     android:id="@+id/wrapper_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -169,15 +109,16 @@
                         android:id="@+id/register_password"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="-5dp"
+                        android:hint="@string/prompt_password"
                         android:imeActionId="@+id/register_button"
                         android:imeActionLabel="Lanjut"
                         android:imeOptions="actionUnspecified"
                         android:inputType="textPassword"
-                        android:textColor="@color/black_70"
-                        android:layout_marginTop="-5dp"
                         android:maxLines="1"
+                        android:textColor="@color/black_70"
                         android:typeface="sans"/>
-                </android.support.design.widget.TextInputLayout>
+                </com.tokopedia.design.text.TkpdTextInputLayout>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -197,11 +138,11 @@
                     android:layout_marginTop="@dimen/margin_med"
                     android:background="@drawable/grey_button_rounded"
                     android:enabled="false"
+                    android:fontFamily="sans-serif-medium"
                     android:gravity="center"
                     android:text="@string/title_register_wo_u"
                     android:textColor="@color/grey_500"
-                    android:textSize="13sp"
-                    android:textStyle="bold"/>
+                    android:textSize="13sp"/>
 
                 <TextView
                     android:id="@+id/register_next_detail_t_and_p"
@@ -211,6 +152,7 @@
                     android:layout_marginTop="@dimen/margin_med"
                     android:fontFamily="sans-serif"
                     android:gravity="center"
+                    android:lineSpacingExtra="6sp"
                     android:paddingLeft="@dimen/padding_small"
                     android:paddingRight="@dimen/padding_small"
                     android:textColor="@color/black_38"

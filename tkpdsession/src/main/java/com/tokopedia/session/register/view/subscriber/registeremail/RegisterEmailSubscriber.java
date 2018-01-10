@@ -2,14 +2,11 @@ package com.tokopedia.session.register.view.subscriber.registeremail;
 
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.session.R;
 import com.tokopedia.session.register.data.model.RegisterEmailModel;
 import com.tokopedia.session.register.data.pojo.RegisterEmailData;
 import com.tokopedia.session.register.view.viewlistener.RegisterEmailViewListener;
 import com.tokopedia.session.register.view.viewmodel.RegisterEmailViewModel;
-
-import java.net.UnknownHostException;
 
 import rx.Subscriber;
 
@@ -19,6 +16,7 @@ import rx.Subscriber;
 
 public class RegisterEmailSubscriber extends Subscriber<RegisterEmailModel> {
 
+    private static final String ALREADY_REGISTERED = "sudah terdaftar";
     private final RegisterEmailViewListener viewListener;
 
     public RegisterEmailSubscriber(RegisterEmailViewListener viewListener) {
@@ -32,54 +30,13 @@ public class RegisterEmailSubscriber extends Subscriber<RegisterEmailModel> {
 
     @Override
     public void onError(Throwable e) {
-        if (e instanceof UnknownHostException) {
-            viewListener.onErrorRegister(
-                    viewListener.getString(R.string.msg_no_connection));
-        } else if (e instanceof RuntimeException &&
-                e.getLocalizedMessage() != null &&
-                e.getLocalizedMessage().length() <= 3) {
-            new ErrorHandler(new ErrorListener() {
-                @Override
-                public void onUnknown() {
-                    viewListener.onErrorRegister(
-                            viewListener.getString(R.string.default_request_error_unknown));
-                }
-
-                @Override
-                public void onTimeout() {
-                    viewListener.onErrorRegister(
-                            viewListener.getString(R.string.default_request_error_timeout));
-                }
-
-                @Override
-                public void onServerError() {
-                    viewListener.onErrorRegister(
-                            viewListener.getString(R.string.default_request_error_internal_server));
-                }
-
-                @Override
-                public void onBadRequest() {
-                    viewListener.onErrorRegister(
-                            viewListener.getString(R.string.default_request_error_bad_request));
-                }
-
-                @Override
-                public void onForbidden() {
-                    viewListener.onErrorRegister(
-                            viewListener.getString(R.string.default_request_error_forbidden_auth));
-                }
-            }, Integer.parseInt(e.getLocalizedMessage()));
-        } else if (e instanceof ErrorMessageException &&
-                e.getLocalizedMessage() != null) {
-
-            if(e.getLocalizedMessage().contains("sudah terdaftar")){
-                viewListener.showInfo();
-            }else {
-                viewListener.onErrorRegister(e.getLocalizedMessage());
-            }
+        if (e instanceof ErrorMessageException
+                && e.getLocalizedMessage() != null
+                && e.getLocalizedMessage().contains(ALREADY_REGISTERED)) {
+            viewListener.showInfo();
         } else {
             viewListener.onErrorRegister(
-                    viewListener.getString(R.string.default_request_error_unknown));
+                    ErrorHandler.getErrorMessage(e));
         }
     }
 

@@ -37,6 +37,7 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.profile.model.GetUserInfoDomainData;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.cotp.view.viewmodel.InterruptVerificationViewModel;
@@ -73,7 +74,9 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         implements RegisterInitial.View {
 
     private static final int REQUEST_REGISTER_WEBVIEW = 100;
-    private static final int REQUEST_PHONE_VERIF = 104;
+    private static final int REQUEST_REGISTER_EMAIL = 101;
+    private static final int REQUEST_CREATE_PASSWORD = 102;
+    private static final int REQUEST_SECURITY_QUESTION = 103;
 
     private static final String FACEBOOK = "facebook";
     private static final String GPLUS = "gplus";
@@ -93,6 +96,9 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     @Inject
     GlobalCacheManager cacheManager;
+
+    @Inject
+    SessionHandler sessionHandler;
 
     CallbackManager callbackManager;
 
@@ -128,6 +134,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         callbackManager = CallbackManager.Factory.create();
+        sessionHandler.clearToken();
     }
 
     @Nullable
@@ -167,10 +174,9 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             public void onClick(View v) {
                 UnifyTracking.eventTracking(LoginAnalytics.getEventClickRegisterEmail());
                 UnifyTracking.eventMoRegistrationStart(AppEventTracking.GTMCacheValue.EMAIL);
-
+                showProgressBar();
                 Intent intent = RegisterEmailActivity.getCallingIntent(getActivity());
-                intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_REGISTER_EMAIL);
 
             }
         });
@@ -205,7 +211,6 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             public void onClick(View v) {
                 getActivity().finish();
                 Intent intent = LoginActivity.getCallingIntent(getActivity());
-                intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
                 startActivity(intent);
             }
         });
@@ -213,14 +218,37 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        callbackManager.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQUEST_REGISTER_WEBVIEW) {
             handleRegisterWebview(resultCode, data);
         } else if (requestCode == RC_SIGN_IN_GOOGLE && data != null) {
             String accessToken = data.getStringExtra(KEY_GOOGLE_ACCOUNT_TOKEN);
             presenter.registerGoogle(accessToken);
+        } else if (requestCode == REQUEST_REGISTER_EMAIL && resultCode == Activity.RESULT_OK) {
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
+        } else if (requestCode == REQUEST_REGISTER_EMAIL && resultCode == Activity.RESULT_CANCELED) {
+            dismissProgressBar();
+            getActivity().setResult(Activity.RESULT_CANCELED);
+            sessionHandler.clearToken();
+        } else if (requestCode == REQUEST_CREATE_PASSWORD && resultCode == Activity.RESULT_OK) {
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
+        } else if (requestCode == REQUEST_CREATE_PASSWORD && resultCode == Activity.RESULT_CANCELED) {
+            dismissProgressBar();
+            getActivity().setResult(Activity.RESULT_CANCELED);
+            sessionHandler.clearToken();
+        } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
+        } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_CANCELED) {
+            dismissProgressBar();
+            getActivity().setResult(Activity.RESULT_CANCELED);
+            sessionHandler.clearToken();
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+            callbackManager.onActivityResult(requestCode, resultCode, data);
+
         }
     }
 
@@ -410,9 +438,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
                         userInfoDomainData.getBdayDay(),
                         userInfoDomainData.getCreatePasswordList(),
                         String.valueOf(userInfoDomainData.getUserId())));
-        intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
-        startActivity(intent);
-        getActivity().finish();
+        startActivityForResult(intent, REQUEST_CREATE_PASSWORD);
     }
 
     @Override
@@ -445,9 +471,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
 
         Intent intent = VerificationActivity.getSecurityQuestionVerificationIntent(getActivity(),
                 securityDomain.getUserCheckSecurity2());
-        intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
-        startActivity(intent);
-        getActivity().finish();
+        startActivityForResult(intent, REQUEST_SECURITY_QUESTION);
     }
 
     private ArrayList<MethodItem> getListAvailableMethod(SecurityDomain securityDomain, String phone) {
