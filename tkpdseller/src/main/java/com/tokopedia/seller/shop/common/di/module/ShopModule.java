@@ -2,6 +2,7 @@ package com.tokopedia.seller.shop.common.di.module;
 
 import android.content.Context;
 
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.interceptors.BearerInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdErrorResponseInterceptor;
@@ -111,6 +112,12 @@ public class ShopModule {
         }else{
             return null;
         }
+    }
+
+    @ShopScope
+    @Provides
+    public GlobalCacheManager provideGlobalCacheManager(){
+        return new GlobalCacheManager();
     }
 }
 

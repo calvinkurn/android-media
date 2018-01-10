@@ -282,12 +282,8 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     }
 
     @Override
-    public void onSuccessCreateShop(int shopId) {
+    public void onSuccessCreateShop() {
         hideSubmitLoading();
-        SessionHandler session = new SessionHandler(getContext());
-        session.setShopId(String.valueOf(shopId));
-        GlobalCacheManager globalCacheManager = new GlobalCacheManager();
-        globalCacheManager.delete(ProfileSourceFactory.KEY_PROFILE_DATA);
         AppWidgetUtil.sendBroadcastToAppWidget(getActivity());
         trackingOpenShop.eventOpenShopShippingSuccess();
         onShopStepperListener.finishPage();

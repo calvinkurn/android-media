@@ -5,9 +5,11 @@ import android.content.Context;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.shop.common.di.ShopQualifier;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.open.analytic.ShopOpenTracking;
@@ -69,4 +71,8 @@ public interface ShopOpenDomainComponent {
     NetworkCalculator networkCalculator();
 
     ShopOpenTracking trackingOpenShop();
+
+    SessionHandler sessionHandler();
+
+    GlobalCacheManager globalCacheManager();
 }
