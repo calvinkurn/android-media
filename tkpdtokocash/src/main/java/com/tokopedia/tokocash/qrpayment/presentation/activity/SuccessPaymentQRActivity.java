@@ -3,10 +3,17 @@ package com.tokopedia.tokocash.qrpayment.presentation.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
@@ -76,19 +83,38 @@ public class SuccessPaymentQRActivity extends TActivity {
             failedTransactionLayout.setVisibility(View.GONE);
             qrPaymentTokoCash = getIntent().getParcelableExtra(QR_PAYMENT_DATA);
             merchantName.setText(getIntent().getStringExtra(MERCHANT_NAME));
-            amountTransaction.setText("Rp " + CurrencyFormatHelper
-                    .ConvertToRupiah(String.valueOf(getIntent()
-                            .getStringExtra(AMOUNT).replace(",", "."))));
+            String amountTransactionString = CurrencyFormatHelper.ConvertToRupiah(String.valueOf(getIntent()
+                            .getStringExtra(AMOUNT)));
+            amountTransaction.setText("Rp " + amountTransactionString.replace(",", "."));
             timeTransaction.setText(qrPaymentTokoCash.getDateTime());
             idTransaction.setText(String.valueOf(qrPaymentTokoCash.getTransactionId()));
-            tokoCashBalance.setText(String.valueOf("Rp " + CurrencyFormatHelper
-                    .ConvertToRupiah(String.valueOf(qrPaymentTokoCash.getAmount())
-                            .replace(",", "."))));
+            String tokocashBalanceString = CurrencyFormatHelper
+                    .ConvertToRupiah(String.valueOf(qrPaymentTokoCash.getAmount()));
+            tokoCashBalance.setText(String.valueOf("Rp " +
+                    tokocashBalanceString.replace(",", ".")));
+            setHelpText();
         } else {
             toolbar.setTitle("Transaksi Gagal");
             successTransactionLayout.setVisibility(View.GONE);
             failedTransactionLayout.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void setHelpText() {
+        String kendala = "Untuk kendala Transaksi, klik Bantuan";
+        SpannableString ss = new SpannableString(kendala);
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getApplicationContext(), "Bantuan", Toast.LENGTH_SHORT).show();
+
+            }
+        };
+        ss.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getApplicationContext(),
+                R.color.tkpd_main_green)), 30, 37, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ss.setSpan(clickableSpan, 30, 37, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        helpText.setMovementMethod(LinkMovementMethod.getInstance());
+        helpText.setText(ss);
     }
 
     private void setActionVar() {

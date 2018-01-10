@@ -9,12 +9,14 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.design.text.watcher.NumberTextWatcher;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
@@ -47,6 +49,8 @@ public class NominalQrPaymentActivity extends TActivity implements QrPaymentCont
     private Button payButton;
     private InfoQrTokoCash infoQrTokoCash;
     private TokoCashComponent tokoCashComponent;
+    private BalanceTokoCash balanceTokoCash;
+    private ProgressBar progressBar;
     @Inject
     QrPaymentPresenter presenter;
 
@@ -86,6 +90,7 @@ public class NominalQrPaymentActivity extends TActivity implements QrPaymentCont
         payButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                progressBar.setVisibility(View.VISIBLE);
                 presenter.postQrPayment();
             }
         });
@@ -103,6 +108,7 @@ public class NominalQrPaymentActivity extends TActivity implements QrPaymentCont
         separatorNominal = (View) findViewById(R.id.separator);
         tokocashValue = (TextView) findViewById(R.id.tokocash_value);
         payButton = (Button) findViewById(R.id.pay_button);
+        progressBar = (ProgressBar) findViewById(R.id.progress_bar);
     }
 
     @Override
@@ -127,13 +133,15 @@ public class NominalQrPaymentActivity extends TActivity implements QrPaymentCont
     public RequestParams getRequestParams() {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(PostQrPaymentUseCase.IDENTIFIER, getIntent().getStringExtra(IDENTIFIER));
-        requestParams.putString(PostQrPaymentUseCase.NOTE, notesValue.getText().toString());
+        requestParams.putString(PostQrPaymentUseCase.NOTE, notesValue.getText().toString().equals("") ?
+                "Paid to merchant" : notesValue.getText().toString());
         requestParams.putLong(PostQrPaymentUseCase.AMOUNT, Long.parseLong(nominalValue.getText().toString()));
         return requestParams;
     }
 
     @Override
     public void directToSuccessPayment(QrPaymentTokoCash qrPaymentTokoCash) {
+        progressBar.setVisibility(View.GONE);
         startActivity(SuccessPaymentQRActivity.newInstance(getApplicationContext(), qrPaymentTokoCash,
                 infoQrTokoCash.getName(), nominalValue.getText().toString(), true));
         finish();
@@ -141,6 +149,7 @@ public class NominalQrPaymentActivity extends TActivity implements QrPaymentCont
 
     @Override
     public void directToFailedPayment() {
+        progressBar.setVisibility(View.GONE);
         startActivity(SuccessPaymentQRActivity.newInstance(getApplicationContext(), new QrPaymentTokoCash(),
                 infoQrTokoCash.getName(), nominalValue.getText().toString(), false));
         finish();
@@ -149,44 +158,44 @@ public class NominalQrPaymentActivity extends TActivity implements QrPaymentCont
     @Override
     public void renderBalanceTokoCash(final BalanceTokoCash balanceTokoCash) {
         tokocashValue.setText("TokoCash Balance: " + balanceTokoCash.getBalance());
+        this.balanceTokoCash = balanceTokoCash;
 
-        nominalValue.addTextChangedListener(new TextWatcher() {
+        nominalValue.addTextChangedListener(new NumberTextWatcher(nominalValue) {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (nominalValue.getText().toString().equals("")) {
-                    separatorNominal.setBackgroundColor(getColorNominal(R.color.separator_grey));
-                    tokocashValue.setTextColor(getColorNominal(R.color.separator_grey));
-                    payButton.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bg_grey_border_black));
-                    payButton.setTextColor(getColorNominal(R.color.grey_nonactive_text));
-                } else {
-                    if (Long.parseLong(charSequence.toString()) > Long.parseLong(balanceTokoCash.getRaw_balance())) {
-                        separatorNominal.setBackgroundColor(getColorNominal(R.color.separator_red));
-                        tokocashValue.setTextColor(getColorNominal(R.color.separator_red));
-                        payButton.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bg_grey_border_black));
-                        payButton.setTextColor(getColorNominal(R.color.grey_nonactive_text));
-                    } else {
-                        separatorNominal.setBackgroundColor(getColorNominal(R.color.separator_green));
-                        tokocashValue.setTextColor(getColorNominal(R.color.separator_green));
-                        payButton.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.orange_button_rounded));
-                        payButton.setTextColor(getColorNominal(R.color.white));
-                    }
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
+            public void onNumberChanged(double number) {
+                super.onNumberChanged(number);
+                handleWarningPayment(number);
             }
         });
     }
 
+    private void handleWarningPayment(double nominal) {
+        if (nominalValue.getText().toString().equals("")) {
+            separatorNominal.setBackgroundColor(getColorNominal(R.color.separator_grey));
+            tokocashValue.setTextColor(getColorNominal(R.color.separator_grey));
+            payButton.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bg_grey_border_black));
+            payButton.setTextColor(getColorNominal(R.color.grey_nonactive_text));
+            payButton.setEnabled(false);
+        } else {
+            if (nominal > Long.parseLong(balanceTokoCash.getRaw_balance())) {
+                separatorNominal.setBackgroundColor(getColorNominal(R.color.separator_red));
+                tokocashValue.setTextColor(getColorNominal(R.color.separator_red));
+                payButton.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bg_grey_border_black));
+                payButton.setTextColor(getColorNominal(R.color.grey_nonactive_text));
+                payButton.setEnabled(false);
+            } else {
+                separatorNominal.setBackgroundColor(getColorNominal(R.color.separator_green));
+                tokocashValue.setTextColor(getColorNominal(R.color.separator_green));
+                payButton.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.orange_button_rounded));
+                payButton.setTextColor(getColorNominal(R.color.white));
+                payButton.setEnabled(true);
+            }
+        }
+    }
+
     @Override
     public void showErrorBalanceTokoCash(String message) {
+        progressBar.setVisibility(View.GONE);
         NetworkErrorHelper.createSnackbarWithAction(this, message,
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override

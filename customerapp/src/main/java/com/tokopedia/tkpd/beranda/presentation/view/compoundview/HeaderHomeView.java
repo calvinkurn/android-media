@@ -1,23 +1,19 @@
 package com.tokopedia.tkpd.beranda.presentation.view.compoundview;
 
 import android.annotation.SuppressLint;
-import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
-import com.tokopedia.core.router.digitalmodule.sellermodule.TokoCashRouter;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.beranda.listener.HomeCategoryListener;
@@ -127,11 +123,26 @@ public class HeaderHomeView extends BaseCustomView {
 
     }
 
+    private void renderVisibilityTitleOnlyTokoCash(boolean isVisibleButtonAction) {
+        if (!isVisibleButtonAction && scannerQR.getVisibility() == GONE) {
+            tvTitleTokocash.setVisibility(VISIBLE);
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)
+                    tvBalanceTokocash.getLayoutParams();
+            params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            tvBalanceTokocash.setLayoutParams(params);
+        } else {
+            tvTitleTokocash.setVisibility(GONE);
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)
+                    tvBalanceTokocash.getLayoutParams();
+            params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+            tvBalanceTokocash.setLayoutParams(params);
+        }
+    }
+
     private void renderTokocashLayoutListener() {
         final HomeHeaderWalletAction homeHeaderWalletAction =
                 headerViewModel.getHomeHeaderWalletActionData();
 
-        tvTitleTokocash.setVisibility(GONE);
         tvTitleTokocash.setText(homeHeaderWalletAction.getLabelTitle());
         tvActionTokocash.setText(homeHeaderWalletAction.getLabelActionButton());
         tvActionTokocash.setVisibility(VISIBLE);
@@ -155,7 +166,7 @@ public class HeaderHomeView extends BaseCustomView {
                 tvActionTokocash.setVisibility(GONE);
             }
 
-            tvTitleTokocash.setOnClickListener(getOnClickTokocashBalance(homeHeaderWalletAction));
+            tokoCashHolder.setOnClickListener(getOnClickTokocashBalance(homeHeaderWalletAction));
 
             if (homeHeaderWalletAction.getAbTags().size() > 0) {
                 for (int i = 0; i < homeHeaderWalletAction.getAbTags().size(); i++) {
@@ -259,7 +270,11 @@ public class HeaderHomeView extends BaseCustomView {
         scannerQR = view.findViewById(R.id.scanner_qr);
         tvBalanceTokocash = view.findViewById(R.id.tv_balance_tokocash);
 
-        if (headerViewModel.getHomeHeaderWalletActionData() != null) renderTokocashLayoutListener();
+        if (headerViewModel.getHomeHeaderWalletActionData() != null) {
+            renderTokocashLayoutListener();
+            renderVisibilityTitleOnlyTokoCash(headerViewModel.getHomeHeaderWalletActionData()
+                    .isVisibleActionButton());
+        }
     }
 
     public HeaderHomeView(@NonNull Context context, @Nullable AttributeSet attrs) {

@@ -51,9 +51,8 @@
             android:textSize="12sp"
             android:textStyle="bold"
             android:visibility="gone"
-            tools:text="Rp 100.000"
-            tools:visibility="visible" />
-            tools:text="Balance" />
+            tools:visibility="visible"
+            tools:text="Rp 100.000" />
 
         <LinearLayout
             android:layout_width="wrap_content"
