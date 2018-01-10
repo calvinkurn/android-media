@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,6 +24,7 @@ import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.common.imageeditor.view.WatermarkPresenterView;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
+import com.tokopedia.seller.shop.common.tracking.TrackingOpenShop;
 import com.tokopedia.seller.shop.open.di.component.DaggerShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.view.activity.ShopOpenMandatoryActivity;
@@ -31,11 +33,13 @@ import com.tokopedia.seller.shop.open.view.presenter.ShopCreateSuccessPresenter;
 import javax.inject.Inject;
 
 
-public class ShopOpenReserveDomainSuccessFragment extends Fragment{
+public class ShopOpenReserveDomainSuccessFragment extends BaseDaggerFragment{
     public static final String TAG = ShopOpenReserveDomainSuccessFragment.class.getSimpleName();
 
     public static final String ARG_SHOP_NAME = "shop_nm";
     private String shopName;
+    @Inject
+    TrackingOpenShop trackingOpenShop;
 
     public static ShopOpenReserveDomainSuccessFragment newInstance(String shopName) {
 
@@ -45,6 +49,17 @@ public class ShopOpenReserveDomainSuccessFragment extends Fragment{
         args.putString(ARG_SHOP_NAME, shopName);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
+    }
+
+    @Override
+    protected void initInjector() {
+        ShopOpenDomainComponent component = getComponent(ShopOpenDomainComponent.class);
+        component.inject(this);
     }
 
     @Override
@@ -59,10 +74,11 @@ public class ShopOpenReserveDomainSuccessFragment extends Fragment{
         View view = inflater.inflate(R.layout.fragment_shop_reserve_domain_success, container, false);
         TextView tvTitle = view.findViewById(R.id.tv_title);
         tvTitle.setText(MethodChecker.fromHtml(getString(R.string.shop_reserve_success_title,shopName)));
-        View buttonNext = view.findViewById(R.id.button_next);
+        final Button buttonNext = view.findViewById(R.id.button_next);
         buttonNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                trackingOpenShop.eventOpenShopDomainReserveNext(buttonNext.getText().toString());
                 Intent intent = new Intent(getActivity(), ShopOpenMandatoryActivity.class);
                 startActivity(intent);
                 getActivity().finish();
