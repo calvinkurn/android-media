@@ -135,6 +135,7 @@
     <string name="dialog_message_ask_seller"><![CDATA[<br/><br/>Invoice:<br/>XXX]]></string>
 
     <string name="button_order_detail_accept_order">Terima Pesanan</string>
+    <string name="button_order_detail_accept_order_partially">Terima Sebagian</string>
     <string name="button_order_detail_change_courier">Ganti Kurir</string>
     <string name="button_order_detail_request_pickup">Request Pickup</string>
     <string name="button_order_detail_confirm">Konfirmasi</string>
@@ -147,10 +148,14 @@
     <string name="button_order_detail_ask_seller">Tanya Penjual</string>
     <string name="button_order_detail_ask_buyer">Tanya Pembeli</string>
     <string name="button_order_detail_reject_order">Tolak Pesanan</string>
+    <string name="button_order_detail_reject_shipment">Tolak Pengiriman</string>
     <string name="button_order_detail_request_cancel">Ajukan Pembatalan</string>
     <string name="button_order_detail_complaint">Komplain</string>
     <string name="button_order_detail_cancel_chance">Batalkan Pencarian</string>
     <string name="title_cancellation_notes">Tulis Keterangan Anda di sini</string>
+    <string name="title_cancel_shipment_notes">Tulis alasan pembatalan</string>
+    <string name="sub_title_cancel_shipment_notes">Pembatalan pengiriman akan mendapatkan pengurangan reputasi sebesar 3 poin</string>
+    <string name="label_cancel_shipment_notes">Alasan Pembatalan</string>
     <string name="label_explanation">Keterangan</string>
     <string name="label_awb_number">Nomor Resi</string>
     <string name="title_replacement_cancellation">Pilih Alasan Pembatalan: </string>

@@ -16,6 +16,8 @@ import com.tokopedia.transaction.purchase.detail.adapter.OrderCourierAdapter;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.CourierViewModel;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.ListCourierViewModel;
 
+import static com.tokopedia.transaction.purchase.detail.activity.ConfirmShippingActivity.SELECT_SERVICE_FRAGMENT_TAG;
+
 /**
  * Created by kris on 1/3/18. Tokopedia
  */
@@ -59,7 +61,7 @@ public class CourierSelectionFragment extends Fragment implements OrderCourierAd
         ServiceSelectionFragment serviceSelectionFragment = ServiceSelectionFragment
                 .createFragment(courierViewModel);
         getFragmentManager().beginTransaction()
-                .replace(0, serviceSelectionFragment)
+                .add(R.id.main_view, serviceSelectionFragment, SELECT_SERVICE_FRAGMENT_TAG)
                 .commit();
     }
 }

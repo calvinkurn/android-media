@@ -26,6 +26,7 @@ public class AcceptOrderDialog extends DialogFragment {
         AcceptOrderDialog dialog = new AcceptOrderDialog();
         Bundle bundle = new Bundle();
         bundle.putString(ORDER_ID_EXTRA, orderId);
+        dialog.setArguments(bundle);
         return dialog;
     }
 
@@ -58,6 +59,7 @@ public class AcceptOrderDialog extends DialogFragment {
             @Override
             public void onClick(View view) {
                 listener.onAcceptOrder(getArguments().getString(ORDER_ID_EXTRA));
+                dismiss();
             }
         };
     }

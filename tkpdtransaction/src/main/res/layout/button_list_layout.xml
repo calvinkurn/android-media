@@ -23,11 +23,11 @@
         android:layout_height="@dimen/btn_height"
         android:layout_margin="@dimen/margin_small"
         android:background="@drawable/green_button_rounded_unify"
-        android:text="@string/button_order_detail_accept_order"
+        android:text="@string/button_order_detail_accept_order_partially"
         android:textAllCaps="false"
         android:textColor="@color/white" />
 
-    <Button
+    <!--<Button
         android:id="@+id/change_courier"
         android:layout_width="match_parent"
         android:layout_height="@dimen/btn_height"
@@ -35,7 +35,7 @@
         android:background="@drawable/green_button_rounded_unify"
         android:text="@string/button_order_detail_change_courier"
         android:textAllCaps="false"
-        android:textColor="@color/white" />
+        android:textColor="@color/white" />-->
 
     <Button
         android:id="@+id/request_pickup"
@@ -122,6 +122,15 @@
         android:layout_margin="@dimen/margin_small"
         android:background="@drawable/white_button_rounded"
         android:text="@string/button_order_detail_reject_order"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/reject_shipment_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:layout_margin="@dimen/margin_small"
+        android:background="@drawable/white_button_rounded"
+        android:text="@string/button_order_detail_reject_shipment"
         android:textAllCaps="false" />
 
     <Button

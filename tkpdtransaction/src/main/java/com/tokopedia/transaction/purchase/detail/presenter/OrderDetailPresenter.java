@@ -50,6 +50,8 @@ public interface OrderDetailPresenter {
 
     void processRejectOrder(Context context, OrderDetailData data);
 
+    void processRejectShipment(Context context, OrderDetailData data);
+
     void processCancelSearch(Context context, OrderDetailData data);
 
     void acceptOrder(Context context, String orderId);

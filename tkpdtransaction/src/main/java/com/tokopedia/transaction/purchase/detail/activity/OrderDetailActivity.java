@@ -41,6 +41,7 @@ import com.tokopedia.transaction.purchase.detail.dialog.ComplaintDialog;
 import com.tokopedia.transaction.purchase.detail.dialog.FinishOrderDialog;
 import com.tokopedia.transaction.purchase.detail.fragment.CancelOrderFragment;
 import com.tokopedia.transaction.purchase.detail.fragment.CancelSearchFragment;
+import com.tokopedia.transaction.purchase.detail.fragment.CancelShipmentFragment;
 import com.tokopedia.transaction.purchase.detail.fragment.ChangeAwbFragment;
 import com.tokopedia.transaction.purchase.detail.fragment.RejectOrderFragment;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
@@ -61,7 +62,8 @@ public class OrderDetailActivity extends TActivity
         AcceptOrderDialog.AcceptOrderListener,
         RejectOrderFragment.RejectOrderFragmentListener,
         AcceptPartialOrderDialog.PartialDialogListener,
-        ChangeAwbFragment.ChangeAwbListener{
+        ChangeAwbFragment.ChangeAwbListener,
+        CancelShipmentFragment.CancelShipmentListener{
 
     public static final int REQUEST_CODE_ORDER_DETAIL = 111;
     private static final String VALIDATION_FRAGMENT_TAG = "validation_fragments";
@@ -448,6 +450,7 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void onRequestPickup(OrderDetailData data) {
+        presenter.retryOrder(this, data);
         //TODO Bundle important things here, dont put entire model in the bundle!!
     }
 
@@ -466,6 +469,18 @@ public class OrderDetailActivity extends TActivity
             getFragmentManager().beginTransaction()
                     .setCustomAnimations(R.animator.enter_bottom, R.animator.enter_bottom)
                     .add(R.id.main_view, rejectOrderFragment, VALIDATION_FRAGMENT_TAG)
+                    .commit();
+        }
+    }
+
+    @Override
+    public void onRejectShipment(OrderDetailData data) {
+        if (getFragmentManager().findFragmentByTag(VALIDATION_FRAGMENT_TAG) == null) {
+            CancelShipmentFragment cancelShipmentFragment = CancelShipmentFragment
+                    .createFragment(data.getOrderId());
+            getFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.animator.enter_bottom, R.animator.enter_bottom)
+                    .add(R.id.main_view, cancelShipmentFragment, VALIDATION_FRAGMENT_TAG)
                     .commit();
         }
     }
@@ -510,8 +525,14 @@ public class OrderDetailActivity extends TActivity
     }
 
     @Override
-    public void showErrorSnackbar(String errorMessage) {
+    public void showSnackbar(String errorMessage) {
         NetworkErrorHelper.showSnackbar(this, errorMessage);
+    }
+
+    @Override
+    public void dismissSellerActionFragment() {
+        getFragmentManager().beginTransaction().remove(getFragmentManager()
+                .findFragmentByTag(VALIDATION_FRAGMENT_TAG)).commit();
     }
 
     @Override
@@ -601,6 +622,8 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void onAcceptOrder(String orderId) {
         presenter.acceptOrder(this, orderId);
+        setResult(Activity.RESULT_OK);
+        finish();
     }
 
     @Override
@@ -616,5 +639,10 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void onAcceptPartialOrderCreated(String orderId, String remark, String param) {
         presenter.partialOrder(this, orderId, remark, param);
+    }
+
+    @Override
+    public void cancelShipment(String orderId, String notes) {
+        presenter.rejectOrder(this, orderId, notes);
     }
 }

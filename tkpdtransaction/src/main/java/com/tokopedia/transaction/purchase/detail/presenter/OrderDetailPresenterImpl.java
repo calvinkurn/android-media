@@ -136,6 +136,11 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
     }
 
     @Override
+    public void processRejectShipment(Context context, OrderDetailData data) {
+        mainView.onRejectShipment(data);
+    }
+
+    @Override
     public void processCancelSearch(Context context, OrderDetailData data) {
         mainView.onCancelSearchReplacement(data);
     }
@@ -182,7 +187,7 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
         TKPDMapParam<String, String> rejectOrderParam = new TKPDMapParam<>();
         rejectOrderParam.put("action_type", "reject");
         rejectOrderParam.put("reason", orderId);
-        orderDetailInteractor.processOrder(sellerActionSubscriber(),
+        orderDetailInteractor.processOrder(sellerFragmentActionSubscriber(),
                 AuthUtil.generateParamsNetwork(context, rejectOrderParam));
     }
 
@@ -204,7 +209,12 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
 
     @Override
     public void retryOrder(Context context, OrderDetailData data) {
-
+        mainView.showProgressDialog();
+        TKPDMapParam<String, String> retryPickUpParams = new TKPDMapParam<>();
+        retryPickUpParams.put("order_id", data.getOrderId());
+        orderDetailInteractor.retryPickup(
+                sellerActionSubscriber(),
+                AuthUtil.generateParamsNetwork(context, retryPickUpParams));
     }
 
     @Override
@@ -282,7 +292,7 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
 
             @Override
             public void onError(Throwable e) {
-                mainView.showErrorSnackbar(e.getMessage());
+                mainView.showSnackbar(e.getMessage());
             }
 
             @Override
@@ -302,7 +312,7 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
             @Override
             public void onError(Throwable e) {
                 mainView.dismissProgressDialog();
-                mainView.showErrorSnackbar(e.getMessage());
+                mainView.showSnackbar(e.getMessage());
             }
 
             @Override
@@ -323,12 +333,36 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
             @Override
             public void onError(Throwable e) {
                 mainView.dismissProgressDialog();
-                mainView.showErrorSnackbar(e.getMessage());
+                mainView.showSnackbar(e.getMessage());
             }
 
             @Override
             public void onNext(String s) {
                 mainView.dismissProgressDialog();
+                mainView.showSnackbar(s);
+                //TODO put action to finish activity and refresh
+            }
+        };
+    }
+
+    private Subscriber<String> sellerFragmentActionSubscriber() {
+        return new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                mainView.dismissProgressDialog();
+                mainView.showSnackbar(e.getMessage());
+            }
+
+            @Override
+            public void onNext(String s) {
+                mainView.dismissProgressDialog();
+                mainView.showSnackbar(s);
+                mainView.dismissSellerActionFragment();
                 //TODO put action to finish activity and refresh
             }
         };
@@ -344,7 +378,7 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
             @Override
             public void onError(Throwable e) {
                 mainView.dismissProgressDialog();
-                mainView.showErrorSnackbar(e.getMessage());
+                mainView.showSnackbar(e.getMessage());
             }
 
             @Override
