@@ -21,7 +21,7 @@ import rx.Observable;
  */
 
 public class HomeFeedDataSource {
-    private static final int FEED_LIMIT = 3;
+    private static final int PRODUCT_PER_CARD_LIMIT = 4;
     private ApolloClient apolloClient;
     private HomeFeedMapper homeFeedMapper;
     protected FeedResultMapper feedResultMapper;
@@ -43,7 +43,7 @@ public class HomeFeedDataSource {
         String cursor = requestParams.getString(GetFeedsUseCase.PARAM_CURSOR, "");
         ApolloWatcher<HomeFeedQuery.Data> apolloWatcher = apolloClient.newCall(HomeFeedQuery.builder()
                 .userID(requestParams.getInt(GetFeedsUseCase.PARAM_USER_ID, 0))
-                .limit(FEED_LIMIT)
+                .limit(PRODUCT_PER_CARD_LIMIT)
                 .cursor(cursor)
                 .build()).watcher();
 
