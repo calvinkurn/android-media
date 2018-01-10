@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.TextView;
+import android.widget.Button;
 
 import com.tokopedia.transaction.R;
 
@@ -38,10 +38,8 @@ public class DeleteCreditCardDialog extends DialogFragment{
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
         View view= inflater.inflate(R.layout.credit_card_delete_dialog, container, false);
-        TextView deleteButton = (TextView) view.findViewById(R.id.delete_button);
-        TextView cancelButton = (TextView) view.findViewById(R.id.cancel_button);
-        TextView deletionInfo = (TextView) view.findViewById(R.id.card_deletion_info);
-        deletionInfo.setText(getArguments().getString(CARD_ID));
+        Button deleteButton = view.findViewById(R.id.delete_button);
+        Button cancelButton = view.findViewById(R.id.cancel_button);
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
