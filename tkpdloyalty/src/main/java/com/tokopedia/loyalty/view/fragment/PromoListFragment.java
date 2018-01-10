@@ -20,7 +20,6 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
-import com.tokopedia.core.customView.EndLessScrollBehavior;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
@@ -272,6 +271,7 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
                 dPresenter.processGetPromoList(filterSelected);
             }
         });
+        quickSingleFilterView.actionSelect(0);
     }
 
     private List<QuickFilterItem> setQuickFilterItems(List<PromoSubMenuData> promoSubMenuDataList) {
@@ -341,6 +341,7 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
     }
 
     private void handleErrorEmptyState(String message) {
+        adapter.clearDataList();
         NetworkErrorHelper.showEmptyState(
                 getActivity(), containerList, message,
                 new NetworkErrorHelper.RetryClickedListener() {

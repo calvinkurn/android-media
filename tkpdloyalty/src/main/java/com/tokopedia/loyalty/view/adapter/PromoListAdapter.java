@@ -4,7 +4,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -101,6 +100,11 @@ public class PromoListAdapter extends RecyclerView.Adapter {
     public void addAllItems(List<PromoData> promoDataList) {
         this.promoDataList.clear();
         this.promoDataList.addAll(promoDataList);
+        notifyDataSetChanged();
+    }
+
+    public void clearDataList() {
+        this.promoDataList.clear();
         notifyDataSetChanged();
     }
 
