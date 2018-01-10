@@ -21,6 +21,7 @@ ext {
     tkpdDesignVersion = '1.+'
     tkpdFeedVersion = '1.+'
     tkpdRideVersion = '1.+'
+    tkpdLoyaltyVersion = '1.+'
     tkpdReactNativeVersion = '1.+'
     compileSdkVersion = 26
     minSdkVersion = 16
@@ -98,10 +99,11 @@ ext {
     ]
 
     analyticsDependencies = [
-            appsflyer : "com.appsflyer:af-android-sdk:4.7.4@aar",
-            moengage   : "com.moengage:moe-android-sdk:8.0.05",
-            moengageFCM: "com.moengage:moe-push-firebase:2.0.01",
-            moengageMSG: "com.moengage:addon-messaging:2.0.02",
+            appsflyer : "com.appsflyer:af-android-sdk:4.8.6@aar",
+            installRef : "com.android.installreferrer:installreferrer:1.0",
+            moengage   : "com.moengage:moe-android-sdk:7.7.10",
+            moengageFCM: "com.moengage:moe-push-firebase:1.1.01",
+            moengageMSG: "com.moengage:addon-messaging:1.1.01",
             branch:"io.branch.sdk.android:library:2.+"
     ]
 
@@ -184,7 +186,8 @@ ext {
             design     : "com.tokopedia.design:design:${tkpdDesignVersion}",
             feed       : "com.tokopedia.feed:feed:${tkpdFeedVersion}",
             ride       : "com.tokopedia.ride:ride:${tkpdRideVersion}",
-            reactNative: "com.tokopedia.tkpdreactnative:reactnative:${tkpdReactNativeVersion}"
+            reactNative: "com.tokopedia.tkpdreactnative:reactnative:${tkpdReactNativeVersion}",
+            loyalty    : "com.tokopedia.loyalty:loyalty:${tkpdLoyaltyVersion}"
     ]
 
     tkpdLibDependencies = [

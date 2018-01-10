@@ -14,6 +14,16 @@
             android:name=".common.imageeditor.GalleryCropWatermarkActivity"
             android:screenOrientation="portrait"/>
 
+        <activity android:name=".seller.info.view.activity.SellerInfoWebViewActivity"
+            android:label="@string/title_seller_info"
+            />
+
+        <activity android:name=".seller.info.view.activity.SellerInfoActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/title_seller_info"
+            android:exported="true"
+            />
+
         <activity
             android:name=".shopscore.view.activity.ShopScoreDetailActivity"
             android:label="@string/title_shop_score"
@@ -91,8 +101,7 @@
         <activity
             android:name=".product.edit.view.activity.ProductAddActivity"
             android:label="@string/title_activity_add_product"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -133,26 +142,22 @@
         <activity
             android:name=".product.edit.view.activity.ProductEditActivity"
             android:label="@string/title_activity_edit_product"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".product.edit.view.activity.ProductDraftAddActivity"
             android:label="@string/title_activity_add_product"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".product.edit.view.activity.ProductDraftEditActivity"
             android:label="@string/title_activity_edit_product"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".product.edit.view.activity.ProductDuplicateActivity"
             android:label="@string/title_activity_add_product"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".product.edit.view.activity.ProductScoringDetailActivity"
@@ -178,6 +183,11 @@
             android:name=".product.edit.view.activity.CatalogPickerActivity"
             android:exported="true"
             android:label="@string/title_activity_catalog_picker"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".product.edit.view.activity.ProductAddInfoActivity"
+            android:label="@string/product_desc_guide"
             android:screenOrientation="portrait" />
 
         <activity
@@ -220,6 +230,10 @@
         <activity
             android:name=".opportunity.activity.OpportunityDetailActivity"
             android:label="@string/title_opportunity_detail"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".opportunity.activity.OpportunityTncActivity"
+            android:label="@string/take_opportunity"
             android:screenOrientation="portrait" />
 
         <activity

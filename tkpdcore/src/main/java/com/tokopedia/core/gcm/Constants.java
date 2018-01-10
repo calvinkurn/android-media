@@ -75,6 +75,7 @@ public interface Constants {
         String PRODUCT_INFO = "tokopedia://product/{product_id}";
         String PRODUCT_ADD = "tokopedia://product/add";
         String PURCHASE_VERIFICATION = "tokopedia://buyer/payment";
+        String CREDIT_CARD_AUTH_SETTING = "tokopedia://payment/credit-card";
         String PURCHASE_ORDER = "tokopedia://buyer/order";
         String PURCHASE_SHIPPING_CONFIRM = "tokopedia://buyer/shipping-confirm";
         String PURCHASE_HISTORY = "tokopedia://buyer/history";
@@ -93,6 +94,7 @@ public interface Constants {
         String DIGITAL_PRODUCT = "tokopedia://digital/form";
         String DIGITAL_CART = "tokopedia://digital/cart";
         String DIGITAL_CATEGORY = "tokopedia://digital/category";
+        String DISCOVERY_PAGE = "tokopedia://discovery/{page_id}";
         String PROMO = "tokopedia://promo";
         String PROMO_CATEGORY = "tokopedia://promo/{promo_id}";
         String PROMO_WITH_DASH = "tokopedia://promo/{promo_id}/";

@@ -11,14 +11,17 @@ public class CreateSubmitDomain {
     @Nullable
     private ResolutionDomain resolution;
 
+    private ShopDomain shop;
+
     @Nullable
     private boolean isSuccess;
 
     @Nullable
     private String successMessage;
 
-    public CreateSubmitDomain(ResolutionDomain resolution, String successMessage) {
+    public CreateSubmitDomain(ResolutionDomain resolution, ShopDomain shop, String successMessage) {
         this.resolution = resolution;
+        this.shop = shop;
         this.successMessage = successMessage;
     }
 
@@ -47,5 +50,13 @@ public class CreateSubmitDomain {
 
     public void setSuccessMessage(@Nullable String successMessage) {
         this.successMessage = successMessage;
+    }
+
+    public ShopDomain getShop() {
+        return shop;
+    }
+
+    public void setShop(ShopDomain shop) {
+        this.shop = shop;
     }
 }

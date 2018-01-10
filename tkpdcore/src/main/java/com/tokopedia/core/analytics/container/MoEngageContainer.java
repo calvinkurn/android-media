@@ -58,7 +58,9 @@ public class MoEngageContainer implements IMoengageContainer {
 
     @Override
     public void initialize() {
-        Single<Void> initTask = Single.create(new Single.OnSubscribe<Void>() {
+        MoEHelper.getInstance(context).autoIntegrate(MainApplication.getInstance());
+        MoEHelper.getInstance(context).setLogLevel(Logger.VERBOSE);
+        /*Single<Void> initTask = Single.create(new Single.OnSubscribe<Void>() {
             @Override
             public void call(SingleSubscriber<? super Void> singleSubscriber) {
                 MoEHelper.getInstance(context).autoIntegrate(MainApplication.getInstance());
@@ -77,7 +79,7 @@ public class MoEngageContainer implements IMoengageContainer {
                         error.printStackTrace();
                     }
                 }
-        );
+        );*/
     }
 
     @Override
@@ -227,6 +229,8 @@ public class MoEngageContainer implements IMoengageContainer {
                 if(checkNull(value.getShopScore()))
                 helper.setUserAttribute(AppEventTracking.MOENGAGE.SHOP_SCORE, value.getShopScore());
 
+                if(checkNull(value.getGender()))
+                    helper.setGender(value.getGender().equals("1") ? "male" : "female");
             }
 
             @Override

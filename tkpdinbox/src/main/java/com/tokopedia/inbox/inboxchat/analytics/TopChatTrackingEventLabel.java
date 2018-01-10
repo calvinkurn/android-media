@@ -12,6 +12,7 @@ public class TopChatTrackingEventLabel {
         public static final String SHOP_PAGE = "shop page";
         public static final String INBOX_CHAT = "inbox-chat";
         public static final String CHAT_DETAIL = "chat detail";
+        public static final String UPDATE_TEMPLATE = "update template";
     }
 
     public interface Name {
@@ -30,7 +31,9 @@ public class TopChatTrackingEventLabel {
         public static final String INBOX_CHAT_SEARCH ="search on chatlist";
         public static final String CHAT_DETAIL_SEND ="click on send button";
         public static final String CHAT_DETAIL_INSERT ="click on insert button";
-        public static final String CHAT_DETAIL_ATTACHMENT ="click on send product attachemnt";
+        public static final String CHAT_DETAIL_ATTACHMENT ="click on send product attachment";
+        public static final String TEMPLATE_CHAT_CLICK ="click on template chat";
+        public static final String UPDATE_TEMPLATE = "click on tambah template";
     }
 
     public interface Label {

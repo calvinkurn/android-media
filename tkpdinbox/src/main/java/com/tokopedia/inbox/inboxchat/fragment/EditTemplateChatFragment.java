@@ -19,10 +19,12 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.inboxchat.analytics.TopChatTrackingEventLabel;
 import com.tokopedia.inbox.inboxchat.di.DaggerTemplateChatComponent;
 import com.tokopedia.inbox.inboxchat.presenter.EditTemplateChatContract;
 import com.tokopedia.inbox.inboxchat.presenter.EditTemplateChatPresenter;
@@ -173,6 +175,9 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                UnifyTracking.eventClickTemplate(TopChatTrackingEventLabel.Category.UPDATE_TEMPLATE,
+                        TopChatTrackingEventLabel.Action.UPDATE_TEMPLATE,
+                        TopChatTrackingEventLabel.Name.INBOX_CHAT);
                 presenter.submitText(editText.getText().toString(), message, list);
             }
         });

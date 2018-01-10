@@ -479,7 +479,7 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
 
             @Override
             public void onClick(View v) {
-                startActivityForResult(CommonUtils.requestBarcodeScanner(), 0);
+                startActivityForResult(CommonUtils.requestBarcodeScanner(getActivity()), 0);
             }
         });
         ConfirmButton.setOnClickListener(new View.OnClickListener() {

@@ -4,9 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.discovery.model.Filter;
-import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentView;
-import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.presenter.CatalogFragmentContract;
 import com.tokopedia.discovery.newdynamicfilter.helper.DynamicFilterDbManager;
 
 import java.lang.reflect.Type;
@@ -53,7 +50,7 @@ public class GetDynamicFilterSubscriber extends Subscriber<DynamicFilterModel> {
         String filterData = gson.toJson(model.getData().getFilter(), listType);
 
         DynamicFilterDbManager cache = new DynamicFilterDbManager();
-        cache.setFilterID(view.getScreenName());
+        cache.setFilterID(view.getScreenNameId());
         cache.setFilterData(filterData);
         cache.store();
     }

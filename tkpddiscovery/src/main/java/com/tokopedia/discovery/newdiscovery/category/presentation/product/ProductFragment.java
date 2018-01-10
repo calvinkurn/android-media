@@ -15,6 +15,7 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.tkpd.library.utils.URLParser;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
@@ -301,7 +302,7 @@ public class ProductFragment extends SearchSectionFragment
     }
 
     @Override
-    public String getScreenName() {
+    public String getScreenNameId() {
         return AppScreen.SCREEN_BROWSE_PRODUCT_FROM_CATEGORY;
     }
 
@@ -440,6 +441,10 @@ public class ProductFragment extends SearchSectionFragment
 
     @Override
     public String getDepartmentId() {
+        if (productViewModel == null ||
+                productViewModel.getCategoryHeaderModel() == null) {
+            return "0";
+        }
         return productViewModel.getCategoryHeaderModel().getDepartementId();
     }
 
@@ -623,6 +628,18 @@ public class ProductFragment extends SearchSectionFragment
     public void onDestroyView() {
         super.onDestroyView();
         presenter.detachView();
+    }
+
+    @Override
+    protected void screenTrack() {
+        if (getDepartmentId() != null && !getDepartmentId().equals("0")) {
+            ScreenTracking.eventDiscoveryScreenAuth(getDepartmentId());
+        }
+    }
+
+    @Override
+    protected String getScreenName() {
+        return getScreenNameId();
     }
 }
 

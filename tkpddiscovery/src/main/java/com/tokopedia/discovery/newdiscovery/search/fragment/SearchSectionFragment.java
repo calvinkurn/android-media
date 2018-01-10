@@ -14,7 +14,8 @@ import android.view.View;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
-import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.discovery.model.Filter;
@@ -22,14 +23,12 @@ import com.tokopedia.core.discovery.model.Sort;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.share.ShareActivity;
-import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.activity.SortProductActivity;
 import com.tokopedia.discovery.newdiscovery.base.BottomNavigationListener;
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
 import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
-import com.tokopedia.discovery.newdynamicfilter.helper.PreFilterHelper;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 
 import java.util.ArrayList;
@@ -77,6 +76,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        screenTrack();
         if (getUserVisibleHint()) {
             setupBottomNavigation();
         }
@@ -161,6 +161,13 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         if (isVisibleToUser && getView() != null) {
             setupBottomNavigation();
             showBottomBarNavigation(showBottomBar);
+            screenTrack();
+        }
+    }
+
+    protected void screenTrack() {
+        if (getUserVisibleHint()) {
+            ScreenTracking.screen(getScreenName());
         }
     }
 
@@ -245,7 +252,6 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         startActivity(intent);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -460,7 +466,6 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
 
     }
 
-    @SuppressWarnings("unchecked")
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         setSpanCount(savedInstanceState.getInt(EXTRA_SPAN_COUNT));
         setFilterData(savedInstanceState.<Filter>getParcelableArrayList(EXTRA_FILTER));

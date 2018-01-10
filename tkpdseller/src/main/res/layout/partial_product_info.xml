@@ -12,7 +12,7 @@
         android:orientation="vertical">
 
         <TextView
-            style="@style/TextView.Body1.BlackSecondary"
+            style="@style/TextView.Small.BlackSecondary"
             android:text="@string/product_label_product_info" />
 
     </LinearLayout>
@@ -52,7 +52,7 @@
 
             <TextView
                 android:id="@+id/text_view_shop_title"
-                style="@style/TextView.Body1.BlackSecondary"
+                style="@style/TextView.Small.BlackSecondary"
                 android:text="@string/product_label_product_recommendation" />
 
             <RadioGroup
@@ -75,7 +75,6 @@
             android:layout_height="wrap_content"
             app:content="@string/product_label_choose"
             app:content_color="@color/tkpd_main_green"
-            app:label_show_arrow="true"
             app:content_max_lines="5"
             app:title="@string/product_label_category"
             android:focusable="true"/>
@@ -89,7 +88,6 @@
         android:visibility="gone"
         app:content="@string/product_label_choose"
         app:content_color="@color/tkpd_main_green"
-        app:label_show_arrow="true"
         app:title="@string/product_label_catalog" />
 
 </LinearLayout>

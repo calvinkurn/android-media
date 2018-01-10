@@ -15,15 +15,18 @@ public class CreateResoWithoutAttachmentDomain {
     private String cacheKey;
 
     @Nullable
+    private ShopDomain shop;
+
+    @Nullable
     private boolean isSuccess;
 
     @Nullable
     private String successMessage;
 
-
-    public CreateResoWithoutAttachmentDomain(ResolutionDomain resolution, String cacheKey, String successMessage) {
+    public CreateResoWithoutAttachmentDomain(ResolutionDomain resolution, String cacheKey, ShopDomain shop, String successMessage) {
         this.resolution = resolution;
         this.cacheKey = cacheKey;
+        this.shop = shop;
         this.successMessage = successMessage;
     }
 
@@ -61,5 +64,14 @@ public class CreateResoWithoutAttachmentDomain {
 
     public void setSuccessMessage(@Nullable String successMessage) {
         this.successMessage = successMessage;
+    }
+
+    @Nullable
+    public ShopDomain getShop() {
+        return shop;
+    }
+
+    public void setShop(@Nullable ShopDomain shop) {
+        this.shop = shop;
     }
 }
