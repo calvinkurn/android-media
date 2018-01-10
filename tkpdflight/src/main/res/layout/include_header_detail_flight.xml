@@ -11,14 +11,15 @@
         android:id="@+id/container_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/airline_icon"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/image_width_m"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/margin_sm"
-            app:srcCompat="@drawable/ic_badge_diamond" />
+            android:layout_marginRight="@dimen/margin_vs" />
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -76,13 +77,13 @@
         android:layout_below="@+id/container_header"
         android:layout_marginTop="@dimen/margin_small"
         android:gravity="center_vertical"
-        tools:visibility="visible"
+        android:orientation="horizontal"
         android:visibility="gone"
-        android:orientation="horizontal">
+        tools:visibility="visible">
 
         <TextView
-            android:layout_marginRight="@dimen/margin_vs"
             style="@style/TextView.Body1.BlackSecondary"
+            android:layout_marginRight="@dimen/margin_vs"
             android:text="@string/flight_label_booking_code_pnr" />
 
         <TextView
