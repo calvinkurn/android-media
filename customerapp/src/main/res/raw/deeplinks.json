@@ -51,7 +51,7 @@
     },
     {
       "applink" : "tokopedia://digital/form?category_id=1&operator_id=7",
-      "path": "pulsa-smartfren"
+      "path": "paket-smartfren"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=1&operator_id=12",
@@ -507,7 +507,6 @@
 
 
 
-
     {
       "applink" : "tokopedia://digital/form?category_id=12",
       "path": "dompet-online"
@@ -624,21 +623,6 @@
       "applink" : "tokopedia://digital/form?category_id=5&operator_id=230",
       "path": "tagihan/pdam"
     },
-
-
-
-
-
-
-    {
-      "applink" : "tokopedia://digital/form?category_id=21&operator_id=228",
-      "path": "tokocash"
-    },
-    {
-      "applink" : "tokopedia://digital/form?category_id=21&operator_id=15",
-      "path": "gift-card/tokopedia"
-    },
-
 
 
 
@@ -844,11 +828,7 @@
     },
     {
       "applink" : "tokopedia://digital/form?category_id=4&operator_id=13",
-      "path": "bpjs/kesehtan"
-    },
-    {
-      "applink" : "tokopedia://digital/form?category_id=4&operator_id=13",
-      "path": "bpjs-kesehtan"
+      "path": "bpjs-kesehatan"
     },
     {
       "applink" : "tokopedia://digital/form?category_id=4&operator_id=14",
