@@ -15,6 +15,7 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -42,7 +43,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_DATA_PARAMS;
+import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_DISTRICT_NAME;
+import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_REQ_PARAMS;
 import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_DATA_STORE;
 
 public class PickupPointActivity extends BaseActivity
@@ -81,9 +83,10 @@ public class PickupPointActivity extends BaseActivity
     private Store selectedPickupBooth;
     private PickupPointAdapter pickupPointAdapter;
 
-    public static Intent createInstance(Activity activity, HashMap<String, String> params) {
+    public static Intent createInstance(Activity activity, String districtName, HashMap<String, String> params) {
         Intent intent = new Intent(activity, PickupPointActivity.class);
-        intent.putExtra(INTENT_DATA_PARAMS, params);
+        intent.putExtra(INTENT_REQ_PARAMS, params);
+        intent.putExtra(INTENT_DISTRICT_NAME, districtName);
         return intent;
     }
 
@@ -95,9 +98,10 @@ public class PickupPointActivity extends BaseActivity
 
         setupToolbar();
 
-        HashMap<String, String> params = (HashMap<String, String>) getIntent().getSerializableExtra(INTENT_DATA_PARAMS);
+        setupPickupPointSpinner();
 
-        setupSearchView(params);
+        HashMap<String, String> queryParams = (HashMap<String, String>) getIntent().getSerializableExtra(INTENT_REQ_PARAMS);
+        setupSearchView(queryParams);
 
         initializeInjector();
 
@@ -105,7 +109,14 @@ public class PickupPointActivity extends BaseActivity
 
         setupRecycleView();
 
-        doQuery(params);
+        doQuery(queryParams);
+    }
+
+    private void setupPickupPointSpinner() {
+        ArrayAdapter<String> pickupPointAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.pickup_point));
+        pickupPointAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spPickupBooth.setAdapter(pickupPointAdapter);
     }
 
     private void setupSearchView(final HashMap<String, String> params) {
@@ -142,6 +153,10 @@ public class PickupPointActivity extends BaseActivity
             getSupportActionBar().setHomeAsUpIndicator(
                     com.tokopedia.core.R.drawable.ic_webview_back_button
             );
+            String districtName = String.format(getString(R.string.title_send_to_pick_up_booth),
+                    getIntent().getStringExtra(INTENT_DISTRICT_NAME));
+            tvExpandedTitle.setText(districtName);
+            getSupportActionBar().setTitle(districtName);
 
             appBar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
                 @Override
@@ -238,7 +253,7 @@ public class PickupPointActivity extends BaseActivity
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
-                        doQuery((HashMap<String, String>) getIntent().getSerializableExtra(INTENT_DATA_PARAMS));
+                        doQuery((HashMap<String, String>) getIntent().getSerializableExtra(INTENT_REQ_PARAMS));
                     }
                 });
     }
@@ -263,7 +278,7 @@ public class PickupPointActivity extends BaseActivity
 
     @Override
     public void onItemShowMapClick(Store store) {
-        startActivityForResult(PickupPointMapActivity.createInstance(this, store), REQUEST_CODE_MAP);
+//        startActivityForResult(PickupPointMapActivity.createInstance(this, store), REQUEST_CODE_MAP);
     }
 
     @Override

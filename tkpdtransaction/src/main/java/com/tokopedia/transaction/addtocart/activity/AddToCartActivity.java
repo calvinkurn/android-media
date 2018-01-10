@@ -1139,8 +1139,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
 
     @Override
     public void onChoosePickupPoint() {
-        startActivityForResult(PickupPointActivity.createInstance(this, presenter.getPickupPointParams()),
-                REQUEST_CHOOSE_PICKUP_POINT);
+        startActivityForResult(PickupPointActivity.createInstance(this, presenter.getDistrictName(),
+                presenter.getPickupPointParams()), REQUEST_CHOOSE_PICKUP_POINT);
     }
 
     @Override
@@ -1150,7 +1150,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
 
     @Override
     public void onEditPickupPoint(Store store) {
-        startActivityForResult(PickupPointActivity.createInstance(this, presenter.getPickupPointParams()),
-                REQUEST_CHOOSE_PICKUP_POINT);
+        startActivityForResult(PickupPointActivity.createInstance(this, presenter.getDistrictName(),
+                presenter.getPickupPointParams()), REQUEST_CHOOSE_PICKUP_POINT);
     }
 }

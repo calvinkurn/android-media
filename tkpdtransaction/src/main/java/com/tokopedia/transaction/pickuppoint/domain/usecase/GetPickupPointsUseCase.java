@@ -43,9 +43,10 @@ public class GetPickupPointsUseCase extends UseCase<PickupPointResponse> {
         return repository.getPickupPoints(requestParams.getParamsAllValueInString());
     }
 
-    public static HashMap<String, String> generateParams(AtcFormData atcFormData){
+    public static HashMap<String, String> generateParams(AtcFormData atcFormData) {
         HashMap<String, String> params = new HashMap<>();
-        params.put(GetPickupPointsUseCase.PARAM_DISTRICT_ID, String.valueOf(atcFormData.getShop().getOriginId()));
+        params.put(GetPickupPointsUseCase.PARAM_DISTRICT_ID,
+                String.valueOf(atcFormData.getForm().getDestination().getDistrictId()));
         params.put(GetPickupPointsUseCase.PARAM_PAGE, GetPickupPointsUseCase.DEFAULT_PAGE);
         params.put(GetPickupPointsUseCase.PARAM_TOKEN,
                 atcFormData.getShop().getTokenPickup() != null ? atcFormData.getShop().getTokenPickup() : "");
@@ -54,7 +55,7 @@ public class GetPickupPointsUseCase extends UseCase<PickupPointResponse> {
         return params;
     }
 
-    public static HashMap<String, String> generateParams(Store store){
+    public static HashMap<String, String> generateParams(Store store) {
         HashMap<String, String> params = new HashMap<>();
         params.put(GetPickupPointsUseCase.PARAM_DISTRICT_ID, String.valueOf(store.getDistrictId()));
         params.put(GetPickupPointsUseCase.PARAM_PAGE, GetPickupPointsUseCase.DEFAULT_PAGE);

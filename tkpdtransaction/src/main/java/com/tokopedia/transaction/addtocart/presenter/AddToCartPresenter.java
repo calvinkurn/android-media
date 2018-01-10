@@ -72,4 +72,6 @@ public interface AddToCartPresenter {
     String calculateWeight(String initWeight, String quantity);
 
     HashMap<String, String> getPickupPointParams();
+
+    String getDistrictName();
 }

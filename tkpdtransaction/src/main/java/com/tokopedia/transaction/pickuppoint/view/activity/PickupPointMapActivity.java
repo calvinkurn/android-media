@@ -25,6 +25,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_DATA_STORE;
+import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_DISTRICT_NAME;
 
 public class PickupPointMapActivity extends BasePresenterActivity implements OnMapReadyCallback {
 
@@ -35,9 +36,10 @@ public class PickupPointMapActivity extends BasePresenterActivity implements OnM
 
     private Store store;
 
-    public static Intent createInstance(Activity activity, Store store) {
+    public static Intent createInstance(Activity activity, String districtName, Store store) {
         Intent intent = new Intent(activity, PickupPointMapActivity.class);
         intent.putExtra(INTENT_DATA_STORE, store);
+        intent.putExtra(INTENT_DISTRICT_NAME, districtName);
         return intent;
     }
 
@@ -124,6 +126,8 @@ public class PickupPointMapActivity extends BasePresenterActivity implements OnM
     protected void setupToolbar() {
         super.setupToolbar();
         toolbar.setNavigationIcon(com.tokopedia.core.R.drawable.ic_clear_24dp);
+        toolbar.setTitle(String.format(getString(R.string.title_send_to_pick_up_booth),
+                getIntent().getStringExtra(INTENT_DISTRICT_NAME)));
     }
 
     @Override

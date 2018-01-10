@@ -592,4 +592,8 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
         return GetPickupPointsUseCase.generateParams(atcFormData);
     }
 
+    @Override
+    public String getDistrictName() {
+        return atcFormData.getForm().getDestination().getDistrictName();
+    }
 }

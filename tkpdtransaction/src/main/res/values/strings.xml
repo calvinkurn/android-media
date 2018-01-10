@@ -167,7 +167,7 @@
 
     <string name="title_term_and_condition">Syarat dan Ketentuan</string>
     <string name="title_bottomsheet_insurance">Asuransi Pengiriman</string>
-    <string name="title_send_to_pick_up_booth">Gerai Pengambilan di aaaa bbbb cccc dddd eeee ffff gggg hhhh iiii jjjj kkkk llll mmmm nnnn</string>
+    <string name="title_send_to_pick_up_booth">Gerai Pengambilan di %s</string>
     <string name="label_send_to_pick_up_booth">Kirim ke Gerai Pengambilan</string>
     <string name="label_edit_pickup">Edit</string>
     <string name="label_pickup_booth">Gerai Pengambilan</string>
@@ -182,5 +182,7 @@
     <string name="label_colon">:</string>
     <string name="title_bottomsheet_pin_code_pickup_booth">Kode Pin</string>
     <string name="message_bottomsheet_pin_code_pickup_booth">Tunjukkan Kode Pin untuk verifikasi pada saat pengambilan barang</string>
-    <string formatted="false" name="url_static_map">http://maps.googleapis.com/maps/api/staticmap?center=%s&amp;zoom=%s&amp;size=%sx%s&amp;maptype=%s&amp;markers=%s&amp;key=%s</string>
+    <string-array name="pickup_point">
+        <item>Alfamart</item>
+    </string-array>
 </resources>

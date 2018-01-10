@@ -904,7 +904,9 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void onEditPickupPoint(CartItem cartData) {
-        navigateToActivityRequest(PickupPointActivity.createInstance(getActivity(), GetPickupPointsUseCase.generateParams(cartData.getStore())),
+        navigateToActivityRequest(PickupPointActivity.createInstance(getActivity(),
+                cartData.getCartDestination().getAddressDistrict(),
+                GetPickupPointsUseCase.generateParams(cartData.getStore())),
                 REQUEST_CHOOSE_PICKUP_POINT);
         // TODO : Open PickupPointActivity
         // TODO : Request ke API stich,
