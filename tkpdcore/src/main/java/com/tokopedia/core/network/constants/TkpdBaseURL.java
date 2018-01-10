@@ -540,6 +540,9 @@ public class TkpdBaseURL {
         public static final String PATH_TX_PAYMENT_EMONEY = "tx-payment-emoney.pl";
 
         public static final String GET_COUPON_LIST = "coupon/list/";
+
+        public static final String PATH_EDIT_PICKUP_POINT = "/v4/action/tx-cart/edit_pickupstore_point";
+        public static final String PATH_REMOVE_PICKUP_POINT = "/v4/action/tx-cart/remove_pickupstore_point";
     }
 
     public static class Shipment {
