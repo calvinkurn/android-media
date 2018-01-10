@@ -18,7 +18,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.helper.KeyboardHelper;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout;
