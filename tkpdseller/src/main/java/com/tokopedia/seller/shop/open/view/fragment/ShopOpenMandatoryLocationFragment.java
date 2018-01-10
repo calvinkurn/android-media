@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,17 +20,14 @@ import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Tok
 import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationContract;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.logistic.LogisticRouter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.base.view.listener.StepperListener;
-import com.tokopedia.seller.logistic.GetOpenShopLocationPassUseCase;
-import com.tokopedia.seller.logistic.GetOpenShopTokenUseCase;
 import com.tokopedia.seller.shop.common.exception.ShopException;
-import com.tokopedia.seller.shop.common.tracking.TrackingOpenShop;
+import com.tokopedia.seller.shop.open.analytic.ShopOpenTracking;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
 import com.tokopedia.seller.shop.open.view.holder.LocationHeaderViewHolder;
@@ -43,15 +39,12 @@ import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.Respon
 import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.Shipment;
 import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.UserData;
 import com.tokopedia.seller.shop.open.domain.interactor.ShopOpenSaveLocationUseCase;
-import com.tokopedia.seller.shop.open.view.model.LocationViewModel;
 import com.tokopedia.seller.shop.open.view.presenter.ShopOpenLocPresenterImpl;
 import com.tokopedia.seller.shop.open.view.presenter.ShopOpenLocView;
 
 import java.util.HashMap;
 
 import javax.inject.Inject;
-
-import rx.Subscriber;
 
 
 /**
@@ -74,7 +67,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
     ShopOpenLocPresenterImpl shopOpenLocPresenter;
 
     @Inject
-    TrackingOpenShop trackingOpenShop;
+    ShopOpenTracking trackingOpenShop;
 
     RequestParams requestParams;
     private ProgressDialog progressDialog;

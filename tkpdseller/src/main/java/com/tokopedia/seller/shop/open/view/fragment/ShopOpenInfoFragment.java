@@ -34,7 +34,7 @@ import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.common.gallery.GalleryCropActivity;
 import com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout;
 import com.tokopedia.seller.product.edit.view.dialog.ImageEditDialogFragment;
-import com.tokopedia.seller.shop.common.tracking.TrackingOpenShop;
+import com.tokopedia.seller.shop.open.analytic.ShopOpenTracking;
 import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
 import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.UserData;
 import com.tokopedia.seller.shop.open.di.component.DaggerShopSettingInfoComponent;
@@ -83,7 +83,7 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
     private StepperListener<ShopOpenStepperModel> onShopStepperListener;
 
     @Inject
-    TrackingOpenShop trackingOpenShop;
+    ShopOpenTracking trackingOpenShop;
 
     public static ShopOpenInfoFragment createInstance() {
         return new ShopOpenInfoFragment();

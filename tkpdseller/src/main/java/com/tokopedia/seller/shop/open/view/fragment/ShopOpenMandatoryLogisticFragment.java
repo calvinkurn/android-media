@@ -32,7 +32,7 @@ import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.listener.StepperListener;
-import com.tokopedia.seller.shop.common.tracking.TrackingOpenShop;
+import com.tokopedia.seller.shop.open.analytic.ShopOpenTracking;
 import com.tokopedia.seller.logistic.model.CouriersModel;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.util.ShopErrorHandler;
@@ -75,7 +75,7 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     private TkpdProgressDialog tkpdProgressDialog;
 
     @Inject
-    TrackingOpenShop trackingOpenShop;
+    ShopOpenTracking trackingOpenShop;
 
     public static ShopOpenMandatoryLogisticFragment newInstance() {
         return new ShopOpenMandatoryLogisticFragment();

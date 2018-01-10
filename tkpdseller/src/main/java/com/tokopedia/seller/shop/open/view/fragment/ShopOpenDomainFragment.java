@@ -20,10 +20,9 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.common.widget.PrefixEditText;
 import com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout;
-import com.tokopedia.seller.shop.common.tracking.TrackingOpenShop;
+import com.tokopedia.seller.shop.open.analytic.ShopOpenTracking;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.util.ShopErrorHandler;
-import com.tokopedia.seller.shop.open.view.activity.ShopOpenMandatoryActivity;
 import com.tokopedia.seller.shop.open.view.activity.ShopOpenReserveDomainSuccessActivity;
 import com.tokopedia.seller.shop.open.view.listener.ShopOpenDomainView;
 import com.tokopedia.seller.shop.open.view.presenter.ShopOpenDomainPresenterImpl;
@@ -50,7 +49,7 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
     @Inject
     ShopOpenDomainPresenterImpl shopOpenDomainPresenter;
     @Inject
-    TrackingOpenShop trackingOpenShop;
+    ShopOpenTracking trackingOpenShop;
 
     public static ShopOpenDomainFragment newInstance() {
         return new ShopOpenDomainFragment();

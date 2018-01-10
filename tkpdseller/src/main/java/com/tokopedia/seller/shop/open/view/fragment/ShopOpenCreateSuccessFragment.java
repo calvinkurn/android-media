@@ -20,7 +20,7 @@ import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.common.imageeditor.view.WatermarkPresenterView;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
-import com.tokopedia.seller.shop.common.tracking.TrackingOpenShop;
+import com.tokopedia.seller.shop.open.analytic.ShopOpenTracking;
 import com.tokopedia.seller.shop.open.di.component.DaggerShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.view.presenter.ShopCreateSuccessPresenter;
@@ -38,7 +38,7 @@ public class ShopOpenCreateSuccessFragment extends BasePresenterFragment impleme
     private TextView tvShopName;
 
     @Inject
-    TrackingOpenShop trackingOpenShop;
+    ShopOpenTracking trackingOpenShop;
 
     public static ShopOpenCreateSuccessFragment newInstance() {
         return new ShopOpenCreateSuccessFragment();

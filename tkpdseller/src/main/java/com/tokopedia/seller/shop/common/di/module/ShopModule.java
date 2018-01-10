@@ -13,7 +13,7 @@ import com.tokopedia.seller.shop.common.di.ShopScope;
 import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
 import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepositoryImpl;
 import com.tokopedia.seller.shop.common.interceptor.HeaderErrorResponseInterceptor;
-import com.tokopedia.seller.shop.common.tracking.TrackingOpenShop;
+import com.tokopedia.seller.shop.open.analytic.ShopOpenTracking;
 import com.tokopedia.seller.shop.open.data.source.cloud.api.TomeApi;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
@@ -105,9 +105,9 @@ public class ShopModule {
 
     @ShopScope
     @Provides
-    public TrackingOpenShop provideTrackingOpenShop(@ApplicationContext Context context){
+    public ShopOpenTracking provideTrackingOpenShop(@ApplicationContext Context context){
         if(context instanceof SellerModuleRouter) {
-            return new TrackingOpenShop((SellerModuleRouter)context);
+            return new ShopOpenTracking((SellerModuleRouter)context);
         }else{
             return null;
         }
