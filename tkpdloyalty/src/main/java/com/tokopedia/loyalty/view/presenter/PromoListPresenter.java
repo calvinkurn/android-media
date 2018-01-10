@@ -23,6 +23,7 @@ import rx.Subscriber;
 public class PromoListPresenter implements IPromoListPresenter {
     private final IPromoInteractor promoInteractor;
     private final IPromoListView view;
+    private int perPage = 10;
 
     @Inject
     public PromoListPresenter(IPromoInteractor promoInteractor, IPromoListView view) {
@@ -30,12 +31,17 @@ public class PromoListPresenter implements IPromoListPresenter {
         this.view = view;
     }
 
+    @Override
+    public void setPage(int perPage) {
+        this.perPage = perPage;
+    }
 
     @Override
     public void processGetPromoList(String subCategories) {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put("categories", subCategories);
         param.put("categories_exclude", "30");
+        param.put("per_page", String.valueOf(perPage));
         this.promoInteractor.getPromoList(param, new Subscriber<List<PromoData>>() {
             @Override
             public void onCompleted() {
@@ -44,32 +50,80 @@ public class PromoListPresenter implements IPromoListPresenter {
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
-                if (e instanceof UnknownHostException) {
-                             /* Ini kalau ga ada internet */
-                    view.renderErrorNoConnectionGetPromoDataList(
-                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
-                    );
-                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-                            /* Ini kalau timeout */
-                    view.renderErrorTimeoutConnectionGetPromoDataListt(
-                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
-                    );
-                } else if (e instanceof HttpErrorException) {
-                            /* Ini Http error, misal 403, 500, 404,
-                            code http errornya bisa diambil
-                             e.getErrorCode */
-                    view.renderErrorHttpGetPromoDataList(e.getMessage());
-                } else {
-                             /* Ini diluar dari segalanya hahahaha */
-                    view.renderErrorHttpGetPromoDataList(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                }
+                handleError(e);
             }
 
             @Override
             public void onNext(List<PromoData> promoData) {
-                view.renderPromoDataList(promoData);
+                if (promoData.size() > 0) {
+                    if (promoData.size() == 10) {
+                        perPage += 10;
+                        view.renderNextPage(true);
+                    }
+                    view.renderPromoDataList(promoData, true);
+                } else {
+                    view.renderErrorGetPromoDataList("Empty Data");
+                }
             }
         });
+    }
+
+    @Override
+    public void processGetPromoListLoadMore(String subCategories) {
+        TKPDMapParam<String, String> param = new TKPDMapParam<>();
+        param.put("categories", subCategories);
+        param.put("categories_exclude", "30");
+        param.put("per_page", String.valueOf(perPage));
+        this.promoInteractor.getPromoList(param, new Subscriber<List<PromoData>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                handleError(e);
+            }
+
+            @Override
+            public void onNext(List<PromoData> promoData) {
+                if (promoData.size() > 0) {
+                    if (promoData.size() == 10) {
+                        perPage += 10;
+                        view.renderNextPage(true);
+                    } else {
+                        perPage = 10;
+                        view.renderNextPage(false);
+                    }
+                } else {
+                    perPage = 10;
+                    view.renderNextPage(false);
+                }
+                view.renderPromoDataList(promoData, false);
+            }
+        });
+    }
+
+    private void handleError(Throwable e) {
+        e.printStackTrace();
+        if (e instanceof UnknownHostException) {
+                             /* Ini kalau ga ada internet */
+            view.renderErrorNoConnectionGetPromoDataList(
+                    ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
+            );
+        } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
+                            /* Ini kalau timeout */
+            view.renderErrorTimeoutConnectionGetPromoDataListt(
+                    ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+            );
+        } else if (e instanceof HttpErrorException) {
+                            /* Ini Http error, misal 403, 500, 404,
+                            code http errornya bisa diambil
+                             e.getErrorCode */
+            view.renderErrorHttpGetPromoDataList(e.getMessage());
+        } else {
+                             /* Ini diluar dari segalanya hahahaha */
+            view.renderErrorHttpGetPromoDataList(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+        }
     }
 }
