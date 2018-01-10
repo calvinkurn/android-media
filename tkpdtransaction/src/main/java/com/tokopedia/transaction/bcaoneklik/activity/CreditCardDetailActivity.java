@@ -1,10 +1,8 @@
 package com.tokopedia.transaction.bcaoneklik.activity;
 
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -12,22 +10,32 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
+import com.tokopedia.transaction.bcaoneklik.di.DaggerPaymentOptionComponent;
+import com.tokopedia.transaction.bcaoneklik.di.PaymentOptionComponent;
+import com.tokopedia.transaction.bcaoneklik.dialog.DeleteCreditCardDialog;
 import com.tokopedia.transaction.bcaoneklik.model.creditcard.CreditCardModelItem;
+import com.tokopedia.transaction.bcaoneklik.presenter.ListPaymentTypePresenterImpl;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * @author Aghny A. Putra on 09/01/18
  */
 
-public class CreditCardDetailActivity extends TActivity {
+public class CreditCardDetailActivity extends TActivity implements DeleteCreditCardDialog.DeleteCreditCardDialogListener {
 
     @BindView(R2.id.image_cc_big_size) ImageView mViewImageCc;
     @BindView(R2.id.input_credit_card_number) TextView mCreditCardNumber;
     @BindView(R2.id.card_expiry) TextView mCardExpiry;
     @BindView(R2.id.credit_card_logo) ImageView mCreditCardLogo;
-    @BindView(R2.id.button_delete_cc) Button mButtonDeleteCc;
+
+    @Inject ListPaymentTypePresenterImpl mListPaymentTypePresenter;
+
+    private CreditCardModelItem mCreditCardModelItem;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -35,14 +43,24 @@ public class CreditCardDetailActivity extends TActivity {
         inflateView(R.layout.credit_card_detail_layout);
         ButterKnife.bind(this);
 
-        Intent intent = getIntent();
-        CreditCardModelItem creditCardModelItem = (CreditCardModelItem) intent.getSerializableExtra("credit_card_item");
+        initInjector();
 
-        mViewImageCc.setBackgroundResource(getCcImageResource(creditCardModelItem));
-        mCreditCardNumber.setText(getSpacedText(creditCardModelItem.getMaskedNumber()));
-        mCardExpiry.setText(creditCardModelItem.getExpiryMonth() + "/" + creditCardModelItem.getExpiryYear());
-        ImageHandler.LoadImage(mCreditCardLogo, creditCardModelItem.getCardTypeImage());
+        mCreditCardModelItem = (CreditCardModelItem) getIntent().getSerializableExtra("credit_card_item");
+
+        mViewImageCc.setBackgroundResource(getCcImageResource(mCreditCardModelItem));
+        mCreditCardNumber.setText(getSpacedText(mCreditCardModelItem.getMaskedNumber()));
+        mCardExpiry.setText(mCreditCardModelItem.getExpiryMonth() + "/" + mCreditCardModelItem.getExpiryYear());
+        ImageHandler.LoadImage(mCreditCardLogo, mCreditCardModelItem.getCardTypeImage());
     }
+
+    private void initInjector() {
+        PaymentOptionComponent component = DaggerPaymentOptionComponent
+                .builder()
+                .appComponent(getApplicationComponent())
+                .build();
+        component.inject(this);
+    }
+
 
     @Override
     protected void setupToolbar() {
@@ -104,4 +122,16 @@ public class CreditCardDetailActivity extends TActivity {
         return builder.toString();
     }
 
+    @OnClick(R2.id.button_delete_cc)
+    public void showDeleteCcDialog() {
+        DeleteCreditCardDialog creditCardDialog = DeleteCreditCardDialog.createDialog(
+                mCreditCardModelItem.getTokenId(),
+                mCreditCardModelItem.getMaskedNumber());
+        creditCardDialog.show(getFragmentManager(), "delete_credit_card_dialog");
+    }
+
+    @Override
+    public void onConfirmDelete(String tokenId) {
+        mListPaymentTypePresenter.onCreditCardDeleted(this, tokenId);
+    }
 }
