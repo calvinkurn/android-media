@@ -64,7 +64,7 @@ import permissions.dispatcher.RuntimePermissions;
  */
 
 @RuntimePermissions
-public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpenInfoView {
+public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements ShopOpenInfoView {
 
     public static final int REQUEST_CODE_IMAGE_PICKER = 532;
 
@@ -85,8 +85,8 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
     @Inject
     ShopOpenTracking trackingOpenShop;
 
-    public static ShopOpenInfoFragment createInstance() {
-        return new ShopOpenInfoFragment();
+    public static ShopOpenMandatoryInfoFragment createInstance() {
+        return new ShopOpenMandatoryInfoFragment();
     }
 
     @Override
@@ -227,18 +227,18 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
 
     private void onClickBrowseImage() {
         FragmentManager fm = getActivity().getSupportFragmentManager();
-        ImageNewDialogFragment dialogFragment = ImageNewDialogFragment.newInstance(0);
+        ShopOpenMandatoryImageDialogFragment dialogFragment = ShopOpenMandatoryImageDialogFragment.newInstance(0);
         dialogFragment.show(fm, ImageEditDialogFragment.FRAGMENT_TAG);
         dialogFragment.setOnImageEditListener(new ImageEditDialogFragment.OnImageEditListener() {
 
             @Override
             public void clickEditProductFromCamera(int position) {
-                ShopOpenInfoFragmentPermissionsDispatcher.goToCameraWithCheck(ShopOpenInfoFragment.this);
+                ShopOpenInfoFragmentPermissionsDispatcher.goToCameraWithCheck(ShopOpenMandatoryInfoFragment.this);
             }
 
             @Override
             public void clickEditProductFromGallery(int position) {
-                ShopOpenInfoFragmentPermissionsDispatcher.goToGalleryWithCheck(ShopOpenInfoFragment.this);
+                ShopOpenInfoFragmentPermissionsDispatcher.goToGalleryWithCheck(ShopOpenMandatoryInfoFragment.this);
             }
         });
     }

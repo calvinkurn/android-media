@@ -40,10 +40,10 @@ import com.tokopedia.seller.shop.open.view.model.CourierServiceIdWrapper;
 import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
 import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
 import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.Shipment;
-import com.tokopedia.seller.shop.open.view.widget.CourierListViewGroup;
-import com.tokopedia.seller.shop.open.view.widget.ShopCourierExpandableOption;
-import com.tokopedia.seller.shop.open.view.listener.ShopSettingLogisticView;
-import com.tokopedia.seller.shop.open.view.presenter.ShopSettingLogisticPresenterImpl;
+import com.tokopedia.seller.shop.open.view.widget.ShopOpenCourierListViewGroup;
+import com.tokopedia.seller.shop.open.view.widget.ShopOpenCourierExpandableOption;
+import com.tokopedia.seller.shop.open.view.listener.ShopOpenLogisticView;
+import com.tokopedia.seller.shop.open.view.presenter.ShopOpenLogisticPresenterImpl;
 
 import java.util.List;
 
@@ -53,7 +53,7 @@ import javax.inject.Inject;
  * Created by nathan on 10/21/17.
  */
 
-public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implements ShopSettingLogisticView, ShopCourierExpandableOption.OnShopCourierExpandableOptionListener {
+public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implements ShopOpenLogisticView, ShopOpenCourierExpandableOption.OnShopCourierExpandableOptionListener {
     private StepperListener<ShopOpenStepperModel> onShopStepperListener;
     private OnShopOpenLogisticFragmentListener onShopOpenLogisticFragmentListener;
     private TextView tvMakeSurePickupLoc;
@@ -68,10 +68,10 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     public static final String SAVED_SELECTED_COURIER = "svd_sel_couriers";
 
     @Inject
-    public ShopSettingLogisticPresenterImpl presenter;
+    public ShopOpenLogisticPresenterImpl presenter;
     private View vContent;
     private View vLoading;
-    private CourierListViewGroup courierListViewGroup;
+    private ShopOpenCourierListViewGroup courierListViewGroup;
     private TkpdProgressDialog tkpdProgressDialog;
 
     @Inject

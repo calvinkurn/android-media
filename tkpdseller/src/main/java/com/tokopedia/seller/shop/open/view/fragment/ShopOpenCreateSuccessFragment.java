@@ -23,7 +23,7 @@ import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.shop.open.analytic.ShopOpenTracking;
 import com.tokopedia.seller.shop.open.di.component.DaggerShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
-import com.tokopedia.seller.shop.open.view.presenter.ShopCreateSuccessPresenter;
+import com.tokopedia.seller.shop.open.view.presenter.ShopOpenCreateSuccessPresenter;
 
 import javax.inject.Inject;
 
@@ -32,7 +32,7 @@ public class ShopOpenCreateSuccessFragment extends BasePresenterFragment impleme
     public static final String TAG = ShopOpenCreateSuccessFragment.class.getSimpleName();
 
     @Inject
-    public ShopCreateSuccessPresenter shopCreateSuccessPresenter;
+    public ShopOpenCreateSuccessPresenter shopCreateSuccessPresenter;
     private ImageView shopIconImageView;
     private LoadingStateView loadingStateView;
     private TextView tvShopName;

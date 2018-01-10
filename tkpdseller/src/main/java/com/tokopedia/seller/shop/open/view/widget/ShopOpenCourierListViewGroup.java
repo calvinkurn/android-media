@@ -17,32 +17,32 @@ import com.tokopedia.seller.shop.open.view.model.CourierServiceIdWrapper;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CourierListViewGroup extends LinearLayout implements ShopCourierExpandableOption.OnShopCourierExpandableOptionListener {
+public class ShopOpenCourierListViewGroup extends LinearLayout implements ShopOpenCourierExpandableOption.OnShopCourierExpandableOptionListener {
     private List<Courier> courierList;
 
-    private ShopCourierExpandableOption.OnShopCourierExpandableOptionListener onShopCourierExpandableOptionListener;
-    public void setOnShopCourierExpandableOptionListener(ShopCourierExpandableOption.OnShopCourierExpandableOptionListener
+    private ShopOpenCourierExpandableOption.OnShopCourierExpandableOptionListener onShopCourierExpandableOptionListener;
+    public void setOnShopCourierExpandableOptionListener(ShopOpenCourierExpandableOption.OnShopCourierExpandableOptionListener
                                                                  onShopCourierExpandableOptionListener) {
         this.onShopCourierExpandableOptionListener = onShopCourierExpandableOptionListener;
     }
 
-    public CourierListViewGroup(Context context) {
+    public ShopOpenCourierListViewGroup(Context context) {
         super(context);
         init();
     }
 
-    public CourierListViewGroup(Context context, @Nullable AttributeSet attrs) {
+    public ShopOpenCourierListViewGroup(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public CourierListViewGroup(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ShopOpenCourierListViewGroup(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public CourierListViewGroup(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public ShopOpenCourierListViewGroup(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init();
     }
@@ -66,8 +66,8 @@ public class CourierListViewGroup extends LinearLayout implements ShopCourierExp
         this.removeAllViews();
         for (int i = 0, sizei = courierList.size(); i < sizei; i++) {
             Courier courier = courierList.get(i);
-            ShopCourierExpandableOption shopCourierExpandableOption =
-                    (ShopCourierExpandableOption) LayoutInflater.from(getContext()).inflate(R.layout.item_shop_courier, this, false);
+            ShopOpenCourierExpandableOption shopCourierExpandableOption =
+                    (ShopOpenCourierExpandableOption) LayoutInflater.from(getContext()).inflate(R.layout.item_shop_courier, this, false);
             shopCourierExpandableOption.setTitleText(courier.getName());
             shopCourierExpandableOption.setLogo(courier.getLogo());
             shopCourierExpandableOption.setEnabled(courier.isAvailable());
@@ -89,8 +89,8 @@ public class CourierListViewGroup extends LinearLayout implements ShopCourierExp
         CourierServiceIdWrapper courierServiceIdWrapper = new CourierServiceIdWrapper();
         for (int i = 0, sizei = this.getChildCount(); i < sizei; i++) {
             View child = this.getChildAt(i);
-            if (child instanceof ShopCourierExpandableOption) {
-                ShopCourierExpandableOption shopCourierExpandableOption = (ShopCourierExpandableOption) child;
+            if (child instanceof ShopOpenCourierExpandableOption) {
+                ShopOpenCourierExpandableOption shopCourierExpandableOption = (ShopOpenCourierExpandableOption) child;
                 boolean isChecked = shopCourierExpandableOption.isChecked();
                 if (isChecked) {
                     courierServiceIdWrapper.add(courierList.get(i).getId(),

@@ -16,7 +16,7 @@ import rx.Subscriber;
  * Created by sebastianuskh on 3/23/17.
  */
 
-public class ShopSettingLogisticPresenterImpl extends ShopSettingLogisticPresenter {
+public class ShopOpenLogisticPresenterImpl extends ShopOpenLogisticPresenter {
 
     public static final String SUCCESS = "1";
     private final GetLogisticAvailableUseCase getLogisticAvailableUseCase;
@@ -24,9 +24,9 @@ public class ShopSettingLogisticPresenterImpl extends ShopSettingLogisticPresent
     private final ShopOpenCreateUseCase shopOpenCreateUseCase;
 
     @Inject
-    public ShopSettingLogisticPresenterImpl(GetLogisticAvailableUseCase getLogisticAvailableUseCase,
-                                            ShopOpenSaveCourierUseCase shopOpenSaveCourierUseCase,
-                                            ShopOpenCreateUseCase shopOpenCreateUseCase) {
+    public ShopOpenLogisticPresenterImpl(GetLogisticAvailableUseCase getLogisticAvailableUseCase,
+                                         ShopOpenSaveCourierUseCase shopOpenSaveCourierUseCase,
+                                         ShopOpenCreateUseCase shopOpenCreateUseCase) {
         this.getLogisticAvailableUseCase = getLogisticAvailableUseCase;
         this.shopOpenSaveCourierUseCase = shopOpenSaveCourierUseCase;
         this.shopOpenCreateUseCase = shopOpenCreateUseCase;

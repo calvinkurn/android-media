@@ -71,7 +71,7 @@
                     android:animateLayoutChanges="true"
                     android:orientation="vertical">
 
-                    <com.tokopedia.seller.shop.open.view.widget.CourierListViewGroup
+                    <com.tokopedia.seller.shop.open.view.widget.ShopOpenCourierListViewGroup
                         android:id="@+id/vg_courier_list"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

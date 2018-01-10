@@ -34,7 +34,7 @@ import javax.inject.Inject;
  * Created by Hendry on 3/17/2017.
  */
 
-public class ShopOpenDomainFragment extends BasePresenterFragment implements ShopOpenDomainView {
+public class ShopOpenReserveDomainFragment extends BasePresenterFragment implements ShopOpenDomainView {
 
     public static final int MIN_SHOP_NAME_LENGTH = 3;
     public static final int MIN_SHOP_DOMAIN_LENGTH = 3;
@@ -51,8 +51,8 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
     @Inject
     ShopOpenTracking trackingOpenShop;
 
-    public static ShopOpenDomainFragment newInstance() {
-        return new ShopOpenDomainFragment();
+    public static ShopOpenReserveDomainFragment newInstance() {
+        return new ShopOpenReserveDomainFragment();
     }
 
     @Override
