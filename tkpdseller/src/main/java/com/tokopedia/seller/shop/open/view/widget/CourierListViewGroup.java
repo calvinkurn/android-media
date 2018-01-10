@@ -1,4 +1,4 @@
-package com.tokopedia.seller.shop.open.view;
+package com.tokopedia.seller.shop.open.view.widget;
 
 import android.animation.LayoutTransition;
 import android.annotation.TargetApi;

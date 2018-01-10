@@ -40,8 +40,8 @@ import com.tokopedia.seller.shop.open.view.model.CourierServiceIdWrapper;
 import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
 import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
 import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.Shipment;
-import com.tokopedia.seller.shop.open.view.CourierListViewGroup;
-import com.tokopedia.seller.shop.open.view.ShopCourierExpandableOption;
+import com.tokopedia.seller.shop.open.view.widget.CourierListViewGroup;
+import com.tokopedia.seller.shop.open.view.widget.ShopCourierExpandableOption;
 import com.tokopedia.seller.shop.open.view.listener.ShopSettingLogisticView;
 import com.tokopedia.seller.shop.open.view.presenter.ShopSettingLogisticPresenterImpl;
 
