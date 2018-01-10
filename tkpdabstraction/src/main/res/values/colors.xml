@@ -1,13 +1,8 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
 
-    <color name="grey">#888888</color>
     <color name="black_12">#1e000000</color>
     <color name="black_twenty_percent">#1F000000</color>
-    <color name="tkpd_dark_green">#5eba46</color>
-    <color name="tkpd_dark_gray">#999999</color>
-    <color name="tkpd_light_grey">#dedede</color>
     <color name="tkpd_dark_red">#FF0000</color>
-    <color name="orange_red">#ff5722</color>
 
 </resources>

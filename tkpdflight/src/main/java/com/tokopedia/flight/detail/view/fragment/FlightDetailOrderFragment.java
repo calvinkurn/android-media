@@ -271,7 +271,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Override
     public void updateViewExpired() {
-        updateViewStatus(R.string.flight_label_transaction_failed, R.color.orange_red, false, false, false, true);
+        updateViewStatus(R.string.flight_label_transaction_failed, R.color.deep_orange_500, false, false, false, true);
     }
 
     @Override

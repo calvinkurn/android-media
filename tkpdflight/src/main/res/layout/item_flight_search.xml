@@ -107,7 +107,7 @@
                 android:layout_above="@id/arrival_time_circle"
                 android:layout_below="@id/departure_time_circle"
                 android:layout_centerHorizontal="true"
-                android:background="@color/tkpd_light_grey" />
+                android:background="@color/grey_300" />
 
         </RelativeLayout>
 

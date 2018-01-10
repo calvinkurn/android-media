@@ -73,7 +73,7 @@ public class FlightSearchActivity extends BaseFlightActivity
 
     private void setupFlightToolbar() {
         toolbar.setContentInsetStartWithNavigation(0);
-        toolbar.setSubtitleTextColor(ContextCompat.getColor(this, R.color.tkpd_dark_gray));
+        toolbar.setSubtitleTextColor(ContextCompat.getColor(this, R.color.grey_500));
         String title = getDepartureAirport().getCityName() + " ➝ " + getArrivalAirport().getCityName();
         String subtitle = dateString + " | " + passengerString + " | " + classString;
         updateTitle(title, subtitle);

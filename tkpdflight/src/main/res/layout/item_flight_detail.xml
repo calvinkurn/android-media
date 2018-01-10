@@ -75,7 +75,7 @@
                 android:layout_alignLeft="@+id/departure_time_circle"
                 android:layout_below="@id/departure_time_circle"
                 android:layout_marginLeft="4dp"
-                android:background="@color/tkpd_light_grey" />
+                android:background="@color/grey_300" />
 
             <TextView
                 android:id="@+id/departure_airport_name"
