@@ -1,5 +1,6 @@
 package com.tokopedia.seller.shop.open.view.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -32,6 +33,7 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepp
         ShopOpenMandatoryLogisticFragment.OnShopOpenLogisticFragmentListener{
 
     public static final String EXTRA_RESPONSE_IS_RESERVE_DOMAIN = "EXTRA_RESPONSE_IS_RESERVE_DOMAIN";
+    public static final int REQUEST_PHONE_VERIFICATION = 300;
     private List<Fragment> fragmentList;
     private ShopOpenDomainComponent component;
 
@@ -88,7 +90,17 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepp
         super.onResume();
         if (!SessionHandler.isMsisdnVerified()) {
             Intent intent = SessionRouter.getPhoneVerificationActivationActivityIntent(this);
-            startActivity(intent);
+            startActivityForResult(intent, REQUEST_PHONE_VERIFICATION);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_PHONE_VERIFICATION) {
+            if (resultCode != Activity.RESULT_OK) {
+                this.finish();
+            }
         }
     }
 
