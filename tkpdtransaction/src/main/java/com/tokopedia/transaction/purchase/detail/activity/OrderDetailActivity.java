@@ -384,18 +384,14 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void onRejectOrder(OrderDetailData data) {
-        /*if (getFragmentManager().findFragmentByTag(VALIDATION_FRAGMENT_TAG) == null) {
+        if (getFragmentManager().findFragmentByTag(VALIDATION_FRAGMENT_TAG) == null) {
             RejectOrderFragment rejectOrderFragment = RejectOrderFragment
                     .createFragment(data.getOrderId());
             getFragmentManager().beginTransaction()
                     .setCustomAnimations(R.animator.enter_bottom, R.animator.enter_bottom)
                     .add(R.id.main_view, rejectOrderFragment, VALIDATION_FRAGMENT_TAG)
                     .commit();
-        }*/
-        ConstrainRejectedDialog dialog = ConstrainRejectedDialog.newInstance(reason,
-                ProductListAdapter.Type.courrier);
-        dialog.setOnConfirmReject(onConfirmReject);
-        dialog.show(getFragmentManager(), reason);
+        }
     }
 
     @Override

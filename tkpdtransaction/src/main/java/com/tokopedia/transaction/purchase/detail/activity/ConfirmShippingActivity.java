@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.purchase.detail.di.DaggerOrderCourierComponent;
 import com.tokopedia.transaction.purchase.detail.di.OrderCourierComponent;
@@ -88,7 +89,7 @@ public class ConfirmShippingActivity extends TActivity
 
     @Override
     public void onShowError(String errorMessage) {
-
+        NetworkErrorHelper.showSnackbar(this, errorMessage);
     }
 
     @Override
