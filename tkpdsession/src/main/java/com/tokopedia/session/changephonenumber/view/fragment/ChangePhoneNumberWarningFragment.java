@@ -201,7 +201,7 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
 
     private void showOrHideWithdrawButton() {
         if (viewModel.getAction().equalsIgnoreCase(ACTION_OTP)
-                && !isNullOrEmpty(viewModel.getTokopediaBalance())
+                && viewModel.getTokopediaBalanceNumber() >= BALANCE_THRESHOLD_FOR_WARNING
                 && viewModel.isHasBankAccount()) {
             withdrawButton.setVisibility(View.VISIBLE);
         } else {
@@ -217,14 +217,14 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
 
     private void loadDataToView() {
         if (viewModel != null) {
-            if (isNullOrEmpty(viewModel.getTokopediaBalance())) {
+            if (viewModel.getTokopediaBalanceNumber() < BALANCE_THRESHOLD_FOR_WARNING) {
                 tokopediaBalanceLayout.setVisibility(View.GONE);
             } else {
                 tokopediaBalanceLayout.setVisibility(View.VISIBLE);
                 tokopediaBalanceValue.setText(viewModel.getTokopediaBalance());
             }
 
-            if (isNullOrEmpty(viewModel.getTokocash())) {
+            if (viewModel.getTokocashNumber() <= 0) {
                 tokocashLayout.setVisibility(View.GONE);
             } else {
                 tokocashLayout.setVisibility(View.VISIBLE);
@@ -275,12 +275,6 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
             case REQUEST_WITHDRAW_TOKOPEDIA_BALANCE:
                 break;
         }
-    }
-
-    private boolean isNullOrEmpty(String string) {
-        return (string == null || string.equalsIgnoreCase("null")
-                || string.isEmpty()
-                || string.equalsIgnoreCase(EMPTY_BALANCE));
     }
 
     private void populateRecyclerView() {
