@@ -1,6 +1,7 @@
 package com.tokopedia.topads.sdk.view;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -10,12 +11,15 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
+import android.text.style.TypefaceSpan;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.domain.model.Badge;
@@ -71,7 +75,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         TextView nameTxt = (TextView) findViewById(R.id.shop_name);
         TextView descriptionTxt = (TextView) findViewById(R.id.description);
         LinearLayout badgeContainer = (LinearLayout) findViewById(R.id.badges_container);
-        imageLoader.loadImage(cpm.getCpmImage().getFullEcs(), cpm.getCpmImage().getFullUrl(), iconImg);
+        Glide.with(context).load(cpm.getCpmImage().getFullEcs()).into(iconImg);
         promotedTxt.setText(cpm.getPromotedText());
         nameTxt.setText(escapeHTML(cpm.getName()));
 
@@ -81,7 +85,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
             ImageView badgeImg = new ImageView(context);
             badgeImg.setLayoutParams(new LayoutParams(context.getResources().getDimensionPixelSize(R.dimen.badge_size),
                     context.getResources().getDimensionPixelSize(R.dimen.badge_size)));
-            imageLoader.loadImageWithMemoryCache(badge.getImageUrl(), badgeImg);
+            Glide.with(context).load(badge.getImageUrl()).into(iconImg);
             badgeContainer.addView(badgeImg);
         }
     }
@@ -91,6 +95,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         Spannable str = (Spannable) view.getText();
         int i = fulltext.indexOf(subtext);
         str.setSpan(new ForegroundColorSpan(color), i, i + subtext.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        str.setSpan(new TypefaceSpan("sans-serif"), i, i + subtext.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 
     private void createViewCpmDigital(Context context, final CpmData.Cpm cpm) {
@@ -98,7 +103,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         ImageView iconImg = (ImageView) findViewById(R.id.icon);
         TextView nameTxt = (TextView) findViewById(R.id.name);
         TextView descriptionTxt = (TextView) findViewById(R.id.description);
-        imageLoader.loadImage(cpm.getCpmImage().getFullEcs(), cpm.getCpmImage().getFullUrl(), iconImg);
+        Glide.with(context).load(cpm.getCpmImage().getFullEcs()).into(iconImg);
         nameTxt.setText(escapeHTML(cpm.getName()));
         String desc = String.format("%s %s", escapeHTML(cpm.getDecription()), cpm.getCta());
         setTextColor(descriptionTxt, desc, cpm.getCta(), ContextCompat.getColor(context, R.color.tkpd_main_green));
