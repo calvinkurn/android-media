@@ -42,6 +42,7 @@ import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.search.constant.FlightSortOption;
 import com.tokopedia.flight.search.data.db.model.FlightMetaDataDB;
 import com.tokopedia.flight.search.di.DaggerFlightSearchComponent;
+import com.tokopedia.flight.search.di.FlightSearchComponent;
 import com.tokopedia.flight.search.presenter.FlightSearchPresenter;
 import com.tokopedia.flight.search.view.FlightSearchView;
 import com.tokopedia.flight.search.view.activity.FlightSearchFilterActivity;
@@ -83,17 +84,16 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     @Inject
     public FlightSearchPresenter flightSearchPresenter;
     protected FlightSearchPassDataViewModel flightSearchPassDataViewModel;
+    protected OnFlightSearchFragmentListener onFlightSearchFragmentListener;
+    protected FlightSearchComponent flightSearchComponent;
     int selectedSortOption;
     private BottomActionView filterAndSortBottomAction;
     private FlightFilterModel flightFilterModel;
-
     private HorizontalProgressBar progressBar;
     private int progress;
-    private OnFlightSearchFragmentListener onFlightSearchFragmentListener;
     private AirportCombineModelList airportCombineModelList;
     private SwipeToRefresh swipeToRefresh;
     private boolean needRefreshFromCache;
-
     private boolean inFilterMode = false;
 
     public static FlightSearchFragment newInstance(FlightSearchPassDataViewModel passDataViewModel) {
@@ -160,10 +160,12 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     }
 
     @Override
-    protected final void initInjector() {
-        DaggerFlightSearchComponent.builder()
+    protected void initInjector() {
+        flightSearchComponent = DaggerFlightSearchComponent.builder()
                 .flightComponent(FlightComponentInstance.getFlightComponent(getActivity().getApplication()))
-                .build()
+                .build();
+
+        flightSearchComponent
                 .inject(this);
         flightSearchPresenter.attachView(this);
     }

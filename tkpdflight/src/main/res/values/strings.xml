@@ -72,7 +72,7 @@
     <string name="non_refundable">Non-Refundable</string>
     <string name="partial_refundable">Partial Refundable</string>
     <string name="flight_search_filter_label">Filter</string>
-    <string name="flight_search_sort_label">Sort</string>
+    <string name="flight_search_sort_label">Urutkan</string>
     <string name="flight_search_sort_title">Urutkan</string>
     <string name="flight_search_sort_item_earliest_departure">Waktu Keberangkatan Terpagi</string>
     <string name="flight_search_sort_item_latest_departure">Waktu Keberangkatan Termalam</string>
@@ -288,4 +288,5 @@
     <string name="flight_contact_us_cancel_attc">Lampirkan identitas penumpang</string>
     <string name="flight_contact_us_cancel_toolbar">Ajukan Refund</string>
     <string name="flight_order_flight_default_contact_us_global_prefix"><![CDATA[sid=1377&oid=]]></string>
+    <string name="flight_search_return_departure_should_greater_message">Jadwal keberangkatan penerbangan pulang disarankan lebih besar dari jadwal kepulangan pergi</string>
 </resources>
