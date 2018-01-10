@@ -145,7 +145,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
         voucherCartView = (VoucherCartView) view.findViewById(R.id.voucher_check_view);
         containerFlightReturn = view.findViewById(R.id.container_flight_return);
         progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage("");
+        progressDialog.setMessage(getString(R.string.flight_booking_loading_title));
         progressDialog.setCancelable(false);
 
         reviewTime.setListener(new CountdownTimeView.OnActionListener() {
