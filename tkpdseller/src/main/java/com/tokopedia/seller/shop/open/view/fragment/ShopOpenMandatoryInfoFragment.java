@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.gallery.GalleryType;
@@ -202,6 +203,7 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
 
     @Override
     public void onFailedSaveInfoShop(Throwable t) {
+        Crashlytics.logException(t);
         String errorMessage = ShopErrorHandler.getErrorMessage(t);
         trackingOpenShop.eventOpenShopFormError(errorMessage);
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, Snackbar.LENGTH_LONG, new NetworkErrorHelper.RetryClickedListener() {
@@ -233,12 +235,12 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
 
             @Override
             public void clickEditProductFromCamera(int position) {
-                ShopOpenInfoFragmentPermissionsDispatcher.goToCameraWithCheck(ShopOpenMandatoryInfoFragment.this);
+                ShopOpenMandatoryInfoFragmentPermissionsDispatcher.goToCameraWithCheck(ShopOpenMandatoryInfoFragment.this);
             }
 
             @Override
             public void clickEditProductFromGallery(int position) {
-                ShopOpenInfoFragmentPermissionsDispatcher.goToGalleryWithCheck(ShopOpenMandatoryInfoFragment.this);
+                ShopOpenMandatoryInfoFragmentPermissionsDispatcher.goToGalleryWithCheck(ShopOpenMandatoryInfoFragment.this);
             }
         });
     }
@@ -294,7 +296,7 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         // NOTE: delegate the permission handling to generated method
-        ShopOpenInfoFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+        ShopOpenMandatoryInfoFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
     @TargetApi(16)

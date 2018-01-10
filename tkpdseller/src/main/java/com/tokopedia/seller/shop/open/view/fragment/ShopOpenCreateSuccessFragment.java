@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -117,6 +118,7 @@ public class ShopOpenCreateSuccessFragment extends BasePresenterFragment impleme
 
     @Override
     public void onErrorGetShopInfo(Throwable t) {
+        Crashlytics.logException(t);
         loadingStateView.setErrorViewRes(R.layout.design_retry);
         View errorView = loadingStateView.getErrorView();
         errorView.findViewById(R.id.retry_but).setOnClickListener(new View.OnClickListener() {

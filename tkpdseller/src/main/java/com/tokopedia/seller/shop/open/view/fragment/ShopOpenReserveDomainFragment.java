@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
@@ -201,6 +202,7 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
     @Override
     public void onErrorReserveShop(Throwable t) {
         hideSubmitLoading();
+        Crashlytics.logException(t);
         String message = ShopErrorHandler.getErrorMessage(t);
         trackingOpenShop.eventOpenShopBiodataError(message);
         snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(),

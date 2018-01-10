@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -263,6 +264,7 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     @Override
     public void onErrorSaveCourier(Throwable t) {
         hideSubmitLoading();
+        Crashlytics.logException(t);
         trackingOpenShop.eventOpenShopShippingError(ShopErrorHandler.getErrorMessage(t));
         SnackbarRetry snackbarSubmitRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(),
                 ShopErrorHandler.getErrorMessage(t), new NetworkErrorHelper.RetryClickedListener() {

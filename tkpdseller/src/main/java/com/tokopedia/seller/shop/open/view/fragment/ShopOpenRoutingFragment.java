@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
@@ -79,6 +80,7 @@ public class ShopOpenRoutingFragment extends BaseDaggerFragment implements ShopO
     @Override
     public void onErrorCheckReserveDomain(Throwable t) {
         showLoading(false);
+        Crashlytics.logException(t);
         String errorMessage = ShopErrorHandler.getErrorMessage(t);
         if (!TextUtils.isEmpty(errorMessage)) {
             tvMessageRetry.setText(errorMessage);
