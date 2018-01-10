@@ -92,7 +92,9 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
         }
 
         if(googleLocationViewModel != null && !TextUtils.isEmpty(googleLocationViewModel.getGeneratedAddress())){
-            googleMap.clear();
+            if(googleMap != null){
+                googleMap.clear();
+            }
 
             generatedLocationOpenShop.setVisibility(View.VISIBLE);
             generateLocationOpenShopCopy.setVisibility(View.VISIBLE);
