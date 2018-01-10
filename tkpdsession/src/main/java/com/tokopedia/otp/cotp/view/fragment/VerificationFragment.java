@@ -362,6 +362,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
             useOtherMethod.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    dropKeyboard();
                     goToOtherVerificationMethod();
                 }
             });
