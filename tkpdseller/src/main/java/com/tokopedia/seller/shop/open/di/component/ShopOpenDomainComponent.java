@@ -21,6 +21,7 @@ import com.tokopedia.seller.shop.open.view.fragment.ShopOpenCreateSuccessFragmen
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenReserveDomainFragment;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLocationFragment;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLogisticFragment;
+import com.tokopedia.seller.shop.open.view.fragment.ShopOpenReserveDomainSuccessFragment;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenRoutingFragment;
 import com.tokopedia.seller.shop.open.di.module.ShopSettingInfoModule;
 import com.tokopedia.seller.shop.open.view.presenter.ShopOpenInfoPresenter;
@@ -45,6 +46,8 @@ public interface ShopOpenDomainComponent {
     void inject(ShopOpenMandatoryLogisticFragment shopOpenMandatoryLogisticFragment);
 
     void inject(ShopOpenCreateSuccessFragment shopOpenCreateSuccessFragment);
+
+    void inject(ShopOpenReserveDomainSuccessFragment shopOpenReserveDomainSuccessFragment);
 
     ThreadExecutor getThreadExecutor();
 
