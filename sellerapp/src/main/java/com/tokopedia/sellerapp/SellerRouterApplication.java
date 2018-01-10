@@ -406,7 +406,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getPhoneVerificationActivityIntent(Context context) {
-        return PhoneVerificationActivationActivity.getIntent(context, true, true);
+        return PhoneVerificationActivationActivity.getIntent(context, true, false);
     }
 
     @Override
