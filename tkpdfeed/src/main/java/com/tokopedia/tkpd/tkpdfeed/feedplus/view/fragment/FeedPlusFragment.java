@@ -431,7 +431,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 productId,
                 priceInt,
                 productUrl,
-                positionFeedCard + 1,
+                positionFeedCard,
                 itemPosition,
                 SessionHandler.getLoginID(getContext()),
                 eventLabel
@@ -465,7 +465,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 productId,
                 priceInt,
                 productUrl,
-                positionFeedCard + 1,
+                positionFeedCard,
                 itemPosition,
                 source,
                 SessionHandler.getLoginID(getContext()),
