@@ -12,7 +12,6 @@ import java.util.List;
 
 public class ActivityCardViewModel extends ProductCardViewModel {
 
-    private static final String TAG = "hangnadi";
     private final int totalProduct;
     private final int page;
     private int positionFeedCard;

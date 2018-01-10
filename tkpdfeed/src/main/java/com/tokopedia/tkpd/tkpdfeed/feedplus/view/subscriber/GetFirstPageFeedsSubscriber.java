@@ -59,7 +59,6 @@ import rx.Subscriber;
 public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
     private static final String FREE_RETURN = "Free Return";
-    private static final String TAG = "hangnadi";
     protected final FeedPlus.View viewListener;
     private static final String TYPE_OS_BRANDS = "official_store_brand";
     private static final String TYPE_OS_CAMPAIGN = "official_store_campaign";

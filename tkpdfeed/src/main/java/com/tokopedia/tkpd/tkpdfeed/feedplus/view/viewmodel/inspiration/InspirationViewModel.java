@@ -13,7 +13,6 @@ import java.util.List;
 
 public class InspirationViewModel implements Visitable<FeedPlusTypeFactory> {
 
-    private static final String TAG = "hangnadi";
     private String title;
     protected ArrayList<InspirationProductViewModel> listProduct;
     private int rowNumber;
