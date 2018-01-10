@@ -13,6 +13,7 @@ import android.view.View;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.R;
+import com.tokopedia.abstraction.common.data.model.anlaytic.Tracker;
 import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.abstraction.utils.DialogForceLogout;
@@ -25,7 +26,7 @@ import com.tokopedia.abstraction.utils.snackbar.SnackbarManager;
  * Created by nisie on 2/7/17.
  */
 
-public class BaseActivity extends AppCompatActivity implements
+abstract class BaseActivity extends AppCompatActivity implements
         ErrorNetworkReceiver.ReceiveListener {
 
     public static final String FORCE_LOGOUT = "com.tokopedia.tkpd.FORCE_LOGOUT";
@@ -84,7 +85,10 @@ public class BaseActivity extends AppCompatActivity implements
     }
 
     private void sendScreenAnalytics() {
-//        ScreenTracking.sendScreen(this, this);
+        if (getApplication() instanceof AbstractionRouter) {
+            Tracker tracker = ((AbstractionRouter) getApplication()).getTracker();
+            tracker.sendScreen(this, getScreenName());
+        }
     }
 
     @Override
@@ -205,9 +209,7 @@ public class BaseActivity extends AppCompatActivity implements
         startActivity(Intent.createChooser(intent, getString(R.string.send_email)));
     }
 
-//    @Override
-//    public String getScreenName() {
-//        return null;
-//    }
-
+    public String getScreenName() {
+        return null;
+    }
 }

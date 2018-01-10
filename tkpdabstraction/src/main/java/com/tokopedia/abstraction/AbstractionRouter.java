@@ -2,6 +2,7 @@ package com.tokopedia.abstraction;
 
 import android.app.Activity;
 
+import com.tokopedia.abstraction.common.data.model.anlaytic.Tracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 
 /**
@@ -31,4 +32,6 @@ public interface AbstractionRouter {
     void refreshToken();
 
     UserSession getSession();
+
+    Tracker getTracker();
 }
