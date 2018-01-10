@@ -39,6 +39,8 @@ public class ConfirmShippingActivity extends TActivity
 
     private OrderDetailShipmentModel editableModel;
 
+    private TextView courierName;
+
     @Inject
     OrderCourierPresenterImpl presenter;
 
@@ -61,6 +63,7 @@ public class ConfirmShippingActivity extends TActivity
         editableModel.setPackageId(orderDetailData.getShipmentServiceId());
         editableModel.setShipmentName(orderDetailData.getShipmentName());
         editableModel.setPackageName(orderDetailData.getShipmentServiceName());
+        courierName = findViewById(R.id.courier_name);
         EditText barcodeEditText = findViewById(R.id.barcode_edit_text);
         ImageView barcodeScanner = findViewById(R.id.icon_scan);
         LinearLayout courierLayout = findViewById(R.id.courier_layout);
@@ -69,6 +72,7 @@ public class ConfirmShippingActivity extends TActivity
         confirmButton.setOnClickListener(onConfirmButtonClickedListener(barcodeEditText));
         barcodeEditText.setText(orderDetailData.getAwb());
         barcodeScanner.setOnClickListener(onBarcodeScanClickedListener());
+        courierName.setText(editableModel.getShipmentName() + " " + editableModel.getPackageName());
     }
 
     @Override
@@ -100,6 +104,7 @@ public class ConfirmShippingActivity extends TActivity
         editableModel.setPackageName(courierSelectionModel.getServiceName());
         editableModel.setShipmentId(courierSelectionModel.getCourierId());
         editableModel.setPackageId(courierSelectionModel.getServiceId());
+        courierName.setText(editableModel.getShipmentName() + " " + editableModel.getPackageName());
     }
 
     private View.OnClickListener onGetCourierButtonClickedListener() {
