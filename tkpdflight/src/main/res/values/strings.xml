@@ -288,5 +288,5 @@
     <string name="flight_contact_us_cancel_attc">Lampirkan identitas penumpang</string>
     <string name="flight_contact_us_cancel_toolbar">Ajukan Refund</string>
     <string name="flight_order_flight_default_contact_us_global_prefix"><![CDATA[sid=1377&oid=]]></string>
-    <string name="flight_search_return_departure_should_greater_message">Jadwal keberangkatan penerbangan pulang disarankan lebih besar dari jadwal kepulangan pergi</string>
+    <string name="flight_search_return_departure_should_greater_message">Disarankan untuk memilih jadwal penerbangan pulang setelah jadwal kedatangan sebelumnya</string>
 </resources>

@@ -50,7 +50,6 @@ import rx.subscriptions.CompositeSubscription;
 public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBookingContract.View>
         implements FlightBookingContract.Presenter {
 
-    private static final String DEFAULT_COUNTRY_CODE_PHONE_NUMBER = "ID";
     private FlightBookingGetSingleResultUseCase flightBookingGetSingleResultUseCase;
     private FlightAddToCartUseCase flightAddToCartUseCase;
     private FlightBookingCartDataMapper flightBookingCartDataMapper;

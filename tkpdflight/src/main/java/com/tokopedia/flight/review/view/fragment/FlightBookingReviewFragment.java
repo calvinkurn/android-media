@@ -249,6 +249,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
                 }
                 break;
             case REQUEST_CODE_TOPPAY:
+                reviewTime.start();
                 if (getActivity().getApplication() instanceof FlightModuleRouter) {
                     int paymentSuccess = ((FlightModuleRouter) getActivity().getApplication()).getTopPayPaymentSuccessCode();
                     int paymentFailed = ((FlightModuleRouter) getActivity().getApplication()).getTopPayPaymentFailedCode();
@@ -521,6 +522,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     public void navigateToTopPay(FlightCheckoutViewModel flightCheckoutViewModel) {
         if (getActivity().getApplication() instanceof FlightModuleRouter
                 && ((FlightModuleRouter) getActivity().getApplication()).getTopPayIntent(getActivity(), flightCheckoutViewModel) != null) {
+            reviewTime.cancel();
             startActivityForResult(((FlightModuleRouter) getActivity().getApplication()).getTopPayIntent(getActivity(), flightCheckoutViewModel), REQUEST_CODE_TOPPAY);
         }
     }
