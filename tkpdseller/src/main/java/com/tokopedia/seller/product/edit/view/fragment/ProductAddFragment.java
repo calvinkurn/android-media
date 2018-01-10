@@ -31,12 +31,10 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.seller.common.imageeditor.GalleryCropActivity;
 import com.tokopedia.seller.common.imageeditor.GalleryCropWatermarkActivity;
 import com.tokopedia.seller.common.imageeditor.ImageEditorActivity;
 import com.tokopedia.seller.common.imageeditor.ImageEditorWatermarkActivity;
 import com.tokopedia.seller.instoped.InstopedSellerCropWatermarkActivity;
-import com.tokopedia.seller.instoped.InstopedSellerCropperActivity;
 import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivity;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
@@ -498,9 +496,10 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     }
 
     @Override
-    public void onSuccessLoadShopInfo(boolean isGoldMerchant, boolean isFreeReturn) {
+    public void onSuccessLoadShopInfo(boolean isGoldMerchant, boolean isFreeReturn, boolean officialStore) {
         productAdditionalInfoViewHolder.updateViewGoldMerchant(isGoldMerchant);
         productDetailViewHolder.setGoldMerchant(isGoldMerchant);
+        productDetailViewHolder.setOfficialStore(officialStore);
         productDetailViewHolder.updateViewFreeReturn(isFreeReturn);
         valueIndicatorScoreModel.setFreeReturnActive(isFreeReturn);
 
@@ -786,8 +785,8 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     @Override
     public void startAddWholeSaleDialog(WholesaleModel fixedPrice,
                                         @CurrencyTypeDef int currencyType,
-                                        WholesaleModel previousWholesalePrice) {
-        listener.startAddWholeSaleDialog(fixedPrice, currencyType, previousWholesalePrice);
+                                        WholesaleModel previousWholesalePrice, boolean officialStore) {
+        listener.startAddWholeSaleDialog(fixedPrice, currencyType, previousWholesalePrice, officialStore);
     }
 
     @Override
@@ -917,7 +916,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
         void startAddWholeSaleDialog(WholesaleModel fixedPrice,
                                      @CurrencyTypeDef int currencyType,
-                                     WholesaleModel previousWholesalePrice);
+                                     WholesaleModel previousWholesalePrice, boolean officialStore);
 
         void startUploadProductAndAddWithShare(Long productId);
 

@@ -181,5 +181,8 @@
     <string name="transaction_value">Nilai Transaksi</string>
     <string name="title_tooltip_reputation_multiplier">Nilai Reputasi</string>
     <string name="body_tooltip_reputation_multiplier">Ini adalah Nilai Kelipatan Reputasi. Reputasi dari pesanan ini akan dikalikan dengan Nilai Kelipatan Reputasi.</string>
+    <string name="product_manage_title_dialog_variant">Produk dengan Varian</string>
+    <string name="product_manage_label_dialog_variant">Saat ini produk yang memiliki varian hanya bisa diubah dan dihapus melalui desktop</string>
+    <string name="product_manage_label_snackbar_variant">Produk dengan Varian hanya dapat dihapus dan diubah melalui desktop.</string>
 
 </resources>
