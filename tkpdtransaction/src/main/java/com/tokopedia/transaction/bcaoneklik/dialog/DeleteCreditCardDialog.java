@@ -43,14 +43,14 @@ public class DeleteCreditCardDialog extends DialogFragment{
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dismiss();
+                dismissDialog();
             }
         });
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 listener.onConfirmDelete(getArguments().getString(TOKEN_ID));
-                dismiss();
+                dismissDialog();
             }
         });
         return view;
@@ -67,6 +67,10 @@ public class DeleteCreditCardDialog extends DialogFragment{
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         listener = (DeleteCreditCardDialogListener) activity;
+    }
+
+    private void dismissDialog() {
+        getActivity().onBackPressed();
     }
 
     public interface DeleteCreditCardDialogListener {
