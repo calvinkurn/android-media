@@ -5,10 +5,9 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
-import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.widget.TouchViewPager;
@@ -85,13 +84,24 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
     }
 
     @Override
-    protected int getLayoutId() {
+    protected int getContentId() {
         return R.layout.activity_promo_list;
     }
 
     @Override
-    protected void initView() {
+    protected int getLayoutId() {
+        return 0;
+    }
 
+    @Override
+    protected void initView() {
+        if (isLightToolbarThemes())
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                toolbar.setElevation(0);
+                toolbar.setBackgroundResource(com.tokopedia.core.R.color.white);
+            } else {
+                toolbar.setBackgroundColor(getResources().getColor(R.color.white));
+            }
     }
 
     @Override
@@ -111,37 +121,18 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
 
     @Override
     public void renderPromoMenuDataList(List<PromoMenuData> promoMenuDataList) {
-        for (PromoMenuData promoMenuData : promoMenuDataList) {
-            Toast.makeText(this, promoMenuData.getTitle(), Toast.LENGTH_SHORT).show();
-        }
-        for (int i = 0; i < promoMenuDataList.size(); i++) {
-            MenuPromoTab menuPromoTab = new MenuPromoTab(this);
-            menuPromoTab.renderData(promoMenuDataList.get(i));
-            tabLayout.addTab(tabLayout.newTab().setCustomView(menuPromoTab));
-        }
         viewPager.setOffscreenPageLimit(promoMenuDataList.size());
         adapter = new PromoPagerAdapter(getFragmentManager(), promoMenuDataList);
         viewPager.setAdapter(adapter);
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
+        tabLayout.setupWithViewPager(viewPager);
+        for (int i = 0; i < promoMenuDataList.size(); i++) {
+            MenuPromoTab menuPromoTab = new MenuPromoTab(this);
+            menuPromoTab.renderData(promoMenuDataList.get(i));
+            tabLayout.getTabAt(i).setCustomView(menuPromoTab);
+        }
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
                 if (tab.getCustomView() != null) {
                     ((MenuPromoTab) tab.getCustomView()).renderActiveState();
                 }
@@ -161,7 +152,11 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
         });
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setTabMode(TabLayout.MODE_FIXED);
-        viewPager.setCurrentItem(0);
+        TabLayout.Tab firstTab = tabLayout.getTabAt(0);
+        if (firstTab != null) {
+            firstTab.select();
+            ((MenuPromoTab) firstTab.getCustomView()).renderActiveState();
+        }
     }
 
     @Override
