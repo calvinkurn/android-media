@@ -85,7 +85,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
             ImageView badgeImg = new ImageView(context);
             badgeImg.setLayoutParams(new LayoutParams(context.getResources().getDimensionPixelSize(R.dimen.badge_size),
                     context.getResources().getDimensionPixelSize(R.dimen.badge_size)));
-            Glide.with(context).load(badge.getImageUrl()).into(iconImg);
+            Glide.with(context).load(badge.getImageUrl()).into(badgeImg);
             badgeContainer.addView(badgeImg);
         }
     }
