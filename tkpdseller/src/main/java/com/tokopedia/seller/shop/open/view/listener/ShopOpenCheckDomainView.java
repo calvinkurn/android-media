@@ -7,7 +7,7 @@ import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.Respon
  * Created by sebastianuskh on 3/17/17.
  */
 
-public interface ShopCheckDomainView extends CustomerView {
+public interface ShopOpenCheckDomainView extends CustomerView {
 
     void onSuccessCheckReserveDomain(ResponseIsReserveDomain object);
 

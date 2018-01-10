@@ -4,6 +4,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.shop.open.domain.interactor.ShopIsReserveDomainUseCase;
 import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
 import com.tokopedia.seller.shop.open.domain.interactor.ShopOpenSaveInfoUseCase;
+import com.tokopedia.seller.shop.open.domain.model.ShopOpenSaveInfoResponseModel;
 
 import rx.Subscriber;
 
@@ -25,7 +26,7 @@ public class ShopOpenInfoPresenterImpl extends ShopOpenInfoPresenter {
     public void submitShopInfo(String uriPathImage, String shopSlogan, String shopDescription, String imageUrl, String serverId, String picObj) {
         getView().showProgressDialog();
         shopOpenSaveInfoUseCase.execute(ShopOpenSaveInfoUseCase.createRequestParams(uriPathImage,
-                shopDescription, shopSlogan, imageUrl, serverId, picObj), new Subscriber<Boolean>() {
+                shopDescription, shopSlogan, imageUrl, serverId, picObj), new Subscriber<ShopOpenSaveInfoResponseModel>() {
             @Override
             public void onCompleted() {
 
@@ -40,10 +41,10 @@ public class ShopOpenInfoPresenterImpl extends ShopOpenInfoPresenter {
             }
 
             @Override
-            public void onNext(Boolean isSuccess) {
+            public void onNext(ShopOpenSaveInfoResponseModel responseModel) {
                 getView().dismissProgressDialog();
-                if (isSuccess) {
-                    getView().onSuccessSaveInfoShop();
+                if (responseModel.isSaveShopSuccess()) {
+                    getView().onSuccessSaveInfoShop(responseModel);
                 } else {
                     onError(new Exception());
                 }

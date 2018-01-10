@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
@@ -20,10 +21,9 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.common.widget.PrefixEditText;
 import com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout;
-import com.tokopedia.seller.shop.common.tracking.TrackingOpenShop;
+import com.tokopedia.seller.shop.open.analytic.ShopOpenTracking;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.util.ShopErrorHandler;
-import com.tokopedia.seller.shop.open.view.activity.ShopOpenMandatoryActivity;
 import com.tokopedia.seller.shop.open.view.activity.ShopOpenReserveDomainSuccessActivity;
 import com.tokopedia.seller.shop.open.view.listener.ShopOpenDomainView;
 import com.tokopedia.seller.shop.open.view.presenter.ShopOpenDomainPresenterImpl;
@@ -35,7 +35,7 @@ import javax.inject.Inject;
  * Created by Hendry on 3/17/2017.
  */
 
-public class ShopOpenDomainFragment extends BasePresenterFragment implements ShopOpenDomainView {
+public class ShopOpenReserveDomainFragment extends BasePresenterFragment implements ShopOpenDomainView {
 
     public static final int MIN_SHOP_NAME_LENGTH = 3;
     public static final int MIN_SHOP_DOMAIN_LENGTH = 3;
@@ -50,10 +50,10 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
     @Inject
     ShopOpenDomainPresenterImpl shopOpenDomainPresenter;
     @Inject
-    TrackingOpenShop trackingOpenShop;
+    ShopOpenTracking trackingOpenShop;
 
-    public static ShopOpenDomainFragment newInstance() {
-        return new ShopOpenDomainFragment();
+    public static ShopOpenReserveDomainFragment newInstance() {
+        return new ShopOpenReserveDomainFragment();
     }
 
     @Override
@@ -202,6 +202,7 @@ public class ShopOpenDomainFragment extends BasePresenterFragment implements Sho
     @Override
     public void onErrorReserveShop(Throwable t) {
         hideSubmitLoading();
+        Crashlytics.logException(t);
         String message = ShopErrorHandler.getErrorMessage(t);
         trackingOpenShop.eventOpenShopBiodataError(message);
         snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(),

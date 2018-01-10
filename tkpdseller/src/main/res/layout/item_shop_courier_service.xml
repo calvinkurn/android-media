@@ -10,7 +10,7 @@
         android:layout_weight="1"
         android:layout_height="wrap_content"
         android:theme="@style/checkBoxStyleSeller"
-        style="@style/TextView.Body1"
+        style="@style/TextView.Small"
         tools:text="ini hanya test"/>
 
     <FrameLayout

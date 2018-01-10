@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class ShopServiceCourierAdapter extends RecyclerView.Adapter<ShopServiceCourierAdapter.ShopServiceCourierViewHolder> {
+public class ShopOpenCourierAdapter extends RecyclerView.Adapter<ShopOpenCourierAdapter.ShopServiceCourierViewHolder> {
     private Context context;
     private List<CourierServiceModel> courierServiceModelList;
     private List<String> selectedIds;
@@ -28,8 +28,8 @@ public class ShopServiceCourierAdapter extends RecyclerView.Adapter<ShopServiceC
         void onInfoIconClicked(String title, String description);
     }
 
-    public ShopServiceCourierAdapter(Context context, List<CourierServiceModel> courierServiceModelList,
-                                     List<String> selectedIds, OnShopServiceCourierAdapterListener listener) {
+    public ShopOpenCourierAdapter(Context context, List<CourierServiceModel> courierServiceModelList,
+                                  List<String> selectedIds, OnShopServiceCourierAdapterListener listener) {
         this.context = context;
         setCourierServiceModelList(courierServiceModelList);
         setSelectedIds(selectedIds);

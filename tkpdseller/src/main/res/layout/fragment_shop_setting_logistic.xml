@@ -26,14 +26,14 @@
                 android:src="@drawable/ic_icon_openshop_box" />
 
             <TextView
-                style="@style/TextView.Title"
+                style="@style/TextView.TitleBig"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_med"
                 android:text="@string/title_shop_setting_logistic" />
 
             <TextView
-                style="@style/TextView.Body1"
+                style="@style/TextView.Small"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -47,7 +47,7 @@
 
             <TextView
                 android:id="@+id/tv_pickup_location"
-                style="@style/TextView.Caption"
+                style="@style/TextView.Micro"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -71,7 +71,7 @@
                     android:animateLayoutChanges="true"
                     android:orientation="vertical">
 
-                    <com.tokopedia.seller.shop.open.view.CourierListViewGroup
+                    <com.tokopedia.seller.shop.open.view.widget.ShopOpenCourierListViewGroup
                         android:id="@+id/vg_courier_list"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

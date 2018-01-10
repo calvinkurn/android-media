@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.gallery.GalleryType;
@@ -34,12 +35,13 @@ import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.common.gallery.GalleryCropActivity;
 import com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout;
 import com.tokopedia.seller.product.edit.view.dialog.ImageEditDialogFragment;
-import com.tokopedia.seller.shop.common.tracking.TrackingOpenShop;
+import com.tokopedia.seller.shop.open.analytic.ShopOpenTracking;
 import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
 import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.UserData;
 import com.tokopedia.seller.shop.open.di.component.DaggerShopSettingInfoComponent;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.di.component.ShopSettingInfoComponent;
+import com.tokopedia.seller.shop.open.domain.model.ShopOpenSaveInfoResponseModel;
 import com.tokopedia.seller.shop.open.util.ShopErrorHandler;
 import com.tokopedia.seller.shop.open.view.listener.ShopOpenInfoView;
 import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
@@ -63,7 +65,7 @@ import permissions.dispatcher.RuntimePermissions;
  */
 
 @RuntimePermissions
-public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpenInfoView {
+public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements ShopOpenInfoView {
 
     public static final int REQUEST_CODE_IMAGE_PICKER = 532;
 
@@ -82,10 +84,10 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
     private StepperListener<ShopOpenStepperModel> onShopStepperListener;
 
     @Inject
-    TrackingOpenShop trackingOpenShop;
+    ShopOpenTracking trackingOpenShop;
 
-    public static ShopOpenInfoFragment createInstance() {
-        return new ShopOpenInfoFragment();
+    public static ShopOpenMandatoryInfoFragment createInstance() {
+        return new ShopOpenMandatoryInfoFragment();
     }
 
     @Override
@@ -187,7 +189,12 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
     }
 
     @Override
-    public void onSuccessSaveInfoShop() {
+    public void onSuccessSaveInfoShop(ShopOpenSaveInfoResponseModel responseModel) {
+        if(onShopStepperListener != null && onShopStepperListener.getStepperModel().getResponseIsReserveDomain() != null){
+            onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData().setShortDesc(responseModel.getShopDesc());
+            onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData().setLogo(responseModel.getPicSrc());
+            onShopStepperListener.getStepperModel().getResponseIsReserveDomain().getUserData().setTagLine(responseModel.getShopTagLine());
+        }
         trackingOpenShop.eventOpenShopFormSuccess();
         if (onShopStepperListener != null) {
             onShopStepperListener.goToNextPage(null);
@@ -196,6 +203,7 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
 
     @Override
     public void onFailedSaveInfoShop(Throwable t) {
+        Crashlytics.logException(t);
         String errorMessage = ShopErrorHandler.getErrorMessage(t);
         trackingOpenShop.eventOpenShopFormError(errorMessage);
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, Snackbar.LENGTH_LONG, new NetworkErrorHelper.RetryClickedListener() {
@@ -221,18 +229,18 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
 
     private void onClickBrowseImage() {
         FragmentManager fm = getActivity().getSupportFragmentManager();
-        ImageEditDialogFragment dialogFragment = ImageEditDialogFragment.newInstance(0);
+        ShopOpenMandatoryImageDialogFragment dialogFragment = ShopOpenMandatoryImageDialogFragment.newInstance(0);
         dialogFragment.show(fm, ImageEditDialogFragment.FRAGMENT_TAG);
         dialogFragment.setOnImageEditListener(new ImageEditDialogFragment.OnImageEditListener() {
 
             @Override
             public void clickEditProductFromCamera(int position) {
-                ShopOpenInfoFragmentPermissionsDispatcher.goToCameraWithCheck(ShopOpenInfoFragment.this);
+                ShopOpenMandatoryInfoFragmentPermissionsDispatcher.goToCameraWithCheck(ShopOpenMandatoryInfoFragment.this);
             }
 
             @Override
             public void clickEditProductFromGallery(int position) {
-                ShopOpenInfoFragmentPermissionsDispatcher.goToGalleryWithCheck(ShopOpenInfoFragment.this);
+                ShopOpenMandatoryInfoFragmentPermissionsDispatcher.goToGalleryWithCheck(ShopOpenMandatoryInfoFragment.this);
             }
         });
     }
@@ -288,7 +296,7 @@ public class ShopOpenInfoFragment extends BaseDaggerFragment implements ShopOpen
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         // NOTE: delegate the permission handling to generated method
-        ShopOpenInfoFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+        ShopOpenMandatoryInfoFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
     @TargetApi(16)

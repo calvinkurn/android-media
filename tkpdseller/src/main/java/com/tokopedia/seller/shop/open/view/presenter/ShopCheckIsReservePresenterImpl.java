@@ -2,7 +2,7 @@ package com.tokopedia.seller.shop.open.view.presenter;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.seller.shop.open.domain.interactor.ShopIsReserveDomainUseCase;
-import com.tokopedia.seller.shop.open.view.listener.ShopCheckDomainView;
+import com.tokopedia.seller.shop.open.view.listener.ShopOpenCheckDomainView;
 import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
 
 import javax.inject.Inject;
@@ -13,8 +13,8 @@ import rx.Subscriber;
  * Created by sebastianuskh on 3/17/17.
  */
 
-public class ShopCheckIsReservePresenterImpl extends BaseDaggerPresenter<ShopCheckDomainView>
-        implements ShopCheckIsReservePresenter {
+public class ShopCheckIsReservePresenterImpl extends BaseDaggerPresenter<ShopOpenCheckDomainView>
+        implements ShopOpenCheckIsReservePresenter {
 
     private final ShopIsReserveDomainUseCase shopIsReserveDomainUseCase;
 

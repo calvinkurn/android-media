@@ -15,7 +15,7 @@
             android:id="@+id/seller_text_edit_shipping_city"
             style="@style/EditText.ShopSetting"
             android:maxLength="@integer/open_shop_max_desc_char"
-            android:layout_width="match_parent"
+            android:hint="@string/hint_origin_destination"
             android:clickable="true"
             android:focusable="false"
             />
@@ -30,9 +30,9 @@
 
         <AutoCompleteTextView
             android:id="@+id/seller_postal_code"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/EditText.ShopSetting"
             android:completionThreshold="3"
+            android:hint="@string/hint_post_code"
             android:digits="1234567890"
             android:inputType="phone"
             android:maxLength="5" />

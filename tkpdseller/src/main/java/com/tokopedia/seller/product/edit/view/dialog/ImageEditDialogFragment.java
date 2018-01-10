@@ -20,6 +20,8 @@ public class ImageEditDialogFragment extends DialogFragment {
 
     private CharSequence imageMenu[];
     private OnImageEditListener mListener;
+    String wordingPickImageCamera;
+    String wordingPickImageGallery;
 
     public interface OnImageEditListener {
         void clickEditProductFromCamera(int position);
@@ -52,11 +54,21 @@ public class ImageEditDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        wordingPickImageCamera = getWordingPickImageCamera();
+        wordingPickImageGallery = getWordingPickImageGallery();
         imageMenu = new CharSequence[]{
-                getString(R.string.edit_from_camera_text_description),
-                getString(R.string.edit_from_gallery_text_description)};
+                wordingPickImageCamera,
+                wordingPickImageGallery};
         builder.setItems(imageMenu, getImageAddProductListener());
         return builder.create();
+    }
+
+    protected String getWordingPickImageGallery() {
+        return getString(R.string.edit_from_gallery_text_description);
+    }
+
+    protected String getWordingPickImageCamera() {
+        return  getString(R.string.edit_from_camera_text_description);
     }
 
     private DialogInterface.OnClickListener getImageAddProductListener() {
@@ -65,9 +77,9 @@ public class ImageEditDialogFragment extends DialogFragment {
             public void onClick(DialogInterface dialog, int which) {
                 if (mListener != null) {
                     CharSequence stringClicked = imageMenu[which];
-                    if (stringClicked.equals(getString(R.string.edit_from_camera_text_description))) {
+                    if (stringClicked.equals(wordingPickImageCamera)) {
                         mListener.clickEditProductFromCamera(position);
-                    } else if (stringClicked.equals(getString(R.string.edit_from_gallery_text_description))) {
+                    } else if (stringClicked.equals(wordingPickImageGallery)) {
                         mListener.clickEditProductFromGallery(position);
                     }
                 }

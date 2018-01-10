@@ -87,6 +87,8 @@ public class TopAdsProductAdsDataSource {
         dataModel.setAdEndTime(domainModel.getAdEndTime());
         dataModel.setAdImage(domainModel.getAdImage());
         dataModel.setAdTitle(domainModel.getAdTitle());
+        dataModel.setSuggestionBidValue(domainModel.getSuggestionBidValue());
+        dataModel.setSuggestionBidButton(domainModel.getSuggestionBidButton());
         dataModel.setSource(TopAdsNetworkConstant.VALUE_SOURCE_ANDROID);
         return dataModel;
     }

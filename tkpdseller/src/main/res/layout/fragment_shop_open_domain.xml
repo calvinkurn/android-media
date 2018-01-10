@@ -27,7 +27,7 @@
             tools:text="@string/hello_x" />
 
         <android.support.v7.widget.AppCompatTextView
-            style="@style/TextView.Subheading"
+            style="@style/TextView.Title"
             android:layout_gravity="center"
             android:text="@string/fill_domain_and_shop" />
 
@@ -52,7 +52,7 @@
         </com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout>
 
         <TextView
-            style="@style/TextView.Caption.BlackDisabled"
+            style="@style/TextView.Micro.BlackDisabled"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/padding_vs"
@@ -60,7 +60,7 @@
             android:text="@string/shop_domain" />
 
         <TextView
-            style="@style/TextView.Caption.BlackDisabled"
+            style="@style/TextView.Micro.BlackDisabled"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/padding_vs"

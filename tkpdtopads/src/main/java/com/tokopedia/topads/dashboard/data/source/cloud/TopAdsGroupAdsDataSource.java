@@ -111,7 +111,9 @@ public class TopAdsGroupAdsDataSource {
                 topAdsDetailGroupDomainModel.getAdEndDate(),
                 topAdsDetailGroupDomainModel.getAdEndTime(),
                 topAdsDetailGroupDomainModel.getStickerId(),
-                TopAdsNetworkConstant.VALUE_SOURCE_ANDROID
+                TopAdsNetworkConstant.VALUE_SOURCE_ANDROID,
+                topAdsDetailGroupDomainModel.getSuggestionBidValue(),
+                topAdsDetailGroupDomainModel.getSuggestionBidButton()
         );
         dataRequest.setData(editGroupRequest);
         return dataRequest;

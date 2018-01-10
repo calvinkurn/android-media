@@ -21,8 +21,9 @@ import rx.Subscriber;
  * Created by sebastianuskh on 3/23/17.
  */
 
-public class ShopSettingLogisticPresenterImpl extends ShopSettingLogisticPresenter {
+public class ShopOpenLogisticPresenterImpl extends ShopOpenLogisticPresenter {
 
+    public static final String SUCCESS = "1";
     private final GetLogisticAvailableUseCase getLogisticAvailableUseCase;
     private final ShopOpenSaveCourierUseCase shopOpenSaveCourierUseCase;
     private final ShopOpenCreateUseCase shopOpenCreateUseCase;
@@ -30,11 +31,11 @@ public class ShopSettingLogisticPresenterImpl extends ShopSettingLogisticPresent
     private final GlobalCacheManager globalCacheManager;
 
     @Inject
-    public ShopSettingLogisticPresenterImpl(GetLogisticAvailableUseCase getLogisticAvailableUseCase,
-                                            ShopOpenSaveCourierUseCase shopOpenSaveCourierUseCase,
-                                            ShopOpenCreateUseCase shopOpenCreateUseCase,
-                                            SessionHandler sessionHandler,
-                                            GlobalCacheManager globalCacheManager) {
+    public ShopOpenLogisticPresenterImpl(GetLogisticAvailableUseCase getLogisticAvailableUseCase,
+                                         ShopOpenSaveCourierUseCase shopOpenSaveCourierUseCase,
+                                         ShopOpenCreateUseCase shopOpenCreateUseCase,
+                                         SessionHandler sessionHandler,
+                                         GlobalCacheManager globalCacheManager) {
         this.getLogisticAvailableUseCase = getLogisticAvailableUseCase;
         this.shopOpenSaveCourierUseCase = shopOpenSaveCourierUseCase;
         this.shopOpenCreateUseCase = shopOpenCreateUseCase;
@@ -113,7 +114,7 @@ public class ShopSettingLogisticPresenterImpl extends ShopSettingLogisticPresent
                     globalCacheManager.delete(ProfileSourceFactory.KEY_PROFILE_DATA);
                     getView().onSuccessCreateShop();
                 } else {
-                    getView().onErrorCreateShop(null);
+                    getView().onErrorCreateShop(new Exception());
                 }
             }
         });

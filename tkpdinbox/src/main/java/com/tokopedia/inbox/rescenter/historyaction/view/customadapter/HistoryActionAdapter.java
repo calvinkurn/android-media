@@ -157,10 +157,12 @@ public class HistoryActionAdapter extends BaseLinearRecyclerViewAdapter {
         holder.indicator.setImageResource(R.drawable.ic_dot_grey_24dp);
         holder.indicator.setVisibility(model.isShowGlowingView() ? View.GONE : View.VISIBLE);
         holder.glowingView.setVisibility(model.isShowGlowingView() ? View.VISIBLE : View.GONE);
-        if (model.isShowGlowingView()) {
+        if (model.isShowGlowingView() && !isFinished) {
             holder.glowingView.renderData(new Object());
         } else {
             holder.glowingView.stopAnimation();
+            holder.glowingView.setVisibility(View.GONE);
+            holder.indicator.setVisibility(View.VISIBLE);
         }
     }
 

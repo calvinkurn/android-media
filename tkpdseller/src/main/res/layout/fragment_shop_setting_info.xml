@@ -18,13 +18,13 @@
 
         <TextView
             android:id="@+id/welcome_shop_label"
-            style="@style/TextView.Title"
+            style="@style/TextView.TitleBig"
             android:layout_marginBottom="@dimen/margin_sm"
             android:gravity="center"
             android:text="@string/hello_x" />
 
         <TextView
-            style="@style/TextView.Subheading"
+            style="@style/TextView.Title"
             android:layout_marginBottom="@dimen/margin_large"
             android:gravity="center"
             android:text="@string/label_shop_open_info_title_shop" />
@@ -65,7 +65,7 @@
         </com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout>
 
         <TextView
-            style="@style/TextView.Caption.BlackSecondary"
+            style="@style/TextView.Micro.BlackSecondary"
             android:layout_gravity="start"
             android:layout_marginBottom="@dimen/margin_small"
             android:text="@string/label_shop_setting_logo" />
@@ -92,22 +92,22 @@
                 android:layout_toRightOf="@+id/image_picker_container">
 
                 <TextView
-                    style="@style/TextView.Caption.BlackDisabled"
+                    style="@style/TextView.Micro.BlackDisabled"
                     android:text="@string/label_shop_setting_info_max_file_size"
                     android:textStyle="bold" />
 
                 <TextView
-                    style="@style/TextView.Caption.BlackDisabled"
+                    style="@style/TextView.Micro.BlackDisabled"
                     android:layout_marginBottom="@dimen/margin_ms"
                     android:text="@string/label_shop_setting_info_size_image" />
 
                 <TextView
-                    style="@style/TextView.Caption.BlackDisabled"
+                    style="@style/TextView.Micro.BlackDisabled"
                     android:text="@string/label_shop_setting_info_allowed_file"
                     android:textStyle="bold" />
 
                 <TextView
-                    style="@style/TextView.Caption.BlackDisabled"
+                    style="@style/TextView.Micro.BlackDisabled"
                     android:text="@string/label_shop_setting_type_file_image" />
 
             </LinearLayout>

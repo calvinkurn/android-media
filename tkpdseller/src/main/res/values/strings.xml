@@ -178,7 +178,7 @@
 
     <!-- Shop Setting -->
     <string name="label_shop_open_welcome">Halo,</string>
-    <string name="label_shop_open_info_title_shop">Lengkapi informasi toko. Tampilan toko yang menarik buat pembeli tertarik</string>
+    <string name="label_shop_open_info_title_shop">Lengkapi informasi toko. Tampilan toko yang menarik, buat pembeli tertarik.</string>
     <string name="label_shop_setting_slogan">Slogan Toko</string>
     <string name="label_shop_setting_desc_shop">Deskripsi Toko</string>
     <string name="label_shop_setting_logo">Logo (Opsional)</string>
@@ -223,7 +223,7 @@
     <string name="getting_shop_step">Mengambil Informasi Toko</string>
     <string name="shipping_location_text"><b>Lokasi Pengiriman</b></string>
     <string name="shipping_location_text_desc">Lengkapi informasi lokasi pengiriman untuk memilih kurir yang tersedia di lokasi Anda.</string>
-    <string name="shipping_location_text_choose_desc">Pilih dari Daftar Alamat jika alamat pengiriman sama dengan alamat pembelian yang pernah Anda isi</string>
+    <string name="shipping_location_text_choose_desc">Pilih dari Daftar Alamat yang sudah terdaftar di akun Anda.</string>
     <string name="choose_from_address_list">Pilih dari Daftar Alamat</string>
     <string name="optional_pinpoint_location_text">Pinpoint Lokasi (Opsional)</string>
     <string name="pin_pickup_location_text">Tandai lokasi pickup dalam peta jika Anda menggunakan kurir Express (seperti Go-Send) atau Cargo Service.</string>
@@ -257,5 +257,8 @@
     <string name="shop_reserve_success_title">Lengkapi Informasi <![CDATA[<b>]]>%1$s<![CDATA[</b>]]> dan mulai berjualan sekarang!</string>
     <string name="shop_reserve_success_info">INFO: Toko akan otomatis dihapus dalam 7 hari jika Informasi Toko belum lengkap.</string>
     <string name="shop_open_create_success">Anda berhasil membuka toko!</string>
+    <string name="shop_open_label_picker_image_camera">Tambah gambar dari Kamera</string>
+    <string name="shop_open_label_picker_gallery">Tambah gambar dari Galeri</string>
     <string name="shop_location_must_be_filled">Lokasi pengiriman harus diisi</string>
+    <string name="hint_origin_destination">Tulis kota/kecamatan asal pengiriman</string>
 </resources>

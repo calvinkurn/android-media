@@ -10,7 +10,7 @@ import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.shop.open.di.component.DaggerShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.di.module.ShopOpenDomainModule;
-import com.tokopedia.seller.shop.open.view.fragment.ShopOpenDomainFragment;
+import com.tokopedia.seller.shop.open.view.fragment.ShopOpenReserveDomainFragment;
 
 /**
  * Created by Nathaniel on 3/16/2017.
@@ -26,7 +26,7 @@ public class ShopOpenDomainActivity extends BaseSimpleActivity
 
     @Override
     protected Fragment getNewFragment() {
-        return ShopOpenDomainFragment.newInstance();
+        return ShopOpenReserveDomainFragment.newInstance();
     }
 
     @Override
