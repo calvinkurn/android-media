@@ -1,4 +1,4 @@
-package com.tokopedia.seller.shop.open.view;
+package com.tokopedia.seller.shop.open.view.widget;
 
 import android.animation.LayoutTransition;
 import android.content.Context;
@@ -20,12 +20,12 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.expandable.BaseExpandableOption;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.logistic.model.CourierServiceModel;
-import com.tokopedia.seller.shop.open.view.adapter.ShopServiceCourierAdapter;
+import com.tokopedia.seller.shop.open.view.adapter.ShopOpenCourierAdapter;
 
 import java.util.List;
 
 
-public class ShopCourierExpandableOption extends BaseExpandableOption implements ShopServiceCourierAdapter.OnShopServiceCourierAdapterListener {
+public class ShopOpenCourierExpandableOption extends BaseExpandableOption implements ShopOpenCourierAdapter.OnShopServiceCourierAdapterListener {
     private ImageView ivIcon;
     private TextView tvTitle;
     private TextView tvDesc;
@@ -46,22 +46,22 @@ public class ShopCourierExpandableOption extends BaseExpandableOption implements
 
     private String logo;
 
-    private ShopServiceCourierAdapter shopServiceCourierAdapter;
+    private ShopOpenCourierAdapter shopServiceCourierAdapter;
     private CompoundButton.OnCheckedChangeListener onCheckedChangeListener;
 
-    public ShopCourierExpandableOption(Context context) {
+    public ShopOpenCourierExpandableOption(Context context) {
         super(context);
     }
 
-    public ShopCourierExpandableOption(Context context, @Nullable AttributeSet attrs) {
+    public ShopOpenCourierExpandableOption(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public ShopCourierExpandableOption(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ShopOpenCourierExpandableOption(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
-    public ShopCourierExpandableOption(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public ShopOpenCourierExpandableOption(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
@@ -69,7 +69,7 @@ public class ShopCourierExpandableOption extends BaseExpandableOption implements
     protected void init() {
         setHeaderLayoutRes(R.layout.item_shop_courier_expandable_header);
         setFooterLayoutRes(R.layout.item_shop_courier_expandable_child);
-        shopServiceCourierAdapter = new ShopServiceCourierAdapter(getContext(), null, null, this);
+        shopServiceCourierAdapter = new ShopOpenCourierAdapter(getContext(), null, null, this);
         super.init();
     }
 

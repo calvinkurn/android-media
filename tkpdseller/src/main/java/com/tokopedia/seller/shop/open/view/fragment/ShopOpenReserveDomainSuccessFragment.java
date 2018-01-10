@@ -4,33 +4,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
-import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
-import com.tokopedia.seller.common.imageeditor.view.WatermarkPresenterView;
-import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.shop.common.tracking.TrackingOpenShop;
 import com.tokopedia.seller.shop.open.di.component.DaggerShopOpenDomainComponent;
-import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.view.activity.ShopOpenMandatoryActivity;
-import com.tokopedia.seller.shop.open.view.presenter.ShopCreateSuccessPresenter;
-
-import javax.inject.Inject;
 
 
 public class ShopOpenReserveDomainSuccessFragment extends BaseDaggerFragment{

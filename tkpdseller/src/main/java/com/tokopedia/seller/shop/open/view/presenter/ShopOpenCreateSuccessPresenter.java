@@ -13,11 +13,11 @@ import rx.Subscriber;
  * Created by hendry on 10/20/2017.
  */
 
-public class ShopCreateSuccessPresenter extends BaseDaggerPresenter<WatermarkPresenterView> {
+public class ShopOpenCreateSuccessPresenter extends BaseDaggerPresenter<WatermarkPresenterView> {
     private GetShopInfoUseCase getShopInfoUseCase;
 
     @Inject
-    public ShopCreateSuccessPresenter(GetShopInfoUseCase getShopInfoUseCase) {
+    public ShopOpenCreateSuccessPresenter(GetShopInfoUseCase getShopInfoUseCase) {
         this.getShopInfoUseCase = getShopInfoUseCase;
     }
 

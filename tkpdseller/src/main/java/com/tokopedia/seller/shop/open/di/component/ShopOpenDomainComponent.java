@@ -5,18 +5,20 @@ import android.content.Context;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.shop.common.di.ShopQualifier;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
-import com.tokopedia.seller.shop.common.tracking.TrackingOpenShop;
+import com.tokopedia.seller.shop.open.analytic.ShopOpenTracking;
 import com.tokopedia.seller.shop.open.data.repository.ShopOpenRepository;
 import com.tokopedia.seller.shop.open.data.source.cloud.api.TomeApi;
 import com.tokopedia.seller.shop.open.di.module.ShopOpenDomainModule;
 import com.tokopedia.seller.shop.open.di.scope.ShopOpenDomainScope;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenCreateSuccessFragment;
-import com.tokopedia.seller.shop.open.view.fragment.ShopOpenDomainFragment;
+import com.tokopedia.seller.shop.open.view.fragment.ShopOpenReserveDomainFragment;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLocationFragment;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLogisticFragment;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenReserveDomainSuccessFragment;
@@ -37,7 +39,7 @@ public interface ShopOpenDomainComponent {
 
 	void inject(ShopOpenRoutingFragment shopOpenRoutingFragment);
 
-    void inject(ShopOpenDomainFragment shopOpenDomainFragment);
+    void inject(ShopOpenReserveDomainFragment shopOpenDomainFragment);
 
     void inject(ShopOpenMandatoryLocationFragment shopOpenMandatoryLocationFragment);
 
@@ -71,5 +73,9 @@ public interface ShopOpenDomainComponent {
 
     NetworkCalculator networkCalculator();
 
-    TrackingOpenShop trackingOpenShop();
+    ShopOpenTracking trackingOpenShop();
+
+    SessionHandler sessionHandler();
+
+    GlobalCacheManager globalCacheManager();
 }

@@ -8,21 +8,20 @@ import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 import com.tokopedia.core.network.retrofit.interceptors.BearerInterceptor;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.shop.common.di.ShopQualifier;
 import com.tokopedia.seller.shop.common.di.ShopScope;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
-import com.tokopedia.seller.shop.common.tracking.TrackingOpenShop;
+import com.tokopedia.seller.shop.open.analytic.ShopOpenTracking;
 import com.tokopedia.seller.shop.open.data.source.cloud.api.TomeApi;
 
 import dagger.Component;
 import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
 /**
@@ -61,5 +60,9 @@ public interface ShopComponent {
 
     ShopInfoRepository shopInfoRepository();
 
-    TrackingOpenShop trackingOpenShop();
+    ShopOpenTracking trackingOpenShop();
+
+    SessionHandler sessionHandler();
+
+    GlobalCacheManager globalCacheManager();
 }

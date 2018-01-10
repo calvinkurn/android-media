@@ -9,10 +9,10 @@ import com.tokopedia.seller.product.edit.view.dialog.ImageEditDialogFragment;
  * Created by zulfikarrahman on 1/9/18.
  */
 
-public class ImageNewDialogFragment extends ImageEditDialogFragment {
+public class ShopOpenMandatoryImageDialogFragment extends ImageEditDialogFragment {
 
-    public static ImageNewDialogFragment newInstance(int position) {
-        ImageNewDialogFragment f = new ImageNewDialogFragment();
+    public static ShopOpenMandatoryImageDialogFragment newInstance(int position) {
+        ShopOpenMandatoryImageDialogFragment f = new ShopOpenMandatoryImageDialogFragment();
         Bundle args = new Bundle();
         args.putInt(IMAGE_PRODUCT_POSITION, position);
         f.setArguments(args);

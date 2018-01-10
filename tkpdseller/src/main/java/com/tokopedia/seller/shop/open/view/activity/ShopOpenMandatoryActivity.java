@@ -1,5 +1,6 @@
 package com.tokopedia.seller.shop.open.view.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,7 +19,7 @@ import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLogisticFra
 import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
 import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
 import com.tokopedia.seller.shop.open.di.component.DaggerShopOpenDomainComponent;
-import com.tokopedia.seller.shop.open.view.fragment.ShopOpenInfoFragment;
+import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryInfoFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,7 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepp
         ShopOpenMandatoryLogisticFragment.OnShopOpenLogisticFragmentListener{
 
     public static final String EXTRA_RESPONSE_IS_RESERVE_DOMAIN = "EXTRA_RESPONSE_IS_RESERVE_DOMAIN";
+    public static final int REQUEST_PHONE_VERIFICATION = 300;
     private List<Fragment> fragmentList;
     private ShopOpenDomainComponent component;
 
@@ -74,7 +76,7 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepp
     protected List<Fragment> getListFragment() {
         if (fragmentList == null) {
             fragmentList = new ArrayList<>();
-            fragmentList.add(ShopOpenInfoFragment.createInstance());
+            fragmentList.add(ShopOpenMandatoryInfoFragment.createInstance());
             fragmentList.add(ShopOpenMandatoryLocationFragment.getInstance());
             fragmentList.add(ShopOpenMandatoryLogisticFragment.newInstance());
             return fragmentList;
@@ -88,7 +90,17 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepp
         super.onResume();
         if (!SessionHandler.isMsisdnVerified()) {
             Intent intent = SessionRouter.getPhoneVerificationActivationActivityIntent(this);
-            startActivity(intent);
+            startActivityForResult(intent, REQUEST_PHONE_VERIFICATION);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_PHONE_VERIFICATION) {
+            if (resultCode != Activity.RESULT_OK) {
+                this.finish();
+            }
         }
     }
 

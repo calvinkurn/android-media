@@ -7,7 +7,7 @@ import com.tokopedia.seller.logistic.model.CouriersModel;
  * Created by sebastianuskh on 3/23/17.
  */
 
-public interface ShopSettingLogisticView extends CustomerView {
+public interface ShopOpenLogisticView extends CustomerView {
 
     void onSuccessLoadLogistic(CouriersModel couriersModel);
 
@@ -17,6 +17,6 @@ public interface ShopSettingLogisticView extends CustomerView {
 
     void onErrorCreateShop(Throwable t);
 
-    void onSuccessCreateShop(int shopId);
+    void onSuccessCreateShop();
 
 }
