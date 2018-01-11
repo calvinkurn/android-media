@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.common.view.FlightExpandableOptionArrow;
+import com.tokopedia.flight.detail.presenter.ExpandableOnClickListener;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 
 import java.util.ArrayList;
@@ -31,10 +32,14 @@ public class FlightDetailOrderViewHolder extends AbstractViewHolder<FlightOrderJ
     private FlightDetailAdapter flightDetailAdapter;
     private FlightOrderJourney flightOrderJourney;
 
+    private ExpandableOnClickListener expandableOnClickListener;
+
     private boolean isFlightInfoShowed = true;
 
-    public FlightDetailOrderViewHolder(final View layoutView) {
+    public FlightDetailOrderViewHolder(final View layoutView, ExpandableOnClickListener expandableOnClickListener) {
         super(layoutView);
+        this.expandableOnClickListener = expandableOnClickListener;
+
         flightCounter = layoutView.findViewById(R.id.counter_flight);
         journeyView = layoutView.findViewById(R.id.layout_expendable_flight);
         titleJourney = layoutView.findViewById(R.id.title_expendable_passenger);
@@ -93,5 +98,8 @@ public class FlightDetailOrderViewHolder extends AbstractViewHolder<FlightOrderJ
         isFlightInfoShowed = true;
         recyclerViewFlightJourney.setVisibility(View.VISIBLE);
         imageJourney.setRotation(0);
+        expandableOnClickListener.onCloseExpand(getPosition());
     }
+
+
 }
