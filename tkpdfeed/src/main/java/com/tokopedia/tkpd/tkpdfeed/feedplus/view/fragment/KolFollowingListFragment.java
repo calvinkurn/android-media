@@ -18,6 +18,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.KolFollowingListActivity;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.KolProfileWebViewActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.KolFollowingAdapter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.KolFollowingList;
@@ -106,6 +107,7 @@ public class KolFollowingListFragment extends BaseDaggerFragment
         rvItem.setLayoutManager(layoutManager);
         rvItem.setHasFixedSize(true);
         rvItem.setAdapter(adapter);
+        rvItem.addOnScrollListener(getRVListener());
         showLoading();
         presenter.getKolFollowingList(userId);
     }
@@ -207,6 +209,7 @@ public class KolFollowingListFragment extends BaseDaggerFragment
         adapter.removeBottomLoading();
         adapter.getItemList().addAll(itemList.getKolFollowingViewModelList());
         adapter.notifyDataSetChanged();
+        updateParams(itemList);
     }
 
     @Override
@@ -220,6 +223,7 @@ public class KolFollowingListFragment extends BaseDaggerFragment
         String url = item.getProfileApplink();
         if (!TextUtils.isEmpty(url)) {
             ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity(), url);
+//            startActivity(KolProfileWebViewActivity.getCallingIntent(getActivity(), url));
         }
     }
 
