@@ -32,6 +32,8 @@ import com.tokopedia.seller.opportunity.activity.OpportunityFilterActivity;
 import com.tokopedia.seller.opportunity.activity.OpportunitySortActivity;
 import com.tokopedia.seller.opportunity.adapter.OpportunityListAdapter;
 import com.tokopedia.seller.opportunity.analytics.OpportunityTrackingEventLabel;
+import com.tokopedia.seller.opportunity.di.component.OpportunityComponent;
+import com.tokopedia.seller.opportunity.di.module.OpportunityModule;
 import com.tokopedia.seller.opportunity.domain.param.GetOpportunityListParam;
 import com.tokopedia.seller.opportunity.listener.OpportunityListView;
 import com.tokopedia.seller.opportunity.presenter.OpportunityListPresenter;
@@ -46,8 +48,11 @@ import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
+import com.tokopedia.seller.opportunity.di.component.DaggerOpportunityComponent;
 
 import java.util.ArrayList;
+
+import javax.inject.Inject;
 
 import static com.tokopedia.seller.opportunity.activity.OpportunityFilterActivity.CACHE_OPPORTUNITY_FILTER;
 
@@ -87,7 +92,12 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     private OpportunityFilterViewModel filterData;
     private OpportunityFilterPassModel opportunityFilterPassModel;
 
+    private OpportunityComponent opportunityComponent;
+
     private ShowCaseDialog showCaseDialog;
+
+    @Inject
+    OpportunityListPresenter presenter;
 
     public static Fragment newInstance() {
         return new OpportunityListFragment();
@@ -183,14 +193,18 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
 
     @Override
     protected void initialPresenter() {
-        presenter = new OpportunityListPresenterImpl(this);
-        // inject dagger
+        opportunityComponent.inject(this);
+        presenter.attachView(this);
     }
 
     @Override
     protected void initialListener(Activity activity) {
         if(activity != null && activity instanceof BaseActivity){
-
+            opportunityComponent = DaggerOpportunityComponent
+                    .builder()
+                    .opportunityModule(new OpportunityModule())
+                    .appComponent(((BaseActivity)activity).getApplicationComponent())
+                    .build();
         }
     }
 
@@ -569,6 +583,12 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         presenter.unsubscribeObservable();
         cacheHandler = null;
         cacheManager = null;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
     }
 
     @Override

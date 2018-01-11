@@ -21,40 +21,23 @@ import com.tokopedia.seller.opportunity.presenter.subscriber.AcceptOpportunitySu
  */
 public class OpportunityImpl extends OpportunityPresenter {
 
-    private final OpportunityView view;
     private AcceptReplacementUseCase acceptReplacementUseCase;
 
 
-
-    @Deprecated
-    public OpportunityImpl(Context context, OpportunityView view) {
-        this.view = view;
-
-//        OpportunityService opportunityService = new OpportunityService();
-//
-//        ReplacementRepositoryImpl repository = new ReplacementRepositoryImpl(
-//                new ActionReplacementSourceFactory(context),
-//                new OpportunityDataSourceFactory(context,
-//                        opportunityService,
-//                        new OpportunityListMapper(),
-//                        new OpportunityFilterMapper(),
-//                        new GlobalCacheManager())
-//        );
-//        this.acceptReplacementUseCase = new AcceptReplacementUseCase(
-//                new JobExecutor(), new UIThread(), repository
-//        );
+    public OpportunityImpl(AcceptReplacementUseCase acceptReplacementUseCase) {
+        this.acceptReplacementUseCase = acceptReplacementUseCase;
     }
 
     @Override
     public void acceptOpportunity() {
-        view.showLoadingProgress();
+        getView().showLoadingProgress();
         acceptReplacementUseCase.execute(getAcceptOpportunityParams(),
-                new AcceptOpportunitySubscriber(view));
+                new AcceptOpportunitySubscriber(getView()));
     }
 
     private RequestParams getAcceptOpportunityParams() {
         RequestParams params = RequestParams.create();
-        params.putString(AcceptReplacementUseCase.PARAMS_ID, view.getOpportunityId());
+        params.putString(AcceptReplacementUseCase.PARAMS_ID, getView().getOpportunityId());
         return params;
     }
 

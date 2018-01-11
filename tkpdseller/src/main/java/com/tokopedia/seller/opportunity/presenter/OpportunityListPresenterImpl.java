@@ -33,7 +33,6 @@ import java.util.HashMap;
 
 public class OpportunityListPresenterImpl extends OpportunityListPresenter {
 
-    private OpportunityListView viewListener;
 
     private GetOpportunityUseCase getOpportunityUseCase;
     private GetOpportunityFilterUseCase getFilterUseCase;
@@ -48,43 +47,16 @@ public class OpportunityListPresenterImpl extends OpportunityListPresenter {
         this.sessionHandler = sessionHandler;
     }
 
-    @Deprecated
-    public OpportunityListPresenterImpl(OpportunityListView viewListener) {
-        this.viewListener = viewListener;
-
-//        ReplacementRepositoryImpl repository = new ReplacementRepositoryImpl(
-//                new ActionReplacementSourceFactory(viewListener.getActivity()),
-//                new OpportunityDataSourceFactory(viewListener.getActivity(),
-//                        new OpportunityService(),
-//                        new OpportunityListMapper(),
-//                        new OpportunityFilterMapper(),
-//                        new GlobalCacheManager())
-//        );
-//
-//        this.getOpportunityUseCase = new GetOpportunityUseCase(
-//                new JobExecutor(), new UIThread(), repository);
-//
-//        this.getFilterUseCase = new GetOpportunityFilterUseCase(
-//                new JobExecutor(), new UIThread(), repository);
-//
-//        this.sessionHandler = new SessionHandler(viewListener.getActivity());
-//
-//        this.getOpportunityFirstTimeUseCase = new GetOpportunityFirstTimeUseCase(
-//                new JobExecutor(), new UIThread(), getOpportunityUseCase, getFilterUseCase
-//        );
-
-    }
-
     @Override
     public void getOpportunity(@Nullable String query,
                                @Nullable ArrayList<FilterPass> listFilter) {
-        viewListener.showLoadingList();
-        viewListener.disableView();
+        getView().showLoadingList();
+        getView().disableView();
         getOpportunityUseCase.execute(GetOpportunityUseCase.getRequestParam(
-                viewListener.getPage(),
+                getView().getPage(),
                 query,
                 listFilter
-        ), new GetOpportunitySubscriber(viewListener));
+        ), new GetOpportunitySubscriber(getView()));
 
     }
 
@@ -98,25 +70,15 @@ public class OpportunityListPresenterImpl extends OpportunityListPresenter {
     @Override
     public void initOpportunityForFirstTime(@Nullable String query,
                                             @Nullable ArrayList<FilterPass> listFilter) {
-        viewListener.showLoadingList();
-        viewListener.disableView();
+        getView().showLoadingList();
+        getView().disableView();
         getOpportunityFirstTimeUseCase.execute(
                 GetOpportunityFirstTimeUseCase.getRequestParam(
                         1,
                         query,
                         listFilter,
                         sessionHandler.getShopID()),
-                new GetOpportunityFirstTimeSubscriber(viewListener));
-
-//        if ((listFilter != null && listFilter.size() > 0)
-//                || (query != null && !query.equals("")))
-//            UnifyTracking.eventOpportunityCustom(
-//                    OpportunityTrackingEventLabel.EventName.SUBMIT_OPPORTUNITY,
-//                    OpportunityTrackingEventLabel.EventCategory.OPPORTUNITY_FILTER,
-//                    AppEventTracking.Action.SUBMIT,
-//                    OpportunityTrackingEventLabel.EventLabel.SEARCH,
-//                    getCustomDimension(query, listFilter)
-//            );
+                new GetOpportunityFirstTimeSubscriber(getView()));
     }
 
     public HashMap<String, String> getCustomDimension(String query,

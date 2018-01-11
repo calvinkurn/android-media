@@ -18,15 +18,20 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.fragment.BaseWebViewFragment;
 import com.tokopedia.seller.opportunity.analytics.OpportunityTrackingEventLabel;
+import com.tokopedia.seller.opportunity.di.component.OpportunityComponent;
+import com.tokopedia.seller.opportunity.di.module.OpportunityModule;
 import com.tokopedia.seller.opportunity.listener.OpportunityView;
 import com.tokopedia.seller.opportunity.presentation.ActionViewData;
 import com.tokopedia.seller.opportunity.presenter.OpportunityImpl;
 import com.tokopedia.seller.opportunity.presenter.OpportunityPresenter;
 import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityItemViewModel;
+
+import javax.inject.Inject;
 
 public class OpportunityTncFragment extends BaseWebViewFragment implements OpportunityView {
     private OpportunityItemViewModel opportunityItemViewModel;
@@ -36,6 +41,11 @@ public class OpportunityTncFragment extends BaseWebViewFragment implements Oppor
 
     TkpdProgressDialog progressDialog;
     private View btnTakeOpportunity;
+
+    private OpportunityComponent opportunityComponent;
+
+    @Inject
+    OpportunityPresenter presenter;
 
     public interface OnOpportunityFragmentListener{
         OpportunityItemViewModel getItemViewModel();
@@ -49,14 +59,15 @@ public class OpportunityTncFragment extends BaseWebViewFragment implements Oppor
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.opportunityItemViewModel = listener.getItemViewModel();
+
+        opportunityComponent.inject(this);
+        presenter.attachView(this);
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
-
-        opportunityPresenter = new OpportunityImpl(getActivity(), this);
 
         btnTakeOpportunity = view.findViewById(R.id.button_take_opportunity);
         btnTakeOpportunity.setOnClickListener(new View.OnClickListener() {
@@ -75,6 +86,12 @@ public class OpportunityTncFragment extends BaseWebViewFragment implements Oppor
         if (btnTakeOpportunity!= null) {
             btnTakeOpportunity.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
     }
 
     @Override
@@ -169,5 +186,13 @@ public class OpportunityTncFragment extends BaseWebViewFragment implements Oppor
 
     protected void onAttachListener(Context context) {
         this.listener = (OnOpportunityFragmentListener) context;
+
+        if(context != null && context instanceof BaseActivity){
+            opportunityComponent = DaggerOpportunityComponent
+                    .builder()
+                    .opportunityModule(new OpportunityModule())
+                    .appComponent(((BaseActivity)context).getApplicationComponent())
+                    .build();
+        }
     }
 }

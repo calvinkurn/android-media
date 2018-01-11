@@ -8,13 +8,16 @@ import com.tokopedia.seller.opportunity.data.source.api.ReplacementActApi;
 import com.tokopedia.seller.opportunity.data.source.api.ReplacementApi;
 import com.tokopedia.seller.opportunity.data.source.CloudActionReplacementSource2;
 import com.tokopedia.seller.opportunity.di.scope.OpportunityScope;
+import com.tokopedia.seller.opportunity.domain.interactor.AcceptReplacementUseCase;
 import com.tokopedia.seller.opportunity.domain.interactor.GetOpportunityFilterUseCase;
 import com.tokopedia.seller.opportunity.domain.interactor.GetOpportunityFirstTimeUseCase;
 import com.tokopedia.seller.opportunity.domain.interactor.GetOpportunityUseCase;
 import com.tokopedia.seller.opportunity.domain.repository.ReplacementRepository;
 import com.tokopedia.seller.opportunity.domain.repository.ReplacementRepositoryImpl;
+import com.tokopedia.seller.opportunity.presenter.OpportunityImpl;
 import com.tokopedia.seller.opportunity.presenter.OpportunityListPresenter;
 import com.tokopedia.seller.opportunity.presenter.OpportunityListPresenterImpl;
+import com.tokopedia.seller.opportunity.presenter.OpportunityPresenter;
 
 import dagger.Module;
 import dagger.Provides;
@@ -56,5 +59,11 @@ public class OpportunityModule {
             GetOpportunityFirstTimeUseCase getOpportunityFirstTimeUseCase,
             SessionHandler sessionHandler){
                 return new OpportunityListPresenterImpl(getOpportunityUseCase, getFilterUseCase, getOpportunityFirstTimeUseCase, sessionHandler);
+    }
+
+    @OpportunityScope
+    @Provides
+    public OpportunityPresenter provideOpportunityPresenter(AcceptReplacementUseCase acceptReplacementUseCase){
+                return new OpportunityImpl(acceptReplacementUseCase);
     }
 }

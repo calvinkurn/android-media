@@ -15,12 +15,15 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.seller.opportunity.activity.OpportunityTncActivity;
 import com.tokopedia.seller.opportunity.analytics.OpportunityTrackingEventLabel;
 import com.tokopedia.seller.opportunity.customview.OpportunityValueBottomSheet;
+import com.tokopedia.seller.opportunity.di.component.OpportunityComponent;
+import com.tokopedia.seller.opportunity.di.module.OpportunityModule;
 import com.tokopedia.seller.opportunity.snapshot.SnapShotProduct;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.activity.OpportunityDetailActivity;
@@ -32,6 +35,8 @@ import com.tokopedia.seller.opportunity.presentation.ActionViewData;
 import com.tokopedia.seller.opportunity.presenter.OpportunityImpl;
 import com.tokopedia.seller.opportunity.presenter.OpportunityPresenter;
 import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityItemViewModel;
+
+import javax.inject.Inject;
 
 /**
  * Created by hangnadi on 2/27/17.
@@ -50,7 +55,14 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
     OpportunityDetailSummaryView summaryView;
     TkpdProgressDialog progressDialog;
 
+    private OpportunityComponent opportunityComponent;
+
+    @Inject
+    OpportunityPresenter presenter;
+
     private OpportunityItemViewModel oppItemViewModel;
+
+
 
     public static Fragment createInstance(Bundle bundle) {
         OpportunityDetailFragment fragment = new OpportunityDetailFragment();
@@ -173,12 +185,19 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
 
     @Override
     protected void initialPresenter() {
-        presenter = new OpportunityImpl(getActivity(), this);
+        opportunityComponent.inject(this);
+        presenter.attachView(this);
     }
 
     @Override
     protected void initialListener(Activity activity) {
-
+        if(activity != null && activity instanceof BaseActivity){
+            opportunityComponent = DaggerOpportunityComponent
+                    .builder()
+                    .opportunityModule(new OpportunityModule())
+                    .appComponent(((BaseActivity)activity).getApplicationComponent())
+                    .build();
+        }
     }
 
     @Override
