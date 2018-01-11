@@ -10,20 +10,29 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.shop.common.tracking.TrackingOpenShop;
+import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
+import com.tokopedia.seller.common.imageeditor.view.WatermarkPresenterView;
+import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
+
+import com.tokopedia.seller.shop.open.analytic.ShopOpenTracking;
 import com.tokopedia.seller.shop.open.di.component.DaggerShopOpenDomainComponent;
+import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.view.activity.ShopOpenMandatoryActivity;
 
+import javax.inject.Inject;
 
-public class ShopOpenReserveDomainSuccessFragment extends BaseDaggerFragment{
+
+public class ShopOpenReserveDomainSuccessFragment extends BaseDaggerFragment {
     public static final String TAG = ShopOpenReserveDomainSuccessFragment.class.getSimpleName();
 
     public static final String ARG_SHOP_NAME = "shop_nm";
     private String shopName;
     @Inject
-    TrackingOpenShop trackingOpenShop;
+    ShopOpenTracking trackingOpenShop;
 
     public static ShopOpenReserveDomainSuccessFragment newInstance(String shopName) {
 
