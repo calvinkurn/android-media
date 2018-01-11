@@ -14,11 +14,20 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.ChildCategoryLifestyleAdapter;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.RevampCategoryAdapter;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
+import com.tokopedia.topads.sdk.base.Config;
+import com.tokopedia.topads.sdk.base.Endpoint;
+import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
+import com.tokopedia.topads.sdk.view.TopAdsBannerView;
 
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -32,6 +41,7 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_category_header_lifestyle;
 
+    public static final String DEFAULT_ITEM_VALUE = "1";
     private final Context context;
     private final ImageView imageHeader;
     private final RelativeLayout imageHeaderContainer;
@@ -40,6 +50,7 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
     private final RevampCategoryAdapter.CategoryListener categoryListener;
     private final TextView titleHeader;
     private final TextView totalProduct;
+    private final TopAdsBannerView topAdsBannerView;
 
     public CategoryLifestyleHeaderViewHolder(View itemView,
                                              RevampCategoryAdapter.CategoryListener listener) {
@@ -51,11 +62,35 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
         this.imageHeaderContainer = (RelativeLayout) itemView.findViewById(R.id.image_header_container);
         this.layoutChildCategory = itemView.findViewById(R.id.view_child_category);
         this.listChildCategory = itemView.findViewById(R.id.recyclerview_child_category);
+        this.topAdsBannerView = (TopAdsBannerView) itemView.findViewById(R.id.topAdsBannerView);
         this.categoryListener = listener;
+    }
+
+    private void initTopAds(String depId) {
+        TopAdsParams adsParams = new TopAdsParams();
+        adsParams.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_DIRECTORY);
+        adsParams.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, depId);
+        adsParams.getParam().put(TopAdsParams.KEY_ITEM, DEFAULT_ITEM_VALUE);
+
+        Config config = new Config.Builder()
+                .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
+                .setUserId(SessionHandler.getLoginID(context))
+                .setEndpoint(Endpoint.CPM)
+                .topAdsParams(adsParams)
+                .build();
+        this.topAdsBannerView.setConfig(config);
+        this.topAdsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
+            @Override
+            public void onBannerAdsClicked(String applink) {
+                categoryListener.onBannerAdsClicked(applink);
+            }
+        });
+        this.topAdsBannerView.loadTopAds();
     }
 
     @Override
     public void bind(CategoryHeaderModel model) {
+        initTopAds(model.getDepartementId());
         renderBannerCategory(model);
         renderChildCategory(model);
         renderTotalProduct(model);
