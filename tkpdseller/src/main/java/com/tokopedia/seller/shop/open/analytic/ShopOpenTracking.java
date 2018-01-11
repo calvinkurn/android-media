@@ -148,4 +148,10 @@ public class ShopOpenTracking {
                 ""
         );
     }
+
+    public void eventOpenShopDomainReserveNext(String label) {
+        eventOpenShop(ShopOpenTrackingConstant.OPEN_SHOP_DOMAIN_RESERVE,
+                ShopOpenTrackingConstant.OPEN_SHOP_CLICK_NEXT_STEP,
+                label);
+    }
 }

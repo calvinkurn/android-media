@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -165,8 +164,10 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
     protected void onNextButtonClicked() {
         GoogleLocationViewModel googleLocationViewModel = locationMapViewHolder.getGoogleLocationViewModel();
 
-        if (TextUtils.isEmpty(locationShippingViewHolder.getDistrictName())) {
-            NetworkErrorHelper.showCloseSnackbar(getActivity(), getString(R.string.shop_location_must_be_filled));
+        if (!locationShippingViewHolder.isDataInputValid()){
+            return;
+        }
+        if (!locationMapViewHolder.isDataInputValid()){
             return;
         }
         RequestParams requestParams = ShopOpenSaveLocationUseCase.createRequestParams(
@@ -222,10 +223,12 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
             if (shipment == null) {
                 shipment = new Shipment();
             }
-            shipment.setAddrStreet(googleLocationViewModel.getGeneratedAddress());
-            shipment.setLongitude(googleLocationViewModel.getLongitude());
-            shipment.setLatitude(googleLocationViewModel.getLatitude());
-            shipment.setGeolocationChecksum(googleLocationViewModel.getCheckSum());
+            if (googleLocationViewModel!= null) {
+                shipment.setAddrStreet(googleLocationViewModel.getGeneratedAddress());
+                shipment.setLongitude(googleLocationViewModel.getLongitude());
+                shipment.setLatitude(googleLocationViewModel.getLatitude());
+                shipment.setGeolocationChecksum(googleLocationViewModel.getCheckSum());
+            }
             shipment.setDistrictId(Integer.valueOf(locationShippingViewHolder.getDistrictId()));
             shipment.setPostal(Integer.valueOf(locationShippingViewHolder.getPostalCode()));
 
