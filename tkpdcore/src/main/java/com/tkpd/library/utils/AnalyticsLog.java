@@ -13,6 +13,7 @@ import java.io.IOException;
  * Created by ricoharisin on 8/23/16.
  */
 public class AnalyticsLog {
+    private static final String TOKEN_LOG_NOTIFIER = "2719adf1-18c8-4cc6-8c92-88a07594f7db";
 
     public static void logForceLogout(String url) {
         Context context = MainApplication.getAppContext();
@@ -43,7 +44,7 @@ public class AnalyticsLog {
                     false,
                     null,
                     0,
-                    "2719adf1-18c8-4cc6-8c92-88a07594f7db",
+                    TOKEN_LOG_NOTIFIER,
                     false
             );
         } catch (IOException e) {
