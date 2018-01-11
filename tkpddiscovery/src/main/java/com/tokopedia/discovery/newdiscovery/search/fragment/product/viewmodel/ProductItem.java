@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.CurrencyFormatHelper;
+import com.tokopedia.core.analytics.SearchTracking;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
 
@@ -177,7 +178,7 @@ public class ProductItem implements Parcelable, Visitable<ProductListTypeFactory
                 "brand", "",
                 "category", "",
                 "variant", "",
-                "list", "",
+                "list", SearchTracking.ACTION_FIELD,
                 "position", Integer.toString(getPosition()),
                 "userId", userId
         );

@@ -11,6 +11,8 @@ import java.util.Map;
 
 public class SearchTracking extends TrackingUtils {
 
+    public static final String ACTION_FIELD = "/search result - product 2 - product list";
+
     public static void trackEventClickSearchResultProduct(String name,
                                                           String id,
                                                           String price,
@@ -19,7 +21,7 @@ public class SearchTracking extends TrackingUtils {
                                                           String eventLabel) {
         getGTMEngine().enhanceClickSearchResultProduct(createProductList(name, id, price, itemPosition, userId),
                 eventLabel,
-                ""
+                ACTION_FIELD
         );
     }
 
@@ -34,7 +36,7 @@ public class SearchTracking extends TrackingUtils {
         product.setCategoryId("");
         product.setCategoryName("");
         product.setVariant("");
-        product.setList("");
+        product.setList(ACTION_FIELD);
         product.setPosition(itemPosition);
         product.setUserId(userId);
 
