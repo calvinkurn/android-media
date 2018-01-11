@@ -13,10 +13,13 @@ import com.tokopedia.core.var.ProductItem;
 
 import org.json.JSONArray;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.tokopedia.core.util.DateFormatUtils.DEFAULT_LOCALE;
 
 /**
  * @author by Herdi_WORK on 25.10.16.
@@ -3022,7 +3025,7 @@ public class UnifyTracking extends TrackingUtils {
 
     private static String generateWishlistClickEventLabel(boolean isWishlisted, String keyword) {
         String action = isWishlisted ? "add" : "remove";
-        return action + " - " + keyword + " - " + new Date().toString();
+        return action + " - " + keyword + " - " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", DEFAULT_LOCALE).format(new Date());
     }
 
     public static void eventSearchResultSort(String screenName, String sortByValue) {
