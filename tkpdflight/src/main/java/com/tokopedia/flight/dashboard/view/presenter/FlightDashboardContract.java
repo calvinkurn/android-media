@@ -26,11 +26,11 @@ public interface FlightDashboardContract {
 
         FlightDashboardViewModel getCurrentDashboardViewModel();
 
-        void showDepartureDatePickerDialog(Date selectedDate, Date minDate);
+        void showDepartureDatePickerDialog(Date selectedDate, Date minDate, Date maxDate);
 
         void setDashBoardViewModel(FlightDashboardViewModel viewModel);
 
-        void showReturnDatePickerDialog(Date selectedDate, Date minDate);
+        void showReturnDatePickerDialog(Date selectedDate, Date minDate, Date maxDate);
 
         CharSequence getString(@StringRes int resID);
 

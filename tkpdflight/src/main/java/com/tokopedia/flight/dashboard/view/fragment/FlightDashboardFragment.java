@@ -300,7 +300,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     }
 
     @Override
-    public void showDepartureDatePickerDialog(Date selectedDate, Date minDate) {
+    public void showDepartureDatePickerDialog(Date selectedDate, Date minDate, Date maxDate) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(selectedDate);
         DatePickerDialog datePicker = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
@@ -311,11 +311,12 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
         DatePicker datePicker1 = datePicker.getDatePicker();
         datePicker1.setMinDate(minDate.getTime());
+        datePicker1.setMaxDate(maxDate.getTime());
         datePicker.show();
     }
 
     @Override
-    public void showReturnDatePickerDialog(Date selectedDate, Date minDate) {
+    public void showReturnDatePickerDialog(Date selectedDate, Date minDate, Date maxDate) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(selectedDate);
         DatePickerDialog datePicker = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
@@ -326,6 +327,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
         DatePicker datePicker1 = datePicker.getDatePicker();
         datePicker1.setMinDate(minDate.getTime());
+        datePicker1.setMaxDate(maxDate.getTime());
         datePicker.show();
     }
 
