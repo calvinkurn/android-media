@@ -9,7 +9,9 @@ import com.tokopedia.seller.opportunity.data.source.api.ReplacementApi;
 
 import javax.inject.Inject;
 
+import retrofit2.Response;
 import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * Created by normansyahputa on 1/10/18.
@@ -27,5 +29,16 @@ public class CloudGetListOpportunitySource2 {
         return replacementApi
                 .getOpportunityList(requestParams.getParamsAllValueInString())
                 .map(new OpportunityListMapper());
+    }
+
+    public Observable<String> getOpportunityNewPrice(RequestParams requestParams){
+        return replacementApi
+                .getOpportunityPriceInfo(requestParams.getParamsAllValueInString())
+                .map(new Func1<Response<String>, String>() {
+                    @Override
+                    public String call(Response<String> stringResponse) {
+                        return stringResponse.body();
+                    }
+                });
     }
 }

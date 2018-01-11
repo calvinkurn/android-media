@@ -2,7 +2,9 @@ package com.tokopedia.seller.opportunity.presenter;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.seller.opportunity.domain.interactor.AcceptReplacementUseCase;
+import com.tokopedia.seller.opportunity.domain.interactor.GetOpportunityNewPriceUseCase;
 import com.tokopedia.seller.opportunity.presenter.subscriber.AcceptOpportunitySubscriber;
+import com.tokopedia.seller.opportunity.presenter.subscriber.NewPriceInfoSubscriber;
 
 /**
  * Created by hangnadi on 2/27/17.
@@ -10,10 +12,19 @@ import com.tokopedia.seller.opportunity.presenter.subscriber.AcceptOpportunitySu
 public class OpportunityImpl extends OpportunityPresenter {
 
     private AcceptReplacementUseCase acceptReplacementUseCase;
+    private GetOpportunityNewPriceUseCase newPriceUseCase;
 
-
-    public OpportunityImpl(AcceptReplacementUseCase acceptReplacementUseCase) {
+    public OpportunityImpl(AcceptReplacementUseCase acceptReplacementUseCase,
+                           GetOpportunityNewPriceUseCase newPriceUseCase) {
         this.acceptReplacementUseCase = acceptReplacementUseCase;
+        this.newPriceUseCase = newPriceUseCase;
+    }
+
+    @Override
+    public void getNewPriceInfo() {
+        getView().showLoadingProgress();
+        newPriceUseCase.execute(getNewPriceInfoParams(),
+                new NewPriceInfoSubscriber(getView()));
     }
 
     @Override
@@ -21,6 +32,10 @@ public class OpportunityImpl extends OpportunityPresenter {
         getView().showLoadingProgress();
         acceptReplacementUseCase.execute(getAcceptOpportunityParams(),
                 new AcceptOpportunitySubscriber(getView()));
+    }
+
+    private RequestParams getNewPriceInfoParams(){
+        return GetOpportunityNewPriceUseCase.createRequestParams(getView().getOpportunityId());
     }
 
     private RequestParams getAcceptOpportunityParams() {

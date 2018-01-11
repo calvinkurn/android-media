@@ -54,8 +54,8 @@ public class ReplacementRepositoryImpl implements ReplacementRepository {
     }
 
     @Override
-    public Observable<String> getOpportunityReplacementNewPrice(TKPDMapParam<String, Object> parameters) {
-        return null;
+    public Observable<String> getOpportunityReplacementNewPrice(RequestParams parameters) {
+        return cloudGetListOpportunitySource2.getOpportunityNewPrice(parameters);
     }
 
 }
