@@ -52,7 +52,7 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
             @Override
             public void onNext(List<FlightOrder> orderEntities) {
                 List<Visitable> visitables = flightOrderViewModelMapper.transform(orderEntities);
-                if (page == 0) {
+                if (page == 1) {
                     buildAndRenderFilterList();
                 }
                 getView().renderList(visitables, visitables.size() >= perPage );
