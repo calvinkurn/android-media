@@ -165,15 +165,13 @@ android {
 
     splits {
         density {
-            enable false
-            /*enable allowSplit()*/
+            enable allowSplit()
             reset()
             include "mdpi", "hdpi", "xhdpi", "xxhdpi"
             compatibleScreens 'small', 'normal', 'large', 'xlarge'
         }
         abi {
-            enable false
-            /*enable allowSplit()*/
+            enable allowSplit()
             reset()
             include "armeabi-v7a", "x86"
             universalApk false
@@ -222,12 +220,12 @@ android {
         }
     }
 
-   /* variantFilter { variant ->
+    variantFilter { variant ->
 
         if(variant.buildType.name.equals('release') && variant.getFlavors().get(0).name.equals('staging')) {
             variant.setIgnore(true);
         }
-    }*/
+    }
 }
 
 dependencies {
