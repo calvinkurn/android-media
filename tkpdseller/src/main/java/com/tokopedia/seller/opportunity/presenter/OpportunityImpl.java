@@ -1,10 +1,13 @@
 package com.tokopedia.seller.opportunity.presenter;
 
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.seller.opportunity.data.OpportunityNewPriceData;
 import com.tokopedia.seller.opportunity.domain.interactor.AcceptReplacementUseCase;
 import com.tokopedia.seller.opportunity.domain.interactor.GetOpportunityNewPriceUseCase;
 import com.tokopedia.seller.opportunity.presenter.subscriber.AcceptOpportunitySubscriber;
-import com.tokopedia.seller.opportunity.presenter.subscriber.NewPriceInfoSubscriber;
+
+import rx.Subscriber;
 
 /**
  * Created by hangnadi on 2/27/17.
@@ -23,8 +26,22 @@ public class OpportunityImpl extends OpportunityPresenter {
     @Override
     public void getNewPriceInfo() {
         getView().showLoadingProgress();
-        newPriceUseCase.execute(getNewPriceInfoParams(),
-                new NewPriceInfoSubscriber(getView()));
+        newPriceUseCase.execute(getNewPriceInfoParams(), new Subscriber<OpportunityNewPriceData>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                getView().onErrorTakeOpportunity(ErrorHandler.getErrorMessage(e));
+            }
+
+            @Override
+            public void onNext(OpportunityNewPriceData opportunityNewPriceData) {
+                getView().onSuccessNewPrice(opportunityNewPriceData);
+            }
+        });
     }
 
     @Override
