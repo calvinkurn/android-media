@@ -39,6 +39,7 @@ public abstract class BasePresenterActivity<P> extends TActivity {
         initVar();
         setViewListener();
         setActionVar();
+
     }
 
     protected void setupVar(Bundle savedInstanceState) { /*leave empty*/ }

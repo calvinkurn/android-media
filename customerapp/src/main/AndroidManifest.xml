@@ -10,7 +10,7 @@
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         tools:node="remove"
-        tools:selector="com.google.firebase"/>
+        tools:selector="com.google.firebase" />
 
     <application
         android:name=".ConsumerMainApplication"
@@ -219,9 +219,13 @@
         <service
             android:name=".thankyou.view.ThanksTrackerService"
             android:exported="false" />
-        <activity android:name=".datepicker.DatePickerTokoCashActivity"
+
+        <activity
+            android:name=".datepicker.DatePickerTokoCashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3" />
+        <activity android:name=".campaign.view.BarcodeCampaignActivity"
+            android:theme="@style/Theme.Transparent.Black"></activity>
     </application>
 
 </manifest>

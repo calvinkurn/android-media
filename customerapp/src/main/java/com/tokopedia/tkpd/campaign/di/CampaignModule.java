@@ -1,0 +1,77 @@
+package com.tokopedia.tkpd.campaign.di;
+
+
+import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.tokopedia.core.analytics.nishikino.model.Campaign;
+import com.tokopedia.core.base.domain.executor.PostExecutionThread;
+import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.core.OkHttpFactory;
+import com.tokopedia.core.network.core.OkHttpRetryPolicy;
+import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.RideInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
+import com.tokopedia.ride.common.ride.data.BookingRideDataStoreFactory;
+import com.tokopedia.ride.common.ride.data.BookingRideRepositoryData;
+import com.tokopedia.ride.common.ride.di.RideQualifier;
+import com.tokopedia.ride.common.ride.di.scope.RideScope;
+import com.tokopedia.ride.common.ride.domain.BookingRideRepository;
+import com.tokopedia.tkpd.campaign.domain.barcode.CampaignDataRepository;
+import com.tokopedia.tkpd.campaign.domain.barcode.PostBarCodeDataUseCase;
+import com.tokopedia.tkpd.campaign.source.CampaignData;
+import com.tokopedia.tkpd.campaign.source.CampaignDataFactory;
+import com.tokopedia.tkpd.campaign.source.api.CampaignAPI;
+import com.tokopedia.tkpd.campaign.source.api.CampaignURL;
+import com.tokopedia.tkpd.campaign.view.BarCodeScannerPresenter;
+
+import dagger.Module;
+import dagger.Provides;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Retrofit;
+
+/**
+ * Created by sandeepgoyal on 15/12/17.
+ */
+
+@Module
+public class CampaignModule {
+    @Provides
+    BarCodeScannerPresenter provideBarCodeScannerPresenter(PostBarCodeDataUseCase postBarCodeDataUseCase) {
+        return new BarCodeScannerPresenter(postBarCodeDataUseCase);
+    }
+    @Provides
+    PostBarCodeDataUseCase providePostBarCodeDataUseCase(ThreadExecutor threadExecutor,
+                                                         PostExecutionThread postExecutionThread,
+                                                         CampaignDataRepository bookingRideRepository) {
+        return new PostBarCodeDataUseCase(threadExecutor, postExecutionThread, bookingRideRepository);
+    }
+
+    @Provides
+    CampaignDataRepository provideCampaignRideRepository(CampaignDataFactory campaignDataFactory) {
+        return new CampaignData(campaignDataFactory);
+    }
+
+
+    @Provides
+    CampaignDataFactory provideCampaignDataFactory(CampaignAPI campaignAPI) {
+        return new CampaignDataFactory(campaignAPI);
+    }
+
+    @Provides
+    CampaignAPI provideCampaignApi( Retrofit retrofit) {
+        return retrofit.create(CampaignAPI.class);
+    }
+    @Provides
+    Retrofit provideRideRetrofit( OkHttpClient okHttpClient,
+                                 Retrofit.Builder retrofitBuilder) {
+        return retrofitBuilder.baseUrl(CampaignURL.BASE_URL).client(okHttpClient).build();
+    }
+
+    @Provides
+    OkHttpClient provideOkHttpClientRide() {
+
+        return OkHttpFactory.create().buildClientDefaultAuth();
+    }
+
+}

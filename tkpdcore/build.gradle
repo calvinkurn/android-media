@@ -161,6 +161,9 @@ dependencies {
     }
 
     compile rootProject.ext.miscDependencies.captureActivity
+    compile (rootProject.ext.miscDependencies.scannerZxing){
+        exclude group: 'com.google.zxing'
+    }
     compile rootProject.ext.miscDependencies.multiDex
     compile rootProject.ext.miscDependencies.parcelerApi
     apt rootProject.ext.miscDependencies.parceler
