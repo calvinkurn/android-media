@@ -648,5 +648,17 @@ public class TrackingUtils extends TrackingConfig {
     public static void eventImpressionHotlistProductFeatured(Hotlist hotlist) {
         getGTMEngine().eventImpressionHotlistProductFeatured(hotlist);
     }
+
+    public static void impressionHotlistPromo(String hotlistName, String promoName, String promoCode) {
+        getGTMEngine().impressionHotlistTracking(hotlistName, promoName, promoCode);
+    }
+
+    public static void clickCopyButtonHotlistPromo(String hotlistName, String promoName, String promoCode) {
+        getGTMEngine().clickCopyButtonHotlistPromo(hotlistName, promoName, promoCode);
+    }
+
+    public static void clickTnCButtonHotlistPromo(String hotlistName, String promoName, String promoCode) {
+        getGTMEngine().clickTncButtonHotlistPromo(hotlistName, promoName, promoCode);
+    }
 }
 

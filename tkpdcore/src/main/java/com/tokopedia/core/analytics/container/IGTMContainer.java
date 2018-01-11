@@ -113,6 +113,13 @@ public interface IGTMContainer {
 
     void event(String name, Map<String, Object> data);
 
+    void impressionHotlistTracking(String hotlistName, String promoName, String promoCode);
+
+    void clickCopyButtonHotlistPromo(String hotlistName, String promoName, String promoCode);
+
+    void clickTncButtonHotlistPromo(String hotlistName, String promoName, String promoCode);
+
+
     void enhanceClickFeedRecomItem(Map<String, Object> objects, String eventLabel, String productUrl, String actionField);
 
     void eventImpressionFeedInspiration(List<Object> objects, String eventLabel);
