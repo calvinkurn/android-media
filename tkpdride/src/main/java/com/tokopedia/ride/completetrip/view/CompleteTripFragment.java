@@ -48,6 +48,7 @@ import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.common.ride.di.RideComponent;
 import com.tokopedia.ride.common.ride.domain.model.Receipt;
+import com.tokopedia.ride.common.ride.utils.RideUtils;
 import com.tokopedia.ride.completetrip.di.CompleteTripComponent;
 import com.tokopedia.ride.completetrip.di.DaggerCompleteTripComponent;
 import com.tokopedia.ride.completetrip.domain.GetReceiptUseCase;
@@ -707,6 +708,38 @@ public class CompleteTripFragment extends BaseFragment implements CompleteTripCo
         if (getActivity() != null && progressDialog != null && !progressDialog.isShowing()) {
             progressDialog.show();
         }
+    }
+
+    @Override
+    public void showAddShortcutDialog() {
+        if (getActivity() == null) {
+            return;
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage(getString(R.string.dialog_title_add_uber_shortcut));
+        builder.setCancelable(true);
+
+        builder.setPositiveButton(
+                getString(R.string.title_ok),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        RideUtils.addUberShortcutOnLauncher(getActivity(), getString(R.string.label_book_uber_shortcut), getString(R.string.label_book_uber_shortcut));
+                        presenter.setShortcutDialogIsShowninCache();
+                        dialog.cancel();
+                    }
+                });
+
+        builder.setNegativeButton(
+                getString(R.string.btn_maybe_later),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        presenter.setShortcutDialogIsShowninCache();
+                        dialog.cancel();
+                    }
+                });
+
+        builder.create().show();
     }
 
     @Override
