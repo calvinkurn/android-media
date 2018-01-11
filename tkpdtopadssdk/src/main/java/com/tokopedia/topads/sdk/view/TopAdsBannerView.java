@@ -60,11 +60,15 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         init();
     }
 
-    public static Spanned escapeHTML(String s) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            return Html.fromHtml(StringEscapeUtils.unescapeHtml4(s), Html.FROM_HTML_MODE_LEGACY);
-        } else {
-            return Html.fromHtml(StringEscapeUtils.unescapeHtml4(s));
+    public static String escapeHTML(String s) {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                return Html.fromHtml(StringEscapeUtils.unescapeHtml4(s), Html.FROM_HTML_MODE_LEGACY).toString();
+            } else {
+                return Html.fromHtml(StringEscapeUtils.unescapeHtml4(s)).toString();
+            }
+        } catch (Exception e) {
+            return "";
         }
     }
 
@@ -81,7 +85,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
 
         String desc = String.format("%s %s", escapeHTML(cpm.getDecription()), cpm.getCta());
         setTextColor(descriptionTxt, desc, cpm.getCta(), ContextCompat.getColor(context, R.color.tkpd_main_green));
-        if(cpm.getBadges().size()>0) {
+        if (cpm.getBadges().size() > 0) {
             badgeContainer.setVisibility(VISIBLE);
             for (Badge badge : cpm.getBadges()) {
                 ImageView badgeImg = new ImageView(context);
@@ -143,7 +147,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
             setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(topAdsBannerClickListener !=null){
+                    if (topAdsBannerClickListener != null) {
                         topAdsBannerClickListener.onBannerAdsClicked(data.getApplinks());
                     }
                 }
