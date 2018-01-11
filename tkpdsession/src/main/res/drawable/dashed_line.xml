@@ -11,8 +11,8 @@
             <solid android:color="@android:color/transparent" />
 
             <stroke
-                android:dashGap="10px"
-                android:dashWidth="10px"
+                android:dashGap="6px"
+                android:dashWidth="6px"
                 android:width="1dp"
                 android:color="#cccccc" />
         </shape>
