@@ -8,9 +8,11 @@
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/tv_departure_city"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="0.8"
+        android:layout_weight="1"
+        android:ellipsize="end"
+        android:lines="1"
         android:textSize="@dimen/font_title"
         tools:text="Jakarta" />
 
@@ -22,10 +24,12 @@
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/tv_arrival_city"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:paddingLeft="@dimen/padding_med"
+        android:ellipsize="end"
+        android:lines="1"
+        android:paddingLeft="@dimen/padding_small"
         android:textSize="@dimen/font_title"
         tools:text="London" />
 </LinearLayout>

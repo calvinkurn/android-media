@@ -35,7 +35,7 @@
 
             <TextView
                 android:id="@+id/airline_code"
-                style="@style/TextView.Body1.BlackSecondary"
+                style="@style/TextView.Caption.BlackSecondary"
                 android:layout_alignLeft="@+id/airline_name"
                 android:layout_below="@id/airline_name"
                 tools:text="CP - 321" />
@@ -57,10 +57,10 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:background="@drawable/bg_rect_stroke_flight_grey"
-                android:paddingBottom="@dimen/padding_vvs"
-                android:paddingLeft="@dimen/padding_small"
-                android:paddingRight="@dimen/padding_small"
-                android:paddingTop="@dimen/padding_vvs"
+                android:paddingBottom="@dimen/padding_ms"
+                android:paddingLeft="@dimen/padding_16"
+                android:paddingRight="@dimen/padding_16"
+                android:paddingTop="@dimen/padding_ms"
                 android:textSize="10sp"
                 android:visibility="gone"
                 tools:text="Refundable"
@@ -88,7 +88,7 @@
 
         <TextView
             android:id="@+id/pnr_code"
-            style="@style/TextView.Body1.Green.Bold"
+            style="@style/TextView.Body1.Green"
             android:layout_marginRight="@dimen/margin_vs"
             tools:text="323088926194" />
 

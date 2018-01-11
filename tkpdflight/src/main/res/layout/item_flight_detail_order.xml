@@ -26,6 +26,8 @@
         <TextView
             android:id="@+id/title_expendable_passenger"
             style="@style/style_expandable_flight_detail_order_title"
+            android:textStyle="normal"
+            android:paddingTop="@dimen/padding_vvs"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

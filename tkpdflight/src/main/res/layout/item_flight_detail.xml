@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:paddingTop="@dimen/padding_small"
+        android:paddingTop="@dimen/padding_16"
         android:paddingBottom="@dimen/padding_small">
 
         <RelativeLayout
@@ -23,7 +23,7 @@
 
             <TextView
                 android:id="@+id/departure_time"
-                style="@style/TextView.Body1.Green"
+                style="@style/TextView.Caption.Green"
                 android:layout_marginRight="10dp"
                 android:layout_toRightOf="@+id/departure_time_circle"
                 tools:text="19:25" />
@@ -47,7 +47,7 @@
 
             <TextView
                 android:id="@+id/arrival_time"
-                style="@style/TextView.Body1.Green"
+                style="@style/TextView.Caption.Green"
                 android:layout_alignBottom="@+id/arrival_date"
                 android:layout_toRightOf="@+id/arrival_time_circle"
                 tools:text="19:25" />
