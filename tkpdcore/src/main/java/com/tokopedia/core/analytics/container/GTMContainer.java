@@ -476,4 +476,17 @@ public class GTMContainer implements IGTMContainer {
         GTMDataLayer.pushGeneral(context, trackingData);
 
     }
+
+    @Override
+    public void clearEnhanceEcommerce() {
+        GTMDataLayer.pushGeneral(
+                context,
+                DataLayer.mapOf("event", null,
+                        "eventCategory", null,
+                        "eventAction", null,
+                        "eventLabel", null,
+                        "ecommerce", null
+                )
+        );
+    }
 }

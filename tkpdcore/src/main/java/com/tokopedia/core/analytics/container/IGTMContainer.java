@@ -114,4 +114,6 @@ public interface IGTMContainer {
     void event(String name, Map<String, Object> data);
 
     void eventTrackingEnhancedEcommerce(Map<String, Object> trackingData);
+
+    void clearEnhanceEcommerce();
 }

@@ -651,6 +651,7 @@ public class TrackingUtils extends TrackingConfig {
     }
 
     public static void eventTrackingEnhancedEcommerce(Map<String, Object> trackingData) {
+        getGTMEngine().clearEnhanceEcommerce();
         getGTMEngine().eventTrackingEnhancedEcommerce(trackingData);
     }
 }
