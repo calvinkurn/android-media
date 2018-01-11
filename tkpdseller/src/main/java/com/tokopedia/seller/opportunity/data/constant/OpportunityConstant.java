@@ -13,5 +13,5 @@ public class OpportunityConstant {
 
     public static final String NEW_PRICE_INFO = "/v4/replacement/new_price_info";
 
-    public static final String R_CODE = "r_code";
+    public static final String R_CODE = "r_id";
 }

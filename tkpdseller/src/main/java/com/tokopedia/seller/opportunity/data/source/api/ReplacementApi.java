@@ -26,7 +26,6 @@ public interface ReplacementApi {
     @GET(OpportunityConstant.PATH_GET_CATEGORY)
     Observable<Response<TkpdResponse>> getOpportunityCategory(@QueryMap Map<String, String> param);
 
-    @FormUrlEncoded
-    @POST(OpportunityConstant.NEW_PRICE_INFO)
-    Observable<Response<String>> getOpportunityPriceInfo(@FieldMap Map<String, String> param);
+    @GET(OpportunityConstant.NEW_PRICE_INFO)
+    Observable<Response<String>> getOpportunityPriceInfo(@QueryMap Map<String, String> param);
 }
