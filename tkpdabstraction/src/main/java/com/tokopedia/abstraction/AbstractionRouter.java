@@ -2,7 +2,7 @@ package com.tokopedia.abstraction;
 
 import android.app.Activity;
 
-import com.tokopedia.abstraction.common.data.model.analytic.Tracker;
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 
 import okhttp3.Response;
@@ -29,5 +29,5 @@ public interface AbstractionRouter {
 
     UserSession getSession();
 
-    Tracker getTracker();
+    AnalyticTracker getTracker();
 }

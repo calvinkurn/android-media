@@ -13,7 +13,7 @@ import android.view.View;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.R;
-import com.tokopedia.abstraction.common.data.model.analytic.Tracker;
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.utils.DialogForceLogout;
 import com.tokopedia.abstraction.utils.GlobalConfig;
 import com.tokopedia.abstraction.utils.HockeyAppHelper;
@@ -64,8 +64,8 @@ abstract class BaseActivity extends AppCompatActivity implements
 
     private void sendScreenAnalytics() {
         if (getApplication() instanceof AbstractionRouter) {
-            Tracker tracker = ((AbstractionRouter) getApplication()).getTracker();
-            tracker.sendScreen(this, getScreenName());
+            AnalyticTracker analyticTracker = ((AbstractionRouter) getApplication()).getTracker();
+            analyticTracker.sendScreen(this, getScreenName());
         }
     }
 
