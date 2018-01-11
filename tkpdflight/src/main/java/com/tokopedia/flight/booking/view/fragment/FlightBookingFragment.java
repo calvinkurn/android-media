@@ -165,14 +165,6 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
                 presenter.onButtonSubmitClicked();
             }
         });
-        FlightBookingPassengerAdapterTypeFactory adapterTypeFactory = new FlightBookingPassengerAdapterTypeFactory(this);
-        adapter = new FlightBookingPassengerAdapter(adapterTypeFactory, new ArrayList<Visitable>());
-        LinearLayoutManager layoutManager
-                = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        passengerRecyclerView.setLayoutManager(layoutManager);
-        passengerRecyclerView.setHasFixedSize(true);
-        passengerRecyclerView.setNestedScrollingEnabled(false);
-        passengerRecyclerView.setAdapter(adapter);
 
         departureInfoView.setActionListener(new CardWithActionView.ActionListener() {
             @Override
@@ -188,6 +180,23 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
             }
         });
 
+        initializePassengerInfo();
+        initializePriceList();
+        return view;
+    }
+
+    private void initializePassengerInfo() {
+        FlightBookingPassengerAdapterTypeFactory adapterTypeFactory = new FlightBookingPassengerAdapterTypeFactory(this);
+        adapter = new FlightBookingPassengerAdapter(adapterTypeFactory, new ArrayList<Visitable>());
+        LinearLayoutManager layoutManager
+                = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        passengerRecyclerView.setLayoutManager(layoutManager);
+        passengerRecyclerView.setHasFixedSize(true);
+        passengerRecyclerView.setNestedScrollingEnabled(false);
+        passengerRecyclerView.setAdapter(adapter);
+    }
+
+    private void initializePriceList() {
         priceListAdapter = new FlightSimpleAdapter();
         priceListAdapter.setDescriptionTextColor(getResources().getColor(R.color.font_black_secondary_54));
         LinearLayoutManager flightSimpleAdapterLayoutManager
@@ -196,8 +205,6 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         pricelistsRecyclerView.setHasFixedSize(true);
         pricelistsRecyclerView.setNestedScrollingEnabled(false);
         pricelistsRecyclerView.setAdapter(priceListAdapter);
-
-        return view;
     }
 
     @Override

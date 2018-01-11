@@ -13,6 +13,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @Module
 public class RetrofitModule {
 
+    private static final String GSON_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
+
     @ApplicationScope
     @Provides
     public Retrofit.Builder provideRetrofitBuilder(Gson gson) {
@@ -25,7 +27,7 @@ public class RetrofitModule {
     @Provides
     public Gson provideGson() {
         return new GsonBuilder()
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
+                .setDateFormat(GSON_DATE_FORMAT)
                 .setPrettyPrinting()
                 .serializeNulls()
                 .create();

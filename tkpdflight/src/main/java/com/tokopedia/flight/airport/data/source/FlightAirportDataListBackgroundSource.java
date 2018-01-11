@@ -49,11 +49,5 @@ public class FlightAirportDataListBackgroundSource {
 
     private Observable<Boolean> updateDatabaseList(final List<FlightAirportCountry> flightAirportCountries) {
         return flightAirportDataListDBSource.updateAndInsert(flightAirportCountries);
-        /*return flightAirportDataListDBSource.deleteAll().flatMap(new Func1<Boolean, Observable<Boolean>>() {
-            @Override
-            public Observable<Boolean> call(Boolean aBoolean) {
-                return flightAirportDataListDBSource.insertAll(flightAirportCountries);
-            }
-        });*/
     }
 }

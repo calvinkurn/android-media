@@ -110,7 +110,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         FlowManager.init(new FlowConfig.Builder(this)
                 .addDatabaseHolder(TkpdSellerGeneratedDatabaseHolder.class)
                 .build());
-        TkpdFlight.init(getApplicationContext());
+        TkpdFlight.initDatabase(getApplicationContext());
     }
 
     @Override

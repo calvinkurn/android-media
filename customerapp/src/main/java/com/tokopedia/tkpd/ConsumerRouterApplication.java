@@ -375,8 +375,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToManageProduct(Context context) {
-        //TODO changed back to product, use goToFlightActivity(Context context) instead
-        TkpdFlight.goToFlightActivity(context);
+        Intent intent = new Intent(context, ProductManageActivity.class);
+        context.startActivity(intent);
     }
 
     @Override
@@ -940,7 +940,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void refreshLogin() {
         AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
         try {
-            ;
             SessionRefresh sessionRefresh = new SessionRefresh(accessTokenRefresh.refreshToken());
             sessionRefresh.refreshLogin();
         } catch (IOException e) {

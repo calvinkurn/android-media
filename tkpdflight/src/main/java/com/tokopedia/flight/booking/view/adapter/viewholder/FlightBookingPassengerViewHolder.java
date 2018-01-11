@@ -63,58 +63,64 @@ public class FlightBookingPassengerViewHolder extends AbstractViewHolder<FlightB
             }
         });
         if (viewModel.getPassengerFirstName() != null) {
-            passengerDetailLayout.setVisibility(View.VISIBLE);
-            headerLabel.setContent(itemView.getContext().getString(R.string.flight_booking_passenger_change_label));
-            String passengerName = viewModel.getPassengerFirstName() + " " + viewModel.getPassengerLastName();
-            if (viewModel.getPassengerTitle() != null && viewModel.getPassengerTitle().length() > 0) {
-                passengerName = String.format("%s %s", viewModel.getPassengerTitle(), passengerName);
-            }
-            tvPassengerName.setText(String.valueOf(passengerName));
-            List<SimpleViewModel> simpleViewModels = new ArrayList<>();
-            if (viewModel.getPassengerBirthdate() != null && viewModel.getPassengerBirthdate().length() > 0) {
-                simpleViewModels.add(new SimpleViewModel(itemView.getContext().getString(R.string.flight_booking_list_passenger_birthdate_label), String.valueOf(FlightDateUtil.formatDate(
-                        FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.DEFAULT_VIEW_FORMAT, viewModel.getPassengerBirthdate()
-                ))));
-            }
-
-            if (viewModel.getFlightBookingLuggageMetaViewModels() != null) {
-                for (FlightBookingAmenityMetaViewModel flightBookingLuggageRouteViewModel : viewModel.getFlightBookingLuggageMetaViewModels()) {
-                    ArrayList<String> selectedLuggages = new ArrayList<>();
-                    for (FlightBookingAmenityViewModel flightBookingLuggageViewModel : flightBookingLuggageRouteViewModel.getAmenities()) {
-                        selectedLuggages.add(flightBookingLuggageViewModel.getTitle() + " - " + flightBookingLuggageViewModel.getPrice());
-                    }
-                    simpleViewModels.add(new SimpleViewModel(
-                            itemView.getContext().getString(R.string.flight_booking_list_passenger_luggage_label) + " " + flightBookingLuggageRouteViewModel.getDescription(),
-                            TextUtils.join(" + ", selectedLuggages)
-                    ));
-                }
-            }
-
-            if (viewModel.getFlightBookingMealMetaViewModels() != null && viewModel.getFlightBookingMealMetaViewModels().size() > 0) {
-                for (FlightBookingAmenityMetaViewModel flightBookingMealRouteViewModel : viewModel.getFlightBookingMealMetaViewModels()) {
-                    simpleViewModels.add(new SimpleViewModel(
-                            itemView.getContext().getString(R.string.flight_booking_list_passenger_meals_label) + " " + flightBookingMealRouteViewModel.getDescription(),
-                            TextUtils.join(" + ", flightBookingMealRouteViewModel.getAmenities())
-                    ));
-                }
-            }
-
-            FlightSimpleAdapter adapter = new FlightSimpleAdapter();
-            adapter.setTitleBold(true);
-            adapter.setDescriptionTextColor(itemView.getResources().getColor(R.color.font_black_secondary_54));
-            LinearLayoutManager layoutManager
-                    = new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.VERTICAL, false);
-            rvPassengerDetail.setLayoutManager(layoutManager);
-            rvPassengerDetail.setHasFixedSize(true);
-            rvPassengerDetail.setNestedScrollingEnabled(false);
-            rvPassengerDetail.setAdapter(adapter);
-            adapter.setViewModels(simpleViewModels);
-            adapter.notifyDataSetChanged();
-
+            bindPassenger(viewModel);
         } else {
             passengerDetailLayout.setVisibility(View.GONE);
             headerLabel.setContent(itemView.getContext().getString(R.string.flight_booking_passenger_fill_data_label));
         }
+    }
+
+    private void bindPassenger(FlightBookingPassengerViewModel viewModel) {
+        passengerDetailLayout.setVisibility(View.VISIBLE);
+        headerLabel.setContent(itemView.getContext().getString(R.string.flight_booking_passenger_change_label));
+        String passengerName = viewModel.getPassengerFirstName() + " " + viewModel.getPassengerLastName();
+        if (viewModel.getPassengerTitle() != null && viewModel.getPassengerTitle().length() > 0) {
+            passengerName = String.format("%s %s", viewModel.getPassengerTitle(), passengerName);
+        }
+        tvPassengerName.setText(String.valueOf(passengerName));
+        initiatePassengerDetailView(viewModel);
+    }
+
+    private void initiatePassengerDetailView(FlightBookingPassengerViewModel viewModel) {
+        List<SimpleViewModel> simpleViewModels = new ArrayList<>();
+        if (viewModel.getPassengerBirthdate() != null && viewModel.getPassengerBirthdate().length() > 0) {
+            simpleViewModels.add(new SimpleViewModel(itemView.getContext().getString(R.string.flight_booking_list_passenger_birthdate_label), String.valueOf(FlightDateUtil.formatDate(
+                    FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.DEFAULT_VIEW_FORMAT, viewModel.getPassengerBirthdate()
+            ))));
+        }
+
+        if (viewModel.getFlightBookingLuggageMetaViewModels() != null) {
+            for (FlightBookingAmenityMetaViewModel flightBookingLuggageRouteViewModel : viewModel.getFlightBookingLuggageMetaViewModels()) {
+                ArrayList<String> selectedLuggages = new ArrayList<>();
+                for (FlightBookingAmenityViewModel flightBookingLuggageViewModel : flightBookingLuggageRouteViewModel.getAmenities()) {
+                    selectedLuggages.add(flightBookingLuggageViewModel.getTitle() + " - " + flightBookingLuggageViewModel.getPrice());
+                }
+                simpleViewModels.add(new SimpleViewModel(
+                        itemView.getContext().getString(R.string.flight_booking_list_passenger_luggage_label) + " " + flightBookingLuggageRouteViewModel.getDescription(),
+                        TextUtils.join(" + ", selectedLuggages)
+                ));
+            }
+        }
+
+        if (viewModel.getFlightBookingMealMetaViewModels() != null && viewModel.getFlightBookingMealMetaViewModels().size() > 0) {
+            for (FlightBookingAmenityMetaViewModel flightBookingMealRouteViewModel : viewModel.getFlightBookingMealMetaViewModels()) {
+                simpleViewModels.add(new SimpleViewModel(
+                        itemView.getContext().getString(R.string.flight_booking_list_passenger_meals_label) + " " + flightBookingMealRouteViewModel.getDescription(),
+                        TextUtils.join(" + ", flightBookingMealRouteViewModel.getAmenities())
+                ));
+            }
+        }
+        FlightSimpleAdapter adapter = new FlightSimpleAdapter();
+        adapter.setTitleBold(true);
+        adapter.setDescriptionTextColor(itemView.getResources().getColor(R.color.font_black_secondary_54));
+        LinearLayoutManager layoutManager
+                = new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.VERTICAL, false);
+        rvPassengerDetail.setLayoutManager(layoutManager);
+        rvPassengerDetail.setHasFixedSize(true);
+        rvPassengerDetail.setNestedScrollingEnabled(false);
+        rvPassengerDetail.setAdapter(adapter);
+        adapter.setViewModels(simpleViewModels);
+        adapter.notifyDataSetChanged();
     }
 
 }

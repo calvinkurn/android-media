@@ -42,9 +42,9 @@ public class FlightBookingActivity extends BaseFlightActivity implements HasComp
     @Override
     protected Fragment getNewFragment() {
         String departureId = getIntent().getStringExtra(EXTRA_FLIGHT_DEPARTURE_ID);
-        String returnId = getIntent().getStringExtra(EXTRA_FLIGHT_ARRIVAL_ID);
+        String arrivalId = getIntent().getStringExtra(EXTRA_FLIGHT_ARRIVAL_ID);
         FlightSearchPassDataViewModel searchPassDataViewModel = getIntent().getParcelableExtra(EXTRA_PASS_SEARCH_DATA);
-        return FlightBookingFragment.newInstance(searchPassDataViewModel, departureId, returnId);
+        return FlightBookingFragment.newInstance(searchPassDataViewModel, departureId, arrivalId);
     }
 
     @Override

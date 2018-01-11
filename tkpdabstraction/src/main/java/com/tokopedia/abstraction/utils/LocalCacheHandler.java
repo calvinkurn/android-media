@@ -8,6 +8,8 @@ import java.util.ArrayList;
 
 public class LocalCacheHandler {
 
+    private static final String SEPARATOR_FORMAT = "#separator#";
+
     private Editor editor;
     private SharedPreferences sharedPrefs;
 
@@ -45,7 +47,7 @@ public class LocalCacheHandler {
                             if (temp.length() == 0) {
                                 temp = string;
                             } else {
-                                temp = temp + "#separator#" + string;
+                                temp = temp + SEPARATOR_FORMAT + string;
                             }
                 }
 
