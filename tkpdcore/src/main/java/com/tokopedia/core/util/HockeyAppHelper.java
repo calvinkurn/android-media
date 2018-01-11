@@ -13,6 +13,7 @@ import net.hockeyapp.android.UpdateManager;
 public class HockeyAppHelper {
 
     private static Boolean ENABLE_DISTRIBUTION = false;
+    private static final String HOCKEYAPP_DOWNLOAD_URL = "https://rink.hockeyapp.net/apps/528b17702bf941a581f15e188677306b";
 
     public static void handleLogin(Activity activity) {
         if (isAllow()) {
@@ -39,5 +40,9 @@ public class HockeyAppHelper {
 
     public static Boolean getEnableDistribution() {
         return ENABLE_DISTRIBUTION;
+    }
+
+    public static String getHockeyappDownloadUrl() {
+        return HOCKEYAPP_DOWNLOAD_URL;
     }
 }
