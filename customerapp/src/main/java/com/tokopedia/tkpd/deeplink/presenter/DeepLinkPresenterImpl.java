@@ -145,10 +145,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 finalSegments.append(linkSegments.get(i));
             }
         }
-        mapUrlUseCase.execute(mapUrlUseCase.setRequestParam(finalSegments.toString()), mapUrlToApplinkSubscriber());
+        mapUrlUseCase.execute(mapUrlUseCase.setRequestParam(finalSegments.toString()), mapUrlToApplinkSubscriber(uri));
     }
 
-    private Subscriber<Deeplink> mapUrlToApplinkSubscriber() {
+    private Subscriber<Deeplink> mapUrlToApplinkSubscriber(final Uri uriData) {
         return new Subscriber<Deeplink>() {
             @Override
             public void onCompleted() {
@@ -165,6 +165,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 if (TextUtils.isEmpty(deeplink.applink)) {
                     viewListener.initDeepLink();
                 } else {
+                    String screenName = "something";
+                    sendCampaignGTM(uriData.toString(), screenName);
                     openDigitalPage(deeplink.applink);
                 }
             }
@@ -338,7 +340,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         data.setPasswordType(SignInInteractor.ACTIVATION_CODE);
         return data;
     }
-
 
     private void openInvoice(List<String> linkSegment, Uri uriData) {
         AppUtils.InvoiceDialogDeeplink(context, uriData.toString(), uriData.getQueryParameter("pdf"));
