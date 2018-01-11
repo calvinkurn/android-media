@@ -86,9 +86,6 @@ dependencies {
     apt rootProject.ext.miscDependencies.daggerCompiler
 
     compile rootProject.ext.miscDependencies.chips
-    compile(rootProject.ext.tkpdLibDependencies.showcase) {
-        exclude group: "com.android.support"
-    }
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'

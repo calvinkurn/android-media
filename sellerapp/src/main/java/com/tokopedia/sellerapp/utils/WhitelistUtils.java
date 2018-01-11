@@ -2,6 +2,7 @@ package com.tokopedia.sellerapp.utils;
 
 import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.seller.opportunity.data.constant.OpportunityConstant;
 import com.tokopedia.seller.product.variant.data.cloud.api.TomeApi;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 
@@ -62,6 +63,9 @@ public class WhitelistUtils {
         // TopAds Statistic
         cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.TOPADS_DOMAIN,
                 TopAdsNetworkConstant.PATH_DASHBOARD_STATISTIC, FIVE_MINUTE));
+
+        // opportunity category
+        cacheApiWhiteList.add(new CacheApiWhiteListDomain(TkpdBaseURL.BASE_DOMAIN, OpportunityConstant.PATH_GET_CATEGORY, ONE_DAY));
 
         return cacheApiWhiteList;
     }

@@ -1,11 +1,12 @@
 package com.tokopedia.seller.opportunity.listener;
 
+import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.seller.opportunity.presentation.ActionViewData;
 
 /**
  * Created by hangnadi on 2/27/17.
  */
-public interface OpportunityView {
+public interface OpportunityView extends CustomerView {
 
     void onActionDeleteClicked();
 
