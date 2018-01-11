@@ -126,20 +126,18 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
 
     private void onContinueButtonClicked() {
         //check validity
-        if (!isInputValid(true)) {
+        if (!isInputValid()) {
             return;
         }
         showSubmitLoading();
         presenter.saveCourier(selectedCourierServiceIdWrapper);
     }
 
-    private boolean isInputValid(boolean showError) {
+    private boolean isInputValid() {
         selectedCourierServiceIdWrapper = courierListViewGroup.getSelectedCourierList();
         List<String> courierIdList = selectedCourierServiceIdWrapper.getSelectedServiceIdList();
         if (courierIdList.size() == 0) {
-            if (showError) {
-                NetworkErrorHelper.showCloseSnackbar(getActivity(), getString(R.string.min_1_courier_must_be_selected));
-            }
+            NetworkErrorHelper.showCloseSnackbar(getActivity(), getString(R.string.min_1_courier_must_be_selected));
             return false;
         }
         return true;
