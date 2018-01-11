@@ -19,27 +19,30 @@ import com.tokopedia.seller.opportunity.presenter.subscriber.AcceptOpportunitySu
 /**
  * Created by hangnadi on 2/27/17.
  */
-public class OpportunityImpl implements OpportunityPresenter {
+public class OpportunityImpl extends OpportunityPresenter {
 
     private final OpportunityView view;
-    private final AcceptReplacementUseCase acceptReplacementUseCase;
+    private AcceptReplacementUseCase acceptReplacementUseCase;
 
+
+
+    @Deprecated
     public OpportunityImpl(Context context, OpportunityView view) {
         this.view = view;
 
-        OpportunityService opportunityService = new OpportunityService();
-
-        ReplacementRepositoryImpl repository = new ReplacementRepositoryImpl(
-                new ActionReplacementSourceFactory(context),
-                new OpportunityDataSourceFactory(context,
-                        opportunityService,
-                        new OpportunityListMapper(),
-                        new OpportunityFilterMapper(),
-                        new GlobalCacheManager())
-        );
-        this.acceptReplacementUseCase = new AcceptReplacementUseCase(
-                new JobExecutor(), new UIThread(), repository
-        );
+//        OpportunityService opportunityService = new OpportunityService();
+//
+//        ReplacementRepositoryImpl repository = new ReplacementRepositoryImpl(
+//                new ActionReplacementSourceFactory(context),
+//                new OpportunityDataSourceFactory(context,
+//                        opportunityService,
+//                        new OpportunityListMapper(),
+//                        new OpportunityFilterMapper(),
+//                        new GlobalCacheManager())
+//        );
+//        this.acceptReplacementUseCase = new AcceptReplacementUseCase(
+//                new JobExecutor(), new UIThread(), repository
+//        );
     }
 
     @Override

@@ -16,6 +16,7 @@ import rx.Observable;
 /**
  * Created by nisie on 3/3/17.
  */
+@Deprecated
 public interface ReplacementApi {
 
     @GET(TkpdBaseURL.Replacement.PATH_GET_OPPORTUNITY)

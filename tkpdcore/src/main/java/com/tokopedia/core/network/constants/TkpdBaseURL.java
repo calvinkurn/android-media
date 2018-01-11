@@ -877,6 +877,7 @@ public class TkpdBaseURL {
 
     }
 
+    @Deprecated
     public static class Replacement {
         public static final String URL_REPLACEMENT = BASE_DOMAIN + "";
         public static final String PATH_GET_OPPORTUNITY = "v4/order/replacement/list";

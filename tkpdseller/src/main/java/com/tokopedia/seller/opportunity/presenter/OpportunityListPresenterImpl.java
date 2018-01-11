@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.data.executor.JobExecutor;
+import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.apiservices.replacement.OpportunityService;
@@ -30,38 +31,47 @@ import java.util.HashMap;
  * Created by nisie on 3/2/17.
  */
 
-public class OpportunityListPresenterImpl implements OpportunityListPresenter {
+public class OpportunityListPresenterImpl extends OpportunityListPresenter {
 
-    private final OpportunityListView viewListener;
+    private OpportunityListView viewListener;
 
     private GetOpportunityUseCase getOpportunityUseCase;
     private GetOpportunityFilterUseCase getFilterUseCase;
     private GetOpportunityFirstTimeUseCase getOpportunityFirstTimeUseCase;
     private SessionHandler sessionHandler;
 
+
+    public OpportunityListPresenterImpl(GetOpportunityUseCase getOpportunityUseCase, GetOpportunityFilterUseCase getFilterUseCase, GetOpportunityFirstTimeUseCase getOpportunityFirstTimeUseCase, SessionHandler sessionHandler) {
+        this.getOpportunityUseCase = getOpportunityUseCase;
+        this.getFilterUseCase = getFilterUseCase;
+        this.getOpportunityFirstTimeUseCase = getOpportunityFirstTimeUseCase;
+        this.sessionHandler = sessionHandler;
+    }
+
+    @Deprecated
     public OpportunityListPresenterImpl(OpportunityListView viewListener) {
         this.viewListener = viewListener;
 
-        ReplacementRepositoryImpl repository = new ReplacementRepositoryImpl(
-                new ActionReplacementSourceFactory(viewListener.getActivity()),
-                new OpportunityDataSourceFactory(viewListener.getActivity(),
-                        new OpportunityService(),
-                        new OpportunityListMapper(),
-                        new OpportunityFilterMapper(),
-                        new GlobalCacheManager())
-        );
-
-        this.getOpportunityUseCase = new GetOpportunityUseCase(
-                new JobExecutor(), new UIThread(), repository);
-
-        this.getFilterUseCase = new GetOpportunityFilterUseCase(
-                new JobExecutor(), new UIThread(), repository);
-
-        this.sessionHandler = new SessionHandler(viewListener.getActivity());
-
-        this.getOpportunityFirstTimeUseCase = new GetOpportunityFirstTimeUseCase(
-                new JobExecutor(), new UIThread(), getOpportunityUseCase, getFilterUseCase
-        );
+//        ReplacementRepositoryImpl repository = new ReplacementRepositoryImpl(
+//                new ActionReplacementSourceFactory(viewListener.getActivity()),
+//                new OpportunityDataSourceFactory(viewListener.getActivity(),
+//                        new OpportunityService(),
+//                        new OpportunityListMapper(),
+//                        new OpportunityFilterMapper(),
+//                        new GlobalCacheManager())
+//        );
+//
+//        this.getOpportunityUseCase = new GetOpportunityUseCase(
+//                new JobExecutor(), new UIThread(), repository);
+//
+//        this.getFilterUseCase = new GetOpportunityFilterUseCase(
+//                new JobExecutor(), new UIThread(), repository);
+//
+//        this.sessionHandler = new SessionHandler(viewListener.getActivity());
+//
+//        this.getOpportunityFirstTimeUseCase = new GetOpportunityFirstTimeUseCase(
+//                new JobExecutor(), new UIThread(), getOpportunityUseCase, getFilterUseCase
+//        );
 
     }
 

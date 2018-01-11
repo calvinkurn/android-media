@@ -18,6 +18,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -183,11 +184,14 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     @Override
     protected void initialPresenter() {
         presenter = new OpportunityListPresenterImpl(this);
+        // inject dagger
     }
 
     @Override
     protected void initialListener(Activity activity) {
+        if(activity != null && activity instanceof BaseActivity){
 
+        }
     }
 
     @Override
@@ -202,12 +206,12 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
 
     @Override
     protected void initView(View view) {
-        opportunityList = (RecyclerView) view.findViewById(R.id.opportunity_list);
-        headerInfo = (TextView) view.findViewById(R.id.header_info);
-        searchView = (SearchView) view.findViewById(R.id.search);
+        opportunityList = view.findViewById(R.id.opportunity_list);
+        headerInfo = view.findViewById(R.id.header_info);
+        searchView = view.findViewById(R.id.search);
         filterButton = view.findViewById(R.id.filter);
         sortButton = view.findViewById(R.id.sort);
-        sortText = (TextView) view.findViewById(R.id.sort_but);
+        sortText = view.findViewById(R.id.sort_but);
         footer = view.findViewById(R.id.footer);
 
         adapter = OpportunityListAdapter.createInstance(onGoToDetail());

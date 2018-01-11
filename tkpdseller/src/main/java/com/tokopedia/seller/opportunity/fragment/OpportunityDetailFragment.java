@@ -20,6 +20,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.seller.opportunity.activity.OpportunityTncActivity;
 import com.tokopedia.seller.opportunity.analytics.OpportunityTrackingEventLabel;
+import com.tokopedia.seller.opportunity.customview.OpportunityValueBottomSheet;
 import com.tokopedia.seller.opportunity.snapshot.SnapShotProduct;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.activity.OpportunityDetailActivity;
@@ -119,6 +120,14 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
                 .setImg(R.drawable.ic_reputation_value)
                 .build());
         bottomSheetView.show();
+    }
+
+    public void onReputationShippingFee(){
+        OpportunityValueBottomSheet.showShippingFee(getActivity()).show();
+    }
+
+    public void onReputationProductPrice(){
+        OpportunityValueBottomSheet.showProductPrice(getActivity()).show();
     }
 
     @Override

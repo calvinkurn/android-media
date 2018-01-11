@@ -183,5 +183,9 @@
     <string name="body_tooltip_reputation_multiplier">Ini adalah Nilai Kelipatan Reputasi. Reputasi dari pesanan ini akan dikalikan dengan Nilai Kelipatan Reputasi.</string>
     <string name="opportunity_reputation_value">Nilai Reputasi Peluang</string>
     <string name="opportunity_reputation_detail">Ini adalah angka pengali nilai reputasi yang akan diperbaharui setiap 30 menit. Ayo ambil order peluang sebanyak-banyaknya dan tingkatkan reputasi tokomu!</string>
-
+    <string name="reputation_detail_bottomsheet">Harga yang dicoret akan dicantumkan di invoice. Harga baru adalah harga yang sudah disesuaikan dengan lokasi Anda.</string>
+    <string name="label_delivery_price_title">Ongkos Kirim</string>
+    <string name="label_delivery_price_detail">Ongkos kirim yang dicoret akan dicantumkan di invoice. Ongkos kirim baru sudah disesuaikan dengan lokasi Anda.</string>
+    <string name="label_product_price">Harga Barang</string>
+    <string name="label_product_price_detail">Harga yang dicoret akan dicantumkan di invoice. Harga baru adalah harga yang sudah disesuaikan dengan lokasi Anda.</string>
 </resources>
