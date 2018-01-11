@@ -3,9 +3,9 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="75dp"
-              android:gravity="center"
+              android:gravity="center_horizontal"
               android:orientation="vertical"
-              android:padding="5dp">
+              android:padding="10dp">
 
     <com.tokopedia.core.customwidget.SquareImageView
         android:id="@+id/iv_icon"
@@ -19,9 +19,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:maxLines="1"
+        android:maxLines="2"
         android:paddingTop="3dp"
         android:textColor="@color/grey_600"
         android:textSize="11sp"
-        tools:text="Jual Beli"/>
+        tools:text="Jual Beli\n hahaha"/>
 </LinearLayout>
