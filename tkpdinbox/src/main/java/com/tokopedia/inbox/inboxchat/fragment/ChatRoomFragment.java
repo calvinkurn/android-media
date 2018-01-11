@@ -232,16 +232,10 @@ public class ChatRoomFragment extends BaseDaggerFragment
     @Override
     public void onGoToGallery(Attachment attachment) {
 
-        Bundle bundle = new Bundle();
         ArrayList<String> strings = new ArrayList<>();
         strings.add(attachment.getAttributes().getImageUrl());
-        bundle.putStringArrayList(FILELOC, strings);
-        bundle.putString("product_name", "name");
-        bundle.putString("product_price", "price");
-        bundle.putStringArrayList("image_desc", new ArrayList<String>());
-        bundle.putInt("position", 1);
 
-        ((PdpRouter) getActivity().getApplication()).goToPreviewProduct(getActivity(), bundle);
+        ((PdpRouter) getActivity().getApplication()).openImagePreview(getActivity(), strings, new ArrayList<String>(), 1);
     }
 
     @Override

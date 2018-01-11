@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PorterDuff;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -55,6 +56,8 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
         implements EditTemplateChatContract.View {
 
     private static final int MAX_CHAR = 200;
+    private static final int DISABLE_DELETE = 130;
+    private static final int ENABLE_DELETE = 255;
 
     private TextView counter;
     private TextView error;
@@ -78,11 +81,7 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments().getInt(PARAM_MODE) == CREATE || getArguments().getInt(PARAM_NAV) == 1) {
-            setHasOptionsMenu(false);
-        } else {
-            setHasOptionsMenu(true);
-        }
+        setHasOptionsMenu(true);
     }
 
 
@@ -93,10 +92,27 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        MenuItem item = menu.findItem(R.id.action_organize);
+        if (getArguments().getInt(PARAM_MODE) == CREATE || getArguments().getInt(PARAM_NAV) == 1) {
+            item.getIcon().setAlpha(DISABLE_DELETE);
+        } else {
+            item.getIcon().setAlpha(ENABLE_DELETE);
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == R.id.action_organize) {
-            showDialogDelete();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                if(item.getIcon().getAlpha() == ENABLE_DELETE){
+                    showDialogDelete();
+                }else {
+                    showError("");
+                }
+            }
             return true;
         }
         return super.onOptionsItemSelected(item);

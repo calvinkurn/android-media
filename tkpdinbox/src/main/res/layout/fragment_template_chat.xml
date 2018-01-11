@@ -23,7 +23,7 @@
         android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#f8f8f8">
+        android:background="#f1f1f1">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -97,15 +97,15 @@
                 android:fontFamily="sans-serif"
                 android:textStyle="bold"
                 android:textColor="@color/black_70"
-                android:paddingTop="@dimen/new_margin_small"
-                android:paddingBottom="@dimen/new_margin_small"
+                android:layout_marginBottom="@dimen/new_margin_small"
+                android:layout_marginTop="@dimen/new_margin_small"
                 android:paddingLeft="@dimen/activity_vertical_margin" />
 
                 <ImageView
                     android:id="@+id/template_list_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/info_icon"
+                    android:src="@drawable/ic_information"
                     android:layout_toRightOf="@id/template_list"
                     android:layout_alignTop="@id/template_list"
                     android:layout_alignBottom="@id/template_list"

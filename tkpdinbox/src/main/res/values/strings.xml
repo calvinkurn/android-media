@@ -263,7 +263,7 @@ yang ditemukan</string>
     <string name="success_delete_template_chat">Template berhasil dihapus</string>
     <string name="success_rearrange_template_chat">Berhasil mengubah urutan template</string>
     <string name="success_switch_template_chat">Berhasil mengubah urutan template</string>
-    <string name="hint_template_chat">Silakan tambahkan template untuk membantu Anda melakukan Chat dan Diskusi tanpa perlu mengetik pesan yang sama berulang kali.
+    <string name="hint_template_chat">Silakan tambahkan template untuk membantu Anda melakukan Chat tanpa perlu mengetik pesan yang sama berulang kali.
         \n\nContoh:\nHalo, barang ini ready ya. Silakan diorder</string>
     <string name="delete_chat_template">"Hapus template?"</string>
     <string name="forever_deleted_template">"Template akan terhapus selamanya"</string>

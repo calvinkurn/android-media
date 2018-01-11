@@ -127,7 +127,7 @@ public class EditTemplateChatPresenter extends BaseDaggerPresenter<EditTemplateC
                     getView().onResult(editTemplateViewModel, index);
                     getView().finish();
                 }else {
-                    getView().showError("delete");
+                    getView().showError("");
                 }
             }
         });

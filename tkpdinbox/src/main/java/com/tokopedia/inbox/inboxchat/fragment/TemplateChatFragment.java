@@ -123,14 +123,14 @@ public class TemplateChatFragment extends BaseDaggerFragment
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
 
-        snackbarError.getView().setBackgroundColor(MethodChecker.getColor(getActivity(), R.color.red_template));
+//        snackbarError.getView().setBackgroundColor(MethodChecker.getColor(getActivity(), R.color.red_template));
         TextView textView = snackbarError.getView().findViewById(android.support.design.R.id.snackbar_text);
-        textView.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_70));
+//        textView.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_70));
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
 
-        snackbarInfo.getView().setBackgroundColor(MethodChecker.getColor(getActivity(), R.color.green_template));
+//        snackbarInfo.getView().setBackgroundColor(MethodChecker.getColor(getActivity(), R.color.green_template));
         TextView textView2 = snackbarInfo.getView().findViewById(android.support.design.R.id.snackbar_text);
-        textView2.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_70));
+//        textView2.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_70));
         textView2.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
 
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(adapter);
