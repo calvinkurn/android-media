@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.abstraction.utils.DialogForceLogout;
 import com.tokopedia.abstraction.utils.GlobalConfig;
+import com.tokopedia.abstraction.utils.HockeyAppHelper;
 import com.tokopedia.abstraction.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.utils.receiver.ErrorNetworkReceiver;
 import com.tokopedia.abstraction.utils.snackbar.SnackbarManager;
@@ -35,8 +36,6 @@ abstract class BaseActivity extends AppCompatActivity implements
 
     private static final long DISMISS_TIME = 10000;
 
-//    protected SessionHandler sessionHandler;
-
     private ErrorNetworkReceiver logoutNetworkReceiver;
     private LocalCacheHandler cache;
 
@@ -49,17 +48,15 @@ abstract class BaseActivity extends AppCompatActivity implements
 //        }
 
         logoutNetworkReceiver = new ErrorNetworkReceiver();
-//        Localytics.registerPush(Constants.FIREBASE_PROJECT_ID);
-
-//        HockeyAppHelper.handleLogin(this);
-//        HockeyAppHelper.checkForUpdate(this);
+        HockeyAppHelper.handleLogin(this);
+        HockeyAppHelper.checkForUpdate(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         unregisterForceLogoutReceiver();
-//        HockeyAppHelper.unregisterManager();
+        HockeyAppHelper.unregisterManager();
     }
 
     @Override
@@ -77,7 +74,6 @@ abstract class BaseActivity extends AppCompatActivity implements
             finish();
         }
 
-        initGTM();
         sendScreenAnalytics();
 
         registerForceLogoutReceiver();
@@ -94,30 +90,8 @@ abstract class BaseActivity extends AppCompatActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        HockeyAppHelper.unregisterManager();
-//        sessionHandler = null;
+        HockeyAppHelper.unregisterManager();
         cache = null;
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-//        Localytics.onNewIntent(this, intent);
-    }
-
-    public void initGTM() {
-//        Observable.just(true)
-//                .subscribeOn(Schedulers.newThread())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .map(new Func1<Boolean, Boolean>() {
-//                    @Override
-//                    public Boolean call(Boolean b) {
-//                        TrackingUtils.eventPushUserID();
-//                        TrackingUtils.eventOnline();
-//                        return true;
-//                    }
-//                })
-//                .subscribe();
     }
 
     private void registerForceLogoutReceiver() {
