@@ -250,7 +250,7 @@ public class CompleteTripPresenter extends BaseDaggerPresenter<CompleteTripContr
         try {
             GlobalCacheManager cacheManager = new GlobalCacheManager();
             String cache = cacheManager.getValueString(UBER_SHOURTCUT_ALERT_SHOWN_KEY);
-            if (cache != null && !cache.equalsIgnoreCase("1")) {
+            if (cache == null || !cache.equalsIgnoreCase("1")) {
                 getView().showAddShortcutDialog();
             }
         } catch (Exception ex) {

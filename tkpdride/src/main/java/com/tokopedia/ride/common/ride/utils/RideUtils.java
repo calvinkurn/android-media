@@ -138,7 +138,7 @@ public class RideUtils {
                 ShortcutInfo shortcut = new ShortcutInfo.Builder(context, "uber")
                         .setShortLabel(shortLabel)
                         .setLongLabel(lonLabel)
-                        .setIcon(Icon.createWithResource(context, R.drawable.cabs_uber_ic))
+                        .setIcon(Icon.createWithResource(context, R.drawable.uber_shortcut))
                         .setIntent(new Intent(Intent.ACTION_VIEW,
                                 Uri.parse(Constants.Applinks.RIDE)))
                         .build();
@@ -154,7 +154,7 @@ public class RideUtils {
                 addIntent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
                 addIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, shortLabel);
                 addIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
-                        Intent.ShortcutIconResource.fromContext(context, R.drawable.cabs_uber_ic));
+                        Intent.ShortcutIconResource.fromContext(context, R.drawable.uber_shortcut));
                 addIntent.putExtra("duplicate", false);
                 addIntent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
                 context.sendBroadcast(addIntent);
