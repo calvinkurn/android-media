@@ -255,13 +255,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void goToPreviewProduct(Context context, Bundle bundle) {
-        Intent intent = new Intent(context, PreviewProductImageDetail.class);
-        intent.putExtras(bundle);
-        startActivity(intent);
-    }
-
-    @Override
     public void openImagePreview(Context context, ArrayList<String> images,
                                  ArrayList<String> imageDesc, int position) {
         Intent intent = PreviewProductImageDetail.getCallingIntent(context, images, imageDesc,

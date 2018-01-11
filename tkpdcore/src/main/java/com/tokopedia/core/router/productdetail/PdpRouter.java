@@ -38,7 +38,4 @@ public interface PdpRouter {
             imageDesc, int position);
 
     Intent getProductReputationIntent(Context context);
-
-
-    void goToPreviewProduct(Context context, Bundle bundle);
 }

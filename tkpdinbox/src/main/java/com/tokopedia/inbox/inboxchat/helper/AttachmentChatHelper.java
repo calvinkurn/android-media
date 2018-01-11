@@ -55,7 +55,7 @@ public class AttachmentChatHelper {
                 @Override
                 public void onClick(View view) {
                     if (attachment != null && attachment.getFallbackAttachment()!=null) {
-                        viewListener.onGoToWebView(attachment.getFallbackAttachment().getUrl());
+                        viewListener.onGoToWebView(attachment.getAttributes().getUrl());
                     }
                 }
             });
