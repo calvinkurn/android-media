@@ -43,7 +43,7 @@ public class TopAdsEditCostShopFragment extends TopAdsEditCostFragment<TopAdsDet
     @Override
     protected void onClickedNext() {
         if (firstTimeCheck()) return;
-        if(!isError()) {
+        if (!isError()) {
             super.onClickedNext();
             if (detailAd != null) {
                 daggerPresenter.saveAd(detailAd);
@@ -57,18 +57,19 @@ public class TopAdsEditCostShopFragment extends TopAdsEditCostFragment<TopAdsDet
     }
 
     @Override
+    protected void setSuggestionBidText(@Nullable GetSuggestionResponse data) {
+        // Do nothing
+    }
+
+    @Override
     protected void loadSuggestionBid() {
-        setSuggestionBidText((GetSuggestionResponse)null);
-        titleSuggestionBidUse.setVisibility(View.GONE);
+        // Do nothing
     }
 
     @Override
-    protected void onSuggestionTitleUseClick() {
-        titleSuggestionBid.setText(getString(R.string.static_suggestion_bid_recommendation));
+    public void onSuggestionSuccess(GetSuggestionResponse s) {
+        /* remain empty*/
     }
-
-    @Override
-    public void onSuggestionSuccess(GetSuggestionResponse s) { /* remain empty*/ }
 
     @Override
     public void onSuggestionError(@Nullable Throwable t) {

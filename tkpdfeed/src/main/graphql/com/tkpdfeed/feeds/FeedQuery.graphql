@@ -38,6 +38,7 @@ query FeedQuery($userID: Int!, $limit: Int!, $cursor: String) {
                 productLink
                 wishlist
                 rating
+                price_int
               }
               promotions {
                 id
@@ -141,6 +142,7 @@ query FeedQuery($userID: Int!, $limit: Int!, $cursor: String) {
                   app_url
                   image_url
                   price
+                  price_int
                   recommendation_type
                 }
               }
