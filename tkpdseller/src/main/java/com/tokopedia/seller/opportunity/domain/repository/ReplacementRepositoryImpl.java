@@ -5,8 +5,6 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.seller.opportunity.data.AcceptReplacementModel;
 import com.tokopedia.seller.opportunity.data.OpportunityFilterModel;
 import com.tokopedia.seller.opportunity.data.OpportunityModel;
-import com.tokopedia.seller.opportunity.data.factory.ActionReplacementSourceFactory;
-import com.tokopedia.seller.opportunity.data.factory.OpportunityDataSourceFactory;
 import com.tokopedia.seller.opportunity.data.source.CloudGetFilterOpportunitySource2;
 import com.tokopedia.seller.opportunity.data.source.CloudGetListOpportunitySource2;
 import com.tokopedia.seller.opportunity.data.source.CloudActionReplacementSource2;

@@ -1,19 +1,7 @@
 package com.tokopedia.seller.opportunity.presenter;
 
-import android.content.Context;
-
-import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.presentation.UIThread;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.network.apiservices.replacement.OpportunityService;
-import com.tokopedia.seller.opportunity.data.factory.ActionReplacementSourceFactory;
-import com.tokopedia.seller.opportunity.data.factory.OpportunityDataSourceFactory;
-import com.tokopedia.seller.opportunity.data.mapper.OpportunityFilterMapper;
-import com.tokopedia.seller.opportunity.data.mapper.OpportunityListMapper;
-import com.tokopedia.seller.opportunity.domain.repository.ReplacementRepositoryImpl;
 import com.tokopedia.seller.opportunity.domain.interactor.AcceptReplacementUseCase;
-import com.tokopedia.seller.opportunity.listener.OpportunityView;
 import com.tokopedia.seller.opportunity.presenter.subscriber.AcceptOpportunitySubscriber;
 
 /**

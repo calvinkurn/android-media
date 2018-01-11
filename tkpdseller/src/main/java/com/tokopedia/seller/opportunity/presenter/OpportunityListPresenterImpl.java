@@ -2,24 +2,11 @@ package com.tokopedia.seller.opportunity.presenter;
 
 import android.support.annotation.Nullable;
 
-import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.base.data.executor.JobExecutor;
-import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.core.base.presentation.UIThread;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.network.apiservices.replacement.OpportunityService;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.opportunity.analytics.OpportunityTrackingEventLabel;
-import com.tokopedia.seller.opportunity.data.factory.ActionReplacementSourceFactory;
-import com.tokopedia.seller.opportunity.data.factory.OpportunityDataSourceFactory;
-import com.tokopedia.seller.opportunity.data.mapper.OpportunityFilterMapper;
-import com.tokopedia.seller.opportunity.data.mapper.OpportunityListMapper;
 import com.tokopedia.seller.opportunity.domain.interactor.GetOpportunityFilterUseCase;
 import com.tokopedia.seller.opportunity.domain.interactor.GetOpportunityFirstTimeUseCase;
 import com.tokopedia.seller.opportunity.domain.interactor.GetOpportunityUseCase;
-import com.tokopedia.seller.opportunity.domain.repository.ReplacementRepositoryImpl;
-import com.tokopedia.seller.opportunity.listener.OpportunityListView;
 import com.tokopedia.seller.opportunity.presenter.subscriber.GetOpportunityFirstTimeSubscriber;
 import com.tokopedia.seller.opportunity.presenter.subscriber.GetOpportunitySubscriber;
 import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.FilterPass;
