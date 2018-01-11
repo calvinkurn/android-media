@@ -137,7 +137,7 @@ public class OrderDetailMapper {
                     responseData.getDetail().getShipment().getInfo().getDriver().getName()
             );
             viewData.setDriverImage(
-                    responseData.getDetail().getShipment().getInfo().getDriver().getImage()
+                    responseData.getDetail().getShipment().getInfo().getDriver().getPhoto()
             );
             viewData.setDriverPhone(
                     responseData.getDetail().getShipment().getInfo().getDriver().getPhone()
