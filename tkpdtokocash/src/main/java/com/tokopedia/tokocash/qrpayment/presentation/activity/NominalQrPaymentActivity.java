@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,7 +15,6 @@ import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.design.text.watcher.NumberTextWatcher;
-import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
 import com.tokopedia.tokocash.di.TokoCashComponent;
@@ -37,6 +34,8 @@ import javax.inject.Inject;
 public class NominalQrPaymentActivity extends TActivity implements QrPaymentContract.View,
         HasComponent<TokoCashComponent> {
 
+    private static final int REQUEST_CODE_SUCCESS = 121;
+    private static final int REQUEST_CODE_FAILED = 111;
     private static final String INFO_QR = "info_qr";
     private static final String IDENTIFIER = "identifier";
 
@@ -91,7 +90,17 @@ public class NominalQrPaymentActivity extends TActivity implements QrPaymentCont
             @Override
             public void onClick(View view) {
                 progressBar.setVisibility(View.VISIBLE);
-                presenter.postQrPayment();
+//                presenter.postQrPayment();
+                if (notesValue.getText().toString().equals("")) {
+                    directToFailedPayment();
+                } else {
+                    QrPaymentTokoCash qrPaymentTokoCash = new QrPaymentTokoCash();
+                    qrPaymentTokoCash.setTransactionId(12345);
+                    qrPaymentTokoCash.setPaymentId(123455);
+                    qrPaymentTokoCash.setDateTime("11 Jan 2018");
+                    qrPaymentTokoCash.setAmount(10000);
+                    directToSuccessPayment(qrPaymentTokoCash);
+                }
             }
         });
     }
@@ -142,21 +151,22 @@ public class NominalQrPaymentActivity extends TActivity implements QrPaymentCont
     @Override
     public void directToSuccessPayment(QrPaymentTokoCash qrPaymentTokoCash) {
         progressBar.setVisibility(View.GONE);
-        startActivity(SuccessPaymentQRActivity.newInstance(getApplicationContext(), qrPaymentTokoCash,
-                infoQrTokoCash.getName(), nominalValue.getText().toString(), true));
-        finish();
+        Intent intent = SuccessPaymentQRActivity.newInstance(getApplicationContext(), qrPaymentTokoCash,
+                infoQrTokoCash.getName(), nominalValue.getText().toString(), true);
+        startActivityForResult(intent, REQUEST_CODE_SUCCESS);
     }
 
     @Override
     public void directToFailedPayment() {
         progressBar.setVisibility(View.GONE);
-        startActivity(SuccessPaymentQRActivity.newInstance(getApplicationContext(), new QrPaymentTokoCash(),
-                infoQrTokoCash.getName(), nominalValue.getText().toString(), false));
-        finish();
+        Intent intent = SuccessPaymentQRActivity.newInstance(getApplicationContext(), new QrPaymentTokoCash(),
+                infoQrTokoCash.getName(), nominalValue.getText().toString(), false);
+        startActivityForResult(intent, REQUEST_CODE_FAILED);
     }
 
     @Override
     public void renderBalanceTokoCash(final BalanceTokoCash balanceTokoCash) {
+        tokocashValue.setVisibility(View.VISIBLE);
         tokocashValue.setText("TokoCash Balance: " + balanceTokoCash.getBalance());
         this.balanceTokoCash = balanceTokoCash;
 
@@ -170,7 +180,7 @@ public class NominalQrPaymentActivity extends TActivity implements QrPaymentCont
     }
 
     private void handleWarningPayment(double nominal) {
-        if (nominalValue.getText().toString().equals("")) {
+        if (nominalValue.getText().toString().equals("") || nominal == 0) {
             separatorNominal.setBackgroundColor(getColorNominal(R.color.separator_grey));
             tokocashValue.setTextColor(getColorNominal(R.color.separator_grey));
             payButton.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bg_grey_border_black));
@@ -196,6 +206,8 @@ public class NominalQrPaymentActivity extends TActivity implements QrPaymentCont
     @Override
     public void showErrorBalanceTokoCash(String message) {
         progressBar.setVisibility(View.GONE);
+        tokocashValue.setVisibility(View.VISIBLE);
+        tokocashValue.setText("Failed to get Balance TokoCash");
         NetworkErrorHelper.createSnackbarWithAction(this, message,
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
@@ -203,5 +215,26 @@ public class NominalQrPaymentActivity extends TActivity implements QrPaymentCont
                         presenter.getBalanceTokoCash();
                     }
                 }).showRetrySnackbar();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_SUCCESS) {
+            Intent intent = new Intent();
+            setResult(CustomScannerTokoCashActivity.RESULT_CODE_HOME, intent);
+            finish();
+        } else {
+            Intent intent = new Intent();
+            setResult(CustomScannerTokoCashActivity.RESULT_CODE__SCANNER, intent);
+            finish();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        setResult(CustomScannerTokoCashActivity.RESULT_CODE_HOME, intent);
+        finish();
     }
 }

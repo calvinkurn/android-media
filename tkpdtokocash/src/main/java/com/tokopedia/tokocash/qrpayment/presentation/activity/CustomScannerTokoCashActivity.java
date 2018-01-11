@@ -1,6 +1,7 @@
 package com.tokopedia.tokocash.qrpayment.presentation.activity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -29,6 +30,10 @@ import javax.inject.Inject;
 
 public class CustomScannerTokoCashActivity extends BaseScannerQRActivity implements InfoQrTokoCashContract.View,
         HasComponent<TokoCashComponent> {
+
+    public static final int RESULT_CODE_HOME = 1;
+    public static final int RESULT_CODE__SCANNER = 2;
+    private static final int REQUEST_CODE_NOMINAL = 211;
 
     private TokoCashComponent tokoCashComponent;
     private String resultScan = "";
@@ -177,6 +182,13 @@ public class CustomScannerTokoCashActivity extends BaseScannerQRActivity impleme
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        decoratedBarcodeView.resume();
+        animateScannerLaser();
+    }
+
+    @Override
     public void showErrorNetwork(String message) {
         NetworkErrorHelper.createSnackbarWithAction(this, message,
                 new NetworkErrorHelper.RetryClickedListener() {
@@ -190,7 +202,15 @@ public class CustomScannerTokoCashActivity extends BaseScannerQRActivity impleme
 
     @Override
     public void directPageToPayment(InfoQrTokoCash infoQrTokoCash) {
-        startActivity(NominalQrPaymentActivity.newInstance(getApplicationContext(), resultScan, infoQrTokoCash));
-        finish();
+        Intent intent = NominalQrPaymentActivity.newInstance(getApplicationContext(), resultScan, infoQrTokoCash);
+        startActivityForResult(intent, REQUEST_CODE_NOMINAL);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_NOMINAL && resultCode == RESULT_CODE_HOME) {
+            finish();
+        }
     }
 }

@@ -42,6 +42,7 @@ public class SuccessPaymentQRActivity extends TActivity {
     private LinearLayout successTransactionLayout;
     private LinearLayout failedTransactionLayout;
     private boolean isTransactionSuccess;
+    private Button btnRetryScan;
 
     public static Intent newInstance(Context context, QrPaymentTokoCash qrPaymentTokoCash,
                                      String merchantName, String amount, boolean isTransactionSuccess) {
@@ -73,6 +74,7 @@ public class SuccessPaymentQRActivity extends TActivity {
         helpText = (TextView) findViewById(R.id.help_text);
         successTransactionLayout = (LinearLayout) findViewById(R.id.layout_success_transaction);
         failedTransactionLayout = (LinearLayout) findViewById(R.id.layout_failed_transaction);
+        btnRetryScan = (Button) findViewById(R.id.button_back_scanner);
     }
 
     private void initVar() {
@@ -84,7 +86,7 @@ public class SuccessPaymentQRActivity extends TActivity {
             qrPaymentTokoCash = getIntent().getParcelableExtra(QR_PAYMENT_DATA);
             merchantName.setText(getIntent().getStringExtra(MERCHANT_NAME));
             String amountTransactionString = CurrencyFormatHelper.ConvertToRupiah(String.valueOf(getIntent()
-                            .getStringExtra(AMOUNT)));
+                    .getStringExtra(AMOUNT)));
             amountTransaction.setText("Rp " + amountTransactionString.replace(",", "."));
             timeTransaction.setText(qrPaymentTokoCash.getDateTime());
             idTransaction.setText(String.valueOf(qrPaymentTokoCash.getTransactionId()));
@@ -97,6 +99,14 @@ public class SuccessPaymentQRActivity extends TActivity {
             toolbar.setTitle("Transaksi Gagal");
             successTransactionLayout.setVisibility(View.GONE);
             failedTransactionLayout.setVisibility(View.VISIBLE);
+            btnRetryScan.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent();
+                    setResult(CustomScannerTokoCashActivity.RESULT_CODE__SCANNER, intent);
+                    finish();
+                }
+            });
         }
     }
 
@@ -124,6 +134,13 @@ public class SuccessPaymentQRActivity extends TActivity {
                 onBackPressed();
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        setResult(CustomScannerTokoCashActivity.RESULT_CODE_HOME, intent);
+        finish();
     }
 
     @Override
