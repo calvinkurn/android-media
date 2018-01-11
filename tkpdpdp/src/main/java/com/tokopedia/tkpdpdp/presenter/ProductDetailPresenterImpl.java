@@ -101,6 +101,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     private static final String DATE_EXPIRE = "CACHE_EXPIRED_DATE";
     private static final String IS_UNPROMOTED_PRODUCT = "0";
 
+    private static final int SHOP_IS_OFFICIAL_TRUE = 1;
+    private static final String NON_LOGIN_USER_ID = "0";
     private static final String OFFICIAL_STORE_TYPE = "os";
     private static final String MERCHANT_TYPE = "merchant";
 
@@ -308,10 +310,10 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             getTalk(context, productDetailData.getInfo().getProductId().toString(), productDetailData.getShopInfo().getShopId());
                             getMostHelpfulReview(context, productDetailData.getInfo().getProductId
                                     ().toString(), productDetailData.getShopInfo().getShopId());
-                            String shopType = productDetailData.getShopInfo().getShopIsOfficial()==1 ? OFFICIAL_STORE_TYPE : MERCHANT_TYPE;
+                            String shopType = productDetailData.getShopInfo().getShopIsOfficial()== SHOP_IS_OFFICIAL_TRUE ? OFFICIAL_STORE_TYPE : MERCHANT_TYPE;
                             if (!GlobalConfig.isSellerApp()) {
                                 getPromoWidget(context, generatePromoTargetType(productDetailData, context),
-                                        SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : "0", shopType);
+                                        SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : NON_LOGIN_USER_ID, shopType);
                             }
                         }
 
@@ -812,10 +814,10 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         getMostHelpfulReview(context, data.getInfo().getProductId().toString(),
                                 data.getShopInfo().getShopId());
                         getTalk(context, data.getInfo().getProductId().toString(), data.getShopInfo().getShopId());
-                        String shopType = data.getShopInfo().getShopIsOfficial()==1 ? OFFICIAL_STORE_TYPE : MERCHANT_TYPE;
+                        String shopType = data.getShopInfo().getShopIsOfficial()==SHOP_IS_OFFICIAL_TRUE ? OFFICIAL_STORE_TYPE : MERCHANT_TYPE;
                         if (!GlobalConfig.isSellerApp()) {
                             getPromoWidget(context, generatePromoTargetType(data, context),
-                                    SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : "0",shopType
+                                    SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : NON_LOGIN_USER_ID,shopType
                                     );
                         }
                     }
