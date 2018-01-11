@@ -34,6 +34,7 @@ import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.common.view.FlightExpandableOptionArrow;
 import com.tokopedia.flight.contactus.FlightContactUsActivity;
 import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
+import com.tokopedia.flight.detail.presenter.ExpandableOnClickListener;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderContract;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderPresenter;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderAdapter;
@@ -54,7 +55,7 @@ import javax.inject.Inject;
  * Created by zulfikarrahman on 12/12/17.
  */
 
-public class FlightDetailOrderFragment extends BaseDaggerFragment implements FlightDetailOrderContract.View {
+public class FlightDetailOrderFragment extends BaseDaggerFragment implements FlightDetailOrderContract.View, ExpandableOnClickListener {
 
     public static final String EXTRA_ORDER_DETAIL_PASS = "EXTRA_ORDER_DETAIL_PASS";
     @Inject
@@ -138,7 +139,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
         setViewClickListener();
 
-        FlightDetailOrderTypeFactory flightDetailOrderTypeFactory = new FlightDetailOrderTypeFactory();
+        FlightDetailOrderTypeFactory flightDetailOrderTypeFactory = new FlightDetailOrderTypeFactory(this);
         flightDetailOrderAdapter = new FlightDetailOrderAdapter(flightDetailOrderTypeFactory);
         FlightBookingReviewPassengerAdapterTypeFactory flightBookingReviewPassengerAdapterTypeFactory = new FlightBookingReviewPassengerAdapterTypeFactory();
         flightBookingReviewPassengerAdapter = new FlightBookingReviewPassengerAdapter(flightBookingReviewPassengerAdapterTypeFactory);
@@ -428,5 +429,10 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     @Override
     public void navigateToContactUs(FlightOrder flightOrder) {
         startActivity(FlightContactUsActivity.createContactUsIntent(getActivity(), flightOrder.getId(), cancelMessage));
+    }
+
+    @Override
+    public void onCloseExpand(int position) {
+        // do something to scroll the view
     }
 }
