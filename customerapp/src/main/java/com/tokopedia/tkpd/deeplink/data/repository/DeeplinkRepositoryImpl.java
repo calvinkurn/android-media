@@ -105,7 +105,7 @@ public class DeeplinkRepositoryImpl implements DeeplinkRepository {
     }
 
     private List<Deeplink> readDeeplinksFromFile() {
-        InputStream inputStream = context.getResources().openRawResource(R.raw.Whitelist);
+        InputStream inputStream = context.getResources().openRawResource(R.raw.whitelist);
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
         Gson gson = new Gson();
