@@ -98,7 +98,7 @@
 
             <TextView
                 android:id="@+id/text_view_variant"
-                style="@style/TextView.Caption.BlackDisabled"
+                style="@style/TextView.Micro.BlackDisabled"
                 android:layout_marginEnd="@dimen/margin_ms"
                 android:layout_marginRight="@dimen/margin_ms"
                 android:background="@drawable/bg_rect_stroke_lighter_gray"
