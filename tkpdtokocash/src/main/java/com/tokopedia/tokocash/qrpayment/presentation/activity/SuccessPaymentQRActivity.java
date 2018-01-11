@@ -80,7 +80,7 @@ public class SuccessPaymentQRActivity extends TActivity {
     private void initVar() {
         isTransactionSuccess = getIntent().getBooleanExtra(IS_TRANSACTION_SUCCESS, false);
         if (isTransactionSuccess) {
-            toolbar.setTitle("Transaksi Berhasil");
+            toolbar.setTitle(getString(R.string.title_success_payment));
             successTransactionLayout.setVisibility(View.VISIBLE);
             failedTransactionLayout.setVisibility(View.GONE);
             qrPaymentTokoCash = getIntent().getParcelableExtra(QR_PAYMENT_DATA);
@@ -96,7 +96,7 @@ public class SuccessPaymentQRActivity extends TActivity {
                     tokocashBalanceString.replace(",", ".")));
             setHelpText();
         } else {
-            toolbar.setTitle("Transaksi Gagal");
+            toolbar.setTitle(getString(R.string.title_failed_payment));
             successTransactionLayout.setVisibility(View.GONE);
             failedTransactionLayout.setVisibility(View.VISIBLE);
             btnRetryScan.setOnClickListener(new View.OnClickListener() {
@@ -111,12 +111,11 @@ public class SuccessPaymentQRActivity extends TActivity {
     }
 
     private void setHelpText() {
-        String kendala = "Untuk kendala Transaksi, klik Bantuan";
-        SpannableString ss = new SpannableString(kendala);
+        SpannableString ss = new SpannableString(getString(R.string.help_payment_tokocash));
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getApplicationContext(), "Bantuan", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.help_payment_tokocash), Toast.LENGTH_SHORT).show();
 
             }
         };

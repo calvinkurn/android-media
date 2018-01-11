@@ -67,7 +67,7 @@ public class NominalQrPaymentActivity extends TActivity implements QrPaymentCont
         initInjector();
         presenter.attachView(this);
 
-        toolbar.setTitle("Nominal Pembayaran");
+        toolbar.setTitle(getString(R.string.title_input_nominal));
         infoQrTokoCash = getIntent().getParcelableExtra(INFO_QR);
 
         initView();
@@ -90,17 +90,7 @@ public class NominalQrPaymentActivity extends TActivity implements QrPaymentCont
             @Override
             public void onClick(View view) {
                 progressBar.setVisibility(View.VISIBLE);
-//                presenter.postQrPayment();
-                if (notesValue.getText().toString().equals("")) {
-                    directToFailedPayment();
-                } else {
-                    QrPaymentTokoCash qrPaymentTokoCash = new QrPaymentTokoCash();
-                    qrPaymentTokoCash.setTransactionId(12345);
-                    qrPaymentTokoCash.setPaymentId(123455);
-                    qrPaymentTokoCash.setDateTime("11 Jan 2018");
-                    qrPaymentTokoCash.setAmount(10000);
-                    directToSuccessPayment(qrPaymentTokoCash);
-                }
+                presenter.postQrPayment();
             }
         });
     }
@@ -143,7 +133,7 @@ public class NominalQrPaymentActivity extends TActivity implements QrPaymentCont
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(PostQrPaymentUseCase.IDENTIFIER, getIntent().getStringExtra(IDENTIFIER));
         requestParams.putString(PostQrPaymentUseCase.NOTE, notesValue.getText().toString().equals("") ?
-                "Paid to merchant" : notesValue.getText().toString());
+                getString(R.string.default_notes_payment) : notesValue.getText().toString());
         requestParams.putLong(PostQrPaymentUseCase.AMOUNT, Long.parseLong(nominalValue.getText().toString()));
         return requestParams;
     }
@@ -167,7 +157,8 @@ public class NominalQrPaymentActivity extends TActivity implements QrPaymentCont
     @Override
     public void renderBalanceTokoCash(final BalanceTokoCash balanceTokoCash) {
         tokocashValue.setVisibility(View.VISIBLE);
-        tokocashValue.setText("TokoCash Balance: " + balanceTokoCash.getBalance());
+        tokocashValue.setText(String.format(getString(R.string.tokocash_balance_payment),
+                balanceTokoCash.getBalance()));
         this.balanceTokoCash = balanceTokoCash;
 
         nominalValue.addTextChangedListener(new NumberTextWatcher(nominalValue) {
@@ -207,7 +198,7 @@ public class NominalQrPaymentActivity extends TActivity implements QrPaymentCont
     public void showErrorBalanceTokoCash(String message) {
         progressBar.setVisibility(View.GONE);
         tokocashValue.setVisibility(View.VISIBLE);
-        tokocashValue.setText("Failed to get Balance TokoCash");
+        tokocashValue.setText(getString(R.string.error_message_tokocash));
         NetworkErrorHelper.createSnackbarWithAction(this, message,
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override

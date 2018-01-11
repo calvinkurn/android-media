@@ -49,7 +49,7 @@
         android:background="@drawable/tokocash_bg_white_oval_rounded"
         android:gravity="center_horizontal"
         android:layout_centerHorizontal="true"
-        android:text="Arahkan kode QR ke area yang telah ditentukan"
+        android:text="@string/scanner_info"
         android:textColor="@color/black_54"
         android:textSize="@dimen/fontvs"/>
 

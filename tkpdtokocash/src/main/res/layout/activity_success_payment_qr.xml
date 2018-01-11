@@ -12,14 +12,14 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:visibility="gone"
-        tools:visibility="visible">
+        tools:visibility="gone">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/margin_large"
-            android:text="Pembayaran berhasil ke"
+            android:text="@string/success_payment_header"
             android:textColor="@color/black_70"
             android:textSize="@dimen/fonts" />
 
@@ -62,7 +62,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Time"
+                android:text="@string/success_payment_time"
                 android:textColor="@color/black_54"
                 android:textSize="@dimen/fontvs" />
 
@@ -89,7 +89,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/separator_time"
-                android:text="Transaction ID"
+                android:text="@string/success_payment_transaction_id"
                 android:textColor="@color/black_54"
                 android:textSize="@dimen/fontvs" />
 
@@ -116,7 +116,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/separator_trans_id"
-                android:text="TokoCash Balance"
+                android:text="@string/success_payment_balance"
                 android:textColor="@color/black_54"
                 android:textSize="@dimen/fontvs" />
 
@@ -151,7 +151,7 @@
                 android:paddingLeft="@dimen/margin_large"
                 android:paddingRight="@dimen/margin_large"
                 android:paddingTop="@dimen/padding_small"
-                android:text="Kembali ke Beranda"
+                android:text="@string/btn_back_to_home"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="@dimen/fonts" />
@@ -163,7 +163,6 @@
                 android:layout_below="@+id/button_back_to_home"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/margin_large"
-                android:text="Untuk kendala Transaksi, klik Bantuan"
                 android:textColor="@color/black_54"
                 android:textSize="@dimen/fontvs" />
 
@@ -176,7 +175,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -189,7 +188,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Maaf, Transaksi Gagal"
+            android:text="@string/failed_payment_header"
             android:textSize="@dimen/font_large"
             android:textColor="@color/black_70"
             android:layout_gravity="center_horizontal"/>
@@ -198,7 +197,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_sm"
-            android:text="Cek Koneksi dan Ulangi Proses Transfer."
+            android:text="@string/failed_payment_body"
             android:textSize="@dimen/fontvs"
             android:textColor="@color/black_70"
             android:layout_gravity="center_horizontal"/>
@@ -215,7 +214,7 @@
             android:paddingLeft="@dimen/margin_large"
             android:paddingRight="@dimen/margin_large"
             android:paddingTop="@dimen/padding_small"
-            android:text="Ulangi Transaksi"
+            android:text="@string/failed_payment_retry"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="@dimen/fonts" />
