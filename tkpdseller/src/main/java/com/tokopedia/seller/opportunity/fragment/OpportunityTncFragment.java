@@ -30,6 +30,7 @@ import com.tokopedia.seller.opportunity.presentation.ActionViewData;
 import com.tokopedia.seller.opportunity.presenter.OpportunityImpl;
 import com.tokopedia.seller.opportunity.presenter.OpportunityPresenter;
 import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityItemViewModel;
+import com.tokopedia.seller.opportunity.di.component.DaggerOpportunityComponent;
 
 import javax.inject.Inject;
 
