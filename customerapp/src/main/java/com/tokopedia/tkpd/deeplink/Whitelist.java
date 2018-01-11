@@ -6,6 +6,6 @@ import java.util.List;
  * Created by Rizky on 04/01/18.
  */
 
-public class Response {
-    public List<Deeplink> deeplinks;
+public class Whitelist {
+    public List<WhitelistItem> data;
 }

@@ -1,7 +1,6 @@
 package com.tokopedia.tkpd.deeplink.data.repository;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.tkpd.deeplink.Deeplink;
+import com.tokopedia.tkpd.deeplink.WhitelistItem;
 
 import java.util.List;
 
@@ -13,6 +12,6 @@ import rx.Observable;
 
 public interface DeeplinkRepository {
 
-    Observable<List<Deeplink>> mapUrl();
+    Observable<List<WhitelistItem>> mapUrl();
 
 }

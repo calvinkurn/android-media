@@ -18,7 +18,6 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.fragment.FragmentShopPreview;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
@@ -43,7 +42,7 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivi
 import com.tokopedia.session.session.interactor.SignInInteractor;
 import com.tokopedia.session.session.interactor.SignInInteractorImpl;
 import com.tokopedia.session.session.presenter.Login;
-import com.tokopedia.tkpd.deeplink.Deeplink;
+import com.tokopedia.tkpd.deeplink.WhitelistItem;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.deeplink.domain.interactor.MapUrlUseCase;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
@@ -148,8 +147,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         mapUrlUseCase.execute(mapUrlUseCase.setRequestParam(finalSegments.toString()), mapUrlToApplinkSubscriber(uri));
     }
 
-    private Subscriber<Deeplink> mapUrlToApplinkSubscriber(final Uri uriData) {
-        return new Subscriber<Deeplink>() {
+    private Subscriber<WhitelistItem> mapUrlToApplinkSubscriber(final Uri uriData) {
+        return new Subscriber<WhitelistItem>() {
             @Override
             public void onCompleted() {
 
@@ -161,7 +160,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             }
 
             @Override
-            public void onNext(Deeplink deeplink) {
+            public void onNext(WhitelistItem deeplink) {
                 if (TextUtils.isEmpty(deeplink.applink)) {
                     viewListener.initDeepLink();
                 } else {

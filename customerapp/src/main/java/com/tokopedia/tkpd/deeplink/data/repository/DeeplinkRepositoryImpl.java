@@ -1,13 +1,14 @@
 package com.tokopedia.tkpd.deeplink.data.repository;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.deeplink.Deeplink;
-import com.tokopedia.tkpd.deeplink.Response;
+import com.tokopedia.tkpd.deeplink.Whitelist;
+import com.tokopedia.tkpd.deeplink.WhitelistItem;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -35,65 +36,69 @@ public class DeeplinkRepositoryImpl implements DeeplinkRepository {
     }
 
     @Override
-    public Observable<List<Deeplink>> mapUrl() {
-        return Observable.concat(getDeeplinksFromDb(), getDeeplinksFromFile())
-                .first(new Func1<List<Deeplink>, Boolean>() {
+    public Observable<List<WhitelistItem>> mapUrl() {
+        return Observable.concat(getWhitelistFromDB(), getWhitelistFromFile())
+                .first(new Func1<List<WhitelistItem>, Boolean>() {
                     @Override
-                    public Boolean call(List<Deeplink> deeplinks) {
-                        return deeplinks != null && !deeplinks.isEmpty();
+                    public Boolean call(List<WhitelistItem> whitelistItems) {
+                        return whitelistItems != null && !whitelistItems.isEmpty();
                     }
                 });
     }
 
-    private Observable<List<Deeplink>> getDeeplinksFromDb() {
+    private Observable<List<WhitelistItem>> getWhitelistFromDB() {
         return Observable.just(new GlobalCacheManager())
-                .map(new Func1<GlobalCacheManager, List<Deeplink>>() {
+                .map(new Func1<GlobalCacheManager, List<WhitelistItem>>() {
                     @Override
-                    public List<Deeplink> call(GlobalCacheManager globalCacheManager) {
-                        if (Integer.valueOf(globalCacheManager.getValueString(KEY_VERSION)) <=
-                                BuildConfig.VERSION_CODE) {
-                            return new ArrayList<>();
+                    public List<WhitelistItem> call(GlobalCacheManager globalCacheManager) {
+                        if (!TextUtils.isEmpty(globalCacheManager.getValueString(KEY_VERSION))) {
+                            if (Integer.valueOf(globalCacheManager.getValueString(KEY_VERSION)) <=
+                                    BuildConfig.VERSION_CODE) {
+                                return new ArrayList<>();
+                            } else {
+                                String cache = globalCacheManager.getValueString(KEY_MAPPING);
+                                Gson gson = new Gson();
+                                Whitelist whitelist = gson.fromJson(cache, Whitelist.class);
+                                return whitelist.data;
+                            }
                         } else {
-                            String cache = globalCacheManager.getValueString(KEY_MAPPING);
-                            Gson gson = new Gson();
-                            Response response = gson.fromJson(cache, Response.class);
-                            return response.deeplinks;
+                            return new ArrayList<>();
                         }
                     }
                 })
-                .onErrorReturn(new Func1<Throwable, List<Deeplink>>() {
+                .onErrorReturn(new Func1<Throwable, List<WhitelistItem>>() {
                     @Override
-                    public List<Deeplink> call(Throwable throwable) {
+                    public List<WhitelistItem> call(Throwable throwable) {
                         return new ArrayList<>();
                     }
                 });
     }
 
-    private Observable<List<Deeplink>> getDeeplinksFromFile() {
+    private Observable<List<WhitelistItem>> getWhitelistFromFile() {
         return Observable.just(true)
-                .map(new Func1<Boolean, List<Deeplink>>() {
+                .map(new Func1<Boolean, List<WhitelistItem>>() {
                     @Override
-                    public List<Deeplink> call(Boolean bool) {
-                        return readDeeplinksFromFile();
+                    public List<WhitelistItem> call(Boolean bool) {
+                        return readWhitelistFromFile();
                     }
                 })
-                .doOnNext(new Action1<List<Deeplink>>() {
+                .doOnNext(new Action1<List<WhitelistItem>>() {
                     @Override
-                    public void call(List<Deeplink> deeplinks) {
+                    public void call(List<WhitelistItem> whitelistItems) {
                         saveVersionToCache();
-                        saveMappingToCache(deeplinks);
+                        saveMappingToCache(whitelistItems);
                     }
                 });
     }
 
-    private void saveMappingToCache(List<Deeplink> deeplinks) {
+    private void saveMappingToCache(List<WhitelistItem> whitelistItems) {
         GlobalCacheManager mappingCache = new GlobalCacheManager();
         Gson gson = new Gson();
-        if (deeplinks != null && !deeplinks.isEmpty()) {
+        if (whitelistItems != null && !whitelistItems.isEmpty()) {
             mappingCache.setKey(KEY_MAPPING);
-            Response response = new Response();
-            response.deeplinks = deeplinks;
-            mappingCache.setValue(gson.toJson(response));
+            Whitelist whitelist = new Whitelist();
+            whitelist.data = whitelistItems;
+            mappingCache.setValue(gson.toJson(whitelist));
         }
     }
 
@@ -104,13 +109,13 @@ public class DeeplinkRepositoryImpl implements DeeplinkRepository {
         versionCache.setValue(gson.toJson(BuildConfig.VERSION_CODE));
     }
 
-    private List<Deeplink> readDeeplinksFromFile() {
+    private List<WhitelistItem> readWhitelistFromFile() {
         InputStream inputStream = context.getResources().openRawResource(R.raw.whitelist);
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
         Gson gson = new Gson();
-        Response response = gson.fromJson(reader, Response.class);
-        return response.deeplinks;
+        Whitelist whitelist = gson.fromJson(reader, Whitelist.class);
+        return whitelist.data;
     }
 
 }

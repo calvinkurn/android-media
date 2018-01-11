@@ -6,7 +6,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.tkpd.deeplink.Deeplink;
+import com.tokopedia.tkpd.deeplink.WhitelistItem;
 import com.tokopedia.tkpd.deeplink.data.repository.DeeplinkRepository;
 
 import java.util.List;
@@ -18,7 +18,7 @@ import rx.functions.Func1;
  * Created by Rizky on 04/01/18.
  */
 
-public class MapUrlUseCase extends UseCase<Deeplink> {
+public class MapUrlUseCase extends UseCase<WhitelistItem> {
 
     private final String KEY_FINAL_SEGMENTS = "KEY_FINAL_SEGMENTS";
 
@@ -30,27 +30,27 @@ public class MapUrlUseCase extends UseCase<Deeplink> {
     }
 
     @Override
-    public Observable<Deeplink> createObservable(final RequestParams requestParams) {
+    public Observable<WhitelistItem> createObservable(final RequestParams requestParams) {
         return deeplinkRepository.mapUrl()
-                .flatMapIterable(new Func1<List<Deeplink>, Iterable<Deeplink>>() {
+                .flatMapIterable(new Func1<List<WhitelistItem>, Iterable<WhitelistItem>>() {
                     @Override
-                    public Iterable<Deeplink> call(List<Deeplink> deeplinks) {
-                        return deeplinks;
+                    public Iterable<WhitelistItem> call(List<WhitelistItem> whitelistItems) {
+                        return whitelistItems;
                     }
                 })
-                .firstOrDefault(new Deeplink(null, null), new Func1<Deeplink, Boolean>() {
+                .firstOrDefault(new WhitelistItem(null, null), new Func1<WhitelistItem, Boolean>() {
                     @Override
-                    public Boolean call(Deeplink deeplink) {
-                        String applink = findApplink(deeplink, requestParams.getString(KEY_FINAL_SEGMENTS, ""));
+                    public Boolean call(WhitelistItem whitelistItem) {
+                        String applink = findApplink(whitelistItem, requestParams.getString(KEY_FINAL_SEGMENTS, ""));
                         return !TextUtils.isEmpty(applink);
                     }
                 });
     }
 
-    private String findApplink(Deeplink deeplink, String finalSegments) {
-        if (deeplink != null) {
-            if (deeplink.path.equals(finalSegments)) {
-                return deeplink.applink;
+    private String findApplink(WhitelistItem whitelistItem, String finalSegments) {
+        if (whitelistItem != null) {
+            if (whitelistItem.path.equals(finalSegments)) {
+                return whitelistItem.applink;
             }
         }
         return null;
