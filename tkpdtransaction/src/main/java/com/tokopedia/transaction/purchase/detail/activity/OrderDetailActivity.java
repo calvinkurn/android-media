@@ -151,12 +151,12 @@ public class OrderDetailActivity extends TActivity
             ImageView driverPhoto = findViewById(R.id.driver_photo);
             TextView driverName = findViewById(R.id.driver_name);
             TextView driverPhone = findViewById(R.id.driver_phone);
-            TextView drivervehicle = findViewById(R.id.driver_vehicle);
+            TextView driverVehicle = findViewById(R.id.driver_vehicle);
             TextView btnCallDriver = findViewById(R.id.btn_call_driver);
 
             driverName.setText(data.getDriverName());
             driverPhone.setText(data.getDriverPhone());
-            drivervehicle.setText(data.getDriverVehicle());
+            driverVehicle.setText(data.getDriverVehicle());
 
             ImageHandler.loadImageCircle2(this, driverPhoto, data.getDriverImage());
 
