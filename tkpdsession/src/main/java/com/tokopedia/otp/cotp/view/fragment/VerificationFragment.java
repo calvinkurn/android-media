@@ -56,18 +56,18 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
     private static final int REQUEST_VERIFY_PHONE_NUMBER = 243;
 
-    ImageView icon;
-    TextView message;
-    PinEntryEditText inputOtp;
-    TextView countdownText;
-    TextView verifyButton;
-    TextView errorOtp;
-    View limitOtp;
-    View finishCountdownView;
-    TextView noCodeText;
+    private ImageView icon;
+    private TextView message;
+    private PinEntryEditText inputOtp;
+    private TextView countdownText;
+    private TextView verifyButton;
+    private TextView errorOtp;
+    private View limitOtp;
+    private View finishCountdownView;
+    private TextView noCodeText;
 
-    CountDownTimer countDownTimer;
-    TkpdProgressDialog progressDialog;
+    private CountDownTimer countDownTimer;
+    private TkpdProgressDialog progressDialog;
 
     private boolean isRunningTimer = false;
     protected LocalCacheHandler cacheHandler;

@@ -33,8 +33,7 @@ import javax.inject.Inject;
 public class ChooseVerificationMethodFragment extends BaseDaggerFragment implements
         SelectVerification.View {
 
-    RecyclerView methodList;
-    VerificationMethodAdapter adapter;
+    private RecyclerView methodList;
 
     @Inject
     GlobalCacheManager cacheManager;
@@ -79,7 +78,8 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
     }
 
     private void prepareView() {
-        adapter = VerificationMethodAdapter.createInstance(getList(), this);
+        VerificationMethodAdapter adapter = VerificationMethodAdapter.createInstance(getList(),
+                this);
         methodList.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager
                 .VERTICAL, false));
         methodList.setAdapter(adapter);
