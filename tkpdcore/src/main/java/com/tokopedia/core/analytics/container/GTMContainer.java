@@ -35,6 +35,7 @@ import com.tokopedia.core.var.TkpdCache;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -470,4 +471,32 @@ public class GTMContainer implements IGTMContainer {
     public void event(String name, Map<String, Object> data) {
         GTMDataLayer.pushEvent(context, name, data);
     }
+
+    private void clearEnhanceEcommerce() {
+        GTMDataLayer.pushGeneral(
+                context,
+                DataLayer.mapOf("event", null,
+                        "eventCategory", null,
+                        "eventAction", null,
+                        "eventLabel", null,
+                        "ecommerce", null
+                )
+        );
+    }
+
+    @Override
+    public void eventImpressionCategoryLifestyle(List<Object> list) {
+        clearEnhanceEcommerce();
+        GTMDataLayer.pushGeneral(
+                context, DataLayer.mapOf("event", "promoClick",
+                        "eventCategory", "category page",
+                        "eventAction", "subcategory impression",
+                        "eventLabel", "",
+                        "ecommerce", DataLayer.mapOf(
+                                "promoView", DataLayer.mapOf(
+                                        "promotions", DataLayer.listOf(list.toArray(new Object[list.size()]))))
+                        )
+        );
+    }
+
 }
