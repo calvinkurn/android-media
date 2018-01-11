@@ -17,9 +17,9 @@ public class Driver {
     @SerializedName("photo")
     @Expose
     private String photo;
-    @SerializedName("vehicle")
+    @SerializedName("license_number")
     @Expose
-    private String vehicle;
+    private String licenseNumber;
 
     public Driver() {
     }
@@ -48,11 +48,11 @@ public class Driver {
         this.photo = photo;
     }
 
-    public String getVehicle() {
-        return vehicle;
+    public String getLicenseNumber() {
+        return licenseNumber;
     }
 
-    public void setVehicle(String vehicle) {
-        this.vehicle = vehicle;
+    public void setLicenseNumber(String licenseNumber) {
+        this.licenseNumber = licenseNumber;
     }
 }

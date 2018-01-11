@@ -143,7 +143,7 @@ public class OrderDetailMapper {
                     responseData.getDetail().getShipment().getInfo().getDriver().getPhone()
             );
             viewData.setDriverVehicle(
-                    responseData.getDetail().getShipment().getInfo().getDriver().getVehicle()
+                    responseData.getDetail().getShipment().getInfo().getDriver().getLicenseNumber()
             );
         }
 
