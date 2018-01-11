@@ -2,8 +2,6 @@ package com.tokopedia.abstraction.utils;
 
 import android.app.Activity;
 
-import com.tokopedia.core.BuildConfig;
-
 import net.hockeyapp.android.LoginManager;
 import net.hockeyapp.android.UpdateManager;
 

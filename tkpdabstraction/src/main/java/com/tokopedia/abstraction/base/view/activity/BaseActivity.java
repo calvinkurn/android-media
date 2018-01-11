@@ -42,11 +42,6 @@ abstract class BaseActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-//        if (MaintenancePage.isMaintenance(this)) {
-//            startActivity(MaintenancePage.createIntent(this));
-//        }
-
         logoutNetworkReceiver = new ErrorNetworkReceiver();
         HockeyAppHelper.handleLogin(this);
         HockeyAppHelper.checkForUpdate(this);
@@ -67,11 +62,8 @@ abstract class BaseActivity extends AppCompatActivity implements
         if (cache.getInt(TkpdCache.Key.STATUS) == TkpdState.UpdateState.MUST_UPDATE) {
             if (getApplication() instanceof AbstractionRouter) {
                 ((AbstractionRouter) getApplication()).goToForceUpdate(this);
+                finish();
             }
-//            Intent intent = new Intent(this, ForceUpdate.class);
-//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//            startActivity(new Intent(this, ForceUpdate.class));
-            finish();
         }
 
         sendScreenAnalytics();
@@ -154,19 +146,6 @@ abstract class BaseActivity extends AppCompatActivity implements
                         if (getApplication() instanceof AbstractionRouter) {
                             ((AbstractionRouter) getApplication()).onForceLogout(BaseActivity.this);
                         }
-//                        LoginManager.getInstance().logOut();
-//                        setIsDialogShown(context, false);
-//                        NotificationModHandler.clearCacheAllNotification(context);
-//                        sessionHandler.forceLogout();
-//                        if (GlobalConfig.isSellerApp()) {
-//                            Intent intent = SellerRouter.getAcitivitySplashScreenActivity(getBaseContext());
-//                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-//                            startActivity(intent);
-//                        } else {
-//                            Intent intent = CustomerRouter.getSplashScreenIntent(getBaseContext());
-//                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-//                            startActivity(intent);
-//                        }
                     }
                 });
     }
