@@ -488,7 +488,7 @@ public class GTMContainer implements IGTMContainer {
     public void eventImpressionCategoryLifestyle(List<Object> list) {
         clearEnhanceEcommerce();
         GTMDataLayer.pushGeneral(
-                context, DataLayer.mapOf("event", "promoClick",
+                context, DataLayer.mapOf("event", "promoView",
                         "eventCategory", "category page",
                         "eventAction", "subcategory impression",
                         "eventLabel", "",
