@@ -87,11 +87,11 @@ public class TemplateChatSettingPresenter extends BaseDaggerPresenter<TemplateCh
     @Override
     public void switchTemplateAvailability(final boolean enabled) {
         JsonArray array = null;
-//        ArrayList<Integer> arrayList = new ArrayList<>();
-//        for (int i = 0; i < 5; i++) {
-//            arrayList.add(i + 1);
-//        }
-//        array = toJsonArray(arrayList);
+        ArrayList<Integer> arrayList = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            arrayList.add(i + 1);
+        }
+        array = toJsonArray(arrayList);
         getView().showLoading();
         setAvailabilityTemplateUseCase.execute(SetAvailabilityTemplateUseCase.generateParam(array, enabled), new Subscriber<GetTemplateViewModel>() {
             @Override

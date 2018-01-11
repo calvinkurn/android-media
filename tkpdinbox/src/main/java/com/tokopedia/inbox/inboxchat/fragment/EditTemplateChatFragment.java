@@ -110,7 +110,7 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
                 if(item.getIcon().getAlpha() == ENABLE_DELETE){
                     showDialogDelete();
                 }else {
-                    showError("");
+                    showError(getActivity().getString(R.string.minimum_template_chat_warning));
                 }
             }
             return true;
@@ -271,7 +271,11 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
 
     @Override
     public void showError(String error) {
-        SnackbarManager.make(getActivity(), getActivity().getString(R.string.default_request_error_bad_request), Snackbar.LENGTH_LONG).show();
+        if(error.equals("")){
+            SnackbarManager.make(getActivity(), getActivity().getString(R.string.default_request_error_bad_request), Snackbar.LENGTH_LONG).show();
+        }else{
+            SnackbarManager.make(getActivity(), error, Snackbar.LENGTH_LONG).show();
+        }
     }
 
 }

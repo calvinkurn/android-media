@@ -258,6 +258,7 @@ yang ditemukan</string>
     <string name="add_template_chat_title">Tambah Template Pesan</string>
     <string name="edit_template_chat_title">Ubah Template Pesan</string>
     <string name="limited_template_chat_warning">Hapus salah satu template untuk bisa membuat template baru.</string>
+    <string name="minimum_template_chat_warning">Minimal harus memiliki 1 template.</string>
     <string name="success_add_template_chat">Berhasil menambahkan template pesan</string>
     <string name="success_edit_template_chat">Berhasil mengubah template pesan</string>
     <string name="success_delete_template_chat">Template berhasil dihapus</string>
