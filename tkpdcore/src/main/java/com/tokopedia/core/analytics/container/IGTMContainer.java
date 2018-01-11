@@ -114,4 +114,6 @@ public interface IGTMContainer {
     void event(String name, Map<String, Object> data);
 
     void eventImpressionCategoryLifestyle(List<Object> list);
+
+    void eventClickCategoryLifestyle(String categoryUrl, List<Object> list);
 }

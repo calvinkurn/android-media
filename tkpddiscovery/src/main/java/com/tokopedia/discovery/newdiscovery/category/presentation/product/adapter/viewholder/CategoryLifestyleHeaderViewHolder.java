@@ -74,9 +74,9 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
                 list.add(
                         DataLayer.mapOf(
                                 "id", looper.getCategoryId(),
-                                "name", String.format("category %s - subcategory banner", model.getHeaderModel().getCategoryName()),
+                                "name", String.format("category %s - subcategory banner", looper.getCategoryName()),
                                 "position", i+1,
-                                "creative", looper.getCategoryName()
+                                "creative", model.getHeaderModel().getCategoryName()
                                 )
                 );
             }
@@ -108,7 +108,7 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
                             Color.parseColor(model.getHeaderImageHexColor())
             );
 
-            ChildCategoryLifestyleAdapter adapter = new ChildCategoryLifestyleAdapter(categoryListener);
+            ChildCategoryLifestyleAdapter adapter = new ChildCategoryLifestyleAdapter(categoryListener, model.getHeaderModel().getCategoryName());
             adapter.setListCategory(model.getChildCategoryModelList());
             adapter.notifyDataSetChanged();
             listChildCategory.setHasFixedSize(true);

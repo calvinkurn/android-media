@@ -199,6 +199,7 @@ public class CategoryHeaderModel implements Parcelable , Visitable<CategoryProdu
                 childCategoryModel.setCategoryId(child.getId());
                 childCategoryModel.setCategoryImageUrl(child.getThumbnailImage());
                 childCategoryModel.setCategoryName(child.getName());
+                childCategoryModel.setCategoryUrl(child.getUrl());
                 categoryModelList.add(childCategoryModel);
             }
         }
