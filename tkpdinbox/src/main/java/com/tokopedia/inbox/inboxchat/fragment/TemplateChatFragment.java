@@ -141,7 +141,7 @@ public class TemplateChatFragment extends BaseDaggerFragment
             @Override
             public void onClick(View view) {
                 boolean b = switchTemplate.isChecked();
-                presenter.setArrange(b);
+                presenter.switchTemplateAvailability(b);
                 if (b) {
                     templateContainer.setVisibility(View.VISIBLE);
                 } else {
@@ -233,7 +233,7 @@ public class TemplateChatFragment extends BaseDaggerFragment
 
     public ArrayList<Integer> arrangeList(int from, int to){
         ArrayList<Integer> arrayList = new ArrayList<>();
-        for (int i = 0; i < adapter.getList().size(); i++) {
+        for (int i = 0; i < adapter.getList().size()-1; i++) {
             arrayList.add(i + 1);
         }
 
@@ -293,6 +293,7 @@ public class TemplateChatFragment extends BaseDaggerFragment
         String text = getActivity().getString(R.string.success_rearrange_template_chat);
         snackbarInfo.setText(text);
         snackbarInfo.show();
+        prepareResult();
     }
 
     @Override

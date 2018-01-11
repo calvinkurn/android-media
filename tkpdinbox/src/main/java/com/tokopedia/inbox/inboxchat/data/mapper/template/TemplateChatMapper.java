@@ -64,6 +64,7 @@ public class TemplateChatMapper implements Func1<Response<TkpdResponse>, GetTemp
                 }
             }
         }
+        model.setSuccess(data.isSuccess());
         model.setEnabled(data.isIsEnable());
         model.setListTemplate(list);
         return model;
