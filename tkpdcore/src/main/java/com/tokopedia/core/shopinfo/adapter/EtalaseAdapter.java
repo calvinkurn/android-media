@@ -66,9 +66,11 @@ public class EtalaseAdapter extends ArrayAdapter<EtalaseAdapterModel> {
 
         if(getItem(position).getEtalaseBadge() != null
                 && !getItem(position).getEtalaseBadge().isEmpty()) {
+            vh.imageView.setVisibility(View.VISIBLE);
             ImageHandler.loadImage(getContext(), vh.imageView, getItem(position).getEtalaseBadge(), R.drawable.loading_page);
         } else {
             vh.imageView.setImageDrawable(null);
+            vh.imageView.setVisibility(View.GONE);
         }
         return convertView;
     }
