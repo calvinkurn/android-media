@@ -54,7 +54,7 @@ public class ChatRightViewHolder extends AbstractViewHolder<ChatRightViewModel> 
             rvAttachment.setAdapter(adapter);
         }
         rvAttachment.setHasFixedSize(true);
-        String date = DateFormatUtils.formatDateForResoChatV2(element.getConversation().getCreateTime().getTimestamp());
+        String date = element.getConversation().getCreateTime().getTimestamp();
         tvDate.setText(date);
     }
 

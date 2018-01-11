@@ -18,6 +18,7 @@ public class HistoryActionViewItem implements Parcelable {
     private String dateNumber;
     private String month;
     private String createTimestampStr;
+    private String timeNumber;
 
     public String getDateTimestamp() {
         return dateTimestamp;
@@ -102,6 +103,14 @@ public class HistoryActionViewItem implements Parcelable {
 
     public String getHistoryText() {
         return historyText;
+    }
+
+    public String getTimeNumber() {
+        return timeNumber;
+    }
+
+    public void setTimeNumber(String timeNumber) {
+        this.timeNumber = timeNumber;
     }
 
     @Override

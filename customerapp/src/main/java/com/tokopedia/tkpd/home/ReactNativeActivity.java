@@ -26,6 +26,7 @@ public class ReactNativeActivity extends BasePresenterActivity implements ReactN
     public static final String USER_ID = "User_ID";
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
     public static final String EXTRA_URL = "EXTRA_URL";
+    public static final String PAGE_ID = "page_id";
     public static final String OS_PROMO_PAGE = "OS Promo Page";
 
     @DeepLink({Constants.Applinks.OFFICIAL_STORES})
@@ -64,6 +65,15 @@ public class ReactNativeActivity extends BasePresenterActivity implements ReactN
         );
     }
 
+    @DeepLink({Constants.Applinks.DISCOVERY_PAGE})
+    public static Intent getDiscoveryPaageIntent(Context context, Bundle bundle) {
+        return ReactNativeActivity.createDiscoveryPageReactNativeActivity(
+                context, ReactConst.Screen.DISCOVERY_PAGE,
+                "",
+                bundle.getString(PAGE_ID)
+        ).putExtras(bundle);
+    }
+
     public static Intent createOfficialStoresReactNativeActivity(Context context,
                                                                  String reactScreenName,
                                                                  String pageTitle) {
@@ -92,6 +102,19 @@ public class ReactNativeActivity extends BasePresenterActivity implements ReactN
         extras.putString(ReactConst.KEY_SCREEN, reactScreenName);
         extras.putString(ReactConst.SUB_PAGE, ReactConst.Screen.PROMO_TERMS);
         extras.putString(EXTRA_TITLE, title);
+        intent.putExtras(extras);
+        return intent;
+    }
+
+    public static Intent createDiscoveryPageReactNativeActivity(Context context,
+                                                                 String reactScreenName,
+                                                                 String pageTitle,
+                                                                 String pageId) {
+        Intent intent = new Intent(context, ReactNativeActivity.class);
+        Bundle extras = new Bundle();
+        extras.putString(ReactConst.KEY_SCREEN, reactScreenName);
+        extras.putString(EXTRA_TITLE, pageTitle);
+        extras.putString(PAGE_ID, pageId);
         intent.putExtras(extras);
         return intent;
     }

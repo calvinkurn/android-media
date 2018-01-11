@@ -2,11 +2,10 @@ package com.tokopedia.digital.widget.interactor;
 
 import android.support.v4.util.Pair;
 
-import com.tokopedia.digital.widget.model.operator.Operator;
-import com.tokopedia.digital.widget.model.product.Product;
-
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.widget.model.DigitalNumberList;
+import com.tokopedia.digital.widget.model.operator.Operator;
+import com.tokopedia.digital.widget.model.product.Product;
 
 import java.util.List;
 
@@ -21,8 +20,6 @@ public interface IDigitalWidgetInteractor {
 
     void getOperatorAndProductsFromPrefix(Subscriber<Pair<Operator, List<Product>>> subscriber, int categoryId, String prefix);
 
-    void getOperatorAndProductsFromPrefix2(Subscriber<Pair<Operator, List<Product>>> subscriber, int categoryId, String prefix);
-
     void getOperatorAndProductsByOperatorId(Subscriber<Pair<Operator, List<Product>>> subscriber,
                                                   int categoryId, String operatorId);
 
@@ -36,7 +33,5 @@ public interface IDigitalWidgetInteractor {
 
     void getNumberList(Subscriber<DigitalNumberList> subscriber,
                        TKPDMapParam<String, String> param);
-
-    void setUseCacheToTrue();
 
 }

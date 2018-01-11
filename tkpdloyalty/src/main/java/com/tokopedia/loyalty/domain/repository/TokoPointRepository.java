@@ -5,7 +5,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
-import com.tokopedia.core.network.apiservices.transaction.TXService;
 import com.tokopedia.core.network.apiservices.transaction.TXVoucherService;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;

@@ -930,6 +930,8 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
         RequestParams params = RequestParams.create();
         params.putString(ReputationReviewApi.ID, productId);
         params.putString(ReputationReviewApi.SHOP_ID, shopId);
+        params.putString(ReputationReviewApi.PER_PAGE, String.valueOf(1));
+        params.putString(ReputationReviewApi.PARAM_SOURCE, ReputationReviewApi.VALUE_SNEAK_PEAK);
         return params.getParameters();
     }
 
@@ -941,7 +943,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
 
         Observable<Response<TkpdResponse>> observableGetProductTalk = kunyitService
                 .getApi().getProductTalk(
-                        AuthUtil.generateParams(context, NetworkParam.paramProductTalk(productId, shopId))
+                        AuthUtil.generateParams(context, NetworkParam.paramProductSneakPeakTalk(productId, shopId))
                 );
 
         Subscriber<LatestTalkViewModel> subscriber = new Subscriber<LatestTalkViewModel>() {
@@ -979,7 +981,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                                       @Nonnull final DiscussionListener listener) {
         Observable<Response<TkpdResponse>> observableGetTalkComment =
                 kunyitService.getApi().getCommentTalk(
-                        AuthUtil.generateParams(context, NetworkParam.paramTalkComment(talkId, shopId))
+                        AuthUtil.generateParams(context, NetworkParam.paramSneakPeakTalkComment(talkId, shopId))
                 );
 
         Subscriber<LatestTalkViewModel> subscriber = new Subscriber<LatestTalkViewModel>() {
