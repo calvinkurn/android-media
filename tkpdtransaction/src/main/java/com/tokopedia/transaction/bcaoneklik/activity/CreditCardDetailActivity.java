@@ -1,8 +1,10 @@
 package com.tokopedia.transaction.bcaoneklik.activity;
 
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -44,13 +46,13 @@ public class CreditCardDetailActivity extends TActivity implements DeleteCreditC
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+        mCreditCardModelItem = (CreditCardModelItem) getIntent().getSerializableExtra(KEY_CC_ITEM);
+
         super.onCreate(savedInstanceState);
         inflateView(R.layout.credit_card_detail_layout);
         ButterKnife.bind(this);
 
         initInjector();
-
-        mCreditCardModelItem = (CreditCardModelItem) getIntent().getSerializableExtra(KEY_CC_ITEM);
 
         mViewImageCc.setBackgroundResource(getCcImageResource(mCreditCardModelItem));
         mCreditCardNumber.setText(getSpacedText(mCreditCardModelItem.getMaskedNumber()));
@@ -64,40 +66,6 @@ public class CreditCardDetailActivity extends TActivity implements DeleteCreditC
                 .appComponent(getApplicationComponent())
                 .build();
         component.inject(this);
-    }
-
-    @Override
-    protected void setupToolbar() {
-        toolbar = findViewById(com.tokopedia.core.R.id.app_bar);
-        toolbar.setTitle(getTitle());
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-
-        if (isLightToolbarThemes()) {
-            setLightToolbarStyle();
-        }
-    }
-
-    private void setLightToolbarStyle() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.setBackgroundResource(com.tokopedia.core.R.color.white);
-        } else {
-            toolbar.setBackgroundResource(com.tokopedia.core.R.drawable.bg_white_toolbar_drop_shadow);
-        }
-
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_black_24dp);
-
-        toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.WebViewToolbarText);
-        toolbar.setSubtitleTextAppearance(this, com.tokopedia.core.R.style
-                .WebViewToolbarSubtitleText);
-    }
-
-    @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
     }
 
     private int getCcImageResource(CreditCardModelItem item) {
@@ -130,6 +98,10 @@ public class CreditCardDetailActivity extends TActivity implements DeleteCreditC
         return String.format("%s/%s", item.getExpiryMonth(), item.getExpiryYear());
     }
 
+    private String getToolbarTitle() {
+        return getTitle() + " " + mCreditCardModelItem.getCardType();
+    }
+
     @OnClick(R2.id.button_delete_cc)
     public void showDeleteCcDialog() {
         DeleteCreditCardDialog creditCardDialog = DeleteCreditCardDialog.createDialog(
@@ -141,5 +113,44 @@ public class CreditCardDetailActivity extends TActivity implements DeleteCreditC
     @Override
     public void onConfirmDelete(String tokenId) {
         mListPaymentTypePresenter.onCreditCardDeleted(this, tokenId);
+    }
+
+    @Override
+    protected void setupToolbar() {
+        toolbar = findViewById(com.tokopedia.core.R.id.app_bar);
+        toolbar.setTitle(getToolbarTitle());
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
+        if (isLightToolbarThemes()) {
+            setLightToolbarStyle();
+        }
+    }
+
+    private void setLightToolbarStyle() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.setElevation(10);
+            toolbar.setBackgroundResource(com.tokopedia.core.R.color.white);
+        } else {
+            toolbar.setBackgroundResource(com.tokopedia.core.R.drawable.bg_white_toolbar_drop_shadow);
+        }
+
+        Drawable drawable = ContextCompat.getDrawable(this, com.tokopedia.core.R.drawable.ic_toolbar_overflow_level_two_black);
+        drawable.setBounds(5, 5, 5, 5);
+        toolbar.setOverflowIcon(drawable);
+
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_black_24dp);
+
+        toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.WebViewToolbarText);
+        toolbar.setSubtitleTextAppearance(this, com.tokopedia.core.R.style
+                .WebViewToolbarSubtitleText);
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }

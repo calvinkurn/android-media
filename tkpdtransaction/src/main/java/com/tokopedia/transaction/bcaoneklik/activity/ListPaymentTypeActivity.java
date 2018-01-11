@@ -38,13 +38,9 @@ import javax.inject.Inject;
 public class ListPaymentTypeActivity extends TActivity implements ListPaymentTypeView, BcaOneClickDeleteListener {
 
     private RelativeLayout rootView;
-
     private TkpdProgressDialog progressDialog;
-
     private TkpdProgressDialog mainProgressDialog;
-
     private RefreshHandler refreshHandler;
-
     private PaymentSettingMainAdapter paymentSettingsAdapter;
 
     @Inject ListPaymentTypePresenterImpl presenter;
@@ -56,7 +52,6 @@ public class ListPaymentTypeActivity extends TActivity implements ListPaymentTyp
         initInjector();
         presenter.setViewListener(this);
         initView();
-
     }
 
     private void initInjector() {
@@ -71,9 +66,11 @@ public class ListPaymentTypeActivity extends TActivity implements ListPaymentTyp
     protected void initView() {
         rootView = findViewById(R.id.payment_list_root_view);
         RecyclerView paymentOptionMainRecyclerView = findViewById(R.id.payment_option_main_recycler_view);
+
         paymentSettingsAdapter = new PaymentSettingMainAdapter(presenter, this);
         paymentOptionMainRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         paymentOptionMainRecyclerView.setAdapter(paymentSettingsAdapter);
+
         progressDialog = new TkpdProgressDialog(ListPaymentTypeActivity.this,
                 TkpdProgressDialog.NORMAL_PROGRESS);
         mainProgressDialog = new TkpdProgressDialog(ListPaymentTypeActivity.this,
@@ -84,6 +81,7 @@ public class ListPaymentTypeActivity extends TActivity implements ListPaymentTyp
                 fetchData();
             }
         });
+
         showMainDialog();
         fetchData();
     }
@@ -227,7 +225,7 @@ public class ListPaymentTypeActivity extends TActivity implements ListPaymentTyp
     }
 
     private void showErrorSnackbar(Throwable e) {
-        if(e instanceof ResponseRuntimeException) {
+        if (e instanceof ResponseRuntimeException) {
             NetworkErrorHelper.showSnackbar(ListPaymentTypeActivity.this, e.getMessage());
         }
     }
