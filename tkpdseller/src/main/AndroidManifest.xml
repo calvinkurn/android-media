@@ -34,6 +34,7 @@
         <activity
             android:name=".shop.open.view.activity.ShopOpenMandatoryActivity"
             android:label="@string/title_shop_setting"
+            android:windowSoftInputMode="stateHidden"
             android:exported="true"
             android:screenOrientation="portrait" />
 

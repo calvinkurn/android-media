@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.crashlytics.android.Crashlytics;
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.gallery.GalleryType;
@@ -228,6 +229,7 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
     }
 
     private void onClickBrowseImage() {
+        CommonUtils.hideKeyboard(getActivity(), getView());
         FragmentManager fm = getActivity().getSupportFragmentManager();
         ShopOpenMandatoryImageDialogFragment dialogFragment = ShopOpenMandatoryImageDialogFragment.newInstance(0);
         dialogFragment.show(fm, ImageEditDialogFragment.FRAGMENT_TAG);
