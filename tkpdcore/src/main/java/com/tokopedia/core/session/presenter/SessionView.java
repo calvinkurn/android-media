@@ -32,6 +32,7 @@ public interface SessionView {
     int MOVE_TO_CART_TYPE = 1;
     int HOME = 2;
     int SELLER_HOME = 3;
+    int EVENTS_CART = 4146;
 
     boolean isFragmentCreated(String tag);
 
