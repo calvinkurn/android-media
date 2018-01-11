@@ -180,19 +180,12 @@ public class WidgetStyle99RechargeFragment extends BaseWidgetRechargeFragment<ID
         return new WidgetClientNumberView.RechargeEditTextListener() {
             @Override
             public void onRechargeTextChanged(CharSequence s, int start, int before, int count) {
-                if (queryListener != null) {
-                    queryListener.onQueryChanged(s.toString());
-                }
+
             }
 
             @Override
             public void onRechargeTextClear() {
-                if (category.getAttributes().isValidatePrefix()) {
-                    selectedOperator = null;
-                    widgetClientNumberView.setImgOperatorInvisible();
-                }
-                clearHolder(holderWidgetSpinnerProduct);
-                clearHolder(holderWidgetWrapperBuy);
+
             }
 
             @Override
