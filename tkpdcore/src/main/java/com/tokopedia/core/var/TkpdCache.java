@@ -225,7 +225,7 @@ public class TkpdCache {
         public static final String HOME_TICKER_CACHE = "HOME_TICKER_CACHE";
         public static final String KEY_TOKOPOINT_DRAWER_DATA = "KEY_TOKOPOINT_DRAWER_DATA";
         public static final String KEY_APP_RATING_VERSION = "APP_RATING_VERSION";
-        public static final String KEY_ADVANCED_APP_RATING_VERSION = "ADVANCES_APP_RATING_VERSION";
+        public static final String KEY_ADVANCED_APP_RATING_VERSION = "ADVANCED_APP_RATING_VERSION";
     }
 
     public class RemoteConfigKey {

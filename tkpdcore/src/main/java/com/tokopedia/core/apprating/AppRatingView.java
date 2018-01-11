@@ -60,7 +60,7 @@ public class AppRatingView extends FrameLayout {
     private void onRatingChange(float rating) {
         AppRatingEnum appRating = ratingFactory(rating);
         if(appRating != AppRatingEnum.EMPTY) {
-            ImageHandler.loadImageWithId(imageRating, appRating.getDrawableId());
+            ImageHandler.loadImageWithId(imageRating, appRating.getDrawableId(), appRating.getDrawableId());
             textDescription.setText(appRating.getStringId());
             textDescription.setTextColor(
                     AppCompatResources.getColorStateList(getContext(), appRating.getColorId())

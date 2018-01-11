@@ -86,6 +86,15 @@ public class ImageHandler {
                 .into(imageview);
     }
 
+    public static void loadImageWithId(ImageView imageview, int resId, int placeholder) {
+        Glide.with(imageview.getContext())
+                .load(resId)
+                .placeholder(placeholder)
+                .dontAnimate()
+                .error(resId)
+                .into(imageview);
+    }
+
     public static void loadImageWithIdWithoutPlaceholder(ImageView imageview, int resId) {
         Glide.with(imageview.getContext())
                 .load(resId)
