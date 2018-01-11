@@ -252,4 +252,11 @@ public class Info {
         return false;
     }
 
+    public boolean isOfficialStore(){
+        if(shopIsOfficial > 0){
+            return true;
+        }
+        return false;
+    }
+
 }

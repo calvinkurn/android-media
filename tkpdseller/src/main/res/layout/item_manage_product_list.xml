@@ -97,6 +97,17 @@
                 android:src="@drawable/ic_featured_product" />
 
             <TextView
+                android:id="@+id/text_view_variant"
+                style="@style/TextView.Micro.BlackDisabled"
+                android:layout_marginEnd="@dimen/margin_ms"
+                android:layout_marginRight="@dimen/margin_ms"
+                android:background="@drawable/bg_rect_stroke_lighter_gray"
+                android:padding="@dimen/padding_vvs"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:text="@string/product_label_variant" />
+
+            <TextView
                 android:id="@+id/text_view_cashback"
                 style="@style/TextView.Micro.BlackDisabled"
                 android:layout_marginEnd="@dimen/margin_ms"
