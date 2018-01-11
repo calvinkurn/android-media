@@ -51,6 +51,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -79,6 +80,7 @@ import com.tokopedia.topads.sdk.view.TopAdsView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.addtocart.utils.KeroppiConstants;
+import com.tokopedia.transaction.cart.activity.CartActivity;
 import com.tokopedia.transaction.cart.activity.ShipmentCartActivity;
 import com.tokopedia.transaction.cart.adapter.CartItemAdapter;
 import com.tokopedia.transaction.cart.listener.ICartView;
@@ -98,6 +100,10 @@ import com.tokopedia.transaction.cart.presenter.CartPresenter;
 import com.tokopedia.transaction.cart.presenter.ICartPresenter;
 import com.tokopedia.transaction.cart.receivers.TopPayBroadcastReceiver;
 import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
+import com.tokopedia.transaction.pickuppoint.di.CartPickupPointComponent;
+import com.tokopedia.transaction.pickuppoint.di.DaggerCartPickupPointComponent;
+import com.tokopedia.transaction.pickuppoint.di.DaggerPickupPointComponent;
+import com.tokopedia.transaction.pickuppoint.di.PickupPointComponent;
 import com.tokopedia.transaction.pickuppoint.domain.usecase.GetPickupPointsUseCase;
 import com.tokopedia.transaction.pickuppoint.view.activity.PickupPointActivity;
 import com.tokopedia.transaction.utils.LinearLayoutManagerNonScroll;
@@ -300,6 +306,14 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         getActivity().registerReceiver(topPayBroadcastReceiver, new IntentFilter(
                 TopPayBroadcastReceiver.ACTION_TOP_PAY
         ));
+    }
+
+    @Override
+    protected void initInjector() {
+        AppComponent component = ((CartActivity) getActivity()).getApplicationComponent();
+        CartPickupPointComponent cartPickupPointComponent = DaggerCartPickupPointComponent.builder()
+                .appComponent(component).build();
+        cartPickupPointComponent.inject(this);
     }
 
     @Override
@@ -890,6 +904,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 //                pickupBooth = null;
 
                 // TODO : Request ke API stich,
+                presenter.processRemovePickupPoint(cartItem.getCartCustomerId(), "1234");
                 // TODO : Jika result success, go to edit cart shipment, set first available logistic, jika failed show toast
                 // renderInitialLoadingCartInfo();
                 // renderVisibleMainCartContainer();

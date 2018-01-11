@@ -15,7 +15,7 @@ import dagger.Component;
 @CartPickupPointScope
 @Component(modules = CartPickupPointModule.class, dependencies = AppComponent.class)
 public interface CartPickupPointComponent {
-    void inject(CartPresenter cartPresenter);
+    void inject(CartFragment cartFragment);
 
     ThreadExecutor threadExecutor();
 

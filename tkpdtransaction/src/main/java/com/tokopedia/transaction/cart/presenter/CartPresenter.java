@@ -15,6 +15,9 @@ import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.nishikino.model.Checkout;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.BranchSdkUtils;
@@ -40,6 +43,10 @@ import com.tokopedia.transaction.cart.model.voucher.VoucherData;
 import com.tokopedia.transaction.cart.services.TopPayIntentService;
 import com.tokopedia.transaction.exception.HttpErrorException;
 import com.tokopedia.transaction.exception.ResponseErrorException;
+import com.tokopedia.transaction.pickuppoint.di.DaggerPickupPointComponent;
+import com.tokopedia.transaction.pickuppoint.di.PickupPointComponent;
+import com.tokopedia.transaction.pickuppoint.domain.usecase.EditCartPickupPointsUseCase;
+import com.tokopedia.transaction.pickuppoint.domain.usecase.RemoveCartPickupPointsUseCase;
 
 import org.json.JSONArray;
 
@@ -50,6 +57,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
+import retrofit2.Response;
 import rx.Subscriber;
 
 /**
@@ -64,6 +74,12 @@ public class CartPresenter implements ICartPresenter {
     public static final String IS_SUGGESTED = "suggested";
     private final ICartView view;
     private final ICartDataInteractor cartDataInteractor;
+
+    @Inject
+    EditCartPickupPointsUseCase editCartPickupPointsUseCase;
+
+    @Inject
+    RemoveCartPickupPointsUseCase removeCartPickupPointsUseCase;
 
     public CartPresenter(ICartView iCartView) {
         this.view = iCartView;
@@ -892,7 +908,24 @@ public class CartPresenter implements ICartPresenter {
     }
 
     @Override
-    public void processRemovePickupPoint() {
+    public void processRemovePickupPoint(int cartId, String oldStoreId) {
+        removeCartPickupPointsUseCase.execute(
+                RemoveCartPickupPointsUseCase.generateParams(view.getContext(), cartId, oldStoreId),
+                new Subscriber<Response<TkpdResponse>>() {
+            @Override
+            public void onCompleted() {
 
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Response<TkpdResponse> tkpdResponseResponse) {
+
+            }
+        });
     }
 }

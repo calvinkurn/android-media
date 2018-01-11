@@ -49,5 +49,5 @@ public interface ICartPresenter {
 
     void processUpdatePickupPoint();
 
-    void processRemovePickupPoint();
+    void processRemovePickupPoint(int cartId, String oldStoreId);
 }
