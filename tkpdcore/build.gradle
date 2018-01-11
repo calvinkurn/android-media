@@ -144,7 +144,6 @@ dependencies {
     compile(rootProject.ext.analyticsDependencies.moengage) {
         exclude group: 'com.moengage', module: 'moe-push-gcm'
     }
-    compile rootProject.ext.analyticsDependencies.moengageFCM
     compile(rootProject.ext.analyticsDependencies.moengageMSG) {
         exclude group: 'com.android.support'
     }
