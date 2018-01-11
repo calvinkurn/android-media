@@ -88,6 +88,7 @@ public interface AppEventTracking {
         String USER_INTERACTION_HOMEPAGE = "userInteractionHomePage";
         String RECHARGE_TRACKING = "rechargeTracking";
         String EVENT_TOKO_POINT = "eventTokopoint";
+        String CLICK_PROMO_MICRO_SITE = "clickPromoMicrosite";
 
         String SHOP_MANAGE = "clickManageShop";
         String NOTES = "clickNotes";
@@ -269,6 +270,9 @@ public interface AppEventTracking {
         String APP_RATING = "Application Rating";
         String FEED_CONTENT_COMMENT_DETAIL = "content - comment detail";
         String ONBOARDING = "onboarding";
+
+        String PROMO_MICROSITE_PROMO_LIST ="promo microsite - promo list";
+        String PROMO_MICROSITE_PROMO_TOOLTIP ="promo microsite - promo tooltip";
     }
 
     interface Action {
@@ -417,6 +421,14 @@ public interface AppEventTracking {
 
         String CLICK_IMAGE_SETTINGS = "click image settings";
         String CLICK_SAVE_EDIT = "click save edit";
+
+        String PROMO_CLICK_CATEGORY = "user click on category";
+        String PROMO_CLICK_SUB_CATEGORY = "user click on subcategory";
+        String PROMO_CLICK_COPY_PROMO_CODE = "user click salin kode";
+
+        String PROMO_CLICK_OPEN_TOOLTIP ="user click on tooltip";
+        String PROMO_CLICK_CLOSE_TOOLTIP ="user click tutup";
+
     }
 
     interface ImageEditor{

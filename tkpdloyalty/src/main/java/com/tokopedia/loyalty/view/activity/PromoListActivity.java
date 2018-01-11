@@ -11,6 +11,7 @@ import android.support.design.widget.TabLayout;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.widget.TouchViewPager;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
@@ -120,7 +121,7 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
     }
 
     @Override
-    public void renderPromoMenuDataList(List<PromoMenuData> promoMenuDataList) {
+    public void renderPromoMenuDataList(final List<PromoMenuData> promoMenuDataList) {
         viewPager.setOffscreenPageLimit(promoMenuDataList.size());
         adapter = new PromoPagerAdapter(getFragmentManager(), promoMenuDataList);
         viewPager.setAdapter(adapter);
@@ -136,6 +137,9 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
                 if (tab.getCustomView() != null) {
                     ((MenuPromoTab) tab.getCustomView()).renderActiveState();
                 }
+                UnifyTracking.eventPromoListClickCategory(
+                        promoMenuDataList.get(tab.getPosition()).getTitle()
+                );
             }
 
             @Override

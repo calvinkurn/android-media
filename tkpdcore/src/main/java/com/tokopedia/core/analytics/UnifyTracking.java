@@ -2993,4 +2993,50 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.EventLabel.ONBOARDING_START_LABEL
         ).getEvent());
     }
+
+
+    public static void eventPromoListClickCategory(String categoryName){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_PROMO_MICRO_SITE,
+                AppEventTracking.Category.PROMO_MICROSITE_PROMO_LIST,
+                AppEventTracking.Action.PROMO_CLICK_CATEGORY,
+                categoryName
+        ).getEvent());
+    }
+
+    public static void eventPromoListClickSubCategory(String subCategoryName){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_PROMO_MICRO_SITE,
+                AppEventTracking.Category.PROMO_MICROSITE_PROMO_LIST,
+                AppEventTracking.Action.PROMO_CLICK_SUB_CATEGORY,
+                subCategoryName
+        ).getEvent());
+    }
+
+    public static void eventPromoListClickCopyToClipboardPromoCode(String promoName){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_PROMO_MICRO_SITE,
+                AppEventTracking.Category.PROMO_MICROSITE_PROMO_LIST,
+                AppEventTracking.Action.PROMO_CLICK_COPY_PROMO_CODE,
+                promoName
+        ).getEvent());
+    }
+
+    public static void eventPromoTooltipClickOpenTooltip(){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_PROMO_MICRO_SITE,
+                AppEventTracking.Category.PROMO_MICROSITE_PROMO_TOOLTIP,
+                AppEventTracking.Action.PROMO_CLICK_OPEN_TOOLTIP,
+                ""
+        ).getEvent());
+    }
+
+    public static void eventPromoTooltipClickCloseTooltip(){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_PROMO_MICRO_SITE,
+                AppEventTracking.Category.PROMO_MICROSITE_PROMO_TOOLTIP,
+                AppEventTracking.Action.PROMO_CLICK_CLOSE_TOOLTIP,
+                ""
+        ).getEvent());
+    }
 }

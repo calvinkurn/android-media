@@ -83,7 +83,8 @@ public class PromoListAdapter extends RecyclerView.Adapter {
             itemViewHolder.btnCopyCodePromo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    actionListener.onItemPromoCodeCopyClipboardClicked(promoData.getPromoCode());
+                    actionListener.onItemPromoCodeCopyClipboardClicked(promoData.getPromoCode(),
+                            promoData.getTitle());
                 }
             });
             itemViewHolder.ivBanner.setOnClickListener(new View.OnClickListener() {
@@ -174,7 +175,7 @@ public class PromoListAdapter extends RecyclerView.Adapter {
     }
 
     public interface ActionListener {
-        void onItemPromoCodeCopyClipboardClicked(String promoCode);
+        void onItemPromoCodeCopyClipboardClicked(String promoCode, String promoName);
 
         void onItemPromoClicked(PromoData promoData);
 

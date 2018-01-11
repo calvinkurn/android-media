@@ -16,6 +16,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -258,17 +259,26 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
 
     @Override
     protected void initialVar() {
-        List<QuickFilterItem> quickFilterItemList = setQuickFilterItems(promoMenuData.getPromoSubMenuDataList());
+        final List<QuickFilterItem> quickFilterItemList = setQuickFilterItems(promoMenuData.getPromoSubMenuDataList());
         quickSingleFilterView.renderFilter(quickFilterItemList);
         quickSingleFilterView.setDefaultItem(quickFilterItemList.get(0));
         quickSingleFilterView.setListener(new QuickSingleFilterView.ActionListener() {
             @Override
             public void selectFilter(String typeFilter) {
+                String subCategoryName = getSubCategoryNameById(typeFilter);
+                UnifyTracking.eventPromoListClickSubCategory(subCategoryName);
                 filterSelected = typeFilter.equals(TYPE_FILTER_ALL) ?
                         promoMenuData.getAllSubCategoryId() : typeFilter;
                 endlessRecyclerviewListener.resetState();
                 dPresenter.setPage(1);
                 dPresenter.processGetPromoList(filterSelected);
+            }
+
+            private String getSubCategoryNameById(String typeFilter) {
+                for (QuickFilterItem item : quickFilterItemList) {
+                    if (item.getType().equalsIgnoreCase(typeFilter)) return item.getName();
+                }
+                return "";
             }
         });
         quickSingleFilterView.actionSelect(0);
@@ -301,7 +311,8 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
     }
 
     @Override
-    public void onItemPromoCodeCopyClipboardClicked(String promoCode) {
+    public void onItemPromoCodeCopyClipboardClicked(String promoCode, String promoName) {
+        UnifyTracking.eventPromoListClickCopyToClipboardPromoCode(promoName);
         ClipboardManager clipboard = (ClipboardManager)
                 context.getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText(
@@ -327,6 +338,7 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
 
     @Override
     public void onItemPromoCodeTooltipClicked() {
+        UnifyTracking.eventPromoTooltipClickOpenTooltip();
         if (bottomSheetViewInfoPromoCode == null) {
             bottomSheetViewInfoPromoCode = new BottomSheetView(getActivity());
             bottomSheetViewInfoPromoCode.renderBottomSheet(new BottomSheetView.BottomSheetField
@@ -335,6 +347,17 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
                     .setBody("Masukan Kode Promo di halaman pembayaran")
                     .setImg(R.drawable.ic_promo)
                     .build());
+            bottomSheetViewInfoPromoCode.setListener(new BottomSheetView.ActionListener() {
+                @Override
+                public void clickOnTextLink(String url) {
+
+                }
+
+                @Override
+                public void clickOnButton(String url, String appLink) {
+                    UnifyTracking.eventPromoTooltipClickCloseTooltip();
+                }
+            });
         }
         bottomSheetViewInfoPromoCode.show();
 
