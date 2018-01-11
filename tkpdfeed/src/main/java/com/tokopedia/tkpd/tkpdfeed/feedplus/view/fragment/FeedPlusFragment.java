@@ -56,6 +56,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.FollowKolPostUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.BlogWebViewActivity;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.ContentProductWebViewActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.FeedPlusDetailActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.KolCommentActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.KolProfileWebViewActivity;
@@ -900,7 +901,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onContentProviderLinkClicked(String url) {
-        ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity(), url);
+        startActivity(ContentProductWebViewActivity.getCallingIntent(getActivity(), url));
     }
 
     @Override
