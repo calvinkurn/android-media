@@ -105,7 +105,7 @@ public class FlightBookingReviewPassengerViewHolder extends AbstractViewHolder<F
 
         public void bindData(SimpleViewModel info) {
             titleInfo.setText(info.getDescription());
-            descInfo.setText(info.getLabel());
+            descInfo.setText(info.getLabel().trim());
         }
     }
 }
