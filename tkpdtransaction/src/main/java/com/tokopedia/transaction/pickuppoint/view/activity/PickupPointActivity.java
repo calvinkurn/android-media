@@ -278,7 +278,8 @@ public class PickupPointActivity extends BaseActivity
 
     @Override
     public void onItemShowMapClick(Store store) {
-//        startActivityForResult(PickupPointMapActivity.createInstance(this, store), REQUEST_CODE_MAP);
+        startActivityForResult(PickupPointMapActivity.createInstance(this,
+                getIntent().getStringExtra(INTENT_DISTRICT_NAME), store), REQUEST_CODE_MAP);
     }
 
     @Override

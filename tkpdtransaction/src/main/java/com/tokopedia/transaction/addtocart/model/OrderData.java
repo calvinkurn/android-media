@@ -180,7 +180,7 @@ public class OrderData implements Parcelable {
         return storeId;
     }
 
-    public void setStoreId(int storeId) {
+    public void setPickupStoreId(int storeId) {
         this.storeId = storeId;
     }
 

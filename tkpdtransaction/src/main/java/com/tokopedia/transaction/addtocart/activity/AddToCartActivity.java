@@ -870,7 +870,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     private OrderData createFinalOrderData() {
         OrderData finalOrder = this.orderData;
         if (pickupBooth != null) {
-            orderData.setStoreId(pickupBooth.getId());
+            orderData.setPickupStoreId(pickupBooth.getId());
         }
         finalOrder.setNotes(etRemark.getText().toString());
         return finalOrder;
