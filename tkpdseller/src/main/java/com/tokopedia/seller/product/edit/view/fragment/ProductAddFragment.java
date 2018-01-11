@@ -46,6 +46,7 @@ import com.tokopedia.seller.product.edit.di.component.DaggerProductAddComponent;
 import com.tokopedia.seller.product.edit.di.module.ProductAddModule;
 import com.tokopedia.seller.product.edit.view.activity.CatalogPickerActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
+import com.tokopedia.seller.product.edit.view.activity.ProductAddInfoActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductScoringDetailActivity;
 import com.tokopedia.seller.product.edit.view.activity.YoutubeAddVideoActivity;
 import com.tokopedia.seller.product.edit.view.dialog.ImageAddDialogFragment;
@@ -695,6 +696,11 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         GalleryCropWatermarkActivity.moveToImageGalleryCamera(getActivity(), this, imagePosition,
                 true, remainingEmptySlot,true);
 
+    }
+
+    @Override
+    public void startInfoAddProduct() {
+        startActivity(new Intent(getActivity(), ProductAddInfoActivity.class));
     }
 
     @Override

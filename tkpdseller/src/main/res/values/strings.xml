@@ -181,5 +181,6 @@
     <string name="transaction_value">Nilai Transaksi</string>
     <string name="title_tooltip_reputation_multiplier">Nilai Reputasi</string>
     <string name="body_tooltip_reputation_multiplier">Ini adalah Nilai Kelipatan Reputasi. Reputasi dari pesanan ini akan dikalikan dengan Nilai Kelipatan Reputasi.</string>
+    <string name="product_desc_guide">Panduan Deskripsi Produk</string>
 
 </resources>
