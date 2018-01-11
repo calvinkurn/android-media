@@ -23,6 +23,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.fragment.BaseWebViewFragment;
 import com.tokopedia.seller.opportunity.analytics.OpportunityTrackingEventLabel;
+import com.tokopedia.seller.opportunity.data.OpportunityNewPriceData;
 import com.tokopedia.seller.opportunity.di.component.OpportunityComponent;
 import com.tokopedia.seller.opportunity.di.module.OpportunityModule;
 import com.tokopedia.seller.opportunity.listener.OpportunityView;
@@ -150,6 +151,11 @@ public class OpportunityTncFragment extends BaseWebViewFragment implements Oppor
         CommonUtils.UniversalToast(getActivity(), actionViewData.getMessage());
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
+    }
+
+    @Override
+    public void onSuccessNewPrice(OpportunityNewPriceData opportunityNewPriceData) {
+        finishLoadingProgress();
     }
 
     private void finishLoadingProgress() {

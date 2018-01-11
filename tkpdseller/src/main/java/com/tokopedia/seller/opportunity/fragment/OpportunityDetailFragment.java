@@ -22,6 +22,7 @@ import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.seller.opportunity.activity.OpportunityTncActivity;
 import com.tokopedia.seller.opportunity.analytics.OpportunityTrackingEventLabel;
 import com.tokopedia.seller.opportunity.customview.OpportunityValueBottomSheet;
+import com.tokopedia.seller.opportunity.data.OpportunityNewPriceData;
 import com.tokopedia.seller.opportunity.di.component.OpportunityComponent;
 import com.tokopedia.seller.opportunity.di.module.OpportunityModule;
 import com.tokopedia.seller.opportunity.snapshot.SnapShotProduct;
@@ -214,18 +215,16 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
     @Override
     protected void initView(View view) {
         buttonView = view.findViewById(R.id.button_take_opportunity);
-        statusView = (OpportunityDetailStatusView)
-                view.findViewById(R.id.customview_opportunity_detail_status_view);
-        productView = (OpportunityDetailProductView)
-                view.findViewById(R.id.customview_opportunity_detail_product_view);
-        summaryView = (OpportunityDetailSummaryView)
-                view.findViewById(R.id.customview_opportunity_detail_summary_view);
+        statusView = view.findViewById(R.id.customview_opportunity_detail_status_view);
+        productView = view.findViewById(R.id.customview_opportunity_detail_product_view);
+        summaryView = view.findViewById(R.id.customview_opportunity_detail_summary_view);
 
         oppItemViewModel = getArguments().getParcelable(OpportunityDetailActivity.OPPORTUNITY_EXTRA_PARAM);
         if (oppItemViewModel != null) {
             statusView.renderData(oppItemViewModel);
             productView.renderData(oppItemViewModel);
             summaryView.renderData(oppItemViewModel);
+            presenter.getNewPriceInfo();
             buttonView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -272,6 +271,12 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
         finishLoadingProgress();
         CommonUtils.UniversalToast(getActivity(), actionViewData.getMessage());
         getActivity().finish();
+    }
+
+    @Override
+    public void onSuccessNewPrice(OpportunityNewPriceData opportunityNewPriceData) {
+        finishLoadingProgress();
+
     }
 
     @Override

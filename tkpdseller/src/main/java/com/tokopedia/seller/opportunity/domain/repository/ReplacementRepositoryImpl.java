@@ -5,6 +5,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.seller.opportunity.data.AcceptReplacementModel;
 import com.tokopedia.seller.opportunity.data.OpportunityFilterModel;
 import com.tokopedia.seller.opportunity.data.OpportunityModel;
+import com.tokopedia.seller.opportunity.data.OpportunityNewPriceData;
 import com.tokopedia.seller.opportunity.data.source.CloudGetFilterOpportunitySource2;
 import com.tokopedia.seller.opportunity.data.source.CloudGetListOpportunitySource2;
 import com.tokopedia.seller.opportunity.data.source.CloudActionReplacementSource2;
@@ -54,8 +55,8 @@ public class ReplacementRepositoryImpl implements ReplacementRepository {
     }
 
     @Override
-    public Observable<String> getOpportunityReplacementNewPrice(TKPDMapParam<String, Object> parameters) {
-        return null;
+    public Observable<OpportunityNewPriceData> getOpportunityReplacementNewPrice(RequestParams parameters) {
+        return cloudGetListOpportunitySource2.getOpportunityNewPrice(parameters);
     }
 
 }

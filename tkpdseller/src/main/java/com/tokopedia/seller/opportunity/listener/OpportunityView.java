@@ -1,6 +1,7 @@
 package com.tokopedia.seller.opportunity.listener;
 
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.seller.opportunity.data.OpportunityNewPriceData;
 import com.tokopedia.seller.opportunity.presentation.ActionViewData;
 
 /**
@@ -21,6 +22,8 @@ public interface OpportunityView extends CustomerView {
     String getString(int resId);
 
     void onSuccessTakeOpportunity(ActionViewData actionViewData);
+
+    void onSuccessNewPrice(OpportunityNewPriceData opportunityNewPriceData);
 
     void onErrorTakeOpportunity(String errorMessage);
 }

@@ -11,6 +11,7 @@ import com.tokopedia.seller.opportunity.di.scope.OpportunityScope;
 import com.tokopedia.seller.opportunity.domain.interactor.AcceptReplacementUseCase;
 import com.tokopedia.seller.opportunity.domain.interactor.GetOpportunityFilterUseCase;
 import com.tokopedia.seller.opportunity.domain.interactor.GetOpportunityFirstTimeUseCase;
+import com.tokopedia.seller.opportunity.domain.interactor.GetOpportunityNewPriceUseCase;
 import com.tokopedia.seller.opportunity.domain.interactor.GetOpportunityUseCase;
 import com.tokopedia.seller.opportunity.domain.repository.ReplacementRepository;
 import com.tokopedia.seller.opportunity.domain.repository.ReplacementRepositoryImpl;
@@ -63,7 +64,8 @@ public class OpportunityModule {
 
     @OpportunityScope
     @Provides
-    public OpportunityPresenter provideOpportunityPresenter(AcceptReplacementUseCase acceptReplacementUseCase){
-                return new OpportunityImpl(acceptReplacementUseCase);
+    public OpportunityPresenter provideOpportunityPresenter(AcceptReplacementUseCase acceptReplacementUseCase,
+                                                            GetOpportunityNewPriceUseCase newPriceUseCase){
+                return new OpportunityImpl(acceptReplacementUseCase, newPriceUseCase);
     }
 }
