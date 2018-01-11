@@ -114,7 +114,7 @@ public class PickupPointActivity extends BaseActivity
 
     private void setupPickupPointSpinner() {
         ArrayAdapter<String> pickupPointAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.pickup_point));
+                R.layout.item_pickup_point_spinner, getResources().getStringArray(R.array.pickup_point));
         pickupPointAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spPickupBooth.setAdapter(pickupPointAdapter);
     }
