@@ -240,4 +240,9 @@
         <item name="android:progressDrawable">@drawable/tkpd_rating_bar</item>
     </style>
 
+    <style name="Medium.RatingBar" parent="@android:style/Widget.RatingBar">
+        <item name="colorControlNormal">@color/grey_400</item>
+        <item name="colorControlActivated">@color/yellow_600</item>
+    </style>
+
 </resources>
