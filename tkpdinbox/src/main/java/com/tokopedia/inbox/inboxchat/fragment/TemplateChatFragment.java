@@ -262,6 +262,7 @@ public class TemplateChatFragment extends BaseDaggerFragment
 //        String text = getActivity().getString(R.string.success_rearrange_template_chat);
 //        snackbarInfo.setText(text);
 //        snackbarInfo.show();
+        prepareResultSwitch();
     }
 
     @Override
@@ -329,6 +330,16 @@ public class TemplateChatFragment extends BaseDaggerFragment
                 }
             default:
                 break;
+        }
+    }
+
+    private void prepareResultSwitch() {
+        if(switchTemplate.isChecked()){
+            prepareResult();
+        }else {
+            Intent intent = new Intent();
+            intent.putStringArrayListExtra("string", new ArrayList<String>());
+            getActivity().setResult(Activity.RESULT_OK, intent);
         }
     }
 
