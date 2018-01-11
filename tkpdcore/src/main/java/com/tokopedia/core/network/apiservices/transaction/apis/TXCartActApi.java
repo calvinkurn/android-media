@@ -44,8 +44,8 @@ public interface TXCartActApi {
     Observable<Response<TkpdResponse>> editCart(@FieldMap Map<String, String> params);
 
     @GET(TkpdBaseURL.Transaction.PATH_EDIT_PICKUP_POINT)
-    Observable<Response<String>> editPickupPoint(@QueryMap TKPDMapParam<String, String> params);
+    Observable<Response<TkpdResponse>> editPickupPoint(@QueryMap TKPDMapParam<String, String> params);
 
     @GET(TkpdBaseURL.Transaction.PATH_REMOVE_PICKUP_POINT)
-    Observable<Response<String>> removePickupPoint(@QueryMap TKPDMapParam<String, String> params);
+    Observable<Response<TkpdResponse>> removePickupPoint(@QueryMap TKPDMapParam<String, String> params);
 }

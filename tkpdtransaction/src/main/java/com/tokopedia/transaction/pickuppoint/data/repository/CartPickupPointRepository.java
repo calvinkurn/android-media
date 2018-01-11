@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.pickuppoint.data.repository;
 
+import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.pickuppoint.data.datastore.CartPickupPointDataStore;
 
@@ -20,11 +21,11 @@ public class CartPickupPointRepository {
         this.dataStore = dataStore;
     }
 
-    public Observable<Response<String>> editPickupPoints(TKPDMapParam<String, String> parameters) {
+    public Observable<Response<TkpdResponse>> editPickupPoints(TKPDMapParam<String, String> parameters) {
         return dataStore.editPickupPoints(parameters);
     }
 
-    public Observable<Response<String>> removePickupPoints(TKPDMapParam<String, String> parameters) {
-        return dataStore.editPickupPoints(parameters);
+    public Observable<Response<TkpdResponse>> removePickupPoints(TKPDMapParam<String, String> parameters) {
+        return dataStore.removePickupPoints(parameters);
     }
 }
