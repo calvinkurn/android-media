@@ -60,6 +60,7 @@ public class GetKolFollowingListSubscriber extends Subscriber<KolFollowingResult
                     domain.getId(),
                     domain.getAvatarUrl(),
                     domain.getProfileApplink(),
+                    domain.getProfileUrl(),
                     domain.isInfluencer(),
                     domain.getName());
             viewModelList.add(viewModel);

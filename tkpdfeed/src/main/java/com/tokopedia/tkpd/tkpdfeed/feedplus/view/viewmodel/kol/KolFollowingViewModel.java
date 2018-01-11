@@ -10,15 +10,17 @@ import android.os.Parcelable;
 public class KolFollowingViewModel implements Parcelable {
     private int id;
     private String avatarUrl;
+    private String profileUrl;
     private String profileApplink;
     private boolean isInfluencer;
     private String name;
     private boolean isLoadingItem;
 
-    public KolFollowingViewModel(int id, String avatarUrl, String profileApplink, boolean isInfluencer, String name) {
+    public KolFollowingViewModel(int id, String avatarUrl, String profileApplink, String profileUrl, boolean isInfluencer, String name) {
         this.id = id;
         this.avatarUrl = avatarUrl;
         this.profileApplink = profileApplink;
+        this.profileUrl = profileUrl;
         this.isInfluencer = isInfluencer;
         this.name = name;
         this.isLoadingItem = false;
@@ -81,6 +83,14 @@ public class KolFollowingViewModel implements Parcelable {
         this.name = name;
     }
 
+    public String getProfileUrl() {
+        return profileUrl;
+    }
+
+    public void setProfileUrl(String profileUrl) {
+        this.profileUrl = profileUrl;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -90,6 +100,7 @@ public class KolFollowingViewModel implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.id);
         dest.writeString(this.avatarUrl);
+        dest.writeString(this.profileUrl);
         dest.writeString(this.profileApplink);
         dest.writeByte(this.isInfluencer ? (byte) 1 : (byte) 0);
         dest.writeString(this.name);
@@ -99,6 +110,7 @@ public class KolFollowingViewModel implements Parcelable {
     protected KolFollowingViewModel(Parcel in) {
         this.id = in.readInt();
         this.avatarUrl = in.readString();
+        this.profileUrl = in.readString();
         this.profileApplink = in.readString();
         this.isInfluencer = in.readByte() != 0;
         this.name = in.readString();

@@ -58,6 +58,7 @@ public class KolFollowingMapper implements Func1<GetKolFollowingList.Data, KolFo
                     user.name(),
                     user.photo(),
                     user.userApplink(),
+                    user.userUrl(),
                     user.isInfluencer());
             domainList.add(domain);
         }
