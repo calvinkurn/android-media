@@ -117,7 +117,7 @@ public class ProductManageListViewHolder extends BaseMultipleCheckViewHolder<Pro
         } else {
             cashbackTextView.setVisibility(View.GONE);
         }
-        tagEmptyStock.setVisibility(statusStockEmpty ? View.VISIBLE: View.GONE);
+        tagEmptyStock.setVisibility(statusStockEmpty ? View.VISIBLE : View.GONE);
         viewSuperVision.setVisibility(statusUnderSupervision ? View.VISIBLE : View.GONE);
         preOrderTextView.setVisibility(productManageViewModel.getProductPreorder() == ProductManagePreOrderDef.PRE_ORDER ? View.VISIBLE : View.GONE);
         freeReturnImageView.setVisibility(productManageViewModel.getProductReturnable() == FreeReturnTypeDef.TYPE_ACTIVE ? View.VISIBLE : View.GONE);
@@ -136,11 +136,16 @@ public class ProductManageListViewHolder extends BaseMultipleCheckViewHolder<Pro
         } else {
             stockTextView.setVisibility(View.GONE);
         }
-        checkBoxProduct.setEnabled(!statusUnderSupervision);
-        if(productManageViewModel.getProductVariant() == 1){
+        boolean isProductVariant = productManageViewModel.getProductVariant() == 1;
+        if (isProductVariant) {
             textViewVariant.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             textViewVariant.setVisibility(View.GONE);
+        }
+        if (statusUnderSupervision || isProductVariant) {
+            checkBoxProduct.setEnabled(false);
+        } else {
+            checkBoxProduct.setEnabled(true);
         }
     }
 
