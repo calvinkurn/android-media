@@ -81,7 +81,7 @@ public class FlightBookingPassengerViewHolder extends AbstractViewHolder<FlightB
                 for (FlightBookingAmenityMetaViewModel flightBookingLuggageRouteViewModel : viewModel.getFlightBookingLuggageMetaViewModels()) {
                     ArrayList<String> selectedLuggages = new ArrayList<>();
                     for (FlightBookingAmenityViewModel flightBookingLuggageViewModel : flightBookingLuggageRouteViewModel.getAmenities()) {
-                        selectedLuggages.add(flightBookingLuggageViewModel.getTitle() + " - " + flightBookingLuggageViewModel.getPrice());
+                        selectedLuggages.add(flightBookingLuggageViewModel.getTitle());
                     }
                     simpleViewModels.add(new SimpleViewModel(
                             itemView.getContext().getString(R.string.flight_booking_list_passenger_luggage_label) + " " + flightBookingLuggageRouteViewModel.getDescription(),
