@@ -191,8 +191,7 @@ public class NewOnboardingActivity extends OnboardingActivity {
                                 isNextPressed = false;
                             } else {
                                 NewOnBoardingFragment currentFragment = ((NewOnBoardingFragment) fragments.get(pager.getCurrentItem()));
-                                if (currentFragment != null)
-                                    currentFragment.animateOut();
+                                if (currentFragment != null) currentFragment.animateOut();
                                 pager.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
@@ -204,8 +203,7 @@ public class NewOnboardingActivity extends OnboardingActivity {
                             }
                         } else {
                             NewOnBoardingFragment currentFragment = ((NewOnBoardingFragment) fragments.get(pager.getCurrentItem()));
-                            if (currentFragment != null)
-                                currentFragment.animateOut();
+                            if (currentFragment != null) currentFragment.animateOut();
                             pager.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
