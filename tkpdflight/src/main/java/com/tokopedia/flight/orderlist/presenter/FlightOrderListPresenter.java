@@ -35,7 +35,7 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
 
     @Override
     public void loadData(String selectedFilter, final int page, final int perPage) {
-        flightGetOrdersUseCase.execute(flightGetOrdersUseCase.createRequestParam(page, selectedFilter, perPage), new Subscriber<List<FlightOrder>>() {
+        flightGetOrdersUseCase.execute(flightGetOrdersUseCase.createRequestParam(page - 1 >= 0 ? page - 1 : page, selectedFilter, perPage), new Subscriber<List<FlightOrder>>() {
             @Override
             public void onCompleted() {
 
@@ -52,7 +52,7 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
             @Override
             public void onNext(List<FlightOrder> orderEntities) {
                 List<Visitable> visitables = flightOrderViewModelMapper.transform(orderEntities);
-                if (page == 1) {
+                if (page == 0) {
                     buildAndRenderFilterList();
                 }
                 getView().renderList(visitables, visitables.size() >= perPage );

@@ -28,6 +28,12 @@ public class JourneyEntity {
     @SerializedName("routes")
     @Expose
     private List<RouteEntity> routes;
+    @SerializedName("duration")
+    @Expose
+    private String duration;
+    @SerializedName("add_day_arrival")
+    @Expose
+    private String addDayArrival;
 
     public JourneyEntity() {
     }
@@ -78,5 +84,13 @@ public class JourneyEntity {
 
     public void setRoutes(List<RouteEntity> routes) {
         this.routes = routes;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+
+    public String getAddDayArrival() {
+        return addDayArrival;
     }
 }
