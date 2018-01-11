@@ -7,14 +7,12 @@
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:gravity="center_vertical"
-    android:minHeight="1px"
     android:orientation="horizontal"
     android:paddingBottom="@dimen/card_view_margin"
     android:paddingEnd="@dimen/keyline_1_minus_8dp"
     android:paddingRight="@dimen/keyline_1_minus_8dp"
     android:paddingTop="@dimen/card_view_margin"
     tools:ignore="RtlSymmetry">
-
 
     <ImageView
         android:id="@+id/iv_logo_tokopoint"
@@ -57,7 +55,6 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:orientation="horizontal">
 
@@ -80,10 +77,7 @@
                 android:id="@+id/scanner_qr"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/margin_med"
-                android:drawableLeft="@drawable/ic_qr_scanner"
                 android:drawablePadding="8dp"
                 android:gravity="center_vertical"
                 android:lineSpacingExtra="4sp"
@@ -97,4 +91,5 @@
         </LinearLayout>
 
     </RelativeLayout>
+
 </LinearLayout>

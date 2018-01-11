@@ -79,7 +79,6 @@
                 android:id="@+id/scanner_qr_with_toko_point"
                 android:layout_width="25dp"
                 android:layout_height="24dp"
-                android:drawableLeft="@drawable/ic_qr_scanner"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="10dp"
                 android:layout_centerVertical="true"
