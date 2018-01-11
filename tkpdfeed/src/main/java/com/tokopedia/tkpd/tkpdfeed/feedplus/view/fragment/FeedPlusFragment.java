@@ -23,6 +23,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.FeedTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -414,6 +415,31 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onGoToProductDetailFromProductUpload(int rowNumber,
+                                                     int positionFeedCard,
+                                                     int page,
+                                                     int itemPosition,
+                                                     String productId,
+                                                     String imageSourceSingle,
+                                                     String name,
+                                                     String price,
+                                                     String priceInt,
+                                                     String productUrl,
+                                                     String eventLabel) {
+        FeedTracking.trackEventClickProductUploadEnhanced(
+                name,
+                productId,
+                priceInt,
+                productUrl,
+                positionFeedCard,
+                itemPosition,
+                SessionHandler.getLoginID(getContext()),
+                eventLabel
+        );
+        goToProductDetail(productId, imageSourceSingle, name, price);
+    }
+
+    @Override
     public void onGoToProductDetailFromRecentView(String productId, String imgUri,
                                                   String name, String price) {
         goToProductDetail(productId, imgUri, name, price);
@@ -422,15 +448,35 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToProductDetailFromInspiration(int page, int rowNumber,
-                                                   String productId, String imageSource,
-                                                   String name, String price) {
+    public void onGoToProductDetailFromInspiration(int page,
+                                                   int rowNumber,
+                                                   String productId,
+                                                   String imageSource,
+                                                   String name,
+                                                   String price,
+                                                   String priceInt,
+                                                   String productUrl,
+                                                   String source,
+                                                   int positionFeedCard,
+                                                   int itemPosition,
+                                                   String eventLabel) {
+        FeedTracking.trackEventClickInspirationEnhanced(
+                name,
+                productId,
+                priceInt,
+                productUrl,
+                positionFeedCard,
+                itemPosition,
+                source,
+                SessionHandler.getLoginID(getContext()),
+                eventLabel
+        );
+
         goToProductDetail(productId, imageSource, name, price);
         UnifyTracking.eventR3Product(productId, AppEventTracking.Action.CLICK,
                 getFeedAnalyticsHeader(page, rowNumber)
                         + FeedTrackingEventLabel.Click.FEED_RECOMMENDATION_PDP);
     }
-
 
     @Override
     public void onGoToFeedDetail(int page, int rowNumber, String feedId) {
@@ -899,7 +945,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
 
     @Override
-    public void onToppicksClicked(int page, int rowNumber, String name, String url) {
+    public void onToppicksClicked(int page, int rowNumber, String name, String url, int itemPosition) {
         UnifyTracking.eventFeedClick(
                 getFeedAnalyticsHeader(page, rowNumber) +
                         FeedTrackingEventLabel.Click.TOPPICKS + name);
@@ -968,7 +1014,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onGoToKolComment(int page, int rowNumber, KolViewModel model) {
         startActivityForResult(KolCommentActivity.getCallingIntent(getActivity(),
                 new KolCommentHeaderViewModel(model.getAvatar(), model.getName(), model.getReview
-                        (), model.getTime()),
+                        (), model.getTime(), String.valueOf(model.getUserId())),
                 new KolCommentProductViewModel(model.getKolImage(), model.getContentName(),
                         model.getProductPrice(), model.isWishlisted()),
                 model.getId(),

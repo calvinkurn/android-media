@@ -54,7 +54,7 @@ public class ChatSystemRightViewHolder extends AbstractViewHolder<ChatSystemRigh
                             element.getConversation().getAction().getTitle()));
         if (element.getConversation().getSolution().getName() != null)
             tvMessage.setText(MethodChecker.fromHtml(element.getConversation().getSolution().getName()));
-        String date = DateFormatUtils.formatDateForResoChatV2(element.getConversation().getCreateTime().getTimestamp());
+        String date = element.getConversation().getCreateTime().getTimestamp();
         tvDate.setText(date);
         if (element.getConversation().getAttachment() == null || element.getConversation().getAttachment().size() == 0) {
             rvAttachment.setVisibility(View.GONE);

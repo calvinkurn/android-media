@@ -81,11 +81,7 @@ public class AddressReturView extends BaseView<AddressReturData, DetailResCenter
 
     private String generateInformationText(AddressReturData data) {
         return getContext().getString(R.string.template_awb_additional_text,
-                formatDate(data.getAddressReturDateTimestamp()));
-    }
-
-    private String formatDate(String addressReturDate) {
-        return DateFormatUtils.formatDateForResoChatV2(addressReturDate);
+                data.getAddressReturDateTimestamp());
     }
 
     private class AddressReturViewOnClickListener implements OnClickListener {

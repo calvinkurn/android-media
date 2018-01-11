@@ -33,7 +33,7 @@
             <TextView
                 android:text="@string/label_top_ads_info_group_option_new"
                 android:id="@+id/view_info_radio_new_group"
-                style="@style/TextView.Caption.BlackSecondary" />
+                style="@style/TextView.Micro.BlackSecondary" />
         </LinearLayout>
     </com.tokopedia.topads.dashboard.view.widget.TopAdsRadioExpandView>
 

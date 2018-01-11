@@ -46,7 +46,6 @@ public abstract class BaseWidgetRechargeFragment<P> extends BasePresenterFragmen
 
     protected static final String ARG_PARAM_CATEGORY = "ARG_PARAM_CATEGORY";
     protected static final String ARG_TAB_INDEX_POSITION = "ARG_TAB_INDEX_POSITION";
-    protected static final String ARG_USE_CACHE = "ARG_USE_CACHE";
 
     private static final String EXTRA_CHECKOUT_PASS_DATA = "EXTRA_CHECKOUT_PASS_DATA";
     private static final String STATE_CATEGORY = "STATE_CATEGORY";
@@ -102,7 +101,6 @@ public abstract class BaseWidgetRechargeFragment<P> extends BasePresenterFragmen
     protected void setupArguments(Bundle arguments) {
         category = arguments.getParcelable(ARG_PARAM_CATEGORY);
         currentPosition = arguments.getInt(ARG_TAB_INDEX_POSITION);
-        useCache = arguments.getBoolean(ARG_USE_CACHE);
         bundle = arguments;
     }
 

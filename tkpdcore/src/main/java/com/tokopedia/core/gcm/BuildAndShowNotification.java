@@ -22,6 +22,7 @@ import com.tokopedia.core.gcm.data.entity.NotificationEntity;
 import com.tokopedia.core.gcm.model.ApplinkNotificationPass;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.GCMUtils;
+import com.tokopedia.core.gcm.utils.NotificationChannelId;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
@@ -58,7 +59,7 @@ public class BuildAndShowNotification {
             }
         }
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext)
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext, NotificationChannelId.GENERAL)
                 .setSmallIcon(getDrawableIcon())
                 .setAutoCancel(true);
 
@@ -171,7 +172,7 @@ public class BuildAndShowNotification {
         NotificationManager mNotificationManager =
                 (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext)
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext, NotificationChannelId.GENERAL)
                 .setSmallIcon(getDrawableIcon())
                 .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), getDrawableLargeIcon()))
                 .setAutoCancel(true);
@@ -233,7 +234,7 @@ public class BuildAndShowNotification {
         NotificationManager mNotificationManager =
                 (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext)
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext, NotificationChannelId.GENERAL)
                 .setSmallIcon(getDrawableIcon())
                 .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), getDrawableLargeIcon()))
                 .setAutoCancel(true);

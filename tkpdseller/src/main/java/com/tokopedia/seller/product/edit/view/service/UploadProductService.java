@@ -15,6 +15,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.crashlytics.android.Crashlytics;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BaseService;
+import com.tokopedia.core.gcm.utils.NotificationChannelId;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
@@ -184,7 +185,7 @@ public class UploadProductService extends BaseService implements AddProductServi
         String title = getString(R.string.product_title_notification_upload_product) + " " + productName;
         Intent pendingIntent = new Intent(this, ProductManageActivity.class);
         PendingIntent pIntent = PendingIntent.getActivity(this, 0, pendingIntent, 0);
-        return new NotificationCompat.Builder(this)
+        return new NotificationCompat.Builder(this, NotificationChannelId.GENERAL)
                 .setContentTitle(title)
                 .setSmallIcon(getSmallDrawableIcon())
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), getDrawableIcon()))

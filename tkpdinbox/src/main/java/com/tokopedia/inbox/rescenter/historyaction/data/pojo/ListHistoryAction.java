@@ -17,12 +17,6 @@ public class ListHistoryAction {
     private String actionByStr;
     @SerializedName("remark")
     private String remark;
-    @SerializedName("createTimestampStr")
-    private String createTimestampStr;
-    @SerializedName("month")
-    private String month;
-    @SerializedName("dateNumber")
-    private String dateNumber;
 
     public String getResConvId() {
         return resConvId;
@@ -62,29 +56,5 @@ public class ListHistoryAction {
 
     public void setRemark(String remark) {
         this.remark = remark;
-    }
-
-    public String getCreateTimestampStr() {
-        return createTimestampStr;
-    }
-
-    public void setCreateTimestampStr(String createTimestampStr) {
-        this.createTimestampStr = createTimestampStr;
-    }
-
-    public String getMonth() {
-        return month;
-    }
-
-    public void setMonth(String month) {
-        this.month = month;
-    }
-
-    public String getDateNumber() {
-        return dateNumber;
-    }
-
-    public void setDateNumber(String dateNumber) {
-        this.dateNumber = dateNumber;
     }
 }
