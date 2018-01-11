@@ -58,14 +58,6 @@ abstract class BaseActivity extends AppCompatActivity implements
     protected void onResume() {
         super.onResume();
 
-        cache = new LocalCacheHandler(this, TkpdCache.STATUS_UPDATE);
-        if (cache.getInt(TkpdCache.Key.STATUS) == TkpdState.UpdateState.MUST_UPDATE) {
-            if (getApplication() instanceof AbstractionRouter) {
-                ((AbstractionRouter) getApplication()).goToForceUpdate(this);
-                finish();
-            }
-        }
-
         sendScreenAnalytics();
 
         registerForceLogoutReceiver();
