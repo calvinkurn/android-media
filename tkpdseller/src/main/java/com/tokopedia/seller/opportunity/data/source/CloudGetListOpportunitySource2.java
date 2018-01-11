@@ -1,10 +1,13 @@
 package com.tokopedia.seller.opportunity.data.source;
 
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.seller.opportunity.data.OpportunityModel;
+import com.tokopedia.seller.opportunity.data.OpportunityNewPriceData;
 import com.tokopedia.seller.opportunity.data.mapper.OpportunityListMapper;
+import com.tokopedia.seller.opportunity.data.mapper.OpportunityNewPriceMapper;
 import com.tokopedia.seller.opportunity.data.source.api.ReplacementApi;
 
 import javax.inject.Inject;
@@ -31,14 +34,9 @@ public class CloudGetListOpportunitySource2 {
                 .map(new OpportunityListMapper());
     }
 
-    public Observable<String> getOpportunityNewPrice(RequestParams requestParams){
+    public Observable<OpportunityNewPriceData> getOpportunityNewPrice(RequestParams requestParams){
         return replacementApi
                 .getOpportunityPriceInfo(requestParams.getParamsAllValueInString())
-                .map(new Func1<Response<String>, String>() {
-                    @Override
-                    public String call(Response<String> stringResponse) {
-                        return stringResponse.body();
-                    }
-                });
+                .map(new OpportunityNewPriceMapper());
     }
 }

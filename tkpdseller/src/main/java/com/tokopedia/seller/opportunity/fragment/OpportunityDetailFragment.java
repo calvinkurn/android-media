@@ -22,6 +22,7 @@ import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.seller.opportunity.activity.OpportunityTncActivity;
 import com.tokopedia.seller.opportunity.analytics.OpportunityTrackingEventLabel;
 import com.tokopedia.seller.opportunity.customview.OpportunityValueBottomSheet;
+import com.tokopedia.seller.opportunity.data.OpportunityNewPriceData;
 import com.tokopedia.seller.opportunity.di.component.OpportunityComponent;
 import com.tokopedia.seller.opportunity.di.module.OpportunityModule;
 import com.tokopedia.seller.opportunity.snapshot.SnapShotProduct;
@@ -270,6 +271,12 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
         finishLoadingProgress();
         CommonUtils.UniversalToast(getActivity(), actionViewData.getMessage());
         getActivity().finish();
+    }
+
+    @Override
+    public void onSuccessNewPrice(OpportunityNewPriceData opportunityNewPriceData) {
+        finishLoadingProgress();
+
     }
 
     @Override

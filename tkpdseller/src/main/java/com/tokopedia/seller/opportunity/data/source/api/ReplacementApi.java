@@ -27,5 +27,5 @@ public interface ReplacementApi {
     Observable<Response<TkpdResponse>> getOpportunityCategory(@QueryMap Map<String, String> param);
 
     @GET(OpportunityConstant.NEW_PRICE_INFO)
-    Observable<Response<String>> getOpportunityPriceInfo(@QueryMap Map<String, String> param);
+    Observable<Response<TkpdResponse>> getOpportunityPriceInfo(@QueryMap Map<String, String> param);
 }

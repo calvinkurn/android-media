@@ -4,6 +4,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.seller.opportunity.data.OpportunityNewPriceData;
 import com.tokopedia.seller.opportunity.data.constant.OpportunityConstant;
 import com.tokopedia.seller.opportunity.domain.repository.ReplacementRepository;
 
@@ -15,7 +16,7 @@ import rx.Observable;
  * Created by normansyahputa on 1/11/18.
  */
 
-public class GetOpportunityNewPriceUseCase extends UseCase<String>{
+public class GetOpportunityNewPriceUseCase extends UseCase<OpportunityNewPriceData>{
 
     private ReplacementRepository replacementRepository;
 
@@ -35,7 +36,7 @@ public class GetOpportunityNewPriceUseCase extends UseCase<String>{
     }
 
     @Override
-    public Observable<String> createObservable(RequestParams requestParams) {
+    public Observable<OpportunityNewPriceData> createObservable(RequestParams requestParams) {
         return replacementRepository.getOpportunityReplacementNewPrice(requestParams);
     }
 }

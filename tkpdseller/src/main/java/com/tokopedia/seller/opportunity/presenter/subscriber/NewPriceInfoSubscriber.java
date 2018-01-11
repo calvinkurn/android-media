@@ -3,6 +3,7 @@ package com.tokopedia.seller.opportunity.presenter.subscriber;
 import android.util.Log;
 
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.seller.opportunity.data.OpportunityNewPriceData;
 import com.tokopedia.seller.opportunity.listener.OpportunityView;
 
 import rx.Subscriber;
@@ -11,7 +12,7 @@ import rx.Subscriber;
  * Created by normansyahputa on 1/11/18.
  */
 
-public class NewPriceInfoSubscriber extends Subscriber<String> {
+public class NewPriceInfoSubscriber extends Subscriber<OpportunityNewPriceData> {
     private OpportunityView view;
     private static final String TAG = "NewPriceInfoSubscriber";
 
@@ -30,7 +31,8 @@ public class NewPriceInfoSubscriber extends Subscriber<String> {
     }
 
     @Override
-    public void onNext(String s) {
+    public void onNext(OpportunityNewPriceData s) {
         Log.i(TAG, TAG+"--> "+s);
+        view.onSuccessNewPrice(s);
     }
 }
