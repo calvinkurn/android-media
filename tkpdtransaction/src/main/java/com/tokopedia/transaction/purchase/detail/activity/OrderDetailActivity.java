@@ -39,6 +39,7 @@ import com.tokopedia.transaction.purchase.detail.fragment.CancelOrderFragment;
 import com.tokopedia.transaction.purchase.detail.fragment.CancelSearchFragment;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
 import com.tokopedia.transaction.purchase.detail.presenter.OrderDetailPresenterImpl;
+import com.tokopedia.transaction.purchase.receiver.TxListUIReceiver;
 
 import javax.inject.Inject;
 
@@ -452,6 +453,7 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void onConfirmFinish(String orderId, String orderStatus) {
         presenter.processFinish(this, orderId, orderStatus);
+        TxListUIReceiver.sendBroadcastForceRefreshListData(this);
     }
 
     @Override
@@ -473,6 +475,7 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void cancelSearch(String orderId, int reasonId, String notes) {
         presenter.cancelReplacement(this, orderId, reasonId, notes);
+        TxListUIReceiver.sendBroadcastForceRefreshListData(this);
     }
 
     @Override
