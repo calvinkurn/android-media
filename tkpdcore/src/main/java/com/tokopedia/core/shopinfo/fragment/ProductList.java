@@ -506,6 +506,7 @@ public class ProductList extends V2BaseFragment {
         if (productShopParam.getSelectedEtalase() != pos) {
             productShopParam.setEtalaseId(etalaseList.get(pos).getEtalaseId());
             productShopParam.setSelectedEtalase(pos);
+            adapter.setSelectedEtalasePos(productShopParam.getSelectedEtalase());
             if (getArguments().getInt(EXTRA_USE_ACE) == 1) {
                 productShopParam.setUseAce(etalaseList.get(pos).isUseAce());
             }
