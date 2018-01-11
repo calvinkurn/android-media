@@ -58,16 +58,5 @@ public class SplashScreenActivity extends SplashScreen {
         Intent intent = SellerRouter.getActivityShopCreateEdit(context);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         return intent;
-        // Msisdn logic is between the shop create.
-        // Therefore below logic is not valid.
-        /*if (SessionHandler.isMsisdnVerified()) {
-            Intent intent = SellerRouter.getActivityShopCreateEdit(context, true, true);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            return intent;
-        } else {
-            Intent intent;
-            intent = SessionRouter.getPhoneVerificationActivationActivityIntent(context, true, true);
-            return intent;
-        }*/
     }
 }

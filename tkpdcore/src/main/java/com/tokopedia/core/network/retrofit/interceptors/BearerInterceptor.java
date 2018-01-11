@@ -10,6 +10,8 @@ import java.util.Map;
 public class BearerInterceptor extends TkpdAuthInterceptor {
     private static final String HEADER_DEVICE = "X-Device";
     public static final String ANDROID = "android";
+    private static final String PARAM_AUTHORIZATION = "Authorization";
+    private static final String PARAM_BEARER = "Bearer";
     private SessionHandler sessionHandler;
 
     public BearerInterceptor(SessionHandler sessionHandler) {
@@ -22,7 +24,7 @@ public class BearerInterceptor extends TkpdAuthInterceptor {
         Map<String, String> headerMap = new ArrayMap<>();
         String accessToken = sessionHandler.getAccessToken();
         if (!TextUtils.isEmpty(accessToken)) {
-            headerMap.put("Authorization", "Bearer " + accessToken);
+            headerMap.put(PARAM_AUTHORIZATION, PARAM_BEARER + " " + accessToken);
         }
         headerMap.put(HEADER_DEVICE, ANDROID);
         return headerMap;
