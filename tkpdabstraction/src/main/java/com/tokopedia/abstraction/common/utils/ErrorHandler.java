@@ -1,9 +1,8 @@
-package com.tokopedia.abstraction.utils;
+package com.tokopedia.abstraction.common.utils;
 
 import android.content.Context;
 
 import com.tokopedia.abstraction.R;
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.network.constant.ResponseStatus;
 
 import java.io.IOException;

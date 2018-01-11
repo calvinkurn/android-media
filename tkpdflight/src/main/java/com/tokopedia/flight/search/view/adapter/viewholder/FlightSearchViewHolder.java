@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.abstraction.utils.MethodChecker;
+import com.tokopedia.abstraction.common.utils.MethodChecker;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.common.view.FlightMultiAirlineView;

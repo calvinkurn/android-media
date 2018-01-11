@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.qualifier.AuthKeyQualifier;
 import com.tokopedia.abstraction.common.di.qualifier.FreshAccessTokenQualifier;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
-import com.tokopedia.abstraction.utils.AuthUtil;
+import com.tokopedia.abstraction.common.utils.AuthUtil;
 
 import dagger.Module;
 import dagger.Provides;

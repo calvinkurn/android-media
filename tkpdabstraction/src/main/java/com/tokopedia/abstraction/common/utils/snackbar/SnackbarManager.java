@@ -1,4 +1,4 @@
-package com.tokopedia.abstraction.utils.snackbar;
+package com.tokopedia.abstraction.common.utils.snackbar;
 
 import android.app.Activity;
 import android.content.Context;
@@ -11,7 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.R;
-import com.tokopedia.abstraction.utils.CommonUtils;
+import com.tokopedia.abstraction.common.utils.CommonUtils;
 
 /**
  * Created by Tkpd_Eka on 12/23/2015.

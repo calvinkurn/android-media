@@ -1,4 +1,4 @@
-package com.tokopedia.abstraction.utils;
+package com.tokopedia.abstraction.common.utils;
 
 import android.graphics.drawable.Drawable;
 import android.support.v4.graphics.drawable.DrawableCompat;

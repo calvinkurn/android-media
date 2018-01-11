@@ -14,12 +14,12 @@ import android.view.View;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.abstraction.utils.DialogForceLogout;
-import com.tokopedia.abstraction.utils.GlobalConfig;
-import com.tokopedia.abstraction.utils.HockeyAppHelper;
-import com.tokopedia.abstraction.utils.LocalCacheHandler;
-import com.tokopedia.abstraction.utils.receiver.ErrorNetworkReceiver;
-import com.tokopedia.abstraction.utils.snackbar.SnackbarManager;
+import com.tokopedia.abstraction.common.utils.DialogForceLogout;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.abstraction.common.utils.HockeyAppHelper;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.common.utils.receiver.ErrorNetworkReceiver;
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 
 /**
  * Created by nisie on 2/7/17.

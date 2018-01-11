@@ -1,4 +1,4 @@
-package com.tokopedia.abstraction.utils.snackbar;
+package com.tokopedia.abstraction.common.utils.snackbar;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;

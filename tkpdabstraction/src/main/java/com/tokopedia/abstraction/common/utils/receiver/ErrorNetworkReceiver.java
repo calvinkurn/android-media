@@ -1,4 +1,4 @@
-package com.tokopedia.abstraction.utils.receiver;
+package com.tokopedia.abstraction.common.utils.receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

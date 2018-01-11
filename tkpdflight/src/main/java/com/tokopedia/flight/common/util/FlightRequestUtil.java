@@ -3,7 +3,7 @@ package com.tokopedia.flight.common.util;
 import android.os.Build;
 import android.text.TextUtils;
 
-import com.tokopedia.abstraction.utils.GlobalConfig;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;

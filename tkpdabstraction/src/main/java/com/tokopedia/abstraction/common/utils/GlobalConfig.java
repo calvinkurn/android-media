@@ -1,4 +1,4 @@
-package com.tokopedia.abstraction.utils;
+package com.tokopedia.abstraction.common.utils;
 
 /**
  * Created by ricoharisin on 11/21/16.

@@ -20,9 +20,9 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
-import com.tokopedia.abstraction.utils.ErrorHandler;
-import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.abstraction.utils.snackbar.SnackbarRetry;
+import com.tokopedia.abstraction.common.utils.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 
 import java.util.List;
 

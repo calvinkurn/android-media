@@ -1,4 +1,4 @@
-package com.tokopedia.abstraction.utils.image;
+package com.tokopedia.abstraction.common.utils.image;
 
 import android.app.Fragment;
 import android.content.Context;

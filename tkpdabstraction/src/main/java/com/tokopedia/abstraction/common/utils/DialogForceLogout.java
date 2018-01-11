@@ -1,4 +1,4 @@
-package com.tokopedia.abstraction.utils;
+package com.tokopedia.abstraction.common.utils;
 
 import android.app.AlertDialog;
 import android.content.Context;

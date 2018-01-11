@@ -1,4 +1,4 @@
-package com.tokopedia.abstraction.utils.snackbar;
+package com.tokopedia.abstraction.common.utils.snackbar;
 
 import android.support.annotation.ColorInt;
 import android.support.design.widget.Snackbar;
