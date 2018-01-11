@@ -60,7 +60,7 @@ public class ChangePhoneNumberEmailActivity extends BasePresenterActivity
 
     @Override
     protected void initView() {
-
+        inflateFragment();
     }
 
     @Override

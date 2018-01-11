@@ -46,7 +46,7 @@ public class ChangePhoneNumberEmailFragment extends TkpdBaseV4Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable
             Bundle savedInstanceState) {
-        View parentView = inflater.inflate(R.layout.fragment_change_phone_number_input,
+        View parentView = inflater.inflate(R.layout.fragment_change_phone_number_email,
                 container, false);
         initVar();
         initView(parentView);
@@ -67,7 +67,7 @@ public class ChangePhoneNumberEmailFragment extends TkpdBaseV4Fragment {
 
         String verificationText = String.format("%s <b>%s</b>",
                 getString(R.string.we_will_send_email_to),
-                phoneNumber
+                email
         );
         verificationInstruction.setText(MethodChecker.fromHtml(verificationText));
     }
