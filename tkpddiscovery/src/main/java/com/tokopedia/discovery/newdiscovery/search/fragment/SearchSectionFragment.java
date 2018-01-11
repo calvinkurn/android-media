@@ -259,7 +259,8 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == getSortRequestCode()) {
                 setSelectedSort((HashMap<String, String>) data.getSerializableExtra(SortProductActivity.EXTRA_SELECTED_SORT));
-                UnifyTracking.eventSearchResultSort(getScreenName(), TextUtils.join(", ", getSelectedSort().values()));
+                String selectedSortName = data.getStringExtra(SortProductActivity.EXTRA_SELECTED_NAME);
+                UnifyTracking.eventSearchResultSort(getScreenName(), selectedSortName);
                 clearDataFilterSort();
                 showBottomBarNavigation(false);
                 reloadData();
