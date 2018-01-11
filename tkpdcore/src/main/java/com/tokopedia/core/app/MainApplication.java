@@ -30,6 +30,7 @@ import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.cache.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
+import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.network.di.module.NetModule;
 import com.tokopedia.core.service.HUDIntent;
 import com.tokopedia.core.util.BranchSdkUtils;
@@ -288,6 +289,7 @@ public abstract class MainApplication extends BaseMainApplication{
         addToWhiteList();
         // initialize the Branch object
         initBranch();
+        NotificationUtils.setNotificationChannel(this);
     }
 
 
