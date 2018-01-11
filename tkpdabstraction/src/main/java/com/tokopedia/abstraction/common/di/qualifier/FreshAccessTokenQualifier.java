@@ -1,4 +1,4 @@
-package com.tokopedia.abstraction.di.qualifier;
+package com.tokopedia.abstraction.common.di.qualifier;
 
 import javax.inject.Qualifier;
 

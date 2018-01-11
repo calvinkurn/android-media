@@ -1,10 +1,10 @@
-package com.tokopedia.abstraction.di.module.net;
+package com.tokopedia.abstraction.common.di.module.net;
 
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.TkpdOkHttpBuilder;
 import com.tokopedia.abstraction.common.network.interceptor.DebugInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdBaseInterceptor;
-import com.tokopedia.abstraction.di.scope.ApplicationScope;
+import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 
 import dagger.Module;
 import dagger.Provides;

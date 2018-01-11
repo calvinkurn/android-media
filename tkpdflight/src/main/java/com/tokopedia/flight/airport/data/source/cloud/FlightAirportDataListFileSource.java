@@ -6,7 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.data.source.cloud.DataListCloudSource;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.abstraction.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.flight.airport.data.source.cloud.model.FlightAirportCountry;
 import com.tokopedia.flight.airport.data.source.db.FlightAirportVersionDBSource;
 
@@ -18,9 +18,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import retrofit2.Response;
 import rx.Observable;
-import rx.functions.Func1;
 
 /**
  * Created by normansyahputa on 5/18/17.

@@ -1,4 +1,4 @@
-package com.tokopedia.abstraction.di.qualifier;
+package com.tokopedia.abstraction.common.di.qualifier;
 
 /**
  * Created by zulfikarrahman on 11/22/17.

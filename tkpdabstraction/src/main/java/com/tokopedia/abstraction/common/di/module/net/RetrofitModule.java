@@ -1,8 +1,8 @@
-package com.tokopedia.abstraction.di.module.net;
+package com.tokopedia.abstraction.common.di.module.net;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.tokopedia.abstraction.di.scope.ApplicationScope;
+import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 
 import dagger.Module;
 import dagger.Provides;

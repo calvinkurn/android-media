@@ -1,5 +1,5 @@
 
-package com.tokopedia.abstraction.di.scope;
+package com.tokopedia.abstraction.common.di.scope;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

@@ -1,10 +1,10 @@
-package com.tokopedia.abstraction.di.module;
+package com.tokopedia.abstraction.common.di.module;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.di.module.net.NetModule;
-import com.tokopedia.abstraction.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.di.scope.ApplicationScope;
+import com.tokopedia.abstraction.common.di.module.net.NetModule;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 
 import dagger.Module;
 import dagger.Provides;

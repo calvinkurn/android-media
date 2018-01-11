@@ -3,7 +3,7 @@ package com.tokopedia.flight.search.data.cache;
 import android.content.Context;
 
 import com.tokopedia.abstraction.base.data.source.cache.DataCacheSource;
-import com.tokopedia.abstraction.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 
 import java.util.concurrent.TimeUnit;
 

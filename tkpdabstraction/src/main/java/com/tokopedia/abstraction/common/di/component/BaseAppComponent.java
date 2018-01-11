@@ -1,15 +1,15 @@
-package com.tokopedia.abstraction.di.component;
+package com.tokopedia.abstraction.common.di.component;
 
 import android.content.Context;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.abstraction.di.module.AppModule;
-import com.tokopedia.abstraction.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.di.qualifier.AuthKeyQualifier;
-import com.tokopedia.abstraction.di.qualifier.FreshAccessTokenQualifier;
-import com.tokopedia.abstraction.di.scope.ApplicationScope;
+import com.tokopedia.abstraction.common.di.module.AppModule;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.di.qualifier.AuthKeyQualifier;
+import com.tokopedia.abstraction.common.di.qualifier.FreshAccessTokenQualifier;
+import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 
 import dagger.Component;
 import okhttp3.OkHttpClient;

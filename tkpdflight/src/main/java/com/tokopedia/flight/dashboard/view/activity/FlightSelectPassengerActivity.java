@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.abstraction.di.component.HasComponent;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.dashboard.di.DaggerFlightDashboardComponent;
 import com.tokopedia.flight.dashboard.di.FlightDashboardComponent;

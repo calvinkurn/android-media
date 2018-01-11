@@ -1,4 +1,4 @@
-package com.tokopedia.abstraction.di.module.net;
+package com.tokopedia.abstraction.common.di.module.net;
 
 import dagger.Module;
 

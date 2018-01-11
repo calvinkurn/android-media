@@ -3,7 +3,7 @@ package com.tokopedia.flight.airport.data.source.db;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.tokopedia.abstraction.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.flight.R;
 
 import javax.inject.Inject;

@@ -1,14 +1,14 @@
-package com.tokopedia.abstraction.di.module.net;
+package com.tokopedia.abstraction.common.di.module.net;
 
 import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
-import com.tokopedia.abstraction.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.di.qualifier.AuthKeyQualifier;
-import com.tokopedia.abstraction.di.qualifier.FreshAccessTokenQualifier;
-import com.tokopedia.abstraction.di.scope.ApplicationScope;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.di.qualifier.AuthKeyQualifier;
+import com.tokopedia.abstraction.common.di.qualifier.FreshAccessTokenQualifier;
+import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.utils.AuthUtil;
 
 import dagger.Module;
