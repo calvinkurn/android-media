@@ -1,4 +1,4 @@
-package com.tokopedia.abstraction.common.data.model.anlaytic;
+package com.tokopedia.abstraction.common.data.model.analytic;
 
 import android.app.Activity;
 

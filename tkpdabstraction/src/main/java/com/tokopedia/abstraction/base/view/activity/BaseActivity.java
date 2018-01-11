@@ -13,9 +13,7 @@ import android.view.View;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.R;
-import com.tokopedia.abstraction.common.data.model.anlaytic.Tracker;
-import com.tokopedia.abstraction.constant.TkpdCache;
-import com.tokopedia.abstraction.constant.TkpdState;
+import com.tokopedia.abstraction.common.data.model.analytic.Tracker;
 import com.tokopedia.abstraction.utils.DialogForceLogout;
 import com.tokopedia.abstraction.utils.GlobalConfig;
 import com.tokopedia.abstraction.utils.HockeyAppHelper;

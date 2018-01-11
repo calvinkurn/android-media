@@ -16,6 +16,7 @@ import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.analytic;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.ForceUpdate;
 import com.tokopedia.core.app.MainApplication;
@@ -883,12 +884,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Intent getDetailResChatIntentBuyer(Context context, String resoId, String shopName) {
         return DetailResChatActivity.newBuyerInstance(context, resoId, shopName);
     }
-    @Override
-    public void goToForceUpdate(Activity activity) {
-        Intent intent = new Intent(this, ForceUpdate.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(new Intent(this, ForceUpdate.class));
-    }
 
     @Override
     public void onForceLogout(Activity activity) {
@@ -927,13 +922,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void showServerErrorSnackbar() {
+    public void showServerError(Response response) {
         ServerErrorHandler.showServerErrorSnackbar();
-    }
-
-    @Override
-    public void sendErrorNetworkAnalytics(String url, int code) {
-        ServerErrorHandler.sendErrorNetworkAnalytics(url, code);
+        ServerErrorHandler.sendErrorNetworkAnalytics(response.request().url().toString(), response.code());
     }
 
     @Override
@@ -955,6 +946,21 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public Tracker getTracker() {
+        return new Tracker() {
+            @Override
+            public void sendEventTracking(String event, String category, String action, String label) {
+
+            }
+
+            @Override
+            public void sendScreen(Activity activity, String screenName) {
+
+            }
+        };
     }
 
     @Override
