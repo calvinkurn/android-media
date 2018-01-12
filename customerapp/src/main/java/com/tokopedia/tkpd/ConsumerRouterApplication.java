@@ -975,7 +975,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         SessionHandler sessionHandler = new SessionHandler(activity);
         sessionHandler.forceLogout();
         if (GlobalConfig.isSellerApp()) {
-            Intent intent = SellerRouter.getAcitivitySplashScreenActivity(getBaseContext());
+            Intent intent = SellerRouter.getActivitySplashScreenActivity(getBaseContext());
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         } else {
