@@ -8,6 +8,13 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
  */
 
 public class CalculateShipmentWrapper {
+    private static final String PARAM_SP_ID = "sp_id";
+    private static final String PARAM_ADDRESS_ID = "address_id";
+    private static final String PARAM_SHOP_ID = "shop_id";
+    private static final String PARAM_WEIGHT = "weight";
+    private static final String PARAM_DO = "do";
+    private static final String PARAM_RECALCULATE = "recalculate";
+
     private String mAddressId;
     private String mShopId;
     private String mWeight;
@@ -17,12 +24,12 @@ public class CalculateShipmentWrapper {
 
     public TKPDMapParam<String, String> getParams() {
         TKPDMapParam<String, String> map = new TKPDMapParam<>();
-        map.put("sp_id", this.mShippingId);
-        map.put("address_id", this.mAddressId);
-        map.put("shop_id", this.mShopId);
-        map.put("weight", this.mWeight);
-        map.put("do", this.mDo);
-        map.put("recalculate", this.mRecalculate);
+        map.put(PARAM_SP_ID, this.mShippingId);
+        map.put(PARAM_ADDRESS_ID, this.mAddressId);
+        map.put(PARAM_SHOP_ID, this.mShopId);
+        map.put(PARAM_WEIGHT, this.mWeight);
+        map.put(PARAM_DO, this.mDo);
+        map.put(PARAM_RECALCULATE, this.mRecalculate);
         return map;
     }
 
