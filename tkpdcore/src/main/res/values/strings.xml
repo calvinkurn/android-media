@@ -2132,4 +2132,5 @@ di Tokopedia Sekarang!</string>
     <string name="app_rating_title">Beri Rating Aplikasi Kami</string>
     <string name="app_rating_message">Jika Kamu suka dengan aplikasi Tokopedia, silakan berikan dukungan Kamu dengan memberi rating 5 bintang dan ulasan di Google Play.</string>
 
+    <string name="notif_channel_general">Notifikasi</string>
 </resources>

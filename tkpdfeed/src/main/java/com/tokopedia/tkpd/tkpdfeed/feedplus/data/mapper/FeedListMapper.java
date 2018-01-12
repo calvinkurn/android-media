@@ -46,7 +46,7 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
                 product.image(), product.image_single(), wholesaleDomains, product.freereturns(),
                 product.preorder(), product.cashback(), (String) product.url(),
                 product.productLink(), product.wishlist(),
-                product.rating(), cursor);
+                product.rating(), String.valueOf(product.price_int()), cursor);
     }
 
     private PromotionFeedDomain createPromotionFeedDomain(FeedQuery.Data.Promotion promotion) {
@@ -412,7 +412,8 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
                         recommendation.app_url(),
                         recommendation.image_url().toString(),
                         recommendation.price(),
-                        recommendation.recommendation_type()
+                        recommendation.recommendation_type(),
+                        String.valueOf(recommendation.price_int())
                 ));
             }
         }
