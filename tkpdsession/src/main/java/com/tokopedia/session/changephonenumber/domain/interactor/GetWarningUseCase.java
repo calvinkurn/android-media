@@ -17,6 +17,9 @@ import rx.Observable;
  */
 
 public class GetWarningUseCase extends UseCase<WarningViewModel> {
+    private static final String PARAM_OS_TYPE = "os_type";
+    private static final String OS_TYPE_ANDROID = "1";
+
     private final ChangePhoneNumberRepository changePhoneNumberRepository;
 
     @Inject
@@ -30,5 +33,11 @@ public class GetWarningUseCase extends UseCase<WarningViewModel> {
     @Override
     public Observable<WarningViewModel> createObservable(RequestParams requestParams) {
         return changePhoneNumberRepository.getWarning(requestParams.getParameters());
+    }
+
+    public static RequestParams getGetWarningParam() {
+        RequestParams param = RequestParams.create();
+        param.putString(PARAM_OS_TYPE, OS_TYPE_ANDROID);
+        return param;
     }
 }

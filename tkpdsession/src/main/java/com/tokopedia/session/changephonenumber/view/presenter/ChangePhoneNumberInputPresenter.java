@@ -2,7 +2,6 @@ package com.tokopedia.session.changephonenumber.view.presenter;
 
 import android.text.Editable;
 
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.util.CustomPhoneNumberUtil;
 import com.tokopedia.session.changephonenumber.domain.interactor.ValidateNumberUseCase;
@@ -11,6 +10,11 @@ import com.tokopedia.session.changephonenumber.view.subscriber.SubmitNumberSubsc
 import com.tokopedia.session.changephonenumber.view.subscriber.ValidateNumberSubscriber;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.session.changephonenumber.domain.interactor.ValidateNumberUseCase
+        .getSubmitNumberParam;
+import static com.tokopedia.session.changephonenumber.domain.interactor.ValidateNumberUseCase
+        .getValidateNumberParam;
 
 /**
  * Created by milhamj on 20/12/17.
@@ -82,19 +86,5 @@ public class ChangePhoneNumberInputPresenter
         view.showLoading();
         validateNumberUseCase.execute(getSubmitNumberParam(newPhoneNumber),
                 new SubmitNumberSubscriber(view));
-    }
-
-    private RequestParams getValidateNumberParam(String newPhoneNumber) {
-        RequestParams param = RequestParams.create();
-        param.putString(ValidateNumberUseCase.PARAM_ACTION, ValidateNumberUseCase.ACTION_VALIDATE);
-        param.putString(ValidateNumberUseCase.PARAM_NEW_MSISDN, newPhoneNumber);
-        return param;
-    }
-
-    private RequestParams getSubmitNumberParam(String newPhoneNumber) {
-        RequestParams param = RequestParams.create();
-        param.putString(ValidateNumberUseCase.PARAM_ACTION, ValidateNumberUseCase.ACTION_SUMBIT);
-        param.putString(ValidateNumberUseCase.PARAM_NEW_MSISDN, newPhoneNumber);
-        return param;
     }
 }
