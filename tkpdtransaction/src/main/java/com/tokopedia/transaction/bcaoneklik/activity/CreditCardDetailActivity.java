@@ -48,7 +48,7 @@ public class CreditCardDetailActivity extends TActivity
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        mCreditCardModelItem = (CreditCardModelItem) getIntent().getSerializableExtra(KEY_CC_ITEM);
+        mCreditCardModelItem = getIntent().getParcelableExtra(KEY_CC_ITEM);
 
         super.onCreate(savedInstanceState);
         inflateView(R.layout.credit_card_detail_layout);
