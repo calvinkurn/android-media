@@ -88,6 +88,7 @@ public class ShopOpenCourierExpandableOption extends BaseExpandableOption implem
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(shopServiceCourierAdapter);
         recyclerView.setNestedScrollingEnabled(false);
+        recyclerView.setHasFixedSize(true);
 
         final Runnable expandRunnable = new Runnable() {
             @Override

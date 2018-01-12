@@ -3,10 +3,6 @@ package com.tokopedia.seller.logistic.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-/**
- * Created by nakama on 19/12/17.
- */
-
 public class CourierServiceModel {
 
     @SerializedName("description")
