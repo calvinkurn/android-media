@@ -15,10 +15,10 @@ import com.tokopedia.gm.statistic.domain.GMStatRepository;
 import com.tokopedia.gm.statistic.domain.interactor.GMStatClearCacheUseCase;
 import com.tokopedia.gm.statistic.domain.mapper.GMTransactionStatDomainMapper;
 import com.tokopedia.gm.statistic.domain.mapper.GMTransactionTableMapper;
-import com.tokopedia.seller.product.edit.data.repository.ShopInfoRepositoryImpl;
-import com.tokopedia.seller.product.edit.data.source.ShopInfoDataSource;
-import com.tokopedia.seller.product.edit.data.source.cloud.api.ShopApi;
-import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
+import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepositoryImpl;
+import com.tokopedia.seller.shop.common.data.source.ShopInfoDataSource;
+import com.tokopedia.seller.shop.common.data.source.cloud.api.ShopApi;
+import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
 
 import dagger.Module;
 import dagger.Provides;

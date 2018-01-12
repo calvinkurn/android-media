@@ -11,6 +11,7 @@ import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
@@ -24,6 +25,18 @@ import com.tokopedia.session.R;
 
 public class PhoneVerificationActivationActivity extends BasePresenterActivity {
 
+    public static final String EXTRA_IS_MANDATORY = "EXTRA_IS_MANDATORY";
+    public static final String EXTRA_IS_LOGOUT_ON_BACK = "EXTRA_LOGOUT_ON_BACK";
+
+    private boolean canSkip = false;
+    private boolean isLogoutOnBack = false;
+
+    public static Intent getIntent(Context context, boolean isMandatory, boolean isLogoutOnBack){
+        Intent intent = new Intent(context, PhoneVerificationActivationActivity.class);
+        intent.putExtra(EXTRA_IS_MANDATORY, isMandatory);
+        intent.putExtra(EXTRA_IS_LOGOUT_ON_BACK, isLogoutOnBack);
+        return intent;
+    }
 
     @Override
     protected void setupURIPass(Uri data) {
@@ -42,6 +55,13 @@ public class PhoneVerificationActivationActivity extends BasePresenterActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Intent intent = getIntent();
+        if (intent.hasExtra(EXTRA_IS_MANDATORY)) {
+            canSkip = intent.getBooleanExtra(EXTRA_IS_MANDATORY, false);
+        }
+        if (intent.hasExtra(EXTRA_IS_LOGOUT_ON_BACK)) {
+            isLogoutOnBack = intent.getBooleanExtra(EXTRA_IS_LOGOUT_ON_BACK, false);
+        }
         super.onCreate(savedInstanceState);
     }
 
@@ -59,7 +79,7 @@ public class PhoneVerificationActivationActivity extends BasePresenterActivity {
     protected void initView() {
 
         PhoneVerificationActivationFragment fragmentHeader = PhoneVerificationActivationFragment.createInstance();
-        PhoneVerificationFragment fragment = PhoneVerificationFragment.createInstance(getPhoneVerificationListener());
+        PhoneVerificationFragment fragment = PhoneVerificationFragment.createInstance(getPhoneVerificationListener(), canSkip);
 
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         if (getFragmentManager().findFragmentById(R.id.container_header) == null) {
@@ -104,6 +124,16 @@ public class PhoneVerificationActivationActivity extends BasePresenterActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        if (isLogoutOnBack) {
+            SessionHandler session = new SessionHandler(this);
+            session.Logout(this);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     private void goToSellerHome() {
         Intent intent = SellerAppRouter.getSellerHomeActivity(PhoneVerificationActivationActivity.this);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -120,18 +150,13 @@ public class PhoneVerificationActivationActivity extends BasePresenterActivity {
     }
 
     private void goToSellerShopCreateEdit() {
-        Intent intent = SellerRouter.getAcitivityShopCreateEdit(PhoneVerificationActivationActivity.this);
-        intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
-                SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
-        intent.putExtra(SellerRouter.ShopSettingConstant.ON_BACK,
-                SellerRouter.ShopSettingConstant.LOG_OUT);
+        Intent intent = SellerRouter.getActivityShopCreateEdit(PhoneVerificationActivationActivity.this);
         startActivity(intent);
         finish();
     }
 
     private boolean isHasShop() {
-        return !SessionHandler.getShopID(PhoneVerificationActivationActivity.this).equals("")
-                && !SessionHandler.getShopID(PhoneVerificationActivationActivity.this).equals("0");
+        return SessionHandler.isUserHasShop(this);
     }
 
     @Override

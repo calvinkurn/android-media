@@ -535,17 +535,11 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
     private InspirationViewModel convertToInspirationViewModel(DataFeedDomain domain) {
         if (domain.getContent() != null
                 && !domain.getContent().getInspirationDomains().isEmpty()) {
-            InspirationViewModel viewModel = new InspirationViewModel();
-            viewModel.setTitle(domain.getContent().getInspirationDomains().get(0).getTitle());
-            viewModel.setListProduct(
-                    convertToRecommendationListViewModel(
-                            domain.getContent().getInspirationDomains().get(0).getListInspirationItem()
-                    )
-            );
-            viewModel.setSource(
+            return new InspirationViewModel(
+                    domain.getContent().getInspirationDomains().get(0).getTitle(),
+                    convertToRecommendationListViewModel(domain.getContent().getInspirationDomains().get(0).getListInspirationItem()),
                     domain.getContent().getInspirationDomains().get(0).getSource()
             );
-            return viewModel;
         } else {
             return null;
         }

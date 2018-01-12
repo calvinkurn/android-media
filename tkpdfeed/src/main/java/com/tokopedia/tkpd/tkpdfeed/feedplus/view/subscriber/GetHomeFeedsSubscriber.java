@@ -86,8 +86,7 @@ public class GetHomeFeedsSubscriber extends Subscriber<FeedResult> {
                 && !domain.getContent().getInspirationDomains().isEmpty()) {
             return new InspirationViewModel(
                     domain.getContent().getInspirationDomains().get(0).getTitle(),
-                    convertToRecommendationListViewModel(domain.getContent()
-                            .getInspirationDomains().get(0).getListInspirationItem()),
+                    convertToRecommendationListViewModel(domain.getContent().getInspirationDomains().get(0).getListInspirationItem()),
                     domain.getContent().getInspirationDomains().get(0).getSource()
             );
         } else {
