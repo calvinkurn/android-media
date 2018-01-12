@@ -1,4 +1,4 @@
-package com.tokopedia.seller.shop.open.view.presenter;
+package com.tokopedia.seller.shop.open.view.listener;
 
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;

@@ -40,7 +40,7 @@ import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.Shipme
 import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.UserData;
 import com.tokopedia.seller.shop.open.domain.interactor.ShopOpenSaveLocationUseCase;
 import com.tokopedia.seller.shop.open.view.presenter.ShopOpenLocPresenterImpl;
-import com.tokopedia.seller.shop.open.view.presenter.ShopOpenLocView;
+import com.tokopedia.seller.shop.open.view.listener.ShopOpenLocView;
 
 import java.util.HashMap;
 

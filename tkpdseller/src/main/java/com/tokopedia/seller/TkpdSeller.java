@@ -16,15 +16,7 @@ public class TkpdSeller {
     public static Intent getIntentCreateEditShop(Context context, boolean isCreate, boolean logOutOnBack){
         Intent intent;  
         if (isCreate) {
-            //TODO change to latest
             intent = ShopOpenRoutingActivity.getIntent(context);
-//            intent = new Intent(context, ShopEditorActivity.class);
-//            intent.putExtra(ShopSettingView.FRAGMENT_TO_SHOW, ShopSettingView.CREATE_SHOP_FRAGMENT_TAG);
-//            if (logOutOnBack) {
-//                intent.putExtra(ShopSettingView.ON_BACK, ShopSettingView.LOG_OUT);
-//            } else {
-//                intent.putExtra(ShopSettingView.ON_BACK, ShopSettingView.FINISH);
-//            }
         } else {
             intent = new Intent(context, ShopEditorActivity.class);
             intent.putExtra(ShopSettingView.FRAGMENT_TO_SHOW, ShopSettingView.EDIT_SHOP_FRAGMENT_TAG);
@@ -77,5 +69,4 @@ public class TkpdSeller {
         return ActivitySellingTransaction.createIntent(context,
                 ActivitySellingTransaction.TAB_POSITION_SELLING_OPPORTUNITY);
     }
-
 }
