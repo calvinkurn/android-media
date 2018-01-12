@@ -169,4 +169,5 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     private void initReact() {
         SoLoader.init(this, false);
     }
+
 }

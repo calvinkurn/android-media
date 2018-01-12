@@ -14,6 +14,8 @@ public interface DeepLinkView {
 
     void inflateFragmentV4(android.support.v4.app.Fragment fragment, String tag);
 
+    void initDeepLink();
+
     void replaceFragment(Fragment fragment, String tag);
 
     void hideActionBar();

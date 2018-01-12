@@ -24,7 +24,7 @@
             android:layout_weight="1"
             android:text="@string/title_category"
             android:layout_marginLeft="32dp"
-            style="@style/TextView.Title.Bold.BlackPrimary" />
+            style="@style/TextView.TitleBig.Bold" />
 
     </LinearLayout>
 

@@ -5,6 +5,7 @@ import com.tokopedia.core.base.di.scope.ApplicationScope;
 import com.tokopedia.core.cache.interceptor.ApiCacheInterceptor;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.core.OkHttpRetryPolicy;
+import com.tokopedia.core.network.core.TkpdOkHttpBuilder;
 import com.tokopedia.core.network.di.qualifier.BearerAuth;
 import com.tokopedia.core.network.di.qualifier.BearerAuthTypeJsonUt;
 import com.tokopedia.core.network.di.qualifier.DefaultAuth;
@@ -14,9 +15,11 @@ import com.tokopedia.core.network.di.qualifier.MojitoNoRetryAuth;
 import com.tokopedia.core.network.di.qualifier.MojitoSmallTimeoutNoAuth;
 import com.tokopedia.core.network.di.qualifier.NoAuth;
 import com.tokopedia.core.network.di.qualifier.NoAuthNoFingerprint;
+import com.tokopedia.core.network.di.qualifier.TomeBearerAuth;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.UploadWsV4Auth;
 import com.tokopedia.core.network.di.qualifier.WsV4Auth;
+import com.tokopedia.core.network.retrofit.interceptors.BearerInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.GlobalTkpdAuthInterceptor;
@@ -24,6 +27,7 @@ import com.tokopedia.core.network.retrofit.interceptors.ResolutionInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.StandardizedInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.TkpdBearerWithAuthInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdBearerWithAuthTypeJsonUtInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdErrorResponseInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TopAdsAuthInterceptor;
@@ -34,6 +38,7 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 
 /**
  * @author  ricoharisin on 3/23/17.
@@ -42,17 +47,37 @@ import okhttp3.OkHttpClient;
 @Module(includes={InterceptorModule.class})
 public class OkHttpClientModule {
 
+    @ApplicationScope
+    @Provides
+    public OkHttpClient.Builder provideOkHttpClientBuilder() {
+        return new OkHttpClient.Builder();
+    }
+
+    @TomeBearerAuth
+    @ApplicationScope
+    @Provides
+    public OkHttpClient provideOkHttpClientTomeBearerAuth(OkHttpClient.Builder okHttpClientBuilder,
+                                                          HttpLoggingInterceptor httpLoggingInterceptor,
+                                                          BearerInterceptor bearerInterceptor) {
+        return okHttpClientBuilder
+                .addInterceptor(bearerInterceptor)
+                .addInterceptor(httpLoggingInterceptor)
+                .build();
+    }
+
     @NoAuth
     @ApplicationScope
     @Provides
-    public OkHttpClient provideOkHttpClientNoAuth(FingerprintInterceptor fingerprintInterceptor,
+    public OkHttpClient provideOkHttpClientNoAuth(TopAdsAuthInterceptor tkpdBearerWithAuthInterceptor,
+                                                  FingerprintInterceptor fingerprintInterceptor,
                                                   TkpdBaseInterceptor tkpdBaseInterceptor,
                                                   OkHttpRetryPolicy okHttpRetryPolicy,
                                                   ChuckInterceptor chuckInterceptor,
                                                   DebugInterceptor debugInterceptor,
                                                   ApiCacheInterceptor apiCacheInterceptor) {
 
-        return OkHttpFactory.create().buildDaggerClientNoAuth(fingerprintInterceptor,
+        return OkHttpFactory.create().buildDaggerClientNoAuthWithBearer(tkpdBearerWithAuthInterceptor,
+                fingerprintInterceptor,
                 tkpdBaseInterceptor,
                 okHttpRetryPolicy,
                 chuckInterceptor,

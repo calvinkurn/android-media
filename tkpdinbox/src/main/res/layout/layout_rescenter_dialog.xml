@@ -39,7 +39,7 @@
             android:layout_marginRight="@dimen/margin_med"
             android:layout_marginBottom="@dimen/margin_sm"
             contect:text="@string/string_detail_create_complain"
-            android:textSize="@dimen/font_body2"
+            android:textSize="@dimen/font_small"
             android:textColor="@color/black_54"/>
 
 
