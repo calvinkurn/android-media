@@ -125,7 +125,7 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
         }
 
         TKPDMapParam<String, String> paramQueryBanner = new TKPDMapParam<>();
-        paramQueryBanner.put("category_id", categoryId);
+        paramQueryBanner.put(PARAM_CATEGORY_ID, categoryId);
 
         TKPDMapParam<String, String> paramQueryNumberList = new TKPDMapParam<>();
         paramQueryNumberList.put(PARAM_CATEGORY_ID, categoryId);
