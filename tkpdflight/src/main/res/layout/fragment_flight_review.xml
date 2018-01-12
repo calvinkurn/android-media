@@ -115,9 +115,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:nestedScrollingEnabled="false"
-                        android:paddingBottom="@dimen/padding_med"
-                        android:paddingLeft="@dimen/padding_med"
-                        android:paddingRight="@dimen/padding_med" />
+                        android:paddingBottom="@dimen/padding_med" />
                 </LinearLayout>
 
                 <LinearLayout

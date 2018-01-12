@@ -27,7 +27,7 @@
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/tv_order_id"
-            style="@style/TextView.Small"
+            style="@style/TextView.Micro"
             android:layout_below="@+id/tv_order_date"
             tools:text="Order ID: 323088926194" />
 

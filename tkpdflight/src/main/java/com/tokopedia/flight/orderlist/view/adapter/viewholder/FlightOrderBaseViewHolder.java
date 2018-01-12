@@ -78,6 +78,13 @@ public abstract class FlightOrderBaseViewHolder<T extends Visitable> extends Abs
 
     protected CharSequence getAirportTextForView(String airportId, String cityCode, String cityName) {
         SpannableStringBuilder text = new SpannableStringBuilder();
+        if (!TextUtils.isEmpty(cityName)) {
+            text.append(cityName);
+            makeBold(itemView.getContext(), text);
+        }
+        return text;
+
+/*        SpannableStringBuilder text = new SpannableStringBuilder();
         if (TextUtils.isEmpty(airportId)) {
             // id is more than one
             if (TextUtils.isEmpty(cityCode)) {
@@ -96,7 +103,7 @@ public abstract class FlightOrderBaseViewHolder<T extends Visitable> extends Abs
             text.append("\n");
             text.append(cityNameText);
         }
-        return text;
+        return text;*/
     }
 
     private SpannableStringBuilder makeSmall(SpannableStringBuilder text) {

@@ -18,14 +18,19 @@
             android:layout_height="wrap_content"
             android:background="@color/white"
             android:orientation="vertical"
-            android:padding="@dimen/padding_med">
+            android:paddingBottom="@dimen/padding_med"
+            android:paddingLeft="@dimen/padding_small"
+            android:paddingRight="@dimen/padding_small"
+            android:paddingTop="@dimen/padding_med">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_sm"
                 android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/padding_small"
+                android:paddingRight="@dimen/padding_small">
 
                 <ImageView
                     android:id="@+id/icon_status"
@@ -63,6 +68,8 @@
                 android:orientation="horizontal"
                 android:paddingBottom="@dimen/padding_vvvs"
                 android:paddingTop="@dimen/padding_vvvs"
+                android:paddingLeft="@dimen/padding_small"
+                android:paddingRight="@dimen/padding_small"
                 android:weightSum="2">
 
                 <TextView
@@ -88,7 +95,9 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/padding_small"
+                android:paddingRight="@dimen/padding_small">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -130,8 +139,9 @@
                     android:orientation="horizontal">
 
                     <ImageView
-                        android:layout_width="@dimen/image_width_xxs"
-                        android:layout_height="@dimen/image_width_xxs"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="top"
                         android:layout_marginRight="@dimen/margin_vs"
                         app:srcCompat="@drawable/ic_download_eticket" />
 
@@ -171,13 +181,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingLeft="@dimen/padding_small"
-                android:paddingRight="@dimen/padding_small">
+                android:paddingLeft="@dimen/padding_med"
+                android:paddingRight="@dimen/padding_med">
 
                 <TextView
                     android:id="@+id/title_expendable_passenger"
                     style="@style/style_expandable_flight_detail_order_title"
                     android:layout_width="0dp"
+                    android:textSize="18sp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/flight_label_passenger_data" />
@@ -196,9 +207,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:nestedScrollingEnabled="false"
-                android:paddingLeft="@dimen/padding_small"
-                android:paddingRight="@dimen/padding_small"
-                android:paddingBottom="@dimen/padding_med" />
+                android:paddingBottom="@dimen/padding_med"
+                android:paddingLeft="@dimen/padding_med"
+                android:paddingRight="@dimen/padding_med" />
 
         </LinearLayout>
 
@@ -220,7 +231,8 @@
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/container_download_invoice"
-                    android:text="@string/flight_label_detail_price" />
+                    android:text="@string/flight_label_detail_price"
+                    android:textSize="18sp" />
 
                 <LinearLayout
                     android:id="@+id/container_download_invoice"
@@ -233,14 +245,15 @@
                     android:orientation="horizontal">
 
                     <ImageView
-                        android:layout_width="@dimen/image_width_xxs"
-                        android:layout_height="@dimen/image_width_xxs"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="top"
                         android:layout_marginRight="@dimen/margin_vs"
                         app:srcCompat="@drawable/ic_download_eticket" />
 
                     <TextView
                         style="@style/TextView.Small.Green"
-                        android:text="@string/flight_label_invoice" />
+                        android:text="@string/flight_label_invoice"/>
 
                 </LinearLayout>
             </RelativeLayout>

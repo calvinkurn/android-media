@@ -18,17 +18,23 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_small"
             android:layout_marginTop="@dimen/margin_small"
-            android:nestedScrollingEnabled="false" />
+            android:nestedScrollingEnabled="false"
+            android:paddingLeft="@dimen/padding_med"
+            android:paddingRight="@dimen/padding_med" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/black_twenty_percent" />
+            android:background="@color/black_twenty_percent"
+            android:layout_marginLeft="@dimen/padding_small"
+            android:layout_marginRight="@dimen/padding_small" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/padding_med"
+            android:paddingRight="@dimen/padding_med">
 
             <TextView
                 android:id="@+id/title_info"
