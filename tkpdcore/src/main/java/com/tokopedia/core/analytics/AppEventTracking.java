@@ -889,6 +889,8 @@ public interface AppEventTracking {
         String TOTAL_ACTIVE_PRODUCT     = "total_active_product";
         String SHOP_SCORE     = "shop_score";
         String QUALITY_SCORE     = "quality_score";
+        String SCREEN_NAME     = "screen_name";
+        String CHANNEL     = "channel";
 
     }
 
@@ -923,6 +925,8 @@ public interface AppEventTracking {
         String EVENT_USER_ATTR = "User_Attribute_Name";
         String SELLER_SCREEN_OPEN = "Penjualan_Screen_Launched";
         String SHIPPING_CONFIRMED = "Shipping_Received_Confirmation";
+        String REFERRAL_SCREEN_LAUNCHED = "Referral_Screen_Launched";
+        String REFERRAL_SHARE_EVENT = "Share_Event";
     }
 
 

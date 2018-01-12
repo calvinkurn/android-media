@@ -7,6 +7,7 @@ import com.facebook.login.LoginManager;
 import com.tkpd.library.utils.ConnectionDetector;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
@@ -254,6 +255,8 @@ public class ProductSharePresenterImpl implements ProductSharePresenter {
     private void sendAnalyticsForReferral(String type, String channel) {
         if (type.equals(ShareData.APP_SHARE_TYPE)) {
             UnifyTracking.eventReferralAndShare(AppEventTracking.Action.SELECT_CHANNEL, channel);
+            TrackingUtils.sendMoEngageReferralShareEvent(channel);
+
         }
     }
 }

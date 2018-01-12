@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -46,7 +47,11 @@ public class ReferralPresenter implements IReferralPresenter {
     private Activity activity;
     private ReferralView view;
     private String contents = "";
-    RemoteConfig remoteConfig;
+    private RemoteConfig remoteConfig;
+    public static final String ShareScreenName = "Share Channel";
+    public static final String phoneVerificationScreenName = "Phone Number Verification";
+
+
 
     public ReferralPresenter(ReferralView view) {
         this.activity = view.getActivity();
@@ -57,12 +62,14 @@ public class ReferralPresenter implements IReferralPresenter {
     @Override
     public void initialize() {
         if (view.isUserLoggedIn()) {
-            if(isappShowReferralButtonActivated()) {
+            if(isAppShowReferralButtonActivated()) {
                 if (view.isUserPhoneNumberVerified()) {
                     getReferralVoucherCode();
 
                 } else {
                     view.showVerificationPhoneNumberPage();
+                    TrackingUtils.sendMoEngageReferralScreenOpen(phoneVerificationScreenName);
+
                 }
             }
         } else {
@@ -81,6 +88,8 @@ public class ReferralPresenter implements IReferralPresenter {
                 .setUri(Constants.WEB_PLAYSTORE_BUYER_APP_URL)
                 .build();
         activity.startActivity(ShareActivity.createIntent(activity, shareData));
+        TrackingUtils.sendMoEngageReferralScreenOpen(ShareScreenName);
+
 
     }
 
@@ -172,24 +181,17 @@ public class ReferralPresenter implements IReferralPresenter {
 
     @Override
     public void copyVoucherCode(String voucherCode) {
-        int sdk = android.os.Build.VERSION.SDK_INT;
-        if (sdk < android.os.Build.VERSION_CODES.HONEYCOMB) {
-            android.text.ClipboardManager clipboard = (android.text.ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
-            clipboard.setText(voucherCode);
-            view.showToastMessage(view.getActivity().getString(R.string.copied_to_clipboard) + " " + voucherCode);
-        } else {
-            android.content.ClipboardManager clipboard = (android.content.ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
-            android.content.ClipData clip = android.content.ClipData.newPlainText(view.getActivity().getString(R.string.copied_to_clipboard), voucherCode);
-            clipboard.setPrimaryClip(clip);
-            view.showToastMessage(view.getActivity().getString(R.string.copied_to_clipboard) + " " + voucherCode);
-        }
-        UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_COPY_REFERRAL_CODE,voucherCode);
+        android.content.ClipboardManager clipboard = (android.content.ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
+        android.content.ClipData clip = android.content.ClipData.newPlainText(view.getActivity().getString(R.string.copied_to_clipboard), voucherCode);
+        clipboard.setPrimaryClip(clip);
+        view.showToastMessage(view.getActivity().getString(R.string.copied_to_clipboard) + " " + voucherCode);
+        UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_COPY_REFERRAL_CODE, voucherCode);
 
     }
 
     @Override
     public String getReferralContents() {
-        return remoteConfig.getString(TkpdCache.RemoteConfigKey.APP_REFFERAL_CONTENT, "");
+        return remoteConfig.getString(TkpdCache.RemoteConfigKey.APP_REFFERAL_CONTENT, view.getActivity().getString(R.string.app_share_label_desc));
     }
 
     @Override
@@ -204,7 +206,7 @@ public class ReferralPresenter implements IReferralPresenter {
     }
 
     @Override
-    public Boolean isappShowReferralButtonActivated(){
+    public Boolean isAppShowReferralButtonActivated(){
         return remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_REFERRAL_BUTTON);
 
     }

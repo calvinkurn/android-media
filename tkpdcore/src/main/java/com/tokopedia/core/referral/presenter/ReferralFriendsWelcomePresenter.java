@@ -1,5 +1,7 @@
 package com.tokopedia.core.referral.presenter;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -10,6 +12,9 @@ import com.tokopedia.core.referral.listner.FriendsWelcomeView;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.var.TkpdCache;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 /**
  * Created by ashwanityagi on 04/12/17.
@@ -44,17 +49,14 @@ public class ReferralFriendsWelcomePresenter implements IReferralFriendsWelcomeP
 
     @Override
     public void copyVoucherCode(String voucherCode) {
-        int sdk = android.os.Build.VERSION.SDK_INT;
-        if (sdk < android.os.Build.VERSION_CODES.HONEYCOMB) {
-            android.text.ClipboardManager clipboard = (android.text.ClipboardManager) view.getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-            clipboard.setText(voucherCode);
-            view.showToastMessage(view.getActivity().getString(R.string.copied_to_clipboard)+ " " +voucherCode);
-        } else {
-            android.content.ClipboardManager clipboard = (android.content.ClipboardManager) view.getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-            android.content.ClipData clip = android.content.ClipData.newPlainText(view.getActivity().getString(R.string.copied_to_clipboard), voucherCode);
-            clipboard.setPrimaryClip(clip);
-            view.showToastMessage(view.getActivity().getString(R.string.copied_to_clipboard) +" " +voucherCode);
-        }
+       ClipboardManager clipboard = (ClipboardManager)
+                view.getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText(
+                view.getActivity().getString(R.string.copied_to_clipboard), voucherCode
+        );
+        clipboard.setPrimaryClip(clip);
+        view.showToastMessage(view.getActivity().getString(R.string.copied_to_clipboard) +" " +voucherCode);
+
         UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_COPY_REFERRAL_CODE, voucherCode);
 
     }
@@ -63,7 +65,15 @@ public class ReferralFriendsWelcomePresenter implements IReferralFriendsWelcomeP
     public String getReferralWelcomeMsg() {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(view.getActivity());
         String msg = remoteConfig.getString(TkpdCache.RemoteConfigKey.APP_SHARE_WELCOME_MESSAGE);
-        msg = msg.replace("%s", owner);
+        try{
+            owner = URLDecoder.decode(owner, "UTF-8");// here is double encoding characters that's why i am decoding it twice.
+            owner = URLDecoder.decode(owner, "UTF-8");
+            msg = msg.replace("%s", owner);
+
+        }catch (UnsupportedEncodingException e){
+
+        }
+
         return msg;
 
     }

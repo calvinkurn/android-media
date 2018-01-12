@@ -9,6 +9,7 @@ import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.referral.fragment.FragmentReferral;
@@ -22,12 +23,21 @@ import com.tokopedia.core.var.TkpdCache;
 
 public class ReferralActivity extends BasePresenterActivity {
 
+    public static final String screenName = "Referral Home";
+
     @DeepLink(Constants.Applinks.REFERRAL)
     public static Intent getCallingReferral(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ReferralActivity.class)
                 .setData(uri.build())
                 .putExtras(extras);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        TrackingUtils.sendMoEngageReferralScreenOpen(screenName);
+
     }
 
     @Override

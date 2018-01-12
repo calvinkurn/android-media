@@ -20,5 +20,5 @@ public interface IReferralPresenter {
 
     String getVoucherCodeFromCache();
 
-    Boolean isappShowReferralButtonActivated();
+    Boolean isAppShowReferralButtonActivated();
 }

@@ -28,7 +28,7 @@ public class ReferralService extends AuthService<ReferralApi> {
 
     @Override
     protected String getBaseUrl() {
-        return TkpdBaseURL.STAGE_DOMAIN;
+        return TkpdBaseURL.LIVE_DOMAIN;
     }
 
     @Override

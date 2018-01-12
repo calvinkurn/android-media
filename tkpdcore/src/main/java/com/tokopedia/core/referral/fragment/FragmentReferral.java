@@ -109,7 +109,7 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
     protected void initView(View view) {
         appShareButton.setOnClickListener(getButtonAppShareClickListner());
         referralContentTextView.setText(presenter.getReferralContents());
-        if (presenter.isappShowReferralButtonActivated()) {
+        if (presenter.isAppShowReferralButtonActivated()) {
             referralCodeLayout.setVisibility(View.VISIBLE);
             TextViewHelpLink.setText(presenter.getHowItWorks());
             renderVoucherCode(presenter.getVoucherCodeFromCache());

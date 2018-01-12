@@ -534,6 +534,18 @@ public class TrackingUtils extends TrackingConfig {
         }
     }
 
+    public static void sendMoEngageReferralScreenOpen(String screenName) {
+        PayloadBuilder builder = new PayloadBuilder();
+        builder.putAttrString(AppEventTracking.MOENGAGE.SCREEN_NAME, screenName);
+        getMoEngine().sendEvent(builder.build(), AppEventTracking.EventMoEngage.REFERRAL_SCREEN_LAUNCHED);
+    }
+
+    public static void sendMoEngageReferralShareEvent(String channel) {
+        PayloadBuilder builder = new PayloadBuilder();
+        builder.putAttrString(AppEventTracking.MOENGAGE.CHANNEL, channel);
+        getMoEngine().sendEvent(builder.build(), AppEventTracking.EventMoEngage.REFERRAL_SHARE_EVENT);
+    }
+
     public static void fragmentBasedAFEvent(String tag) {
         Map<String, Object> afValue = new HashMap<>();
         if (tag.equals(SessionRouter.IDENTIFIER_REGISTER_NEWNEXT_FRAGMENT) || tag.equals(SessionRouter.IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT)) {
