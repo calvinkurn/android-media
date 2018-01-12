@@ -4,12 +4,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
+import android.util.Log;
 
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.PagingHandler;
@@ -21,6 +24,7 @@ import com.tokopedia.inbox.inboxchat.ChatWebSocketListenerImpl;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetReplyListUseCase;
+import com.tokopedia.inbox.inboxchat.domain.usecase.SendMessageUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.template.GetTemplateUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.ReplyMessageUseCase;
 import com.tokopedia.inbox.inboxchat.presenter.subscriber.GetReplySubscriber;
@@ -28,6 +32,7 @@ import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.GetTemplateViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.SendMessageViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.TemplateChatModel;
 
 import org.json.JSONException;
@@ -77,15 +82,18 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     final static String OFFICIAL = "Official";
     final static String SELLER = "shop";
     private CountDownTimer countDownTimer;
+    private SendMessageUseCase sendMessageUseCase;
 
     @Inject
     ChatRoomPresenter(GetReplyListUseCase getReplyListUseCase,
                       ReplyMessageUseCase replyMessageUseCase,
                       GetTemplateUseCase getTemplateUseCase,
+                      SendMessageUseCase sendMessageUseCase,
                       SessionHandler sessionHandler) {
         this.getReplyListUseCase = getReplyListUseCase;
         this.replyMessageUseCase = replyMessageUseCase;
         this.getTemplateUseCase = getTemplateUseCase;
+        this.sendMessageUseCase = sendMessageUseCase;
         this.sessionHandler = sessionHandler;
     }
 
@@ -116,7 +124,14 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
             }
         };
 
-        createWebSocket();
+        if(getView().needCreateWebSocket()){
+            createWebSocket();
+        }else {
+            getView().setHeader();
+            getView().hideMainLoading();
+            getView().setTextAreaReply(true);
+            getView().hideNotifier();
+        }
         getTemplate();
     }
 
@@ -223,6 +238,51 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
             }
             getView().scrollToBottom();
         }
+    }
+
+    @Override
+    public void initMessage(String message, String source, String toShopId, String toUserId) {
+        Log.i("initMessage: ","");
+
+        if (isValidReply()) {
+            getView().addDummyInitialMessage();
+            getView().disableAction();
+            sendMessageUseCase.execute(SendMessageUseCase.getParam(
+                    message,
+                    toShopId,
+                    toUserId,
+                    source
+            ), new Subscriber<SendMessageViewModel>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable throwable) {
+                    getView().onErrorSendReply();
+                }
+
+                @Override
+                public void onNext(SendMessageViewModel sendMessageViewModel) {
+                    if (sendMessageViewModel.isSuccess())
+                        getView().onSuccessInitMessage();
+                    else
+                        getView().onErrorSendReply();
+
+                }
+            });
+
+        }
+    }
+
+    private boolean isValidMessage(String message) {
+        Boolean isValid = true;
+
+        if (message.trim().length() == 0) {
+            isValid = false;
+        }
+        return isValid;
     }
 
     public void onLoadMore() {

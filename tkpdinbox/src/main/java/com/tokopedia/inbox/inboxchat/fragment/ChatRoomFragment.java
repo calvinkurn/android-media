@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.PreviewProductImage;
@@ -40,6 +41,7 @@ import com.tokopedia.inbox.inboxchat.InboxChatConstant;
 import com.tokopedia.inbox.inboxchat.WebSocketInterface;
 import com.tokopedia.inbox.inboxchat.activity.ChatMarketingThumbnailActivity;
 import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
+import com.tokopedia.inbox.inboxchat.activity.SendMessageActivity;
 import com.tokopedia.inbox.inboxchat.activity.TemplateChatActivity;
 import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
 import com.tokopedia.inbox.inboxchat.adapter.ChatRoomAdapter;
@@ -75,6 +77,7 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 
 import static com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity.PARAM_SENDER_ROLE;
+import static com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity.PARAM_WEBSOCKET;
 
 /**
  * Created by stevenfredian on 9/19/17.
@@ -146,47 +149,77 @@ public class ChatRoomFragment extends BaseDaggerFragment
         recyclerView.setHasFixedSize(true);
         templateRecyclerView.setHasFixedSize(true);
         presenter.attachView(this);
+        prepareView();
         initListener();
         return rootView;
+    }
+
+    private void prepareView() {
+        if (getArguments().getBoolean(SendMessageActivity.IS_HAS_ATTACH_BUTTON)) {
+            attachButton.setVisibility(View.VISIBLE);
+        } else {
+            attachButton.setVisibility(View.GONE);
+        }
+
+        if (!TextUtils.isEmpty(getArguments().getString(SendMessageActivity.PARAM_CUSTOM_MESSAGE,
+                ""))) {
+            String customMessage = "\n" + getArguments().getString(SendMessageActivity
+                    .PARAM_CUSTOM_MESSAGE, "");
+            replyColumn.setText(customMessage);
+        }
     }
 
 
     private void initListener() {
 
-        sendButton.setOnClickListener(getSendWithWebSocketListener());
-
-        replyIsTyping = replyWatcher.map(new Func1<String, Boolean>() {
-            @Override
-            public Boolean call(String s) {
-                return s.length() > 0;
-            }
-        });
-
-        replyIsTyping.subscribe(new Action1<Boolean>() {
-            @Override
-            public void call(Boolean aBoolean) {
-                try {
-                    if (aBoolean)
-                        presenter.setIsTyping(getArguments().getString(ChatRoomActivity
-                                .PARAM_MESSAGE_ID));
-                } catch (JSONException e) {
-                    e.printStackTrace();
+        if (needCreateWebSocket()) {
+            sendButton.setOnClickListener(getSendWithWebSocketListener());
+            replyIsTyping = replyWatcher.map(new Func1<String, Boolean>() {
+                @Override
+                public Boolean call(String s) {
+                    return s.length() > 0;
                 }
-            }
-        });
+            });
 
-        replyIsTyping.debounce(2, TimeUnit.SECONDS)
-                .subscribe(new Action1<Boolean>() {
-                    @Override
-                    public void call(Boolean aBoolean) {
-                        try {
-                            presenter.stopTyping(getArguments().getString(ChatRoomActivity
+            replyIsTyping.subscribe(new Action1<Boolean>() {
+                @Override
+                public void call(Boolean aBoolean) {
+                    try {
+                        if (aBoolean)
+                            presenter.setIsTyping(getArguments().getString(ChatRoomActivity
                                     .PARAM_MESSAGE_ID));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                });
+                }
+            });
+
+            replyIsTyping.debounce(2, TimeUnit.SECONDS)
+                    .subscribe(new Action1<Boolean>() {
+                        @Override
+                        public void call(Boolean aBoolean) {
+                            try {
+                                presenter.stopTyping(getArguments().getString(ChatRoomActivity
+                                        .PARAM_MESSAGE_ID));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+        } else {
+            sendButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    UnifyTracking.eventSendMessagePage();
+                    presenter.initMessage(replyColumn.getText().toString(),
+                            getArguments().getString(ChatRoomActivity.PARAM_SOURCE),
+                            getArguments().getString(ChatRoomActivity.PARAM_SENDER_ID),
+                            getArguments().getString(ChatRoomActivity.PARAM_USER_ID));
+                }
+            });
+
+        }
+
 
         attachButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -247,6 +280,21 @@ public class ChatRoomFragment extends BaseDaggerFragment
         startActivity(ChatMarketingThumbnailActivity.getCallingIntent(getActivity(), url));
     }
 
+    @Override
+    public boolean needCreateWebSocket() {
+        return getArguments().getBoolean(PARAM_WEBSOCKET);
+    }
+
+    @Override
+    public void hideNotifier() {
+        notifier.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onSuccessInitMessage() {
+        CommonUtils.UniversalToast(getActivity(), getString(R.string.success_send_msg));
+        getActivity().finish();
+    }
 
     private void initVar() {
         typeFactory = new ChatRoomTypeFactoryImpl(this);
@@ -265,7 +313,11 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
         templateAdapter = new TemplateChatAdapter(templateChatFactory);
 
-        presenter.getReply(mode);
+        if(needCreateWebSocket()) {
+            presenter.getReply(mode);
+        }else {
+            progressBar.setVisibility(View.GONE);
+        }
 
         adapter.notifyDataSetChanged();
         templateAdapter.notifyDataSetChanged();
@@ -526,9 +578,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     @Override
     public void setTemplate(List<Visitable> listTemplate) {
-        if(listTemplate == null){
+        if (listTemplate == null) {
             templateRecyclerView.setVisibility(View.GONE);
-        }else {
+        } else {
             templateRecyclerView.setVisibility(View.VISIBLE);
             templateAdapter.setList(listTemplate);
         }
@@ -557,6 +609,23 @@ public class ChatRoomFragment extends BaseDaggerFragment
         scrollToBottom();
     }
 
+
+    @Override
+    public void addDummyInitialMessage() {
+        MyChatViewModel item = new MyChatViewModel();
+        item.setMsg(getReplyMessage());
+        item.setReplyTime(MyChatViewModel.SENDING_TEXT);
+        item.setDummy(true);
+        item.setSenderId(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
+        adapter.addReply(item);
+        scrollToBottom();
+    }
+
+    @Override
+    public void disableAction() {
+        sendButton.setEnabled(false);
+    }
+
     private void setResult() {
         if (adapter != null && getActivity() != null) {
             Intent intent = new Intent();
@@ -579,7 +648,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     public void restackList(Bundle data) {
 
-        if (toolbar  != null) {
+        if (toolbar != null) {
             mainHeader.setVisibility(View.VISIBLE);
             avatar = toolbar.findViewById(R.id.user_avatar);
             user = toolbar.findViewById(R.id.title);
@@ -693,7 +762,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         try {
             presenter.stopTyping(getArguments().getString(ChatRoomActivity
                     .PARAM_MESSAGE_ID));
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         presenter.closeWebSocket();

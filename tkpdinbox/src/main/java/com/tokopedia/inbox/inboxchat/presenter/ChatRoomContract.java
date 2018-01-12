@@ -93,6 +93,16 @@ public class ChatRoomContract {
         void onGoToGallery(Attachment attachment);
 
         void onGoToWebView(String attachment);
+
+        boolean needCreateWebSocket();
+
+        void hideNotifier();
+
+        void onSuccessInitMessage();
+
+        void addDummyInitialMessage();
+
+        void disableAction();
     }
 
     interface Presenter extends CustomerPresenter<View>{
@@ -109,5 +119,7 @@ public class ChatRoomContract {
         void sendMessageWithApi();
 
         void addDummyMessage(WebSocketResponse response);
+
+        void initMessage(String s, String string, String string1, String string2);
     }
 }

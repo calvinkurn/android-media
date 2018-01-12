@@ -22,6 +22,7 @@ import com.tokopedia.inbox.inboxchat.data.repository.template.TemplateRepository
 import com.tokopedia.inbox.inboxchat.data.repository.template.TemplateRepositoryImpl;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetMessageListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetReplyListUseCase;
+import com.tokopedia.inbox.inboxchat.domain.usecase.SendMessageUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.template.GetTemplateUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.ReplyMessageUseCase;
 
@@ -170,5 +171,19 @@ public class ChatRoomModule {
     SendMessageSource provideSendMessageSource(ChatService chatService,
                                                SendMessageMapper sendMessageMapper) {
         return new SendMessageSource(chatService, sendMessageMapper);
+    }
+
+
+
+    @InboxChatScope
+    @Provides
+    SendMessageUseCase provideSendMessageUseCase(ThreadExecutor threadExecutor,
+                                                 PostExecutionThread postExecutor,
+                                                 MessageRepository messageRepository) {
+        return new SendMessageUseCase(
+                threadExecutor,
+                postExecutor,
+                messageRepository
+        );
     }
 }

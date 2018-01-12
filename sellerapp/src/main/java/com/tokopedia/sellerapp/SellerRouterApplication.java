@@ -39,6 +39,7 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResCenterActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
@@ -588,7 +589,7 @@ public abstract class SellerRouterApplication extends MainApplication
                                     String customSubject, String customMessage, String source,
                                     String avatar) {
         if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
-            return SendMessageActivity.getAskBuyerIntent(context, toUserId, customerName,
+            return ChatRoomActivity.getAskBuyerIntent(context, toUserId, customerName,
                     customSubject, customMessage, source, avatar);
         else
             return SendMessageActivityOld.getAskBuyerIntent(context, toUserId, customerName,
@@ -599,7 +600,7 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName, String
             source, String avatar) {
         if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
-            return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName, source, avatar);
+            return ChatRoomActivity.getAskSellerIntent(context, toShopId, shopName, source, avatar);
         else
             return SendMessageActivityOld.getAskSellerIntent(context, toShopId, shopName, source);
 
@@ -610,7 +611,7 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getAskUserIntent(Context context, String userId, String userName, String
             source, String avatar) {
         if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
-            return SendMessageActivity.getAskUserIntent(context, userId, userName, source, avatar);
+            return ChatRoomActivity.getAskUserIntent(context, userId, userName, source, avatar);
         else
             return SendMessageActivityOld.getAskUserIntent(context, userId, userName, source);
 
