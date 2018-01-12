@@ -4,6 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="18dp"
+    android:layout_marginRight="@dimen/small_dp"
+    android:layout_marginLeft="@dimen/small_dp"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -16,8 +18,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/small_dp"
-            android:layout_marginStart="@dimen/small_dp"
+            android:layout_marginLeft="@dimen/margin_vs"
+            android:layout_marginRight="@dimen/margin_vs"
             android:text="@string/header_title_pembayaran_kartu_kredit"
             android:textSize="@dimen/font_medium"
             android:textStyle="bold"

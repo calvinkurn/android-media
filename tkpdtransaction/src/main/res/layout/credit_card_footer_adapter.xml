@@ -9,7 +9,9 @@
         android:id="@+id/credit_card_auth_footer"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginRight="@dimen/margin_small"
+        android:layout_marginLeft="@dimen/margin_small">
 
         <TextView
             android:layout_width="wrap_content"

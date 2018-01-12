@@ -119,12 +119,6 @@ public class CreditCardDetailActivity extends TActivity implements DeleteCreditC
     }
 
     @Override
-    public void onCancelDelete() {
-        setResult(ListPaymentTypeView.CREDIT_CARD_DETAIL_REQUEST_CODE);
-        finish();
-    }
-
-    @Override
     protected void setupToolbar() {
         toolbar = findViewById(com.tokopedia.core.R.id.app_bar);
         toolbar.setTitle(getToolbarTitle());
