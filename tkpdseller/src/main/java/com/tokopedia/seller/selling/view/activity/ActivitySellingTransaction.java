@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v13.app.FragmentPagerAdapter;
-import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
@@ -41,7 +40,6 @@ import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.core.router.SellerAppRouter;
-import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.GlobalConfig;
@@ -67,6 +65,14 @@ public class ActivitySellingTransaction extends TkpdActivity
 
     public static final String FROM_WIDGET_TAG = "from widget";
 
+    public static final String EXTRA_STATE_TAB_POSITION = "tab";
+
+    public static final int TAB_POSITION_SELLING_OPPORTUNITY = 1;
+    public final static int TAB_POSITION_SELLING_NEW_ORDER = 2;
+    public final static int TAB_POSITION_SELLING_CONFIRM_SHIPPING = 3;
+    public final static int TAB_POSITION_SELLING_SHIPPING_STATUS = 4;
+    public final static int TAB_POSITION_SELLING_TRANSACTION_LIST = 5;
+
     ViewPager mViewPager;
     private TabLayout indicator;
     private TextView sellerTickerView;
@@ -82,7 +88,7 @@ public class ActivitySellingTransaction extends TkpdActivity
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ActivitySellingTransaction.class)
                 .setData(uri.build())
-                .putExtra(SellerRouter.EXTRA_STATE_TAB_POSITION, SellerRouter.TAB_POSITION_SELLING_NEW_ORDER)
+                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_NEW_ORDER)
                 .putExtras(extras);
     }
 
@@ -91,7 +97,7 @@ public class ActivitySellingTransaction extends TkpdActivity
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ActivitySellingTransaction.class)
                 .setData(uri.build())
-                .putExtra(SellerRouter.EXTRA_STATE_TAB_POSITION, SellerRouter.TAB_POSITION_SELLING_CONFIRM_SHIPPING)
+                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_CONFIRM_SHIPPING)
                 .putExtras(extras);
     }
 
@@ -100,7 +106,7 @@ public class ActivitySellingTransaction extends TkpdActivity
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ActivitySellingTransaction.class)
                 .setData(uri.build())
-                .putExtra(SellerRouter.EXTRA_STATE_TAB_POSITION, SellerRouter.TAB_POSITION_SELLING_SHIPPING_STATUS)
+                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_SHIPPING_STATUS)
                 .putExtras(extras);
     }
 
@@ -109,7 +115,7 @@ public class ActivitySellingTransaction extends TkpdActivity
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ActivitySellingTransaction.class)
                 .setData(uri.build())
-                .putExtra(SellerRouter.EXTRA_STATE_TAB_POSITION, SellerRouter.TAB_POSITION_SELLING_TRANSACTION_LIST)
+                .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_TRANSACTION_LIST)
                 .putExtras(extras);
     }
 
@@ -128,7 +134,7 @@ public class ActivitySellingTransaction extends TkpdActivity
 
     public static Intent createIntent(Context context, int tab) {
         return new Intent(context, ActivitySellingTransaction.class)
-                .putExtra(SellerRouter.EXTRA_STATE_TAB_POSITION, tab);
+                .putExtra(EXTRA_STATE_TAB_POSITION, tab);
     }
 
     @Override
@@ -148,7 +154,7 @@ public class ActivitySellingTransaction extends TkpdActivity
                 startActivity(((TkpdCoreRouter) getApplication()).getLoginIntent(this));
                 AppWidgetUtil.sendBroadcastToAppWidget(this);
                 finish();
-            } else if (!SessionHandler.isUserSeller(this)) {
+            } else if (!SessionHandler.isUserHasShop(this)) {
                 startActivity(((TkpdCoreRouter) getApplication()).getHomeIntent(this));
                 AppWidgetUtil.sendBroadcastToAppWidget(this);
                 finish();
@@ -268,7 +274,7 @@ public class ActivitySellingTransaction extends TkpdActivity
             sellerTickerView.setText(strBuilder);
             sellerTickerView.setMovementMethod(LinkMovementMethod.getInstance());
             sellerTickerView.setVisibility(View.VISIBLE);
-            hideTickerOpportunity(getIntent().getExtras().getInt(SellerRouter.EXTRA_STATE_TAB_POSITION));
+            hideTickerOpportunity(getIntent().getExtras().getInt(EXTRA_STATE_TAB_POSITION));
         } else {
             sellerTickerView.setVisibility(View.GONE);
         }
@@ -334,8 +340,8 @@ public class ActivitySellingTransaction extends TkpdActivity
 
     private void openTab() {
         try {
-            mViewPager.setCurrentItem(getIntent().getExtras().getInt(SellerRouter.EXTRA_STATE_TAB_POSITION));
-            setDrawerPosition(getIntent().getExtras().getInt(SellerRouter.EXTRA_STATE_TAB_POSITION));
+            mViewPager.setCurrentItem(getIntent().getExtras().getInt(EXTRA_STATE_TAB_POSITION));
+            setDrawerPosition(getIntent().getExtras().getInt(EXTRA_STATE_TAB_POSITION));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -343,19 +349,19 @@ public class ActivitySellingTransaction extends TkpdActivity
 
     private void setDrawerPosition(int position) {
         switch (position) {
-            case SellerRouter.TAB_POSITION_SELLING_NEW_ORDER:
+            case TAB_POSITION_SELLING_NEW_ORDER:
                 drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_NEW_ORDER);
                 break;
-            case SellerRouter.TAB_POSITION_SELLING_CONFIRM_SHIPPING:
+            case TAB_POSITION_SELLING_CONFIRM_SHIPPING:
                 drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_CONFIRM_SHIPPING);
                 break;
-            case SellerRouter.TAB_POSITION_SELLING_SHIPPING_STATUS:
+            case TAB_POSITION_SELLING_SHIPPING_STATUS:
                 drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_SHIPPING_STATUS);
                 break;
-            case SellerRouter.TAB_POSITION_SELLING_TRANSACTION_LIST:
+            case TAB_POSITION_SELLING_TRANSACTION_LIST:
                 drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_TRANSACTION_LIST);
                 break;
-            case SellerRouter.TAB_POSITION_SELLING_OPPORTUNITY:
+            case TAB_POSITION_SELLING_OPPORTUNITY:
                 drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_OPPORTUNITY_LIST);
                 break;
             default:

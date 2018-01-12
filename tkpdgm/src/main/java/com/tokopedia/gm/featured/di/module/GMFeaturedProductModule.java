@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
-import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.gm.featured.data.GMFeaturedProductDataSource;
 import com.tokopedia.gm.featured.data.cloud.api.GMFeaturedProductApi;
@@ -13,11 +12,10 @@ import com.tokopedia.gm.featured.domain.mapper.GMFeaturedProductMapper;
 import com.tokopedia.gm.featured.domain.mapper.GMFeaturedProductSubmitMapper;
 import com.tokopedia.gm.featured.repository.GMFeaturedProductRepository;
 import com.tokopedia.gm.featured.repository.GMFeaturedProductRepositoryImpl;
-import com.tokopedia.seller.product.edit.data.repository.ShopInfoRepositoryImpl;
-import com.tokopedia.seller.product.edit.data.source.ShopInfoDataSource;
-import com.tokopedia.seller.product.edit.data.source.cloud.api.ShopApi;
-import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
-import com.tokopedia.seller.product.variant.data.cloud.api.TomeApi;
+import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepositoryImpl;
+import com.tokopedia.seller.shop.common.data.source.ShopInfoDataSource;
+import com.tokopedia.seller.shop.common.data.source.cloud.api.ShopApi;
+import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
 
 import dagger.Module;
 import dagger.Provides;

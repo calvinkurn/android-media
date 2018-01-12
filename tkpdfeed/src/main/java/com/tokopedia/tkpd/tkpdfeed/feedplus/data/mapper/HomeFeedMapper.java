@@ -98,7 +98,8 @@ public class HomeFeedMapper implements Func1<HomeFeedQuery.Data, FeedDomain> {
                         recommendation.app_url(),
                         recommendation.image_url().toString(),
                         recommendation.price(),
-                        recommendation.recommendation_type()
+                        recommendation.recommendation_type(),
+                        recommendation.price()
                 ));
             }
         }
