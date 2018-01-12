@@ -35,6 +35,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.emptytopads.
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.emptytopads.EmptyTopAdsViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.favoritecta.FavoriteCtaViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.inspiration.InspirationViewHolder;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.kol.ContentProductViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.kol.KolRecommendationViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.kol.KolViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.officialstore.OfficialStoreBrandsViewHolder;
@@ -55,6 +56,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsProductMod
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FavoriteCtaViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.blog.BlogViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.ContentProductViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreBrandsViewModel;
@@ -81,14 +83,12 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
     private final HomeCategoryListener listener;
     private FeedPlus.View feedListener;
     private final FragmentManager fragmentManager;
-    private final FeedPlus.View.Toppicks toppicksListener;
 
     public HomeAdapterFactory(FragmentManager fragmentManager, HomeCategoryListener listener,
-                              FeedPlus.View feedListener, FeedPlus.View.Toppicks toppicksListener) {
+                              FeedPlus.View feedListener) {
         this.fragmentManager = fragmentManager;
         this.listener = listener;
         this.feedListener = feedListener;
-        this.toppicksListener = toppicksListener;
     }
 
     @Override
@@ -235,6 +235,11 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
     }
 
     @Override
+    public int type(ContentProductViewModel contentProductViewModel) {
+        return ContentProductViewHolder.LAYOUT;
+    }
+
+    @Override
     public int type(RetryModel retryModel) {
         return RetryViewHolder.LAYOUT;
     }
@@ -268,145 +273,10 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
             viewHolder = new RetryViewHolder(view, feedListener);
         else if (type == AddFeedViewHolder.LAYOUT)
             viewHolder = new AddFeedViewHolder(view, feedListener);
-        else if (type == ActivityCardViewHolder.LAYOUT)
-            viewHolder = new ActivityCardViewHolder(view, feedListener);
-        else if (type == PromotedShopViewHolder.LAYOUT)
-            viewHolder = new PromotedShopViewHolder(view, feedListener);
-        else if (type == PromoViewHolder.LAYOUT)
-            viewHolder = new PromoViewHolder(view, feedListener);
-        else if (type == OfficialStoreCampaignViewHolder.LAYOUT)
-            viewHolder = new OfficialStoreCampaignViewHolder(view, feedListener);
-        else if (type == OfficialStoreBrandsViewHolder.LAYOUT)
-            viewHolder = new OfficialStoreBrandsViewHolder(view, feedListener);
         else if (type == InspirationViewHolder.LAYOUT)
             viewHolder = new InspirationViewHolder(view, feedListener);
-        else if (type == ImageBlogViewHolder.LAYOUT)
-            viewHolder = new ImageBlogViewHolder(view, feedListener);
-        else if (type == VideoBlogViewHolder.LAYOUT)
-            viewHolder = new VideoBlogViewHolder(view, feedListener);
-        else if (type == PromotedProductViewHolder.LAYOUT)
-            viewHolder = new PromotedProductViewHolder(view, feedListener);
-        else if (type == RecentViewViewHolder.LAYOUT)
-            viewHolder = new RecentViewViewHolder(view, feedListener);
-        else if (type == EmptyTopAdsViewHolder.LAYOUT)
-            viewHolder = new EmptyTopAdsViewHolder(view, createDummyTopAdsListener());
-        else if (type == EmptyTopAdsProductViewHolder.LAYOUT)
-            viewHolder = new EmptyTopAdsProductViewHolder(view, createDummyTopAdsListener());
-        else if (type == ToppicksViewHolder.LAYOUT)
-            viewHolder = new ToppicksViewHolder(view, toppicksListener);
-        else if (type == KolViewHolder.LAYOUT)
-            viewHolder = new KolViewHolder(view, createDummyKolListener());
-        else if (type == KolRecommendationViewHolder.LAYOUT)
-            viewHolder = new KolRecommendationViewHolder(view, createDummyKolListener());
-        else if (type == FeedTopadsViewHolder.LAYOUT)
-            viewHolder = new FeedTopadsViewHolder(view, createDummyTopAdsListener());
-        else if (type == FavoriteCtaViewHolder.LAYOUT)
-            viewHolder = new FavoriteCtaViewHolder(view, feedListener);
         else viewHolder = super.createViewHolder(view, type);
 
         return viewHolder;
-    }
-
-    private TopAdsItemClickListener createDummyTopAdsListener() {
-        return new TopAdsItemClickListener() {
-            @Override
-            public void onProductItemClicked(Product product) {
-
-            }
-
-            @Override
-            public void onShopItemClicked(Shop shop) {
-
-            }
-
-            @Override
-            public void onAddFavorite(int position, Data data) {
-
-            }
-        };
-    }
-
-    private FeedPlus.View.Kol createDummyKolListener() {
-        return new FeedPlus.View.Kol() {
-            @Override
-            public void onGoToKolProfile(int page, int rowNumber, String url) {
-
-            }
-
-            @Override
-            public void onOpenKolTooltip(int page, int rowNumber, String url) {
-
-            }
-
-            @Override
-            public void onFollowKolClicked(int page, int rowNumber, int id) {
-
-            }
-
-            @Override
-            public void onUnfollowKolClicked(int page, int rowNumber, int id) {
-
-            }
-
-            @Override
-            public void onLikeKolClicked(int page, int rowNumber, int id) {
-
-            }
-
-            @Override
-            public void onUnlikeKolClicked(int page, int adapterPosition, int id) {
-
-            }
-
-            @Override
-            public void onGoToKolComment(int page, int rowNumber, KolViewModel kolViewModel) {
-
-            }
-
-            @Override
-            public void onGoToListKolRecommendation(int page, int rowNumber, String url) {
-
-            }
-
-            @Override
-            public void onErrorFollowKol(String errorMessage, int id, int status, int rowNumber) {
-
-            }
-
-            @Override
-            public void onSuccessFollowUnfollowKol(int rowNumber) {
-
-            }
-
-            @Override
-            public void onErrorLikeDislikeKolPost(String errorMessage) {
-
-            }
-
-            @Override
-            public void onSuccessLikeDislikeKolPost(int rowNumber) {
-
-            }
-
-            @Override
-            public void onFollowKolFromRecommendationClicked(int page, int rowNumber, int id, int position) {
-
-            }
-
-            @Override
-            public void onUnfollowKolFromRecommendationClicked(int page, int rowNumber, int id, int position) {
-
-            }
-
-            @Override
-            public void onSuccessFollowKolFromRecommendation(int rowNumber, int position) {
-
-            }
-
-            @Override
-            public void onSuccessUnfollowKolFromRecommendation(int rowNumber, int position) {
-
-            }
-        };
     }
 }

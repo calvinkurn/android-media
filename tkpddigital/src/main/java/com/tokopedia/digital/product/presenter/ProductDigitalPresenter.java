@@ -96,6 +96,16 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
     private boolean ussdTimeOut = false;
 
     private final String PARAM_IS_RESELLER = "is_reseller";
+    private final String PARAM_VALUE_IS_RESELLER = "1";
+
+    private final String PARAM_CATEGORY_ID = "category_id";
+    private final String PARAM_OPERATOR_ID = "operator_id";
+    private final String PARAM_CLIENT_NUMBER = "client_number";
+    private final String PARAM_PRODUCT_ID = "product_id";
+
+    private final String PARAM_SORT = "sort";
+    private final String PARAM_VALUE_SORT = "label";
+
     private final static String balance = "balance";
 
     public ProductDigitalPresenter(IProductDigitalView view,
@@ -106,25 +116,34 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
     }
 
     @Override
-    public void processGetCategoryAndBannerData() {
-        String categoryId = view.getCategoryId();
-
+    public void processGetCategoryAndBannerData(
+            String categoryId, String operatorId, String productId, String clientNumber
+    ) {
         TKPDMapParam<String, String> paramQueryCategory = new TKPDMapParam<>();
         if (GlobalConfig.isSellerApp()) {
-            paramQueryCategory.put(PARAM_IS_RESELLER, "1");
+            paramQueryCategory.put(PARAM_IS_RESELLER, PARAM_VALUE_IS_RESELLER);
         }
 
         TKPDMapParam<String, String> paramQueryBanner = new TKPDMapParam<>();
-        paramQueryBanner.put("category_id", categoryId);
+        paramQueryBanner.put(PARAM_CATEGORY_ID, categoryId);
 
         TKPDMapParam<String, String> paramQueryNumberList = new TKPDMapParam<>();
-        paramQueryNumberList.put("category_id", categoryId);
-        paramQueryNumberList.put("sort", "label");
+        paramQueryNumberList.put(PARAM_CATEGORY_ID, categoryId);
+        if (!TextUtils.isEmpty(operatorId)) {
+            paramQueryNumberList.put(PARAM_OPERATOR_ID, operatorId);
+        }
+        if (!TextUtils.isEmpty(productId)) {
+            paramQueryNumberList.put(PARAM_PRODUCT_ID, productId);
+        }
+        if (!TextUtils.isEmpty(clientNumber)) {
+            paramQueryNumberList.put(PARAM_CLIENT_NUMBER, clientNumber);
+        }
+        paramQueryNumberList.put(PARAM_SORT, PARAM_VALUE_SORT);
 
         view.showInitialProgressLoading();
 
         productDigitalInteractor.getCategoryAndBanner(
-                view.getCategoryId(),
+                categoryId,
                 view.getGeneratedAuthParamNetwork(paramQueryCategory),
                 view.getGeneratedAuthParamNetwork(paramQueryBanner),
                 view.getGeneratedAuthParamNetwork(paramQueryNumberList),
@@ -320,12 +339,16 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
                 HistoryClientNumber historyClientNumber =
                         productDigitalData.getHistoryClientNumber();
                 if (historyClientNumber.getLastOrderClientNumber() == null) {
+                    String lastSelectedOperatorId = getLastOperatorSelected(categoryData.getCategoryId());
+                    String lastSelectedProductId = getLastProductSelected(categoryData.getCategoryId());
                     String lastTypedClientNumber = getLastClientNumberTyped(categoryData.getCategoryId());
                     String verifiedNumber = SessionHandler.getPhoneNumber();
                     if (!TextUtils.isEmpty(lastTypedClientNumber)) {
                         historyClientNumber.setLastOrderClientNumber(
                                 new OrderClientNumber.Builder()
                                         .clientNumber(lastTypedClientNumber)
+                                        .operatorId(lastSelectedOperatorId)
+                                        .productId(lastSelectedProductId)
                                         .build());
                     } else if (isPulsaOrPaketDataOrRoaming(categoryData.getCategoryId()) &
                             !TextUtils.isEmpty(verifiedNumber)) {

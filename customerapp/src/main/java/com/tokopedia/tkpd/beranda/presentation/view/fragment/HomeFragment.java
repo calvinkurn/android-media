@@ -101,7 +101,7 @@ import static com.tokopedia.core.constants.HomeFragmentBroadcastReceiverConstant
 
 public class HomeFragment extends BaseDaggerFragment implements HomeContract.View,
         SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener, OnSectionChangeListener,
-        TabLayout.OnTabSelectedListener, TokoCashUpdateListener, FeedPlus.View, FeedPlus.View.Toppicks {
+        TabLayout.OnTabSelectedListener, TokoCashUpdateListener, FeedPlus.View {
 
     @Inject
     HomePresenter presenter;
@@ -146,7 +146,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                         HomeFragmentBroadcastReceiverConstant.INTENT_ACTION
                 )
         );
-
     }
 
     @Override
@@ -260,7 +259,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private void initAdapter() {
         layoutManager = new LinearLayoutManagerWithSmoothScroller(getContext());
         recyclerView.setLayoutManager(layoutManager);
-        adapterFactory = new HomeAdapterFactory(getFragmentManager(), this, this, this);
+        adapterFactory = new HomeAdapterFactory(getFragmentManager(), this, this);
         adapter = new HomeRecycleAdapter(adapterFactory, new ArrayList<Visitable>());
         spaceItemDecoration = new VerticalSpaceItemDecoration(getResources().getDimensionPixelSize(R.dimen.margin_card_home), true, 1);
         recyclerView.addItemDecoration(spaceItemDecoration);
@@ -345,9 +344,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void onGoToCreateShop() {
-        Intent intent = SellerRouter.getAcitivityShopCreateEdit(getContext());
-        intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
-                SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
+        Intent intent = SellerRouter.getActivityShopCreateEdit(getContext());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         getActivity().startActivity(intent);
     }
@@ -682,7 +679,23 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void onGoToProductDetailFromInspiration(int page, int rowNumber, String productId, String imageSource, String name, String price) {
+    public void onGoToProductDetailFromProductUpload(int rowNumber, int positionFeedCard, int page, int itemPosition, String productId, String imageSourceSingle, String name, String price, String priceInt, String productUrl, String eventLabel) {
+
+    }
+
+    @Override
+    public void onGoToProductDetailFromInspiration(int page,
+                                                   int rowNumber,
+                                                   String productId,
+                                                   String imageSource,
+                                                   String name,
+                                                   String price,
+                                                   String priceInt,
+                                                   String productUrl,
+                                                   String source,
+                                                   int positionFeedCard,
+                                                   int itemPosition,
+                                                   String eventLabel) {
         goToProductDetail(productId, imageSource, name, price);
     }
 
@@ -929,28 +942,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void onToppicksClicked(int page, int rowNumber, String name, String url) {
-        switch ((DeepLinkChecker.getDeepLinkType(url))) {
-            case DeepLinkChecker.BROWSE:
-                DeepLinkChecker.openBrowse(url, getActivity());
-                break;
-            case DeepLinkChecker.HOT:
-                DeepLinkChecker.openHot(url, getActivity());
-                break;
-            case DeepLinkChecker.CATALOG:
-                DeepLinkChecker.openCatalog(url, getActivity());
-                break;
-            default:
-                if (!TextUtils.isEmpty(url)) {
-                    ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity()
-                            , url);
-                }
-        }
-    }
+    public void onContentProviderLinkClicked(String url) {
 
-    @Override
-    public void onSeeAllToppicks(int page, int rowNumber) {
-        startActivity(TopPicksWebView.newInstance(getActivity(), TkpdBaseURL.URL_TOPPICKS));
     }
 
     private void openActivity(String depID, String title) {

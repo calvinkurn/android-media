@@ -10,7 +10,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
  * @author kulomady on 11/20/16.
  */
 
-public class BaseDaggerPresenter<T extends CustomerView> implements CustomerPresenter<T> {
+public abstract class BaseDaggerPresenter<T extends CustomerView> implements CustomerPresenter<T> {
 
     private T view;
 

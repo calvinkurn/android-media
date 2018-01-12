@@ -41,9 +41,14 @@ public class ProductManageActivity extends DrawerPresenterActivity implements Ha
     }
 
     private void checkLogin() {
-        if (getApplication() instanceof TkpdCoreRouter && !SessionHandler.isV4Login(this)) {
-            startActivity(((TkpdCoreRouter) getApplication()).getLoginIntent(this));
-            finish();
+        if (getApplication() instanceof TkpdCoreRouter) {
+            if (!SessionHandler.isV4Login(this)) {
+                startActivity(((TkpdCoreRouter) getApplication()).getLoginIntent(this));
+                finish();
+            } else if (!SessionHandler.isUserHasShop(this)) {
+                startActivity(((TkpdCoreRouter) getApplication()).getHomeIntent(this));
+                finish();
+            }
         }
     }
 

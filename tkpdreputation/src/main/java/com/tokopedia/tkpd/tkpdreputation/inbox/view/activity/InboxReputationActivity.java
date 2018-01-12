@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.app.DrawerPresenterActivity;
@@ -17,6 +18,7 @@ import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
@@ -124,6 +126,15 @@ public class InboxReputationActivity extends DrawerPresenterActivity implements 
             if (goToReputationHistory) {
                 viewPager.setCurrentItem(TAB_SELLER_REPUTATION_HISTORY);
             }
+        } else {
+            if (!SessionHandler.isUserHasShop(this)) {
+                indicator.addTab(indicator.newTab().setText(getString(R.string.title_menu_all)));
+                indicator.setVisibility(View.GONE);
+            } else {
+                indicator.addTab(indicator.newTab().setText(getString(R.string.title_menu_all)));
+                indicator.addTab(indicator.newTab().setText(getString(R.string.title_my_product)));
+                indicator.addTab(indicator.newTab().setText(getString(R.string.title_my_review)));
+            }
         }
 
     }
@@ -141,11 +152,11 @@ public class InboxReputationActivity extends DrawerPresenterActivity implements 
             }
             fragmentList.add(sellerReputationFragment);
         } else {
-            fragmentList.add(InboxReputationFragment.createInstance(TAB_WAITING_REVIEW));
-            fragmentList.add(InboxReputationFragment.createInstance(TAB_MY_REVIEW));
-            if (!sessionHandler.getShopID(this).equals("0")
-                    && !sessionHandler.getShopID(this).equals("")) {
+            if (!SessionHandler.isUserHasShop(this)) {
                 fragmentList.add(InboxReputationFragment.createInstance(TAB_BUYER_REVIEW));
+            } else {
+                fragmentList.add(InboxReputationFragment.createInstance(TAB_WAITING_REVIEW));
+                fragmentList.add(InboxReputationFragment.createInstance(TAB_MY_REVIEW));
             }
         }
 

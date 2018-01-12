@@ -18,6 +18,7 @@ public class HotlistHeaderViewModel implements Visitable<HotlistAdapterTypeFacto
     private String desc;
     private List<HotlistHashTagViewModel> hashTags;
     private HotlistPromo hotlistPromo;
+    private String hotlistTitle;
 
     public HotlistHeaderViewModel() {
     }
@@ -51,6 +52,22 @@ public class HotlistHeaderViewModel implements Visitable<HotlistAdapterTypeFacto
         return typeFactory.type(this);
     }
 
+    public void setHotlistPromo(HotlistPromo hotlistPromo) {
+        this.hotlistPromo = hotlistPromo;
+    }
+
+    public HotlistPromo getHotlistPromo() {
+        return hotlistPromo;
+    }
+
+    public void setHotlistTitle(String hotlistTitle) {
+        this.hotlistTitle = hotlistTitle;
+    }
+
+    public String getHotlistTitle() {
+        return hotlistTitle;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -61,12 +78,16 @@ public class HotlistHeaderViewModel implements Visitable<HotlistAdapterTypeFacto
         dest.writeString(this.imageUrl);
         dest.writeString(this.desc);
         dest.writeTypedList(this.hashTags);
+        dest.writeParcelable(this.hotlistPromo, flags);
+        dest.writeString(this.hotlistTitle);
     }
 
     protected HotlistHeaderViewModel(Parcel in) {
         this.imageUrl = in.readString();
         this.desc = in.readString();
         this.hashTags = in.createTypedArrayList(HotlistHashTagViewModel.CREATOR);
+        this.hotlistPromo = in.readParcelable(HotlistPromo.class.getClassLoader());
+        this.hotlistTitle = in.readString();
     }
 
     public static final Creator<HotlistHeaderViewModel> CREATOR = new Creator<HotlistHeaderViewModel>() {
@@ -80,12 +101,4 @@ public class HotlistHeaderViewModel implements Visitable<HotlistAdapterTypeFacto
             return new HotlistHeaderViewModel[size];
         }
     };
-
-    public void setHotlistPromo(HotlistPromo hotlistPromo) {
-        this.hotlistPromo = hotlistPromo;
-    }
-
-    public HotlistPromo getHotlistPromo() {
-        return hotlistPromo;
-    }
 }
