@@ -648,7 +648,7 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
     }
 
     @Override
-    public boolean isCarrierSignalsAvailable( String carrierName) {
+    public boolean isCarrierSignalsNotAvailable(String carrierName) {
         final String noSognalsStr = "No signal";
         final String noServiceStr = "No service";
         if (carrierName == null) {

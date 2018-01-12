@@ -16,7 +16,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.ContactsContract;
@@ -432,27 +431,21 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             CheckPulsaBalanceView checkPulsaBalanceView = new CheckPulsaBalanceView(getActivity());
             checkPulsaBalanceView.setActionListener(this);
             if (RequestPermissionUtil.checkHasPermission(getActivity(), Manifest.permission.READ_PHONE_STATE)) {
-
                 Operator operator = presenter.getSelectedUssdOperator(i);
-
                 String ussdCode = operator.getUssdCode();
                 if (ussdCode == null || "".equalsIgnoreCase(ussdCode.trim())) {
-
                     String carrierName = DeviceUtil.getOperatorName(getActivity(), i);
                     error = getString(R.string.label_operator_not_support);
-
-                    if (presenter.isCarrierSignalsAvailable(carrierName)) {
+                    if (presenter.isCarrierSignalsNotAvailable(carrierName)) {
                         error = noSognalsStr;
                         carrierName = error;
+                        activeSim = true;
                     } else {
                         if (!activeSim && i == 1) return;
                         activeSim = false;
                     }
-
                     checkPulsaBalanceView.setOperatorName(carrierName);
-
                 }
-
 
                 String phoneNumber = presenter.getUssdPhoneNumberFromCache(i);
                 if (!DeviceUtil.validateNumberAndMatchOperator(categoryDataState.getClientNumberList().get(0).getValidation(),
@@ -464,11 +457,11 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                     }
                 }
 
-                checkPulsaBalanceView.renderData(i, ussdCode, phoneNumber, error,activeSim);
+                checkPulsaBalanceView.renderData(i, ussdCode, phoneNumber, error, activeSim);
                 holderCheckBalance.addView(checkPulsaBalanceView);
                 error = null;
             } else {
-                checkPulsaBalanceView.renderData(0, "", "", error,activeSim);
+                checkPulsaBalanceView.renderData(0, "", "", error, activeSim);
                 holderCheckBalance.addView(checkPulsaBalanceView);
                 return;
             }
@@ -729,7 +722,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             Operator operator = presenter.getSelectedUssdOperator(simPosition);
             String phoneNumber = presenter.getUssdPhoneNumberFromCache(simPosition);
             String carrierName = DeviceUtil.getOperatorName(getActivity(), simPosition);
-            if (presenter.isCarrierSignalsAvailable(carrierName)
+            if (presenter.isCarrierSignalsNotAvailable(carrierName)
                     && !DeviceUtil.validateNumberAndMatchOperator(categoryDataState.getClientNumberList().get(0).getValidation(),
                     operator, phoneNumber)) {
                 presenter.storeUssdPhoneNumber(simPosition, "");
