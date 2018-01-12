@@ -82,6 +82,9 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        if (getArguments().getInt(PARAM_MODE) == CREATE) {
+            setHasOptionsMenu(false);
+        }
     }
 
 
@@ -95,7 +98,7 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         MenuItem item = menu.findItem(R.id.action_organize);
-        if (getArguments().getInt(PARAM_MODE) == CREATE || getArguments().getInt(PARAM_NAV) == 1) {
+        if (getArguments().getInt(PARAM_NAV) == 1) {
             item.getIcon().setAlpha(DISABLE_DELETE);
         } else {
             item.getIcon().setAlpha(ENABLE_DELETE);
