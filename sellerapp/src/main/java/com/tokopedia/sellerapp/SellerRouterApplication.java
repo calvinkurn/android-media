@@ -866,3 +866,4 @@ public abstract class SellerRouterApplication extends MainApplication
     public void sendEventTracking(String event, String category, String action, String label) {
         UnifyTracking.sendGTMEvent(new EventTracking(event, category, action, label).getEvent());
     }
+}

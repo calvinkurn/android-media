@@ -21,7 +21,7 @@
     <string name="shop_open_shipping_location_text_choose_desc">Pilih dari Daftar Alamat yang sudah terdaftar di akun Anda.</string>
     <string name="shop_open_choose_from_address_list">Pilih dari Daftar Alamat</string>
     <string name="shop_open_optional_pinpoint_location_text">Pinpoint Lokasi (Opsional)</string>
-    <string name="shop_open_pin_pickup_location_text">Tandai lokasi pickup dalam peta jika Anda menggunakan kurir Express (seperti Go-Send) atau Cargo Service.</string>
+    <string name="shop_open_pin_pickup_location_text">Tandai lokasi pickup dalam peta jika Anda menggunakan kurir Express (seperti Go-Send).</string>
     <string name="shop_open_pin_location_pickup">Tandai Lokasi Pickup</string>
     <string name="shop_open_default_address_text">Wisma 77 Tower 2, Jalan Letjen S. Parman, Palmerah, 11410.</string>
     <string name="shop_open_default_address_text_use_this">Gunakan Alamat Ini</string>

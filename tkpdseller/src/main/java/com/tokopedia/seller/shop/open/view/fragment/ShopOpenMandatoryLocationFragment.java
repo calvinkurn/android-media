@@ -21,6 +21,7 @@ import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Tok
 import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationContract;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.seller.LogisticRouter;
@@ -73,6 +74,8 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
 
     RequestParams requestParams;
     private ProgressDialog progressDialog;
+
+    private SnackbarRetry snackbarRetry;
 
     public static ShopOpenMandatoryLocationFragment getInstance() {
         return new ShopOpenMandatoryLocationFragment();
@@ -342,6 +345,10 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
         NetworkErrorHelper.showSnackbar(getActivity(), ErrorHandler.getErrorMessage(e, getActivity()));
     }
 
+    private void onErrorGetReserveDomain(String errorMessage){
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
     @Override
     public void onFailedSaveInfoShop(Throwable t) {
 
@@ -351,24 +358,24 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
             errorMessage = t.getMessage();
         } else {
             errorMessage = ErrorHandler.getErrorMessage(t, getActivity());
+        }
 
-            // set error message
-            if(errorMessage.split(",").length > 1){
-                errorMessage = errorMessage.split(",")[0];
-            }
+        // set error message
+        if(errorMessage.split(",").length > 1){
+            errorMessage = errorMessage.split(",")[0];
+        }
 
-            if(errorMessage.contains(CONST_PINPOINT)){
-                onErrorGetReserveDomain(new Throwable(errorMessage));
-                return;
-            }
+        if(errorMessage.contains(CONST_PINPOINT)){
+            onErrorGetReserveDomain(new Throwable(errorMessage));
+            return;
         }
         trackingOpenShop.eventOpenShopLocationError(errorMessage);
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, new NetworkErrorHelper.RetryClickedListener() {
+        (snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
                 onNextButtonClicked();
             }
-        }).showRetrySnackbar();
+        })).showRetrySnackbar();
     }
 
     @Override
