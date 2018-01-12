@@ -21,7 +21,7 @@ public class ContactUsCreateTicketActivity extends BasePresenterActivity impleme
     public static Intent getCallingIntent(Activity activity,
                                           String title,
                                           String solutionId,
-                                          String orderId,
+                                          String invoiceId,
                                           String descriptionTitle,
                                           String attachmentTitle,
                                           String description) {
@@ -29,7 +29,7 @@ public class ContactUsCreateTicketActivity extends BasePresenterActivity impleme
         Bundle bundle = new Bundle();
         bundle.putString(PARAM_TITLE, title);
         bundle.putString(ContactUsActivity.PARAM_SOLUTION_ID, solutionId);
-        bundle.putString(ContactUsActivity.PARAM_ORDER_ID, orderId);
+        bundle.putString(ContactUsActivity.PARAM_INVOICE_ID, invoiceId);
         bundle.putString(PARAM_DESCRIPTION, description);
         bundle.putString(PARAM_DESCRIPTION_TITLE, descriptionTitle);
         bundle.putString(PARAM_ATTACHMENT_TITLE, attachmentTitle);
