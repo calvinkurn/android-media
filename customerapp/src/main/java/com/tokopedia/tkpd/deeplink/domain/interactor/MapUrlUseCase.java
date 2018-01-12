@@ -24,7 +24,8 @@ public class MapUrlUseCase extends UseCase<WhitelistItem> {
 
     private DeeplinkRepository deeplinkRepository;
 
-    public MapUrlUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, DeeplinkRepository deeplinkRepository) {
+    public MapUrlUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread,
+                         DeeplinkRepository deeplinkRepository) {
         super(threadExecutor, postExecutionThread);
         this.deeplinkRepository = deeplinkRepository;
     }
@@ -41,7 +42,8 @@ public class MapUrlUseCase extends UseCase<WhitelistItem> {
                 .firstOrDefault(new WhitelistItem(null, null), new Func1<WhitelistItem, Boolean>() {
                     @Override
                     public Boolean call(WhitelistItem whitelistItem) {
-                        String applink = findApplink(whitelistItem, requestParams.getString(KEY_FINAL_SEGMENTS, ""));
+                        String applink = findApplink(whitelistItem,
+                                requestParams.getString(KEY_FINAL_SEGMENTS, ""));
                         return !TextUtils.isEmpty(applink);
                     }
                 });

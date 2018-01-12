@@ -266,12 +266,14 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openDigitalPage(String applink) {
-        if (((IDigitalModuleRouter) context.getApplication())
-                .isSupportedDelegateDeepLink(applink)) {
-            Bundle bundle = new Bundle();
-            ((IDigitalModuleRouter) context.getApplication()).actionNavigateByApplinksUrl(context,
-                    applink, bundle);
-            context.finish();
+        if (context.getApplication() instanceof IDigitalModuleRouter) {
+            if (((IDigitalModuleRouter) context.getApplication())
+                    .isSupportedDelegateDeepLink(applink)) {
+                Bundle bundle = new Bundle();
+                ((IDigitalModuleRouter) context.getApplication()).actionNavigateByApplinksUrl(context,
+                        applink, bundle);
+                context.finish();
+            }
         }
     }
 

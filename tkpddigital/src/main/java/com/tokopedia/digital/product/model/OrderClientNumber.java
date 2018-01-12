@@ -76,8 +76,6 @@ public class OrderClientNumber implements Parcelable {
         private String productId;
         private String categoryId;
         private String operatorId;
-//        private String lastUpdated;
-//        private String lastProduct;
 
         public Builder() {
         }

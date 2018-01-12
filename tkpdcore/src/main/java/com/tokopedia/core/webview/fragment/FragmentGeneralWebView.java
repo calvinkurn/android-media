@@ -150,13 +150,13 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
                             .showAndCheckApplinkUnsupported();
                 }
             } else {
-                String applink = ((TkpdCoreRouter) getActivity().getApplication())
-                        .applink(getActivity(), url);
-                if (!TextUtils.isEmpty(applink)) {
-                    openDigitalPage(applink);
-                    return true;
-                } else {
-                    return false;
+                if (getActivity().getApplication() instanceof  TkpdCoreRouter) {
+                    String applink = ((TkpdCoreRouter) getActivity().getApplication())
+                            .applink(getActivity(), url);
+                    if (!TextUtils.isEmpty(applink)) {
+                        openDigitalPage(applink);
+                        return true;
+                    }
                 }
             }
             return overrideUrl(url);
@@ -211,11 +211,13 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     }
 
     private void openDigitalPage(String applink) {
-        if (((IDigitalModuleRouter) getActivity().getApplication())
-                .isSupportedDelegateDeepLink(applink)) {
-            Bundle bundle = new Bundle();
-            ((IDigitalModuleRouter) getActivity().getApplication()).actionNavigateByApplinksUrl(getActivity(),
-                    applink, bundle);
+        if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
+            if (((IDigitalModuleRouter) getActivity().getApplication())
+                    .isSupportedDelegateDeepLink(applink)) {
+                Bundle bundle = new Bundle();
+                ((IDigitalModuleRouter) getActivity().getApplication()).actionNavigateByApplinksUrl(getActivity(),
+                        applink, bundle);
+            }
         }
     }
 

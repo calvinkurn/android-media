@@ -30,9 +30,11 @@ public class DeeplinkRepositoryImpl implements DeeplinkRepository {
     private final String KEY_VERSION = "KEY_VERSION";
 
     private Context context;
+    private GlobalCacheManager globalCacheManager;
 
-    public DeeplinkRepositoryImpl(Context context) {
+    public DeeplinkRepositoryImpl(Context context, GlobalCacheManager globalCacheManager) {
         this.context = context;
+        this.globalCacheManager = globalCacheManager;
     }
 
     @Override
@@ -92,21 +94,21 @@ public class DeeplinkRepositoryImpl implements DeeplinkRepository {
     }
 
     private void saveMappingToCache(List<WhitelistItem> whitelistItems) {
-        GlobalCacheManager mappingCache = new GlobalCacheManager();
+//        GlobalCacheManager mappingCache = new GlobalCacheManager();
         Gson gson = new Gson();
         if (whitelistItems != null && !whitelistItems.isEmpty()) {
-            mappingCache.setKey(KEY_MAPPING);
+            globalCacheManager.setKey(KEY_MAPPING);
             Whitelist whitelist = new Whitelist();
             whitelist.data = whitelistItems;
-            mappingCache.setValue(gson.toJson(whitelist));
+            globalCacheManager.setValue(gson.toJson(whitelist));
         }
     }
 
     private void saveVersionToCache() {
-        GlobalCacheManager versionCache = new GlobalCacheManager();
-        versionCache.setKey(KEY_VERSION);
+//        GlobalCacheManager versionCache = new GlobalCacheManager();
+        globalCacheManager.setKey(KEY_VERSION);
         Gson gson = new Gson();
-        versionCache.setValue(gson.toJson(BuildConfig.VERSION_CODE));
+        globalCacheManager.setValue(gson.toJson(BuildConfig.VERSION_CODE));
     }
 
     private List<WhitelistItem> readWhitelistFromFile() {

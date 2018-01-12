@@ -96,6 +96,16 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
     private boolean ussdTimeOut = false;
 
     private final String PARAM_IS_RESELLER = "is_reseller";
+    private final String PARAM_VALUE_IS_RESELLER = "1";
+
+    private final String PARAM_CATEGORY_ID = "category_id";
+    private final String PARAM_OPERATOR_ID = "operator_id";
+    private final String PARAM_CLIENT_NUMBER = "client_number";
+    private final String PARAM_PRODUCT_ID = "product_id";
+
+    private final String PARAM_SORT = "sort";
+    private final String PARAM_VALUE_SORT = "label";
+
     private final static String balance = "balance";
 
     public ProductDigitalPresenter(IProductDigitalView view,
@@ -111,24 +121,24 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
     ) {
         TKPDMapParam<String, String> paramQueryCategory = new TKPDMapParam<>();
         if (GlobalConfig.isSellerApp()) {
-            paramQueryCategory.put(PARAM_IS_RESELLER, "1");
+            paramQueryCategory.put(PARAM_IS_RESELLER, PARAM_VALUE_IS_RESELLER);
         }
 
         TKPDMapParam<String, String> paramQueryBanner = new TKPDMapParam<>();
         paramQueryBanner.put("category_id", categoryId);
 
         TKPDMapParam<String, String> paramQueryNumberList = new TKPDMapParam<>();
-        paramQueryNumberList.put("category_id", categoryId);
+        paramQueryNumberList.put(PARAM_CATEGORY_ID, categoryId);
         if (!TextUtils.isEmpty(operatorId)) {
-            paramQueryNumberList.put("operator_id", operatorId);
+            paramQueryNumberList.put(PARAM_OPERATOR_ID, operatorId);
         }
         if (!TextUtils.isEmpty(productId)) {
-            paramQueryNumberList.put("product_id", productId);
+            paramQueryNumberList.put(PARAM_PRODUCT_ID, productId);
         }
         if (!TextUtils.isEmpty(clientNumber)) {
-            paramQueryNumberList.put("client_number", clientNumber);
+            paramQueryNumberList.put(PARAM_CLIENT_NUMBER, clientNumber);
         }
-        paramQueryNumberList.put("sort", "label");
+        paramQueryNumberList.put(PARAM_SORT, PARAM_VALUE_SORT);
 
         view.showInitialProgressLoading();
 
