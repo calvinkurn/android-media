@@ -110,6 +110,7 @@ public interface IDigitalCartView extends IBaseView {
 
     DigitalCheckoutPassData getPassData();
 
+    void showProgressLoading(String title,String message);
 
 
 

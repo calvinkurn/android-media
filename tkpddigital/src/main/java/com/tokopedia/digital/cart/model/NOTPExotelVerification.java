@@ -7,13 +7,14 @@ import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.util.Log;
 
+import com.exotel.verification.ConfigBuilder;
 import com.exotel.verification.ExotelVerification;
 import com.exotel.verification.VerificationListener;
 import com.exotel.verification.contracts.Config;
 import com.exotel.verification.contracts.VerificationFailed;
 import com.exotel.verification.contracts.VerificationStart;
 import com.exotel.verification.contracts.VerificationSuccess;
-import com.exotel.verification.exceptions.ClientBuilderException;
+
 import com.exotel.verification.exceptions.InvalidConfigException;
 import com.exotel.verification.exceptions.PermissionNotGrantedException;
 import com.exotel.verification.exceptions.VerificationAlreadyInProgressException;
@@ -74,16 +75,31 @@ public class NOTPExotelVerification {
 
 
 
-        ExotelVerification eVerification = new ExotelVerification();
+
         Config config = null;
         try {
-            config = eVerification.configBuilder().
+
+            config= new ConfigBuilder(APPLICATION_ID, SECRET_KEY, ACCOUNT_SID, context).Build();
+            /*config = eVerification.configBuilder().
                     applicationId(APPLICATION_ID).
                     accountSid(ACCOUNT_SID).
                     sharedSecretKey(SECRET_KEY).
                     context(context).
-                    Build();
-        } catch (ClientBuilderException e) {
+                    Build();*/
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        ExotelVerification eVerification = null;
+        try {
+            Log.e(TAG,"intializationStart "+phoneNo);
+            AnalyticsLog.printNOTPLog("NOTP Verification IntializationStart ");
+
+            eVerification = new ExotelVerification(config);
+
+            AnalyticsLog.printNOTPLog("NOTP Verification IntializationComplete ");
+            Log.e(TAG,"intializationComplete "+phoneNo);
+
+        } catch (PermissionNotGrantedException e) {
             e.printStackTrace();
         }
         final String finalPhoneNo = phoneNo;
@@ -107,23 +123,6 @@ public class NOTPExotelVerification {
             }
         }
 
-        try {
-            Log.e(TAG,"intializationStart "+phoneNo);
-            AnalyticsLog.printNOTPLog("NOTP Verification IntializationStart ");
-
-
-            eVerification.initializeVerification(config);
-
-
-            AnalyticsLog.printNOTPLog("NOTP Verification IntializationComplete ");
-            Log.e(TAG,"intializationComplete "+phoneNo);
-
-
-        } catch (PermissionNotGrantedException e) {
-            e.printStackTrace();
-        } catch (InvalidConfigException e) {
-            e.printStackTrace();
-        }
         try {
             AnalyticsLog.printNOTPLog("NOTP Verification startVerification ");
             eVerification.startVerification(new VerifyListener(), phoneNo,WAIT_SECONDS);

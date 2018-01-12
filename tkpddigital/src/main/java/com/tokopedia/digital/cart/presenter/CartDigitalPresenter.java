@@ -16,6 +16,7 @@ import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.digital.R;
 import com.tokopedia.digital.analytics.NOTPTracking;
 import com.tokopedia.digital.cart.data.entity.requestbody.atc.Attributes;
 import com.tokopedia.digital.cart.data.entity.requestbody.atc.Field;
@@ -390,8 +391,7 @@ TO CHECK IF NOTP ENABLED FROM FIREBASE OR NOT
 
     private void needToVerifyOTP() {
 
-        view.showProgressLoading();
-
+        view.showProgressLoading("",view.getApplicationContext().getResources().getString(R.string.msg_verification));
         NOTPExotelVerification.getmInstance().verifyNo(SessionHandler.getPhoneNumber(), view.getActivity(), new NOTPExotelVerification.NOTPVerificationListener() {
             @Override
             public void onVerificationSuccess() {

@@ -255,6 +255,11 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         mainContainer.setVisibility(View.VISIBLE);
     }
 
+
+    @Override
+    public void showProgressLoading(String title,String message) {
+        progressDialogNormal.showDialog(title,message);
+    }
     @Override
     public void showProgressLoading() {
         progressDialogNormal.showDialog();
