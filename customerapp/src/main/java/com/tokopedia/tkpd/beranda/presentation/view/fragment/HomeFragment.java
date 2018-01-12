@@ -146,7 +146,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                         HomeFragmentBroadcastReceiverConstant.INTENT_ACTION
                 )
         );
-
     }
 
     @Override
@@ -939,6 +938,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onGoToShopDetailFromCampaign(int page, int rowNumber, String shopUrl) {
+
+    }
+
+    @Override
+    public void onContentProviderLinkClicked(String url) {
 
     }
 
