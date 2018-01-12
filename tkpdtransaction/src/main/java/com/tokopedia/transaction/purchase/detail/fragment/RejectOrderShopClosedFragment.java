@@ -22,6 +22,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 
 /**
@@ -49,10 +50,21 @@ public class RejectOrderShopClosedFragment extends TkpdFragment {
         ViewGroup endDateLayout = view.findViewById(R.id.end_date_layout);
         EditText startDateField = view.findViewById(R.id.start_date_field);
         EditText endDateField = view.findViewById(R.id.end_date_field);
+        EditText notesField = view.findViewById(R.id.notes_field);
         TextView rejectShipmentConfirmButton = view.findViewById(R.id.reject_shipment_confirm_button);
-        startDateField.setText(DateFormat.getDateTimeInstance().format(new Date()));
+        Calendar calendar = Calendar.getInstance();
+        startDateField.setText(
+                calendar.get(Calendar.DAY_OF_MONTH)
+                        + "/"
+                        + monthNumberZeroGenerator(calendar.get(Calendar.MONTH) + 1)
+                        + Integer.toString(calendar.get(Calendar.MONTH) + 1)
+                        + "/" + calendar.get(Calendar.YEAR));
         endDateLayout.setOnClickListener(onEndDateClickedListener(endDateField));
-        rejectShipmentConfirmButton.setOnClickListener(onConfirmButtonClickedListener(endDateField));
+        endDateField.setOnClickListener(onEndDateClickedListener(endDateField));
+        rejectShipmentConfirmButton.setOnClickListener(onConfirmButtonClickedListener(
+                endDateField,
+                notesField
+        ));
         return view;
     }
 
@@ -82,13 +94,15 @@ public class RejectOrderShopClosedFragment extends TkpdFragment {
         listener = (RejectOrderShopClosedListener) context;
     }
 
-    private void showDatePickerDialog(EditText editText){
+    private void showDatePickerDialog(EditText editText) {
         Calendar calendar = Calendar.getInstance();
         final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         DatePickerDialog datePickerDialog = new DatePickerDialog(
                 getActivity(),
                 onDateSetListener(editText),
-                calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH));
         datePickerDialog.show();
     }
 
@@ -100,19 +114,22 @@ public class RejectOrderShopClosedFragment extends TkpdFragment {
                 newDate.set(year, monthOfYear, dayOfMonth);
                 editText.setText(
                         String.valueOf(dayOfMonth)
-                        + "/"
-                        + String.valueOf(monthOfYear)
-                        + "/" + String.valueOf(year)
+                                + "/"
+                                + monthNumberZeroGenerator(monthOfYear + 1)
+                                + String.valueOf(monthOfYear + 1)
+                                + "/" + String.valueOf(year)
                 );
             }
         };
     }
 
-    private View.OnClickListener onConfirmButtonClickedListener(final EditText endDateField) {
+    private View.OnClickListener onConfirmButtonClickedListener(
+            final EditText endDateField,
+            final EditText notesField) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(endDateField.getText().toString().isEmpty()) {
+                if (endDateField.getText().toString().isEmpty()) {
                     NetworkErrorHelper.showSnackbar(
                             getActivity(),
                             "Mohon Pilih Tanggal Akhir Tutup");
@@ -122,6 +139,7 @@ public class RejectOrderShopClosedFragment extends TkpdFragment {
                             ((OrderDetailData) getArguments().getParcelable(ORDER_DETAIL_DATA_KEY))
                                     .getOrderId());
                     params.put("close_end", endDateField.getText().toString());
+                    params.put("closed_note", notesField.getText().toString());
                     params.put("reason_code", "4");
                     listener.onClosedDateSelected(params);
                 }
@@ -129,10 +147,16 @@ public class RejectOrderShopClosedFragment extends TkpdFragment {
         };
     }
 
-    public interface RejectOrderShopClosedListener{
+    public interface RejectOrderShopClosedListener {
 
         void onClosedDateSelected(TKPDMapParam<String, String> rejectParam);
 
+    }
+
+    private String monthNumberZeroGenerator(int month) {
+        if(month < 10) {
+            return "0";
+        } else return "";
     }
 
 }

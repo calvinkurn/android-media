@@ -367,6 +367,7 @@ public class OrderDetailActivity extends TActivity
                     .commit();
         }
         setResult(Activity.RESULT_OK);
+        finish();
     }
 
     @Override
