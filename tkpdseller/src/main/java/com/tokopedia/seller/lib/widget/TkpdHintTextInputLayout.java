@@ -372,9 +372,6 @@ public class TkpdHintTextInputLayout extends LinearLayout {
 
     public void setSuccessEnabled(boolean enabled) {
         if (mSuccessEnabled != enabled) {
-            /*if (mErrorView != null) {
-                ViewCompat.animate(mErrorView).cancel();
-            }*/
             mSuccessEnabled = enabled;
             checkSuccessVisible();
             setUISuccess();

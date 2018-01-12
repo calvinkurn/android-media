@@ -30,7 +30,6 @@
         <TextView
             android:layout_margin="@dimen/margin_sm"
             style="@style/TextView.Micro.BlackSecondary"
-            android:lineSpacingExtra="5sp"
             android:gravity="center_horizontal"
             android:text="@string/shop_open_pin_pickup_location_text" />
 
