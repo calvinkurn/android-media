@@ -54,8 +54,6 @@
     <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
         android:id="@+id/recycler_view_flight_detail_journey"
         android:layout_width="match_parent"
-        android:paddingLeft="@dimen/padding_med"
-        android:paddingRight="@dimen/padding_med"
         android:layout_height="wrap_content" />
 
 

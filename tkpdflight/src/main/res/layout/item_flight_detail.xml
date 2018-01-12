@@ -12,14 +12,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:paddingTop="@dimen/padding_16"
-        android:paddingBottom="@dimen/padding_small">
+        android:paddingBottom="@dimen/padding_small"
+        android:paddingTop="@dimen/padding_16">
 
         <RelativeLayout
             android:id="@+id/container_flight_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true">
+            android:layout_alignParentTop="true"
+            android:paddingLeft="@dimen/padding_med"
+            android:paddingRight="@dimen/padding_med">
 
             <TextView
                 android:id="@+id/departure_time"
@@ -41,8 +43,8 @@
                 android:layout_height="@dimen/image_width_xxxs"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
-                android:layout_marginTop="6dp"
                 android:layout_marginRight="@dimen/margin_sm"
+                android:layout_marginTop="6dp"
                 android:src="@drawable/selector_flight_detail" />
 
             <TextView
@@ -133,16 +135,18 @@
         </RelativeLayout>
 
         <TextView
-            android:layout_marginTop="@dimen/margin_sm"
             android:id="@+id/transit_info"
-            android:padding="@dimen/padding_small"
             style="@style/TextView.Body1.BlackSecondary"
             android:layout_width="match_parent"
             android:layout_below="@+id/container_flight_info"
+            android:layout_marginLeft="@dimen/padding_small"
+            android:layout_marginRight="@dimen/padding_small"
+            android:layout_marginTop="@dimen/margin_sm"
             android:background="@drawable/bg_stroke_dash_green_flight"
+            android:padding="@dimen/padding_small"
+            android:textSize="@dimen/font_caption"
             android:visibility="gone"
             tools:text="Transit Selama 5 Jam 40 menit di Muscat (MCT)"
-            android:textSize="@dimen/font_caption"
             tools:visibility="visible" />
     </RelativeLayout>
 </LinearLayout>

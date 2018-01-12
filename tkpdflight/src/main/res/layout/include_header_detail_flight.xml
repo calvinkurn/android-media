@@ -10,6 +10,8 @@
     <RelativeLayout
         android:id="@+id/container_header"
         android:layout_width="match_parent"
+        android:paddingLeft="@dimen/padding_small"
+        android:paddingRight="@dimen/padding_med"
         android:layout_height="wrap_content">
 
         <android.support.v7.widget.AppCompatImageView
@@ -78,6 +80,8 @@
         android:layout_marginTop="@dimen/margin_small"
         android:gravity="center_vertical"
         android:orientation="horizontal"
+        android:paddingLeft="@dimen/padding_med"
+        android:paddingRight="@dimen/padding_med"
         android:visibility="gone"
         tools:visibility="visible">
 
@@ -104,5 +108,7 @@
         android:layout_height="1dp"
         android:layout_below="@+id/container_pnr"
         android:layout_marginTop="@dimen/margin_vs"
-        android:background="@color/black_twenty_percent" />
+        android:background="@color/black_twenty_percent"
+        android:layout_marginLeft="@dimen/padding_small"
+        android:layout_marginRight="@dimen/padding_small" />
 </RelativeLayout>
