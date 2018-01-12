@@ -241,7 +241,7 @@ public class GTMContainer implements IGTMContainer {
         authEvent.setUserID(SessionHandler.getGTMLoginID(context));
         authEvent.setShopID(SessionHandler.getShopID(context));
         authEvent.setShopId(SessionHandler.getShopID(context));
-        authEvent.setUserSeller(SessionHandler.getShopID(context).equals("0") ? 0 : 1);
+        authEvent.setUserSeller(SessionHandler.isUserHasShop(context)? 1 : 0);
 
         CommonUtils.dumper("GAv4 appdata " + new JSONObject(authEvent.getAuthDataLayar()).toString());
 
@@ -258,7 +258,7 @@ public class GTMContainer implements IGTMContainer {
         authEvent.setUserID(SessionHandler.getGTMLoginID(context));
         authEvent.setShopId(shopID);
         authEvent.setShopType(shopType);
-        authEvent.setUserSeller(SessionHandler.getShopID(context).equals("0") ? 0 : 1);
+        authEvent.setUserSeller(SessionHandler.isUserHasShop(context) ? 1 : 0);
 
         CommonUtils.dumper("GAv4 appdata " + new JSONObject(authEvent.getAuthDataLayar()).toString());
 

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:padding="@dimen/padding_small"
     android:background="@drawable/cards_ui_2"
     android:layout_marginBottom="@dimen/padding_small"
@@ -29,7 +31,7 @@
             android:gravity="center_vertical"
             android:layout_gravity="center_vertical"
             android:layout_weight="0.9"
-            android:layout_marginStart="@dimen/margin_vs"/>
+            android:layout_marginLeft="@dimen/margin_vs"/>
 
     </LinearLayout>
     <LinearLayout
@@ -48,7 +50,8 @@
             android:layout_height="wrap_content"
             android:text="@string/info_shipping_unavailable"
             android:layout_marginLeft="@dimen/margin_vs"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            tools:visibility="visible"/>
 
         <LinearLayout
             android:id="@+id/shipping_settings"
