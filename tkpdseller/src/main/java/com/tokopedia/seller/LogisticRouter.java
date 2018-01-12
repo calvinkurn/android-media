@@ -1,12 +1,10 @@
-package com.tokopedia.core.router.logistic;
+package com.tokopedia.seller;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Token;
-import com.tokopedia.core.router.OnActivityResultListener;
 
 /**
  * Created by normansyahputa on 12/20/17.
