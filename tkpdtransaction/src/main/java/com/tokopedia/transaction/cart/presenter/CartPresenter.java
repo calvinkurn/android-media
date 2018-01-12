@@ -517,7 +517,7 @@ public class CartPresenter implements ICartPresenter {
                 }.getType());
         checkoutData.setStep(1);
         checkoutData.setCheckoutOption("cart page loaded");
-        PaymentTracking.eventCartCheckout();
+        PaymentTracking.eventCartCheckout(checkoutData);
     }
 
     @Override
