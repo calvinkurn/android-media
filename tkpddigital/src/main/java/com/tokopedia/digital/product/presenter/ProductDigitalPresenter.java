@@ -119,9 +119,15 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
 
         TKPDMapParam<String, String> paramQueryNumberList = new TKPDMapParam<>();
         paramQueryNumberList.put("category_id", categoryId);
-        paramQueryNumberList.put("operator_id", operatorId);
-        paramQueryNumberList.put("product_id", productId);
-        paramQueryNumberList.put("client_number", clientNumber);
+        if (!TextUtils.isEmpty(operatorId)) {
+            paramQueryNumberList.put("operator_id", operatorId);
+        }
+        if (!TextUtils.isEmpty(productId)) {
+            paramQueryNumberList.put("product_id", productId);
+        }
+        if (!TextUtils.isEmpty(clientNumber)) {
+            paramQueryNumberList.put("client_number", clientNumber);
+        }
         paramQueryNumberList.put("sort", "label");
 
         view.showInitialProgressLoading();

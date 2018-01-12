@@ -164,7 +164,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 if (TextUtils.isEmpty(deeplink.applink)) {
                     viewListener.initDeepLink();
                 } else {
-                    String screenName = "something";
+                    String screenName = AppScreen.SCREEN_NATIVE_RECHARGE;
                     sendCampaignGTM(uriData.toString(), screenName);
                     openDigitalPage(deeplink.applink);
                 }
