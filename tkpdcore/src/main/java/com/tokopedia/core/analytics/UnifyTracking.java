@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.tokopedia.core.util.DateFormatUtils.DEFAULT_LOCALE;
@@ -3042,7 +3043,15 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Event.SEARCH_RESULT,
                 AppEventTracking.Category.FILTER_PRODUCT,
                 AppEventTracking.Action.FILTER.toLowerCase() + " - " + screenName,
-                TextUtils.join(", ", selectedFilter.keySet()) + " - " + TextUtils.join(", ", selectedFilter.values())
+                generateFilterEventLabel(selectedFilter)
         ).setUserId().getEvent());
+    }
+
+    private static String generateFilterEventLabel(Map<String, String> selectedFilter) {
+        List<String> filterList = new ArrayList<>();
+        for (Map.Entry<String, String> entry : selectedFilter.entrySet()) {
+            filterList.add(entry.getKey() + "=" + entry.getValue());
+        }
+        return TextUtils.join("&", filterList);
     }
 }
