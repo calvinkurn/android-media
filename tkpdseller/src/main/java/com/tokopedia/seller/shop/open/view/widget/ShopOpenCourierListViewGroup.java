@@ -71,13 +71,7 @@ public class ShopOpenCourierListViewGroup extends LinearLayout implements ShopOp
             Courier courier = courierList.get(i);
             ShopOpenCourierExpandableOption shopCourierExpandableOption =
                     (ShopOpenCourierExpandableOption) LayoutInflater.from(getContext()).inflate(R.layout.item_shop_courier, this, false);
-            shopCourierExpandableOption.setTitleText(courier.getName());
-            shopCourierExpandableOption.setLogo(courier.getLogo());
-            boolean isEnabled = (courier.isExpressCourierId() && hasPinPointLocation)
-                    || (!courier.isExpressCourierId() && courier.isAvailable());
-            shopCourierExpandableOption.setEnabled(isEnabled);
-            shopCourierExpandableOption.setChild(courier.getServices());
-            shopCourierExpandableOption.setCourier(courier);
+            shopCourierExpandableOption.setCourier(courier, hasPinPointLocation);
             shopCourierExpandableOption.setOnShopCourierExpandableOptionListener(this);
             if (selectedCourierServiceList != null && selectedCourierServiceList.contains(courier.getId())) {
                 shopCourierExpandableOption.setChecked(true);
