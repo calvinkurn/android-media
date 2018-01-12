@@ -1,10 +1,14 @@
 package com.tkpd.library.utils;
 
+import android.os.Build;
+
 import com.logentries.logger.AndroidLogger;
+import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 
@@ -71,5 +75,16 @@ public class AnalyticsLog {
         }
 
         return instance;
+    }
+
+    public static void testLog() {
+        AnalyticsLog.log(
+                "Test Nisie! User: " + SessionHandler.getLoginID(MainApplication.getAppContext())
+                        + " Device ID: " + GCMHandler.getRegistrationId(MainApplication.getAppContext())
+                        + " App Version : " + GlobalConfig.getPackageApplicationName() + " " + GlobalConfig.VERSION_NAME
+                        + " App Code : " + GlobalConfig.VERSION_CODE
+                        + " Android Version : " + Build.VERSION.RELEASE
+                        + " Android Model : " + android.os.Build.MODEL
+        );
     }
 }
