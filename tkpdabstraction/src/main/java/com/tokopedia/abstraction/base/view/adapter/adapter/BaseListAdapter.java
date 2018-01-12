@@ -3,7 +3,6 @@ package com.tokopedia.abstraction.base.view.adapter.adapter;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter;
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 
@@ -17,10 +16,6 @@ public class BaseListAdapter<T extends Visitable, F extends AdapterTypeFactory> 
 
     private OnAdapterInteractionListener<T> onAdapterInteractionListener;
     private boolean nonDataElementOnLastOnly = true;
-
-    public interface OnAdapterInteractionListener<T> {
-        void onItemClicked(T t);
-    }
 
     public BaseListAdapter(F baseListAdapterTypeFactory) {
         super(baseListAdapterTypeFactory);
@@ -41,19 +36,21 @@ public class BaseListAdapter<T extends Visitable, F extends AdapterTypeFactory> 
 
     @Override
     public void onBindViewHolder(final AbstractViewHolder holder, int position) {
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (onAdapterInteractionListener != null) {
-                    try {
-                        T item = (T) visitables.get(holder.getAdapterPosition());
-                        onAdapterInteractionListener.onItemClicked(item);
-                    } catch (ClassCastException e) {
-                        e.printStackTrace();
+        if (onAdapterInteractionListener != null) {
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (onAdapterInteractionListener != null) {
+                        try {
+                            T item = (T) visitables.get(holder.getAdapterPosition());
+                            onAdapterInteractionListener.onItemClicked(item);
+                        } catch (ClassCastException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
         super.onBindViewHolder(holder,position);
     }
 
@@ -88,6 +85,10 @@ public class BaseListAdapter<T extends Visitable, F extends AdapterTypeFactory> 
 
     public int getDataSize(){
         return getData().size();
+    }
+
+    public interface OnAdapterInteractionListener<T> {
+        void onItemClicked(T t);
     }
 
 }

@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.booking.domain.FlightBookingGetSingleResultUseCase;
 import com.tokopedia.flight.common.data.domain.DeleteFlightCacheUseCase;
 import com.tokopedia.flight.common.subscriber.OnNextSubscriber;
-import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.search.constant.FlightSortOption;
 import com.tokopedia.flight.search.domain.FlightSearchMetaUseCase;
 import com.tokopedia.flight.search.domain.FlightSearchStatisticUseCase;
@@ -16,7 +15,6 @@ import com.tokopedia.flight.search.view.model.FlightSearchApiRequestModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchWithMetaViewModel;
 import com.tokopedia.flight.search.view.model.filter.FlightFilterModel;
-import com.tokopedia.flight.search.view.model.resultstatistics.FlightSearchStatisticModel;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -143,12 +141,12 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
         compositeSubscription.add(subscription);
     }
 
-    public void getFlightStatistic(boolean isReturning) {
+    /*public void getFlightStatistic(boolean isReturning) {
         flightSearchStatisticUseCase.execute(FlightSearchUseCase.generateRequestParams(
                 null,
                 isReturning, true, null, FlightSortOption.NO_PREFERENCE),
                 getSubscriberSearchStatisticFlight());
-    }
+    }*/
 
     public void sortFlight(List<FlightSearchViewModel> flightSearchViewModelList,
                            @FlightSortOption int sortOptionId) {
@@ -272,26 +270,6 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
                     getView().hideFilterAndSortView();
                 }
                 getView().setSelectedSortItem(sortOptionId);
-            }
-        };
-    }
-
-    public Subscriber<FlightSearchStatisticModel> getSubscriberSearchStatisticFlight() {
-        return new Subscriber<FlightSearchStatisticModel>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-                getView().showGetListError(e);
-            }
-
-            @Override
-            public void onNext(FlightSearchStatisticModel statisticModel) {
-                getView().onSuccessGetStatistic(statisticModel);
             }
         };
     }

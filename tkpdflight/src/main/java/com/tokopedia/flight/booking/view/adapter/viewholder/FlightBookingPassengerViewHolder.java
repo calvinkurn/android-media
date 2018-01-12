@@ -93,7 +93,7 @@ public class FlightBookingPassengerViewHolder extends AbstractViewHolder<FlightB
             for (FlightBookingAmenityMetaViewModel flightBookingLuggageRouteViewModel : viewModel.getFlightBookingLuggageMetaViewModels()) {
                 ArrayList<String> selectedLuggages = new ArrayList<>();
                 for (FlightBookingAmenityViewModel flightBookingLuggageViewModel : flightBookingLuggageRouteViewModel.getAmenities()) {
-                    selectedLuggages.add(flightBookingLuggageViewModel.getTitle() + " - " + flightBookingLuggageViewModel.getPrice());
+                    selectedLuggages.add(flightBookingLuggageViewModel.getTitle());
                 }
                 simpleViewModels.add(new SimpleViewModel(
                         itemView.getContext().getString(R.string.flight_booking_list_passenger_luggage_label) + " " + flightBookingLuggageRouteViewModel.getDescription(),
@@ -110,8 +110,10 @@ public class FlightBookingPassengerViewHolder extends AbstractViewHolder<FlightB
                 ));
             }
         }
+
         FlightSimpleAdapter adapter = new FlightSimpleAdapter();
         adapter.setTitleBold(true);
+        adapter.setContentAllignmentRight(true);
         adapter.setDescriptionTextColor(itemView.getResources().getColor(R.color.font_black_secondary_54));
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.VERTICAL, false);

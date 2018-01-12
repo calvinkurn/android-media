@@ -1,7 +1,7 @@
 package com.tokopedia.flight.orderlist.view.adapter;
 
-import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderBaseViewModel;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 
@@ -20,7 +20,7 @@ public class FlightOrderAdapter extends BaseListAdapter<Visitable, FlightOrderTy
 
         void onDetailOrderClicked(String orderId);
 
-        void onHelpOptionClicked(String orderId);
+        void onHelpOptionClicked(String orderId, int status);
 
         void onReBookingClicked(FlightOrderBaseViewModel item);
     }

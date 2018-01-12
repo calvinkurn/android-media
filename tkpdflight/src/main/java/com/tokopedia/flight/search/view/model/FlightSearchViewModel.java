@@ -135,20 +135,25 @@ public class FlightSearchViewModel implements Parcelable, Visitable<FilterSearch
             Route route = routeList.get(j);
             String airlineID = route.getAirline();
             // to set the airline in route to the summary
-            if (!addedAirlineIDList.contains(airlineID)) {
-                if (dbAirlineMaps.containsKey(airlineID)) {
-                    String airlineNameFromMap = dbAirlineMaps.get(airlineID).getFullName();
-                    String airlineShortNameFromMap = dbAirlineMaps.get(airlineID).getShortName();
-                    String airlineLogoFromMap = dbAirlineMaps.get(airlineID).getLogo();
-                    int mandatory = dbAirlineMaps.get(airlineID).getMandatoryDob();
-                    route.setAirlineName(airlineNameFromMap);
-                    route.setAirlineLogo(airlineLogoFromMap);
+
+            if (dbAirlineMaps.containsKey(airlineID)) {
+                String airlineNameFromMap = dbAirlineMaps.get(airlineID).getFullName();
+                String airlineShortNameFromMap = dbAirlineMaps.get(airlineID).getShortName();
+                String airlineLogoFromMap = dbAirlineMaps.get(airlineID).getLogo();
+                int mandatory = dbAirlineMaps.get(airlineID).getMandatoryDob();
+                route.setAirlineName(airlineNameFromMap);
+                route.setAirlineLogo(airlineLogoFromMap);
+                if (!addedAirlineIDList.contains(airlineID)) {
                     addedAirlineIDList.add(airlineID);
                     airlineDBArrayList.add(new FlightAirlineDB(airlineID, airlineNameFromMap, airlineShortNameFromMap, airlineLogoFromMap, mandatory));
-                } else {
+                }
+            } else {
+                if (!addedAirlineIDList.contains(airlineID)) {
+                    addedAirlineIDList.add(airlineID);
                     airlineDBArrayList.add(new FlightAirlineDB(airlineID, "", "", "", 0));
                 }
             }
+
 
             String depAirportID = route.getDepartureAirport();
             if (dbAirportMaps.containsKey(depAirportID)) {

@@ -50,14 +50,11 @@ import rx.subscriptions.CompositeSubscription;
 public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBookingContract.View>
         implements FlightBookingContract.Presenter {
 
-    private static final String DEFAULT_COUNTRY_CODE_PHONE_NUMBER = "ID";
     private FlightBookingGetSingleResultUseCase flightBookingGetSingleResultUseCase;
     private FlightAddToCartUseCase flightAddToCartUseCase;
     private FlightBookingCartDataMapper flightBookingCartDataMapper;
     private FlightBookingGetPhoneCodeUseCase flightBookingGetPhoneCodeUseCase;
     private CompositeSubscription compositeSubscription;
-
-    private ArrayList<String> airAsiaFlightIds;
 
     @Inject
     public FlightBookingPresenter(FlightBookingGetSingleResultUseCase flightBookingGetSingleResultUseCase,
@@ -303,17 +300,11 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
 
     @NonNull
     private Observable<FlightBookingPhoneCodeViewModel> getDefaultPhoneDataObservable() {
-        return flightBookingGetPhoneCodeUseCase.createObservable(RequestParams.EMPTY)
+        return flightBookingGetPhoneCodeUseCase.createObservable(flightBookingGetPhoneCodeUseCase.createRequest("Indonesia"))
                 .flatMap(new Func1<List<FlightBookingPhoneCodeViewModel>, Observable<FlightBookingPhoneCodeViewModel>>() {
                     @Override
                     public Observable<FlightBookingPhoneCodeViewModel> call(List<FlightBookingPhoneCodeViewModel> flightBookingPhoneCodeViewModels) {
                         return Observable.from(flightBookingPhoneCodeViewModels);
-                    }
-                })
-                .filter(new Func1<FlightBookingPhoneCodeViewModel, Boolean>() {
-                    @Override
-                    public Boolean call(FlightBookingPhoneCodeViewModel flightBookingPhoneCodeViewModel) {
-                        return flightBookingPhoneCodeViewModel.getCountryId().equalsIgnoreCase(DEFAULT_COUNTRY_CODE_PHONE_NUMBER);
                     }
                 }).first();
     }

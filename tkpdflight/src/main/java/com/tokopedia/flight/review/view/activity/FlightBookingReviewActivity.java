@@ -35,4 +35,15 @@ public class FlightBookingReviewActivity extends BaseFlightActivity implements H
                 .flightComponent(FlightComponentInstance.getFlightComponent(getApplication()))
                 .build();
     }
+
+    @Override
+    public void onBackPressed() {
+        if (getFragment() instanceof OnBackActionListener) {
+            if (!((OnBackActionListener) getFragment()).isCanGoBack()) {
+                ((OnBackActionListener) getFragment()).onBackPressed();
+                return;
+            }
+        }
+        super.onBackPressed();
+    }
 }

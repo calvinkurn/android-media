@@ -96,6 +96,8 @@ public interface FlightBookingPassengerContract {
         void hideKeyboard();
 
         boolean isAirAsiaAirline();
+
+        String getDepartureDateString();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -104,7 +106,7 @@ public interface FlightBookingPassengerContract {
 
         void onSaveButtonClicked();
 
-        void onBirthdateClicked(String departureDate);
+        void onBirthdateClicked();
 
         void onBirthdateChange(int year, int month, int date);
 

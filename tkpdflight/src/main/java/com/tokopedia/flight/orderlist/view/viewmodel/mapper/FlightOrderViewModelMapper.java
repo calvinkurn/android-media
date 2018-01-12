@@ -68,7 +68,7 @@ public class FlightOrderViewModelMapper {
                     inProcessViewModel.setStatus(flightOrder.getStatus());
                     switch (flightOrder.getStatus()) {
                         case 101:
-                        case 201:
+                        case 200:
                             inProcessViewModel.setTitle(R.string.flight_order_waiting_for_confirmation_title);
                             break;
                         case 300:

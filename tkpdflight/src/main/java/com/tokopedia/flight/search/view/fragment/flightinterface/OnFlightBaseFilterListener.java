@@ -6,5 +6,6 @@ package com.tokopedia.flight.search.view.fragment.flightinterface;
 
 public interface OnFlightBaseFilterListener {
     void resetFilter();
+
     void changeFilterToOriginal();
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.flight.detail.view.model;
 
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
+import com.tokopedia.flight.orderlist.data.cloud.entity.JourneyEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.RouteEntity;
 import com.tokopedia.flight.search.data.cloud.model.response.Route;
 
@@ -62,7 +63,7 @@ public class FlightDetailRouteViewModelMapper {
         return flightDetailRouteViewModels;
     }
 
-    public FlightDetailRouteViewModel transform(RouteEntity route) {
+    public FlightDetailRouteViewModel transform(JourneyEntity journeyEntity, RouteEntity route) {
         FlightDetailRouteViewModel flightDetailRouteViewModel = null;
         if (route != null) {
             flightDetailRouteViewModel = new FlightDetailRouteViewModel();
@@ -77,7 +78,8 @@ public class FlightDetailRouteViewModelMapper {
 //            flightDetailRouteViewModel.setDepartureAirportName(route.getDepartureAirportName());
             flightDetailRouteViewModel.setDepartureTimestamp(route.getDepartureTime());
             flightDetailRouteViewModel.setDepartureAirportCode(route.getDepartureAirportCode());
-//            flightDetailRouteViewModel.setDuration(route.getDuration());
+            flightDetailRouteViewModel.setDuration(journeyEntity.getDuration());
+            flightDetailRouteViewModel.setPnr(route.getPnr());
             flightDetailRouteViewModel.setFlightNumber(route.getFlightNumber());
             flightDetailRouteViewModel.setLayover(String.valueOf(route.getLayoverMinute()));
             flightDetailRouteViewModel.setRefundable(route.isRefundable());
@@ -87,12 +89,12 @@ public class FlightDetailRouteViewModelMapper {
         return flightDetailRouteViewModel;
     }
 
-    public List<FlightDetailRouteViewModel> transformList(List<RouteEntity> routeEntities) {
+    public List<FlightDetailRouteViewModel> transformList(JourneyEntity journeyEntity, List<RouteEntity> routeEntities) {
         List<FlightDetailRouteViewModel> flightDetailRouteViewModels = new ArrayList<>();
         FlightDetailRouteViewModel flightDetailRouteViewModel;
         if (routeEntities != null) {
             for (RouteEntity route : routeEntities) {
-                flightDetailRouteViewModel = transform(route);
+                flightDetailRouteViewModel = transform(journeyEntity, route);
                 if (flightDetailRouteViewModel != null) {
                     flightDetailRouteViewModels.add(flightDetailRouteViewModel);
                 }

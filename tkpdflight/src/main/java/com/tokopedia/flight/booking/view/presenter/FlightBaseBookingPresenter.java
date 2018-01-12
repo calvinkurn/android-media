@@ -328,8 +328,8 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                 String.format(getView().getString(R.string.flight_booking_passenger_price_format),
                         departureAirport,
                         arrivalAirport,
-                        passengerCount,
-                        label),
+                        label,
+                passengerCount),
                 convertPriceValueToIdrFormat(price));
     }
 }

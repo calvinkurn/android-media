@@ -18,7 +18,6 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.core.ForceUpdate;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.data.executor.JobExecutor;
@@ -26,6 +25,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.cache.domain.interactor.CacheApiClearAllUseCase;
+import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
@@ -38,14 +38,13 @@ import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.product.model.share.ShareData;
-import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.router.OtpRouter;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.core.router.CustomerRouter;
+import com.tokopedia.core.router.OtpRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
@@ -75,17 +74,17 @@ import com.tokopedia.digital.product.activity.DigitalWebActivity;
 import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.TkpdFlight;
+import com.tokopedia.flight.contactus.model.FlightContactUsPassData;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
+import com.tokopedia.inbox.contactus.activity.ContactUsCreateTicketActivity;
 import com.tokopedia.inbox.inboxchat.activity.InboxChatActivity;
 import com.tokopedia.inbox.inboxchat.activity.SendMessageActivity;
 import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
-import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
-import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
 import com.tokopedia.inbox.inboxmessageold.activity.InboxMessageActivity;
 import com.tokopedia.inbox.inboxmessageold.activity.SendMessageActivityOld;
-import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResCenterActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
+import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
 import com.tokopedia.otp.phoneverification.activity.RidePhoneNumberVerificationActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
@@ -143,7 +142,6 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import okhttp3.Interceptor;
 import okhttp3.Response;
 import rx.Observable;
 
@@ -162,17 +160,27 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TokoCashRouter, IWalletRouter, AbstractionRouter, FlightModuleRouter, ILoyaltyRouter, ReputationRouter {
 
     public static final String COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME = "com.tokopedia.tkpd.home.ParentIndexHome";
-
-    private DaggerProductComponent.Builder daggerProductBuilder;
-    private DaggerReactNativeComponent.Builder daggerReactNativeBuilder;
-    private ProductComponent productComponent;
-    private ReactNativeComponent reactNativeComponent;
     @Inject
     ReactNativeHost reactNativeHost;
     @Inject
     ReactUtils reactUtils;
-
+    private DaggerProductComponent.Builder daggerProductBuilder;
+    private DaggerReactNativeComponent.Builder daggerReactNativeBuilder;
+    private ProductComponent productComponent;
+    private ReactNativeComponent reactNativeComponent;
     private RemoteConfig remoteConfig;
+
+    public static List<PeriodRangeModel> convert(List<PeriodRangeModelCore> periodRangeModelCores) {
+        List<PeriodRangeModel> periodRangeModels = new ArrayList<>();
+        for (PeriodRangeModelCore periodRangeModelCore : periodRangeModelCores) {
+            periodRangeModels.add(new PeriodRangeModel(
+                    periodRangeModelCore.getStartDate(),
+                    periodRangeModelCore.getEndDate(),
+                    periodRangeModelCore.getLabel()
+            ));
+        }
+        return periodRangeModels;
+    }
 
     @Override
     public void onCreate() {
@@ -532,7 +540,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         activity.startActivity(BannerWebView.getCallingIntent(activity, mobileUrl));
     }
 
-
     @Override
     public void onLogout(AppComponent appComponent) {
         CacheApiClearAllUseCase cacheApiClearAllUseCase = appComponent.cacheApiClearAllUseCase();
@@ -591,6 +598,24 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent getContactUsIntent(Activity activity, FlightContactUsPassData passData) {
+        return ContactUsCreateTicketActivity.getCallingIntent(
+                activity,
+                passData.getToolbarTitle(),
+                passData.getSolutionId(),
+                passData.getOrderId(),
+                passData.getDescriptionTitle(),
+                passData.getAttachmentTitle(),
+                passData.getDescription()
+        );
+    }
+
+    @Override
+    protected List<CacheApiWhiteListDomain> getWhiteList() {
+        return null;
+    }
+
+    @Override
     public Class<?> getHomeClass(Context context) throws ClassNotFoundException {
         return Class.forName(COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME);
     }
@@ -599,7 +624,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public String getSchemeAppLinkCancelPayment() {
         return Constants.Applinks.PAYMENT_BACK_TO_DEFAULT;
     }
-
 
     @Override
     public Intent instanceIntentCartDigitalProductWithBundle(Bundle bundle) {
@@ -685,7 +709,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                     customSubject, customMessage, source);
     }
 
-
     @Override
     public Intent getAskUserIntent(Context context, String userId, String userName, String source,
                                    String avatar) {
@@ -721,7 +744,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                                       Bundle bundlePass) {
         context.startActivity(getIntentAppLinkWallet(context, appLinkScheme, alternateRedirectUrl));
     }
-
 
     @Override
     public void navigateAppLinkWallet(Activity activity,
@@ -776,7 +798,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 ? new Intent(context, DeeplinkHandlerActivity.class).setData(Uri.parse(appLinkScheme))
                 : DigitalWebActivity.newInstance(context, appLinkScheme);
     }
-
 
     @Override
     public String getFlavor() {
@@ -852,18 +873,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         else
             return InboxMessageActivity.getCallingIntent(context);
 
-    }
-
-    public static List<PeriodRangeModel> convert(List<PeriodRangeModelCore> periodRangeModelCores) {
-        List<PeriodRangeModel> periodRangeModels = new ArrayList<>();
-        for (PeriodRangeModelCore periodRangeModelCore : periodRangeModelCores) {
-            periodRangeModels.add(new PeriodRangeModel(
-                    periodRangeModelCore.getStartDate(),
-                    periodRangeModelCore.getEndDate(),
-                    periodRangeModelCore.getLabel()
-            ));
-        }
-        return periodRangeModels;
     }
 
     @Override

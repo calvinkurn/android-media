@@ -21,17 +21,14 @@ import rx.Observable;
 public class FlightAirportDataListSource extends DataListSource<FlightAirportCountry, FlightAirportDB> {
 
     public static final String ID_COUNTRY = "ID_COUNTRY";
+    private FlightAirportDataListDBSource flightAirportDataListDBSource;
 
     @Inject
     public FlightAirportDataListSource(FlightAirportDataCacheSource dataListCacheManager,
                                        FlightAirportDataListDBSource dataListDBManager,
                                        FlightAirportDataListFileSource dataListCloudManager) {
         super(dataListCacheManager, dataListDBManager, dataListCloudManager);
-    }
-
-    public Observable<List<FlightAirportDB>> getAirportList(final String queryText) {
-        final HashMap<String, Object> map = generateGetParam(queryText);
-        return getDataList(map);
+        flightAirportDataListDBSource = dataListDBManager;
     }
 
     public static HashMap<String, Object> generateGetParam(String query) {
@@ -60,16 +57,25 @@ public class FlightAirportDataListSource extends DataListSource<FlightAirportCou
         return (String) params.get(FlightAirportDataListDBSource.ID);
     }
 
-    public static String getIdCountryFromMap(HashMap<String, Object> params){
+    public static String getIdCountryFromMap(HashMap<String, Object> params) {
         if (params == null) {
             return "";
         }
         return (String) params.get(ID_COUNTRY);
     }
 
+    public Observable<List<FlightAirportDB>> getAirportList(final String queryText) {
+        final HashMap<String, Object> map = generateGetParam(queryText);
+        return getDataList(map);
+    }
+
     public Observable<List<FlightAirportDB>> getAirportList(String query, String idCountry) {
         HashMap<String, Object> map = generateGetParam(query);
         map.put(ID_COUNTRY, idCountry);
         return getDataList(map);
+    }
+
+    public Observable<List<FlightAirportDB>> getPhoneCodeList(String query) {
+        return flightAirportDataListDBSource.getPhoneCodeList(query);
     }
 }

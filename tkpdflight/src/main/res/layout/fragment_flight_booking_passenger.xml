@@ -20,7 +20,12 @@
             android:layout_marginBottom="@dimen/margin_med"
             android:background="@color/white"
             android:orientation="vertical"
-            android:padding="@dimen/padding_small">
+            android:paddingBottom="@dimen/padding_small"
+            android:paddingEnd="@dimen/padding_16"
+            android:paddingLeft="@dimen/padding_16"
+            android:paddingRight="@dimen/padding_16"
+            android:paddingStart="@dimen/padding_16"
+            android:paddingTop="@dimen/padding_small">
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/tv_header"
@@ -43,11 +48,15 @@
                 android:id="@+id/sp_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_sm"
+                android:layout_marginTop="@dimen/margin_vs"
                 app:spinner_hint="Pilih Titel" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_sm"
+                android:layout_marginTop="@dimen/margin_vs"
                 android:orientation="horizontal">
 
                 <com.tokopedia.design.text.TkpdHintTextInputLayout
@@ -95,6 +104,8 @@
                 style="@style/HintTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_sm"
+                android:layout_marginTop="@dimen/margin_vs"
                 android:hint="@string/flight_booking_passenger_birthdate_hint">
 
                 <android.support.v7.widget.AppCompatEditText
@@ -121,7 +132,12 @@
             android:layout_marginTop="@dimen/margin_med"
             android:background="@color/white"
             android:orientation="vertical"
-            android:padding="@dimen/padding_small"
+            android:paddingBottom="@dimen/padding_small"
+            android:paddingEnd="@dimen/padding_16"
+            android:paddingLeft="@dimen/padding_16"
+            android:paddingRight="@dimen/padding_16"
+            android:paddingStart="@dimen/padding_16"
+            android:paddingTop="@dimen/padding_small"
             android:visibility="gone"
             tools:visibility="visible">
 
@@ -147,7 +163,12 @@
             android:layout_marginTop="@dimen/margin_med"
             android:background="@color/white"
             android:orientation="vertical"
-            android:padding="@dimen/padding_small"
+            android:paddingBottom="@dimen/padding_small"
+            android:paddingEnd="@dimen/padding_16"
+            android:paddingLeft="@dimen/padding_16"
+            android:paddingRight="@dimen/padding_16"
+            android:paddingStart="@dimen/padding_16"
+            android:paddingTop="@dimen/padding_small"
             android:visibility="gone"
             tools:visibility="visible">
 
@@ -167,14 +188,9 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/white"
-            android:orientation="vertical">
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@drawable/bg_line_separator" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/padding_small">
 
             <android.support.v7.widget.AppCompatButton
                 android:id="@+id/button_submit"

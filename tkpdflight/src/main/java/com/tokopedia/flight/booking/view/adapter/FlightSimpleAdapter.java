@@ -26,6 +26,7 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
     private boolean isClickable;
     private boolean isTitleBold;
     private boolean isTitleOnly;
+    private boolean isContentAllignmentRight;
     private OnAdapterInteractionListener interactionListener;
 
     @ColorInt
@@ -37,6 +38,7 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
         isClickable = false;
         isTitleBold = false;
         isTitleOnly = false;
+        isContentAllignmentRight = false;
     }
 
     @Override
@@ -85,6 +87,10 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
         this.interactionListener = interactionListener;
     }
 
+    public void setContentAllignmentRight(boolean contentAllignmentRight) {
+        isContentAllignmentRight = contentAllignmentRight;
+    }
+
     public interface OnAdapterInteractionListener {
         void onItemClick(int adapterPosition, SimpleViewModel viewModel);
     }
@@ -117,6 +123,11 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
             } else {
                 titleTextView.setTypeface(Typeface.DEFAULT);
             }
+
+            if (isContentAllignmentRight) {
+                contentTextView.setGravity(View.TEXT_ALIGNMENT_TEXT_START);
+            }
+
             containerLinearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

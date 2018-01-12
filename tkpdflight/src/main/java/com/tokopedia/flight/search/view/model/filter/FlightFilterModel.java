@@ -13,6 +13,17 @@ import java.util.List;
  */
 
 public class FlightFilterModel implements Parcelable, Cloneable {
+    public static final Creator<FlightFilterModel> CREATOR = new Creator<FlightFilterModel>() {
+        @Override
+        public FlightFilterModel createFromParcel(Parcel in) {
+            return new FlightFilterModel(in);
+        }
+
+        @Override
+        public FlightFilterModel[] newArray(int size) {
+            return new FlightFilterModel[size];
+        }
+    };
     private int priceMin = Integer.MIN_VALUE;
     private int priceMax = Integer.MAX_VALUE;
     private int durationMin = Integer.MIN_VALUE;
@@ -21,29 +32,44 @@ public class FlightFilterModel implements Parcelable, Cloneable {
     private List<String> airlineList;
     private List<DepartureTimeEnum> departureTimeList;
     private List<RefundableEnum> refundableTypeList;
+    private boolean isHasFilter = false;
+
+    public FlightFilterModel() {
+    }
+
+    protected FlightFilterModel(Parcel in) {
+        this.priceMin = in.readInt();
+        this.priceMax = in.readInt();
+        this.durationMin = in.readInt();
+        this.durationMax = in.readInt();
+        this.transitTypeList = new ArrayList<TransitEnum>();
+        in.readList(this.transitTypeList, TransitEnum.class.getClassLoader());
+        this.airlineList = in.createStringArrayList();
+        this.departureTimeList = new ArrayList<DepartureTimeEnum>();
+        in.readList(this.departureTimeList, DepartureTimeEnum.class.getClassLoader());
+        this.refundableTypeList = new ArrayList<RefundableEnum>();
+        in.readList(this.refundableTypeList, RefundableEnum.class.getClassLoader());
+        this.isHasFilter = in.readByte() != 0;
+    }
 
     public int getPriceMin() {
         return priceMin;
-    }
-
-    public int getPriceMax() {
-        return priceMax;
-    }
-
-    public int getDurationMin() {
-        return durationMin;
     }
 
     public void setPriceMin(int priceMin) {
         this.priceMin = priceMin;
     }
 
+    public int getPriceMax() {
+        return priceMax;
+    }
+
     public void setPriceMax(int priceMax) {
         this.priceMax = priceMax;
     }
 
-    public void setDurationMax(int durationMax) {
-        this.durationMax = durationMax;
+    public int getDurationMin() {
+        return durationMin;
     }
 
     public void setDurationMin(int durationMin) {
@@ -54,8 +80,16 @@ public class FlightFilterModel implements Parcelable, Cloneable {
         return durationMax;
     }
 
+    public void setDurationMax(int durationMax) {
+        this.durationMax = durationMax;
+    }
+
     public List<String> getAirlineList() {
         return airlineList;
+    }
+
+    public void setAirlineList(List<String> airlineList) {
+        this.airlineList = airlineList;
     }
 
     public List<TransitEnum> getTransitTypeList() {
@@ -66,50 +100,24 @@ public class FlightFilterModel implements Parcelable, Cloneable {
         this.transitTypeList = transitTypeList;
     }
 
-    public void setDepartureTimeList(List<DepartureTimeEnum> departureTimeList) {
-        this.departureTimeList = departureTimeList;
-    }
-
-    public void setAirlineList(List<String> airlineList) {
-        this.airlineList = airlineList;
-    }
-
-    public void setRefundableTypeList(List<RefundableEnum> refundableTypeList) {
-        this.refundableTypeList = refundableTypeList;
-    }
-
     public List<DepartureTimeEnum> getDepartureTimeList() {
         return departureTimeList;
+    }
+
+    public void setDepartureTimeList(List<DepartureTimeEnum> departureTimeList) {
+        this.departureTimeList = departureTimeList;
     }
 
     public List<RefundableEnum> getRefundableTypeList() {
         return refundableTypeList;
     }
 
-    public boolean hasFilter(FlightSearchStatisticModel flightSearchStatisticModel) {
+    public void setRefundableTypeList(List<RefundableEnum> refundableTypeList) {
+        this.refundableTypeList = refundableTypeList;
+    }
 
-        int priceMinStat;
-        int priceMaxStat;
-        int durMinStat;
-        int durMaxStat;
-
-        if (flightSearchStatisticModel == null) {
-            priceMinStat = Integer.MIN_VALUE;
-            priceMaxStat = Integer.MAX_VALUE;
-            durMinStat = Integer.MIN_VALUE;
-            durMaxStat = Integer.MAX_VALUE;
-        } else {
-            priceMinStat = flightSearchStatisticModel.getMinPrice();
-            priceMaxStat = flightSearchStatisticModel.getMaxPrice();
-            durMinStat = flightSearchStatisticModel.getMinDuration();
-            durMaxStat = flightSearchStatisticModel.getMaxDuration();
-        }
-        return (this.priceMin > priceMinStat || this.priceMax < priceMaxStat ||
-                this.durationMin > durMinStat || this.durationMax < durMaxStat ||
-                (this.transitTypeList != null && this.transitTypeList.size() > 0) ||
-                (this.airlineList != null && this.airlineList.size() > 0) ||
-                (this.departureTimeList != null && this.departureTimeList.size() > 0) ||
-                (this.refundableTypeList != null && this.refundableTypeList.size() > 0));
+    public boolean hasFilter() {
+        return isHasFilter;
     }
 
     public FlightFilterModel copy() {
@@ -165,12 +173,36 @@ public class FlightFilterModel implements Parcelable, Cloneable {
         return refundableEnumList;
     }
 
+    public void setHasFilter(FlightSearchStatisticModel flightSearchStatisticModel) {
+        int priceMinStat;
+        int priceMaxStat;
+        int durMinStat;
+        int durMaxStat;
+
+        if (flightSearchStatisticModel == null) {
+            priceMinStat = Integer.MIN_VALUE;
+            priceMaxStat = Integer.MAX_VALUE;
+            durMinStat = Integer.MIN_VALUE;
+            durMaxStat = Integer.MAX_VALUE;
+        } else {
+            priceMinStat = flightSearchStatisticModel.getMinPrice();
+            priceMaxStat = flightSearchStatisticModel.getMaxPrice();
+            durMinStat = flightSearchStatisticModel.getMinDuration();
+            durMaxStat = flightSearchStatisticModel.getMaxDuration();
+        }
+        isHasFilter = (this.priceMin > priceMinStat || this.priceMax < priceMaxStat ||
+                this.durationMin > durMinStat || this.durationMax < durMaxStat ||
+                (this.transitTypeList != null && this.transitTypeList.size() > 0) ||
+                (this.airlineList != null && this.airlineList.size() > 0) ||
+                (this.departureTimeList != null && this.departureTimeList.size() > 0) ||
+                (this.refundableTypeList != null && this.refundableTypeList.size() > 0));
+    }
+
     @Override
     public int describeContents() {
         return 0;
     }
 
-    @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.priceMin);
         dest.writeInt(this.priceMax);
@@ -180,34 +212,6 @@ public class FlightFilterModel implements Parcelable, Cloneable {
         dest.writeStringList(this.airlineList);
         dest.writeList(this.departureTimeList);
         dest.writeList(this.refundableTypeList);
+        dest.writeByte((byte) (isHasFilter ? 1 : 0));
     }
-
-    public FlightFilterModel() {
-    }
-
-    protected FlightFilterModel(Parcel in) {
-        this.priceMin = in.readInt();
-        this.priceMax = in.readInt();
-        this.durationMin = in.readInt();
-        this.durationMax = in.readInt();
-        this.transitTypeList = new ArrayList<TransitEnum>();
-        in.readList(this.transitTypeList, TransitEnum.class.getClassLoader());
-        this.airlineList = in.createStringArrayList();
-        this.departureTimeList = new ArrayList<DepartureTimeEnum>();
-        in.readList(this.departureTimeList, DepartureTimeEnum.class.getClassLoader());
-        this.refundableTypeList = new ArrayList<RefundableEnum>();
-        in.readList(this.refundableTypeList, RefundableEnum.class.getClassLoader());
-    }
-
-    public static final Parcelable.Creator<FlightFilterModel> CREATOR = new Parcelable.Creator<FlightFilterModel>() {
-        @Override
-        public FlightFilterModel createFromParcel(Parcel source) {
-            return new FlightFilterModel(source);
-        }
-
-        @Override
-        public FlightFilterModel[] newArray(int size) {
-            return new FlightFilterModel[size];
-        }
-    };
 }

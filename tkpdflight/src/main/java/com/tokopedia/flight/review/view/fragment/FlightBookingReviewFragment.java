@@ -54,6 +54,7 @@ import com.tokopedia.flight.detail.view.adapter.FlightDetailRouteTypeFactory;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.orderlist.view.FlightOrderListActivity;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
+import com.tokopedia.flight.review.view.activity.OnBackActionListener;
 import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapter;
 import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapterTypeFactory;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
@@ -71,8 +72,9 @@ import javax.inject.Inject;
  * Created by zulfikarrahman on 11/9/17.
  */
 
-public class FlightBookingReviewFragment extends BaseDaggerFragment implements FlightBookingReviewContract.View, VoucherCartView.ActionListener {
+public class FlightBookingReviewFragment extends BaseDaggerFragment implements FlightBookingReviewContract.View, VoucherCartView.ActionListener, OnBackActionListener {
 
+    public static final String EXTRA_NEED_TO_REFRESH = "EXTRA_NEED_TO_REFRESH";
     public static final String EXTRA_DATA_REVIEW = "EXTRA_DATA_REVIEW";
     public static final int RESULT_ERROR_VERIFY = 874;
     public static final String RESULT_ERROR_CODE = "RESULT_ERROR_CODE";
@@ -97,6 +99,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     private View containerFlightReturn;
     private ProgressDialog progressDialog;
     private FlightSimpleAdapter flightBookingReviewPriceAdapter;
+    private boolean isPassengerInfoPageNeedToRefresh = false;
 
     public static FlightBookingReviewFragment createInstance(FlightBookingReviewModel flightBookingReviewModel) {
         FlightBookingReviewFragment flightBookingReviewFragment = new FlightBookingReviewFragment();
@@ -142,7 +145,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
         voucherCartView = (VoucherCartView) view.findViewById(R.id.voucher_check_view);
         containerFlightReturn = view.findViewById(R.id.container_flight_return);
         progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage("");
+        progressDialog.setMessage(getString(R.string.flight_booking_loading_title));
         progressDialog.setCancelable(false);
 
         reviewTime.setListener(new CountdownTimeView.OnActionListener() {
@@ -246,6 +249,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
                 }
                 break;
             case REQUEST_CODE_TOPPAY:
+                reviewTime.start();
                 if (getActivity().getApplication() instanceof FlightModuleRouter) {
                     int paymentSuccess = ((FlightModuleRouter) getActivity().getApplication()).getTopPayPaymentSuccessCode();
                     int paymentFailed = ((FlightModuleRouter) getActivity().getApplication()).getTopPayPaymentFailedCode();
@@ -368,6 +372,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
 
     @Override
     public void setTimeStamp(String timestamp) {
+        isPassengerInfoPageNeedToRefresh = true;
         flightBookingReviewModel.setDateFinishTime(FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_TIMESTAMP_FORMAT, timestamp));
     }
 
@@ -517,6 +522,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     public void navigateToTopPay(FlightCheckoutViewModel flightCheckoutViewModel) {
         if (getActivity().getApplication() instanceof FlightModuleRouter
                 && ((FlightModuleRouter) getActivity().getApplication()).getTopPayIntent(getActivity(), flightCheckoutViewModel) != null) {
+            reviewTime.cancel();
             startActivityForResult(((FlightModuleRouter) getActivity().getApplication()).getTopPayIntent(getActivity(), flightCheckoutViewModel), REQUEST_CODE_TOPPAY);
         }
     }
@@ -559,5 +565,27 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     public void onDestroy() {
         super.onDestroy();
         flightBookingReviewPresenter.detachView();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isPassengerInfoPageNeedToRefresh) {
+            Intent intent = getActivity().getIntent();
+            intent.putExtra(EXTRA_NEED_TO_REFRESH, isPassengerInfoPageNeedToRefresh);
+            getActivity().setResult(Activity.RESULT_CANCELED, intent);
+            getActivity().finish();
+        } else {
+            getActivity().onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean isCanGoBack() {
+        return !isPassengerInfoPageNeedToRefresh;
+    }
+
+    @Override
+    public void setNeedToRefreshOnPassengerInfo() {
+        isPassengerInfoPageNeedToRefresh = true;
     }
 }

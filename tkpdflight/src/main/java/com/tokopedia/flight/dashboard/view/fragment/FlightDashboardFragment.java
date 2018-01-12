@@ -75,7 +75,6 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     AppCompatButton roundTripAppCompatButton;
     View returnDateSeparatorView;
     View bannerLayout;
-    AppCompatTextView bannerTitle;
     BannerView bannerView;
     List<BannerDetail> bannerList;
     @Inject
@@ -107,8 +106,8 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         classTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_class);
         departureDateTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_date_departure);
         returnDateTextInputView = (TextInputView) view.findViewById(R.id.text_input_view_date_return);
+        returnDateSeparatorView = view.findViewById(R.id.separator_date_return);
         bannerLayout = view.findViewById(R.id.banner_layout);
-        bannerTitle = view.findViewById(R.id.banner_title);
         bannerView = view.findViewById(R.id.banner);
 
         oneWayTripAppCompatButton.setSelected(true);
@@ -241,6 +240,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         oneWayTripAppCompatButton.setSelected(true);
         roundTripAppCompatButton.setSelected(false);
         returnDateTextInputView.setVisibility(View.GONE);
+        returnDateSeparatorView.setVisibility(View.GONE);
 
         departureDateTextInputView.setText(viewModel.getDepartureDateFmt());
         passengerTextInputView.setText(viewModel.getPassengerFmt());
@@ -270,6 +270,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         oneWayTripAppCompatButton.setSelected(false);
         roundTripAppCompatButton.setSelected(true);
         returnDateTextInputView.setVisibility(View.VISIBLE);
+        returnDateSeparatorView.setVisibility(View.VISIBLE);
 
         departureDateTextInputView.setText(viewModel.getDepartureDateFmt());
         returnDateTextInputView.setText(viewModel.getReturnDateFmt());
@@ -299,7 +300,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     }
 
     @Override
-    public void showDepartureDatePickerDialog(Date selectedDate, Date minDate) {
+    public void showDepartureDatePickerDialog(Date selectedDate, Date minDate, Date maxDate) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(selectedDate);
         DatePickerDialog datePicker = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
@@ -310,11 +311,12 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
         DatePicker datePicker1 = datePicker.getDatePicker();
         datePicker1.setMinDate(minDate.getTime());
+        datePicker1.setMaxDate(maxDate.getTime());
         datePicker.show();
     }
 
     @Override
-    public void showReturnDatePickerDialog(Date selectedDate, Date minDate) {
+    public void showReturnDatePickerDialog(Date selectedDate, Date minDate, Date maxDate) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(selectedDate);
         DatePickerDialog datePicker = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
@@ -325,6 +327,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
         DatePicker datePicker1 = datePicker.getDatePicker();
         datePicker1.setMinDate(minDate.getTime());
+        datePicker1.setMaxDate(maxDate.getTime());
         datePicker.show();
     }
 
@@ -384,7 +387,6 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     @Override
     public void renderBannerView(List<BannerDetail> bannerList) {
         bannerLayout.setVisibility(View.VISIBLE);
-        bannerTitle.setVisibility(View.VISIBLE);
         bannerView.setVisibility(View.VISIBLE);
         this.bannerList = bannerList;
         List<String> promoUrls = new ArrayList<>();
@@ -399,7 +401,6 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     @Override
     public void hideBannerView() {
         bannerLayout.setVisibility(View.GONE);
-        bannerTitle.setVisibility(View.GONE);
         bannerView.setVisibility(View.GONE);
     }
 
@@ -452,11 +453,11 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                     presenter.onLoginResultReceived();
                     break;
             }
-            KeyboardHandler.hideSoftKeyboard(getActivity());
         }else if(resultCode == Activity.RESULT_CANCELED && requestCode == REQUEST_CODE_LOGIN) {
             presenter.onLoginResultReceived();
-            KeyboardHandler.hideSoftKeyboard(getActivity());
         }
+        KeyboardHandler.DropKeyboard(getActivity(), getView());
+        KeyboardHandler.hideSoftKeyboard(getActivity());
     }
 
     @SuppressWarnings("Range")

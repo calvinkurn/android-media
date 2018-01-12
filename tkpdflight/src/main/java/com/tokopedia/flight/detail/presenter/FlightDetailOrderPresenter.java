@@ -47,7 +47,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
 
     @Override
     public void actionCancelOrderButtonClicked() {
-        getView().navigateToWebview(getView().getCancelUrl());
+        getView().navigateToContactUs(getView().getFlightOrder());
     }
 
     @Override
@@ -85,6 +85,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
             @Override
             public void onNext(FlightOrder flightOrder) {
                 getView().hideProgressDialog();
+                getView().renderFlightOrder(flightOrder);
                 getView().updateFlightList(filterFlightJourneys(flightOrder.getStatus(), flightOrder.getJourneys(), flightOrderDetailPassData));
                 getView().updatePassengerList(transformToListPassenger(flightOrder.getPassengerViewModels()));
                 getView().updatePrice(transformToSimpleModelPrice(), countTotalPrice(flightOrder.getTotalAdultNumeric(),
@@ -92,15 +93,15 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                 getView().updateOrderData(FlightDateUtil.formatDate(FlightDateUtil.FORMAT_DATE_API_DETAIL,
                         FlightDateUtil.FORMAT_DATE_LOCAL_DETAIL_ORDER, flightOrder.getCreateTime()),
                         generateTicketLink(flightOrder.getId()), generateInvoiceLink(flightOrder.getId()),
-                        generateCancelParam(flightOrder));
+                        generateCancelMessage(flightOrder));
                 generateStatus(flightOrder.getStatus());
             }
         };
     }
 
-    private String generateCancelParam(FlightOrder flightOrder) {
-        String newLine = "&#13;&#10;";
-        StringBuilder result = new StringBuilder(String.format(getView().getActivity().getString(R.string.flight_order_cancel_prefix_label), flightOrder.getId()));
+    private String generateCancelMessage(FlightOrder flightOrder) {
+        String newLine = "\n";
+        StringBuilder result = new StringBuilder();
         result.append(newLine);
         for (FlightOrderJourney flightOrderJourney : flightOrder.getJourneys()) {
             String item = flightOrderJourney.getDepartureAiportId() + "-" + flightOrderJourney.getArrivalAirportId() + " ";
@@ -113,7 +114,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
             item += newLine;
             result.append(item);
         }
-        return Base64.encodeToString(result.toString().getBytes(), Base64.DEFAULT);
+        return result.toString();
     }
 
     private String generateInvoiceLink(String orderId) {
@@ -123,7 +124,6 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     private String generateTicketLink(String orderId) {
         return FlightUrl.getUrlPdf(orderId);
     }
-
 
     private void generateStatus(int status) {
         switch (status) {

@@ -21,15 +21,6 @@
 
             <include layout="@layout/partial_flight_dashboard_search" />
 
-            <android.support.v7.widget.AppCompatButton
-                android:id="@+id/button_search_ticket"
-                style="@style/Button.Submit.Orange"
-                android:layout_marginTop="@dimen/margin_large"
-                android:text="@string/flight_search_search_ticket" />
-
-            <!--Banner disini-->
-            <include layout="@layout/partial_flight_banner" />
-
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>

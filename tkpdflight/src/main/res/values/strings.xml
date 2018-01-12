@@ -72,7 +72,7 @@
     <string name="non_refundable">Non-Refundable</string>
     <string name="partial_refundable">Partial Refundable</string>
     <string name="flight_search_filter_label">Filter</string>
-    <string name="flight_search_sort_label">Sort</string>
+    <string name="flight_search_sort_label">Urutkan</string>
     <string name="flight_search_sort_title">Urutkan</string>
     <string name="flight_search_sort_item_earliest_departure">Waktu Keberangkatan Terpagi</string>
     <string name="flight_search_sort_item_latest_departure">Waktu Keberangkatan Termalam</string>
@@ -125,7 +125,7 @@
     <string name="flight_booking_transit_trip_card">Transit</string>
     <string name="flight_booking_directly_trip_card">Langsung</string>
     <string name="flight_title_menu_reset">Reset</string>
-    <string name="flight_booking_phone_code_label">(+ %1$s)</string>
+    <string name="flight_booking_phone_code_label">(+%1$s)</string>
     <string name="activity_label_flight_booking_phone_code">Kode Telepon Negara</string>
     <string name="activity_label_flight_nationality">Kewarganegaraan</string>
     <string name="activity_label_flight_issuing_country">Negara Penerbit</string>
@@ -206,12 +206,12 @@
     <string name="flight_price_detail_prefixl_meal_label">Makanan </string>
     <string name="flight_price_detail_prefix_luggage_label">Bagasi </string>
     <string name="flight_booking_close_label">Tutup</string>
-    <string name="flight_booking_trip_info_format" formatted="false">| %d %s</string>
-    <string name="flight_booking_trip_info_format_without_count" formatted="false">| %s</string>
+    <string name="flight_booking_trip_info_format" formatted="false"> | %d %s</string>
+    <string name="flight_booking_trip_info_format_without_count" formatted="false"> | %s </string>
     <string name="flight_booking_trip_info_airport_format" formatted="false"> | %s - %s</string>
     <string name="flight_booking_id_empotency_format" formatted="false">%s_%s</string>
     <string name="flight_booking_header_passenger_format" formatted="false">%s %d (%s)</string>
-    <string name="flight_booking_passenger_price_format" formatted="false">%s - %s  %dx %s</string>
+    <string name="flight_booking_passenger_price_format" formatted="false">%s - %s  %s x%d</string>
     <string name="flight_dashboard_error_close_label">Tutup</string>
     <string name="flight_dashboard_departure_should_different_city_error">Kota tujuan dan asal tidak boleh sama</string>
     <string name="flight_booking_loading_title">Memperbarui Data</string>
@@ -219,7 +219,7 @@
     <string name="flight_label_child_review">(Anak)</string>
     <string name="flight_label_infant_review">(Bayi)</string>
     <string name="activity_label_flight_review">Rincian Pesanan</string>
-    <string name="flight_booking_passenger_toolbar_title">Isi Penumpang</string>
+    <string name="flight_booking_passenger_toolbar_title">Data Penumpang</string>
     <string name="flight_booking_passenger_not_fullfilled_error">Info penumpang tidak boleh ada yang kosong</string>
     <string name="flight_booking_dialog_price_change_title">Harga Tiket Telah Berubah</string>
     <string name="flight_booking_dialog_price_change_description">Perubahan harga tiket terjadi karena pengaruh nilai tukar mata uang dan sisa kursi.</string>
@@ -241,7 +241,7 @@
     <string name="flight_label_transaction_date">Tanggal Transaksi</string>
     <string name="flight_label_refund_time">Waktu Pengajuan Refund</string>
     <string name="flight_label_refund_status">Status Refund</string>
-    <string name="flight_label_order_id_detail">Order ID :</string>
+    <string name="flight_label_order_id_detail">Invoice ID :</string>
     <string name="flight_label_eticket">E-TICKET</string>
     <string name="flight_label_cancel_ticket">Batalkan Tiket</string>
     <string name="flight_label_reschedule_ticket">Atur Ulang Jadwal</string>
@@ -275,10 +275,18 @@
     <string name="flight_label_detail_format">%1$s(%2$s) - %3$s(%4$s)</string>/>
     <string name="flight_booking_atc_loading_label">Sedang menyiapkan formulir pemesanan Anda</string>
     <string name="flight_review_failed_checkout_message">Pembayaran gagal</string>
+    <string name="flight_review_cancel_checkout_message">Pembayaran dibatalkan</string>
     <string name="flight_review_checkout_loading_label">Sedang menyiapkan formulir pembayaran</string>
     <string name="di_sini">di sini</string>
     <string name="flight_booking_passenger_last_name_empty_error">Nama belakang minimal 2 karakter</string>
     <!--<string name="flight_order_cancel_prefix_label"><![CDATA[]]></string>-->
     <string name="flight_order_flight_default_contact_us"><![CDATA[sid=1377]]></string>
-    <string name="flight_order_cancel_prefix_label"><![CDATA[sid=1377&oid=%s&msg=Saya ingin membatalkan penerbangan untuk nama-nama dibawah ini:]]></string>
+    <string name="flight_order_cancel_prefix_label">Saya ingin membatalkan penerbangan untuk nama-nama dibawah ini:\n></string>
+    <string name="flight_contact_us_toolbar_title">Bantuan</string>
+    <string name="flight_contact_us_finish_message">Pesan sudah berhasil terkirim. Customer Care Tokopedia akan membalas pesan tersebut ke email kamu. Silakan cek email secara berkala.</string>
+    <string name="flight_contact_us_cancel_desc">Detail penerbangan dan penumpang yang ingin di-refund</string>
+    <string name="flight_contact_us_cancel_attc">Lampirkan identitas penumpang</string>
+    <string name="flight_contact_us_cancel_toolbar">Ajukan Refund</string>
+    <string name="flight_order_flight_default_contact_us_global_prefix"><![CDATA[sid=1377&oid=]]></string>
+    <string name="flight_search_return_departure_should_greater_message">Disarankan untuk memilih jadwal penerbangan pulang setelah jadwal kedatangan sebelumnya</string>
 </resources>

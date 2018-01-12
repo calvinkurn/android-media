@@ -3,6 +3,7 @@ package com.tokopedia.flight.airport.data.source.db.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.raizlabs.android.dbflow.annotation.Collate;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ConflictAction;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
@@ -18,38 +19,56 @@ import com.tokopedia.flight.common.database.TkpdFlightDatabase;
 @Table(database = TkpdFlightDatabase.class, insertConflict = ConflictAction.REPLACE, updateConflict = ConflictAction.REPLACE)
 public class FlightAirportDB extends BaseModel implements Parcelable, Visitable<FlightAirportAdapterTypeFactory> {
 
+    public static final Creator<FlightAirportDB> CREATOR = new Creator<FlightAirportDB>() {
+        @Override
+        public FlightAirportDB createFromParcel(Parcel source) {
+            return new FlightAirportDB(source);
+        }
+
+        @Override
+        public FlightAirportDB[] newArray(int size) {
+            return new FlightAirportDB[size];
+        }
+    };
     @PrimaryKey
     @Column(name = "country_id")
     String countryId;
-
     @PrimaryKey
     @Column(name = "city_id")
     String cityId;
-
     @PrimaryKey
     @Column(name = "airport_id")
     String airportId;
-
-    @Column(name = "country_name")
+    @Column(name = "country_name", collate = Collate.NOCASE)
     String countryName;
-
     @Column(name = "phone_code")
     long phoneCode;
-
     @Column(name = "city_name")
     String cityName;
-
     @Column(name = "city_code")
     String cityCode;
-
     @Column(name = "airport_name")
     String airportName;
-
     @Column(name = "aliases")
     String aliases;
-
     @Column(name = "airport_ids")
     String airportIds;
+
+    public FlightAirportDB() {
+    }
+
+    protected FlightAirportDB(Parcel in) {
+        this.countryId = in.readString();
+        this.cityId = in.readString();
+        this.airportId = in.readString();
+        this.countryName = in.readString();
+        this.phoneCode = in.readLong();
+        this.cityName = in.readString();
+        this.cityCode = in.readString();
+        this.airportName = in.readString();
+        this.aliases = in.readString();
+        this.airportIds = in.readString();
+    }
 
     public String getCountryId() {
         return countryId;
@@ -131,9 +150,6 @@ public class FlightAirportDB extends BaseModel implements Parcelable, Visitable<
         this.airportIds = airportIds;
     }
 
-    public FlightAirportDB() {
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -152,31 +168,6 @@ public class FlightAirportDB extends BaseModel implements Parcelable, Visitable<
         dest.writeString(this.aliases);
         dest.writeString(this.airportIds);
     }
-
-    protected FlightAirportDB(Parcel in) {
-        this.countryId = in.readString();
-        this.cityId = in.readString();
-        this.airportId = in.readString();
-        this.countryName = in.readString();
-        this.phoneCode = in.readLong();
-        this.cityName = in.readString();
-        this.cityCode = in.readString();
-        this.airportName = in.readString();
-        this.aliases = in.readString();
-        this.airportIds = in.readString();
-    }
-
-    public static final Creator<FlightAirportDB> CREATOR = new Creator<FlightAirportDB>() {
-        @Override
-        public FlightAirportDB createFromParcel(Parcel source) {
-            return new FlightAirportDB(source);
-        }
-
-        @Override
-        public FlightAirportDB[] newArray(int size) {
-            return new FlightAirportDB[size];
-        }
-    };
 
     @Override
     public int type(FlightAirportAdapterTypeFactory typeFactory) {

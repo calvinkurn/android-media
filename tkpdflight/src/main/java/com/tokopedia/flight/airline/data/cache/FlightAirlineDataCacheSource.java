@@ -30,7 +30,6 @@ public class FlightAirlineDataCacheSource extends DataCacheSource {
 
     @Override
     protected long getExpiredTimeInSec() {
-        //TODO change to ONE MONTH in production
-        return TimeUnit.MINUTES.toSeconds(5);
+        return ONE_MONTH;
     }
 }

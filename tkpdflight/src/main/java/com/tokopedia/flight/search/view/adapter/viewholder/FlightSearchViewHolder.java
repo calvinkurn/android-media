@@ -14,7 +14,6 @@ import com.tokopedia.flight.search.util.DurationUtil;
 import com.tokopedia.flight.search.view.adapter.FilterSearchAdapterTypeFactory;
 import com.tokopedia.flight.search.view.model.Duration;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
-import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -126,11 +125,11 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightSearchViewM
     }
 
     private void setRefundableInfo(FlightSearchViewModel flightSearchViewModel) {
-        if (flightSearchViewModel.isRefundable() == RefundableEnum.NOT_REFUNDABLE) {
+        /*if (flightSearchViewModel.isRefundable() == RefundableEnum.NOT_REFUNDABLE) {
             airlineRefundableInfo.setVisibility(View.GONE);
-        } else {
-            airlineRefundableInfo.setVisibility(View.VISIBLE);
-            airlineRefundableInfo.setText(flightSearchViewModel.isRefundable().getValueRes());
-        }
+        } else {*/
+        airlineRefundableInfo.setVisibility(View.VISIBLE);
+        airlineRefundableInfo.setText(flightSearchViewModel.isRefundable().getValueRes());
+//        }
     }
 }

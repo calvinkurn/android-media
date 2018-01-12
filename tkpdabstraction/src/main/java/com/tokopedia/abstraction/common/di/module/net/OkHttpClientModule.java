@@ -32,8 +32,8 @@ public class OkHttpClientModule {
     @ApplicationScope
     @Provides
     public OkHttpClient.Builder provideOkHttpClientBuilder(TkpdBaseInterceptor tkpdBaseInterceptor,
-                                                  OkHttpRetryPolicy okHttpRetryPolicy,
-                                                  DebugInterceptor debugInterceptor) {
+                                                           OkHttpRetryPolicy okHttpRetryPolicy,
+                                                           DebugInterceptor debugInterceptor) {
 
         return new TkpdOkHttpBuilder(new OkHttpClient.Builder())
                 .setOkHttpRetryPolicy(okHttpRetryPolicy)

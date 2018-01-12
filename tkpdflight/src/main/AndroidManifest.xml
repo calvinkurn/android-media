@@ -93,6 +93,7 @@
             android:label="@string/activity_label_flight_order_list"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
+
         <service
             android:name=".airport.service.GetAirportListService"
             android:exported="false" />

@@ -30,15 +30,16 @@ import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
-import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
-import com.tokopedia.flight.common.view.FlightExpandableOptionArrow;
+import com.tokopedia.flight.contactus.model.FlightContactUsPassData;
 import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
+import com.tokopedia.flight.detail.presenter.ExpandableOnClickListener;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderContract;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderPresenter;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderAdapter;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderTypeFactory;
 import com.tokopedia.flight.orderlist.di.FlightOrderComponent;
+import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapter;
@@ -53,9 +54,11 @@ import javax.inject.Inject;
  * Created by zulfikarrahman on 12/12/17.
  */
 
-public class FlightDetailOrderFragment extends BaseDaggerFragment implements FlightDetailOrderContract.View {
+public class FlightDetailOrderFragment extends BaseDaggerFragment implements FlightDetailOrderContract.View, ExpandableOnClickListener {
 
     public static final String EXTRA_ORDER_DETAIL_PASS = "EXTRA_ORDER_DETAIL_PASS";
+    private static final String CANCEL_SOLUTION_ID = "1377";
+    private static final int CONTACT_US_REQUEST_CODE = 100;
     @Inject
     FlightDetailOrderPresenter flightDetailOrderPresenter;
     private TextView orderId;
@@ -63,7 +66,9 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     private View containerDownloadEticket;
     private TextView orderStatus;
     private TextView transactionDate;
-    private FlightExpandableOptionArrow layoutExpandablePassenger;
+    private View layoutExpendablePassenger;
+    private TextView titleExpendablePassenger;
+    private AppCompatImageView imageExpendablePassenger;
     private VerticalRecyclerView recyclerViewFlight;
     private VerticalRecyclerView recyclerViewPassenger;
     private RecyclerView recyclerViewPrice;
@@ -78,10 +83,12 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     private FlightBookingReviewPassengerAdapter flightBookingReviewPassengerAdapter;
     private FlightSimpleAdapter flightBookingReviewPriceAdapter;
     private FlightOrderDetailPassData flightOrderDetailPassData;
+    private FlightOrder flightOrder;
 
     private String eticketLink = "";
     private String invoiceLink = "";
-    private String cancelLink = "";
+    private String cancelMessage = "";
+    private boolean isPassengerInfoShowed = true;
 
     public static Fragment createInstance(FlightOrderDetailPassData flightOrderDetailPassData) {
         FlightDetailOrderFragment flightDetailOrderFragment = new FlightDetailOrderFragment();
@@ -117,7 +124,9 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         containerDownloadEticket = view.findViewById(R.id.container_download_eticket);
         orderStatus = view.findViewById(R.id.status_ticket);
         transactionDate = view.findViewById(R.id.transaction_date);
-        layoutExpandablePassenger = view.findViewById(R.id.title_journey_flight);
+        layoutExpendablePassenger = view.findViewById(R.id.layout_expendable_passenger);
+        titleExpendablePassenger = view.findViewById(R.id.title_expendable_passenger);
+        imageExpendablePassenger = view.findViewById(R.id.image_expendable_passenger);
         recyclerViewFlight = view.findViewById(R.id.recycler_view_flight);
         recyclerViewPassenger = view.findViewById(R.id.recycler_view_data_passenger);
         recyclerViewPrice = view.findViewById(R.id.recycler_view_detail_price);
@@ -131,7 +140,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
         setViewClickListener();
 
-        FlightDetailOrderTypeFactory flightDetailOrderTypeFactory = new FlightDetailOrderTypeFactory();
+        FlightDetailOrderTypeFactory flightDetailOrderTypeFactory = new FlightDetailOrderTypeFactory(this);
         flightDetailOrderAdapter = new FlightDetailOrderAdapter(flightDetailOrderTypeFactory);
         FlightBookingReviewPassengerAdapterTypeFactory flightBookingReviewPassengerAdapterTypeFactory = new FlightBookingReviewPassengerAdapterTypeFactory();
         flightBookingReviewPassengerAdapter = new FlightBookingReviewPassengerAdapter(flightBookingReviewPassengerAdapterTypeFactory);
@@ -220,6 +229,14 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
                 flightDetailOrderPresenter.actionReorderButtonClicked();
             }
         });
+
+        layoutExpendablePassenger.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imageExpendablePassenger.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.rotate_reverse));
+                togglePassengerInfo();
+            }
+        });
     }
 
     @Override
@@ -262,11 +279,11 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     }
 
     @Override
-    public void updateOrderData(String transactionDate, String eTicketLink, String invoiceLink, String cancelUrl) {
+    public void updateOrderData(String transactionDate, String eTicketLink, String invoiceLink, String cancelMessage) {
         this.transactionDate.setText(transactionDate);
         this.eticketLink = eTicketLink;
         this.invoiceLink = invoiceLink;
-        this.cancelLink = FlightUrl.CONTACT_US_FLIGHT_PREFIX + cancelUrl;
+        this.cancelMessage = cancelMessage;
     }
 
     @Override
@@ -319,6 +336,26 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         updateViewStatus(R.string.flight_label_waiting_payment, R.color.deep_orange_500, false, false, false, false);
     }
 
+    private void togglePassengerInfo() {
+        if (isPassengerInfoShowed) {
+            hidePassengerInfo();
+        } else {
+            showPassengerInfo();
+        }
+    }
+
+    private void hidePassengerInfo() {
+        isPassengerInfoShowed = false;
+        recyclerViewPassenger.setVisibility(View.GONE);
+        imageExpendablePassenger.setRotation(180);
+    }
+
+    private void showPassengerInfo() {
+        isPassengerInfoShowed = true;
+        recyclerViewPassenger.setVisibility(View.VISIBLE);
+        imageExpendablePassenger.setRotation(0);
+    }
+
     void updateViewStatus(int orderStatusString, int color, boolean isTicketVisible, boolean isScheduleVisible,
                           boolean isCancelVisible, boolean isReorderVisible) {
         orderStatus.setText(orderStatusString);
@@ -352,8 +389,8 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     }
 
     @Override
-    public String getCancelUrl() {
-        return cancelLink;
+    public String getCancelMessage() {
+        return cancelMessage;
     }
 
     @Override
@@ -378,5 +415,54 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         }
         taskStackBuilder.addNextIntent(FlightDashboardActivity.getCallingIntent(getActivity()));
         taskStackBuilder.startActivities();
+    }
+
+    @Override
+    public void renderFlightOrder(FlightOrder flightOrder) {
+        this.flightOrder = flightOrder;
+    }
+
+    @Override
+    public FlightOrder getFlightOrder() {
+        return flightOrder;
+    }
+
+    @Override
+    public void navigateToContactUs(FlightOrder flightOrder) {
+        startActivityForResult(getCallintIntent(
+                CANCEL_SOLUTION_ID,
+                flightOrder.getId(),
+                getString(R.string.flight_contact_us_cancel_desc),
+                getString(R.string.flight_contact_us_cancel_attc),
+                cancelMessage,
+                getString(R.string.flight_contact_us_cancel_toolbar))
+                , CONTACT_US_REQUEST_CODE);
+    }
+
+    private Intent getCallintIntent(String solutionId,
+                                    String orderId,
+                                    String descriptionTitle,
+                                    String attachmentTitle,
+                                    String description,
+                                    String toolbarTitle) {
+
+        FlightContactUsPassData passData = new FlightContactUsPassData();
+        passData.setSolutionId(solutionId);
+        passData.setOrderId(orderId);
+        passData.setDescriptionTitle(descriptionTitle);
+        passData.setAttachmentTitle(attachmentTitle);
+        passData.setDescription(description);
+        passData.setToolbarTitle(toolbarTitle);
+
+        if (getActivity().getApplication() instanceof FlightModuleRouter) {
+            return ((FlightModuleRouter) getActivity().getApplication()).getContactUsIntent(getActivity(), passData);
+        } else {
+            throw new RuntimeException("Application Module should implement FlightModuleRouter");
+        }
+    }
+
+    @Override
+    public void onCloseExpand(int position) {
+        // do something to scroll the view
     }
 }

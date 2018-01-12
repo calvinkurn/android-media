@@ -7,7 +7,10 @@
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
     android:orientation="vertical"
-    android:padding="@dimen/padding_small">
+    android:paddingBottom="@dimen/padding_small"
+    android:paddingLeft="@dimen/padding_16"
+    android:paddingRight="@dimen/padding_16"
+    android:paddingTop="@dimen/padding_small">
 
     <android.support.v7.widget.AppCompatTextView
         style="@style/TextView.TitleBig.Bold"
@@ -35,7 +38,9 @@
             android:imeActionLabel="@string/label_next"
             android:lines="1"
             android:nextFocusForward="@+id/et_contact_email"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:textAppearance="@style/TextView.Title"
+            android:textColor="@color/font_black_secondary_54" />
     </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
     <com.tokopedia.design.text.TkpdHintTextInputLayout
@@ -58,7 +63,8 @@
             android:lines="1"
             android:nextFocusForward="@+id/et_phone_number"
             android:singleLine="true"
-            tools:text="Isyana Saravati" />
+            android:textAppearance="@style/TextView.Title"
+            android:textColor="@color/font_black_secondary_54" />
     </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
     <RelativeLayout
@@ -72,10 +78,10 @@
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/contact_phone_number_label"
+            style="@style/TextView.Micro"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/flight_booking_contact_phone_number_label"
-            style="@style/TextView.Micro"/>
+            android:text="@string/flight_booking_contact_phone_number_label" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -83,31 +89,49 @@
             android:layout_below="@+id/contact_phone_number_label"
             android:orientation="horizontal">
 
-            <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/et_phone_country_code"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:background="@drawable/selectable_background_tokopedia"
-                android:drawableEnd="@drawable/ic_arrow_down_grey"
-                android:drawablePadding="@dimen/padding_small"
-                android:drawableRight="@drawable/ic_arrow_down_grey"
                 android:gravity="center_vertical"
-                style="@style/TextView.Title"
-                tools:text="+62" />
+                android:orientation="vertical">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/et_phone_country_code"
+                    style="@style/TextView.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_vs"
+                    android:drawableEnd="@drawable/ic_arrow_down_grey"
+                    android:drawablePadding="@dimen/padding_small"
+                    android:drawableRight="@drawable/ic_arrow_down_grey"
+                    android:gravity="center_vertical"
+                    tools:text="+62" />
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/grey_300" />
+            </LinearLayout>
+
 
             <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/et_phone_number"
+                style="@style/HintTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin_sm"
                 android:layout_marginStart="@dimen/margin_sm"
                 android:backgroundTint="@color/widget_card_with_action_separator"
+                android:digits="1234567890"
                 android:hint="@string/flight_booking_contact_telp_hint"
                 android:imeActionLabel="@string/label_done"
-                android:inputType="phone"
+                android:inputType="number"
                 android:lines="1"
                 android:singleLine="true"
-                tools:text="81234567890" />
+                android:textAppearance="@style/TextView.Title"
+                android:textColor="@color/font_black_secondary_54" />
+
         </LinearLayout>
     </RelativeLayout>
 

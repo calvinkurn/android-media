@@ -5,6 +5,7 @@ import android.app.Activity;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
+import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 import com.tokopedia.flight.review.view.model.FlightDetailPassenger;
@@ -55,11 +56,17 @@ public interface FlightDetailOrderContract {
 
         Activity getActivity();
 
-        String getCancelUrl();
+        String getCancelMessage();
 
         void navigateToWebview(String url);
 
         void navigateToFlightHomePage();
+
+        void renderFlightOrder(FlightOrder flightOrder);
+
+        FlightOrder getFlightOrder();
+
+        void navigateToContactUs(FlightOrder flightOrder);
     }
 
     interface Presenter extends CustomerPresenter<View> {
