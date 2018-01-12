@@ -94,7 +94,6 @@ public class DeeplinkRepositoryImpl implements DeeplinkRepository {
     }
 
     private void saveMappingToCache(List<WhitelistItem> whitelistItems) {
-//        GlobalCacheManager mappingCache = new GlobalCacheManager();
         Gson gson = new Gson();
         if (whitelistItems != null && !whitelistItems.isEmpty()) {
             globalCacheManager.setKey(KEY_MAPPING);
@@ -105,7 +104,6 @@ public class DeeplinkRepositoryImpl implements DeeplinkRepository {
     }
 
     private void saveVersionToCache() {
-//        GlobalCacheManager versionCache = new GlobalCacheManager();
         globalCacheManager.setKey(KEY_VERSION);
         Gson gson = new Gson();
         globalCacheManager.setValue(gson.toJson(BuildConfig.VERSION_CODE));
