@@ -81,6 +81,14 @@ public class OrderDetailData implements Parcelable{
 
     private ButtonData buttonData;
 
+    private String drivername;
+
+    private String driverPhone;
+
+    private String driverImage;
+
+    private String driverVehicle;
+
     public OrderDetailData() {
 
     }
@@ -121,6 +129,10 @@ public class OrderDetailData implements Parcelable{
         additionalFee = in.readString();
         totalPayment = in.readString();
         buttonData = in.readParcelable(ButtonData.class.getClassLoader());
+        drivername = in.readString();
+        driverPhone = in.readString();
+        driverImage = in.readString();
+        driverVehicle = in.readString();
     }
 
     @Override
@@ -160,6 +172,10 @@ public class OrderDetailData implements Parcelable{
         dest.writeString(additionalFee);
         dest.writeString(totalPayment);
         dest.writeParcelable(buttonData, flags);
+        dest.writeString(drivername);
+        dest.writeString(driverPhone);
+        dest.writeString(driverImage);
+        dest.writeString(driverVehicle);
     }
 
     @Override
@@ -457,5 +473,37 @@ public class OrderDetailData implements Parcelable{
 
     public void setOrderCode(String orderCode) {
         this.orderCode = orderCode;
+    }
+
+    public String getDriverName() {
+        return drivername;
+    }
+
+    public void setDrivername(String drivername) {
+        this.drivername = drivername;
+    }
+
+    public String getDriverPhone() {
+        return driverPhone;
+    }
+
+    public void setDriverPhone(String driverPhone) {
+        this.driverPhone = driverPhone;
+    }
+
+    public String getDriverImage() {
+        return driverImage;
+    }
+
+    public void setDriverImage(String driverImage) {
+        this.driverImage = driverImage;
+    }
+
+    public String getDriverVehicle() {
+        return driverVehicle;
+    }
+
+    public void setDriverVehicle(String driverVehicle) {
+        this.driverVehicle = driverVehicle;
     }
 }
