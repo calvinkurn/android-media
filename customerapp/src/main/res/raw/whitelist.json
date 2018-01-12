@@ -211,7 +211,7 @@
     },
     {
       "path":"joox",
-      "applink":"tokopedia://digital/form?category_id=13&operator_id=152"
+      "applink":"tokopedia://digital/form?category_id=13&operator_id=154"
     },
     {
       "path":"catchplay",
@@ -603,7 +603,7 @@
     },
     {
       "path":"streaming/joox",
-      "applink":"tokopedia://digital/form?category_id=13&operator_id=152"
+      "applink":"tokopedia://digital/form?category_id=13&operator_id=154"
     },
     {
       "path":"streaming/catchplay",
