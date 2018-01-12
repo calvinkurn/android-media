@@ -12,4 +12,5 @@ public abstract class ShopOpenLogisticPresenter extends BaseDaggerPresenter<Shop
 
     public abstract void getCouriers(int districtCode);
     public abstract void saveCourier(CourierServiceIdWrapper courierServiceIdWrapper);
+
 }

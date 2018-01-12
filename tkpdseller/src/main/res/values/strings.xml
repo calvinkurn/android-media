@@ -175,6 +175,7 @@
     <string name="hello_x">Halo, <![CDATA[<b>%1$s</b>]]></string>
     <string name="openshop_make_sure_pickup_location">Pastikan Lokasi Pickup Anda telah sesuai untuk jasa pengiriman Go-JEK, Grab &amp; Ninja Express</string>
     <string name="label_pickup_location">Lokasi Pickup</string>
+    <string name="select_pickup_location">Pilih Lokasi Pickup</string>
 
     <!-- Shop Setting -->
     <string name="label_shop_open_welcome">Halo,</string>
@@ -248,7 +249,9 @@
     <string name="choose_delivery_packet">Pilih Paket Pengiriman</string>
     <string name="delivery_not_available">Pengiriman tidak tersedia</string>
     <string name="courier_cannot_activate_desc">Kurir ini tidak dapat diaktifkan karena tidak tersedia di daerah Anda.</string>
+    <string name="courier_cannot_activate_pinpoint_desc">Pilih Lokasi Pickup untuk mengaktifkan kurir dengan layanan Same Day.</string>
     <string name="courier_cannot_activate_title">Kurir tidak tersedia di daerah Anda</string>
+    <string name="courier_cannot_activate_pinpoint_title">Kurir Tidak Dapat Diaktifkan</string>
     <string name="min_1_courier_must_be_selected">Minimal 1 layanan kurir harus dipilih.</string>
     <string name="shop_has_been_active">Toko Anda sudah aktif!</string>
     <string name="shop_create_success_ask_add_product">Jangan sampai toko Anda kosong begitu saja.\nTambahkan produk pertamamu dan mulai berjualan sekarang.</string>

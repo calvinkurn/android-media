@@ -19,8 +19,10 @@ import java.util.List;
 
 public class ShopOpenCourierListViewGroup extends LinearLayout implements ShopOpenCourierExpandableOption.OnShopCourierExpandableOptionListener {
     private List<Courier> courierList;
+    private boolean hasPinPointLocation;
 
     private ShopOpenCourierExpandableOption.OnShopCourierExpandableOptionListener onShopCourierExpandableOptionListener;
+
     public void setOnShopCourierExpandableOptionListener(ShopOpenCourierExpandableOption.OnShopCourierExpandableOptionListener
                                                                  onShopCourierExpandableOptionListener) {
         this.onShopCourierExpandableOptionListener = onShopCourierExpandableOptionListener;
@@ -53,12 +55,13 @@ public class ShopOpenCourierListViewGroup extends LinearLayout implements ShopOp
         layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
     }
 
-    public void setCourierList(List<Courier> courierList, CourierServiceIdWrapper selectedCourierService) {
+    public void setCourierList(List<Courier> courierList, CourierServiceIdWrapper selectedCourierService, boolean hasPinPointLocation) {
         if (courierList == null) {
             this.courierList = new ArrayList<>();
         } else {
             this.courierList = courierList;
         }
+        this.hasPinPointLocation = hasPinPointLocation;
         setUIBasedOnCourierList(selectedCourierService);
     }
 
@@ -70,8 +73,11 @@ public class ShopOpenCourierListViewGroup extends LinearLayout implements ShopOp
                     (ShopOpenCourierExpandableOption) LayoutInflater.from(getContext()).inflate(R.layout.item_shop_courier, this, false);
             shopCourierExpandableOption.setTitleText(courier.getName());
             shopCourierExpandableOption.setLogo(courier.getLogo());
-            shopCourierExpandableOption.setEnabled(courier.isAvailable());
+            boolean isEnabled = (courier.isExpressCourierId() && hasPinPointLocation)
+                    || (!courier.isExpressCourierId() && courier.isAvailable());
+            shopCourierExpandableOption.setEnabled(isEnabled);
             shopCourierExpandableOption.setChild(courier.getServices());
+            shopCourierExpandableOption.setCourier(courier);
             shopCourierExpandableOption.setOnShopCourierExpandableOptionListener(this);
             if (selectedCourierServiceList != null && selectedCourierServiceList.contains(courier.getId())) {
                 shopCourierExpandableOption.setChecked(true);
@@ -102,9 +108,9 @@ public class ShopOpenCourierListViewGroup extends LinearLayout implements ShopOp
     }
 
     @Override
-    public void onDisabledHeaderClicked() {
+    public void onDisabledHeaderClicked(Courier courier) {
         if (onShopCourierExpandableOptionListener != null) {
-            onShopCourierExpandableOptionListener.onDisabledHeaderClicked();
+            onShopCourierExpandableOptionListener.onDisabledHeaderClicked(courier);
         }
     }
 

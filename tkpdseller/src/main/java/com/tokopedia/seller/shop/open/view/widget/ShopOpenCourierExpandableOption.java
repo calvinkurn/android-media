@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.expandable.BaseExpandableOption;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.logistic.model.Courier;
 import com.tokopedia.seller.logistic.model.CourierServiceModel;
 import com.tokopedia.seller.shop.open.view.adapter.ShopOpenCourierAdapter;
 
@@ -30,13 +31,14 @@ public class ShopOpenCourierExpandableOption extends BaseExpandableOption implem
     private TextView tvTitle;
     private TextView tvDesc;
     private SwitchCompat switchCompat;
+    private Courier courier;
 
     private boolean mEnabled;
 
     private OnShopCourierExpandableOptionListener onShopCourierExpandableOptionListener;
 
     public interface OnShopCourierExpandableOptionListener {
-        void onDisabledHeaderClicked();
+        void onDisabledHeaderClicked(Courier courier);
         void onCourierServiceInfoIconClicked(String title, String description);
     }
 
@@ -175,10 +177,20 @@ public class ShopOpenCourierExpandableOption extends BaseExpandableOption implem
         super.setExpand(isExpanded);
     }
 
+    public void setCourier(Courier courier) {
+        this.courier = courier;
+    }
+
     @Override
     public void setEnabled(boolean enabled) {
         this.mEnabled = enabled;
-        switchCompat.setEnabled(enabled);
+        if (mEnabled) {
+            switchCompat.setEnabled(true);
+            switchCompat.setVisibility(VISIBLE);
+        } else {
+            switchCompat.setEnabled(false);
+            switchCompat.setVisibility(GONE);
+        }
         setUIDescription();
         setUITitle();
     }
@@ -194,7 +206,7 @@ public class ShopOpenCourierExpandableOption extends BaseExpandableOption implem
 
     private void onDisabledHeaderClicked(){
         if (onShopCourierExpandableOptionListener != null) {
-            onShopCourierExpandableOptionListener.onDisabledHeaderClicked();
+            onShopCourierExpandableOptionListener.onDisabledHeaderClicked(courier);
         }
     }
 
