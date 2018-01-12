@@ -96,14 +96,18 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         Date departureDate = FlightDateUtil.stringToDate(getView().getDepartureDateString());
 
         if (isChildPassenger()) {
+            // minDate = 12 tahun + 1 hari
             minDate = FlightDateUtil.addTimeToSpesificDate(departureDate, Calendar.YEAR, -12);
+            minDate = FlightDateUtil.addTimeToSpesificDate(minDate, Calendar.DATE, +1);
             maxDate = FlightDateUtil.addTimeToSpesificDate(departureDate, Calendar.YEAR, -2);
             selectedDate = maxDate;
         } else if(isAdultPassenger()) {
             maxDate = FlightDateUtil.addTimeToSpesificDate(departureDate, Calendar.YEAR, -12);
             selectedDate = maxDate;
         } else {
+            // minDate = 2 tahun + 1 hari
             minDate = FlightDateUtil.addTimeToSpesificDate(departureDate, Calendar.YEAR, -2);
+            minDate = FlightDateUtil.addTimeToSpesificDate(minDate, Calendar.DATE, +1);
             maxDate = FlightDateUtil.addTimeToSpesificDate(departureDate, Calendar.DATE, -1);
             selectedDate = maxDate;
         }
@@ -126,6 +130,9 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         now.set(Calendar.DATE, date);
         Date newReturnDate = now.getTime();
 
+        //max Date + 1 hari, karena pengecekan pakai before
+        maxDate = FlightDateUtil.addTimeToSpesificDate(maxDate, Calendar.DATE, +1);
+
         if (newReturnDate.before(minDate) || newReturnDate.after(maxDate)) {
             if (isChildPassenger()) {
                 getView().showPassengerNameEmptyError(R.string.flight_booking_passenger_birthdate_child_shoud_between_twelve_to_two_years);
@@ -147,6 +154,9 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         now.set(Calendar.MONTH, month);
         now.set(Calendar.DATE, date);
         Date newReturnDate = now.getTime();
+
+        //max Date + 1 hari, karena pengecekan pakai before
+        maxDate = FlightDateUtil.addTimeToSpesificDate(maxDate, Calendar.DATE, +1);
 
         if (newReturnDate.after(maxDate)) {
             getView().showPassengerNameEmptyError(R.string.flight_booking_passenger_birthdate_adult_shoud_more_than_twelve_years);
