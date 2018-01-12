@@ -159,7 +159,6 @@ public class CartPresenter implements ICartPresenter {
             }
         }
         checkoutAnalytics.setCurrency("IDR");
-        checkoutAnalytics.setStep(2);
 
         Map[] afAllItemsPurchased = new Map[afProducts.size()];
         int ctr = 0;
@@ -516,8 +515,9 @@ public class CartPresenter implements ICartPresenter {
                 localCacheHandler.getString(Jordan.CACHE_KEY_DATA_CHECKOUT),
                 new TypeToken<Checkout>() {
                 }.getType());
-        checkoutData.setCheckoutOption(gateway);
-        PaymentTracking.eventCartCheckout(checkoutData);
+        checkoutData.setStep(1);
+        checkoutData.setCheckoutOption("cart page loaded");
+        PaymentTracking.eventCartCheckout();
     }
 
     @Override
