@@ -29,6 +29,7 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
     private int productWholesale;
     private int productUsingStock;
     private int productStock;
+    private int productVariant;
 
     @Override
     public int getType() {
@@ -183,6 +184,14 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
         return productCashbackAmount;
     }
 
+    public int getProductVariant() {
+        return productVariant;
+    }
+
+    public void setProductVariant(int productVariant) {
+        this.productVariant = productVariant;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -206,6 +215,7 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
         dest.writeInt(this.productWholesale);
         dest.writeInt(this.productUsingStock);
         dest.writeInt(this.productStock);
+        dest.writeInt(this.productVariant);
     }
 
     protected ProductManageViewModel(Parcel in) {
@@ -225,6 +235,7 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
         this.productWholesale = in.readInt();
         this.productUsingStock = in.readInt();
         this.productStock = in.readInt();
+        this.productVariant = in.readInt();
     }
 
     public static final Creator<ProductManageViewModel> CREATOR = new Creator<ProductManageViewModel>() {

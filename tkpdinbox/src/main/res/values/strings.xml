@@ -231,6 +231,8 @@ yang ditemukan</string>
     <string name="string_reason">Alasan:</string>
     <string name="string_awb_format">Nomor Resi: %1$s (%2$s)</string>
     <string name="string_common_chat_title">%1$s:</string>
+    <string name="string_sending_message">Sedang mengirim</string>
+
 
     <!--Track Shipping-->
     <string name="title_track_shipping">Lacak Paket</string>
@@ -239,4 +241,14 @@ yang ditemukan</string>
     <string name="string_status">Status :</string>
     <string name="string_awb_attachment_title">Lampiran Foto Resi: </string>
     <string name="string_input_awb_title">Contoh Informasi yang Harus Terlihat:</string>
+
+    <!--success message-->
+    <string name="string_success_accept">Solusi telah diterima</string>
+    <string name="string_success_appeal">Anda berhasil melakukan proses naik banding</string>
+    <string name="string_success_cancel">Resolusi telah dibatalkan</string>
+    <string name="string_success_edit_awb">Terima kasih telah melakukan pengiriman</string>
+    <string name="string_success_edit_solution">Solusi berhasil diubah</string>
+    <string name="string_success_help">Tokopedia akan mempelajari kasus ini terlebih dahulu dan akan memberikan resolusi dalam waktu 3 hari</string>
+    <string name="string_success_input_awb">Terima kasih sudah melakukan pengiriman</string>
+    <string name="string_success_finish">Komplain ini telah dinyatakan selesai. Terima kasih.</string>
 </resources>

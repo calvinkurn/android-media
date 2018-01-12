@@ -293,14 +293,17 @@ public class TkpdBaseURL {
         public static final String URL_MY_SHOP_ORDER_ACTION = BASE_DOMAIN + "v4/action/myshop-order/";
         public static final String URL_MY_SHOP_PAYMENT = BASE_DOMAIN + "v4/myshop-payment/";
         public static final String URL_MY_SHOP_PAYMENT_ACTION = BASE_DOMAIN + "v4/action/myshop-payment/";
-        public static final String URL_MY_SHOP_SHIPMENT = BASE_DOMAIN + "v4/myshop-shipment/";
-        public static final String URL_MY_SHOP_SHIPMENT_ACTION = BASE_DOMAIN + "v4/action/myshop-shipment/";
+        public static final String PATH_MY_SHOP_SHIPMENT = "v4/myshop-shipment/";
+        public static final String URL_MY_SHOP_SHIPMENT = BASE_DOMAIN + PATH_MY_SHOP_SHIPMENT;
+        public static final String PATH_MY_SHOP_SHIPMENT_ACTION = "v4/action/myshop-shipment/";
+        public static final String URL_MY_SHOP_SHIPMENT_ACTION = BASE_DOMAIN + PATH_MY_SHOP_SHIPMENT_ACTION;
         public static final String URL_NOTES = BASE_DOMAIN + "v4/notes/";
         public static final String URL_REPUTATION_ACTION = BASE_DOMAIN + "v4/action/reputation/";
         public static final String PATH_SHOP = "v4/shop/";
         public static final String PATH_SHOP_TOME = "v1/web-service/shop/get_shop_info";
         public static final String URL_SHOP = BASE_DOMAIN + PATH_SHOP;
-        public static final String URL_SHIPPING_WEBVIEW = BASE_DOMAIN + "v4/web-view/";
+        public static final String PATH_SHIPPING_WEBVIEW = "v4/web-view/";
+        public static final String URL_SHIPPING_WEBVIEW = BASE_DOMAIN + PATH_SHIPPING_WEBVIEW;
         public static final String URL_ACTION_SHOP_ORDER = "v4/myshop-order/";
 
         public static final String PATH_CHECK_DOMAIN = "check_domain.pl";
@@ -397,6 +400,12 @@ public class TkpdBaseURL {
 
         public static final String PATH_GET_DATA_SOURCE_TICKER = "get_data_source_ticker.pl";
         public static final String PATH_GET_LIST_FAVE_SHOP_ID = "/v4/home/get_list_fave_shop_id.pl";
+    }
+
+    public static final class Tome {
+        public static final String URL_ADDRESS = TOME_DOMAIN + "v1/web-service/apps/";
+        public static final String PATH_IS_FAVORITE_SHOP = "v1/user/isfollowing";
+        public static final String PATH_GET_SHOP_PRODUCT = "v1/web-service/shop/get_shop_product";
     }
 
     public static class ResCenter {
@@ -569,11 +578,6 @@ public class TkpdBaseURL {
         public static final String PATH_GENERATE_HOST_RESO = "/v4/action/resolution-center/generate_token_host.pl";
     }
 
-    public static class Tome {
-        public static final String PATH_IS_FAVORITE_SHOP = "v1/user/isfollowing";
-        public static final String PATH_GET_SHOP_PRODUCT = "v1/web-service/shop/get_shop_product";
-    }
-
     public static class Ace {
         public static final String PATH_SEARCH = "search/";
         public static final String URL_SEARCH = ACE_DOMAIN + PATH_SEARCH;
@@ -735,6 +739,13 @@ public class TkpdBaseURL {
         public class Wallet {
             public static final String GET_BALANCE = "api/v1/wallet/balance";
         }
+
+        public class ChangeMSISDN {
+            public static final String GET_WARNING = "/api/v1/change-msisdn/get-warning";
+            public static final String SEND_EMAIL = "/api/v1/change-msisdn/update";
+            public static final String VALIDATE = "/api/v1/change-msisdn/validate";
+            public static final String VALIDATE_EMAIL_CODE = "/api/v1/change-msisdn/validate-code";
+        }
     }
 
     public static class Home {
@@ -827,7 +838,7 @@ public class TkpdBaseURL {
     }
 
     public static class ResCenterV2 {
-        public static final String BASE_RESOLUTION = WEB_DOMAIN + "resolution/";
+        public static final String BASE_RESOLUTION = BASE_API_DOMAIN + "resolution/";
         public static final String BASE_RESOLUTION_VERSION_1 = "v1/";
         public static final String BASE_RESOLUTION_VERSION_2 = "v2/";
         public static final String BASE_INBOX_RESOLUTION = BASE_RESOLUTION_VERSION_1 + "inbox";

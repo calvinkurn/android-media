@@ -45,6 +45,9 @@ import com.tokopedia.core.var.TkpdState;
 import java.util.Arrays;
 
 public class SessionHandler {
+    private static final String DEFAULT_EMPTY_SHOP_ID = "0";
+    private static final String DEFAULT_EMPTY_SHOP_ID_ON_PREF = "-1";
+
     private static final String SAVE_REAL = "SAVE_REAL";
     private static final String IS_MSISDN_VERIFIED = "IS_MSISDN_VERIFIED";
     public static final String DONT_REMIND_LATER = "DONT_REMIND_LATER";
@@ -135,6 +138,8 @@ public class SessionHandler {
         editor.putString(USER_DATA, null);
         editor.putString(REFRESH_TOKEN, null);
         editor.putString(ACCESS_TOKEN_TOKOCASH, null);
+        editor.putString(TOKEN_TYPE, null);
+        editor.putString(ACCESS_TOKEN, null);
         editor.apply();
         LocalCacheHandler.clearCache(context, MSISDN_SESSION);
         LocalCacheHandler.clearCache(context, TkpdState.CacheName.CACHE_USER);
@@ -151,8 +156,6 @@ public class SessionHandler {
         logoutInstagram(context);
         MethodChecker.removeAllCookies(context);
         LocalCacheHandler.clearCache(context, DrawerHelper.DRAWER_CACHE);
-
-        TrackingUtils.eventMoEngageLogoutUser();
 
         clearFeedCache();
         AppWidgetUtil.sendBroadcastToAppWidget(context);
@@ -256,10 +259,13 @@ public class SessionHandler {
     }
 
     public static String getShopID(Context context) {
-        String shop_id = null;
+        String shopId = null;
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        shop_id = sharedPrefs.getString(SHOP_ID, "0");
-        return shop_id;
+        shopId = sharedPrefs.getString(SHOP_ID, DEFAULT_EMPTY_SHOP_ID);
+        if (DEFAULT_EMPTY_SHOP_ID_ON_PREF.equals(shopId)) {
+            shopId = DEFAULT_EMPTY_SHOP_ID;
+        }
+        return shopId;
     }
 
     public static String getLoginName(Context context) {
@@ -477,8 +483,9 @@ public class SessionHandler {
         return sharedPrefs.getBoolean(IS_FIRST_TIME_STORAGE, true);
     }
 
-    public static boolean isUserSeller(Context context) {
-        return !SessionHandler.getShopID(context).isEmpty() && !SessionHandler.getShopID(context).equals("0");
+    public static boolean isUserHasShop(Context context) {
+        String shopID = SessionHandler.getShopID(context);
+        return !TextUtils.isEmpty(shopID) && !DEFAULT_EMPTY_SHOP_ID.equals(shopID);
     }
 
     public static String getUUID(Context context) {
@@ -553,6 +560,7 @@ public class SessionHandler {
                 "User Id: " + getLoginID(context) +
                         " Device Id: " + GCMHandler.getRegistrationId(context));
         PasswordGenerator.clearTokenStorage(context);
+        TrackingUtils.eventMoEngageLogoutUser();
         clearUserData();
     }
 
@@ -565,10 +573,10 @@ public class SessionHandler {
     }
 
     public String getShopID() {
-        String shop_id = null;
+        String shopId = null;
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        shop_id = sharedPrefs.getString(SHOP_ID, "0");
-        return shop_id;
+        shopId = sharedPrefs.getString(SHOP_ID, DEFAULT_EMPTY_SHOP_ID);
+        return shopId;
     }
 
     public String getLoginName() {
@@ -636,7 +644,7 @@ public class SessionHandler {
         }
     }
 
-    public String getAccessToken(Context context) {
+    public static String getAccessToken(Context context) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         return sharedPrefs.getString(ACCESS_TOKEN, "");
     }
@@ -670,6 +678,20 @@ public class SessionHandler {
     public static String getAccessTokenTokoCash() {
         SharedPreferences sharedPrefs = MainApplication.getAppContext().getSharedPreferences(TOKOCASH_SESSION, Context.MODE_PRIVATE);
         return sharedPrefs.getString(ACCESS_TOKEN_TOKOCASH, "");
+    }
+
+    public void setUUID(String uuid) {
+        LocalCacheHandler cache = new LocalCacheHandler(MainApplication.getAppContext(),
+                LOGIN_UUID_KEY);
+        String prevUUID = cache.getString(UUID_KEY, "");
+        String currUUID;
+        if (prevUUID.equals("")) {
+            currUUID = uuid;
+        } else {
+            currUUID = prevUUID + "*~*" + uuid;
+        }
+        cache.putString(UUID_KEY, currUUID);
+        cache.applyEditor();
     }
 
     public interface onLogoutListener {

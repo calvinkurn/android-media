@@ -73,7 +73,7 @@ public class GlowingView extends BaseView {
     }
 
     public void stopAnimation() {
-        animation1.cancel();
-        animation2.cancel();
+        ivAnimation1.clearAnimation();
+        ivAnimation2.clearAnimation();
     }
 }
