@@ -16,9 +16,6 @@ import retrofit2.http.POST;
 import retrofit2.http.QueryMap;
 import rx.Observable;
 
-/**
- * Created by nakama on 09/01/18.
- */
 
 public interface WSLogisticApi {
     @FormUrlEncoded
