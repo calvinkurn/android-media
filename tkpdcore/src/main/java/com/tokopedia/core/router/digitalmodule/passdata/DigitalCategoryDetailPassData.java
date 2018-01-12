@@ -11,19 +11,11 @@ public class DigitalCategoryDetailPassData implements Parcelable {
     public static final String PARAM_OPERATOR_ID = "operator_id";
     public static final String PARAM_PRODUCT_ID = "product_id";
     public static final String PARAM_CLIENT_NUMBER = "client_number";
-    public static final String PARAM_UTM_SOURCE = "utm_source";
-    public static final String PARAM_UTM_MEDIUM = "utm_medium";
-    public static final String PARAM_UTM_CAMPAIGN = "utm_campaign";
-    public static final String PARAM_UTM_CONTENT = "utm_content";
 
     private String categoryId;
     private String operatorId;
     private String productId;
     private String clientNumber;
-    private String utmSource;
-    private String utmMedium;
-    private String utmCampaign;
-    private String utmContent;
     private String url;
     private String appLinks;
     private String categoryName;
@@ -33,10 +25,6 @@ public class DigitalCategoryDetailPassData implements Parcelable {
         setOperatorId(builder.operatorId);
         setProductId(builder.productId);
         setClientNumber(builder.clientNumber);
-        setUtmSource(builder.utmSource);
-        setUtmMedium(builder.utmMedium);
-        setUtmCampaign(builder.utmCampaign);
-        setUtmContent(builder.utmContent);
         setUrl(builder.url);
         setAppLinks(builder.appLinks);
         setCategoryName(builder.categoryName);
@@ -72,38 +60,6 @@ public class DigitalCategoryDetailPassData implements Parcelable {
 
     public void setClientNumber(String clientNumber) {
         this.clientNumber = clientNumber;
-    }
-
-    public String getUtmSource() {
-        return utmSource;
-    }
-
-    public void setUtmSource(String utmSource) {
-        this.utmSource = utmSource;
-    }
-
-    public String getUtmMedium() {
-        return utmMedium;
-    }
-
-    public void setUtmMedium(String utmMedium) {
-        this.utmMedium = utmMedium;
-    }
-
-    public String getUtmCampaign() {
-        return utmCampaign;
-    }
-
-    public void setUtmCampaign(String utmCampaign) {
-        this.utmCampaign = utmCampaign;
-    }
-
-    public String getUtmContent() {
-        return utmContent;
-    }
-
-    public void setUtmContent(String utmContent) {
-        this.utmContent = utmContent;
     }
 
     public String getUrl() {
@@ -142,10 +98,6 @@ public class DigitalCategoryDetailPassData implements Parcelable {
         dest.writeString(this.operatorId);
         dest.writeString(this.productId);
         dest.writeString(this.clientNumber);
-        dest.writeString(this.utmSource);
-        dest.writeString(this.utmMedium);
-        dest.writeString(this.utmCampaign);
-        dest.writeString(this.utmContent);
         dest.writeString(this.url);
         dest.writeString(this.appLinks);
         dest.writeString(this.categoryName);
@@ -159,10 +111,6 @@ public class DigitalCategoryDetailPassData implements Parcelable {
         this.operatorId = in.readString();
         this.productId = in.readString();
         this.clientNumber = in.readString();
-        this.utmSource = in.readString();
-        this.utmMedium = in.readString();
-        this.utmCampaign = in.readString();
-        this.utmContent = in.readString();
         this.url = in.readString();
         this.appLinks = in.readString();
         this.categoryName = in.readString();
@@ -215,26 +163,6 @@ public class DigitalCategoryDetailPassData implements Parcelable {
 
         public Builder clientNumber(String val) {
             clientNumber = val;
-            return this;
-        }
-
-        public Builder utmSource(String val) {
-            utmSource = val;
-            return this;
-        }
-
-        public Builder utmMedium(String val) {
-            utmMedium = val;
-            return this;
-        }
-
-        public Builder utmCampaign(String val) {
-            utmCampaign = val;
-            return this;
-        }
-
-        public Builder utmContent(String val) {
-            utmContent = val;
             return this;
         }
 

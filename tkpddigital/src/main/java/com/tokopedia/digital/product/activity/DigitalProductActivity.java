@@ -63,10 +63,6 @@ public class DigitalProductActivity extends BasePresenterActivity
                 .operatorId(extras.getString(DigitalCategoryDetailPassData.PARAM_OPERATOR_ID))
                 .productId(extras.getString(DigitalCategoryDetailPassData.PARAM_PRODUCT_ID))
                 .clientNumber(extras.getString(DigitalCategoryDetailPassData.PARAM_CLIENT_NUMBER))
-                .utmSource(extras.getString(DigitalCategoryDetailPassData.PARAM_UTM_SOURCE))
-                .utmMedium(extras.getString(DigitalCategoryDetailPassData.PARAM_UTM_MEDIUM))
-                .utmCampaign(extras.getString(DigitalCategoryDetailPassData.PARAM_UTM_CAMPAIGN))
-                .utmContent(extras.getString(DigitalCategoryDetailPassData.PARAM_UTM_CONTENT))
                 .build();
         Intent destination = DigitalProductActivity.newInstance(context, passData);
         destination.putExtra(Constants.EXTRA_FROM_PUSH, true);
@@ -98,11 +94,7 @@ public class DigitalProductActivity extends BasePresenterActivity
                             passData.getCategoryId(),
                             passData.getOperatorId(),
                             passData.getProductId(),
-                            passData.getClientNumber(),
-                            passData.getUtmSource(),
-                            passData.getUtmMedium(),
-                            passData.getUtmCampaign(),
-                            passData.getUtmContent()))
+                            passData.getClientNumber()))
                     .commit();
     }
 

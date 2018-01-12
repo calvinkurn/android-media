@@ -107,8 +107,7 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
 
     @Override
     public void processGetCategoryAndBannerData(
-            String categoryId, String operatorId, String productId, String clientNumber,
-            String utmSource, String utmMedium, String utmCampaign, String utmContent
+            String categoryId, String operatorId, String productId, String clientNumber
     ) {
         TKPDMapParam<String, String> paramQueryCategory = new TKPDMapParam<>();
         if (GlobalConfig.isSellerApp()) {
@@ -120,14 +119,10 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
 
         TKPDMapParam<String, String> paramQueryNumberList = new TKPDMapParam<>();
         paramQueryNumberList.put("category_id", categoryId);
-//        paramQueryNumberList.put("operator_id", operatorId);
-//        paramQueryNumberList.put("product_id", productId);
-//        paramQueryNumberList.put("client_number", clientNumber);
-//        paramQueryNumberList.put("utm_source", utmSource);
-//        paramQueryNumberList.put("utm_medium", utmMedium);
-//        paramQueryNumberList.put("utm_campaign", utmCampaign);
-//        paramQueryNumberList.put("utm_content", utmContent);
-//        paramQueryNumberList.put("sort", "label");
+        paramQueryNumberList.put("operator_id", operatorId);
+        paramQueryNumberList.put("product_id", productId);
+        paramQueryNumberList.put("client_number", clientNumber);
+        paramQueryNumberList.put("sort", "label");
 
         view.showInitialProgressLoading();
 

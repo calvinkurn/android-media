@@ -132,11 +132,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private static final String ARG_PARAM_EXTRA_PRODUCT_ID = "ARG_PARAM_EXTRA_PRODUCT_ID";
     private static final String ARG_PARAM_EXTRA_CLIENT_NUMBER = "ARG_PARAM_EXTRA_CLIENT_NUMBER";
 
-    private static final String ARG_PARAM_EXTRA_UTM_SOURCE = "ARG_PARAM_EXTRA_UTM_SOURCE";
-    private static final String ARG_PARAM_EXTRA_UTM_MEDIUM = "ARG_PARAM_EXTRA_UTM_MEDIUM";
-    private static final String ARG_PARAM_EXTRA_UTM_CAMPAIGN = "ARG_PARAM_EXTRA_UTM_CAMPAIGN";
-    private static final String ARG_PARAM_EXTRA_UTM_CONTENT = "ARG_PARAM_EXTRA_UTM_CONTENT";
-
     private static final String EXTRA_STATE_OPERATOR_SELECTED = "EXTRA_STATE_OPERATOR_SELECTED";
     private static final String EXTRA_STATE_PRODUCT_SELECTED = "EXTRA_STATE_PRODUCT_SELECTED";
     private static final String EXTRA_STATE_CLIENT_NUMBER = "EXTRA_STATE_CLIENT_NUMBER";
@@ -184,11 +179,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private String productId;
     private String clientNumber;
 
-    private String utmSource;
-    private String utmMedium;
-    private String utmCampaign;
-    private String utmContent;
-
     private CheckPulsaBalanceView selectedCheckPulsaBalanceView;
 
     private CompositeSubscription compositeSubscription;
@@ -213,18 +203,13 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     public static Fragment newInstance(
-            String categoryId, String operatorId, String productId, String clientNumber,
-            String utmSource, String utmMedium, String utmCampaign, String utmContent) {
+            String categoryId, String operatorId, String productId, String clientNumber) {
         Fragment fragment = new DigitalProductFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ARG_PARAM_EXTRA_CATEGORY_ID, categoryId);
         bundle.putString(ARG_PARAM_EXTRA_OPERATOR_ID, operatorId);
         bundle.putString(ARG_PARAM_EXTRA_PRODUCT_ID, productId);
-        bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER, clientNumber);
-        bundle.putString(ARG_PARAM_EXTRA_UTM_SOURCE, utmSource);
-        bundle.putString(ARG_PARAM_EXTRA_UTM_MEDIUM, utmMedium);
-        bundle.putString(ARG_PARAM_EXTRA_UTM_CAMPAIGN, utmCampaign);
-        bundle.putString(ARG_PARAM_EXTRA_UTM_CONTENT, utmContent);
+        bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER, clientNumber);;
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -242,8 +227,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         Toast.makeText(getActivity(), applinkProperties, Toast.LENGTH_SHORT).show();
 
         presenter.processGetCategoryAndBannerData(
-                categoryId, operatorId, productId, clientNumber,
-                utmSource, utmMedium, utmCampaign, utmContent);
+                categoryId, operatorId, productId, clientNumber);
     }
 
     @Override
@@ -327,11 +311,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         operatorId = arguments.getString(ARG_PARAM_EXTRA_OPERATOR_ID);
         productId = arguments.getString(ARG_PARAM_EXTRA_PRODUCT_ID);
         clientNumber = arguments.getString(ARG_PARAM_EXTRA_CLIENT_NUMBER);
-
-        utmSource = arguments.getString(ARG_PARAM_EXTRA_UTM_SOURCE);
-        utmMedium = arguments.getString(ARG_PARAM_EXTRA_UTM_MEDIUM);
-        utmCampaign = arguments.getString(ARG_PARAM_EXTRA_UTM_CAMPAIGN);
-        utmContent = arguments.getString(ARG_PARAM_EXTRA_UTM_CONTENT);
     }
 
     @Override

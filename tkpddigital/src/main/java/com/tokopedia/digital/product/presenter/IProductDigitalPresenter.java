@@ -17,8 +17,7 @@ public interface IProductDigitalPresenter {
     String TAG = IProductDigitalPresenter.class.getSimpleName();
 
     void processGetCategoryAndBannerData(
-            String categoryId, String operatorId, String productId, String clientNumber,
-            String utmSource, String utmMedium, String utmCampaign, String utmContent
+            String categoryId, String operatorId, String productId, String clientNumber
     );
 
     void processStoreLastInputClientNumberByCategory(
