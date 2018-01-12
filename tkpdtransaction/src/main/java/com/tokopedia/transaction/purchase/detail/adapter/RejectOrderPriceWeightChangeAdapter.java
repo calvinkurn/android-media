@@ -48,6 +48,10 @@ public class RejectOrderPriceWeightChangeAdapter extends RecyclerView.Adapter<Re
         );
     }
 
+    public List<WrongProductPriceWeightEditable> getProductPriceWeightData() {
+        return productPriceWeightData;
+    }
+
     @Override
     public int getItemCount() {
         return productPriceWeightData.size();

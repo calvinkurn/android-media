@@ -7,6 +7,7 @@ import com.tokopedia.transaction.purchase.detail.activity.OrderDetailView;
 import com.tokopedia.transaction.purchase.detail.model.detail.editmodel.OrderDetailShipmentModel;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.EmptyVarianProductEditable;
+import com.tokopedia.transaction.purchase.detail.model.rejectorder.WrongProductPriceWeightEditable;
 
 import java.util.List;
 
@@ -70,6 +71,9 @@ public interface OrderDetailPresenter {
 
     void rejectOrderChangeVarian(Context context,
                                  List<EmptyVarianProductEditable> emptyVarianProductEditables);
+
+    void rejectOrderChangeWeightPrice(Context context,
+                                      List<WrongProductPriceWeightEditable> editables);
 
     void processShipping(Context context,
                          OrderDetailShipmentModel shipmentModel);

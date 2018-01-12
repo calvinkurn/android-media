@@ -4,6 +4,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.purchase.detail.domain.OrderDetailRepository;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.EmptyVarianProductEditable;
+import com.tokopedia.transaction.purchase.detail.model.rejectorder.WrongProductPriceWeightEditable;
 
 import java.util.List;
 
@@ -95,6 +96,24 @@ public class OrderDetailInteractorImpl implements OrderDetailInteractor {
         compositeSubscription.add(orderDetailRepository
                 .rejectOrderChangeProductVarian(
                         emptyVarianProductEditables,
+                        productParam,
+                        rejectParam
+                )
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .subscribe(subscriber));
+    }
+
+    @Override
+    public void rejectChangeWeightPrice(
+            Subscriber<String> subscriber,
+            List<WrongProductPriceWeightEditable> editables,
+            TKPDMapParam<String, String> productParam,
+            TKPDMapParam<String, String> rejectParam) {
+        compositeSubscription.add(orderDetailRepository
+                .rejectOrderWeightPrice(
+                        editables,
                         productParam,
                         rejectParam
                 )

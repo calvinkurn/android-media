@@ -50,8 +50,10 @@ import com.tokopedia.transaction.purchase.detail.fragment.RejectOrderEmptyProduc
 import com.tokopedia.transaction.purchase.detail.fragment.RejectOrderEmptyVarianFragment;
 import com.tokopedia.transaction.purchase.detail.fragment.RejectOrderFragment;
 import com.tokopedia.transaction.purchase.detail.fragment.RejectOrderShopClosedFragment;
+import com.tokopedia.transaction.purchase.detail.fragment.RejectOrderWeightPriceFragment;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.EmptyVarianProductEditable;
+import com.tokopedia.transaction.purchase.detail.model.rejectorder.WrongProductPriceWeightEditable;
 import com.tokopedia.transaction.purchase.detail.presenter.OrderDetailPresenterImpl;
 
 import java.util.List;
@@ -80,10 +82,12 @@ public class OrderDetailActivity extends TActivity
         RejectOrderCourierProblemFragment.RejectOrderCourierReasonListener,
         RejectOrderBuyerRequest.RejectOrderBuyerRequestListener,
         RejectOrderShopClosedFragment.RejectOrderShopClosedListener,
-        RejectOrderEmptyVarianFragment.RejectOrderEmptyVarianFragmentListener{
+        RejectOrderEmptyVarianFragment.RejectOrderEmptyVarianFragmentListener,
+        RejectOrderWeightPriceFragment.RejectOrderChangeWeightPriceListener {
 
     public static final int REQUEST_CODE_ORDER_DETAIL = 111;
     private static final String VALIDATION_FRAGMENT_TAG = "validation_fragments";
+    private static final String REJECT_ORDER_FRAGMENT_TAG = "reject_order_fragment_teg";
     private static final String EXTRA_ORDER_ID = "EXTRA_ORDER_ID";
     private static final String EXTRA_USER_MODE = "EXTRA_USER_MODE";
     private static final int CONFIRM_SHIPMENT_REQUEST_CODE = 16;
@@ -481,12 +485,12 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void onRejectOrder(OrderDetailData data) {
         //TODO Change LATER
-        if (getFragmentManager().findFragmentByTag(VALIDATION_FRAGMENT_TAG) == null) {
+        if (getFragmentManager().findFragmentByTag(REJECT_ORDER_FRAGMENT_TAG) == null) {
             RejectOrderFragment rejectOrderFragment = RejectOrderFragment
                     .createFragment(data);
             getFragmentManager().beginTransaction()
                     .setCustomAnimations(R.animator.enter_bottom, R.animator.enter_bottom)
-                    .add(R.id.main_view, rejectOrderFragment, VALIDATION_FRAGMENT_TAG)
+                    .add(R.id.main_view, rejectOrderFragment, REJECT_ORDER_FRAGMENT_TAG)
                     .commit();
         }
     }
@@ -549,7 +553,9 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void dismissSellerActionFragment() {
-        getFragmentManager().beginTransaction().remove(getFragmentManager()
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.animator.exit_bottom, R.animator.exit_bottom)
+                .remove(getFragmentManager()
                 .findFragmentByTag(VALIDATION_FRAGMENT_TAG)).commit();
     }
 
@@ -560,9 +566,12 @@ public class OrderDetailActivity extends TActivity
                     .remove(getFragmentManager()
                     .findFragmentByTag(FRAGMENT_REJECT_ORDER_SUB_MENU_TAG)).commit();
         }
-        getFragmentManager().beginTransaction().remove(getFragmentManager()
+        getFragmentManager().beginTransaction()
+                .remove(getFragmentManager()
                 .findFragmentByTag(REJECT_ORDER_MENU_FRAGMENT_TAG)).commit();
-        getFragmentManager().beginTransaction().remove(getFragmentManager()
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.animator.exit_bottom, R.animator.exit_bottom)
+                .remove(getFragmentManager()
                 .findFragmentByTag(VALIDATION_FRAGMENT_TAG)).commit();
         setResult(Activity.RESULT_OK);
         finish();
@@ -664,6 +673,11 @@ public class OrderDetailActivity extends TActivity
                     .setCustomAnimations(R.animator.slide_out_right, R.animator.slide_out_right)
                     .remove(getFragmentManager()
                             .findFragmentByTag(REJECT_ORDER_MENU_FRAGMENT_TAG)).commit();
+        }else if(getFragmentManager().findFragmentByTag(REJECT_ORDER_FRAGMENT_TAG) != null) {
+            getFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.animator.slide_out_right, R.animator.slide_out_right)
+                    .remove(getFragmentManager()
+                            .findFragmentByTag(REJECT_ORDER_FRAGMENT_TAG)).commit();
         }else super.onBackPressed();
     }
 
@@ -716,5 +730,10 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void onRejectEmptyVarian(List<EmptyVarianProductEditable> editableList) {
         presenter.rejectOrderChangeVarian(this, editableList);
+    }
+
+    @Override
+    public void onConfirmWeightPrice(List<WrongProductPriceWeightEditable> listOfEditable) {
+        presenter.rejectOrderChangeWeightPrice(this, listOfEditable);
     }
 }

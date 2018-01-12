@@ -11,6 +11,7 @@ import com.tokopedia.transaction.purchase.detail.interactor.OrderDetailInteracto
 import com.tokopedia.transaction.purchase.detail.model.detail.editmodel.OrderDetailShipmentModel;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.EmptyVarianProductEditable;
+import com.tokopedia.transaction.purchase.detail.model.rejectorder.WrongProductPriceWeightEditable;
 
 import java.util.List;
 
@@ -218,6 +219,23 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
                 AuthUtil.generateParamsNetwork(context, new TKPDMapParam<String, String>()),
                 AuthUtil.generateParamsNetwork(context, rejectVarianParam));
 
+    }
+
+    @Override
+    public void rejectOrderChangeWeightPrice(
+            Context context,
+            List<WrongProductPriceWeightEditable> editables
+    ) {
+        mainView.showProgressDialog();
+        TKPDMapParam<String, String> changeWeightPriceParam = new TKPDMapParam<>();
+        changeWeightPriceParam.put("action_type", "reject");
+        changeWeightPriceParam.put("reason_code", "3");
+        changeWeightPriceParam.put("order_id", editables.get(0).getOrderId());
+        orderDetailInteractor.rejectChangeWeightPrice(
+                rejectOrderActionSubscriber(),
+                editables,
+                AuthUtil.generateParamsNetwork(context, new TKPDMapParam<String, String>()),
+                AuthUtil.generateParamsNetwork(context, changeWeightPriceParam));
     }
 
     @Override

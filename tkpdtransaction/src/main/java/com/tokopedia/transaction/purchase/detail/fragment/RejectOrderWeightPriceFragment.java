@@ -1,5 +1,7 @@
 package com.tokopedia.transaction.purchase.detail.fragment;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -17,9 +19,15 @@ import java.util.List;
  * Created by kris on 1/11/18. Tokopedia
  */
 
-public class RejectOrderWeightPriceFragment extends RejectOrderBaseFragment{
+public class RejectOrderWeightPriceFragment extends RejectOrderBaseFragment {
 
     public static final int FRAGMENT_EDIT_WEIGHT_PRICE_REQUEST_CODE = 24;
+
+    private static final int FIXED_KILOGRAM_MODE = 2;
+
+    private RejectOrderChangeWeightPriceListener listener;
+
+    private RejectOrderPriceWeightChangeAdapter adapter;
 
     public static RejectOrderWeightPriceFragment createFragment(OrderDetailData data) {
         RejectOrderWeightPriceFragment fragment = new RejectOrderWeightPriceFragment();
@@ -40,12 +48,25 @@ public class RejectOrderWeightPriceFragment extends RejectOrderBaseFragment{
     }
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        listener = (RejectOrderChangeWeightPriceListener)  activity;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        listener = (RejectOrderChangeWeightPriceListener)  context;
+    }
+
+    @Override
     protected RecyclerView.Adapter initAdapter(OrderDetailData data) {
-        return new RejectOrderPriceWeightChangeAdapter(
+        adapter = new RejectOrderPriceWeightChangeAdapter(
                 generateProductPriceWeight(
                         data.getOrderId(),
                         data.getShopId(),
                         data.getItemList()), adapterListener());
+        return adapter;
     }
 
     private RejectOrderPriceWeightChangeAdapter
@@ -78,7 +99,7 @@ public class RejectOrderWeightPriceFragment extends RejectOrderBaseFragment{
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                listener.onConfirmWeightPrice(adapter.getProductPriceWeightData());
             }
         };
     }
@@ -98,9 +119,21 @@ public class RejectOrderWeightPriceFragment extends RejectOrderBaseFragment{
             productWeightPriceModel.setProductImage(itemDataList.get(i).getImageUrl());
             productWeightPriceModel.setProductName(itemDataList.get(i).getItemName());
             productWeightPriceModel.setProductPrice(itemDataList.get(i).getPrice());
+            productWeightPriceModel.setCurrencyMode(itemDataList.get(i).getCurrencyType());
+            productWeightPriceModel.setWeightMode(FIXED_KILOGRAM_MODE);
+            productWeightPriceModel
+                    .setProductPriceUnformatted(itemDataList.get(i).getPriceUnformatted());
+            productWeightPriceModel
+                    .setProductWeightUnformatted(itemDataList.get(i).getWeightUnformatted());
             productWeightPriceModels.add(productWeightPriceModel);
         }
         return productWeightPriceModels;
+    }
+
+    public interface RejectOrderChangeWeightPriceListener {
+
+        void onConfirmWeightPrice(List<WrongProductPriceWeightEditable> listOfEditable);
+
     }
 
 }

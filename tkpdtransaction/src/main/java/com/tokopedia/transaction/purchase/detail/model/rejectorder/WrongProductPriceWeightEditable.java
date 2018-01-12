@@ -27,6 +27,10 @@ public class WrongProductPriceWeightEditable implements Parcelable{
 
     private int currencyMode;
 
+    private String productPriceUnformatted;
+
+    private String productWeightUnformatted;
+
     public WrongProductPriceWeightEditable() {
 
     }
@@ -41,6 +45,8 @@ public class WrongProductPriceWeightEditable implements Parcelable{
         productWeight = in.readString();
         weightMode = in.readInt();
         currencyMode = in.readInt();
+        productPriceUnformatted = in.readString();
+        productWeightUnformatted = in.readString();
     }
 
     public static final Creator<WrongProductPriceWeightEditable> CREATOR = new Creator<WrongProductPriceWeightEditable>() {
@@ -127,6 +133,22 @@ public class WrongProductPriceWeightEditable implements Parcelable{
         this.currencyMode = currencyMode;
     }
 
+    public String getProductPriceUnformatted() {
+        return productPriceUnformatted;
+    }
+
+    public void setProductPriceUnformatted(String productPriceUnformatted) {
+        this.productPriceUnformatted = productPriceUnformatted;
+    }
+
+    public String getProductWeightUnformatted() {
+        return productWeightUnformatted;
+    }
+
+    public void setProductWeightUnformatted(String productWeightUnformatted) {
+        this.productWeightUnformatted = productWeightUnformatted;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -141,5 +163,7 @@ public class WrongProductPriceWeightEditable implements Parcelable{
         parcel.writeString(productWeight);
         parcel.writeInt(weightMode);
         parcel.writeInt(currencyMode);
+        parcel.writeString(productPriceUnformatted);
+        parcel.writeString(productWeightUnformatted);
     }
 }

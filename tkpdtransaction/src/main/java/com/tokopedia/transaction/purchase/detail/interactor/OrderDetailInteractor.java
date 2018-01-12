@@ -3,6 +3,7 @@ package com.tokopedia.transaction.purchase.detail.interactor;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.EmptyVarianProductEditable;
+import com.tokopedia.transaction.purchase.detail.model.rejectorder.WrongProductPriceWeightEditable;
 
 import java.util.List;
 
@@ -29,6 +30,11 @@ public interface OrderDetailInteractor {
 
     void rejectEmptyOrderVarian(Subscriber<String> subscriber,
                                 List<EmptyVarianProductEditable> emptyVarianProductEditables,
+                                TKPDMapParam<String, String> productParam,
+                                TKPDMapParam<String, String> rejectParam);
+
+    void rejectChangeWeightPrice(Subscriber<String> subscriber,
+                                List<WrongProductPriceWeightEditable> emptyVarianProductEditables,
                                 TKPDMapParam<String, String> productParam,
                                 TKPDMapParam<String, String> rejectParam);
 
