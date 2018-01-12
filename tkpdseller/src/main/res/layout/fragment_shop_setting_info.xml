@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:padding="@dimen/padding_med">
+        android:padding="@dimen/activity_horizontal_margin">
 
         <ImageView
             style="@style/ImageView.ShopSettingTitleImage"
