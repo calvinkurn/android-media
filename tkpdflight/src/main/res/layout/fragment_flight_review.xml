@@ -25,7 +25,7 @@
                 android:layout_gravity="center" />
 
             <android.support.v7.widget.AppCompatTextView
-                style="@style/TextView.Body1"
+                style="@style/TextView.Small"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_sm"
@@ -57,7 +57,7 @@
                     android:paddingTop="@dimen/padding_med">
 
                     <android.support.v7.widget.AppCompatTextView
-                        style="@style/TextView.Caption.BlackSecondary"
+                        style="@style/TextView.Micro.BlackSecondary"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -80,7 +80,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        style="@style/TextView.Caption"
+                        style="@style/TextView.Micro"
                         android:layout_width="match_parent"
                         android:layout_marginLeft="@dimen/margin_small"
                         android:layout_marginRight="@dimen/margin_small"
@@ -95,7 +95,7 @@
                         android:padding="@dimen/padding_med">
 
                         <TextView
-                            style="@style/TextView.Title.Bold"
+                            style="@style/TextView.TitleBig.Bold"
                             android:layout_alignParentLeft="true"
                             android:layout_centerVertical="true"
                             android:layout_toLeftOf="@+id/review_detail_departure_flight"
@@ -103,7 +103,7 @@
 
                         <TextView
                             android:id="@+id/review_detail_departure_flight"
-                            style="@style/TextView.Body1.Green.Bold"
+                            style="@style/TextView.Small.Green.Bold"
                             android:layout_alignParentRight="true"
                             android:layout_centerVertical="true"
                             android:text="@string/flight_label_detail"
@@ -132,7 +132,7 @@
                         android:padding="@dimen/padding_med">
 
                         <TextView
-                            style="@style/TextView.Title.Bold"
+                            style="@style/TextView.TitleBig.Bold"
                             android:layout_alignParentLeft="true"
                             android:layout_centerVertical="true"
                             android:layout_toLeftOf="@+id/review_detail_return_flight"
@@ -140,7 +140,7 @@
 
                         <TextView
                             android:id="@+id/review_detail_return_flight"
-                            style="@style/TextView.Body1.Green.Bold"
+                            style="@style/TextView.Small.Green.Bold"
                             android:layout_alignParentRight="true"
                             android:layout_centerVertical="true"
                             android:text="@string/flight_label_detail"
@@ -165,7 +165,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        style="@style/TextView.Title.Bold"
+                        style="@style/TextView.TitleBig.Bold"
                         android:padding="@dimen/padding_med"
                         android:text="@string/flight_label_passenger_data" />
 
@@ -196,7 +196,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        style="@style/TextView.Title.Bold"
+                        style="@style/TextView.TitleBig.Bold"
                         android:padding="@dimen/padding_med"
                         android:text="@string/flight_label_detail_price" />
 
@@ -214,7 +214,7 @@
                         android:padding="@dimen/padding_med">
 
                         <TextView
-                            style="@style/TextView.Body1.Bold"
+                            style="@style/TextView.Small.Bold"
                             android:layout_alignParentLeft="true"
                             android:layout_centerVertical="true"
                             android:layout_toLeftOf="@+id/total_price"
@@ -222,7 +222,7 @@
 
                         <TextView
                             android:id="@+id/total_price"
-                            style="@style/TextView.Title.Bold"
+                            style="@style/TextView.TitleBig.Bold"
                             android:layout_alignParentRight="true"
                             android:layout_centerVertical="true"
                             tools:text="Rp. 500.0000" />

@@ -38,13 +38,13 @@
 
             <TextView
                 android:id="@+id/title_info"
-                style="@style/TextView.Body1.Bold"
+                style="@style/TextView.Small.Bold"
                 android:layout_width="130dp"
                 android:paddingTop="@dimen/padding_small"
                 android:text="Fasilitas" />
 
             <TextView
-                style="@style/TextView.Body1.Bold"
+                style="@style/TextView.Small.Bold"
                 android:layout_marginLeft="@dimen/margin_vvs"
                 android:layout_marginRight="@dimen/margin_vvs"
                 android:paddingTop="@dimen/padding_small"

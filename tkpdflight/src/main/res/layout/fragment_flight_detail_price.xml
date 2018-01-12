@@ -23,14 +23,14 @@
 
             <TextView
                 android:id="@+id/label_adult_price"
-                style="@style/TextView.Body1"
+                style="@style/TextView.Small"
                 android:layout_alignParentLeft="true"
                 android:layout_toLeftOf="@+id/adult_price"
                 tools:text="Garuda Indonesia Dewasa x1" />
 
             <TextView
                 android:id="@+id/adult_price"
-                style="@style/TextView.Body1.BlackSecondary"
+                style="@style/TextView.Small.BlackSecondary"
                 android:layout_alignParentRight="true"
                 tools:text="Rp. 500.000" />
         </RelativeLayout>
@@ -47,14 +47,14 @@
 
             <TextView
                 android:id="@+id/label_child_price"
-                style="@style/TextView.Body1"
+                style="@style/TextView.Small"
                 android:layout_alignParentLeft="true"
                 android:layout_toLeftOf="@+id/child_price"
                 tools:text="Garuda Indonesia Anak x1" />
 
             <TextView
                 android:id="@+id/child_price"
-                style="@style/TextView.Body1.BlackSecondary"
+                style="@style/TextView.Small.BlackSecondary"
                 android:layout_alignParentRight="true"
                 tools:text="Rp. 500.000" />
         </RelativeLayout>
@@ -71,14 +71,14 @@
 
             <TextView
                 android:id="@+id/label_infant_price"
-                style="@style/TextView.Body1"
+                style="@style/TextView.Small"
                 android:layout_alignParentLeft="true"
                 android:layout_toLeftOf="@+id/infant_price"
                 tools:text="Garuda Indonesia Bayi x1" />
 
             <TextView
                 android:id="@+id/infant_price"
-                style="@style/TextView.Body1.BlackSecondary"
+                style="@style/TextView.Small.BlackSecondary"
                 android:layout_alignParentRight="true"
                 tools:text="Rp. 500.000" />
         </RelativeLayout>
@@ -107,14 +107,14 @@
                 android:layout_marginBottom="@dimen/margin_small">
 
                 <TextView
-                    style="@style/TextView.Body1"
+                    style="@style/TextView.Small"
                     android:layout_alignParentLeft="true"
                     android:layout_toLeftOf="@+id/normal_price"
                     android:text="@string/flight_label_normal_price" />
 
                 <TextView
                     android:id="@+id/normal_price"
-                    style="@style/TextView.Body1.BlackSecondary"
+                    style="@style/TextView.Small.BlackSecondary"
                     android:layout_alignParentRight="true"
                     tools:text="Rp. 500.000" />
             </RelativeLayout>
@@ -127,14 +127,14 @@
                 android:layout_marginBottom="@dimen/margin_small">
 
                 <TextView
-                    style="@style/TextView.Body1"
+                    style="@style/TextView.Small"
                     android:layout_alignParentLeft="true"
                     android:layout_toLeftOf="@+id/saving_price"
                     android:text="@string/flight_label_saving_price" />
 
                 <TextView
                     android:id="@+id/saving_price"
-                    style="@style/TextView.Body1.BlackSecondary"
+                    style="@style/TextView.Small.BlackSecondary"
                     android:layout_alignParentRight="true"
                     tools:text="Rp. 500.0000" />
             </RelativeLayout>
@@ -157,7 +157,7 @@
             android:layout_marginBottom="@dimen/margin_small">
 
             <TextView
-                style="@style/TextView.Body1.Bold"
+                style="@style/TextView.Small.Bold"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:layout_toLeftOf="@+id/total_price"
@@ -165,7 +165,7 @@
 
             <TextView
                 android:id="@+id/total_price"
-                style="@style/TextView.Title.Bold"
+                style="@style/TextView.TitleBig.Bold"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 tools:text="Rp. 500.0000" />

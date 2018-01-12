@@ -25,14 +25,13 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
-import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
-import com.tokopedia.flight.common.view.FlightExpandableOptionArrow;
-import com.tokopedia.flight.contactus.FlightContactUsActivity;
+import com.tokopedia.flight.contactus.model.FlightContactUsPassData;
 import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import com.tokopedia.flight.detail.presenter.ExpandableOnClickListener;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderContract;
@@ -58,6 +57,8 @@ import javax.inject.Inject;
 public class FlightDetailOrderFragment extends BaseDaggerFragment implements FlightDetailOrderContract.View, ExpandableOnClickListener {
 
     public static final String EXTRA_ORDER_DETAIL_PASS = "EXTRA_ORDER_DETAIL_PASS";
+    private static final String CANCEL_SOLUTION_ID = "1377";
+    private static final int CONTACT_US_REQUEST_CODE = 100;
     @Inject
     FlightDetailOrderPresenter flightDetailOrderPresenter;
     private TextView orderId;
@@ -287,7 +288,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Override
     public void updateViewExpired() {
-        updateViewStatus(R.string.flight_label_transaction_failed, R.color.orange_red, false, false, false, true);
+        updateViewStatus(R.string.flight_label_transaction_failed, R.color.deep_orange_500, false, false, false, true);
     }
 
     @Override
@@ -428,7 +429,36 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Override
     public void navigateToContactUs(FlightOrder flightOrder) {
-        startActivity(FlightContactUsActivity.createContactUsIntent(getActivity(), flightOrder.getId(), cancelMessage));
+        startActivityForResult(getCallintIntent(
+                CANCEL_SOLUTION_ID,
+                flightOrder.getId(),
+                getString(R.string.flight_contact_us_cancel_desc),
+                getString(R.string.flight_contact_us_cancel_attc),
+                cancelMessage,
+                getString(R.string.flight_contact_us_cancel_toolbar))
+                , CONTACT_US_REQUEST_CODE);
+    }
+
+    private Intent getCallintIntent(String solutionId,
+                                    String orderId,
+                                    String descriptionTitle,
+                                    String attachmentTitle,
+                                    String description,
+                                    String toolbarTitle) {
+
+        FlightContactUsPassData passData = new FlightContactUsPassData();
+        passData.setSolutionId(solutionId);
+        passData.setOrderId(orderId);
+        passData.setDescriptionTitle(descriptionTitle);
+        passData.setAttachmentTitle(attachmentTitle);
+        passData.setDescription(description);
+        passData.setToolbarTitle(toolbarTitle);
+
+        if (getActivity().getApplication() instanceof FlightModuleRouter) {
+            return ((FlightModuleRouter) getActivity().getApplication()).getContactUsIntent(getActivity(), passData);
+        } else {
+            throw new RuntimeException("Application Module should implement FlightModuleRouter");
+        }
     }
 
     @Override

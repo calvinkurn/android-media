@@ -5,10 +5,10 @@ import android.content.Context;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
-import com.tokopedia.abstraction.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.di.qualifier.AuthKeyQualifier;
-import com.tokopedia.abstraction.di.qualifier.FreshAccessTokenQualifier;
-import com.tokopedia.abstraction.utils.AuthUtil;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.di.qualifier.AuthKeyQualifier;
+import com.tokopedia.abstraction.common.di.qualifier.FreshAccessTokenQualifier;
+import com.tokopedia.abstraction.common.utils.AuthUtil;
 
 import java.io.IOException;
 import java.net.UnknownHostException;

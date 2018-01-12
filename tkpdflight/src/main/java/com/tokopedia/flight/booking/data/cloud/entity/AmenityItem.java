@@ -8,13 +8,7 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class AmenityItem {
-    /*{
-        "id": "15.0;0.0",
-            "price": "Rp 0",
-            "price_numeric": 0,
-            "description": "15kg",
-            "currency": "IDR"
-    },*/
+    
     @SerializedName("id")
     @Expose
     private String id;

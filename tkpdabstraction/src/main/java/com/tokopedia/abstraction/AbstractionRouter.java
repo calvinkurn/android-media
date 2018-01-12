@@ -2,15 +2,16 @@ package com.tokopedia.abstraction;
 
 import android.app.Activity;
 
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+
+import okhttp3.Response;
 
 /**
  * Created by nathan on 10/16/17.
  */
 
 public interface AbstractionRouter {
-
-    void goToForceUpdate(Activity activity);
 
     void onForceLogout(Activity activity);
 
@@ -20,15 +21,13 @@ public interface AbstractionRouter {
 
     void showForceLogoutDialog();
 
-    void sendForceLogoutAnalytics(String url);
-
-    void showServerErrorSnackbar();
-
-    void sendErrorNetworkAnalytics(String url, int code);
+    void showServerError(Response response);
 
     void refreshLogin();
 
     void refreshToken();
 
     UserSession getSession();
+
+    AnalyticTracker getAnalyticTracker();
 }

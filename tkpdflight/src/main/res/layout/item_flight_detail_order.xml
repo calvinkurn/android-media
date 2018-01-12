@@ -3,15 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
+    android:layout_marginTop="@dimen/margin_med"
     android:background="@color/white"
     android:paddingBottom="@dimen/padding_16"
-    android:paddingTop="@dimen/padding_16"
-    android:layout_marginTop="@dimen/margin_med">
+    android:paddingTop="@dimen/padding_16">
 
     <TextView
         android:id="@+id/counter_flight"
-        style="@style/TextView.Title.Bold"
+        style="@style/TextView.TitleBig.Bold"
         android:text="@string/flight_label_detail_order"
         android:paddingLeft="@dimen/padding_med"
         android:paddingRight="@dimen/padding_med"
@@ -58,13 +57,13 @@
 
 
     <TextView
-        style="@style/TextView.Caption.BlackDisabled"
+        style="@style/TextView.Micro.BlackSecondary"
         android:layout_width="match_parent"
         android:background="@color/white"
-        android:paddingTop="@dimen/padding_med"
         android:paddingBottom="@dimen/padding_med"
         android:paddingLeft="@dimen/padding_med"
         android:paddingRight="@dimen/padding_med"
+        android:paddingTop="@dimen/padding_med"
         android:text="@string/flight_label_cek_t_and_c" />
 
 </LinearLayout>

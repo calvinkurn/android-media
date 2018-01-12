@@ -23,11 +23,11 @@
                 android:id="@+id/collapsing_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:collapsedTitleTextAppearance="@style/TextView.Subheading"
+                app:collapsedTitleTextAppearance="@style/TextView.Title"
                 app:contentScrim="@color/white"
                 app:expandedTitleMarginEnd="12dp"
                 app:expandedTitleMarginStart="12dp"
-                app:expandedTitleTextAppearance="@style/TextView.Subheading"
+                app:expandedTitleTextAppearance="@style/TextView.Title"
                 app:layout_scrollFlags="scroll|snap|exitUntilCollapsed">
 
                 <include

@@ -45,13 +45,13 @@
                     android:orientation="vertical">
 
                     <TextView
-                        style="@style/TextView.Caption.BlackDisabled"
+                        style="@style/TextView.Micro.BlackDisabled"
                         android:layout_toRightOf="@id/icon_status"
                         android:text="@string/flight_label_status" />
 
                     <TextView
                         android:id="@+id/status_ticket"
-                        style="@style/TextView.Caption"
+                        style="@style/TextView.Micro"
                         tools:text="Tiket dibatalkan" />
                 </LinearLayout>
             </LinearLayout>
@@ -73,14 +73,14 @@
                 android:weightSum="2">
 
                 <TextView
-                    style="@style/TextView.Body1.BlackSecondary"
+                    style="@style/TextView.Small.BlackSecondary"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:text="@string/flight_label_transaction_date" />
 
                 <TextView
                     android:id="@+id/transaction_date"
-                    style="@style/TextView.Body1.Bold"
+                    style="@style/TextView.Small.Bold"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     tools:text="1 Sep 2017, 05:00 WIB" />
@@ -109,17 +109,16 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        style="@style/TextView.Body1.BlackSecondary"
+                        style="@style/TextView.Small.BlackSecondary"
                         android:layout_marginEnd="@dimen/margin_vvs"
                         android:layout_marginRight="@dimen/margin_vvs"
                         android:text="@string/flight_label_order_id_detail"
-                        android:textSize="@dimen/font_body1" />
+                         />
 
                     <TextView
                         android:id="@+id/order_id_detail"
-                        style="@style/TextView.Body1.BlackPrimary"
+                        style="@style/TextView.Small"
                         android:layout_marginRight="@dimen/margin_vs"
-                        android:textSize="@dimen/font_body1"
                         tools:text="323088926194" />
 
                     <ImageView
@@ -146,7 +145,7 @@
                         app:srcCompat="@drawable/ic_download_eticket" />
 
                     <TextView
-                        style="@style/TextView.Body1.Green"
+                        style="@style/TextView.Small.Green"
                         android:text="@string/flight_label_eticket" />
 
                 </LinearLayout>
@@ -227,7 +226,7 @@
                 android:padding="@dimen/padding_med">
 
                 <TextView
-                    style="@style/TextView.Title.Bold"
+                    style="@style/TextView.TitleBig.Bold"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/container_download_invoice"
@@ -251,7 +250,7 @@
                         app:srcCompat="@drawable/ic_download_eticket" />
 
                     <TextView
-                        style="@style/TextView.Body1.Green"
+                        style="@style/TextView.Small.Green"
                         android:text="@string/flight_label_invoice" />
 
                 </LinearLayout>
@@ -271,7 +270,7 @@
                 android:padding="@dimen/padding_med">
 
                 <TextView
-                    style="@style/TextView.Body1.Bold"
+                    style="@style/TextView.Small.Bold"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/total_price"
@@ -279,7 +278,7 @@
 
                 <TextView
                     android:id="@+id/total_price"
-                    style="@style/TextView.Title.Bold"
+                    style="@style/TextView.TitleBig.Bold"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     tools:text="Rp. 500.0000" />
@@ -301,13 +300,13 @@
                 android:paddingBottom="@dimen/padding_small">
 
                 <TextView
-                    style="@style/TextView.Caption"
+                    style="@style/TextView.Micro"
                     android:layout_marginRight="@dimen/margin_vvs"
                     android:text="Untuk bantuan silakan klik" />
 
                 <TextView
                     android:id="@+id/help"
-                    style="@style/TextView.Caption.Green"
+                    style="@style/TextView.Micro.Green"
                     android:text="@string/di_sini" />
             </LinearLayout>
 

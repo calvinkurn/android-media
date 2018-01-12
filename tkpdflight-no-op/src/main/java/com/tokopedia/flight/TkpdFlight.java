@@ -9,7 +9,7 @@ import android.content.Intent;
 
 public class TkpdFlight{
 
-    public static void init(Context applicationContext){
+    public static void initDatabase(Context applicationContext){
         // no op
     }
 

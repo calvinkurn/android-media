@@ -10,7 +10,7 @@
 
     <TextView
         android:id="@+id/title_info"
-        style="@style/TextView.Body1.Bold"
+        style="@style/TextView.Small.Bold"
         android:layout_width="130dp"
         android:ellipsize="none"
         android:scrollHorizontally="false"
@@ -18,14 +18,14 @@
         tools:text="Jarak antar kursi"/>
 
     <TextView
-        style="@style/TextView.Body1.Bold"
+        style="@style/TextView.Small.Bold"
         android:layout_marginRight="@dimen/margin_vvs"
         android:layout_marginLeft="@dimen/margin_vvs"
         android:text=":"/>
 
     <TextView
         android:id="@+id/desc_info"
-        style="@style/TextView.Body1.BlackSecondary"
+        style="@style/TextView.Small.BlackSecondary"
         android:layout_marginLeft="@dimen/margin_small"
         tools:text="34 inci"/>
 </LinearLayout>

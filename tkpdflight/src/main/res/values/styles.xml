@@ -5,7 +5,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/grey_400</item>
-        <item name="android:textSize">@dimen/font_caption</item>
+        <item name="android:textSize">@dimen/font_micro</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:paddingLeft">@dimen/padding_small</item>
         <item name="android:paddingRight">@dimen/padding_small</item>
@@ -41,20 +41,6 @@
         <item name="android:layout_height">36dp</item>
     </style>
 
-    <style name="WidgetSelectPassengerViewSubtitle">
-        <item name="android:textSize">@dimen/font_caption</item>
-        <item name="android:textColor">@color/grey</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-    </style>
-
-    <style name="WidgetSelectPassengerViewTitle">
-        <item name="android:textSize">@dimen/font_title</item>
-        <item name="android:textColor">@color/black_70</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-    </style>
-
     <style name="FlightCalendarPicker" parent="android:Widget.CalendarView">
         <item name="android:focusedMonthDateColor">@color/colorPrimary</item>
         <item name="android:weekNumberColor">@color/red_500</item>
@@ -69,7 +55,7 @@
     <style name="CardWarningStyle">
         <item name="android:padding">@dimen/padding_ms</item>
         <item name="android:background">@drawable/bg_card_warning</item>
-        <item name="android:textSize">@dimen/font_caption</item>
+        <item name="android:textSize">@dimen/font_micro</item>
     </style>
 
     <style name="FlightProgressBar" parent="ThemeOverlay.AppCompat.Light">
@@ -93,12 +79,12 @@
         <item name="android:paddingTop">@dimen/padding_med</item>
     </style>
 
-    <style name="eo_text_option_style_flight" parent="TextView.Title">
+    <style name="eo_text_option_style_flight" parent="TextView.TitleBig">
         <item name="android:layout_centerVertical">true</item>
         <item name="android:textSize">18sp</item>
     </style>
 
-    <style name="eo_text_option_style_flight.Bold" parent="TextView.Title.Bold">
+    <style name="eo_text_option_style_flight.Bold" parent="TextView.TitleBig.Bold">
         <item name="android:layout_centerVertical">true</item>
         <item name="android:textSize">18sp</item>
     </style>
@@ -108,9 +94,9 @@
         <item name="android:paddingRight">0dp</item>
     </style>
 
-    <style name="eo_text_option_style_flight_detail" parent="TextView.Title">
+    <style name="eo_text_option_style_flight_detail" parent="TextView.TitleBig">
         <item name="android:layout_centerVertical">true</item>
-        <item name="android:textSize">@dimen/font_subheading</item>
+        <item name="android:textSize">@dimen/font_title</item>
     </style>
 
     <style name="style_expandable_flight_detail_order_title" parent="TextView.Title.Bold">
@@ -118,6 +104,6 @@
         <item name="android:paddingBottom">10dp</item>
         <item name="android:paddingTop">10dp</item>
         <item name="android:layout_centerVertical">true</item>
-        <item name="android:textSize">@dimen/font_subheading</item>
+        <item name="android:textSize">@dimen/font_title</item>
     </style>
 </resources>

@@ -67,7 +67,7 @@
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/tv_rebooking"
-                style="@style/TextView.Subheading"
+                style="@style/TextView.Title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/selectable_background_tokopedia"

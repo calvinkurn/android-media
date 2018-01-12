@@ -35,7 +35,7 @@ public class TkpdBaseInterceptor implements Interceptor {
             }
             return response;
         } catch (Error e) {
-            throw new UnknownHostException("tidak ada koneksi internet");
+            throw new UnknownHostException();
         }
     }
 

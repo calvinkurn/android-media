@@ -13,14 +13,14 @@
 
     <TextView
         android:id="@+id/city"
-        style="@style/TextView.Body1.BlackPrimary"
+        style="@style/TextView.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="Jakarta, Indonesia"/>
 
     <TextView
         android:id="@+id/airport"
-        style="@style/TextView.Caption.BlackDisabled"
+        style="@style/TextView.Micro.BlackDisabled"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="Semua Bandara"/>

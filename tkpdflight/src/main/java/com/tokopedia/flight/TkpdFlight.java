@@ -14,8 +14,8 @@ import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 
 public class TkpdFlight{
 
-    public static void init(Context applicationContext){
-        // should only init once per application, if the config is null, initialize it.
+    public static void initDatabase(Context applicationContext){
+        // should only initDatabase once per application, if the config is null, initialize it.
         try{
             FlowManager.getConfig();
         } catch (IllegalStateException e) {

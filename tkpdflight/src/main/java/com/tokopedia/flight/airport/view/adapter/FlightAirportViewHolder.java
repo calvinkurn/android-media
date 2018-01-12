@@ -37,7 +37,7 @@ public class FlightAirportViewHolder extends AbstractViewHolder<FlightAirportDB>
         city = (TextView) itemView.findViewById(R.id.city);
         airport = (TextView) itemView.findViewById(R.id.airport);
         this.filterTextListener = filterTextListener;
-        boldColor = new ForegroundColorSpan(ContextCompat.getColor(itemView.getContext(),R.color.black_70));
+        boldColor = new ForegroundColorSpan(ContextCompat.getColor(itemView.getContext(),R.color.font_black_primary_70));
     }
 
     @Override

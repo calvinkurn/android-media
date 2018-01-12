@@ -28,7 +28,7 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
@@ -166,14 +166,6 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
                 presenter.onButtonSubmitClicked();
             }
         });
-        FlightBookingPassengerAdapterTypeFactory adapterTypeFactory = new FlightBookingPassengerAdapterTypeFactory(this);
-        adapter = new FlightBookingPassengerAdapter(adapterTypeFactory, new ArrayList<Visitable>());
-        LinearLayoutManager layoutManager
-                = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        passengerRecyclerView.setLayoutManager(layoutManager);
-        passengerRecyclerView.setHasFixedSize(true);
-        passengerRecyclerView.setNestedScrollingEnabled(false);
-        passengerRecyclerView.setAdapter(adapter);
 
         departureInfoView.setActionListener(new CardWithActionView.ActionListener() {
             @Override
@@ -189,6 +181,23 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
             }
         });
 
+        initializePassengerInfo();
+        initializePriceList();
+        return view;
+    }
+
+    private void initializePassengerInfo() {
+        FlightBookingPassengerAdapterTypeFactory adapterTypeFactory = new FlightBookingPassengerAdapterTypeFactory(this);
+        adapter = new FlightBookingPassengerAdapter(adapterTypeFactory, new ArrayList<Visitable>());
+        LinearLayoutManager layoutManager
+                = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        passengerRecyclerView.setLayoutManager(layoutManager);
+        passengerRecyclerView.setHasFixedSize(true);
+        passengerRecyclerView.setNestedScrollingEnabled(false);
+        passengerRecyclerView.setAdapter(adapter);
+    }
+
+    private void initializePriceList() {
         priceListAdapter = new FlightSimpleAdapter();
         priceListAdapter.setDescriptionTextColor(getResources().getColor(R.color.font_black_secondary_54));
         LinearLayoutManager flightSimpleAdapterLayoutManager
@@ -197,8 +206,6 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
         pricelistsRecyclerView.setHasFixedSize(true);
         pricelistsRecyclerView.setNestedScrollingEnabled(false);
         pricelistsRecyclerView.setAdapter(priceListAdapter);
-
-        return view;
     }
 
     @Override

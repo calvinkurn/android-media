@@ -115,6 +115,7 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
                     public void onError(Throwable e) {
                         e.printStackTrace();
                         if (isViewAttached()) {
+                            getView().setNeedToRefreshOnPassengerInfo();
                             getView().hideCheckoutLoading();
                             if (e instanceof FlightException) {
                                 getView().showErrorInSnackbar(FlightErrorUtil.getMessageFromException(getView().getActivity(), e));
@@ -126,6 +127,7 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
 
                     @Override
                     public void onNext(FlightCheckoutViewModel flightCheckoutViewModel) {
+                        getView().setNeedToRefreshOnPassengerInfo();
                         getView().hideCheckoutLoading();
                         getView().navigateToTopPay(flightCheckoutViewModel);
                     }

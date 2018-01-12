@@ -100,14 +100,14 @@
     </style>
 
     <style name="ExpandableStyle" parent="style_expandable_option_default">
-        <item name="eo_text_option_style">@style/TextView.Subheading</item>
+        <item name="eo_text_option_style">@style/TextView.Title</item>
         <item name="eo_header_style">@style/ExpandableHeaderStyleNoPadding</item>
         <item name="eo_switch_style">@style/ExpandableSwitchStyle</item>
     </style>
 
     <style name="ExpandableStyleNoItemPadding" parent="style_expandable_option_default">
         <item name="eo_header_style">@style/ExpandableHeaderStylePadding</item>
-        <item name="eo_text_option_style">@style/TextView.Subheading</item>
+        <item name="eo_text_option_style">@style/TextView.Title</item>
         <item name="eo_switch_style">@style/ExpandableSwitchStyle</item>
     </style>
 
