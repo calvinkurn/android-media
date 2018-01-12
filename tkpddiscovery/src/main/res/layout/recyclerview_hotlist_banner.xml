@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:orientation="vertical"
+    android:layout_marginBottom="@dimen/padding_small"
     android:padding="@dimen/padding_small" >
 
     <View

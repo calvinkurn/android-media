@@ -159,6 +159,7 @@ public interface AppEventTracking {
         String EVENT_IMPRESSION_HOME_PAGE ="eventImpressionHomePage";
         String SELLER_INFO = "clickSellerInfo";
         String EVENT_ONBOARDING = "onBoardingEvent";
+        String EVENT_RESOLUTION = "clickResolution";
     }
 
     interface Category {
@@ -258,7 +259,7 @@ public interface AppEventTracking {
         String SHOP_PAGE = "shop page";
         String REFERRAL="Referral";
         String FEATURED_PRODUCT = "Featured Product";
-        String SELLER_INFO_HOMEPAGE = "click hamburger icon";
+        String SELLER_INFO_HOMEPAGE = "seller info-homepage";
         String HOMEPAGE_UNIFY = "homepage tab";
         String EVENT_TOP_NAV = "top nav";
         String CATEGORY_HOTLIST = "hotlist";
@@ -269,6 +270,8 @@ public interface AppEventTracking {
         String APP_RATING = "Application Rating";
         String FEED_CONTENT_COMMENT_DETAIL = "content - comment detail";
         String ONBOARDING = "onboarding";
+        String RESOLUTION_CENTER = "resolution center";
+        String MANAGE_PROFILE = "pengaturan profile";
     }
 
     interface Action {
@@ -417,13 +420,22 @@ public interface AppEventTracking {
 
         String CLICK_IMAGE_SETTINGS = "click image settings";
         String CLICK_SAVE_EDIT = "click save edit";
+
+        String CLICK_PRODUCT_PROBLEM = "click barang & masalah";
+        String CLICK_SOLUTION = "click solution";
+        String CLICK_PROVE = "click bukti & keterangan";
+        String CLICK_CREATE_RESO = "click buat komplain";
+        String CLICK_CREATE_RESO_ABANDON = "click abandon";
+
+        String CLICK_CHANGE_PHONE_NUMBER = "click on ubah";
+        String SUCCESS_CHANGE_PHONE_NUMBER = "success change phone number";
     }
 
     interface ImageEditor{
         String NO_ACTION = "no action";
-        String ROTATE_ONLY = "rotate only";
-        String CROP_ONLY = "crop only";
-        String ROTATE_AND_CROP = "rotate and crop";
+        String ROTATE = "rotate";
+        String CROP = "crop";
+        String WATERMARK = "watermark";
     }
 
     interface EventLabel {
@@ -758,6 +770,15 @@ public interface AppEventTracking {
         String FEED_KOL_RECOMMENDATION_VIEW_ALL = "kol discovery page";
         String ONBOARDING_SKIP_LABEL = "skip - ";
         String ONBOARDING_START_LABEL = "click mulai sekarang";
+
+        String RESO_PROBLEM_SAVE = "problem - save";
+        String RESO_PROBLEM_SAVE_CHOOSE_OTHER = "problem - simpan dan pilih barang lain";
+        String RESO_PROBLEM_CONTINUE = "problem - continue";
+        String RESO_SOLUTION_CONTINUE  = "solution - continue";
+        String RESO_CREATE_COMPLAINT_PRE  = "pre - create complain";
+        String RESO_CREATE_COMPLAINT_CONFIRM  = "confirm - create complain";
+        String RESO_CREATE_COMPLAINT_UNCONFIRM  = "unconfirmed - create complain";
+        String RESO_CREATE_ABANDON = "abandon";
     }
 
     interface SOCIAL_MEDIA {

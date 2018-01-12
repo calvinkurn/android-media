@@ -1,47 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:context="http://schemas.android.com/tools"
     android:paddingLeft="@dimen/padding_small"
     android:paddingRight="@dimen/padding_small"
     android:paddingTop="@dimen/padding_small"
-    android:background="@color/white">
-
-    <TextView
-        android:id="@+id/tv_date"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/indicator_container"
-        android:layout_marginBottom="@dimen/margin_vs"
-        android:text="@string/template_history_additional_information"
-        android:textColor="@color/black"
-        android:textSize="@dimen/font_small"
-        android:textStyle="bold"
-        />
-
-    <TextView
-        android:id="@+id/tv_address_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_date"
-        android:layout_toRightOf="@id/indicator_container"
-        android:textIsSelectable="true"
-        android:paddingBottom="@dimen/padding_small"
-        android:gravity="center_vertical"
-        android:text="Produk telah dikirim kembali oleh pembeli. Menunggu konfirmasi Penjual."
-        android:textColor="@color/black_70"
-        android:textSize="@dimen/fontvs"
-        />
-
+    android:paddingBottom="@dimen/padding_small"
+    android:background="@color/white"
+    android:orientation="horizontal">
 
     <RelativeLayout
         android:id="@+id/indicator_container"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginRight="@dimen/margin_small"
         android:layout_marginEnd="@dimen/margin_small"
-        android:layout_alignTop="@id/tv_date"
-        android:layout_alignBottom="@id/tv_address_text">
+        android:layout_alignTop="@id/tv_date">
 
         <FrameLayout
             android:id="@+id/fl_button"
@@ -67,11 +42,51 @@
             android:id="@+id/line_indicator"
             android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:layout_centerHorizontal="true"
             android:layout_below="@id/fl_button"
-            android:background="@color/grey"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="2dp"
+            android:background="@color/black_12"
             />
 
     </RelativeLayout>
 
-</RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/margin_vs">
+
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/indicator_container"
+            android:layout_marginBottom="@dimen/margin_vs"
+            android:text="@string/template_history_additional_information"
+            android:textColor="@color/black_70"
+            android:textSize="@dimen/font_small"
+            android:textStyle="bold"
+            />
+
+        <TextView
+            android:id="@+id/tv_address_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_date"
+            android:layout_toRightOf="@id/indicator_container"
+            android:textIsSelectable="true"
+            android:paddingBottom="@dimen/padding_small"
+            android:gravity="center_vertical"
+            context:text="Produk telah dikirim kembali oleh pembeli. Menunggu konfirmasi Penjual."
+            android:textColor="@color/black_70"
+            android:textSize="@dimen/fontvs"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"/>
+    </LinearLayout>
+
+
+
+</LinearLayout>

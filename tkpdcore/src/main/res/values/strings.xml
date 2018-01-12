@@ -423,7 +423,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_success_edit_addr">Sukses mengubah alamat</string>
     <string name="title_success_default_bank">Sukses mengganti rekening Bank Utama.</string>
     <string name="title_add_bank_account">Tambah Rekening Bank</string>
-    <string name="title_see_all_addr">Lihat semua &gt;</string>
+    <string name="title_see_all_addr">Lihat semua</string>
     <string name="error_load_shop">Terjadi kesalahan ketika mengambil informasi toko</string>
     <string name="error_empty_report">Mohon diisi</string>
     <string name="title_gold_merchant_redirect">Akses maupun pembelian fitur Gold Merchant hanya
@@ -574,6 +574,8 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="error_max_account">Mohon maaf, Anda hanya dapat menambahkan hingga 10 rekening bank. Harap menghapus rekening bank yang tidak diinginkan dahulu.</string>
     <string name="title_change_email">Anda telah mengirim permintaan untuk mengubah alamat email Anda. Sebuah email konfirmasi telah dikirim ke Email Anda untuk melanjutkan perubahan. Silakan periksa email baru Anda untuk informasi lebih lanjut.</string>
     <string name="title_sort_by">Urutkan</string>
+    <string name="success_change_phone_number">Nomor Ponsel Berhasil Diubah</string>
+    <string name="check_email_change_phone_number">Segera konfirmasi perubahan nomor ponsel melalui email Anda.</string>
     <!-- Strings related Manage People -->
 
 
@@ -2131,6 +2133,9 @@ di Tokopedia Sekarang!</string>
     <string name="app_rating_button_later">Nanti</string>
     <string name="app_rating_title">Beri Rating Aplikasi Kami</string>
     <string name="app_rating_message">Jika Kamu suka dengan aplikasi Tokopedia, silakan berikan dukungan Kamu dengan memberi rating 5 bintang dan ulasan di Google Play.</string>
+    <string name="code_error">Kode error :</string>
+
+    <string name="notif_channel_general">Notifikasi</string>
     <string name="title_hockeyapp_download">Nakama harus menggunakan aplikasi Tokopedia versi beta</string>
     <string name="title_download">Download</string>
 </resources>

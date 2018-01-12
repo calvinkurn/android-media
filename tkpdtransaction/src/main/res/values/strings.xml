@@ -77,7 +77,7 @@
     <string name="label_transaction_total_cart">Total Belanja</string>
     <string name="label_transaction_info_deposit_tokopedia">Saldo Tokopedia Anda saat ini</string>
     <string name="label_transaction_hint_form_voucher_code">Kode Promo</string>
-    <string name="label_transaction_potential_cashback">Potensi Cashback</string>
+    <string name="label_transaction_potential_cashback">Cashback dari Penjual</string>
     <string name="label_transaction_title_summary_puchase">Ringkasan Notifikasi Anda</string>
     <string name="message_transaction_toppay_canceled">Proses pembayaran dibatalkan</string>
     <string name="cancel_replacement">Batalkan Pencarian</string>
@@ -130,7 +130,7 @@
     <string name="menu_credit_card_authentication">Pengaturan Autentikasi</string>
     <string name="title_preorder_proccess_time">Waktu Proses: </string>
     <string name="title_use_promo_code">Gunakan Kode Promo</string>
-    <string name="title_use_promo_code_and_voucher">Gunakan Kode Promo dan Voucher</string>
+    <string name="title_use_promo_code_and_voucher">Gunakan Kode Promo atau Kupon</string>
     <string name="text_complaint_dialog">Apakah Pesanan dari toko %s bermasalah? \n\n\nKlik <b>Ya</b> untuk komplain barang yang berkendala atau belum sampai.\nKlik <b>Kembali</b> untuk membatalkan aksi ini</string>
     <string name="dialog_message_ask_seller"><![CDATA[<br/><br/>Invoice:<br/>XXX]]></string>
 

@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -33,7 +32,6 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
-import com.tokopedia.core.router.TkpdFragmentWrapper;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
@@ -41,6 +39,10 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResCenterActivity;
+import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
+import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
+import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
@@ -715,5 +717,20 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void invalidateCategoryMenuData() {
 
+    }
+
+    @Override
+    public Intent getResolutionCenterIntent(Context context) {
+        return InboxResCenterActivity.createIntent(context);
+    }
+
+    @Override
+    public Intent getDetailResChatIntentBuyer(Context context, String resoId, String shopName) {
+        return DetailResChatActivity.newBuyerInstance(context, resoId, shopName);
+    }
+
+    @Override
+    public Intent getChangePhoneNumberIntent(Context context, String email, String phoneNumber) {
+        return ChangePhoneNumberWarningActivity.newInstance(context, email, phoneNumber);
     }
 }

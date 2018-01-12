@@ -71,6 +71,15 @@ public class RideModule {
         return new BookingRideRepositoryData(bookingRideDataStoreFactory);
     }
 
+
+    @Provides
+    @RideQualifier
+    @RideScope
+    Retrofit provideRideRetrofit(@RideQualifier OkHttpClient okHttpClient,
+                                 Retrofit.Builder retrofitBuilder) {
+        return retrofitBuilder.baseUrl(TkpdBaseURL.RIDE_DOMAIN).client(okHttpClient).build();
+    }
+
     @Provides
     @RideScope
     HttpLoggingInterceptor provideHttpLoggingInterceptor() {
@@ -79,15 +88,6 @@ public class RideModule {
             loggingLevel = HttpLoggingInterceptor.Level.BODY;
         }
         return new HttpLoggingInterceptor().setLevel(loggingLevel);
-    }
-
-
-    @Provides
-    @RideQualifier
-    @RideScope
-    Retrofit provideRideRetrofit(@RideQualifier OkHttpClient okHttpClient,
-                                 Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(TkpdBaseURL.RIDE_DOMAIN).client(okHttpClient).build();
     }
 
     @RideQualifier

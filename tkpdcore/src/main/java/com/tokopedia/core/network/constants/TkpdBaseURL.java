@@ -735,6 +735,13 @@ public class TkpdBaseURL {
         public class Wallet {
             public static final String GET_BALANCE = "api/v1/wallet/balance";
         }
+
+        public class ChangeMSISDN {
+            public static final String GET_WARNING = "/api/v1/change-msisdn/get-warning";
+            public static final String SEND_EMAIL = "/api/v1/change-msisdn/update";
+            public static final String VALIDATE = "/api/v1/change-msisdn/validate";
+            public static final String VALIDATE_EMAIL_CODE = "/api/v1/change-msisdn/validate-code";
+        }
     }
 
     public static class Home {
@@ -827,7 +834,7 @@ public class TkpdBaseURL {
     }
 
     public static class ResCenterV2 {
-        public static final String BASE_RESOLUTION = WEB_DOMAIN + "resolution/";
+        public static final String BASE_RESOLUTION = BASE_API_DOMAIN + "resolution/";
         public static final String BASE_RESOLUTION_VERSION_1 = "v1/";
         public static final String BASE_RESOLUTION_VERSION_2 = "v2/";
         public static final String BASE_INBOX_RESOLUTION = BASE_RESOLUTION_VERSION_1 + "inbox";

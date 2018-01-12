@@ -57,6 +57,7 @@ import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.util.AppIndexHandler;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
@@ -1190,4 +1191,10 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             expandedAppBar();
         }
     }
+
+    @Override
+    public boolean isSellerApp() {
+        return GlobalConfig.isSellerApp();
+    }
+
 }
