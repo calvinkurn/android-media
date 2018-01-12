@@ -26,13 +26,11 @@
                 android:id="@+id/tv_check_balance"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
                 android:focusableInTouchMode="true"
                 android:maxLines="1"
                 android:padding="@dimen/padding_vs"
                 android:text="@string/title_check_credit_balance"
                 android:textSize="@dimen/fonts" />
-
 
             <TextView
                 android:id="@+id/tv_label_check_credit"
@@ -53,8 +51,6 @@
                 android:layout_centerVertical="true"
                 android:layout_gravity="end|center"
                 android:layout_marginBottom="@dimen/margin_vs"
-                android:layout_marginEnd="@dimen/margin_small"
-                android:layout_marginRight="@dimen/margin_small"
                 android:background="@drawable/green_button"
                 android:gravity="center"
                 android:paddingBottom="@dimen/padding_small"
@@ -70,8 +66,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tv_label_check_credit"
+                android:layout_alignLeft="@+id/tv_label_check_credit"
                 android:textColor="@color/bright_red"
-                android:textSize="@dimen/font_small"
+                android:padding="@dimen/padding_vs"
+                android:textSize="@dimen/fontvs"
                 android:visibility="visible" />
         </RelativeLayout>
 
