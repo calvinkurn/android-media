@@ -73,13 +73,13 @@ public class CreditCardDetailActivity extends TActivity
     private int getCcImageResource(CreditCardModelItem item) {
         switch (item.getCardType().toLowerCase()) {
             case VISA:
-                return R.drawable.image_cc_visa_plain_fullsize;
+                return R.drawable.bg_visa_large;
             case MASTERCARD:
-                return R.drawable.image_cc_mastercard_plain_fullsize;
+                return R.drawable.bg_mastercard_large;
             case JCB:
-                return R.drawable.image_cc_jcb_plain_fullsize;
+                return R.drawable.bg_jcb_large;
             default:
-                return R.drawable.image_cc_expired_plain_fullsize;
+                return R.drawable.bg_expired_large;
         }
     }
 

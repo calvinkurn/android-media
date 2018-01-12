@@ -37,7 +37,7 @@
                 android:layout_width="45dp"
                 android:layout_height="45dp"
                 android:padding="3dp"
-                android:src="@drawable/ic_chip_bright"/>
+                android:src="@drawable/ic_chip_thumb_bright" />
 
             <TextView
                 android:id="@+id/input_credit_card_number"

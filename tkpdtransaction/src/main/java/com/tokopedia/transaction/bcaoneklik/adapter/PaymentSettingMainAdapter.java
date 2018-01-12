@@ -262,13 +262,13 @@ public class PaymentSettingMainAdapter extends RecyclerView.Adapter<RecyclerView
         private int getBackgroundResource(CreditCardModelItem item) {
             switch (item.getCardType().toLowerCase()) {
                 case VISA:
-                    return R.drawable.visa_container_kecil;
+                    return R.drawable.bg_visa_small;
                 case MASTERCARD:
-                    return R.drawable.mastercard_container_kecil;
+                    return R.drawable.bg_mastercard_small;
                 case JCB:
-                    return R.drawable.jcb_container_kecil;
+                    return R.drawable.bg_jcb_small;
                 default:
-                    return R.drawable.visa_container_kecil;
+                    return R.drawable.bg_expired_small;
             }
         }
 
