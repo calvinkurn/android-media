@@ -177,8 +177,14 @@ public class ShopOpenCourierExpandableOption extends BaseExpandableOption implem
         super.setExpand(isExpanded);
     }
 
-    public void setCourier(Courier courier) {
+    public void setCourier(Courier courier, boolean hasPinPointLocation) {
         this.courier = courier;
+        setTitleText(courier.getName());
+        setLogo(courier.getLogo());
+        boolean isEnabled = (courier.isExpressCourierId() && hasPinPointLocation)
+                || (!courier.isExpressCourierId() && courier.isAvailable());
+        setEnabled(isEnabled);
+        setChild(courier.getServices());
     }
 
     @Override
