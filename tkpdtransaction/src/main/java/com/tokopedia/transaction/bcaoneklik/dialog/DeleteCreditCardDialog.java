@@ -60,6 +60,7 @@ public class DeleteCreditCardDialog extends DialogFragment {
                 })
                 .setNegativeButton(R.string.label_title_button_no, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
+                        mDeleteCreditCardDialogListener.onCancelDelete();
                     }
                 })
                 .create();
@@ -71,14 +72,9 @@ public class DeleteCreditCardDialog extends DialogFragment {
         mDeleteCreditCardDialogListener = (DeleteCreditCardDialogListener) context;
     }
 
-    @Override
-    public void onDismiss(DialogInterface dialog) {
-        super.onDismiss(dialog);
-        getActivity().onBackPressed();
-    }
-
     public interface DeleteCreditCardDialogListener {
         void onConfirmDelete(String tokenId);
+        void onCancelDelete();
     }
 
 }

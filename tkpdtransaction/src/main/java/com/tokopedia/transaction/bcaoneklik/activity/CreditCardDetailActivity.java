@@ -15,6 +15,7 @@ import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.bcaoneklik.di.DaggerPaymentOptionComponent;
 import com.tokopedia.transaction.bcaoneklik.di.PaymentOptionComponent;
 import com.tokopedia.transaction.bcaoneklik.dialog.DeleteCreditCardDialog;
+import com.tokopedia.transaction.bcaoneklik.listener.ListPaymentTypeView;
 import com.tokopedia.transaction.bcaoneklik.model.creditcard.CreditCardModelItem;
 import com.tokopedia.transaction.bcaoneklik.presenter.ListPaymentTypePresenterImpl;
 
@@ -113,6 +114,14 @@ public class CreditCardDetailActivity extends TActivity implements DeleteCreditC
     @Override
     public void onConfirmDelete(String tokenId) {
         mListPaymentTypePresenter.onCreditCardDeleted(this, tokenId);
+        setResult(ListPaymentTypeView.CREDIT_CARD_DETAIL_REQUEST_CODE);
+        finish();
+    }
+
+    @Override
+    public void onCancelDelete() {
+        setResult(ListPaymentTypeView.CREDIT_CARD_DETAIL_REQUEST_CODE);
+        finish();
     }
 
     @Override

@@ -248,6 +248,9 @@ public class ListPaymentTypeActivity extends TActivity implements ListPaymentTyp
             case EDIT_AUTHENTICATION_PAGE:
                 refreshHandler.startRefresh();
                 break;
+            case CREDIT_CARD_DETAIL_REQUEST_CODE:
+                refreshHandler.startRefresh();
+                break;
         }
     }
 

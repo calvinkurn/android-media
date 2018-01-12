@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.bcaoneklik.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
@@ -189,10 +190,8 @@ public class PaymentSettingMainAdapter extends RecyclerView.Adapter<RecyclerView
         }
 
         void bindCreditCardHeader(List<CreditCardModelItem> listOfCreditCards) {
-            if (listOfCreditCards.isEmpty())
-                addCreditCardLayout.setVisibility(View.VISIBLE);
-            else
-                addCreditCardLayout.setVisibility(View.GONE);
+            if (listOfCreditCards.isEmpty()) addCreditCardLayout.setVisibility(View.VISIBLE);
+            else addCreditCardLayout.setVisibility(View.GONE);
 
             numberOfCreditCards.setText(getTotalSavedCcTitle(listOfCreditCards));
         }
@@ -250,7 +249,7 @@ public class PaymentSettingMainAdapter extends RecyclerView.Adapter<RecyclerView
                 public void onClick(View view) {
                     Intent intent = new Intent(context, CreditCardDetailActivity.class);
                     intent.putExtra(KEY_CC_ITEM, item);
-                    context.startActivity(intent);
+                    ((Activity) context).startActivityForResult(intent, ListPaymentTypeView.CREDIT_CARD_DETAIL_REQUEST_CODE);
                 }
             });
 
