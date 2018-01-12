@@ -1,6 +1,7 @@
 package com.tokopedia.loyalty.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,11 +69,16 @@ public class PromoListAdapter extends RecyclerView.Adapter {
                     promoData.isMultiplePromo() ? View.VISIBLE : View.GONE
             );
             itemViewHolder.layoutSingleCodePromo.setVisibility(
-                    promoData.isMultiplePromo() ? View.GONE : View.VISIBLE
+                    !promoData.isMultiplePromo() && !TextUtils.isEmpty(promoData.getPromoCode())
+                            ? View.VISIBLE : View.GONE
+            );
+            itemViewHolder.layoutEmptyCodePromo.setVisibility(
+                    !promoData.isMultiplePromo() && TextUtils.isEmpty(promoData.getPromoCode())
+                            ? View.VISIBLE : View.GONE
             );
             itemViewHolder.tvCodePromo.setText(promoData.getPromoCode());
             itemViewHolder.tvMultipleCodePromo.setText(
-                    MessageFormat.format("{0}Kode Promo", promoData.getMultiplePromoCodeCount())
+                    MessageFormat.format("{0} Kode Promo", promoData.getMultiplePromoCodeCount())
             );
             itemViewHolder.tvLabelCodePromo.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -143,6 +149,8 @@ public class PromoListAdapter extends RecyclerView.Adapter {
         TextView tvPeriodPromo;
         @BindView(R2.id.layout_single_code_promo)
         RelativeLayout layoutSingleCodePromo;
+        @BindView(R2.id.layout_empty_code_promo)
+        RelativeLayout layoutEmptyCodePromo;
         @BindView(R2.id.tv_code_promo)
         TextView tvCodePromo;
         @BindView(R2.id.btn_copy_code_promo)
