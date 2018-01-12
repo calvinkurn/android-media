@@ -223,6 +223,12 @@ public class NominalQrPaymentActivity extends TActivity implements QrPaymentCont
     }
 
     @Override
+    protected void onDestroy() {
+        presenter.onDestroyPresenter();
+        super.onDestroy();
+    }
+
+    @Override
     public void onBackPressed() {
         Intent intent = new Intent();
         setResult(CustomScannerTokoCashActivity.RESULT_CODE_HOME, intent);

@@ -71,7 +71,6 @@
             android:name=".tokocash.activity.WaitingTransactionActivity"
             android:screenOrientation="portrait"/>
 
-
         <receiver
             android:name=".receiver.TokocashPendingDataBroadcastReceiver"
             android:enabled="true"

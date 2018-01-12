@@ -1,5 +1,6 @@
 package com.tokopedia.tokocash.qrpayment.presentation.activity;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -40,6 +41,10 @@ public class CustomScannerTokoCashActivity extends BaseScannerQRActivity impleme
     private TkpdProgressDialog progressDialog;
     private ImageView torch;
     private boolean isTorchOn;
+
+    public static Intent newInstance(Context context) {
+        return new Intent(context, CustomScannerTokoCashActivity.class);
+    }
 
     @Inject
     public InfoQrTokoCashPresenter presenter;
@@ -186,6 +191,12 @@ public class CustomScannerTokoCashActivity extends BaseScannerQRActivity impleme
         super.onResume();
         decoratedBarcodeView.resume();
         animateScannerLaser();
+    }
+
+    @Override
+    protected void onDestroy() {
+        presenter.onDestroyPresenter();
+        super.onDestroy();
     }
 
     @Override

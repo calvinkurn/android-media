@@ -17,7 +17,7 @@
     <string name="msg_dialog_wrong_scan">Kode QR yang Anda scan invalid.</string>
     <string name="btn_dialog_wrong_scan">OK</string>
     <string name="title_input_nominal">Nominal Pembayaran</string>
-    <string name="default_notes_payment">Paid to merchant</string>
+    <string name="default_notes_payment">Pembayaran ke merchant</string>
     <string name="tokocash_balance_payment">TokoCash Balance: %s</string>
     <string name="error_message_tokocash">Failed to get Balance TokoCash</string>
     <string name="title_success_payment">Transaksi Berhasil</string>

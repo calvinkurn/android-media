@@ -852,7 +852,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent goToQRScannerTokoCash(Context context) {
-        return new Intent(getApplicationContext(), CustomScannerTokoCashActivity.class);
+        return CustomScannerTokoCashActivity.newInstance(context);
     }
 
     @Override
