@@ -119,15 +119,42 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
     }
 
     @Override
-    public void onBirthdateChange(int year, int month, int date) {
+    public void onBirthdateChange(int year, int month, int date, Date minDate, Date maxDate) {
         Calendar now = FlightDateUtil.getCurrentCalendar();
         now.set(Calendar.YEAR, year);
         now.set(Calendar.MONTH, month);
         now.set(Calendar.DATE, date);
         Date newReturnDate = now.getTime();
-        String birthdateStr = FlightDateUtil.dateToString(newReturnDate, FlightDateUtil.DEFAULT_VIEW_FORMAT);
+
+        if (newReturnDate.before(minDate) || newReturnDate.after(maxDate)) {
+            if (isChildPassenger()) {
+                getView().showPassengerNameEmptyError(R.string.flight_booking_passenger_birthdate_child_shoud_between_twelve_to_two_years);
+            } else if (isInfantPassenger()) {
+                getView().showPassengerNameEmptyError(R.string.flight_booking_passenger_birthdate_infant_should_no_more_than_two_years);
+            }
+        } else {
+            String birthdateStr = FlightDateUtil.dateToString(newReturnDate, FlightDateUtil.DEFAULT_VIEW_FORMAT);
+            getView().renderBirthdate(birthdateStr);
+        }
+
         getView().hideKeyboard();
-        getView().renderBirthdate(birthdateStr);
+    }
+
+    @Override
+    public void onBirthdateChange(int year, int month, int date, Date maxDate) {
+        Calendar now = FlightDateUtil.getCurrentCalendar();
+        now.set(Calendar.YEAR, year);
+        now.set(Calendar.MONTH, month);
+        now.set(Calendar.DATE, date);
+        Date newReturnDate = now.getTime();
+
+        if (newReturnDate.after(maxDate)) {
+            getView().showPassengerNameEmptyError(R.string.flight_booking_passenger_birthdate_adult_shoud_more_than_twelve_years);
+        } else {
+            String birthdateStr = FlightDateUtil.dateToString(newReturnDate, FlightDateUtil.DEFAULT_VIEW_FORMAT);
+            getView().renderBirthdate(birthdateStr);
+        }
+        getView().hideKeyboard();
     }
 
     @Override
