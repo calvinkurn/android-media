@@ -197,7 +197,8 @@ public class PaymentSettingMainAdapter extends RecyclerView.Adapter<RecyclerView
         }
 
         private String getTotalSavedCcTitle(List<CreditCardModelItem> listOfCreditCardModelItem) {
-            return String.format("Kartu Kredit Tersimpan (%s/4)", listOfCreditCardModelItem.size());
+            return context.getString(R.string.title_saved_credit_card,
+                    listOfCreditCardModelItem.size());
         }
     }
 
@@ -249,7 +250,8 @@ public class PaymentSettingMainAdapter extends RecyclerView.Adapter<RecyclerView
                 public void onClick(View view) {
                     Intent intent = new Intent(context, CreditCardDetailActivity.class);
                     intent.putExtra(KEY_CC_ITEM, item);
-                    ((Activity) context).startActivityForResult(intent, ListPaymentTypeView.CREDIT_CARD_DETAIL_REQUEST_CODE);
+                    ((Activity) context).startActivityForResult(intent,
+                            ListPaymentTypeView.CREDIT_CARD_DETAIL_REQUEST_CODE);
                 }
             });
 

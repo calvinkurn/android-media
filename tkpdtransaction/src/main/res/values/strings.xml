@@ -174,4 +174,8 @@
     <string name="header_title_pembayaran_kartu_kredit">Pembayaran Kartu Kredit</string>
     <string name="sub_header_title_kartu_kredit_tersimpan">Kartu Kredit Tersimpan (0/4)</string>
     <string name="text_cc_authentication">Autentikasi Pembayaran Kartu Kredit</string>
+    <string name="label_detail_credit_card">Kartu Kredit</string>
+    <string name="tag_delete_credit_card_dialog">delete_credit_card_dialog</string>
+    <string name="title_saved_credit_card">Kartu Kredit Tersimpan (%d/4)</string>
+    <string name="apply">Terapkan</string>
 </resources>

@@ -117,9 +117,11 @@ public class CreditCardAuthenticationActivity extends TActivity
         toolbar = findViewById(com.tokopedia.core.R.id.app_bar);
         toolbar.setTitle(getTitle());
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+        }
 
         if (isLightToolbarThemes()) {
             setLightToolbarStyle();
@@ -134,7 +136,8 @@ public class CreditCardAuthenticationActivity extends TActivity
             toolbar.setBackgroundResource(com.tokopedia.core.R.drawable.bg_white_toolbar_drop_shadow);
         }
 
-        Drawable drawable = ContextCompat.getDrawable(this, com.tokopedia.core.R.drawable.ic_toolbar_overflow_level_two_black);
+        Drawable drawable = ContextCompat.getDrawable(
+                this, com.tokopedia.core.R.drawable.ic_toolbar_overflow_level_two_black);
         drawable.setBounds(5, 5, 5, 5);
         toolbar.setOverflowIcon(drawable);
 

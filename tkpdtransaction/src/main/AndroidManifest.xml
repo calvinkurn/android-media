@@ -58,7 +58,7 @@
             android:label="@string/label_payment_setting" />
 
         <activity android:name=".bcaoneklik.activity.CreditCardDetailActivity"
-            android:label="Kartu Kredit" />
+            android:label="@string/label_detail_credit_card" />
 
         <activity
             android:name=".insurance.view.InsuranceTnCActivity"

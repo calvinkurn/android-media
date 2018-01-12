@@ -16,6 +16,6 @@
         android:layout_margin="@dimen/padding_ms"
         android:layout_alignParentBottom="true"
         style="@style/ButtonGreen"
-        android:text="Terapkan"/>
+        android:text="@string/apply"/>
 
 </RelativeLayout>

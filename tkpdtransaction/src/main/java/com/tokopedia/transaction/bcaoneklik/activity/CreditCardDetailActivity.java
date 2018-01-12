@@ -29,7 +29,8 @@ import butterknife.OnClick;
  * @author Aghny A. Putra on 09/01/18
  */
 
-public class CreditCardDetailActivity extends TActivity implements DeleteCreditCardDialog.DeleteCreditCardDialogListener {
+public class CreditCardDetailActivity extends TActivity
+        implements DeleteCreditCardDialog.DeleteCreditCardDialogListener {
 
     private static final String KEY_CC_ITEM = "credit_card_item";
     private static final String VISA = "visa";
@@ -86,7 +87,7 @@ public class CreditCardDetailActivity extends TActivity implements DeleteCreditC
         StringBuilder builder = new StringBuilder();
 
         builder.append(inputText.charAt(0));
-        for (int i=1; i < inputText.length(); i++) {
+        for (int i = 1; i < inputText.length(); i++) {
             if (i % 4 == 0) builder.append("\u00A0\u00A0\u00A0");
             else builder.append("\u00A0");
             builder.append(inputText.charAt(i));
@@ -108,7 +109,8 @@ public class CreditCardDetailActivity extends TActivity implements DeleteCreditC
         DeleteCreditCardDialog creditCardDialog = DeleteCreditCardDialog.newInstance(
                 mCreditCardModelItem.getTokenId(),
                 mCreditCardModelItem.getMaskedNumber());
-        creditCardDialog.show(getFragmentManager(), "delete_credit_card_dialog");
+        creditCardDialog.show(getFragmentManager(),
+                getString(R.string.tag_delete_credit_card_dialog));
     }
 
     @Override
@@ -123,9 +125,11 @@ public class CreditCardDetailActivity extends TActivity implements DeleteCreditC
         toolbar = findViewById(com.tokopedia.core.R.id.app_bar);
         toolbar.setTitle(getToolbarTitle());
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+        }
 
         if (isLightToolbarThemes()) {
             setLightToolbarStyle();
@@ -140,7 +144,8 @@ public class CreditCardDetailActivity extends TActivity implements DeleteCreditC
             toolbar.setBackgroundResource(com.tokopedia.core.R.drawable.bg_white_toolbar_drop_shadow);
         }
 
-        Drawable drawable = ContextCompat.getDrawable(this, com.tokopedia.core.R.drawable.ic_toolbar_overflow_level_two_black);
+        Drawable drawable = ContextCompat.getDrawable(
+                this, com.tokopedia.core.R.drawable.ic_toolbar_overflow_level_two_black);
         drawable.setBounds(5, 5, 5, 5);
         toolbar.setOverflowIcon(drawable);
 
