@@ -17,40 +17,36 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFeedsUseCase;
 import rx.Observable;
 
 /**
- * @author ricoharisin .
+ * Created by henrypriyono on 12/29/17.
  */
 
-public class CloudFeedDataSource {
-
-    private static final int FEED_LIMIT = 3;
+public class HomeFeedDataSource {
+    private static final int PRODUCT_PER_CARD_LIMIT = 4;
     private ApolloClient apolloClient;
-    private FeedListMapper feedListMapper;
-    protected GlobalCacheManager globalCacheManager;
+    private HomeFeedMapper homeFeedMapper;
     protected FeedResultMapper feedResultMapper;
 
-    public CloudFeedDataSource(ApolloClient apolloClient,
-                               FeedListMapper feedListMapper,
-                               FeedResultMapper feedResultMapper,
-                               GlobalCacheManager globalCacheManager) {
+    public HomeFeedDataSource(ApolloClient apolloClient,
+                               HomeFeedMapper homeFeedMapper,
+                               FeedResultMapper feedResultMapper) {
 
         this.apolloClient = apolloClient;
-        this.feedListMapper = feedListMapper;
-        this.globalCacheManager = globalCacheManager;
+        this.homeFeedMapper = homeFeedMapper;
         this.feedResultMapper = feedResultMapper;
     }
 
-    public Observable<FeedResult> getNextPageFeedsList(RequestParams requestParams) {
-        return getFeedsList(requestParams).map(feedResultMapper);
+    public Observable<FeedResult> getHomeFeeds(RequestParams requestParams) {
+        return getHomeFeedsList(requestParams).map(feedResultMapper);
     }
 
-    protected Observable<FeedDomain> getFeedsList(RequestParams requestParams) {
+    private Observable<FeedDomain> getHomeFeedsList(RequestParams requestParams) {
         String cursor = requestParams.getString(GetFeedsUseCase.PARAM_CURSOR, "");
-        ApolloWatcher<FeedQuery.Data> apolloWatcher = apolloClient.newCall(FeedQuery.builder()
+        ApolloWatcher<HomeFeedQuery.Data> apolloWatcher = apolloClient.newCall(HomeFeedQuery.builder()
                 .userID(requestParams.getInt(GetFeedsUseCase.PARAM_USER_ID, 0))
-                .limit(FEED_LIMIT)
+                .limit(PRODUCT_PER_CARD_LIMIT)
                 .cursor(cursor)
                 .build()).watcher();
 
-        return RxApollo.from(apolloWatcher).map(feedListMapper);
+        return RxApollo.from(apolloWatcher).map(homeFeedMapper);
     }
 }
