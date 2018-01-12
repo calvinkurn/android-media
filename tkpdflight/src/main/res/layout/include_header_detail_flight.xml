@@ -108,7 +108,5 @@
         android:layout_height="1dp"
         android:layout_below="@+id/container_pnr"
         android:layout_marginTop="@dimen/margin_vs"
-        android:background="@color/black_twenty_percent"
-        android:layout_marginLeft="@dimen/padding_small"
-        android:layout_marginRight="@dimen/padding_small" />
+        android:background="@color/black_twenty_percent" />
 </RelativeLayout>

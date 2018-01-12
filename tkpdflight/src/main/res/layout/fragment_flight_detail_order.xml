@@ -139,8 +139,9 @@
                     android:orientation="horizontal">
 
                     <ImageView
-                        android:layout_width="@dimen/image_width_xxs"
-                        android:layout_height="@dimen/image_width_xxs"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="top"
                         android:layout_marginRight="@dimen/margin_vs"
                         app:srcCompat="@drawable/ic_download_eticket" />
 
@@ -244,14 +245,15 @@
                     android:orientation="horizontal">
 
                     <ImageView
-                        android:layout_width="@dimen/image_width_xxs"
-                        android:layout_height="@dimen/image_width_xxs"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="top"
                         android:layout_marginRight="@dimen/margin_vs"
                         app:srcCompat="@drawable/ic_download_eticket" />
 
                     <TextView
                         style="@style/TextView.Small.Green"
-                        android:text="@string/flight_label_invoice" />
+                        android:text="@string/flight_label_invoice"/>
 
                 </LinearLayout>
             </RelativeLayout>
