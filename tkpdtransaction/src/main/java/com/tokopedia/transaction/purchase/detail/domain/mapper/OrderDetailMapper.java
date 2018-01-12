@@ -105,6 +105,10 @@ public class OrderDetailMapper {
             product.setItemQuantity(String.valueOf(responseData.getProducts().get(i).getQuantity()));
             product.setPrice(responseData.getProducts().get(i).getPrice());
             product.setImageUrl(responseData.getProducts().get(i).getThumbnail());
+            product.setCurrencyRate(responseData.getProducts().get(i).getCurrencyRate());
+            product.setCurrencyType(responseData.getProducts().get(i).getCurrencyType());
+            product.setPriceUnformatted(responseData.getProducts().get(i).getPriceUnformatted());
+            product.setWeightUnformatted(responseData.getProducts().get(i).getWeightUnformatted());
             productList.add(product);
         }
         viewData.setItemList(productList);

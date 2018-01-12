@@ -24,6 +24,18 @@ public class Product {
     @SerializedName("note")
     @Expose
     private String note;
+    @SerializedName("currency_type")
+    @Expose
+    private int currencyType;
+    @SerializedName("currency_rate")
+    @Expose
+    private int currencyRate;
+    @SerializedName("price_unfmt")
+    @Expose
+    private String priceUnformatted;
+    @SerializedName("weight_unfmt")
+    @Expose
+    private String weightUnformatted;
 
     public int getId() {
         return id;
@@ -73,4 +85,35 @@ public class Product {
         this.note = note;
     }
 
+    public int getCurrencyType() {
+        return currencyType;
+    }
+
+    public void setCurrencyType(int currencyType) {
+        this.currencyType = currencyType;
+    }
+
+    public int getCurrencyRate() {
+        return currencyRate;
+    }
+
+    public void setCurrencyRate(int currencyRate) {
+        this.currencyRate = currencyRate;
+    }
+
+    public String getPriceUnformatted() {
+        return priceUnformatted;
+    }
+
+    public void setPriceUnformatted(String priceUnformatted) {
+        this.priceUnformatted = priceUnformatted;
+    }
+
+    public String getWeightUnformatted() {
+        return weightUnformatted;
+    }
+
+    public void setWeightUnformatted(String weightUnformatted) {
+        this.weightUnformatted = weightUnformatted;
+    }
 }

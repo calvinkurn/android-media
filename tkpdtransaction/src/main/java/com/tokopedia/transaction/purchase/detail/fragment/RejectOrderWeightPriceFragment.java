@@ -19,6 +19,8 @@ import java.util.List;
 
 public class RejectOrderWeightPriceFragment extends RejectOrderBaseFragment{
 
+    public static final int FRAGMENT_EDIT_WEIGHT_PRICE_REQUEST_CODE = 24;
+
     public static RejectOrderWeightPriceFragment createFragment(OrderDetailData data) {
         RejectOrderWeightPriceFragment fragment = new RejectOrderWeightPriceFragment();
         Bundle bundle = new Bundle();
@@ -39,25 +41,25 @@ public class RejectOrderWeightPriceFragment extends RejectOrderBaseFragment{
 
     @Override
     protected RecyclerView.Adapter initAdapter(OrderDetailData data) {
-        return null;
-        /*return new RejectOrderPriceWeightChangeAdapter(
+        return new RejectOrderPriceWeightChangeAdapter(
                 generateProductPriceWeight(
                         data.getOrderId(),
                         data.getShopId(),
-                        data.getItemList()), adapterListener());*/
+                        data.getItemList()), adapterListener());
     }
 
-    /*private RejectOrderPriceWeightChangeAdapter
+    private RejectOrderPriceWeightChangeAdapter
             .RejectOrderPriceWeightAdapterListener adapterListener() {
         return new RejectOrderPriceWeightChangeAdapter.RejectOrderPriceWeightAdapterListener() {
             @Override
             public void onProductChoosen(WrongProductPriceWeightEditable model) {
-                RejectOrderProductPriceWeightEditFragment editFragment = RejectOrderProductPriceWeightEditFragment.
+                RejectOrderProductPriceWeightEditFragment editFragment =
+                        RejectOrderProductPriceWeightEditFragment.createFragment(model);
                 if(getFragmentManager()
                         .findFragmentByTag(FRAGMENT_REJECT_ORDER_SUB_MENU_TAG) == null) {
                     editFragment.setTargetFragment(
-                            RejectOrderEmptyVarianFragment.this,
-                            FRAGMENT_EDIT_EMPTY_VARIAN_REQUEST_CODE
+                            RejectOrderWeightPriceFragment.this,
+                            FRAGMENT_EDIT_WEIGHT_PRICE_REQUEST_CODE
                     );
                     getFragmentManager()
                             .beginTransaction()
@@ -69,7 +71,7 @@ public class RejectOrderWeightPriceFragment extends RejectOrderBaseFragment{
                 }
             }
         };
-    }*/
+    }
 
     @Override
     protected View.OnClickListener initConfirmButtonClickedListener() {

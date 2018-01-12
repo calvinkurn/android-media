@@ -21,6 +21,14 @@ public class OrderDetailItemData implements Parcelable{
 
     private String imageUrl;
 
+    private int currencyType;
+
+    private int currencyRate;
+
+    private String priceUnformatted;
+
+    private String weightUnformatted;
+
     public OrderDetailItemData() {
     }
 
@@ -31,6 +39,10 @@ public class OrderDetailItemData implements Parcelable{
         price = in.readString();
         description = in.readString();
         imageUrl = in.readString();
+        currencyType = in.readInt();
+        currencyRate = in.readInt();
+        priceUnformatted = in.readString();
+        weightUnformatted = in.readString();
     }
 
     @Override
@@ -41,6 +53,10 @@ public class OrderDetailItemData implements Parcelable{
         dest.writeString(price);
         dest.writeString(description);
         dest.writeString(imageUrl);
+        dest.writeInt(currencyType);
+        dest.writeInt(currencyRate);
+        dest.writeString(priceUnformatted);
+        dest.writeString(weightUnformatted);
     }
 
     @Override
@@ -106,5 +122,37 @@ public class OrderDetailItemData implements Parcelable{
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public int getCurrencyType() {
+        return currencyType;
+    }
+
+    public void setCurrencyType(int currencyType) {
+        this.currencyType = currencyType;
+    }
+
+    public int getCurrencyRate() {
+        return currencyRate;
+    }
+
+    public void setCurrencyRate(int currencyRate) {
+        this.currencyRate = currencyRate;
+    }
+
+    public String getPriceUnformatted() {
+        return priceUnformatted;
+    }
+
+    public void setPriceUnformatted(String priceUnformatted) {
+        this.priceUnformatted = priceUnformatted;
+    }
+
+    public String getWeightUnformatted() {
+        return weightUnformatted;
+    }
+
+    public void setWeightUnformatted(String weightUnformatted) {
+        this.weightUnformatted = weightUnformatted;
     }
 }
