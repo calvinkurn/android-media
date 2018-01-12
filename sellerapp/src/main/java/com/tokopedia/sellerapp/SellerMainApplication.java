@@ -186,9 +186,4 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
             return SendMessageActivityOld.getAskSellerIntent(context, toShopId, shopName,
                     customSubject, customMessage, source);
     }
-
-    @Override
-    public Intent getKolFollowingPageIntent(Context context, int userId) {
-        return null;
-    }
 }

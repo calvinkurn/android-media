@@ -45,7 +45,7 @@ public class KolFollowingMapper implements Func1<GetKolFollowingList.Data, KolFo
                 user_kol_following.users() != null ?
                         mappingKolFollowingDomain(user_kol_following.users()) :
                         new ArrayList<KolFollowingDomain>(),
-                "Explore Influencer",
+                "",
                 ""
         );
     }
