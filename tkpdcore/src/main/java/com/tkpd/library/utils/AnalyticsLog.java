@@ -23,14 +23,26 @@ public class AnalyticsLog {
 
     public static void logForceLogout(String url) {
         AnalyticsLog.log("Force Logout! User: " + SessionHandler.getLoginID(MainApplication.getAppContext())
+                + " Last Access Url: " + url
+                + " App Version : " + GlobalConfig.getPackageApplicationName() + " " + GlobalConfig.VERSION_NAME
+                + " App Code : " + GlobalConfig.VERSION_CODE
+                + " Android Version : " + Build.VERSION.RELEASE
+                + " Android Model : " + android.os.Build.MODEL
                 + " Device ID: " + GCMHandler.getRegistrationId(MainApplication.getAppContext())
-                + " Last Access Url: " + url);
+
+        );
     }
 
     public static void logNetworkError(String url, int errorCode) {
         AnalyticsLog.log("Error Network! User: " + SessionHandler.getLoginID(MainApplication.getAppContext())
                 + " URL: " + url
-                + " Error Code: " + errorCode);
+                + " Error Code: " + errorCode
+                + " App Version : " + GlobalConfig.getPackageApplicationName() + " " + GlobalConfig.VERSION_NAME
+                + " App Code : " + GlobalConfig.VERSION_CODE
+                + " Android Version : " + Build.VERSION.RELEASE
+                + " Android Model : " + android.os.Build.MODEL
+                + " Device ID: " + GCMHandler.getRegistrationId(MainApplication.getAppContext())
+        );
     }
 
     public static void logNotification(String notificationId, String notificationCode) {
@@ -75,16 +87,5 @@ public class AnalyticsLog {
         }
 
         return instance;
-    }
-
-    public static void testLog() {
-        AnalyticsLog.log(
-                "Test Nisie! User: " + SessionHandler.getLoginID(MainApplication.getAppContext())
-                        + " Device ID: " + GCMHandler.getRegistrationId(MainApplication.getAppContext())
-                        + " App Version : " + GlobalConfig.getPackageApplicationName() + " " + GlobalConfig.VERSION_NAME
-                        + " App Code : " + GlobalConfig.VERSION_CODE
-                        + " Android Version : " + Build.VERSION.RELEASE
-                        + " Android Model : " + android.os.Build.MODEL
-        );
     }
 }

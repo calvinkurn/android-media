@@ -15,7 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.readystatesoftware.chuck.Chuck;
-import com.tkpd.library.utils.AnalyticsLog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.OneOnClick;
@@ -85,10 +84,7 @@ public class DeveloperOptions extends TActivity implements SessionHandler.onLogo
         vForceCrash.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                throw new RuntimeException("HAHAHAHAH");
-
-                AnalyticsLog.testLog();
-
+                throw new RuntimeException("HAHAHAHAH");
             }
         });
         resetOnBoarding.setOnClickListener(new View.OnClickListener() {
