@@ -22,4 +22,8 @@ public interface IPromoListView extends IBaseView {
 
     void renderErrorTimeoutConnectionGetPromoDataListt(String message);
 
+    void disableSwipeRefresh();
+
+    void enableSwipeRefresh();
+
 }

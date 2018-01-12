@@ -23,6 +23,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.QuickSingleFilterView;
@@ -50,7 +51,7 @@ import rx.subscriptions.CompositeSubscription;
  * @author anggaprasetiyo on 03/01/18.
  */
 
-public class PromoListFragment extends BasePresenterFragment implements IPromoListView, PromoListAdapter.ActionListener {
+public class PromoListFragment extends BasePresenterFragment implements IPromoListView, PromoListAdapter.ActionListener, RefreshHandler.OnRefreshHandlerListener {
     private static final String ARG_EXTRA_PROMO_MENU_DATA = "ARG_EXTRA_PROMO_MENU_DATA";
     private static final String TYPE_FILTER_ALL = "all";
     @BindView(R2.id.quick_filter)
@@ -64,6 +65,8 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
     IPromoListPresenter dPresenter;
     @Inject
     CompositeSubscription compositeSubscription;
+
+    private RefreshHandler refreshHandler;
 
     private PromoMenuData promoMenuData;
     private PromoListAdapter adapter;
@@ -84,6 +87,7 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
 
     @Override
     public void renderPromoDataList(List<PromoData> promoDataList, boolean firstTimeLoad) {
+        if (refreshHandler.isRefreshing()) refreshHandler.finishRefresh();
         View errorView = containerList.findViewById(com.tokopedia.core.R.id.main_retry);
         if (errorView != null) errorView.setVisibility(View.GONE);
         if (firstTimeLoad) {
@@ -117,6 +121,16 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
     @Override
     public void renderErrorTimeoutConnectionGetPromoDataListt(String message) {
         handleErrorEmptyState(message);
+    }
+
+    @Override
+    public void disableSwipeRefresh() {
+        refreshHandler.setPullEnabled(false);
+    }
+
+    @Override
+    public void enableSwipeRefresh() {
+        refreshHandler.setPullEnabled(true);
     }
 
     @Override
@@ -237,6 +251,7 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
 
     @Override
     protected void initView(View view) {
+        refreshHandler = new RefreshHandler(getActivity(), view, this);
         adapter = new PromoListAdapter(new ArrayList<PromoData>(), this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         rvPromoList.setLayoutManager(layoutManager);
@@ -269,9 +284,7 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
                 UnifyTracking.eventPromoListClickSubCategory(subCategoryName);
                 filterSelected = typeFilter.equals(TYPE_FILTER_ALL) ?
                         promoMenuData.getAllSubCategoryId() : typeFilter;
-                endlessRecyclerviewListener.resetState();
-                dPresenter.setPage(1);
-                dPresenter.processGetPromoList(filterSelected);
+                refreshHandler.startRefresh();
             }
 
             private String getSubCategoryNameById(String typeFilter) {
@@ -337,6 +350,12 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        compositeSubscription.unsubscribe();
+    }
+
+    @Override
     public void onItemPromoCodeTooltipClicked() {
         UnifyTracking.eventPromoTooltipClickOpenTooltip();
         if (bottomSheetViewInfoPromoCode == null) {
@@ -364,6 +383,7 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
     }
 
     private void handleErrorEmptyState(String message) {
+        if (refreshHandler.isRefreshing()) refreshHandler.finishRefresh();
         adapter.clearDataList();
         NetworkErrorHelper.showEmptyState(
                 getActivity(), containerList, message,
@@ -375,5 +395,12 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
                         dPresenter.processGetPromoList(filterSelected);
                     }
                 });
+    }
+
+    @Override
+    public void onRefresh(View view) {
+        endlessRecyclerviewListener.resetState();
+        dPresenter.setPage(1);
+        dPresenter.processGetPromoList(filterSelected);
     }
 }

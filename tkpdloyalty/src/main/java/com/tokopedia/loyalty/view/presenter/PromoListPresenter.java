@@ -38,6 +38,7 @@ public class PromoListPresenter implements IPromoListPresenter {
 
     @Override
     public void processGetPromoList(String subCategories) {
+        view.disableSwipeRefresh();
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put("categories", subCategories);
         param.put("categories_exclude", "30");
@@ -45,7 +46,7 @@ public class PromoListPresenter implements IPromoListPresenter {
         this.promoInteractor.getPromoList(param, new Subscriber<List<PromoData>>() {
             @Override
             public void onCompleted() {
-
+                view.enableSwipeRefresh();
             }
 
             @Override
@@ -72,6 +73,7 @@ public class PromoListPresenter implements IPromoListPresenter {
 
     @Override
     public void processGetPromoListLoadMore(String subCategories) {
+        view.disableSwipeRefresh();
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put("categories", subCategories);
         param.put("categories_exclude", "30");
@@ -79,7 +81,7 @@ public class PromoListPresenter implements IPromoListPresenter {
         this.promoInteractor.getPromoList(param, new Subscriber<List<PromoData>>() {
             @Override
             public void onCompleted() {
-
+                view.enableSwipeRefresh();
             }
 
             @Override
