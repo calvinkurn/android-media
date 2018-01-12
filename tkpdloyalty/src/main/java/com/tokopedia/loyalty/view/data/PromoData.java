@@ -3,11 +3,15 @@ package com.tokopedia.loyalty.view.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author anggaprasetiyo on 03/01/18.
  */
 
 public class PromoData implements Parcelable {
+    private String id;
     private String title;
     private String promoCode;
     private String appLink;
@@ -19,6 +23,7 @@ public class PromoData implements Parcelable {
     private boolean isMultiplePromo;
     private int multiplePromoCodeCount;
     private String periodFormatted;
+    private List<String> promoCodeList = new ArrayList<>();
 
     public String getPeriodFormatted() {
         return periodFormatted;
@@ -108,9 +113,24 @@ public class PromoData implements Parcelable {
         isMultiplePromo = multiplePromo;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public PromoData() {
     }
 
+    public List<String> getPromoCodeList() {
+        return promoCodeList;
+    }
+
+    public void setPromoCodeList(List<String> promoCodeList) {
+        this.promoCodeList = promoCodeList;
+    }
 
     @Override
     public int describeContents() {
@@ -119,6 +139,7 @@ public class PromoData implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.id);
         dest.writeString(this.title);
         dest.writeString(this.promoCode);
         dest.writeString(this.appLink);
@@ -128,10 +149,13 @@ public class PromoData implements Parcelable {
         dest.writeString(this.startDate);
         dest.writeString(this.endDate);
         dest.writeByte(this.isMultiplePromo ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.multiplePromoCodeCount);
         dest.writeString(this.periodFormatted);
+        dest.writeStringList(this.promoCodeList);
     }
 
     protected PromoData(Parcel in) {
+        this.id = in.readString();
         this.title = in.readString();
         this.promoCode = in.readString();
         this.appLink = in.readString();
@@ -141,7 +165,9 @@ public class PromoData implements Parcelable {
         this.startDate = in.readString();
         this.endDate = in.readString();
         this.isMultiplePromo = in.readByte() != 0;
+        this.multiplePromoCodeCount = in.readInt();
         this.periodFormatted = in.readString();
+        this.promoCodeList = in.createStringArrayList();
     }
 
     public static final Creator<PromoData> CREATOR = new Creator<PromoData>() {

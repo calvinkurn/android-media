@@ -1,5 +1,7 @@
 package com.tokopedia.loyalty.view.presenter;
 
+import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.core.analytics.container.GTMContainer;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -10,6 +12,7 @@ import com.tokopedia.loyalty.view.view.IPromoListView;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -37,7 +40,7 @@ public class PromoListPresenter implements IPromoListPresenter {
     }
 
     @Override
-    public void processGetPromoList(String subCategories) {
+    public void processGetPromoList(String subCategories, final String categoryName) {
         view.disableSwipeRefresh();
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put("categories", subCategories);
@@ -56,6 +59,7 @@ public class PromoListPresenter implements IPromoListPresenter {
 
             @Override
             public void onNext(List<PromoData> promoData) {
+                sendImpressionTrackingData(promoData, categoryName);
                 if (promoData.size() > 0) {
                     if (promoData.size() == 10) {
                         page++;
@@ -71,8 +75,45 @@ public class PromoListPresenter implements IPromoListPresenter {
         });
     }
 
+    public void sendImpressionTrackingData(List<PromoData> promoDataList, String categoryName) {
+
+        List<Object> dataLayerSinglePromoCodeList = new ArrayList<>();
+        for (int i = 0, promoDataListSize = promoDataList.size(); i < promoDataListSize; i++) {
+            PromoData promoData = promoDataList.get(i);
+            dataLayerSinglePromoCodeList.add(DataLayer.mapOf(
+                    "id", promoData.getId(),
+                    "name", "promo list - P" + page + " - " + categoryName,
+                    "creative", promoData.getThumbnailImage(),
+                    "position", i + 1,
+                    "promo_id", "0",
+                    "promo_code", promoData.isMultiplePromo() ? promoData.getPromoCodeList() : promoData.getPromoCode())
+            );
+        }
+
+
+        GTMContainer.newInstance(view.getActivityContext()).eventImpressionPromoList(
+                dataLayerSinglePromoCodeList, ""
+        );
+    }
+
+    public void sendClickItemPromoListTrackingData(PromoData promoData, int position, String categoryName) {
+        List<Object> dataLayerSinglePromoCodeList = new ArrayList<>();
+        dataLayerSinglePromoCodeList.add(DataLayer.mapOf(
+                "id", promoData.getId(),
+                "name", "promo list - P" + page + " - " + categoryName,
+                "creative", promoData.getThumbnailImage(),
+                "position", position + 1,
+                "promo_id", "0",
+                "promo_code", promoData.isMultiplePromo() ? promoData.getPromoCodeList() : promoData.getPromoCode())
+        );
+        GTMContainer.newInstance(view.getActivityContext()).eventClickPromoListItem(
+                dataLayerSinglePromoCodeList, promoData.getTitle()
+        );
+    }
+
+
     @Override
-    public void processGetPromoListLoadMore(String subCategories) {
+    public void processGetPromoListLoadMore(String subCategories, String categoryName) {
         view.disableSwipeRefresh();
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put("categories", subCategories);

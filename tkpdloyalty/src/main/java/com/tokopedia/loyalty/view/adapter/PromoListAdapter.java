@@ -59,7 +59,7 @@ public class PromoListAdapter extends RecyclerView.Adapter {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof ItemViewHolder) {
             final PromoData promoData = promoDataList.get(position);
             ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
@@ -96,7 +96,7 @@ public class PromoListAdapter extends RecyclerView.Adapter {
             itemViewHolder.ivBanner.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    actionListener.onItemPromoClicked(promoData);
+                    actionListener.onItemPromoClicked(promoData, position);
                 }
             });
         } else if (holder instanceof ItemLoadingViewHolder) {
@@ -185,7 +185,7 @@ public class PromoListAdapter extends RecyclerView.Adapter {
     public interface ActionListener {
         void onItemPromoCodeCopyClipboardClicked(String promoCode, String promoName);
 
-        void onItemPromoClicked(PromoData promoData);
+        void onItemPromoClicked(PromoData promoData, int position);
 
         void onItemPromoCodeTooltipClicked();
     }

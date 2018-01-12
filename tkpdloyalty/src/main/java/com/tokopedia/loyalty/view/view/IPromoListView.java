@@ -1,5 +1,7 @@
 package com.tokopedia.loyalty.view.view;
 
+import android.content.Context;
+
 import com.tokopedia.loyalty.view.data.PromoData;
 
 import java.util.List;
@@ -26,4 +28,5 @@ public interface IPromoListView extends IBaseView {
 
     void enableSwipeRefresh();
 
+    Context getActivityContext();
 }

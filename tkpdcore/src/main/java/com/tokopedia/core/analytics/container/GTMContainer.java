@@ -439,19 +439,19 @@ public class GTMContainer implements IGTMContainer {
     @Override
     public void eventClickHotlistProductFeatured(Hotlist hotlist) {
         GTMDataLayer.pushGeneral(context,
-                DataLayer.mapOf("event",AppEventTracking.Event.EVENT_INTERNAL_PROMO_MULTI,
-                        "eventCategory",AppEventTracking.Category.CATEGORY_HOTLIST,
-                        "eventAction",String.format("feature product hotlist %s - click product %s", hotlist.getHotlistAlias(), hotlist.getProductList().get(0).getProductName()),
-                        "eventLabel",String.format("%s - %s", hotlist.getScreenName(), hotlist.getPosition(),
-                        "ecommerce",DataLayer.mapOf(
-                                "click", DataLayer.mapOf(
-                                        "actionField", DataLayer.mapOf(
-                                                "list", "hotlist"),
+                DataLayer.mapOf("event", AppEventTracking.Event.EVENT_INTERNAL_PROMO_MULTI,
+                        "eventCategory", AppEventTracking.Category.CATEGORY_HOTLIST,
+                        "eventAction", String.format("feature product hotlist %s - click product %s", hotlist.getHotlistAlias(), hotlist.getProductList().get(0).getProductName()),
+                        "eventLabel", String.format("%s - %s", hotlist.getScreenName(), hotlist.getPosition(),
+                                "ecommerce", DataLayer.mapOf(
+                                        "click", DataLayer.mapOf(
+                                                "actionField", DataLayer.mapOf(
+                                                        "list", "hotlist"),
                                                 "products", hotlist.getProduct().toArray(new Object[hotlist.getProduct().size()])
+                                        )
                                 )
                         )
-                )
-        ));
+                ));
     }
 
     @Override
@@ -511,7 +511,7 @@ public class GTMContainer implements IGTMContainer {
                                 "impressions", DataLayer.listOf(
                                         objects.toArray(new Object[objects.size()])
                                 ))
-                        )
+                )
         );
     }
 
@@ -530,6 +530,52 @@ public class GTMContainer implements IGTMContainer {
                                 "impressions", DataLayer.listOf(
                                         list.toArray(new Object[list.size()])
                                 ))
+                )
+        );
+    }
+
+    @Override
+    public void eventImpressionPromoList(List<Object> list, String promoName) {
+        clearEnhanceEcommerce();
+
+        GTMDataLayer.pushGeneral(
+                context,
+                DataLayer.mapOf(
+                        "event", "promoview",
+                        "eventCategory", "promo microsite - promo list",
+                        "eventAction", "impression on promo",
+                        "eventLabel", promoName,
+                        "ecommerce", DataLayer.mapOf(
+                                "promoView", DataLayer.mapOf(
+                                        "promotions", DataLayer.listOf(
+                                                list.toArray(new Object[list.size()]
+                                                )
+                                        )
+                                )
+                        )
+                )
+        );
+    }
+
+    @Override
+    public void eventClickPromoListItem(List<Object> list, String promoName) {
+        clearEnhanceEcommerce();
+
+        GTMDataLayer.pushGeneral(
+                context,
+                DataLayer.mapOf(
+                        "event", "promoview",
+                        "eventCategory", "promo microsite - promo list",
+                        "eventAction", "impression on promo",
+                        "eventLabel", promoName,
+                        "ecommerce", DataLayer.mapOf(
+                                "promoClick", DataLayer.mapOf(
+                                        "promotions", DataLayer.listOf(
+                                                list.toArray(new Object[list.size()]
+                                                )
+                                        )
+                                )
+                        )
                 )
         );
     }

@@ -31,7 +31,7 @@ public class PromoRepository implements IPromoRepository {
     }
 
     @Override
-    public Observable<List<PromoMenuData>> getPromoMenuDataList(TKPDMapParam<String, String> param) {
+    public Observable<List<PromoMenuData>> getPromoMenuDataList(final TKPDMapParam<String, String> param) {
         return promoEndpointService.getApi().getMenuIndexList(param).map(
                 new Func1<Response<List<MenuPromoResponse>>, List<PromoMenuData>>() {
                     @Override
@@ -42,7 +42,7 @@ public class PromoRepository implements IPromoRepository {
     }
 
     @Override
-    public Observable<List<PromoData>> getPromoDataList(TKPDMapParam<String, String> param) {
+    public Observable<List<PromoData>> getPromoDataList(final TKPDMapParam<String, String> param) {
         return promoEndpointService.getApi().getPromoList(param).map(
                 new Func1<Response<List<PromoResponse>>, List<PromoData>>() {
                     @Override

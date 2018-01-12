@@ -3,7 +3,9 @@ package com.tokopedia.loyalty.domain.repository;
 import android.annotation.SuppressLint;
 
 import com.tokopedia.loyalty.domain.entity.response.promo.Children;
+import com.tokopedia.loyalty.domain.entity.response.promo.GroupCode;
 import com.tokopedia.loyalty.domain.entity.response.promo.MenuPromoResponse;
+import com.tokopedia.loyalty.domain.entity.response.promo.PromoCode;
 import com.tokopedia.loyalty.domain.entity.response.promo.PromoResponse;
 import com.tokopedia.loyalty.view.data.PromoData;
 import com.tokopedia.loyalty.view.data.PromoMenuData;
@@ -37,6 +39,7 @@ public class PromoResponseMapper implements IPromoResponseMapper {
         List<PromoData> promoDataList = new ArrayList<>();
         for (PromoResponse promoResponse : promoResponseList) {
             PromoData promoData = new PromoData();
+            promoData.setId(String.valueOf(promoResponse.getId()));
             promoData.setTitle(promoResponse.getTitle().getRendered());
             promoData.setAppLink(promoResponse.getMeta().getAppLink());
             promoData.setMultiplePromoCodeCount(promoResponse.getAcf().getPromoCodeList().size());
@@ -56,11 +59,19 @@ public class PromoResponseMapper implements IPromoResponseMapper {
             promoData.setStartDate(promoResponse.getMeta().getStartDate());
             promoData.setEndDate(promoResponse.getMeta().getEndDate());
             promoData.setMultiplePromo(promoResponse.getAcf().isMultiplePromoCode());
+            List<String> promoCodeList = new ArrayList<>();
+            for (PromoCode promoCode : promoResponse.getAcf().getPromoCodeList()) {
+                for (GroupCode groupCode : promoCode.getGroupCode()) {
+                    promoCodeList.add(groupCode.getSingleCode());
+                }
+            }
+            promoData.setPromoCodeList(promoCodeList);
             promoData.setPromoCode(promoResponse.getMeta().getPromoCode());
             promoDataList.add(promoData);
         }
         return promoDataList;
     }
+
 
     private String getDatePeriodPromo(String startDate, String endDate) throws ParseException {
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");

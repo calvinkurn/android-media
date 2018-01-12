@@ -138,6 +138,11 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
     }
 
     @Override
+    public Context getActivityContext() {
+        return getActivity();
+    }
+
+    @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
 
     }
@@ -263,7 +268,7 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 if (isLoadMore) {
-                    dPresenter.processGetPromoListLoadMore(filterSelected);
+                    dPresenter.processGetPromoListLoadMore(filterSelected, promoMenuData.getTitle());
                 }
             }
         };
@@ -342,7 +347,7 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
     }
 
     @Override
-    public void onItemPromoClicked(PromoData promoData) {
+    public void onItemPromoClicked(PromoData promoData, int position) {
         String appLink = promoData.getAppLink();
         String redirectUrl = promoData.getPromoLink();
         if (getActivity().getApplication() instanceof TkpdCoreRouter) {
@@ -351,6 +356,7 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
                 tkpdCoreRouter.actionAppLink(getActivity(), appLink);
             else tkpdCoreRouter.actionOpenGeneralWebView(getActivity(), redirectUrl);
         }
+        dPresenter.sendClickItemPromoListTrackingData(promoData, position, promoMenuData.getTitle());
     }
 
     @Override
@@ -396,7 +402,7 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
                     public void onRetryClicked() {
                         endlessRecyclerviewListener.resetState();
                         dPresenter.setPage(1);
-                        dPresenter.processGetPromoList(filterSelected);
+                        dPresenter.processGetPromoList(filterSelected, promoMenuData.getTitle());
                     }
                 });
     }
@@ -405,6 +411,6 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
     public void onRefresh(View view) {
         endlessRecyclerviewListener.resetState();
         dPresenter.setPage(1);
-        dPresenter.processGetPromoList(filterSelected);
+        dPresenter.processGetPromoList(filterSelected, promoMenuData.getTitle());
     }
 }
