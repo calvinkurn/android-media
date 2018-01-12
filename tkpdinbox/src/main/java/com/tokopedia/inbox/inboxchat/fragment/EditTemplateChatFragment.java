@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.inboxchat.fragment;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PorterDuff;
@@ -8,7 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -67,6 +67,7 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
     private List list;
     private String message;
     private Observable<Integer> counterObservable;
+    private int allowDelete;
 
     public static EditTemplateChatFragment createInstance(Bundle extras) {
         EditTemplateChatFragment fragment = new EditTemplateChatFragment();
@@ -99,8 +100,10 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
         super.onPrepareOptionsMenu(menu);
         MenuItem item = menu.findItem(R.id.action_organize);
         if (getArguments().getInt(PARAM_NAV) == 1) {
+            allowDelete = DISABLE_DELETE;
             item.getIcon().setAlpha(DISABLE_DELETE);
         } else {
+            allowDelete = ENABLE_DELETE;
             item.getIcon().setAlpha(ENABLE_DELETE);
         }
     }
@@ -109,13 +112,12 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == R.id.action_organize) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                if(item.getIcon().getAlpha() == ENABLE_DELETE){
-                    showDialogDelete();
-                }else {
-                    showError(getActivity().getString(R.string.minimum_template_chat_warning));
-                }
+            if (allowDelete == ENABLE_DELETE) {
+                showDialogDelete();
+            } else {
+                showError(getActivity().getString(R.string.minimum_template_chat_warning));
             }
+
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -183,7 +185,7 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        showErrorAndProceed(integer,submit);
+                        showErrorAndProceed(integer, submit);
                         counter.setText(String.format("%d/%d", integer, MAX_CHAR));
                     }
                 });
@@ -203,7 +205,7 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
     }
 
     private void showErrorAndProceed(Integer integer, TextView proceed) {
-        if(integer==0){
+        if (integer == 0) {
             canProceed(false, proceed);
         } else if (integer > 0 && integer < 5) {
             error.setText(getActivity().getString(R.string.minimal_char_template));
@@ -274,9 +276,9 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
 
     @Override
     public void showError(String error) {
-        if(error.equals("")){
+        if (error.equals("")) {
             SnackbarManager.make(getActivity(), getActivity().getString(R.string.default_request_error_bad_request), Snackbar.LENGTH_LONG).show();
-        }else{
+        } else {
             SnackbarManager.make(getActivity(), error, Snackbar.LENGTH_LONG).show();
         }
     }
