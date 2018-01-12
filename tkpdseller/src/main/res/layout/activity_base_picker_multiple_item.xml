@@ -63,12 +63,12 @@
 
                 <TextView
                     android:id="@+id/text_view_bottom_sheet_title"
-                    style="@style/TextView.Body1"
+                    style="@style/TextView.Small"
                     tools:text="@string/app_id" />
 
                 <TextView
                     android:id="@+id/text_view_bottom_sheet_content"
-                    style="@style/TextView.Caption.BlackDisabled"
+                    style="@style/TextView.Micro.BlackDisabled"
                     android:layout_marginTop="@dimen/margin_vs"
                     android:textStyle="italic"
                     android:visibility="gone"

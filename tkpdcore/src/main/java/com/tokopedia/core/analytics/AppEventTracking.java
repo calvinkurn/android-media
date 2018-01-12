@@ -159,6 +159,7 @@ public interface AppEventTracking {
         String EVENT_IMPRESSION_HOME_PAGE ="eventImpressionHomePage";
         String SELLER_INFO = "clickSellerInfo";
         String EVENT_ONBOARDING = "onBoardingEvent";
+        String EVENT_RESOLUTION = "clickResolution";
     }
 
     interface Category {
@@ -269,6 +270,8 @@ public interface AppEventTracking {
         String APP_RATING = "Application Rating";
         String FEED_CONTENT_COMMENT_DETAIL = "content - comment detail";
         String ONBOARDING = "onboarding";
+        String RESOLUTION_CENTER = "resolution center";
+        String MANAGE_PROFILE = "pengaturan profile";
     }
 
     interface Action {
@@ -417,6 +420,15 @@ public interface AppEventTracking {
 
         String CLICK_IMAGE_SETTINGS = "click image settings";
         String CLICK_SAVE_EDIT = "click save edit";
+
+        String CLICK_PRODUCT_PROBLEM = "click barang & masalah";
+        String CLICK_SOLUTION = "click solution";
+        String CLICK_PROVE = "click bukti & keterangan";
+        String CLICK_CREATE_RESO = "click buat komplain";
+        String CLICK_CREATE_RESO_ABANDON = "click abandon";
+
+        String CLICK_CHANGE_PHONE_NUMBER = "click on ubah";
+        String SUCCESS_CHANGE_PHONE_NUMBER = "success change phone number";
     }
 
     interface ImageEditor{
@@ -758,6 +770,15 @@ public interface AppEventTracking {
         String FEED_KOL_RECOMMENDATION_VIEW_ALL = "kol discovery page";
         String ONBOARDING_SKIP_LABEL = "skip - ";
         String ONBOARDING_START_LABEL = "click mulai sekarang";
+
+        String RESO_PROBLEM_SAVE = "problem - save";
+        String RESO_PROBLEM_SAVE_CHOOSE_OTHER = "problem - simpan dan pilih barang lain";
+        String RESO_PROBLEM_CONTINUE = "problem - continue";
+        String RESO_SOLUTION_CONTINUE  = "solution - continue";
+        String RESO_CREATE_COMPLAINT_PRE  = "pre - create complain";
+        String RESO_CREATE_COMPLAINT_CONFIRM  = "confirm - create complain";
+        String RESO_CREATE_COMPLAINT_UNCONFIRM  = "unconfirmed - create complain";
+        String RESO_CREATE_ABANDON = "abandon";
     }
 
     interface SOCIAL_MEDIA {
@@ -930,33 +951,34 @@ public interface AppEventTracking {
         String EVENT_CLICK_ADD_PRODUCT = "clickAddProduct";
         String CATEGORY_ADD_PRODUCT = "Add Product";
         String CATEGORY_EDIT_PRODUCT = "Edit Product";
-        String EVENT_ACTION_ADD = "Add";
-        String EVENT_ACTION_EDIT = "Edit";
-        String EVENT_ACTION_ADD_MORE = "Add More";
-        String EVENT_ACTION_ERROR = "Error";
-        String EVENT_ACTION_ERROR_SERVER = "Error Server";
+        String EVENT_ACTION_ADD = "click add - optional fields used";
+        String EVENT_ACTION_EDIT = "click edit - optional fields used";
+        String EVENT_ACTION_ADD_MORE = "click add more products - optional fields used";
+        String EVENT_ACTION_ERROR = "click add error - field validation triggered";
+        String EVENT_ACTION_ERROR_SERVER = "click add error - server validation triggered";
 
-        String FIELDS_MANDATORY_PRODUCT_NAME = "M1";
-        String FIELDS_MANDATORY_CATEGORY = "M2";
-        String FIELDS_MANDATORY_PRICE = "M3";
-        String FIELDS_MANDATORY_WEIGHT = "M4";
-        String FIELDS_MANDATORY_MIN_PURCHASE = "M5";
-        String FIELDS_MANDATORY_STOCK_STATUS = "M6";
-        String FIELDS_MANDATORY_SHOWCASE = "M7";
-        String FIELDS_MANDATORY_CONDITION = "M8";
-        String FIELDS_MANDATORY_INSURANCE = "M9";
-        String FIELDS_OPTIONAL_PICTURE = "O1";
-        String FIELDS_OPTIONAL_WHOLESALE = "O2";
-        String FIELDS_OPTIONAL_STOCK_MANAGEMENT = "O3";
-        String FIELDS_OPTIONAL_FREE_RETURN = "O4";
-        String FIELDS_OPTIONAL_DESCRIPTION = "O5";
-        String FIELDS_OPTIONAL_PRODUCT_VIDEO = "O6";
-        String FIELDS_OPTIONAL_PREORDER = "O7";
-        String FIELDS_OPTIONAL_SHARE = "O8";
-        String FIELDS_OPTIONAL_VARIANT_LEVEL1 = "O9";
-        String FIELDS_OPTIONAL_VARIANT_LEVEL2 = "O10";
-        String FIELDS_OPTIONAL_VARIANT_LEVEL1_CUSTOM = "O11";
-        String FIELDS_OPTIONAL_VARIANT_LEVEL2_CUSTOM = "O12";
+        String FIELDS_MANDATORY_PRODUCT_NAME = "Product Name";
+        String FIELDS_MANDATORY_CATEGORY = "Category";
+        String FIELDS_MANDATORY_PRICE = "Price";
+        String FIELDS_MANDATORY_WEIGHT = "Weight";
+        String FIELDS_MANDATORY_MIN_PURCHASE = "Min Purchase";
+        String FIELDS_MANDATORY_STOCK_STATUS = "Stock Status";
+        String FIELDS_MANDATORY_SHOWCASE = "Showcase";
+        String FIELDS_MANDATORY_CONDITION = "Condition";
+        String FIELDS_MANDATORY_INSURANCE = "Insurance";
+        String FIELDS_OPTIONAL_PICTURE = "Picture";
+        String FIELDS_OPTIONAL_WHOLESALE = "Grosir";
+        String FIELDS_OPTIONAL_STOCK_MANAGEMENT = "Stock management";
+        String FIELDS_OPTIONAL_FREE_RETURN = "Free Return";
+        String FIELDS_OPTIONAL_DESCRIPTION = "Description";
+        String FIELDS_OPTIONAL_PRODUCT_VIDEO = "Product Video";
+        String FIELDS_OPTIONAL_PREORDER = "Preorder";
+        String FIELDS_OPTIONAL_SHARE = "Share";
+        String FIELDS_OPTIONAL_VARIANT_LEVEL1 = "Variant Level 1";
+        String FIELDS_OPTIONAL_VARIANT_LEVEL2 = "Variant Level 2";
+        String FIELDS_OPTIONAL_VARIANT_LEVEL1_CUSTOM = "Variant Level 1 with Custom";
+        String FIELDS_OPTIONAL_VARIANT_LEVEL2_CUSTOM = "Variant Level 2 with Custom";
+        String FIELDS_OPTIONAL_EMPTY = "no optional field used";
     }
 
     interface CustomDimension {
