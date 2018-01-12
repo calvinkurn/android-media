@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
@@ -647,6 +648,11 @@ public class TrackingUtils extends TrackingConfig {
 
     public static void eventImpressionHotlistProductFeatured(Hotlist hotlist) {
         getGTMEngine().eventImpressionHotlistProductFeatured(hotlist);
+    }
+
+    public static void eventTrackingEnhancedEcommerce(Map<String, Object> trackingData) {
+        getGTMEngine().clearEnhanceEcommerce();
+        getGTMEngine().eventTrackingEnhancedEcommerce(trackingData);
     }
 }
 

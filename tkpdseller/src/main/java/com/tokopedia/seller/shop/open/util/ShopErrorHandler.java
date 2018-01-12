@@ -5,9 +5,6 @@ import com.tokopedia.seller.shop.common.exception.ShopException;
 
 import java.util.List;
 
-/**
- * Created by nakama on 02/01/18.
- */
 
 public class ShopErrorHandler {
     public static String getErrorMessage(Throwable t) {

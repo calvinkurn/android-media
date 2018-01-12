@@ -3,9 +3,6 @@ package com.tokopedia.seller.shop.open.view.watcher;
 import android.text.Editable;
 import android.text.TextWatcher;
 
-/**
- * Created by nakama on 14/12/17.
- */
 
 public abstract class AfterTextWatcher implements TextWatcher {
     @Override

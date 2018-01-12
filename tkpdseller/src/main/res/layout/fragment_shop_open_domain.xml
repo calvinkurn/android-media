@@ -57,14 +57,14 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/padding_vs"
             android:layout_marginTop="@dimen/padding_med"
-            android:text="@string/shop_domain" />
+            android:text="@string/shop_open_label_shop_domain" />
 
         <TextView
             style="@style/TextView.Micro.BlackDisabled"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/padding_vs"
-            android:text="@string/shop_domain_definition" />
+            android:text="@string/shop_open_info_shop_domain_definition" />
 
         <com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout
             android:id="@+id/text_input_domain_name"

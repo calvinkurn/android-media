@@ -88,6 +88,7 @@ public class ShopOpenCourierExpandableOption extends BaseExpandableOption implem
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(shopServiceCourierAdapter);
         recyclerView.setNestedScrollingEnabled(false);
+        recyclerView.setHasFixedSize(true);
 
         final Runnable expandRunnable = new Runnable() {
             @Override
@@ -177,8 +178,14 @@ public class ShopOpenCourierExpandableOption extends BaseExpandableOption implem
         super.setExpand(isExpanded);
     }
 
-    public void setCourier(Courier courier) {
+    public void setCourier(Courier courier, boolean hasPinPointLocation) {
         this.courier = courier;
+        setTitleText(courier.getName());
+        setLogo(courier.getLogo());
+        boolean isEnabled = (courier.isExpressCourierId() && hasPinPointLocation)
+                || (!courier.isExpressCourierId() && courier.isAvailable());
+        setEnabled(isEnabled);
+        setChild(courier.getServices());
     }
 
     @Override
@@ -258,10 +265,10 @@ public class ShopOpenCourierExpandableOption extends BaseExpandableOption implem
         }
         if (mEnabled) {
             tvDesc.setTextColor(ContextCompat.getColor(getContext(),R.color.font_black_secondary_54));
-            tvDesc.setText(getContext().getString(R.string.choose_delivery_packet));
+            tvDesc.setText(getContext().getString(R.string.shop_open_choose_delivery_packet));
         } else {
             tvDesc.setTextColor(ContextCompat.getColor(getContext(),R.color.font_black_disabled_38));
-            tvDesc.setText(getContext().getString(R.string.delivery_not_available));
+            tvDesc.setText(getContext().getString(R.string.shop_open_delivery_not_available));
         }
     }
 

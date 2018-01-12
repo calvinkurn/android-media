@@ -7,10 +7,6 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-/**
- * Created by nakama on 19/12/17.
- */
-
 public class Courier {
 
     public static final String EXPRESS_COURIER_ID = "1000"; // from API

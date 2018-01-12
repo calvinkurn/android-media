@@ -15,7 +15,7 @@ public interface ProductManageView extends BaseListViewListener<ProductManageVie
 
     void onSearchLoaded(@NonNull List<ProductManageViewModel> list, int totalItem, boolean hasNextPage);
 
-    void onSuccessLoadGoldMerchantFlag(boolean goldMerchant);
+    void onSuccessGetShopInfo(boolean goldMerchant, boolean officialStore);
 
     void onSuccessGetFeaturedProductList(List<String> data);
 

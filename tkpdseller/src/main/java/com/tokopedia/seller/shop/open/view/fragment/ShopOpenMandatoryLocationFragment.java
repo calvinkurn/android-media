@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +23,7 @@ import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.router.logistic.LogisticRouter;
+import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.base.view.listener.StepperListener;
@@ -40,7 +41,7 @@ import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.Shipme
 import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.UserData;
 import com.tokopedia.seller.shop.open.domain.interactor.ShopOpenSaveLocationUseCase;
 import com.tokopedia.seller.shop.open.view.presenter.ShopOpenLocPresenterImpl;
-import com.tokopedia.seller.shop.open.view.presenter.ShopOpenLocView;
+import com.tokopedia.seller.shop.open.view.listener.ShopOpenLocView;
 
 import java.util.HashMap;
 
@@ -55,6 +56,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
     public static final int REQUEST_CODE_ADDRESS = 1234;
     public static final int REQUEST_CODE__EDIT_ADDRESS = 1235;
     public static final int REQUEST_CODE_GOOGLE_MAP = 1236;
+    public static final String CONST_PINPOINT = "pinpoint";
 
     protected ShopOpenStepperModel stepperModel;
     protected StepperListener<ShopOpenStepperModel> stepperListener;
@@ -342,12 +344,23 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
 
     @Override
     public void onFailedSaveInfoShop(Throwable t) {
+
         String errorMessage;
         Crashlytics.logException(t);
         if (t instanceof ShopException) {
             errorMessage = t.getMessage();
         } else {
             errorMessage = ErrorHandler.getErrorMessage(t, getActivity());
+
+            // set error message
+            if(errorMessage.split(",").length > 1){
+                errorMessage = errorMessage.split(",")[0];
+            }
+
+            if(errorMessage.contains(CONST_PINPOINT)){
+                onErrorGetReserveDomain(new Throwable(errorMessage));
+                return;
+            }
         }
         trackingOpenShop.eventOpenShopLocationError(errorMessage);
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, new NetworkErrorHelper.RetryClickedListener() {

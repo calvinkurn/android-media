@@ -59,7 +59,7 @@ public class ShopOpenReserveDomainSuccessFragment extends BaseDaggerFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_shop_reserve_domain_success, container, false);
         TextView tvTitle = view.findViewById(R.id.tv_title);
-        tvTitle.setText(MethodChecker.fromHtml(getString(R.string.shop_reserve_success_title, shopName)));
+        tvTitle.setText(MethodChecker.fromHtml(getString(R.string.shop_open_shop_reserve_success_title, shopName)));
         final Button buttonNext = view.findViewById(R.id.button_next);
         buttonNext.setOnClickListener(new View.OnClickListener() {
             @Override

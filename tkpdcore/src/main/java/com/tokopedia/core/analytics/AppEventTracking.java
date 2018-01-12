@@ -271,6 +271,7 @@ public interface AppEventTracking {
         String FEED_CONTENT_COMMENT_DETAIL = "content - comment detail";
         String ONBOARDING = "onboarding";
         String RESOLUTION_CENTER = "resolution center";
+        String MANAGE_PROFILE = "pengaturan profile";
     }
 
     interface Action {
@@ -425,6 +426,9 @@ public interface AppEventTracking {
         String CLICK_PROVE = "click bukti & keterangan";
         String CLICK_CREATE_RESO = "click buat komplain";
         String CLICK_CREATE_RESO_ABANDON = "click abandon";
+
+        String CLICK_CHANGE_PHONE_NUMBER = "click on ubah";
+        String SUCCESS_CHANGE_PHONE_NUMBER = "success change phone number";
     }
 
     interface ImageEditor{
