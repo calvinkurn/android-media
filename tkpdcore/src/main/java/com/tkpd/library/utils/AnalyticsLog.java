@@ -3,7 +3,6 @@ package com.tkpd.library.utils;
 import android.os.Build;
 
 import com.logentries.logger.AndroidLogger;
-import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
@@ -34,9 +33,10 @@ public class AnalyticsLog {
     }
 
     public static void logNetworkError(String url, int errorCode) {
-        AnalyticsLog.log("Error Network! User: " + SessionHandler.getLoginID(MainApplication.getAppContext())
-                + " URL: " + url
+        AnalyticsLog.log("Error Network! "
                 + " Error Code: " + errorCode
+                + " User: " + SessionHandler.getLoginID(MainApplication.getAppContext())
+                + " URL: " + url
                 + " App Version : " + GlobalConfig.getPackageApplicationName() + " " + GlobalConfig.VERSION_NAME
                 + " App Code : " + GlobalConfig.VERSION_CODE
                 + " Android Version : " + Build.VERSION.RELEASE
