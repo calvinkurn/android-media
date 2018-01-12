@@ -109,14 +109,14 @@ public class CpmData {
         private static final String KEY_CTA_TEXT = "button_text";
 
         private int templateId;
-        private String name;
+        private String name = "";
         private CpmImage cpmImage;
         private List<Badge> badges = new ArrayList<>();
-        private String promotedText;
-        private String uri;
-        private String decription;
+        private String promotedText = "";
+        private String uri = "";
+        private String decription = "";
         private CpmShop cpmShop;
-        private String cta;
+        private String cta = "";
 
         public Cpm(JSONObject object) throws JSONException {
             if(!object.isNull(KEY_TEMPLATE_ID)){
