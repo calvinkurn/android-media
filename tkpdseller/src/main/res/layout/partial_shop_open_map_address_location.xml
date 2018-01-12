@@ -7,7 +7,7 @@
     <com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout
         android:id="@+id/shop_desc_input_layout"
         style="@style/HintTextInputLayout"
-        android:hint="@string/pickup_location"
+        android:hint="@string/shop_open_pickup_location"
         android:layout_marginTop="@dimen/margin_med">
 
         <android.support.v7.widget.AppCompatEditText
@@ -16,11 +16,11 @@
             android:layout_height="wrap_content"
             style="@style/EditText.ShopSetting"
             android:lineSpacingExtra="6sp"
-            android:hint="@string/write_address_text" />
+            android:hint="@string/shop_open_write_address_text" />
     </com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout>
 
     <TextView
         style="@style/TextView.Micro.BlackDisabled"
         android:lineSpacingExtra="5sp"
-        android:text="@string/fill_width_address_desc" />
+        android:text="@string/shop_open_fill_width_address_desc" />
 </merge>

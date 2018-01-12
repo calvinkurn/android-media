@@ -7,12 +7,17 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.shop.open.di.component.DaggerShopOpenDomainComponent;
+import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
+import com.tokopedia.seller.shop.open.di.module.ShopOpenDomainModule;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenCreateSuccessFragment;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenReserveDomainSuccessFragment;
 
 
-public class ShopOpenReserveDomainSuccessActivity extends BaseActivity {
+public class ShopOpenReserveDomainSuccessActivity extends BaseActivity implements HasComponent<ShopOpenDomainComponent>{
 
     public static final String EXTRA_SHOP_NAME = "shop_nm";
 
@@ -35,4 +40,12 @@ public class ShopOpenReserveDomainSuccessActivity extends BaseActivity {
         }
     }
 
+    @Override
+    public ShopOpenDomainComponent getComponent() {
+        return DaggerShopOpenDomainComponent
+                .builder()
+                .shopOpenDomainModule(new ShopOpenDomainModule())
+                .shopComponent(((SellerModuleRouter) getApplication()).getShopComponent())
+                .build();
+    }
 }

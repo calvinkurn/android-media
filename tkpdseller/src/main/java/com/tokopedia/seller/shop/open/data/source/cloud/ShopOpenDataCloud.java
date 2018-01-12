@@ -18,6 +18,7 @@ import rx.functions.Func1;
  */
 
 public class ShopOpenDataCloud {
+    private static final String STATUS_AVAILABLE = "1";
     private final TomeApi api;
 
     @Inject
@@ -34,7 +35,7 @@ public class ShopOpenDataCloud {
                         if (responseCheckDomainName == null) {
                             throw new RuntimeException();
                         } else {
-                            return Observable.just("1".equals(responseCheckDomainName.getDomainStatus()));
+                            return Observable.just(STATUS_AVAILABLE.equals(responseCheckDomainName.getDomainStatus()));
                         }
                     }
                 });
@@ -48,7 +49,7 @@ public class ShopOpenDataCloud {
                         if (responseCheckShopName == null) {
                             throw new RuntimeException();
                         } else {
-                            return Observable.just("1".equals(responseCheckShopName.getShopNameStatus()));
+                            return Observable.just(STATUS_AVAILABLE.equals(responseCheckShopName.getShopNameStatus()));
                         }
                     }
                 });

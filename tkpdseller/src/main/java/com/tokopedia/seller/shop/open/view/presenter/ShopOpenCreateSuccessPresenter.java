@@ -34,7 +34,9 @@ public class ShopOpenCreateSuccessPresenter extends BaseDaggerPresenter<Watermar
 
             @Override
             public void onError(Throwable e) {
-                getView().onErrorGetShopInfo(e);
+                if (isViewAttached()) {
+                    getView().onErrorGetShopInfo(e);
+                }
             }
 
             @Override

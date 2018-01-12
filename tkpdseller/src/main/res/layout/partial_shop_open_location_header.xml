@@ -13,21 +13,21 @@
     <TextView
         style="@style/TextView.TitleBig"
         android:layout_gravity="center_horizontal"
-        android:text="@string/shipping_location_text"
+        android:text="@string/shop_open_shipping_location_text"
         android:layout_marginTop="24dp" />
 
     <TextView
         style="@style/TextView.Small"
         android:lineSpacingExtra="6sp"
         android:gravity="center_horizontal"
-        android:text="@string/shipping_location_text_desc"
+        android:text="@string/shop_open_shipping_location_text_desc"
         android:layout_marginTop="16dp" />
 
     <TextView
         style="@style/TextView.Micro.BlackSecondary"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="32dp"
-        android:text="@string/shipping_location_text_choose_desc" />
+        android:text="@string/shop_open_shipping_location_text_choose_desc" />
 
 
     <FrameLayout
@@ -42,7 +42,7 @@
             android:layout_gravity="center"
             android:gravity="center"
             style="@style/TextView.Micro"
-            android:text="@string/choose_from_address_list"
+            android:text="@string/shop_open_choose_from_address_list"
              />
     </FrameLayout>
 

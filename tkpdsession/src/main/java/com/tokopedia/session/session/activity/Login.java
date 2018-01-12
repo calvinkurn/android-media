@@ -171,20 +171,6 @@ public class Login extends BaseActivity implements SessionView
         intent = SellerRouter.getActivityShopCreateEdit(context);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         return intent;
-
-//        if (SessionHandler.isMsisdnVerified()) {
-//            Intent intent;
-//            intent = SellerRouter.getActivityShopCreateEdit(context, true, logoutOnBack);
-//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//            return intent;
-//        } else {
-//            /*Intent intent;
-//            intent = new Intent(context, MsisdnActivity.class);
-//            intent.putExtra(MsisdnActivity.SOURCE, Login.class.getSimpleName());
-//            return intent;*/
-//
-//            return null;
-//        }
     }
 
     public static Intent getAutomaticLoginIntent(Context context, String email, String password) {
@@ -392,17 +378,7 @@ public class Login extends BaseActivity implements SessionView
                     if (!SessionHandler.isUserHasShop(this)) {
                         UnifyTracking.eventLoginCreateShopSellerApp();
                     }
-                    //TODO, app intro is no longer needed, directly send (1) has shop
-                    /*if (SessionHandler.isFirstTimeUser(this) || !SessionHandler.isUserHasShop(this)) {
-                        //  Launch app intro
-                        Intent intent = SellerAppRouter.getSellerOnBoardingActivity(this);
-                        startActivity(intent);
-                        return;
-                    }*/
-
-                    // TODO isMsisdnVerified if the user has domain, but has no shop
                     Intent intent;
-                    //if (SessionHandler.isMsisdnVerified()) {
                     if (SessionHandler.isUserHasShop(this)) {
                         intent = SellerAppRouter.getSellerHomeActivity(this);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent
@@ -411,10 +387,6 @@ public class Login extends BaseActivity implements SessionView
                         intent = moveToCreateShop(this);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     }
-                    /*} else {
-                        intent = SessionRouter.getPhoneVerificationActivationActivityIntent(this, true, true);
-                        startActivityForResult(intent, REQUEST_VERIFY_PHONE_NUMBER);
-                    }*/
                     startActivity(intent);
                 }
                 break;
