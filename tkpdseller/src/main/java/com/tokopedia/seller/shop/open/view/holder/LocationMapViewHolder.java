@@ -133,7 +133,7 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
     public boolean isDataInputValid(){
         if (!TextUtils.isEmpty(generatedLocationOpenShop.getText().toString())) {
             if (TextUtils.isEmpty(shopAddressEdittext.getText().toString())) {
-                shopAddressEdittext.setError(root.getContext().getString(R.string.shop_open_shop_location_must_be_filled));
+                tilShopAddress.setError(root.getContext().getString(R.string.shop_open_shop_location_must_be_filled));
                 shopAddressEdittext.requestFocus();
                 CommonUtils.hideSoftKeyboard(root);
                 return false;
