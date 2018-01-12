@@ -3,7 +3,6 @@ package com.tokopedia.tkpd.beranda.presentation.view.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.tokopedia.core.base.adapter.BaseAdapter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.adapter.model.EmptyModel;
