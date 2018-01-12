@@ -24,6 +24,7 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.FeedTracking;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -66,6 +67,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.feed.FeedPl
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactoryImpl;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.productcard.AddFeedViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.FeedTrackingEventLabel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.KolTracking;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.FeedPlusPresenter;
@@ -75,6 +77,8 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsProductMod
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentHeaderViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentProductViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolRecommendItemViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ProductFeedViewModel;
@@ -97,8 +101,10 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.TopAdsViewModel
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ShopFeedViewModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
+
 /**
  * @author by nisie on 5/15/17.
  */
@@ -124,6 +130,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Inject
     FeedPlusPresenter presenter;
+
+    @Inject
+    SessionHandler sessionHandler;
 
     private LinearLayoutManager layoutManager;
     private FeedPlusAdapter adapter;
@@ -267,21 +276,21 @@ public class FeedPlusFragment extends BaseDaggerFragment
                             && layoutManager != null
                             && topAdsRecyclerAdapter != null
                             && topAdsRecyclerAdapter.getPlacer() != null) {
+                        int position = 0;
                         Item item = null;
                         if (itemIsFullScreen()) {
-                            item = topAdsRecyclerAdapter.getPlacer()
-                                    .getItem(layoutManager.findLastVisibleItemPosition());
+                            position = layoutManager.findLastVisibleItemPosition();
                         } else if (layoutManager.findFirstCompletelyVisibleItemPosition() != -1) {
-                            item = topAdsRecyclerAdapter.getPlacer()
-                                    .getItem(layoutManager.findFirstCompletelyVisibleItemPosition());
-
+                            position = layoutManager.findFirstCompletelyVisibleItemPosition();
                         } else if (layoutManager.findLastCompletelyVisibleItemPosition() != -1) {
-                            item = topAdsRecyclerAdapter.getPlacer()
-                                    .getItem(layoutManager.findLastCompletelyVisibleItemPosition());
+                            position = layoutManager.findLastCompletelyVisibleItemPosition();
                         }
 
-                        if (item != null && !isTopads(item)) {
-                            trackImpression(item);
+                        item = topAdsRecyclerAdapter.getPlacer()
+                                .getItem(position);
+
+                        if (position != 0 && item != null && !isTopads(item)) {
+                            trackImpression(item, position);
                         }
                     }
                 } catch (IndexOutOfBoundsException e) {
@@ -293,11 +302,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
         });
     }
 
-    private void trackImpression(Item item) {
-        if (isInspirationItem(item))
+    private void trackImpression(Item item, int position) {
+        if (isInspirationItem(item)) {
             UnifyTracking.eventR3(AppEventTracking.Action.IMPRESSION,
                     FeedTrackingEventLabel.Impression.FEED_RECOMMENDATION);
-        else if (isPromoItem(item)) {
+        } else if (isPromoItem(item)) {
             UnifyTracking.eventFeedClick(AppEventTracking.Action.IMPRESSION,
                     FeedTrackingEventLabel.Impression.FEED_PROMOTION);
         }
@@ -846,8 +855,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
         super.setUserVisibleHint(isVisibleToUser);
         if (firstCursor == null)
             firstCursor = "";
-        if (isVisibleToUser && presenter != null) {
+        if (isVisibleToUser && isAdded()
+                && getActivity()!= null && presenter != null) {
             presenter.checkNewFeed(firstCursor);
+            ScreenTracking.screen(getScreenName());
         }
     }
 
