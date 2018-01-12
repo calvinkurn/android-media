@@ -251,8 +251,10 @@ public class ChatRoomFragment extends BaseDaggerFragment
         UnifyTracking.eventClickTemplate(TopChatTrackingEventLabel.Category.INBOX_CHAT,
                 TopChatTrackingEventLabel.Action.TEMPLATE_CHAT_CLICK,
                 TopChatTrackingEventLabel.Name.INBOX_CHAT);
-        replyColumn.setText(String.format("%s %s", replyColumn.getText(), message));
-        replyColumn.setSelection(replyColumn.getText().length());
+        String text =  replyColumn.getText().toString();
+        int index = replyColumn.getSelectionStart();
+        replyColumn.setText(String.format("%s %s %s", text.substring(0,index) , message, text.substring(index)));
+        replyColumn.setSelection(message.length() + text.substring(0,index).length() +1);
     }
 
     @Override
@@ -294,6 +296,14 @@ public class ChatRoomFragment extends BaseDaggerFragment
     public void onSuccessInitMessage() {
         CommonUtils.UniversalToast(getActivity(), getString(R.string.success_send_msg));
         getActivity().finish();
+    }
+
+
+    @Override
+    public void onErrorInitMessage(String s) {
+        adapter.removeLast();
+        NetworkErrorHelper.showSnackbar(getActivity(), s);
+        sendButton.setEnabled(true);
     }
 
     private void initVar() {
@@ -625,6 +635,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     public void disableAction() {
         sendButton.setEnabled(false);
     }
+
 
     private void setResult() {
         if (adapter != null && getActivity() != null) {

@@ -103,6 +103,8 @@ public class ChatRoomContract {
         void addDummyInitialMessage();
 
         void disableAction();
+
+        void onErrorInitMessage(String s);
     }
 
     interface Presenter extends CustomerPresenter<View>{

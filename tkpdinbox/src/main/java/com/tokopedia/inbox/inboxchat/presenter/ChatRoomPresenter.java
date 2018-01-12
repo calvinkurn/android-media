@@ -242,8 +242,6 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
     @Override
     public void initMessage(String message, String source, String toShopId, String toUserId) {
-        Log.i("initMessage: ","");
-
         if (isValidReply()) {
             getView().addDummyInitialMessage();
             getView().disableAction();
@@ -260,7 +258,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
                 @Override
                 public void onError(Throwable throwable) {
-                    getView().onErrorSendReply();
+                    getView().onErrorInitMessage(ErrorHandler.getErrorMessage(throwable));
                 }
 
                 @Override
@@ -268,7 +266,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                     if (sendMessageViewModel.isSuccess())
                         getView().onSuccessInitMessage();
                     else
-                        getView().onErrorSendReply();
+                        getView().onErrorInitMessage("");
 
                 }
             });
