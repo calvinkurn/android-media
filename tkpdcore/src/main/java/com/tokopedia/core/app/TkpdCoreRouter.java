@@ -110,4 +110,6 @@ public interface TkpdCoreRouter {
     Intent getResolutionCenterIntent(Context context);
 
     Intent getKolFollowingPageIntent(Context context, int userId);
+
+    Intent getChangePhoneNumberIntent(Context context, String email, String phoneNumber);
 }
