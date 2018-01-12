@@ -1,8 +1,10 @@
 package com.tokopedia.core.apprating;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -25,6 +27,8 @@ public abstract class AppRatingDialog {
     protected Activity activity;
     protected RemoteConfig remoteConfig;
     protected LocalCacheHandler cacheHandler;
+    @Nullable
+    protected AppRatingListener listener;
 
     protected AppRatingDialog(Activity activity) {
         this.activity = activity;
@@ -60,9 +64,23 @@ public abstract class AppRatingDialog {
 
     protected void showDialog() {
         if(isDialogNeedToBeShown()) {
-            buildAlertDialog().show();
+            AlertDialog alertDialog = buildAlertDialog();
+            if(listener != null) {
+                alertDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        listener.onDismiss();
+                    }
+                });
+            }
+
+            alertDialog.show();
             onShowDialog();
         }
+    }
+
+    protected void setListener(AppRatingListener listener) {
+        this.listener = listener;
     }
 
     protected abstract AlertDialog buildAlertDialog();
@@ -73,4 +91,8 @@ public abstract class AppRatingDialog {
      * This will be executed when dialog appear
      */
     protected abstract void onShowDialog();
+
+    public interface AppRatingListener {
+        void onDismiss();
+    }
 }

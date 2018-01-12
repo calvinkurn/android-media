@@ -1,6 +1,7 @@
 package com.tokopedia.core.apprating;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +27,12 @@ public class AdvancedAppRatingDialog extends AppRatingDialog {
 
     public static void show(Activity activity) {
         AdvancedAppRatingDialog dialog = new AdvancedAppRatingDialog(activity);
+        dialog.showDialog();
+    }
+
+    public static void show(Activity activity, AppRatingListener listener) {
+        AdvancedAppRatingDialog dialog = new AdvancedAppRatingDialog(activity);
+        dialog.setListener(listener);
         dialog.showDialog();
     }
 
