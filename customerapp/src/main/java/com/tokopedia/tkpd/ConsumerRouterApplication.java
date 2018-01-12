@@ -114,6 +114,9 @@ import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.datepicker.DatePickerUtil;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
+import com.tokopedia.tkpd.deeplink.data.repository.DeeplinkRepository;
+import com.tokopedia.tkpd.deeplink.data.repository.DeeplinkRepositoryImpl;
+import com.tokopedia.tkpd.deeplink.domain.interactor.MapUrlUseCase;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.drawer.DrawerBuyerHelper;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
@@ -944,6 +947,22 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public String applink(Activity activity, String deeplink) {
+        DeeplinkRepository deeplinkRepository = new DeeplinkRepositoryImpl(this, new GlobalCacheManager());
+        MapUrlUseCase mapUrlUseCase = new MapUrlUseCase(new JobExecutor(), new UIThread(), deeplinkRepository);
+        Uri uri = Uri.parse(deeplink);
+        final List<String> linkSegments = uri.getPathSegments();
+        StringBuilder finalSegments = new StringBuilder();
+        for (int i = 0; i < linkSegments.size(); i++) {
+            if (i != linkSegments.size() - 1) {
+                finalSegments.append(linkSegments.get(i)).append("/");
+            } else {
+                finalSegments.append(linkSegments.get(i));
+            }
+        }
+        return mapUrlUseCase.getData(mapUrlUseCase.setRequestParam(finalSegments.toString())).applink;
+    }
+      
     public Intent getKolFollowingPageIntent(Context context, int userId) {
         return KolFollowingListActivity.getCallingIntent(context, userId);
     }

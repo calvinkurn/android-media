@@ -146,7 +146,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                         HomeFragmentBroadcastReceiverConstant.INTENT_ACTION
                 )
         );
-
     }
 
     @Override
