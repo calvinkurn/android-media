@@ -21,7 +21,6 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.gcm.data.entity.NotificationEntity;
 import com.tokopedia.core.gcm.model.ApplinkNotificationPass;
 import com.tokopedia.core.gcm.model.NotificationPass;
-import com.tokopedia.core.gcm.utils.GCMUtils;
 import com.tokopedia.core.gcm.utils.NotificationChannelId;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -291,7 +290,7 @@ public class BuildAndShowNotification {
 
     private void saveIncomingNotification(String title, Bundle data) {
         NotificationEntity notificationEntity = new NotificationEntity();
-        notificationEntity.setCode(String.valueOf(GCMUtils.getCode(data)));
+        notificationEntity.setCode(String.valueOf(getCode(data)));
         notificationEntity.setTitle(title);
         cacheManager.saveIncomingNotification(notificationEntity);
     }
@@ -414,6 +413,16 @@ public class BuildAndShowNotification {
             return R.drawable.ic_status_bar_toped_topseller;
         else
             return R.drawable.ic_stat_notify_white;
+    }
+
+    private int getCode(Bundle data) {
+        int code;
+        try {
+            code = Integer.parseInt(data.getString("tkp_code", "0"));
+        } catch (NumberFormatException e) {
+            code = 0;
+        }
+        return code;
     }
 
     public interface OnGetFileListener {

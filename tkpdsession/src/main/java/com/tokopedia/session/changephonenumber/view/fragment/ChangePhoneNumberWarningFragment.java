@@ -22,8 +22,7 @@ import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.di.SessionComponent;
 import com.tokopedia.di.SessionModule;
 import com.tokopedia.session.R;
-import com.tokopedia.session.changephonenumber.view.activity
-        .ChangePhoneNumberEmailVerificationActivity;
+import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberEmailActivity;
 import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberInputActivity;
 import com.tokopedia.session.changephonenumber.view.adapter.WarningListAdapter;
 import com.tokopedia.session.changephonenumber.view.listener
@@ -38,7 +37,6 @@ import static com.tokopedia.session.changephonenumber.view.viewmodel.WarningView
 import static com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel.ACTION_OTP;
 import static com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel
         .BALANCE_THRESHOLD_FOR_WARNING;
-import static com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel.EMPTY_BALANCE;
 
 /**
  * Created by milhamj on 18/12/17.
@@ -237,7 +235,7 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
 
     private void goToNextActivity() {
         if (viewModel.getAction().equalsIgnoreCase(ACTION_EMAIL)) {
-            Intent intent = ChangePhoneNumberEmailVerificationActivity.newInstance(
+            Intent intent = ChangePhoneNumberEmailActivity.newInstance(
                     getContext(),
                     phoneNumber,
                     email,
