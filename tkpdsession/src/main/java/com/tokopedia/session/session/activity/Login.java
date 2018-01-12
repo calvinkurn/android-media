@@ -387,6 +387,8 @@ public class Login extends BaseActivity implements SessionView
                         intent = moveToCreateShop(this);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     }
+                    intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
+                            HomeRouter.INIT_STATE_FRAGMENT_HOME);
                     startActivity(intent);
                 }
                 break;
@@ -397,7 +399,7 @@ public class Login extends BaseActivity implements SessionView
         if (SessionHandler.isV4Login(this)) {
             Intent intent = HomeRouter.getHomeActivityInterfaceRouter(this);
             intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
-                    HomeRouter.INIT_STATE_FRAGMENT_FEED);
+                    HomeRouter.INIT_STATE_FRAGMENT_HOME);
             startActivity(intent);
         } else {
             Intent intent = HomeRouter.getHomeActivityInterfaceRouter(this);

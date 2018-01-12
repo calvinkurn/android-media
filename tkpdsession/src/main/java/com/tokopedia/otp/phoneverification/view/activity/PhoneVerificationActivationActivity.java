@@ -143,7 +143,7 @@ public class PhoneVerificationActivationActivity extends BasePresenterActivity {
     private void goToConsumerHome() {
         Intent intent = HomeRouter.getHomeActivityInterfaceRouter(PhoneVerificationActivationActivity.this);
         intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
-                HomeRouter.INIT_STATE_FRAGMENT_FEED);
+                HomeRouter.INIT_STATE_FRAGMENT_HOME);
         startActivity(intent);
         finish();
     }

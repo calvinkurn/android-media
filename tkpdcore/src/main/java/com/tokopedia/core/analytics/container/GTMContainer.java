@@ -439,19 +439,19 @@ public class GTMContainer implements IGTMContainer {
     @Override
     public void eventClickHotlistProductFeatured(Hotlist hotlist) {
         GTMDataLayer.pushGeneral(context,
-                DataLayer.mapOf("event",AppEventTracking.Event.EVENT_INTERNAL_PROMO_MULTI,
-                        "eventCategory",AppEventTracking.Category.CATEGORY_HOTLIST,
-                        "eventAction",String.format("feature product hotlist %s - click product %s", hotlist.getHotlistAlias(), hotlist.getProductList().get(0).getProductName()),
-                        "eventLabel",String.format("%s - %s", hotlist.getScreenName(), hotlist.getPosition(),
-                        "ecommerce",DataLayer.mapOf(
-                                "click", DataLayer.mapOf(
-                                        "actionField", DataLayer.mapOf(
-                                                "list", "hotlist"),
+                DataLayer.mapOf("event", AppEventTracking.Event.EVENT_INTERNAL_PROMO_MULTI,
+                        "eventCategory", AppEventTracking.Category.CATEGORY_HOTLIST,
+                        "eventAction", String.format("feature product hotlist %s - click product %s", hotlist.getHotlistAlias(), hotlist.getProductList().get(0).getProductName()),
+                        "eventLabel", String.format("%s - %s", hotlist.getScreenName(), hotlist.getPosition(),
+                                "ecommerce", DataLayer.mapOf(
+                                        "click", DataLayer.mapOf(
+                                                "actionField", DataLayer.mapOf(
+                                                        "list", "hotlist"),
                                                 "products", hotlist.getProduct().toArray(new Object[hotlist.getProduct().size()])
+                                        )
                                 )
                         )
-                )
-        ));
+                ));
     }
 
     @Override
@@ -534,7 +534,14 @@ public class GTMContainer implements IGTMContainer {
         );
     }
 
-    private void clearEnhanceEcommerce() {
+    @Override
+    public void eventTrackingEnhancedEcommerce(Map<String, Object> trackingData) {
+        GTMDataLayer.pushGeneral(context, trackingData);
+
+    }
+
+    @Override
+    public void clearEnhanceEcommerce() {
         GTMDataLayer.pushGeneral(
                 context,
                 DataLayer.mapOf("event", null,
@@ -545,5 +552,4 @@ public class GTMContainer implements IGTMContainer {
                 )
         );
     }
-
 }
