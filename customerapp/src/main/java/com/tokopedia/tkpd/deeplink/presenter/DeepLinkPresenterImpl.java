@@ -20,6 +20,7 @@ import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
@@ -378,6 +379,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openShopInfo(final List<String> linkSegment, final Uri uriData) {
+        viewListener.showLoading();
         RequestParams params = RequestParams.create();
         params.putString("shop_domain", linkSegment.get(0));
         getShopInfoUseCase.execute(params, new Subscriber<ShopModel>() {
@@ -388,11 +390,14 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
             @Override
             public void onError(Throwable e) {
-                prepareOpenWebView(uriData);
+                viewListener.finishLoading();
+                viewListener.networkError(uriData);
+//                prepareOpenWebView(uriData);
             }
 
             @Override
             public void onNext(ShopModel shopModel) {
+                viewListener.finishLoading();
                 if (shopModel != null && shopModel.info != null) {
                     viewListener.goToActivity(
                             ShopInfoActivity.class,

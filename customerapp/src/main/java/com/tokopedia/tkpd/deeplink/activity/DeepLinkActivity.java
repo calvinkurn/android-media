@@ -13,6 +13,8 @@ import android.support.v4.app.TaskStackBuilder;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
@@ -23,6 +25,7 @@ import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.discovery.catalog.listener.ICatalogActionFragment;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.intentservice.ProductInfoIntentService;
 import com.tokopedia.core.product.intentservice.ProductInfoResultReceiver;
 import com.tokopedia.core.product.listener.DetailFragmentInteractionListener;
@@ -69,6 +72,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     private static final String APPLINK_URL = "url";
     private Bundle mExtras;
     private boolean isNeedToUseToolbarWithOptions;
+    private View mainView;
 
 
     @Override
@@ -105,7 +109,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
 
     @Override
     protected void initView() {
-
+        mainView = findViewById(R.id.main_view);
     }
 
     @Override
@@ -160,6 +164,26 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
 
         taskStackBuilder.startActivities();
         finish();
+    }
+
+    @Override
+    public void networkError(final Uri uriData) {
+        NetworkErrorHelper.showEmptyState(this, mainView, new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                presenter.processDeepLinkAction(uriData);
+            }
+        });
+    }
+
+    @Override
+    public void showLoading() {
+        showProgressService();
+    }
+
+    @Override
+    public void finishLoading() {
+        if(progressDialog != null && progressDialog.isProgress()) progressDialog.dismiss();
     }
 
     @Override

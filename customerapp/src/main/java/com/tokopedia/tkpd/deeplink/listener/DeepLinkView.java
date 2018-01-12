@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.deeplink.listener;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.net.Uri;
 import android.os.Bundle;
 
 /**
@@ -20,4 +21,10 @@ public interface DeepLinkView {
     void actionChangeToolbarWithBackToNative();
 
     void goToActivity(Class<? extends Activity> activityClass, Bundle bundle);
+
+    void networkError(Uri uriData);
+
+    void showLoading();
+
+    void finishLoading();
 }
