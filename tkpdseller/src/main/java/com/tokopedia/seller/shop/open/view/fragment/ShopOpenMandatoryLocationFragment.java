@@ -366,7 +366,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
         }
 
         if(errorMessage.contains(CONST_PINPOINT)){
-            onErrorGetReserveDomain(new Throwable(errorMessage));
+            onErrorGetReserveDomain(errorMessage);
             return;
         }
         trackingOpenShop.eventOpenShopLocationError(errorMessage);
