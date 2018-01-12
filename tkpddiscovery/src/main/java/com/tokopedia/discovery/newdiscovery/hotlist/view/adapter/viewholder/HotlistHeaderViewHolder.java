@@ -20,6 +20,7 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -120,14 +121,24 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
 
         if (element.getHotlistPromo() != null) {
             hotlistPromoView.setVisibility(View.VISIBLE);
-            renderPromoView(element.getHotlistPromo());
+            renderPromoView(element.getHotlistTitle(), element.getHotlistPromo());
         } else {
             hotlistPromoView.setVisibility(View.GONE);
         }
     }
 
-    private void renderPromoView(HotlistPromo hotlistPromo) {
-        hotlistPromoView.renderData(hotlistPromo);
+    private void renderPromoView(final String hotlistTitle, HotlistPromo hotlistPromo) {
+        hotlistPromoView.renderData(hotlistPromo, new HotlistPromoView.CallbackListener() {
+            @Override
+            public void onTncButtonClick(String titlePromo, String voucherCode) {
+                TrackingUtils.clickTnCButtonHotlistPromo(hotlistTitle, titlePromo, voucherCode);
+            }
+
+            @Override
+            public void onCopyButtonClick(String titlePromo, String voucherCode) {
+                TrackingUtils.clickCopyButtonHotlistPromo(hotlistTitle, titlePromo, voucherCode);
+            }
+        });
     }
 
     private void renderHashtag(final List<HotlistHashTagViewModel> hashTags) {

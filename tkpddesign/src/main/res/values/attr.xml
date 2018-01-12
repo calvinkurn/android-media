@@ -51,10 +51,10 @@
     </declare-styleable>
 
     <declare-styleable name="TkpdTextInputLayout">
-        <attr name="success_focus_color" format="color" />
-        <attr name="success_leave_color" format="color" />
-        <attr name="success_text_appearance" format="reference" />
-        <attr name="prefix_string" format="string" />
+        <attr name="ttil_successFocusColor" format="color" />
+        <attr name="ttil_successLeaveColor" format="color" />
+        <attr name="ttil_successTextAppearance" format="reference" />
+        <attr name="ttil_prefixString" format="string|reference" />
     </declare-styleable>
 
     <declare-styleable name="TitleCardView">

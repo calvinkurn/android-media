@@ -241,7 +241,7 @@ public class GTMContainer implements IGTMContainer {
         authEvent.setUserID(SessionHandler.getGTMLoginID(context));
         authEvent.setShopID(SessionHandler.getShopID(context));
         authEvent.setShopId(SessionHandler.getShopID(context));
-        authEvent.setUserSeller(SessionHandler.getShopID(context).equals("0") ? 0 : 1);
+        authEvent.setUserSeller(SessionHandler.isUserHasShop(context)? 1 : 0);
 
         CommonUtils.dumper("GAv4 appdata " + new JSONObject(authEvent.getAuthDataLayar()).toString());
 
@@ -258,7 +258,7 @@ public class GTMContainer implements IGTMContainer {
         authEvent.setUserID(SessionHandler.getGTMLoginID(context));
         authEvent.setShopId(shopID);
         authEvent.setShopType(shopType);
-        authEvent.setUserSeller(SessionHandler.getShopID(context).equals("0") ? 0 : 1);
+        authEvent.setUserSeller(SessionHandler.isUserHasShop(context) ? 1 : 0);
 
         CommonUtils.dumper("GAv4 appdata " + new JSONObject(authEvent.getAuthDataLayar()).toString());
 
@@ -439,19 +439,19 @@ public class GTMContainer implements IGTMContainer {
     @Override
     public void eventClickHotlistProductFeatured(Hotlist hotlist) {
         GTMDataLayer.pushGeneral(context,
-                DataLayer.mapOf("event",AppEventTracking.Event.EVENT_INTERNAL_PROMO_MULTI,
-                        "eventCategory",AppEventTracking.Category.CATEGORY_HOTLIST,
-                        "eventAction",String.format("feature product hotlist %s - click product %s", hotlist.getHotlistAlias(), hotlist.getProductList().get(0).getProductName()),
-                        "eventLabel",String.format("%s - %s", hotlist.getScreenName(), hotlist.getPosition(),
-                        "ecommerce",DataLayer.mapOf(
-                                "click", DataLayer.mapOf(
-                                        "actionField", DataLayer.mapOf(
-                                                "list", "hotlist"),
+                DataLayer.mapOf("event", AppEventTracking.Event.EVENT_INTERNAL_PROMO_MULTI,
+                        "eventCategory", AppEventTracking.Category.CATEGORY_HOTLIST,
+                        "eventAction", String.format("feature product hotlist %s - click product %s", hotlist.getHotlistAlias(), hotlist.getProductList().get(0).getProductName()),
+                        "eventLabel", String.format("%s - %s", hotlist.getScreenName(), hotlist.getPosition(),
+                                "ecommerce", DataLayer.mapOf(
+                                        "click", DataLayer.mapOf(
+                                                "actionField", DataLayer.mapOf(
+                                                        "list", "hotlist"),
                                                 "products", hotlist.getProduct().toArray(new Object[hotlist.getProduct().size()])
+                                        )
                                 )
                         )
-                )
-        ));
+                ));
     }
 
     @Override
@@ -470,6 +470,60 @@ public class GTMContainer implements IGTMContainer {
 
     public void event(String name, Map<String, Object> data) {
         GTMDataLayer.pushEvent(context, name, data);
+    }
+
+    @Override
+    public void impressionHotlistTracking(String hotlistName, String promoName, String promoCode) {
+        clearEventTracking();
+        GTMDataLayer.pushGeneral(
+                context,
+                DataLayer.mapOf(
+                        "event", "clickHotlist",
+                        "eventCategory", "hotlist page",
+                        "eventAction", "hotlist promo impression",
+                        "eventLabel", String.format("%s - %s - %s", hotlistName, promoName, promoCode)
+                )
+        );
+    }
+
+
+    @Override
+    public void clickCopyButtonHotlistPromo(String hotlistName, String promoName, String promoCode) {
+        clearEventTracking();
+        GTMDataLayer.pushGeneral(
+                context,
+                DataLayer.mapOf(
+                        "event", "clickHotlist",
+                        "eventCategory", "hotlist page",
+                        "eventAction", "hotlist promo click salin kode",
+                        "eventLabel", String.format("%s - %s - %s", hotlistName, promoName, promoCode)
+                )
+        );
+    }
+
+    @Override
+    public void clickTncButtonHotlistPromo(String hotlistName, String promoName, String promoCode) {
+        clearEventTracking();
+        GTMDataLayer.pushGeneral(
+                context,
+                DataLayer.mapOf(
+                        "event", "clickHotlist",
+                        "eventCategory", "hotlist page",
+                        "eventAction", "hotlist promo click syarat ketentuan",
+                        "eventLabel", String.format("%s - %s - %s", hotlistName, promoName, promoCode)
+                )
+        );
+    }
+
+    private void clearEventTracking() {
+        GTMDataLayer.pushGeneral(
+                context,
+                DataLayer.mapOf("event", null,
+                        "eventCategory", null,
+                        "eventAction", null,
+                        "eventLabel", null
+                )
+        );
     }
 
     @Override
@@ -534,7 +588,14 @@ public class GTMContainer implements IGTMContainer {
         );
     }
 
-    private void clearEnhanceEcommerce() {
+    @Override
+    public void eventTrackingEnhancedEcommerce(Map<String, Object> trackingData) {
+        GTMDataLayer.pushGeneral(context, trackingData);
+
+    }
+
+    @Override
+    public void clearEnhanceEcommerce() {
         GTMDataLayer.pushGeneral(
                 context,
                 DataLayer.mapOf("event", null,
@@ -545,5 +606,4 @@ public class GTMContainer implements IGTMContainer {
                 )
         );
     }
-
 }

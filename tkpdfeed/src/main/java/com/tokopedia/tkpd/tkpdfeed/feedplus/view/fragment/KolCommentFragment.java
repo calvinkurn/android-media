@@ -62,6 +62,8 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
     ImageView productAvatar;
     ImageView wishlist;
 
+    boolean isFromApplink;
+
     KolCommentHeaderViewModel header;
 
     TkpdProgressDialog progressDialog;
@@ -102,11 +104,17 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            header = getArguments().getParcelable(KolCommentActivity.ARGS_HEADER);
+            if (getArguments().get(KolCommentActivity.ARGS_FROM_APPLINK) != null
+                    && getArguments().getBoolean(KolCommentActivity.ARGS_FROM_APPLINK)) {
+                isFromApplink = true;
+            } else {
+                header = getArguments().getParcelable(KolCommentActivity.ARGS_HEADER);
+            }
             totalNewComment = 0;
         } else if (savedInstanceState != null) {
             header = savedInstanceState.getParcelable(KolCommentActivity.ARGS_HEADER);
             totalNewComment = savedInstanceState.getInt(ARGS_TOTAL_COMMENT);
+            isFromApplink = savedInstanceState.getBoolean(KolCommentActivity.ARGS_FROM_APPLINK);
         } else {
             getActivity().finish();
         }
@@ -116,6 +124,7 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(KolCommentActivity.ARGS_HEADER, header);
+        outState.putBoolean(KolCommentActivity.ARGS_FROM_APPLINK, isFromApplink);
         outState.putInt(ARGS_TOTAL_COMMENT, totalNewComment);
     }
 
@@ -140,7 +149,9 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setHeader(header);
+        if (header != null) {
+            setHeader(header);
+        }
         presenter.getCommentFirstTime(getArguments().getInt(KolCommentActivity.ARGS_ID));
     }
 

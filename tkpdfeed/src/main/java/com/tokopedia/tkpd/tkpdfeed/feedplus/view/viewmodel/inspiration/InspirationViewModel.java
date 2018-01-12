@@ -28,10 +28,6 @@ public class InspirationViewModel implements Visitable<FeedPlusTypeFactory> {
         this.source = source;
     }
 
-    public InspirationViewModel() {
-
-    }
-
     @Override
     public int type(FeedPlusTypeFactory favoriteTypeFactory) {
         return favoriteTypeFactory.type(this);

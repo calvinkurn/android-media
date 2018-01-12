@@ -1,10 +1,13 @@
 package com.tkpd.library.utils;
 
+import android.os.Build;
+
 import com.logentries.logger.AndroidLogger;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 
@@ -19,14 +22,27 @@ public class AnalyticsLog {
 
     public static void logForceLogout(String url) {
         AnalyticsLog.log("Force Logout! User: " + SessionHandler.getLoginID(MainApplication.getAppContext())
+                + " Last Access Url: " + url
+                + " App Version : " + GlobalConfig.getPackageApplicationName() + " " + GlobalConfig.VERSION_NAME
+                + " App Code : " + GlobalConfig.VERSION_CODE
+                + " Android Version : " + Build.VERSION.RELEASE
+                + " Android Model : " + android.os.Build.MODEL
                 + " Device ID: " + GCMHandler.getRegistrationId(MainApplication.getAppContext())
-                + " Last Access Url: " + url);
+
+        );
     }
 
     public static void logNetworkError(String url, int errorCode) {
-        AnalyticsLog.log("Error Network! User: " + SessionHandler.getLoginID(MainApplication.getAppContext())
+        AnalyticsLog.log("Error Network! "
+                + " Error Code: " + errorCode
+                + " User: " + SessionHandler.getLoginID(MainApplication.getAppContext())
                 + " URL: " + url
-                + " Error Code: " + errorCode);
+                + " App Version : " + GlobalConfig.getPackageApplicationName() + " " + GlobalConfig.VERSION_NAME
+                + " App Code : " + GlobalConfig.VERSION_CODE
+                + " Android Version : " + Build.VERSION.RELEASE
+                + " Android Model : " + android.os.Build.MODEL
+                + " Device ID: " + GCMHandler.getRegistrationId(MainApplication.getAppContext())
+        );
     }
 
     public static void logNotification(String notificationId, String notificationCode) {

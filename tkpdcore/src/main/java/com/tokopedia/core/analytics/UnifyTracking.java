@@ -26,6 +26,10 @@ public class UnifyTracking extends TrackingUtils {
 
     public static final String EXTRA_LABEL = "label";
 
+    public static void eventGeneral(Map<String,Object> dataLayers) {
+        sendGTMEvent(dataLayers);
+    }
+
     public static void eventHomeTab(String label) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.HOMEPAGE_UNIFY,
@@ -3079,6 +3083,24 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.RESOLUTION_CENTER,
                 AppEventTracking.Action.CLICK_CREATE_RESO_ABANDON,
                 AppEventTracking.EventLabel.RESO_CREATE_ABANDON
+        ).getEvent());
+    }
+
+    public static void eventClickChangePhoneNumber() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_CLICK_USER_PROFILE,
+                AppEventTracking.Category.MANAGE_PROFILE,
+                AppEventTracking.Action.CLICK_CHANGE_PHONE_NUMBER,
+                ""
+        ).getEvent());
+    }
+
+    public static void eventSuccessChangePhoneNumber() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_CLICK_USER_PROFILE,
+                AppEventTracking.Category.MANAGE_PROFILE,
+                AppEventTracking.Action.SUCCESS_CHANGE_PHONE_NUMBER,
+                ""
         ).getEvent());
     }
 }

@@ -246,9 +246,7 @@ public abstract class TalkViewFragment extends BasePresenterFragment<TalkViewPre
 
 
     private boolean checkHasNoShop(){
-        return SessionHandler.getShopID(getActivity())==null
-                || SessionHandler.getShopID(getActivity()).equals("0")
-                || SessionHandler.getShopID(getActivity()).equals("");
+        return !SessionHandler.isUserHasShop(getActivity());
     }
 
     private ViewTreeObserver.OnGlobalLayoutListener checkKeyboardAppearance() {
