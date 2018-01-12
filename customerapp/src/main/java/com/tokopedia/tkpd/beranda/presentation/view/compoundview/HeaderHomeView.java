@@ -3,12 +3,8 @@ package com.tokopedia.tkpd.beranda.presentation.view.compoundview;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.graphics.drawable.VectorDrawableCompat;
-import android.support.v7.content.res.AppCompatResources;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -37,6 +33,7 @@ public class HeaderHomeView extends BaseCustomView {
     private TextView tvBalanceTokocash;
     private ImageView ivLogoTokocash;
     private TextView tvActionTokocash;
+    private ImageView infoBtn;
 
     private View tokoPointHolder;
     private TextView scannerQR;
@@ -84,6 +81,7 @@ public class HeaderHomeView extends BaseCustomView {
         tvBalanceTokocash = view.findViewById(R.id.tv_balance_tokocash);
         ivLogoTokocash = view.findViewById(R.id.iv_logo_tokocash);
         scannerQR = view.findViewById(R.id.scanner_qr_with_toko_point);
+        infoBtn = view.findViewById(R.id.info_btn);
 
         tokoPointHolder = view.findViewById(R.id.container_tokopoint);
         tvTitleTokoPoint = view.findViewById(R.id.tv_title_tokopoint);
@@ -147,6 +145,7 @@ public class HeaderHomeView extends BaseCustomView {
         final HomeHeaderWalletAction homeHeaderWalletAction =
                 headerViewModel.getHomeHeaderWalletActionData();
 
+        infoBtn.setVisibility(GONE);
         tvTitleTokocash.setText(homeHeaderWalletAction.getLabelTitle());
         tvActionTokocash.setText(homeHeaderWalletAction.getLabelActionButton());
 
@@ -168,28 +167,13 @@ public class HeaderHomeView extends BaseCustomView {
                     }
                 }
             }
-
-            Drawable leftScanDrawable = null;
-            Drawable leftActionDrawable = null;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                leftScanDrawable = AppCompatResources
-                        .getDrawable(getContext(), R.drawable.ic_qr_scanner);
-                leftActionDrawable = AppCompatResources
-                            .getDrawable(getContext(), R.drawable.ic_topup);
-            } else {
-                //Safely create VectorDrawable on pre-L android versions.
-                leftScanDrawable = VectorDrawableCompat
-                        .create(getContext().getResources(), R.drawable.ic_qr_scanner, null);
-                leftActionDrawable = VectorDrawableCompat
-                        .create(getContext().getResources(), R.drawable.ic_topup, null);
-            }
             if (scannerQR.getId() == R.id.scanner_qr) {
-                tvActionTokocash.setCompoundDrawablesWithIntrinsicBounds(leftActionDrawable,
-                        null, null, null);
+                tvActionTokocash.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_qr_scanner,
+                        0, 0, 0);
                 tvActionTokocash.setTypeface(null, Typeface.BOLD);
             }
-            scannerQR.setCompoundDrawablesWithIntrinsicBounds(leftScanDrawable,
-                    null, null, null);
+            scannerQR.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_topup,
+                    0, 0, 0);
         } else {
             tokoCashHolder.setOnClickListener(getOnClickTokocashActionButton(homeHeaderWalletAction));
             tvTitleTokocash.setTypeface(null, Typeface.NORMAL);
@@ -197,15 +181,13 @@ public class HeaderHomeView extends BaseCustomView {
             if (headerViewModel.isPendingTokocashChecked()
                     && headerViewModel.getCashBackData() != null) {
                 if (headerViewModel.getCashBackData().getAmount() > 0) {
-                    tvActionTokocash.setVisibility(GONE);
+                    tvActionTokocash.setVisibility(VISIBLE);
                     tvBalanceTokocash.setVisibility(VISIBLE);
+                    infoBtn.setVisibility(VISIBLE);
                     tvBalanceTokocash.setText(homeHeaderWalletAction.getBalance());
                     tvBalanceTokocash.setText(headerViewModel.getCashBackData().getAmountText());
                     tvBalanceTokocash.setTextColor(
                             getContext().getResources().getColor(R.color.black_38)
-                    );
-                    tvBalanceTokocash.setCompoundDrawablesWithIntrinsicBounds(
-                            0, 0, R.drawable.ic_info, 0
                     );
                     tokoCashHolder.setOnClickListener(
                             getOnClickPendingCashBackListener(homeHeaderWalletAction)
@@ -283,6 +265,7 @@ public class HeaderHomeView extends BaseCustomView {
         ivLogoTokocash = view.findViewById(R.id.iv_logo_tokocash);
         scannerQR = view.findViewById(R.id.scanner_qr);
         tvBalanceTokocash = view.findViewById(R.id.tv_balance_tokocash);
+        infoBtn = view.findViewById(R.id.info_btn);
 
         if (headerViewModel.getHomeHeaderWalletActionData() != null) {
             renderTokocashLayoutListener();

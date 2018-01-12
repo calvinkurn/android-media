@@ -24,6 +24,7 @@ import com.tokopedia.tokocash.qrpayment.presentation.model.BalanceTokoCash;
 import com.tokopedia.tokocash.qrpayment.presentation.model.InfoQrTokoCash;
 import com.tokopedia.tokocash.qrpayment.presentation.model.QrPaymentTokoCash;
 import com.tokopedia.tokocash.qrpayment.presentation.presenter.QrPaymentPresenter;
+import com.tokopedia.tokocash.qrpayment.presentation.watcher.PriceTextWatcher;
 
 import javax.inject.Inject;
 
@@ -82,6 +83,7 @@ public class NominalQrPaymentActivity extends TActivity implements QrPaymentCont
 
         if (infoQrTokoCash.getAmount() > 0) {
             nominalValue.setEnabled(false);
+            nominalValue.setText(String.valueOf(infoQrTokoCash.getAmount()));
         } else {
             nominalValue.setEnabled(true);
         }
@@ -90,7 +92,11 @@ public class NominalQrPaymentActivity extends TActivity implements QrPaymentCont
             @Override
             public void onClick(View view) {
                 progressBar.setVisibility(View.VISIBLE);
-                presenter.postQrPayment();
+                if (nominalValue.getText().toString().equals("0") || infoQrTokoCash.getAmount() == 0) {
+                    handleWarningPayment(0);
+                } else {
+                    presenter.postQrPayment();
+                }
             }
         });
     }
@@ -161,7 +167,7 @@ public class NominalQrPaymentActivity extends TActivity implements QrPaymentCont
                 balanceTokoCash.getBalance()));
         this.balanceTokoCash = balanceTokoCash;
 
-        nominalValue.addTextChangedListener(new NumberTextWatcher(nominalValue) {
+        nominalValue.addTextChangedListener(new PriceTextWatcher(nominalValue) {
             @Override
             public void onNumberChanged(double number) {
                 super.onNumberChanged(number);
@@ -171,7 +177,8 @@ public class NominalQrPaymentActivity extends TActivity implements QrPaymentCont
     }
 
     private void handleWarningPayment(double nominal) {
-        if (nominalValue.getText().toString().equals("") || nominal == 0) {
+        if (nominal == 0) {
+            nominalValue.setText("0");
             separatorNominal.setBackgroundColor(getColorNominal(R.color.separator_grey));
             tokocashValue.setTextColor(getColorNominal(R.color.separator_grey));
             payButton.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bg_grey_border_black));
