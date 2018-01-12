@@ -188,6 +188,7 @@
                     android:id="@+id/title_expendable_passenger"
                     style="@style/style_expandable_flight_detail_order_title"
                     android:layout_width="0dp"
+                    android:textSize="18sp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/flight_label_passenger_data" />
@@ -231,7 +232,7 @@
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/container_download_invoice"
                     android:text="@string/flight_label_detail_price"
-                    android:textSize="@dimen/font_subheading" />
+                    android:textSize="18sp" />
 
                 <LinearLayout
                     android:id="@+id/container_download_invoice"
