@@ -839,6 +839,11 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public Intent getKolFollowingPageIntent(Context context, int userId) {
+        return null;
+    }
+
+    @Override
     public Intent getChangePhoneNumberIntent(Context context, String email, String phoneNumber) {
         return ChangePhoneNumberWarningActivity.newInstance(context, email, phoneNumber);
     }
