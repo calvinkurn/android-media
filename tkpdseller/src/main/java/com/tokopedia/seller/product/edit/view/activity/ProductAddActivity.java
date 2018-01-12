@@ -402,9 +402,9 @@ public class ProductAddActivity extends BaseSimpleActivity implements HasCompone
     public void startAddWholeSaleDialog(
             WholesaleModel fixedPrice,
             @CurrencyTypeDef int currencyType,
-            WholesaleModel previousWholesalePrice) {
+            WholesaleModel previousWholesalePrice, boolean officialStore) {
         AddWholeSaleDialog addWholeSaleDialog = AddWholeSaleDialog.newInstance(
-                fixedPrice, currencyType, previousWholesalePrice
+                fixedPrice, currencyType, previousWholesalePrice, officialStore
         );
         addWholeSaleDialog.show(getSupportFragmentManager(), AddWholeSaleDialog.TAG);
         addWholeSaleDialog.setOnDismissListener(new AddWholeSaleDialog.OnDismissListener() {

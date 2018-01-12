@@ -152,6 +152,21 @@ public interface AccountsApi {
     @GET(TkpdBaseURL.Accounts.Wallet.GET_BALANCE)
     Observable<Response<TkpdResponse>> getTokoCash(@QueryMap TKPDMapParam<String, Object> params);
 
+    @GET(TkpdBaseURL.Accounts.ChangeMSISDN.GET_WARNING)
+    Observable<Response<TkpdResponse>> getWarning(@QueryMap TKPDMapParam<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Accounts.ChangeMSISDN.SEND_EMAIL)
+    Observable<Response<TkpdResponse>> sendEmail(@FieldMap TKPDMapParam<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Accounts.ChangeMSISDN.VALIDATE_EMAIL_CODE)
+    Observable<Response<TkpdResponse>> validateEmailCode(@FieldMap TKPDMapParam<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Accounts.ChangeMSISDN.VALIDATE)
+    Observable<Response<TkpdResponse>> validateNumber(@FieldMap TKPDMapParam<String, Object> params);
+
     @GET(TkpdBaseURL.Accounts.PATH_DISCOVER_REGISTER)
     Observable<Response<TkpdResponse>> discoverRegister();
 

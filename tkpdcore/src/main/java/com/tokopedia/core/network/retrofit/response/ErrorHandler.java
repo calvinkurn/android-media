@@ -5,17 +5,11 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.tkpd.library.utils.network.MessageErrorException;
-import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.exception.ResponseErrorException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -138,14 +132,16 @@ public class ErrorHandler {
 
     public static String getErrorMessage(Throwable e) {
         Context context = MainApplication.getAppContext();
-        if (e instanceof UnknownHostException) {
+        if (BuildConfig.DEBUG) {
+            return e.getLocalizedMessage();
+        } else if (e instanceof UnknownHostException) {
             return context.getString(R.string.msg_no_connection) + " " +
                     context.getString(R.string.code_error) + ErrorCode.UNKNOWN_HOST_EXCEPTION;
         } else if (e instanceof SocketTimeoutException) {
             return context.getString(R.string.default_request_error_timeout) + " " +
                     context.getString(R.string.code_error) + ErrorCode.SOCKET_TIMEOUT_EXCEPTION;
         } else if (e instanceof IOException) {
-            return context.getString(R.string.default_request_error_internal_server) + " " +
+            return context.getString(R.string.msg_no_connection) + " " +
                     context.getString(R.string.code_error) + ErrorCode.IO_EXCEPTION;
         } else if (e instanceof RuntimeException &&
                 e.getLocalizedMessage() != null &&
@@ -197,14 +193,13 @@ public class ErrorHandler {
             else {
                 return e.getLocalizedMessage();
             }
-        } else if (BuildConfig.DEBUG) {
-            return e.getLocalizedMessage();
         } else if (e instanceof MessageErrorException) {
             return e.getLocalizedMessage();
         } else {
             return context.getString(R.string.default_request_error_unknown) + " " +
                     context.getString(R.string.code_error) + ErrorCode.UNKNOWN;
         }
+
     }
 
     public static String getErrorMessage(Response response) {

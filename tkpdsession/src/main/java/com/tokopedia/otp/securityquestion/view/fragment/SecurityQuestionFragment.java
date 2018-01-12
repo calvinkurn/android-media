@@ -44,12 +44,12 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.otp.securityquestion.data.model.securityquestion.QuestionViewModel;
-import com.tokopedia.otp.securityquestion.view.activity.ChangePhoneNumberRequestActivity;
 import com.tokopedia.otp.securityquestion.view.activity.SecurityQuestionActivity;
 import com.tokopedia.otp.securityquestion.view.listener.SecurityQuestion;
 import com.tokopedia.otp.securityquestion.view.presenter.SecurityQuestionPresenter;
 import com.tokopedia.otp.securityquestion.view.viewmodel.SecurityQuestionViewModel;
 import com.tokopedia.session.R;
+import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberRequestActivity;
 import com.tokopedia.session.data.viewmodel.SecurityDomain;
 
 import java.util.concurrent.TimeUnit;

@@ -101,7 +101,7 @@
     <string name="phone_number">Nomor Ponsel</string>
     <string name="we_will_send_verification_code">Kami akan mengirimkan SMS kode verifikasi</string>
     <string name="title_verify">Verifikasi</string>
-    <string name="verification_code_sent_to_sms">Kode verifikasi telah dikirimkan ke</string>
+    <string name="verification_code_sent_to">Kode verifikasi telah dikirimkan ke</string>
     <string name="enter_verification_code">Masukkan Kode Verifikasi</string>
     <string name="to_resend_otp">untuk kirim ulang</string>
     <string name="please_wait_in">Mohon tunggu dalam</string>
@@ -137,4 +137,22 @@
     <string name="or_small">atau</string>
     <string name="second">detik</string>
     <string name="not_received_code">Tidak menerima kode?</string>
+    <string name="register">Daftar</string>
+
+    <!-- Change Phone Number strings -->
+    <string name="you_have">Anda memiliki:</string>
+    <string name="tokopedia_balance">Saldo Tokopedia</string>
+    <string name="if_you_change_phone_number_then">Apabila terjadi perubahan nomor ponsel:</string>
+    <string name="change_phone_number">Ubah Nomor Ponsel</string>
+    <string name="are_you_sure_change_phone_number">Yakin ingin mengubah nomor ponsel?</string>
+    <string name="for_your_safety">Demi keamanan, pengguna diharuskan memperbarui nomor ponsel yang bisa dihubungi secara berkala.</string>
+    <string name="old_phone_number">Nomor Ponsel Lama</string>
+    <string name="new_phone_number">Nomor Ponsel Baru</string>
+    <string name="back_to_setting">Kembali ke Pengaturan</string>
+    <string name="please_check_email">Silakan Cek Email Anda</string>
+    <string name="please_check_email_to_continue">Silahkan cek email Anda untuk melakukan ke tahap selanjutnya.</string>
+    <string name="emaiL_has_been_sent_to">Email konfirmasi untuk mengubah nomor ponsel sudah dikirim ke</string>
+    <string name="withdraw_tokopedia_balance">Tarik Saldo Tokopedia</string>
+    <string name="title_info">Info</string>
+
 </resources>

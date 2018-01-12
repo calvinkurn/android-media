@@ -23,7 +23,6 @@ public class OtpSource {
     private final RequestOtpMapper requestOTPMapper;
     private final SessionHandler sessionHandler;
 
-
     public OtpSource(AccountsService accountsService, RequestOtpMapper requestOTPMapper,
                      ValidateOtpMapper validateOtpMapper, SessionHandler sessionHandler) {
         this.accountsService = accountsService;

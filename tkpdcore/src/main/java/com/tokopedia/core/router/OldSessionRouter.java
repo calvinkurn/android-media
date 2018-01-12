@@ -26,7 +26,7 @@ public class OldSessionRouter {
 
     public static final String IDENTIFIER_REGISTER_NEWNEXT_FRAGMENT = "RegisterNewNextFragment";
     public static final String IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT = "RegisterPassPhoneFragment";
-    private static final String CHANGE_PHONE_NUMBER_REQUEST_ACTIVITY = "com.tokopedia.otp.securityquestion.view.activity.ChangePhoneNumberRequestActivity";
+    private static final String CHANGE_PHONE_NUMBER_REQUEST_ACTIVITY = "com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberRequestActivity";
     public static final String PARAM_FORCE_LOGOUT_MESSAGE = "PARAM_FORCE_LOGOUT_MESSAGE";
 
     /////////// INTENT

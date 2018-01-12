@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
@@ -20,6 +21,22 @@ import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepository;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
+import com.tokopedia.session.changephonenumber.data.repository.ChangePhoneNumberRepositoryImpl;
+import com.tokopedia.session.changephonenumber.data.source.CloudGetWarningSource;
+import com.tokopedia.session.changephonenumber.data.source.CloudSendEmailSource;
+import com.tokopedia.session.changephonenumber.data.source.CloudValidateEmailCodeSource;
+import com.tokopedia.session.changephonenumber.data.source.CloudValidateNumberSource;
+import com.tokopedia.session.changephonenumber.domain.ChangePhoneNumberRepository;
+import com.tokopedia.session.changephonenumber.domain.interactor.GetWarningUseCase;
+import com.tokopedia.session.changephonenumber.domain.interactor.SendEmailUseCase;
+import com.tokopedia.session.changephonenumber.domain.interactor.ValidateEmailCodeUseCase;
+import com.tokopedia.session.changephonenumber.domain.interactor.ValidateNumberUseCase;
+import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberEmailVerificationFragmentListener;
+import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberInputFragmentListener;
+import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberWarningFragmentListener;
+import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberEmailVerificationPresenter;
+import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberInputPresenter;
+import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberWarningPresenter;
 import com.tokopedia.session.data.source.GetTokenDataSource;
 import com.tokopedia.session.data.source.MakeLoginDataSource;
 import com.tokopedia.session.domain.mapper.MakeLoginMapper;
@@ -39,10 +56,11 @@ import dagger.Provides;
 public class
 SessionModule {
 
+    public static final String LOGIN_CACHE = "LOGIN_CACHE";
     private static final String HMAC_SERVICE = "HMAC_SERVICE";
-    private static final String BASIC_SERVICE = "BASIC_SERVICE";
-    private static final String BEARER_SERVICE = "BEARER_SERVICE";
     private static final String WS_SERVICE = "WS_SERVICE";
+    public static final String BEARER_SERVICE = "BEARER_SERVICE";
+    private static final String BASIC_SERVICE = "BASIC_SERVICE";
 
     @SessionScope
     @Provides
@@ -117,6 +135,7 @@ SessionModule {
         return new AccountsService(bundle);
     }
 
+
     @SessionScope
     @Provides
     GetTokenDataSource provideGetTokenDataSource(@Named(BASIC_SERVICE) AccountsService
@@ -137,6 +156,38 @@ SessionModule {
     EditUserInfoMapper provideEditUserInfoMapper() {
         return new EditUserInfoMapper();
     }
+
+    @SessionScope
+    @Provides
+    ChangePhoneNumberInputFragmentListener.Presenter provideChangePhoneNumberInputPresenter(ValidateNumberUseCase validateNumberUseCase) {
+        return new ChangePhoneNumberInputPresenter(validateNumberUseCase);
+    }
+
+    @SessionScope
+    @Provides
+    ChangePhoneNumberWarningFragmentListener.Presenter provideChangePhoneNumberWarningPresenter(GetWarningUseCase getWarningUseCase) {
+        return new ChangePhoneNumberWarningPresenter(getWarningUseCase);
+    }
+
+    @SessionScope
+    @Provides
+    ChangePhoneNumberRepository provideChangePhoneNumberRepository(CloudGetWarningSource cloudGetWarningSource,
+                                                                   CloudSendEmailSource cloudSendEmailSource,
+                                                                   CloudValidateNumberSource cloudValidateNumberSource,
+                                                                   CloudValidateEmailCodeSource cloudValidateEmailCodeSource) {
+        return new ChangePhoneNumberRepositoryImpl(cloudGetWarningSource,
+                cloudSendEmailSource,
+                cloudValidateNumberSource,
+                cloudValidateEmailCodeSource);
+    }
+
+    @SessionScope
+    @Provides
+    ChangePhoneNumberEmailVerificationFragmentListener.Presenter ChangePhoneNumberEmailVerificationPresenter(SendEmailUseCase sendEmailUseCase,
+                                                                                                             ValidateEmailCodeUseCase validateEmailCodeUseCase) {
+        return new ChangePhoneNumberEmailVerificationPresenter(sendEmailUseCase, validateEmailCodeUseCase);
+    }
+
 
     @SessionScope
     @Provides
@@ -180,6 +231,13 @@ SessionModule {
                                ValidateOtpMapper validateOTPMapper,
                                SessionHandler sessionHandler) {
         return new OtpSource(accountsService, requestOTPMapper, validateOTPMapper, sessionHandler);
+    }
+
+    @SessionScope
+    @Provides
+    @Named(LOGIN_CACHE)
+    LocalCacheHandler provideLocalCacheHandler(@ApplicationContext Context context) {
+        return new LocalCacheHandler(context, LOGIN_CACHE);
     }
 
 }

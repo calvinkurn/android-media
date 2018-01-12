@@ -46,7 +46,7 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
                 product.image(), product.image_single(), wholesaleDomains, product.freereturns(),
                 product.preorder(), product.cashback(), (String) product.url(),
                 product.productLink(), product.wishlist(),
-                product.rating(), cursor);
+                product.rating(), String.valueOf(product.price_int()), cursor);
     }
 
     private PromotionFeedDomain createPromotionFeedDomain(FeedQuery.Data.Promotion promotion) {
@@ -348,7 +348,8 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
                     kolpost.userInfo() == null ? "" : kolpost.userInfo(),
                     kolpost.headerTitle() == null ? "" : kolpost.headerTitle(),
                     kolpost.userUrl() == null ? "" : kolpost.userUrl(),
-                    kolpost.userId() == null ? 0 : kolpost.userId());
+                    kolpost.userId() == null ? 0 : kolpost.userId(),
+                    datum.content().type() == null ? "" : datum.content().type());
         } else if (datum.content().followedkolpost() != null) {
             FeedQuery.Data.Followedkolpost kolpost = datum.content()
                     .followedkolpost();
@@ -374,7 +375,8 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
                     kolpost.userInfo() == null ? "" : kolpost.userInfo(),
                     "",
                     kolpost.userUrl() == null ? "" : kolpost.userUrl(),
-                    kolpost.userId() == null ? 0 : kolpost.userId());
+                    kolpost.userId() == null ? 0 : kolpost.userId(),
+                    datum.content().type() == null ? "" : datum.content().type());
         } else {
             return null;
         }
@@ -410,7 +412,8 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
                         recommendation.app_url(),
                         recommendation.image_url().toString(),
                         recommendation.price(),
-                        recommendation.recommendation_type()
+                        recommendation.recommendation_type(),
+                        String.valueOf(recommendation.price_int())
                 ));
             }
         }

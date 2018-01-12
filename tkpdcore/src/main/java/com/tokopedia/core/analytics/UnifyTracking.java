@@ -2999,6 +2999,107 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+
+    //Resolution Tracking
+    public static void eventCreateResoStep1SaveAndChooseOther() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_PRODUCT_PROBLEM,
+                AppEventTracking.EventLabel.RESO_PROBLEM_SAVE_CHOOSE_OTHER
+        ).getEvent());
+    }
+
+    public static void eventCreateResoStep1Save() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_PRODUCT_PROBLEM,
+                AppEventTracking.EventLabel.RESO_PROBLEM_SAVE
+        ).getEvent());
+    }
+
+    public static void eventCreateResoStep1Continue() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_PRODUCT_PROBLEM,
+                AppEventTracking.EventLabel.RESO_PROBLEM_CONTINUE
+        ).getEvent());
+    }
+
+    public static void eventCreateResoStep2Continue() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_SOLUTION,
+                AppEventTracking.EventLabel.RESO_SOLUTION_CONTINUE
+        ).getEvent());
+    }
+
+    public static void eventCreateResoStep3Continue() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_PROVE,
+                AppEventTracking.EventLabel.RESO_SOLUTION_CONTINUE
+        ).getEvent());
+    }
+
+    public static void eventCreateResoPre() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_CREATE_RESO,
+                AppEventTracking.EventLabel.RESO_CREATE_COMPLAINT_PRE
+        ).getEvent());
+    }
+
+    public static void eventCreateResoConfirm() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_CREATE_RESO,
+                AppEventTracking.EventLabel.RESO_CREATE_COMPLAINT_CONFIRM
+        ).getEvent());
+    }
+
+    public static void eventCreateResoUnconfirm() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_CREATE_RESO,
+                AppEventTracking.EventLabel.RESO_CREATE_COMPLAINT_UNCONFIRM
+        ).getEvent());
+    }
+
+    public static void eventCreateResoAbandon() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_CREATE_RESO_ABANDON,
+                AppEventTracking.EventLabel.RESO_CREATE_ABANDON
+        ).getEvent());
+    }
+
+    public static void eventClickChangePhoneNumber() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_CLICK_USER_PROFILE,
+                AppEventTracking.Category.MANAGE_PROFILE,
+                AppEventTracking.Action.CLICK_CHANGE_PHONE_NUMBER,
+                ""
+        ).getEvent());
+    }
+
+    public static void eventSuccessChangePhoneNumber() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_CLICK_USER_PROFILE,
+                AppEventTracking.Category.MANAGE_PROFILE,
+                AppEventTracking.Action.SUCCESS_CHANGE_PHONE_NUMBER,
+                ""
+        ).getEvent());
+    }
+
     public static void eventTracking(EventTracking eventTracking) {
         sendGTMEvent(eventTracking.getEvent());
     }

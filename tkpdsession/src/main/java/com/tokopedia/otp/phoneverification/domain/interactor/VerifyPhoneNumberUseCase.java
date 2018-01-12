@@ -7,7 +7,7 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.otp.data.model.ValidateOtpModel;
-import com.tokopedia.otp.domain.oldinteractor.ValidateOtpUseCase;
+import com.tokopedia.otp.domainold.ValidateOtpUseCase;
 import com.tokopedia.otp.phoneverification.data.VerifyPhoneNumberModel;
 import com.tokopedia.otp.phoneverification.domain.MsisdnRepository;
 

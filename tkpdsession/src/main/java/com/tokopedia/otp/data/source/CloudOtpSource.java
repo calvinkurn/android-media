@@ -15,7 +15,7 @@ import rx.Observable;
 /**
  * Created by nisie on 3/7/17.
  */
-
+@Deprecated
 public class CloudOtpSource {
 
     private final Context context;
