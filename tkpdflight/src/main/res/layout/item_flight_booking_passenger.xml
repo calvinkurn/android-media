@@ -40,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_vvs"
                 android:layout_weight="1"
-                style="@style/TextView.Body1.Bold"
+                style="@style/TextView.Subheading.Bold"
                 tools:text="Nona Aisyah Sarasvati" />
 
             <android.support.v7.widget.RecyclerView

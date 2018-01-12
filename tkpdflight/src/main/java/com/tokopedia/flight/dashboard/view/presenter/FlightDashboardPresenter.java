@@ -193,8 +193,9 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     @Override
     public void onDepartureDateButtonClicked() {
         Date minDate = FlightDateUtil.getCurrentDate();
+        Date maxDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, 2);
         Date selectedDate = FlightDateUtil.stringToDate(getView().getCurrentDashboardViewModel().getDepartureDate());
-        getView().showDepartureDatePickerDialog(selectedDate, minDate);
+        getView().showDepartureDatePickerDialog(selectedDate, minDate, maxDate);
     }
 
     @Override
@@ -231,8 +232,8 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     public void onReturnDateButtonClicked() {
         Date selectedDate = FlightDateUtil.stringToDate(getView().getCurrentDashboardViewModel().getReturnDate());
         Date minDate = FlightDateUtil.stringToDate(getView().getCurrentDashboardViewModel().getDepartureDate());
-
-        getView().showReturnDatePickerDialog(selectedDate, minDate);
+        Date maxDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, 2);
+        getView().showReturnDatePickerDialog(selectedDate, minDate, maxDate);
     }
 
     @Override
