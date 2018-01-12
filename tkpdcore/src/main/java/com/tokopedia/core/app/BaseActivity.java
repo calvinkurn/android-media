@@ -63,7 +63,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     private Boolean isPause = false;
     private boolean isDialogNotConnectionShown = false;
     private ErrorNetworkReceiver logoutNetworkReceiver;
-    private GlobalCacheManager globalCacheManager;
+    protected GlobalCacheManager globalCacheManager;
     private LocalCacheHandler cache;
 
     @Override
