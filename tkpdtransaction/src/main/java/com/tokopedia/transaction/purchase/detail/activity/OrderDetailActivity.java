@@ -420,6 +420,7 @@ public class OrderDetailActivity extends TActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        recreate();
     }
 
     @Override
