@@ -5,7 +5,10 @@
               android:layout_height="75dp"
               android:gravity="center_horizontal"
               android:orientation="vertical"
-              android:padding="10dp">
+              android:paddingBottom="10dp"
+              android:paddingEnd="3dp"
+              android:paddingStart="3dp"
+              android:paddingTop="10dp">
 
     <com.tokopedia.core.customwidget.SquareImageView
         android:id="@+id/iv_icon"
@@ -23,5 +26,5 @@
         android:paddingTop="3dp"
         android:textColor="@color/grey_600"
         android:textSize="11sp"
-        tools:text="Jual Beli\n hahaha"/>
+        tools:text="Pembayaran o Topup"/>
 </LinearLayout>
