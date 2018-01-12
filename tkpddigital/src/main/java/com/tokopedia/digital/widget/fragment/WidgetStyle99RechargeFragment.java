@@ -21,6 +21,7 @@ import com.tokopedia.digital.R2;
 import com.tokopedia.digital.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.widget.compoundview.WidgetClientNumberView;
+import com.tokopedia.digital.widget.compoundview.WidgetOperatorChooserView;
 import com.tokopedia.digital.widget.compoundview.WidgetProductChooserView;
 import com.tokopedia.digital.widget.compoundview.WidgetWrapperBuyView;
 import com.tokopedia.digital.widget.data.mapper.FavoriteNumberListDataMapper;
@@ -52,16 +53,11 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
- * @author rizkyfadillah on 10/16/2017.
+ * Created by Rizky on 10/01/18.
  */
 
-/**
- * This class is used to show digital category for style 1 and 99
- * The difference between style 1 and 99 is style 1 can have prefix while style 99 can't
- * @author rizkyfadillah on 10/16/2017.
- */
-
-public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDigitalWidgetStyle1Presenter> implements IDigitalWidgetStyle1View {
+public class WidgetStyle99RechargeFragment extends BaseWidgetRechargeFragment<IDigitalWidgetStyle1Presenter>
+        implements IDigitalWidgetStyle1View {
 
     private static final String STATE_CLIENT_NUMBER = "STATE_CLIENT_NUMBER";
 
@@ -73,25 +69,26 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
     LinearLayout holderWidgetSpinnerProduct;
 
     private DigitalWidgetStyle1Presenter presenter;
+
     private WidgetClientNumberView widgetClientNumberView;
     private WidgetWrapperBuyView widgetWrapperBuyView;
     private WidgetProductChooserView widgetProductChooserView;
+
+    private CompositeSubscription compositeSubscription;
+
+    private WidgetStyle99RechargeFragment.QueryListener queryListener;
 
     private Operator selectedOperator;
     private Product selectedProduct;
 
     private LastOrder lastOrder;
 
-    private CompositeSubscription compositeSubscription;
-
-    private QueryListener queryListener;
-
     private interface QueryListener {
         void onQueryChanged(String query);
     }
 
-    public static WidgetStyle1RechargeFragment newInstance(Category category, int position) {
-        WidgetStyle1RechargeFragment fragment = new WidgetStyle1RechargeFragment();
+    public static WidgetStyle99RechargeFragment newInstance(Category category, int position) {
+        WidgetStyle99RechargeFragment fragment = new WidgetStyle99RechargeFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_PARAM_CATEGORY, category);
         bundle.putInt(ARG_TAB_INDEX_POSITION, position);
@@ -120,8 +117,37 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
     }
 
     @Override
+    protected void initialVar() {
+
+    }
+
+    @Override
+    protected void setActionVar() {
+
+    }
+
+    @Override
     protected int getFragmentLayout() {
         return R.layout.fragment_widget;
+    }
+
+    @Override
+    protected void onFirstTimeLaunched() {
+        lastOperatorSelected = presenter.getLastOperatorSelected(String.valueOf(category.getId()));
+        lastProductSelected = presenter.getLastProductSelected(String.valueOf(category.getId()));
+
+        presenter.getOperatorAndProductsByOperatorId(category.getId(),
+                String.valueOf(category.getAttributes().getDefaultOperatorId()));
+    }
+
+    private void renderClientNumberView() {
+        clearHolder(holderWidgetClientNumber);
+        ClientNumber clientNumber = category.getAttributes().getClientNumber();
+
+        widgetClientNumberView.setClientNumberLabel(clientNumber.getText());
+        widgetClientNumberView.setHint(clientNumber.getPlaceholder());
+        widgetClientNumberView.setVisibilityPhoneBook(category.getAttributes().isUsePhonebook());
+        holderWidgetClientNumber.addView(widgetClientNumberView);
     }
 
     @Override
@@ -132,85 +158,8 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
     }
 
     @Override
-    protected void initialVar() {
-    }
-
-    @Override
-    protected void setActionVar() {
-
-    }
-
-    @Override
-    protected void onFirstTimeLaunched() {
-        lastOperatorSelected = presenter.getLastOperatorSelected(String.valueOf(category.getId()));
-        lastProductSelected = presenter.getLastProductSelected(String.valueOf(category.getId()));
-
-        renderClientNumberView();
-        presenter.fetchNumberList(String.valueOf(category.getId()), true);
-    }
-
-    @Override
     protected void setViewListener() {
         setRechargeEditTextTouchCallback(widgetClientNumberView);
-
-        compositeSubscription.add(
-                Observable
-                        .create(new Observable.OnSubscribe<String>() {
-                            @Override
-                            public void call(final Subscriber<? super String> subscriber) {
-                                queryListener = new QueryListener() {
-                                    @Override
-                                    public void onQueryChanged(String query) {
-                                        subscriber.onNext(query);
-                                    }
-                                };
-                            }
-                        })
-                        .filter(new Func1<String, Boolean>() {
-                            @Override
-                            public Boolean call(String text) {
-                                if (text.isEmpty()) {
-                                    return false;
-                                } else {
-                                    return true;
-                                }
-                            }
-                        })
-                        .debounce(300, TimeUnit.MILLISECONDS)
-                        .switchMap(new Func1<String, Observable<String>>() {
-                            @Override
-                            public Observable<String> call(String s) {
-                                return Observable.just(s);
-                            }
-                        })
-                        .subscribeOn(Schedulers.io())
-                        .unsubscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Action1<String>() {
-                            @Override
-                            public void call(String clientNumber) {
-                                if (clientNumber != null) {
-                                    String temp = clientNumber;
-                                    temp = validateTextPrefix(temp);
-
-                                    if (temp.length() >= 4) {
-                                        if (selectedOperator == null) {
-                                            presenter.getOperatorAndProductsByPrefix(temp, category.getId(),
-                                                    category.getAttributes().isValidatePrefix());
-                                        }
-                                    } else {
-                                        if (selectedOperator != null) {
-                                            selectedOperator = null;
-                                            // hide operator and products
-                                            widgetClientNumberView.setImgOperatorInvisible();
-                                            clearHolder(holderWidgetSpinnerProduct);
-                                            clearHolder(holderWidgetWrapperBuy);
-                                        }
-                                    }
-                                }
-                            }
-                        })
-        );
 
         widgetClientNumberView.setButtonPickerListener(getButtonPickerListener());
         widgetClientNumberView.setRechargeEditTextListener(getEditTextListener());
@@ -222,7 +171,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
             @Override
             public void onButtonContactClicked() {
                 BaseWidgetRechargeFragmentPermissionsDispatcher
-                        .doLaunchContactPickerWithCheck(WidgetStyle1RechargeFragment.this);
+                        .doLaunchContactPickerWithCheck(WidgetStyle99RechargeFragment.this);
             }
         };
     }
@@ -231,19 +180,12 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
         return new WidgetClientNumberView.RechargeEditTextListener() {
             @Override
             public void onRechargeTextChanged(CharSequence s, int start, int before, int count) {
-                if (queryListener != null) {
-                    queryListener.onQueryChanged(s.toString());
-                }
+
             }
 
             @Override
             public void onRechargeTextClear() {
-                if (category.getAttributes().isValidatePrefix()) {
-                    selectedOperator = null;
-                    widgetClientNumberView.setImgOperatorInvisible();
-                }
-                clearHolder(holderWidgetSpinnerProduct);
-                clearHolder(holderWidgetWrapperBuy);
+
             }
 
             @Override
@@ -265,21 +207,8 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
         };
     }
 
-    private WidgetProductChooserView.ProductChoserListener getProductChoserListener() {
-        return new WidgetProductChooserView.ProductChoserListener() {
-            @Override
-            public void initDataView(Product productSelected) {
-                selectedProduct = productSelected;
-                widgetProductChooserView.checkStockProduct(productSelected);
-            }
-
-            @Override
-            public void trackingProduct() {
-                if (selectedProduct != null)
-                    UnifyTracking.eventSelectProductWidget(category.getAttributes().getName(),
-                            selectedProduct.getAttributes().getDesc());
-            }
-        };
+    private void setLastOrder(LastOrder lastOrder) {
+        this.lastOrder = lastOrder;
     }
 
     private WidgetWrapperBuyView.OnBuyButtonListener getBuyButtonListener() {
@@ -317,7 +246,6 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
                         widgetClientNumberView.getText(), selectedProduct);
 
                 startActivityForResult(intent, LOGIN_REQUEST_CODE);
-
             }
 
             @Override
@@ -333,6 +261,23 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
         };
     }
 
+    private WidgetProductChooserView.ProductChoserListener getProductChoserListener() {
+        return new WidgetProductChooserView.ProductChoserListener() {
+            @Override
+            public void initDataView(Product productSelected) {
+                selectedProduct = productSelected;
+                widgetProductChooserView.checkStockProduct(productSelected);
+            }
+
+            @Override
+            public void trackingProduct() {
+                if (selectedProduct != null)
+                    UnifyTracking.eventSelectProductWidget(category.getAttributes().getName(),
+                            selectedProduct.getAttributes().getDesc());
+            }
+        };
+    }
+
     private PreCheckoutDigitalWidget getDataPreCheckout() {
         PreCheckoutDigitalWidget preCheckoutDigitalWidget = new PreCheckoutDigitalWidget();
         preCheckoutDigitalWidget.setClientNumber(widgetClientNumberView.getText());
@@ -343,24 +288,40 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
         return preCheckoutDigitalWidget;
     }
 
-    private void renderClientNumberView() {
-        clearHolder(holderWidgetClientNumber);
-        ClientNumber clientNumber = category.getAttributes().getClientNumber();
+    @Override
+    public void saveAndDisplayPhoneNumber(String phoneNumber) {
+        selectedOperator = null;
+        widgetClientNumberView.setText(phoneNumber);
+    }
 
-        widgetClientNumberView.setClientNumberLabel(clientNumber.getText());
-        widgetClientNumberView.setHint(clientNumber.getPlaceholder());
-        widgetClientNumberView.setVisibilityPhoneBook(category.getAttributes().isUsePhonebook());
-        holderWidgetClientNumber.addView(widgetClientNumberView);
+    @Override
+    public void renderNumberList(List<OrderClientNumber> results) {
+        if (SessionHandler.isV4Login(getActivity())) {
+            widgetClientNumberView.setDropdownAutoComplete(results);
+        }
+    }
+
+    @Override
+    public void renderLastOrder(LastOrder lastOrder) {
+        if (presenter != null) {
+            this.lastOrder = lastOrder;
+            if (lastOrder != null && lastOrder.getAttributes() != null && category != null) {
+                widgetClientNumberView.setText(lastOrder.getAttributes().getClientNumber());
+            }
+        }
     }
 
     @Override
     public void renderDataOperator(Operator operatorModel) {
         selectedOperator = operatorModel;
-        UnifyTracking.eventSelectOperatorWidget(category.getAttributes().getName(),
-                selectedOperator.getAttributes().getName());
-        widgetClientNumberView.setFilterMaxLength(operatorModel.getAttributes().getMaximumLength());
-        widgetClientNumberView.setImgOperator(operatorModel.getAttributes().getImage());
-        widgetClientNumberView.setImgOperatorVisible();
+        if (category.getAttributes().getClientNumber().isShown()) {
+            UnifyTracking.eventSelectOperatorWidget(category.getAttributes().getName(),
+                    selectedOperator.getAttributes().getName());
+            renderClientNumberView();
+            widgetClientNumberView.setFilterMaxLength(operatorModel.getAttributes().getMaximumLength());
+            widgetClientNumberView.setImgOperator(operatorModel.getAttributes().getImage());
+            widgetClientNumberView.setImgOperatorVisible();
+        }
         widgetProductChooserView.setTitleProduct(operatorModel.getAttributes().getRule().getProductText());
         widgetProductChooserView.setVisibilityProduct(operatorModel.getAttributes().getRule().isShowProduct());
     }
@@ -369,6 +330,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
     public void renderDataProducts(List<Product> products, boolean showPrice) {
         clearHolder(holderWidgetSpinnerProduct);
         clearHolder(holderWidgetWrapperBuy);
+
         widgetProductChooserView.setListener(getProductChoserListener());
         widgetProductChooserView.renderDataView(products, showPrice, lastOrder, lastProductSelected);
         widgetWrapperBuyView.setCategory(category);
@@ -382,7 +344,6 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
     public void renderEmptyProduct(String message) {
         widgetClientNumberView.setImgOperatorInvisible();
         clearHolder(holderWidgetWrapperBuy);
-        clearHolder(holderWidgetSpinnerProduct);
     }
 
     @Override
@@ -402,43 +363,16 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
     }
 
     @Override
-    public void renderNumberList(List<OrderClientNumber> results) {
-        if (SessionHandler.isV4Login(getActivity())) {
-            widgetClientNumberView.setDropdownAutoComplete(results);
-        }
-    }
-
-    @Override
-    public void renderVerifiedNumber(String verifiedNumber) {
-        widgetClientNumberView.setText(verifiedNumber);
+    public void renderOperator(Operator operatorModel) {
+        selectedOperator = operatorModel;
+        widgetClientNumberView.setImgOperator(operatorModel.getAttributes().getImage());
+        widgetClientNumberView.setImgOperatorVisible();
     }
 
     @Override
     public void renderLastTypedClientNumber(String lastClientNumberTyped) {
         widgetClientNumberView.setText(lastClientNumberTyped);
-    }
-
-    @Override
-    public void renderLastOrder(LastOrder lastOrder) {
-        if (presenter != null) {
-            this.lastOrder = lastOrder;
-            if (lastOrder != null && lastOrder.getAttributes() != null && category != null) {
-                widgetClientNumberView.setText(lastOrder.getAttributes().getClientNumber());
-            }
-        }
-    }
-
-    private void setLastOrder(LastOrder lastOrder) {
-        this.lastOrder = lastOrder;
-    }
-
-    @Override
-    public void renderOperator(Operator operatorModel) {
-        selectedOperator = operatorModel;
-        widgetWrapperBuyView.resetInstantCheckout();
-        widgetWrapperBuyView.setBuyButtonText(selectedOperator.getAttributes().getRule().getButtonLabel());
-        widgetClientNumberView.setImgOperator(operatorModel.getAttributes().getImage());
-        widgetClientNumberView.setImgOperatorVisible();
+        presenter.getOperatorById(lastOperatorSelected);
     }
 
     @Override
@@ -452,9 +386,13 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
     }
 
     @Override
-    public void saveAndDisplayPhoneNumber(String phoneNumber) {
-        selectedOperator = null;
-        widgetClientNumberView.setText(phoneNumber);
+    public void renderVerifiedNumber(String verifiedNumber) {
+
+    }
+
+    @Override
+    protected boolean getOptionsMenuEnable() {
+        return false;
     }
 
     @Override
@@ -467,14 +405,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
     public void onRestoreState(Bundle savedState) {
         super.onRestoreState(savedState);
 
-        renderClientNumberView();
-        presenter.fetchNumberList(String.valueOf(category.getId()), false);
-        widgetClientNumberView.setText(savedState.getString(STATE_CLIENT_NUMBER));
-    }
-
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
+        presenter.getOperatorAndProductsByOperatorId(category.getId(), category.getAttributes().getDefaultOperatorId());
     }
 
     @Override
