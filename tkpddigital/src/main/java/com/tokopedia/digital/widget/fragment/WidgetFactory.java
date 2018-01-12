@@ -26,8 +26,9 @@ public class WidgetFactory {
 
         switch (operatorStyle) {
             case STYLE_ONE:
-            case STYLE_99:
                 return WidgetStyle1RechargeFragment.newInstance(category, position);
+            case STYLE_99:
+                return WidgetStyle99RechargeFragment.newInstance(category, position);
             case STYLE_TWO:
                 return WidgetStyle2RechargeFragment.newInstance(category, position);
             case STYLE_THREE:

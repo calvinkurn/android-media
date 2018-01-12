@@ -117,26 +117,38 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
             holder.productName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    viewListener.onGoToProductDetail(
+                    viewListener.onGoToProductDetailFromProductUpload(
                             activityCardViewModel.getRowNumber(),
+                            activityCardViewModel.getPositionFeedCard(),
                             list.get(position).getPage(),
+                            position,
                             String.valueOf(list.get(position).getProductId()),
                             list.get(position).getImageSourceSingle(),
                             list.get(position).getName(),
-                            list.get(position).getPrice());
+                            list.get(position).getPrice(),
+                            list.get(position).getPriceInt(),
+                            list.get(position).getUrl(),
+                            activityCardViewModel.getEventLabel()
+                    );
                 }
             });
 
             holder.productImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    viewListener.onGoToProductDetail(
+                    viewListener.onGoToProductDetailFromProductUpload(
                             activityCardViewModel.getRowNumber(),
+                            activityCardViewModel.getPositionFeedCard(),
                             list.get(position).getPage(),
+                            position,
                             String.valueOf(list.get(position).getProductId()),
                             list.get(position).getImageSourceSingle(),
                             list.get(position).getName(),
-                            list.get(position).getPrice());
+                            list.get(position).getPrice(),
+                            list.get(position).getPriceInt(),
+                            list.get(position).getUrl(),
+                            activityCardViewModel.getEventLabel()
+                    );
                 }
             });
         }

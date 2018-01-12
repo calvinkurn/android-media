@@ -7,6 +7,7 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product;
 public class ProductFeedViewModel {
 
     private final int page;
+    private String priceInt;
     private Integer productId;
     private String name;
     private String price;
@@ -26,6 +27,7 @@ public class ProductFeedViewModel {
                                 String shopName,
                                 String shopAva,
                                 boolean isFavorited,
+                                String priceInt,
                                 int page) {
         this.productId = productId;
         this.name = name;
@@ -36,6 +38,7 @@ public class ProductFeedViewModel {
         this.shopName = shopName;
         this.shopAva = shopAva;
         this.isFavorited = isFavorited;
+        this.priceInt = priceInt;
         this.page = page;
     }
 
@@ -114,5 +117,13 @@ public class ProductFeedViewModel {
 
     public int getPage() {
         return page;
+    }
+
+    public String getPriceInt() {
+        return priceInt;
+    }
+
+    public void setPriceInt(String priceInt) {
+        this.priceInt = priceInt;
     }
 }

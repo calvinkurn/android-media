@@ -311,6 +311,7 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
         calculateShipmentWrapper.setShopId(wrapper.getShopId());
         calculateShipmentWrapper.setAddressId(wrapper.getAddressId());
         calculateShipmentWrapper.setWeight(transactionPassData.getCartTotalWeight());
+        calculateShipmentWrapper.setShippingId(transactionPassData.getCartShipments().getShipmentId());
         presenter.processCalculateShipment(calculateShipmentWrapper);
     }
 

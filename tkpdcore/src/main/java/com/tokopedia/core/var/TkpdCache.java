@@ -237,6 +237,8 @@ public class TkpdCache {
 
         public static final String MAINAPP_RATING_TITLE = "mainapp_rating_title";
         public static final String MAINAPP_RATING_MESSAGE = "mainapp_rating_message";
+
+        public static final String NOTIFICATION_LOGGER = "notification_logger";
     }
 
 }

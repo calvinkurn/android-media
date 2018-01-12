@@ -94,6 +94,7 @@ import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
 import com.tokopedia.seller.product.manage.view.activity.ProductManageActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
+import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
@@ -825,7 +826,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             return InboxChatActivity.getCallingIntent(context);
         else
             return InboxMessageActivity.getCallingIntent(context);
-
     }
 
     public static List<PeriodRangeModel> convert(List<PeriodRangeModelCore> periodRangeModelCores) {
@@ -862,5 +862,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public DialogFragment getLoyaltyTokoPointNotificationDialogFragment(TokoPointDrawerData.PopUpNotif popUpNotif) {
         return LoyaltyNotifFragmentDialog.newInstance(popUpNotif);
+    }
+
+    @Override
+    public Intent getChangePhoneNumberIntent(Context context, String email, String phoneNumber) {
+        return ChangePhoneNumberWarningActivity.newInstance(context, email, phoneNumber);
     }
 }
