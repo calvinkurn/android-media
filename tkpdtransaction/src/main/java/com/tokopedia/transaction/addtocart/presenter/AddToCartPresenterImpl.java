@@ -49,7 +49,6 @@ import com.tokopedia.transaction.addtocart.receiver.ATCResultReceiver;
 import com.tokopedia.transaction.addtocart.services.ATCIntentService;
 import com.tokopedia.transaction.addtocart.utils.KeroppiParam;
 import com.tokopedia.transaction.addtocart.utils.NetParamUtil;
-import com.tokopedia.transaction.pickuppoint.domain.usecase.GetPickupPointsUseCase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,7 +63,6 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
     private final AddToCartViewListener viewListener;
     private final KeroNetInteractorImpl keroNetInteractor;
     private static final String GOJEK_ID = "10";
-    private AtcFormData atcFormData;
 
     public AddToCartPresenterImpl(AddToCartActivity addToCartActivity) {
         this.addToCartNetInteractor = new AddToCartNetInteractorImpl();
@@ -83,7 +81,6 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                 new AddToCartNetInteractor.OnGetCartFormListener() {
                     @Override
                     public void onSuccess(AtcFormData data) {
-                        AddToCartPresenterImpl.this.atcFormData = data;
                         viewListener.hideNetworkError();
                         viewListener.initialOrderData(data);
                         viewListener.renderFormProductInfo(data.getForm().getProductDetail());
@@ -587,13 +584,4 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                 Double.parseDouble(quantity)), 4));
     }
 
-    @Override
-    public HashMap<String, String> getPickupPointParams() {
-        return GetPickupPointsUseCase.generateParams(atcFormData);
-    }
-
-    @Override
-    public String getDistrictName() {
-        return atcFormData.getForm().getDestination().getDistrictName();
-    }
 }

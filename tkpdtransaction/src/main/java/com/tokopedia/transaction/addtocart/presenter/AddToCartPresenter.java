@@ -70,8 +70,4 @@ public interface AddToCartPresenter {
     boolean isAllowKeroAccess(AtcFormData data);
 
     String calculateWeight(String initWeight, String quantity);
-
-    HashMap<String, String> getPickupPointParams();
-
-    String getDistrictName();
 }

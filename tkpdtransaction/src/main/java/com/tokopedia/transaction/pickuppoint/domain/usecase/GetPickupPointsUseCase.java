@@ -4,7 +4,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.transaction.addtocart.model.responseatcform.AtcFormData;
+import com.tokopedia.transaction.addtocart.model.OrderData;
 import com.tokopedia.transaction.pickuppoint.data.repository.PickupPointRepository;
 import com.tokopedia.transaction.pickuppoint.domain.model.PickupPointResponse;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
@@ -43,14 +43,14 @@ public class GetPickupPointsUseCase extends UseCase<PickupPointResponse> {
         return repository.getPickupPoints(requestParams.getParamsAllValueInString());
     }
 
-    public static HashMap<String, String> generateParams(AtcFormData atcFormData) {
+    public static HashMap<String, String> generateParams(OrderData orderData) {
         HashMap<String, String> params = new HashMap<>();
         params.put(GetPickupPointsUseCase.PARAM_DISTRICT_ID,
-                String.valueOf(atcFormData.getForm().getDestination().getDistrictId()));
+                String.valueOf(orderData.getAddress().getDistrictId()));
         params.put(GetPickupPointsUseCase.PARAM_PAGE, GetPickupPointsUseCase.DEFAULT_PAGE);
         params.put(GetPickupPointsUseCase.PARAM_TOKEN,
-                atcFormData.getShop().getTokenPickup() != null ? atcFormData.getShop().getTokenPickup() : "");
-        params.put(GetPickupPointsUseCase.PARAM_UT, String.valueOf(atcFormData.getShop().getUt()));
+                orderData.getShop().getTokenPickup() != null ? orderData.getShop().getTokenPickup() : "");
+        params.put(GetPickupPointsUseCase.PARAM_UT, String.valueOf(orderData.getShop().getUt()));
 
         return params;
     }

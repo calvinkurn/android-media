@@ -70,6 +70,7 @@ import com.tokopedia.transaction.addtocart.receiver.ATCResultReceiver;
 import com.tokopedia.transaction.addtocart.services.ATCIntentService;
 import com.tokopedia.transaction.addtocart.utils.KeroppiConstants;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
+import com.tokopedia.transaction.pickuppoint.domain.usecase.GetPickupPointsUseCase;
 import com.tokopedia.transaction.pickuppoint.view.activity.PickupPointActivity;
 import com.tokopedia.transaction.pickuppoint.view.customview.PickupPointLayout;
 
@@ -411,13 +412,14 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         if (pickupBooth != null) {
             for (int i = 0; i < datas.size(); i++) {
                 if (datas.get(i).getShipperId().equals(TkpdState.SHIPPING_ID.ALFAMART)) {
-                    Log.e("Position", String.valueOf(i));
                     spShippingAgency.setSelection(i);
                     spShippingAgency.setEnabled(false);
                 }
             }
         } else {
             spShippingAgency.setEnabled(true);
+            Log.e("pickupPointLayout", "SetVisibility");
+            pickupPointLayout.setVisibility(View.VISIBLE);
             for (int i = 0; i < datas.size(); i++) {
                 if (datas.get(i).getShipperId().equals(orderData.getShipment())) {
                     spShippingAgency.setSelection(i);
@@ -1139,8 +1141,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
 
     @Override
     public void onChoosePickupPoint() {
-        startActivityForResult(PickupPointActivity.createInstance(this, presenter.getDistrictName(),
-                presenter.getPickupPointParams()), REQUEST_CHOOSE_PICKUP_POINT);
+        startActivityForResult(PickupPointActivity.createInstance(this, mDestination.getDistrictName(),
+                GetPickupPointsUseCase.generateParams(orderData)), REQUEST_CHOOSE_PICKUP_POINT);
     }
 
     @Override
@@ -1150,7 +1152,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
 
     @Override
     public void onEditPickupPoint(Store store) {
-        startActivityForResult(PickupPointActivity.createInstance(this, presenter.getDistrictName(),
-                presenter.getPickupPointParams()), REQUEST_CHOOSE_PICKUP_POINT);
+        startActivityForResult(PickupPointActivity.createInstance(this, mDestination.getDistrictName(),
+                GetPickupPointsUseCase.generateParams(orderData)), REQUEST_CHOOSE_PICKUP_POINT);
     }
 }
