@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -40,7 +39,7 @@
             android:lines="1"
             android:nextFocusForward="@+id/et_contact_email"
             android:singleLine="true"
-            android:textAppearance="@style/TextView.Subheading"
+            android:textAppearance="@style/TextView.Title"
             android:textColor="@color/font_black_secondary_54" />
     </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
@@ -64,7 +63,7 @@
             android:lines="1"
             android:nextFocusForward="@+id/et_phone_number"
             android:singleLine="true"
-            android:textAppearance="@style/TextView.Subheading"
+            android:textAppearance="@style/TextView.Title"
             android:textColor="@color/font_black_secondary_54" />
     </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
@@ -79,10 +78,10 @@
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/contact_phone_number_label"
+            style="@style/TextView.Micro"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/flight_booking_contact_phone_number_label"
-            style="@style/TextView.Micro"/>
+            android:text="@string/flight_booking_contact_phone_number_label" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -99,14 +98,15 @@
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/et_phone_country_code"
+                    style="@style/TextView.Title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_vs"android:drawableEnd="@drawable/ic_arrow_down_grey"
-                android:drawablePadding="@dimen/padding_small"
-                android:drawableRight="@drawable/ic_arrow_down_grey"
-                android:gravity="center_vertical"
-                style="@style/TextView.Title"
-                tools:text="+62" />
+                    android:layout_marginBottom="@dimen/margin_vs"
+                    android:drawableEnd="@drawable/ic_arrow_down_grey"
+                    android:drawablePadding="@dimen/padding_small"
+                    android:drawableRight="@drawable/ic_arrow_down_grey"
+                    android:gravity="center_vertical"
+                    tools:text="+62" />
 
                 <View
                     android:layout_width="fill_parent"
@@ -129,7 +129,7 @@
                 android:inputType="number"
                 android:lines="1"
                 android:singleLine="true"
-                android:textAppearance="@style/TextView.Subheading"
+                android:textAppearance="@style/TextView.Title"
                 android:textColor="@color/font_black_secondary_54" />
 
         </LinearLayout>

@@ -18,7 +18,6 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.core.ForceUpdate;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.data.executor.JobExecutor;
@@ -26,6 +25,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.cache.domain.interactor.CacheApiClearAllUseCase;
+import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
@@ -74,10 +74,9 @@ import com.tokopedia.digital.product.activity.DigitalWebActivity;
 import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.TkpdFlight;
-import com.tokopedia.flight.contactus.FlightContactUsListener;
 import com.tokopedia.flight.contactus.model.FlightContactUsPassData;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
-import com.tokopedia.inbox.contactus.fragment.CreateTicketFormFragment;
+import com.tokopedia.inbox.contactus.activity.ContactUsCreateTicketActivity;
 import com.tokopedia.inbox.inboxchat.activity.InboxChatActivity;
 import com.tokopedia.inbox.inboxchat.activity.SendMessageActivity;
 import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
@@ -109,6 +108,7 @@ import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
+import com.tokopedia.seller.product.manage.view.activity.ProductManageActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
@@ -142,6 +142,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import okhttp3.Response;
 import rx.Observable;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
@@ -597,20 +598,21 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public android.app.Fragment getContactUsFragment(FlightContactUsPassData passData, final FlightContactUsListener listener) {
-        return CreateTicketFormFragment.createInstance(
+    public Intent getContactUsIntent(Activity activity, FlightContactUsPassData passData) {
+        return ContactUsCreateTicketActivity.getCallingIntent(
+                activity,
+                passData.getToolbarTitle(),
                 passData.getSolutionId(),
                 passData.getOrderId(),
                 passData.getDescriptionTitle(),
                 passData.getAttachmentTitle(),
-                passData.getDescription(),
-                new CreateTicketFormFragment.FinishContactUsListener() {
+                passData.getDescription()
+        );
+    }
 
-                    @Override
-                    public void onFinishCreateTicket() {
-                        listener.onFinishCreateTicket();
-                    }
-                });
+    @Override
+    protected List<CacheApiWhiteListDomain> getWhiteList() {
+        return null;
     }
 
     @Override

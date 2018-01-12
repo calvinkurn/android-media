@@ -1,11 +1,9 @@
 package com.tokopedia.flight;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 
-import com.tokopedia.flight.contactus.FlightContactUsListener;
 import com.tokopedia.flight.contactus.model.FlightContactUsPassData;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 
@@ -29,5 +27,5 @@ public interface FlightModuleRouter {
 
     Intent getHomeIntent(Context context);
 
-    Fragment getContactUsFragment(FlightContactUsPassData passData, FlightContactUsListener listener);
+    Intent getContactUsIntent(Activity activity, FlightContactUsPassData passData);
 }

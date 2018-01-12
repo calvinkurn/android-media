@@ -37,7 +37,7 @@ import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.contactus.ContactUsConstant;
-import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
+import com.tokopedia.inbox.contactus.activity.ContactUsCreateTicketActivity;
 import com.tokopedia.inbox.contactus.adapter.ImageUploadAdapter;
 import com.tokopedia.inbox.contactus.listener.CreateTicketFormFragmentView;
 import com.tokopedia.inbox.contactus.model.ImageUpload;
@@ -63,9 +63,7 @@ import permissions.dispatcher.RuntimePermissions;
 @RuntimePermissions
 public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicketFormFragmentPresenter>
         implements CreateTicketFormFragmentView, ContactUsConstant {
-    private static final String PARAM_DESCRIPTION = "PARAM_DESCRIPTION";
-    private static final String PARAM_DESCRIPTION_TITLE = "PARAM_DESCRIPTION_TITLE";
-    private static final String PARAM_ATTACHMENT_TITLE = "PARAM_ATTACHMENT_TITLE";
+
     @BindView(R2.id.main_category)
     EditText mainCategory;
     @BindView(R2.id.detail)
@@ -97,24 +95,6 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
         CreateTicketFormFragment fragment = new CreateTicketFormFragment();
         Bundle bundle = new Bundle();
         bundle.putAll(extras);
-        fragment.setArguments(bundle);
-        return fragment;
-    }
-
-    public static CreateTicketFormFragment createInstance(String solutionId,
-                                                          String orderId,
-                                                          String descriptionTitle,
-                                                          String attachmentTitle,
-                                                          String description,
-                                                          FinishContactUsListener finishContactUsListener) {
-        CreateTicketFormFragment fragment = new CreateTicketFormFragment();
-        fragment.setFinishContactUsListener(finishContactUsListener);
-        Bundle bundle = new Bundle();
-        bundle.putString(ContactUsActivity.PARAM_SOLUTION_ID, solutionId);
-        bundle.putString(ContactUsActivity.PARAM_ORDER_ID, orderId);
-        bundle.putString(PARAM_DESCRIPTION, description);
-        bundle.putString(PARAM_DESCRIPTION_TITLE, descriptionTitle);
-        bundle.putString(PARAM_ATTACHMENT_TITLE, attachmentTitle);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -151,14 +131,14 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
 
     private void setInitFieldValue() {
         if (getArguments() != null) {
-            if (!TextUtils.isEmpty(getArguments().getString(PARAM_DESCRIPTION_TITLE, null))) {
-                detailTextView.setText(getArguments().getString(PARAM_DESCRIPTION_TITLE));
+            if (!TextUtils.isEmpty(getArguments().getString(ContactUsCreateTicketActivity.PARAM_DESCRIPTION_TITLE, null))) {
+                detailTextView.setText(getArguments().getString(ContactUsCreateTicketActivity.PARAM_DESCRIPTION_TITLE));
             }
-            if (!TextUtils.isEmpty(getArguments().getString(PARAM_ATTACHMENT_TITLE, null))) {
-                attachmentLabelTextView.setText(getArguments().getString(PARAM_ATTACHMENT_TITLE));
+            if (!TextUtils.isEmpty(getArguments().getString(ContactUsCreateTicketActivity.PARAM_ATTACHMENT_TITLE, null))) {
+                attachmentLabelTextView.setText(getArguments().getString(ContactUsCreateTicketActivity.PARAM_ATTACHMENT_TITLE));
             }
-            if (!TextUtils.isEmpty(getArguments().getString(PARAM_DESCRIPTION, null))) {
-                detail.setText(getArguments().getString(PARAM_DESCRIPTION));
+            if (!TextUtils.isEmpty(getArguments().getString(ContactUsCreateTicketActivity.PARAM_DESCRIPTION, null))) {
+                detail.setText(getArguments().getString(ContactUsCreateTicketActivity.PARAM_DESCRIPTION));
             }
         }
     }
