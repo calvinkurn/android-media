@@ -46,21 +46,29 @@ public class FileUtils {
         return Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/data/" + MainApplication.PACKAGE_NAME + "/";
     }
 
-    public static String getFileNameWithoutExt(String path) {
-        String fileName = path.substring(path.lastIndexOf("/") + 1);
-        int pos = fileName.lastIndexOf(".");
-        if (pos > 0) {
-            fileName = fileName.substring(0, pos);
-        }
-        return fileName;
-    }
-
     public static String generateUniqueFileName() {
         return String.valueOf(System.currentTimeMillis() / 1000L) + new Random().nextInt(1000);
     }
 
-    public static String generateUniqueFileName(String path) {
-        return String.valueOf(path.hashCode()).replaceAll("-", "");
+    @NonNull
+    private static File getTkpdCacheDirectory() {
+        String tkpdFolderPath = FileUtils.getFolderPathForUpload();
+
+        File tkpdRootdirectory = new File(tkpdFolderPath);
+        if (!tkpdRootdirectory.exists()) {
+            tkpdRootdirectory.mkdirs();
+        }
+        File tkpdCachedirectory = new File(tkpdRootdirectory.getAbsolutePath() + CACHE_TOKOPEDIA);
+        if (!tkpdCachedirectory.exists()) {
+            tkpdCachedirectory.mkdirs();
+        }
+        return tkpdCachedirectory;
+    }
+
+    @NonNull
+    public static File getTkpdImageCacheFile(String fileName) {
+        File tkpdCachedirectory = getTkpdCacheDirectory();
+        return new File(tkpdCachedirectory.getAbsolutePath() + "/" + fileName + PNG);
     }
 
     /**
@@ -173,27 +181,6 @@ public class FileUtils {
         if (isInTkpdCache(fileToDelete)) {
             fileToDelete.delete();
         }
-    }
-
-    @NonNull
-    private static File getTkpdCacheDirectory() {
-        String tkpdFolderPath = FileUtils.getFolderPathForUpload();
-
-        File tkpdRootdirectory = new File(tkpdFolderPath);
-        if (!tkpdRootdirectory.exists()) {
-            tkpdRootdirectory.mkdirs();
-        }
-        File tkpdCachedirectory = new File(tkpdRootdirectory.getAbsolutePath() + CACHE_TOKOPEDIA);
-        if (!tkpdCachedirectory.exists()) {
-            tkpdCachedirectory.mkdirs();
-        }
-        return tkpdCachedirectory;
-    }
-
-    @NonNull
-    public static File getTkpdImageCacheFile(String fileName) {
-        File tkpdCachedirectory = getTkpdCacheDirectory();
-        return new File(tkpdCachedirectory.getAbsolutePath() + "/" + fileName + PNG);
     }
 
     // URI starts with "content://gmail-ls/"
