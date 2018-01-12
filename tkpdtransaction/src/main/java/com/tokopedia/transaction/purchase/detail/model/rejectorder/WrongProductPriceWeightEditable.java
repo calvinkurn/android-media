@@ -7,7 +7,11 @@ import android.os.Parcelable;
  * Created by kris on 1/11/18. Tokopedia
  */
 
-public class WrongProdcutPriceWeightEditable implements Parcelable{
+public class WrongProductPriceWeightEditable implements Parcelable{
+
+    private String orderId;
+
+    private String shopId;
 
     private String productId;
 
@@ -23,11 +27,13 @@ public class WrongProdcutPriceWeightEditable implements Parcelable{
 
     private int currencyMode;
 
-    public WrongProdcutPriceWeightEditable() {
+    public WrongProductPriceWeightEditable() {
 
     }
 
-    protected WrongProdcutPriceWeightEditable(Parcel in) {
+    protected WrongProductPriceWeightEditable(Parcel in) {
+        orderId = in.readString();
+        shopId = in.readString();
         productId = in.readString();
         productName = in.readString();
         productImage = in.readString();
@@ -37,17 +43,33 @@ public class WrongProdcutPriceWeightEditable implements Parcelable{
         currencyMode = in.readInt();
     }
 
-    public static final Creator<WrongProdcutPriceWeightEditable> CREATOR = new Creator<WrongProdcutPriceWeightEditable>() {
+    public static final Creator<WrongProductPriceWeightEditable> CREATOR = new Creator<WrongProductPriceWeightEditable>() {
         @Override
-        public WrongProdcutPriceWeightEditable createFromParcel(Parcel in) {
-            return new WrongProdcutPriceWeightEditable(in);
+        public WrongProductPriceWeightEditable createFromParcel(Parcel in) {
+            return new WrongProductPriceWeightEditable(in);
         }
 
         @Override
-        public WrongProdcutPriceWeightEditable[] newArray(int size) {
-            return new WrongProdcutPriceWeightEditable[size];
+        public WrongProductPriceWeightEditable[] newArray(int size) {
+            return new WrongProductPriceWeightEditable[size];
         }
     };
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
+
+    public String getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(String shopId) {
+        this.shopId = shopId;
+    }
 
     public String getProductId() {
         return productId;

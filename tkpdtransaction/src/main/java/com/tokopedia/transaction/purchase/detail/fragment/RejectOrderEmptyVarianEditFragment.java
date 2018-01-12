@@ -47,11 +47,13 @@ public class RejectOrderEmptyVarianEditFragment extends TkpdFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         EmptyVarianProductEditable editable = getArguments().getParcelable(EDITABLE_EXTRA);
         View view = inflater.inflate(R.layout.order_reject_empty_varian, container, false);
+        ViewGroup mainView = view.findViewById(R.id.main_container);
         TextView productName = view.findViewById(R.id.order_detail_product_name);
         TextView productPrice = view.findViewById(R.id.order_detail_product_price);
         EditText description = view.findViewById(R.id.description);
         Button rejectOrderConfirmButton = view.findViewById(R.id.reject_order_confirm_button);
         ImageView productImage = view.findViewById(R.id.product_image);
+        mainView.setOnClickListener(null);
         productName.setText(editable.getProductName());
         productPrice.setText(editable.getProductPrice());
         ImageHandler.LoadImage(productImage, editable.getProductImage());

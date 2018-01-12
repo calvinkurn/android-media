@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.purchase.detail.model.rejectorder.WrongProdcutPriceWeightEditable;
+import com.tokopedia.transaction.purchase.detail.model.rejectorder.WrongProductPriceWeightEditable;
 
 import java.util.List;
 
@@ -19,12 +19,12 @@ import java.util.List;
 
 public class RejectOrderPriceWeightChangeAdapter extends RecyclerView.Adapter<RejectOrderPriceWeightChangeAdapter.RejectOrderWeightPriceViewHolder>{
 
-    private List<WrongProdcutPriceWeightEditable> productPriceWeightData;
+    private List<WrongProductPriceWeightEditable> productPriceWeightData;
 
     private RejectOrderPriceWeightAdapterListener listener;
 
     public RejectOrderPriceWeightChangeAdapter(
-            List<WrongProdcutPriceWeightEditable> productPriceWeightData,
+            List<WrongProductPriceWeightEditable> productPriceWeightData,
             RejectOrderPriceWeightAdapterListener listener) {
         this.productPriceWeightData = productPriceWeightData;
         this.listener = listener;
@@ -76,7 +76,7 @@ public class RejectOrderPriceWeightChangeAdapter extends RecyclerView.Adapter<Re
     }
 
     private View.OnClickListener onProductLayoutClickedListener(
-            final WrongProdcutPriceWeightEditable data
+            final WrongProductPriceWeightEditable data
     ) {
         return new View.OnClickListener() {
             @Override
@@ -88,7 +88,7 @@ public class RejectOrderPriceWeightChangeAdapter extends RecyclerView.Adapter<Re
 
     public interface RejectOrderPriceWeightAdapterListener{
 
-        void onProductChoosen(WrongProdcutPriceWeightEditable model);
+        void onProductChoosen(WrongProductPriceWeightEditable model);
 
     }
 

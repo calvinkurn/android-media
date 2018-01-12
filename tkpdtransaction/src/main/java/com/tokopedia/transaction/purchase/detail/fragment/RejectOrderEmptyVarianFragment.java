@@ -61,24 +61,29 @@ public class RejectOrderEmptyVarianFragment extends RejectOrderBaseFragment{
     @Override
     protected RecyclerView.Adapter initAdapter(OrderDetailData data) {
         adapter = new RejectOrderEmptyVarianAdapter(
-                generateEmptyVarianProductList(data.getShopId(), data.getItemList()),
+                generateEmptyVarianProductList(
+                        data.getOrderId(),
+                        data.getShopId(),
+                        data.getItemList()),
                 adapterListener()
         );
         return adapter;
     }
 
     private List<EmptyVarianProductEditable> generateEmptyVarianProductList(
+            String orderId,
             String shopId,
             List<OrderDetailItemData> itemDataList
     ) {
         List<EmptyVarianProductEditable> emptyVarianProductEditables = new ArrayList<>();
         for(int i =0; i < itemDataList.size(); i++) {
             EmptyVarianProductEditable emptyVarianProductEditable = new EmptyVarianProductEditable();
+            emptyVarianProductEditable.setOrderId(orderId);
             emptyVarianProductEditable.setShopId(shopId);
             emptyVarianProductEditable.setProductId(itemDataList.get(i).getProductId());
             emptyVarianProductEditable.setProductImage(itemDataList.get(i).getImageUrl());
             emptyVarianProductEditable.setProductName(itemDataList.get(i).getItemName());
-            emptyVarianProductEditable.setProductPrice(itemDataList.get(i).getItemName());
+            emptyVarianProductEditable.setProductPrice(itemDataList.get(i).getPrice());
             emptyVarianProductEditable.setProductDescription(itemDataList.get(i).getDescription());
             emptyVarianProductEditables.add(emptyVarianProductEditable);
         }

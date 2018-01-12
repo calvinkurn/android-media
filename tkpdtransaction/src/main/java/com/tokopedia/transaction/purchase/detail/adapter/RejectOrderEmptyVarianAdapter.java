@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -34,7 +35,7 @@ public class RejectOrderEmptyVarianAdapter extends RecyclerView
     @Override
     public RejectOrderEmptyVarianHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.order_reject_empty_varian, parent, false);
+                .inflate(R.layout.order_reject_empty_varian_adapter, parent, false);
         return new RejectOrderEmptyVarianHolder(view);
     }
 
@@ -53,6 +54,9 @@ public class RejectOrderEmptyVarianAdapter extends RecyclerView
                 holder.productImage, emptyVarianProductEditables.get(position).getProductImage()
         );
         holder.productLayout.setOnClickListener(
+                onProductLayoutClickedListener(emptyVarianProductEditables.get(position))
+        );
+        holder.additionalNote.setOnClickListener(
                 onProductLayoutClickedListener(emptyVarianProductEditables.get(position))
         );
     }
@@ -74,7 +78,7 @@ public class RejectOrderEmptyVarianAdapter extends RecyclerView
 
         private TextView productPrice;
 
-        private TextView additionalNote;
+        private TextView additionalNote;;
 
         private ImageView productImage;
 
@@ -83,7 +87,7 @@ public class RejectOrderEmptyVarianAdapter extends RecyclerView
             productLayout = itemView.findViewById(R.id.product_layout);
             productName = itemView.findViewById(R.id.order_detail_product_name);
             productPrice = itemView.findViewById(R.id.order_detail_product_price);
-            additionalNote = itemView.findViewById(R.id.order_detail_notes);
+            additionalNote = itemView.findViewById(R.id.additional_notes);
             productImage = itemView.findViewById(R.id.product_image);
         }
     }

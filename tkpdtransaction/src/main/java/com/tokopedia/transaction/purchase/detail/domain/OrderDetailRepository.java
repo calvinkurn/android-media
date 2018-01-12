@@ -180,7 +180,7 @@ public class OrderDetailRepository implements IOrderDetailRepository {
             productParam.put("product_description", emptyVarianProductEditables.get(0).getProductDescription());
             cartVarianObservableList.add(productActService.getApi().editDescription(productParam));
         }
-        return Observable.merge(cartVarianObservableList);
+        return Observable.concat(cartVarianObservableList);
     }
 
     private String displayMessageToUser(Response<TkpdResponse> tkpdResponseResponse) {

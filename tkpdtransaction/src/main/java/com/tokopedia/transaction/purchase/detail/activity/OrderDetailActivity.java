@@ -366,8 +366,6 @@ public class OrderDetailActivity extends TActivity
                     .add(R.id.main_view, cancelSearchFragment, VALIDATION_FRAGMENT_TAG)
                     .commit();
         }
-        setResult(Activity.RESULT_OK);
-        finish();
     }
 
     @Override
@@ -487,7 +485,8 @@ public class OrderDetailActivity extends TActivity
                 .findFragmentByTag(REJECT_ORDER_MENU_FRAGMENT_TAG)).commit();
         getFragmentManager().beginTransaction().remove(getFragmentManager()
                 .findFragmentByTag(VALIDATION_FRAGMENT_TAG)).commit();
-
+        setResult(Activity.RESULT_OK);
+        finish();
     }
 
     @Override
