@@ -619,6 +619,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
     public void onResetFilterClicked() {
         flightFilterModel = new FlightFilterModel();
+        getAdapter().clearAllNonDataElement();
         showLoading();
         setUIMarkFilter();
         reloadDataFromCache();

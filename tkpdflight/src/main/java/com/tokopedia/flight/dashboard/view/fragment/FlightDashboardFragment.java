@@ -453,11 +453,11 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                     presenter.onLoginResultReceived();
                     break;
             }
-            KeyboardHandler.hideSoftKeyboard(getActivity());
         }else if(resultCode == Activity.RESULT_CANCELED && requestCode == REQUEST_CODE_LOGIN) {
             presenter.onLoginResultReceived();
-            KeyboardHandler.hideSoftKeyboard(getActivity());
         }
+        KeyboardHandler.DropKeyboard(getActivity(), getView());
+        KeyboardHandler.hideSoftKeyboard(getActivity());
     }
 
     @SuppressWarnings("Range")

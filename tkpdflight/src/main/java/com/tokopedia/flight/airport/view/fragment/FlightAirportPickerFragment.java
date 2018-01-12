@@ -3,6 +3,7 @@ package com.tokopedia.flight.airport.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,7 @@ import com.tokopedia.flight.airport.view.presenter.FlightAirportPickerPresenter;
 import com.tokopedia.flight.airport.view.presenter.FlightAirportPickerView;
 import com.tokopedia.flight.common.di.component.FlightComponent;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -34,12 +36,10 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAi
 
     public static final String EXTRA_SELECTED_AIRPORT = "extra_selected_aiport";
     public static final String FLIGHT_AIRPORT = "flight_airport";
-
     private static final long DELAY_TEXT_CHANGED = TimeUnit.MILLISECONDS.toMillis(0);
-
     @Inject
     FlightAirportPickerPresenter flightAirportPickerPresenter;
-
+    private boolean isFirstTime = true;
 
     public static FlightAirportPickerFragment getInstance() {
         return new FlightAirportPickerFragment();
@@ -54,14 +54,9 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAi
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        flightAirportPickerPresenter.checkAirportVersion(((FlightModuleRouter)getActivity().getApplication()).getLongConfig(FLIGHT_AIRPORT));
-    }
-
-    @Override
     public void loadData(int page) {
-        flightAirportPickerPresenter.getAirportList(searchInputView.getSearchText());
+        if (isFirstTime) searchInputView.setVisibility(View.GONE);
+        flightAirportPickerPresenter.getAirportList(searchInputView.getSearchText(), isFirstTime);
     }
 
     @Override
@@ -89,12 +84,12 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAi
 
     @Override
     public void onSearchSubmitted(String text) {
-        flightAirportPickerPresenter.getAirportList(searchInputView.getSearchText());
+        flightAirportPickerPresenter.getAirportList(searchInputView.getSearchText(), isFirstTime);
     }
 
     @Override
     public void onSearchTextChanged(String text) {
-        flightAirportPickerPresenter.getAirportList(text);
+        flightAirportPickerPresenter.getAirportList(text, isFirstTime);
     }
 
     @Override
@@ -111,6 +106,16 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<FlightAi
     @Override
     public void updateAirportListOnBackground() {
         GetAirportListService.startService(getActivity(), ((FlightModuleRouter)getActivity().getApplication()).getLongConfig(FLIGHT_AIRPORT));
+    }
+
+    @Override
+    public void renderList(@NonNull List<FlightAirportDB> list) {
+        if (isFirstTime) {
+            flightAirportPickerPresenter.checkAirportVersion(((FlightModuleRouter) getActivity().getApplication()).getLongConfig(FLIGHT_AIRPORT));
+            searchInputView.setVisibility(View.VISIBLE);
+            isFirstTime = false;
+        }
+        super.renderList(list);
     }
 
     @Override
