@@ -24,8 +24,8 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.utils.KeyboardHandler;
-import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.KeyboardHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.design.voucher.VoucherCartView;
 import com.tokopedia.flight.FlightModuleRouter;

@@ -35,7 +35,7 @@
 
     <TextView
         android:id="@+id/sub_message_retry"
-        style="@style/TextView.Body1.BlackDisabled.Bold"
+        style="@style/TextView.Small.BlackDisabled.Bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin_vs"

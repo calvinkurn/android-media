@@ -16,6 +16,7 @@ import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.ForceUpdate;
 import com.tokopedia.core.app.MainApplication;
@@ -383,8 +384,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToManageProduct(Context context) {
-        //TODO changed back to product, use goToFlightActivity(Context context) instead
-        TkpdFlight.goToFlightActivity(context);
+        Intent intent = new Intent(context, ProductManageActivity.class);
+        context.startActivity(intent);
     }
 
     @Override
@@ -893,13 +894,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void goToForceUpdate(Activity activity) {
-        Intent intent = new Intent(this, ForceUpdate.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(new Intent(this, ForceUpdate.class));
-    }
-
-    @Override
     public void onForceLogout(Activity activity) {
         SessionHandler sessionHandler = new SessionHandler(activity);
         sessionHandler.forceLogout();
@@ -931,25 +925,15 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void sendForceLogoutAnalytics(String url) {
-        ServerErrorHandler.sendForceLogoutAnalytics(url);
-    }
-
-    @Override
-    public void showServerErrorSnackbar() {
+    public void showServerError(Response response) {
         ServerErrorHandler.showServerErrorSnackbar();
-    }
-
-    @Override
-    public void sendErrorNetworkAnalytics(String url, int code) {
-        ServerErrorHandler.sendErrorNetworkAnalytics(url, code);
+        ServerErrorHandler.sendErrorNetworkAnalytics(response.request().url().toString(), response.code());
     }
 
     @Override
     public void refreshLogin() {
         AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
         try {
-            ;
             SessionRefresh sessionRefresh = new SessionRefresh(accessTokenRefresh.refreshToken());
             sessionRefresh.refreshLogin();
         } catch (IOException e) {
@@ -965,6 +949,21 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public AnalyticTracker getAnalyticTracker() {
+        return new AnalyticTracker() {
+            @Override
+            public void sendEventTracking(String event, String category, String action, String label) {
+
+            }
+
+            @Override
+            public void sendScreen(Activity activity, String screenName) {
+
+            }
+        };
     }
 
     @Override

@@ -89,4 +89,8 @@
         <key>flight_airport</key>
         <value>1</value>
     </entry>
+    <entry>
+        <key>notification_logger</key>
+        <value>false</value>
+    </entry>
 </defaultsMap>

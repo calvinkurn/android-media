@@ -26,7 +26,7 @@ import java.io.File;
 import java.io.IOException;
 
 
-public class ImageHandler extends com.tokopedia.abstraction.utils.image.ImageHandler {
+public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.ImageHandler {
 
     public static Bitmap ResizeBitmap(Bitmap bitmap, float bounding) {
         int width = bitmap.getWidth();

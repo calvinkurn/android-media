@@ -25,13 +25,13 @@
 
         <TextView
             android:id="@+id/departure_airport_code"
-            style="@style/TextView.Title.Bold"
+            style="@style/TextView.TitleBig.Bold"
             android:gravity="center"
             tools:text="CGK" />
 
         <TextView
             android:id="@+id/departure_airport_name"
-            style="@style/TextView.Caption.BlackSecondary"
+            style="@style/TextView.Micro.BlackSecondary"
             android:gravity="center"
             tools:text="Jakarta"
             android:singleLine="true"
@@ -55,12 +55,12 @@
 
         <TextView
             android:id="@+id/arrival_airport_code"
-            style="@style/TextView.Title.Bold"
+            style="@style/TextView.TitleBig.Bold"
             tools:text="DPS" />
 
         <TextView
             android:id="@+id/arrival_airport_name"
-            style="@style/TextView.Caption.BlackSecondary"
+            style="@style/TextView.Micro.BlackSecondary"
             android:gravity="center"
             tools:text="Denpasar"
             android:singleLine="true"

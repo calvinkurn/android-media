@@ -13,19 +13,19 @@ import android.view.View;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.R;
-import com.tokopedia.abstraction.constant.TkpdCache;
-import com.tokopedia.abstraction.constant.TkpdState;
-import com.tokopedia.abstraction.utils.DialogForceLogout;
-import com.tokopedia.abstraction.utils.GlobalConfig;
-import com.tokopedia.abstraction.utils.LocalCacheHandler;
-import com.tokopedia.abstraction.utils.receiver.ErrorNetworkReceiver;
-import com.tokopedia.abstraction.utils.snackbar.SnackbarManager;
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.abstraction.common.utils.DialogForceLogout;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.abstraction.common.utils.HockeyAppHelper;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.common.utils.receiver.ErrorNetworkReceiver;
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 
 /**
  * Created by nisie on 2/7/17.
  */
 
-public class BaseActivity extends AppCompatActivity implements
+abstract class BaseActivity extends AppCompatActivity implements
         ErrorNetworkReceiver.ReceiveListener {
 
     public static final String FORCE_LOGOUT = "com.tokopedia.tkpd.FORCE_LOGOUT";
@@ -34,49 +34,28 @@ public class BaseActivity extends AppCompatActivity implements
 
     private static final long DISMISS_TIME = 10000;
 
-//    protected SessionHandler sessionHandler;
-
     private ErrorNetworkReceiver logoutNetworkReceiver;
     private LocalCacheHandler cache;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-//        if (MaintenancePage.isMaintenance(this)) {
-//            startActivity(MaintenancePage.createIntent(this));
-//        }
-
         logoutNetworkReceiver = new ErrorNetworkReceiver();
-//        Localytics.registerPush(Constants.FIREBASE_PROJECT_ID);
-
-//        HockeyAppHelper.handleLogin(this);
-//        HockeyAppHelper.checkForUpdate(this);
+        HockeyAppHelper.handleLogin(this);
+        HockeyAppHelper.checkForUpdate(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         unregisterForceLogoutReceiver();
-//        HockeyAppHelper.unregisterManager();
+        HockeyAppHelper.unregisterManager();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        cache = new LocalCacheHandler(this, TkpdCache.STATUS_UPDATE);
-        if (cache.getInt(TkpdCache.Key.STATUS) == TkpdState.UpdateState.MUST_UPDATE) {
-            if (getApplication() instanceof AbstractionRouter) {
-                ((AbstractionRouter) getApplication()).goToForceUpdate(this);
-            }
-//            Intent intent = new Intent(this, ForceUpdate.class);
-//            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//            startActivity(new Intent(this, ForceUpdate.class));
-            finish();
-        }
-
-        initGTM();
         sendScreenAnalytics();
 
         registerForceLogoutReceiver();
@@ -84,36 +63,17 @@ public class BaseActivity extends AppCompatActivity implements
     }
 
     private void sendScreenAnalytics() {
-//        ScreenTracking.sendScreen(this, this);
+        if (getApplication() instanceof AbstractionRouter) {
+            AnalyticTracker analyticTracker = ((AbstractionRouter) getApplication()).getAnalyticTracker();
+            analyticTracker.sendScreen(this, getScreenName());
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        HockeyAppHelper.unregisterManager();
-//        sessionHandler = null;
+        HockeyAppHelper.unregisterManager();
         cache = null;
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-//        Localytics.onNewIntent(this, intent);
-    }
-
-    public void initGTM() {
-//        Observable.just(true)
-//                .subscribeOn(Schedulers.newThread())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .map(new Func1<Boolean, Boolean>() {
-//                    @Override
-//                    public Boolean call(Boolean b) {
-//                        TrackingUtils.eventPushUserID();
-//                        TrackingUtils.eventOnline();
-//                        return true;
-//                    }
-//                })
-//                .subscribe();
     }
 
     private void registerForceLogoutReceiver() {
@@ -176,19 +136,6 @@ public class BaseActivity extends AppCompatActivity implements
                         if (getApplication() instanceof AbstractionRouter) {
                             ((AbstractionRouter) getApplication()).onForceLogout(BaseActivity.this);
                         }
-//                        LoginManager.getInstance().logOut();
-//                        setIsDialogShown(context, false);
-//                        NotificationModHandler.clearCacheAllNotification(context);
-//                        sessionHandler.forceLogout();
-//                        if (GlobalConfig.isSellerApp()) {
-//                            Intent intent = SellerRouter.getAcitivitySplashScreenActivity(getBaseContext());
-//                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-//                            startActivity(intent);
-//                        } else {
-//                            Intent intent = CustomerRouter.getSplashScreenIntent(getBaseContext());
-//                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-//                            startActivity(intent);
-//                        }
                     }
                 });
     }
@@ -205,9 +152,7 @@ public class BaseActivity extends AppCompatActivity implements
         startActivity(Intent.createChooser(intent, getString(R.string.send_email)));
     }
 
-//    @Override
-//    public String getScreenName() {
-//        return null;
-//    }
-
+    public String getScreenName() {
+        return null;
+    }
 }

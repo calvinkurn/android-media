@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.abstraction.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteInfoViewModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;

@@ -40,7 +40,7 @@ public class SwipeToRefresh extends SwipeRefreshLayout implements ViewTreeObserv
 
     private void init(Context context){
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
-        setColorSchemeResources(R.color.tkpd_dark_green);
+        setColorSchemeResources(R.color.green_300);
         this.getViewTreeObserver().addOnGlobalLayoutListener(this);
     }
 

@@ -30,12 +30,12 @@
 
             <TextView
                 android:id="@+id/airline_name"
-                style="@style/TextView.Body1.BlackPrimary"
+                style="@style/TextView.Small"
                 tools:text="Cathay Pacific" />
 
             <TextView
                 android:id="@+id/airline_code"
-                style="@style/TextView.Body1.BlackSecondary"
+                style="@style/TextView.Small.BlackSecondary"
                 android:layout_alignLeft="@+id/airline_name"
                 android:layout_below="@id/airline_name"
                 tools:text="CP - 321" />
@@ -52,7 +52,7 @@
 
             <TextView
                 android:id="@+id/airline_refundable_info"
-                style="@style/TextView.Caption.BlackSecondary"
+                style="@style/TextView.Micro.BlackSecondary"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
@@ -82,13 +82,13 @@
         tools:visibility="visible">
 
         <TextView
-            style="@style/TextView.Body1.BlackSecondary"
+            style="@style/TextView.Small.BlackSecondary"
             android:layout_marginRight="@dimen/margin_vs"
             android:text="@string/flight_label_booking_code_pnr" />
 
         <TextView
             android:id="@+id/pnr_code"
-            style="@style/TextView.Body1.Green.Bold"
+            style="@style/TextView.Small.Green.Bold"
             android:layout_marginRight="@dimen/margin_vs"
             tools:text="323088926194" />
 

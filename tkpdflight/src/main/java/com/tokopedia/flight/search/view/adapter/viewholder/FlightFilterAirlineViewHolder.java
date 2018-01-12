@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder;
-import com.tokopedia.abstraction.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.search.view.model.resultstatistics.AirlineStat;
 

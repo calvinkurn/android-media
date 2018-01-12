@@ -25,7 +25,7 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
-import com.tokopedia.abstraction.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
@@ -287,7 +287,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Override
     public void updateViewExpired() {
-        updateViewStatus(R.string.flight_label_transaction_failed, R.color.orange_red, false, false, false, true);
+        updateViewStatus(R.string.flight_label_transaction_failed, R.color.deep_orange_500, false, false, false, true);
     }
 
     @Override

@@ -8,6 +8,6 @@
 
     <TextView
         android:id="@+id/country_name"
-        style="@style/TextView.Body1"
+        style="@style/TextView.Small"
         tools:text="India" />
 </LinearLayout>

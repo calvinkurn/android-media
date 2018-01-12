@@ -86,17 +86,20 @@ dependencies {
     compile getTkpdDesign()
 
     compile rootProject.ext.supportLibDependencies.appCompactV7
+
+    compile rootProject.ext.serviceDependencies.hockeyApp
+
     compile rootProject.ext.miscDependencies.roundCornerProgressBar
-    compile rootProject.ext.networkDependencies.glide
     compile rootProject.ext.miscDependencies.gson
     compile rootProject.ext.miscDependencies.rxAndroid
     compile rootProject.ext.miscDependencies.rxJava
+    compile rootProject.ext.miscDependencies.multiDex
+
+    compile rootProject.ext.networkDependencies.glide
     compile rootProject.ext.networkDependencies.converterGson
     compile rootProject.ext.networkDependencies.retrofit
     compile rootProject.ext.networkDependencies.adapterRxJava
     compile rootProject.ext.networkDependencies.loggingInterceptor
-
-    compile rootProject.ext.miscDependencies.multiDex
 
     provided rootProject.ext.miscDependencies.javaxAnnotation
     compile rootProject.ext.miscDependencies.dagger

@@ -23,6 +23,7 @@ import com.tokopedia.core.var.TkpdState;
 /**
  * Created by Nisie on 31/08/15.
  */
+@Deprecated
 public abstract class TActivity extends BaseActivity {
 
     protected FrameLayout parentView;

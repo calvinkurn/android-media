@@ -26,14 +26,14 @@
             android:id="@+id/tv_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/TextView.Subheading.Bold"
+            style="@style/TextView.Title.Bold"
             tools:text="Air Asia"/>
         <TextView
             android:id="@+id/tv_desc"
             android:layout_marginTop="@dimen/margin_vvs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/TextView.Caption.BlackSecondary"
+            style="@style/TextView.Micro.BlackSecondary"
             tools:text="Mulai dari Rp5.857.900"/>
     </LinearLayout>
 

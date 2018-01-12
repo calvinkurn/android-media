@@ -3,7 +3,7 @@ package com.tokopedia.abstraction.base.data.source.cache;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.tokopedia.abstraction.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 
 import rx.Observable;
 import rx.Subscriber;

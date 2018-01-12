@@ -4,8 +4,8 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.abstraction.utils.AuthUtil;
-import com.tokopedia.abstraction.utils.MethodChecker;
+import com.tokopedia.abstraction.common.utils.AuthUtil;
+import com.tokopedia.abstraction.common.utils.MethodChecker;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,9 +26,25 @@ import okio.Buffer;
  * @author Angga.Prasetiyo on 27/11/2015.
  */
 public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
-    private static final String TAG = TkpdAuthInterceptor.class.getSimpleName();
     private static final int ERROR_FORBIDDEN_REQUEST = 403;
     private static final String ACTION_TIMEZONE_ERROR = "com.tokopedia.tkpd.TIMEZONE_ERROR";
+
+    private static final String REQUEST_METHOD_GET = "GET";
+    private static final String REQUEST_METHOD_POST = "POST";
+    private static final String REQUEST_METHOD_PATCH = "PATCH";
+    private static final String REQUEST_METHOD_DELETE = "DELETE";
+
+    private static final String RESPONSE_STATUS_OK = "OK";
+    private static final String RESPONSE_STATUS_FORBIDDEN = "FORBIDDEN";
+    private static final String RESPONSE_STATUS_UNDER_MAINTENANCE = "UNDER_MAINTENANCE";
+    private static final String RESPONSE_STATUS_REQUEST_DENIED = "REQUEST_DENIED";
+    private static final String RESPONSE_STATUS_INVALID_REQUEST = "INVALID_REQUEST";
+    private static final String HEADER_PARAM_AUTHORIZATION = "authorization";
+    private static final String HEADER_PARAM_BEARER = "Bearer";
+    private static final String RESPONSE_PARAM_MAKE_LOGIN = "make_login";
+    private static final String RESPONSE_PARAM_STATUS = "status";
+    private static final String RESPONSE_PARAM_MESSAGE_ERROR = "message_error";
+
     private final String authKey;
     private Context context;
     private String freshAccessToken;
@@ -74,7 +90,6 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             Response response1 = chain.proceed(newest);
             if (isUnauthorized(newest, response1)) {
                 showForceLogoutDialog();
-                sendForceLogoutAnalytics(response1);
             }
             return response1;
         }
@@ -91,10 +106,8 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             showMaintenancePage();
         } else if (isRequestDenied(bodyResponse)) {
             showForceLogoutDialog();
-            sendForceLogoutAnalytics(response);
         } else if (isServerError(response.code()) && !isHasErrorMessage(bodyResponse)) {
-            showServerErrorSnackbar();
-            sendErrorNetworkAnalytics(response);
+            showServerError(response);
         } else if (isForbiddenRequest(bodyResponse, response.code())
                 && isTimezoneNotAutomatic()) {
             showTimezoneErrorSnackbar();
@@ -115,8 +128,8 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         JSONObject json;
         try {
             json = new JSONObject(bodyResponse);
-            String status = json.optString("status", "OK");
-            return status.equals("FORBIDDEN") && code == ERROR_FORBIDDEN_REQUEST;
+            String status = json.optString(RESPONSE_PARAM_STATUS, RESPONSE_STATUS_OK);
+            return status.equals(RESPONSE_STATUS_FORBIDDEN) && code == ERROR_FORBIDDEN_REQUEST;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -127,22 +140,21 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             throws IOException {
         Map<String, String> authHeaders = new HashMap<>();
         authHeaders = prepareHeader(authHeaders, originRequest);
-        //   Log.d(TAG, "header: " + new PrettyPrintingMap<>(authHeaders).toString());
         generateHeader(authHeaders, originRequest, newRequest);
     }
 
     Map<String, String> prepareHeader(Map<String, String> authHeaders, Request originRequest) {
 
         String contentTypeHeader = null;
-        if (!"GET".equals(originRequest.method())
+        if (!REQUEST_METHOD_GET.equals(originRequest.method())
                 && originRequest.body() != null
                 && originRequest.body().contentType() != null)
             contentTypeHeader = originRequest.body().contentType().toString();
-        if ("GET".equalsIgnoreCase(originRequest.method())) contentTypeHeader = "";
+        if (REQUEST_METHOD_GET.equalsIgnoreCase(originRequest.method())) contentTypeHeader = "";
         switch (originRequest.method()) {
-            case "PATCH":
-            case "DELETE":
-            case "POST":
+            case REQUEST_METHOD_PATCH:
+            case REQUEST_METHOD_DELETE:
+            case REQUEST_METHOD_POST:
                 authHeaders = getHeaderMap(
                         originRequest.url().uri().getPath(),
                         generateParamBodyString(originRequest),
@@ -151,7 +163,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
                         contentTypeHeader
                 );
                 break;
-            case "GET":
+            case REQUEST_METHOD_GET:
                 authHeaders = getHeaderMap(
                         originRequest.url().uri().getPath(),
                         generateQueryString(originRequest),
@@ -196,8 +208,8 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         JSONObject json;
         try {
             json = new JSONObject(response);
-            String status = json.optString("status", "OK");
-            return status.equals("UNDER_MAINTENANCE");
+            String status = json.optString(RESPONSE_PARAM_STATUS, RESPONSE_STATUS_OK);
+            return status.equals(RESPONSE_STATUS_UNDER_MAINTENANCE);
         } catch (JSONException e) {
             e.printStackTrace();
             return false;
@@ -208,7 +220,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         JSONObject json;
         try {
             json = new JSONObject(response);
-            JSONArray errorMessage = json.optJSONArray("message_error");
+            JSONArray errorMessage = json.optJSONArray(RESPONSE_PARAM_MESSAGE_ERROR);
             return errorMessage.length() > 0;
         } catch (JSONException e) {
             e.printStackTrace();
@@ -220,8 +232,8 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         JSONObject json;
         try {
             json = new JSONObject(response);
-            String status = json.optString("status", "OK");
-            return status.equals("REQUEST_DENIED");
+            String status = json.optString(RESPONSE_PARAM_STATUS, RESPONSE_STATUS_OK);
+            return status.equals(RESPONSE_STATUS_REQUEST_DENIED);
         } catch (JSONException e) {
             e.printStackTrace();
             return false;
@@ -233,8 +245,8 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         JSONObject json;
         try {
             json = new JSONObject(response);
-            String status = json.optString("status", "OK");
-            if (status.equals("INVALID_REQUEST")) return true;
+            String status = json.optString(RESPONSE_PARAM_STATUS, RESPONSE_STATUS_OK);
+            if (status.equals(RESPONSE_STATUS_INVALID_REQUEST)) return true;
         } catch (JSONException e) {
             e.printStackTrace();
             return false;
@@ -282,26 +294,16 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     }
 
     @Deprecated
-    protected void sendForceLogoutAnalytics(Response response) {
-        abstractionRouter.sendForceLogoutAnalytics(response.request().url().toString());
-    }
-
-    @Deprecated
-    protected void showServerErrorSnackbar() {
-        abstractionRouter.showServerErrorSnackbar();
-    }
-
-    @Deprecated
-    protected void sendErrorNetworkAnalytics(Response response) {
-        abstractionRouter.sendErrorNetworkAnalytics(response.request().url().toString(), response.code());
+    protected void showServerError(Response response) {
+        abstractionRouter.showServerError(response);
     }
 
     protected Boolean isNeedRelogin(Response response) {
         try {
             //using peekBody instead of body in order to avoid consume response object, peekBody will automatically return new reponse
             String responseString = response.peekBody(512).string();
-            return responseString.toUpperCase().contains("REQUEST_DENIED") &&
-                    !response.request().url().encodedPath().contains("make_login");
+            return responseString.toUpperCase().contains(RESPONSE_STATUS_REQUEST_DENIED) &&
+                    !response.request().url().encodedPath().contains(RESPONSE_PARAM_MAKE_LOGIN);
         } catch (IOException e) {
             e.printStackTrace();
             return false;
@@ -312,8 +314,8 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         try {
             //using peekBody instead of body in order to avoid consume response object, peekBody will automatically return new reponse
             String responseString = response.peekBody(512).string();
-            return responseString.toLowerCase().contains("invalid_request")
-                    && request.header("authorization").contains("Bearer");
+            return responseString.toLowerCase().contains(RESPONSE_STATUS_INVALID_REQUEST)
+                    && request.header(HEADER_PARAM_AUTHORIZATION).contains(HEADER_PARAM_BEARER);
         } catch (IOException e) {
             e.printStackTrace();
             return false;
@@ -331,7 +333,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     private Request recreateRequestWithNewAccessToken(Chain chain) {
         String freshAccessToken = this.freshAccessToken;
         return chain.request().newBuilder()
-                .header("authorization", "Bearer " + freshAccessToken)
+                .header(HEADER_PARAM_AUTHORIZATION, HEADER_PARAM_BEARER + " " + freshAccessToken)
                 .build();
     }
 }

@@ -2,7 +2,7 @@ package com.tokopedia.abstraction.base.view.fragment;
 
 import android.os.Bundle;
 
-import com.tokopedia.abstraction.di.component.HasComponent;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 
 
 /**

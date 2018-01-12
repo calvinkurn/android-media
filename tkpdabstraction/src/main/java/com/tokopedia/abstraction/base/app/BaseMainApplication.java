@@ -2,9 +2,9 @@ package com.tokopedia.abstraction.base.app;
 
 import android.support.multidex.MultiDexApplication;
 
-import com.tokopedia.abstraction.di.component.BaseAppComponent;
-import com.tokopedia.abstraction.di.component.DaggerBaseAppComponent;
-import com.tokopedia.abstraction.di.module.AppModule;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.di.component.DaggerBaseAppComponent;
+import com.tokopedia.abstraction.common.di.module.AppModule;
 
 /**
  * Created by User on 10/24/2017.
