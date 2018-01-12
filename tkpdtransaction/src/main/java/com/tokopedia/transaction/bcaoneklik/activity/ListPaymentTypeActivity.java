@@ -62,7 +62,6 @@ public class ListPaymentTypeActivity extends TActivity implements ListPaymentTyp
         component.inject(this);
     }
 
-
     protected void initView() {
         rootView = findViewById(R.id.payment_list_root_view);
         RecyclerView paymentOptionMainRecyclerView = findViewById(R.id.payment_option_main_recycler_view);
@@ -118,8 +117,7 @@ public class ListPaymentTypeActivity extends TActivity implements ListPaymentTyp
     @Override
     public void successDeleteCreditCard(String message) {
         NetworkErrorHelper.showSnackbar(this, message);
-        refreshHandler.finishRefresh();
-        presenter.onGetAllPaymentList(this);
+        fetchData();
     }
 
     @Override
@@ -249,7 +247,7 @@ public class ListPaymentTypeActivity extends TActivity implements ListPaymentTyp
                 refreshHandler.startRefresh();
                 break;
             case CREDIT_CARD_DETAIL_REQUEST_CODE:
-                refreshHandler.startRefresh();
+                recreate();
                 break;
         }
     }
