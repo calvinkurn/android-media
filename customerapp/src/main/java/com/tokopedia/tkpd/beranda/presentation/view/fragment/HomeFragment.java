@@ -942,6 +942,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     }
 
+    @Override
+    public void onContentProviderLinkClicked(String url) {
+
+    }
+
     private void openActivity(String depID, String title) {
         IntermediaryActivity.moveTo(
                 getActivity(),
