@@ -149,4 +149,12 @@ public class ShopOpenLocPresenterImpl extends BaseDaggerPresenter<ShopOpenLocVie
             }
         });
     }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        shopOpenSaveLocationUseCase.unsubscribe();
+        getOpenShopTokenUseCase.unsubscribe();
+        getOpenShopLocationPassUseCase.unsubscribe();
+    }
 }
