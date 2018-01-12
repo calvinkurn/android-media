@@ -839,6 +839,10 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public String applink(Activity activity, String deeplink) {
+        return null;
+    }
+
     public Intent getKolFollowingPageIntent(Context context, int userId) {
         return null;
     }
