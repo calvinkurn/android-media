@@ -3,6 +3,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:fillViewport="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
@@ -53,6 +54,11 @@
             </LinearLayout>
         </com.tokopedia.design.loading.LoadingStateView>
 
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/appCompatTextView"
             style="@style/TextView.TitleBig"
@@ -63,12 +69,16 @@
         <android.support.v7.widget.AppCompatTextView
             style="@style/TextView.Small"
             android:layout_gravity="center"
-            android:layout_marginTop="@dimen/margin_med"
+            android:layout_marginTop="@dimen/margin_small"
             android:gravity="center"
             android:paddingLeft="@dimen/padding_med"
             android:paddingRight="@dimen/padding_med"
             android:text="@string/shop_open_shop_create_success_ask_add_product" />
 
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
         <Button
             android:id="@+id/button_add_product"
             style="@style/Button.Submit.Green"
