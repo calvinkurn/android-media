@@ -8,9 +8,14 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.exception.ResponseRuntimeException;
 import com.tokopedia.transaction.network.MyShopOrderActService;
+import com.tokopedia.transaction.network.ProductChangeService;
 import com.tokopedia.transaction.purchase.detail.domain.mapper.OrderDetailMapper;
 import com.tokopedia.transaction.purchase.detail.model.detail.response.OrderDetailResponse;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
+import com.tokopedia.transaction.purchase.detail.model.rejectorder.EmptyVarianProductEditable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -32,16 +37,20 @@ public class OrderDetailRepository implements IOrderDetailRepository {
 
     private MyShopOrderActService shopService;
 
+    private ProductChangeService productActService;
+
     public OrderDetailRepository(OrderDetailMapper mapper,
                                  OrderDetailService service,
                                  ReplacementActService replacementService,
                                  TXOrderActService orderActService,
-                                 MyShopOrderActService shopService) {
+                                 MyShopOrderActService shopService,
+                                 ProductChangeService productActService) {
         this.mapper = mapper;
         this.service = service;
         this.replacementService = replacementService;
         this.orderActService = orderActService;
         this.shopService = shopService;
+        this.productActService = productActService;
     }
 
     @Override
@@ -141,6 +150,37 @@ public class OrderDetailRepository implements IOrderDetailRepository {
                 return displayMessageToUser(tkpdResponseResponse);
             }
         });
+    }
+
+    @Override
+    public Observable<String> rejectOrderChangeProductVarian(
+            List<EmptyVarianProductEditable> emptyVarianProductEditables,
+            TKPDMapParam<String, String> productParam,
+            final TKPDMapParam<String, String> rejectParam
+    ) {
+        return rejectOrderMergedEditDescription(
+                emptyVarianProductEditables,
+                productParam
+        ).flatMap(new Func1<String, Observable<String>>() {
+            @Override
+            public Observable<String> call(String s) {
+                return processOrder(rejectParam);
+            }
+        });
+    }
+
+    private Observable<String> rejectOrderMergedEditDescription(
+            List<EmptyVarianProductEditable> emptyVarianProductEditables,
+            TKPDMapParam<String, String> productParam
+    ) {
+        List<Observable<String>> cartVarianObservableList = new ArrayList<>();
+        for (int i =0; i < emptyVarianProductEditables.size(); i++) {
+            productParam.put("shop_id", emptyVarianProductEditables.get(i).getShopId());
+            productParam.put("product_id", emptyVarianProductEditables.get(i).getProductId());
+            productParam.put("product_description", emptyVarianProductEditables.get(0).getProductDescription());
+            cartVarianObservableList.add(productActService.getApi().editDescription(productParam));
+        }
+        return Observable.merge(cartVarianObservableList);
     }
 
     private String displayMessageToUser(Response<TkpdResponse> tkpdResponseResponse) {

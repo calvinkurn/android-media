@@ -174,4 +174,7 @@
     <string name="sub_title_change_awb_instruction">Karena kami tidak akan memproses resi invalid</string>
     <string name="title_term_and_condition">Syarat dan Ketentuan</string>
     <string name="title_bottomsheet_insurance">Asuransi Pengiriman</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

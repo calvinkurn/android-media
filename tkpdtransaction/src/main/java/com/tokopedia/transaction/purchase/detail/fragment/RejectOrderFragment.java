@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.purchase.detail.fragment;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
 
 /**
  * Created by kris on 1/2/18. Tokopedia
@@ -18,14 +20,16 @@ import com.tokopedia.transaction.R;
 
 public class RejectOrderFragment extends TkpdFragment {
 
-    private static final String ORDER_ID_ARGUMENT = "ORDER_ID_ARGUMENT";
+    private static final String ORDER_DATA_ARGUMENT = "ORDER_ID_ARGUMENT";
+
+    public static final String REJECT_ORDER_MENU_FRAGMENT_TAG = "reject_order_fragment";
 
     private RejectOrderFragmentListener listener;
 
-    public static RejectOrderFragment createFragment(String orderId) {
+    public static RejectOrderFragment createFragment(OrderDetailData orderDetailData) {
         RejectOrderFragment fragment = new RejectOrderFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(ORDER_ID_ARGUMENT, orderId);
+        bundle.putParcelable(ORDER_DATA_ARGUMENT, orderDetailData);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -57,13 +61,81 @@ public class RejectOrderFragment extends TkpdFragment {
         TextView reason4 = view.findViewById(R.id.reason_4);
         TextView reason5 = view.findViewById(R.id.reason_5);
         TextView reason6 = view.findViewById(R.id.reason_6);
-        reason1.setOnClickListener(onReasonClickedListener());
-        reason2.setOnClickListener(onReasonClickedListener());
-        reason3.setOnClickListener(onReasonClickedListener());
-        reason4.setOnClickListener(onReasonClickedListener());
-        reason5.setOnClickListener(onReasonClickedListener());
-        reason6.setOnClickListener(onReasonClickedListener());
+        reason1.setOnClickListener(onStockEmpty());
+        reason2.setOnClickListener(onVarianEmpty());
+        reason3.setOnClickListener(onWrongPriceWeight());
+        reason4.setOnClickListener(onStoreClosed());
+        reason5.setOnClickListener(onCourierProblem());
+        reason6.setOnClickListener(onBuyerRequest());
         return view;
+    }
+
+    private View.OnClickListener onStockEmpty() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openFragment(RejectOrderEmptyProductFragment.createFragment(
+                        (OrderDetailData) getArguments().getParcelable(ORDER_DATA_ARGUMENT))
+                );
+            }
+        };
+    }
+
+    private View.OnClickListener onVarianEmpty() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openFragment(RejectOrderEmptyVarianFragment.createFragment(
+                        (OrderDetailData) getArguments().getParcelable(ORDER_DATA_ARGUMENT))
+                );
+            }
+        };
+    }
+
+    private View.OnClickListener onWrongPriceWeight() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openFragment(RejectOrderWeightPriceFragment.createFragment(
+                        (OrderDetailData) getArguments().getParcelable(ORDER_DATA_ARGUMENT))
+                );
+            }
+        };
+    }
+
+    private View.OnClickListener onStoreClosed() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openFragment(RejectOrderShopClosedFragment.createFragment(
+                        (OrderDetailData) getArguments().getParcelable(ORDER_DATA_ARGUMENT))
+                );
+            }
+        };
+    }
+
+    private View.OnClickListener onCourierProblem() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openFragment(RejectOrderCourierProblemFragment.createFragment(
+                        ((OrderDetailData) getArguments().getParcelable(ORDER_DATA_ARGUMENT))
+                                .getOrderId())
+                );
+            }
+        };
+    }
+
+    private View.OnClickListener onBuyerRequest() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openFragment(RejectOrderBuyerRequest.createFragment(
+                        ((OrderDetailData) getArguments().getParcelable(ORDER_DATA_ARGUMENT))
+                                .getOrderId())
+                );
+            }
+        };
     }
 
     private View.OnClickListener onReasonClickedListener() {
@@ -72,11 +144,19 @@ public class RejectOrderFragment extends TkpdFragment {
             public void onClick(View view) {
                 listener.onReject(
                         ((TextView) view).getText().toString(),
-                        getArguments().getString(ORDER_ID_ARGUMENT)
+                        getArguments().getString(ORDER_DATA_ARGUMENT)
                 );
-
             }
         };
+    }
+
+    private void openFragment(Fragment fragmentToOpen) {
+        if (getFragmentManager().findFragmentByTag(REJECT_ORDER_MENU_FRAGMENT_TAG) == null) {
+            getFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.animator.enter_bottom, R.animator.enter_bottom)
+                    .add(R.id.main_view, fragmentToOpen, REJECT_ORDER_MENU_FRAGMENT_TAG)
+                    .commit();
+        }
     }
 
     public interface RejectOrderFragmentListener {

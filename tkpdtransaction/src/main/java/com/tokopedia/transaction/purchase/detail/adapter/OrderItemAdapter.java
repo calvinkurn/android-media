@@ -11,7 +11,6 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailView;
-import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailItemData;
 
 import java.util.List;
@@ -70,12 +69,12 @@ public class OrderItemAdapter extends RecyclerView.Adapter<OrderItemAdapter.Orde
 
         OrderItemViewHolder(View itemView) {
             super(itemView);
-            productLayout = (ViewGroup) itemView.findViewById(R.id.product_layout);
-            productName = (TextView) itemView.findViewById(R.id.order_detail_product_name);
-            productPrice = (TextView) itemView.findViewById(R.id.order_detail_product_price);
-            productQuantity = (TextView) itemView.findViewById(R.id.order_detail_item_quantity);
-            additionalNote = (TextView) itemView.findViewById(R.id.order_detail_notes);
-            productImage = (ImageView) itemView.findViewById(R.id.product_image);
+            productLayout = itemView.findViewById(R.id.product_layout);
+            productName = itemView.findViewById(R.id.order_detail_product_name);
+            productPrice = itemView.findViewById(R.id.order_detail_product_price);
+            productQuantity = itemView.findViewById(R.id.order_detail_item_quantity);
+            additionalNote = itemView.findViewById(R.id.order_detail_notes);
+            productImage = itemView.findViewById(R.id.product_image);
         }
     }
 

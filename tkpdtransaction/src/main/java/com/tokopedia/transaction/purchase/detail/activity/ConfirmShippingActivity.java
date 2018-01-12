@@ -204,4 +204,9 @@ public class ConfirmShippingActivity extends TActivity
                 .remove(getFragmentManager()
                         .findFragmentByTag(SELECT_SERVICE_FRAGMENT_TAG)).commit();
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

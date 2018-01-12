@@ -2,9 +2,13 @@ package com.tokopedia.transaction.purchase.detail.presenter;
 
 import android.content.Context;
 
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailView;
 import com.tokopedia.transaction.purchase.detail.model.detail.editmodel.OrderDetailShipmentModel;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
+import com.tokopedia.transaction.purchase.detail.model.rejectorder.EmptyVarianProductEditable;
+
+import java.util.List;
 
 /**
  * Created by kris on 11/10/17. Tokopedia
@@ -61,6 +65,11 @@ public interface OrderDetailPresenter {
     void partialOrder(Context context, String orderId, String reason, String quantityAccept);
 
     void rejectOrder(Context context, String orderId, String reason);
+
+    void rejectOrderGenericReason(Context context, TKPDMapParam<String, String> reasonParam);
+
+    void rejectOrderChangeVarian(Context context,
+                                 List<EmptyVarianProductEditable> emptyVarianProductEditables);
 
     void processShipping(Context context,
                          OrderDetailShipmentModel shipmentModel);

@@ -10,6 +10,9 @@ import com.tokopedia.transaction.purchase.detail.activity.OrderDetailView;
 import com.tokopedia.transaction.purchase.detail.interactor.OrderDetailInteractor;
 import com.tokopedia.transaction.purchase.detail.model.detail.editmodel.OrderDetailShipmentModel;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
+import com.tokopedia.transaction.purchase.detail.model.rejectorder.EmptyVarianProductEditable;
+
+import java.util.List;
 
 import rx.Subscriber;
 
@@ -174,6 +177,7 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
         mainView.showProgressDialog();
         TKPDMapParam<String, String> partialParam = new TKPDMapParam<>();
         partialParam.put("action_type", "partial");
+        partialParam.put("action_type", "reject");
         partialParam.put("order_id", orderId);
         partialParam.put("reason", reason);
         partialParam.put("qty_accept", quantityAccept);
@@ -186,9 +190,34 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
         mainView.showProgressDialog();
         TKPDMapParam<String, String> rejectOrderParam = new TKPDMapParam<>();
         rejectOrderParam.put("action_type", "reject");
-        rejectOrderParam.put("reason", orderId);
+        rejectOrderParam.put("order_id", orderId);
+        rejectOrderParam.put("reason", reason);
         orderDetailInteractor.processOrder(sellerFragmentActionSubscriber(),
                 AuthUtil.generateParamsNetwork(context, rejectOrderParam));
+    }
+
+    @Override
+    public void rejectOrderGenericReason(Context context, TKPDMapParam<String, String> reasonParam) {
+        mainView.showProgressDialog();
+        reasonParam.put("action_type", "reject");
+        orderDetailInteractor.processOrder(rejectOrderActionSubscriber(),
+                AuthUtil.generateParamsNetwork(context, reasonParam));
+    }
+
+    @Override
+    public void rejectOrderChangeVarian(Context context,
+                                        List<EmptyVarianProductEditable> emptyVarianProductEditables) {
+        mainView.showProgressDialog();
+        TKPDMapParam<String, String> rejectVarianParam = new TKPDMapParam<>();
+        rejectVarianParam.put("action_type", "reject");
+        rejectVarianParam.put("reason_code", "2");
+        rejectVarianParam.put("order_id", emptyVarianProductEditables.get(0).getOrderId());
+        orderDetailInteractor.rejectEmptyOrderVarian(
+                rejectOrderActionSubscriber(),
+                emptyVarianProductEditables,
+                AuthUtil.generateParamsNetwork(context, new TKPDMapParam<String, String>()),
+                AuthUtil.generateParamsNetwork(context, rejectVarianParam));
+
     }
 
     @Override
@@ -364,6 +393,29 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
                 mainView.dismissProgressDialog();
                 mainView.showSnackbar(s);
                 mainView.dismissSellerActionFragment();
+                //TODO put action to finish activity and refresh
+            }
+        };
+    }
+
+    private Subscriber<String> rejectOrderActionSubscriber() {
+        return new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                mainView.dismissProgressDialog();
+                mainView.showSnackbar(e.getMessage());
+            }
+
+            @Override
+            public void onNext(String s) {
+                mainView.dismissProgressDialog();
+                mainView.showSnackbar(s);
+                mainView.dismissRejectOrderActionFragment();
                 //TODO put action to finish activity and refresh
             }
         };

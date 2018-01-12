@@ -44,7 +44,7 @@ public class OrderCourierAdapter extends RecyclerView.Adapter<OrderCourierAdapte
         final CourierViewModel currentViewModel = modelList.get(position);
         ImageHandler.LoadImage(holder.courierLogo, currentViewModel.getCourierImageUrl());
         holder.courierName.setText(currentViewModel.getCourierName());
-        holder.courierCheckBox.setSelected(currentViewModel.isSelected());
+        holder.courierCheckBox.setChecked(currentViewModel.isSelected());
         holder.courierPlaceHolder.setOnClickListener(onCourierSelectedListener(currentViewModel));
         holder.courierCheckBox.setOnClickListener(onCourierSelectedListener(currentViewModel));
     }

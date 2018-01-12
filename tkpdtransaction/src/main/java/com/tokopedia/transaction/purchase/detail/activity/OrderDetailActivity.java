@@ -1,10 +1,7 @@
 package com.tokopedia.transaction.purchase.detail.activity;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -23,6 +20,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
@@ -43,11 +41,22 @@ import com.tokopedia.transaction.purchase.detail.fragment.CancelOrderFragment;
 import com.tokopedia.transaction.purchase.detail.fragment.CancelSearchFragment;
 import com.tokopedia.transaction.purchase.detail.fragment.CancelShipmentFragment;
 import com.tokopedia.transaction.purchase.detail.fragment.ChangeAwbFragment;
+import com.tokopedia.transaction.purchase.detail.fragment.RejectOrderBuyerRequest;
+import com.tokopedia.transaction.purchase.detail.fragment.RejectOrderCourierProblemFragment;
+import com.tokopedia.transaction.purchase.detail.fragment.RejectOrderEmptyProductFragment;
+import com.tokopedia.transaction.purchase.detail.fragment.RejectOrderEmptyVarianFragment;
 import com.tokopedia.transaction.purchase.detail.fragment.RejectOrderFragment;
+import com.tokopedia.transaction.purchase.detail.fragment.RejectOrderShopClosedFragment;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
+import com.tokopedia.transaction.purchase.detail.model.rejectorder.EmptyVarianProductEditable;
 import com.tokopedia.transaction.purchase.detail.presenter.OrderDetailPresenterImpl;
 
+import java.util.List;
+
 import javax.inject.Inject;
+
+import static com.tokopedia.transaction.purchase.detail.fragment.RejectOrderBaseFragment.FRAGMENT_REJECT_ORDER_SUB_MENU_TAG;
+import static com.tokopedia.transaction.purchase.detail.fragment.RejectOrderFragment.REJECT_ORDER_MENU_FRAGMENT_TAG;
 
 /**
  * Created by kris on 11/2/17. Tokopedia
@@ -63,7 +72,12 @@ public class OrderDetailActivity extends TActivity
         RejectOrderFragment.RejectOrderFragmentListener,
         AcceptPartialOrderDialog.PartialDialogListener,
         ChangeAwbFragment.ChangeAwbListener,
-        CancelShipmentFragment.CancelShipmentListener{
+        CancelShipmentFragment.CancelShipmentListener,
+        RejectOrderEmptyProductFragment.RejectOrderEmptyStockListener,
+        RejectOrderCourierProblemFragment.RejectOrderCourierReasonListener,
+        RejectOrderBuyerRequest.RejectOrderBuyerRequestListener,
+        RejectOrderShopClosedFragment.RejectOrderShopClosedListener,
+        RejectOrderEmptyVarianFragment.RejectOrderEmptyVarianFragmentListener{
 
     public static final int REQUEST_CODE_ORDER_DETAIL = 111;
     private static final String VALIDATION_FRAGMENT_TAG = "validation_fragments";
@@ -352,6 +366,7 @@ public class OrderDetailActivity extends TActivity
                     .add(R.id.main_view, cancelSearchFragment, VALIDATION_FRAGMENT_TAG)
                     .commit();
         }
+        setResult(Activity.RESULT_OK);
     }
 
     @Override
@@ -390,7 +405,7 @@ public class OrderDetailActivity extends TActivity
         //TODO Change LATER
         if (getFragmentManager().findFragmentByTag(VALIDATION_FRAGMENT_TAG) == null) {
             RejectOrderFragment rejectOrderFragment = RejectOrderFragment
-                    .createFragment(data.getOrderId());
+                    .createFragment(data);
             getFragmentManager().beginTransaction()
                     .setCustomAnimations(R.animator.enter_bottom, R.animator.enter_bottom)
                     .add(R.id.main_view, rejectOrderFragment, VALIDATION_FRAGMENT_TAG)
@@ -461,6 +476,20 @@ public class OrderDetailActivity extends TActivity
     }
 
     @Override
+    public void dismissRejectOrderActionFragment() {
+        if (getFragmentManager().findFragmentByTag(FRAGMENT_REJECT_ORDER_SUB_MENU_TAG) != null) {
+            getFragmentManager().beginTransaction()
+                    .remove(getFragmentManager()
+                    .findFragmentByTag(FRAGMENT_REJECT_ORDER_SUB_MENU_TAG)).commit();
+        }
+        getFragmentManager().beginTransaction().remove(getFragmentManager()
+                .findFragmentByTag(REJECT_ORDER_MENU_FRAGMENT_TAG)).commit();
+        getFragmentManager().beginTransaction().remove(getFragmentManager()
+                .findFragmentByTag(VALIDATION_FRAGMENT_TAG)).commit();
+
+    }
+
+    @Override
     public void showProgressDialog() {
         smallProgressDialog.showDialog();
     }
@@ -473,7 +502,7 @@ public class OrderDetailActivity extends TActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == CONFIRM_SHIPMENT_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+        if (requestCode == CONFIRM_SHIPMENT_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             presenter.fetchData(this, getExtraOrderId(), getExtraUserMode());
         }
     }
@@ -542,16 +571,27 @@ public class OrderDetailActivity extends TActivity
     public void onBackPressed() {
         setToolbarCancelSearch(getString(R.string.title_detail_transaction), R.drawable.ic_arrow_back_black);
         if (getFragmentManager().findFragmentByTag(VALIDATION_FRAGMENT_TAG) != null) {
-            getFragmentManager().beginTransaction().remove(getFragmentManager()
+            getFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.animator.slide_out_right, R.animator.slide_out_right)
+                    .remove(getFragmentManager()
                     .findFragmentByTag(VALIDATION_FRAGMENT_TAG)).commit();
-        } else super.onBackPressed();
+        } else if(getFragmentManager().findFragmentByTag(FRAGMENT_REJECT_ORDER_SUB_MENU_TAG) != null) {
+            getFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.animator.slide_out_right, R.animator.slide_out_right)
+                    .remove(getFragmentManager()
+                    .findFragmentByTag(FRAGMENT_REJECT_ORDER_SUB_MENU_TAG)).commit();
+        } else if(getFragmentManager().findFragmentByTag(REJECT_ORDER_MENU_FRAGMENT_TAG) != null) {
+            getFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.animator.slide_out_right, R.animator.slide_out_right)
+                    .remove(getFragmentManager()
+                            .findFragmentByTag(REJECT_ORDER_MENU_FRAGMENT_TAG)).commit();
+        }else super.onBackPressed();
     }
 
     @Override
     public void onAcceptOrder(String orderId) {
         presenter.acceptOrder(this, orderId);
-        setResult(Activity.RESULT_OK);
-        finish();
+        presenter.fetchData(this, orderId, getExtraUserMode());
     }
 
     @Override
@@ -572,5 +612,30 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void cancelShipment(String orderId, String notes) {
         presenter.rejectOrder(this, orderId, notes);
+    }
+
+    @Override
+    public void onRejectEmptyStock(TKPDMapParam<String, String> param) {
+        presenter.rejectOrderGenericReason(this, param);
+    }
+
+    @Override
+    public void rejectOrderCourierReason(TKPDMapParam<String, String> param) {
+        presenter.rejectOrderGenericReason(this, param);
+    }
+
+    @Override
+    public void rejectOrderBuyerRequest(TKPDMapParam<String, String> rejectParam) {
+        presenter.rejectOrderGenericReason(this, rejectParam);
+    }
+
+    @Override
+    public void onClosedDateSelected(TKPDMapParam<String, String> rejectParam) {
+        presenter.rejectOrderGenericReason(this, rejectParam);
+    }
+
+    @Override
+    public void onRejectEmptyVarian(List<EmptyVarianProductEditable> editableList) {
+        presenter.rejectOrderChangeVarian(this, editableList);
     }
 }

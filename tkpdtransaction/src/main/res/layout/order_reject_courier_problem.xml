@@ -16,24 +16,18 @@
             android:id="@+id/notes_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/title_cancel_shipment_notes"
+            android:text="Tulis kendala kurir yang Anda alami"
             android:textSize="@dimen/text_size_large"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/notes_label_subtitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/notes_label"
-            android:text="@string/sub_title_cancel_shipment_notes" />
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/notes_text_input_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/notes_label_subtitle"
+            android:layout_below="@id/notes_label"
             android:layout_marginTop="@dimen/margin_large"
-            android:hint="@string/label_cancel_shipment_notes">
+            android:hint="Keterangan">
 
             <EditText
                 android:id="@+id/reject_shipment_notes_field"

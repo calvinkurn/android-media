@@ -61,6 +61,8 @@ public interface OrderDetailView {
 
     void dismissSellerActionFragment();
 
+    void dismissRejectOrderActionFragment();
+
     void showProgressDialog();
 
     void dismissProgressDialog();

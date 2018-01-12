@@ -16,9 +16,10 @@
 
     <TextView
         android:id="@+id/reason_1"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
+        android:layout_marginTop="@dimen/margin_small"
         android:padding="@dimen/padding_small"
         android:text="Persediaan Barang Habis"
         android:textStyle="bold" />
@@ -33,9 +34,10 @@
 
     <TextView
         android:id="@+id/reason_2"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
+        android:layout_marginTop="@dimen/margin_small"
         android:padding="@dimen/padding_small"
         android:text="Varian Tidak Tersedia"
         android:textStyle="bold" />
@@ -50,9 +52,10 @@
 
     <TextView
         android:id="@+id/reason_3"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
+        android:layout_marginTop="@dimen/margin_small"
         android:padding="@dimen/padding_small"
         android:text="Salah harga atau berat Produk"
         android:textStyle="bold" />
@@ -67,9 +70,10 @@
 
     <TextView
         android:id="@+id/reason_4"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
+        android:layout_marginTop="@dimen/margin_small"
         android:padding="@dimen/padding_small"
         android:text="Toko sedang tutup"
         android:textStyle="bold" />
@@ -84,9 +88,10 @@
 
     <TextView
         android:id="@+id/reason_5"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
+        android:layout_marginTop="@dimen/margin_small"
         android:padding="@dimen/padding_small"
         android:text="Kendala Kurir"
         android:textStyle="bold" />
@@ -101,9 +106,10 @@
 
     <TextView
         android:id="@+id/reason_6"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
+        android:layout_marginTop="@dimen/margin_small"
         android:padding="@dimen/padding_small"
         android:text="Permintaan Pembeli"
         android:textStyle="bold" />

@@ -3,6 +3,9 @@ package com.tokopedia.transaction.purchase.detail.interactor;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.purchase.detail.domain.OrderDetailRepository;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
+import com.tokopedia.transaction.purchase.detail.model.rejectorder.EmptyVarianProductEditable;
+
+import java.util.List;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -76,6 +79,25 @@ public class OrderDetailInteractorImpl implements OrderDetailInteractor {
     @Override
     public void processOrder(Subscriber<String> subscriber, TKPDMapParam<String, String> params) {
         compositeSubscription.add(orderDetailRepository.processOrder(params)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .subscribe(subscriber));
+    }
+
+    @Override
+    public void rejectEmptyOrderVarian(
+            Subscriber<String> subscriber,
+            List<EmptyVarianProductEditable> emptyVarianProductEditables,
+            TKPDMapParam<String, String> productParam,
+            TKPDMapParam<String, String> rejectParam
+    ) {
+        compositeSubscription.add(orderDetailRepository
+                .rejectOrderChangeProductVarian(
+                        emptyVarianProductEditables,
+                        productParam,
+                        rejectParam
+                )
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.newThread())
