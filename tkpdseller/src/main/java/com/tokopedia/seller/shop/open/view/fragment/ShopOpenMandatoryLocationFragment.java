@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,6 +56,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
     public static final int REQUEST_CODE_ADDRESS = 1234;
     public static final int REQUEST_CODE__EDIT_ADDRESS = 1235;
     public static final int REQUEST_CODE_GOOGLE_MAP = 1236;
+    public static final String CONST_PINPOINT = "pinpoint";
 
     protected ShopOpenStepperModel stepperModel;
     protected StepperListener<ShopOpenStepperModel> stepperListener;
@@ -342,12 +344,23 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
 
     @Override
     public void onFailedSaveInfoShop(Throwable t) {
+
         String errorMessage;
         Crashlytics.logException(t);
         if (t instanceof ShopException) {
             errorMessage = t.getMessage();
         } else {
             errorMessage = ErrorHandler.getErrorMessage(t, getActivity());
+
+            // set error message
+            if(errorMessage.split(",").length > 1){
+                errorMessage = errorMessage.split(",")[0];
+            }
+
+            if(errorMessage.contains(CONST_PINPOINT)){
+                onErrorGetReserveDomain(new Throwable(errorMessage));
+                return;
+            }
         }
         trackingOpenShop.eventOpenShopLocationError(errorMessage);
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, new NetworkErrorHelper.RetryClickedListener() {
