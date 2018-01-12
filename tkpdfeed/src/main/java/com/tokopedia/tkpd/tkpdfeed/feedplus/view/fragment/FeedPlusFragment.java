@@ -309,52 +309,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         } else if (isPromoItem(item)) {
             UnifyTracking.eventFeedClick(AppEventTracking.Action.IMPRESSION,
                     FeedTrackingEventLabel.Impression.FEED_PROMOTION);
-        } else if (isKolItem(item)) {
-            KolViewModel kolViewModel = (KolViewModel) adapter.getlist().get(item.originalPos());
-            List<KolTracking.Promotion> list = new ArrayList<>();
-            list.add(new KolTracking.Promotion(
-                    kolViewModel.getId(),
-                    KolTracking.Promotion.createContentName(
-                            kolViewModel.getTagsType(),
-                            kolViewModel.getCardType())
-                    ,
-                    kolViewModel.getName().equals("") ? "-" : kolViewModel.getName(),
-                    position,
-                    kolViewModel.getLabel().equals("") ? "-" : kolViewModel.getLabel(),
-                    kolViewModel.getContentId(),
-                    kolViewModel.getContentLink().equals("") ? "-" : kolViewModel.getContentLink()
-            ));
-            TrackingUtils.eventTrackingEnhancedEcommerce(KolTracking.getKolImpressionTracking
-                    (list,  Integer.parseInt(SessionHandler.getLoginID(MainApplication.getAppContext()))));
-        } else if (isKolRecommendationItem(item)) {
-            KolRecommendationViewModel kolRecomendationViewModel = (KolRecommendationViewModel) adapter.getlist()
-                    .get(item.originalPos());
-            List<KolTracking.Promotion> list = new ArrayList<>();
-            for (KolRecommendItemViewModel recItem : kolRecomendationViewModel.getListRecommend()) {
-                list.add(new KolTracking.Promotion(
-                        recItem.getId(),
-                        KolTracking.Promotion.createContentNameRecommendation(),
-                        recItem.getName().equals("") ? "-" : recItem.getName(),
-                        position,
-                        recItem.getLabel().equals("") ? "-" : recItem.getLabel(),
-                        recItem.getId(),
-                        recItem.getUrl().equals("") ? "-" : recItem.getUrl()
-                ));
-            }
-            TrackingUtils.eventTrackingEnhancedEcommerce(KolTracking
-                    .getKolImpressionTracking(list,
-                            Integer.parseInt(SessionHandler.getLoginID(MainApplication.getAppContext()))));
         }
-    }
-
-    private boolean isKolRecommendationItem(Item item) {
-        return item instanceof ClientViewModel
-                && adapter.getlist().get(item.originalPos()) instanceof KolRecommendationViewModel;
-    }
-
-    private boolean isKolItem(Item item) {
-        return item instanceof ClientViewModel
-                && adapter.getlist().get(item.originalPos()) instanceof KolViewModel;
     }
 
     private boolean isPromoItem(Item item) {
