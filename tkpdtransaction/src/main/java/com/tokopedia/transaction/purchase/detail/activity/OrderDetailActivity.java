@@ -221,24 +221,28 @@ public class OrderDetailActivity extends TActivity
 
     private void setPickupPointView(OrderDetailData data) {
         LinearLayout layoutPickupPointPinCode = findViewById(R.id.layout_pickup_point_pin_code);
-        ImageButton btPinCodeInfo = findViewById(R.id.bt_pin_code_info);
-        TextView tvPinCode = findViewById(R.id.tv_pin_code);
+        if (data.getPickupPinCode() != null) {
+            ImageButton btPinCodeInfo = findViewById(R.id.bt_pin_code_info);
+            TextView tvPinCode = findViewById(R.id.tv_pin_code);
+            tvPinCode.setText(data.getPickupPinCode());
+            btPinCodeInfo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    BottomSheetView bottomSheetView = new BottomSheetView(OrderDetailActivity.this);
+                    bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
+                            .BottomSheetFieldBuilder()
+                            .setTitle(getString(R.string.title_bottomsheet_pin_code_pickup_booth))
+                            .setBody(getString(R.string.message_bottomsheet_pin_code_pickup_booth))
+                            .setImg(R.drawable.ic_pickup_point_pin_code)
+                            .build());
 
-        layoutPickupPointPinCode.setVisibility(View.VISIBLE);
-        btPinCodeInfo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                BottomSheetView bottomSheetView = new BottomSheetView(OrderDetailActivity.this);
-                bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
-                        .BottomSheetFieldBuilder()
-                        .setTitle(getString(R.string.title_bottomsheet_pin_code_pickup_booth))
-                        .setBody(getString(R.string.message_bottomsheet_pin_code_pickup_booth))
-                        .setImg(R.drawable.ic_pickup_point_pin_code)
-                        .build());
-
-                bottomSheetView.show();
-            }
-        });
+                    bottomSheetView.show();
+                }
+            });
+            layoutPickupPointPinCode.setVisibility(View.VISIBLE);
+        } else {
+            layoutPickupPointPinCode.setVisibility(View.GONE);
+        }
     }
 
     private View.OnClickListener onStatusLayoutClickedListener(final String orderId) {

@@ -120,6 +120,12 @@ public class OrderDetailMapper {
         buttonData.setRequestPickupVisibility(buttons.getRequestPickup());
         viewData.setButtonData(buttonData);
 
+        if (responseData.getDetail().getShipment().getInfo() != null &&
+                responseData.getDetail().getShipment().getInfo().getPickupInfo() != null) {
+            viewData.setPickupPinCode(responseData.getDetail().getShipment().getInfo()
+                    .getPickupInfo().getPickupCode());
+        }
+
         return viewData;
     }
 

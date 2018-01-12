@@ -68,6 +68,8 @@ public class OrderDetailData {
 
     private ButtonData buttonData;
 
+    private String pickupPinCode;
+
     public String getOrderId() {
         return orderId;
     }
@@ -306,5 +308,13 @@ public class OrderDetailData {
 
     public void setOrderCode(String orderCode) {
         this.orderCode = orderCode;
+    }
+
+    public String getPickupPinCode() {
+        return pickupPinCode;
+    }
+
+    public void setPickupPinCode(String pickupPinCode) {
+        this.pickupPinCode = pickupPinCode;
     }
 }
