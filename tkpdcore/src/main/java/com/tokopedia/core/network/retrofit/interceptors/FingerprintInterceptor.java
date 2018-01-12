@@ -47,10 +47,10 @@ public class FingerprintInterceptor implements Interceptor {
     private Request.Builder addFingerPrint(final Request.Builder newRequest) {
         String json = "";
 
-        boolean sellerAppAndKitkat = GlobalConfig.isSellerApp() && Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT;
-        if (!sellerAppAndKitkat) {
-            json = getFingerPrintJson();
-        }
+//        boolean sellerAppAndKitkat = GlobalConfig.isSellerApp() && Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT;
+//        if (!sellerAppAndKitkat) {
+        json = getFingerPrintJson();
+//        }
 
         SessionHandler session = new SessionHandler(MainApplication.getAppContext());
         newRequest.addHeader(KEY_SESSION_ID, FCMCacheManager.getRegistrationIdWithTemp(MainApplication.getAppContext()));
