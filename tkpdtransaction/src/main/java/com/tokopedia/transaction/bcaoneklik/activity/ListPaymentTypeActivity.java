@@ -170,7 +170,7 @@ public class ListPaymentTypeActivity extends TActivity implements ListPaymentTyp
 
     @Override
     public void onDeleteCreditCardClicked(String tokenId, String cardId) {
-        DeleteCreditCardDialog creditCardDialog = DeleteCreditCardDialog.createDialog(tokenId,
+        DeleteCreditCardDialog creditCardDialog = DeleteCreditCardDialog.newInstance(tokenId,
                 cardId);
         creditCardDialog.show(getFragmentManager(), "delete_credit_card_dialog");
     }

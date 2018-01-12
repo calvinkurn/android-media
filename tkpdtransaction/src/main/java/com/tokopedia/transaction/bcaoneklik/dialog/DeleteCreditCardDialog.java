@@ -1,26 +1,18 @@
 package com.tokopedia.transaction.bcaoneklik.dialog;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
+import android.support.v7.app.AlertDialog;
 
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.R2;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by kris on 8/23/17. Tokopedia
+ * Modified by aghny on 12/1/18
  */
 
 public class DeleteCreditCardDialog extends DialogFragment {
@@ -28,12 +20,9 @@ public class DeleteCreditCardDialog extends DialogFragment {
     private static final String TOKEN_ID = "TOKEN_ID";
     private static final String CARD_ID = "CARD_ID";
 
-    private DeleteCreditCardDialogListener listener;
+    private DeleteCreditCardDialogListener mDeleteCreditCardDialogListener;
 
-    @BindView(R2.id.delete_button) Button deleteButton;
-    @BindView(R2.id.cancel_button) Button cancelButton;
-
-    public static DeleteCreditCardDialog createDialog(String tokenId, String cardId) {
+    public static DeleteCreditCardDialog newInstance(String tokenId, String cardId) {
         Bundle bundle = new Bundle();
         bundle.putString(TOKEN_ID, tokenId);
         bundle.putString(CARD_ID, cardId);
@@ -44,54 +33,47 @@ public class DeleteCreditCardDialog extends DialogFragment {
         return cardDialog;
     }
 
-    @Nullable
+    // Override the Fragment.onAttach() method to instantiate the NoticeDialogListener
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.credit_card_delete_dialog, container, false);
-        ButterKnife.bind(this, view);
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        // Verify that the host activity implements the callback interface
+        try {
+            // Instantiate the NoticeDialogListener so we can send events to the host
+            mDeleteCreditCardDialogListener = (DeleteCreditCardDialogListener) activity;
+        } catch (ClassCastException e) {
+            // The activity doesn't implement the interface, throw exception
+            throw new ClassCastException(activity.toString()
+                    + " must implement NoticeDialogListener");
+        }
+    }
 
-        getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
-        initWindowDialog(getDialog().getWindow());
-
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismissDialog();
-            }
-        });
-        deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.onConfirmDelete(getArguments().getString(TOKEN_ID));
-                dismissDialog();
-            }
-        });
-
-        return view;
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        return new AlertDialog.Builder(getActivity())
+                .setTitle(R.string.delete_credit_card)
+                .setMessage(R.string.forever_delete_credit_card)
+                .setPositiveButton(R.string.label_title_button_yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        mDeleteCreditCardDialogListener.onConfirmDelete(getArguments().getString(TOKEN_ID));
+                    }
+                })
+                .setNegativeButton(R.string.label_title_button_no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
+                .create();
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        listener = (DeleteCreditCardDialogListener) context;
+        mDeleteCreditCardDialogListener = (DeleteCreditCardDialogListener) context;
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        listener = (DeleteCreditCardDialogListener) activity;
-    }
-
-    private void initWindowDialog(Window window) {
-        window.setGravity(Gravity.TOP | Gravity.START);
-        WindowManager.LayoutParams params = window.getAttributes();
-        params.gravity = Gravity.CENTER_HORIZONTAL;
-        params.y = -200;
-        window.setAttributes(params);
-        window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-    }
-
-    private void dismissDialog() {
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
         getActivity().onBackPressed();
     }
 

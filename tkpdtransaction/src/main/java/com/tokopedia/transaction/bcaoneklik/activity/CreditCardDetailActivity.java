@@ -1,12 +1,10 @@
 package com.tokopedia.transaction.bcaoneklik.activity;
 
-import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -106,8 +104,10 @@ public class CreditCardDetailActivity extends TActivity implements DeleteCreditC
 
     @OnClick(R2.id.button_delete_cc)
     public void showDeleteCcDialog() {
-        AlertDialog dialog = createDeleteDialog(mCreditCardModelItem.getTokenId());
-        dialog.show();
+        DeleteCreditCardDialog creditCardDialog = DeleteCreditCardDialog.newInstance(
+                mCreditCardModelItem.getTokenId(),
+                mCreditCardModelItem.getMaskedNumber());
+        creditCardDialog.show(getFragmentManager(), "delete_credit_card_dialog");
     }
 
     @Override
@@ -152,28 +152,6 @@ public class CreditCardDetailActivity extends TActivity implements DeleteCreditC
     @Override
     protected boolean isLightToolbarThemes() {
         return true;
-    }
-
-    private AlertDialog createDeleteDialog(final String tokenId) {
-        return new AlertDialog.Builder(this)
-                .setTitle(R.string.delete_credit_card)
-                .setMessage(R.string.forever_delete_credit_card)
-                .setPositiveButton(R.string.label_title_button_yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        onConfirmDelete(tokenId);
-                        dismissDialog();
-                    }
-                })
-                .setNegativeButton(R.string.label_title_button_no, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dismissDialog();
-                    }
-                })
-                .create();
-    }
-
-    private void dismissDialog() {
-        this.onBackPressed();
     }
 
 }
