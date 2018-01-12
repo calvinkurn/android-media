@@ -6,7 +6,6 @@ package com.tokopedia.core.gcm;
  */
 
 public interface Constants {
-    String FIREBASE_PROJECT_ID = "673352445777";
     String ARG_NOTIFICATION_CODE = "tkp_code";
     String ARG_NOTIFICATION_TITLE = "title";
     String ARG_NOTIFICATION_DESCRIPTION = "desc";
