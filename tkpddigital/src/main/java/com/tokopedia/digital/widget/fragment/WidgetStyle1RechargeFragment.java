@@ -435,6 +435,8 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
     @Override
     public void renderOperator(Operator operatorModel) {
         selectedOperator = operatorModel;
+        widgetWrapperBuyView.resetInstantCheckout();
+        widgetWrapperBuyView.setBuyButtonText(selectedOperator.getAttributes().getRule().getButtonLabel());
         widgetClientNumberView.setImgOperator(operatorModel.getAttributes().getImage());
         widgetClientNumberView.setImgOperatorVisible();
     }

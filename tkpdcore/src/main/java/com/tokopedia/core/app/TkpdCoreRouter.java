@@ -108,4 +108,6 @@ public interface TkpdCoreRouter {
     Intent getInboxReputationIntent(Context context);
 
     Intent getResolutionCenterIntent(Context context);
+
+    Intent getChangePhoneNumberIntent(Context context, String email, String phoneNumber);
 }

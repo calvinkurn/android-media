@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Html;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -316,14 +315,18 @@ public class NewOnBoardingFragment extends OnBoardingFragment implements CustomA
     }
 
     public void animateOut() {
-        ValueAnimator slideTitle = slideToX(titleView, 1, 0, mScreenWidth);
-        ValueAnimator slideDesc = slideToX(descView, 1, 0, mScreenWidth);
-        animatorSet.playTogether(slideTitle, slideDesc);
-        if (!animatorSet.isRunning()) {
-            animatorSet.start();
+        try {
+            ValueAnimator slideTitle = slideToX(titleView, 1, 0, mScreenWidth);
+            ValueAnimator slideDesc = slideToX(descView, 1, 0, mScreenWidth);
+            animatorSet.playTogether(slideTitle, slideDesc);
+            if (!animatorSet.isRunning()) {
+                animatorSet.start();
 
-            lottieAnimationView.setProgress(0.4f);
-            lottieAnimationView.reverseAnimation();
+                lottieAnimationView.setProgress(0.4f);
+                lottieAnimationView.reverseAnimation();
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
         }
     }
 
