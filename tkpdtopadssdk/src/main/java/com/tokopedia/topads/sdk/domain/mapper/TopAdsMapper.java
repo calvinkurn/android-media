@@ -1,4 +1,4 @@
-package com.tokopedia.topads.sdk.domain.interactor;
+package com.tokopedia.topads.sdk.domain.mapper;
 
 import android.content.Context;
 
