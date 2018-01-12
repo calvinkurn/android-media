@@ -29,5 +29,5 @@ public interface AbstractionRouter {
 
     UserSession getSession();
 
-    AnalyticTracker getTracker();
+    AnalyticTracker getAnalyticTracker();
 }

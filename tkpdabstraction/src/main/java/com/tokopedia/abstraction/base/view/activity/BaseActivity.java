@@ -64,7 +64,7 @@ abstract class BaseActivity extends AppCompatActivity implements
 
     private void sendScreenAnalytics() {
         if (getApplication() instanceof AbstractionRouter) {
-            AnalyticTracker analyticTracker = ((AbstractionRouter) getApplication()).getTracker();
+            AnalyticTracker analyticTracker = ((AbstractionRouter) getApplication()).getAnalyticTracker();
             analyticTracker.sendScreen(this, getScreenName());
         }
     }

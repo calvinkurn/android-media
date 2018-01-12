@@ -15,6 +15,9 @@ import android.text.TextUtils;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.ForceUpdate;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -70,6 +73,9 @@ import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.activity.DigitalWebActivity;
 import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
+import com.tokopedia.flight.FlightModuleRouter;
+import com.tokopedia.flight.TkpdFlight;
+import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 import com.tokopedia.inbox.inboxchat.activity.InboxChatActivity;
 import com.tokopedia.inbox.inboxchat.activity.SendMessageActivity;
 import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
@@ -138,6 +144,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import okhttp3.Interceptor;
+import okhttp3.Response;
 import rx.Observable;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
@@ -152,7 +159,7 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_
 public abstract class ConsumerRouterApplication extends MainApplication implements
         TkpdCoreRouter, SellerModuleRouter, IDigitalModuleRouter, PdpRouter,
         OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication, TkpdInboxRouter,
-        TokoCashRouter, IWalletRouter, ILoyaltyRouter, ReputationRouter {
+        TokoCashRouter, IWalletRouter, AbstractionRouter, FlightModuleRouter, ILoyaltyRouter, ReputationRouter {
 
     public static final String COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME = "com.tokopedia.tkpd.home.ParentIndexHome";
 
@@ -372,6 +379,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void goToManageProduct(Context context) {
         Intent intent = new Intent(context, ProductManageActivity.class);
         context.startActivity(intent);
+    }
+
+    @Override
+    public void goToFlightActivity(Context context) {
+        TkpdFlight.goToFlightActivity(context);
     }
 
     @Override
@@ -872,6 +884,129 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getDetailResChatIntentBuyer(Context context, String resoId, String shopName) {
         return DetailResChatActivity.newBuyerInstance(context, resoId, shopName);
+    }
+
+    @Override
+    public void onForceLogout(Activity activity) {
+        SessionHandler sessionHandler = new SessionHandler(activity);
+        sessionHandler.forceLogout();
+        if (GlobalConfig.isSellerApp()) {
+            Intent intent = SellerRouter.getAcitivitySplashScreenActivity(getBaseContext());
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        } else {
+            invalidateCategoryMenuData();
+            Intent intent = CustomerRouter.getSplashScreenIntent(getBaseContext());
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
+    }
+
+    @Override
+    public void showTimezoneErrorSnackbar() {
+        ServerErrorHandler.showTimezoneErrorSnackbar();
+    }
+
+    @Override
+    public void showMaintenancePage() {
+        ServerErrorHandler.showMaintenancePage();
+    }
+
+    @Override
+    public void showForceLogoutDialog() {
+        ServerErrorHandler.showMaintenancePage();
+    }
+
+    @Override
+    public void showServerError(Response response) {
+        ServerErrorHandler.showServerErrorSnackbar();
+        ServerErrorHandler.sendErrorNetworkAnalytics(response.request().url().toString(), response.code());
+    }
+
+    @Override
+    public void refreshLogin() {
+        AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
+        try {
+            SessionRefresh sessionRefresh = new SessionRefresh(accessTokenRefresh.refreshToken());
+            sessionRefresh.refreshLogin();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void refreshToken() {
+        AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
+        try {
+            accessTokenRefresh.refreshToken();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public AnalyticTracker getAnalyticTracker() {
+        return new AnalyticTracker() {
+            @Override
+            public void sendEventTracking(String event, String category, String action, String label) {
+
+            }
+
+            @Override
+            public void sendScreen(Activity activity, String screenName) {
+
+            }
+        };
+    }
+
+    @Override
+    public long getLongConfig(String flightAirport) {
+        return remoteConfig.getLong(flightAirport);
+    }
+
+    @Override
+    public UserSession getSession() {
+        return new UserSessionImpl(this);
+    }
+
+    @Override
+    public Intent getLoginIntent() {
+        Intent intent = SessionRouter.getLoginActivityIntent(this);
+        intent.putExtra(Session.WHICH_FRAGMENT_KEY,
+                TkpdState.DrawerPosition.LOGIN);
+        return intent;
+    }
+
+    @Override
+    public Intent getTopPayIntent(Activity activity, FlightCheckoutViewModel flightCheckoutViewModel) {
+        PaymentPassData paymentPassData = new PaymentPassData();
+        paymentPassData.setPaymentId(flightCheckoutViewModel.getPaymentId());
+        paymentPassData.setTransactionId(flightCheckoutViewModel.getTransactionId());
+        paymentPassData.setRedirectUrl(flightCheckoutViewModel.getRedirectUrl());
+        paymentPassData.setCallbackFailedUrl(flightCheckoutViewModel.getCallbackFailedUrl());
+        paymentPassData.setCallbackSuccessUrl(flightCheckoutViewModel.getCallbackSuccessUrl());
+        paymentPassData.setQueryString(flightCheckoutViewModel.getQueryString());
+        return TopPayActivity.createInstance(activity, paymentPassData);
+    }
+
+    @Override
+    public int getTopPayPaymentSuccessCode() {
+        return TopPayActivity.PAYMENT_SUCCESS;
+    }
+
+    @Override
+    public int getTopPayPaymentFailedCode() {
+        return TopPayActivity.PAYMENT_FAILED;
+    }
+
+    @Override
+    public int getTopPayPaymentCancelCode() {
+        return TopPayActivity.PAYMENT_CANCELLED;
+    }
+
+    @Override
+    public Intent getBannerWebViewIntent(Activity activity, String url) {
+        return BannerWebView.getCallingIntent(activity, url);
     }
 
     @Override
