@@ -6,8 +6,6 @@
     android:orientation="vertical"
     android:background="@color/white"
     android:paddingBottom="@dimen/padding_16"
-    android:paddingLeft="@dimen/padding_small"
-    android:paddingRight="@dimen/padding_small"
     android:paddingTop="@dimen/padding_16"
     android:layout_marginTop="@dimen/margin_med">
 
@@ -15,12 +13,16 @@
         android:id="@+id/counter_flight"
         style="@style/TextView.Title.Bold"
         android:text="@string/flight_label_detail_order"
+        android:paddingLeft="@dimen/padding_med"
+        android:paddingRight="@dimen/padding_med"
         android:textSize="18sp" />
 
     <LinearLayout
         android:id="@+id/layout_expendable_flight"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/padding_med"
+        android:paddingRight="@dimen/padding_med"
         android:orientation="horizontal">
 
         <TextView
@@ -42,9 +44,18 @@
 
     </LinearLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginBottom="@dimen/margin_small"
+        android:layout_marginTop="@dimen/margin_ms"
+        android:background="@drawable/bg_line_separator" />
+
     <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
         android:id="@+id/recycler_view_flight_detail_journey"
         android:layout_width="match_parent"
+        android:paddingLeft="@dimen/padding_med"
+        android:paddingRight="@dimen/padding_med"
         android:layout_height="wrap_content" />
 
 
@@ -54,6 +65,7 @@
         android:background="@color/white"
         android:paddingTop="@dimen/padding_med"
         android:paddingBottom="@dimen/padding_med"
+        android:paddingLeft="@dimen/padding_med"
         android:paddingRight="@dimen/padding_med"
         android:text="@string/flight_label_cek_t_and_c" />
 
