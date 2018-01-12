@@ -201,7 +201,8 @@ public class CacheInteractorImpl implements CacheInteractor {
     }
 
     @Override
-    public void getPromoWidgetCache(final @NonNull String targetType, final @NonNull String userId, @NonNull final GetPromoWidgetCacheListener listener) {
+    public void getPromoWidgetCache(final @NonNull String targetType, final @NonNull String userId,
+                                    final @NonNull String shopType, @NonNull final GetPromoWidgetCacheListener listener) {
 
         final GlobalCacheManager cacheManager= new GlobalCacheManager();
         Observable.just(PROMO_WIDGET_PDP)
@@ -227,7 +228,7 @@ public class CacheInteractorImpl implements CacheInteractor {
                     @Override
                     public void onNext(PromoAttributes promoAttributes) {
                         if (promoAttributes!=null && targetType.equals(promoAttributes.getTargetType()) &&
-                                userId.equals(promoAttributes.getUserId())) {
+                                userId.equals(promoAttributes.getUserId()) && shopType.equals(promoAttributes.getShopType())) {
                             listener.onSuccess(promoAttributes);
                         } else {
                             listener.onError();
@@ -237,7 +238,7 @@ public class CacheInteractorImpl implements CacheInteractor {
         }
 
     @Override
-    public void storePromoWidget(String targetType, String userId, DataPromoWidget promoWidget) {
+    public void storePromoWidget(String targetType, String userId, String shopType, DataPromoWidget promoWidget) {
 
         PromoAttributes promoAttributes = new PromoAttributes();
         if (!promoWidget.getPromoWidgetList().isEmpty()) {
@@ -245,6 +246,7 @@ public class CacheInteractorImpl implements CacheInteractor {
         }
         promoAttributes.setTargetType(targetType);
         promoAttributes.setUserId(userId);
+        promoAttributes.setShopType(shopType);
 
         final GlobalCacheManager cache = new GlobalCacheManager();
         cache.setKey(PROMO_WIDGET_PDP)
