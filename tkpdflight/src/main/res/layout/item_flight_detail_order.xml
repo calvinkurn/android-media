@@ -45,6 +45,7 @@
     </LinearLayout>
 
     <View
+        android:id="@+id/flight_detail_order_separator_line"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_marginBottom="@dimen/margin_small"
@@ -58,6 +59,7 @@
 
 
     <TextView
+        android:id="@+id/text_view_flight_cek_syarat"
         style="@style/TextView.Micro.BlackSecondary"
         android:layout_width="match_parent"
         android:background="@color/white"
