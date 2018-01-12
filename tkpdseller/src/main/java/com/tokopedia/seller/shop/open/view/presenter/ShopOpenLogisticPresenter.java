@@ -11,5 +11,7 @@ import com.tokopedia.seller.shop.open.view.listener.ShopOpenLogisticView;
 public abstract class ShopOpenLogisticPresenter extends BaseDaggerPresenter<ShopOpenLogisticView> {
 
     public abstract void getCouriers(int districtCode);
+
     public abstract void saveCourier(CourierServiceIdWrapper courierServiceIdWrapper);
+
 }

@@ -7,11 +7,10 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-/**
- * Created by nakama on 19/12/17.
- */
-
 public class Courier {
+
+    public static final String EXPRESS_COURIER_ID = "1000"; // from API
+
     @Expose
     private String name;
     @SerializedName("weight_policy")
@@ -65,6 +64,10 @@ public class Courier {
 
     public String getId() {
         return id;
+    }
+
+    public boolean isExpressCourierId(){
+        return EXPRESS_COURIER_ID.equals(id);
     }
 
     public List<CourierServiceModel> getServices() {

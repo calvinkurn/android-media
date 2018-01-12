@@ -187,12 +187,6 @@ public class TkpdHintTextInputLayout extends LinearLayout {
             mPasswordToggleTintList = a.getColorStateList(
                     R.styleable.TextInputLayoutv2_passwordToggleTint);
         }
-        /*if (a.hasValue(R.styleable.TextInputLayoutv2_passwordToggleTintMode)) {
-            mHasPasswordToggleTintMode = true;
-            mPasswordToggleTintMode = parseTintMode(
-                    a.getInt(R.styleable.TextInputLayoutv2_passwordToggleTintMode, -1), null);
-        }*/
-
         Resources.Theme theme = getContext().getTheme();
         if (theme != null) {
             int[] appcompatCheckAttrs = {
@@ -339,9 +333,6 @@ public class TkpdHintTextInputLayout extends LinearLayout {
 
     public void setErrorEnabled(boolean enabled) {
         if (mErrorEnabled != enabled) {
-            /*if (mErrorView != null) {
-                ViewCompat.animate(mErrorView).cancel();
-            }*/
             mErrorEnabled = enabled;
             checkErrorVisible();
             updateEditTextBackground();
@@ -392,9 +383,6 @@ public class TkpdHintTextInputLayout extends LinearLayout {
 
     public void setHelperEnabled(boolean enabled) {
         if (mHelperEnabled != enabled) {
-            /*if (mErrorView != null) {
-                ViewCompat.animate(mErrorView).cancel();
-            }*/
             mHelperEnabled = enabled;
             setUIHelper();
         }
@@ -768,13 +756,10 @@ public class TkpdHintTextInputLayout extends LinearLayout {
         if (child instanceof EditText) {
             // Make sure that the EditText is vertically at the bottom, so that it sits on the
             // EditText's underline
-//            FrameLayout.LayoutParams flp = new FrameLayout.LayoutParams(params);
-//            flp.gravity = Gravity.CENTER_VERTICAL | (flp.gravity & ~Gravity.VERTICAL_GRAVITY_MASK);
             mFrameLayout.addView(child);
 
             // Now use the EditText's LayoutParams as our own and update them to make enough space
             // for the label
-//            mFrameLayout.setLayoutParams(params);
             setEditText((EditText) child);
 
             setUIPasswordToogle();
@@ -827,18 +812,7 @@ public class TkpdHintTextInputLayout extends LinearLayout {
             mHint = mEditText.getHint();
             mTvLabel.setText(mHint);
         }
-//
-//        if (mCounterView != null) {
-//            setUICounter(mEditText.getText().length());
-//        }
-//
-//        if (mIndicatorArea != null) {
-//            adjustIndicatorPadding();
-//        }
-//
-//        updatePasswordToggleView();
-//
-//        // Update the label visibility with no animation, but force a state change
+        // Update the label visibility with no animation, but force a state change
         updateLabelState(false, true);
     }
 

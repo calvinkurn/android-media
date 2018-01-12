@@ -30,7 +30,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_med"
-                android:text="@string/title_shop_setting_logistic" />
+                android:text="@string/shop_open_label_logistic" />
 
             <TextView
                 style="@style/TextView.Small"
@@ -42,7 +42,7 @@
                 android:layout_marginRight="@dimen/margin_sm"
                 android:layout_marginTop="@dimen/margin_ms"
                 android:gravity="center"
-                android:text="@string/description_shop_setting_logistic"
+                android:text="@string/shop_open_description_shop_setting_logistic"
                 android:textAlignment="center" />
 
             <TextView

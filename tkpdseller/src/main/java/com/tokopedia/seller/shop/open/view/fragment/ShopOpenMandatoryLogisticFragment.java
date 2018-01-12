@@ -25,14 +25,12 @@ import android.widget.TextView;
 import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.drawer2.data.factory.ProfileSourceFactory;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.AppWidgetUtil;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.listener.StepperListener;
+import com.tokopedia.seller.logistic.model.Courier;
 import com.tokopedia.seller.shop.open.analytic.ShopOpenTracking;
 import com.tokopedia.seller.logistic.model.CouriersModel;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
@@ -59,7 +57,7 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     private OnShopOpenLogisticFragmentListener onShopOpenLogisticFragmentListener;
     private TextView tvMakeSurePickupLoc;
 
-    public interface OnShopOpenLogisticFragmentListener{
+    public interface OnShopOpenLogisticFragmentListener {
         void goToPickupLocation();
     }
 
@@ -110,7 +108,7 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
         tvMakeSurePickupLoc = view.findViewById(R.id.tv_pickup_location);
 
         courierListViewGroup = view.findViewById(R.id.vg_courier_list);
-        courierListViewGroup.setCourierList(null, selectedCourierServiceIdWrapper);
+        courierListViewGroup.setCourierList(null, selectedCourierServiceIdWrapper, hasPinPointLocation());
         courierListViewGroup.setOnShopCourierExpandableOptionListener(this);
 
         View continueButton = view.findViewById(R.id.continue_button);
@@ -126,16 +124,23 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
         return view;
     }
 
-    private void onContinueButtonClicked(){
+    private void onContinueButtonClicked() {
         //check validity
-        selectedCourierServiceIdWrapper = courierListViewGroup.getSelectedCourierList();
-        List<String> courierIdList = selectedCourierServiceIdWrapper.getSelectedServiceIdList();
-        if (courierIdList.size() == 0) {
-            NetworkErrorHelper.showCloseSnackbar(getActivity(),getString(R.string.min_1_courier_must_be_selected));
+        if (!isInputValid()) {
             return;
         }
         showSubmitLoading();
         presenter.saveCourier(selectedCourierServiceIdWrapper);
+    }
+
+    private boolean isInputValid() {
+        selectedCourierServiceIdWrapper = courierListViewGroup.getSelectedCourierList();
+        List<String> courierIdList = selectedCourierServiceIdWrapper.getSelectedServiceIdList();
+        if (courierIdList.size() == 0) {
+            NetworkErrorHelper.showCloseSnackbar(getActivity(), getString(R.string.shop_open_error_min_1_courier_must_be_selected));
+            return false;
+        }
+        return true;
     }
 
     public void updateLogistic() {
@@ -143,13 +148,13 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
         presenter.getCouriers(getDistrictId());
     }
 
-    private void setPickupLocationText(){
+    private void setPickupLocationText() {
         SpannableString spannableString = new SpannableString(getString(R.string.openshop_make_sure_pickup_location));
         final String locationPickUpString = getString(R.string.label_pickup_location);
         ClickableSpan clickablePickup = new ClickableSpan() {
             @Override
             public void onClick(View view) {
-                onShopOpenLogisticFragmentListener.goToPickupLocation();
+                goToPickupLocation();
             }
         };
         int locationPickUpStringIndex = spannableString.toString().indexOf(locationPickUpString);
@@ -164,20 +169,38 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
         tvMakeSurePickupLoc.setText(spannableString);
     }
 
-    private int getDistrictId(){
-        ShopOpenStepperModel shopOpenStepperModel = onShopStepperListener.getStepperModel();
-        if (shopOpenStepperModel == null) {
-            return DEFAULT_DISTRICT_ID;
-        }
-        ResponseIsReserveDomain responseIsReserveDomain = shopOpenStepperModel.getResponseIsReserveDomain();
-        if (responseIsReserveDomain == null) {
-            return DEFAULT_DISTRICT_ID;
-        }
-        Shipment shipment = responseIsReserveDomain.getShipment();
+    private int getDistrictId() {
+        Shipment shipment = getShipment();
         if (shipment == null) {
             return DEFAULT_DISTRICT_ID;
         }
         return shipment.getDistrictId();
+    }
+
+    private boolean hasPinPointLocation() {
+        Shipment shipment = getShipment();
+        if (shipment == null) {
+            return false;
+        }
+        if (TextUtils.isEmpty(shipment.getLongitude()) || "0".equals(shipment.getLongitude())) {
+            return false;
+        }
+        if (TextUtils.isEmpty(shipment.getLatitude()) || "0".equals(shipment.getLatitude())) {
+            return false;
+        }
+        return true;
+    }
+
+    private Shipment getShipment() {
+        ShopOpenStepperModel shopOpenStepperModel = onShopStepperListener.getStepperModel();
+        if (shopOpenStepperModel == null) {
+            return null;
+        }
+        ResponseIsReserveDomain responseIsReserveDomain = shopOpenStepperModel.getResponseIsReserveDomain();
+        if (responseIsReserveDomain == null) {
+            return null;
+        }
+        return responseIsReserveDomain.getShipment();
     }
 
     @Override
@@ -218,18 +241,41 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     }
 
     @Override
-    public void onDisabledHeaderClicked() {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle)
-                .setTitle(getString(R.string.courier_cannot_activate_title))
-                .setMessage(getString(R.string.courier_cannot_activate_desc))
-                .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        // no op, just dismiss
-                    }
-                });
+    public void onDisabledHeaderClicked(Courier courier) {
+        AlertDialog.Builder alertDialogBuilder;
+        if (courier.isExpressCourierId()) {
+            alertDialogBuilder = new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle)
+                    .setTitle(getString(R.string.shop_open_error_courier_cannot_activate_pinpoint_title))
+                    .setMessage(getString(R.string.shop_open_error_courier_cannot_activate_pinpoint_desc))
+                    .setNegativeButton(getString(R.string.label_exit), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            // no op, just dismiss
+                        }
+                    })
+                    .setPositiveButton(getString(R.string.select_pickup_location), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            goToPickupLocation();
+                        }
+                    });
+        } else {
+            alertDialogBuilder = new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle)
+                    .setTitle(getString(R.string.shop_open_error_courier_cannot_activate_title))
+                    .setMessage(getString(R.string.shop_open_error_courier_cannot_activate_desc))
+                    .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            // no op, just dismiss
+                        }
+                    });
+        }
         AlertDialog dialog = alertDialogBuilder.create();
         dialog.show();
+    }
+
+    private void goToPickupLocation() {
+        onShopOpenLogisticFragmentListener.goToPickupLocation();
     }
 
     @Override
@@ -249,7 +295,8 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     @Override
     public void onSuccessLoadLogistic(CouriersModel couriersModel) {
         hideLoading();
-        courierListViewGroup.setCourierList(couriersModel.getCourier(), selectedCourierServiceIdWrapper);
+        courierListViewGroup.setCourierList(couriersModel.getCourier(), selectedCourierServiceIdWrapper,
+                hasPinPointLocation());
     }
 
     @Override
@@ -328,7 +375,7 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
         onAttachListener(context);
     }
 
-    protected void onAttachListener(Context context){
+    protected void onAttachListener(Context context) {
         onShopStepperListener = (StepperListener<ShopOpenStepperModel>) context;
         onShopOpenLogisticFragmentListener = (OnShopOpenLogisticFragmentListener) context;
     }

@@ -1,7 +1,5 @@
 package com.tokopedia.seller.shop.open.view.presenter;
 
-import android.util.Log;
-
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
@@ -9,7 +7,7 @@ import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Tok
 import com.tokopedia.seller.logistic.GetOpenShopLocationPassUseCase;
 import com.tokopedia.seller.logistic.GetOpenShopTokenUseCase;
 import com.tokopedia.seller.shop.open.domain.interactor.ShopOpenSaveLocationUseCase;
-import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLocationFragment;
+import com.tokopedia.seller.shop.open.view.listener.ShopOpenLocView;
 
 import javax.inject.Inject;
 
@@ -22,9 +20,7 @@ import rx.Subscriber;
 public class ShopOpenLocPresenterImpl extends BaseDaggerPresenter<ShopOpenLocView> {
 
     ShopOpenSaveLocationUseCase shopOpenSaveLocationUseCase;
-
     GetOpenShopTokenUseCase getOpenShopTokenUseCase;
-
     GetOpenShopLocationPassUseCase getOpenShopLocationPassUseCase;
     private boolean isHitToken;
 
@@ -37,7 +33,7 @@ public class ShopOpenLocPresenterImpl extends BaseDaggerPresenter<ShopOpenLocVie
         this.getOpenShopLocationPassUseCase = getOpenShopLocationPassUseCase;
     }
 
-    public void submitData(RequestParams requestParams){
+    public void submitData(RequestParams requestParams) {
         shopOpenSaveLocationUseCase.execute(requestParams, new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
@@ -46,29 +42,27 @@ public class ShopOpenLocPresenterImpl extends BaseDaggerPresenter<ShopOpenLocVie
 
             @Override
             public void onError(Throwable e) {
-                if(!isViewAttached())
-                    return;
-
-                getView().onFailedSaveInfoShop(e);
+                if (isViewAttached()) {
+                    getView().onFailedSaveInfoShop(e);
+                }
             }
 
             @Override
             public void onNext(Boolean aBoolean) {
-                if(aBoolean == null || !isViewAttached())
+                if (aBoolean == null || !isViewAttached())
                     return;
-
                 getView().updateStepperModel();
                 getView().goToNextPage(null);
             }
         });
     }
 
-    public void openGoogleMap(RequestParams requestParams, final String generatedMap){
-        if(isHitToken)
+    public void openGoogleMap(RequestParams requestParams, final String generatedMap) {
+        if (isHitToken)
             return;
 
         isHitToken = true;
-        if(isViewAttached()){
+        if (isViewAttached()) {
             getView().showProgressDialog();
         }
         getOpenShopLocationPassUseCase.execute(requestParams, new Subscriber<LocationPass>() {
@@ -79,25 +73,20 @@ public class ShopOpenLocPresenterImpl extends BaseDaggerPresenter<ShopOpenLocVie
             @Override
             public void onError(Throwable e) {
                 isHitToken = false;
-
-                if(!isViewAttached())
-                    return;
-
-                if(isViewAttached()){
+                if (isViewAttached()) {
                     getView().dismissProgressDialog();
+                    getView().onErrorGetReserveDomain(e);
                 }
-
-                getView().onErrorGetReserveDomain(e);
             }
 
             @Override
             public void onNext(LocationPass locationPass) {
                 isHitToken = false;
 
-                if(!isViewAttached())
+                if (!isViewAttached())
                     return;
 
-                if(isViewAttached()){
+                if (isViewAttached()) {
                     getView().dismissProgressDialog();
                 }
 
@@ -106,12 +95,12 @@ public class ShopOpenLocPresenterImpl extends BaseDaggerPresenter<ShopOpenLocVie
         });
     }
 
-    public void openDistrictRecommendation(RequestParams requestParams){
-        if(isHitToken)
+    public void openDistrictRecommendation(RequestParams requestParams) {
+        if (isHitToken) {
             return;
-
+        }
         isHitToken = true;
-        if(isViewAttached()){
+        if (isViewAttached()) {
             getView().showProgressDialog();
         }
         getOpenShopTokenUseCase.execute(requestParams, new Subscriber<Token>() {
@@ -122,29 +111,16 @@ public class ShopOpenLocPresenterImpl extends BaseDaggerPresenter<ShopOpenLocVie
             @Override
             public void onError(Throwable e) {
                 isHitToken = false;
-
-
-                if(!isViewAttached())
-                    return;
-
-                if(isViewAttached()){
+                if (isViewAttached()) {
                     getView().dismissProgressDialog();
+                    getView().onErrorGetReserveDomain(e);
                 }
-
-                getView().onErrorGetReserveDomain(e);
             }
 
             @Override
             public void onNext(Token token) {
                 isHitToken = false;
-
-                if(!isViewAttached())
-                    return;
-
-                if(isViewAttached()){
-                    getView().dismissProgressDialog();
-                }
-
+                getView().dismissProgressDialog();
                 getView().navigateToDistrictRecommendation(token);
             }
         });

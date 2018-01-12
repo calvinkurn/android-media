@@ -94,15 +94,6 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
         Intent intent = SellerRouter.getActivityShopCreateEdit(context);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         return intent;
-
-        // MSISDN will between shop create
-        /*if (SessionHandler.isMsisdnVerified()) {
-            Intent intent = SellerRouter.getActivityShopCreateEdit(context, true, true);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            return intent;
-        } else {
-            return SessionRouter.getPhoneVerificationActivationActivityIntent(context);
-        }*/
     }
 
     @DeepLink(Constants.Applinks.SellerApp.BROWSER)

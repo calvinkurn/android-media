@@ -19,5 +19,4 @@ public interface MyShopApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.Shop.PATH_GET_OPEN_SHOP_FORM)
     Observable<Response<TkpdResponse>> getOpenShopForm(@FieldMap Map<String, String> params);
-
 }

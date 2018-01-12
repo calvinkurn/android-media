@@ -15,7 +15,7 @@
             android:id="@+id/seller_text_edit_shipping_city"
             style="@style/EditText.ShopSetting"
             android:maxLength="@integer/open_shop_max_desc_char"
-            android:hint="@string/hint_origin_destination"
+            android:hint="@string/shop_open_hint_origin_destination"
             android:clickable="true"
             android:focusable="false"
             />

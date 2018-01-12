@@ -133,4 +133,5 @@ public interface TkpdCoreRouter {
 
     Intent getResolutionCenterIntent(Context context);
 
+    Intent getChangePhoneNumberIntent(Context context, String email, String phoneNumber);
 }

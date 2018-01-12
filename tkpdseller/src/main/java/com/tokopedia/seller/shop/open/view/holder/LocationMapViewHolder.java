@@ -3,9 +3,7 @@ package com.tokopedia.seller.shop.open.view.holder;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -18,7 +16,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.lib.widget.TkpdHintTextInputLayout;
 import com.tokopedia.seller.shop.open.view.model.GoogleLocationViewModel;
@@ -136,7 +133,7 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
     public boolean isDataInputValid(){
         if (!TextUtils.isEmpty(generatedLocationOpenShop.getText().toString())) {
             if (TextUtils.isEmpty(shopAddressEdittext.getText().toString())) {
-                shopAddressEdittext.setError(root.getContext().getString(R.string.shop_location_must_be_filled));
+                shopAddressEdittext.setError(root.getContext().getString(R.string.shop_open_shop_location_must_be_filled));
                 shopAddressEdittext.requestFocus();
                 CommonUtils.hideSoftKeyboard(root);
                 return false;
