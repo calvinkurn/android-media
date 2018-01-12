@@ -53,6 +53,10 @@ import rx.subscriptions.CompositeSubscription;
 
 public class PromoListFragment extends BasePresenterFragment implements IPromoListView, PromoListAdapter.ActionListener, RefreshHandler.OnRefreshHandlerListener {
     private static final String ARG_EXTRA_PROMO_MENU_DATA = "ARG_EXTRA_PROMO_MENU_DATA";
+
+    private static final String EXTRA_STATE_PROMO_MENU_DATA = "EXTRA_STATE_PROMO_MENU_DATA";
+    private static final String EXTRA_STATE_FILTER_SELECTED = "EXTRA_STATE_FILTER_SELECTED";
+
     private static final String TYPE_FILTER_ALL = "all";
     @BindView(R2.id.quick_filter)
     QuickSingleFilterView quickSingleFilterView;
@@ -216,12 +220,12 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
 
     @Override
     public void onSaveState(Bundle state) {
-
+        state.putParcelable(EXTRA_STATE_PROMO_MENU_DATA, promoMenuData);
     }
 
     @Override
     public void onRestoreState(Bundle savedState) {
-
+        promoMenuData = savedState.getParcelable(EXTRA_STATE_PROMO_MENU_DATA);
     }
 
     @Override
