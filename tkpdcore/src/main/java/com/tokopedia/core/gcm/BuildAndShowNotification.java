@@ -418,8 +418,8 @@ public class BuildAndShowNotification {
     private int getCode(Bundle data) {
         int code;
         try {
-            code = Integer.parseInt(data.getString("tkp_code"));
-        } catch (Exception e) {
+            code = Integer.parseInt(data.getString("tkp_code", "0"));
+        } catch (NumberFormatException e) {
             code = 0;
         }
         return code;
