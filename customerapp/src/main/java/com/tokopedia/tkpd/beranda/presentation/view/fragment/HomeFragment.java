@@ -675,11 +675,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void onGoToProductDetailFromProductUpload(int rowNumber, int positionFeedCard, int page, int itemPosition, String productId, String imageSourceSingle, String name, String price, String priceInt, String productUrl, String eventLabel) {
-
-    }
-
-    @Override
     public void onGoToProductDetailFromRecentView(String productID, String imgUri, String name, String price) {
 
     }
@@ -689,8 +684,19 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     }
 
-    @Overridepublic void onGoToProductDetailFromInspiration(int page, int rowNumber, String productId, String imageSource, String name, String price,
-                                                   String priceInt, String productUrl, String source, int positionFeedCard, int itemPosition, String eventLabel) {
+    @Override
+    public void onGoToProductDetailFromInspiration(int page,
+                                                   int rowNumber,
+                                                   String productId,
+                                                   String imageSource,
+                                                   String name,
+                                                   String price,
+                                                   String priceInt,
+                                                   String productUrl,
+                                                   String source,
+                                                   int positionFeedCard,
+                                                   int itemPosition,
+                                                   String eventLabel) {
         goToProductDetail(productId, imageSource, name, price);
     }
 
