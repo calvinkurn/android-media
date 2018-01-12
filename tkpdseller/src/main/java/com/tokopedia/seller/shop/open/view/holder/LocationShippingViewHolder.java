@@ -83,7 +83,7 @@ public class LocationShippingViewHolder {
     }
 
     private void setErrorEmptyCity() {
-        cityTextInputLayout.setError(root.getContext().getString(R.string.shop_open_shop_location_must_be_filled));
+        cityTextInputLayout.setError(root.getContext().getString(R.string.shop_open_error_city_not_filled));
         cityTextInputLayout.requestFocus();
         CommonUtils.hideSoftKeyboard(root);
     }

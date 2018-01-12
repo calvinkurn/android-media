@@ -43,6 +43,7 @@ public class ShopOpenLocPresenterImpl extends BaseDaggerPresenter<ShopOpenLocVie
             @Override
             public void onError(Throwable e) {
                 if (isViewAttached()) {
+                    getView().updateStepperModel();
                     getView().onFailedSaveInfoShop(e);
                 }
             }

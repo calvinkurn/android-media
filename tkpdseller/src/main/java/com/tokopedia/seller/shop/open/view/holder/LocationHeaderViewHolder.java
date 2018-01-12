@@ -15,7 +15,7 @@ public class LocationHeaderViewHolder {
 
     public LocationHeaderViewHolder(View root, final ViewHolderListener viewHolderListener) {
         this.viewHolderListener = viewHolderListener;
-        root.findViewById(R.id.btn_choose_from_address).setOnClickListener(new View.OnClickListener() {
+        root.findViewById(R.id.btn_choose_from_address_container).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(viewHolderListener != null){
