@@ -11,10 +11,10 @@
         android:orientation="vertical">
 
         <ImageView
-            android:layout_width="38dp"
-            android:layout_height="38dp"
+            android:layout_width="@dimen/verification_icon"
+            android:layout_height="@dimen/verification_icon"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="@dimen/space_large_32"
             android:contentDescription="@string/title_email"
             android:src="@drawable/ic_verification_email" />
 
@@ -23,26 +23,26 @@
             android:layout_height="wrap_content"
             android:text="@string/verification_for_security"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="16dp"
-            android:textSize="16sp"
+            android:layout_marginTop="@dimen/new_margin_med"
+            android:textSize="@dimen/text_size_l_medium"
             android:fontFamily="sans-serif"
             android:textStyle="bold"
             android:textColor="@color/black_70"
-            android:lineSpacingExtra="6sp"
+            android:lineSpacingExtra="@dimen/line_spacing_6"
             android:gravity="center_horizontal"
             />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/new_margin_med"
             android:layout_marginLeft="18.5dp"
             android:layout_marginRight="18.5dp"
-            android:textSize="14sp"
+            android:textSize="@dimen/text_size_medium"
             android:fontFamily="sans-serif"
             android:textStyle="normal"
             android:textColor="@color/black_54"
-            android:lineSpacingExtra="8sp"
+            android:lineSpacingExtra="@dimen/line_spacing_8"
             android:gravity="center_horizontal"
             tools:text="Untuk memastikan akun ini benar milik Anda, kami akan mengirimkan kode verifikasi melalui email ke farrah.nurul@gmail.com"
             android:id="@+id/verification_instruction"
@@ -51,17 +51,17 @@
         <TextView
             android:id="@+id/send_button"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginLeft="41dp"
-            android:layout_marginRight="41dp"
-            android:layout_marginBottom="16dp"
+            android:layout_height="@dimen/button_height"
+            android:layout_marginTop="@dimen/new_margin_med"
+            android:layout_marginLeft="@dimen/space_slightly_very_large"
+            android:layout_marginRight="@dimen/space_slightly_very_large"
+            android:layout_marginBottom="@dimen/new_margin_med"
             android:background="@drawable/green_button_rounded_unify"
             android:fontFamily="sans-serif"
             android:gravity="center"
             android:text="@string/title_otp_email"
             android:textColor="@color/white"
-            android:textSize="13sp"
+            android:textSize="@dimen/text_size_s_medium"
             android:textStyle="bold" />
     </LinearLayout>
 </ScrollView>
