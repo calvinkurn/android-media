@@ -112,8 +112,11 @@ public class QuickSingleFilterView extends BaseCustomView {
             @Override
             public void run() {
                 if (recyclerView != null) {
-                    View holderItem = recyclerView.findViewHolderForAdapterPosition(position).itemView;
-                    if (holderItem != null) holderItem.performClick();
+                    RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(position);
+                    if (holder != null) {
+                        View holderItem = holder.itemView;
+                        if (holderItem != null) holderItem.performClick();
+                    }
                 }
             }
         }, 100);
