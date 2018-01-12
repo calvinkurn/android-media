@@ -397,13 +397,14 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
     public void renderDataOperator(Operator operatorModel) {
         if (!TextUtils.isEmpty(widgetClientNumberView.getText())) {
             selectedOperator = operatorModel;
+            widgetWrapperBuyView.resetInstantCheckout();
+            widgetWrapperBuyView.setBuyButtonText(selectedOperator.getAttributes().getRule().getButtonLabel());
             UnifyTracking.eventSelectOperatorWidget(category.getAttributes().getName(),
                     selectedOperator.getAttributes().getName());
             minLengthDefaultOperator = operatorModel.getAttributes().getMinimumLength();
             widgetClientNumberView.setFilterMaxLength(operatorModel.getAttributes().getMaximumLength());
             widgetClientNumberView.setImgOperator(operatorModel.getAttributes().getImage());
             widgetClientNumberView.setImgOperatorVisible();
-//            widgetClientNumberView.setInputType(operatorModel.getAttributes().getRule().isAllowAphanumericNumber());
             widgetProductChooserView.setTitleProduct(operatorModel.getAttributes().getRule().getProductText());
             widgetProductChooserView.setVisibilityProduct(operatorModel.getAttributes().getRule().isShowProduct());
 
@@ -486,6 +487,8 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
     @Override
     public void renderOperator(Operator operatorModel) {
         selectedOperator = operatorModel;
+        widgetWrapperBuyView.resetInstantCheckout();
+        widgetWrapperBuyView.setBuyButtonText(selectedOperator.getAttributes().getRule().getButtonLabel());
         widgetClientNumberView.setImgOperator(operatorModel.getAttributes().getImage());
         widgetClientNumberView.setImgOperatorVisible();
     }
