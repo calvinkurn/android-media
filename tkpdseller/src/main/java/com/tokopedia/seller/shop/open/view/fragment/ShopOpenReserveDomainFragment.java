@@ -88,9 +88,9 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
                 buttonSubmit.setEnabled(false);
                 hideSnackBarRetry();
                 if (TextUtils.isEmpty(s)) {
-                    textInputShopName.setError(getString(R.string.shop_name_must_be_filled));
+                    textInputShopName.setError(getString(R.string.shop_open_error_shop_name_must_be_filled));
                 } else if (s.toString().length() < MIN_SHOP_NAME_LENGTH) {
-                    textInputShopName.setError(getString(R.string.shop_name_min_char));
+                    textInputShopName.setError(getString(R.string.shop_open_error_shop_name_min_char));
                 } else if (s.toString().length() <= textInputShopName.getCounterMaxLength()) {
                     shopOpenDomainPresenter.checkShop(editTextInputShopName.getText().toString());
                 }
@@ -106,9 +106,9 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
                 hideSnackBarRetry();
                 String domainInputStr = editTextInputDomainName.getTextWithoutPrefix();
                 if (TextUtils.isEmpty(domainInputStr)) {
-                    textInputDomainName.setError(getString(R.string.domain_name_must_be_filled));
+                    textInputDomainName.setError(getString(R.string.shop_open_error_domain_name_must_be_filled));
                 } else if (domainInputStr.length() < MIN_SHOP_DOMAIN_LENGTH) {
-                    textInputDomainName.setError(getString(R.string.domain_name_min_char));
+                    textInputDomainName.setError(getString(R.string.shop_open_error_domain_name_min_char));
                 } else if (s.toString().length() <= textInputDomainName.getCounterMaxLength()) {
                     shopOpenDomainPresenter.checkDomain(editTextInputDomainName.getTextWithoutPrefix());
                 }

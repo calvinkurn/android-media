@@ -258,10 +258,10 @@ public class ShopOpenCourierExpandableOption extends BaseExpandableOption implem
         }
         if (mEnabled) {
             tvDesc.setTextColor(ContextCompat.getColor(getContext(),R.color.font_black_secondary_54));
-            tvDesc.setText(getContext().getString(R.string.choose_delivery_packet));
+            tvDesc.setText(getContext().getString(R.string.shop_open_choose_delivery_packet));
         } else {
             tvDesc.setTextColor(ContextCompat.getColor(getContext(),R.color.font_black_disabled_38));
-            tvDesc.setText(getContext().getString(R.string.delivery_not_available));
+            tvDesc.setText(getContext().getString(R.string.shop_open_delivery_not_available));
         }
     }
 

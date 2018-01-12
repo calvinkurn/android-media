@@ -1,6 +1,5 @@
 package com.tokopedia.seller.shop.open.view.holder;
 
-import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.MotionEvent;
@@ -9,7 +8,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.seller.R;
@@ -85,19 +83,19 @@ public class LocationShippingViewHolder {
     }
 
     private void setErrorEmptyCity() {
-        cityTextInputLayout.setError(root.getContext().getString(R.string.shop_location_must_be_filled));
+        cityTextInputLayout.setError(root.getContext().getString(R.string.shop_open_shop_location_must_be_filled));
         cityTextInputLayout.requestFocus();
         CommonUtils.hideSoftKeyboard(root);
     }
 
     private void setErrorEmptyPostalCode() {
-        postalCodeTextInputLayout.setError(root.getContext().getString(R.string.postal_code_must_be_filled));
+        postalCodeTextInputLayout.setError(root.getContext().getString(R.string.shop_open_postal_code_must_be_filled));
         postalCodeTextInputLayout.requestFocus();
         CommonUtils.hideSoftKeyboard(root);
     }
 
     private void setErrorLengthPostalCode() {
-        postalCodeTextInputLayout.setError(root.getContext().getString(R.string.postal_code_minimum_5_char));
+        postalCodeTextInputLayout.setError(root.getContext().getString(R.string.shop_open_postal_code_minimum_5_char));
         postalCodeTextInputLayout.requestFocus();
         CommonUtils.hideSoftKeyboard(root);
     }
