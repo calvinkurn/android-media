@@ -4,7 +4,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.otp.data.RequestOtpModel;
 import com.tokopedia.otp.data.ValidateOtpModel;
 import com.tokopedia.otp.data.factory.OtpSourceFactory;
-import com.tokopedia.otp.domain.OtpRepository;
+import com.tokopedia.otp.domainold.OtpRepository;
 
 import rx.Observable;
 

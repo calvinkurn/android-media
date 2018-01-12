@@ -45,7 +45,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".changephonenumber.activity.ChangePhoneNumberRequestActivity"
+            android:name=".changephonenumber.view.activity.ChangePhoneNumberRequestActivity"
             android:label="@string/title_change_phone_number_request"
             android:screenOrientation="portrait" />
         <activity
@@ -60,12 +60,16 @@
             android:name="com.tokopedia.otp.phoneverification.view.activity.TokoCashWebViewActivity"
             android:label="@string/tokocash"
             android:screenOrientation="portrait" />
-
         <activity
             android:name="com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity"
-            android:windowSoftInputMode="adjustResize"
             android:label="@string/profile_completion_title"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name="com.tokopedia.otp.cotp.view.activity.VerificationActivity"
+            android:label="@string/title_verify"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
 
         <service
             android:name=".session.intentservice.LoginService"
@@ -88,7 +92,21 @@
             android:name=".google.GoogleSignInActivity"
             android:screenOrientation="portrait"
             android:theme="@style/DialogTheme" />
-
+        <activity
+            android:name=".changephonenumber.view.activity.ChangePhoneNumberWarningActivity"
+            android:label=""
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".changephonenumber.view.activity.ChangePhoneNumberInputActivity"
+            android:label="@string/change_phone_number"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".changephonenumber.view.activity.ChangePhoneNumberEmailVerificationActivity"
+            android:label="@string/title_verify"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"
+            />
     </application>
 
 </manifest>

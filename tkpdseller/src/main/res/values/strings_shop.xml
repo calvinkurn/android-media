@@ -1,0 +1,77 @@
+<resources>
+
+    <string name="shop_open_error_shop_name_must_be_filled">Nama Toko harus diisi</string>
+    <string name="shop_open_error_shop_name_min_char">Nama Toko minimum 3 karakter</string>
+    <string name="shop_open_error_domain_name_must_be_filled">Nama domain harus diisi</string>
+    <string name="shop_open_error_domain_name_min_char">Nama domain minimum 3 karakter</string>
+    <string name="shop_open_info_loading_reserve_shop_name_domain">Mereservasi nama toko dan domain</string>
+    <string name="shop_open_error_shop_name_or_domain_has_been_reserved">Nama atau domain toko sudah terpakai</string>
+    <string name="shop_open_label_shop_domain">Domain Toko</string>
+    <string name="shop_open_info_shop_domain_definition">Domain Toko adalah nama unik untuk membedakan toko Anda dengan toko lainnya.</string>
+
+    <string name="shop_open_complete_shop_information">Lengkapi Informasi Toko</string>
+    <string name="shop_open_shop_reserve_success_title">Lengkapi Informasi <![CDATA[<b>]]>%1$s<![CDATA[</b>]]> dan mulai berjualan sekarang!</string>
+    <string name="shop_open_shop_reserve_success_info">INFO: Toko akan otomatis dihapus dalam 7 hari jika Informasi Toko belum lengkap.</string>
+    <string name="shop_open_create_success">Anda berhasil membuka toko!</string>
+
+
+    <string name="shop_open_getting_shop_step">Mengambil Informasi Toko</string>
+    <string name="shop_open_shipping_location_text"><b>Lokasi Pengiriman</b></string>
+    <string name="shop_open_shipping_location_text_desc">Lengkapi informasi lokasi pengiriman untuk memilih kurir yang tersedia di lokasi Anda.</string>
+    <string name="shop_open_shipping_location_text_choose_desc">Pilih dari Daftar Alamat yang sudah terdaftar di akun Anda.</string>
+    <string name="shop_open_choose_from_address_list">Pilih dari Daftar Alamat</string>
+    <string name="shop_open_optional_pinpoint_location_text">Pinpoint Lokasi (Opsional)</string>
+    <string name="shop_open_pin_pickup_location_text">Tandai lokasi pickup dalam peta jika Anda menggunakan kurir Express (seperti Go-Send).</string>
+    <string name="shop_open_pin_location_pickup">Tandai Lokasi Pickup</string>
+    <string name="shop_open_default_address_text">Wisma 77 Tower 2, Jalan Letjen S. Parman, Palmerah, 11410.</string>
+    <string name="shop_open_default_address_text_use_this">Gunakan Alamat Ini</string>
+    <string name="shop_open_pickup_location">Alamat Pick Up</string>
+    <string name="shop_open_write_address_text">Tulis jalan, nomor rumah, gedung/landmark</string>
+    <string name="shop_open_fill_width_address_desc">Isi dengan jalan, nomor rumah, kecamatan, nama gedung, landmark dekat lokasi dan detail lainnya.</string>
+    <string name="shop_open_title_next_and_continue_later">Simpan dan lanjutkan Nanti</string>
+    <string name="shop_open_error_courier_cannot_activate_desc">Kurir ini tidak dapat diaktifkan karena tidak tersedia di daerah Anda.</string>
+    <string name="shop_open_error_courier_cannot_activate_pinpoint_desc">Pilih Lokasi Pickup untuk mengaktifkan kurir dengan layanan Same Day.</string>
+    <string name="shop_open_error_courier_cannot_activate_title">Kurir tidak tersedia di daerah Anda</string>
+    <string name="shop_open_error_courier_cannot_activate_pinpoint_title">Kurir Tidak Dapat Diaktifkan</string>
+
+    <string name="shop_open_label_save_and_continue_later">Simpan dan Lanjutkan Nanti</string>
+    <string name="shop_open_label_description_info">Ceritakan secara singkat mengenai toko Anda, produk apa yang Anda jual, dan lain-lain.</string>
+    <string name="shop_open_label_slogan_info">Tulis kalimat singkat yang mencerminkan toko Anda.</string>
+    <string name="shop_open_choose_delivery_packet">Pilih Paket Pengiriman</string>
+    <string name="shop_open_delivery_not_available">Pengiriman tidak tersedia</string>
+    <string name="shop_open_courier_cannot_activate_desc">Kurir ini tidak dapat diaktifkan karena tidak tersedia di daerah Anda.</string>
+    <string name="shop_open_courier_cannot_activate_title">Kurir tidak tersedia di daerah Anda</string>
+    <string name="shop_open_error_min_1_courier_must_be_selected">Minimal 1 layanan kurir harus dipilih.</string>
+
+    <string name="shop_open_label_picker_image_camera">Tambah gambar dari Kamera</string>
+    <string name="shop_open_label_picker_gallery">Tambah gambar dari Galeri</string>
+    <string name="shop_open_shop_location_must_be_filled">Lokasi pengiriman harus diisi</string>
+    <string name="shop_open_postal_code_must_be_filled">Kode Pos harus diisi</string>
+    <string name="shop_open_postal_code_minimum_5_char">Kode Pos harus minimum 5 digit</string>
+    <string name="shop_open_hint_origin_destination">Tulis kota/kecamatan asal pengiriman</string>
+
+    <string name="shop_open_label_prefix_welcome">Halo,</string>
+    <string name="shop_open_label_info_title_shop">Lengkapi informasi toko. Tampilan toko yang menarik, buat pembeli tertarik.</string>
+    <string name="shop_open_label_slogan">Slogan Toko</string>
+    <string name="shop_open_label_desc_shop">Deskripsi Toko</string>
+    <string name="shop_open_label_logo">Logo (Opsional)</string>
+    <string name="shop_open_error_should_pick_image">Logo harus diisi</string>
+    <string name="shop_open_label_max_file_size">Besar file maksimum:</string>
+    <string name="shop_open_label_info_size_image">10 Megabytes (10 MB)</string>
+    <string name="shop_open_label_info_allowed_file">File yang diperbolehkan:</string>
+    <string name="shop_open_label_info_type_file_image">.JPG .JPEG .PNG</string>
+    <string name="shop_open_label_browse_file">Browse File</string>
+    <string name="shop_open_error_slogan_should_fill">Slogan toko harus diisi</string>
+    <string name="shop_open_error_desc_should_fill">Deskripsi toko harus diisi</string>
+    <string name="shop_open_label_logistic">Layanan Kurir</string>
+    <string name="shop_open_description_shop_setting_logistic">Aktifkan kurir yang tersedia, beri pembeli lebih banyak pilihan pengiriman.</string>
+    <string name="shop_open_label_title_shop_information">Informasi Toko</string>
+    <string name="shop_open_label_shop_location">Lokasi Toko</string>
+    <string name="shop_open_label_shop_shipping">Atur Pengiriman</string>
+    <string name="shop_open_error_postal_code_not_filled">Kode pos harus diisi</string>
+    <string name="shop_open_error_city_not_filled">Kota harus diisi</string>
+
+    <string name="shop_open_shop_has_been_active">Toko Anda sudah aktif!</string>
+    <string name="shop_open_shop_create_success_ask_add_product">Jangan sampai toko Anda kosong begitu saja.\nTambahkan produk pertamamu dan mulai berjualan sekarang.</string>
+    <string name="shop_open_go_to_shop_page">Ke Halaman Toko Saya</string>
+</resources>

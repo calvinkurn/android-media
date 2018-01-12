@@ -170,6 +170,9 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
                 operatorRule.setProductViewStyle(
                         categoryDetailIncluded.getAttributes().getRule().getProductViewStyle()
                 );
+                operatorRule.setButtonText(
+                        categoryDetailIncluded.getAttributes().getRule().getButtonText()
+                );
                 operatorCategory.setRule(operatorRule);
 
                 operatorCategoryList.add(operatorCategory);
