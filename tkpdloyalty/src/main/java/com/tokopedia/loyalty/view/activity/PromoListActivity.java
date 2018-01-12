@@ -160,6 +160,9 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
         if (firstTab != null) {
             firstTab.select();
             ((MenuPromoTab) firstTab.getCustomView()).renderActiveState();
+            UnifyTracking.eventPromoListClickCategory(
+                    promoMenuDataList.get(firstTab.getPosition()).getTitle()
+            );
         }
     }
 
