@@ -125,7 +125,7 @@
     <string name="flight_booking_transit_trip_card">Transit</string>
     <string name="flight_booking_directly_trip_card">Langsung</string>
     <string name="flight_title_menu_reset">Reset</string>
-    <string name="flight_booking_phone_code_label">(+ %1$s)</string>
+    <string name="flight_booking_phone_code_label">(+%1$s)</string>
     <string name="activity_label_flight_booking_phone_code">Kode Telepon Negara</string>
     <string name="activity_label_flight_nationality">Kewarganegaraan</string>
     <string name="activity_label_flight_issuing_country">Negara Penerbit</string>
@@ -241,7 +241,7 @@
     <string name="flight_label_transaction_date">Tanggal Transaksi</string>
     <string name="flight_label_refund_time">Waktu Pengajuan Refund</string>
     <string name="flight_label_refund_status">Status Refund</string>
-    <string name="flight_label_order_id_detail">Order ID :</string>
+    <string name="flight_label_order_id_detail">Invoice ID :</string>
     <string name="flight_label_eticket">E-TICKET</string>
     <string name="flight_label_cancel_ticket">Batalkan Tiket</string>
     <string name="flight_label_reschedule_ticket">Atur Ulang Jadwal</string>

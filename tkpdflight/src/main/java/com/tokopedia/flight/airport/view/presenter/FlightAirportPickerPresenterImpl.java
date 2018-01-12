@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.airport.domain.interactor.FlightAirportPickerUseCase;
 import com.tokopedia.flight.airport.domain.interactor.FlightAirportVersionCheckUseCase;
-import com.tokopedia.flight.common.util.FlightErrorUtil;
 
 import java.util.List;
 
@@ -26,7 +25,7 @@ public class FlightAirportPickerPresenterImpl extends BaseDaggerPresenter<Flight
     }
 
     @Override
-    public void getAirportList(String text) {
+    public void getAirportList(String text, boolean isFirstTime) {
         getView().showGetAirportListLoading();
         flightAirportPickerUseCase.execute(FlightAirportPickerUseCase.createRequestParams(text), getSubscriberGetAirportList());
     }
