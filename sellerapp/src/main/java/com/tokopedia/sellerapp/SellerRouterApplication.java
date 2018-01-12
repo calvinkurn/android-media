@@ -727,4 +727,10 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getDetailResChatIntentBuyer(Context context, String resoId, String shopName) {
         return DetailResChatActivity.newBuyerInstance(context, resoId, shopName);
     }
+
+    @Override
+    public String applink(Activity activity, String deeplink) {
+        return null;
+    }
+
 }
