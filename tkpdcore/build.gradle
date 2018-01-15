@@ -119,7 +119,6 @@ dependencies {
     compile rootProject.ext.playServicesDependencies.base
     compile rootProject.ext.playServicesDependencies.appIndexing
     compile rootProject.ext.playServicesDependencies.analytics
-    compile rootProject.ext.playServicesDependencies.gcm
     compile rootProject.ext.playServicesDependencies.firebase
     compile rootProject.ext.playServicesDependencies.location
     compile rootProject.ext.playServicesDependencies.maps

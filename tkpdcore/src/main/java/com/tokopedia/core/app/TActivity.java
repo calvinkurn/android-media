@@ -116,7 +116,6 @@ public abstract class TActivity extends BaseActivity {
         getSupportActionBar().hide();
     }
 
-
     private void setLightToolbarStyle() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.setElevation(10);
@@ -132,7 +131,6 @@ public abstract class TActivity extends BaseActivity {
             getSupportActionBar().setHomeAsUpIndicator(
                     com.tokopedia.core.R.drawable.ic_webview_back_button
             );
-
 
         toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.WebViewToolbarText);
         toolbar.setSubtitleTextAppearance(this, com.tokopedia.core.R.style

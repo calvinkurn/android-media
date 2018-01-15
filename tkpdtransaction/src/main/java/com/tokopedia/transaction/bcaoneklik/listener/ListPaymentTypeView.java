@@ -20,6 +20,7 @@ public interface ListPaymentTypeView {
     int REGISTER_BCA_ONE_CLICK_REQUEST_CODE = 1;
     int EDIT_BCA_ONE_CLICK_REQUEST_CODE = 2;
     int EDIT_AUTHENTICATION_PAGE = 3;
+    int CREDIT_CARD_DETAIL_REQUEST_CODE = 4;
 
     Context getContext();
 

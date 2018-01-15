@@ -7,10 +7,13 @@ import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionTypeFactoryImpl;
+import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.viewholder.CatalogHeaderViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.viewholder.GridCatalogViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.viewholder.ListCatalogViewHolder;
+import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.model.CatalogHeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.model.CatalogViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.EmptyViewHolder;
+import com.tokopedia.topads.sdk.base.Config;
 
 /**
  * Created by hangnadi on 10/12/17.
@@ -20,9 +23,16 @@ public class CatalogAdapterTypeFactory extends SearchSectionTypeFactoryImpl
         implements CatalogTypeFactory {
 
     private final ItemClickListener mItemClickListener;
+    private final String query;
 
-    public CatalogAdapterTypeFactory(ItemClickListener listener) {
+    public CatalogAdapterTypeFactory(ItemClickListener listener, String query) {
         this.mItemClickListener = listener;
+        this.query = query;
+    }
+
+    @Override
+    public int type(CatalogHeaderViewModel headerViewModel) {
+        return CatalogHeaderViewHolder.LAYOUT;
     }
 
     @Override
@@ -36,6 +46,8 @@ public class CatalogAdapterTypeFactory extends SearchSectionTypeFactoryImpl
                 return GridCatalogViewHolder.LAYOUT;
         }
     }
+
+
 
     @Override
     public int type(EmptyModel viewModel) {
@@ -51,6 +63,8 @@ public class CatalogAdapterTypeFactory extends SearchSectionTypeFactoryImpl
             viewHolder = new GridCatalogViewHolder(parent, mItemClickListener);
         } else if (type == EmptyViewHolder.LAYOUT) {
             viewHolder = new EmptyViewHolder(parent, mItemClickListener);
+        } else if (type == CatalogHeaderViewHolder.LAYOUT) {
+            viewHolder = new CatalogHeaderViewHolder(parent, mItemClickListener, query);
         } else {
             viewHolder = super.createViewHolder(parent, type);
         }

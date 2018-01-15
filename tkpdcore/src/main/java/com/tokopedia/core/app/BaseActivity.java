@@ -25,6 +25,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.retrofit.utils.DialogForceLogout;
+import com.tokopedia.core.network.retrofit.utils.DialogHockeyApp;
 import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -54,6 +55,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     public static final String FORCE_LOGOUT = "com.tokopedia.tkpd.FORCE_LOGOUT";
     public static final String SERVER_ERROR = "com.tokopedia.tkpd.SERVER_ERROR";
     public static final String TIMEZONE_ERROR = "com.tokopedia.tkpd.TIMEZONE_ERROR";
+    public static final String FORCE_HOCKEYAPP = "com.tokopedia.tkpd.FORCE_HOCKEYAPP";
     private static final String TAG = "BaseActivity";
     private static final long DISMISS_TIME = 10000;
     protected Boolean isAllowFetchDepartmentView = false;
@@ -191,6 +193,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         filter.addAction(FORCE_LOGOUT);
         filter.addAction(SERVER_ERROR);
         filter.addAction(TIMEZONE_ERROR);
+        if (!GlobalConfig.isAllowDebuggingTools()) filter.addAction(FORCE_HOCKEYAPP);
         LocalBroadcastManager.getInstance(this).registerReceiver(logoutNetworkReceiver, filter);
     }
 
@@ -244,7 +247,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         snackBar.show();
     }
 
-    public void showForceLogoutDialog() {
+    private void showForceLogoutDialog() {
         DialogForceLogout.createShow(this,
                 new DialogForceLogout.ActionListener() {
                     @Override
@@ -292,4 +295,22 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     protected void setGoldMerchant(ShopModel shopModel) {
         sessionHandler.setGoldMerchant(shopModel.info.shopIsGold);
     }
+
+    @Override
+    public void onForceHockeyApp() {
+        if (!DialogHockeyApp.isDialogShown(this)) showHoeckeyAppDialog();
+    }
+
+    private void showHoeckeyAppDialog() {
+        DialogHockeyApp.createShow(this,
+                new DialogHockeyApp.ActionListener() {
+                    @Override
+                    public void onDialogClicked() {
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse(HockeyAppHelper.getHockeyappDownloadUrl()));
+                        startActivity(intent);
+                    }
+                });
+    }
+
 }

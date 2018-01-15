@@ -81,12 +81,6 @@ public class DigitalProductChooserView extends BaseDigitalChooserView<Product> {
         Product productInitSelected = null;
         if (!dataList.isEmpty()) {
             productInitSelected = dataList.get(0);
-            for (Product product : dataList) {
-                if (product.getStatus() != Product.STATUS_INACTIVE) {
-                    productInitSelected = product;
-                    break;
-                }
-            }
         }
         if (productInitSelected != null && (this.dataSelected == null
                 || !this.dataSelected.getProductId()
@@ -98,15 +92,10 @@ public class DigitalProductChooserView extends BaseDigitalChooserView<Product> {
         layoutProduct.setOnClickListener(getOnChooserClickedListener());
     }
 
-
     private void invalidateContentView() {
         if (dataSelected != null) {
             this.tvNameProduct.setText(dataSelected.getDesc());
             switch (dataSelected.getStatus()) {
-                case Product.STATUS_INACTIVE:
-                    tvErrorProduct.setVisibility(VISIBLE);
-                    tvErrorProduct.setText(R.string.error_message_product_inactive_digital_module);
-                    break;
                 case Product.STATUS_OUT_OF_STOCK:
                     tvErrorProduct.setVisibility(VISIBLE);
                     tvErrorProduct.setText(
