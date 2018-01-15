@@ -90,8 +90,6 @@ public class HeaderHomeView extends BaseCustomView {
 
         if (headerViewModel.getHomeHeaderWalletActionData() != null) {
             renderTokocashLayoutListener();
-            renderVisibilityTitleTokoCashWithTokoPoint(
-                    headerViewModel.getHomeHeaderWalletActionData().isVisibleActionButton());
         }
         renderTokoPointLayoutListener();
     }
@@ -114,15 +112,6 @@ public class HeaderHomeView extends BaseCustomView {
                 );
             }
         });
-    }
-
-    private void renderVisibilityTitleTokoCashWithTokoPoint(boolean isVisibleButtonAction) {
-        if (isVisibleButtonAction) {
-            tvTitleTokocash.setVisibility(GONE);
-        } else {
-            tvTitleTokocash.setVisibility(VISIBLE);
-        }
-
     }
 
     private void renderVisibilityTitleOnlyTokoCash(boolean isVisibleButtonAction) {
@@ -159,6 +148,7 @@ public class HeaderHomeView extends BaseCustomView {
 
             tvActionTokocash.setText(getContext().getString(R.string.top_up_button));
             tvActionTokocash.setVisibility(homeHeaderWalletAction.isVisibleActionButton() ? VISIBLE : GONE);
+            tvTitleTokocash.setVisibility(homeHeaderWalletAction.isVisibleActionButton() ? GONE : VISIBLE);
 
             if (homeHeaderWalletAction.getAbTags().size() > 0) {
                 for (int i = 0; i < homeHeaderWalletAction.getAbTags().size(); i++) {
@@ -168,35 +158,35 @@ public class HeaderHomeView extends BaseCustomView {
                 }
             }
             if (scannerQR.getId() == R.id.scanner_qr) {
-                tvActionTokocash.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_qr_scanner,
+                tvActionTokocash.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_topup,
                         0, 0, 0);
                 tvActionTokocash.setTypeface(null, Typeface.BOLD);
             }
-            scannerQR.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_topup,
+            scannerQR.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_qr_scanner,
                     0, 0, 0);
         } else {
-            tokoCashHolder.setOnClickListener(getOnClickTokocashActionButton(homeHeaderWalletAction));
-            tvTitleTokocash.setTypeface(null, Typeface.NORMAL);
-            scannerQR.setVisibility(GONE);
             if (headerViewModel.isPendingTokocashChecked()
                     && headerViewModel.getCashBackData() != null) {
                 if (headerViewModel.getCashBackData().getAmount() > 0) {
-                    tvActionTokocash.setVisibility(VISIBLE);
+                    tvTitleTokocash.setVisibility(GONE);
+                    scannerQR.setVisibility(GONE);
                     tvBalanceTokocash.setVisibility(VISIBLE);
-                    infoBtn.setVisibility(VISIBLE);
                     tvBalanceTokocash.setText(homeHeaderWalletAction.getBalance());
                     tvBalanceTokocash.setText(headerViewModel.getCashBackData().getAmountText());
                     tvBalanceTokocash.setTextColor(
                             getContext().getResources().getColor(R.color.black_38)
                     );
-                    tokoCashHolder.setOnClickListener(
+                    infoBtn.setVisibility(VISIBLE);
+                    infoBtn.setOnClickListener(
                             getOnClickPendingCashBackListener(homeHeaderWalletAction)
                     );
+                    tvActionTokocash.setVisibility(VISIBLE);
+                    tvActionTokocash.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                    tvActionTokocash.setOnClickListener(getOnClickTokocashActionButton(homeHeaderWalletAction));
                 }
             } else {
                 listener.onRequestPendingCashBack();
             }
-            tvActionTokocash.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         }
 
         scannerQR.setOnClickListener(new OnClickListener() {

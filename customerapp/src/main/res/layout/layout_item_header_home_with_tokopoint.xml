@@ -99,7 +99,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="10dp"
                 android:visibility="gone"
-                tools:visibility="visible" />
+                app:srcCompat="@drawable/ic_qr_scanner"/>
 
         </RelativeLayout>
 
