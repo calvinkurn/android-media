@@ -26,7 +26,8 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
     private boolean isClickable;
     private boolean isTitleBold;
     private boolean isTitleOnly;
-    private boolean isContentAllignmentRight;
+    private boolean isTitleHalfView;
+    private boolean isContentAllignmentLeft;
     private OnAdapterInteractionListener interactionListener;
 
     @ColorInt
@@ -38,7 +39,8 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
         isClickable = false;
         isTitleBold = false;
         isTitleOnly = false;
-        isContentAllignmentRight = false;
+        isContentAllignmentLeft = false;
+        isTitleHalfView = true;
     }
 
     @Override
@@ -83,12 +85,16 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
 
     public void setTitleOnly(boolean isTitleOnly) { this.isTitleOnly = isTitleOnly; }
 
+    public void setTitleHalfView(boolean titleHalfView) {
+        isTitleHalfView = titleHalfView;
+    }
+
     public void setInteractionListener(OnAdapterInteractionListener interactionListener) {
         this.interactionListener = interactionListener;
     }
 
-    public void setContentAllignmentRight(boolean contentAllignmentRight) {
-        isContentAllignmentRight = contentAllignmentRight;
+    public void setContentAllignmentLeft(boolean contentAllignmentLeft) {
+        isContentAllignmentLeft = contentAllignmentLeft;
     }
 
     public interface OnAdapterInteractionListener {
@@ -126,7 +132,19 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
                 titleTextView.setTypeface(Typeface.DEFAULT);
             }
 
-            if (isContentAllignmentRight) {
+            if (isTitleHalfView) {
+                layoutParams.width = 0;
+                layoutParams.weight = 1;
+                titleTextView.setLayoutParams(layoutParams);
+            } else {
+                layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+                layoutParams.weight = 0;
+                layoutParams.setMargins(0,0,10,0);
+                titleTextView.setLayoutParams(layoutParams);
+                titleTextView.setMinWidth(150);
+            }
+
+            if (isContentAllignmentLeft) {
                 contentTextView.setGravity(View.TEXT_ALIGNMENT_TEXT_START);
             }
 
