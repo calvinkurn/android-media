@@ -8,6 +8,8 @@ ext {
     glideVersion = '3.7.0'
     permissionDispatcherVersion = '2.2.0'
     deeplinkDispatchVersion = '3.0.0-rc1'
+    tkpdUseCaseVersion = '1.+'
+    tkpdAbstractionVersion = '1.+'
     tkpdCoreVersion = '1.+'
     tkpdInboxVersion = '1.+'
     tkpdSessionVersion = '1.+'
@@ -23,9 +25,11 @@ ext {
     tkpdRideVersion = '1.+'
     tkpdLoyaltyVersion = '1.+'
     tkpdReactNativeVersion = '1.+'
+    tkpdFlightVersion = '1.+'
     compileSdkVersion = 26
     minSdkVersion = 16
     targetSdkVersion = 26
+    buildToolsVersion = "25.0.0"
     espressoVersion = "2.2.2"
     runnerVersion = "0.5"
     rulesVersion = "0.5"
@@ -64,7 +68,6 @@ ext {
             base            : "com.google.android.gms:play-services-base:${playServiceVersion}",
             appIndexing     : "com.google.firebase:firebase-appindexing:${playServiceVersion}",
             analytics       : "com.google.android.gms:play-services-analytics:${playServiceVersion}",
-            gcm             : "com.google.android.gms:play-services-gcm:${playServiceVersion}",
             firebase        : "com.google.firebase:firebase-messaging:${playServiceVersion}",
             location        : "com.google.android.gms:play-services-location:${playServiceVersion}",
             maps            : "com.google.android.gms:play-services-maps:${playServiceVersion}",
@@ -89,7 +92,7 @@ ext {
     viewDependencies = [
             ahBottomNavigation : "com.aurelhubert:ahbottomnavigation:1.4.0",
             recyclerMultiSelect: "com.bignerdranch.android:recyclerview-multiselect:0.2@aar",
-            appIntro           : "com.github.apl-devs:appintro:v4.2.2"
+            appIntro           : "com.github.apl-devs:appintro:v4.2.2",
     ]
 
     serviceDependencies = [
@@ -172,6 +175,8 @@ ext {
     ]
 
     tkpdDependencies = [
+            usecase    : "com.tokopedia.usecase:usecase:${tkpdUseCaseVersion}",
+            abstraction: "com.tokopedia.abstraction:abstraction:${tkpdAbstractionVersion}",
             core       : "com.tokopedia.core:core:${tkpdCoreVersion}",
             inbox      : "com.tokopedia.inbox:inbox:${tkpdInboxVersion}",
             session    : "com.tokopedia.session:session:${tkpdSessionVersion}",
@@ -186,11 +191,13 @@ ext {
             feed       : "com.tokopedia.feed:feed:${tkpdFeedVersion}",
             ride       : "com.tokopedia.ride:ride:${tkpdRideVersion}",
             reactNative: "com.tokopedia.tkpdreactnative:reactnative:${tkpdReactNativeVersion}",
-            loyalty    : "com.tokopedia.loyalty:loyalty:${tkpdLoyaltyVersion}"
+            loyalty    : "com.tokopedia.loyalty:loyalty:${tkpdLoyaltyVersion}",
+            flight     : "com.tokopedia.flight:flight:${tkpdFlightVersion}",
+            flightNoOp : "com.tokopedia.flight:flight-no-op:${tkpdFlightVersion}",
     ]
 
     tkpdLibDependencies = [
-            expandableOption: "com.tokopedia.tkpdlib:expandableoption:0.5.9",
+            expandableOption: "com.tokopedia.tkpdlib:expandableoption:0.6.1",
             showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.5.11"
     ]
 

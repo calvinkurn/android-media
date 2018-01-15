@@ -31,8 +31,6 @@ public interface ManagePeopleProfileFragmentView {
 
     void showEmailVerificationDialog(String userEmail);
 
-    void showManualPhoneVerificationDialog(String userPhone);
-
     void showPhoneVerificationDialog(String userPhone);
 
     void setReceiveResult(int resultCode, Bundle resultData);
@@ -78,4 +76,6 @@ public interface ManagePeopleProfileFragmentView {
     void setActivityResultSuccess();
 
     void finishActivity();
+
+    void startChangePhoneNumber();
 }
