@@ -19,14 +19,12 @@ public class FlightDetailPassenger implements Parcelable, Visitable<FlightBookin
 
     List<SimpleViewModel> infoPassengerList;
     String passengerName;
-    String passengerTitle;
     @FlightBookingPassenger
     int passengerType;
 
     protected FlightDetailPassenger(Parcel in) {
         infoPassengerList = in.createTypedArrayList(SimpleViewModel.CREATOR);
         passengerName = in.readString();
-        passengerTitle = in.readString();
         passengerType = in.readInt();
     }
 
@@ -58,14 +56,6 @@ public class FlightDetailPassenger implements Parcelable, Visitable<FlightBookin
         this.passengerName = passengerName;
     }
 
-    public String getPassengerTitle() {
-        return passengerTitle;
-    }
-
-    public void setPassengerTitle(String passengerTitle) {
-        this.passengerTitle = passengerTitle;
-    }
-
     public FlightDetailPassenger() {
     }
 
@@ -88,7 +78,6 @@ public class FlightDetailPassenger implements Parcelable, Visitable<FlightBookin
 
         dest.writeTypedList(infoPassengerList);
         dest.writeString(passengerName);
-        dest.writeString(passengerTitle);
         dest.writeInt(passengerType);
     }
 

@@ -297,8 +297,7 @@ public class FlightBookingReviewModel implements Parcelable{
         List<FlightDetailPassenger> flightDetailPassengers = new ArrayList<>();
         for (FlightBookingPassengerViewModel flightBookingPassengerViewModel : passengerViewModels) {
             FlightDetailPassenger flightDetailPassenger = new FlightDetailPassenger();
-            flightDetailPassenger.setPassengerTitle(flightBookingPassengerViewModel.getPassengerTitle());
-            flightDetailPassenger.setPassengerName(flightBookingPassengerViewModel.getPassengerFirstName() + " " + flightBookingPassengerViewModel.getPassengerLastName());
+            flightDetailPassenger.setPassengerName(flightBookingPassengerViewModel.getPassengerTitle() + " " + flightBookingPassengerViewModel.getPassengerFirstName() + " " + flightBookingPassengerViewModel.getPassengerLastName());
             flightDetailPassenger.setPassengerType(flightBookingPassengerViewModel.getType());
             flightDetailPassenger.setInfoPassengerList(generateDetailViewModelPassenger(flightBookingPassengerViewModel.getFlightBookingLuggageMetaViewModels(),
                     flightBookingPassengerViewModel.getFlightBookingMealMetaViewModels()));
