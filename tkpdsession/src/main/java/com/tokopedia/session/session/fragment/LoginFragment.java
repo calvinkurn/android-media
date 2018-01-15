@@ -607,7 +607,8 @@ LoginFragment extends Fragment implements LoginView {
         listProvider = data;
         if (listProvider != null && checkHasNoProvider()) {
             login.saveProvider(listProvider);
-            listProvider.add(2, getLoginPhoneNumberBean());
+            if (!GlobalConfig.isSellerApp())
+                listProvider.add(2, getLoginPhoneNumberBean());
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
