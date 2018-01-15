@@ -310,12 +310,14 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void onOrderFinished(String message) {
         Toast.makeText(this, getString(R.string.success_finish_order_message), Toast.LENGTH_LONG).show();
+        TxListUIReceiver.sendBroadcastForceRefreshListData(this);
         finish();
     }
 
     @Override
     public void onOrderCancelled(String message) {
         Toast.makeText(this, getString(R.string.success_request_cancel_order), Toast.LENGTH_LONG).show();
+        TxListUIReceiver.sendBroadcastForceRefreshListData(this);
         finish();
     }
 
