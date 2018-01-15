@@ -121,12 +121,6 @@ public interface IGTMContainer {
     void clickTncButtonHotlistPromo(String hotlistName, String promoName, String promoCode);
 
 
-    void enhanceClickFeedRecomItem(Map<String, Object> objects, String eventLabel, String productUrl, String actionField);
-
-    void eventImpressionFeedInspiration(List<Object> objects, String eventLabel);
-
-    void eventImpressionFeedUploadedProduct(List<Object> list, String eventLabel);
-
     void eventTrackingEnhancedEcommerce(Map<String, Object> trackingData);
 
     void clearEnhanceEcommerce();
