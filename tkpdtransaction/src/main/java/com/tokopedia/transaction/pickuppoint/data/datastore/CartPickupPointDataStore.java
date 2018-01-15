@@ -3,6 +3,7 @@ package com.tokopedia.transaction.pickuppoint.data.datastore;
 import com.tokopedia.core.network.apiservices.transaction.TXCartActService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.transaction.pickuppoint.data.network.PickupPointService;
 
 import javax.inject.Inject;
 
@@ -14,10 +15,10 @@ import rx.Observable;
  */
 
 public class CartPickupPointDataStore {
-    private final TXCartActService service;
+    private final PickupPointService service;
 
     @Inject
-    public CartPickupPointDataStore(TXCartActService service) {
+    public CartPickupPointDataStore(PickupPointService service) {
         this.service = service;
     }
 

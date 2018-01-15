@@ -4,6 +4,7 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.transaction.TXCartActService;
 import com.tokopedia.transaction.pickuppoint.data.datastore.CartPickupPointDataStore;
+import com.tokopedia.transaction.pickuppoint.data.network.PickupPointService;
 import com.tokopedia.transaction.pickuppoint.data.repository.CartPickupPointRepository;
 import com.tokopedia.transaction.pickuppoint.domain.usecase.EditCartPickupPointsUseCase;
 import com.tokopedia.transaction.pickuppoint.domain.usecase.RemoveCartPickupPointsUseCase;
@@ -20,14 +21,14 @@ public class CartPickupPointModule {
 
     @Provides
     @CartPickupPointScope
-    TXCartActService provideTXCartActService() {
-        return new TXCartActService();
+    PickupPointService providePickupPointService() {
+        return new PickupPointService();
     }
 
     @Provides
     @CartPickupPointScope
-    CartPickupPointDataStore provideCartPickupPointDataStore(TXCartActService txCartActService) {
-        return new CartPickupPointDataStore(txCartActService);
+    CartPickupPointDataStore provideCartPickupPointDataStore(PickupPointService pickupPointService) {
+        return new CartPickupPointDataStore(pickupPointService);
     }
 
     @Provides

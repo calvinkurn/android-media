@@ -44,7 +44,7 @@ public class RemoveCartPickupPointsUseCase extends UseCase<Response<TkpdResponse
     public static RequestParams generateParams(Context context, int cartId, String oldStoreId) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putAll(AuthUtil.generateParamsNetwork(context));
-        requestParams.putInt(PARAM_CART_ID, cartId);
+        requestParams.putString(PARAM_CART_ID, String.valueOf(cartId));
         requestParams.putString(PARAM_OLD_STORE_ID, oldStoreId);
 
         return requestParams;
