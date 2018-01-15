@@ -60,6 +60,7 @@ public class CatalogDataInteractor implements ICataloDataInteractor {
                         return catalogWrapperData.getCatalogDetailData();
                     }
                 })
+                .unsubscribeOn(Schedulers.newThread())
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber));
@@ -90,6 +91,7 @@ public class CatalogDataInteractor implements ICataloDataInteractor {
         })
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.newThread())
                 .subscribe(subscriber));
     }
 
