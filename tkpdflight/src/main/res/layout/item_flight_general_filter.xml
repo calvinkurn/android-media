@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:clickable="true"
+    android:foreground="?attr/selectableItemBackground"
+    android:orientation="horizontal"
+    android:paddingTop="@dimen/margin_sm"
+    android:paddingBottom="@dimen/margin_sm"
+    android:paddingLeft="@dimen/margin_med"
+    android:paddingStart="@dimen/margin_med"
+    android:paddingRight="@dimen/margin_sm"
+    android:paddingEnd="@dimen/margin_sm">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical">
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/TextView.Title.Bold"
+            tools:text="Langsung"/>
+        <TextView
+            android:id="@+id/tv_desc"
+            android:layout_marginTop="@dimen/margin_vvs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/TextView.Micro.BlackSecondary"
+            tools:text="Mulai dari Rp5.857.900"/>
+    </LinearLayout>
+
+    <android.support.v7.widget.AppCompatCheckBox
+        android:id="@+id/checkbox"
+        android:theme="@style/checkBoxStyle"
+        android:layout_gravity="center_vertical"
+        android:layout_width="@dimen/icon_size"
+        android:layout_height="@dimen/icon_size" />
+</LinearLayout>

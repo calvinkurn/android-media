@@ -478,7 +478,17 @@ public class SessionHandler {
         return sharedPrefs.getString(ACCESS_TOKEN, "");
     }
 
+    public String getAuthAccessToken() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(ACCESS_TOKEN, "");
+    }
+
     public static String getRefreshToken(Context context) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(REFRESH_TOKEN, "");
+    }
+
+    public String getAuthRefreshToken() {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         return sharedPrefs.getString(REFRESH_TOKEN, "");
     }
