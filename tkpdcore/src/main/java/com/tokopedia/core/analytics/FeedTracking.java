@@ -11,17 +11,16 @@ import java.util.Map;
 
 public class FeedTracking extends TrackingUtils {
 
-    public static final String CARD_TYPE_PRODUCT = "Product";
-    public static final String CARD_TYPE_BANNER = "Banner";
-    public static final String CARD_DETAIL_PRODUCT_UPLOAD = "Product Upload";
-    public static final String CARD_DETAIL_INSPIRASI_PREFIX = "Inspirasi - inspirasi_";
-    public static final String CARD_DETAIL_TOPPICKS = "Toppicks";
-    public static final String CARD_DETAIL_TOPADS_PRODUCT = "Topads Product";
-    public static final String CARD_DETAIL_OS_CAMPAIGN = "OS Campaign";
-    public static final String CARD_DETAIL_TOPADS_SHOP = "Topads Shop";
-    public static final String CARD_DETAIL_PROMO = "Promo";
-    public static final String CARD_DETAIL_SELLER_STORY = "Seller Story";
-    public static final String CARD_DETAIL_OS_BRAND = "OS Brand";
+    public static final String EVENT_NAME = "event";
+    public static final String EVENT_CATEGORY = "eventCategory";
+    public static final String EVENT_ACTION = "eventAction";
+    public static final String EVENT_LABEL = "eventLabel";
+    public static final String EVENT_ECOMMERCE = "ecommerce";
+    public static final String STATIC_VALUE_PRODUCT_VIEW = "productView";
+    public static final String STATIC_VALUE_PRODUCT_CLICK = "productClick";
+    public static final String STATIC_VALUE_HOMEPAGE = "homepage";
+    public static final String STATIC_VALUE_FEED_ITEM_IMPRESSION = "feed - item impression";
+    public static final String STATIC_VALUE_FEED_CLICK_CARD_ITEM = "feed - click card item";
 
     public static void trackEventClickProductUploadEnhanced(String name,
                                                             String id,
@@ -93,11 +92,11 @@ public class FeedTracking extends TrackingUtils {
 
     private static void eventImpressionFeedProductItem(List<Object> list, String eventLabel) {
         eventTrackingEnhanceFeed(
-                DataLayer.mapOf("event", "productView",
-                        "eventCategory", "homepage",
-                        "eventAction", "feed - item impression",
-                        "eventLabel", eventLabel,
-                        "ecommerce", DataLayer.mapOf(
+                DataLayer.mapOf(EVENT_NAME, STATIC_VALUE_PRODUCT_VIEW,
+                        EVENT_CATEGORY, STATIC_VALUE_HOMEPAGE,
+                        EVENT_ACTION, STATIC_VALUE_FEED_ITEM_IMPRESSION,
+                        EVENT_LABEL, eventLabel,
+                        EVENT_ECOMMERCE, DataLayer.mapOf(
                                 "currencyCode", "IDR",
                                 "impressions", DataLayer.listOf(
                                         list.toArray(new Object[list.size()])
@@ -111,11 +110,11 @@ public class FeedTracking extends TrackingUtils {
                                                   String actionField,
                                                   String productUrl) {
         eventTrackingEnhanceFeed(
-                DataLayer.mapOf("event", "productClick",
-                        "eventCategory", "homepage",
-                        "eventAction", "feed - click card item",
-                        "eventLabel", eventLabel,
-                        "ecommerce", DataLayer.mapOf("click",
+                DataLayer.mapOf(EVENT_NAME, STATIC_VALUE_PRODUCT_CLICK,
+                        EVENT_CATEGORY, STATIC_VALUE_HOMEPAGE,
+                        EVENT_ACTION, STATIC_VALUE_FEED_CLICK_CARD_ITEM,
+                        EVENT_LABEL, eventLabel,
+                        EVENT_ECOMMERCE, DataLayer.mapOf("click",
                                 DataLayer.mapOf("actionField",
                                         DataLayer.mapOf("list", actionField),
                                         "products", DataLayer.listOf(objects)
