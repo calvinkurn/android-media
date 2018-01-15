@@ -205,7 +205,7 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
     @Override
     public void onFailedSaveInfoShop(Throwable t) {
         Crashlytics.logException(t);
-        String errorMessage = ShopErrorHandler.getErrorMessage(t);
+        String errorMessage = ShopErrorHandler.getErrorMessage(getActivity(), t);
         trackingOpenShop.eventOpenShopFormError(errorMessage);
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, Snackbar.LENGTH_LONG, new NetworkErrorHelper.RetryClickedListener() {
             @Override
@@ -225,7 +225,7 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
 
     @Override
     public void onErrorGetReserveDomain(Throwable e) {
-        NetworkErrorHelper.showSnackbar(getActivity(), ShopErrorHandler.getErrorMessage(e));
+        NetworkErrorHelper.showSnackbar(getActivity(), ShopErrorHandler.getErrorMessage(getActivity(), e));
     }
 
     private void onClickBrowseImage() {
