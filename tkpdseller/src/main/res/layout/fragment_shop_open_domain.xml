@@ -22,7 +22,7 @@
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/text_hello"
-            style="@style/TextView.Headline"
+            style="@style/TextView.TitleBig"
             android:layout_gravity="center"
             tools:text="@string/hello_x" />
 

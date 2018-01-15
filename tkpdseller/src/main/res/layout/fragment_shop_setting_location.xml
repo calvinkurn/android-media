@@ -23,7 +23,7 @@
 
             <TextView
                 style="@style/TextView.TitleBig"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="@dimen/margin_med"
                 android:text="@string/title_shop_setting_location" />
 
             <TextView
@@ -65,7 +65,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="number"
-                android:textSize="16sp" />
+                android:textSize="@dimen/font_title" />
 
         </android.support.design.widget.TextInputLayout>
 

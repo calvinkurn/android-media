@@ -205,7 +205,7 @@ public class ShopOpenCourierExpandableOption extends BaseExpandableOption implem
     @Override
     protected void onHeaderClicked() {
         if (mEnabled) {
-            super.onHeaderClicked();
+            switchCompat.setChecked(!switchCompat.isChecked());
         } else {
             onDisabledHeaderClicked();
         }

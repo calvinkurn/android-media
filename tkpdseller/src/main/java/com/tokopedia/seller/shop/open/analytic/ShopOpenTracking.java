@@ -141,11 +141,11 @@ public class ShopOpenTracking {
         );
     }
 
-    public void eventOpenShopLocationError(String error){
+    public void eventOpenShopLocationError(String labelError){
         eventOpenShop(
                 ShopOpenTrackingConstant.OPEN_SHOP_SHOP_LOCATION_FORM,
                 ShopOpenTrackingConstant.OPEN_SHOP_CLICK_NEXT_STEP_ERROR,
-                ""
+                labelError
         );
     }
 
