@@ -10,14 +10,16 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.feed.FeedPl
 public class ContentProductViewModel implements Visitable<FeedPlusTypeFactory> {
     private String imageUrl;
     private String applink;
+    private String applinkUrl;
     private String buttonTitle;
     private String textHeader;
     private String textDescription;
     private boolean isContentProductShowing;
 
-    public ContentProductViewModel(String imageUrl, String applink, String buttonTitle, String textHeader, String textDescription, boolean isContentProductShowing) {
+    public ContentProductViewModel(String imageUrl, String applink, String applinkUrl, String buttonTitle, String textHeader, String textDescription, boolean isContentProductShowing) {
         this.imageUrl = imageUrl;
         this.applink = applink;
+        this.applinkUrl = applinkUrl;
         this.buttonTitle = buttonTitle;
         this.textHeader = textHeader;
         this.textDescription = textDescription;
@@ -50,6 +52,10 @@ public class ContentProductViewModel implements Visitable<FeedPlusTypeFactory> {
 
     public String getTextDescription() {
         return textDescription;
+    }
+
+    public String getApplinkUrl() {
+        return applinkUrl;
     }
 
     @Override

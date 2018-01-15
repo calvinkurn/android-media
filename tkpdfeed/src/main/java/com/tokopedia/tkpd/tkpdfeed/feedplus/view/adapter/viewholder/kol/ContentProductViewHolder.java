@@ -74,7 +74,7 @@ public class ContentProductViewHolder extends AbstractViewHolder<ContentProductV
         btnContent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mainView.onContentProviderLinkClicked(model.getApplink());
+                mainView.onContentProviderLinkClicked(model.getApplinkUrl());
             }
         });
     }
