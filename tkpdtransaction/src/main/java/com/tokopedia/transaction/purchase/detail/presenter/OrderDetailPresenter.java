@@ -88,4 +88,48 @@ public interface OrderDetailPresenter {
 
     void onDestroyed();
 
+    String SHIPPING_REF_KEY = "shipping_ref";
+
+    String ACTION_TYPE_KEY = "action_type";
+
+    String ORDER_ID_KEY = "order_id";
+
+    String LANGUAGE_KEY = "lang";
+
+    String OS_TYPE_KEY = "os_type";
+
+    String REQUEST_BY_KEY = "request_by";
+
+    String REASON_KEY = "reason";
+
+    String QUANTITY_ACCEPT_KEY = "qty_accept";
+
+    String REASON_CODE_KEY = "reason_code";
+
+    String SHIPMENT_ID_KEY = "shipment_id";
+
+    String SHIPMENT_NAME_KEY = "shipment_name";
+
+    String SERVICE_ID_KEY = "sp_id";
+
+    String REASON_CANCEL_KEY = "reason_cancel";
+
+    String USER_ID_KEY = "user_id";
+
+    String REPLACEMENT_REASON_CODE = "r_code";
+
+    String INDONESIAN_LANGUAGE_CONSTANT = "id";
+
+    String ACCEPT_ORDER_CONSTANT = "accept";
+
+    String PARTIAL_ORDER_CONSTANT = "partial";
+
+    String REJECT_ORDER_CONSTANT = "reject";
+
+    String CHANGE_VARIAN_CODE = "2";
+
+    String CHANGE_PRODUCT_CODE = "3";
+
+    String CONFIRM_SHIPPING_CONSTANT = "confirm";
+
 }
