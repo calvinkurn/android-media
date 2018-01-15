@@ -1,6 +1,5 @@
 package com.tokopedia.session.changephonenumber.view.presenter;
 
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.session.changephonenumber.domain.interactor.GetWarningUseCase;
 import com.tokopedia.session.changephonenumber.view.listener
@@ -42,7 +41,7 @@ public class ChangePhoneNumberWarningPresenter
     @Override
     public void getWarning() {
         view.showLoading();
-        getWarningUseCase.execute(RequestParams.create(),
+        getWarningUseCase.execute(GetWarningUseCase.getGetWarningParam(),
                 new GetWarningSubscriber(view));
     }
 
