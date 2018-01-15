@@ -16,7 +16,6 @@ import com.tokopedia.core.analytics.nishikino.model.Checkout;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -25,6 +24,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.addtocart.model.kero.Rates;
+import com.tokopedia.transaction.cart.activity.CartActivity;
 import com.tokopedia.transaction.cart.interactor.CartDataInteractor;
 import com.tokopedia.transaction.cart.interactor.ICartDataInteractor;
 import com.tokopedia.transaction.cart.listener.ICartView;
@@ -43,8 +43,8 @@ import com.tokopedia.transaction.cart.model.voucher.VoucherData;
 import com.tokopedia.transaction.cart.services.TopPayIntentService;
 import com.tokopedia.transaction.exception.HttpErrorException;
 import com.tokopedia.transaction.exception.ResponseErrorException;
-import com.tokopedia.transaction.pickuppoint.di.DaggerPickupPointComponent;
-import com.tokopedia.transaction.pickuppoint.di.PickupPointComponent;
+import com.tokopedia.transaction.pickuppoint.di.CartPickupPointComponent;
+import com.tokopedia.transaction.pickuppoint.di.DaggerCartPickupPointComponent;
 import com.tokopedia.transaction.pickuppoint.domain.usecase.EditCartPickupPointsUseCase;
 import com.tokopedia.transaction.pickuppoint.domain.usecase.RemoveCartPickupPointsUseCase;
 
@@ -84,6 +84,14 @@ public class CartPresenter implements ICartPresenter {
     public CartPresenter(ICartView iCartView) {
         this.view = iCartView;
         this.cartDataInteractor = new CartDataInteractor();
+        initializeInjector();
+    }
+
+    void initializeInjector() {
+        AppComponent component = ((CartActivity) view.getContext()).getApplicationComponent();
+        CartPickupPointComponent cartPickupPointComponent = DaggerCartPickupPointComponent.builder()
+                .appComponent(component).build();
+        cartPickupPointComponent.inject(this);
     }
 
     @Override
