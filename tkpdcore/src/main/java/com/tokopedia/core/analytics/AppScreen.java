@@ -16,6 +16,7 @@ public final class AppScreen {
     public static final String SCREEN_COPY_PRODUCT = "Salin Product Page";
     public static final String SCREEN_INSTOPED = "Instoped Upload Page";
     public static final String SCREEN_INDEX_HOME = "Index Main";
+    public static final String SCREEN_NATIVE_RECHARGE = "Native Recharge";
     public static final String SCREEN_LOGIN = "Login page";
     public static final String SCREEN_REGISTER = "Register page";
     public static final String SCREEN_REGISTER_THIRD = "Register page - Social Media";
@@ -262,6 +263,18 @@ public final class AppScreen {
     public static final String SCREEN_OPPORTUNITY_TAB= "Replacement Main Page";
     public static final String SCREEN_ONBOARDING = "Screen OnBoarding ";
     public static final String SCREEN_KOL_COMMENTS = "Kol Comments Page";
+    public static final String SCREEN_DISCOVERY_PAGE = "Discovery Page";
+    public static final String SCREEN_CHAT = "inbox-chat";
+    public static final String SCREEN_CHAT_DETAIL = "chat detail";
+    
+    public static final String SCREEN_SELECT_VERIFICATION_METHOD = "change method";
+    public static final String SCREEN_COTP_DEFAULT = "Input OTP";
+    public static final String SCREEN_COTP_SMS = "Input OTP sms";
+    public static final String SCREEN_COTP_CALL = "Input OTP call";
+    public static final String SCREEN_COTP_EMAIL = "Input OTP email";
+
+    public static final String SCREEN_CHANGE_PHONE_NUMBER_WARNING = "Warning";
+    public static final String SCREEN_CHANGE_PHONE_NUMBER_INPUT = "Change Number";
 
     private AppScreen() {
 

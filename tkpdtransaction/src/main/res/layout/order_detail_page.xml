@@ -56,11 +56,6 @@
                         android:textColor="@color/green_500"
                         android:textStyle="bold" />
 
-                    <ImageView
-                        android:layout_width="12dp"
-                        android:layout_height="12dp"
-                        android:src="@drawable/chevron_thin_right" />
-
                 </LinearLayout>
 
             </LinearLayout>

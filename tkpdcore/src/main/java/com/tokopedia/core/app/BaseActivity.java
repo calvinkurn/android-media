@@ -1,6 +1,7 @@
 package com.tokopedia.core.app;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
@@ -10,6 +11,7 @@ import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -23,6 +25,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.retrofit.utils.DialogForceLogout;
+import com.tokopedia.core.network.retrofit.utils.DialogHockeyApp;
 import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -35,7 +38,6 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core.welcome.WelcomeActivity;
-
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -52,6 +54,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     public static final String FORCE_LOGOUT = "com.tokopedia.tkpd.FORCE_LOGOUT";
     public static final String SERVER_ERROR = "com.tokopedia.tkpd.SERVER_ERROR";
     public static final String TIMEZONE_ERROR = "com.tokopedia.tkpd.TIMEZONE_ERROR";
+    public static final String FORCE_HOCKEYAPP = "com.tokopedia.tkpd.FORCE_HOCKEYAPP";
     private static final String TAG = "BaseActivity";
     private static final long DISMISS_TIME = 10000;
     protected Boolean isAllowFetchDepartmentView = false;
@@ -63,7 +66,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     private Boolean isPause = false;
     private boolean isDialogNotConnectionShown = false;
     private ErrorNetworkReceiver logoutNetworkReceiver;
-    private GlobalCacheManager globalCacheManager;
+    protected GlobalCacheManager globalCacheManager;
     private LocalCacheHandler cache;
 
     @Override
@@ -189,6 +192,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         filter.addAction(FORCE_LOGOUT);
         filter.addAction(SERVER_ERROR);
         filter.addAction(TIMEZONE_ERROR);
+        if (!GlobalConfig.isAllowDebuggingTools()) filter.addAction(FORCE_HOCKEYAPP);
         LocalBroadcastManager.getInstance(this).registerReceiver(logoutNetworkReceiver, filter);
     }
 
@@ -207,6 +211,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         if (!DialogForceLogout.isDialogShown(this)) showForceLogoutDialog();
     }
 
+    @SuppressWarnings("Range")
     @Override
     public void onServerError() {
         final Snackbar snackBar = SnackbarManager.make(this,
@@ -226,6 +231,7 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         }, DISMISS_TIME);
     }
 
+    @SuppressWarnings("Range")
     @Override
     public void onTimezoneError() {
 
@@ -240,14 +246,14 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         snackBar.show();
     }
 
-    public void showForceLogoutDialog() {
+    private void showForceLogoutDialog() {
         DialogForceLogout.createShow(this,
                 new DialogForceLogout.ActionListener() {
                     @Override
                     public void onDialogClicked() {
                         sessionHandler.forceLogout();
                         if (GlobalConfig.isSellerApp()) {
-                            Intent intent = SellerRouter.getAcitivitySplashScreenActivity(getBaseContext());
+                            Intent intent = SellerRouter.getActivitySplashScreenActivity(getBaseContext());
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
                         } else {
@@ -288,4 +294,22 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     protected void setGoldMerchant(ShopModel shopModel) {
         sessionHandler.setGoldMerchant(shopModel.info.shopIsGold);
     }
+
+    @Override
+    public void onForceHockeyApp() {
+        if (!DialogHockeyApp.isDialogShown(this)) showHoeckeyAppDialog();
+    }
+
+    private void showHoeckeyAppDialog() {
+        DialogHockeyApp.createShow(this,
+                new DialogHockeyApp.ActionListener() {
+                    @Override
+                    public void onDialogClicked() {
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse(HockeyAppHelper.getHockeyappDownloadUrl()));
+                        startActivity(intent);
+                    }
+                });
+    }
+
 }

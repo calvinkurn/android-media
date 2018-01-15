@@ -56,7 +56,7 @@ public class ViewUtils {
         }
     }
 
-    public static Pair<Double, Double> minMaxPrice(Context context, int currencyType) {
+    public static Pair<Double, Double> minMaxPrice(Context context, int currencyType, boolean isOfficialStore) {
         String spinnerValue = null;
         switch (currencyType) {
             case CurrencyTypeDef.TYPE_USD:
@@ -67,11 +67,22 @@ public class ViewUtils {
                 spinnerValue = Integer.toString(CurrencyTypeDef.TYPE_IDR);
                 break;
         }
-        String minPriceString = CurrencyFormatHelper.removeCurrencyPrefix(context.getString(R.string.product_minimum_price_rp));
-        String maxPriceString = CurrencyFormatHelper.removeCurrencyPrefix(context.getString(R.string.product_maximum_price_rp));
-        if (spinnerValue.equalsIgnoreCase(context.getString(R.string.product_currency_value_usd))) {
-            minPriceString = CurrencyFormatHelper.removeCurrencyPrefix(context.getString(R.string.product_minimum_price_usd));
-            maxPriceString = CurrencyFormatHelper.removeCurrencyPrefix(context.getString(R.string.product_maximum_price_usd));
+        String minPriceString;
+        String maxPriceString;
+        if(isOfficialStore) {
+            minPriceString = CurrencyFormatHelper.removeCurrencyPrefix(context.getString(R.string.product_minimum_price_rp));
+            maxPriceString = CurrencyFormatHelper.removeCurrencyPrefix(context.getString(R.string.product_maximum_price_rp_official_store));
+            if (spinnerValue.equalsIgnoreCase(context.getString(R.string.product_currency_value_usd))) {
+                minPriceString = CurrencyFormatHelper.removeCurrencyPrefix(context.getString(R.string.product_minimum_price_usd));
+                maxPriceString = CurrencyFormatHelper.removeCurrencyPrefix(context.getString(R.string.product_maximum_price_usd_official_store));
+            }
+        }else{
+            minPriceString = CurrencyFormatHelper.removeCurrencyPrefix(context.getString(R.string.product_minimum_price_rp));
+            maxPriceString = CurrencyFormatHelper.removeCurrencyPrefix(context.getString(R.string.product_maximum_price_rp_general));
+            if (spinnerValue.equalsIgnoreCase(context.getString(R.string.product_currency_value_usd))) {
+                minPriceString = CurrencyFormatHelper.removeCurrencyPrefix(context.getString(R.string.product_minimum_price_usd));
+                maxPriceString = CurrencyFormatHelper.removeCurrencyPrefix(context.getString(R.string.product_maximum_price_usd_general));
+            }
         }
         double minPrice = Double.parseDouble(CurrencyFormatHelper.RemoveNonNumeric(minPriceString));
         double maxPrice = Double.parseDouble(CurrencyFormatHelper.RemoveNonNumeric(maxPriceString));

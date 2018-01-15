@@ -1,6 +1,8 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -23,7 +25,6 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.SendKolCommentDomain;
@@ -36,7 +37,6 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.KolComment;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.KolCommentPresenter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentHeaderViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentProductViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolComments;
 
@@ -62,8 +62,9 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
     ImageView productAvatar;
     ImageView wishlist;
 
+    boolean isFromApplink;
+
     KolCommentHeaderViewModel header;
-    KolCommentProductViewModel footer;
 
     TkpdProgressDialog progressDialog;
 
@@ -103,13 +104,17 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            header = getArguments().getParcelable(KolCommentActivity.ARGS_HEADER);
-            footer = getArguments().getParcelable(KolCommentActivity.ARGS_FOOTER);
+            if (getArguments().get(KolCommentActivity.ARGS_FROM_APPLINK) != null
+                    && getArguments().getBoolean(KolCommentActivity.ARGS_FROM_APPLINK)) {
+                isFromApplink = true;
+            } else {
+                header = getArguments().getParcelable(KolCommentActivity.ARGS_HEADER);
+            }
             totalNewComment = 0;
         } else if (savedInstanceState != null) {
             header = savedInstanceState.getParcelable(KolCommentActivity.ARGS_HEADER);
-            footer = savedInstanceState.getParcelable(KolCommentActivity.ARGS_FOOTER);
             totalNewComment = savedInstanceState.getInt(ARGS_TOTAL_COMMENT);
+            isFromApplink = savedInstanceState.getBoolean(KolCommentActivity.ARGS_FROM_APPLINK);
         } else {
             getActivity().finish();
         }
@@ -119,7 +124,7 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(KolCommentActivity.ARGS_HEADER, header);
-        outState.putParcelable(KolCommentActivity.ARGS_FOOTER, footer);
+        outState.putBoolean(KolCommentActivity.ARGS_FROM_APPLINK, isFromApplink);
         outState.putInt(ARGS_TOTAL_COMMENT, totalNewComment);
     }
 
@@ -144,8 +149,9 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setHeader(header);
-//        setFooter(footer);
+        if (header != null) {
+            setHeader(header);
+        }
         presenter.getCommentFirstTime(getArguments().getInt(KolCommentActivity.ARGS_ID));
     }
 
@@ -222,27 +228,6 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
         }
     }
 
-    private void setFooter(KolCommentProductViewModel footer) {
-
-        productName.setText(MethodChecker.fromHtml(footer.getName()));
-        ImageHandler.LoadImage(productAvatar, footer.getImageUrl());
-        if (TextUtils.isEmpty(footer.getPrice())) {
-            productPrice.setVisibility(View.GONE);
-        } else {
-            productPrice.setVisibility(View.VISIBLE);
-            productPrice.setText(footer.getPrice());
-        }
-
-        setWishlist(footer.isWishlisted());
-
-        wishlist.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                presenter.changeWishlist();
-            }
-        });
-    }
-
     @Override
     public void removeLoading() {
         adapter.removeLoading();
@@ -289,6 +274,7 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
         UnifyTracking.eventKolCommentDetailSubmitComment();
         adapter.addItem(new KolCommentViewModel(
                 sendKolCommentDomain.getId(),
+                String.valueOf(sendKolCommentDomain.getDomainUser().getId()),
                 sendKolCommentDomain.getDomainUser().getPhoto(),
                 sendKolCommentDomain.getDomainUser().getName(),
                 sendKolCommentDomain.getComment(),
@@ -325,8 +311,42 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
     }
 
     @Override
-    public void onDeleteCommentKol(int id, int adapterPosition) {
-        presenter.deleteComment(id, adapterPosition);
+    public boolean onDeleteCommentKol(String id, boolean canDeleteComment, int
+            adapterPosition) {
+        if (canDeleteComment || isInfluencer()) {
+            showDeleteDialog(id, adapterPosition);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean isInfluencer() {
+        return header != null
+                && sessionHandler != null
+                && !TextUtils.isEmpty(header.getUserId())
+                && sessionHandler.getLoginID().equals(header.getUserId());
+    }
+
+    private void showDeleteDialog(final String id, final int adapterPosition) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+        builder.setMessage(R.string.prompt_delete_comment_kol);
+        builder.setPositiveButton(R.string.title_delete, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                presenter.deleteComment(id, adapterPosition);
+            }
+        });
+        builder.setNegativeButton(R.string.title_cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     @Override
@@ -354,5 +374,11 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
             ImageHandler.loadImageWithIdWithoutPlaceholder(wishlist, R.drawable.ic_wishlist_red);
         else
             ImageHandler.loadImageWithIdWithoutPlaceholder(wishlist, R.drawable.ic_wishlist);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
     }
 }

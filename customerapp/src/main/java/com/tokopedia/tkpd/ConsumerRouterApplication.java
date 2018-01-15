@@ -15,6 +15,8 @@ import android.text.TextUtils;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.data.executor.JobExecutor;
@@ -30,11 +32,17 @@ import com.tokopedia.core.gcm.ApplinkUnsupported;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
+import com.tokopedia.core.geolocation.activity.GeolocationActivity;
+import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
+import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Token;
+import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationActivity;
+import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.onboarding.OnboardingActivity;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.router.OtpRouter;
@@ -67,15 +75,19 @@ import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
 import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
 import com.tokopedia.inbox.inboxmessageold.activity.InboxMessageActivity;
 import com.tokopedia.inbox.inboxmessageold.activity.SendMessageActivityOld;
-import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
+import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResCenterActivity;
+import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
+import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.otp.phoneverification.activity.RidePhoneNumberVerificationActivity;
+import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
-import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
+import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.TkpdSeller;
 import com.tokopedia.seller.common.cashback.DataCashbackModel;
 import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
@@ -90,20 +102,30 @@ import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
 import com.tokopedia.seller.product.manage.view.activity.ProductManageActivity;
+import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
+import com.tokopedia.seller.shop.common.di.component.ShopComponent;
+import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
+import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.datepicker.DatePickerUtil;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
+import com.tokopedia.tkpd.deeplink.data.repository.DeeplinkRepository;
+import com.tokopedia.tkpd.deeplink.data.repository.DeeplinkRepositoryImpl;
+import com.tokopedia.tkpd.deeplink.domain.interactor.MapUrlUseCase;
+import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.drawer.DrawerBuyerHelper;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.KolFollowingListActivity;
+import com.tokopedia.tkpd.truecaller.TruecallerActivity;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.activity.ReputationProduct;
@@ -137,13 +159,13 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_
 public abstract class ConsumerRouterApplication extends MainApplication implements
         TkpdCoreRouter, SellerModuleRouter, IDigitalModuleRouter, PdpRouter,
         OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication, TkpdInboxRouter,
-        TokoCashRouter, IWalletRouter, ILoyaltyRouter, ReputationRouter {
-
-    public static final String COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME = "com.tokopedia.tkpd.home.ParentIndexHome";
+        TokoCashRouter, IWalletRouter, ILoyaltyRouter, ReputationRouter, LogisticRouter {
 
     private DaggerProductComponent.Builder daggerProductBuilder;
     private DaggerReactNativeComponent.Builder daggerReactNativeBuilder;
     private ProductComponent productComponent;
+    private DaggerShopComponent.Builder daggerShopBuilder;
+    private ShopComponent shopComponent;
     private ReactNativeComponent reactNativeComponent;
     @Inject
     ReactNativeHost reactNativeHost;
@@ -169,6 +191,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         daggerReactNativeBuilder = DaggerReactNativeComponent.builder()
                 .appComponent(getApplicationComponent())
                 .reactNativeModule(new ReactNativeModule(this));
+        daggerShopBuilder = DaggerShopComponent.builder().shopModule(new ShopModule());
     }
 
     private void initRemoteConfig() {
@@ -181,6 +204,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             productComponent = daggerProductBuilder.appComponent(getApplicationComponent()).build();
         }
         return productComponent;
+    }
+
+    @Override
+    public ShopComponent getShopComponent() {
+        if(shopComponent == null){
+            shopComponent = daggerShopBuilder.appComponent(getApplicationComponent()).build();
+        }
+        return shopComponent;
     }
 
     @Override
@@ -197,9 +228,66 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent getIntentCreateShop(Context context){
+        return TkpdSeller.getIntentCreateEditShop(context, true, false);
+    }
+
+    @Override
+    public Intent getSplashScreenIntent(Context context){
+        return new Intent(context, ConsumerSplashScreen.class);
+    }
+
+    @Override
+    public Class getDeepLinkClass() {
+        return DeepLinkActivity.class;
+    }
+
+    @Override
+    public Intent getIntentManageShop(Context context){
+        return TkpdSeller.getIntentManageShop(context);
+    }
+
+    @Override
+    public android.app.Fragment getFragmentShopSettings() {
+        return TkpdSeller.getFragmentShopSettings();
+    }
+
+    @Override
+    public android.app.Fragment getFragmentSellingNewOrder() {
+        return TkpdSeller.getFragmentSellingNewOrder();
+    }
+
+    @Override
     public void goToProductDetail(Context context, String productUrl) {
         DeepLinkChecker.openProduct(productUrl, context);
     }
+
+    @Override
+    public Class getSellingActivityClass() {
+        return TkpdSeller.getSellingActivityClass();
+    }
+
+    @Override
+    public Intent getActivitySellingTransactionNewOrder(Context context) {
+        return TkpdSeller.getActivitySellingTransactionNewOrder(context);
+    }
+
+    public Intent getActivitySellingTransactionConfirmShipping(Context context) {
+        return TkpdSeller.getActivitySellingTransactionConfirmShipping(context);
+    }
+
+    public Intent getActivitySellingTransactionShippingStatus(Context context) {
+        return TkpdSeller.getActivitySellingTransactionShippingStatus(context);
+    }
+
+    public Intent getActivitySellingTransactionList(Context context) {
+        return TkpdSeller.getActivitySellingTransactionList(context);
+    }
+
+    public Intent getActivitySellingTransactionOpportunity(Context context) {
+        return TkpdSeller.getActivitySellingTransactionOpportunity(context);
+    }
+
 
     @Override
     public void goToProductDetail(Context context, ProductPass productPass) {
@@ -334,11 +422,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void startInstopedActivity(Context context) {
-        InstopedActivity.startInstopedActivity(context);
-    }
-
-    @Override
     public void startInstopedActivityForResult(Activity activity, int resultCode, int maxResult) {
         InstopedActivity.startInstopedActivityForResult(activity, resultCode, maxResult);
     }
@@ -362,13 +445,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void goToDraftProductList(Context context) {
         Intent intent = new Intent(context, ProductDraftListActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-    }
-
-    @Override
-    public void goToManageEtalase(Context context) {
-        Intent intent = new Intent(context, EtalaseShopEditor.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
@@ -533,12 +609,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void goToProfileCompletion(Context context) {
-        Intent intent = new Intent(context, ProfileCompletionActivity.class);
-        context.startActivity(intent);
-    }
-
-    @Override
     public Intent instanceIntentCartDigitalProduct(DigitalCheckoutPassData passData) {
         return CartDigitalActivity.newInstance(this, passData);
     }
@@ -564,8 +634,23 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent getOnBoardingActivityIntent(Context context) {
+        return new Intent(context, OnboardingActivity.class);
+    }
+
+    @Override
+    public Intent getTrueCallerActivityIntent(Context context) {
+        return new Intent(context, TruecallerActivity.class);
+    }
+
+    @Override
+    public Intent getPhoneVerificationActivityIntent(Context context) {
+        return PhoneVerificationActivationActivity.getIntent(context, false, false);
+    }
+
+    @Override
     public Class<?> getHomeClass(Context context) throws ClassNotFoundException {
-        return Class.forName(COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME);
+        return ParentIndexHome.class;
     }
 
     @Override
@@ -644,19 +729,19 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                                     String customSubject, String customMessage, String source,
                                     String avatar) {
 
-        if(remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
+        if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
             return SendMessageActivity.getAskBuyerIntent(context, toUserId, customerName,
                     customSubject, customMessage, source, avatar);
         else
             return SendMessageActivityOld.getAskBuyerIntent(context, toUserId, customerName,
-                customSubject, customMessage, source);
+                    customSubject, customMessage, source);
     }
 
     @Override
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName,
                                      String customSubject, String customMessage, String source, String avatar) {
 
-        if(remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
+        if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
             return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName,
                     customSubject, customMessage, source, avatar);
         else
@@ -668,7 +753,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getAskUserIntent(Context context, String userId, String userName, String source,
                                    String avatar) {
-        if(remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
+        if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
             return SendMessageActivity.getAskUserIntent(context, userId, userName, source, avatar);
         else
             return SendMessageActivityOld.getAskUserIntent(context, userId, userName, source);
@@ -679,7 +764,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName,
                                      String customSubject, String source) {
-        if(remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
+        if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
             return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName, customSubject, source);
         else
             return SendMessageActivityOld.getAskSellerIntent(context, toShopId, shopName, customSubject, source);
@@ -826,11 +911,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getInboxMessageIntent(Context context) {
-        if(remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
+        if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
             return InboxChatActivity.getCallingIntent(context);
         else
             return InboxMessageActivity.getCallingIntent(context);
-
     }
 
     public static List<PeriodRangeModel> convert(List<PeriodRangeModelCore> periodRangeModelCores) {
@@ -856,7 +940,66 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent getResolutionCenterIntent(Context context) {
+        return InboxResCenterActivity.createIntent(context);
+    }
+
+    @Override
+    public Intent getDetailResChatIntentBuyer(Context context, String resoId, String shopName) {
+        return DetailResChatActivity.newBuyerInstance(context, resoId, shopName);
+    }
+    @Override
     public DialogFragment getLoyaltyTokoPointNotificationDialogFragment(TokoPointDrawerData.PopUpNotif popUpNotif) {
         return LoyaltyNotifFragmentDialog.newInstance(popUpNotif);
+    }
+
+    @Override
+    public String applink(Activity activity, String deeplink) {
+        DeeplinkRepository deeplinkRepository = new DeeplinkRepositoryImpl(this, new GlobalCacheManager());
+        MapUrlUseCase mapUrlUseCase = new MapUrlUseCase(new JobExecutor(), new UIThread(), deeplinkRepository);
+        Uri uri = Uri.parse(deeplink);
+        final List<String> linkSegments = uri.getPathSegments();
+        StringBuilder finalSegments = new StringBuilder();
+        for (int i = 0; i < linkSegments.size(); i++) {
+            if (i != linkSegments.size() - 1) {
+                finalSegments.append(linkSegments.get(i)).append("/");
+            } else {
+                finalSegments.append(linkSegments.get(i));
+            }
+        }
+        return mapUrlUseCase.getData(mapUrlUseCase.setRequestParam(finalSegments.toString())).applink;
+    }
+      
+    public Intent getKolFollowingPageIntent(Context context, int userId) {
+        return KolFollowingListActivity.getCallingIntent(context, userId);
+    }
+
+    @Override
+    public Intent getChangePhoneNumberIntent(Context context, String email, String phoneNumber) {
+        return ChangePhoneNumberWarningActivity.newInstance(context, email, phoneNumber);
+    }
+
+    @Override
+    public void sendEventTracking(String event, String category, String action, String label) {
+        UnifyTracking.sendGTMEvent(new EventTracking(event, category, action, label).getEvent());
+    }
+
+    @Override
+    public void navigateToChooseAddressActivityRequest(Fragment var1, Intent var2, int var3) {
+        Intent instance = ChooseAddressActivity.createInstance(var1.getContext());
+        var1.startActivityForResult(instance, var3);
+    }
+
+    @Override
+    public void navigateToEditAddressActivityRequest(final Fragment fragment, final int requestCode, Token token) {
+        fragment.startActivityForResult(DistrictRecommendationActivity.createInstance(fragment.getActivity(),
+                token),
+                requestCode);
+    }
+
+    @Override
+    public void navigateToGeoLocationActivityRequest(final Fragment fragment, final int requestCode, final String generatedAddress, LocationPass locationPass) {
+        Intent intent = GeolocationActivity.createInstance(fragment.getActivity(), locationPass);
+        fragment.startActivityForResult(intent, requestCode);
     }
 }

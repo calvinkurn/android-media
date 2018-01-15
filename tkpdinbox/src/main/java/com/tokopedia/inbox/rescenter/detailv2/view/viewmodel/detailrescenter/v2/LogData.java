@@ -18,6 +18,7 @@ public class LogData implements Parcelable {
     private String createTimestampStr;
     private String month;
     private String dateNumber;
+    private String timeNumber;
 
     public LogData(int id,
                    String action,
@@ -28,7 +29,8 @@ public class LogData implements Parcelable {
                    String createTimeStr,
                    String createTimestampStr,
                    String month,
-                   String dateNumber) {
+                   String dateNumber,
+                   String timeNumber) {
         this.id = id;
         this.action = action;
         this.solution = solution;
@@ -39,6 +41,7 @@ public class LogData implements Parcelable {
         this.createTimestampStr = createTimestampStr;
         this.month = month;
         this.dateNumber = dateNumber;
+        this.timeNumber = timeNumber;
     }
 
     public String getCreateTimestampStr() {
@@ -121,6 +124,14 @@ public class LogData implements Parcelable {
         this.createTimeStr = createTimeStr;
     }
 
+    public String getTimeNumber() {
+        return timeNumber;
+    }
+
+    public void setTimeNumber(String timeNumber) {
+        this.timeNumber = timeNumber;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -138,6 +149,7 @@ public class LogData implements Parcelable {
         dest.writeString(this.createTimestampStr);
         dest.writeString(this.month);
         dest.writeString(this.dateNumber);
+        dest.writeString(this.timeNumber);
     }
 
     protected LogData(Parcel in) {
@@ -151,6 +163,7 @@ public class LogData implements Parcelable {
         this.createTimestampStr = in.readString();
         this.month = in.readString();
         this.dateNumber = in.readString();
+        this.timeNumber = in.readString();
     }
 
     public static final Creator<LogData> CREATOR = new Creator<LogData>() {

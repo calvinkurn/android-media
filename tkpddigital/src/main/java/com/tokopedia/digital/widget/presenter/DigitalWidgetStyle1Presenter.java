@@ -33,6 +33,11 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
     private static final String PAKET_DATA_CATEGORY_ID = "2";
     private static final String ROAMING_CATEGORY_ID = "20";
 
+    private final String PARAM_CATEGORY_ID = "category_id";
+    private final String PARAM_SORT = "sort";
+
+    private final String PARAM_VALUE_LABEL = "label";
+
     private final IDigitalWidgetInteractor widgetInteractor;
     private final IDigitalWidgetStyle1View view;
     private Context context;
@@ -49,8 +54,8 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
     @Override
     public void fetchNumberList(String categoryId, boolean showLastOrder) {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put("category_id", categoryId);
-        param.put("sort", "label");
+        param.put(PARAM_CATEGORY_ID, categoryId);
+        param.put(PARAM_SORT, PARAM_VALUE_LABEL);
 
         widgetInteractor.getNumberList(getNumberListSubscriber(categoryId, showLastOrder),
                 AuthUtil.generateParamsNetwork(context, param));
@@ -93,8 +98,8 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
         attributes.setClientNumber(orderClientNumber.getClientNumber());
         attributes.setCategoryId(Integer.valueOf(orderClientNumber.getCategoryId()));
         attributes.setOperatorId(Integer.valueOf(orderClientNumber.getOperatorId()));
-        if (!TextUtils.isEmpty(orderClientNumber.getLastProduct())) {
-            attributes.setProductId(Integer.valueOf(orderClientNumber.getLastProduct()));
+        if (!TextUtils.isEmpty(orderClientNumber.getProductId())) {
+            attributes.setProductId(Integer.valueOf(orderClientNumber.getProductId()));
         }
         lastOrder.setAttributes(attributes);
         return lastOrder;
@@ -133,7 +138,7 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
 
     @Override
     public void getOperatorAndProductsByPrefix(String phonePrefix, int categoryId, boolean validatePrefix) {
-        widgetInteractor.getOperatorAndProductsFromPrefix2(operatorAndProductsSubscriber(), categoryId,
+        widgetInteractor.getOperatorAndProductsFromPrefix(operatorAndProductsSubscriber(), categoryId,
                 phonePrefix);
     }
 
@@ -165,7 +170,6 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
 
                     if (!products.isEmpty()) {
                         view.renderDataProducts(products, operator.getAttributes().getRule().isShowPrice());
-                        widgetInteractor.setUseCacheToTrue();
                     } else {
                         view.renderEmptyProduct(context.getString(R.string.error_message_product));
                     }

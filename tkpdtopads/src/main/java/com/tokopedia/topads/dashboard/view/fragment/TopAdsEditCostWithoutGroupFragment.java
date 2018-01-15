@@ -11,6 +11,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.constant.TopAdsSuggestionBidInteractionTypeDef;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
@@ -83,16 +84,27 @@ public class TopAdsEditCostWithoutGroupFragment extends TopAdsEditCostFragment<T
     @Override
     public void onSuggestionSuccess(GetSuggestionResponse s) {
         setSuggestionBidText(s);
+        detailAd.setSuggestionBidValue(suggestionBidValue);
+        detailAd.setSuggestionBidButton(TopAdsSuggestionBidInteractionTypeDef.SUGGESTION_NOT_IMPLEMENTED);
+        defaultSuggestionBidButtonStatus = TopAdsSuggestionBidInteractionTypeDef.SUGGESTION_NOT_IMPLEMENTED;
     }
 
     @Override
     public void onSuggestionError(@Nullable Throwable t) {
-
+        detailAd.setSuggestionBidButton(TopAdsSuggestionBidInteractionTypeDef.NO_SUGGESTION);
     }
 
     @Override
-    protected void onSuggestionTitleUseClick() {
+    protected void onSuggestionBidClicked() {
+        detailAd.setSuggestionBidButton(TopAdsSuggestionBidInteractionTypeDef.SUGGESTION_IMPLEMENTED);
+    }
 
+    @Override
+    protected void onPriceChanged(double number) {
+        super.onPriceChanged(number);
+        if (suggestionBidValue != number) {
+            detailAd.setSuggestionBidButton(defaultSuggestionBidButtonStatus);
+        }
     }
 
     @Override
@@ -103,8 +115,7 @@ public class TopAdsEditCostWithoutGroupFragment extends TopAdsEditCostFragment<T
 
     @Override
     protected void loadSuggestionBid() {
-        setSuggestionBidText((GetSuggestionResponse)null);
-        titleSuggestionBidUse.setVisibility(View.GONE);
+        // Do nothing
     }
 
     @Override

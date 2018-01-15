@@ -84,7 +84,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
     protected Response checkShowForceLogout(Chain chain, Request newestRequest) throws IOException{
         Response response = chain.proceed(newestRequest);
-        if (isUnauthorized(newestRequest, response)) {
+        if (isUnauthorized(newestRequest, response) || isNeedRelogin(response)) {
             ServerErrorHandler.showForceLogoutDialog();
             ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
         }
@@ -93,11 +93,15 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
     protected void checkResponse(String string, Response response) {
         String bodyResponse = string;
+
+        if (isOnBetaServer(response)) ServerErrorHandler.showForceHockeyAppDialog();
+
         if (isMaintenance(bodyResponse)) {
             ServerErrorHandler.showMaintenancePage();
         } else if (isServerError(response.code()) && !isHasErrorMessage(bodyResponse)) {
             ServerErrorHandler.showServerErrorSnackbar();
-            ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
+            ServerErrorHandler.sendErrorNetworkAnalytics(response.request().url().toString(),
+                    response.code());
         } else if (isForbiddenRequest(bodyResponse, response.code())
                 && isTimezoneNotAutomatic()) {
             ServerErrorHandler.showTimezoneErrorSnackbar();
@@ -348,6 +352,10 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         newestRequestBuilder
                 .header("accounts-authorization", "Bearer " + freshAccessToken);
         return newestRequestBuilder.build();
+    }
+
+    private Boolean isOnBetaServer(Response response) {
+        return response.header("is_beta", "0").equals("1");
     }
 
 }

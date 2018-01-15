@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
@@ -133,6 +134,7 @@ public class ChooseProductAndProblemFragment extends BaseDaggerFragment implemen
             @Override
             public void onClick(View view) {
                 presenter.buttonContinueClicked();
+                UnifyTracking.eventCreateResoStep1Continue();
             }
         });
 

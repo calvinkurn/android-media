@@ -8,13 +8,13 @@
         android:id="@+id/max_bid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:lv_font_size="@dimen/font_body1"
+        app:lv_font_size="@dimen/font_small"
         app:title="@string/label_top_ads_max_bid" />
 
     <com.tokopedia.seller.common.widget.LabelView
         android:id="@+id/avg_cost"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:lv_font_size="@dimen/font_body1"
+        app:lv_font_size="@dimen/font_small"
         app:title="@string/label_top_ads_avg_cost" />
 </merge>

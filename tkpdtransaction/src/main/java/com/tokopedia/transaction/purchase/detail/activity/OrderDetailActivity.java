@@ -28,6 +28,7 @@ import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.bottomsheet.BottomSheetCallAction;
@@ -544,9 +545,12 @@ public class OrderDetailActivity extends TActivity
     }
 
     @Override
-    public void onViewComplaint(String resoId) {
-        Intent intent = InboxRouter.getDetailResCenterActivityIntent(this, resoId);
-        startActivity(intent);
+    public void onViewComplaint(OrderDetailData data) {
+        if (MainApplication.getAppContext() instanceof TransactionRouter) {
+            Intent intent = ((TransactionRouter) MainApplication.getAppContext())
+                    .getDetailResChatIntentBuyer(this, data.getResoId(), data.getShopName());
+            startActivity(intent);
+        }
     }
 
     @Override

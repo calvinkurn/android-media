@@ -86,7 +86,7 @@ android {
 
     project.ext {
         defaultVersionCode = 216001101;
-        defaultVersionName = "2.16";
+        defaultVersionName = "2.18";
     }
 
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -198,6 +198,7 @@ android {
 
     dexOptions {
         javaMaxHeapSize "8g"
+        keepRuntimeAnnotatedClasses false
     }
 
     compileOptions {

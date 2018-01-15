@@ -12,6 +12,7 @@ import rx.functions.Func1;
  * Created by nisie on 3/7/17.
  */
 
+@Deprecated
 public class RequestOtpMapper implements Func1<Response<TkpdResponse>, RequestOtpModel> {
     @Override
     public RequestOtpModel call(Response<TkpdResponse> response) {
