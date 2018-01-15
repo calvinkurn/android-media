@@ -404,7 +404,9 @@ TO CHECK IF NOTP ENABLED FROM FIREBASE OR NOT
             public void onVerificationFail() {
                 view.hideProgressLoading();
                 NOTPTracking.eventFailNOTPVerification(SessionHandler.getPhoneNumber());
-                view.interruptRequestTokenVerification();
+                if(view.getActivity() != null) {
+                    view.interruptRequestTokenVerification();
+                }
             }
         });
     }

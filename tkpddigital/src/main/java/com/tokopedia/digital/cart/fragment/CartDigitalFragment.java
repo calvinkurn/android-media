@@ -812,6 +812,12 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        progressDialogNormal.dismiss();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         if (compositeSubscription != null && compositeSubscription.hasSubscriptions())
