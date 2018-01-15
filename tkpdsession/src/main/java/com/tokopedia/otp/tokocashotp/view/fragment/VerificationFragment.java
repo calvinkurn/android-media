@@ -57,6 +57,8 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     private static final int INTERVAL = 1000;
     private static final String RESEND = "Kirim ulang";
     private static final String USE_OTHER_METHOD = "gunakan metode verifikasi lain";
+    private static final int MAX_INPUT_OTP = 6;
+
 
     private static final String CACHE_OTP = "CACHE_OTP";
     private static final String HAS_TIMER = "has_timer";
@@ -163,7 +165,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     }
 
     private void prepareView() {
-        if (!cacheHandler.isExpired() && cacheHandler.getBoolean(HAS_TIMER, false)) {
+        if (!isCountdownFinished()) {
             startTimer();
         } else {
             setLimitReachedCountdownText();
@@ -183,7 +185,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (inputOtp.getText().length() == 6) {
+                if (inputOtp.getText().length() == MAX_INPUT_OTP) {
                     enableVerifyButton();
                 } else {
                     disableVerifyButton();
@@ -195,7 +197,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE
-                        && inputOtp.length() == 6) {
+                        && inputOtp.length() == MAX_INPUT_OTP) {
                     UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getVerifyTracking
                             (viewModel.getType()));
                     presenter.verifyOtp(viewModel.getPhoneNumber(), inputOtp.getText().toString());
@@ -323,7 +325,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     }
 
     private void startTimer() {
-        if (cacheHandler.isExpired() || !cacheHandler.getBoolean(HAS_TIMER, false)) {
+        if (isCountdownFinished()) {
             cacheHandler.putBoolean(HAS_TIMER, true);
             cacheHandler.setExpire(COUNTDOWN_LENGTH);
             cacheHandler.applyEditor();
