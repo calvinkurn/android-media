@@ -18,8 +18,9 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
-import com.tokopedia.core.fragment.FragmentShopPreview;
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
@@ -33,6 +34,8 @@ import com.tokopedia.core.session.model.AccountsModel;
 import com.tokopedia.core.session.model.AccountsParameter;
 import com.tokopedia.core.session.model.InfoModel;
 import com.tokopedia.core.session.model.SecurityModel;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.SessionHandler;
@@ -44,6 +47,9 @@ import com.tokopedia.session.session.interactor.SignInInteractorImpl;
 import com.tokopedia.session.session.presenter.Login;
 import com.tokopedia.tkpd.deeplink.WhitelistItem;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
+import com.tokopedia.tkpd.deeplink.di.component.DaggerDeeplinkComponent;
+import com.tokopedia.tkpd.deeplink.di.component.DeeplinkComponent;
+import com.tokopedia.tkpd.deeplink.domain.GetShopInfoUseCase;
 import com.tokopedia.tkpd.deeplink.domain.interactor.MapUrlUseCase;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.home.ReactNativeActivity;
@@ -54,6 +60,8 @@ import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import javax.inject.Inject;
 
 import rx.Subscriber;
 
@@ -76,11 +84,16 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private SignInInteractor interactor;
     private MapUrlUseCase mapUrlUseCase;
 
+    @Inject
+    GetShopInfoUseCase getShopInfoUseCase;
+
     public DeepLinkPresenterImpl(DeepLinkActivity activity, MapUrlUseCase mapUrlUseCase) {
         this.viewListener = activity;
         this.context = activity;
         this.interactor = SignInInteractorImpl.createInstance(activity);
         this.mapUrlUseCase = mapUrlUseCase;
+
+        initInjection(activity);
     }
 
     @Override
@@ -131,6 +144,13 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     @Override
     public void actionGotUrlFromApplink(Uri uriData) {
         prepareOpenWebView(uriData);
+    }
+
+    private void initInjection(DeepLinkActivity activity) {
+        DeeplinkComponent component = DaggerDeeplinkComponent.builder()
+                .appComponent(activity.getApplicationComponent())
+                .build();
+        component.inject(this);
     }
 
     @Override
@@ -415,9 +435,36 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         return encodedUrl;
     }
 
-    private void openShopInfo(List<String> linkSegment, Uri uriData) {
-        Fragment fragment = FragmentShopPreview.createInstanceForDeeplink(linkSegment.get(0), uriData.toString());
-        viewListener.inflateFragment(fragment, "SHOP_INFO");
+    private void openShopInfo(final List<String> linkSegment, final Uri uriData) {
+        viewListener.showLoading();
+        RequestParams params = RequestParams.create();
+        params.putString("shop_domain", linkSegment.get(0));
+        getShopInfoUseCase.execute(params, new Subscriber<ShopModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                viewListener.finishLoading();
+                viewListener.networkError(uriData);
+//                prepareOpenWebView(uriData);
+            }
+
+            @Override
+            public void onNext(ShopModel shopModel) {
+                viewListener.finishLoading();
+                if (shopModel != null && shopModel.info != null) {
+                    viewListener.goToActivity(
+                            ShopInfoActivity.class,
+                            ShopInfoActivity.createBundle(shopModel.info.getShopId(), linkSegment.get(0))
+                    );
+                } else {
+                    prepareOpenWebView(uriData);
+                }
+            }
+        });
     }
 
     private void openDetailProduct(List<String> linkSegment, Uri uriData) {
