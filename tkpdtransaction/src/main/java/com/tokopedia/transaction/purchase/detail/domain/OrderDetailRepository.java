@@ -1,7 +1,6 @@
 package com.tokopedia.transaction.purchase.detail.domain;
 
 import com.google.gson.Gson;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.network.apiservices.replacement.ReplacementActService;
 import com.tokopedia.core.network.apiservices.transaction.OrderDetailService;
 import com.tokopedia.core.network.apiservices.transaction.TXOrderActService;
@@ -162,27 +161,26 @@ public class OrderDetailRepository implements IOrderDetailRepository {
     ) {
         return rejectOrderMergedEditDescription(
                 emptyVarianProductEditables,
-                productParam
-        ).last().flatMap(new Func1<String, Observable<String>>() {
-            @Override
-            public Observable<String> call(String s) {
-                CommonUtils.dumper("PORING REJECT VARIAN");
-                return processOrder(rejectParam);
-            }
-        });
+                productParam,
+                rejectParam
+        );
     }
 
     private Observable<String> rejectOrderMergedEditDescription(
             List<EmptyVarianProductEditable> emptyVarianProductEditables,
-            TKPDMapParam<String, String> productParam
+            TKPDMapParam<String, String> productParam,
+            TKPDMapParam<String, String> rejectParam
     ) {
         List<Observable<String>> cartVarianObservableList = new ArrayList<>();
         for (int i =0; i < emptyVarianProductEditables.size(); i++) {
-            productParam.put("shop_id", emptyVarianProductEditables.get(i).getShopId());
-            productParam.put("product_id", emptyVarianProductEditables.get(i).getProductId());
-            productParam.put("product_description", emptyVarianProductEditables.get(i).getProductDescription());
-            cartVarianObservableList.add(productActService.getApi().editDescription(productParam));
+            TKPDMapParam<String, String> params = new TKPDMapParam<>();
+            params.putAll(productParam);
+            params.put("shop_id", emptyVarianProductEditables.get(i).getShopId());
+            params.put("product_id", emptyVarianProductEditables.get(i).getProductId());
+            params.put("product_description", emptyVarianProductEditables.get(i).getProductDescription());
+            cartVarianObservableList.add(productActService.getApi().editDescription(params));
         }
+        cartVarianObservableList.add(processOrder(rejectParam));
         return Observable.concat(cartVarianObservableList);
     }
 
@@ -193,43 +191,42 @@ public class OrderDetailRepository implements IOrderDetailRepository {
             final TKPDMapParam<String, String> rejectParam) {
         return rejectOrderMergedEditWeightPrice(
                 editables,
-                productParam
-        ).last().flatMap(new Func1<String, Observable<String>>() {
-            @Override
-            public Observable<String> call(String s) {
-                return processOrder(rejectParam);
-            }
-        });
+                productParam,
+                rejectParam);
     }
 
     private Observable<String> rejectOrderMergedEditWeightPrice(
             List<WrongProductPriceWeightEditable> editables,
-            TKPDMapParam<String, String> productParam
+            TKPDMapParam<String, String> productParam,
+            TKPDMapParam<String, String> rejectParam
     ) {
         List<Observable<String>> cartWeightPriceObservableList = new ArrayList<>();
         for (int i =0; i < editables.size(); i++) {
-            productParam.put("shop_id", editables.get(i).getShopId());
-            productParam.put("product_id", editables.get(i).getProductId());
-            productParam.put(
+            TKPDMapParam<String, String> params = new TKPDMapParam<>();
+            params.putAll(productParam);
+            params.put("shop_id", editables.get(i).getShopId());
+            params.put("product_id", editables.get(i).getProductId());
+            params.put(
                     "product_price",
                     editables.get(i).getProductPriceUnformatted()
             );
-            productParam.put(
+            params.put(
                     "product_weight_value",
                     editables.get(i).getProductWeightUnformatted()
             );
-            productParam.put(
+            params.put(
                     "product_price_currency",
                     String.valueOf(editables.get(i).getCurrencyMode())
             );
-            productParam.put(
+            params.put(
                     "product_weight_unit",
                     String.valueOf(editables.get(i).getWeightMode())
             );
             cartWeightPriceObservableList.add(
-                    productActService.getApi().editWeightPrice(productParam)
+                    productActService.getApi().editWeightPrice(params)
             );
         }
+        cartWeightPriceObservableList.add(processOrder(rejectParam));
         return Observable.concat(cartWeightPriceObservableList);
     }
 
