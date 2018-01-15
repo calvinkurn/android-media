@@ -114,7 +114,7 @@ public class HeaderHomeView extends BaseCustomView {
 
     private void renderVisibilityTitleOnlyTokoCash(boolean isVisibleButtonAction) {
         if (!isVisibleButtonAction && scannerQR.getVisibility() == GONE
-                && headerViewModel.getCashBackData().getAmount() == 0) {
+                && headerViewModel.getCashBackData() == null) {
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)
                     tvBalanceTokocash.getLayoutParams();
             tvTitleTokocash.setVisibility(VISIBLE);
