@@ -86,7 +86,7 @@ android {
 
     project.ext {
         defaultVersionCode = 216001101;
-        defaultVersionName = "2.17";
+        defaultVersionName = "2.18";
     }
 
     compileSdkVersion rootProject.ext.compileSdkVersion

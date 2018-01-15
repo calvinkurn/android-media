@@ -1,11 +1,13 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment.catalog;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,7 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
@@ -238,12 +241,20 @@ public class CatalogFragment extends SearchSectionFragment implements
     }
 
     @Override
+    public void onBannerAdsClicked(String appLink) {
+        if (!TextUtils.isEmpty(appLink)) {
+            ((TkpdCoreRouter) getActivity().getApplication()).actionApplink(getActivity(), appLink);
+        }
+    }
+
+    @Override
     public void onEmptyButtonClicked() {
         showSearchInputView();
     }
 
     protected void setupAdapter() {
-        CatalogTypeFactory typeFactory = new CatalogAdapterTypeFactory(this);
+
+        CatalogTypeFactory typeFactory = new CatalogAdapterTypeFactory(this, query);
         catalogAdapter = new CatalogAdapter(this, typeFactory);
 
         topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), catalogAdapter);
@@ -256,6 +267,7 @@ public class CatalogFragment extends SearchSectionFragment implements
         topAdsRecyclerAdapter.setSpanSizeLookup(onSpanSizeLookup());
         topAdsRecyclerAdapter.setAdsItemClickListener(this);
         topAdsRecyclerAdapter.setTopAdsListener(this);
+        topAdsRecyclerAdapter.setHasHeader(true);
         recyclerView.setAdapter(topAdsRecyclerAdapter);
         topAdsRecyclerAdapter.setLayoutManager(getGridLayoutManager());
     }
@@ -281,6 +293,7 @@ public class CatalogFragment extends SearchSectionFragment implements
             @Override
             public int getSpanSize(int position) {
                 if (catalogAdapter.isEmptyItem(position) ||
+                        catalogAdapter.isCatalogHeader(position) ||
                         topAdsRecyclerAdapter.isLoading(position) ||
                         topAdsRecyclerAdapter.isTopAdsViewHolder(position)) {
                     return spanCount;

@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -114,6 +115,64 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         return fragmentView;
     }
 
+    private class MyWebClient extends WebViewClient {
+        @Override
+        public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            super.onPageStarted(view, url, favicon);
+            Log.d(TAG, "initial url = " + url);
+            try {
+                //noinspection deprecation
+                getActivity().setProgressBarIndeterminateVisibility(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        @SuppressWarnings("deprecation")
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            Log.d(TAG, "redirect url = " + url);
+            if (getActivity() != null && ((IDigitalModuleRouter) getActivity().getApplication())
+                    .isSupportedDelegateDeepLink(url)) {
+                ((IDigitalModuleRouter) getActivity().getApplication())
+                        .actionNavigateByApplinksUrl(getActivity(), url, new Bundle());
+                return true;
+            } else if (getActivity() != null &&
+                    Uri.parse(url).getScheme().equalsIgnoreCase(Constants.APPLINK_CUSTOMER_SCHEME)) {
+                if (getActivity().getApplication() instanceof TkpdCoreRouter &&
+                        (((TkpdCoreRouter) getActivity().getApplication()).getApplinkUnsupported(getActivity()) != null)) {
+
+                    ((TkpdCoreRouter) getActivity().getApplication())
+                            .getApplinkUnsupported(getActivity())
+                            .showAndCheckApplinkUnsupported();
+                }
+            } else {
+                if (getActivity().getApplication() instanceof  TkpdCoreRouter) {
+                    String applink = ((TkpdCoreRouter) getActivity().getApplication())
+                            .applink(getActivity(), url);
+                    if (!TextUtils.isEmpty(applink)) {
+                        openDigitalPage(applink);
+                        return true;
+                    }
+                }
+            }
+            return overrideUrl(url);
+        }
+
+        @Override
+        public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+            super.onReceivedSslError(view, handler, error);
+            handler.cancel();
+            progressBar.setVisibility(View.GONE);
+        }
+
+        public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+            super.onReceivedError(view, errorCode, description, failingUrl);
+            progressBar.setVisibility(View.GONE);
+        }
+    }
+
     public WebView getWebview() {
         return WebViewGeneral;
     }
@@ -146,6 +205,17 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
             }
         } else {
             return false;
+        }
+    }
+
+    private void openDigitalPage(String applink) {
+        if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
+            if (((IDigitalModuleRouter) getActivity().getApplication())
+                    .isSupportedDelegateDeepLink(applink)) {
+                Bundle bundle = new Bundle();
+                ((IDigitalModuleRouter) getActivity().getApplication()).actionNavigateByApplinksUrl(getActivity(),
+                        applink, bundle);
+            }
         }
     }
 

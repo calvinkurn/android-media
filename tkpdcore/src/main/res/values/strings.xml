@@ -1906,6 +1906,7 @@ di Tokopedia Sekarang!</string>
 
 
     <string name="template_people_total_fav_shop">XYZ Toko Favoritku</string>
+    <string name="template_people_total_following">Following List</string>
     <string name="message_success_people_unfav">Sukses menghapus toko favorit</string>
     <string name="message_success_people_fav">Sukses menambahkan toko favorit</string>
     <string name="failed_create_ticket">Gagal membuat tiket</string>
@@ -2141,4 +2142,6 @@ di Tokopedia Sekarang!</string>
     <string name="code_error">Kode error :</string>
 
     <string name="notif_channel_general">Notifikasi</string>
+    <string name="title_hockeyapp_download">Nakama harus menggunakan aplikasi Tokopedia versi beta</string>
+    <string name="title_download">Download</string>
 </resources>

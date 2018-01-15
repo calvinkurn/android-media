@@ -27,5 +27,5 @@ public interface IProductDigitalMapper {
 
     PulsaBalance transformPulsaBalance(
             ResponsePulsaBalance responsePulsaBalance);
-    
+
 }

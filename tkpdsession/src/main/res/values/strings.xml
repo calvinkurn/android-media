@@ -154,5 +154,7 @@
     <string name="emaiL_has_been_sent_to">Email konfirmasi untuk mengubah nomor ponsel sudah dikirim ke</string>
     <string name="withdraw_tokopedia_balance">Tarik Saldo Tokopedia</string>
     <string name="title_info">Info</string>
+    <string name="verification_for_security">Verifikasi untuk Keamanan</string>
+    <string name="we_will_send_email_to">Untuk memastikan akun ini benar milik Anda, kami akan mengirimkan kode verifikasi melalui email ke</string>
 
 </resources>

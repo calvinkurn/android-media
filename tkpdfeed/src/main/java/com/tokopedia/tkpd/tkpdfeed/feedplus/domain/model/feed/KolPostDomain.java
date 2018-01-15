@@ -86,6 +86,9 @@ public class KolPostDomain {
     private final int userId;
 
     @Nullable
+    private final boolean isShowComment;
+
+    @Nullable
     private final String cardType;
 
 
@@ -93,7 +96,7 @@ public class KolPostDomain {
                          int likeCount, boolean isLiked, boolean isFollowed, String createTime,
                          String productPrice, String contentLink, String contentUrl, String userName,
                          String userPhoto, String tagsType, String caption, int itemId, String label,
-                         String headerTitle, String userUrl, int userId, String cardType) {
+                         String headerTitle, String userUrl, int userId, boolean isShowComment, String cardType) {
         this.id = id;
         this.imageUrl = imageUrl;
         this.description = description;
@@ -114,6 +117,7 @@ public class KolPostDomain {
         this.headerTitle = headerTitle;
         this.userUrl = userUrl;
         this.userId = userId;
+        this.isShowComment = isShowComment;
         this.cardType = cardType;
     }
 
@@ -215,6 +219,11 @@ public class KolPostDomain {
     @Nullable
     public int getUserId() {
         return userId;
+    }
+
+    @Nullable
+    public boolean isShowComment() {
+        return isShowComment;
     }
 
     @Nullable
