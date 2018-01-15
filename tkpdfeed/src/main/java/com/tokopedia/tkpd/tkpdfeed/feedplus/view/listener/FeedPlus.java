@@ -189,6 +189,8 @@ public interface FeedPlus {
                                              String imageSourceSingle, String name, String price);
 
         void onGoToShopDetailFromCampaign(int page, int rowNumber, String shopUrl);
+
+        void onContentProviderLinkClicked(String url);
     }
 
     interface Presenter extends CustomerPresenter<View> {

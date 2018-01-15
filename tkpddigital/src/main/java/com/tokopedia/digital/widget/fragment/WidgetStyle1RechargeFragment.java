@@ -255,8 +255,8 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
                 attributes.setClientNumber(orderClientNumber.getClientNumber());
                 attributes.setCategoryId(Integer.valueOf(orderClientNumber.getCategoryId()));
                 attributes.setOperatorId(Integer.valueOf(orderClientNumber.getOperatorId()));
-                if (orderClientNumber.getLastProduct() != null) {
-                    attributes.setProductId(Integer.valueOf(orderClientNumber.getLastProduct()));
+                if (orderClientNumber.getProductId() != null) {
+                    attributes.setProductId(Integer.valueOf(orderClientNumber.getProductId()));
                 }
                 lastOrder.setAttributes(attributes);
 

@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -148,6 +149,15 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
                             .getApplinkUnsupported(getActivity())
                             .showAndCheckApplinkUnsupported();
                 }
+            } else {
+                if (getActivity().getApplication() instanceof  TkpdCoreRouter) {
+                    String applink = ((TkpdCoreRouter) getActivity().getApplication())
+                            .applink(getActivity(), url);
+                    if (!TextUtils.isEmpty(applink)) {
+                        openDigitalPage(applink);
+                        return true;
+                    }
+                }
             }
             return overrideUrl(url);
         }
@@ -197,6 +207,17 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
             }
         } else {
             return false;
+        }
+    }
+
+    private void openDigitalPage(String applink) {
+        if (getActivity().getApplication() instanceof IDigitalModuleRouter) {
+            if (((IDigitalModuleRouter) getActivity().getApplication())
+                    .isSupportedDelegateDeepLink(applink)) {
+                Bundle bundle = new Bundle();
+                ((IDigitalModuleRouter) getActivity().getApplication()).actionNavigateByApplinksUrl(getActivity(),
+                        applink, bundle);
+            }
         }
     }
 
