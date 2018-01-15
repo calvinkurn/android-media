@@ -25,6 +25,9 @@ import java.util.List;
 
 public class FlightBookingReviewModel implements Parcelable{
 
+    private static final String LUGGAGE_PREFIX = "Bagasi ";
+    private static final String MEAL_PREFIX = "Makanan ";
+
     private String id;
     private FlightDetailViewModel detailViewModelListDeparture;
     private FlightDetailViewModel detailViewModelListReturn;
@@ -294,7 +297,7 @@ public class FlightBookingReviewModel implements Parcelable{
         List<FlightDetailPassenger> flightDetailPassengers = new ArrayList<>();
         for (FlightBookingPassengerViewModel flightBookingPassengerViewModel : passengerViewModels) {
             FlightDetailPassenger flightDetailPassenger = new FlightDetailPassenger();
-            flightDetailPassenger.setPassengerName(flightBookingPassengerViewModel.getPassengerFirstName() + " " + flightBookingPassengerViewModel.getPassengerLastName());
+            flightDetailPassenger.setPassengerName(flightBookingPassengerViewModel.getPassengerTitle() + " " + flightBookingPassengerViewModel.getPassengerFirstName() + " " + flightBookingPassengerViewModel.getPassengerLastName());
             flightDetailPassenger.setPassengerType(flightBookingPassengerViewModel.getType());
             flightDetailPassenger.setInfoPassengerList(generateDetailViewModelPassenger(flightBookingPassengerViewModel.getFlightBookingLuggageMetaViewModels(),
                     flightBookingPassengerViewModel.getFlightBookingMealMetaViewModels()));
@@ -308,14 +311,14 @@ public class FlightBookingReviewModel implements Parcelable{
         List<SimpleViewModel> simpleViewModels = new ArrayList<>();
         for (FlightBookingAmenityMetaViewModel flightBookingLuggageMetaViewModel : flightBookingLuggageMetaViewModels) {
             SimpleViewModel simpleViewModel = new SimpleViewModel();
-            simpleViewModel.setDescription(flightBookingLuggageMetaViewModel.getDescription());
+            simpleViewModel.setDescription(LUGGAGE_PREFIX + flightBookingLuggageMetaViewModel.getDescription());
             simpleViewModel.setLabel(generateLabelLuggage(flightBookingLuggageMetaViewModel.getAmenities()));
             simpleViewModels.add(simpleViewModel);
         }
 
         for (FlightBookingAmenityMetaViewModel flightBookingAmenityMetaViewModel : flightBookingAmenityMetaViewModels) {
             SimpleViewModel simpleViewModel = new SimpleViewModel();
-            simpleViewModel.setDescription(flightBookingAmenityMetaViewModel.getDescription());
+            simpleViewModel.setDescription(MEAL_PREFIX + flightBookingAmenityMetaViewModel.getDescription());
             simpleViewModel.setLabel(generateLabelMeal(flightBookingAmenityMetaViewModel.getAmenities()));
             simpleViewModels.add(simpleViewModel);
         }

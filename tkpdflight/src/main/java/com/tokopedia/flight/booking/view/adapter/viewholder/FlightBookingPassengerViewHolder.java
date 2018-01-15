@@ -114,6 +114,7 @@ public class FlightBookingPassengerViewHolder extends AbstractViewHolder<FlightB
         FlightSimpleAdapter adapter = new FlightSimpleAdapter();
         adapter.setTitleBold(true);
         adapter.setContentAllignmentRight(true);
+        adapter.setShowColon(true);
         adapter.setDescriptionTextColor(itemView.getResources().getColor(R.color.font_black_secondary_54));
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.VERTICAL, false);
