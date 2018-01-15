@@ -496,7 +496,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     }
 
     private boolean isValidEmail(String contactEmail) {
-        return Patterns.EMAIL_ADDRESS.matcher(contactEmail).matches();
+        return Patterns.EMAIL_ADDRESS.matcher(contactEmail).matches() && !contactEmail.contains(".@") && !contactEmail.contains("@.");
     }
 
     @Override
