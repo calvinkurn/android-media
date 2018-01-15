@@ -24,7 +24,6 @@ import com.tokopedia.tokocash.qrpayment.presentation.model.BalanceTokoCash;
 import com.tokopedia.tokocash.qrpayment.presentation.model.InfoQrTokoCash;
 import com.tokopedia.tokocash.qrpayment.presentation.model.QrPaymentTokoCash;
 import com.tokopedia.tokocash.qrpayment.presentation.presenter.QrPaymentPresenter;
-import com.tokopedia.tokocash.qrpayment.presentation.watcher.PriceTextWatcher;
 
 import javax.inject.Inject;
 
@@ -167,7 +166,7 @@ public class NominalQrPaymentActivity extends TActivity implements QrPaymentCont
                 balanceTokoCash.getBalance()));
         this.balanceTokoCash = balanceTokoCash;
 
-        nominalValue.addTextChangedListener(new PriceTextWatcher(nominalValue) {
+        nominalValue.addTextChangedListener(new NumberTextWatcher(nominalValue) {
             @Override
             public void onNumberChanged(double number) {
                 super.onNumberChanged(number);

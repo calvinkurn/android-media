@@ -165,11 +165,14 @@ public class HeaderHomeView extends BaseCustomView {
             scannerQR.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_qr_scanner,
                     0, 0, 0);
         } else {
+            tvTitleTokocash.setVisibility(GONE);
+            scannerQR.setVisibility(GONE);
+            tvActionTokocash.setVisibility(VISIBLE);
+            tvActionTokocash.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            tokoCashHolder.setOnClickListener(getOnClickTokocashActionButton(homeHeaderWalletAction));
             if (headerViewModel.isPendingTokocashChecked()
                     && headerViewModel.getCashBackData() != null) {
                 if (headerViewModel.getCashBackData().getAmount() > 0) {
-                    tvTitleTokocash.setVisibility(GONE);
-                    scannerQR.setVisibility(GONE);
                     tvBalanceTokocash.setVisibility(VISIBLE);
                     tvBalanceTokocash.setText(homeHeaderWalletAction.getBalance());
                     tvBalanceTokocash.setText(headerViewModel.getCashBackData().getAmountText());
@@ -180,9 +183,6 @@ public class HeaderHomeView extends BaseCustomView {
                     infoBtn.setOnClickListener(
                             getOnClickPendingCashBackListener(homeHeaderWalletAction)
                     );
-                    tvActionTokocash.setVisibility(VISIBLE);
-                    tvActionTokocash.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-                    tvActionTokocash.setOnClickListener(getOnClickTokocashActionButton(homeHeaderWalletAction));
                 }
             } else {
                 listener.onRequestPendingCashBack();

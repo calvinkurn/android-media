@@ -136,18 +136,6 @@
             android:paddingTop="@dimen/padding_vs">
 
             <TextView
-                android:id="@+id/tv_title_tokopoint"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:lineSpacingExtra="4sp"
-                android:textColor="@color/black_54"
-                android:textSize="12sp"
-                android:visibility="gone"
-                tools:text="Silver Member"
-                tools:visibility="visible" />
-
-            <TextView
                 android:id="@+id/tv_balance_tokopoint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -159,6 +147,19 @@
                 android:visibility="gone"
                 tools:text="90 Poin"
                 tools:visibility="visible" />
+
+            <TextView
+                android:id="@+id/tv_title_tokopoint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:lineSpacingExtra="4sp"
+                android:textColor="@color/black_54"
+                android:textSize="12sp"
+                android:visibility="gone"
+                tools:text="Silver Member"
+                tools:visibility="visible" />
+
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>
