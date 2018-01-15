@@ -13,8 +13,9 @@
         android:id="@+id/cc_auth_setting_submit_button"
         android:layout_width="match_parent"
         android:layout_height="@dimen/btn_height"
+        android:layout_margin="@dimen/padding_ms"
         android:layout_alignParentBottom="true"
         style="@style/ButtonGreen"
-        android:text="@string/title_save"/>
+        android:text="@string/apply"/>
 
 </RelativeLayout>
