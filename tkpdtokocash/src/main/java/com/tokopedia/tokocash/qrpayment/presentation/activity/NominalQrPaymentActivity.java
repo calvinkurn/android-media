@@ -166,7 +166,7 @@ public class NominalQrPaymentActivity extends TActivity implements QrPaymentCont
                 balanceTokoCash.getBalance()));
         this.balanceTokoCash = balanceTokoCash;
 
-        nominalValue.addTextChangedListener(new NumberTextWatcher(nominalValue) {
+        nominalValue.addTextChangedListener(new NumberTextWatcher(nominalValue, "0") {
             @Override
             public void onNumberChanged(double number) {
                 super.onNumberChanged(number);
@@ -176,15 +176,14 @@ public class NominalQrPaymentActivity extends TActivity implements QrPaymentCont
     }
 
     private void handleWarningPayment(double nominal) {
-        if (nominal == 0) {
-            nominalValue.setText("0");
+        if (nominal <= 0) {
             separatorNominal.setBackgroundColor(getColorNominal(R.color.separator_grey));
             tokocashValue.setTextColor(getColorNominal(R.color.separator_grey));
             payButton.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bg_grey_border_black));
             payButton.setTextColor(getColorNominal(R.color.grey_nonactive_text));
             payButton.setEnabled(false);
         } else {
-            if (nominal > Long.parseLong(balanceTokoCash.getRaw_balance())) {
+            if (nominal > Double.parseDouble(balanceTokoCash.getRaw_balance())) {
                 separatorNominal.setBackgroundColor(getColorNominal(R.color.separator_red));
                 tokocashValue.setTextColor(getColorNominal(R.color.separator_red));
                 payButton.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bg_grey_border_black));
