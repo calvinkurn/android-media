@@ -450,7 +450,6 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
         return new KolCtaDomain(
                 kol_cta.img_header(),
                 kol_cta.click_applink(),
-                kol_cta.click_url(),
                 kol_cta.button_text(),
                 kol_cta.title(),
                 kol_cta.subtitle());

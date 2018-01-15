@@ -659,7 +659,6 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
             return new ContentProductViewModel(
                     domain.getImageUrl(),
                     domain.getApplink(),
-                    domain.getApplinkUrl(),
                     domain.getButtonTitle(),
                     domain.getTextHeader(),
                     domain.getTextDescription(),

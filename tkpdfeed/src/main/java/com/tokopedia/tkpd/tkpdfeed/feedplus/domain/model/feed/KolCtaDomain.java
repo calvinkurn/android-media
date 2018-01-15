@@ -7,15 +7,13 @@ package com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed;
 public class KolCtaDomain {
     private final String imageUrl;
     private final String applink;
-    private final String applinkUrl;
     private final String buttonTitle;
     private final String textHeader;
     private final String textDescription;
 
-    public KolCtaDomain(String imageUrl, String applink, String applinkUrl, String buttonTitle, String textHeader, String textDescription) {
+    public KolCtaDomain(String imageUrl, String applink, String buttonTitle, String textHeader, String textDescription) {
         this.imageUrl = imageUrl;
         this.applink = applink;
-        this.applinkUrl = applinkUrl;
         this.buttonTitle = buttonTitle;
         this.textHeader = textHeader;
         this.textDescription = textDescription;
@@ -35,10 +33,6 @@ public class KolCtaDomain {
 
     public String getTextHeader() {
         return textHeader;
-    }
-
-    public String getApplinkUrl() {
-        return applinkUrl;
     }
 
     public String getTextDescription() {
