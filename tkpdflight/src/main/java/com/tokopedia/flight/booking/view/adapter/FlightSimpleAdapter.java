@@ -27,6 +27,7 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
     private boolean isTitleBold;
     private boolean isTitleOnly;
     private boolean isContentAllignmentRight;
+    private boolean showColon;
     private OnAdapterInteractionListener interactionListener;
 
     @ColorInt
@@ -39,6 +40,7 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
         isTitleBold = false;
         isTitleOnly = false;
         isContentAllignmentRight = false;
+        showColon = false;
     }
 
     @Override
@@ -91,6 +93,10 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
         isContentAllignmentRight = contentAllignmentRight;
     }
 
+    public void setShowColon(boolean showColon) {
+        this.showColon = showColon;
+    }
+
     public interface OnAdapterInteractionListener {
         void onItemClick(int adapterPosition, SimpleViewModel viewModel);
     }
@@ -99,6 +105,7 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
         private TextView titleTextView;
         private TextView contentTextView;
         private ImageView arrowImageView;
+        private TextView colonTextView;
         private LinearLayout containerLinearLayout;
 
         public ViewHolder(View itemView) {
@@ -107,6 +114,7 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
             contentTextView = (TextView) itemView.findViewById(R.id.tv_content);
             arrowImageView = (ImageView) itemView.findViewById(R.id.iv_arrow);
             containerLinearLayout = (LinearLayout) itemView.findViewById(R.id.container);
+            colonTextView = itemView.findViewById(R.id.text_colon);
         }
 
         public void bind(final SimpleViewModel viewModel) {
@@ -122,6 +130,10 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
                 titleTextView.setTypeface(Typeface.DEFAULT_BOLD);
             } else {
                 titleTextView.setTypeface(Typeface.DEFAULT);
+            }
+
+            if(showColon) {
+                colonTextView.setVisibility(View.VISIBLE);
             }
 
             if (isContentAllignmentRight) {
