@@ -30,4 +30,5 @@
     <dimen name="padding_activity">24dp</dimen>
     <dimen name="verification_icon">38dp</dimen>
     <dimen name="extra_space_start">3dp</dimen>
+    <dimen name="default_big_icon">200dp</dimen>
 </resources>

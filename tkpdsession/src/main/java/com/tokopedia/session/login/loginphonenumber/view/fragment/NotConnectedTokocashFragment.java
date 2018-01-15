@@ -211,4 +211,11 @@ public class NotConnectedTokocashFragment extends BaseDaggerFragment {
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(NotConnectedTokocashActivity.PARAM_PHONE_NUMBER, phoneNumber);
+        outState.putInt(NotConnectedTokocashActivity.PARAM_TYPE, type);
+    }
 }

@@ -235,6 +235,13 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(ChooseTokocashAccountActivity.ARGS_DATA, viewModel);
+
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         presenter.detachView();

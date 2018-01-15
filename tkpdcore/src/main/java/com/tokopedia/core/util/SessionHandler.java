@@ -704,6 +704,10 @@ public class SessionHandler {
         cache.applyEditor();
     }
 
+    public String getTempLoginSession() {
+       return getTempLoginSession(context);
+    }
+
     public interface onLogoutListener {
         void onLogout(Boolean success);
     }

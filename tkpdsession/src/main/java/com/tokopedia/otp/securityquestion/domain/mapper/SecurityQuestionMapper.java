@@ -2,13 +2,11 @@ package com.tokopedia.otp.securityquestion.domain.mapper;
 
 import android.text.TextUtils;
 
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.otp.securityquestion.domain.pojo.SecurityQuestionPojo;
 import com.tokopedia.otp.securityquestion.data.model.securityquestion.QuestionViewModel;
-import com.tokopedia.session.R;
+import com.tokopedia.otp.securityquestion.domain.pojo.SecurityQuestionPojo;
 
 import javax.inject.Inject;
 
@@ -40,8 +38,7 @@ public class SecurityQuestionMapper implements Func1<Response<TkpdResponse>, Que
                         && !response.body().getErrorMessages().isEmpty()) {
                     throw new ErrorMessageException(response.body().getErrorMessageJoined());
                 } else {
-                    throw new ErrorMessageException(MainApplication.getAppContext().getString
-                            (R.string.default_request_error_unknown));
+                    throw new ErrorMessageException("");
                 }
             }
         } else {

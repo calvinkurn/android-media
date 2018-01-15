@@ -18,6 +18,7 @@ import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextPaint;
+import android.text.TextUtils;
 import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -448,6 +449,9 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessRequestOTP(String messageStatus) {
+        if (TextUtils.isEmpty(messageStatus)) {
+            messageStatus = getString(R.string.success_request_otp);
+        }
         startTimer();
         NetworkErrorHelper.showSnackbar(getActivity(), messageStatus);
     }

@@ -32,14 +32,13 @@ public class ValidateOtpLoginSubscriber extends Subscriber<ValidateOtpLoginDomai
     public void onNext(ValidateOtpLoginDomain validateOTPLoginDomain) {
         viewListener.dismissLoadingProgress();
         if (validateOTPLoginDomain.getValidateOtpDomain().isSuccess()
-                && validateOTPLoginDomain.getMakeLoginDomain().isLogin()
-                && !validateOTPLoginDomain.getMakeLoginDomain().isMsisdnVerified()) {
-            viewListener.onGoToPhoneVerification();
-        } else if (validateOTPLoginDomain.getValidateOtpDomain().isSuccess()
-                && validateOTPLoginDomain.getMakeLoginDomain().isLogin()
-                && validateOTPLoginDomain.getMakeLoginDomain().isMsisdnVerified())
-            viewListener.onSuccessValidateOtp();
-        else {
+                && validateOTPLoginDomain.getMakeLoginDomain().isLogin()) {
+            if (!validateOTPLoginDomain.getMakeLoginDomain().isMsisdnVerified()) {
+                viewListener.onGoToPhoneVerification();
+            } else {
+                viewListener.onSuccessValidateOtp();
+            }
+        } else {
             viewListener.onErrorValidateOtp(
                     ErrorHandler.getDefaultErrorCodeMessage(ErrorCode.UNSUPPORTED_FLOW));
         }

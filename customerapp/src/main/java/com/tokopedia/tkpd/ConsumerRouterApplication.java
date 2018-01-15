@@ -158,8 +158,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication, TkpdInboxRouter,
         TokoCashRouter, IWalletRouter, ILoyaltyRouter, ReputationRouter, SessionRouter, LogisticRouter {
 
-    public static final String COM_TOKOPEDIA_TKPD_HOME_PARENT_INDEX_HOME = "com.tokopedia.tkpd.home.ParentIndexHome";
-
     private DaggerProductComponent.Builder daggerProductBuilder;
     private DaggerReactNativeComponent.Builder daggerReactNativeBuilder;
     private ProductComponent productComponent;
