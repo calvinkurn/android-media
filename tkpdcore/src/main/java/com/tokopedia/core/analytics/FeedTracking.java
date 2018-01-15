@@ -21,6 +21,7 @@ public class FeedTracking extends TrackingUtils {
     public static final String STATIC_VALUE_HOMEPAGE = "homepage";
     public static final String STATIC_VALUE_FEED_ITEM_IMPRESSION = "feed - item impression";
     public static final String STATIC_VALUE_FEED_CLICK_CARD_ITEM = "feed - click card item";
+    public static final String STATIC_FORMAT_ACTION_FIELD_FEED_PRODUCT = "/feed - product %d - %s";
 
     public static void trackEventClickProductUploadEnhanced(String name,
                                                             String id,
@@ -30,7 +31,7 @@ public class FeedTracking extends TrackingUtils {
                                                             int itemPosition,
                                                             String userId,
                                                             String eventLabel) {
-        String actionField = String.format("/feed - product %d - %s", rowNumber, eventLabel);
+        String actionField = String.format(STATIC_FORMAT_ACTION_FIELD_FEED_PRODUCT, rowNumber, eventLabel);
         eventClickFeedProductItem(createProductList(name, id, price, itemPosition, actionField, userId),
                 eventLabel,
                 actionField,
@@ -47,7 +48,7 @@ public class FeedTracking extends TrackingUtils {
                                                           String source,
                                                           String userId,
                                                           String eventLabel) {
-        String actionField = String.format("/feed - product %d - %s", rowNumber, eventLabel);
+        String actionField = String.format(STATIC_FORMAT_ACTION_FIELD_FEED_PRODUCT, rowNumber, eventLabel);
         eventClickFeedProductItem(createProductList(name, id, price, itemPosition, actionField, userId),
                 eventLabel,
                 actionField,
