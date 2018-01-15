@@ -93,6 +93,9 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
     protected void checkResponse(String string, Response response) {
         String bodyResponse = string;
+
+        if (isOnBetaServer(response)) ServerErrorHandler.showForceHockeyAppDialog();
+
         if (isMaintenance(bodyResponse)) {
             ServerErrorHandler.showMaintenancePage();
         } else if (isServerError(response.code()) && !isHasErrorMessage(bodyResponse)) {
@@ -349,6 +352,10 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         newestRequestBuilder
                 .header("accounts-authorization", "Bearer " + freshAccessToken);
         return newestRequestBuilder.build();
+    }
+
+    private Boolean isOnBetaServer(Response response) {
+        return response.header("is_beta", "0").equals("1");
     }
 
 }

@@ -2142,4 +2142,6 @@ di Tokopedia Sekarang!</string>
     <string name="code_error">Kode error :</string>
 
     <string name="notif_channel_general">Notifikasi</string>
+    <string name="title_hockeyapp_download">Nakama harus menggunakan aplikasi Tokopedia versi beta</string>
+    <string name="title_download">Download</string>
 </resources>
