@@ -576,6 +576,9 @@ public class OrderDetailActivity extends TActivity
                 .setCustomAnimations(R.animator.exit_bottom, R.animator.exit_bottom)
                 .remove(getFragmentManager()
                 .findFragmentByTag(VALIDATION_FRAGMENT_TAG)).commit();*/
+        Toast.makeText(
+                this, getString(R.string.default_success_message_reject_order),
+                Toast.LENGTH_LONG).show();
         setResult(Activity.RESULT_OK);
         finish();
     }
