@@ -44,12 +44,12 @@
 
         <TextView
             android:id="@+id/text_product_name"
-            style="@style/TextView.Body2.Black"
+            style="@style/TextView.Small"
             tools:text="Tas selempang wanita bulat merah Good Things by Olympicto bahan Kanvas" />
 
         <TextView
             android:id="@+id/text_product_price"
-            style="@style/TextView.Body2.BlackSecondary"
+            style="@style/TextView.Small"
             android:layout_marginTop="@dimen/margin_small"
             tools:text="Rp. 500" />
 

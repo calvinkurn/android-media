@@ -162,10 +162,14 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        presenter.getInboxDetail(
-                passModel.getReputationId(),
-                getArguments().getInt(InboxReputationDetailActivity.ARGS_TAB, -1)
-        );
+        if (passModel != null && !TextUtils.isEmpty(passModel.getReputationId())) {
+            presenter.getInboxDetail(
+                    passModel.getReputationId(),
+                    getArguments().getInt(InboxReputationDetailActivity.ARGS_TAB, -1)
+            );
+        }else{
+            getActivity().finish();
+        }
     }
 
     @Override
@@ -176,7 +180,8 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onErrorGetInboxDetail(String errorMessage) {
-        if (getActivity() != null && mainView != null)
+        if (getActivity() != null
+                && mainView != null)
             NetworkErrorHelper.showEmptyState(getActivity(), mainView, errorMessage,
                     new NetworkErrorHelper.RetryClickedListener() {
                         @Override
