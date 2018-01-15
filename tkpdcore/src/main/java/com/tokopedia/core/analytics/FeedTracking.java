@@ -1,5 +1,7 @@
 package com.tokopedia.core.analytics;
 
+import com.google.android.gms.tagmanager.DataLayer;
+
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +32,7 @@ public class FeedTracking extends TrackingUtils {
                                                             String userId,
                                                             String eventLabel) {
         String actionField = String.format("/feed - product %d - %s", rowNumber, eventLabel);
-        enhanceClickFeedRecomItem(createProductList(name, id, price, itemPosition, actionField, userId),
+        eventClickFeedProductItem(createProductList(name, id, price, itemPosition, actionField, userId),
                 eventLabel,
                 actionField,
                 productUrl
@@ -47,18 +49,11 @@ public class FeedTracking extends TrackingUtils {
                                                           String userId,
                                                           String eventLabel) {
         String actionField = String.format("/feed - product %d - %s", rowNumber, eventLabel);
-        enhanceClickFeedRecomItem(createProductList(name, id, price, itemPosition, actionField, userId),
+        eventClickFeedProductItem(createProductList(name, id, price, itemPosition, actionField, userId),
                 eventLabel,
                 actionField,
                 productUrl
         );
-    }
-
-    private static void enhanceClickFeedRecomItem(Map<String, Object> objects,
-                                                  String eventLabel,
-                                                  String actionField,
-                                                  String productUrl) {
-        getGTMEngine().enhanceClickFeedRecomItem(objects, eventLabel, productUrl, actionField);
     }
 
     private static String generateClickRecomItemEventLabel(String cardType, String cardDetail) {
@@ -84,10 +79,49 @@ public class FeedTracking extends TrackingUtils {
     }
 
     public static void eventImpressionFeedInspiration(List<Object> list, String eventLabel) {
-        getGTMEngine().eventImpressionFeedInspiration(list, eventLabel);
+        eventImpressionFeedProductItem(list, eventLabel);
     }
 
     public static void eventImpressionFeedUploadedProduct(List<Object> list, String eventLabel) {
-        getGTMEngine().eventImpressionFeedUploadedProduct(list, eventLabel);
+        eventImpressionFeedProductItem(list, eventLabel);
+    }
+
+    private static void eventTrackingEnhanceFeed(Map<String, Object> trackingData) {
+        getGTMEngine().clearEnhanceEcommerce();
+        getGTMEngine().eventTrackingEnhancedEcommerce(trackingData);
+    }
+
+    private static void eventImpressionFeedProductItem(List<Object> list, String eventLabel) {
+        eventTrackingEnhanceFeed(
+                DataLayer.mapOf("event", "productView",
+                        "eventCategory", "homepage",
+                        "eventAction", "feed - item impression",
+                        "eventLabel", eventLabel,
+                        "ecommerce", DataLayer.mapOf(
+                                "currencyCode", "IDR",
+                                "impressions", DataLayer.listOf(
+                                        list.toArray(new Object[list.size()])
+                                ))
+                )
+        );
+    }
+
+    private static void eventClickFeedProductItem(Map<String, Object> objects,
+                                                  String eventLabel,
+                                                  String actionField,
+                                                  String productUrl) {
+        eventTrackingEnhanceFeed(
+                DataLayer.mapOf("event", "productClick",
+                        "eventCategory", "homepage",
+                        "eventAction", "feed - click card item",
+                        "eventLabel", eventLabel,
+                        "ecommerce", DataLayer.mapOf("click",
+                                DataLayer.mapOf("actionField",
+                                        DataLayer.mapOf("list", actionField),
+                                        "products", DataLayer.listOf(objects)
+                                )
+                        )
+                )
+        );
     }
 }
