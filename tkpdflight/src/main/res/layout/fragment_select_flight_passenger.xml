@@ -1,0 +1,71 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/coordinator_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical">
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.tokopedia.flight.dashboard.view.widget.SelectPassengerView
+                android:id="@+id/spv_passenger_adult"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:spv_icon="@drawable/ic_passenger_adult"
+                app:spv_max_value="7"
+                app:spv_min_value="1"
+                app:spv_subtitle="@string/select_passenger_adult_subtitle"
+                app:spv_title="@string/select_passenger_adult_title"
+                android:layout_marginLeft="@dimen/margin_sm"
+                android:layout_marginRight="@dimen/margin_sm"
+                android:layout_marginTop="@dimen/padding_ms"
+                android:layout_marginBottom="@dimen/padding_ms"/>
+
+            <com.tokopedia.flight.dashboard.view.widget.SelectPassengerView
+                android:id="@+id/spv_passenger_children"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:spv_icon="@drawable/ic_passenger_childreen"
+                app:spv_max_value="7"
+                app:spv_min_value="0"
+                app:spv_subtitle="@string/select_passenger_children_subtitle"
+                app:spv_title="@string/select_passenger_children_title"
+                android:layout_marginLeft="@dimen/margin_sm"
+                android:layout_marginRight="@dimen/margin_sm"
+                android:layout_marginTop="@dimen/padding_ms"
+                android:layout_marginBottom="@dimen/padding_ms"/>
+
+            <com.tokopedia.flight.dashboard.view.widget.SelectPassengerView
+                android:id="@+id/spv_passenger_infant"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:spv_icon="@drawable/ic_passenger_infant"
+                app:spv_max_value="7"
+                app:spv_min_value="0"
+                app:spv_subtitle="@string/select_passenger_infant_subtitle"
+                app:spv_title="@string/select_passenger_infant_title"
+                android:layout_marginLeft="@dimen/margin_sm"
+                android:layout_marginRight="@dimen/margin_sm"
+                android:layout_marginTop="@dimen/padding_ms"
+                android:layout_marginBottom="@dimen/padding_ms"/>
+        </LinearLayout>
+
+
+    </android.support.v4.widget.NestedScrollView>
+
+    <Button
+        android:id="@+id/button_save"
+        style="@style/Button.Submit.Green"
+        android:text="@string/select_passenger_submit_button" />
+</LinearLayout>

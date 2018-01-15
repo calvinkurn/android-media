@@ -119,4 +119,7 @@
     <color name="black_tooltip">#96000000</color>
     <color name="red_1">#ea1706</color>
     <color name="yellow_1">#ffb03b</color>
+
+    <color name="yellow_background">#fffcd3</color>
+    <color name="yellow_border">#efe9a1</color>
 </resources>

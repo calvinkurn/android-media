@@ -12,6 +12,8 @@ import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.analytics.nishikino.model.Promotion;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 
+import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -111,4 +113,15 @@ public interface IGTMContainer {
     void eventImpressionHotlistProductFeatured(Hotlist hotlist);
 
     void event(String name, Map<String, Object> data);
+
+    void impressionHotlistTracking(String hotlistName, String promoName, String promoCode);
+
+    void clickCopyButtonHotlistPromo(String hotlistName, String promoName, String promoCode);
+
+    void clickTncButtonHotlistPromo(String hotlistName, String promoName, String promoCode);
+
+
+    void eventTrackingEnhancedEcommerce(Map<String, Object> trackingData);
+
+    void clearEnhanceEcommerce();
 }

@@ -200,6 +200,10 @@ public class BannerView extends BaseCustomView {
         }
     }
 
+    public void setPagerAdapter(BannerPagerAdapter bannerPagerAdapter) {
+        bannerRecyclerView.setAdapter(bannerPagerAdapter);
+    }
+
     private void setCurrentIndicator() {
         for (int i = 0; i < indicatorItems.size(); i++) {
             if (currentPosition != i) {

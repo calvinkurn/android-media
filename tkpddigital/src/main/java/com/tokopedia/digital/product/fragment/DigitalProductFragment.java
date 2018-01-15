@@ -46,7 +46,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.session.presenter.Session;
@@ -129,6 +129,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         BaseDigitalProductView.ActionListener, IUssdUpdateListener, CheckPulsaBalanceView.ActionListener {
 
     private static final String ARG_PARAM_EXTRA_CATEGORY_ID = "ARG_PARAM_EXTRA_CATEGORY_ID";
+    private static final String ARG_PARAM_EXTRA_OPERATOR_ID = "ARG_PARAM_EXTRA_OPERATOR_ID";
+    private static final String ARG_PARAM_EXTRA_PRODUCT_ID = "ARG_PARAM_EXTRA_PRODUCT_ID";
+    private static final String ARG_PARAM_EXTRA_CLIENT_NUMBER = "ARG_PARAM_EXTRA_CLIENT_NUMBER";
 
     private static final String EXTRA_STATE_OPERATOR_SELECTED = "EXTRA_STATE_OPERATOR_SELECTED";
     private static final String EXTRA_STATE_PRODUCT_SELECTED = "EXTRA_STATE_PRODUCT_SELECTED";
@@ -171,7 +174,12 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     LinearLayout holderCheckBalance;
 
     private BannerAdapter bannerAdapter;
+
     private String categoryId;
+    private String operatorId;
+    private String productId;
+    private String clientNumber;
+
     private CheckPulsaBalanceView selectedCheckPulsaBalanceView;
 
     private CompositeSubscription compositeSubscription;
@@ -195,6 +203,18 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         return fragment;
     }
 
+    public static Fragment newInstance(
+            String categoryId, String operatorId, String productId, String clientNumber) {
+        Fragment fragment = new DigitalProductFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(ARG_PARAM_EXTRA_CATEGORY_ID, categoryId);
+        bundle.putString(ARG_PARAM_EXTRA_OPERATOR_ID, operatorId);
+        bundle.putString(ARG_PARAM_EXTRA_PRODUCT_ID, productId);
+        bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER, clientNumber);;
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
     @Override
     protected boolean isRetainInstance() {
         return false;
@@ -202,7 +222,13 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     protected void onFirstTimeLaunched() {
-        presenter.processGetCategoryAndBannerData();
+        String applinkProperties = "category id: " + categoryId + "\n" +
+                "operator id: " + operatorId;
+
+        Toast.makeText(getActivity(), applinkProperties, Toast.LENGTH_SHORT).show();
+
+        presenter.processGetCategoryAndBannerData(
+                categoryId, operatorId, productId, clientNumber);
     }
 
     @Override
@@ -283,6 +309,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     protected void setupArguments(Bundle arguments) {
         categoryId = arguments.getString(ARG_PARAM_EXTRA_CATEGORY_ID);
+        operatorId = arguments.getString(ARG_PARAM_EXTRA_OPERATOR_ID);
+        productId = arguments.getString(ARG_PARAM_EXTRA_PRODUCT_ID);
+        clientNumber = arguments.getString(ARG_PARAM_EXTRA_CLIENT_NUMBER);
     }
 
     @Override
@@ -575,11 +604,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
-    public String getCategoryId() {
-        return categoryId == null ? "" : categoryId;
-    }
-
-    @Override
     public void closeViewWithMessageAlert(String message) {
         Intent intent = new Intent();
         intent.putExtra(IDigitalModuleRouter.EXTRA_MESSAGE, message);
@@ -620,7 +644,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     public void interruptUserNeedLoginOnCheckout(DigitalCheckoutPassData digitalCheckoutPassData) {
         this.digitalCheckoutPassDataState = digitalCheckoutPassData;
-        Intent intent = SessionRouter.getLoginActivityIntent(getActivity());
+        Intent intent = OldSessionRouter.getLoginActivityIntent(getActivity());
         intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
         navigateToActivityRequest(intent, IDigitalModuleRouter.REQUEST_CODE_LOGIN);
     }

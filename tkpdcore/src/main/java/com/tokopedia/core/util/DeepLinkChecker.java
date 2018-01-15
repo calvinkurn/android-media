@@ -183,7 +183,6 @@ public class DeepLinkChecker {
                 && !linkSegment.get(0).equals("activation.pl"));
     }
 
-
     private static boolean isSearch(String url) {
         return (getLinkSegment(url).get(0).equals("search"));
     }
@@ -256,7 +255,6 @@ public class DeepLinkChecker {
                 BrowseProductRouter.getHotlistIntent(context, url)
         );
     }
-
 
     public static void openCatalog(String url, Context context) {
         context.startActivity(DetailProductRouter.getCatalogDetailActivity(context, getLinkSegment(url).get(1)));
