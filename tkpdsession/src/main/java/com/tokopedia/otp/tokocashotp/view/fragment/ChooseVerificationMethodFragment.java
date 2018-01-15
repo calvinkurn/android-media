@@ -31,7 +31,7 @@ import java.util.ArrayList;
 public class ChooseVerificationMethodFragment extends BaseDaggerFragment implements
         SelectVerification.View {
 
-    RecyclerView methodList;
+    RecyclerView methodListRecyclerView;
     VerificationMethodAdapter adapter;
 
     @Override
@@ -68,16 +68,16 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle
             savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_choose_verification_method, parent, false);
-        methodList = view.findViewById(R.id.method_list);
+        methodListRecyclerView = view.findViewById(R.id.method_list);
         prepareView();
         return view;
     }
 
     private void prepareView() {
         adapter = VerificationMethodAdapter.createInstance(getList(), this);
-        methodList.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager
+        methodListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager
                 .VERTICAL, false));
-        methodList.setAdapter(adapter);
+        methodListRecyclerView.setAdapter(adapter);
     }
 
     private ArrayList<MethodItem> getList() {

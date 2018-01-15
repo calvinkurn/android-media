@@ -76,7 +76,7 @@ public class SecurityQuestionPresenter extends BaseDaggerPresenter<SecurityQuest
             validateOtpLoginUseCase.execute(ValidateOtpLoginUseCase.getParam(
                     ValidateOtpUseCase.OTP_TYPE_SECURITY_QUESTION,
                     otp,
-                    sessionHandler.getTempLoginSession(MainApplication.getAppContext())),
+                    sessionHandler.getTempLoginSession()),
                     new ValidateOtpLoginSubscriber(viewListener));
         } else {
             viewListener.showInvalidOtp();
