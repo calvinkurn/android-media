@@ -27,6 +27,9 @@ public class Detail {
     @SerializedName("shop")
     @Expose
     private Shop shop;
+    @SerializedName("customer")
+    @Expose
+    private Customer customer;
     @SerializedName("drop_shipper")
     @Expose
     private DropShipper dropShipper;
@@ -84,6 +87,14 @@ public class Detail {
 
     public void setShop(Shop shop) {
         this.shop = shop;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     public DropShipper getDropShipper() {

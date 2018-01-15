@@ -14,6 +14,7 @@
     <string name="title_save">Simpan</string>
     <string name="title_status">Status</string>
     <string name="toko_cash_info">TokoCash</string>
+    <string name="weight_place_holder">(WEIGHT)</string>
 
     <string name="label_payment_setting">Pengaturan Pembayaran</string>
     <string name="label_error_reason_must_fill">Alasan harus diisi</string>

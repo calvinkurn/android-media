@@ -2,6 +2,7 @@ package com.tokopedia.transaction.purchase.detail.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -119,6 +120,7 @@ public class RejectOrderWeightPriceFragment extends RejectOrderBaseFragment {
             productWeightPriceModel.setProductImage(itemDataList.get(i).getImageUrl());
             productWeightPriceModel.setProductName(itemDataList.get(i).getItemName());
             productWeightPriceModel.setProductPrice(itemDataList.get(i).getPrice());
+            productWeightPriceModel.setProductWeight(itemDataList.get(i).getWeight());
             productWeightPriceModel.setCurrencyMode(itemDataList.get(i).getCurrencyType());
             productWeightPriceModel.setWeightMode(FIXED_KILOGRAM_MODE);
             productWeightPriceModel
@@ -128,6 +130,17 @@ public class RejectOrderWeightPriceFragment extends RejectOrderBaseFragment {
             productWeightPriceModels.add(productWeightPriceModel);
         }
         return productWeightPriceModels;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        adapter.notifyDataSetChanged();
+        getFragmentManager()
+                .beginTransaction()
+                .setCustomAnimations(R.animator.exit_bottom, R.animator.exit_bottom)
+                .remove(getFragmentManager().findFragmentByTag(FRAGMENT_REJECT_ORDER_SUB_MENU_TAG))
+                .commit();
     }
 
     public interface RejectOrderChangeWeightPriceListener {

@@ -162,19 +162,15 @@ public class OrderDetailRepository implements IOrderDetailRepository {
     ) {
         return rejectOrderMergedEditDescription(
                 emptyVarianProductEditables,
-                productParam
-        ).flatMap(new Func1<String, Observable<String>>() {
-            @Override
-            public Observable<String> call(String s) {
-                CommonUtils.dumper("PORING REJECT VARIAN");
-                return processOrder(rejectParam);
-            }
-        });
+                productParam,
+                rejectParam
+        );
     }
 
     private Observable<String> rejectOrderMergedEditDescription(
             List<EmptyVarianProductEditable> emptyVarianProductEditables,
-            TKPDMapParam<String, String> productParam
+            TKPDMapParam<String, String> productParam,
+            TKPDMapParam<String, String> rejectParam
     ) {
         List<Observable<String>> cartVarianObservableList = new ArrayList<>();
         for (int i =0; i < emptyVarianProductEditables.size(); i++) {
@@ -183,7 +179,8 @@ public class OrderDetailRepository implements IOrderDetailRepository {
             productParam.put("product_description", emptyVarianProductEditables.get(i).getProductDescription());
             cartVarianObservableList.add(productActService.getApi().editDescription(productParam));
         }
-        return Observable.concat(cartVarianObservableList);
+        cartVarianObservableList.add(processShipping(rejectParam));
+        return Observable.merge(cartVarianObservableList);
     }
 
     @Override
@@ -193,7 +190,8 @@ public class OrderDetailRepository implements IOrderDetailRepository {
             final TKPDMapParam<String, String> rejectParam) {
         return rejectOrderMergedEditWeightPrice(
                 editables,
-                productParam
+                productParam,
+                rejectParam
         ).flatMap(new Func1<String, Observable<String>>() {
             @Override
             public Observable<String> call(String s) {
@@ -204,7 +202,8 @@ public class OrderDetailRepository implements IOrderDetailRepository {
 
     private Observable<String> rejectOrderMergedEditWeightPrice(
             List<WrongProductPriceWeightEditable> editables,
-            TKPDMapParam<String, String> productParam
+            TKPDMapParam<String, String> productParam,
+            TKPDMapParam<String, String> rejectParam
     ) {
         List<Observable<String>> cartWeightPriceObservableList = new ArrayList<>();
         for (int i =0; i < editables.size(); i++) {
@@ -230,7 +229,8 @@ public class OrderDetailRepository implements IOrderDetailRepository {
                     productActService.getApi().editWeightPrice(productParam)
             );
         }
-        return Observable.concat(cartWeightPriceObservableList);
+        cartWeightPriceObservableList.add(processOrder(rejectParam));
+        return Observable.merge(cartWeightPriceObservableList);
     }
 
     private String displayMessageToUser(Response<TkpdResponse> tkpdResponseResponse) {

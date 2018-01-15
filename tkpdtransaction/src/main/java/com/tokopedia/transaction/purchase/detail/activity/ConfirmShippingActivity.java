@@ -201,6 +201,7 @@ public class ConfirmShippingActivity extends TActivity
     private void removeServiceSelectionFragment() {
         getFragmentManager()
                 .beginTransaction()
+                .setCustomAnimations(R.animator.slide_out_right, R.animator.slide_out_right)
                 .remove(getFragmentManager()
                         .findFragmentByTag(SELECT_SERVICE_FRAGMENT_TAG)).commit();
     }

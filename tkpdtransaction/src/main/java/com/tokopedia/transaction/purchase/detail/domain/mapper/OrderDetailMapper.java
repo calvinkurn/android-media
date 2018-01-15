@@ -38,6 +38,7 @@ public class OrderDetailMapper {
         viewData.setOrderImage(responseData.getStatus().getImage());
 
         viewData.setBuyerName(responseData.getDetail().getReceiver().getName());
+        viewData.setBuyerUserName(responseData.getDetail().getCustomer().getName());
         if (responseData.getDetail().getPaymentVerifiedDate() != null) {
             viewData.setPurchaseDate(responseData.getDetail().getPaymentVerifiedDate());
         } else {
@@ -90,6 +91,7 @@ public class OrderDetailMapper {
         viewData.setAwb(responseData.getDetail().getShipment().getAwb());
 
         viewData.setTotalItemQuantity(String.valueOf(responseData.getSummary().getTotalItem()));
+        viewData.setTotalItemWeight(responseData.getSummary().getTotalWeight());
         viewData.setAdditionalFee(responseData.getSummary().getAdditionalPrice());
         viewData.setDeliveryPrice(responseData.getSummary().getShippingPrice());
         viewData.setInsurancePrice(responseData.getSummary().getInsurancePrice());
@@ -104,6 +106,7 @@ public class OrderDetailMapper {
             product.setDescription(responseData.getProducts().get(i).getNote());
             product.setItemQuantity(String.valueOf(responseData.getProducts().get(i).getQuantity()));
             product.setPrice(responseData.getProducts().get(i).getPrice());
+            product.setWeight(responseData.getProducts().get(i).getWeight());
             product.setImageUrl(responseData.getProducts().get(i).getThumbnail());
             product.setCurrencyRate(responseData.getProducts().get(i).getCurrencyRate());
             product.setCurrencyType(responseData.getProducts().get(i).getCurrencyType());

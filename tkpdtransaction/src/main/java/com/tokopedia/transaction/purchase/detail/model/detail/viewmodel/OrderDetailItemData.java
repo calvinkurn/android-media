@@ -17,6 +17,8 @@ public class OrderDetailItemData implements Parcelable{
 
     private String price;
 
+    private String weight;
+
     private String description;
 
     private String imageUrl;
@@ -37,6 +39,7 @@ public class OrderDetailItemData implements Parcelable{
         itemName = in.readString();
         itemQuantity = in.readString();
         price = in.readString();
+        weight = in.readString();
         description = in.readString();
         imageUrl = in.readString();
         currencyType = in.readInt();
@@ -51,6 +54,7 @@ public class OrderDetailItemData implements Parcelable{
         dest.writeString(itemName);
         dest.writeString(itemQuantity);
         dest.writeString(price);
+        dest.writeString(weight);
         dest.writeString(description);
         dest.writeString(imageUrl);
         dest.writeInt(currencyType);
@@ -106,6 +110,14 @@ public class OrderDetailItemData implements Parcelable{
 
     public void setPrice(String price) {
         this.price = price;
+    }
+
+    public String getWeight() {
+        return weight;
+    }
+
+    public void setWeight(String weight) {
+        this.weight = weight;
     }
 
     public String getDescription() {

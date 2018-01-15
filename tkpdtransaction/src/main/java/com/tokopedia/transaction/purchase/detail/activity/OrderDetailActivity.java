@@ -242,12 +242,15 @@ public class OrderDetailActivity extends TActivity
 
     private void setPriceView(OrderDetailData data) {
         TextView itemAmount = findViewById(R.id.item_amount);
+        TextView itemTotalWeight = findViewById(R.id.item_total_weight);
         TextView productPrice = findViewById(R.id.product_price);
         TextView deliveryPrice = findViewById(R.id.delivery_price);
         TextView insurancePrice = findViewById(R.id.insurance_price);
         TextView additionalFee = findViewById(R.id.additional_fee);
         TextView totalPayment = findViewById(R.id.total_payment);
         itemAmount.setText(data.getTotalItemQuantity());
+        itemTotalWeight.setText(getString(R.string.weight_place_holder)
+                .replace("WEIGHT", data.getTotalItemWeight()));
         productPrice.setText(data.getProductPrice());
         deliveryPrice.setText(data.getDeliveryPrice());
         insurancePrice.setText(data.getInsurancePrice());
@@ -281,7 +284,7 @@ public class OrderDetailActivity extends TActivity
         TextView descriptionShippingAddess = findViewById(R.id.description_shipping_address);
         TextView descriptionPartialOrderStatus = findViewById(R.id.description_partial_order_status);
         descriptionDate.setText(data.getPurchaseDate());
-        descriptionBuyerName.setText(data.getBuyerName());
+        descriptionBuyerName.setText(data.getBuyerUserName());
         descriptionCourierName.setText(data.getCourierName());
         descriptionShippingAddess.setText(data.getShippingAddress());
         descriptionPartialOrderStatus.setText(data.getPartialOrderStatus());

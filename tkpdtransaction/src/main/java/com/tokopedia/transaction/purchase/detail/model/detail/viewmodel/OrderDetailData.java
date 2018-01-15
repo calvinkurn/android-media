@@ -35,6 +35,8 @@ public class OrderDetailData implements Parcelable{
 
     private String buyerName;
 
+    private String buyerUserName;
+
     private String courierName;
 
     private String shipmentName;
@@ -68,6 +70,8 @@ public class OrderDetailData implements Parcelable{
     private List<OrderDetailItemData> itemList;
 
     private String totalItemQuantity;
+
+    private String totalItemWeight;
 
     private String productPrice;
 
@@ -106,6 +110,7 @@ public class OrderDetailData implements Parcelable{
         shopName = in.readString();
         shopLogo = in.readString();
         buyerName = in.readString();
+        buyerUserName = in.readString();
         courierName = in.readString();
         shipmentName = in.readString();
         shipmentId = in.readString();
@@ -123,6 +128,7 @@ public class OrderDetailData implements Parcelable{
         invoiceUrl = in.readString();
         itemList = in.createTypedArrayList(OrderDetailItemData.CREATOR);
         totalItemQuantity = in.readString();
+        totalItemWeight = in.readString();
         productPrice = in.readString();
         deliveryPrice = in.readString();
         insurancePrice = in.readString();
@@ -149,6 +155,7 @@ public class OrderDetailData implements Parcelable{
         dest.writeString(shopName);
         dest.writeString(shopLogo);
         dest.writeString(buyerName);
+        dest.writeString(buyerUserName);
         dest.writeString(courierName);
         dest.writeString(shipmentName);
         dest.writeString(shipmentId);
@@ -166,6 +173,7 @@ public class OrderDetailData implements Parcelable{
         dest.writeString(invoiceUrl);
         dest.writeTypedList(itemList);
         dest.writeString(totalItemQuantity);
+        dest.writeString(totalItemWeight);
         dest.writeString(productPrice);
         dest.writeString(deliveryPrice);
         dest.writeString(insurancePrice);
@@ -281,6 +289,14 @@ public class OrderDetailData implements Parcelable{
 
     public void setBuyerName(String buyerName) {
         this.buyerName = buyerName;
+    }
+
+    public String getBuyerUserName() {
+        return buyerUserName;
+    }
+
+    public void setBuyerUserName(String buyerUserName) {
+        this.buyerUserName = buyerUserName;
     }
 
     public String getCourierName() {
@@ -417,6 +433,14 @@ public class OrderDetailData implements Parcelable{
 
     public void setTotalItemQuantity(String totalItemQuantity) {
         this.totalItemQuantity = totalItemQuantity;
+    }
+
+    public String getTotalItemWeight() {
+        return totalItemWeight;
+    }
+
+    public void setTotalItemWeight(String totalItemWeight) {
+        this.totalItemWeight = totalItemWeight;
     }
 
     public String getProductPrice() {

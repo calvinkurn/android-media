@@ -120,6 +120,7 @@ public class RejectOrderEmptyVarianFragment extends RejectOrderBaseFragment{
         adapter.notifyDataSetChanged();
         getFragmentManager()
                 .beginTransaction()
+                .setCustomAnimations(R.animator.exit_bottom, R.animator.exit_bottom)
                 .remove(getFragmentManager().findFragmentByTag(FRAGMENT_REJECT_ORDER_SUB_MENU_TAG))
                 .commit();
     }

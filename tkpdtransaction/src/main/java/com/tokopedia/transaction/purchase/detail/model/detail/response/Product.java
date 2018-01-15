@@ -18,6 +18,9 @@ public class Product {
     @SerializedName("price")
     @Expose
     private String price;
+    @SerializedName("weight")
+    @Expose
+    private String weight;
     @SerializedName("quantity")
     @Expose
     private int quantity;
@@ -63,6 +66,14 @@ public class Product {
 
     public String getPrice() {
         return price;
+    }
+
+    public String getWeight() {
+        return weight;
+    }
+
+    public void setWeight(String weight) {
+        this.weight = weight;
     }
 
     public void setPrice(String price) {
