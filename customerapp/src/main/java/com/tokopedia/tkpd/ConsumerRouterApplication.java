@@ -52,6 +52,7 @@ import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.CustomerRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.OtpRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
@@ -1060,7 +1061,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getLoginIntent() {
-        Intent intent = SessionRouter.getLoginActivityIntent(this);
+        Intent intent = OldSessionRouter.getLoginActivityIntent(this);
         intent.putExtra(Session.WHICH_FRAGMENT_KEY,
                 TkpdState.DrawerPosition.LOGIN);
         return intent;
