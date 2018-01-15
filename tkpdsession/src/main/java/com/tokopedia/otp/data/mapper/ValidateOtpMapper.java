@@ -11,6 +11,7 @@ import rx.functions.Func1;
 /**
  * Created by nisie on 3/7/17.
  */
+@Deprecated
 public class ValidateOtpMapper implements Func1<Response<TkpdResponse>, ValidateOtpModel> {
     @Override
     public ValidateOtpModel call(Response<TkpdResponse> response) {

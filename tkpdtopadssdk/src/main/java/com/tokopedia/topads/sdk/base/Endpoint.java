@@ -5,7 +5,7 @@ package com.tokopedia.topads.sdk.base;
  */
 
 public enum Endpoint {
-    RANDOM("0"), PRODUCT("1"), SHOP("2");
+    RANDOM("0"), PRODUCT("1"), SHOP("2"), CPM("3");
 
     private String description;
 

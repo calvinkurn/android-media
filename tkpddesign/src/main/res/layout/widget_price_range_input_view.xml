@@ -15,7 +15,7 @@
         <TextView
             android:id="@+id/min_label"
             tools:text="pmin label"
-            style="@style/TextView.Caption.BlackSecondary"
+            style="@style/TextView.Micro.BlackSecondary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -25,7 +25,7 @@
         <TextView
             android:id="@+id/max_label"
             tools:text="pmax label"
-            style="@style/TextView.Caption.BlackSecondary"
+            style="@style/TextView.Micro.BlackSecondary"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -45,7 +45,7 @@
             android:id="@+id/min_value"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            style="@style/TextView.Subheading.BlackPrimary"
+            style="@style/TextView.Title.BlackPrimary"
             tools:text="pmin"
             android:singleLine="true"
             android:layout_weight="1"
@@ -69,7 +69,7 @@
             android:id="@+id/max_value"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            style="@style/TextView.Subheading.BlackPrimary"
+            style="@style/TextView.Title.BlackPrimary"
             android:singleLine="true"
             tools:text="pmax"
             android:layout_weight="1"
@@ -93,7 +93,7 @@
             android:layout_width="match_parent"
             android:layout_height="4dp"
             android:layout_centerVertical="true"
-            app:foreColor="@color/medium_green"
+            app:foreColor="@color/tkpd_main_green"
             app:backColor="@color/grey_300"
             />
 

@@ -80,6 +80,16 @@ public class RideModule {
         return retrofitBuilder.baseUrl(TkpdBaseURL.RIDE_DOMAIN).client(okHttpClient).build();
     }
 
+    @Provides
+    @RideScope
+    HttpLoggingInterceptor provideHttpLoggingInterceptor() {
+        HttpLoggingInterceptor.Level loggingLevel = HttpLoggingInterceptor.Level.NONE;
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            loggingLevel = HttpLoggingInterceptor.Level.BODY;
+        }
+        return new HttpLoggingInterceptor().setLevel(loggingLevel);
+    }
+
     @RideQualifier
     @Provides
     @RideScope
