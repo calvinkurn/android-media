@@ -33,7 +33,7 @@ public class FlightBookingReviewPassengerViewHolder extends AbstractViewHolder<F
     @Override
     public void bind(FlightDetailPassenger flightDetailPassenger) {
         passengerNumber.setText(String.format("%d.", getAdapterPosition() + 1));
-        passengerName.setText(flightDetailPassenger.getPassengerName());
+        passengerName.setText(flightDetailPassenger.getPassengerTitle() + " " + flightDetailPassenger.getPassengerName());
         passengerCategory.setText(getPassengerType(flightDetailPassenger.getPassengerType()));
         reviewPassengerDetailAdapter.addData(flightDetailPassenger.getInfoPassengerList());
     }

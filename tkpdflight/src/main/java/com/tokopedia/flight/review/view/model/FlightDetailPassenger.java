@@ -19,8 +19,28 @@ public class FlightDetailPassenger implements Parcelable, Visitable<FlightBookin
 
     List<SimpleViewModel> infoPassengerList;
     String passengerName;
+    String passengerTitle;
     @FlightBookingPassenger
     int passengerType;
+
+    protected FlightDetailPassenger(Parcel in) {
+        infoPassengerList = in.createTypedArrayList(SimpleViewModel.CREATOR);
+        passengerName = in.readString();
+        passengerTitle = in.readString();
+        passengerType = in.readInt();
+    }
+
+    public static final Creator<FlightDetailPassenger> CREATOR = new Creator<FlightDetailPassenger>() {
+        @Override
+        public FlightDetailPassenger createFromParcel(Parcel in) {
+            return new FlightDetailPassenger(in);
+        }
+
+        @Override
+        public FlightDetailPassenger[] newArray(int size) {
+            return new FlightDetailPassenger[size];
+        }
+    };
 
     public List<SimpleViewModel> getInfoPassengerList() {
         return infoPassengerList;
@@ -38,10 +58,19 @@ public class FlightDetailPassenger implements Parcelable, Visitable<FlightBookin
         this.passengerName = passengerName;
     }
 
+    public String getPassengerTitle() {
+        return passengerTitle;
+    }
+
+    public void setPassengerTitle(String passengerTitle) {
+        this.passengerTitle = passengerTitle;
+    }
+
     public FlightDetailPassenger() {
     }
 
-    public @FlightBookingPassenger int getPassengerType() {
+    public @FlightBookingPassenger
+    int getPassengerType() {
         return passengerType;
     }
 
@@ -56,29 +85,12 @@ public class FlightDetailPassenger implements Parcelable, Visitable<FlightBookin
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeList(this.infoPassengerList);
-        dest.writeString(this.passengerName);
-        dest.writeInt(this.passengerType);
+
+        dest.writeTypedList(infoPassengerList);
+        dest.writeString(passengerName);
+        dest.writeString(passengerTitle);
+        dest.writeInt(passengerType);
     }
-
-    protected FlightDetailPassenger(Parcel in) {
-        this.infoPassengerList = new ArrayList<SimpleViewModel>();
-        in.readList(this.infoPassengerList, SimpleViewModel.class.getClassLoader());
-        this.passengerName = in.readString();
-        this.passengerType = in.readInt();
-    }
-
-    public static final Creator<FlightDetailPassenger> CREATOR = new Creator<FlightDetailPassenger>() {
-        @Override
-        public FlightDetailPassenger createFromParcel(Parcel source) {
-            return new FlightDetailPassenger(source);
-        }
-
-        @Override
-        public FlightDetailPassenger[] newArray(int size) {
-            return new FlightDetailPassenger[size];
-        }
-    };
 
     @Override
     public int type(FlightBookingReviewPassengerAdapterTypeFactory typeFactory) {
