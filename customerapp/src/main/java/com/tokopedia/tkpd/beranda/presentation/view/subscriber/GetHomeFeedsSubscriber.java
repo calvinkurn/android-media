@@ -1,13 +1,13 @@
-package com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber;
+package com.tokopedia.tkpd.beranda.presentation.view.subscriber;
 
 import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.tkpd.beranda.listener.HomeFeedListener;
+import com.tokopedia.tkpd.beranda.presentation.view.viewmodel.InspirationProductViewModel;
+import com.tokopedia.tkpd.beranda.presentation.view.viewmodel.InspirationViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.InspirationItemDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.DataFeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.FeedResult;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationProductViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,10 +22,10 @@ public class GetHomeFeedsSubscriber extends Subscriber<FeedResult> {
 
     private static final String TYPE_INSPIRATION = "inspirasi";
 
-    private final FeedPlus.View viewListener;
+    private final HomeFeedListener viewListener;
     private final int page;
 
-    public GetHomeFeedsSubscriber(FeedPlus.View viewListener, int page) {
+    public GetHomeFeedsSubscriber(HomeFeedListener viewListener, int page) {
         this.viewListener = viewListener;
         this.page = page;
     }
