@@ -16,6 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.qrpayment.presentation.model.QrPaymentTokoCash;
@@ -130,6 +132,8 @@ public class SuccessPaymentQRActivity extends TActivity {
         backToHomeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                GlobalCacheManager cache = new GlobalCacheManager();
+                cache.delete(TkpdCache.Key.KEY_TOKOCASH_BALANCE_CACHE);
                 onBackPressed();
             }
         });
