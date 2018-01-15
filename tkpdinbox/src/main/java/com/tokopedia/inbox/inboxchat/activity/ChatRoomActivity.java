@@ -120,6 +120,7 @@ public class ChatRoomActivity extends BasePresenterActivity
 
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
         if(remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT)) {
+            extras.putBoolean(PARAM_WEBSOCKET, true);
             detailsIntent = new Intent(context, ChatRoomActivity.class).putExtras(extras);
             parentIntent = new Intent(context, InboxChatActivity.class);
         } else {
