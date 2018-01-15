@@ -942,8 +942,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void onContentProviderLinkClicked(String url) {
-
+    public void onContentProductLinkClicked(String url) {
+        ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity(), url);
     }
 
     private void openActivity(String depID, String title) {

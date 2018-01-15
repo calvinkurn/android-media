@@ -8,7 +8,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
@@ -74,7 +73,7 @@ public class ContentProductViewHolder extends AbstractViewHolder<ContentProductV
         btnContent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mainView.onContentProviderLinkClicked(model.getApplinkUrl());
+                mainView.onContentProductLinkClicked(model.getApplink());
             }
         });
     }
