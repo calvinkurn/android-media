@@ -61,7 +61,7 @@ public class OkHttpFactory {
     }
 
     private TkpdOkHttpBuilder getDefaultClientConfig(OkHttpClient.Builder builder) {
-        return new TkpdOkHttpBuilder(builder);
+        return new TkpdOkHttpBuilder(builder).addInterceptor(getHttpLoggingInterceptor());
     }
 
     private HttpLoggingInterceptor getHttpLoggingInterceptor() {
@@ -174,13 +174,14 @@ public class OkHttpFactory {
                 .build();
     }
 
-    public OkHttpClient buildClientAccountsAuth(String authKey, Boolean isUsingHMAC, boolean isUsingBothAuthorization) {
+    public OkHttpClient buildClientAccountsAuth(String authKey, Boolean isUsingHMAC, boolean isUsingBothAuthorization, boolean isBasic) {
         return new TkpdOkHttpBuilder(builder)
                 .addInterceptor(new FingerprintInterceptor())
-                .addInterceptor(new AccountsInterceptor(authKey, isUsingHMAC, isUsingBothAuthorization))
+                .addInterceptor(new AccountsInterceptor(authKey, isUsingHMAC,
+                        isUsingBothAuthorization, isBasic))
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
-                .addInterceptor(getHeaderHttpLoggingInterceptor())
+                .addInterceptor(getHttpLoggingInterceptor())
                 .build();
     }
 

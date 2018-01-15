@@ -6,6 +6,8 @@ import android.text.TextUtils;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
+import com.tokopedia.core.base.domain.executor.PostExecutionThread;
+import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -13,6 +15,12 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.otp.data.source.OtpSource;
 import com.tokopedia.otp.domain.mapper.RequestOtpMapper;
 import com.tokopedia.otp.domain.mapper.ValidateOtpMapper;
+import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
+import com.tokopedia.profilecompletion.data.mapper.EditUserInfoMapper;
+import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
+import com.tokopedia.profilecompletion.data.repository.ProfileRepository;
+import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
+import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.session.changephonenumber.data.repository.ChangePhoneNumberRepositoryImpl;
 import com.tokopedia.session.changephonenumber.data.source.CloudGetWarningSource;
 import com.tokopedia.session.changephonenumber.data.source.CloudSendEmailSource;
@@ -29,6 +37,10 @@ import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberWa
 import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberEmailVerificationPresenter;
 import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberInputPresenter;
 import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberWarningPresenter;
+import com.tokopedia.session.data.source.GetTokenDataSource;
+import com.tokopedia.session.data.source.MakeLoginDataSource;
+import com.tokopedia.session.domain.mapper.MakeLoginMapper;
+import com.tokopedia.session.domain.mapper.TokenMapper;
 
 import javax.inject.Named;
 
@@ -44,10 +56,11 @@ import dagger.Provides;
 public class
 SessionModule {
 
-    public static final String BEARER_SERVICE = "BEARER_SERVICE";
     public static final String LOGIN_CACHE = "LOGIN_CACHE";
     private static final String HMAC_SERVICE = "HMAC_SERVICE";
     private static final String WS_SERVICE = "WS_SERVICE";
+    public static final String BEARER_SERVICE = "BEARER_SERVICE";
+    private static final String BASIC_SERVICE = "BASIC_SERVICE";
 
     @SessionScope
     @Provides
@@ -66,6 +79,19 @@ SessionModule {
         Bundle bundle = new Bundle();
         bundle.putBoolean(AccountsService.USING_HMAC, true);
         bundle.putString(AccountsService.AUTH_KEY, AuthUtil.KEY.KEY_WSV4);
+        return new AccountsService(bundle);
+    }
+
+    /**
+     * @return https://accounts.tokopedia.com
+     * with Authorization : Basic
+     */
+    @SessionScope
+    @Named(BASIC_SERVICE)
+    @Provides
+    AccountsService provideBasicAccountsService() {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(AccountsService.IS_BASIC, true);
         return new AccountsService(bundle);
     }
 
@@ -109,12 +135,33 @@ SessionModule {
         return new AccountsService(bundle);
     }
 
+
+    @SessionScope
+    @Provides
+    GetTokenDataSource provideGetTokenDataSource(@Named(BASIC_SERVICE) AccountsService
+                                                         accountsService,
+                                                 TokenMapper tokenMapper,
+                                                 SessionHandler sessionHandler) {
+        return new GetTokenDataSource(accountsService, tokenMapper, sessionHandler);
+    }
+
+    @SessionScope
+    @Provides
+    GetUserInfoMapper provideGetUserInfoMapper() {
+        return new GetUserInfoMapper();
+    }
+
+    @SessionScope
+    @Provides
+    EditUserInfoMapper provideEditUserInfoMapper() {
+        return new EditUserInfoMapper();
+    }
+
     @SessionScope
     @Provides
     ChangePhoneNumberInputFragmentListener.Presenter provideChangePhoneNumberInputPresenter(ValidateNumberUseCase validateNumberUseCase) {
         return new ChangePhoneNumberInputPresenter(validateNumberUseCase);
     }
-
 
     @SessionScope
     @Provides
@@ -139,6 +186,42 @@ SessionModule {
     ChangePhoneNumberEmailVerificationFragmentListener.Presenter ChangePhoneNumberEmailVerificationPresenter(SendEmailUseCase sendEmailUseCase,
                                                                                                              ValidateEmailCodeUseCase validateEmailCodeUseCase) {
         return new ChangePhoneNumberEmailVerificationPresenter(sendEmailUseCase, validateEmailCodeUseCase);
+    }
+
+
+    @SessionScope
+    @Provides
+    ProfileSourceFactory provideProfileSourceFactory(@ApplicationContext Context context,
+                                                     @Named(BEARER_SERVICE) AccountsService accountsService,
+                                                     GetUserInfoMapper getUserInfoMapper,
+                                                     EditUserInfoMapper editUserInfoMapper,
+                                                     SessionHandler sessionHandler) {
+        return new ProfileSourceFactory(
+                context, accountsService,
+                getUserInfoMapper, editUserInfoMapper,
+                sessionHandler);
+    }
+
+    @SessionScope
+    @Provides
+    ProfileRepository provideProfileRepository(ProfileSourceFactory profileSourceFactory) {
+        return new ProfileRepositoryImpl(profileSourceFactory);
+    }
+
+    @SessionScope
+    @Provides
+    GetUserInfoUseCase provideGetUserInfoUseCase(ThreadExecutor threadExecutor,
+                                                 PostExecutionThread postExecutionThread,
+                                                 ProfileRepository profileRepository) {
+        return new GetUserInfoUseCase(threadExecutor, postExecutionThread, profileRepository);
+    }
+
+    @SessionScope
+    @Provides
+    MakeLoginDataSource provideMakeLoginDataSource(@Named(WS_SERVICE) AccountsService accountsService,
+                                                   MakeLoginMapper makeLoginMapper,
+                                                   SessionHandler sessionHandler) {
+        return new MakeLoginDataSource(accountsService, makeLoginMapper, sessionHandler);
     }
 
     @SessionScope

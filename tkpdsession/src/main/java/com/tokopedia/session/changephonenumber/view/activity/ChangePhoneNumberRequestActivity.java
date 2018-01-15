@@ -2,6 +2,8 @@ package com.tokopedia.session.changephonenumber.view.activity;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -79,5 +81,9 @@ public class ChangePhoneNumberRequestActivity extends BasePresenterActivity impl
     @Override
     protected boolean isLightToolbarThemes() {
         return true;
+    }
+
+    public static Intent getCallingIntent(Context context) {
+        return new Intent(context, ChangePhoneNumberRequestActivity.class);
     }
 }

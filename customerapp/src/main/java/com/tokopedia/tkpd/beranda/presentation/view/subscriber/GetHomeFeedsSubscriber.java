@@ -112,8 +112,7 @@ public class GetHomeFeedsSubscriber extends Subscriber<FeedResult> {
                 recommendationDomain.getImageUrl(),
                 recommendationDomain.getUrl(),
                 page,
-                recommendationDomain.getPriceInt()
-        );
+                recommendationDomain.getPriceInt());
     }
 
     private String getCurrentCursor(FeedResult feedResult) {

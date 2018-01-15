@@ -6,7 +6,7 @@ import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.otp.data.RequestOtpModel;
+import com.tokopedia.otp.data.model.RequestOtpModel;
 import com.tokopedia.otp.domainold.RequestOtpUseCase;
 import com.tokopedia.otp.domainold.ValidateOtpUseCase;
 import com.tokopedia.otp.phoneverification.data.VerifyPhoneNumberModel;
