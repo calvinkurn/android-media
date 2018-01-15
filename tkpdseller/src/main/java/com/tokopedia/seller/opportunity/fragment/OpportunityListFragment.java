@@ -137,6 +137,9 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
                                     Color.WHITE));
                 }
 
+                if(showCaseList.isEmpty())
+                    return;
+
                 showCaseDialog = ShowCaseDialogFactory.createTkpdShowCase();
                 showCaseDialog.show(getActivity(), showCaseTag, showCaseList);
             }

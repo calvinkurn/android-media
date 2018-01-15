@@ -26,4 +26,6 @@ public interface OpportunityView extends CustomerView {
     void onSuccessNewPrice(OpportunityNewPriceData opportunityNewPriceData);
 
     void onErrorTakeOpportunity(String errorMessage);
+
+    void onErrorPriceInfo(String errorMessage);
 }

@@ -141,6 +141,8 @@ dependencies {
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler
 
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+
     provided rootProject.ext.miscDependencies.javaxAnnotation
 
     compile(rootProject.ext.tkpdLibDependencies.expandableOption) {

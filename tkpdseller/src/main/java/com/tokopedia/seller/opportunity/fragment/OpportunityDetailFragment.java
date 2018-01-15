@@ -21,6 +21,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.seller.opportunity.activity.OpportunityTncActivity;
 import com.tokopedia.seller.opportunity.analytics.OpportunityTrackingEventLabel;
+import com.tokopedia.seller.opportunity.customview.OpportunityPriceInfoView;
 import com.tokopedia.seller.opportunity.customview.OpportunityValueBottomSheet;
 import com.tokopedia.seller.opportunity.data.OpportunityNewPriceData;
 import com.tokopedia.seller.opportunity.di.component.OpportunityComponent;
@@ -35,6 +36,7 @@ import com.tokopedia.seller.opportunity.listener.OpportunityView;
 import com.tokopedia.seller.opportunity.presentation.ActionViewData;
 import com.tokopedia.seller.opportunity.presenter.OpportunityImpl;
 import com.tokopedia.seller.opportunity.presenter.OpportunityPresenter;
+import com.tokopedia.seller.opportunity.viewmodel.OpportunityPriceInfoViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityItemViewModel;
 import com.tokopedia.seller.opportunity.di.component.DaggerOpportunityComponent;
 
@@ -56,6 +58,8 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
     OpportunityDetailProductView productView;
     OpportunityDetailSummaryView summaryView;
     TkpdProgressDialog progressDialog;
+    OpportunityPriceInfoView itemPriceView;
+    OpportunityPriceInfoView shippingFeeView;
 
     private OpportunityComponent opportunityComponent;
 
@@ -219,6 +223,9 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
         productView = view.findViewById(R.id.customview_opportunity_detail_product_view);
         summaryView = view.findViewById(R.id.customview_opportunity_detail_summary_view);
 
+        itemPriceView = view.findViewById(R.id.price_item);
+        shippingFeeView = view.findViewById(R.id.shipping_fee);
+
         oppItemViewModel = getArguments().getParcelable(OpportunityDetailActivity.OPPORTUNITY_EXTRA_PARAM);
         if (oppItemViewModel != null) {
             statusView.renderData(oppItemViewModel);
@@ -277,12 +284,46 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
     public void onSuccessNewPrice(OpportunityNewPriceData opportunityNewPriceData) {
         finishLoadingProgress();
 
+        itemPriceView.setVisibility(View.VISIBLE);
+        shippingFeeView.setVisibility(View.VISIBLE);
+
+        OpportunityPriceInfoViewModel datas = new OpportunityPriceInfoViewModel();
+        datas.setTitle(getString(R.string.item_price_label));
+        datas.setStrikeThroughText(opportunityNewPriceData.getOldItemPriceIdr());
+        datas.setNonStrikeThroughText(opportunityNewPriceData.getNewItemPriceIdr());
+
+        itemPriceView.renderData(datas);
+        itemPriceView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onReputationProductPrice();
+            }
+        });
+
+        datas = new OpportunityPriceInfoViewModel();
+        datas.setTitle(getString(R.string.shipping_fee_label));
+        datas.setStrikeThroughText(opportunityNewPriceData.getOldShippingPriceIdr());
+        datas.setNonStrikeThroughText(opportunityNewPriceData.getNewShippingPriceIdr());
+
+        shippingFeeView.renderData(datas);
+        shippingFeeView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onReputationShippingFee();
+            }
+        });
     }
 
     @Override
     public void onErrorTakeOpportunity(String errorMessage) {
         finishLoadingProgress();
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onErrorPriceInfo(String errorMessage) {
+        itemPriceView.setVisibility(View.GONE);
+        shippingFeeView.setVisibility(View.GONE);
     }
 
     private void finishLoadingProgress() {

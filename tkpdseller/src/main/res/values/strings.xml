@@ -212,5 +212,8 @@
     <string name="product_manage_label_dialog_variant">Saat ini produk yang memiliki varian hanya bisa diubah dan dihapus melalui desktop</string>
     <string name="product_manage_label_snackbar_variant">Produk dengan Varian hanya dapat dihapus dan diubah melalui desktop.</string>
     <string name="product_desc_guide">Panduan Deskripsi Produk</string>
+    <string name="test_strike"><strike>TextView</strike></string>
+    <string name="item_price_label">Harga Barang</string>
+    <string name="shipping_fee_label">Ongkos Kirim</string>
 
 </resources>
