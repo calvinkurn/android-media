@@ -130,4 +130,8 @@ public interface IGTMContainer {
     void eventTrackingEnhancedEcommerce(Map<String, Object> trackingData);
 
     void clearEnhanceEcommerce();
+
+    void eventImpressionCategoryLifestyle(List<Object> list);
+
+    void eventClickCategoryLifestyle(String categoryUrl, List<Object> list);
 }

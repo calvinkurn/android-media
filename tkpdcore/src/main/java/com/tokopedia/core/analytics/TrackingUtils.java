@@ -37,6 +37,7 @@ import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -665,6 +666,14 @@ public class TrackingUtils extends TrackingConfig {
     public static void eventTrackingEnhancedEcommerce(Map<String, Object> trackingData) {
         getGTMEngine().clearEnhanceEcommerce();
         getGTMEngine().eventTrackingEnhancedEcommerce(trackingData);
+    }
+
+    public static void eventCategoryLifestyleImpression(List<Object> list) {
+        getGTMEngine().eventImpressionCategoryLifestyle(list);
+    }
+
+    public static void eventCategoryLifestyleClick(String categoryUrl, List<Object> list) {
+        getGTMEngine().eventClickCategoryLifestyle(categoryUrl, list);
     }
 }
 
