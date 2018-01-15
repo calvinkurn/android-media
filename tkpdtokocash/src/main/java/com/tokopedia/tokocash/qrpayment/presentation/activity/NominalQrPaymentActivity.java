@@ -91,11 +91,7 @@ public class NominalQrPaymentActivity extends TActivity implements QrPaymentCont
             @Override
             public void onClick(View view) {
                 progressBar.setVisibility(View.VISIBLE);
-                if (nominalValue.getText().toString().equals("0") || infoQrTokoCash.getAmount() == 0) {
-                    handleWarningPayment(0);
-                } else {
-                    presenter.postQrPayment();
-                }
+                presenter.postQrPayment();
             }
         });
     }

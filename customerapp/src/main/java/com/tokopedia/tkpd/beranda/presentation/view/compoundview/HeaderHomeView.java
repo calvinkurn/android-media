@@ -113,8 +113,8 @@ public class HeaderHomeView extends BaseCustomView {
     }
 
     private void renderVisibilityTitleOnlyTokoCash(boolean isVisibleButtonAction) {
-        if (!isVisibleButtonAction && scannerQR.getVisibility() == GONE &&
-                !headerViewModel.isPendingTokocashChecked()) {
+        if (!isVisibleButtonAction && scannerQR.getVisibility() == GONE
+                && headerViewModel.getCashBackData().getAmount() == 0) {
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)
                     tvBalanceTokocash.getLayoutParams();
             tvTitleTokocash.setVisibility(VISIBLE);
@@ -133,7 +133,6 @@ public class HeaderHomeView extends BaseCustomView {
         final HomeHeaderWalletAction homeHeaderWalletAction =
                 headerViewModel.getHomeHeaderWalletActionData();
 
-        tvTitleTokocash.setVisibility(GONE);
         infoBtn.setVisibility(GONE);
         tvTitleTokocash.setText(homeHeaderWalletAction.getLabelTitle());
         tvActionTokocash.setText(homeHeaderWalletAction.getLabelActionButton());
@@ -166,6 +165,7 @@ public class HeaderHomeView extends BaseCustomView {
                     0, 0, 0);
         } else {
             scannerQR.setVisibility(GONE);
+            tvTitleTokocash.setTypeface(null, Typeface.NORMAL);
             tvActionTokocash.setVisibility(VISIBLE);
             tvActionTokocash.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             tokoCashHolder.setOnClickListener(getOnClickTokocashActionButton(homeHeaderWalletAction));
