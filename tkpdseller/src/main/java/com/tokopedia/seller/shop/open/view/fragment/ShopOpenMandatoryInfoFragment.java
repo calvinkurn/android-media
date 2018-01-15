@@ -259,11 +259,13 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
                     }
                     break;
                 case com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY:
+                    if(data != null) {
                         String imageUrl = data.getStringExtra(GalleryActivity.IMAGE_URL);
                         if (!TextUtils.isEmpty(imageUrl)) {
                             uriPathImage = imageUrl;
                             ImageHandler.loadImageFromFile(getActivity(), imagePicker, new File(uriPathImage));
                         }
+                    }
                     break;
                 default:
                     break;
