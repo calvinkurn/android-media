@@ -862,8 +862,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                             showToastMessage(message);
                         }
                     }
-                } else if(resultCode == IDigitalModuleRouter.PAYMENT_SUCCESS) {
-                    AdvancedAppRatingDialog.show(getActivity());
                 }
                 break;
             case IDigitalModuleRouter.REQUEST_CODE_CONTACT_PICKER:

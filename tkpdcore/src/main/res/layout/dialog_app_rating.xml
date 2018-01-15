@@ -2,7 +2,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/margin_med"
+    android:paddingTop="@dimen/margin_med"
+    android:paddingBottom="@dimen/margin_med"
+    android:paddingRight="@dimen/margin_small"
+    android:paddingLeft="@dimen/margin_small"
     android:background="@color/white">
     <TextView
         android:id="@+id/text_title"

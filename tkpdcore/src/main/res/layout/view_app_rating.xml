@@ -2,8 +2,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_marginTop="@dimen/margin_sm"
-    android:layout_marginBottom="@dimen/margin_sm"
+    android:layout_margin="@dimen/margin_med"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
     <ImageView
@@ -29,8 +28,8 @@
         android:layout_below="@id/text_description"
         android:numStars="5"
         android:stepSize="1"
-        android:scaleX="0.6"
-        android:scaleY="0.6"
+        android:scaleX="0.7"
+        android:scaleY="0.7"
         android:layout_centerHorizontal="true"
         style="@style/Medium.RatingBar"/>
     <TextView
