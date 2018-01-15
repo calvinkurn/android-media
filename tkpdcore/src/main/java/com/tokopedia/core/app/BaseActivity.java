@@ -48,6 +48,7 @@ import rx.schedulers.Schedulers;
  * Created by nisie on 2/7/17.
  */
 
+@Deprecated
 public class BaseActivity extends AppCompatActivity implements SessionHandler.onLogoutListener,
         ErrorNetworkReceiver.ReceiveListener, ScreenTracking.IOpenScreenAnalytics {
 
