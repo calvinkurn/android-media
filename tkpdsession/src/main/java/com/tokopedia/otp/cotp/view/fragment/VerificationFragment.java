@@ -189,7 +189,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (inputOtp.getText().length() == 6) {
+                if (inputOtp.getText().length() == MAX_OTP_LENGTH) {
                     enableVerifyButton();
                 } else {
                     disableVerifyButton();
