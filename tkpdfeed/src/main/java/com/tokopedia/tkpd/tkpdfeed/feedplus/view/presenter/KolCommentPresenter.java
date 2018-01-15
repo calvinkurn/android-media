@@ -59,7 +59,7 @@ public class KolCommentPresenter extends BaseDaggerPresenter<KolComment.View>
     }
 
     @Override
-    public void deleteComment(int id, int adapterPosition) {
+    public void deleteComment(String id, int adapterPosition) {
         getView().showProgressDialog();
         deleteKolCommentUseCase.execute(DeleteKolCommentUseCase.getParam(id), new
                 DeleteKolCommentSubscriber(getView(), adapterPosition));

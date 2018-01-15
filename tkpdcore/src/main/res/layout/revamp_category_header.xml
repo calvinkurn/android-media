@@ -114,6 +114,12 @@
 
     </LinearLayout>
 
+    <com.tokopedia.topads.sdk.view.TopAdsBannerView
+        android:id="@+id/topAdsBannerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_vvvs" />
+
     <TextView
         android:id="@+id/total_product"
         android:layout_width="match_parent"
@@ -124,6 +130,7 @@
         android:textSize="@dimen/font_medium"
         android:layout_marginLeft="@dimen/margin_small"
         android:layout_marginTop="@dimen/margin_vs"
+        android:layout_marginBottom="@dimen/margin_vvvs"
         android:textAlignment="viewStart"
         android:visibility="gone"
         android:layout_weight="1"/>

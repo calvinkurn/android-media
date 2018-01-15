@@ -118,4 +118,6 @@
     <color name="light_green">#f3fef3</color>
 
     <color name="black_tooltip">#96000000</color>
+    <color name="yellow_background">#fffcd3</color>
+    <color name="yellow_border">#efe9a1</color>
 </resources>

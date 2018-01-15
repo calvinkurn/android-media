@@ -1,9 +1,5 @@
 package com.tokopedia.core.service;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-
 /**
  * Created by ricoharisin on 7/26/16.
  */
@@ -20,6 +16,8 @@ public class ErrorNetworkReceiver extends BroadcastReceiver {
                 mReceiver.onServerError();
             } else if (intent.getAction().equals("com.tokopedia.tkpd.TIMEZONE_ERROR")) {
                 mReceiver.onTimezoneError();
+            } else if (intent.getAction().equals("com.tokopedia.tkpd.FORCE_HOCKEYAPP")) {
+                mReceiver.onForceHockeyApp();
             }
         }
     }
@@ -28,10 +26,12 @@ public class ErrorNetworkReceiver extends BroadcastReceiver {
         void onForceLogout();
         void onServerError();
         void onTimezoneError();
+        void onForceHockeyApp();
     }
 
     public void setReceiver(ErrorNetworkReceiver.ReceiveListener receiver) {
         this.mReceiver = receiver;
     }
+
 
 }
