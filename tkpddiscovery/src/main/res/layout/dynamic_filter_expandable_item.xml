@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center_vertical"
-            style="@style/TextView.Subheading.BlackPrimary"
+            style="@style/TextView.Title"
             tools:text="Dukungan Pengiriman"
             />
 

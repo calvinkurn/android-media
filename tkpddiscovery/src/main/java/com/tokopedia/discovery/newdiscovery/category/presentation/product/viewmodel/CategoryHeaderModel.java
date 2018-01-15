@@ -31,6 +31,9 @@ public class CategoryHeaderModel implements Parcelable , Visitable<CategoryProdu
     private List<ChildCategoryModel> childCategoryModelList = new ArrayList<>();
     private List<BannerModel> bannerModelList = new ArrayList<>();
     private int totalData = 0;
+    private String rootCategoryId;
+    private String headerImage;
+    private String headerImageHexColor;
 
     public CategoryHeaderModel(){
 
@@ -54,6 +57,9 @@ public class CategoryHeaderModel implements Parcelable , Visitable<CategoryProdu
             bannerModelList = null;
         }
         totalData = in.readInt();
+        rootCategoryId = in.readString();
+        headerImage = in.readString();
+        headerImageHexColor = in.readString();
     }
 
     @Override
@@ -80,6 +86,9 @@ public class CategoryHeaderModel implements Parcelable , Visitable<CategoryProdu
             dest.writeList(bannerModelList);
         }
         dest.writeInt(totalData);
+        dest.writeString(rootCategoryId);
+        dest.writeString(headerImage);
+        dest.writeString(headerImageHexColor);
     }
 
     @SuppressWarnings("unused")
@@ -161,6 +170,10 @@ public class CategoryHeaderModel implements Parcelable , Visitable<CategoryProdu
         CategoryHeaderModel categoryHeaderModel = new CategoryHeaderModel();
         categoryHeaderModel.setRevamp(categoryHadesModel.getData().getIsRevamp());
         categoryHeaderModel.setDepartementId(categoryHadesModel.getData().getId());
+        categoryHeaderModel.setTemplate(categoryHadesModel.getData().getTemplate());
+        categoryHeaderModel.setRootCategoryId(String.valueOf(categoryHadesModel.getData().getRootCategoryId()));
+        categoryHeaderModel.setHeaderImage(categoryHadesModel.getData().getHeaderImage());
+        categoryHeaderModel.setHeaderImageHexColor(categoryHadesModel.getData().getHeaderHexColor());
         HeaderModel headerModel = new HeaderModel();
         headerModel.setCategoryName(categoryHadesModel.getData().getName());
         headerModel.setHeaderImageUrl(categoryHadesModel.getData().getHeaderImage());
@@ -188,5 +201,29 @@ public class CategoryHeaderModel implements Parcelable , Visitable<CategoryProdu
         }
         categoryHeaderModel.setChildCategoryModelList(categoryModelList);
         return  categoryHeaderModel;
+    }
+
+    public void setRootCategoryId(String rootCategoryId) {
+        this.rootCategoryId = rootCategoryId;
+    }
+
+    public String getRootCategoryId() {
+        return rootCategoryId;
+    }
+
+    public void setHeaderImage(String headerImage) {
+        this.headerImage = headerImage;
+    }
+
+    public String getHeaderImage() {
+        return headerImage;
+    }
+
+    public void setHeaderImageHexColor(String headerImageHexColor) {
+        this.headerImageHexColor = headerImageHexColor;
+    }
+
+    public String getHeaderImageHexColor() {
+        return headerImageHexColor;
     }
 }

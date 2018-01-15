@@ -19,10 +19,10 @@ import com.tokopedia.seller.product.draft.data.repository.ProductDraftRepository
 import com.tokopedia.seller.product.draft.data.source.ProductDraftDataSource;
 import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
-import com.tokopedia.seller.product.edit.data.repository.ShopInfoRepositoryImpl;
-import com.tokopedia.seller.product.edit.data.source.ShopInfoDataSource;
-import com.tokopedia.seller.product.edit.data.source.cloud.api.ShopApi;
-import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
+import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepositoryImpl;
+import com.tokopedia.seller.shop.common.data.source.ShopInfoDataSource;
+import com.tokopedia.seller.shop.common.data.source.cloud.api.ShopApi;
+import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
 
 import dagger.Module;
 import dagger.Provides;

@@ -5,17 +5,16 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/official_store_banner_container"
+    <com.tokopedia.topads.sdk.view.TopAdsBannerView
+        android:id="@+id/ads_banner"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" />
+        android:layout_height="wrap_content" />
 
     <LinearLayout
         android:id="@+id/suggestion_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="1dp"
+        android:layout_marginBottom="1px"
         android:orientation="vertical" />
 
 </LinearLayout>
