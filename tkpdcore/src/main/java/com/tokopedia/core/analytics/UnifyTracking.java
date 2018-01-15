@@ -3103,4 +3103,8 @@ public class UnifyTracking extends TrackingUtils {
                 ""
         ).getEvent());
     }
+
+    public static void eventTracking(EventTracking eventTracking) {
+        sendGTMEvent(eventTracking.getEvent());
+    }
 }

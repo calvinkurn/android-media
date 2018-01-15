@@ -157,6 +157,7 @@ public class SessionHandler {
         MethodChecker.removeAllCookies(context);
         LocalCacheHandler.clearCache(context, DrawerHelper.DRAWER_CACHE);
 
+
         clearFeedCache();
         AppWidgetUtil.sendBroadcastToAppWidget(context);
 
@@ -167,6 +168,15 @@ public class SessionHandler {
     private static void deleteCacheTokoPoint() {
         GlobalCacheManager cacheBalanceTokoCash = new GlobalCacheManager();
         cacheBalanceTokoCash.delete(TkpdCache.Key.KEY_TOKOPOINT_DRAWER_DATA);
+    }
+
+
+    public void clearToken() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        Editor editor = sharedPrefs.edit();
+        editor.putString(TOKEN_TYPE, null);
+        editor.putString(ACCESS_TOKEN, null);
+        editor.apply();
     }
 
     private static void deleteCacheBalanceTokoCash() {
@@ -702,6 +712,10 @@ public class SessionHandler {
         }
         cache.putString(UUID_KEY, currUUID);
         cache.applyEditor();
+    }
+
+    public String getTempLoginSession() {
+       return getTempLoginSession(context);
     }
 
     public interface onLogoutListener {

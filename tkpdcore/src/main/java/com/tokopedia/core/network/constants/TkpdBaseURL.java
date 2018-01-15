@@ -59,7 +59,7 @@ public class TkpdBaseURL {
     public static String MAPS_DOMAIN = "https://gw.tokopedia.com/";
     public static String BASE_API_DOMAIN = "https://api.tokopedia.com/";
 
-    public static String WALLET_DOMAIN = "https://wallet.tokopedia.id/";
+    public static String WALLET_DOMAIN = "https://www.tokocash.com/";
     public static String TOKOPOINT_API_DOMAIN = "https://api.tokopedia.com/tokoplus/";
 
     public static class Product {
@@ -702,6 +702,7 @@ public class TkpdBaseURL {
         public static final String PATH_GET_INFO = "info";
         public static final String PATH_GET_PROFILE = "profile/json/{id}";
         public static final String PATH_DISCOVER_LOGIN = "api/discover";
+        public static final String PATH_DISCOVER_REGISTER = "/api/discover?type=register";
         public static final String DO_REGISTER = "api/register";
         public static final String CREATE_PASSWORD = "api/create-password";
         public static final String RESET_PASSWORD = "api/reset";
@@ -788,6 +789,10 @@ public class TkpdBaseURL {
         public static final String POST_COMPLAINT = "api/v1/cs/complaint";
         public static final String GET_OAUTH_INFO_ACCOUNT = "api/v1/me/profile";
         public static final String REVOKE_ACCESS_TOKOCASH = "api/v1/me/client/revoke";
+        public static final String REQUEST_OTP_LOGIN = "oauth/otp";
+        public static final String VERIFY_OTP_LOGIN = "oauth/verify_native";
+        public static final String AUTHORIZE = "oauth/authorize_native";
+        public static final String CHECK_MSISDN = "oauth/check/msisdn";
     }
 
     public static class Truecaller {
