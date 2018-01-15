@@ -309,14 +309,14 @@ public class FlightBookingReviewModel implements Parcelable{
         List<SimpleViewModel> simpleViewModels = new ArrayList<>();
         for (FlightBookingAmenityMetaViewModel flightBookingLuggageMetaViewModel : flightBookingLuggageMetaViewModels) {
             SimpleViewModel simpleViewModel = new SimpleViewModel();
-            simpleViewModel.setDescription(flightBookingLuggageMetaViewModel.getDescription());
+            simpleViewModel.setDescription("Bagasi " + flightBookingLuggageMetaViewModel.getDescription());
             simpleViewModel.setLabel(generateLabelLuggage(flightBookingLuggageMetaViewModel.getAmenities()));
             simpleViewModels.add(simpleViewModel);
         }
 
         for (FlightBookingAmenityMetaViewModel flightBookingAmenityMetaViewModel : flightBookingAmenityMetaViewModels) {
             SimpleViewModel simpleViewModel = new SimpleViewModel();
-            simpleViewModel.setDescription(flightBookingAmenityMetaViewModel.getDescription());
+            simpleViewModel.setDescription("Makanan " + flightBookingAmenityMetaViewModel.getDescription());
             simpleViewModel.setLabel(generateLabelMeal(flightBookingAmenityMetaViewModel.getAmenities()));
             simpleViewModels.add(simpleViewModel);
         }
