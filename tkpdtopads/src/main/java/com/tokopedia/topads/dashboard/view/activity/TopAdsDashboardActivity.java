@@ -188,12 +188,7 @@ public class TopAdsDashboardActivity extends DrawerPresenterActivity implements 
     public void onBackPressed() {
         if (isTaskRoot()) {
             if (getIntent().getExtras() != null && getIntent().getExtras().getBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, false)) {
-                Intent homeIntent = null;
-                if (GlobalConfig.isSellerApp()) {
-                    homeIntent = SellerAppRouter.getSellerHomeActivity(this);
-                } else {
-                    homeIntent = HomeRouter.getHomeActivity(this);
-                }
+                Intent homeIntent = ((TkpdCoreRouter)getApplication()).getHomeIntent(this);
                 startActivity(homeIntent);
                 finish();
             } else

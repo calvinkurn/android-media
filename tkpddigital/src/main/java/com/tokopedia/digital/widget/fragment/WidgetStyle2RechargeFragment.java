@@ -265,8 +265,8 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
                 attributes.setClientNumber(orderClientNumber.getClientNumber());
                 attributes.setCategoryId(Integer.valueOf(orderClientNumber.getCategoryId()));
                 attributes.setOperatorId(Integer.valueOf(orderClientNumber.getOperatorId()));
-                if (orderClientNumber.getLastProduct() != null) {
-                    attributes.setProductId(Integer.valueOf(orderClientNumber.getLastProduct()));
+                if (orderClientNumber.getProductId() != null) {
+                    attributes.setProductId(Integer.valueOf(orderClientNumber.getProductId()));
                 }
                 lastOrder.setAttributes(attributes);
 
@@ -361,6 +361,8 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
             public void onCheckChange(Operator rechargeOperatorModel) {
                 selectedProduct = null;
                 selectedOperator = rechargeOperatorModel;
+                widgetWrapperBuyView.resetInstantCheckout();
+                widgetWrapperBuyView.setBuyButtonText(selectedOperator.getAttributes().getRule().getButtonLabel());
                 widgetClientNumberView.setInputType(rechargeOperatorModel.getAttributes().getRule().isAllowAphanumericNumber());
                 widgetClientNumberView.setFilterMaxLength(rechargeOperatorModel.getAttributes().getMaximumLength());
                 widgetClientNumberView.setImgOperator(selectedOperator.getAttributes().getImage());
@@ -438,6 +440,8 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
     @Override
     public void renderOperator(Operator rechargeOperatorModel) {
         selectedOperator = rechargeOperatorModel;
+        widgetWrapperBuyView.resetInstantCheckout();
+        widgetWrapperBuyView.setBuyButtonText(selectedOperator.getAttributes().getRule().getButtonLabel());
     }
 
     @Override

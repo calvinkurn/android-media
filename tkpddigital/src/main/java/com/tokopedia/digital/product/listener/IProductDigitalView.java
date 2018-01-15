@@ -20,7 +20,6 @@ import java.util.List;
 
 public interface IProductDigitalView extends IBaseView {
 
-
     void renderBannerListData(String title, List<BannerData> bannerDataList);
 
     void renderOtherBannerListData(String title, List<BannerData> otherBannerDataList);
@@ -65,8 +64,6 @@ public interface IProductDigitalView extends IBaseView {
     String getUserLoginId();
 
     Application getMainApplication();
-
-    String getCategoryId();
 
     void closeViewWithMessageAlert(String message);
 

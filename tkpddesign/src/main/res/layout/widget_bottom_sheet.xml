@@ -21,31 +21,26 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_small"
-                android:textSize="@dimen/font_title"
+                android:textSize="@dimen/font_title_big"
                 android:textStyle="bold"
                 android:textColor="@color/font_black_primary_70"
                 tools:text="Contoh Judul"/>
 
             <TextView
                 android:id="@+id/body_bottom_sheet"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_small"
                 android:layout_marginLeft="@dimen/margin_small"
                 android:layout_marginStart="@dimen/margin_small"
-                android:textSize="@dimen/font_body1"
+                style="@style/TextView.Small"
                 tools:text="Contoh deskripsi dari bottom sheet yang diberikan. Contoh deskripsi dari bottom sheet yang diberikan. Contoh deskripsi dari bottom sheet yang diberikan. "/>
 
             <TextView
                 android:id="@+id/link_bottom_sheet"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_small"
                 android:layout_marginLeft="@dimen/margin_small"
                 android:layout_marginStart="@dimen/margin_small"
-                android:textSize="@dimen/font_body1"
-                tools:text="Lihat selengkapnya (Contoh)"
-                android:textColor="@color/tkpd_main_green"/>
+                style="@style/TextView.Small.Green"
+                tools:text="Lihat selengkapnya (Contoh)"/>
 
         </LinearLayout>
 

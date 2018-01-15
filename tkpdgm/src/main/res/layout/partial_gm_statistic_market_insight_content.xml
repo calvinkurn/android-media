@@ -16,7 +16,7 @@
         android:paddingTop="8dp">
 
         <TextView
-            style="@style/TextView.Caption.BlackSecondary"
+            style="@style/TextView.Micro.BlackSecondary"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:text="@string/gm_statistic_most_popular_keyword"/>
 
@@ -28,7 +28,7 @@
 
         <TextView
             android:id="@+id/market_insight_footer"
-            style="@style/TextView.Caption.BlackSecondary"
+            style="@style/TextView.Micro.BlackSecondary"
             tools:text="@string/gm_statistic_these_keywords_are_based_on_category_x"/>
     </LinearLayout>
 

@@ -97,7 +97,8 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             ServerErrorHandler.showMaintenancePage();
         } else if (isServerError(response.code()) && !isHasErrorMessage(bodyResponse)) {
             ServerErrorHandler.showServerErrorSnackbar();
-            ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString());
+            ServerErrorHandler.sendErrorNetworkAnalytics(response.request().url().toString(),
+                    response.code());
         } else if (isForbiddenRequest(bodyResponse, response.code())
                 && isTimezoneNotAutomatic()) {
             ServerErrorHandler.showTimezoneErrorSnackbar();
