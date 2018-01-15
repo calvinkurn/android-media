@@ -564,7 +564,7 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void dismissRejectOrderActionFragment() {
-        if (getFragmentManager().findFragmentByTag(FRAGMENT_REJECT_ORDER_SUB_MENU_TAG) != null) {
+        /*if (getFragmentManager().findFragmentByTag(FRAGMENT_REJECT_ORDER_SUB_MENU_TAG) != null) {
             getFragmentManager().beginTransaction()
                     .remove(getFragmentManager()
                     .findFragmentByTag(FRAGMENT_REJECT_ORDER_SUB_MENU_TAG)).commit();
@@ -575,7 +575,7 @@ public class OrderDetailActivity extends TActivity
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.animator.exit_bottom, R.animator.exit_bottom)
                 .remove(getFragmentManager()
-                .findFragmentByTag(VALIDATION_FRAGMENT_TAG)).commit();
+                .findFragmentByTag(VALIDATION_FRAGMENT_TAG)).commit();*/
         setResult(Activity.RESULT_OK);
         finish();
     }
