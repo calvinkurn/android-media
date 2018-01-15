@@ -26,6 +26,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedResultMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FollowKolMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.KolCommentMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.KolDeleteCommentMapper;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.KolFollowingMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.KolSendCommentMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.LikeKolMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.RecentProductMapper;
@@ -49,6 +50,8 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFeedsUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFirstPageFeedsCloudUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetFirstPageFeedsUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetKolCommentsUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetKolFollowingListLoadMoreUseCase;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetKolFollowingListUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetRecentViewUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.RefreshFeedUseCase;
@@ -373,8 +376,9 @@ public class FeedPlusModule {
     @FeedPlusScope
     @Provides
     KolSource provideKolSource(ApolloClient apolloClient, LikeKolMapper likeKolMapper,
-                               FollowKolMapper followKolMapper) {
-        return new KolSource(apolloClient, likeKolMapper, followKolMapper);
+                               FollowKolMapper followKolMapper,
+                               KolFollowingMapper kolFollowingMapper) {
+        return new KolSource(apolloClient, likeKolMapper, followKolMapper, kolFollowingMapper);
     }
 
     @FeedPlusScope
@@ -399,6 +403,11 @@ public class FeedPlusModule {
         return new FollowKolMapper();
     }
 
+    @FeedPlusScope
+    @Provides
+    KolFollowingMapper provideKolFollowingMapper() {
+        return new KolFollowingMapper();
+    }
 
     @FeedPlusScope
     @Provides
@@ -406,6 +415,28 @@ public class FeedPlusModule {
                                                      PostExecutionThread postExecutionThread,
                                                      FeedRepository feedRepository) {
         return new FollowKolPostUseCase(threadExecutor,
+                postExecutionThread,
+                feedRepository);
+    }
+
+    @FeedPlusScope
+    @Provides
+    GetKolFollowingListUseCase provideGetKolFollowingListUseCase(ThreadExecutor threadExecutor,
+                                                                 PostExecutionThread postExecutionThread,
+                                                                 FeedRepository feedRepository) {
+        return new GetKolFollowingListUseCase(
+                threadExecutor,
+                postExecutionThread,
+                feedRepository);
+    }
+
+    @FeedPlusScope
+    @Provides
+    GetKolFollowingListLoadMoreUseCase provideGetKolFollowingListLoadMoreUseCase(ThreadExecutor threadExecutor,
+                                                                                 PostExecutionThread postExecutionThread,
+                                                                                 FeedRepository feedRepository) {
+        return new GetKolFollowingListLoadMoreUseCase(
+                threadExecutor,
                 postExecutionThread,
                 feedRepository);
     }

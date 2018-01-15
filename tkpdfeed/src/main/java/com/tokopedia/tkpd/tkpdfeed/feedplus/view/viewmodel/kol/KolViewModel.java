@@ -33,13 +33,14 @@ public class KolViewModel implements Visitable<FeedPlusTypeFactory> {
     private String contentName;
     private String productPrice;
     private boolean wishlisted;
+    private boolean isShowComment;
 
     public KolViewModel(String title, String name, String avatar, String label,
                         boolean followed, String kolImage, String productTooltip,
                         String review, boolean liked, int totalLike, int totalComment,
                         int page, String kolProfileUrl, int contentId, int id, String time,
                         String contentName, String productPrice, boolean wishlisted, String tagsType,
-                        String contentLink, int userId, String cardType) {
+                        String contentLink, int userId, boolean isShowComment, String cardType) {
         this.title = title;
         this.name = name;
         this.avatar = avatar;
@@ -62,6 +63,7 @@ public class KolViewModel implements Visitable<FeedPlusTypeFactory> {
         this.tagsType = tagsType;
         this.contentLink = contentLink;
         this.userId = userId;
+        this.isShowComment = isShowComment;
         this.cardType = cardType;
     }
 
@@ -210,6 +212,14 @@ public class KolViewModel implements Visitable<FeedPlusTypeFactory> {
 
     public String getTagsType() {
         return tagsType;
+    }
+
+    public boolean isShowComment() {
+        return isShowComment;
+    }
+
+    public void setShowComment(boolean showComment) {
+        isShowComment = showComment;
     }
 
     public String getCardType() {

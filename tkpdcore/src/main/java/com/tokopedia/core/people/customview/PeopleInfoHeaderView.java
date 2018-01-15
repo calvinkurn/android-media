@@ -29,6 +29,8 @@ public class PeopleInfoHeaderView extends BaseView<InputOutputData, PeopleInfoFr
     TextView username;
     @BindView(R2.id.user_favorite)
     TextView textFavorite;
+    @BindView(R2.id.user_following)
+    TextView textFollowing;
     @BindView(R2.id.message_user)
     View actionMessage;
     @BindView(R2.id.manage_user)
@@ -69,6 +71,9 @@ public class PeopleInfoHeaderView extends BaseView<InputOutputData, PeopleInfoFr
         if (data.getPeopleFavShopData().getDataRandomFavShop().getTotalFave() != 0) {
             textFavorite.setOnClickListener(new FavoritedShopClick(peopleInfoData));
         }
+
+        textFollowing.setOnClickListener(new FollowingClick(peopleInfoData));
+
         actionManage.setOnClickListener(new ManageClick(peopleInfoData));
         actionMessage.setOnClickListener(new MessageClick(peopleInfoData));
 
@@ -79,6 +84,9 @@ public class PeopleInfoHeaderView extends BaseView<InputOutputData, PeopleInfoFr
         textFavorite.setText(
                 getContext().getString(R.string.template_people_total_fav_shop)
                         .replace("XYZ", data.getDataRandomFavShop().getTotalFaveFmt())
+        );
+        textFollowing.setText(
+                getContext().getString(R.string.template_people_total_following)
         );
     }
 
@@ -149,6 +157,18 @@ public class PeopleInfoHeaderView extends BaseView<InputOutputData, PeopleInfoFr
         @Override
         public void onClick(View view) {
             presenter.onFavoritedShoplicked(getContext(), data.getUserInfo());
+        }
+    }
+
+    private class FollowingClick implements OnClickListener {
+        private final PeopleInfoData data;
+
+        private FollowingClick(PeopleInfoData data) {
+            this.data = data;
+        }
+        @Override
+        public void onClick(View view) {
+            presenter.onFollowingClicked(getContext(), data.getUserInfo());
         }
     }
 }
