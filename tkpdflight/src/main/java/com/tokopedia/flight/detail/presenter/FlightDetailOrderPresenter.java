@@ -108,10 +108,9 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
             item += newLine;
             ArrayList<String> passengers = new ArrayList<>();
             for (FlightOrderPassengerViewModel flightOrderPassengerViewModel : flightOrder.getPassengerViewModels()) {
-                passengers.add("Passenger " + flightOrderPassengerViewModel.getPassengerFirstName() + " " + flightOrderPassengerViewModel.getPassengerLastName() + "[ ]");
+                passengers.add(flightOrderPassengerViewModel.getPassengerFirstName() + " " + flightOrderPassengerViewModel.getPassengerLastName() + "[ ]");
             }
-            item += TextUtils.join(",", passengers);
-            item += newLine;
+            item += TextUtils.join(newLine, passengers);
             result.append(item);
         }
         return result.toString();
