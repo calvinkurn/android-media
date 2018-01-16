@@ -298,7 +298,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Override
     public void updateViewFailed() {
-        updateViewStatus(R.string.flight_label_canceled_ticket, R.color.font_black_primary_70, true, false, false, false);
+        updateViewStatus(R.string.flight_label_canceled_ticket, R.color.font_black_primary_70, false, false, false, false);
     }
 
     @Override
@@ -318,7 +318,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Override
     public void updateViewRefunded() {
-        updateViewStatus(R.string.flight_label_refunded, R.color.font_black_primary_70, true, false, false, false);
+        updateViewStatus(R.string.flight_label_refunded, R.color.font_black_primary_70, false, false, false, false);
     }
 
     @Override
