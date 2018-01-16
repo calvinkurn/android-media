@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.text.InputFilter;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -37,6 +38,7 @@ public class NominalQrPaymentActivity extends TActivity implements QrPaymentCont
 
     private static final int REQUEST_CODE_SUCCESS = 121;
     private static final int REQUEST_CODE_FAILED = 111;
+    private static final int MAX_DIGIT_NOMINAL = 8;
     private static final String INFO_QR = "info_qr";
     private static final String IDENTIFIER = "identifier";
 
@@ -165,7 +167,8 @@ public class NominalQrPaymentActivity extends TActivity implements QrPaymentCont
         } else {
             nominalValue.setEnabled(true);
         }
-
+        nominalValue.setFilters(
+                new InputFilter[]{new InputFilter.LengthFilter(MAX_DIGIT_NOMINAL)});
         nominalValue.addTextChangedListener(new NumberTextWatcher(nominalValue, "0") {
             @Override
             public void onNumberChanged(double number) {
