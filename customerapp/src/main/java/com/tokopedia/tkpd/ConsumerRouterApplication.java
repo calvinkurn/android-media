@@ -36,6 +36,7 @@ import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
+import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -44,6 +45,7 @@ import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.CustomerRouter;
+import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.OtpRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.SessionRouter;
@@ -76,6 +78,7 @@ import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.TkpdFlight;
 import com.tokopedia.flight.contactus.model.FlightContactUsPassData;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
+import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
 import com.tokopedia.inbox.contactus.activity.ContactUsCreateTicketActivity;
 import com.tokopedia.inbox.inboxchat.activity.InboxChatActivity;
 import com.tokopedia.inbox.inboxchat.activity.SendMessageActivity;
@@ -608,6 +611,22 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 passData.getAttachmentTitle(),
                 passData.getDescription()
         );
+    }
+
+    @Override
+    public Intent getDefaultContactUsIntent(Activity activity) {
+        Intent intent = new Intent(activity, ContactUsActivity.class);
+        intent.putExtra(InboxRouter.PARAM_URL,
+                URLGenerator.generateURLContactUs(TkpdBaseURL.BASE_CONTACT_US, activity));
+        return intent;
+    }
+
+    @Override
+    public Intent getDefaultContactUsIntent(Activity activity, String url) {
+        Intent intent = new Intent(activity, ContactUsActivity.class);
+        intent.putExtra(InboxRouter.PARAM_URL,
+                URLGenerator.generateURLContactUs(url, activity));
+        return intent;
     }
 
     @Override

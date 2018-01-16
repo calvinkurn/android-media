@@ -153,9 +153,9 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
         String url = FlightUrl.CONTACT_US_FLIGHT_PREFIX + Base64.encodeToString(content.getBytes(), Base64.DEFAULT);
         if (getActivity().getApplication() instanceof FlightModuleRouter
                 && ((FlightModuleRouter) getActivity().getApplication())
-                .getBannerWebViewIntent(getActivity(), url) != null) {
+                .getDefaultContactUsIntent(getActivity(), url) != null) {
             startActivity(((FlightModuleRouter) getActivity().getApplication())
-                    .getBannerWebViewIntent(getActivity(), url));
+                    .getDefaultContactUsIntent(getActivity(), url));
         }
     }
 

@@ -389,7 +389,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     }
 
     @Override
-    public String getCancelMessage() {
+    public String getCancelMessage()  {
         return cancelMessage;
     }
 
@@ -397,9 +397,9 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     public void navigateToWebview(String url) {
         if (getActivity().getApplication() instanceof FlightModuleRouter
                 && ((FlightModuleRouter) getActivity().getApplication())
-                .getBannerWebViewIntent(getActivity(), url) != null) {
+                .getDefaultContactUsIntent(getActivity()) != null) {
             startActivity(((FlightModuleRouter) getActivity().getApplication())
-                    .getBannerWebViewIntent(getActivity(), url));
+                    .getDefaultContactUsIntent(getActivity()));
         }
     }
 
