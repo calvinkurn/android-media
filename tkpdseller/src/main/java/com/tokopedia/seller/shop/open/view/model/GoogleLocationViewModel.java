@@ -65,6 +65,12 @@ public class GoogleLocationViewModel implements Parcelable {
                 Double.valueOf(latitude) == -999 || Double.valueOf(longitude) == -999;
     }
 
+    public void clearData(){
+        longitude = null;
+        latitude = null;
+        checkSum = null;
+    }
+
     @Override
     public String toString() {
         return "GoogleLocationViewModel{" +
