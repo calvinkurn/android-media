@@ -125,7 +125,7 @@ public class NominalQrPaymentActivity extends TActivity implements QrPaymentCont
 
     @Override
     public RequestParams getRequestParams() {
-        String valueNominal = CurrencyFormatHelper.removeCurrencyPrefix(nominalValue.getText().toString());
+        String valueNominal = CurrencyFormatHelper.RemoveNonNumeric(nominalValue.getText().toString());
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(PostQrPaymentUseCase.IDENTIFIER, getIntent().getStringExtra(IDENTIFIER));
         requestParams.putString(PostQrPaymentUseCase.NOTE, notesValue.getText().toString().equals("") ?
