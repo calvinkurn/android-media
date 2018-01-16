@@ -133,8 +133,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
                                     itemView.findViewById(R.id.reputation_point),
                                     getString(R.string.opportunity_reputation_value),
                                     getString(R.string.opportunity_reputation_detail),
-                                    ShowCaseContentPosition.UNDEFINED,
-                                    Color.WHITE));
+                                    ShowCaseContentPosition.UNDEFINED));
                 }
 
                 if(showCaseList.isEmpty())
