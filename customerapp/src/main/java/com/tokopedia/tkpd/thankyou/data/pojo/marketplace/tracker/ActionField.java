@@ -6,58 +6,35 @@ import java.util.HashMap;
  * Created by okasurya on 12/12/17.
  */
 public class ActionField extends HashMap<String, Object> {
-    private String id;
-    private String affiliation;
-    private String revenue;
-    private String tax;
-    private String shipping;
-    private String coupon;
 
-    public String getId() {
-        return id;
-    }
+    private static final String ID = "id";
+    private static final String AFFILIATION = "affiliation";
+    private static final String REVENUE = "revenue";
+    private static final String TAX = "tax";
+    private static final String SHIPPING = "shipping";
+    private static final String COUPON = "coupon";
 
     public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getAffiliation() {
-        return affiliation;
+        this.put(ID, id);
     }
 
     public void setAffiliation(String affiliation) {
-        this.affiliation = affiliation;
-    }
-
-    public String getRevenue() {
-        return revenue;
+        this.put(AFFILIATION, affiliation);
     }
 
     public void setRevenue(String revenue) {
-        this.revenue = revenue;
-    }
-
-    public String getTax() {
-        return tax;
+        this.put(REVENUE, revenue);
     }
 
     public void setTax(String tax) {
-        this.tax = tax;
-    }
-
-    public String getShipping() {
-        return shipping;
+        this.put(TAX, tax);
     }
 
     public void setShipping(String shipping) {
-        this.shipping = shipping;
-    }
-
-    public String getCoupon() {
-        return coupon;
+        this.put(SHIPPING, shipping);
     }
 
     public void setCoupon(String coupon) {
-        this.coupon = coupon;
+        this.put(COUPON, coupon);
     }
 }

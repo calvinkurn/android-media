@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.thankyou.data.mapper;
 
+import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -82,6 +83,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
     @SuppressWarnings("unchecked")
     private void processData(PaymentData payment, CartItem cartItem) {
         MarketplaceTrackerData marketplaceTrackerData = getTrackingData(payment, cartItem);
+        Log.d("oka", marketplaceTrackerData.toString());
         PurchaseTracking.marketplace(marketplaceTrackerData);
     }
 
