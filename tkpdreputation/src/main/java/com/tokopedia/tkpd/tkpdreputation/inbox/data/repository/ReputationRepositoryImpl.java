@@ -15,6 +15,11 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendRevie
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewValidateDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.SendSmileyReputationDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SkipReviewDomain;
+import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.DataResponseReviewCount;
+import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewlist.DataResponseReviewHelpful;
+import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewlist.DataResponseReviewProduct;
+import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewlist.DataResponseReviewShop;
+import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewstarcount.DataResponseReviewStarCount;
 
 import rx.Observable;
 
@@ -140,5 +145,40 @@ public class ReputationRepositoryImpl implements ReputationRepository {
         return reputationFactory
                 .createCloudLikeDislikeDataSource()
                 .getLikeDislikeReview(requestParams);
+    }
+
+    @Override
+    public Observable<DataResponseReviewProduct> getReviewProductList(RequestParams requestParams) {
+        return reputationFactory
+                .createCloudGetReviewProductList()
+                .getReviewProductList(requestParams);
+    }
+
+    @Override
+    public Observable<DataResponseReviewShop> getReviewShopList(RequestParams requestParams) {
+        return reputationFactory
+                .createCloudGetReviewShopList()
+                .getReviewShopList(requestParams);
+    }
+
+    @Override
+    public Observable<DataResponseReviewHelpful> getReviewHelpful(RequestParams requestParams) {
+        return reputationFactory
+                .createCloudGetReviewHelpful()
+                .getReviewHelpfulList(requestParams);
+    }
+
+    @Override
+    public Observable<DataResponseReviewStarCount> getReviewStarCount(RequestParams requestParams) {
+        return reputationFactory
+                .createCloudGetReviewStarCount()
+                .getReviewStarCount(requestParams);
+    }
+
+    @Override
+    public Observable<DataResponseReviewCount> getReviewCount(RequestParams requestParams) {
+        return reputationFactory
+                .createCloudGetReviewCount()
+                .getReviewCount(requestParams);
     }
 }

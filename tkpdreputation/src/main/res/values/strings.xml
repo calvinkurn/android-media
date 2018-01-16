@@ -111,5 +111,6 @@
     <string name="query_hint_review_buyer">Invoice / Nama Penjual / Nama Produk</string>
     <string name="query_hint_review_seller">Invoice / Nama Pembeli / Nama Produk</string>
     <string name="product_is_banned">Produk telah diban</string>
+    <string name="product_review_label_rating_comparison">/ 5</string>
 
 </resources>

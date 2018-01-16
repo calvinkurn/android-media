@@ -19,6 +19,9 @@
     <style name="TextView.Headline">
         <item name="android:textSize">@dimen/font_headline</item>
     </style>
+    <style name="TextView.Headline.Bold">
+        <item name="android:textStyle">bold</item>
+    </style>
     <style name="TextView.Headline.Green">
         <item name="android:textColor">@color/tkpd_main_green</item>
     </style>
