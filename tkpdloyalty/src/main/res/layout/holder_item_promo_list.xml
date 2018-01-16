@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="15dp">
+        android:padding="@dimen/margin_sm">
 
         <RelativeLayout
             android:id="@+id/layout_period_promo"
@@ -31,10 +31,11 @@
                 android:id="@+id/iv_period_promo"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginRight="5dp"
-                android:padding="3dp"
-                android:src="@drawable/ic_period_promo"/>
+                android:layout_marginEnd="@dimen/padding_vs"
+                android:layout_marginRight="@dimen/padding_vs"
+                android:padding="@dimen/padding_vvs"
+                android:src="@drawable/ic_period_promo"
+                tools:ignore="ContentDescription"/>
 
             <TextView
                 android:id="@+id/tv_label_period_promo"
@@ -42,7 +43,7 @@
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@id/iv_period_promo"
                 android:layout_toRightOf="@id/iv_period_promo"
-                android:text="Priode Promo"
+                android:text="@string/label_period_promo_loyalty_module"
                 android:textColor="@color/grey_600"
                 android:textSize="12sp"/>
 
@@ -51,6 +52,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tv_label_period_promo"
+                android:layout_toEndOf="@id/iv_period_promo"
                 android:layout_toRightOf="@id/iv_period_promo"
                 android:textColor="@color/grey_800"
                 android:textSize="14sp"
@@ -60,7 +62,7 @@
 
         <android.support.v4.widget.Space
             android:layout_width="match_parent"
-            android:layout_height="15dp"/>
+            android:layout_height="@dimen/margin_sm"/>
 
         <RelativeLayout
             android:id="@+id/layout_single_code_promo"
@@ -73,10 +75,11 @@
                 android:id="@+id/iv_code_promo"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginRight="5dp"
-                android:padding="3dp"
-                android:src="@drawable/ic_coupon_promo"/>
+                android:layout_marginEnd="@dimen/padding_vs"
+                android:layout_marginRight="@dimen/padding_vs"
+                android:padding="@dimen/padding_vvs"
+                android:src="@drawable/ic_coupon_promo"
+                tools:ignore="ContentDescription"/>
 
             <TextView
                 android:id="@+id/tv_label_code_promo"
@@ -85,9 +88,9 @@
                 android:layout_toEndOf="@id/iv_code_promo"
                 android:layout_toRightOf="@id/iv_code_promo"
                 android:drawableEnd="@drawable/info_icon"
-                android:drawablePadding="5dp"
+                android:drawablePadding="@dimen/padding_vs"
                 android:drawableRight="@drawable/info_icon"
-                android:text="Kode Promo"
+                android:text="@string/label_promo_code_loyalty_module"
                 android:textColor="@color/grey_600"
                 android:textSize="12sp"/>
 
@@ -99,18 +102,19 @@
                 android:layout_toEndOf="@id/iv_code_promo"
                 android:layout_toRightOf="@id/iv_code_promo"
                 android:textColor="#ff5722"
-                android:textSize="14sp"
+                android:textSize="@dimen/text_size_medium"
                 tools:text="ANGGAGANTENG"/>
 
             <TextView
                 android:id="@+id/btn_copy_code_promo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:background="@drawable/btn_cancel"
-                android:padding="5dp"
-                android:text="Salin Kode"
-                tools:ignore="RtlHardcoded"/>
+                android:padding="@dimen/padding_vs"
+                android:text="@string/label_copy_promo_code_loyalty_module"
+                tools:ignore="RelativeOverlap"/>
 
         </RelativeLayout>
 
@@ -126,10 +130,11 @@
                 android:id="@+id/iv_multiple_code_promo"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginRight="5dp"
-                android:padding="3dp"
-                android:src="@drawable/ic_coupon_promo"/>
+                android:layout_marginEnd="@dimen/padding_vs"
+                android:layout_marginRight="@dimen/padding_vs"
+                android:padding="@dimen/padding_vvs"
+                android:src="@drawable/ic_coupon_promo"
+                tools:ignore="ContentDescription"/>
 
             <TextView
                 android:id="@+id/tv_multiple_code_promo"
@@ -138,10 +143,10 @@
                 android:layout_centerVertical="true"
                 android:layout_toEndOf="@id/iv_multiple_code_promo"
                 android:layout_toRightOf="@id/iv_multiple_code_promo"
-                android:drawablePadding="5dp"
+                android:drawablePadding="@dimen/padding_vs"
                 android:gravity="center_vertical"
                 android:textColor="@color/grey_600"
-                android:textSize="14sp"
+                android:textSize="@dimen/text_size_medium"
                 tools:text="3 Kode Promo"/>
 
         </RelativeLayout>
@@ -158,9 +163,9 @@
                 android:id="@+id/iv_empty_code_promo"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginRight="5dp"
-                android:padding="3dp"
+                android:layout_marginEnd="@dimen/padding_vs"
+                android:layout_marginRight="@dimen/padding_vs"
+                android:padding="@dimen/padding_small_sm"
                 android:src="@drawable/ic_coupon_promo"
                 tools:ignore="ContentDescription"/>
 
@@ -171,7 +176,7 @@
                 android:layout_centerVertical="true"
                 android:layout_toEndOf="@+id/iv_empty_code_promo"
                 android:layout_toRightOf="@+id/iv_empty_code_promo"
-                android:drawablePadding="5dp"
+                android:drawablePadding="@dimen/padding_vs"
                 android:gravity="center_vertical"
                 android:text="Tanpa Kode Promo"
                 android:textColor="@color/grey_600"

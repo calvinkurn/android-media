@@ -99,8 +99,6 @@ public class PromoListAdapter extends RecyclerView.Adapter {
                     actionListener.onItemPromoClicked(promoData, position);
                 }
             });
-        } else if (holder instanceof ItemLoadingViewHolder) {
-
         }
     }
 
