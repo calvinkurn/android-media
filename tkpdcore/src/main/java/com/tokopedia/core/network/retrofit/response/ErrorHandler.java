@@ -5,12 +5,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.tkpd.library.utils.network.MessageErrorException;
-import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.MainApplication;
@@ -263,26 +258,5 @@ public class ErrorHandler {
 
     private static boolean hasErrorMessageTokoCash(JSONObject jsonObject) {
         return jsonObject.has(ERROR_MESSAGE_TOKOCASH);
-    }
-
-    private static boolean hasErrorMessage(JsonObject jsonObject) {
-        return jsonObject.has(ERROR_MESSAGE);
-    }
-
-    public static String getErrorMessageJoined(JsonArray errorMessages) {
-
-        StringBuilder stringBuilder = new StringBuilder();
-        if (errorMessages.size() != 0) {
-            for (int i = 0, statusMessagesSize = errorMessages.size(); i < statusMessagesSize; i++) {
-                String string = String.valueOf(errorMessages.get(i));
-                stringBuilder.append(string);
-                if (i != errorMessages.size() - 1
-                        && !errorMessages.get(i).equals("")
-                        && !errorMessages.get(i + 1).equals("")) {
-                    stringBuilder.append("\n");
-                }
-            }
-        }
-        return stringBuilder.toString();
     }
 }

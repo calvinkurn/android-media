@@ -21,9 +21,6 @@ public abstract class RegisterNew extends BaseImpl<RegisterNewView> {
     String LOGIN_UUID_KEY = "LOGIN_UUID";
     String UUID_KEY = "uuid";
     String DEFAULT_UUID_VALUE = "";
-    String PROVIDER_LIST = "provider";
-    String PROVIDER_CACHE_KEY = "provider_cache";
-
 
     @Override
     public String getMessageTAG() {

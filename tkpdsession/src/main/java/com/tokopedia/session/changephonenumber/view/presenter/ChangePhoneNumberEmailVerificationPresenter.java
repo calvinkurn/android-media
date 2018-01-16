@@ -10,6 +10,9 @@ import com.tokopedia.session.changephonenumber.view.subscriber.ValidateEmailCode
 
 import javax.inject.Inject;
 
+import static com.tokopedia.session.changephonenumber.domain.interactor.ValidateEmailCodeUseCase
+        .getValidateEmailCodeParam;
+
 /**
  * Created by milhamj on 03/01/18.
  */
@@ -45,16 +48,19 @@ public class ChangePhoneNumberEmailVerificationPresenter
     public void sendEmail() {
         view.dropKeyboard();
         view.showLoading();
-        sendEmailUseCase.execute(SendEmailUseCase.getSendEmailParam(),
-                new SendEmailSubscriber(view));
+        sendEmailUseCase.execute(
+                SendEmailUseCase.getSendEmailParam(),
+                new SendEmailSubscriber(view)
+        );
     }
 
     @Override
     public void validateOtp(String otpCode) {
         view.dropKeyboard();
         view.showLoading();
-        validateEmailCodeUseCase.execute(ValidateEmailCodeUseCase.getSendEmailParam(otpCode),
-                new ValidateEmailCodeSubscriber(view));
-
+        validateEmailCodeUseCase.execute(
+                ValidateEmailCodeUseCase.getValidateEmailCodeParam(otpCode),
+                new ValidateEmailCodeSubscriber(view)
+        );
     }
 }

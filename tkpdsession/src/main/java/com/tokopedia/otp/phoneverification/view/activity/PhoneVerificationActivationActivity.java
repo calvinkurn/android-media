@@ -10,7 +10,6 @@ import android.os.Bundle;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
@@ -176,6 +175,10 @@ public class PhoneVerificationActivationActivity extends BasePresenterActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    public static Intent getCallingIntent(Context context) {
+        return new Intent(context, PhoneVerificationActivationActivity.class);
     }
 
     @Override
