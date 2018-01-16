@@ -27,6 +27,7 @@ public class FlightBookingReviewModel implements Parcelable{
 
     private static final String LUGGAGE_PREFIX = "Bagasi ";
     private static final String MEAL_PREFIX = "Makanan ";
+    private static final String BIRTHDAY_PREFIX = "Tanggal Lahir ";
 
     private String id;
     private FlightDetailViewModel detailViewModelListDeparture;
@@ -299,16 +300,21 @@ public class FlightBookingReviewModel implements Parcelable{
             FlightDetailPassenger flightDetailPassenger = new FlightDetailPassenger();
             flightDetailPassenger.setPassengerName(flightBookingPassengerViewModel.getPassengerTitle() + " " + flightBookingPassengerViewModel.getPassengerFirstName() + " " + flightBookingPassengerViewModel.getPassengerLastName());
             flightDetailPassenger.setPassengerType(flightBookingPassengerViewModel.getType());
-            flightDetailPassenger.setInfoPassengerList(generateDetailViewModelPassenger(flightBookingPassengerViewModel.getFlightBookingLuggageMetaViewModels(),
+            flightDetailPassenger.setInfoPassengerList(generateDetailViewModelPassenger(flightBookingPassengerViewModel.getPassengerBirthdate(), flightBookingPassengerViewModel.getFlightBookingLuggageMetaViewModels(),
                     flightBookingPassengerViewModel.getFlightBookingMealMetaViewModels()));
             flightDetailPassengers.add(flightDetailPassenger);
         }
         return flightDetailPassengers;
     }
 
-    private List<SimpleViewModel> generateDetailViewModelPassenger(List<FlightBookingAmenityMetaViewModel> flightBookingLuggageMetaViewModels,
+    private List<SimpleViewModel> generateDetailViewModelPassenger(String passengerBirthdate,
+                                                                   List<FlightBookingAmenityMetaViewModel> flightBookingLuggageMetaViewModels,
                                                                    List<FlightBookingAmenityMetaViewModel> flightBookingAmenityMetaViewModels) {
         List<SimpleViewModel> simpleViewModels = new ArrayList<>();
+
+        // add tanggal lahir
+        simpleViewModels.add(new SimpleViewModel(passengerBirthdate, BIRTHDAY_PREFIX));
+
         for (FlightBookingAmenityMetaViewModel flightBookingLuggageMetaViewModel : flightBookingLuggageMetaViewModels) {
             SimpleViewModel simpleViewModel = new SimpleViewModel();
             simpleViewModel.setDescription(LUGGAGE_PREFIX + flightBookingLuggageMetaViewModel.getDescription());
