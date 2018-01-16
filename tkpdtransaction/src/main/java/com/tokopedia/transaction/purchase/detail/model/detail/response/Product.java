@@ -9,6 +9,9 @@ public class Product {
     @SerializedName("id")
     @Expose
     private int id;
+    @SerializedName("order_detail_id")
+    @Expose
+    private String orderDetailId;
     @SerializedName("name")
     @Expose
     private String name;
@@ -46,6 +49,14 @@ public class Product {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getOrderDetailId() {
+        return orderDetailId;
+    }
+
+    public void setOrderDetailId(String orderDetailId) {
+        this.orderDetailId = orderDetailId;
     }
 
     public String getName() {

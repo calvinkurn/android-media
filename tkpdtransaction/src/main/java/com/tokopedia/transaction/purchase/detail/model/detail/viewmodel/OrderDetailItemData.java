@@ -11,6 +11,8 @@ public class OrderDetailItemData implements Parcelable{
 
     private String productId;
 
+    private String orderDetailId;
+
     private String itemName;
 
     private String itemQuantity;
@@ -36,6 +38,7 @@ public class OrderDetailItemData implements Parcelable{
 
     protected OrderDetailItemData(Parcel in) {
         productId = in.readString();
+        orderDetailId = in.readString();
         itemName = in.readString();
         itemQuantity = in.readString();
         price = in.readString();
@@ -51,6 +54,7 @@ public class OrderDetailItemData implements Parcelable{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(productId);
+        dest.writeString(orderDetailId);
         dest.writeString(itemName);
         dest.writeString(itemQuantity);
         dest.writeString(price);
@@ -86,6 +90,14 @@ public class OrderDetailItemData implements Parcelable{
 
     public void setProductId(String productId) {
         this.productId = productId;
+    }
+
+    public String getOrderDetailId() {
+        return orderDetailId;
+    }
+
+    public void setOrderDetailId(String orderDetailId) {
+        this.orderDetailId = orderDetailId;
     }
 
     public String getItemName() {

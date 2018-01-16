@@ -102,6 +102,7 @@ public class OrderDetailMapper {
         for (int i = 0; i < responseData.getProducts().size(); i++) {
             OrderDetailItemData product = new OrderDetailItemData();
             product.setProductId(String.valueOf(responseData.getProducts().get(i).getId()));
+            product.setOrderDetailId(responseData.getProducts().get(i).getOrderDetailId());
             product.setItemName(responseData.getProducts().get(i).getName());
             product.setDescription(responseData.getProducts().get(i).getNote());
             product.setItemQuantity(String.valueOf(responseData.getProducts().get(i).getQuantity()));

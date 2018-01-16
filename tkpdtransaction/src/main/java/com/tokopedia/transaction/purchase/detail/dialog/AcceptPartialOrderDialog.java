@@ -108,7 +108,7 @@ public class AcceptPartialOrderDialog extends DialogFragment{
                 ArrayList<PartialDialogModels> newDialogPartialDetails = new ArrayList<PartialDialogModels>();
                 for(int i=0; i<numberOfProducts; i++) {
                     PartialDialogModels partialdetails = new PartialDialogModels();
-                    partialdetails.setItemDesc(data.getItemList().get(i).getProductId());
+                    partialdetails.setItemDesc(data.getItemList().get(i).getOrderDetailId());
                     partialdetails.setItemQty(ProdQty[i].getText().toString());
                     newDialogPartialDetails.add(partialdetails);
                 }
