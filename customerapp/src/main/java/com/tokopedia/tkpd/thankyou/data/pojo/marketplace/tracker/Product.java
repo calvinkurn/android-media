@@ -3,96 +3,42 @@ package com.tokopedia.tkpd.thankyou.data.pojo.marketplace.tracker;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by okasurya on 12/12/17.
  */
-public class Product {
-    @SerializedName("name")
-    @Expose
-    private String name;
-    @SerializedName("id")
-    @Expose
-    private String id;
-    @SerializedName("price")
-    @Expose
-    private String price;
-    @SerializedName("brand")
-    @Expose
-    private String brand;
-    @SerializedName("category")
-    @Expose
-    private String category;
-    @SerializedName("variant")
-    @Expose
-    private String variant;
-    @SerializedName("quantity")
-    @Expose
-    private int quantity;
-    @SerializedName("coupon")
-    @Expose
-    private String coupon;
-
-    public String getName() {
-        return name;
-    }
-
+public class Product extends HashMap<String, Object> {
     public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getId() {
-        return id;
+        this.put("name", name);
     }
 
     public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getPrice() {
-        return price;
+        this.put("id", id);
     }
 
     public void setPrice(String price) {
-        this.price = price;
-    }
-
-    public String getBrand() {
-        return brand;
+        this.put("price", price);
     }
 
     public void setBrand(String brand) {
-        this.brand = brand;
-    }
-
-    public String getCategory() {
-        return category;
+        this.put("brand", brand);
     }
 
     public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public String getVariant() {
-        return variant;
+        this.put("category", category);
     }
 
     public void setVariant(String variant) {
-        this.variant = variant;
-    }
-
-    public int getQuantity() {
-        return quantity;
+        this.put("variant", variant);
     }
 
     public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public String getCoupon() {
-        return coupon;
+        this.put("quantity", quantity);
     }
 
     public void setCoupon(String coupon) {
-        this.coupon = coupon;
+        this.put("coupon", coupon);
     }
 }

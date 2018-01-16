@@ -1,9 +1,11 @@
 package com.tokopedia.tkpd.thankyou.data.pojo.marketplace.tracker;
 
+import java.util.HashMap;
+
 /**
  * Created by okasurya on 12/12/17.
  */
-public class ActionField {
+public class ActionField extends HashMap<String, Object> {
     private String id;
     private String affiliation;
     private String revenue;

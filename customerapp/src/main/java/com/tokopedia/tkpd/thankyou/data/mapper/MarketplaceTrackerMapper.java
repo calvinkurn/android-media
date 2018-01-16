@@ -6,6 +6,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.analytics.PurchaseTracking;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.PaymentMethod;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.tracker.ActionField;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.tracker.Ecommerce;
@@ -37,10 +38,13 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
     private static final String COUPON = "coupon";
     private GlobalCacheManager globalCacheManager;
     private Gson gson;
+    private SessionHandler sessionHandler;
 
-    public MarketplaceTrackerMapper(Gson gson) {
+    public MarketplaceTrackerMapper(Gson gson,
+                                    SessionHandler sessionHandler) {
         this.globalCacheManager = new GlobalCacheManager();
         this.gson = gson;
+        this.sessionHandler = sessionHandler;
     }
 
     @Override
@@ -78,12 +82,12 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
     @SuppressWarnings("unchecked")
     private void processData(PaymentData payment, CartItem cartItem) {
         MarketplaceTrackerData marketplaceTrackerData = getTrackingData(payment, cartItem);
-        String rawTrackingData = gson.toJson(marketplaceTrackerData);
-        PurchaseTracking.marketplace(gson.fromJson(rawTrackingData, LinkedTreeMap.class));
+        PurchaseTracking.marketplace(marketplaceTrackerData);
     }
 
     private MarketplaceTrackerData getTrackingData(PaymentData paymentData, CartItem cartItem) {
         MarketplaceTrackerData trackingData = new MarketplaceTrackerData();
+        trackingData.setEvent(PurchaseTracking.TRANSACTION);
 
         if(cartItem.getCartShop() != null) {
             trackingData.setShopId(cartItem.getCartShop().getShopId());
@@ -99,6 +103,8 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         if(cartItem.getCartShipments() != null) {
             trackingData.setLogisticType(cartItem.getCartShipments().getShipmentId());
         }
+
+        trackingData.setUserId(sessionHandler.getLoginID());
 
         trackingData.setEcommerce(
                 getEcommerceData(paymentData, cartItem)
