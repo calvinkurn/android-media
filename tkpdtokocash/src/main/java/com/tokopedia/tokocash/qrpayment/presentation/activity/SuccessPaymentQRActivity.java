@@ -87,8 +87,7 @@ public class SuccessPaymentQRActivity extends TActivity {
             failedTransactionLayout.setVisibility(View.GONE);
             qrPaymentTokoCash = getIntent().getParcelableExtra(QR_PAYMENT_DATA);
             merchantName.setText(getIntent().getStringExtra(MERCHANT_NAME));
-            String amountTransactionString = CurrencyFormatHelper.ConvertToRupiah(String.valueOf(getIntent()
-                    .getStringExtra(AMOUNT)));
+            String amountTransactionString = getIntent().getStringExtra(AMOUNT);
             amountTransaction.setText("Rp " + amountTransactionString.replace(",", "."));
             timeTransaction.setText(qrPaymentTokoCash.getDateTime());
             idTransaction.setText(String.valueOf(qrPaymentTokoCash.getTransactionId()));
