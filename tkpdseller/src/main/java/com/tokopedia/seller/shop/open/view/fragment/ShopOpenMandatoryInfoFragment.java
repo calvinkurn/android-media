@@ -209,7 +209,7 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
     @Override
     public void onFailedSaveInfoShop(Throwable t) {
         Crashlytics.logException(t);
-        String errorMessage = ShopErrorHandler.getErrorMessage(t);
+        String errorMessage = ShopErrorHandler.getErrorMessage(getActivity(), t);
         trackingOpenShop.eventOpenShopFormError(errorMessage);
         onErrorGetReserveDomain(errorMessage);
     }
@@ -228,7 +228,7 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
 
     @Override
     public void onErrorGetReserveDomain(Throwable e) {
-        NetworkErrorHelper.showSnackbar(getActivity(), ShopErrorHandler.getErrorMessage(e));
+        NetworkErrorHelper.showSnackbar(getActivity(), ShopErrorHandler.getErrorMessage(getActivity(), e));
     }
 
     private void onClickBrowseImage() {
@@ -262,11 +262,13 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
                     }
                     break;
                 case com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY:
+                    if(data != null) {
                         String imageUrl = data.getStringExtra(GalleryActivity.IMAGE_URL);
                         if (!TextUtils.isEmpty(imageUrl)) {
                             uriPathImage = imageUrl;
                             ImageHandler.loadImageFromFile(getActivity(), imagePicker, new File(uriPathImage));
                         }
+                    }
                     break;
                 default:
                     break;

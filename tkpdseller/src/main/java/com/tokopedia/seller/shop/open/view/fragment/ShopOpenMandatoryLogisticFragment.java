@@ -302,7 +302,7 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     @Override
     public void onErrorLoadLogistic(Throwable t) {
         hideLoading();
-        String message = ShopErrorHandler.getErrorMessage(t);
+        String message = ShopErrorHandler.getErrorMessage(getActivity(), t);
         if (!TextUtils.isEmpty(message)) {
             showMessageError(message);
         }
@@ -311,8 +311,8 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     @Override
     public void onErrorSaveCourier(Throwable t) {
         hideSubmitLoading();
-        Crashlytics.logException(t);
-        trackingOpenShop.eventOpenShopShippingError(ShopErrorHandler.getErrorMessage(t));
+        Crashlytics.logException(t);      
+        trackingOpenShop.eventOpenShopShippingError(ShopErrorHandler.getErrorMessage(getActivity(), t));
         NetworkErrorHelper.showSnackbar(getActivity(),ShopErrorHandler.getErrorMessage(t));
     }
 
