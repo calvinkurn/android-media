@@ -26,23 +26,23 @@ public class ValidateOtpLoginSubscriber extends Subscriber<ValidateOtpLoginDomai
     @Override
     public void onError(Throwable e) {
         view.dismissLoadingProgress();
-        view.onErrorVerifyOtp(ErrorHandler.getErrorMessageWithErrorCode(e));
+        view.onErrorVerifyLogin(ErrorHandler.getErrorMessageWithErrorCode(e));
     }
 
     @Override
     public void onNext(ValidateOtpLoginDomain validateOTPLoginDomain) {
         view.dismissLoadingProgress();
-        if (validateOTPLoginDomain.getValidateOtpDomain().isSuccess()
-                && validateOTPLoginDomain.getMakeLoginDomain().isLogin()
-                && !validateOTPLoginDomain.getMakeLoginDomain().isMsisdnVerified()) {
-            view.onGoToPhoneVerification();
+        if (!validateOTPLoginDomain.getValidateOtpDomain().isSuccess()) {
+            view.onErrorVerifyOtpCode(ErrorHandler.getDefaultErrorCodeMessage(ErrorCode.UNSUPPORTED_FLOW));
         } else if (validateOTPLoginDomain.getValidateOtpDomain().isSuccess()
-                && validateOTPLoginDomain.getMakeLoginDomain().isLogin()
-                && validateOTPLoginDomain.getMakeLoginDomain().isMsisdnVerified())
-            view.onSuccessVerifyOTP();
-        else {
-            view.onErrorVerifyOtp(
-                    ErrorHandler.getDefaultErrorCodeMessage(ErrorCode.UNSUPPORTED_FLOW));
+                && validateOTPLoginDomain.getMakeLoginDomain().isLogin()) {
+            if (!validateOTPLoginDomain.getMakeLoginDomain().isMsisdnVerified()) {
+                view.onGoToPhoneVerification();
+            } else {
+                view.onSuccessVerifyOTP();
+            }
+        } else {
+            view.onErrorVerifyLogin(ErrorHandler.getDefaultErrorCodeMessage(ErrorCode.UNSUPPORTED_FLOW));
         }
     }
 }

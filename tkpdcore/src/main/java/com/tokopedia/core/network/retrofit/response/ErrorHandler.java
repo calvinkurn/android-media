@@ -81,7 +81,7 @@ public class ErrorHandler {
     }
 
     public static String getErrorMessage(Throwable e) {
-        getErrorMessage(e, MainApplication.getAppContext());
+        return getErrorMessage(e, MainApplication.getAppContext());
     }
 
     public static String getErrorMessage(Throwable e, final Context context) {

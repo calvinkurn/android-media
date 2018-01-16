@@ -17,7 +17,7 @@ public interface Verification {
 
         void onErrorGetOTP(String errorMessage);
 
-        void onErrorVerifyOtp(String errorMessage);
+        void onErrorVerifyOtpCode(String errorMessage);
 
         void showLoadingProgress();
 
@@ -28,6 +28,8 @@ public interface Verification {
         void dropKeyboard();
 
         void onGoToPhoneVerification();
+
+        void onErrorVerifyLogin(String errorMessage);
     }
 
     interface Presenter extends CustomerPresenter<Verification.View> {

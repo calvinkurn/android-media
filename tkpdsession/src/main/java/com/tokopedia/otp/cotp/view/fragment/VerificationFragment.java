@@ -370,11 +370,16 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     }
 
     @Override
-    public void onErrorVerifyOtp(String errorMessage) {
+    public void onErrorVerifyOtpCode(String errorMessage) {
         inputOtp.setError(true);
         errorOtp.setVisibility(View.VISIBLE);
         inputOtp.setCompoundDrawables(null, null, MethodChecker.getDrawable
                 (getActivity(), R.drawable.ic_cancel_red), null);
+    }
+
+    @Override
+    public void onErrorVerifyLogin(String errorMessage) {
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), errorMessage);
     }
 
     @Override

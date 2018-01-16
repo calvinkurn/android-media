@@ -303,25 +303,60 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
     private TextWatcher phoneWatcher(final EditText editText) {
         return new TextWatcher() {
+
+            private boolean backspacingFlag = false;
+            private int cursorComplement;
+            private int totalSpace, newTotalSpace;
+            private int selectionStart;
+
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                totalSpace = s.length() - s.toString().replace("-", "").length();
+                cursorComplement = s.length() - editText.getSelectionStart();
+
+                String cutString = s.toString().substring(0, editText.getSelectionStart());
+                int totalSpaceWithinCutString = cutString.length() - cutString.replace("-", "")
+                        .length();
+                selectionStart = editText.getSelectionStart() - totalSpaceWithinCutString;
+
+                if (count > after) {
+                    backspacingFlag = true;
+                } else {
+                    backspacingFlag = false;
+                }
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                String phone = CustomPhoneNumberUtil.transform(s.toString());
-                if (s.toString().length() != phone.length()) {
-                    editText.removeTextChangedListener(this);
-                    editText.setText(phone);
-                    editText.setSelection(phone.length());
-                    editText.addTextChangedListener(this);
+                String unformattedText = s.toString().replace("-", "");
+                String formattedText = CustomPhoneNumberUtil.transform(unformattedText);
+                newTotalSpace = formattedText.length() - unformattedText.length();
+
+
+                if (s.toString().length() > 4 && cursorComplement == 0) {
+                    formatPhoneNumber(formattedText, formattedText.length());
+                } else if (s.toString().length() > 4 && !backspacingFlag && cursorComplement > 0) {
+                    int cursorPosition = formattedText.length() -
+                            (cursorComplement + newTotalSpace - totalSpace);
+                    if (selectionStart % 4 == 0 && selectionStart != 0) cursorPosition += 1;
+                    formatPhoneNumber(formattedText, cursorPosition);
+                } else if (s.toString().length() > 4 && backspacingFlag && cursorComplement > 0) {
+                    int cursorPosition = s.length() - cursorComplement;
+                    formatPhoneNumber(formattedText, cursorPosition);
                 }
 
-                checkIsValidForm();
+            }
+
+            private void formatPhoneNumber(String formattedText, int cursorPosition) {
+                editText.removeTextChangedListener(this);
+                editText.setText(formattedText);
+                editText.setSelection(cursorPosition);
+                editText.addTextChangedListener(this);
             }
         };
     }
