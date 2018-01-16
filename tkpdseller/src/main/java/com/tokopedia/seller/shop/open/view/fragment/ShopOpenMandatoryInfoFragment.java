@@ -211,12 +211,11 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
         Crashlytics.logException(t);
         String errorMessage = ShopErrorHandler.getErrorMessage(t);
         trackingOpenShop.eventOpenShopFormError(errorMessage);
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, Snackbar.LENGTH_LONG, new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                onNextButtonClicked();
-            }
-        }).showRetrySnackbar();
+        onErrorGetReserveDomain(errorMessage);
+    }
+
+    private void onErrorGetReserveDomain(String errorMessage){
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
     @Override

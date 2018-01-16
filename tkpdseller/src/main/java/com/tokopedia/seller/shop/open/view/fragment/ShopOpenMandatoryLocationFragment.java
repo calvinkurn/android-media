@@ -76,8 +76,6 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
     RequestParams requestParams;
     private TkpdProgressDialog tkpdProgressDialog;
 
-    private SnackbarRetry snackbarRetry;
-
     public static ShopOpenMandatoryLocationFragment getInstance() {
         return new ShopOpenMandatoryLocationFragment();
     }
