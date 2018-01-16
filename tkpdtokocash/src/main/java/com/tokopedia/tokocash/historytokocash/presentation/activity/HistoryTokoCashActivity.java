@@ -301,7 +301,7 @@ public class HistoryTokoCashActivity extends TActivity implements TokoCashHistor
 
         refreshHandler.finishRefresh();
         adapterFilter.setListener(getFilterTokoCashListener());
-        adapterFilter.addFilterTokoCashList(headerMapper.transform(
+        adapterFilter.addQuickFilterItems(headerMapper.transform(
                 removeTypeAllOnHeader(tokoCashHistoryData.getHeaderHistory())));
         adapterHistory.setListener(getItemHistoryListener());
         if (firstTimeLoad) {
