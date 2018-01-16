@@ -653,7 +653,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         if (!TextUtils.isEmpty(domain.getImageUrl())
                 || !TextUtils.isEmpty(domain.getApplink())
                 || !TextUtils.isEmpty(domain.getButtonTitle())
-                || !TextUtils.isEmpty(domain.getApplinkUrl())
+                || !TextUtils.isEmpty(domain.getApplink())
                 || !TextUtils.isEmpty(domain.getTextHeader())
                 || !TextUtils.isEmpty(domain.getTextDescription()))
             return new ContentProductViewModel(
