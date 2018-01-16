@@ -2810,30 +2810,30 @@ public class UnifyTracking extends TrackingUtils {
     }
 
 
-    public static void eventAppRatingImpression() {
+    public static void eventAppRatingImpression(String label) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.IMPRESSION_APP_RATING,
                 AppEventTracking.Category.APP_RATING,
                 AppEventTracking.Action.IMPRESSION,
-                ""
+                label
         ).getEvent());
     }
 
-    public static void eventClickAppRating() {
+    public static void eventClickAppRating(String label) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.CLICK_APP_RATING,
                 AppEventTracking.Category.APP_RATING,
                 AppEventTracking.Action.CLICK,
-                ""
+                label
         ).getEvent());
     }
 
-    public static void eventCancelAppRating() {
+    public static void eventCancelAppRating(String label) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.CANCEL_APP_RATING,
                 AppEventTracking.Category.APP_RATING,
                 AppEventTracking.Action.CLICK,
-                ""
+                label
         ).getEvent());
     }
 
