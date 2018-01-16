@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.crashlytics.android.Crashlytics;
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
@@ -74,9 +75,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
     ShopOpenTracking trackingOpenShop;
 
     RequestParams requestParams;
-    private ProgressDialog progressDialog;
-
-    private SnackbarRetry snackbarRetry;
+    private TkpdProgressDialog tkpdProgressDialog;
 
     public static ShopOpenMandatoryLocationFragment getInstance() {
         return new ShopOpenMandatoryLocationFragment();
@@ -92,9 +91,23 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
         return root;
     }
 
+    @Override
+    public void dismissProgressDialog() {
+        if (tkpdProgressDialog != null) {
+            tkpdProgressDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void showProgressDialog() {
+        if (tkpdProgressDialog == null) {
+            tkpdProgressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS,
+                    getString(R.string.title_loading));
+        }
+        tkpdProgressDialog.showDialog();
+    }
+
     private void initView(View root) {
-        progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage(getString(R.string.title_loading));
 
         new LocationHeaderViewHolder(root, new LocationHeaderViewHolder.ViewHolderListener() {
             @Override
@@ -331,6 +344,18 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        locationMapViewHolder.onDestroy();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        locationMapViewHolder.onLowMemory();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         shopOpenLocPresenter.detachView();
@@ -370,12 +395,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
             onErrorGetReserveDomain(errorMessage);
             return;
         }
-        (snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                onNextButtonClicked();
-            }
-        })).showRetrySnackbar();
+        onErrorGetReserveDomain(errorMessage);
     }
 
     private void sendErrorTracking(String errorMessage) {
@@ -385,15 +405,5 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
                 locationMapViewHolder.getGoogleLocationViewModel() != null ? locationMapViewHolder.getGoogleLocationViewModel().getManualAddress() : "",
                 locationMapViewHolder.getManualAddress() != null ? locationMapViewHolder.getGoogleLocationViewModel().getManualAddress() : "");
         trackingOpenShop.eventOpenShopLocationErrorWithData(generatedErrorMessage);
-    }
-
-    @Override
-    public void showProgressDialog() {
-        progressDialog.show();
-    }
-
-    @Override
-    public void dismissProgressDialog() {
-        progressDialog.dismiss();
     }
 }

@@ -311,16 +311,9 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     @Override
     public void onErrorSaveCourier(Throwable t) {
         hideSubmitLoading();
-        Crashlytics.logException(t);
+        Crashlytics.logException(t);      
         trackingOpenShop.eventOpenShopShippingError(ShopErrorHandler.getErrorMessage(getActivity(), t));
-        SnackbarRetry snackbarSubmitRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(),
-                ShopErrorHandler.getErrorMessage(getActivity(), t), new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        onContinueButtonClicked();
-                    }
-                });
-        snackbarSubmitRetry.showRetrySnackbar();
+        NetworkErrorHelper.showSnackbar(getActivity(),ShopErrorHandler.getErrorMessage(t));
     }
 
     @Override

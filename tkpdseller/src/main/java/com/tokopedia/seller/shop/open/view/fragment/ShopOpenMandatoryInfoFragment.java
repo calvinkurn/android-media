@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.crashlytics.android.Crashlytics;
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
@@ -80,7 +81,7 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
     private ImageView imagePicker;
     private TextView welcomeText;
     private Button buttonNext;
-    private ProgressDialog progressDialog;
+    private TkpdProgressDialog tkpdProgressDialog;
     private String uriPathImage = "";
     private StepperListener<ShopOpenStepperModel> onShopStepperListener;
 
@@ -119,9 +120,6 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
         imagePicker = (ImageView) view.findViewById(R.id.image_picker);
         buttonNext = (Button) view.findViewById(R.id.button_next);
         welcomeText = view.findViewById(R.id.welcome_shop_label);
-
-        progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage(getString(R.string.title_loading));
 
         if (onShopStepperListener != null) {
             if (onShopStepperListener.getStepperModel().getResponseIsReserveDomain() == null) {
@@ -180,13 +178,19 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void showProgressDialog() {
-        progressDialog.show();
+    public void dismissProgressDialog() {
+        if (tkpdProgressDialog != null) {
+            tkpdProgressDialog.dismiss();
+        }
     }
 
     @Override
-    public void dismissProgressDialog() {
-        progressDialog.dismiss();
+    public void showProgressDialog() {
+        if (tkpdProgressDialog == null) {
+            tkpdProgressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS,
+                    getString(R.string.title_loading));
+        }
+        tkpdProgressDialog.showDialog();
     }
 
     @Override
@@ -207,12 +211,11 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
         Crashlytics.logException(t);
         String errorMessage = ShopErrorHandler.getErrorMessage(getActivity(), t);
         trackingOpenShop.eventOpenShopFormError(errorMessage);
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, Snackbar.LENGTH_LONG, new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                onNextButtonClicked();
-            }
-        }).showRetrySnackbar();
+        onErrorGetReserveDomain(errorMessage);
+    }
+
+    private void onErrorGetReserveDomain(String errorMessage){
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
     @Override
