@@ -25,7 +25,6 @@ public class OpportunityImpl extends OpportunityPresenter {
 
     @Override
     public void getNewPriceInfo() {
-        getView().showLoadingProgress();
         newPriceUseCase.execute(getNewPriceInfoParams(), new Subscriber<OpportunityNewPriceData>() {
             @Override
             public void onCompleted() {

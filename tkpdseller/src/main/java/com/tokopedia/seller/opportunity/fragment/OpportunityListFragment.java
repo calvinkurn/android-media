@@ -145,7 +145,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         }, 300);
     }
 
-    // for show case
+    // get first item to start demo the opportunity
     public View getItemRecyclerView() {
         int position = layoutManager.findFirstCompletelyVisibleItemPosition();
         return layoutManager.findViewByPosition(position);

@@ -37,6 +37,8 @@ public class OpportunityNewPriceData {
     @Expose
     private String newShippingPriceIdr;
 
+    @SerializedName("opportunity_title")
+    @Expose
     private String title;
 
     public String getTitle() {
