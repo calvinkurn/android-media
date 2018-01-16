@@ -75,6 +75,9 @@ public interface OrderDetailPresenter {
     void rejectOrderChangeWeightPrice(Context context,
                                       List<WrongProductPriceWeightEditable> editables);
 
+    void processInstantCourierShipping(Context context,
+                                       OrderDetailData data);
+
     void processShipping(Context context,
                          OrderDetailShipmentModel shipmentModel);
 

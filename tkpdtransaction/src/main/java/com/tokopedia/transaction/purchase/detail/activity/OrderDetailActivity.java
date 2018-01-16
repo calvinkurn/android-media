@@ -475,7 +475,7 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void onRequestPickup(OrderDetailData data) {
-        presenter.retryOrder(this, data);
+        presenter.processInstantCourierShipping(this, data);
         //TODO Bundle important things here, dont put entire model in the bundle!!
     }
 
