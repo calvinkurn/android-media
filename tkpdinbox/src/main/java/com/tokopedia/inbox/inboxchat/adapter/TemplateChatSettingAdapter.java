@@ -96,25 +96,31 @@ public class TemplateChatSettingAdapter extends RecyclerView.Adapter<AbstractVie
     }
 
     public void edit(int index, String string) {
-        ((TemplateChatModel) list.get(index)).setMessage(string);
-        notifyItemChanged(index);
+        if(list!=null && list.size()>0) {
+            ((TemplateChatModel) list.get(index)).setMessage(string);
+            notifyItemChanged(index);
+        }
     }
 
     public void delete(int index) {
-        list.remove(index);
-        notifyItemRemoved(index);
-        list.remove(list.size()-1);
-        notifyItemRemoved(list.size()-1);
-        list.add(new TemplateChatModel(false, list.size()));
-        notifyItemInserted(list.size());
+        if(list!=null && list.size()>0) {
+            list.remove(index);
+            notifyItemRemoved(index);
+            list.remove(list.size() - 1);
+            notifyItemRemoved(list.size() - 1);
+            list.add(new TemplateChatModel(false, list.size()));
+            notifyItemInserted(list.size());
+        }
     }
 
     public void add(String string) {
-        list.remove(list.size()-1);
-        notifyItemRemoved(list.size()-1);
-        list.add(new TemplateChatModel(string));
-        list.add(new TemplateChatModel(false, list.size()));
-        notifyItemRangeInserted(list.size(), 2);
+        if(list!=null && list.size()>0) {
+            list.remove(list.size() - 1);
+            notifyItemRemoved(list.size() - 1);
+            list.add(new TemplateChatModel(string));
+            list.add(new TemplateChatModel(false, list.size()));
+            notifyItemRangeInserted(list.size(), 2);
+        }
     }
 
 
