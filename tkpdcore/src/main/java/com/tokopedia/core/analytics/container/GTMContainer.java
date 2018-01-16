@@ -515,6 +515,52 @@ public class GTMContainer implements IGTMContainer {
         );
     }
 
+    @Override
+    public void eventImpressionPromoList(List<Object> list, String promoName) {
+        clearEnhanceEcommerce();
+
+        GTMDataLayer.pushGeneral(
+                context,
+                DataLayer.mapOf(
+                        "event", "promoView",
+                        "eventCategory", "promo microsite - promo list",
+                        "eventAction", "impression on promo",
+                        "eventLabel", promoName,
+                        "ecommerce", DataLayer.mapOf(
+                                "promoView", DataLayer.mapOf(
+                                        "promotions", DataLayer.listOf(
+                                                list.toArray(new Object[list.size()]
+                                                )
+                                        )
+                                )
+                        )
+                )
+        );
+    }
+
+    @Override
+    public void eventClickPromoListItem(List<Object> list, String promoName) {
+        clearEnhanceEcommerce();
+
+        GTMDataLayer.pushGeneral(
+                context,
+                DataLayer.mapOf(
+                        "event", "promoView",
+                        "eventCategory", "promo microsite - promo list",
+                        "eventAction", "impression on promo",
+                        "eventLabel", promoName,
+                        "ecommerce", DataLayer.mapOf(
+                                "promoClick", DataLayer.mapOf(
+                                        "promotions", DataLayer.listOf(
+                                                list.toArray(new Object[list.size()]
+                                                )
+                                        )
+                                )
+                        )
+                )
+        );
+    }
+
     private void clearEventTracking() {
         GTMDataLayer.pushGeneral(
                 context,

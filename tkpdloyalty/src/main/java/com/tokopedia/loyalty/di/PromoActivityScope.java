@@ -6,10 +6,9 @@ import java.lang.annotation.RetentionPolicy;
 import javax.inject.Scope;
 
 /**
- * @author anggaprasetiyo on 04/12/17.
+ * @author anggaprasetiyo on 04/01/18.
  */
-
 @Scope
 @Retention(RetentionPolicy.CLASS)
-public @interface TokoplusDrawerScope {
+public @interface PromoActivityScope {
 }
