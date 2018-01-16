@@ -109,6 +109,5 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule {
     public void sendTrackingEvent(ReadableMap dataLayer) {
         HashMap<String, Object> maps = dataLayer.toHashMap();
         TrackingUtils.eventTrackingEnhancedEcommerce(maps);
-        //UnifyTracking.eventGeneral(maps);
     }
 }
