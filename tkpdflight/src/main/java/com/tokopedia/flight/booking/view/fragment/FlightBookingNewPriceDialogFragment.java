@@ -91,6 +91,16 @@ public class FlightBookingNewPriceDialogFragment extends DialogFragment {
     }
 
     @Override
+    public void onResume() {
+        ViewGroup.LayoutParams params = getDialog().getWindow().getAttributes();
+        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        getDialog().getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
+
+        super.onResume();
+    }
+
+    @Override
     public void dismiss() {
         if (isProgramaticallyDismissed) {
             super.dismiss();
