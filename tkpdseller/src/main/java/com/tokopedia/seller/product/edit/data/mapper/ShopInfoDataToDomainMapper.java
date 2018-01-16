@@ -21,6 +21,7 @@ public class ShopInfoDataToDomainMapper implements Func1<ShopModel, AddProductSh
         domainModel.setGoldMerchant( shopModel.info.shopIsGold == 1 );
         // !! REQUIRED
         domainModel.setFreeReturn( shopModel.info.isFreeReturns() );
+        domainModel.setOfficialStore(shopModel.info.isOfficialStore());
         return domainModel;
     }
 

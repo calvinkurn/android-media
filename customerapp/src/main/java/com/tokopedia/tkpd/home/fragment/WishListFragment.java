@@ -398,6 +398,8 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     @Override
     public boolean isPullToRefresh() {
+        if (swipeToRefresh == null)
+            return false;
         return swipeToRefresh.isRefreshing();
     }
 

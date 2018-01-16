@@ -759,6 +759,8 @@ public class TxListPresenterImpl implements TxListPresenter {
                 if (resultCode == Activity.RESULT_OK) {
                     viewListener.showToastSuccessMessage(
                             context.getString(com.tokopedia.transaction.R.string.success_cancel_replacement));
+                } else {
+                    viewListener.resetData();
                 }
             default:
                 break;

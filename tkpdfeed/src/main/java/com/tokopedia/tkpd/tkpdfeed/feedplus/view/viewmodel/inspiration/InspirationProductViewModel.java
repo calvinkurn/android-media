@@ -11,15 +11,17 @@ public class InspirationProductViewModel {
     private String imageSource;
     private String url;
     private int page;
+    private String priceInt;
 
     public InspirationProductViewModel(String productId, String name, String price, String
-            imageSource, String url, int page) {
+            imageSource, String url, int page, String priceInt) {
         this.productId = productId;
         this.name = name;
         this.price = price;
         this.imageSource = imageSource;
         this.url = url;
         this.page = page;
+        this.priceInt = priceInt;
     }
 
     public String getProductId() {
@@ -64,5 +66,13 @@ public class InspirationProductViewModel {
 
     public int getPage() {
         return page;
+    }
+
+    public String getPriceInt() {
+        return priceInt;
+    }
+
+    public void setPriceInt(String priceInt) {
+        this.priceInt = priceInt;
     }
 }

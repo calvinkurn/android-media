@@ -50,7 +50,7 @@ public class GalleryCropWatermarkActivity extends GalleryCropActivity {
         moveToImageGalleryCamera(context, fragment, position, forceOpenCamera, maxImageSelection, false);
     }
 
-    protected static Intent createIntent(Context context, int position,
+    public static Intent createIntent(Context context, int position,
                                        boolean forceOpenCamera,
                                        int maxImageSelection,
                                        boolean compressToTkpd) {

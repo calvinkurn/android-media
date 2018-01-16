@@ -22,7 +22,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.apprating.AppRatingDialog;
+import com.tokopedia.core.apprating.SimpleAppRatingDialog;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
@@ -558,7 +558,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     public void showRatingDialog(Bundle bundle) {
         if (bundle != null && bundle.getFloat(InboxReputationFormActivity.ARGS_RATING) >= 3.0) {
-            AppRatingDialog.show(getActivity());
+            SimpleAppRatingDialog.show(getActivity());
         }
     }
 }

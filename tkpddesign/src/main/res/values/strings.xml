@@ -9,6 +9,8 @@
     <string name="price_range_separator_symbol">-</string>
     <string name="empty_search_result_title_template">Oops, $1 tidak ditemukan</string>
     <string name="empty_search_result_content_template">Hasil pencarian untuk \"$1\" tidak ditemukan</string>
+
+    <string name="counter_pattern">%1$d / %2$d</string>
     <string name="checkbox_use_promo_code">Gunakan Kode Promo Tokopedia</string>
     <string name="title_success_get_voucher">Anda mendapatkan promo:</string>
     <string name="button_cancel_voucher">Batalkan</string>
