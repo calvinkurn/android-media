@@ -5,7 +5,10 @@ import com.tokopedia.tkpd.campaign.domain.barcode.CampaignDataRepository;
 
 import java.util.Map;
 
+import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.QueryMap;
 import rx.Observable;
 
@@ -14,7 +17,8 @@ import rx.Observable;
  */
 
 public interface CampaignAPI {
-    @GET(CampaignURL.BARCODE_CAMPAIGN)
-    Observable<CampaignResponseEntity> getCampaign(@QueryMap Map<String, Object> param);
+    @FormUrlEncoded
+    @POST(CampaignURL.BARCODE_CAMPAIGN)
+    Observable<CampaignResponseEntity> getCampaign(@FieldMap Map<String, Object> param);
 
 }

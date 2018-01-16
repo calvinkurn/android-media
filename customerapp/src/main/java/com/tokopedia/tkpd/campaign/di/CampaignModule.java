@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.campaign.di;
 
 
+import com.google.gson.Gson;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
@@ -37,7 +38,7 @@ import retrofit2.Retrofit;
 @Module
 public class CampaignModule {
     @Provides
-    BarCodeScannerPresenter provideBarCodeScannerPresenter(PostBarCodeDataUseCase postBarCodeDataUseCase) {
+    BarCodeScannerPresenter provideBarCodeScannerPresenter(PostBarCodeDataUseCase postBarCodeDataUseCase, Gson gson) {
         return new BarCodeScannerPresenter(postBarCodeDataUseCase);
     }
     @Provides

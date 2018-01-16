@@ -1,6 +1,9 @@
 package com.tokopedia.tkpd.campaign.view;
 
 
+import android.util.Log;
+
+import com.google.gson.Gson;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
@@ -11,7 +14,7 @@ import javax.inject.Inject;
 import rx.Subscriber;
 
 import static com.tokopedia.tkpd.campaign.domain.barcode.PostBarCodeDataUseCase.CAMPAIGN_ID;
-import static com.tokopedia.tkpd.campaign.domain.barcode.PostBarCodeDataUseCase.CAMPAIGN_TYPE;
+import static com.tokopedia.tkpd.campaign.domain.barcode.PostBarCodeDataUseCase.CAMPAIGN_NAME;
 
 
 /**
@@ -31,21 +34,26 @@ public class BarCodeScannerPresenter extends BaseDaggerPresenter<BarCodeScannerC
     @Override
     public void onBarCodeScanComplete() {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(CAMPAIGN_TYPE, "qr");
-        requestParams.putString(CAMPAIGN_ID, getView().getBarCodeData());
+        Gson gson = new Gson();
+        CampaignResponseEntity campaignResponseEntity = gson.fromJson(getView().getBarCodeData(),CampaignResponseEntity.class);
+        requestParams.putInt(CAMPAIGN_ID, campaignResponseEntity.getCampaignId());
+        requestParams.putString(CAMPAIGN_NAME,campaignResponseEntity.getCampaignName());
         postBarCodeDataUseCase.execute(requestParams, new Subscriber<CampaignResponseEntity>() {
             @Override
             public void onCompleted() {
+                Log.e("toko_barcode","onCompleted ");
                 getView().finish();
-            }
+                 }
 
             @Override
             public void onError(Throwable e) {
+                Log.e("toko_barcode","onError ");
                 getView().finish();
             }
 
             @Override
             public void onNext(CampaignResponseEntity s) {
+                Log.e("toko_barcode","onNext ");
                 getView().finish();
                 //Open next activity based upon the result from server
             }

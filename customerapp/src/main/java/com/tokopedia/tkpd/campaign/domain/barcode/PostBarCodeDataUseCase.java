@@ -17,8 +17,8 @@ public class PostBarCodeDataUseCase extends UseCase<CampaignResponseEntity> {
 
     CampaignDataRepository campaignDataRepository;
 
-    public static final String CAMPAIGN_ID ="campaign_id";
-    public static final String CAMPAIGN_TYPE = "campaign_type";
+    public static final String CAMPAIGN_ID ="tkp_campaign_id";
+    public static final String CAMPAIGN_NAME = "tkp_campaign_name";
 
 
     public PostBarCodeDataUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, CampaignDataRepository campaignDataRepository) {

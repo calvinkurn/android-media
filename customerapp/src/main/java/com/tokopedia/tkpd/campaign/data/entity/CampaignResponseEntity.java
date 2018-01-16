@@ -7,11 +7,11 @@ public class CampaignResponseEntity{
 	@SerializedName("message")
 	private String message;
 
-	@SerializedName("campaign_id")
+	@SerializedName("tkp_campaign_id")
 	private int campaignId;
 
-	@SerializedName("campaign_url")
-	private String campaignUrl;
+	@SerializedName("tkp_campaign_name")
+	private String campaignName;
 
 	public void setMessage(String message){
 		this.message = message;
@@ -29,12 +29,12 @@ public class CampaignResponseEntity{
 		return campaignId;
 	}
 
-	public void setCampaignUrl(String campaignUrl){
-		this.campaignUrl = campaignUrl;
+	public void setCampaignName(String campaignUrl){
+		this.campaignName = campaignUrl;
 	}
 
-	public String getCampaignUrl(){
-		return campaignUrl;
+	public String getCampaignName(){
+		return campaignName;
 	}
 
 	@Override
@@ -43,7 +43,7 @@ public class CampaignResponseEntity{
 			"CampaignResponseEntity{" + 
 			"message = '" + message + '\'' + 
 			",campaign_id = '" + campaignId + '\'' + 
-			",campaign_url = '" + campaignUrl + '\'' + 
+			",campaign_url = '" + campaignName + '\'' +
 			"}";
 		}
 }
