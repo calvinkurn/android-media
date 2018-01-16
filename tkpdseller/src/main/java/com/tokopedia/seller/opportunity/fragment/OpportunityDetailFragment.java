@@ -231,6 +231,7 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
             statusView.renderData(oppItemViewModel);
             productView.renderData(oppItemViewModel);
             summaryView.renderData(oppItemViewModel);
+            showLoadingProgress();
             presenter.getNewPriceInfo();
             buttonView.setOnClickListener(new View.OnClickListener() {
                 @Override

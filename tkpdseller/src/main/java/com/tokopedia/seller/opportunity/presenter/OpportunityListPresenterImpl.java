@@ -26,6 +26,8 @@ public class OpportunityListPresenterImpl extends OpportunityListPresenter {
     private GetOpportunityFirstTimeUseCase getOpportunityFirstTimeUseCase;
     private SessionHandler sessionHandler;
 
+    private static final int PAGE_ONE = 1;
+
 
     public OpportunityListPresenterImpl(GetOpportunityUseCase getOpportunityUseCase, GetOpportunityFilterUseCase getFilterUseCase, GetOpportunityFirstTimeUseCase getOpportunityFirstTimeUseCase, SessionHandler sessionHandler) {
         this.getOpportunityUseCase = getOpportunityUseCase;
@@ -61,7 +63,7 @@ public class OpportunityListPresenterImpl extends OpportunityListPresenter {
         getView().disableView();
         getOpportunityFirstTimeUseCase.execute(
                 GetOpportunityFirstTimeUseCase.getRequestParam(
-                        1,
+                        PAGE_ONE,
                         query,
                         listFilter,
                         sessionHandler.getShopID()),

@@ -7,9 +7,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
     <android.support.v7.widget.AppCompatTextView
-        android:paddingTop="8dp"
-        android:paddingLeft="12dp"
-        android:paddingRight="12dp"
+        android:paddingTop="@dimen/margin_ms"
+        android:paddingLeft="@dimen/margin_smalls"
+        android:paddingRight="@dimen/margin_smalls"
         android:id="@+id/text_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -20,16 +20,16 @@
         android:id="@+id/text_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="8dp"
-        android:paddingLeft="12dp"
-        android:paddingRight="12dp"
-        android:paddingBottom="8dp"
+        android:paddingTop="@dimen/margin_ms"
+        android:paddingLeft="@dimen/margin_smalls"
+        android:paddingRight="@dimen/margin_smalls"
+        android:paddingBottom="@dimen/margin_ms"
         android:lineSpacingExtra="4dp"/>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/margin_ms"
         android:background="@color/grey_600"/>
 
     <android.support.v7.widget.LinearLayoutCompat
@@ -38,9 +38,9 @@
         android:orientation="horizontal">
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/text_previous"
-            android:paddingLeft="12dp"
-            android:paddingTop="12dp"
-            android:paddingBottom="12dp"
+            android:paddingLeft="@dimen/margin_smalls"
+            android:paddingTop="@dimen/margin_smalls"
+            android:paddingBottom="@dimen/margin_smalls"
             android:layout_width="@dimen/buttom_width_small"
             android:layout_height="wrap_content"
             android:gravity="left"
@@ -58,9 +58,9 @@
         </android.support.v7.widget.LinearLayoutCompat>
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/text_next"
-            android:paddingRight="12dp"
-            android:paddingTop="12dp"
-            android:paddingBottom="12dp"
+            android:paddingRight="@dimen/margin_smalls"
+            android:paddingTop="@dimen/margin_smalls"
+            android:paddingBottom="@dimen/margin_smalls"
             android:layout_width="@dimen/buttom_width_small"
             android:layout_height="wrap_content"
             android:clickable="true"
