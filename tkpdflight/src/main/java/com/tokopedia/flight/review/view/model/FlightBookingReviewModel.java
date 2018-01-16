@@ -313,7 +313,8 @@ public class FlightBookingReviewModel implements Parcelable{
         List<SimpleViewModel> simpleViewModels = new ArrayList<>();
 
         // add tanggal lahir
-        simpleViewModels.add(new SimpleViewModel(passengerBirthdate, BIRTHDAY_PREFIX));
+        if(passengerBirthdate != null && !passengerBirthdate.equals(""))
+            simpleViewModels.add(new SimpleViewModel(passengerBirthdate, BIRTHDAY_PREFIX));
 
         for (FlightBookingAmenityMetaViewModel flightBookingLuggageMetaViewModel : flightBookingLuggageMetaViewModels) {
             SimpleViewModel simpleViewModel = new SimpleViewModel();
