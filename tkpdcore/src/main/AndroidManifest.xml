@@ -385,17 +385,6 @@
                 android:name="forward.Kochava"
                 android:value="com.kochava.android.tracker.ReferralCapture" />
         </receiver>
-        <receiver
-            android:name="com.google.android.gms.gcm.GcmReceiver"
-            android:exported="true"
-            android:permission="com.google.android.c2dm.permission.SEND">
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-
-                <category android:name="com.tokopedia.tkpd" />
-            </intent-filter>
-        </receiver>
         <receiver android:name=".msisdn.IncomingSmsReceiver">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />

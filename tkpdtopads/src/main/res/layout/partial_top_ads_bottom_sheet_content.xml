@@ -40,7 +40,7 @@
                 android:textSize="14sp"/>
 
             <TextView
-                style="@style/TextView.Caption.BlackDisabled"
+                style="@style/TextView.Micro.BlackDisabled"
                 android:id="@+id/bt_selection_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

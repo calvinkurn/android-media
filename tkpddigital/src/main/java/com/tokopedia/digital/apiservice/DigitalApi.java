@@ -42,9 +42,6 @@ public interface DigitalApi {
     @GET(TkpdBaseURL.DigitalApi.PATH_PRODUCT)
     Observable<Response<TkpdDigitalResponse>> getProductList();
 
-    @GET(TkpdBaseURL.DigitalApi.PATH_BANNER)
-    Observable<Response<TkpdDigitalResponse>> getBanner(@QueryMap Map<String, String> params);
-
     @GET(TkpdBaseURL.DigitalApi.PATH_NUMBER_LIST)
     Observable<Response<TkpdDigitalResponse>> getNumberList(@QueryMap Map<String, String> params);
 

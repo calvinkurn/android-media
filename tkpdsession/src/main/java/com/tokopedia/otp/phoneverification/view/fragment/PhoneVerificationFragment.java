@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -31,12 +30,12 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.msisdn.IncomingSmsReceiver;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.util.CustomPhoneNumberUtil;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.otp.phoneverification.view.activity.ChangePhoneNumberActivity;
+import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.TokoCashWebViewActivity;
 import com.tokopedia.otp.phoneverification.view.listener.PhoneVerificationFragmentView;
 import com.tokopedia.otp.phoneverification.view.presenter.PhoneVerificationPresenter;
@@ -93,8 +92,20 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
     PhoneVerificationFragmentListener listener;
     private String phoneNumber;
 
+    private boolean isMandatory = false;
+
     public static PhoneVerificationFragment createInstance(PhoneVerificationFragmentListener listener) {
         PhoneVerificationFragment fragment = new PhoneVerificationFragment();
+        fragment.setPhoneVerificationListener(listener);
+        return fragment;
+    }
+
+
+    public static PhoneVerificationFragment createInstance(PhoneVerificationFragmentListener listener, boolean canSkip) {
+        PhoneVerificationFragment fragment = new PhoneVerificationFragment();
+        Bundle args = new Bundle();
+        args.putBoolean(PhoneVerificationActivationActivity.EXTRA_IS_MANDATORY, canSkip);
+        fragment.setArguments(args);
         fragment.setPhoneVerificationListener(listener);
         return fragment;
     }
@@ -108,9 +119,22 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
         return fragment;
     }
 
-    public PhoneVerificationFragment() {
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+
         this.smsReceiver = new IncomingSmsReceiver();
         this.smsReceiver.setListener(this);
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    protected void setupArguments(Bundle arguments) {
+        if (arguments!= null) {
+            if (arguments.containsKey(PhoneVerificationActivationActivity.EXTRA_IS_MANDATORY)) {
+                isMandatory = arguments.getBoolean(PhoneVerificationActivationActivity.EXTRA_IS_MANDATORY);
+            }
+            this.phoneNumber = arguments.getString(EXTRA_PARAM_PHONE_NUMBER);
+        }
     }
 
     public void setPhoneVerificationListener(PhoneVerificationFragmentListener listener) {
@@ -227,11 +251,6 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
     @Override
     protected void initialListener(Activity activity) {
 
-    }
-
-    @Override
-    protected void setupArguments(Bundle arguments) {
-        this.phoneNumber = arguments.getString(EXTRA_PARAM_PHONE_NUMBER);
     }
 
     @Override
@@ -362,6 +381,12 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
             }
         });
 
+        if (isMandatory) {
+            skipButton.setVisibility(View.INVISIBLE);
+        } else {
+            skipButton.setVisibility(View.VISIBLE);
+        }
+
         tokocashText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -382,6 +407,7 @@ public class PhoneVerificationFragment extends BasePresenterFragment<PhoneVerifi
 
     }
 
+    @SuppressWarnings("Range")
     @Override
     public void onSuccessRequestOtp(String status) {
         finishProgressDialog();

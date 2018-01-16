@@ -22,7 +22,7 @@ public class GetNewOrderPresenterImpl extends GetNewOrderPresenter {
 
     @Override
     public void getNewOrderAndCount() {
-        getNewOrderUseCase.execute(GetNewOrderWidgetUseCase.createRequestParams(PAGE, "", PER_PAGE, ""), new GetSubscriberNewOrder());
+        getNewOrderUseCase.executeSync(GetNewOrderWidgetUseCase.createRequestParams(PAGE, "", PER_PAGE, ""), new GetSubscriberNewOrder());
     }
 
     private class GetSubscriberNewOrder extends Subscriber<DataOrderDomainWidget> {

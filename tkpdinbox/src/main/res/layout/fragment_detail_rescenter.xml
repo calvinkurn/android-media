@@ -92,6 +92,13 @@
                 android:layout_marginBottom="@dimen/margin_small"
                 />
 
+            <com.tokopedia.inbox.rescenter.detailv2.view.customview.FreeReturnView
+                android:id="@+id/free_return_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_small"
+                />
+
             <com.tokopedia.inbox.rescenter.detailv2.view.customview.CancelComplaintView
                 android:id="@+id/cancel_complaint_view"
                 android:layout_width="match_parent"
@@ -99,7 +106,10 @@
                 android:layout_marginBottom="@dimen/margin_small"
                 />
 
-
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                />
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 

@@ -112,7 +112,9 @@ public class ProductPresenter extends SearchSectionFragmentPresenterImpl<Product
         requestParams.putAll(AuthUtil.generateParamsNetwork2(context, requestParams.getParameters()));
         requestParams.putString(BrowseApi.SOURCE, BrowseApi.DEFAULT_VALUE_SOURCE_DIRECTORY);
         requestParams.putString(BrowseApi.DEVICE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
-        requestParams.putString(BrowseApi.SC, getView().getDepartmentId());
+        if(isViewAttached()) {
+            requestParams.putString(BrowseApi.SC, getView().getDepartmentId());
+        }
         if (getView().getSelectedSort() != null) {
             requestParams.putAll(getView().getSelectedSort());
         }

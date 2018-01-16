@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="@dimen/verification_icon"
+            android:layout_height="@dimen/verification_icon"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/space_large_32"
+            android:contentDescription="@string/title_email"
+            android:src="@drawable/ic_verification_email" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/verification_for_security"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/new_margin_med"
+            android:textSize="@dimen/text_size_l_medium"
+            android:fontFamily="sans-serif"
+            android:textStyle="bold"
+            android:textColor="@color/black_70"
+            android:lineSpacingExtra="@dimen/line_spacing_6"
+            android:gravity="center_horizontal"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/new_margin_med"
+            android:layout_marginLeft="18.5dp"
+            android:layout_marginRight="18.5dp"
+            android:textSize="@dimen/text_size_medium"
+            android:fontFamily="sans-serif"
+            android:textStyle="normal"
+            android:textColor="@color/black_54"
+            android:lineSpacingExtra="@dimen/line_spacing_8"
+            android:gravity="center_horizontal"
+            tools:text="Untuk memastikan akun ini benar milik Anda, kami akan mengirimkan kode verifikasi melalui email ke farrah.nurul@gmail.com"
+            android:id="@+id/verification_instruction"
+            />
+
+        <TextView
+            android:id="@+id/send_button"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/button_height"
+            android:layout_marginTop="@dimen/new_margin_med"
+            android:layout_marginLeft="@dimen/space_slightly_very_large"
+            android:layout_marginRight="@dimen/space_slightly_very_large"
+            android:layout_marginBottom="@dimen/new_margin_med"
+            android:background="@drawable/green_button_rounded_unify"
+            android:fontFamily="sans-serif"
+            android:gravity="center"
+            android:text="@string/title_otp_email"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_s_medium"
+            android:textStyle="bold" />
+    </LinearLayout>
+</ScrollView>

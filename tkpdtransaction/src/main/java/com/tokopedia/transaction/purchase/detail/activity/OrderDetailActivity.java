@@ -25,6 +25,7 @@ import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.transaction.R;
@@ -38,6 +39,7 @@ import com.tokopedia.transaction.purchase.detail.fragment.CancelOrderFragment;
 import com.tokopedia.transaction.purchase.detail.fragment.CancelSearchFragment;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
 import com.tokopedia.transaction.purchase.detail.presenter.OrderDetailPresenterImpl;
+import com.tokopedia.transaction.purchase.receiver.TxListUIReceiver;
 
 import javax.inject.Inject;
 
@@ -308,12 +310,14 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void onOrderFinished(String message) {
         Toast.makeText(this, getString(R.string.success_finish_order_message), Toast.LENGTH_LONG).show();
+        TxListUIReceiver.sendBroadcastForceRefreshListData(this);
         finish();
     }
 
     @Override
     public void onOrderCancelled(String message) {
         Toast.makeText(this, getString(R.string.success_request_cancel_order), Toast.LENGTH_LONG).show();
+        TxListUIReceiver.sendBroadcastForceRefreshListData(this);
         finish();
     }
 
@@ -392,9 +396,12 @@ public class OrderDetailActivity extends TActivity
     }
 
     @Override
-    public void onViewComplaint(String resoId) {
-        Intent intent = InboxRouter.getDetailResCenterActivityIntent(this, resoId);
-        startActivity(intent);
+    public void onViewComplaint(OrderDetailData data) {
+        if (MainApplication.getAppContext() instanceof TransactionRouter) {
+            Intent intent = ((TransactionRouter) MainApplication.getAppContext())
+                    .getDetailResChatIntentBuyer(this, data.getResoId(), data.getShopName());
+            startActivity(intent);
+        }
     }
 
     @Override
@@ -448,6 +455,7 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void onConfirmFinish(String orderId, String orderStatus) {
         presenter.processFinish(this, orderId, orderStatus);
+        TxListUIReceiver.sendBroadcastForceRefreshListData(this);
     }
 
     @Override
@@ -469,6 +477,7 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void cancelSearch(String orderId, int reasonId, String notes) {
         presenter.cancelReplacement(this, orderId, reasonId, notes);
+        TxListUIReceiver.sendBroadcastForceRefreshListData(this);
     }
 
     @Override
