@@ -430,6 +430,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         super.onActivityResult(requestCode, resultCode, data);
         KeyboardHandler.DropKeyboard(getActivity(), getView());
         KeyboardHandler.hideSoftKeyboard(getActivity());
+        removeFocus();
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case REQUEST_CODE_AIRPORT_CLASSES:
@@ -460,6 +461,13 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         }else if(resultCode == Activity.RESULT_CANCELED && requestCode == REQUEST_CODE_LOGIN) {
             presenter.onLoginResultReceived();
         }
+    }
+
+    private void removeFocus() {
+        passengerTextInputView.clearFocus();
+        classTextInputView.clearFocus();
+        departureDateTextInputView.clearFocus();
+        returnDateTextInputView.clearFocus();
     }
 
     @SuppressWarnings("Range")
