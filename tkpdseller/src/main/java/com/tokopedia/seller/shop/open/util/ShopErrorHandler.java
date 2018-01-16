@@ -1,6 +1,7 @@
 package com.tokopedia.seller.shop.open.util;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.seller.shop.common.exception.ShopException;
@@ -27,8 +28,12 @@ public class ShopErrorHandler {
         }
         String additionalError = "";
         for (String additionalMessage: additionalMessages) {
-            additionalError += " - '";
-            additionalError += additionalMessage;
+            if (!TextUtils.isEmpty(additionalError)) {
+                additionalError += " - '";
+            }
+            if (!TextUtils.isEmpty(additionalMessage)) {
+                additionalError += additionalMessage;
+            }
             additionalError += "'";
         }
         return new String(errorMessage) + " :: " + additionalError;
