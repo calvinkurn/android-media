@@ -77,8 +77,8 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
         List<SimpleViewModel> filtersMap = new ArrayList<>();
         filtersMap.add(new SimpleViewModel("700,800", getView().getString(R.string.flight_order_status_success_label)));
         filtersMap.add(new SimpleViewModel("600", getView().getString(R.string.flight_order_status_failed_label)));
-        filtersMap.add(new SimpleViewModel("102", getView().getString(R.string.flight_order_status_waiting_for_payment_label)));
-        filtersMap.add(new SimpleViewModel("101,200,300", getView().getString(R.string.flight_order_status_in_progress_label)));
+        filtersMap.add(new SimpleViewModel("102,101", getView().getString(R.string.flight_order_status_waiting_for_payment_label)));
+        filtersMap.add(new SimpleViewModel("200,300", getView().getString(R.string.flight_order_status_in_progress_label)));
         filtersMap.add(new SimpleViewModel("650", getView().getString(R.string.flight_order_status_refund_label)));
 
         List<QuickFilterItem> filterItems = new ArrayList<>();
