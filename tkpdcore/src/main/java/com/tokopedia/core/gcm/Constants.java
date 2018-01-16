@@ -116,7 +116,7 @@ public interface Constants {
         String OFFICIAL_STORES_PROMO = "tokopedia://official-stores/promo/{slug}";
         String OFFICIAL_STORE_PROMO = "tokopedia://official-store/promo/{slug}";
         String OFFICIAL_STORES_PROMO_TERMS = "tokopedia://official-stores/promo-terms";
-        String PROMO_SALE = "tokopedia://sale/{slug}";
+        String PROMO_SALE = "tokopedia://sale/{slug}/";
         String PROMO_SALE_TERMS = "tokopedia://promo-sale/promo-terms";
         String WALLET_HOME = "tokopedia://wallet";
         String WALLET_ACTIVATION = "tokopedia://wallet/activation";
