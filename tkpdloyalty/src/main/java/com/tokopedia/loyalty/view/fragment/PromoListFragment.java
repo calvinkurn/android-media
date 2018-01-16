@@ -51,7 +51,8 @@ import rx.subscriptions.CompositeSubscription;
  * @author anggaprasetiyo on 03/01/18.
  */
 
-public class PromoListFragment extends BasePresenterFragment implements IPromoListView, PromoListAdapter.ActionListener, RefreshHandler.OnRefreshHandlerListener {
+public class PromoListFragment extends BasePresenterFragment implements IPromoListView,
+        PromoListAdapter.ActionListener, RefreshHandler.OnRefreshHandlerListener {
     private static final String ARG_EXTRA_PROMO_MENU_DATA = "ARG_EXTRA_PROMO_MENU_DATA";
 
     private static final String EXTRA_STATE_PROMO_MENU_DATA = "EXTRA_STATE_PROMO_MENU_DATA";

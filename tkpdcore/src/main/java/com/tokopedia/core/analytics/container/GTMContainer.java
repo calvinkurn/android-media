@@ -522,7 +522,7 @@ public class GTMContainer implements IGTMContainer {
         GTMDataLayer.pushGeneral(
                 context,
                 DataLayer.mapOf(
-                        "event", "promoview",
+                        "event", "promoView",
                         "eventCategory", "promo microsite - promo list",
                         "eventAction", "impression on promo",
                         "eventLabel", promoName,
@@ -545,7 +545,7 @@ public class GTMContainer implements IGTMContainer {
         GTMDataLayer.pushGeneral(
                 context,
                 DataLayer.mapOf(
-                        "event", "promoview",
+                        "event", "promoView",
                         "eventCategory", "promo microsite - promo list",
                         "eventAction", "impression on promo",
                         "eventLabel", promoName,

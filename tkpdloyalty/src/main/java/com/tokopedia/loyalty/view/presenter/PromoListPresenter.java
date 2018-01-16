@@ -1,7 +1,7 @@
 package com.tokopedia.loyalty.view.presenter;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.tokopedia.core.analytics.container.GTMContainer;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -89,11 +89,7 @@ public class PromoListPresenter implements IPromoListPresenter {
                     "promo_code", promoData.isMultiplePromo() ? promoData.getPromoCodeList() : promoData.getPromoCode())
             );
         }
-
-
-        GTMContainer.newInstance(view.getActivityContext()).eventImpressionPromoList(
-                dataLayerSinglePromoCodeList, ""
-        );
+        TrackingUtils.eventImpressionPromoList(dataLayerSinglePromoCodeList, "");
     }
 
     public void sendClickItemPromoListTrackingData(PromoData promoData, int position, String categoryName) {
@@ -106,14 +102,12 @@ public class PromoListPresenter implements IPromoListPresenter {
                 "promo_id", "0",
                 "promo_code", promoData.isMultiplePromo() ? promoData.getPromoCodeList() : promoData.getPromoCode())
         );
-        GTMContainer.newInstance(view.getActivityContext()).eventClickPromoListItem(
-                dataLayerSinglePromoCodeList, promoData.getTitle()
-        );
+        TrackingUtils.eventClickPromoListItem(dataLayerSinglePromoCodeList, promoData.getTitle());
     }
 
 
     @Override
-    public void processGetPromoListLoadMore(String subCategories, String categoryName) {
+    public void processGetPromoListLoadMore(String subCategories, final String categoryName) {
         view.disableSwipeRefresh();
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put("categories", subCategories);
@@ -132,6 +126,7 @@ public class PromoListPresenter implements IPromoListPresenter {
 
             @Override
             public void onNext(List<PromoData> promoData) {
+                sendImpressionTrackingData(promoData, categoryName);
                 if (promoData.size() > 0) {
                     if (promoData.size() == 10) {
                         page++;
