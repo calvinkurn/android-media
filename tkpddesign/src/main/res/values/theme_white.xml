@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="Theme.White" parent="Base.Theme">
+        <item name="toolbarTheme">@style/Toolbar.White</item>
+        <item name="tabThemeWhite">@style/TabBar.White</item>
+        <item name="titleTextAppearance">@style/TitleTextAppearance.White</item>
+    </style>
+
+    <style name="Toolbar.White" parent="Base.Toolbar.Theme">
+        <item name="android:background">@android:color/white</item>
+        <item name="actionModeBackground">@android:color/white</item>
+        <item name="android:actionModeBackground">@android:color/white</item>
+        <item name="android:textColorPrimary">@color/font_black_primary_70</item>
+        <item name="android:actionMenuTextColor">@color/font_black_primary_70</item>
+        <item name="android:textColorSecondary">@color/font_black_primary_70</item>
+    </style>
+
+    <style name="TabBar.White" parent="BaseTabBar">
+        <item name="android:textSize">@dimen/font_small</item>
+        <item name="android:background">@android:color/white</item>
+        <item name="tabTextColor">@color/grey_title</item>
+        <item name="tabIndicatorColor">@color/tkpd_main_green</item>
+        <item name="tabSelectedTextColor">@color/tkpd_main_green</item>
+    </style>
+
+    <style name="TitlePageWhiteIndicator">
+        <item name="android:textSize">@dimen/font_micro</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+    <style name="TitleTextAppearance.White">
+        <item name="android:textColor">@color/font_black_primary_70</item>
+    </style>
+</resources>

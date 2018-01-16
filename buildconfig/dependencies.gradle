@@ -8,6 +8,8 @@ ext {
     glideVersion = '3.7.0'
     permissionDispatcherVersion = '2.2.0'
     deeplinkDispatchVersion = '3.0.0-rc1'
+    tkpdUseCaseVersion = '1.+'
+    tkpdAbstractionVersion = '1.+'
     tkpdCoreVersion = '1.+'
     tkpdInboxVersion = '1.+'
     tkpdSessionVersion = '1.+'
@@ -23,9 +25,11 @@ ext {
     tkpdRideVersion = '1.+'
     tkpdLoyaltyVersion = '1.+'
     tkpdReactNativeVersion = '1.+'
+    tkpdFlightVersion = '1.+'
     compileSdkVersion = 26
     minSdkVersion = 16
     targetSdkVersion = 26
+    buildToolsVersion = "25.0.0"
     espressoVersion = "2.2.2"
     runnerVersion = "0.5"
     rulesVersion = "0.5"
@@ -171,6 +175,8 @@ ext {
     ]
 
     tkpdDependencies = [
+            usecase    : "com.tokopedia.usecase:usecase:${tkpdUseCaseVersion}",
+            abstraction: "com.tokopedia.abstraction:abstraction:${tkpdAbstractionVersion}",
             core       : "com.tokopedia.core:core:${tkpdCoreVersion}",
             inbox      : "com.tokopedia.inbox:inbox:${tkpdInboxVersion}",
             session    : "com.tokopedia.session:session:${tkpdSessionVersion}",
@@ -185,7 +191,9 @@ ext {
             feed       : "com.tokopedia.feed:feed:${tkpdFeedVersion}",
             ride       : "com.tokopedia.ride:ride:${tkpdRideVersion}",
             reactNative: "com.tokopedia.tkpdreactnative:reactnative:${tkpdReactNativeVersion}",
-            loyalty    : "com.tokopedia.loyalty:loyalty:${tkpdLoyaltyVersion}"
+            loyalty    : "com.tokopedia.loyalty:loyalty:${tkpdLoyaltyVersion}",
+            flight     : "com.tokopedia.flight:flight:${tkpdFlightVersion}",
+            flightNoOp : "com.tokopedia.flight:flight-no-op:${tkpdFlightVersion}",
     ]
 
     tkpdLibDependencies = [

@@ -3,4 +3,6 @@
     <item android:color="@color/colorAccent" android:state_selected="true" />
     <item android:color="@color/grey_500" android:state_focused="true" />
     <item android:color="#FFCCCCCC" android:state_focused="false" />
+    <item android:color="@color/red_500" android:state_active="true" />
+
 </selector>

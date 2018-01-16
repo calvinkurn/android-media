@@ -54,7 +54,7 @@ import com.tokopedia.core.home.GetUserInfoListener;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.onboarding.NewOnboardingActivity;
 import com.tokopedia.core.onboarding.OnboardingActivity;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.rxjava.RxUtils;
@@ -497,7 +497,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             case R.id.action_cart:
                 if (!SessionHandler.isV4Login(getBaseContext())) {
                     UnifyTracking.eventClickCart();
-                    Intent intent = SessionRouter.getLoginActivityIntent(getApplicationContext());
+                    Intent intent = OldSessionRouter.getLoginActivityIntent(getApplicationContext());
                     intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.MOVE_TO_CART_TYPE);
                     intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
                     startActivity(intent);

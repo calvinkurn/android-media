@@ -5,6 +5,7 @@ package com.tokopedia.core.gcm;
  * this class contain all string used for applink/PN case
  */
 
+@Deprecated
 public interface Constants {
     String ARG_NOTIFICATION_CODE = "tkp_code";
     String ARG_NOTIFICATION_TITLE = "title";

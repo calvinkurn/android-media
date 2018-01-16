@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="Theme.Green" parent="Base.Theme">
+        <item name="toolbarTheme">@style/Toolbar.Green</item>
+        <item name="tabTheme">@style/TabBar.Green</item>
+        <item name="titleTextAppearance">@style/TitleTextAppearance.Green</item>
+    </style>
+
+    <style name="Toolbar.Green" parent="Base.Toolbar.Theme">
+        <item name="android:background">@color/tkpd_main_green</item>
+        <item name="actionModeBackground">@color/tkpd_main_green</item>
+        <item name="android:actionModeBackground">@color/tkpd_main_green</item>
+        <item name="android:textColorPrimary">@color/abc_primary_text_material_dark</item>
+        <item name="android:actionMenuTextColor">@color/abc_primary_text_material_dark</item>
+        <item name="android:textColorSecondary">@color/abc_primary_text_material_dark</item>
+    </style>
+
+    <style name="TabBar.Green" parent="BaseTabBar">
+        <item name="android:background">@color/tkpd_main_green</item>
+        <item name="tabTextColor">@android:color/white</item>
+        <item name="tabIndicatorColor">@color/white</item>
+        <item name="tabSelectedTextColor">@color/white</item>
+    </style>
+
+    <style name="TitleTextAppearance.Green">
+
+    </style>
+</resources>

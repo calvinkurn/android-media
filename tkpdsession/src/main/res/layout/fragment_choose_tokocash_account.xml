@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:background="@color/white"
+    >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/padding_activity"
+        android:layout_marginRight="@dimen/padding_activity"
+        android:layout_marginStart="@dimen/padding_activity"
+        android:layout_marginTop="@dimen/padding_activity"
+        android:fontFamily="sans-serif"
+        android:text="@string/choose_account"
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/text_size_xlarge"
+        android:textStyle="bold"
+        />
+
+    <TextView
+        android:id="@+id/message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="54dp"
+        android:layout_marginEnd="54dp"
+        android:layout_marginLeft="@dimen/padding_activity"
+        android:layout_marginStart="@dimen/padding_activity"
+        android:layout_marginTop="@dimen/margin_small"
+        android:fontFamily="sans-serif"
+        android:lineSpacingExtra="5sp"
+        android:textColor="@color/black_38"
+        android:textSize="@dimen/text_size_12"
+        android:textStyle="normal"
+        tools:text="Anda memiliki 4 akun dengan nomor ponsel 0856-1552-0031. Pilih salah satu akun untuk masuk."
+        />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list_account"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/margin_sm"
+        android:layout_weight="1"/>
+
+</LinearLayout>
