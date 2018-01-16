@@ -71,6 +71,7 @@ import javax.inject.Inject;
 public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel, FilterSearchAdapterTypeFactory> implements FlightSearchView,
         FilterSearchAdapterTypeFactory.OnFlightSearchListener{
 
+    private static final int EMPTY_MARGIN = 0;
     public static final String TAG = FlightSearchFragment.class.getSimpleName();
     public static final int MAX_PROGRESS = 100;
     protected static final String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
@@ -454,13 +455,26 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
             if (progress < MAX_PROGRESS) {
                 getAdapter().showLoading();
             } else {
+                RecyclerView recyclerView = getRecyclerView(getView());
+                recyclerView.setPadding(
+                        EMPTY_MARGIN,
+                        EMPTY_MARGIN,
+                        EMPTY_MARGIN,
+                        EMPTY_MARGIN
+                );
                 getAdapter().addElement(getEmptyDataViewModel());
             }
         } else {
+            float scale = getResources().getDisplayMetrics().density;
+            RecyclerView recyclerView = getRecyclerView(getView());
+            recyclerView.setPadding(
+                    EMPTY_MARGIN,
+                    EMPTY_MARGIN,
+                    EMPTY_MARGIN,
+                    (int) (scale * 60 + 0.5f)
+            );
             getAdapter().addElement(flightSearchViewModelList);
         }
-
-
     }
 
     @Override
