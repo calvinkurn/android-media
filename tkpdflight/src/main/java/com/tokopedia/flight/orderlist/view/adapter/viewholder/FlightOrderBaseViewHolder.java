@@ -151,6 +151,8 @@ public abstract class FlightOrderBaseViewHolder<T extends Visitable> extends Abs
     protected void renderDepartureSchedule(List<FlightOrderJourney> orderJourney) {
         FlightSimpleAdapter departureSchedules = new FlightSimpleAdapter();
         departureSchedules.setDescriptionTextColor(itemView.getContext().getResources().getColor(R.color.font_black_secondary_54));
+        departureSchedules.setTitleHalfView(false);
+        departureSchedules.setContentAllignmentLeft(true);
         LinearLayoutManager flightSimpleAdapterLayoutManager
                 = new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.VERTICAL, false);
         rvDepartureSchedule.setLayoutManager(flightSimpleAdapterLayoutManager);

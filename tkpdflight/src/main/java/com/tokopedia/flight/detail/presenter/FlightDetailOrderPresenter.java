@@ -108,10 +108,9 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
             item += newLine;
             ArrayList<String> passengers = new ArrayList<>();
             for (FlightOrderPassengerViewModel flightOrderPassengerViewModel : flightOrder.getPassengerViewModels()) {
-                passengers.add("Passenger " + flightOrderPassengerViewModel.getPassengerFirstName() + " " + flightOrderPassengerViewModel.getPassengerLastName() + "[ ]");
+                passengers.add(flightOrderPassengerViewModel.getPassengerFirstName() + " " + flightOrderPassengerViewModel.getPassengerLastName());
             }
-            item += TextUtils.join(",", passengers);
-            item += newLine;
+            item += TextUtils.join(newLine, passengers);
             result.append(item);
         }
         return result.toString();
@@ -218,9 +217,9 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         List<SimpleViewModel> simpleViewModels = new ArrayList<>();
         for (FlightBookingAmenityViewModel flightBookingAmenityViewModel : amenities) {
             SimpleViewModel simpleViewModel = new SimpleViewModel();
-            simpleViewModel.setLabel(generateLabelPassenger(String.valueOf(flightBookingAmenityViewModel.getAmenityType()), flightBookingAmenityViewModel.getDepartureId(),
+            simpleViewModel.setDescription(generateLabelPassenger(String.valueOf(flightBookingAmenityViewModel.getAmenityType()), flightBookingAmenityViewModel.getDepartureId(),
                     flightBookingAmenityViewModel.getArrivalId()));
-            simpleViewModel.setDescription(flightBookingAmenityViewModel.getTitle());
+            simpleViewModel.setLabel(flightBookingAmenityViewModel.getTitle());
             simpleViewModels.add(simpleViewModel);
         }
         return simpleViewModels;

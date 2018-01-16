@@ -396,6 +396,8 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         bannerView.setPromoList(promoUrls);
         bannerView.buildView();
         bannerView.setPagerAdapter(new FlightBannerPagerAdapter(promoUrls, bannerView.getOnPromoClickListener()));
+        KeyboardHandler.hideSoftKeyboard(getActivity());
+        KeyboardHandler.DropKeyboard(getActivity(), getView());
     }
 
     @Override
@@ -426,6 +428,8 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        KeyboardHandler.DropKeyboard(getActivity(), getView());
+        KeyboardHandler.hideSoftKeyboard(getActivity());
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case REQUEST_CODE_AIRPORT_CLASSES:
@@ -456,8 +460,6 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         }else if(resultCode == Activity.RESULT_CANCELED && requestCode == REQUEST_CODE_LOGIN) {
             presenter.onLoginResultReceived();
         }
-        KeyboardHandler.DropKeyboard(getActivity(), getView());
-        KeyboardHandler.hideSoftKeyboard(getActivity());
     }
 
     @SuppressWarnings("Range")

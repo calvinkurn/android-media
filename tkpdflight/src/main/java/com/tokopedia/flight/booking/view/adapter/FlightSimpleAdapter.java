@@ -26,8 +26,8 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
     private boolean isClickable;
     private boolean isTitleBold;
     private boolean isTitleOnly;
-    private boolean isContentAllignmentRight;
-    private boolean showColon;
+    private boolean isTitleHalfView;
+    private boolean isContentAllignmentLeft;
     private OnAdapterInteractionListener interactionListener;
 
     @ColorInt
@@ -39,8 +39,8 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
         isClickable = false;
         isTitleBold = false;
         isTitleOnly = false;
-        isContentAllignmentRight = false;
-        showColon = false;
+        isContentAllignmentLeft = false;
+        isTitleHalfView = true;
     }
 
     @Override
@@ -85,16 +85,16 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
 
     public void setTitleOnly(boolean isTitleOnly) { this.isTitleOnly = isTitleOnly; }
 
+    public void setTitleHalfView(boolean titleHalfView) {
+        isTitleHalfView = titleHalfView;
+    }
+
     public void setInteractionListener(OnAdapterInteractionListener interactionListener) {
         this.interactionListener = interactionListener;
     }
 
-    public void setContentAllignmentRight(boolean contentAllignmentRight) {
-        isContentAllignmentRight = contentAllignmentRight;
-    }
-
-    public void setShowColon(boolean showColon) {
-        this.showColon = showColon;
+    public void setContentAllignmentLeft(boolean contentAllignmentLeft) {
+        isContentAllignmentLeft = contentAllignmentLeft;
     }
 
     public interface OnAdapterInteractionListener {
@@ -105,7 +105,6 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
         private TextView titleTextView;
         private TextView contentTextView;
         private ImageView arrowImageView;
-        private TextView colonTextView;
         private LinearLayout containerLinearLayout;
 
         public ViewHolder(View itemView) {
@@ -114,10 +113,11 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
             contentTextView = (TextView) itemView.findViewById(R.id.tv_content);
             arrowImageView = (ImageView) itemView.findViewById(R.id.iv_arrow);
             containerLinearLayout = (LinearLayout) itemView.findViewById(R.id.container);
-            colonTextView = itemView.findViewById(R.id.text_colon);
         }
 
         public void bind(final SimpleViewModel viewModel) {
+            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) titleTextView.getLayoutParams();
+
             titleTextView.setText(viewModel.getLabel());
             contentTextView.setText(viewModel.getDescription());
             contentTextView.setVisibility(isTitleOnly ? View.GONE : View.VISIBLE);
@@ -132,11 +132,19 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
                 titleTextView.setTypeface(Typeface.DEFAULT);
             }
 
-            if(showColon) {
-                colonTextView.setVisibility(View.VISIBLE);
+            if (isTitleHalfView) {
+                layoutParams.width = 0;
+                layoutParams.weight = 1;
+                titleTextView.setLayoutParams(layoutParams);
+            } else {
+                layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+                layoutParams.weight = 0;
+                layoutParams.setMargins(0,0,10,0);
+                titleTextView.setLayoutParams(layoutParams);
+                titleTextView.setMinWidth(150);
             }
 
-            if (isContentAllignmentRight) {
+            if (isContentAllignmentLeft) {
                 contentTextView.setGravity(View.TEXT_ALIGNMENT_TEXT_START);
             }
 
