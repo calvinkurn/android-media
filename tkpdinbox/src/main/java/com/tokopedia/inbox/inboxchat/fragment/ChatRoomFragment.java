@@ -508,7 +508,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     @Override
     public void scrollToBottom() {
-        layoutManager.scrollToPosition(adapter.getList().size() - 1);
+        recyclerView.scrollToPosition(adapter.getItemCount() - 1);
     }
 
     @Override

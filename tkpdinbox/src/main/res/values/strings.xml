@@ -269,7 +269,7 @@ yang ditemukan</string>
     <string name="delete_chat_template">"Hapus template?"</string>
     <string name="forever_deleted_template">"Template akan terhapus selamanya"</string>
     <string name="minimal_char_template">"Template pesan minimal 5 karakter"</string>
-    <string name="maximal_char_template">"Template pesan minimal %1$d karakter"</string>
+    <string name="maximal_char_template">"Template pesan maksimal %1$d karakter"</string>
 
     <string name="title_info_list_template">"Kelola Template Pesan"</string>
     <string name="body_info_list_template">"Ubah dengan tekan tombol edit, atau atur urutan dengan tahan dan geser tombol drag."</string>
