@@ -32,6 +32,8 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
@@ -87,6 +89,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         implements ChatRoomContract.View, InboxMessageConstant, InboxChatConstant
         , WebSocketInterface {
 
+    private static final String ENABLE_TOPCHAT = "topchat_template";
     @Inject
     ChatRoomPresenter presenter;
 
@@ -121,6 +124,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
     private View notifier;
     private LinearLayoutManager templateLayoutManager;
 
+    private RemoteConfig remoteConfig;
+
     public static ChatRoomFragment createInstance(Bundle extras) {
         ChatRoomFragment fragment = new ChatRoomFragment();
         fragment.setArguments(extras);
@@ -151,6 +156,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         presenter.attachView(this);
         prepareView();
         initListener();
+        remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
         return rootView;
     }
 
@@ -167,6 +173,10 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     .PARAM_CUSTOM_MESSAGE, "");
             replyColumn.setText(customMessage);
         }
+    }
+
+    public boolean isAllowedTemplate(){
+        return (remoteConfig.getBoolean(ENABLE_TOPCHAT));
     }
 
 

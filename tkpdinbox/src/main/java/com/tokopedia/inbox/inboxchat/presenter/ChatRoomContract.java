@@ -105,6 +105,8 @@ public class ChatRoomContract {
         void disableAction();
 
         void onErrorInitMessage(String s);
+
+        boolean isAllowedTemplate();
     }
 
     interface Presenter extends CustomerPresenter<View>{

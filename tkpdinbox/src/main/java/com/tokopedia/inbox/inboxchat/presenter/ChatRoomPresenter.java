@@ -477,11 +477,11 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                 if(getTemplateViewModel.isEnabled()){
                     List<Visitable> temp = getTemplateViewModel.getListTemplate();
                     if(temp == null) temp = new ArrayList<>();
-                    temp.add(new TemplateChatModel(false));
+                    if(getView().isAllowedTemplate()) temp.add(new TemplateChatModel(false));
                     getView().setTemplate(temp);
                 }else {
                     List<Visitable> temp = new ArrayList<>();
-                    temp.add(new TemplateChatModel(false));
+                    if(getView().isAllowedTemplate()) temp.add(new TemplateChatModel(false));
                     getView().setTemplate(temp);
                 }
             }
