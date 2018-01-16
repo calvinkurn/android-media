@@ -243,7 +243,7 @@
     <string name="flight_label_transaction_date">Tanggal Transaksi</string>
     <string name="flight_label_refund_time">Waktu Pengajuan Refund</string>
     <string name="flight_label_refund_status">Status Refund</string>
-    <string name="flight_label_order_id_detail">Invoice ID :</string>
+    <string name="flight_label_order_id_detail">Order ID :</string>
     <string name="flight_label_eticket">E-TICKET</string>
     <string name="flight_label_cancel_ticket">Batalkan Tiket</string>
     <string name="flight_label_reschedule_ticket">Atur Ulang Jadwal</string>
