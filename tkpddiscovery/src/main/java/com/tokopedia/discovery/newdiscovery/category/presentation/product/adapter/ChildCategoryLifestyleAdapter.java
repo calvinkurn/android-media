@@ -68,9 +68,9 @@ public class ChildCategoryLifestyleAdapter extends RecyclerView.Adapter<ChildCat
                 list.add(
                         DataLayer.mapOf(
                                 "id", model.getCategoryId(),
-                                "name", String.format("category %s - subcategory banner", model.getCategoryName()),
+                                "name", String.format("category %s - subcategory banner", headerName),
                                 "position", String.valueOf(position + 1),
-                                "creative", headerName
+                                "creative", model.getCategoryName()
                         )
                 );
                 TrackingUtils.eventCategoryLifestyleClick(model.getCategoryUrl(), list);
