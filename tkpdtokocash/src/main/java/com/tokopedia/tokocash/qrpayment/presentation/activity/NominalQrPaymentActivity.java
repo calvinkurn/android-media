@@ -17,6 +17,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.design.text.watcher.NumberTextWatcher;
 import com.tokopedia.design.utils.ConverterUtils;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
 import com.tokopedia.tokocash.di.TokoCashComponent;
@@ -126,11 +127,12 @@ public class NominalQrPaymentActivity extends TActivity implements QrPaymentCont
 
     @Override
     public RequestParams getRequestParams() {
+        String valueNominal = CurrencyFormatHelper.removeCurrencyPrefix(nominalValue.getText().toString());
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(PostQrPaymentUseCase.IDENTIFIER, getIntent().getStringExtra(IDENTIFIER));
         requestParams.putString(PostQrPaymentUseCase.NOTE, notesValue.getText().toString().equals("") ?
                 getString(R.string.default_notes_payment) : notesValue.getText().toString());
-        requestParams.putLong(PostQrPaymentUseCase.AMOUNT, Long.parseLong(nominalValue.getText().toString()));
+        requestParams.putLong(PostQrPaymentUseCase.AMOUNT, Long.parseLong(valueNominal));
         return requestParams;
     }
 
