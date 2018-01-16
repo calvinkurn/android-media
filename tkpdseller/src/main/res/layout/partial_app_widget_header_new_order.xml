@@ -16,7 +16,7 @@
         android:src="@drawable/ic_order_widget" />
 
     <TextView
-        style="@style/TextView.Body2.WhitePrimary"
+        style="@style/TextView.Small.WhitePrimary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/app_widget_title_new_order"/>

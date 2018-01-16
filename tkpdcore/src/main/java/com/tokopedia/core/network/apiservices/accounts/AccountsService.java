@@ -26,6 +26,7 @@ public class AccountsService {
     public static final String AUTH_KEY = "AUTH_KEY";
     public static final String WEB_SERVICE = "WEB_SERVICE";
     public static final String USING_HMAC = "USING_HMAC";
+    public static final String IS_BASIC = "IS_BASIC";
     public static final String USING_BOTH_AUTHORIZATION = "USING_BOTH_AUTHORIZATION";
 
 
@@ -36,6 +37,7 @@ public class AccountsService {
 
         String authKey = bundle.getString(AUTH_KEY, "");
         String webService = bundle.getString(WEB_SERVICE, ACCOUNTS);
+        boolean isBasic = bundle.getBoolean(IS_BASIC, false);
         boolean isUsingHMAC = bundle.getBoolean(USING_HMAC, false);
         boolean isUsingBothAuthorization = bundle.getBoolean(USING_BOTH_AUTHORIZATION, false);
 

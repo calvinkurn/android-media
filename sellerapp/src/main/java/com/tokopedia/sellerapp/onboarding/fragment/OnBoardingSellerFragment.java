@@ -141,11 +141,7 @@ public class OnBoardingSellerFragment extends OnBoardingFragment {
                 Intent intent;
                 UnifyTracking.eventClickCreateShopOnBoardingSellerApp();
                 if (SessionHandler.isMsisdnVerified()) {
-                    intent = SellerRouter.getAcitivityShopCreateEdit(getActivity());
-                    intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
-                            SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
-                    intent.putExtra(SellerRouter.ShopSettingConstant.ON_BACK,
-                            SellerRouter.ShopSettingConstant.LOG_OUT);
+                    intent = SellerRouter.getActivityShopCreateEdit(getContext());
                     startActivity(intent);
                     getActivity().finish();
                 } else if (MainApplication.getAppContext() instanceof SellerModuleRouter){
@@ -187,11 +183,7 @@ public class OnBoardingSellerFragment extends OnBoardingFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_ACTIVATE_PHONE_SELLER) {
-            Intent intent = SellerRouter.getAcitivityShopCreateEdit(getActivity());
-            intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
-                    SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
-            intent.putExtra(SellerRouter.ShopSettingConstant.ON_BACK,
-                    SellerRouter.ShopSettingConstant.LOG_OUT);
+            Intent intent = SellerRouter.getActivityShopCreateEdit(getActivity());
             startActivity(intent);
             getActivity().finish();
         }

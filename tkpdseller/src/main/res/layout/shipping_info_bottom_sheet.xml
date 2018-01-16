@@ -2,22 +2,23 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/padding_small">
+    android:padding="@dimen/margin_med"
+    android:divider="@drawable/bg_line_separator"
+    android:showDividers="middle">
 
     <TextView
         android:id="@+id/courier_name_service"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:textSize="@dimen/font_medium"
+        style="@style/TextView.Title"
         android:layout_marginBottom="@dimen/padding_small"/>
 
     <TextView
         android:id="@+id/courier_information"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_small"
         android:layout_marginBottom="@dimen/padding_small"
-        android:textSize="@dimen/font_medium" />
+        style="@style/TextView.Small" />
 
 </LinearLayout>

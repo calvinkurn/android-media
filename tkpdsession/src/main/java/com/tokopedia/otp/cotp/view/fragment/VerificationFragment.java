@@ -71,6 +71,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
     private static final int COUNTDOWN_LENGTH = 90;
     private static final int INTERVAL = 1000;
+    private static final int MAX_OTP_LENGTH = 6;
 
     private static final String CACHE_OTP = "CACHE_OTP";
     private static final String HAS_TIMER = "has_timer";
@@ -251,7 +252,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     }
 
     private void prepareView() {
-        if (!cacheHandler.isExpired() && cacheHandler.getBoolean(HAS_TIMER, false)) {
+        if (!isCountdownFinished()) {
             startTimer();
         } else {
             setLimitReachedCountdownText();
@@ -271,7 +272,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (inputOtp.getText().length() == 6) {
+                if (inputOtp.getText().length() == MAX_OTP_LENGTH) {
                     enableVerifyButton();
                 } else {
                     disableVerifyButton();
@@ -283,7 +284,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE
-                        && inputOtp.length() == 6) {
+                        && inputOtp.length() == MAX_OTP_LENGTH) {
                     presenter.verifyOtp(verificationPassModel, inputOtp.getText().toString());
                     return true;
                 }
@@ -403,7 +404,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     }
 
     private void startTimer() {
-        if (cacheHandler.isExpired() || !cacheHandler.getBoolean(HAS_TIMER, false)) {
+        if (isCountdownFinished()) {
             cacheHandler.putBoolean(HAS_TIMER, true);
             cacheHandler.setExpire(COUNTDOWN_LENGTH);
             cacheHandler.applyEditor();
@@ -451,6 +452,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
             useOtherMethod.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    dropKeyboard();
                     goToOtherVerificationMethod();
                 }
             });
@@ -489,7 +491,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         noCodeText.setVisibility(View.GONE);
 
         countdownText.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_38));
-
+        countdownText.setEnabled(false);
         String text = String.format("%s <b> %s %s</b> %s",
                 getString(R.string.please_wait_in),
                 countdown,

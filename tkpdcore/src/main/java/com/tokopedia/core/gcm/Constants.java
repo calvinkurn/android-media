@@ -5,8 +5,8 @@ package com.tokopedia.core.gcm;
  * this class contain all string used for applink/PN case
  */
 
+@Deprecated
 public interface Constants {
-    String FIREBASE_PROJECT_ID = "673352445777";
     String ARG_NOTIFICATION_CODE = "tkp_code";
     String ARG_NOTIFICATION_TITLE = "title";
     String ARG_NOTIFICATION_DESCRIPTION = "desc";
@@ -123,6 +123,7 @@ public interface Constants {
         String BROWSER = "tokopedia://browser";
         String REGISTER = "tokopedia://registration";
         String FAVORITE = "tokopedia://home/favorite";
+        String KOLCOMMENT = "tokopedia://kolcomment/{id}";
 
         interface SellerApp{
             String PRODUCT_ADD = "sellerapp://product/add";

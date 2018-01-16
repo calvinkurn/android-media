@@ -18,8 +18,8 @@ import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextPaint;
+import android.text.TextUtils;
 import android.text.style.ClickableSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,12 +45,12 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.otp.securityquestion.data.model.securityquestion.QuestionViewModel;
-import com.tokopedia.otp.securityquestion.view.activity.ChangePhoneNumberRequestActivity;
 import com.tokopedia.otp.securityquestion.view.activity.SecurityQuestionActivity;
 import com.tokopedia.otp.securityquestion.view.listener.SecurityQuestion;
 import com.tokopedia.otp.securityquestion.view.presenter.SecurityQuestionPresenter;
 import com.tokopedia.otp.securityquestion.view.viewmodel.SecurityQuestionViewModel;
 import com.tokopedia.session.R;
+import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberRequestActivity;
 import com.tokopedia.session.data.viewmodel.SecurityDomain;
 
 import java.util.concurrent.TimeUnit;
@@ -248,7 +248,7 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
             @Override
             public void onClick(View v) {
 
-                presenter.requestOTPWithPhoneCall();
+                presenter.requestOTPWithPhoneCall(securityQuestionViewModel.getPhone());
 
             }
         });
@@ -376,12 +376,12 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
         vSendOtpCall.setVisibility(View.VISIBLE);
         presenter.checkTrueCaller(getActivity());
         if (isAutoRequestOTP()) {
-            presenter.requestOTPWithSMS();
+            presenter.requestOTPWithSMS(securityQuestionViewModel.getPhone());
         }
         vSendOtp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.requestOTPWithSMS();
+                presenter.requestOTPWithSMS(securityQuestionViewModel.getPhone());
             }
         });
     }
@@ -448,6 +448,9 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessRequestOTP(String messageStatus) {
+        if (TextUtils.isEmpty(messageStatus)) {
+            messageStatus = getString(R.string.success_request_otp);
+        }
         startTimer();
         NetworkErrorHelper.showSnackbar(getActivity(), messageStatus);
     }
@@ -535,8 +538,6 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessValidateOtp() {
-        Log.d("NISNISLogin", "SQFragment " + sessionHandler.isV4Login());
-
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
     }

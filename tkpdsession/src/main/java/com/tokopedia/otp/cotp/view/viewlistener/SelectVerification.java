@@ -13,7 +13,7 @@ public interface SelectVerification {
         void onMethodSelected(int type);
     }
 
-    interface Presenter extends CustomerPresenter<SelectVerification.View> {
+    interface Presenter extends CustomerPresenter<View> {
 
     }
 }

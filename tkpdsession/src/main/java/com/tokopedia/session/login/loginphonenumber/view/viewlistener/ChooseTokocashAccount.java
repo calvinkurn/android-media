@@ -3,6 +3,7 @@ package com.tokopedia.session.login.loginphonenumber.view.viewlistener;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.otp.tokocashotp.view.viewmodel.LoginTokoCashViewModel;
+import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
 import com.tokopedia.session.login.loginphonenumber.view.viewmodel.AccountTokocash;
 
 /**
@@ -22,7 +23,7 @@ public interface ChooseTokocashAccount {
 
         void onErrorLoginTokoCash(String errorMessage);
 
-        void goToSecurityQuestion(AccountTokocash email, LoginTokoCashViewModel makeLoginDomain);
+        void goToSecurityQuestion(AccountTokocash email, LoginTokoCashViewModel loginTokoCashViewModel);
     }
 
     interface Presenter extends CustomerPresenter<ChooseTokocashAccount.View> {

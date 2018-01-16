@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
@@ -118,7 +119,7 @@ public class VerificationActivity extends TActivity implements HasComponent {
 
     @Override
     public String getScreenName() {
-        return AppScreen.SCREEN_LOGIN_PHONE_NUMBER;
+        return AppScreen.SCREEN_COTP_DEFAULT;
     }
 
     @Override
@@ -289,4 +290,13 @@ public class VerificationActivity extends TActivity implements HasComponent {
         intent.putExtras(bundle);
         return intent;
     }
+
+    public static Intent getCallingIntent(Context context, int defaultType) {
+        Intent intent = new Intent(context, VerificationActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt(PARAM_DEFAULT_FRAGMENT_TYPE, defaultType);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
 }

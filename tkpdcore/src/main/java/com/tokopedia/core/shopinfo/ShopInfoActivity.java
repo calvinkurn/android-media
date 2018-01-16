@@ -367,6 +367,7 @@ public class ShopInfoActivity extends BaseActivity
         };
     }
 
+    @SuppressWarnings("Range")
     public void showToggleFavoriteSuccess(String shopName, boolean favorited) {
         String message;
         if (favorited) {
@@ -406,6 +407,7 @@ public class ShopInfoActivity extends BaseActivity
                 ShopInfoActivity.this.finish();
             }
 
+            @SuppressWarnings("Range")
             @Override
             public void onFailure() {
                 if (!checkIsShowingInitialData()) {
@@ -1026,16 +1028,12 @@ public class ShopInfoActivity extends BaseActivity
 
     @Override
     public void onBackPressed() {
-        if (getIntent().getExtras() != null && getIntent().getExtras().getBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, false)) {
-            startActivity(HomeRouter.getHomeActivity(this));
+        if (isTaskRoot() ||
+                (getIntent().getExtras() != null &&
+                        getIntent().getExtras().getBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, false))) {
+            Intent homeIntent = ((TkpdCoreRouter) getApplication()).getHomeIntent(this);
+            startActivity(homeIntent);
             finish();
-        }
-        if (isTaskRoot() && GlobalConfig.isSellerApp()) {
-            startActivity(SellerAppRouter.getSellerHomeActivity(this));
-            super.onBackPressed();
-        } else if (isTaskRoot()) {
-            startActivity(HomeRouter.getHomeActivity(this));
-            super.onBackPressed();
         } else {
             super.onBackPressed();
         }

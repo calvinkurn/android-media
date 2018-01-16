@@ -13,6 +13,7 @@ import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.sellerapp.R;
+import com.tokopedia.sellerapp.SellerRouterApplication;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.sellerapp.onboarding.fragment.OnBoardingSellerFragment;
 
@@ -78,11 +79,7 @@ public class OnboardingSellerActivity extends OnboardingActivity {
             finish();
             SessionHandler.setFirstTimeUser(this, false);
         } else if (SessionHandler.isMsisdnVerified()) {
-            Intent intent = SellerRouter.getAcitivityShopCreateEdit(this);
-            intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
-                    SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
-            intent.putExtra(SellerRouter.ShopSettingConstant.ON_BACK,
-                    SellerRouter.ShopSettingConstant.LOG_OUT);
+            Intent intent = SellerRouter.getActivityShopCreateEdit(this);
             startActivity(intent);
             finish();
         } else if (MainApplication.getAppContext() instanceof SellerModuleRouter){
@@ -116,11 +113,7 @@ public class OnboardingSellerActivity extends OnboardingActivity {
                     .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
             finish();
         } else if (requestCode == REQUEST_ACTIVATE_PHONE_SELLER) {
-            Intent intent = SellerRouter.getAcitivityShopCreateEdit(this);
-            intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
-                    SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
-            intent.putExtra(SellerRouter.ShopSettingConstant.ON_BACK,
-                    SellerRouter.ShopSettingConstant.LOG_OUT);
+            Intent intent = SellerRouter.getActivityShopCreateEdit(this);
             startActivity(intent);
             finish();
         } else {

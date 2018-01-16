@@ -5,12 +5,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.tkpd.library.utils.network.MessageErrorException;
-import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.MainApplication;
@@ -145,8 +140,7 @@ public class ErrorHandler {
             return context.getString(R.string.default_request_error_timeout) + " " +
                     context.getString(R.string.code_error) + ErrorCode.SOCKET_TIMEOUT_EXCEPTION;
         } else if (e instanceof IOException) {
-            return context.getString(R.string.msg_no_connection) + " " +
-                    context.getString(R.string.code_error) + ErrorCode.IO_EXCEPTION;
+            return context.getString(R.string.msg_no_connection);
         } else if (e instanceof RuntimeException &&
                 e.getLocalizedMessage() != null &&
                 !e.getLocalizedMessage().equals("") &&
@@ -191,12 +185,7 @@ public class ErrorHandler {
             }
         } else if (e instanceof ErrorMessageException
                 && !TextUtils.isEmpty(e.getLocalizedMessage())) {
-            if (!e.getLocalizedMessage().contains(context.getString(R.string.code_error)))
-                return e.getLocalizedMessage() + " " +
-                        context.getString(R.string.code_error) + ErrorCode.WS_ERROR;
-            else {
-                return e.getLocalizedMessage();
-            }
+            return e.getLocalizedMessage();
         } else if (e instanceof MessageErrorException) {
             return e.getLocalizedMessage();
         } else {
@@ -225,7 +214,8 @@ public class ErrorHandler {
         return "";
     }
 
-    private static boolean hasErrorMessage(JSONObject jsonObject) {
+
+private static boolean hasErrorMessage(JSONObject jsonObject) {
         return jsonObject.has(ERROR_MESSAGE);
     }
 
@@ -279,26 +269,5 @@ public class ErrorHandler {
 
     private static boolean hasErrorMessageTokoCash(JSONObject jsonObject) {
         return jsonObject.has(ERROR_MESSAGE_TOKOCASH);
-    }
-
-    private static boolean hasErrorMessage(JsonObject jsonObject) {
-        return jsonObject.has(ERROR_MESSAGE);
-    }
-
-    public static String getErrorMessageJoined(JsonArray errorMessages) {
-
-        StringBuilder stringBuilder = new StringBuilder();
-        if (errorMessages.size() != 0) {
-            for (int i = 0, statusMessagesSize = errorMessages.size(); i < statusMessagesSize; i++) {
-                String string = String.valueOf(errorMessages.get(i));
-                stringBuilder.append(string);
-                if (i != errorMessages.size() - 1
-                        && !errorMessages.get(i).equals("")
-                        && !errorMessages.get(i + 1).equals("")) {
-                    stringBuilder.append("\n");
-                }
-            }
-        }
-        return stringBuilder.toString();
     }
 }

@@ -40,8 +40,7 @@ public class RequestOTPSecurityQuestionSubscriber extends Subscriber<RequestOtpV
                 .getMessageStatus()))
             viewListener.onSuccessRequestOTP(requestOtpViewModel.getMessageStatus());
         else if (requestOtpViewModel.isSuccess())
-            viewListener.onSuccessRequestOTP(MainApplication.getAppContext().getString(R.string
-                    .success_request_otp));
+            viewListener.onSuccessRequestOTP("");
         else
             viewListener.onErrorRequestOTP(
                     ErrorHandler.getDefaultErrorCodeMessage(ErrorCode.UNSUPPORTED_FLOW));

@@ -17,6 +17,7 @@ public final class AppScreen {
     public static final String SCREEN_COPY_PRODUCT = "Salin Product Page";
     public static final String SCREEN_INSTOPED = "Instoped Upload Page";
     public static final String SCREEN_INDEX_HOME = "Index Main";
+    public static final String SCREEN_NATIVE_RECHARGE = "Native Recharge";
     public static final String SCREEN_LOGIN = "Login page";
     public static final String SCREEN_REGISTER = "Register page";
     public static final String SCREEN_REGISTER_THIRD = "Register page - Social Media";
@@ -267,22 +268,27 @@ public final class AppScreen {
     public static final String SCREEN_CHAT = "inbox-chat";
     public static final String SCREEN_CHAT_DETAIL = "chat detail";
 
-    public static final String SCREEN_LOGIN_PHONE_NUMBER = "Login by Phone Number";
-    public static final String SCREEN_SELECT_VERIFICATION_METHOD = "Select Verification Method Page";
-    public static final String SCREEN_COTP_DEFAULT = "Account Verification Page";
-    public static final String SCREEN_COTP_SMS = "Account Verification - SMS ";
-    public static final String SCREEN_COTP_CALL = "Account Verification - Call";
-    public static final String SCREEN_COTP_EMAIL = "Account Verification - Email";
-    public static final String SCREEN_CHOOSE_TOKOCASH_ACCOUNT = "Login Tokocash - Choose Account";
-    public static final String SCREEN_NOT_CONNECTED_TO_TOKOCASH = "Login Tokocash - Not Connected";
-
     public static final String SCREEN_INITIAL_REGISTER = "Register - Initial Page";
     public static final String SCREEN_CREATE_PASSWORD = "Register - Create Password";
-    public static final String SCREEN_SECURITY_QUESTION = "Security Question Page";
-    public static final String SCREEN_CHANGE_PHONE_NUMBER = "Change Phone Number Page";
     public static final String SCREEN_INTERRUPT_VERIFICATION_DEFAULT = "Verification Interrupt Page";
     public static final String SCREEN_INTERRUPT_VERIFICATION_SMS = "Verification Interrupt Sms";
     public static final String SCREEN_INTERRUPT_VERIFICATION_EMAIL = "Verification Interrupt Email";
+
+    public static final String SCREEN_SELECT_VERIFICATION_METHOD = "change method";
+    public static final String SCREEN_COTP_DEFAULT = "Input OTP";
+    public static final String SCREEN_COTP_SMS = "Input OTP sms";
+    public static final String SCREEN_COTP_CALL = "Input OTP call";
+    public static final String SCREEN_COTP_EMAIL = "Input OTP email";
+
+    public static final String SCREEN_LOGIN_PHONE_NUMBER = "Login by Phone Number";
+    public static final String SCREEN_CHOOSE_TOKOCASH_ACCOUNT = "choose account";
+    public static final String SCREEN_NOT_CONNECTED_TO_TOKOCASH = "Login Tokocash - Not Connected";
+
+    public static final String SCREEN_SECURITY_QUESTION = "Security Question Page";
+    public static final String SCREEN_CHANGE_PHONE_NUMBER = "Change Phone Number Page";
+
+    public static final String SCREEN_CHANGE_PHONE_NUMBER_WARNING = "Warning";
+    public static final String SCREEN_CHANGE_PHONE_NUMBER_INPUT = "Change Number";
 
     private AppScreen() {
 

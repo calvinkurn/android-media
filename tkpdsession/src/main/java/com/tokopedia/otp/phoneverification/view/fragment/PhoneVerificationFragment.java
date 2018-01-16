@@ -41,6 +41,7 @@ import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.phoneverification.view.activity.ChangePhoneNumberActivity;
+import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.TokoCashWebViewActivity;
 import com.tokopedia.otp.phoneverification.view.listener.PhoneVerification;
 import com.tokopedia.otp.phoneverification.view.presenter.PhoneVerificationPresenter;
@@ -117,15 +118,33 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
     @Inject
     PhoneVerificationPresenter presenter;
 
+    private boolean isMandatory = false;
+
     public static PhoneVerificationFragment createInstance(PhoneVerificationFragmentListener listener) {
         PhoneVerificationFragment fragment = new PhoneVerificationFragment();
         fragment.setPhoneVerificationListener(listener);
         return fragment;
     }
 
-    public PhoneVerificationFragment() {
+    public static PhoneVerificationFragment createInstance(PhoneVerificationFragmentListener listener, boolean canSkip) {
+        PhoneVerificationFragment fragment = new PhoneVerificationFragment();
+        Bundle args = new Bundle();
+        args.putBoolean(PhoneVerificationActivationActivity.EXTRA_IS_MANDATORY, canSkip);
+        fragment.setArguments(args);
+        fragment.setPhoneVerificationListener(listener);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         this.smsReceiver = new IncomingSmsReceiver();
         this.smsReceiver.setListener(this);
+        cacheHandler = new LocalCacheHandler(getActivity(), CACHE_PHONE_VERIF_TIMER);
+        if (getArguments().containsKey(PhoneVerificationActivationActivity.EXTRA_IS_MANDATORY)) {
+            isMandatory = getArguments().getBoolean(PhoneVerificationActivationActivity
+                    .EXTRA_IS_MANDATORY);
+        }
     }
 
     public void setPhoneVerificationListener(PhoneVerificationFragmentListener listener) {
@@ -134,13 +153,6 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
 
     public PhoneVerificationFragmentListener getListener() {
         return listener;
-    }
-
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        cacheHandler = new LocalCacheHandler(getActivity(), CACHE_PHONE_VERIF_TIMER);
     }
 
     @Nullable
@@ -348,6 +360,12 @@ public class PhoneVerificationFragment extends BaseDaggerFragment
                 }
             }
         });
+
+        if (isMandatory) {
+            skipButton.setVisibility(View.INVISIBLE);
+        } else {
+            skipButton.setVisibility(View.VISIBLE);
+        }
 
         tokocashText.setOnClickListener(new View.OnClickListener() {
             @Override

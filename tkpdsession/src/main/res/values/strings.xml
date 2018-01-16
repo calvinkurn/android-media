@@ -138,10 +138,28 @@
     <string name="second">detik</string>
     <string name="not_received_code">Tidak menerima kode?</string>
     <string name="register">Daftar</string>
+
+    <!-- Change Phone Number strings -->
+    <string name="you_have">Anda memiliki:</string>
+    <string name="tokopedia_balance">Saldo Tokopedia</string>
+    <string name="if_you_change_phone_number_then">Apabila terjadi perubahan nomor ponsel:</string>
+    <string name="change_phone_number">Ubah Nomor Ponsel</string>
+    <string name="are_you_sure_change_phone_number">Yakin ingin mengubah nomor ponsel?</string>
+    <string name="for_your_safety">Demi keamanan, pengguna diharuskan memperbarui nomor ponsel yang bisa dihubungi secara berkala.</string>
+    <string name="old_phone_number">Nomor Ponsel Lama</string>
+    <string name="new_phone_number">Nomor Ponsel Baru</string>
+    <string name="back_to_setting">Kembali ke Pengaturan</string>
+    <string name="please_check_email">Silakan Cek Email Anda</string>
+    <string name="please_check_email_to_continue">Silahkan cek email Anda untuk melakukan ke tahap selanjutnya.</string>
+    <string name="emaiL_has_been_sent_to">Email konfirmasi untuk mengubah nomor ponsel sudah dikirim ke</string>
+    <string name="withdraw_tokopedia_balance">Tarik Saldo Tokopedia</string>
+    <string name="title_info">Info</string>
+    <string name="verification_for_security">Verifikasi untuk Keamanan</string>
+    <string name="we_will_send_email_to">Untuk memastikan akun ini benar milik Anda, kami akan mengirimkan kode verifikasi melalui email ke</string>
+
     <string name="make_sure_phone_is_active">Pastikan nomor ponsel  Anda aktif untuk keamanan dan kemudahan transaksi.</string>
     <string name="minimal_6_character">Minimal 6 karakter</string>
     <string name="please_click_this_button_to_continue">Silahkan klik tombol ini untuk melanjutkan</string>
-    <string name="verification_for_security">Verifikasi untuk Keamanan</string>
     <string name="to_verify_sms">Untuk memastikan akun ini benar milik Anda, kami akan mengirimkan kode verifikasi melalui SMS ke</string>
     <string name="send_sms_verification">Kirim SMS Verifikasi</string>
     <string name="to_verify_email">Untuk memastikan akun ini benar milik Anda, kami akan
@@ -150,4 +168,5 @@
     <string name="or_login_with">Atau masuk dengan:</string>
     <string name="limit_otp_reached_many_times">Anda telah melakukan permintaan kode berkali-kali.</string>
     <string name="my_phone_number_is_inactive">Nomor saya sudah tidak aktif</string>
+
 </resources>

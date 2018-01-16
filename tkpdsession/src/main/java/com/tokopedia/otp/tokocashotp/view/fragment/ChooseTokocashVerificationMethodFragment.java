@@ -9,8 +9,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.analytics.LoginPhoneNumberAnalytics;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.di.DaggerSessionComponent;
@@ -29,7 +31,7 @@ import java.util.ArrayList;
 public class ChooseTokocashVerificationMethodFragment extends BaseDaggerFragment implements
         SelectVerification.View {
 
-    RecyclerView methodList;
+    RecyclerView methodListRecyclerView;
     VerificationMethodAdapter adapter;
 
     @Override
@@ -66,16 +68,16 @@ public class ChooseTokocashVerificationMethodFragment extends BaseDaggerFragment
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle
             savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_choose_verification_method, parent, false);
-        methodList = view.findViewById(R.id.method_list);
+        methodListRecyclerView = view.findViewById(R.id.method_list);
         prepareView();
         return view;
     }
 
     private void prepareView() {
         adapter = VerificationMethodAdapter.createInstance(getList(), this);
-        methodList.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager
+        methodListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager
                 .VERTICAL, false));
-        methodList.setAdapter(adapter);
+        methodListRecyclerView.setAdapter(adapter);
     }
 
     private ArrayList<MethodItem> getList() {
@@ -90,10 +92,14 @@ public class ChooseTokocashVerificationMethodFragment extends BaseDaggerFragment
         if (getActivity() instanceof VerificationActivity) {
             switch (type) {
                 case VerificationActivity.TYPE_SMS: {
+                    UnifyTracking.eventTracking(LoginPhoneNumberAnalytics
+                            .getChooseVerificationMethodTracking(VerificationActivity.TYPE_SMS));
                     ((VerificationActivity) getActivity()).goToSmsVerification();
                     break;
                 }
                 case VerificationActivity.TYPE_PHONE_CALL: {
+                    UnifyTracking.eventTracking(LoginPhoneNumberAnalytics
+                            .getChooseVerificationMethodTracking(VerificationActivity.TYPE_PHONE_CALL));
                     ((VerificationActivity) getActivity()).goToCallVerification();
                     break;
                 }

@@ -8,6 +8,7 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
+import com.tokopedia.otp.domain.interactor.RequestOtpWithEmailUseCase;
 import com.tokopedia.otp.domain.interactor.ValidateOtpLoginUseCase;
 import com.tokopedia.otp.domain.interactor.ValidateOtpUseCase;
 import com.tokopedia.otp.securityquestion.domain.interactor.GetSecurityQuestionFormUseCase;
@@ -32,6 +33,7 @@ public class SecurityQuestionPresenter extends BaseDaggerPresenter<SecurityQuest
 
     private final GetSecurityQuestionFormUseCase getSecurityQuestionFormUseCase;
     private final RequestOtpUseCase requestOtpUseCase;
+    private final RequestOtpWithEmailUseCase requestOtpWithEmailUseCase;
     private final ValidateOtpLoginUseCase validateOtpLoginUseCase;
     private final SessionHandler sessionHandler;
 
@@ -42,9 +44,11 @@ public class SecurityQuestionPresenter extends BaseDaggerPresenter<SecurityQuest
                                      GetSecurityQuestionFormUseCase
                                              getSecurityQuestionFormUseCase,
                                      RequestOtpUseCase requestOtpUseCase,
+                                     RequestOtpWithEmailUseCase requestOtpWithEmailUseCase,
                                      ValidateOtpLoginUseCase validateOtpLoginUseCase) {
         this.getSecurityQuestionFormUseCase = getSecurityQuestionFormUseCase;
         this.requestOtpUseCase = requestOtpUseCase;
+        this.requestOtpWithEmailUseCase = requestOtpWithEmailUseCase;
         this.validateOtpLoginUseCase = validateOtpLoginUseCase;
         this.sessionHandler = sessionHandler;
     }
@@ -72,7 +76,7 @@ public class SecurityQuestionPresenter extends BaseDaggerPresenter<SecurityQuest
             validateOtpLoginUseCase.execute(ValidateOtpLoginUseCase.getParam(
                     ValidateOtpUseCase.OTP_TYPE_SECURITY_QUESTION,
                     otp,
-                    sessionHandler.getTempLoginSession(MainApplication.getAppContext())),
+                    sessionHandler.getTempLoginSession()),
                     new ValidateOtpLoginSubscriber(viewListener));
         } else {
             viewListener.showInvalidOtp();
@@ -110,42 +114,41 @@ public class SecurityQuestionPresenter extends BaseDaggerPresenter<SecurityQuest
     }
 
     @Override
-    public void requestOTPWithSMS() {
+    public void requestOTPWithSMS(String phone) {
         viewListener.showLoadingProgress();
         viewListener.disableOtpButton();
         requestOtpUseCase.execute(
                 RequestOtpUseCase.getParamBeforeLogin(
                         RequestOtpUseCase.MODE_SMS,
-                        "",
+                        phone,
                         RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION,
-                        sessionHandler.getTempLoginSession(MainApplication.getAppContext())),
+                        sessionHandler.getTempLoginSession()),
                 new RequestOTPSecurityQuestionSubscriber(viewListener));
     }
 
     @Override
-    public void requestOTPWithPhoneCall() {
+    public void requestOTPWithPhoneCall(String phone) {
         viewListener.showLoadingProgress();
         viewListener.disableOtpButton();
         requestOtpUseCase.execute(
                 RequestOtpUseCase.getParamBeforeLogin(
                         RequestOtpUseCase.MODE_CALL,
-                        "",
+                        phone,
                         RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION,
-                        sessionHandler.getTempLoginSession(MainApplication.getAppContext())),
+                        sessionHandler.getTempLoginSession()),
                 new RequestOTPSecurityQuestionSubscriber(viewListener));
     }
 
     @Override
     public void requestOTPWithEmail(String email) {
-//        viewListener.showLoadingProgress();
-//        viewListener.disableOtpButton();
-//        requestOtpUseCase.execute(
-//                RequestOtpUseCase.getParamEmailBeforeLogin(
-//                        RequestOtpUseCase.MODE_EMAIL,
-//                        email,
-//                        RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION,
-//                        sessionHandler.getTempLoginSession(MainApplication.getAppContext())),
-//                new RequestOTPSecurityQuestionSubscriber(viewListener));
+        viewListener.showLoadingProgress();
+        viewListener.disableOtpButton();
+        requestOtpWithEmailUseCase.execute(
+                RequestOtpWithEmailUseCase.getParam(
+                        email,
+                        RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION,
+                        sessionHandler.getTempLoginSession()),
+                new RequestOTPSecurityQuestionSubscriber(viewListener));
     }
 
     private boolean isValid(String otp) {

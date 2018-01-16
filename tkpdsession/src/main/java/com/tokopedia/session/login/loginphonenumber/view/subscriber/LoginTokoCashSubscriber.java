@@ -38,7 +38,7 @@ public class LoginTokoCashSubscriber extends Subscriber<LoginTokoCashViewModel> 
     @Override
     public void onNext(LoginTokoCashViewModel loginTokoCashViewModel) {
         view.dismissLoadingProgress();
-        if (goToSecurityQuestion(loginTokoCashViewModel.getMakeLoginDomain())) {
+        if (canGoToSecurityQuestion(loginTokoCashViewModel.getMakeLoginDomain())) {
             view.goToSecurityQuestion(accountTokocash,
                     loginTokoCashViewModel);
         } else if (loginTokoCashViewModel.getMakeLoginDomain().isLogin()) {
@@ -49,7 +49,7 @@ public class LoginTokoCashSubscriber extends Subscriber<LoginTokoCashViewModel> 
 
     }
 
-    private boolean goToSecurityQuestion(MakeLoginDomain makeLoginDomain) {
+    private boolean canGoToSecurityQuestion(MakeLoginDomain makeLoginDomain) {
         return makeLoginDomain.getSecurityDomain().getAllowLogin() == 0
                 && !makeLoginDomain.isLogin();
     }

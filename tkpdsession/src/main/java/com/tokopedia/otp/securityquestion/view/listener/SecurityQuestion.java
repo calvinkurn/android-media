@@ -58,7 +58,7 @@ public interface SecurityQuestion {
     interface Presenter extends CustomerPresenter<View> {
         void validateOTP(String otp);
 
-        void requestOTPWithPhoneCall();
+        void requestOTPWithPhoneCall(String phone);
 
         void processTrueCaller(Intent data);
 
@@ -66,7 +66,7 @@ public interface SecurityQuestion {
 
         void checkTrueCaller(Context context);
 
-        void requestOTPWithSMS();
+        void requestOTPWithSMS(String phone);
 
         void requestOTPWithEmail(String email);
     }

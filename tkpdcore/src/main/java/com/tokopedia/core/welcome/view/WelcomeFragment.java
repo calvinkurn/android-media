@@ -23,7 +23,6 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
@@ -416,26 +415,17 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
     private void onSuccessLogin() {
         if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
             Intent intent;
-            if (SessionHandler.isUserSeller(getActivity())) {
+            if (SessionHandler.isUserHasShop(getActivity())) {
                 intent = SellerAppRouter.getSellerHomeActivity(getActivity());
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent
                         .FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             } else {
-                intent = moveToCreateShop(this);
+                intent = SellerRouter.getActivityShopCreateEdit(context);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             }
             intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,
                     HomeRouter.INIT_STATE_FRAGMENT_FEED);
             startActivity(intent);
         }
-    }
-
-    private Intent moveToCreateShop(WelcomeFragment welcomeFragment) {
-        Intent intent;
-        intent = SellerRouter.getAcitivityShopCreateEdit(context);
-        intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
-                SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        return intent;
     }
 }

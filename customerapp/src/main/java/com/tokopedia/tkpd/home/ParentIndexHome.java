@@ -651,10 +651,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     }
 
     private int getDefaultTabPosition() {
-        if (SessionHandler.isV2Login(getApplicationContext()) || SessionHandler.isV4Login(getApplicationContext())) {
-            return 1;
-        }
-
         return 0;
     }
 

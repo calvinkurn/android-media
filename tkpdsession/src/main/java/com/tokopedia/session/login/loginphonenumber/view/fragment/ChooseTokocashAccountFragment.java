@@ -19,8 +19,10 @@ import android.widget.TextView;
 
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.analytics.LoginPhoneNumberAnalytics;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -189,6 +191,8 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
 
     @Override
     public void onSuccessLogin() {
+        UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getSuccessLoginTracking());
+
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
     }
@@ -275,6 +279,13 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
             presenter.clearToken();
             super.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(ChooseTokocashAccountActivity.ARGS_DATA, viewModel);
+
     }
 
     @Override

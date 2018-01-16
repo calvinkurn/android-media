@@ -22,8 +22,10 @@ import com.tkpd.library.ui.widget.PinEntryEditText;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.analytics.LoginPhoneNumberAnalytics;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -55,6 +57,8 @@ public class TokoCashVerificationFragment extends BaseDaggerFragment implements 
     private static final int INTERVAL = 1000;
     private static final String RESEND = "Kirim ulang";
     private static final String USE_OTHER_METHOD = "gunakan metode verifikasi lain";
+    private static final int MAX_INPUT_OTP = 6;
+
 
     private static final String CACHE_OTP = "CACHE_OTP";
     private static final String HAS_TIMER = "has_timer";
@@ -161,7 +165,7 @@ public class TokoCashVerificationFragment extends BaseDaggerFragment implements 
     }
 
     private void prepareView() {
-        if (!cacheHandler.isExpired() && cacheHandler.getBoolean(HAS_TIMER, false)) {
+        if (!isCountdownFinished()) {
             startTimer();
         } else {
             setLimitReachedCountdownText();
@@ -181,7 +185,7 @@ public class TokoCashVerificationFragment extends BaseDaggerFragment implements 
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (inputOtp.getText().length() == 6) {
+                if (inputOtp.getText().length() == MAX_INPUT_OTP) {
                     enableVerifyButton();
                 } else {
                     disableVerifyButton();
@@ -193,7 +197,9 @@ public class TokoCashVerificationFragment extends BaseDaggerFragment implements 
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE
-                        && inputOtp.length() == 6) {
+                        && inputOtp.length() == MAX_INPUT_OTP) {
+                    UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getVerifyTracking
+                            (viewModel.getType()));
                     presenter.verifyOtp(viewModel.getPhoneNumber(), inputOtp.getText().toString());
                     return true;
                 }
@@ -204,6 +210,7 @@ public class TokoCashVerificationFragment extends BaseDaggerFragment implements 
         verifyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getVerifyTracking(viewModel.getType()));
                 presenter.verifyOtp(viewModel.getPhoneNumber(), inputOtp.getText().toString());
             }
         });
@@ -249,13 +256,14 @@ public class TokoCashVerificationFragment extends BaseDaggerFragment implements 
     @Override
     public void onSuccessVerifyOTP(VerifyOtpTokoCashViewModel verifyOtpTokoCashViewModel) {
         resetCountDown();
-        Intent intent = ChooseTokocashAccountActivity.getCallingIntent(
-                getActivity(),
+        Intent intent = new Intent();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ChooseTokocashAccountActivity.ARGS_DATA,
                 new ChooseTokoCashAccountViewModel(verifyOtpTokoCashViewModel.getList(),
                         viewModel.getPhoneNumber(),
                         verifyOtpTokoCashViewModel.getKey()));
-        intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
-        startActivity(intent);
+        intent.putExtras(bundle);
+        getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }
 
@@ -301,11 +309,8 @@ public class TokoCashVerificationFragment extends BaseDaggerFragment implements 
 
     @Override
     public void onErrorNoAccountTokoCash() {
-        Intent intent = NotConnectedTokocashActivity.getNoTokocashAccountIntent(getActivity(),
-                viewModel.getPhoneNumber());
-        intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
-        startActivity(intent);
-        getActivity().setResult(Activity.RESULT_CANCELED);
+        startActivity(NotConnectedTokocashActivity.getNoTokocashAccountIntent(getActivity(),
+                viewModel.getPhoneNumber()));
         getActivity().finish();
     }
 
@@ -320,7 +325,7 @@ public class TokoCashVerificationFragment extends BaseDaggerFragment implements 
     }
 
     private void startTimer() {
-        if (cacheHandler.isExpired() || !cacheHandler.getBoolean(HAS_TIMER, false)) {
+        if (isCountdownFinished()) {
             cacheHandler.putBoolean(HAS_TIMER, true);
             cacheHandler.setExpire(COUNTDOWN_LENGTH);
             cacheHandler.applyEditor();
@@ -353,6 +358,9 @@ public class TokoCashVerificationFragment extends BaseDaggerFragment implements 
         resend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                UnifyTracking.eventTracking(
+                        LoginPhoneNumberAnalytics.getResendVerificationTracking(
+                                viewModel.getType()));
                 presenter.requestOTP(viewModel);
             }
         });

@@ -38,6 +38,26 @@ import com.tokopedia.session.domain.mapper.TokenMapper;
 import com.tokopedia.session.login.loginemail.domain.interactor.LoginEmailUseCase;
 import com.tokopedia.session.login.loginemail.view.presenter.LoginPresenter;
 import com.tokopedia.session.register.data.mapper.CreatePasswordMapper;
+import com.tokopedia.session.changephonenumber.data.repository.ChangePhoneNumberRepositoryImpl;
+import com.tokopedia.session.changephonenumber.data.source.CloudGetWarningSource;
+import com.tokopedia.session.changephonenumber.data.source.CloudSendEmailSource;
+import com.tokopedia.session.changephonenumber.data.source.CloudValidateEmailCodeSource;
+import com.tokopedia.session.changephonenumber.data.source.CloudValidateNumberSource;
+import com.tokopedia.session.changephonenumber.domain.ChangePhoneNumberRepository;
+import com.tokopedia.session.changephonenumber.domain.interactor.GetWarningUseCase;
+import com.tokopedia.session.changephonenumber.domain.interactor.SendEmailUseCase;
+import com.tokopedia.session.changephonenumber.domain.interactor.ValidateEmailCodeUseCase;
+import com.tokopedia.session.changephonenumber.domain.interactor.ValidateNumberUseCase;
+import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberEmailVerificationFragmentListener;
+import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberInputFragmentListener;
+import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberWarningFragmentListener;
+import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberEmailVerificationPresenter;
+import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberInputPresenter;
+import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberWarningPresenter;
+import com.tokopedia.session.data.source.GetTokenDataSource;
+import com.tokopedia.session.data.source.MakeLoginDataSource;
+import com.tokopedia.session.domain.mapper.MakeLoginMapper;
+import com.tokopedia.session.domain.mapper.TokenMapper;
 
 import javax.inject.Named;
 
@@ -54,7 +74,7 @@ public class
 SessionModule {
 
     private static final String HMAC_SERVICE = "HMAC_SERVICE";
-    private static final String BEARER_SERVICE = "BEARER_SERVICE";
+    public static final String BEARER_SERVICE = "BEARER_SERVICE";
     private static final String WS_SERVICE = "WS_SERVICE";
     public static final String LOGIN_CACHE = "LOGIN_CACHE";
 
@@ -135,6 +155,50 @@ SessionModule {
                                                  SessionHandler sessionHandler) {
         return new GetTokenDataSource(accountsService, tokenMapper, sessionHandler);
     }
+
+    @SessionScope
+    @Provides
+    GetUserInfoMapper provideGetUserInfoMapper() {
+        return new GetUserInfoMapper();
+    }
+
+    @SessionScope
+    @Provides
+    EditUserInfoMapper provideEditUserInfoMapper() {
+        return new EditUserInfoMapper();
+    }
+
+    @SessionScope
+    @Provides
+    ChangePhoneNumberInputFragmentListener.Presenter provideChangePhoneNumberInputPresenter(ValidateNumberUseCase validateNumberUseCase) {
+        return new ChangePhoneNumberInputPresenter(validateNumberUseCase);
+    }
+
+    @SessionScope
+    @Provides
+    ChangePhoneNumberWarningFragmentListener.Presenter provideChangePhoneNumberWarningPresenter(GetWarningUseCase getWarningUseCase) {
+        return new ChangePhoneNumberWarningPresenter(getWarningUseCase);
+    }
+
+    @SessionScope
+    @Provides
+    ChangePhoneNumberRepository provideChangePhoneNumberRepository(CloudGetWarningSource cloudGetWarningSource,
+                                                                   CloudSendEmailSource cloudSendEmailSource,
+                                                                   CloudValidateNumberSource cloudValidateNumberSource,
+                                                                   CloudValidateEmailCodeSource cloudValidateEmailCodeSource) {
+        return new ChangePhoneNumberRepositoryImpl(cloudGetWarningSource,
+                cloudSendEmailSource,
+                cloudValidateNumberSource,
+                cloudValidateEmailCodeSource);
+    }
+
+    @SessionScope
+    @Provides
+    ChangePhoneNumberEmailVerificationFragmentListener.Presenter ChangePhoneNumberEmailVerificationPresenter(SendEmailUseCase sendEmailUseCase,
+                                                                                                             ValidateEmailCodeUseCase validateEmailCodeUseCase) {
+        return new ChangePhoneNumberEmailVerificationPresenter(sendEmailUseCase, validateEmailCodeUseCase);
+    }
+
 
     @SessionScope
     @Provides

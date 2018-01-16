@@ -1,5 +1,6 @@
 package com.tokopedia.session.login.loginphonenumber.view.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -202,4 +203,19 @@ public class NotConnectedTokocashFragment extends BaseDaggerFragment {
         return list;
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_VERIFY_PHONE_NUMBER && resultCode == Activity.RESULT_OK) {
+
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(NotConnectedTokocashActivity.PARAM_PHONE_NUMBER, phoneNumber);
+        outState.putInt(NotConnectedTokocashActivity.PARAM_TYPE, type);
+    }
 }

@@ -122,7 +122,6 @@ public class VerificationActivity extends TActivity implements HasComponent {
         return getApplicationComponent();
     }
 
-
     public static Intent getLoginTokoCashVerificationIntent(Context context, String phoneNumber,
                                                             ArrayList<MethodItem> listAvailableMethod) {
         Intent intent = new Intent(context, VerificationActivity.class);

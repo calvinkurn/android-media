@@ -51,8 +51,6 @@ public class CloudGetUserInfoSource {
                             .getGetUserInfoDomainData().getFullName());
                     sessionHandler.setTempLoginEmail(getUserInfoDomainModel
                             .getGetUserInfoDomainData().getEmail());
-                } else {
-
                 }
             }
         };

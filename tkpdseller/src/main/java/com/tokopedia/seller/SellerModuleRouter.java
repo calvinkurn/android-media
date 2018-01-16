@@ -3,14 +3,13 @@ package com.tokopedia.seller;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.FragmentActivity;
 
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.seller.common.cashback.DataCashbackModel;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
-import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
+import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +38,11 @@ public interface SellerModuleRouter {
 
     Observable<List<DataCashbackModel>> getCashbackList(List<String> productIds);
 
+    ShopComponent getShopComponent();
+
     Intent getInboxReputationIntent(Context context);
+
+    void sendEventTracking(String event, String category, String action, String label);
 
     Intent getPhoneVerificationActivationIntent(Context context);
 

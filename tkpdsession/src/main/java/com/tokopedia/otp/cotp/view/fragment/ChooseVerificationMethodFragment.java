@@ -22,8 +22,8 @@ import com.tokopedia.otp.cotp.view.adapter.VerificationMethodAdapter;
 import com.tokopedia.otp.cotp.view.viewlistener.SelectVerification;
 import com.tokopedia.otp.cotp.view.viewmodel.MethodItem;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
-import com.tokopedia.otp.securityquestion.view.activity.ChangePhoneNumberRequestActivity;
 import com.tokopedia.session.R;
+import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberRequestActivity;
 
 import java.util.ArrayList;
 
@@ -36,8 +36,7 @@ import javax.inject.Inject;
 public class ChooseVerificationMethodFragment extends BaseDaggerFragment implements
         SelectVerification.View {
 
-    RecyclerView methodList;
-    VerificationMethodAdapter adapter;
+    private RecyclerView methodListRecyclerView;
     TextView changePhoneNumberButton;
 
     @Inject
@@ -77,18 +76,18 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle
             savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_choose_verification_method, parent, false);
-        methodList = view.findViewById(R.id.method_list);
+        methodListRecyclerView = view.findViewById(R.id.method_list);
         changePhoneNumberButton = view.findViewById(R.id.phone_inactive);
         prepareView();
         return view;
     }
 
     private void prepareView() {
-        adapter = VerificationMethodAdapter.createInstance(getList(), this);
-        methodList.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager
+        VerificationMethodAdapter adapter = VerificationMethodAdapter.createInstance(getList(),
+                this);
+        methodListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager
                 .VERTICAL, false));
-        methodList.setAdapter(adapter);
-
+        methodListRecyclerView.setAdapter(adapter);
         changePhoneNumberButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

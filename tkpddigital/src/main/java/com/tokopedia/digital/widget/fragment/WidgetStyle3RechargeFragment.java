@@ -269,8 +269,8 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
                 attributes.setClientNumber(orderClientNumber.getClientNumber());
                 attributes.setCategoryId(Integer.valueOf(orderClientNumber.getCategoryId()));
                 attributes.setOperatorId(Integer.valueOf(orderClientNumber.getOperatorId()));
-                if (orderClientNumber.getLastProduct() != null) {
-                    attributes.setProductId(Integer.valueOf(orderClientNumber.getLastProduct()));
+                if (orderClientNumber.getProductId() != null) {
+                    attributes.setProductId(Integer.valueOf(orderClientNumber.getProductId()));
                 }
                 lastOrder.setAttributes(attributes);
 
@@ -362,6 +362,8 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
             public void onCheckChangeOperator(Operator rechargeOperatorModel) {
                 selectedProduct = null;
                 selectedOperator = rechargeOperatorModel;
+                widgetWrapperBuyView.resetInstantCheckout();
+                widgetWrapperBuyView.setBuyButtonText(selectedOperator.getAttributes().getRule().getButtonLabel());
                 selectedOperatorId = String.valueOf(rechargeOperatorModel.getId());
                 widgetClientNumberView.setFilterMaxLength(rechargeOperatorModel.getAttributes().getMaximumLength());
                 widgetClientNumberView.setInputType(rechargeOperatorModel.getAttributes().getRule().isAllowAphanumericNumber());
@@ -470,6 +472,8 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
     @Override
     public void renderOperator(Operator rechargeOperatorModel) {
         selectedOperator = rechargeOperatorModel;
+        widgetWrapperBuyView.resetInstantCheckout();
+        widgetWrapperBuyView.setBuyButtonText(selectedOperator.getAttributes().getRule().getButtonLabel());
         UnifyTracking.eventSelectOperatorWidget(category.getAttributes().getName(),
                 selectedOperator.getAttributes().getName());
         selectedOperatorId = String.valueOf(selectedOperator.getId());
