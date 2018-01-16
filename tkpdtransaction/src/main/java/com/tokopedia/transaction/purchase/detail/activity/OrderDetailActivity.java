@@ -88,6 +88,7 @@ public class OrderDetailActivity extends TActivity
 
     public static final int REQUEST_CODE_ORDER_DETAIL = 111;
     private static final String VALIDATION_FRAGMENT_TAG = "validation_fragments";
+    private static final String VALIDATION_FRAGMENT_DIALOG = "validation_fragments";
     private static final String REJECT_ORDER_FRAGMENT_TAG = "reject_order_fragment_teg";
     private static final String EXTRA_ORDER_ID = "EXTRA_ORDER_ID";
     private static final String EXTRA_USER_MODE = "EXTRA_USER_MODE";
@@ -588,6 +589,17 @@ public class OrderDetailActivity extends TActivity
     }
 
     @Override
+    public void onRefreshActivity() {
+        presenter.fetchData(this, getExtraOrderId(), getExtraUserMode());
+
+    }
+
+    @Override
+    public void dismissActivity() {
+        setResult(Activity.RESULT_OK);
+    }
+
+    @Override
     public void showProgressDialog() {
         smallProgressDialog.showDialog();
     }
@@ -694,7 +706,6 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void onAcceptOrder(String orderId) {
         presenter.acceptOrder(this, orderId);
-        presenter.fetchData(this, orderId, getExtraUserMode());
     }
 
     @Override

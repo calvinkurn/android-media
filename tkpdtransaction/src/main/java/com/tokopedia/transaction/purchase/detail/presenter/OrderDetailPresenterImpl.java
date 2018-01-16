@@ -155,7 +155,7 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
         TKPDMapParam<String, String> acceptOrderParam = new TKPDMapParam<>();
         acceptOrderParam.put(ACTION_TYPE_KEY, ACCEPT_ORDER_CONSTANT);
         acceptOrderParam.put(ORDER_ID_KEY, orderId);
-        orderDetailInteractor.processOrder(sellerActionSubscriber(),
+        orderDetailInteractor.processOrder(refreshActivitySubscriber(),
                 AuthUtil.generateParamsNetwork(context, acceptOrderParam));
 
     }
@@ -181,7 +181,7 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
         partialParam.put(ORDER_ID_KEY, orderId);
         partialParam.put(REASON_KEY, reason);
         partialParam.put(QUANTITY_ACCEPT_KEY, quantityAccept);
-        orderDetailInteractor.processOrder(sellerActionSubscriber(),
+        orderDetailInteractor.processOrder(refreshActivitySubscriber(),
                 AuthUtil.generateParamsNetwork(context, partialParam));
     }
 
@@ -375,6 +375,52 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
             public void onNext(String s) {
                 mainView.dismissProgressDialog();
                 mainView.onOrderCancelled(s);
+            }
+        };
+    }
+
+    private Subscriber<String> closeActivitySubscriber() {
+        return new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                mainView.dismissProgressDialog();
+                mainView.showSnackbar(e.getMessage());
+            }
+
+            @Override
+            public void onNext(String s) {
+                mainView.dismissProgressDialog();
+                mainView.showSnackbar(s);
+                mainView.dismissActivity();
+                //TODO put action to finish activity and refresh
+            }
+        };
+    }
+
+    private Subscriber<String> refreshActivitySubscriber() {
+        return new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                mainView.dismissProgressDialog();
+                mainView.showSnackbar(e.getMessage());
+            }
+
+            @Override
+            public void onNext(String s) {
+                mainView.dismissProgressDialog();
+                mainView.showSnackbar(s);
+                mainView.onRefreshActivity();
+                //TODO put action to finish activity and refresh
             }
         };
     }
