@@ -20,4 +20,17 @@ public class ShopErrorHandler {
         }
         return null;
     }
+
+    public static String getGeneratedErrorMessage(char[] errorMessage, String... additionalMessages) {
+        if (additionalMessages == null || additionalMessages.length < 1) {
+            return new String(errorMessage);
+        }
+        String additionalError = "";
+        for (String additionalMessage: additionalMessages) {
+            additionalError += " - '";
+            additionalError += additionalMessage;
+            additionalError += "'";
+        }
+        return new String(errorMessage) + " :: " + additionalError;
+    }
 }

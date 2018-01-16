@@ -204,7 +204,7 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
         hideSubmitLoading();
         Crashlytics.logException(t);
         String message = ShopErrorHandler.getErrorMessage(getActivity(), t);
-        trackingOpenShop.eventOpenShopBiodataError(message);
+        sendErrorTracking(message);
         snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(),
                 message,
                 new NetworkErrorHelper.RetryClickedListener() {
@@ -214,6 +214,13 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
                     }
                 });
         snackbarRetry.showRetrySnackbar();
+    }
+
+    private void sendErrorTracking(String errorMessage) {
+        trackingOpenShop.eventOpenShopBiodataError(errorMessage);
+        String generatedErrorMessage = ShopErrorHandler.getGeneratedErrorMessage(errorMessage.toCharArray(),
+                editTextInputShopName.getText().toString(), editTextInputDomainName.getTextWithoutPrefix());
+        trackingOpenShop.eventOpenShopBiodataErrorWithData(generatedErrorMessage);
     }
 
     @Override

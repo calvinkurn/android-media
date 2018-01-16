@@ -37,6 +37,14 @@ public class ShopOpenTracking {
         );
     }
 
+    public void eventOpenShopBiodataErrorWithData(String labelError){
+        eventOpenShop(
+                ShopOpenTrackingConstant.OPEN_SHOP_BIODATA_FORM,
+                ShopOpenTrackingConstant.OPEN_SHOP_ERROR_WITH_DATA,
+                labelError
+        );
+    }
+
     public void eventOpenShopBiodataNameError(String labelError){
         eventOpenShop(
                 ShopOpenTrackingConstant.OPEN_SHOP_BIODATA_FORM,
@@ -145,6 +153,14 @@ public class ShopOpenTracking {
         eventOpenShop(
                 ShopOpenTrackingConstant.OPEN_SHOP_SHOP_LOCATION_FORM,
                 ShopOpenTrackingConstant.OPEN_SHOP_CLICK_NEXT_STEP_ERROR,
+                labelError
+        );
+    }
+
+    public void eventOpenShopLocationErrorWithData(String labelError){
+        eventOpenShop(
+                ShopOpenTrackingConstant.OPEN_SHOP_SHOP_LOCATION_FORM,
+                ShopOpenTrackingConstant.OPEN_SHOP_CLICK_NEXT_STEP_ERROR_WITH_DATA,
                 labelError
         );
     }
