@@ -25,7 +25,7 @@ public class VerifyOtpTokoCashSubscriber extends Subscriber<VerifyOtpTokoCashVie
     @Override
     public void onError(Throwable e) {
         view.dismissLoadingProgress();
-        view.onErrorVerifyOtp(ErrorHandler.getErrorMessage(e));
+        view.onErrorVerifyOtp(ErrorHandler.getErrorMessageWithErrorCode(e));
     }
 
     @Override

@@ -27,7 +27,7 @@ public class ValidateEmailCodeSubscriber extends Subscriber<Boolean> {
     @Override
     public void onError(Throwable e) {
         view.dismissLoading();
-        view.onValidateOtpError(ErrorHandler.getErrorMessage(e));
+        view.onValidateOtpError(ErrorHandler.getErrorMessageWithErrorCode(e));
     }
 
     @Override

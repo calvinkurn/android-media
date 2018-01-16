@@ -399,7 +399,7 @@ public class LoginFragment extends BaseDaggerFragment
 
     @Override
     public void onErrorLogin(String errorMessage) {
-        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), errorMessage);
         passwordEditText.setText("");
     }
 

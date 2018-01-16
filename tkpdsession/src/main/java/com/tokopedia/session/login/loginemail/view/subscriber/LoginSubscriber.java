@@ -39,7 +39,7 @@ public class LoginSubscriber extends Subscriber<LoginEmailDomain> {
             view.onGoToActivationPage(email);
         } else {
             view.dismissLoadingLogin();
-            view.onErrorLogin(ErrorHandler.getErrorMessage(e));
+            view.onErrorLogin(ErrorHandler.getErrorMessageWithErrorCode(e));
         }
     }
 

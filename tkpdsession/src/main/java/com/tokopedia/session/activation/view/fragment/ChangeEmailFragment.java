@@ -145,7 +145,7 @@ public class ChangeEmailFragment extends BasePresenterFragment<ChangeEmailPresen
     @Override
     public void onErrorChangeEmail(String message) {
         finishLoadingProgress();
-        NetworkErrorHelper.showSnackbar(getActivity(), message);
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), message);
     }
 
     @Override

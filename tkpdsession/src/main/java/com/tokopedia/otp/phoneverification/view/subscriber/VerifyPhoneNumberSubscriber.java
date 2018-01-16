@@ -25,7 +25,7 @@ public class VerifyPhoneNumberSubscriber extends Subscriber<ValidateVerifyPhoneN
 
     @Override
     public void onError(Throwable e) {
-        viewListener.onErrorVerifyPhoneNumber(ErrorHandler.getErrorMessage(e));
+        viewListener.onErrorVerifyPhoneNumber(ErrorHandler.getErrorMessageWithErrorCode(e));
     }
 
     @Override

@@ -85,7 +85,6 @@ import static com.tokopedia.session.google.GoogleSignInActivity.RC_SIGN_IN_GOOGL
 public class RegisterEmailFragment extends BaseDaggerFragment
         implements RegisterEmailViewListener, RegisterConstant {
 
-    private static final int REQUEST_LOGIN = 101;
     View container;
     View redirectView;
     AutoCompleteTextView email;
@@ -387,11 +386,9 @@ public class RegisterEmailFragment extends BaseDaggerFragment
         Set<String> listOfAddresses = new LinkedHashSet<>();
         Pattern emailPattern = Patterns.EMAIL_ADDRESS; // API level 8+
         Account[] accounts = AccountManager.get(getActivity()).getAccountsByType("com.google");
-        if (accounts != null) {
-            for (Account account : accounts) {
-                if (emailPattern.matcher(account.name).matches()) {
-                    listOfAddresses.add(account.name);
-                }
+        for (Account account : accounts) {
+            if (emailPattern.matcher(account.name).matches()) {
+                listOfAddresses.add(account.name);
             }
         }
         return new ArrayList<>(listOfAddresses);
@@ -485,34 +482,10 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void setPhoneError(String errorMessage) {
-        setWrapperError(wrapperPhone, errorMessage);
-        phone.requestFocus();
-    }
-
-    @Override
     public void resetError() {
         setWrapperError(wrapperName, null);
         setWrapperError(wrapperEmail, null);
         setWrapperError(wrapperPassword, null);
-    }
-
-    @Override
-    public void setPasswordError(String messageError) {
-        setWrapperError(wrapperPassword, messageError);
-        registerPassword.requestFocus();
-    }
-
-    @Override
-    public void setEmailError(String messageError) {
-        setWrapperError(wrapperEmail, messageError);
-        email.requestFocus();
-    }
-
-    @Override
-    public void setNameError(String messageError) {
-        setWrapperError(wrapperName, messageError);
-        name.requestFocus();
     }
 
     @Override

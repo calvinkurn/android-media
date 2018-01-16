@@ -19,17 +19,9 @@ public interface RegisterEmailViewListener {
 
     void resetError();
 
-    void setPasswordError(String messageError);
-
     Activity getActivity();
 
     EditText getPhone();
-
-    void setPhoneError(String errorMessage);
-
-    void setEmailError(String messageError);
-
-    void setNameError(String messageError);
 
     String getString(int resId);
 

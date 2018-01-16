@@ -28,7 +28,7 @@ public class LoginDiscoverSubscriber extends Subscriber<DiscoverViewModel> {
     @Override
     public void onError(Throwable e) {
         view.dismissLoadingDiscover();
-        view.onErrorDiscoverLogin(ErrorHandler.getErrorMessage(e));
+        view.onErrorDiscoverLogin(ErrorHandler.getErrorMessageWithErrorCode(e));
     }
 
     @Override
@@ -37,9 +37,7 @@ public class LoginDiscoverSubscriber extends Subscriber<DiscoverViewModel> {
         if (!discoverViewModel.getProviders().isEmpty()) {
             view.onSuccessDiscoverLogin(discoverViewModel.getProviders());
         } else {
-            view.onErrorDiscoverLogin(MainApplication.getAppContext().getString(R
-                    .string.error_empty_provider) + " " + MainApplication.getAppContext().getString(R
-                    .string.code_error) + " " + ErrorCode.UNSUPPORTED_FLOW);
+            view.onErrorDiscoverLogin(ErrorHandler.getDefaultErrorCodeMessage(ErrorCode.UNSUPPORTED_FLOW));
         }
     }
 }

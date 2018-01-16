@@ -80,6 +80,10 @@ public class ErrorHandler {
         return "Error " + String.valueOf(code) + " : " + msg;
     }
 
+    public static String getErrorMessage(Throwable e) {
+        getErrorMessage(e, MainApplication.getAppContext());
+    }
+
     public static String getErrorMessage(Throwable e, final Context context) {
         if (e instanceof UnknownHostException) {
             return context.getString(R.string.msg_no_connection);
@@ -129,7 +133,8 @@ public class ErrorHandler {
         }
     }
 
-    public static String getErrorMessage(Throwable e) {
+
+    public static String getErrorMessageWithErrorCode(Throwable e) {
         Context context = MainApplication.getAppContext();
         if (BuildConfig.DEBUG) {
             return e.getLocalizedMessage();
@@ -140,7 +145,8 @@ public class ErrorHandler {
             return context.getString(R.string.default_request_error_timeout) + " " +
                     context.getString(R.string.code_error) + ErrorCode.SOCKET_TIMEOUT_EXCEPTION;
         } else if (e instanceof IOException) {
-            return context.getString(R.string.msg_no_connection);
+            return context.getString(R.string.msg_no_connection) + " " +
+                    context.getString(R.string.code_error) + ErrorCode.IO_EXCEPTION;
         } else if (e instanceof RuntimeException &&
                 e.getLocalizedMessage() != null &&
                 !e.getLocalizedMessage().equals("") &&
@@ -185,7 +191,12 @@ public class ErrorHandler {
             }
         } else if (e instanceof ErrorMessageException
                 && !TextUtils.isEmpty(e.getLocalizedMessage())) {
-            return e.getLocalizedMessage();
+            if (!e.getLocalizedMessage().contains(context.getString(R.string.code_error)))
+                return e.getLocalizedMessage() + " " +
+                        context.getString(R.string.code_error) + ErrorCode.WS_ERROR;
+            else {
+                return e.getLocalizedMessage();
+            }
         } else if (e instanceof MessageErrorException) {
             return e.getLocalizedMessage();
         } else {
@@ -215,7 +226,7 @@ public class ErrorHandler {
     }
 
 
-private static boolean hasErrorMessage(JSONObject jsonObject) {
+    private static boolean hasErrorMessage(JSONObject jsonObject) {
         return jsonObject.has(ERROR_MESSAGE);
     }
 
@@ -244,8 +255,7 @@ private static boolean hasErrorMessage(JSONObject jsonObject) {
 
     public static String getDefaultErrorCodeMessage(int errorCode) {
         return MainApplication.getAppContext().getString(R.string.default_request_error_unknown)
-                + " " + MainApplication.getAppContext().getString(R.string.code_error)
-                + " " + errorCode;
+                + " (" + errorCode + ")";
     }
 
     public static String getErrorMessageTokoCash(Response<TkpdDigitalResponse> response) {

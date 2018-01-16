@@ -26,7 +26,7 @@ public class ChangePhoneNumberSubscriber extends Subscriber<ChangePhoneNumberVie
 
     @Override
     public void onError(Throwable e) {
-        viewListener.onErrorChangePhoneNumber(ErrorHandler.getErrorMessage(e));
+        viewListener.onErrorChangePhoneNumber(ErrorHandler.getErrorMessageWithErrorCode(e));
     }
 
     @Override

@@ -36,7 +36,7 @@ public class RegisterEmailSubscriber extends Subscriber<RegisterEmailModel> {
             viewListener.showInfo();
         } else {
             viewListener.onErrorRegister(
-                    ErrorHandler.getErrorMessage(e));
+                    ErrorHandler.getErrorMessageWithErrorCode(e));
         }
     }
 

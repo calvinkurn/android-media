@@ -25,7 +25,7 @@ public class ValidateNumberSubscriber extends Subscriber<Boolean> {
     @Override
     public void onError(Throwable e) {
         view.dismissLoading();
-        view.onValidateNumberError(ErrorHandler.getErrorMessage(e));
+        view.onValidateNumberError(ErrorHandler.getErrorMessageWithErrorCode(e));
     }
 
     @Override

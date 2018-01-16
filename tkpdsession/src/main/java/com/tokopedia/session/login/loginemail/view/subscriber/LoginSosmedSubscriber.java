@@ -41,7 +41,7 @@ public class LoginSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
             view.onGoToActivationPage(email);
         } else {
             view.dismissLoadingLogin();
-            view.onErrorLogin(ErrorHandler.getErrorMessage(e));
+            view.onErrorLogin(ErrorHandler.getErrorMessageWithErrorCode(e));
         }
     }
 

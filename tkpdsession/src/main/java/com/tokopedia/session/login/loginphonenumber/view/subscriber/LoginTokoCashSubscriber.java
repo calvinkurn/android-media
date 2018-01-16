@@ -32,7 +32,7 @@ public class LoginTokoCashSubscriber extends Subscriber<LoginTokoCashViewModel> 
     @Override
     public void onError(Throwable e) {
         view.dismissLoadingProgress();
-        view.onErrorLoginTokoCash(ErrorHandler.getErrorMessage(e));
+        view.onErrorLoginTokoCash(ErrorHandler.getErrorMessageWithErrorCode(e));
     }
 
     @Override
