@@ -33,7 +33,7 @@
             android:paddingLeft="@dimen/keyline_1"
             android:text="Payment with TokoCash"
             android:textColor="@color/black_54"
-            android:textSize="@dimen/fonts" />
+            android:textSize="@dimen/fontvs" />
     </LinearLayout>
 
     <TextView
