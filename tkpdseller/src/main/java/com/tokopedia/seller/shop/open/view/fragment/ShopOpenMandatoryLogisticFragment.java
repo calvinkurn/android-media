@@ -313,7 +313,7 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
         hideSubmitLoading();
         Crashlytics.logException(t);      
         trackingOpenShop.eventOpenShopShippingError(ShopErrorHandler.getErrorMessage(getActivity(), t));
-        NetworkErrorHelper.showSnackbar(getActivity(),ShopErrorHandler.getErrorMessage(t));
+        NetworkErrorHelper.showSnackbar(getActivity(),ShopErrorHandler.getErrorMessage(getActivity(), t));
     }
 
     @Override
