@@ -1,5 +1,6 @@
 package com.tokopedia.seller.shop.open.view.holder;
 
+import android.os.Bundle;
 import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -92,6 +93,18 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
 
     }
 
+    public void onDestroy(){
+        mapView.onDestroy();
+    }
+
+    public void onCreate(Bundle saveInstanceState){
+        mapView.onCreate(saveInstanceState);
+    }
+
+    public void onLowMemory(){
+        mapView.onLowMemory();
+    }
+
     public void setLocationText(GoogleLocationViewModel googleLocationViewModel){
         this.googleLocationViewModel = googleLocationViewModel;
 
@@ -117,6 +130,7 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
                     }
                 }
             });
+            shopAddressEdittext.setText(generatedLocationOpenShop.getText().toString());
         }else{
             generatedLocationOpenShop.setVisibility(View.GONE);
             generateLocationOpenShopCopy.setVisibility(View.GONE);

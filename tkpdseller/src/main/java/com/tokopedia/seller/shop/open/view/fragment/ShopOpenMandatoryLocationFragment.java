@@ -330,6 +330,18 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        locationMapViewHolder.onDestroy();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        locationMapViewHolder.onLowMemory();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         shopOpenLocPresenter.detachView();
