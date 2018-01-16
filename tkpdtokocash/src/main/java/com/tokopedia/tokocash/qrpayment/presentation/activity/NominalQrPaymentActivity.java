@@ -38,7 +38,7 @@ public class NominalQrPaymentActivity extends TActivity implements QrPaymentCont
 
     private static final int REQUEST_CODE_SUCCESS = 121;
     private static final int REQUEST_CODE_FAILED = 111;
-    private static final int MAX_DIGIT_NOMINAL = 8;
+    private static final int MAX_DIGIT_NOMINAL = 10;
     private static final String INFO_QR = "info_qr";
     private static final String IDENTIFIER = "identifier";
 
