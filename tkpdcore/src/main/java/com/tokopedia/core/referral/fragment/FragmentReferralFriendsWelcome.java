@@ -100,7 +100,7 @@ public class FragmentReferralFriendsWelcome extends BasePresenterFragment<IRefer
         btnReferralExplore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_EXPLORE_TOKOPEDIA,"");
+                UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_EXPLORE_TOKOPEDIA, getString(R.string.label_landing_url));
                 closeView();
             }
         });

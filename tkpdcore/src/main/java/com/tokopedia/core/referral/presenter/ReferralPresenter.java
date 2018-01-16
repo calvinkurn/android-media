@@ -84,7 +84,7 @@ public class ReferralPresenter implements IReferralPresenter {
                 .setType(ShareData.APP_SHARE_TYPE)
                 .setId(view.getReferralCodeFromTextView())
                 .setName(activity.getString(R.string.app_share_title))
-                .setTextContent(activity.getString(R.string.app_share_title) + "\n " + contents + " ")
+                .setTextContent(contents.replace("(kode)",view.getReferralCodeFromTextView()) + " ")
                 .setUri(Constants.WEB_PLAYSTORE_BUYER_APP_URL)
                 .build();
         activity.startActivity(ShareActivity.createIntent(activity, shareData));

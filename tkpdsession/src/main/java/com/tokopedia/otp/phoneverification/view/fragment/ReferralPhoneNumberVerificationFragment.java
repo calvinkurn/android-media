@@ -119,7 +119,7 @@ public class ReferralPhoneNumberVerificationFragment extends BasePresenterFragme
             @Override
             public void onClick(View view) {
                 if (listener != null) {
-                    UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_VERIFY_NUMBER,tvPhoneNumber.getText().toString());
+                    UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_VERIFY_NUMBER,tvPhoneNumber.getText().toString().replace("-", ""));
 
                     listener.onClickVerification(tvPhoneNumber.getText().toString());
                 }
