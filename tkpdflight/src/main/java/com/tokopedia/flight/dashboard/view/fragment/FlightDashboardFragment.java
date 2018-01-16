@@ -492,4 +492,10 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                     .getBannerWebViewIntent(getActivity(), FlightUrl.ALL_PROMO_LINK));
         }
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        KeyboardHandler.hideSoftKeyboard(getActivity());
+    }
 }

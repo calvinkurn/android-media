@@ -67,6 +67,9 @@ public interface FlightBookingReviewContract {
         void showErrorInEmptyState(String message);
 
         void setNeedToRefreshOnPassengerInfo();
+
+        void updateFinalTotal(AttributesVoucher attributesVoucher, FlightBookingReviewModel currentBookingReviewModel);
+
     }
 
     interface Presenter extends FlightBaseBookingContact.Presenter<View>{

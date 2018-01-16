@@ -203,6 +203,7 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
             public void onNext(AttributesVoucher attributesVoucher) {
                 getView().hideProgressDialog();
                 getView().onSuccessCheckVoucherCode(attributesVoucher);
+                getView().updateFinalTotal(attributesVoucher, getView().getCurrentBookingReviewModel());
             }
         };
     }
