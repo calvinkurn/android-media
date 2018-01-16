@@ -21,6 +21,7 @@ import android.widget.EditText;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.gallery.GalleryActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.ImageUploadHandler;
@@ -270,6 +271,7 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
             @Override
             public void onClick(View view) {
                 presenter.btnContinueClicked();
+                UnifyTracking.eventCreateResoStep3Continue();
             }
         });
     }

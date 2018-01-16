@@ -10,15 +10,23 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -70,6 +78,7 @@ import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.view.TopAdsView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
+import com.tokopedia.transaction.addtocart.utils.KeroppiConstants;
 import com.tokopedia.transaction.cart.activity.ShipmentCartActivity;
 import com.tokopedia.transaction.cart.adapter.CartItemAdapter;
 import com.tokopedia.transaction.cart.listener.ICartView;
@@ -88,6 +97,7 @@ import com.tokopedia.transaction.cart.model.toppaydata.TopPayParameterData;
 import com.tokopedia.transaction.cart.presenter.CartPresenter;
 import com.tokopedia.transaction.cart.presenter.ICartPresenter;
 import com.tokopedia.transaction.cart.receivers.TopPayBroadcastReceiver;
+import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
 import com.tokopedia.transaction.utils.LinearLayoutManagerNonScroll;
 import com.tokopedia.transaction.utils.ValueConverter;
 
@@ -164,6 +174,8 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     TextView instantInsertVoucherButton;
     @BindView(R2.id.instant_promo_placeholder)
     CardView instantPromoPlaceHolder;
+    @BindView(R2.id.tv_insurance_terms)
+    TextView tvInsuranceTerms;
     @BindView(R2.id.promo_code_layout)
     ViewGroup promoCodeLayout;
     @BindView(R2.id.promo_result)
@@ -190,6 +202,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     private String totalLoyaltyPoint;
     private String donationValue;
 
+    private boolean hasLogisticInsurance;
     private boolean hasPromotion;
     private final String TOPADS_CART_SRC = "empty_cart";
 
@@ -244,8 +257,33 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     protected void initView(View view) {
+        Spannable tosAgreementText = formatInsuranceTacText();
+        tvInsuranceTerms.setText(tosAgreementText);
+
         progressDialogNormal = new TkpdProgressDialog(context, TkpdProgressDialog.NORMAL_PROGRESS);
         stopNestedScrollingView();
+    }
+
+    @NonNull
+    private Spannable formatInsuranceTacText() {
+        String formatText = getString(R.string.text_tos_agreement);
+        String messageTosAgreement = getString(R.string.message_tos_agreement);
+        int startSpan = messageTosAgreement.indexOf(formatText);
+        int endSpan = messageTosAgreement.indexOf(formatText) + formatText.length();
+        Spannable tosAgreementText = new SpannableString(messageTosAgreement);
+        int color = ContextCompat.getColor(context, R.color.tkpd_green_header);
+        tosAgreementText.setSpan(new ForegroundColorSpan(color), startSpan, endSpan,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        tosAgreementText.setSpan(new StyleSpan(Typeface.BOLD), startSpan, endSpan,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        tosAgreementText.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                getActivity().startActivity(new Intent(getActivity(), InsuranceTnCActivity.class));
+            }
+        }, startSpan, endSpan, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        tvInsuranceTerms.setMovementMethod(LinkMovementMethod.getInstance());
+        return tosAgreementText;
     }
 
     @Override
@@ -369,6 +407,29 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         btnCheckout.setOnClickListener(getCheckoutButtonClickListener());
     }
 
+    private void setInsuranceTermsVisibility(CartCourierPrices cartCourierPrices) {
+        if (cartCourierPrices.getCartInsuranceProd() != 0) {
+            if (!hasLogisticInsurance &&
+                    (cartCourierPrices.getInsuranceMode() == KeroppiConstants.InsuranceType.MUST ||
+                            cartCourierPrices.getInsuranceMode() == KeroppiConstants.InsuranceType.OPTIONAL)) {
+                if (cartCourierPrices.getInsuranceUsedType() == KeroppiConstants.InsuranceUsedType.TOKOPEDIA_INSURANCE) {
+                    tvInsuranceTerms.setVisibility(View.VISIBLE);
+                } else if (cartCourierPrices.getInsuranceUsedType() == KeroppiConstants.InsuranceUsedType.LOGISTIC_INSURANCE) {
+                    tvInsuranceTerms.setVisibility(View.GONE);
+                    hasLogisticInsurance = true;
+                } else {
+                    tvInsuranceTerms.setVisibility(View.GONE);
+                }
+            } else {
+                tvInsuranceTerms.setVisibility(View.GONE);
+            }
+        } else {
+            tvInsuranceTerms.setVisibility(View.GONE);
+        }
+
+    }
+
+
     @Override
     public void setCheckoutCartToken(String token) {
         checkoutDataBuilder.token(token);
@@ -413,6 +474,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 
     @Override
     public void renderErrorCheckVoucher(String message) {
+        NetworkErrorHelper.showSnackbar(getActivity(), message);
     }
 
     @Override
@@ -663,6 +725,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     @Override
     public void setCartSubTotal(CartCourierPrices cartCourierPrices) {
         cartItemAdapter.setRates(cartCourierPrices);
+        setInsuranceTermsVisibility(cartCourierPrices);
     }
 
     @Override
@@ -953,7 +1016,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
             } else if (resultCode == LoyaltyActivity.COUPON_RESULT_CODE) {
                 Bundle bundle = data.getExtras();
                 promoResultLayout.setVisibility(View.VISIBLE);
-                labelPromoType.setText("Kode Kupon: ");
+                labelPromoType.setText(getString(R.string.title_coupon_code) + " : ");
                 promoVoucherCode.setText(bundle.getString(LoyaltyActivity.COUPON_TITLE, ""));
                 voucherDescription.setText(bundle.getString(LoyaltyActivity.COUPON_MESSAGE, ""));
 
@@ -970,7 +1033,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                                         String amount,
                                         String description) {
         promoResultLayout.setVisibility(View.VISIBLE);
-        labelPromoType.setText("Kode Voucher: ");
+        labelPromoType.setText(getString(R.string.title_promo_code) + " : ");
         promoVoucherCode.setText(voucherCode);
         voucherDescription.setText(description);
 

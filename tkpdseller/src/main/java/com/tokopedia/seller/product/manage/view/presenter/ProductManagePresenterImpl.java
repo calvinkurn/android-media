@@ -72,7 +72,7 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
 
             @Override
             public void onNext(ShopModel shopModel) {
-                getView().onSuccessLoadGoldMerchantFlag(shopModel.getInfo().isGoldMerchant());
+                getView().onSuccessGetShopInfo(shopModel.getInfo().isGoldMerchant(), shopModel.getInfo().isOfficialStore());
             }
         });
     }

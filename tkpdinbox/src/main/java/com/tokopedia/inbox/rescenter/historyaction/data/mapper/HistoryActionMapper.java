@@ -46,13 +46,14 @@ public class HistoryActionMapper implements Func1<Response<TkpdResponse>, Histor
             if (item.getCreateTime() != null) {
                 data.setDateTimestamp(item.getCreateTime().getCreateTimestamp());
                 data.setDate(item.getCreateTime().getCreateTimeStr());
+                data.setMonth(item.getCreateTime().getMonth());
+                data.setDateNumber(item.getCreateTime().getDateNumber());
+                data.setCreateTimestampStr(item.getCreateTime().getCreateTimestamp());
+                data.setTimeNumber(item.getCreateTime().getTimeNumber());
             }
             data.setActionByText(item.getActionByStr());
             data.setHistoryStr(item.getRemark());
             data.setConversationID(item.getResConvId());
-            data.setMonth(item.getMonth());
-            data.setDateNumber(item.getDateNumber());
-            data.setCreateTimestampStr(item.getCreateTimestampStr());
             list.add(data);
         }
         return list;

@@ -190,7 +190,8 @@ public class NewOnboardingActivity extends OnboardingActivity {
                                 permissionsArray.remove(position);
                                 isNextPressed = false;
                             } else {
-                                ((NewOnBoardingFragment) fragments.get(pager.getCurrentItem())).animateOut();
+                                NewOnBoardingFragment currentFragment = ((NewOnBoardingFragment) fragments.get(pager.getCurrentItem()));
+                                if (currentFragment != null) currentFragment.animateOut();
                                 pager.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
@@ -201,7 +202,8 @@ public class NewOnboardingActivity extends OnboardingActivity {
                                 onNextPressed();
                             }
                         } else {
-                            ((NewOnBoardingFragment) fragments.get(pager.getCurrentItem())).animateOut();
+                            NewOnBoardingFragment currentFragment = ((NewOnBoardingFragment) fragments.get(pager.getCurrentItem()));
+                            if (currentFragment != null) currentFragment.animateOut();
                             pager.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {

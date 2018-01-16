@@ -66,6 +66,9 @@ public class Data implements Parcelable {
     @SerializedName("root_category_id")
     @Expose
     private Integer rootCategoryId;
+    @SerializedName("header_image_hex_color")
+    @Expose
+    private String headerHexColor;
 
 
     public List<Child> getChild() {
@@ -220,6 +223,14 @@ public class Data implements Parcelable {
         this.rootCategoryId = rootCategoryId;
     }
 
+    public String getHeaderHexColor() {
+        return headerHexColor;
+    }
+
+    public void setHeaderHexColor(String headerHexColor) {
+        this.headerHexColor = headerHexColor;
+    }
+
     protected Data(Parcel in) {
         if (in.readByte() == 0x01) {
             child = new ArrayList<Child>();
@@ -245,6 +256,7 @@ public class Data implements Parcelable {
         applinks = in.readString();
         video = (Video) in.readValue(Video.class.getClassLoader());
         rootCategoryId = in.readByte() == 0x00 ? null : in.readInt();
+        headerHexColor = in.readString();
     }
 
     @Override
@@ -299,6 +311,7 @@ public class Data implements Parcelable {
             dest.writeByte((byte) (0x01));
             dest.writeInt(rootCategoryId);
         }
+        dest.writeString(headerHexColor);
     }
 
     @SuppressWarnings("unused")
