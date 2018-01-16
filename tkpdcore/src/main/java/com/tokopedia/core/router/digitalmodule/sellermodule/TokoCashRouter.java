@@ -17,7 +17,7 @@ public interface TokoCashRouter {
 
     String getRangeDateFormatted(Context context, long startDate, long endDate);
 
-    //TODO will be deleted
+    //TODO will continue using this method in next sprint
     Intent goToHistoryTokoCash(Context context);
 
     Intent goToQRScannerTokoCash(Context context);

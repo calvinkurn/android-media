@@ -19,10 +19,10 @@ public class BalanceTokoCashMapper implements Func1<BalanceTokoCashEntity, Balan
 
             if (balanceTokoCashEntity.getActionBalanceEntity() != null) {
                 ActionBalance actionBalance = new ActionBalance();
-                actionBalance.setApplinks(balanceTokoCash.getActionBalance().getApplinks());
-                actionBalance.setLabelAction(balanceTokoCash.getActionBalance().getLabelAction());
-                actionBalance.setRedirectUrl(balanceTokoCash.getActionBalance().getRedirectUrl());
-                actionBalance.setVisibility(balanceTokoCash.getActionBalance().getVisibility());
+                actionBalance.setApplinks(balanceTokoCashEntity.getActionBalanceEntity().getApplinks());
+                actionBalance.setLabelAction(balanceTokoCashEntity.getActionBalanceEntity().getLabelAction());
+                actionBalance.setRedirectUrl(balanceTokoCashEntity.getActionBalanceEntity().getRedirectUrl());
+                actionBalance.setVisibility(balanceTokoCashEntity.getActionBalanceEntity().getVisibility());
                 balanceTokoCash.setActionBalance(actionBalance);
             }
             balanceTokoCash.setAbTags(balanceTokoCashEntity.getAbTags());

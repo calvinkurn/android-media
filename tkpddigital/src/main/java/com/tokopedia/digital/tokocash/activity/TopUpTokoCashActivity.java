@@ -333,7 +333,7 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
         if (item.getItemId() == R.id.action_menu_history_tokocash) {
             startActivity(HistoryTokocashActivity.newInstance(this));
 
-            //TODO activate this code below to use the new version clean architecture
+            //TODO in next sprint activate this code below to use the new version clean architecture
 //            Application application = this.getApplication();
 //            if (application != null && application instanceof TokoCashRouter) {
 //                Intent intent = ((TokoCashRouter) application).goToHistoryTokoCash(this);
