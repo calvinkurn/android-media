@@ -397,11 +397,6 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
             return;
         }
         trackingOpenShop.eventOpenShopLocationError(errorMessage);
-        (snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                onNextButtonClicked();
-            }
-        })).showRetrySnackbar();
+        onErrorGetReserveDomain(errorMessage);
     }
 }
