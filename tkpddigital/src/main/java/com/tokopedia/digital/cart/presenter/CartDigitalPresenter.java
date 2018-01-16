@@ -392,7 +392,7 @@ TO CHECK IF NOTP ENABLED FROM FIREBASE OR NOT
     private void needToVerifyOTP() {
 
         view.showProgressLoading("",view.getApplicationContext().getResources().getString(R.string.msg_verification));
-        NOTPExotelVerification.getmInstance().verifyNo(SessionHandler.getPhoneNumber(), view.getActivity(), new NOTPExotelVerification.NOTPVerificationListener() {
+        NOTPExotelVerification.getmInstance().verifyNo(SessionHandler.getPhoneNumber(), view.getApplicationContext(), new NOTPExotelVerification.NOTPVerificationListener() {
             @Override
             public void onVerificationSuccess() {
                 view.hideProgressLoading();
