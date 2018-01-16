@@ -90,27 +90,28 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
             public void onNext(FlightOrder flightOrder) {
                 getView().hideProgressDialog();
                 getView().renderFlightOrder(flightOrder);
-                getView().updateFlightList(filterFlightJourneys(flightOrder.getStatus(), flightOrder.getJourneys(), flightOrderDetailPassData));
+                List<FlightOrderJourney> flightOrderJourneyList = filterFlightJourneys(flightOrder.getStatus(), flightOrder.getJourneys(), flightOrderDetailPassData);
+                getView().updateFlightList(flightOrderJourneyList);
                 getView().updatePassengerList(transformToListPassenger(flightOrder.getPassengerViewModels()));
                 getView().updatePrice(transformToSimpleModelPrice(flightOrder), CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(totalPrice));
                 getView().updateOrderData(FlightDateUtil.formatDate(FlightDateUtil.FORMAT_DATE_API_DETAIL,
                         FlightDateUtil.FORMAT_DATE_LOCAL_DETAIL_ORDER, flightOrder.getCreateTime()),
                         generateTicketLink(flightOrder.getId()), generateInvoiceLink(flightOrder.getId()),
-                        generateCancelMessage(flightOrder));
+                        generateCancelMessage(flightOrderJourneyList, flightOrder.getPassengerViewModels()));
                 generateStatus(flightOrder.getStatus());
             }
         };
     }
 
-    private String generateCancelMessage(FlightOrder flightOrder) {
+    private String generateCancelMessage(List<FlightOrderJourney> flightOrder, List<FlightOrderPassengerViewModel> passengerViewModels) {
         String newLine = "\n";
         StringBuilder result = new StringBuilder();
         result.append(newLine);
-        for (FlightOrderJourney flightOrderJourney : flightOrder.getJourneys()) {
+        for (FlightOrderJourney flightOrderJourney : flightOrder) {
             String item = flightOrderJourney.getDepartureAiportId() + "-" + flightOrderJourney.getArrivalAirportId() + " ";
             item += newLine;
             ArrayList<String> passengers = new ArrayList<>();
-            for (FlightOrderPassengerViewModel flightOrderPassengerViewModel : flightOrder.getPassengerViewModels()) {
+            for (FlightOrderPassengerViewModel flightOrderPassengerViewModel : passengerViewModels) {
                 passengers.add(flightOrderPassengerViewModel.getPassengerFirstName() + " " + flightOrderPassengerViewModel.getPassengerLastName());
             }
             item += TextUtils.join(newLine, passengers);
