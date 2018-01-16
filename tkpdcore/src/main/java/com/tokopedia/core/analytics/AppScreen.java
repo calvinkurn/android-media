@@ -1,7 +1,7 @@
 package com.tokopedia.core.analytics;
 
 import com.appsflyer.AFInAppEventType;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 
 
@@ -266,12 +266,19 @@ public final class AppScreen {
     public static final String SCREEN_DISCOVERY_PAGE = "Discovery Page";
     public static final String SCREEN_CHAT = "inbox-chat";
     public static final String SCREEN_CHAT_DETAIL = "chat detail";
-    
+
     public static final String SCREEN_SELECT_VERIFICATION_METHOD = "change method";
     public static final String SCREEN_COTP_DEFAULT = "Input OTP";
     public static final String SCREEN_COTP_SMS = "Input OTP sms";
     public static final String SCREEN_COTP_CALL = "Input OTP call";
     public static final String SCREEN_COTP_EMAIL = "Input OTP email";
+
+    public static final String SCREEN_LOGIN_PHONE_NUMBER = "Login by Phone Number";
+    public static final String SCREEN_CHOOSE_TOKOCASH_ACCOUNT = "choose account";
+    public static final String SCREEN_NOT_CONNECTED_TO_TOKOCASH = "Login Tokocash - Not Connected";
+
+    public static final String SCREEN_SECURITY_QUESTION = "Security Question Page";
+    public static final String SCREEN_CHANGE_PHONE_NUMBER = "Change Phone Number Page";
 
     public static final String SCREEN_CHANGE_PHONE_NUMBER_WARNING = "Warning";
     public static final String SCREEN_CHANGE_PHONE_NUMBER_INPUT = "Change Number";
@@ -289,7 +296,7 @@ public final class AppScreen {
     }
 
     public static String convertAFFragmentEvent(String tag) {
-        if (tag.equals(SessionRouter.IDENTIFIER_REGISTER_NEWNEXT_FRAGMENT) || tag.equals(SessionRouter.IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT)) {
+        if (tag.equals(OldSessionRouter.IDENTIFIER_REGISTER_NEWNEXT_FRAGMENT) || tag.equals(OldSessionRouter.IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT)) {
             return AFInAppEventType.COMPLETE_REGISTRATION;
         } else {
             return AFInAppEventType.CONTENT_VIEW;

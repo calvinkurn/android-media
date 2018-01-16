@@ -3,14 +3,13 @@ package com.tokopedia.digital.widget.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.session.presenter.Session;
@@ -21,7 +20,6 @@ import com.tokopedia.digital.R2;
 import com.tokopedia.digital.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.widget.compoundview.WidgetClientNumberView;
-import com.tokopedia.digital.widget.compoundview.WidgetOperatorChooserView;
 import com.tokopedia.digital.widget.compoundview.WidgetProductChooserView;
 import com.tokopedia.digital.widget.compoundview.WidgetWrapperBuyView;
 import com.tokopedia.digital.widget.data.mapper.FavoriteNumberListDataMapper;
@@ -41,15 +39,8 @@ import com.tokopedia.digital.widget.presenter.DigitalWidgetStyle1Presenter;
 import com.tokopedia.digital.widget.presenter.IDigitalWidgetStyle1Presenter;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -239,7 +230,7 @@ public class WidgetStyle99RechargeFragment extends BaseWidgetRechargeFragment<ID
                 digitalCheckoutPassDataState =
                         widgetWrapperBuyView.getGeneratedCheckoutPassData(getDataPreCheckout());
 
-                Intent intent = SessionRouter.getLoginActivityIntent(getActivity());
+                Intent intent = OldSessionRouter.getLoginActivityIntent(getActivity());
                 intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
 
                 presenter.storeLastClientNumberTyped(String.valueOf(category.getId()),

@@ -40,6 +40,7 @@ import com.tokopedia.tkpd.beranda.domain.interactor.GetLocalHomeDataUseCase;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetTickerUseCase;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetTopPicksUseCase;
 import com.tokopedia.tkpd.beranda.domain.model.category.CategoryLayoutRowModel;
+import com.tokopedia.tkpd.beranda.listener.HomeFeedListener;
 import com.tokopedia.tkpd.beranda.presentation.view.HomeContract;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.BrandsViewModel;
@@ -48,9 +49,7 @@ import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.HeaderView
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TopPicksViewModel;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetHomeFeedsUseCase;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.GetFeedsSubscriber;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.subscriber.GetHomeFeedsSubscriber;
+import com.tokopedia.tkpd.beranda.presentation.view.subscriber.GetHomeFeedsSubscriber;
 
 import java.util.List;
 
@@ -96,7 +95,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     private GetShopInfoRetrofit getShopInfoRetrofit;
     private String currentCursor = "";
     private PagingHandler pagingHandler;
-    private FeedPlus.View feedListener;
+    private HomeFeedListener feedListener;
 
     private HeaderViewModel headerViewModel;
 
@@ -325,7 +324,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         }
     }
 
-    public void setFeedListener(FeedPlus.View feedListener) {
+    public void setFeedListener(HomeFeedListener feedListener) {
         this.feedListener = feedListener;
     }
 

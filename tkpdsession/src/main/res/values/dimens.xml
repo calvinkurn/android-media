@@ -33,4 +33,5 @@
     <dimen name="verification_icon">38dp</dimen>
     <dimen name="extra_space_start">3dp</dimen>
     <dimen name="button_height">40dp</dimen>
+    <dimen name="default_big_icon">200dp</dimen>
 </resources>
