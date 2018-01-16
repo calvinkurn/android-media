@@ -466,7 +466,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                     String carrierName = DeviceUtil.getOperatorName(getActivity(), i);
                     error = getString(R.string.label_operator_not_support);
                     if(carrierName == null){
-                        return;
+                        continue;
                     }else if (presenter.isCarrierSignalsNotAvailable(carrierName)) {
                         error = noSognalsStr;
                         carrierName = error;
