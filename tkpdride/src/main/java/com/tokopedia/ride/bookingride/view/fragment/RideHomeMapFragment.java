@@ -510,7 +510,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         source.setAndFormatLatitude(latitude);
         source.setAndFormatLongitude(longitude);
         proccessToRenderRideProduct();
-        setSourceLocationText(sourceAddress);
+        setSourceLocationText(title);
     }
 
     @Override
