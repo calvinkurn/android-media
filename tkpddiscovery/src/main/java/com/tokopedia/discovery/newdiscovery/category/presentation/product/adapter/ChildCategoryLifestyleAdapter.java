@@ -69,7 +69,7 @@ public class ChildCategoryLifestyleAdapter extends RecyclerView.Adapter<ChildCat
                         DataLayer.mapOf(
                                 "id", model.getCategoryId(),
                                 "name", String.format("category %s - subcategory banner", model.getCategoryName()),
-                                "position", position + 1,
+                                "position", String.valueOf(position + 1),
                                 "creative", headerName
                         )
                 );

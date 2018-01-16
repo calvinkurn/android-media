@@ -110,7 +110,7 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
                         DataLayer.mapOf(
                                 "id", looper.getCategoryId(),
                                 "name", String.format("category %s - subcategory banner", looper.getCategoryName()),
-                                "position", i+1,
+                                "position", String.valueOf(i+1),
                                 "creative", model.getHeaderModel().getCategoryName()
                                 )
                 );
