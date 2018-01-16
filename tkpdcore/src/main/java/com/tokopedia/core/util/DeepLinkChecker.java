@@ -123,6 +123,10 @@ public class DeepLinkChecker {
         return (linkSegment.get(0).equals("catalog"));
     }
 
+    private static boolean isContent(List<String> linkSegment) {
+        return (linkSegment.get(0).equals("content"));
+    }
+
     private static boolean isPromo(List<String> linkSegment) {
         return linkSegment.size() > 0 && (linkSegment.get(0).equals("promo"));
     }
@@ -170,6 +174,7 @@ public class DeepLinkChecker {
                 && !isHelp(linkSegment)
                 && !isBrowse(linkSegment)
                 && !isHot(linkSegment)
+                && !isContent(linkSegment)
                 && !isCatalog(linkSegment)
                 && !isTopPicks(linkSegment));
     }
