@@ -114,6 +114,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                 passengers.add(flightOrderPassengerViewModel.getPassengerFirstName() + " " + flightOrderPassengerViewModel.getPassengerLastName());
             }
             item += TextUtils.join(newLine, passengers);
+            item += newLine;
             result.append(item);
         }
         return result.toString();
