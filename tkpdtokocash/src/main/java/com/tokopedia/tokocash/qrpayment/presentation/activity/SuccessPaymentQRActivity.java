@@ -96,7 +96,6 @@ public class SuccessPaymentQRActivity extends TActivity {
                     .ConvertToRupiah(String.valueOf(qrPaymentTokoCash.getAmount()));
             tokoCashBalance.setText(String.valueOf("Rp " +
                     tokocashBalanceString.replace(",", ".")));
-            setHelpText();
         } else {
             toolbar.setTitle(getString(R.string.title_failed_payment));
             successTransactionLayout.setVisibility(View.GONE);
@@ -113,6 +112,7 @@ public class SuccessPaymentQRActivity extends TActivity {
     }
 
     private void setHelpText() {
+        // TODO for next development will use this help link, for now still hide help link
         SpannableString ss = new SpannableString(getString(R.string.help_payment_tokocash));
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override

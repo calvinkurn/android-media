@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:visibility="gone"
-        tools:visibility="gone">
+        tools:visibility="visible">
 
         <TextView
             android:layout_width="wrap_content"
@@ -164,7 +164,8 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/margin_large"
                 android:textColor="@color/black_54"
-                android:textSize="@dimen/fontvs" />
+                android:textSize="@dimen/fontvs"
+                android:visibility="gone"/>
 
         </RelativeLayout>
 
@@ -175,7 +176,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <ImageView
             android:layout_width="wrap_content"

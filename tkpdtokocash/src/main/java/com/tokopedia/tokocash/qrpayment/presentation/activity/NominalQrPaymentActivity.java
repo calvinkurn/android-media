@@ -15,6 +15,8 @@ import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.design.text.watcher.NumberTextWatcher;
+import com.tokopedia.design.utils.ConverterUtils;
+import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
 import com.tokopedia.tokocash.di.TokoCashComponent;
@@ -79,13 +81,6 @@ public class NominalQrPaymentActivity extends TActivity implements QrPaymentCont
         merchantName.setText(infoQrTokoCash.getName());
         merchantPhone.setText(infoQrTokoCash.getPhoneNumber());
         merchantPhone.setVisibility(!infoQrTokoCash.getPhoneNumber().equals("") ? View.VISIBLE : View.GONE);
-
-        if (infoQrTokoCash.getAmount() > 0) {
-            nominalValue.setEnabled(false);
-            nominalValue.setText(String.valueOf(infoQrTokoCash.getAmount()));
-        } else {
-            nominalValue.setEnabled(true);
-        }
 
         payButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,6 +156,15 @@ public class NominalQrPaymentActivity extends TActivity implements QrPaymentCont
         tokocashValue.setText(String.format(getString(R.string.tokocash_balance_payment),
                 balanceTokoCash.getBalance()));
         this.balanceTokoCash = balanceTokoCash;
+
+        if (infoQrTokoCash.getAmount() > 0) {
+            nominalValue.setEnabled(false);
+            nominalValue.setText(CurrencyFormatHelper
+                    .ConvertToRupiah(String.valueOf(infoQrTokoCash.getAmount())));
+            handleWarningPayment(infoQrTokoCash.getAmount());
+        } else {
+            nominalValue.setEnabled(true);
+        }
 
         nominalValue.addTextChangedListener(new NumberTextWatcher(nominalValue, "0") {
             @Override
