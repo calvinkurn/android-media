@@ -6,6 +6,8 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 /**
  * Created by nisie on 5/5/17.
  */
@@ -33,7 +35,47 @@ public class TokoCashData implements Parcelable {
     @SerializedName("link")
     @Expose
     private int link;
+    @SerializedName("ab_tags")
+    @Expose
+    private List<String> abTags;
 
+
+    protected TokoCashData(Parcel in) {
+        mAction = in.readParcelable(Action.class.getClassLoader());
+        mBalance = in.readString();
+        mRedirectUrl = in.readString();
+        mAppLinks = in.readString();
+        mText = in.readString();
+        if (in.readByte() == 0) {
+            mWalletId = null;
+        } else {
+            mWalletId = in.readLong();
+        }
+        link = in.readInt();
+        abTags = in.createStringArrayList();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(mAction, flags);
+        dest.writeString(mBalance);
+        dest.writeString(mRedirectUrl);
+        dest.writeString(mAppLinks);
+        dest.writeString(mText);
+        if (mWalletId == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeLong(mWalletId);
+        }
+        dest.writeInt(link);
+        dest.writeStringList(abTags);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
     public static final Creator<TokoCashData> CREATOR = new Creator<TokoCashData>() {
         @Override
@@ -99,34 +141,15 @@ public class TokoCashData implements Parcelable {
         return mAppLinks;
     }
 
-
-    @Override
-    public int describeContents() {
-        return 0;
+    public List<String> getAbTags() {
+        return abTags;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(this.mAction, flags);
-        dest.writeString(this.mBalance);
-        dest.writeString(this.mRedirectUrl);
-        dest.writeString(this.mAppLinks);
-        dest.writeString(this.mText);
-        dest.writeValue(this.mWalletId);
-        dest.writeInt(this.link);
+    public void setAbTags(List<String> abTags) {
+        this.abTags = abTags;
     }
 
     public TokoCashData() {
-    }
-
-    protected TokoCashData(Parcel in) {
-        this.mAction = in.readParcelable(Action.class.getClassLoader());
-        this.mBalance = in.readString();
-        this.mRedirectUrl = in.readString();
-        this.mAppLinks = in.readString();
-        this.mText = in.readString();
-        this.mWalletId = (Long) in.readValue(Long.class.getClassLoader());
-        this.link = in.readInt();
     }
 
 }

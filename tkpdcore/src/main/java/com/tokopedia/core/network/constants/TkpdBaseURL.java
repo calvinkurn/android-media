@@ -790,6 +790,9 @@ public class TkpdBaseURL {
         public static final String POST_COMPLAINT = "api/v1/cs/complaint";
         public static final String GET_OAUTH_INFO_ACCOUNT = "api/v1/me/profile";
         public static final String REVOKE_ACCESS_TOKOCASH = "api/v1/me/client/revoke";
+        public static final String GET_QR_INFO = "api/v1/qr/{identifier}";
+        public static final String POST_QR_PAYMENT = "api/v1/paymentqr";
+        public static final String GET_BALANCE = "api/v1/wallet/balance";
         public static final String REQUEST_OTP_LOGIN = "oauth/otp";
         public static final String VERIFY_OTP_LOGIN = "oauth/verify_native";
         public static final String AUTHORIZE = "oauth/authorize_native";

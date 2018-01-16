@@ -1,5 +1,7 @@
 package com.tokopedia.tkpd.beranda.presentation.view.fragment;
 
+import android.Manifest;
+import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -49,6 +51,7 @@ import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.router.digitalmodule.sellermodule.TokoCashRouter;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -81,7 +84,7 @@ import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.HeaderView
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.LayoutSections;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
-import com.tokopedia.tkpd.home.ReactNativeActivity;
+import com.tokopedia.tkpd.home.ReactNativeOfficialStoreActivity;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 
 import java.util.ArrayList;
@@ -91,12 +94,15 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.RuntimePermissions;
+
 import static com.tokopedia.core.constants.HomeFragmentBroadcastReceiverConstant.EXTRA_ACTION_RECEIVER;
 
 /**
  * @author by errysuprayogi on 11/27/17.
  */
-
+@RuntimePermissions
 public class HomeFragment extends BaseDaggerFragment implements HomeContract.View,
         SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener, OnSectionChangeListener,
         TabLayout.OnTabSelectedListener, TokoCashUpdateListener, HomeFeedListener {
@@ -435,10 +441,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
         if (firebaseRemoteConfig.getBoolean(MAINAPP_SHOW_REACT_OFFICIAL_STORE)) {
             getActivity().startActivity(
-                    ReactNativeActivity.createOfficialStoresReactNativeActivity(
+                    ReactNativeOfficialStoreActivity.createCallingIntent(
                             getActivity(), ReactConst.Screen.OFFICIAL_STORE,
-                            getString(R.string.react_native_banner_official_title)
-                    )
+                            getString(R.string.react_native_banner_official_title))
             );
         } else {
             openWebViewBrandsURL(TkpdBaseURL.OfficialStore.URL_WEBVIEW);
@@ -532,6 +537,22 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             startActivity(BannerWebView.getCallingIntent(getActivity(), tokoPointUrl));
         else
             startActivity(BannerWebView.getCallingIntentWithTitle(getActivity(), tokoPointUrl, pageTitle));
+    }
+
+
+
+    @Override
+    public void actionScannerQRTokoCash() {
+        HomeFragmentPermissionsDispatcher.scanQRCodeWithCheck(this);
+    }
+
+    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    public void scanQRCode() {
+        Application application = getActivity().getApplication();
+        if (application != null && application instanceof TokoCashRouter) {
+            Intent intent = ((TokoCashRouter) application).goToQRScannerTokoCash(getActivity());
+            startActivity(intent);
+        }
     }
 
     @Override
