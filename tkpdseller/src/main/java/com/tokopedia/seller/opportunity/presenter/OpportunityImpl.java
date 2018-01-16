@@ -34,11 +34,18 @@ public class OpportunityImpl extends OpportunityPresenter {
 
             @Override
             public void onError(Throwable e) {
+                if(!isViewAttached())
+                    return;
+
+                getView().onErrorPriceInfo(ErrorHandler.getErrorMessage(e));
                 getView().onErrorTakeOpportunity(ErrorHandler.getErrorMessage(e));
             }
 
             @Override
             public void onNext(OpportunityNewPriceData opportunityNewPriceData) {
+                if(!isViewAttached())
+                    return;
+
                 getView().onSuccessNewPrice(opportunityNewPriceData);
             }
         });

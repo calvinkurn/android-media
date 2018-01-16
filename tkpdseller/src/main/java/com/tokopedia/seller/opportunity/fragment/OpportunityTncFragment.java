@@ -175,6 +175,11 @@ public class OpportunityTncFragment extends BaseWebViewFragment implements Oppor
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
+    @Override
+    public void onErrorPriceInfo(String errorMessage) {
+
+    }
+
     @SuppressWarnings("deprecation")
     @Override
     public final void onAttach(Activity activity) {
