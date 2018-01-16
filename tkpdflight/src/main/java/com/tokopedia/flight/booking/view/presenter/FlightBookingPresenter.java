@@ -10,6 +10,7 @@ import com.tokopedia.flight.booking.data.cloud.entity.NewFarePrice;
 import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
 import com.tokopedia.flight.booking.domain.FlightBookingGetPhoneCodeUseCase;
 import com.tokopedia.flight.booking.domain.FlightBookingGetSingleResultUseCase;
+import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.booking.view.viewmodel.BaseCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
@@ -349,6 +350,45 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     }
 
     @Override
+    public void onGetProfileData() {
+        getView().getProfileObservable()
+                .onBackpressureDrop()
+                .subscribeOn(Schedulers.newThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<ProfileInfo>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        if (isViewAttached()) {
+
+                        }
+
+                    }
+
+                    @Override
+                    public void onNext(ProfileInfo profileInfo) {
+                        if (profileInfo != null && isViewAttached()) {
+                            if (getView().getContactName().length() == 0) {
+                                getView().setContactName(profileInfo.getFullname());
+                            }
+                            if (getView().getContactEmail().length() == 0) {
+                                getView().setContactEmail(profileInfo.getEmail());
+                            }
+                            if (getView().getContactPhoneNumber().length() == 0) {
+                                getView().setContactPhoneNumber(profileInfo.getPhoneNumber());
+                            }
+                        }
+                    }
+                });
+    }
+
+    @Override
     public void onRetryGetCartData() {
         processGetCartData();
     }
@@ -540,15 +580,15 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
 
     private boolean isAirAsiaAirline(FlightBookingCartData flightBookingCartData) {
 
-        if(flightBookingCartData.getDepartureTrip() != null)
-            for(FlightDetailRouteViewModel data : flightBookingCartData.getDepartureTrip().getRouteList()) {
-                if(data.isAirlineMandatoryDOB() == 1)
+        if (flightBookingCartData.getDepartureTrip() != null)
+            for (FlightDetailRouteViewModel data : flightBookingCartData.getDepartureTrip().getRouteList()) {
+                if (data.isAirlineMandatoryDOB() == 1)
                     return true;
             }
 
-        if(flightBookingCartData.getReturnTrip() != null)
-            for(FlightDetailRouteViewModel data : flightBookingCartData.getReturnTrip().getRouteList()) {
-                if(data.isAirlineMandatoryDOB() == 1)
+        if (flightBookingCartData.getReturnTrip() != null)
+            for (FlightDetailRouteViewModel data : flightBookingCartData.getReturnTrip().getRouteList()) {
+                if (data.isAirlineMandatoryDOB() == 1)
                     return true;
             }
 

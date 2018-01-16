@@ -1,5 +1,6 @@
 package com.tokopedia.abstraction.common.di.module.net;
 
+import com.tokopedia.abstraction.common.di.qualifier.OkHttpClientBuilderDefaultQualifier;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.TkpdOkHttpBuilder;
 import com.tokopedia.abstraction.common.network.interceptor.DebugInterceptor;
@@ -11,10 +12,10 @@ import dagger.Provides;
 import okhttp3.OkHttpClient;
 
 /**
- * @author  ricoharisin on 3/23/17.
+ * @author ricoharisin on 3/23/17.
  */
 
-@Module(includes={InterceptorModule.class})
+@Module(includes = {InterceptorModule.class})
 public class OkHttpClientModule {
 
     @ApplicationScope
@@ -39,6 +40,18 @@ public class OkHttpClientModule {
                 .setOkHttpRetryPolicy(okHttpRetryPolicy)
                 .addInterceptor(debugInterceptor)
                 .addInterceptor(tkpdBaseInterceptor)
+                .getBuilder();
+    }
+
+    @ApplicationScope
+    @Provides
+    @OkHttpClientBuilderDefaultQualifier
+    public OkHttpClient.Builder provideOkhttpBuilder(OkHttpRetryPolicy okHttpRetryPolicy,
+                                                     DebugInterceptor debugInterceptor) {
+
+        return new TkpdOkHttpBuilder(new OkHttpClient.Builder())
+                .setOkHttpRetryPolicy(okHttpRetryPolicy)
+                .addInterceptor(debugInterceptor)
                 .getBuilder();
     }
 }

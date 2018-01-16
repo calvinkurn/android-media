@@ -42,6 +42,7 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.CustomerRouter;
@@ -76,6 +77,7 @@ import com.tokopedia.digital.product.activity.DigitalWebActivity;
 import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.TkpdFlight;
+import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.contactus.model.FlightContactUsPassData;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 import com.tokopedia.inbox.contactus.activity.ContactUsActivity;
@@ -147,6 +149,7 @@ import javax.inject.Inject;
 
 import okhttp3.Response;
 import rx.Observable;
+import rx.functions.Func1;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
@@ -473,6 +476,41 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         );
 
         getUserInfoUseCase.execute(GetUserInfoUseCase.generateParam(), profileSubscriber);
+    }
+
+    @Override
+    public Observable<ProfileInfo> getProfile() {
+        Bundle bundle = new Bundle();
+        SessionHandler sessionHandler = new SessionHandler(this);
+        String authKey = sessionHandler.getAccessToken(this);
+        authKey = sessionHandler.getTokenType(this) + " " + authKey;
+        bundle.putString(AccountsService.AUTH_KEY, authKey);
+
+        AccountsService accountsService = new AccountsService(bundle);
+
+        ProfileSourceFactory profileSourceFactory =
+                new ProfileSourceFactory(
+                        this,
+                        accountsService,
+                        new GetUserInfoMapper(),
+                        null
+                );
+
+        GetUserInfoUseCase getUserInfoUseCase = new GetUserInfoUseCase(
+                new JobExecutor(),
+                new UIThread(),
+                new ProfileRepositoryImpl(profileSourceFactory)
+        );
+        return getUserInfoUseCase.createObservable(GetUserInfoUseCase.generateParam()).map(new Func1<GetUserInfoDomainModel, ProfileInfo>() {
+            @Override
+            public ProfileInfo call(GetUserInfoDomainModel getUserInfoDomainModel) {
+                ProfileInfo profileInfo = new ProfileInfo();
+                profileInfo.setFullname(getUserInfoDomainModel.getGetUserInfoDomainData().getFullName());
+                profileInfo.setPhoneNumber(getUserInfoDomainModel.getGetUserInfoDomainData().getPhone());
+                profileInfo.setEmail(getUserInfoDomainModel.getGetUserInfoDomainData().getEmail());
+                return profileInfo;
+            }
+        });
     }
 
     @Override
