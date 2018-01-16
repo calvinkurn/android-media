@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.crashlytics.android.Crashlytics;
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
@@ -73,7 +74,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
     ShopOpenTracking trackingOpenShop;
 
     RequestParams requestParams;
-    private ProgressDialog progressDialog;
+    private TkpdProgressDialog tkpdProgressDialog;
 
     private SnackbarRetry snackbarRetry;
 
@@ -91,9 +92,23 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
         return root;
     }
 
+    @Override
+    public void dismissProgressDialog() {
+        if (tkpdProgressDialog != null) {
+            tkpdProgressDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void showProgressDialog() {
+        if (tkpdProgressDialog == null) {
+            tkpdProgressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS,
+                    getString(R.string.title_loading));
+        }
+        tkpdProgressDialog.showDialog();
+    }
+
     private void initView(View root) {
-        progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage(getString(R.string.title_loading));
 
         new LocationHeaderViewHolder(root, new LocationHeaderViewHolder.ViewHolderListener() {
             @Override
@@ -388,15 +403,5 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
                 onNextButtonClicked();
             }
         })).showRetrySnackbar();
-    }
-
-    @Override
-    public void showProgressDialog() {
-        progressDialog.show();
-    }
-
-    @Override
-    public void dismissProgressDialog() {
-        progressDialog.dismiss();
     }
 }
