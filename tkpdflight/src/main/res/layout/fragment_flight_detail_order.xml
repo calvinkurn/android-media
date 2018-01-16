@@ -164,6 +164,7 @@
                 android:id="@+id/recycler_view_flight"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:descendantFocusability="blocksDescendants"
                 android:background="@color/background_apps"
                 android:nestedScrollingEnabled="false" />
 
@@ -206,6 +207,7 @@
                 android:id="@+id/recycler_view_data_passenger"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:descendantFocusability="blocksDescendants"
                 android:nestedScrollingEnabled="false"
                 android:paddingBottom="@dimen/padding_med"
                 android:paddingLeft="@dimen/padding_med"

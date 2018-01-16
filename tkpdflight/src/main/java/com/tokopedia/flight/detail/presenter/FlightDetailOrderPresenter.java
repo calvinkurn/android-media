@@ -21,7 +21,9 @@ import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 import com.tokopedia.flight.review.view.model.FlightDetailPassenger;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -34,6 +36,8 @@ import rx.Subscriber;
 public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetailOrderContract.View> implements FlightDetailOrderContract.Presenter {
 
     private final FlightGetOrderUseCase flightGetOrderUseCase;
+
+    private int totalPrice = 0;
 
     @Inject
     public FlightDetailOrderPresenter(FlightGetOrderUseCase flightGetOrderUseCase) {
@@ -85,31 +89,32 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
             public void onNext(FlightOrder flightOrder) {
                 getView().hideProgressDialog();
                 getView().renderFlightOrder(flightOrder);
-                getView().updateFlightList(filterFlightJourneys(flightOrder.getStatus(), flightOrder.getJourneys(), flightOrderDetailPassData));
+                List<FlightOrderJourney> flightOrderJourneyList = filterFlightJourneys(flightOrder.getStatus(), flightOrder.getJourneys(), flightOrderDetailPassData);
+                getView().updateFlightList(flightOrderJourneyList);
                 getView().updatePassengerList(transformToListPassenger(flightOrder.getPassengerViewModels()));
-                getView().updatePrice(transformToSimpleModelPrice(), countTotalPrice(flightOrder.getTotalAdultNumeric(),
-                        flightOrder.getTotalChildNumeric(), flightOrder.getTotalInfantNumeric()));
+                getView().updatePrice(transformToSimpleModelPrice(flightOrder), CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(totalPrice));
                 getView().updateOrderData(FlightDateUtil.formatDate(FlightDateUtil.FORMAT_DATE_API_DETAIL,
                         FlightDateUtil.FORMAT_DATE_LOCAL_DETAIL_ORDER, flightOrder.getCreateTime()),
                         generateTicketLink(flightOrder.getId()), generateInvoiceLink(flightOrder.getId()),
-                        generateCancelMessage(flightOrder));
+                        generateCancelMessage(flightOrderJourneyList, flightOrder.getPassengerViewModels()));
                 generateStatus(flightOrder.getStatus());
             }
         };
     }
 
-    private String generateCancelMessage(FlightOrder flightOrder) {
+    private String generateCancelMessage(List<FlightOrderJourney> flightOrder, List<FlightOrderPassengerViewModel> passengerViewModels) {
         String newLine = "\n";
         StringBuilder result = new StringBuilder();
         result.append(newLine);
-        for (FlightOrderJourney flightOrderJourney : flightOrder.getJourneys()) {
+        for (FlightOrderJourney flightOrderJourney : flightOrder) {
             String item = flightOrderJourney.getDepartureAiportId() + "-" + flightOrderJourney.getArrivalAirportId() + " ";
             item += newLine;
             ArrayList<String> passengers = new ArrayList<>();
-            for (FlightOrderPassengerViewModel flightOrderPassengerViewModel : flightOrder.getPassengerViewModels()) {
+            for (FlightOrderPassengerViewModel flightOrderPassengerViewModel : passengerViewModels) {
                 passengers.add(flightOrderPassengerViewModel.getPassengerFirstName() + " " + flightOrderPassengerViewModel.getPassengerLastName());
             }
             item += TextUtils.join(newLine, passengers);
+            item += newLine;
             result.append(item);
         }
         return result.toString();
@@ -178,12 +183,93 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         return journeyList;
     }
 
-    private List<SimpleViewModel> transformToSimpleModelPrice() {
-        return new ArrayList<>();
+    private List<SimpleViewModel> transformToSimpleModelPrice(FlightOrder flightOrder) {
+        List<SimpleViewModel> simpleViewModelList = new ArrayList<>();
+
+        Map<String, Integer> meals = new HashMap<>();
+        Map<String, Integer> luggages = new HashMap<>();
+
+        int passengerAdultCount = 0;
+        int passengerChildCount = 0;
+        int passengerInfantCount = 0;
+
+        for(FlightOrderPassengerViewModel flightOrderPassengerViewModel : flightOrder.getPassengerViewModels()) {
+            // add to passenger count
+            switch (flightOrderPassengerViewModel.getType()) {
+                case 0 : passengerAdultCount++;
+                    break;
+                case 1 : passengerChildCount++;
+                    break;
+                case 2 : passengerInfantCount++;
+                    break;
+            }
+
+            for(FlightBookingAmenityViewModel amenityViewModel : flightOrderPassengerViewModel.getAmenities()) {
+                switch (Integer.toString(amenityViewModel.getAmenityType())) {
+                    case FlightAmenityType.LUGGAGE : String key = String.format("%s - %s", amenityViewModel.getDepartureId(), amenityViewModel.getArrivalId());
+                        if (luggages.containsKey(key)) {
+                            luggages.put(key, luggages.get(key) + amenityViewModel.getPriceNumeric());
+                        } else {
+                            luggages.put(key, amenityViewModel.getPriceNumeric());
+                        }
+                        break;
+                    case FlightAmenityType.MEAL : key = String.format("%s - %s", amenityViewModel.getDepartureId(), amenityViewModel.getArrivalId());
+                        if (meals.containsKey(key)) {
+                            meals.put(key, meals.get(key) + amenityViewModel.getPriceNumeric());
+                        } else {
+                            meals.put(key, amenityViewModel.getPriceNumeric());
+                        }
+                        break;
+                }
+
+                // add total price
+                totalPrice += amenityViewModel.getPriceNumeric();
+            }
+        }
+
+        // add total price
+        totalPrice += flightOrder.getTotalAdultNumeric();
+        totalPrice += flightOrder.getTotalChildNumeric();
+        totalPrice += flightOrder.getTotalInfantNumeric();
+
+        // add simpleViewModel price for adult passenger
+        if(passengerAdultCount > 0)
+            simpleViewModelList.add(formatPassengerFarePriceDetail(getView().getString(R.string.select_passenger_adult_title), passengerAdultCount, flightOrder.getTotalAdultNumeric()));
+
+        // add simpleViewModel price for child passenger
+        if(passengerChildCount > 0)
+            simpleViewModelList.add(formatPassengerFarePriceDetail(getView().getString(R.string.select_passenger_children_title), passengerChildCount, flightOrder.getTotalChildNumeric()));
+
+        // add simpleViewModel price for infant passenger
+        if(passengerInfantCount > 0)
+            simpleViewModelList.add(formatPassengerFarePriceDetail(getView().getString(R.string.select_passenger_infant_title), passengerInfantCount, flightOrder.getTotalInfantNumeric()));
+
+        for (Map.Entry<String, Integer> entry : luggages.entrySet()) {
+            simpleViewModelList.add(new SimpleViewModel(
+                    String.format("%s %s", getView().getString(R.string.flight_price_detail_prefix_luggage_label),
+                            entry.getKey()),
+                    CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(entry.getValue())));
+        }
+
+        for (Map.Entry<String, Integer> entry : meals.entrySet()) {
+            simpleViewModelList.add(new SimpleViewModel(
+                    String.format("%s %s", getView().getString(R.string.flight_price_detail_prefixl_meal_label),
+                            entry.getKey()),
+                    CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(entry.getValue())));
+        }
+
+        return simpleViewModelList;
     }
 
-    private String countTotalPrice(int totalAdultNumeric, int totalChildNumeric, int totalInfantNumeric) {
-        return CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(totalAdultNumeric + totalChildNumeric + totalInfantNumeric);
+    private SimpleViewModel formatPassengerFarePriceDetail(
+                                                           String label,
+                                                           int passengerCount,
+                                                           int price) {
+        return new SimpleViewModel(
+                String.format("%s x%d",
+                        label,
+                        passengerCount),
+                CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(price));
     }
 
     private List<FlightDetailPassenger> transformToListPassenger(List<FlightOrderPassengerViewModel> passengerViewModels) {

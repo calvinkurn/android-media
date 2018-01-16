@@ -6,7 +6,8 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <include layout="@layout/include_header_detail_flight" />
+    <include layout="@layout/include_header_detail_flight"
+        android:paddingTop="0dp"  />
 
     <RelativeLayout
         android:layout_width="match_parent"
