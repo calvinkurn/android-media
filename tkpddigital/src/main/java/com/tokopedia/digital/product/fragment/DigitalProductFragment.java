@@ -465,12 +465,15 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                 if (ussdCode == null || "".equalsIgnoreCase(ussdCode.trim())) {
                     String carrierName = DeviceUtil.getOperatorName(getActivity(), i);
                     error = getString(R.string.label_operator_not_support);
-                    if (presenter.isCarrierSignalsNotAvailable(carrierName)) {
+                    if(carrierName == null){
+                        return;
+                    }else if (presenter.isCarrierSignalsNotAvailable(carrierName)) {
                         error = noSognalsStr;
                         carrierName = error;
                         activeSim = true;
                     } else {
                         if (!activeSim && i == 1) return;
+
                         activeSim = false;
                     }
                     checkPulsaBalanceView.setOperatorName(carrierName);
