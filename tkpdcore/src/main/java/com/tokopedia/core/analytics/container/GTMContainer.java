@@ -527,68 +527,6 @@ public class GTMContainer implements IGTMContainer {
     }
 
     @Override
-    public void enhanceClickFeedRecomItem(Map<String, Object> objects,
-                                          String eventLabel,
-                                          String productUrl,
-                                          String actionField) {
-
-        clearEnhanceEcommerce();
-
-        GTMDataLayer.pushGeneral(
-                context,
-                DataLayer.mapOf("event", "productClick",
-                        "eventCategory", "homepage",
-                        "eventAction", "feed - click card item",
-                        "eventLabel", eventLabel,
-                        "ecommerce", DataLayer.mapOf("click",
-                                DataLayer.mapOf("actionField",
-                                        DataLayer.mapOf("list", actionField),
-                                        "products", DataLayer.listOf(objects)
-                                )
-                        )
-                )
-        );
-    }
-
-    @Override
-    public void eventImpressionFeedInspiration(List<Object> objects, String eventLabel) {
-        clearEnhanceEcommerce();
-
-        GTMDataLayer.pushGeneral(
-                context,
-                DataLayer.mapOf("event", "productView",
-                        "eventCategory", "homepage",
-                        "eventAction", "feed - item impression",
-                        "eventLabel", eventLabel,
-                        "ecommerce", DataLayer.mapOf(
-                                "currencyCode", "IDR",
-                                "impressions", DataLayer.listOf(
-                                        objects.toArray(new Object[objects.size()])
-                                ))
-                        )
-        );
-    }
-
-    @Override
-    public void eventImpressionFeedUploadedProduct(List<Object> list, String eventLabel) {
-        clearEnhanceEcommerce();
-
-        GTMDataLayer.pushGeneral(
-                context,
-                DataLayer.mapOf("event", "productView",
-                        "eventCategory", "homepage",
-                        "eventAction", "feed - item impression",
-                        "eventLabel", eventLabel,
-                        "ecommerce", DataLayer.mapOf(
-                                "currencyCode", "IDR",
-                                "impressions", DataLayer.listOf(
-                                        list.toArray(new Object[list.size()])
-                                ))
-                )
-        );
-    }
-
-    @Override
     public void eventTrackingEnhancedEcommerce(Map<String, Object> trackingData) {
         GTMDataLayer.pushGeneral(context, trackingData);
 

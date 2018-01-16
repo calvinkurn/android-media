@@ -9,6 +9,7 @@ import com.tokopedia.core.R;
 /**
  * Created by ricoharisin on 6/2/16.
  */
+@Deprecated
 public class SnackbarRetry {
 
     private Boolean isRetryClicked;

@@ -26,9 +26,14 @@ import static com.tokopedia.core.network.apiservices.etc.apis.home.CategoryApi.H
  */
 public interface AccountsApi {
 
+    @Deprecated
     @FormUrlEncoded
     @POST(TkpdBaseURL.Accounts.PATH_GET_TOKEN)
-    Observable<Response<String>> getToken(@FieldMap Map<String, String> params);
+    Observable<Response<String>> getTokenOld(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Accounts.PATH_GET_TOKEN)
+    Observable<Response<String>> getToken(@FieldMap Map<String, Object> params);
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.Accounts.PATH_GET_TOKEN)
@@ -161,4 +166,8 @@ public interface AccountsApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.Accounts.ChangeMSISDN.VALIDATE)
     Observable<Response<TkpdResponse>> validateNumber(@FieldMap TKPDMapParam<String, Object> params);
+
+    @GET(TkpdBaseURL.Accounts.PATH_DISCOVER_REGISTER)
+    Observable<Response<TkpdResponse>> discoverRegister();
+
 }

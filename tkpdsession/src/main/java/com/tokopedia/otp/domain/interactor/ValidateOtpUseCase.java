@@ -1,9 +1,12 @@
 package com.tokopedia.otp.domain.interactor;
 
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.otp.data.model.ValidateOtpDomain;
 import com.tokopedia.otp.data.source.OtpSource;
 

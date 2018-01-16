@@ -9,6 +9,7 @@ import java.util.Map;
 /**
  * @author kulomady on 12/24/16.
  */
+@Deprecated
 public class RequestParams {
     public static final RequestParams EMPTY = RequestParams.create();
 
