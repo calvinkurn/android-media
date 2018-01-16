@@ -69,6 +69,8 @@ public class GoogleLocationViewModel implements Parcelable {
         longitude = null;
         latitude = null;
         checkSum = null;
+        generatedAddress = "";
+        manualAddress = "";
     }
 
     @Override
