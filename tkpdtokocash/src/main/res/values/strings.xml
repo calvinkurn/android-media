@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">tkpdtokocash</string>
+    <string name="back_to_top">Kembali ke Atas</string>
+    <string name="title_menu_history_tokocash">Riwayat Transaksi</string>
+    <string name="desc_empty_page_tokocash">Pilih filter lain untuk melihat jenis transaksi lainnya, atau tutup filter untuk melihat semua riwayat transaksi.</string>
+    <string name="desc_empty_page_no_transaction_tokocash">Anda belum bertransaksi dengan TokoCash di rentang waktu yang anda pilih. Ayo gunakan TokoCash untuk semua kebutuhan harianmu.</string>
+    <string name="message_no_transaction">Belum ada Riwayat Transaksi </string>
+    <string name="range_date_today">Hari ini</string>
+    <string name="range_date_seven_days_ago">7 Hari Terakhir</string>
+    <string name="range_date_thirty_days_ago">30 Hari Terakhir</string>
+    <string name="range_date_this_month">Bulan ini</string>
+    <string name="range_date_last_month">Bulan Lalu</string>
+    <string name="title_empty_page_tokocash">Belum ada Riwayat Transaksi</string>
+
+    <string name="title_scan_qr">Scan Kode QR</string>
+    <string name="title_dialog_wrong_scan">Oops!</string>
+    <string name="msg_dialog_wrong_scan">Kode QR yang Anda scan invalid.</string>
+    <string name="btn_dialog_wrong_scan">OK</string>
+    <string name="title_input_nominal">Nominal Pembayaran</string>
+    <string name="default_notes_payment">Pembayaran ke merchant</string>
+    <string name="tokocash_balance_payment">TokoCash Balance: %s</string>
+    <string name="error_message_tokocash">Failed to get Balance TokoCash</string>
+    <string name="title_success_payment">Transaksi Berhasil</string>
+    <string name="title_failed_payment">Transaksi Gagal</string>
+    <string name="help_payment_tokocash">Untuk kendala Transaksi, klik Bantuan</string>
+    <string name="btn_back_to_home">Kembali ke Beranda</string>
+    <string name="success_payment_header">Pembayaran berhasil ke</string>
+    <string name="success_payment_time">Time</string>
+    <string name="success_payment_transaction_id">Transaction ID</string>
+    <string name="success_payment_balance">TokoCash Balance</string>
+    <string name="failed_payment_header">Maaf, Transaksi Gagal</string>
+    <string name="failed_payment_body">Cek Koneksi dan Ulangi Proses Transfer.</string>
+    <string name="failed_payment_retry">Ulangi Transaksi</string>
+    <string name="scanner_info">Arahkan kode QR ke area yang telah ditentukan</string>
+
+</resources>

@@ -90,6 +90,7 @@ import com.tokopedia.inbox.inboxchat.activity.SendMessageActivity;
 import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
 import com.tokopedia.inbox.inboxmessageold.activity.InboxMessageActivity;
 import com.tokopedia.inbox.inboxmessageold.activity.SendMessageActivityOld;
+import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
@@ -150,6 +151,8 @@ import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
+import com.tokopedia.tokocash.historytokocash.presentation.activity.HistoryTokoCashActivity;
+import com.tokopedia.tokocash.qrpayment.presentation.activity.CustomScannerTokoCashActivity;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.transaction.wallet.WalletActivity;
@@ -962,6 +965,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent goToHistoryTokoCash(Context context) {
+        return HistoryTokoCashActivity.newInstance(context);
+    }
+
+    @Override
+    public Intent goToQRScannerTokoCash(Context context) {
+        return CustomScannerTokoCashActivity.newInstance(context);
+    }
+
+    @Override
     public void invalidateCategoryMenuData() {
 
     }
@@ -1120,7 +1133,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         }
         return mapUrlUseCase.getData(mapUrlUseCase.setRequestParam(finalSegments.toString())).applink;
     }
-      
+
     public Intent getKolFollowingPageIntent(Context context, int userId) {
         return KolFollowingListActivity.getCallingIntent(context, userId);
     }
