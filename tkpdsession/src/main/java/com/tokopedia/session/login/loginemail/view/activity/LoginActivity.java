@@ -2,16 +2,25 @@ package com.tokopedia.session.login.loginemail.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.session.presenter.Session;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.session.R;
 import com.tokopedia.session.login.loginemail.view.fragment.LoginFragment;
+import com.tokopedia.session.session.activity.Login;
 
 /**
  * @author by nisie on 12/18/17.
@@ -28,8 +37,23 @@ public class LoginActivity extends TActivity implements HasComponent {
     public static final int METHOD_FACEBOOK = 111;
     public static final int METHOD_GOOGLE = 222;
     public static final int METHOD_WEBVIEW = 333;
+    public static final int METHOD_EMAIL = 444;
+
     public static final String AUTO_WEBVIEW_NAME = "webview_name";
     public static final String AUTO_WEBVIEW_URL = "webview_url";
+
+    @DeepLink({Constants.Applinks.LOGIN})
+    public static Intent getCallingApplinkIntent(Context context, Bundle bundle) {
+        Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
+        if (SessionHandler.isV4Login(context)) {
+            if (context.getApplicationContext() instanceof TkpdCoreRouter)
+                return ((TkpdCoreRouter) context.getApplicationContext()).getHomeIntent(context);
+            else throw new RuntimeException("Applinks intent unsufficient");
+        } else {
+            Intent intent = getCallingIntent(context);
+            return intent.setData(uri.build());
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +133,18 @@ public class LoginActivity extends TActivity implements HasComponent {
     @Override
     protected void setupToolbar() {
         super.setupToolbar();
-        toolbar.setPadding(0,0,30,0);
+        toolbar.setPadding(0, 0, 30, 0);
     }
+
+    public static Intent getAutomaticLogin(Context context, String email, String password) {
+        Intent intent = new Intent(context, LoginActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(LoginFragment.IS_AUTO_LOGIN, true);
+        bundle.putInt(LoginFragment.AUTO_LOGIN_METHOD, METHOD_EMAIL);
+        bundle.putString(LoginFragment.AUTO_LOGIN_EMAIL, email);
+        bundle.putString(LoginFragment.AUTO_LOGIN_PASS, password);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
 }

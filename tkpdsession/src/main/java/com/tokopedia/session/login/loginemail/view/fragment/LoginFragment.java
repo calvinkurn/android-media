@@ -109,6 +109,8 @@ public class LoginFragment extends BaseDaggerFragment
     public static final String IS_AUTO_LOGIN = "auto_login";
     public static final String AUTO_LOGIN_METHOD = "method";
 
+    public static final String AUTO_LOGIN_EMAIL = "email";
+    public static final String AUTO_LOGIN_PASS = "pw";
 
     AutoCompleteTextView emailEditText;
     TextInputEditText passwordEditText;
@@ -268,7 +270,7 @@ public class LoginFragment extends BaseDaggerFragment
 
         presenter.discoverLogin();
 
-        if (getArguments().getBoolean(IS_AUTO_LOGIN)) {
+        if (getArguments().getBoolean(IS_AUTO_LOGIN, false)) {
             switch (getArguments().getInt(AUTO_LOGIN_METHOD)) {
                 case LoginActivity.METHOD_FACEBOOK:
                     onLoginFacebookClick();
@@ -286,6 +288,13 @@ public class LoginFragment extends BaseDaggerFragment
                                 getArguments().getString(LoginActivity.AUTO_WEBVIEW_URL,
                                         ""));
                     }
+                    break;
+                case LoginActivity.METHOD_EMAIL:
+                    String email = getArguments().getString(AUTO_LOGIN_EMAIL, "");
+                    String pw = getArguments().getString(AUTO_LOGIN_PASS, "");
+                    emailEditText.setText(email);
+                    passwordEditText.setText(pw);
+                    presenter.login(email, pw);
                     break;
                 default:
                     showSmartLock();
@@ -391,6 +400,7 @@ public class LoginFragment extends BaseDaggerFragment
     @Override
     public void onErrorLogin(String errorMessage) {
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+        passwordEditText.setText("");
     }
 
     @Override
@@ -556,7 +566,7 @@ public class LoginFragment extends BaseDaggerFragment
     @Override
     public void onGoToActivationPage(String email) {
         Intent intent = ActivationActivity.getCallingIntent(getActivity(),
-                email);
+                email, passwordEditText.getText().toString());
         intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         startActivityForResult(intent, REQUEST_ACTIVATE_ACCOUNT);
     }

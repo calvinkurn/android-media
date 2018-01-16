@@ -9,8 +9,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
-import android.telephony.PhoneNumberFormattingTextWatcher;
-import android.telephony.PhoneNumberUtils;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -35,11 +33,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -52,6 +50,7 @@ import com.tokopedia.session.activation.view.activity.ActivationActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.google.GoogleSignInActivity;
 import com.tokopedia.session.login.loginemail.LoginAnalytics;
+import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.register.RegisterConstant;
 import com.tokopedia.session.register.data.model.RegisterViewModel;
 import com.tokopedia.session.register.view.adapter.AutoCompleteTextAdapter;
@@ -60,7 +59,6 @@ import com.tokopedia.session.register.view.presenter.RegisterEmailPresenter;
 import com.tokopedia.session.register.view.util.RegisterUtil;
 import com.tokopedia.session.register.view.viewlistener.RegisterEmailViewListener;
 import com.tokopedia.session.register.view.viewmodel.RegisterEmailViewModel;
-import com.tokopedia.session.session.activity.Login;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -87,6 +85,7 @@ import static com.tokopedia.session.google.GoogleSignInActivity.RC_SIGN_IN_GOOGL
 public class RegisterEmailFragment extends BaseDaggerFragment
         implements RegisterEmailViewListener, RegisterConstant {
 
+    private static final int REQUEST_LOGIN = 101;
     View container;
     View redirectView;
     AutoCompleteTextView email;
@@ -548,10 +547,11 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     public void goToActivationPage(RegisterEmailViewModel viewModel) {
 
         dismissLoadingProgress();
-        startActivity(ActivationActivity.getCallingIntent(getActivity(),
-                email.getText().toString()
-        ));
-        getActivity().finish();
+        Intent intent = ActivationActivity.getCallingIntent(getActivity(),
+                email.getText().toString(),
+                registerPassword.getText().toString()
+        );
+        startActivity(intent);
     }
 
     @Override
@@ -564,13 +564,19 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     @Override
     public void goToAutomaticLogin() {
         dismissLoadingProgress();
-        getActivity().finish();
-
-        startActivity(Login.getAutomaticLoginIntent(
+        Intent intentLogin = LoginActivity.getAutomaticLogin(
                 getActivity(),
                 email.getText().toString(),
-                registerPassword.getText().toString())
+                registerPassword.getText().toString()
         );
+        Intent intentHome = ((TkpdCoreRouter) MainApplication.getAppContext()).getHomeIntent
+                (getActivity());
+        intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        getActivity().startActivities(new Intent[]
+                {
+                        intentHome,
+                        intentLogin
+                });
     }
 
     @Override

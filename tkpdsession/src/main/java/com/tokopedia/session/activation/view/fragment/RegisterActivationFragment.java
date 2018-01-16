@@ -25,11 +25,13 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.session.R;
+import com.tokopedia.session.activation.view.activity.ActivationActivity;
 import com.tokopedia.session.activation.view.activity.ChangeEmailActivity;
 import com.tokopedia.session.activation.view.di.RegisterActivationDependencyInjector;
 import com.tokopedia.session.activation.view.presenter.RegisterActivationPresenter;
 import com.tokopedia.session.activation.view.viewListener.RegisterActivationView;
 import com.tokopedia.session.activation.view.viewmodel.LoginTokenViewModel;
+import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.register.RegisterConstant;
 import com.tokopedia.session.session.activity.Login;
 
@@ -40,9 +42,6 @@ import com.tokopedia.session.session.activity.Login;
 public class RegisterActivationFragment extends BasePresenterFragment<RegisterActivationPresenter>
         implements RegisterConstant, RegisterActivationView {
 
-    private static final String ARGS_EMAIL = "ARGS_EMAIL";
-    private static final String ARGS_PASSWORD = "ARGS_PASSWORD";
-
     TextView activationText;
     EditText verifyCode;
     TextView activateButton;
@@ -50,12 +49,12 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
     TkpdProgressDialog progressDialog;
 
     String email;
+    String pw;
 
-    public static RegisterActivationFragment createInstance(String email) {
+
+    public static RegisterActivationFragment createInstance(Bundle args) {
         RegisterActivationFragment fragment = new RegisterActivationFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(ARGS_EMAIL, email);
-        fragment.setArguments(bundle);
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -73,9 +72,14 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState != null)
-            email = savedInstanceState.getString(ARGS_EMAIL, "");
-        else if (getArguments().getString(ARGS_EMAIL) != null)
-            email = getArguments().getString(ARGS_EMAIL, "");
+            email = savedInstanceState.getString(ActivationActivity.INTENT_EXTRA_PARAM_EMAIL, "");
+        else if (getArguments().getString(ActivationActivity.INTENT_EXTRA_PARAM_EMAIL) != null)
+            email = getArguments().getString(ActivationActivity.INTENT_EXTRA_PARAM_EMAIL, "");
+
+        if (savedInstanceState != null)
+            pw = savedInstanceState.getString(ActivationActivity.INTENT_EXTRA_PARAM_PW, "");
+        else if (getArguments().getString(ActivationActivity.INTENT_EXTRA_PARAM_PW) != null)
+            pw = getArguments().getString(ActivationActivity.INTENT_EXTRA_PARAM_PW, "");
     }
 
     @Override
@@ -301,9 +305,10 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
     private void goToAutomaticLogin(LoginTokenViewModel loginTokenViewModel) {
         getActivity().finish();
 
-        startActivity(Login.getAutomaticLoginFromActivationIntent(
+        startActivity(LoginActivity.getAutomaticLogin(
                 getActivity(),
-                loginTokenViewModel)
+                email,
+                pw)
         );
     }
 
@@ -326,6 +331,7 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
                 && data != null
                 && data.getExtras() != null) {
             email = data.getExtras().getString(ChangeEmailFragment.EXTRA_EMAIL, "");
+
             setActivateText();
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -333,7 +339,8 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putString(ARGS_EMAIL, email);
+        outState.putString(ActivationActivity.INTENT_EXTRA_PARAM_EMAIL, email);
+        outState.putString(ActivationActivity.INTENT_EXTRA_PARAM_PW, pw);
         super.onSaveInstanceState(outState);
     }
 }

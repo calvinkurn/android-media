@@ -17,6 +17,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.di.SessionModule;
 import com.tokopedia.session.R;
 import com.tokopedia.session.domain.interactor.DiscoverUseCase;
+import com.tokopedia.session.domain.interactor.MakeLoginUseCase;
 import com.tokopedia.session.login.loginemail.LoginAnalytics;
 import com.tokopedia.session.login.loginemail.domain.interactor.LoginEmailUseCase;
 import com.tokopedia.session.login.loginemail.view.subscriber.LoginDiscoverSubscriber;
@@ -51,12 +52,13 @@ public class LoginPresenter extends BaseDaggerPresenter<Login.View>
     private static final String HTTPS = "https://";
     private static final String ACTIVATION_SOCIAL = "activation-social";
 
-    private final LoginEmailUseCase loginEmailUseCase;
     private final LocalCacheHandler loginCache;
     private final DiscoverUseCase discoverUseCase;
     private final GetFacebookCredentialUseCase getFacebookCredentialUseCase;
     private final LoginWithSosmedUseCase loginWithSosmedUseCase;
     private final LoginWebviewUseCase loginWebviewUseCase;
+    private final LoginEmailUseCase loginEmailUseCase;
+    private final MakeLoginUseCase makeLoginUseCase;
     private final SessionHandler sessionHandler;
 
     @Inject
@@ -66,7 +68,8 @@ public class LoginPresenter extends BaseDaggerPresenter<Login.View>
                           DiscoverUseCase discoverUseCase,
                           GetFacebookCredentialUseCase getFacebookCredentialUseCase,
                           LoginWithSosmedUseCase loginWithSosmedUseCase,
-                          LoginWebviewUseCase loginWebviewUseCase
+                          LoginWebviewUseCase loginWebviewUseCase,
+                          MakeLoginUseCase makeLoginUseCase
     ) {
         this.sessionHandler = sessionHandler;
         this.loginCache = loginCache;
@@ -75,6 +78,7 @@ public class LoginPresenter extends BaseDaggerPresenter<Login.View>
         this.getFacebookCredentialUseCase = getFacebookCredentialUseCase;
         this.loginWithSosmedUseCase = loginWithSosmedUseCase;
         this.loginWebviewUseCase = loginWebviewUseCase;
+        this.makeLoginUseCase = makeLoginUseCase;
     }
 
     @Override
@@ -84,6 +88,7 @@ public class LoginPresenter extends BaseDaggerPresenter<Login.View>
         discoverUseCase.unsubscribe();
         loginWithSosmedUseCase.unsubscribe();
         loginWebviewUseCase.unsubscribe();
+        makeLoginUseCase.unsubscribe();
     }
 
     @Override
@@ -189,4 +194,5 @@ public class LoginPresenter extends BaseDaggerPresenter<Login.View>
     public void resetToken() {
         sessionHandler.clearToken();
     }
+
 }

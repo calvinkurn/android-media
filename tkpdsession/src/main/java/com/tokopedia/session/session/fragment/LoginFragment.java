@@ -762,7 +762,8 @@ LoginFragment extends Fragment implements LoginView {
             if (mContext != null && mContext instanceof SessionView) {
                 Bundle bundle = new Bundle();
                 bundle.putInt(AppEventTracking.GTMKey.ACCOUNTS_TYPE, DownloadService.LOGIN_WEBVIEW);
-                startActivity(ActivationActivity.getCallingIntent(getActivity(), mEmailView.getText().toString()));
+                startActivity(ActivationActivity.getCallingIntent(getActivity(), mEmailView
+                        .getText().toString(), mPasswordView.getText().toString()));
                 getActivity().finish();
             }
         }
@@ -831,7 +832,8 @@ LoginFragment extends Fragment implements LoginView {
                     } else if (bundle.getString("path").contains("activation-social")) {
                         Bundle lbundle = new Bundle();
                         lbundle.putInt(AppEventTracking.GTMKey.ACCOUNTS_TYPE, DownloadService.REGISTER_WEBVIEW);
-                        startActivity(ActivationActivity.getCallingIntent(getActivity(), mEmailView.getText().toString()));
+                        startActivity(ActivationActivity.getCallingIntent(getActivity(),
+                                mEmailView.getText().toString(), mPasswordView.getText().toString()));
                         getActivity().finish();
 
                     }
