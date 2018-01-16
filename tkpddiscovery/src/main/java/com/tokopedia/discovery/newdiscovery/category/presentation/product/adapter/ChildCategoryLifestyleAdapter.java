@@ -68,7 +68,7 @@ public class ChildCategoryLifestyleAdapter extends RecyclerView.Adapter<ChildCat
                 list.add(
                         DataLayer.mapOf(
                                 "id", model.getCategoryId(),
-                                "name", String.format("category %s - subcategory banner", headerName),
+                                "name", String.format("category %s - subcategory banner", headerName.toLowerCase()),
                                 "position", String.valueOf(position + 1),
                                 "creative", model.getCategoryName()
                         )
