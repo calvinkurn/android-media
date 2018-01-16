@@ -37,7 +37,6 @@ import javax.inject.Inject;
 
 public class OpportunityTncFragment extends BaseWebViewFragment implements OpportunityView {
     private OpportunityItemViewModel opportunityItemViewModel;
-    private OpportunityPresenter opportunityPresenter;
 
     private OnOpportunityFragmentListener listener;
 
@@ -118,7 +117,7 @@ public class OpportunityTncFragment extends BaseWebViewFragment implements Oppor
                 AppEventTracking.Action.CLICK,
                 OpportunityTrackingEventLabel.EventLabel.YES
         );
-        opportunityPresenter.acceptOpportunity();
+        presenter.acceptOpportunity();
     }
 
     @Override
@@ -166,7 +165,7 @@ public class OpportunityTncFragment extends BaseWebViewFragment implements Oppor
     @Override
     public void onPause() {
         super.onPause();
-        opportunityPresenter.unsubscribeObservable();
+        presenter.unsubscribeObservable();
     }
 
     @Override
