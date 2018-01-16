@@ -9,6 +9,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -27,6 +28,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
+import com.tokopedia.transaction.cart.model.cartdata.CartItem;
 import com.tokopedia.transaction.pickuppoint.di.DaggerPickupPointComponent;
 import com.tokopedia.transaction.pickuppoint.di.PickupPointComponent;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
@@ -43,9 +45,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_CART_ITEM;
+import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_DATA_STORE;
 import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_DISTRICT_NAME;
 import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_REQ_PARAMS;
-import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_DATA_STORE;
 
 public class PickupPointActivity extends BaseActivity
         implements PickupPointContract.View, PickupPointAdapter.Listener {
@@ -58,6 +61,8 @@ public class PickupPointActivity extends BaseActivity
     CollapsingToolbarLayout toolbarLayout;
     @BindView(R2.id.app_bar)
     AppBarLayout appBar;
+    @BindView(R2.id.nested_scroll_view)
+    NestedScrollView contentScrollView;
     @BindView(R2.id.sp_pickup_booth)
     Spinner spPickupBooth;
     @BindView(R2.id.search_view_pickup_booth)
@@ -87,6 +92,14 @@ public class PickupPointActivity extends BaseActivity
         Intent intent = new Intent(activity, PickupPointActivity.class);
         intent.putExtra(INTENT_REQ_PARAMS, params);
         intent.putExtra(INTENT_DISTRICT_NAME, districtName);
+        return intent;
+    }
+
+    public static Intent createInstance(Activity activity, CartItem cartItem, HashMap<String, String> params) {
+        Intent intent = new Intent(activity, PickupPointActivity.class);
+        intent.putExtra(INTENT_REQ_PARAMS, params);
+        intent.putExtra(INTENT_DISTRICT_NAME, cartItem.getCartDestination().getAddressDistrict());
+        intent.putExtra(INTENT_CART_ITEM, cartItem);
         return intent;
     }
 
@@ -249,10 +262,14 @@ public class PickupPointActivity extends BaseActivity
 
     @Override
     public void showNoConnection(@NonNull String message) {
+        contentScrollView.setVisibility(View.GONE);
+        btnChoosePickupBooth.setVisibility(View.GONE);
         NetworkErrorHelper.showEmptyState(getActivity(), networkErrorView, message,
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
+                        contentScrollView.setVisibility(View.VISIBLE);
+                        btnChoosePickupBooth.setVisibility(View.VISIBLE);
                         doQuery((HashMap<String, String>) getIntent().getSerializableExtra(INTENT_REQ_PARAMS));
                     }
                 });

@@ -45,5 +45,7 @@ public interface PickupPointContract {
 
         String INTENT_DATA_STORE = "store";
 
+        String INTENT_CART_ITEM = "cart_item";
+
     }
 }

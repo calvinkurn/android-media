@@ -45,10 +45,10 @@ public class EditCartPickupPointsUseCase extends UseCase<Response<TkpdResponse>>
         return repository.editPickupPoints(requestParams.getParamsAllValueInString());
     }
 
-    public static RequestParams generateParams(Context context, int cartId, String oldStoreId, String newStoreId) {
+    public static RequestParams generateParams(Context context, String cartId, String oldStoreId, String newStoreId) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putAll(AuthUtil.generateParamsNetwork(context));
-        requestParams.putInt(PARAM_CART_ID, cartId);
+        requestParams.putString(PARAM_CART_ID, cartId);
         requestParams.putString(PARAM_OLD_STORE_ID, oldStoreId);
         requestParams.putString(PARAM_NEW_STORE_ID, newStoreId);
 

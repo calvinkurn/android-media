@@ -111,6 +111,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_CART_ITEM;
+
 
 /**
  * @author anggaprasetiyo on 11/1/16.
@@ -895,7 +897,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
 //                pickupBooth = null;
 
                 // TODO : Request ke API stich,
-                presenter.processRemovePickupPoint(cartItem.getCartCustomerId(), "1234");
+                presenter.processRemovePickupPoint(cartItem.getCartString(), "1234");
                 // TODO : Jika result success, go to edit cart shipment, set first available logistic, jika failed show toast
                 // renderInitialLoadingCartInfo();
                 // renderVisibleMainCartContainer();
@@ -1073,7 +1075,8 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                 cancelPromoLayout.setOnClickListener(onPromoCancelled());
             }
         } else if (requestCode == REQUEST_CHOOSE_PICKUP_POINT && resultCode == Activity.RESULT_OK) {
-            presenter.processUpdatePickupPoint();
+            CartItem cartItem = data.getParcelableExtra(INTENT_CART_ITEM);
+            presenter.processUpdatePickupPoint(cartItem.getCartString(), "", "");
         }
     }
 

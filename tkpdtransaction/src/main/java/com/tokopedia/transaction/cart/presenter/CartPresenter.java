@@ -2,6 +2,7 @@ package com.tokopedia.transaction.cart.presenter;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.appsflyer.AFInAppEventParameterName;
 import com.google.gson.Gson;
@@ -911,28 +912,45 @@ public class CartPresenter implements ICartPresenter {
     }
 
     @Override
-    public void processUpdatePickupPoint() {
+    public void processUpdatePickupPoint(String cartId, String oldStoreId, String newStoreId) {
+        editCartPickupPointsUseCase.execute(
+                EditCartPickupPointsUseCase.generateParams(view.getContext(), cartId, oldStoreId, newStoreId),
+                new Subscriber<Response<TkpdResponse>>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.e("removeCartPickupPoints", "onCompleted");
+                    }
 
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e("removeCartPickupPoints", "onError");
+                    }
+
+                    @Override
+                    public void onNext(Response<TkpdResponse> tkpdResponseResponse) {
+                        Log.e("removeCartPickupPoints", "onNext");
+                    }
+                });
     }
 
     @Override
-    public void processRemovePickupPoint(int cartId, String oldStoreId) {
+    public void processRemovePickupPoint(String cartId, String oldStoreId) {
         removeCartPickupPointsUseCase.execute(
                 RemoveCartPickupPointsUseCase.generateParams(view.getContext(), cartId, oldStoreId),
                 new Subscriber<Response<TkpdResponse>>() {
             @Override
             public void onCompleted() {
-
+                Log.e("removeCartPickupPoints", "onCompleted");
             }
 
             @Override
             public void onError(Throwable e) {
-
+                Log.e("removeCartPickupPoints", "onError");
             }
 
             @Override
             public void onNext(Response<TkpdResponse> tkpdResponseResponse) {
-
+                Log.e("removeCartPickupPoints", "onNext");
             }
         });
     }

@@ -41,10 +41,10 @@ public class RemoveCartPickupPointsUseCase extends UseCase<Response<TkpdResponse
         return repository.removePickupPoints(requestParams.getParamsAllValueInString());
     }
 
-    public static RequestParams generateParams(Context context, int cartId, String oldStoreId) {
+    public static RequestParams generateParams(Context context, String cartId, String oldStoreId) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putAll(AuthUtil.generateParamsNetwork(context));
-        requestParams.putString(PARAM_CART_ID, String.valueOf(cartId));
+        requestParams.putString(PARAM_CART_ID, cartId);
         requestParams.putString(PARAM_OLD_STORE_ID, oldStoreId);
 
         return requestParams;

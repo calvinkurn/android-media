@@ -47,7 +47,7 @@ public interface ICartPresenter {
 
     void clearNotificationCart();
 
-    void processUpdatePickupPoint();
+    void processUpdatePickupPoint(String cartId, String oldStoreId, String newStoreId);
 
-    void processRemovePickupPoint(int cartId, String oldStoreId);
+    void processRemovePickupPoint(String cartId, String oldStoreId);
 }
