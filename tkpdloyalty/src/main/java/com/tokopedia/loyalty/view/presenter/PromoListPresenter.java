@@ -1,5 +1,7 @@
 package com.tokopedia.loyalty.view.presenter;
 
+import android.util.Log;
+
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.network.exception.HttpErrorException;
@@ -82,23 +84,24 @@ public class PromoListPresenter implements IPromoListPresenter {
             PromoData promoData = promoDataList.get(i);
             dataLayerSinglePromoCodeList.add(DataLayer.mapOf(
                     "id", promoData.getId(),
-                    "name", "promo list - P" + page + " - " + categoryName,
+                    "name", "promo list - P" + String.valueOf(page) + " - " + categoryName,
                     "creative", promoData.getThumbnailImage(),
-                    "position", i + 1,
+                    "position", String.valueOf(i + 1),
                     "promo_id", "0",
                     "promo_code", promoData.isMultiplePromo() ? promoData.getPromoCodeList() : promoData.getPromoCode())
             );
         }
         TrackingUtils.eventImpressionPromoList(dataLayerSinglePromoCodeList, "");
+        Log.d("TOTOT", "sendImpressionTrackingData: ");
     }
 
     public void sendClickItemPromoListTrackingData(PromoData promoData, int position, String categoryName) {
         List<Object> dataLayerSinglePromoCodeList = new ArrayList<>();
         dataLayerSinglePromoCodeList.add(DataLayer.mapOf(
                 "id", promoData.getId(),
-                "name", "promo list - P" + page + " - " + categoryName,
+                "name", "promo list - P" + String.valueOf(page) + " - " + categoryName,
                 "creative", promoData.getThumbnailImage(),
-                "position", position + 1,
+                "position", String.valueOf(position + 1),
                 "promo_id", "0",
                 "promo_code", promoData.isMultiplePromo() ? promoData.getPromoCodeList() : promoData.getPromoCode())
         );
