@@ -139,9 +139,9 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
     public void displayAds(CpmModel cpmModel) {
         if (cpmModel.getData().size() > 0) {
             final CpmData data = cpmModel.getData().get(0);
-            if (data.getCpm().getCpmShop() != null) {
+            if (data.getCpm().getCpmShop() != null && isResponseValid(data)) {
                 createViewCpmShop(getContext(), data.getCpm());
-            } else {
+            } else if(data.getCpm().getTemplateId() == 4) {
                 createViewCpmDigital(getContext(), data.getCpm());
             }
             setOnClickListener(new OnClickListener() {
@@ -153,6 +153,12 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
                 }
             });
         }
+    }
+
+    private boolean isResponseValid(CpmData data) {
+        return !data.getCpm().getCta().isEmpty()
+                && !data.getCpm().getPromotedText().isEmpty()
+                && data.getCpm().getBadges().size() > 0;
     }
 
     @Override

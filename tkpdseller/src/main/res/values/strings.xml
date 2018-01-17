@@ -207,6 +207,8 @@
     <string name="test_strike"><strike>TextView</strike></string>
     <string name="item_price_label">Harga Barang</string>
     <string name="shipping_fee_label">Ongkos Kirim</string>
+	<string name="shipping_location_pinpoint_label">Pinpoint Lokasi Pengiriman</string>
+    <string name="shipping_location_pinpoint_detail">Isi pinpoint lokasi toko Anda untuk mengaktifkan Layanan Pengiriman Ekspress.</string>
 
     <!-- Opportunity -->
     <string name="opportunity_showcase_reputation_value_title">Nilai Reputasi Peluang</string>

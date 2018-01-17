@@ -13,6 +13,9 @@ import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.apprating.AdvancedAppRatingDialog;
+import com.tokopedia.core.apprating.AppRatingDialog;
+import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.fragment.ReactNativeThankYouPageFragment;
 import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
@@ -72,7 +75,7 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_react_native_official_stores;
+        return R.layout.activity_react_native;
     }
 
     @Override
@@ -128,5 +131,19 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
         data.setTemplate(initialProps.getString(ThanksTrackerConst.Key.TEMPLATE));
         data.setId(initialProps.getString(ThanksTrackerConst.Key.ID));
         ThanksTrackerService.start(this, data);
+    }
+
+    @Override
+    public void onBackPressed() {
+        AdvancedAppRatingDialog.show(this, new AppRatingDialog.AppRatingListener() {
+            @Override
+            public void onDismiss() {
+                closeThankyouPage();
+            }
+        });
+    }
+
+    private void closeThankyouPage() {
+        super.onBackPressed();
     }
 }
