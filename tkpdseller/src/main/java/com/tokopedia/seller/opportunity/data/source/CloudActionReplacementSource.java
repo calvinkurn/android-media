@@ -1,35 +1,33 @@
 package com.tokopedia.seller.opportunity.data.source;
 
-import android.content.Context;
-
-import com.tokopedia.core.network.apiservices.replacement.ReplacementActService;
+import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.seller.opportunity.data.AcceptReplacementModel;
 import com.tokopedia.seller.opportunity.data.mapper.AcceptOpportunityMapper;
+import com.tokopedia.seller.opportunity.data.source.api.ReplacementActApi;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
 /**
- * Created by hangnadi on 3/3/17.
+ * Created by normansyahputa on 1/10/18.
  */
+
 public class CloudActionReplacementSource {
+    private ReplacementActApi replacementActApi;
+    private AcceptOpportunityMapper acceptOpportunityMapper;
 
-    private final Context context;
-    private final ReplacementActService actService;
-    private final AcceptOpportunityMapper acceptMapper;
-
-    public CloudActionReplacementSource(Context context,
-                                        ReplacementActService actService,
-                                        AcceptOpportunityMapper acceptMapper) {
-        this.context = context;
-        this.actService = actService;
-        this.acceptMapper = acceptMapper;
+    @Inject
+    public CloudActionReplacementSource(ReplacementActApi replacementActApi, AcceptOpportunityMapper acceptOpportunityMapper) {
+        this.replacementActApi = replacementActApi;
+        this.acceptOpportunityMapper = acceptOpportunityMapper;
     }
 
-    public Observable<AcceptReplacementModel> acceptReplacement(TKPDMapParam<String, Object> params) {
-        return actService.getApi()
-                .acceptReplacement(AuthUtil.generateParamsNetwork2(context,params))
-                .map(acceptMapper);
+    public Observable<AcceptReplacementModel> acceptReplacement(RequestParams params) {
+        return replacementActApi
+                .acceptReplacement(params.getParamsAllValueInString())
+                .map(acceptOpportunityMapper);
     }
 }

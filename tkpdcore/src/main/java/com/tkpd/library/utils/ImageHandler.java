@@ -239,6 +239,24 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
         }
     }
 
+    public static void loadImageChat(ImageView imageview, String url, int resId) {
+        if (url != null && !TextUtils.isEmpty(url)) {
+            Glide.with(imageview.getContext())
+                    .load(url)
+                    .placeholder(R.drawable.loading_page)
+                    .dontAnimate()
+                    .error(resId)
+                    .fitCenter()
+                    .into(imageview);
+        } else {
+            Glide.with(imageview.getContext())
+                    .load(url)
+                    .placeholder(resId)
+                    .error(resId)
+                    .into(imageview);
+        }
+    }
+
     public static void loadImageAndCache(ImageView imageview, String url) {
         Glide.with(imageview.getContext())
                 .load(url)

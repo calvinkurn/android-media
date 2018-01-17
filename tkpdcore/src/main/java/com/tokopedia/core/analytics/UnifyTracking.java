@@ -26,10 +26,6 @@ public class UnifyTracking extends TrackingUtils {
 
     public static final String EXTRA_LABEL = "label";
 
-    public static void eventGeneral(Map<String,Object> dataLayers) {
-        sendGTMEvent(dataLayers);
-    }
-
     public static void eventHomeTab(String label) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.HOMEPAGE_UNIFY,
@@ -2554,6 +2550,14 @@ public class UnifyTracking extends TrackingUtils {
                 , ""
         ).getEvent());
     }
+
+
+    public static void eventClickThumbnailMarketing(String category, String action, String event) {
+        sendGTMEvent(new EventTracking(
+                event, category, action, "").getEvent());
+    }
+
+
 
     public static void eventSellerHomeDashboardClick(String main, String item) {
         sendGTMEvent(new EventTracking(

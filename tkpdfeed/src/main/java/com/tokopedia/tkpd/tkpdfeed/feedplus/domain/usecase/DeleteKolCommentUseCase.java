@@ -32,9 +32,9 @@ public class DeleteKolCommentUseCase extends UseCase<DeleteKolCommentDomain> {
     }
 
 
-    public static RequestParams getParam(String commentId) {
+    public static RequestParams getParam(int commentId) {
         RequestParams params = RequestParams.create();
-        params.putString(PARAM_ID, commentId);
+        params.putInt(PARAM_ID, commentId);
         return params;
     }
 }
