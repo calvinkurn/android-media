@@ -32,4 +32,5 @@ public class ShopOpenTrackingConstant {
     public static String OPEN_SHOP_CLICK_MY_SHOP_PAGE = "click my shop page";
     public static String OPEN_SHOP_CLICK_ADDRESS_LIST = "click address list";
     public static String OPEN_SHOP_CLICK_PINPOINT_LOCATION = "click pinpoint location";
+    public static String OPEN_SHOP_CLICK_DELETE_PINPOINT_LOCATION = "click delete pinpoint location";
 }

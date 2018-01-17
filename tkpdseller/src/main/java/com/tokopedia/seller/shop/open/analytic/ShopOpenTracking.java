@@ -133,10 +133,18 @@ public class ShopOpenTracking {
         );
     }
 
-    public void eventOpenShopPinPointLocation(){
+    public void eventOpenShopPinPointSelected(){
         eventOpenShop(
                 ShopOpenTrackingConstant.OPEN_SHOP_SHOP_LOCATION_FORM,
                 ShopOpenTrackingConstant.OPEN_SHOP_CLICK_PINPOINT_LOCATION,
+                ""
+        );
+    }
+
+    public void eventOpenShopPinPointDeleted(){
+        eventOpenShop(
+                ShopOpenTrackingConstant.OPEN_SHOP_SHOP_LOCATION_FORM,
+                ShopOpenTrackingConstant.OPEN_SHOP_CLICK_DELETE_PINPOINT_LOCATION,
                 ""
         );
     }

@@ -1,12 +1,10 @@
 package com.tokopedia.seller.shop.open.view.fragment;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +20,6 @@ import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Tok
 import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationContract;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.seller.LogisticRouter;
@@ -133,7 +130,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
             }
         });
 
-        locationMapViewHolder = new LocationMapViewHolder(root, new LocationMapViewHolder.ViewHolderListener3() {
+        locationMapViewHolder = new LocationMapViewHolder(root, new LocationMapViewHolder.ViewHolderListener() {
             @Override
             public void navigateToGeoLocationActivityRequest(final String generatedMap) {
                 if (logisticRouter == null)
@@ -143,8 +140,13 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
             }
 
             @Override
-            public void sendTrackingData() {
-                trackingOpenShop.eventOpenShopPinPointLocation();
+            public void onPinPointSelected() {
+                trackingOpenShop.eventOpenShopPinPointSelected();
+            }
+
+            @Override
+            public void onPinPointDeleted() {
+                trackingOpenShop.eventOpenShopPinPointDeleted();
             }
         });
 
