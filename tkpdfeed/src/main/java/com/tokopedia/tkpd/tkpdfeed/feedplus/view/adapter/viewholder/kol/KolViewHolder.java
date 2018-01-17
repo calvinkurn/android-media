@@ -219,26 +219,15 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
         tooltipClickArea.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UnifyTracking.eventKolContentCtaClick(element.isFollowed(), element.getTagsType());
-                List<KolTracking.Promotion> list = new ArrayList<>();
-                list.add(new KolTracking.Promotion(
-                        element.getId(),
-                        KolTracking.Promotion.createContentName(
-                                element.getTagsType(),
-                                element.getCardType())
-                        ,
-                        element.getName().equals("")? "-" : element.getName(),
-                        getAdapterPosition(),
-                        element.getLabel().equals("")? "-" : element.getLabel(),
-                        element.getContentId(),
-                        element.getContentLink().equals("")? "-" : element.getContentLink()
-                ));
+                tooltipAreaClicked(element);
+            }
+        });
 
-                TrackingUtils.eventTrackingEnhancedEcommerce(KolTracking.getKolClickTracking(list,
-                        Integer.parseInt(SessionHandler.getLoginID(MainApplication.getAppContext()))));
-
-                viewListener.onOpenKolTooltip(element.getPage(), getAdapterPosition(),
-                        element.getContentLink());
+        reviewImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (tooltipClickArea.getVisibility() == View.VISIBLE)
+                    tooltipAreaClicked(element);
             }
         });
 
@@ -257,6 +246,29 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
         } else {
             return MethodChecker.fromHtml(element.getReview());
         }
+    }
+
+    private void tooltipAreaClicked(KolViewModel element) {
+        UnifyTracking.eventKolContentCtaClick(element.isFollowed(), element.getTagsType());
+        List<KolTracking.Promotion> list = new ArrayList<>();
+        list.add(new KolTracking.Promotion(
+                element.getId(),
+                KolTracking.Promotion.createContentName(
+                        element.getTagsType(),
+                        element.getCardType())
+                ,
+                element.getName().equals("")? "-" : element.getName(),
+                getAdapterPosition(),
+                element.getLabel().equals("")? "-" : element.getLabel(),
+                element.getContentId(),
+                element.getContentLink().equals("")? "-" : element.getContentLink()
+        ));
+
+        TrackingUtils.eventTrackingEnhancedEcommerce(KolTracking.getKolClickTracking(list,
+                Integer.parseInt(SessionHandler.getLoginID(MainApplication.getAppContext()))));
+
+        viewListener.onOpenKolTooltip(element.getPage(), getAdapterPosition(),
+                element.getContentLink());
     }
 
 }
