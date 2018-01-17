@@ -96,7 +96,11 @@ public class CategoryProductStyle3View extends
 
     @Override
     protected void onInitialDataRendered() {
-        tvTitle.setText(TextUtils.isEmpty(data.getTitleText()) ? "" : data.getTitleText());
+        if (source != WIDGET) {
+            tvTitle.setText(TextUtils.isEmpty(data.getTitleText()) ? "" : data.getTitleText());
+        } else {
+            tvTitle.setVisibility(GONE);
+        }
         renderInstantCheckoutOptions();
         if (source == WIDGET) {
             renderOperatorChooserOptionsWidget();
@@ -212,8 +216,9 @@ public class CategoryProductStyle3View extends
         clearHolder(holderPriceInfoProduct);
         clientNumberInputView.setActionListener(getActionListenerClientNumberInputView());
         clientNumberInputView.renderData(operator.getClientNumberList().get(0));
-        holderClientNumber.addView(clientNumberInputView);
+        clientNumberInputView.setFilterMaxLength(operator.getRule().getMaximumLength());
         clientNumberInputView.resetInputTyped();
+        holderClientNumber.addView(clientNumberInputView);
 
         if (hasLastOrderHistoryData()) {
             if (operatorSelected != null && operator.getOperatorId().equalsIgnoreCase(

@@ -20,9 +20,11 @@ import com.tokopedia.digital.product.model.HistoryClientNumber;
 import com.tokopedia.digital.product.model.Operator;
 import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.product.model.Product;
+import com.tokopedia.digital.product.model.Validation;
 import com.tokopedia.digital.widget.compoundview.WidgetProductChooserView2;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 
@@ -96,6 +98,8 @@ public class CategoryProductStyle2View extends
     protected void onInitialDataRendered() {
         if (source != WIDGET) {
             tvTitle.setText(TextUtils.isEmpty(data.getTitleText()) ? "" : data.getTitleText());
+        } else {
+            tvTitle.setVisibility(GONE);
         }
         clearHolder(holderRadioChooserOperator);
         renderOperatorChooserOptions();
@@ -445,14 +449,25 @@ public class CategoryProductStyle2View extends
             preCheckoutProduct.setErrorCheckout(
                     context.getString(R.string.message_error_digital_operator_not_selected)
             );
-        } else if (!operatorSelected.getClientNumberList().isEmpty()
-                && clientNumberInputView.getText().isEmpty()) {
-            preCheckoutProduct.setErrorCheckout(
-                    context.getString(
-                            R.string.message_error_digital_client_number_not_filled
-                    ) + " " + operatorSelected.getClientNumberList().get(0).getText()
-                            .toLowerCase()
-            );
+        } else if (!operatorSelected.getClientNumberList().isEmpty() && !isClientNumberValid()) {
+            if (clientNumberInputView.getText().isEmpty()) {
+                preCheckoutProduct.setErrorCheckout(
+                        context.getString(
+                                R.string.message_error_digital_client_number_not_filled
+                        ) + " " + operatorSelected.getClientNumberList().get(0).getText()
+                                .toLowerCase()
+                );
+            } else {
+                for (Validation validation : operatorSelected.getClientNumberList().get(0).getValidation()) {
+                    if (!Pattern.matches(validation.getRegex(), getClientNumber())) {
+                        preCheckoutProduct.setErrorCheckout(
+                                validation.getError() + " " +
+                                        operatorSelected.getClientNumberList().get(0).getText().toLowerCase()
+                        );
+                        break;
+                    }
+                }
+            }
         } else if (productSelected == null) {
             if (operatorSelected.getRule().getProductViewStyle() == 99
                     && !operatorSelected.getClientNumberList().isEmpty()
@@ -482,6 +497,15 @@ public class CategoryProductStyle2View extends
         preCheckoutProduct.setInstantCheckout(cbInstantCheckout.isChecked());
         preCheckoutProduct.setCanBeCheckout(canBeCheckout);
         return preCheckoutProduct;
+    }
+
+    private boolean isClientNumberValid() {
+        for (Validation validation : operatorSelected.getClientNumberList().get(0).getValidation()) {
+            if (!Pattern.matches(validation.getRegex(), getClientNumber())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private boolean hasLastOrderHistoryData() {
