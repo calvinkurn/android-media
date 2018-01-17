@@ -1,4 +1,4 @@
-package com.tokopedia.seller.base.view.fragment;
+package com.tokopedia.abstraction.base.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,18 +10,28 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.util.TkpdWebView;
-import com.tokopedia.seller.R;
+import com.tokopedia.abstraction.R;
+import com.tokopedia.abstraction.base.view.webview.TkpdWebView;
+
 
 public abstract class BaseWebViewFragment extends BaseDaggerFragment {
-
     private static final int MAX_PROGRESS = 100;
 
     private TkpdWebView webView;
     private ProgressBar progressBar;
 
+    /**
+     * return the url to load in the webview
+     * You can use URLGenerator.java to use generate the seamless URL.
+     */
     protected abstract String getUrl();
+
+    /**
+     * this is to put in header with key X-User-ID when the webview loadUrl
+     * fill with blank or NULL if authorization header is not needed.
+     */
+    @Nullable
+    protected abstract String getUserIdForHeader();
 
     @Override
     protected void initInjector() {
@@ -38,7 +48,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     protected int getLayout(){
-        return R.layout.fragment_fragment_general_web_view;
+        return R.layout.fragment_general_web_view;
     }
 
     @Override
@@ -64,13 +74,17 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 super.onProgressChanged(view, newProgress);
             }
         });
-        webView.loadAuthUrlWithFlags(getUrl());
+        webView.loadAuthUrlWithFlags(getUrl(), getUserIdForHeader());
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                return false;
+                return BaseWebViewFragment.this.shouldOverrideUrlLoading(view, url);
             }
         });
+    }
+
+    protected boolean shouldOverrideUrlLoading(WebView webView, String url) {
+        return false;
     }
 
     protected void onLoadFinished(){

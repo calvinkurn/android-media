@@ -57,7 +57,6 @@ public class PushNotificationIntentService extends IntentService {
         public void onNext(FCMTokenUpdateEntity entity) {
             CommonUtils.dumper(entity.toString());
             if (entity.getSuccess()) {
-                FCMCacheManager.storeFcmTimestamp(getApplicationContext());
                 FCMCacheManager.storeRegId(entity.getToken(), getBaseContext());
             }
         }
