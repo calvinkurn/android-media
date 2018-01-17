@@ -267,6 +267,10 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Override
     public void updatePassengerList(List<FlightDetailPassenger> flightDetailPassengers) {
+        if(flightDetailPassengers.size() < 2) {
+            removePassengerRecyclerDivider();
+        }
+
         flightBookingReviewPassengerAdapter.addElement(flightDetailPassengers);
         flightBookingReviewPassengerAdapter.notifyDataSetChanged();
     }
@@ -334,6 +338,10 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     @Override
     public void updateViewWaitingForTransfer() {
         updateViewStatus(R.string.flight_label_waiting_payment, R.color.deep_orange_500, false, false, false, false);
+    }
+
+    private void removePassengerRecyclerDivider() {
+        recyclerViewPassenger.clearItemDecoration();
     }
 
     private void togglePassengerInfo() {

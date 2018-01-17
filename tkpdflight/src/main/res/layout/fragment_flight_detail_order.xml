@@ -209,7 +209,6 @@
                 android:layout_height="wrap_content"
                 android:descendantFocusability="blocksDescendants"
                 android:nestedScrollingEnabled="false"
-                android:paddingBottom="@dimen/padding_med"
                 android:paddingLeft="@dimen/padding_med"
                 android:paddingRight="@dimen/padding_med" />
 

@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/padding_small">
+    android:paddingTop="@dimen/padding_ms"
+    android:paddingBottom="@dimen/padding_ms">
 
     <TextView
         android:id="@+id/passenger_number"
@@ -40,6 +41,5 @@
         android:layout_alignLeft="@id/passenger_name"
         android:layout_alignStart="@id/passenger_name"
         android:layout_below="@+id/passenger_name"
-        android:layout_marginTop="@dimen/margin_small"
-        android:paddingBottom="@dimen/padding_small" />
+        android:layout_marginTop="@dimen/margin_small"/>
 </RelativeLayout>
