@@ -71,9 +71,12 @@ public class BottomSheetView extends BottomSheetDialog {
     }
 
     public void renderBottomSheet(BottomSheetField bottomSheetField) {
-        if(bottomSheetField.getImg() <= 0){
+        if (bottomSheetField == null) {
+            return;
+        }
+        if (bottomSheetField.getImg() <= 0) {
             imgIconBottomSheet.setVisibility(View.GONE);
-        }else{
+        } else {
             imgIconBottomSheet.setVisibility(View.VISIBLE);
             imgIconBottomSheet.setImageDrawable(ContextCompat.getDrawable(context, bottomSheetField.getImg()));
         }
