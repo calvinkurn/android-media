@@ -4,7 +4,6 @@ import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.payment.utils.ErrorNetMessage;
 import com.tokopedia.transaction.exception.ResponseRuntimeException;
 import com.tokopedia.transaction.purchase.detail.model.detail.response.Buttons;
-import com.tokopedia.transaction.purchase.detail.model.detail.response.Data;
 import com.tokopedia.transaction.purchase.detail.model.detail.response.OrderDetailResponse;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.ButtonData;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
@@ -39,11 +38,11 @@ public class OrderDetailMapper {
         } else {
             viewData.setPurchaseDate(responseData.getDetail().getCheckoutDate());
         }
-        if(responseData.getDetail().getDeadline() != null) {
+        if (responseData.getDetail().getDeadline() != null) {
             viewData.setResponseTimeLimit(responseData.getDetail().getDeadline().getText());
             viewData.setDeadlineColorString(responseData.getDetail().getDeadline().getColor());
         }
-        if(responseData.getDetail().getShop() !=null) {
+        if (responseData.getDetail().getShop() != null) {
             viewData.setShopId(String.valueOf(responseData.getDetail().getShop().getId()));
             viewData.setShopName(responseData.getDetail().getShop().getName());
             viewData.setShopLogo(responseData.getDetail().getShop().getLogo());
@@ -51,7 +50,7 @@ public class OrderDetailMapper {
         viewData.setPartialOrderStatus(
                 getPartialOrderStatus(responseData.getDetail().getPartialOrder())
         );
-        if(responseData.getDetail().getPreorder() == null
+        if (responseData.getDetail().getPreorder() == null
                 || responseData.getDetail().getPreorder().getIsPreorder() == 0) {
             viewData.setPreorder(false);
         } else {
@@ -60,7 +59,7 @@ public class OrderDetailMapper {
                     responseData.getDetail().getPreorder().getProcessTime()));
             viewData.setPreorderPeriodText(responseData.getDetail().getPreorder().getProcessTimeText());
         }
-        if(responseData.getDetail().getDropShipper() != null) {
+        if (responseData.getDetail().getDropShipper() != null) {
             viewData.setDropshipperName(responseData.getDetail().getDropShipper().getName());
             viewData.setDropshipperPhone(responseData.getDetail().getDropShipper().getPhone());
         }
@@ -120,6 +119,22 @@ public class OrderDetailMapper {
         buttonData.setRequestPickupVisibility(buttons.getRequestPickup());
         viewData.setButtonData(buttonData);
 
+        if (responseData.getDetail().getShipment().getInfo() != null &&
+                responseData.getDetail().getShipment().getInfo().getDriver() != null) {
+            viewData.setDriverName(
+                    responseData.getDetail().getShipment().getInfo().getDriver().getName()
+            );
+            viewData.setDriverImage(
+                    responseData.getDetail().getShipment().getInfo().getDriver().getPhoto()
+            );
+            viewData.setDriverPhone(
+                    responseData.getDetail().getShipment().getInfo().getDriver().getPhone()
+            );
+            viewData.setDriverVehicle(
+                    responseData.getDetail().getShipment().getInfo().getDriver().getLicenseNumber()
+            );
+        }
+
         return viewData;
     }
 
@@ -129,12 +144,12 @@ public class OrderDetailMapper {
                 .Data historyData = response.getData();
         viewData.setStepperMode(historyData.getOrderStatusCode());
         viewData.setStepperStatusTitle(historyData.getHistoryTitle());
-        if(response.getData().getHistoryImg() != null) {
+        if (response.getData().getHistoryImg() != null) {
             viewData.setHistoryImage(historyData.getHistoryImg());
         } else viewData.setHistoryImage("");
         List<OrderHistoryListData> historyListData = new ArrayList<>();
         List<History> orderHistories = historyData.getHistories();
-        for(int i = 0; i < orderHistories.size(); i++) {
+        for (int i = 0; i < orderHistories.size(); i++) {
             OrderHistoryListData listData = new OrderHistoryListData();
             listData.setOrderHistoryDate(orderHistories.get(i).getDate());
             listData.setActionBy(orderHistories.get(i).getActionBy());
@@ -149,7 +164,7 @@ public class OrderDetailMapper {
     }
 
     private String getPartialOrderStatus(int partialOrder) {
-        if(partialOrder == 1) return "Ya";
+        if (partialOrder == 1) return "Ya";
         else return "Tidak";
     }
 
@@ -169,9 +184,9 @@ public class OrderDetailMapper {
     }
 
     private void handleResponseError(TkpdResponse response) {
-        if(response == null)
+        if (response == null)
             throw new ResponseRuntimeException(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-        else if(response.isError())
+        else if (response.isError())
             throw new ResponseRuntimeException(response.getErrorMessageJoined());
     }
 
