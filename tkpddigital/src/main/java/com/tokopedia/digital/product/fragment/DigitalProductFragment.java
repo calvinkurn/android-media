@@ -192,8 +192,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private ShowCaseDialog showCaseDialog;
     private int selectedSimIndex = 0;//start from 0
     private boolean ussdInProgress = false;
-    private final String noSognalsStr = "No signal";
-
     public static Fragment newInstance(String categoryId) {
         Fragment fragment = new DigitalProductFragment();
         Bundle bundle = new Bundle();
@@ -468,7 +466,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                     if(carrierName == null){
                         continue;
                     }else if (presenter.isCarrierSignalsNotAvailable(carrierName)) {
-                        error = noSognalsStr;
+                        error = getString(R.string.label_no_signal);
                         carrierName = error;
                         activeSim = true;
                     } else {
@@ -1048,13 +1046,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     void showNeverAskForPhone() {
         RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.CALL_PHONE);
     }
-
-//    @OnShowRationale({Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE})
-//    void showRationaleForPhone(final PermissionRequest request) {
-//        RequestPermissionUtil.onShowRationale(
-//                getActivity(), request, Manifest.permission.CALL_PHONE
-//        );
-//    }
 
     private void renderContactDataToClientNumber(ContactData contactData) {
         digitalProductView.renderClientNumberFromContact(contactData.getContactNumber());

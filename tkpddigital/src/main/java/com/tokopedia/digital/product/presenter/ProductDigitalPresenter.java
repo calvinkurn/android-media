@@ -672,18 +672,17 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
 
     @Override
     public boolean isCarrierSignalsNotAvailable(String carrierName) {
-        final String noSognalsStr = "No signal";
-        final String noServiceStr = "No service";
+        final String noSignalStr = view.getActivity().getString(R.string.label_no_signal);
+        final String noServiceStr = view.getActivity().getString(R.string.label_no_service);
         if (carrierName == null) {
             return false;
         }
         carrierName = carrierName.toLowerCase();
-        if ((carrierName.contains(noServiceStr.toLowerCase()) || carrierName.contains(noSognalsStr.toLowerCase()))) {
+        if ((carrierName.contains(noServiceStr.toLowerCase()) || carrierName.contains(noSignalStr.toLowerCase()))) {
             return true;
         } else {
             return false;
         }
-
     }
 }
 

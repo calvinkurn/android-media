@@ -80,15 +80,15 @@ public class CheckPulsaBalanceView extends LinearLayout {
 
     public void renderData(int simPosition, String ussdCode, String phoneNumber,String error, Boolean activeSim) {
         if (phoneNumber != null && !"".equalsIgnoreCase(phoneNumber.trim()))
-            tvPhoneNumber.setText("SIM" + (simPosition + 1) + "- " + phoneNumber);
+            tvPhoneNumber.setText(context.getString(R.string.label_sim) + (simPosition + 1) + "- " + phoneNumber);
         else
-            tvPhoneNumber.setText("SIM" + (simPosition + 1));
+            tvPhoneNumber.setText(context.getString(R.string.label_sim) + (simPosition + 1));
         this.mobileNumber = phoneNumber;
         if (activeSim) {
             this.btnCheckBalance.setOnClickListener(getButtonCheckBalanceClicked(simPosition, ussdCode));
             errorOperator.setVisibility(GONE);
             if (error != null && operatorName != null) {
-                tvPhoneNumber.setText("SIM" + (simPosition + 1) + "- " + operatorName);
+                tvPhoneNumber.setText(context.getString(R.string.label_sim) + (simPosition + 1) + "- " + operatorName);
 
             }
         } else {
@@ -96,7 +96,7 @@ public class CheckPulsaBalanceView extends LinearLayout {
             errorOperator.setVisibility(VISIBLE);
             errorOperator.setText(error);
             if (operatorName != null) {
-                tvPhoneNumber.setText("SIM" + (simPosition + 1) + "- " + operatorName);
+                tvPhoneNumber.setText(context.getString(R.string.label_sim) + (simPosition + 1) + "- " + operatorName);
 
             }
         }
