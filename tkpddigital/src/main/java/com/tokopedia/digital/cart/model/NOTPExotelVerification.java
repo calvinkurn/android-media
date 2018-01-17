@@ -79,7 +79,7 @@ public class NOTPExotelVerification {
         Config config = null;
         try {
 
-            config= new ConfigBuilder(APPLICATION_ID, SECRET_KEY, ACCOUNT_SID, context).Build();
+            config= new ConfigBuilder(APPLICATION_ID, SECRET_KEY, ACCOUNT_SID, context.getApplicationContext()).Build();
             /*config = eVerification.configBuilder().
                     applicationId(APPLICATION_ID).
                     accountSid(ACCOUNT_SID).
