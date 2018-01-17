@@ -11,6 +11,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.referral.listner.FriendsWelcomeView;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 
 import java.io.UnsupportedEncodingException;
@@ -65,11 +66,13 @@ public class ReferralFriendsWelcomePresenter implements IReferralFriendsWelcomeP
     public String getReferralWelcomeMsg() {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(view.getActivity());
         String msg = remoteConfig.getString(TkpdCache.RemoteConfigKey.APP_SHARE_WELCOME_MESSAGE);
+        String username= SessionHandler.getLoginName(view.getActivity());
+        username = username == null?"":username;
         try{
             owner = URLDecoder.decode(owner, "UTF-8");// here is double encoding characters that's why i am decoding it twice.
             owner = URLDecoder.decode(owner, "UTF-8");
-            msg = msg.replace("%s", owner);
 
+            msg = String.format(msg,username,owner);
         }catch (UnsupportedEncodingException e){
 
         }

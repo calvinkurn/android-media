@@ -2157,5 +2157,7 @@ di Tokopedia Sekarang!</string>
     <string name="notif_channel_general">Notifikasi</string>
     <string name="title_hockeyapp_download">Nakama harus menggunakan aplikasi Tokopedia versi beta</string>
     <string name="title_download">Download</string>
+    <string name="app_share_explore_btn_label">Mulai Belanja</string>
+
 
 </resources>
