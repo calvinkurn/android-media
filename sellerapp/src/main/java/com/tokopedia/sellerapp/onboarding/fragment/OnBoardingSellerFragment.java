@@ -19,6 +19,7 @@ import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.sellerapp.R;
+import com.tokopedia.sellerapp.SellerRouterApplication;
 
 public class OnBoardingSellerFragment extends OnBoardingFragment {
 
@@ -146,7 +147,7 @@ public class OnBoardingSellerFragment extends OnBoardingFragment {
                     getActivity().finish();
                 } else if (MainApplication.getAppContext() instanceof SellerModuleRouter){
                     intent =  ((SellerModuleRouter) MainApplication.getAppContext())
-                            .getPhoneVerificationActivationIntent(getActivity());
+                            .getPhoneVerificationActivityIntent(getActivity());
                     startActivityForResult(intent, REQUEST_ACTIVATE_PHONE_SELLER);
                 }
             }

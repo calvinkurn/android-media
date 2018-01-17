@@ -90,7 +90,7 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepp
         super.onResume();
         if (!SessionHandler.isMsisdnVerified()) {
             Intent intent = ((SellerModuleRouter) MainApplication.getAppContext())
-                    .getPhoneVerificationActivationIntent(this);
+                    .getPhoneVerificationActivityIntent(this);
             startActivityForResult(intent, REQUEST_PHONE_VERIFICATION);
         }
     }

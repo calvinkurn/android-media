@@ -83,7 +83,7 @@ public class OnboardingSellerActivity extends OnboardingActivity {
             finish();
         } else if (MainApplication.getAppContext() instanceof SellerModuleRouter){
             Intent intent =  ((SellerModuleRouter) MainApplication.getAppContext())
-                    .getPhoneVerificationActivationIntent(this);
+                    .getPhoneVerificationActivityIntent(this);
             startActivityForResult(intent, REQUEST_ACTIVATE_PHONE_SELLER);
         }
     }
