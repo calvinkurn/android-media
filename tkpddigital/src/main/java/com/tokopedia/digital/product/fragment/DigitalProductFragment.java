@@ -222,11 +222,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     protected void onFirstTimeLaunched() {
-        String applinkProperties = "category id: " + categoryId + "\n" +
-                "operator id: " + operatorId;
-
-        Toast.makeText(getActivity(), applinkProperties, Toast.LENGTH_SHORT).show();
-
         presenter.processGetCategoryAndBannerData(
                 categoryId, operatorId, productId, clientNumber);
     }
