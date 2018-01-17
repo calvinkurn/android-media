@@ -3,7 +3,6 @@ package com.tokopedia.seller.opportunity.fragment;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -37,7 +36,6 @@ import com.tokopedia.seller.opportunity.di.module.OpportunityModule;
 import com.tokopedia.seller.opportunity.domain.param.GetOpportunityListParam;
 import com.tokopedia.seller.opportunity.listener.OpportunityListView;
 import com.tokopedia.seller.opportunity.presenter.OpportunityListPresenter;
-import com.tokopedia.seller.opportunity.presenter.OpportunityListPresenterImpl;
 import com.tokopedia.seller.opportunity.viewmodel.OpportunityFilterPassModel;
 import com.tokopedia.seller.opportunity.viewmodel.SortingTypeViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.FilterPass;
@@ -131,8 +129,8 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
                     showCaseList.add(
                             new ShowCaseObject(
                                     itemView.findViewById(R.id.reputation_point),
-                                    getString(R.string.opportunity_reputation_value),
-                                    getString(R.string.opportunity_reputation_detail),
+                                    getString(R.string.opportunity_showcase_reputation_value_title),
+                                    getString(R.string.opportunity_showcase_reputation_value_content),
                                     ShowCaseContentPosition.UNDEFINED));
                 }
 

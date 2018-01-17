@@ -19,26 +19,24 @@ import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
-import com.tokopedia.seller.opportunity.activity.OpportunityTncActivity;
-import com.tokopedia.seller.opportunity.analytics.OpportunityTrackingEventLabel;
-import com.tokopedia.seller.opportunity.customview.OpportunityPriceInfoView;
-import com.tokopedia.seller.opportunity.customview.OpportunityValueBottomSheet;
-import com.tokopedia.seller.opportunity.data.OpportunityNewPriceData;
-import com.tokopedia.seller.opportunity.di.component.OpportunityComponent;
-import com.tokopedia.seller.opportunity.di.module.OpportunityModule;
-import com.tokopedia.seller.opportunity.snapshot.SnapShotProduct;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.activity.OpportunityDetailActivity;
+import com.tokopedia.seller.opportunity.activity.OpportunityTncActivity;
+import com.tokopedia.seller.opportunity.analytics.OpportunityTrackingEventLabel;
 import com.tokopedia.seller.opportunity.customview.OpportunityDetailProductView;
 import com.tokopedia.seller.opportunity.customview.OpportunityDetailStatusView;
 import com.tokopedia.seller.opportunity.customview.OpportunityDetailSummaryView;
+import com.tokopedia.seller.opportunity.customview.OpportunityPriceInfoView;
+import com.tokopedia.seller.opportunity.data.OpportunityNewPriceData;
+import com.tokopedia.seller.opportunity.di.component.DaggerOpportunityComponent;
+import com.tokopedia.seller.opportunity.di.component.OpportunityComponent;
+import com.tokopedia.seller.opportunity.di.module.OpportunityModule;
 import com.tokopedia.seller.opportunity.listener.OpportunityView;
 import com.tokopedia.seller.opportunity.presentation.ActionViewData;
-import com.tokopedia.seller.opportunity.presenter.OpportunityImpl;
 import com.tokopedia.seller.opportunity.presenter.OpportunityPresenter;
+import com.tokopedia.seller.opportunity.snapshot.SnapShotProduct;
 import com.tokopedia.seller.opportunity.viewmodel.OpportunityPriceInfoViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityItemViewModel;
-import com.tokopedia.seller.opportunity.di.component.DaggerOpportunityComponent;
 
 import javax.inject.Inject;
 
@@ -133,19 +131,33 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
         BottomSheetView bottomSheetView = new BottomSheetView(getActivity());
         bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
                 .BottomSheetFieldBuilder()
-                .setTitle(getActivity().getString(R.string.title_tooltip_reputation_multiplier))
-                .setBody(getActivity().getString(R.string.body_tooltip_reputation_multiplier))
+                .setTitle(getActivity().getString(R.string.opportunity_detail_info_reputation_multiplier_title))
+                .setBody(getActivity().getString(R.string.opportunity_detail_info_reputation_multiplier_content))
                 .setImg(R.drawable.ic_reputation_value)
                 .build());
         bottomSheetView.show();
     }
 
     public void onReputationShippingFee(){
-        OpportunityValueBottomSheet.showShippingFee(getActivity()).show();
+        BottomSheetView bottomSheetView = new BottomSheetView(getActivity());
+        bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
+                .BottomSheetFieldBuilder()
+                .setTitle(context.getString(R.string.opportunity_detail_info_delivery_price_title))
+                .setBody(context.getString(R.string.opportunity_detail_info_delivery_price_content))
+                .setImg(R.drawable.ic_shipping_fee)
+                .build());
+        bottomSheetView.show();
     }
 
     public void onReputationProductPrice(){
-        OpportunityValueBottomSheet.showProductPrice(getActivity()).show();
+        BottomSheetView bottomSheetView = new BottomSheetView(context);
+        bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
+                .BottomSheetFieldBuilder()
+                .setTitle(context.getString(R.string.opportunity_detail_info_product_price_title))
+                .setBody(context.getString(R.string.opportunity_detail_info_product_price_content))
+                .setImg(R.drawable.ic_product_price)
+                .build());
+        bottomSheetView.show();
     }
 
     @Override
