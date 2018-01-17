@@ -269,7 +269,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Override
     public void updatePassengerList(List<FlightDetailPassenger> flightDetailPassengers) {
-        if(flightDetailPassengers.size() < 2) {
+        if(flightBookingReviewPassengerAdapter.getDataSize() < 2) {
             removePassengerRecyclerDivider();
         }
 
