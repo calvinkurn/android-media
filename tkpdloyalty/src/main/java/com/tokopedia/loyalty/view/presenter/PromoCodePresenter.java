@@ -35,7 +35,6 @@ public class PromoCodePresenter implements IPromoCodePresenter {
         view.showProgressLoading();
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put("voucher_code", voucherCode);
-
         promoCodeInteractor.submitVoucher(voucherCode,
                 AuthUtil.generateParamsNetwork(context, param),
                 makeVoucherViewModel());

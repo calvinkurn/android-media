@@ -171,7 +171,7 @@ public class TokoPointRepository implements ITokoPointRepository {
     }
 
     @Override
-    public Observable<VoucherViewModel> checkVoucherValidity( TKPDMapParam<String, String> param,
+    public Observable<VoucherViewModel> checkVoucherValidity(TKPDMapParam<String, String> param,
                                                              final String voucherCode) {
         return txVoucherService.getApi().checkVoucherCode(param).map(new Func1<Response<TkpdResponse>, VoucherViewModel>() {
             @Override
@@ -189,7 +189,7 @@ public class TokoPointRepository implements ITokoPointRepository {
 
     @Override
     public Observable<CouponViewModel> checkCouponValidity(
-          TKPDMapParam<String, String> param,
+            TKPDMapParam<String, String> param,
             final String voucherCode, final String couponTitle
     ) {
         return txVoucherService.getApi().checkVoucherCode(param)
@@ -212,7 +212,7 @@ public class TokoPointRepository implements ITokoPointRepository {
     public Observable<VoucherViewModel> checkDigitalVoucherValidity(
             TKPDMapParam<String, String> param, final String voucherCode
     ) {
-        return digitalService.getApi().checkVoucher( param)
+        return digitalService.getApi().checkVoucher(param)
                 .map(new Func1<Response<TkpdDigitalResponse>, VoucherViewModel>() {
                     @Override
                     public VoucherViewModel call(Response<TkpdDigitalResponse> tkpdDigitalResponseResponse) {
@@ -226,9 +226,9 @@ public class TokoPointRepository implements ITokoPointRepository {
 
     @Override
     public Observable<CouponViewModel> checkDigitalCouponValidity(
-             TKPDMapParam<String, String> param, final String voucherCode, final String couponTitle
+            TKPDMapParam<String, String> param, final String voucherCode, final String couponTitle
     ) {
-        return digitalService.getApi().checkVoucher( param).
+        return digitalService.getApi().checkVoucher(param).
                 map(new Func1<Response<TkpdDigitalResponse>, CouponViewModel>() {
                     @Override
                     public CouponViewModel call(Response<TkpdDigitalResponse> tkpdDigitalResponseResponse) {

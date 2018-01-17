@@ -87,7 +87,6 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
         param.put("voucher_code", voucherCode);
         param.put("category_id", digitalCategoryId);
         view.showProgressLoading();
-        AnalyticsCacheHandler analHandler = new AnalyticsCacheHandler();
         cartDigitalInteractor.checkVoucher(
                 view.getGeneratedAuthParamNetwork(param), getSubscriberCheckVoucher()
         );

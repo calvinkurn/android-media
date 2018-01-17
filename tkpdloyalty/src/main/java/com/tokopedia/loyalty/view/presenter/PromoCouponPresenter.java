@@ -121,8 +121,6 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
         view.showProgressLoading();
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put(VOUCHER_CODE, couponData.getCode());
-        AnalyticsCacheHandler analHandler = new AnalyticsCacheHandler();
-
         promoCouponInteractor.submitVoucher(
                 couponData.getTitle(),
                 couponData.getCode(),
@@ -137,7 +135,6 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         param.put(VOUCHER_CODE, couponData.getCode());
         param.put(CATEGORY_ID, categoryId);
-        AnalyticsCacheHandler analHandler = new AnalyticsCacheHandler();
         promoCouponInteractor.submitDigitalVoucher(
                 couponData.getTitle(),
                 couponData.getCode(),

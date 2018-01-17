@@ -17,6 +17,6 @@ import rx.Observable;
 public interface DigitalApi {
 
     @GET(TkpdBaseURL.DigitalApi.PATH_CHECK_VOUCHER)
-    Observable<Response<TkpdDigitalResponse>> checkVoucher( @QueryMap Map<String, String> params);
+    Observable<Response<TkpdDigitalResponse>> checkVoucher(@QueryMap Map<String, String> params);
 
 }

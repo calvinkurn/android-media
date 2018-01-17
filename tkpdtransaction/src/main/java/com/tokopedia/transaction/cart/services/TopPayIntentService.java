@@ -182,7 +182,6 @@ public class TopPayIntentService extends IntentService {
         intent.putExtra(TopPayBroadcastReceiver.EXTRA_MESSAGE_TOP_PAY_ACTION,
                 "Melakukan proses checkout");
         sendBroadcast(intent);
-
         cartDataInteractor.getParameterTopPay(
                 AuthUtil.generateParamsNetwork(this, params), Schedulers.immediate(),
                 new Subscriber<TopPayParameterData>() {

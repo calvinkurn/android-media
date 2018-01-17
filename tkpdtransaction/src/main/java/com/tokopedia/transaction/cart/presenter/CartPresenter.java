@@ -397,7 +397,7 @@ public class CartPresenter implements ICartPresenter {
         TKPDMapParam<String, String> params = new TKPDMapParam<>();
         params.put(VOUCHER_CODE, view.getVoucherCodeCheckoutData());
         params.put(IS_SUGGESTED, String.valueOf(instantCheckVoucher));
-        cartDataInteractor.checkVoucherCode( view.getGeneratedAuthParamNetwork(params),
+        cartDataInteractor.checkVoucherCode(view.getGeneratedAuthParamNetwork(params),
                 new Subscriber<ResponseTransform<VoucherData>>() {
                     @Override
                     public void onCompleted() {

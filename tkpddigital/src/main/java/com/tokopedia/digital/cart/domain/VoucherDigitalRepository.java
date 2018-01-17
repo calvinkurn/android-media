@@ -30,7 +30,7 @@ public class VoucherDigitalRepository implements IVoucherDigitalRepository {
 
     @Override
     public Observable<VoucherDigital> checkVoucher(TKPDMapParam<String, String> param) {
-        return digitalEndpointService.getApi().checkVoucher( param)
+        return digitalEndpointService.getApi().checkVoucher(param)
                 .map(getFuncResponseToVoucherDigital());
     }
 
