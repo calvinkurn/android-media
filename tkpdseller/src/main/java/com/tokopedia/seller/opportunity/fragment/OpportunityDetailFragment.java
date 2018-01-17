@@ -100,7 +100,6 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
                             AppEventTracking.Action.CLICK,
                             OpportunityTrackingEventLabel.EventLabel.YES
                     );
-
                     presenter.acceptOpportunity();
                     dialogInterface.dismiss();
                 }
@@ -131,31 +130,9 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
         BottomSheetView bottomSheetView = new BottomSheetView(getActivity());
         bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
                 .BottomSheetFieldBuilder()
-                .setTitle(getActivity().getString(R.string.opportunity_detail_info_reputation_multiplier_title))
-                .setBody(getActivity().getString(R.string.opportunity_detail_info_reputation_multiplier_content))
+                .setTitle(getString(R.string.opportunity_detail_info_reputation_multiplier_title))
+                .setBody(getString(R.string.opportunity_detail_info_reputation_multiplier_content))
                 .setImg(R.drawable.ic_reputation_value)
-                .build());
-        bottomSheetView.show();
-    }
-
-    public void onReputationShippingFee(){
-        BottomSheetView bottomSheetView = new BottomSheetView(getActivity());
-        bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
-                .BottomSheetFieldBuilder()
-                .setTitle(context.getString(R.string.opportunity_detail_info_delivery_price_title))
-                .setBody(context.getString(R.string.opportunity_detail_info_delivery_price_content))
-                .setImg(R.drawable.ic_shipping_fee)
-                .build());
-        bottomSheetView.show();
-    }
-
-    public void onReputationProductPrice(){
-        BottomSheetView bottomSheetView = new BottomSheetView(context);
-        bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
-                .BottomSheetFieldBuilder()
-                .setTitle(context.getString(R.string.opportunity_detail_info_product_price_title))
-                .setBody(context.getString(R.string.opportunity_detail_info_product_price_content))
-                .setImg(R.drawable.ic_product_price)
                 .build());
         bottomSheetView.show();
     }
@@ -300,29 +277,51 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
         itemPriceView.setVisibility(View.VISIBLE);
         shippingFeeView.setVisibility(View.VISIBLE);
 
-        OpportunityPriceInfoViewModel datas = new OpportunityPriceInfoViewModel();
-        datas.setTitle(getString(R.string.item_price_label));
-        datas.setStrikeThroughText(opportunityNewPriceData.getOldItemPriceIdr());
-        datas.setNonStrikeThroughText(opportunityNewPriceData.getNewItemPriceIdr());
+        OpportunityPriceInfoViewModel opportunityPriceInfoViewModel = new OpportunityPriceInfoViewModel();
+        opportunityPriceInfoViewModel.setTitle(getString(R.string.item_price_label));
+        opportunityPriceInfoViewModel.setStrikeThroughText(opportunityNewPriceData.getOldItemPriceIdr());
+        opportunityPriceInfoViewModel.setNonStrikeThroughText(opportunityNewPriceData.getNewItemPriceIdr());
 
-        itemPriceView.renderData(datas);
+        itemPriceView.renderData(opportunityPriceInfoViewModel);
         itemPriceView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onReputationProductPrice();
             }
+
+            private void onReputationProductPrice(){
+                BottomSheetView bottomSheetView = new BottomSheetView(context);
+                bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
+                        .BottomSheetFieldBuilder()
+                        .setTitle(getString(R.string.opportunity_detail_info_product_price_title))
+                        .setBody(getString(R.string.opportunity_detail_info_product_price_content))
+                        .setImg(R.drawable.ic_product_price)
+                        .build());
+                bottomSheetView.show();
+            }
         });
 
-        datas = new OpportunityPriceInfoViewModel();
-        datas.setTitle(getString(R.string.shipping_fee_label));
-        datas.setStrikeThroughText(opportunityNewPriceData.getOldShippingPriceIdr());
-        datas.setNonStrikeThroughText(opportunityNewPriceData.getNewShippingPriceIdr());
+        opportunityPriceInfoViewModel = new OpportunityPriceInfoViewModel();
+        opportunityPriceInfoViewModel.setTitle(getString(R.string.shipping_fee_label));
+        opportunityPriceInfoViewModel.setStrikeThroughText(opportunityNewPriceData.getOldShippingPriceIdr());
+        opportunityPriceInfoViewModel.setNonStrikeThroughText(opportunityNewPriceData.getNewShippingPriceIdr());
 
-        shippingFeeView.renderData(datas);
+        shippingFeeView.renderData(opportunityPriceInfoViewModel);
         shippingFeeView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onReputationShippingFee();
+            }
+
+            private void onReputationShippingFee(){
+                BottomSheetView bottomSheetView = new BottomSheetView(getActivity());
+                bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
+                        .BottomSheetFieldBuilder()
+                        .setTitle(getString(R.string.opportunity_detail_info_delivery_price_title))
+                        .setBody(getString(R.string.opportunity_detail_info_delivery_price_content))
+                        .setImg(R.drawable.ic_shipping_fee)
+                        .build());
+                bottomSheetView.show();
             }
         });
     }
