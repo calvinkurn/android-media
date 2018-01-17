@@ -82,6 +82,7 @@ import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategorySe
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.LayoutSections;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.SellViewModel;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.home.ReactNativeOfficialStoreActivity;
@@ -362,7 +363,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void focusView(String title) {
         if (title.equalsIgnoreCase("Jual")) {
-            recyclerView.smoothScrollToPosition(adapter.getItemCount() - 1);
+            for (int i = 0; i < adapter.getItemCount(); i++) {
+                if (adapter.getItem(i) instanceof SellViewModel) {
+                    recyclerView.smoothScrollToPosition(i);
+                    break;
+                }
+            }
         } else {
             for (int i = 0; i < adapter.getItemCount(); i++) {
                 Visitable visitable = adapter.getItem(i);
