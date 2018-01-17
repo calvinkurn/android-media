@@ -24,13 +24,13 @@ public class AnalyticsLog {
         AnalyticsLog.log("ErrorType=Force Logout!"
                 + " UserID=" + (SessionHandler.getLoginID(MainApplication.getAppContext())
                 .equals("") ? "0" : SessionHandler.getLoginID(MainApplication.getAppContext()))
-                + " URL=" + url
+                + " Url=" + url
                 + " AppPackage=" + GlobalConfig.getPackageApplicationName()
                 + " AppVersion=" + GlobalConfig.VERSION_NAME
                 + " AppCode=" + GlobalConfig.VERSION_CODE
                 + " OSVersion=" + Build.VERSION.RELEASE
                 + " DeviceModel=" + android.os.Build.MODEL
-                + " DeviceID=" + GCMHandler.getRegistrationId(MainApplication.getAppContext())
+                + " DeviceId=" + GCMHandler.getRegistrationId(MainApplication.getAppContext())
 
         );
     }
@@ -40,13 +40,13 @@ public class AnalyticsLog {
                 + " ErrorCode=" + errorCode
                 + " UserID=" + (SessionHandler.getLoginID(MainApplication.getAppContext())
                 .equals("") ? "0" : SessionHandler.getLoginID(MainApplication.getAppContext()))
-                + " URL=" + url
+                + " Url=" + url
                 + " AppPackage=" + GlobalConfig.getPackageApplicationName()
                 + " AppVersion=" + GlobalConfig.VERSION_NAME
                 + " AppCode=" + GlobalConfig.VERSION_CODE
                 + " OSVersion=" + Build.VERSION.RELEASE
                 + " DeviceModel=" + android.os.Build.MODEL
-                + " DeviceID=" + GCMHandler.getRegistrationId(MainApplication.getAppContext())
+                + " DeviceId=" + GCMHandler.getRegistrationId(MainApplication.getAppContext())
 
         );
     }
