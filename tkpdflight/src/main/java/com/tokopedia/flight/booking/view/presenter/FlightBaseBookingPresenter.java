@@ -3,6 +3,7 @@ package com.tokopedia.flight.booking.view.presenter;
 import android.support.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.data.cloud.entity.NewFarePrice;
@@ -22,8 +23,6 @@ import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.search.data.cloud.model.response.Fare;
 import com.tokopedia.usecase.RequestParams;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -125,8 +124,8 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                         onCountDownTimestimeChanged(FlightDateUtil.dateToString(expiredDate, FlightDateUtil.DEFAULT_TIMESTAMP_FORMAT));
 
                         if (baseCartData.getTotal() != getCurrentCartData().getTotal()) {
-                            getView().showPriceChangesDialog(convertPriceValueToIdrFormat(baseCartData.getTotal()),
-                                    convertPriceValueToIdrFormat(getCurrentCartData().getTotal()));
+                            getView().showPriceChangesDialog(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(baseCartData.getTotal()),
+                                    CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(getCurrentCartData().getTotal()));
                             updateTotalPrice(baseCartData.getTotal());
                             actionCalculatePriceAndRender(
                                     baseCartData.getNewFarePrices(),
@@ -164,21 +163,6 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
             throw new RuntimeException("Failed to Clone FlightDashboardViewModel");
         }
         return viewModel;
-    }
-
-    protected String convertPriceValueToIdrFormat(int price) {
-        DecimalFormat kursIndonesia = (DecimalFormat) DecimalFormat.getCurrencyInstance();
-        kursIndonesia.setMaximumFractionDigits(0);
-        DecimalFormatSymbols formatRp = new DecimalFormatSymbols();
-
-        formatRp.setCurrencySymbol("Rp ");
-        formatRp.setGroupingSeparator('.');
-        formatRp.setMonetaryDecimalSeparator('.');
-        formatRp.setDecimalSeparator('.');
-        kursIndonesia.setDecimalFormatSymbols(formatRp);
-        String result = kursIndonesia.format(price);
-
-        return result.replace(",", ".");
     }
 
     protected void actionCalculatePriceAndRender(
@@ -305,14 +289,14 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
             simpleViewModels.add(new SimpleViewModel(
                     String.format("%s %s", getView().getString(R.string.flight_price_detail_prefixl_meal_label),
                             entry.getKey()),
-                    convertPriceValueToIdrFormat(entry.getValue())));
+                    CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(entry.getValue())));
 
         }
         for (Map.Entry<String, Integer> entry : luggages.entrySet()) {
             simpleViewModels.add(new SimpleViewModel(
                     String.format("%s %s", getView().getString(R.string.flight_price_detail_prefix_luggage_label),
                             entry.getKey()),
-                    convertPriceValueToIdrFormat(entry.getValue())));
+                    CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(entry.getValue())));
 
         }
 
@@ -330,6 +314,6 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                         arrivalAirport,
                         label,
                 passengerCount),
-                convertPriceValueToIdrFormat(price));
+                CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(price));
     }
 }
