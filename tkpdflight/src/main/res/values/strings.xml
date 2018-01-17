@@ -289,6 +289,7 @@
     <string name="flight_contact_us_cancel_desc">Detail penerbangan dan penumpang yang ingin di-refund</string>
     <string name="flight_contact_us_cancel_attc">Lampirkan identitas penumpang</string>
     <string name="flight_contact_us_cancel_toolbar">Ajukan Refund</string>
-    <string name="flight_order_flight_default_contact_us_global_prefix"><![CDATA[sid=1377&oid=]]></string>
-    <string name="flight_search_return_departure_should_greater_message">Disarankan untuk memilih jadwal penerbangan pulang setelah jadwal kedatangan sebelumnya</string>
+    <string name="flight_order_flight_default_contact_us_global_prefix"><![CDATA[oid=]]></string>
+    <string name="flight_search_return_departure_should_greater_message">Disarankan untuk memilih jadwal penerbangan pulang minimal 6 setelah jadwal kedatangan sebelumnya.</string>
+    <string name="flight_review_diskon_voucher_label">Diskon Voucher</string>
 </resources>

@@ -173,7 +173,9 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
                 clipboard.addPrimaryClipChangedListener(new ClipboardManager.OnPrimaryClipChangedListener() {
                     @Override
                     public void onPrimaryClipChanged() {
-                        Toast.makeText(getActivity(), R.string.flight_label_copy_clipboard, Toast.LENGTH_SHORT).show();
+                        if (getActivity() != null) {
+                            Toast.makeText(getActivity(), R.string.flight_label_copy_clipboard, Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
             }
@@ -297,7 +299,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Override
     public void updateViewConfirmed() {
-        updateViewStatus(R.string.flight_label_transaction_success, R.color.font_black_primary_70, true, true, true, false);
+        updateViewStatus(R.string.flight_label_transaction_success, R.color.font_black_primary_70, true, false, true, false);
     }
 
     @Override
@@ -307,7 +309,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Override
     public void updateViewFinished() {
-        updateViewStatus(R.string.flight_label_transaction_success, R.color.font_black_primary_70, true, true, true, false);
+        updateViewStatus(R.string.flight_label_transaction_success, R.color.font_black_primary_70, true, false, true, false);
     }
 
     @Override
@@ -397,7 +399,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     }
 
     @Override
-    public String getCancelMessage() {
+    public String getCancelMessage()  {
         return cancelMessage;
     }
 
@@ -405,9 +407,9 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     public void navigateToWebview(String url) {
         if (getActivity().getApplication() instanceof FlightModuleRouter
                 && ((FlightModuleRouter) getActivity().getApplication())
-                .getBannerWebViewIntent(getActivity(), url) != null) {
+                .getDefaultContactUsIntent(getActivity()) != null) {
             startActivity(((FlightModuleRouter) getActivity().getApplication())
-                    .getBannerWebViewIntent(getActivity(), url));
+                    .getDefaultContactUsIntent(getActivity()));
         }
     }
 

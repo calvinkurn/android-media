@@ -1,6 +1,8 @@
 package com.tokopedia.flight.orderlist.view;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -20,7 +22,9 @@ import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.common.constant.FlightUrl;
+import com.tokopedia.flight.common.di.module.FlightModule;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
+import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import com.tokopedia.flight.detail.view.activity.FlightDetailOrderActivity;
 import com.tokopedia.flight.orderlist.contract.FlightOrderListContract;
 import com.tokopedia.flight.orderlist.di.FlightOrderComponent;
@@ -153,9 +157,9 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
         String url = FlightUrl.CONTACT_US_FLIGHT_PREFIX + Base64.encodeToString(content.getBytes(), Base64.DEFAULT);
         if (getActivity().getApplication() instanceof FlightModuleRouter
                 && ((FlightModuleRouter) getActivity().getApplication())
-                .getBannerWebViewIntent(getActivity(), url) != null) {
+                .getDefaultContactUsIntent(getActivity(), url) != null) {
             startActivity(((FlightModuleRouter) getActivity().getApplication())
-                    .getBannerWebViewIntent(getActivity(), url));
+                    .getDefaultContactUsIntent(getActivity(), url));
         }
     }
 
@@ -172,7 +176,22 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
 
     @Override
     public void onReBookingClicked(FlightOrderBaseViewModel item) {
-        getActivity().finish();
+        android.support.v4.app.TaskStackBuilder taskStackBuilder = android.support.v4.app.TaskStackBuilder.create(getActivity());
+        if (getActivity().getApplication() instanceof FlightModuleRouter
+                && ((FlightModuleRouter) getActivity().getApplication())
+                .getHomeIntent(getActivity()) != null) {
+            Intent intent = ((FlightModuleRouter) getActivity().getApplication())
+                    .getHomeIntent(getActivity());
+            taskStackBuilder.addNextIntent(intent);
+        }
+        taskStackBuilder.addNextIntent(FlightDashboardActivity.getCallingIntent(getActivity()));
+        taskStackBuilder.startActivities();
+    }
+
+    @Override
+    public void onDownloadETicket(String urlPdf) {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(urlPdf));
+        startActivity(browserIntent);
     }
 
     @Override

@@ -141,13 +141,6 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
         compositeSubscription.add(subscription);
     }
 
-    /*public void getFlightStatistic(boolean isReturning) {
-        flightSearchStatisticUseCase.execute(FlightSearchUseCase.generateRequestParams(
-                null,
-                isReturning, true, null, FlightSortOption.NO_PREFERENCE),
-                getSubscriberSearchStatisticFlight());
-    }*/
-
     public void sortFlight(List<FlightSearchViewModel> flightSearchViewModelList,
                            @FlightSortOption int sortOptionId) {
         getView().removeToolbarElevation();

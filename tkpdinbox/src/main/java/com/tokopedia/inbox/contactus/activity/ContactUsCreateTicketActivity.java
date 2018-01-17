@@ -104,6 +104,11 @@ public class ContactUsCreateTicketActivity extends BasePresenterActivity impleme
     }
 
     @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
+
+    @Override
     public void onFinishCreateTicket() {
         Toast.makeText(this, R.string.title_contact_finish, Toast.LENGTH_SHORT).show();
         setResult(RESULT_OK);

@@ -56,8 +56,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
 
     @Override
     public void onHelpButtonClicked() {
-        String url = FlightUrl.CONTACT_US_FLIGHT_PREFIX + generateGeneralFlightContactUs();
-        getView().navigateToWebview(url);
+        getView().navigateToWebview(FlightUrl.CONTACT_US );
     }
 
     @Override

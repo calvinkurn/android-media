@@ -23,5 +23,7 @@ public class FlightOrderAdapter extends BaseListAdapter<Visitable, FlightOrderTy
         void onHelpOptionClicked(String orderId, int status);
 
         void onReBookingClicked(FlightOrderBaseViewModel item);
+
+        void onDownloadETicket(String urlPdf);
     }
 }

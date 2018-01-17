@@ -430,6 +430,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         super.onActivityResult(requestCode, resultCode, data);
         KeyboardHandler.DropKeyboard(getActivity(), getView());
         KeyboardHandler.hideSoftKeyboard(getActivity());
+        removeFocus();
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case REQUEST_CODE_AIRPORT_CLASSES:
@@ -462,6 +463,13 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         }
     }
 
+    private void removeFocus() {
+        passengerTextInputView.clearFocus();
+        classTextInputView.clearFocus();
+        departureDateTextInputView.clearFocus();
+        returnDateTextInputView.clearFocus();
+    }
+
     @SuppressWarnings("Range")
     private void showMessageErrorInSnackBar(int resId) {
         NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(resId));
@@ -491,5 +499,11 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
             startActivity(((FlightModuleRouter) getActivity().getApplication())
                     .getBannerWebViewIntent(getActivity(), FlightUrl.ALL_PROMO_LINK));
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        KeyboardHandler.hideSoftKeyboard(getActivity());
     }
 }
