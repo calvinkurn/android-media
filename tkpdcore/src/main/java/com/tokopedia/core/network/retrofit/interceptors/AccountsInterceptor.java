@@ -72,7 +72,7 @@ public class AccountsInterceptor extends TkpdAuthInterceptor {
     }
 
 
-    private String getToken() {
+    protected String getToken() {
         SessionHandler sessionHandler = new SessionHandler(MainApplication.getAppContext());
         if (!TextUtils.isEmpty(sessionHandler
                 .getAccessToken(MainApplication.getAppContext())))

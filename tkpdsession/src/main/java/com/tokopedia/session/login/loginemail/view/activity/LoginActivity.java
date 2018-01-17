@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -15,12 +14,9 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.session.R;
 import com.tokopedia.session.login.loginemail.view.fragment.LoginFragment;
-import com.tokopedia.session.session.activity.Login;
 
 /**
  * @author by nisie on 12/18/17.

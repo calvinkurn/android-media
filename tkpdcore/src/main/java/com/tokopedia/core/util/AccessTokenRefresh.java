@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.google.gson.GsonBuilder;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.apiservices.accounts.apis.AccountsApi;
+import com.tokopedia.core.network.apiservices.accounts.apis.AccountsBasicApi;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
@@ -33,7 +33,7 @@ public class AccessTokenRefresh {
         params.put("grant_type", "refresh_token");
         params.put("refresh_token", EncoderDecoder.Decrypt(SessionHandler.getRefreshToken(context), SessionHandler.getRefreshTokenIV(context)));
 
-        Call<String> responseCall = getRetrofit().create(AccountsApi.class).getTokenSynchronous(params);
+        Call<String> responseCall = getRetrofit().create(AccountsBasicApi.class).getTokenSynchronous(params);
 
         String tokenResponse = null;
         try {
@@ -55,7 +55,7 @@ public class AccessTokenRefresh {
         return new Retrofit.Builder()
                 .baseUrl(TkpdBaseURL.ACCOUNTS_DOMAIN)
                 .addConverterFactory(new StringResponseConverter())
-                .client(OkHttpFactory.create().buildClientAccountsAuth("", false, false))
+                .client(OkHttpFactory.create().buildBasicAuth())
                 .build();
     }
 }

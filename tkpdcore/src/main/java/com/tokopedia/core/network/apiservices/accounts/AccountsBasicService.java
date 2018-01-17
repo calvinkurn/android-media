@@ -1,6 +1,6 @@
 package com.tokopedia.core.network.apiservices.accounts;
 
-import com.tokopedia.core.network.apiservices.accounts.apis.BasicApi;
+import com.tokopedia.core.network.apiservices.accounts.apis.AccountsBasicApi;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.core.OkHttpRetryPolicy;
@@ -15,22 +15,20 @@ import retrofit2.Retrofit;
  * @author by nisie on 12/27/17.
  */
 
-public class AccountsBasicService extends AuthService<BasicApi> {
+public class AccountsBasicService extends AuthService<AccountsBasicApi> {
 
     @Inject
     public AccountsBasicService() {
         initApiService(RetrofitFactory.createRetrofitDefaultConfig(getBaseUrl())
                 .client(OkHttpFactory.create()
                         .addOkHttpRetryPolicy(OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy())
-                        .buildClientAccountsAuth("",
-                                false,
-                                false))
+                        .buildBasicAuth())
                 .build());
     }
 
     @Override
     protected void initApiService(Retrofit retrofit) {
-        api = retrofit.create(BasicApi.class);
+        api = retrofit.create(AccountsBasicApi.class);
 
     }
 
@@ -40,7 +38,7 @@ public class AccountsBasicService extends AuthService<BasicApi> {
     }
 
     @Override
-    public BasicApi getApi() {
+    public AccountsBasicApi getApi() {
         return api;
     }
 }

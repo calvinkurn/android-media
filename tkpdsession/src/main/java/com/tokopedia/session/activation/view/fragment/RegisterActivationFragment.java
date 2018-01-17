@@ -33,7 +33,6 @@ import com.tokopedia.session.activation.view.viewListener.RegisterActivationView
 import com.tokopedia.session.activation.view.viewmodel.LoginTokenViewModel;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.register.RegisterConstant;
-import com.tokopedia.session.session.activity.Login;
 
 /**
  * Created by nisie on 1/31/17.

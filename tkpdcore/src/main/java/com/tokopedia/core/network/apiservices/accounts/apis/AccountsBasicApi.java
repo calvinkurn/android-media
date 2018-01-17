@@ -15,7 +15,7 @@ import rx.Observable;
  * @author by nisie on 12/27/17.
  */
 
-public interface BasicApi {
+public interface AccountsBasicApi {
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.Accounts.PATH_GET_TOKEN)
