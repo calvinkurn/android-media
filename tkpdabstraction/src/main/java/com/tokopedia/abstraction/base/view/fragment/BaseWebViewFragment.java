@@ -28,8 +28,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
     /**
      * this is to put in header with key X-User-ID when the webview loadUrl
+     * fill with blank or NULL if authorization header is not needed.
      */
-    protected abstract String getUserId();
+    @Nullable
+    protected abstract String getUserIdForHeader();
 
     @Override
     protected void initInjector() {
@@ -72,13 +74,17 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 super.onProgressChanged(view, newProgress);
             }
         });
-        webView.loadAuthUrlWithFlags(getUrl(), getUserId());
+        webView.loadAuthUrlWithFlags(getUrl(), getUserIdForHeader());
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                return false;
+                return BaseWebViewFragment.this.shouldOverrideUrlLoading(view, url);
             }
         });
+    }
+
+    protected boolean shouldOverrideUrlLoading(WebView webView, String url) {
+        return false;
     }
 
     protected void onLoadFinished(){

@@ -34,7 +34,7 @@ public class MitraToppersFragment extends BaseWebViewFragment {
     }
 
     @Override
-    protected String getUserId() {
+    protected String getUserIdForHeader() {
         return userSession.getUserId();
     }
 
