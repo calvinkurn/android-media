@@ -1063,13 +1063,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public long getLongConfig(String flightAirport) {
-        return remoteConfig.getLong(flightAirport);
+    public UserSession getSession() {
+        return new UserSessionImpl(this);
     }
 
     @Override
-    public UserSession getSession() {
-        return new UserSessionImpl(this);
+    public long getLongConfig(String flightAirport) {
+        return remoteConfig.getLong(flightAirport);
     }
 
     @Override

@@ -15,4 +15,10 @@ public interface UserSession {
     String getDeviceId();
 
     boolean isLoggedIn();
+
+    String getFcmId();
+
+    String getShopId();
+
+    boolean hasShop();
 }

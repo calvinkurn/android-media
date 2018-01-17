@@ -1,0 +1,13 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+
+    package="com.tokopedia.mitratoppers">
+
+    <application android:label="@string/app_name">
+        <activity
+            android:name=".dashboard.MitraToppersActivity"
+            android:label="@string/title_mitra_toppers"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Green"/>
+    </application>
+
+</manifest>
