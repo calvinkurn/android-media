@@ -1,7 +1,6 @@
 package com.tokopedia.seller.selling.view.fragment;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -28,7 +27,6 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
@@ -380,14 +378,10 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            if(requestCode == REQUEST_CODE_BARCODE) {
-                if(editRefDialog != null && editRefDialog.isShowing()) {
-                    ref.setText(CommonUtils.getBarcode(data));
-                }
-            }
+        if (editRefDialog != null && editRefDialog.isShowing()) {
+            ref.setText(CommonUtils.getBarcode(requestCode, resultCode, data));
         }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void createEditRefDialog(final SellingStatusTxModel model) {
@@ -523,7 +517,7 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
 
     @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     public void onStartBarcodeScanner() {
-        startActivityForResult(CommonUtils.requestBarcodeScanner(getActivity()), REQUEST_CODE_BARCODE);
+        CommonUtils.requestBarcodeScanner(this, CustomScannerBarcodeActivity.class);
     }
 
     @Override

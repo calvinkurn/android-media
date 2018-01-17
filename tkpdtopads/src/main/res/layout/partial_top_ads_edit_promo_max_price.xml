@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout.Small">
 
-        <com.tokopedia.topads.dashboard.view.widget.PrefixEditText
+        <com.tokopedia.seller.common.widget.PrefixEditText
             android:id="@+id/edit_text_max_price"
             style="@style/EditText.Currency"
             android:layout_width="match_parent"
@@ -30,7 +30,7 @@
 
         <TextView
             android:id="@+id/text_suggestion_bid"
-            style="@style/TextView.Body1.BlackSecondary"
+            style="@style/TextView.Small.BlackSecondary"
             android:maxLines="3"
             android:text="@string/top_ads_label_price_desc" />
 

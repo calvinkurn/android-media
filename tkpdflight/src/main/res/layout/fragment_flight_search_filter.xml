@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_apps"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:divider="@drawable/bg_line_separator"
+            android:orientation="vertical"
+            android:showDividers="middle|end">
+
+            <com.tokopedia.design.text.RangeInputView
+                android:id="@+id/price_range_input_view"
+                style="@style/FlightFilterLabelLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:driv_label_max="@string/flight_search_filter_price_max_label"
+                app:driv_label_min="@string/flight_search_filter_price_min_label"
+                app:driv_typable="false"
+                app:driv_value_max_length="@integer/max_length_price_input"
+                app:driv_value_text_appearance="@style/TextView.Small.Bold" />
+
+            <com.tokopedia.design.text.RangeInputView
+                android:id="@+id/duration_range_input_view"
+                style="@style/FlightFilterLabelLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:driv_label_max="@string/flight_search_filter_duration_min_label"
+                app:driv_label_min="@string/flight_search_filter_duration_max_label"
+                app:driv_typable="false"
+                app:driv_value_max_length="@integer/max_length_duration_input"
+                app:driv_value_text_appearance="@style/TextView.Small.Bold" />
+
+            <com.tokopedia.design.label.selection.text.SelectionTextLabelView
+                android:id="@+id/selection_text_label_layout_transit"
+                style="@style/FlightFilterLabelLayout"
+                app:slv_title="@string/flight_search_filter_transit" />
+
+            <com.tokopedia.design.label.selection.text.SelectionTextLabelView
+                android:id="@+id/selection_text_label_layout_airline"
+                style="@style/FlightFilterLabelLayout"
+                app:slv_title="@string/flight_search_filter_airplane" />
+
+            <com.tokopedia.design.label.selection.text.SelectionTextLabelView
+                android:id="@+id/selection_text_label_layout_departure_time"
+                style="@style/FlightFilterLabelLayout"
+                app:slv_title="@string/flight_search_filter_departure_time" />
+
+            <com.tokopedia.design.label.selection.text.SelectionTextLabelView
+                android:id="@+id/selection_text_label_layout_refund_policy"
+                style="@style/FlightFilterLabelLayout"
+                app:slv_title="@string/flight_search_filter_refund_policy" />
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+</LinearLayout>

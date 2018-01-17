@@ -3,7 +3,7 @@ package com.tokopedia.seller.product.edit.domain.interactor;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
+import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
 import com.tokopedia.seller.product.edit.domain.model.AddProductShopInfoDomainModel;
 
 import javax.inject.Inject;

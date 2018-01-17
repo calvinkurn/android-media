@@ -46,7 +46,7 @@
                 android:paddingLeft="@dimen/padding_small"
                 android:paddingRight="@dimen/padding_small"
                 android:textColorHint="@color/black_38"
-                android:textSize="@dimen/font_body1" />
+                android:textSize="@dimen/font_small" />
 
             <ImageView
                 android:id="@+id/iv_send"

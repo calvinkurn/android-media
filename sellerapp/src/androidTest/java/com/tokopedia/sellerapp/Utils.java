@@ -105,17 +105,6 @@ public class Utils {
         return InstrumentationRegistry.getTargetContext().getString(stringId);
     }
 
-    public static void setupGCMHandler(final GCMHandler gcmHandler){
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                GCMHandlerListener gcmHandlerListener =
-                        (GCMHandlerListener) invocation.getArguments()[0];
-                gcmHandlerListener.onGCMSuccess("123456");
-                return null;
-            }
-        }).when(gcmHandler).commitGCMProcess();
-    }
 
     public static Matcher<View> childAtPosition(
             final Matcher<View> parentMatcher, final int position) {
@@ -198,12 +187,25 @@ public class Utils {
         };
     }
 
+    public static Matcher<View> withDrawable(final int resourceId) {
+        return new DrawableMatcher(resourceId);
+    }
+
+    public static Matcher<View> noDrawable() {
+        return new DrawableMatcher(-1);
+    }
+
     public static class RecyclerViewTestUtils{
         public static <VH extends RecyclerView.ViewHolder> ViewAction actionOnItemViewAtPosition(int position,
                                                                                                  @IdRes
                                                                                                          int viewId,
                                                                                                  ViewAction viewAction) {
             return new ActionOnItemViewAtPositionViewAction(position, viewId, viewAction);
+        }
+
+        public static RecyclerViewMatcher withRecyclerView(final int recyclerViewId) {
+
+            return new RecyclerViewMatcher(recyclerViewId);
         }
 
         private static final class ActionOnItemViewAtPositionViewAction<VH extends RecyclerView
@@ -281,12 +283,6 @@ public class Utils {
                 RecyclerView recyclerView = (RecyclerView) view;
                 recyclerView.scrollToPosition(this.position);
             }
-        }
-
-
-        public static RecyclerViewMatcher withRecyclerView(final int recyclerViewId) {
-
-            return new RecyclerViewMatcher(recyclerViewId);
         }
     }
 
@@ -458,14 +454,6 @@ public class Utils {
                 description.appendText("]");
             }
         }
-    }
-
-    public static Matcher<View> withDrawable(final int resourceId) {
-        return new DrawableMatcher(resourceId);
-    }
-
-    public static Matcher<View> noDrawable() {
-        return new DrawableMatcher(-1);
     }
 
 }

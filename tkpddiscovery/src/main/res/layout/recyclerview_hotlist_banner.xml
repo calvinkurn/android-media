@@ -2,59 +2,75 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:orientation="vertical"
     android:layout_marginBottom="@dimen/padding_small"
-    android:padding="@dimen/padding_small" >
+    android:background="@color/white"
+    android:orientation="vertical">
 
-    <View
-        android:id="@+id/blank"
-        android:layout_width="match_parent"
-        android:layout_height="0dp" />
-
-    <RelativeLayout
-        android:id="@+id/hotlist_background"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/img_hot_prod" >
-
-        <com.tkpd.library.viewpagerindicator.CirclePageIndicator
-            android:id="@+id/hot_list_banner_indicator"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/small_dp"
-            android:layout_alignParentBottom="true" />
-
-        <android.support.v4.view.ViewPager
-            android:id="@+id/hot_list_banner_view_pager"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/img_hot_prod"
-            android:layout_above="@id/hot_list_banner_indicator"
-            android:layout_marginBottom="@dimen/margin_vs"
-            />
-
-    </RelativeLayout>
-
-    <com.tokopedia.discovery.newdiscovery.hotlist.view.customview.HotlistPromoView
-        android:id="@+id/view_hotlist_promo"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        />
+        android:orientation="vertical"
+        android:padding="@dimen/padding_small">
 
-    <HorizontalScrollView
-        android:id="@+id/hashtag_scroll_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/margin_small"
-        android:layout_marginTop="@dimen/margin_med"
-        android:fadingEdge="vertical"
-        android:fadingEdgeLength="@dimen/med_dp"
-        android:scrollbars="none"
-        android:visibility="gone">
-
-        <LinearLayout
-            android:id="@+id/hot_list_banner_hashtags"
+        <View
+            android:id="@+id/blank"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" />
-    </HorizontalScrollView>
+            android:layout_height="0dp" />
+
+        <RelativeLayout
+            android:id="@+id/hotlist_background"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/img_hot_prod">
+
+            <com.tkpd.library.viewpagerindicator.CirclePageIndicator
+                android:id="@+id/hot_list_banner_indicator"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/small_dp"
+                android:layout_alignParentBottom="true" />
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/hot_list_banner_view_pager"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/img_hot_prod"
+                android:layout_above="@id/hot_list_banner_indicator"
+                android:layout_marginBottom="@dimen/margin_vs" />
+
+        </RelativeLayout>
+
+        <com.tokopedia.discovery.newdiscovery.hotlist.view.customview.HotlistPromoView
+            android:id="@+id/view_hotlist_promo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <HorizontalScrollView
+            android:id="@+id/hashtag_scroll_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_marginTop="@dimen/margin_med"
+            android:fadingEdge="vertical"
+            android:fadingEdgeLength="@dimen/med_dp"
+            android:scrollbars="none"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:id="@+id/hot_list_banner_hashtags"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" />
+        </HorizontalScrollView>
+
+    </LinearLayout>
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey_300" />
+
+    <com.tokopedia.topads.sdk.view.TopAdsBannerView
+        android:id="@+id/topAdsBannerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

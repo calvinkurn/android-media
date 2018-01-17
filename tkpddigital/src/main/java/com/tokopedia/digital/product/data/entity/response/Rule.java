@@ -21,6 +21,9 @@ public class Rule {
     @SerializedName("enable_voucher")
     @Expose
     private boolean enableVoucher;
+    @SerializedName("button_text")
+    @Expose
+    private String buttonText;
 
     public String getProductText() {
         return productText;
@@ -37,4 +40,9 @@ public class Rule {
     public boolean isEnableVoucher() {
         return enableVoucher;
     }
+
+    public String getButtonText() {
+        return buttonText;
+    }
+
 }

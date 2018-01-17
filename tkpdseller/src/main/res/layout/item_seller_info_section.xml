@@ -9,7 +9,7 @@
         android:id="@+id/text_date_section"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/TextView.Subheading.BlackSecondary"
+        style="@style/TextView.Title.BlackSecondary"
         android:layout_marginLeft="@dimen/margin_sm"
         android:layout_marginStart="@dimen/margin_sm"
         android:layout_marginBottom="@dimen/padding_ms"

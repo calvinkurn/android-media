@@ -21,10 +21,12 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionTypeFac
 
 public class HotlistAdapterTypeFactory extends SearchSectionTypeFactoryImpl implements HotlistTypeFactory {
 
-    private ItemClickListener mItemClickListener;
+    private final ItemClickListener mItemClickListener;
+    private final String searchQuery;
 
-    public HotlistAdapterTypeFactory(ItemClickListener mItemClickListener) {
+    public HotlistAdapterTypeFactory(ItemClickListener mItemClickListener, String searchQuery) {
         this.mItemClickListener = mItemClickListener;
+        this.searchQuery = searchQuery;
     }
 
     @Override
@@ -53,7 +55,7 @@ public class HotlistAdapterTypeFactory extends SearchSectionTypeFactoryImpl impl
     public AbstractViewHolder createViewHolder(View parent, int type) {
         AbstractViewHolder viewHolder;
         if (type == HotlistHeaderViewHolder.LAYOUT) {
-            viewHolder = new HotlistHeaderViewHolder(parent, mItemClickListener);
+            viewHolder = new HotlistHeaderViewHolder(parent, mItemClickListener, searchQuery);
         } else if (type == GridProductViewHolder.LAYOUT) {
             viewHolder = new GridProductViewHolder(parent, mItemClickListener);
         } else if (type == ListProductViewHolder.LAYOUT) {

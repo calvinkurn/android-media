@@ -20,7 +20,7 @@
             android:layout_marginBottom="3dp">
 
             <TextView
-                style="@style/TextView.Caption.BlackSecondary"
+                style="@style/TextView.Micro.BlackSecondary"
                 android:layout_alignParentLeft="true"
                 android:layout_toLeftOf="@+id/text_score"
                 android:text="@string/product_title_activity_product_score"
@@ -28,7 +28,7 @@
 
             <TextView
                 android:id="@+id/text_score"
-                style="@style/TextView.Caption.BlackSecondary"
+                style="@style/TextView.Micro.BlackSecondary"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:text="@string/product_score_label_minus"
