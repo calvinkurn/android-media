@@ -33,7 +33,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/title_email"
-                    android:padding="@dimen/padding_small"
                     style="@style/HintTextInputLayout"
                     android:layout_marginBottom="@dimen/margin_med"
                     >
