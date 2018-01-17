@@ -42,6 +42,9 @@ import rx.functions.Func1;
 
 import static com.tokopedia.inbox.inboxchat.fragment.TemplateChatFragment.CREATE;
 import static com.tokopedia.inbox.inboxchat.fragment.TemplateChatFragment.DELETE;
+import static com.tokopedia.inbox.inboxchat.fragment.TemplateChatFragment.INDEX_RESULT;
+import static com.tokopedia.inbox.inboxchat.fragment.TemplateChatFragment.LIST_RESULT;
+import static com.tokopedia.inbox.inboxchat.fragment.TemplateChatFragment.MODE_RESULT;
 import static com.tokopedia.inbox.inboxmessage.InboxMessageConstant.PARAM_ALL;
 import static com.tokopedia.inbox.inboxmessage.InboxMessageConstant.PARAM_MESSAGE;
 import static com.tokopedia.inbox.inboxmessage.InboxMessageConstant.PARAM_MODE;
@@ -249,18 +252,18 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
     @Override
     public void onResult(EditTemplateViewModel editTemplateViewModel, int index, String s) {
         Intent intent = getActivity().getIntent();
-        intent.putExtra("index", index);
-        intent.putExtra("string", s);
+        intent.putExtra(INDEX_RESULT, index);
+        intent.putExtra(LIST_RESULT, s);
         intent.putExtra("enabled", editTemplateViewModel.isEnabled());
-        intent.putExtra("mode", getArguments().getInt(PARAM_MODE));
+        intent.putExtra(MODE_RESULT, getArguments().getInt(PARAM_MODE));
         getActivity().setResult(Activity.RESULT_OK, intent);
     }
 
     @Override
     public void onResult(EditTemplateViewModel editTemplateViewModel, int index) {
         Intent intent = getActivity().getIntent();
-        intent.putExtra("index", index);
-        intent.putExtra("mode", DELETE);
+        intent.putExtra(INDEX_RESULT, index);
+        intent.putExtra(MODE_RESULT, DELETE);
         getActivity().setResult(Activity.RESULT_OK, intent);
     }
 

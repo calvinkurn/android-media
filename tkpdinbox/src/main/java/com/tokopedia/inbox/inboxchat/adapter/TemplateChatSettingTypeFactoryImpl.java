@@ -17,7 +17,7 @@ import com.tokopedia.inbox.inboxchat.viewmodel.TemplateChatModel;
  * Created by stevenfredian on 9/27/17.
  */
 
-public class TemplateChatSettingTypeFactoryImpl extends BaseAdapterTypeFactory implements TemplateChatSettingTypeFactory{
+public class TemplateChatSettingTypeFactoryImpl extends BaseAdapterTypeFactory implements TemplateChatSettingTypeFactory {
 
     TemplateChatContract.View viewListener;
 
@@ -30,19 +30,19 @@ public class TemplateChatSettingTypeFactoryImpl extends BaseAdapterTypeFactory i
 
         AbstractViewHolder viewHolder;
 
-        if (type == ItemTemplateChatViewHolder.LAYOUT)
+        if (type == ItemTemplateChatViewHolder.LAYOUT) {
             viewHolder = new ItemTemplateChatViewHolder(view, viewListener);
-        else if (type == ItemAddTemplateChatViewHolder.LAYOUT)
+        } else if (type == ItemAddTemplateChatViewHolder.LAYOUT) {
             viewHolder = new ItemAddTemplateChatViewHolder(view, viewListener);
-        else
+        } else {
             return super.createViewHolder(view, type);
-
+        }
         return viewHolder;
     }
 
     @Override
     public int type(TemplateChatModel templateChatModel) {
-        if(templateChatModel.isIcon()){
+        if (templateChatModel.isIcon()) {
             return ItemAddTemplateChatViewHolder.LAYOUT;
         }
         return ItemTemplateChatViewHolder.LAYOUT;

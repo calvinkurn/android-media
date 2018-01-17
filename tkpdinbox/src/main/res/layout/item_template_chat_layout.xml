@@ -16,16 +16,16 @@
     <TextView
         android:id="@+id/text"
         android:layout_width="wrap_content"
-        android:maxWidth="132dp"
-        android:minWidth="52dp"
+        android:maxWidth="@dimen/max_width_template"
+        android:minWidth="@dimen/min_width_template"
         android:layout_height="wrap_content"
-        android:minHeight="32dp"
+        android:minHeight="@dimen/min_height_template"
         android:gravity="center"
         android:background="@drawable/interactive_label_template_chat"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
+        android:paddingTop="@dimen/new_margin_small"
+        android:paddingBottom="@dimen/new_margin_small"
+        android:paddingLeft="@dimen/margin_small"
+        android:paddingRight="@dimen/margin_small"
         android:singleLine="true"
         android:ellipsize="marquee"
         android:textSize="@dimen/text_size_small"
@@ -34,8 +34,8 @@
 
     <com.tokopedia.core.customwidget.SquareHImageView
         android:id="@+id/setting"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="@dimen/min_height_template"
+        android:layout_height="@dimen/min_height_template"
         android:background="@drawable/interactive_label_template_chat"
         android:src="@drawable/ic_setting_chat" />
 

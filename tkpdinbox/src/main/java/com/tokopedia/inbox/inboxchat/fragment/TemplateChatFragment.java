@@ -52,6 +52,10 @@ public class TemplateChatFragment extends BaseDaggerFragment
     public static final int EDIT = 1;
     public static final int DELETE = -1;
 
+    public static final String LIST_RESULT = "string";
+    public static final String INDEX_RESULT = "index";
+    public static final String MODE_RESULT = "mode";
+
     private SwitchCompat switchTemplate;
     private RecyclerView recyclerView;
     private View templateContainer;
@@ -123,14 +127,10 @@ public class TemplateChatFragment extends BaseDaggerFragment
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
 
-//        snackbarError.getView().setBackgroundColor(MethodChecker.getColor(getActivity(), R.color.red_template));
         TextView textView = snackbarError.getView().findViewById(android.support.design.R.id.snackbar_text);
-//        textView.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_70));
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
 
-//        snackbarInfo.getView().setBackgroundColor(MethodChecker.getColor(getActivity(), R.color.green_template));
         TextView textView2 = snackbarInfo.getView().findViewById(android.support.design.R.id.snackbar_text);
-//        textView2.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_70));
         textView2.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
 
         ItemTouchHelper.Callback callback = new SimpleItemTouchHelperCallback(adapter);
@@ -259,9 +259,6 @@ public class TemplateChatFragment extends BaseDaggerFragment
 
     @Override
     public void successSwitch() {
-//        String text = getActivity().getString(R.string.success_rearrange_template_chat);
-//        snackbarInfo.setText(text);
-//        snackbarInfo.show();
         prepareResultSwitch();
     }
 
@@ -303,10 +300,10 @@ public class TemplateChatFragment extends BaseDaggerFragment
         switch (requestCode) {
             case 100:
                 if (resultCode == Activity.RESULT_OK) {
-                    String string = data.getStringExtra("string");
-                    int index = data.getIntExtra("index", -1);
+                    String string = data.getStringExtra(LIST_RESULT);
+                    int index = data.getIntExtra(INDEX_RESULT, -1);
                     String text = "";
-                    switch (data.getIntExtra("mode", 0)) {
+                    switch (data.getIntExtra(MODE_RESULT, 0)) {
                         case CREATE:
                             adapter.add(string);
                             text = getActivity().getString(R.string.success_add_template_chat);
@@ -338,14 +335,14 @@ public class TemplateChatFragment extends BaseDaggerFragment
             prepareResult();
         }else {
             Intent intent = new Intent();
-            intent.putStringArrayListExtra("string", new ArrayList<String>());
+            intent.putStringArrayListExtra(LIST_RESULT, new ArrayList<String>());
             getActivity().setResult(Activity.RESULT_OK, intent);
         }
     }
 
     private void prepareResult() {
         Intent intent = new Intent();
-        intent.putStringArrayListExtra("string", adapter.getListString());
+        intent.putStringArrayListExtra(LIST_RESULT, adapter.getListString());
         getActivity().setResult(Activity.RESULT_OK, intent);
     }
 }
