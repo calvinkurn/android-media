@@ -677,5 +677,13 @@ public class TrackingUtils extends TrackingConfig {
     }
 
 
+
+    public static void eventCategoryLifestyleImpression(List<Object> list) {
+        getGTMEngine().eventImpressionCategoryLifestyle(list);
+    }
+
+    public static void eventCategoryLifestyleClick(String categoryUrl, List<Object> list) {
+        getGTMEngine().eventClickCategoryLifestyle(categoryUrl, list);
+    }
 }
 

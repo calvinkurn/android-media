@@ -132,4 +132,8 @@ public interface IGTMContainer {
     void eventImpressionPromoList(List<Object> list, String promoName);
 
     void eventClickPromoListItem(List<Object> list, String promoName);
+
+    void eventImpressionCategoryLifestyle(List<Object> list);
+
+    void eventClickCategoryLifestyle(String categoryUrl, List<Object> list);
 }
