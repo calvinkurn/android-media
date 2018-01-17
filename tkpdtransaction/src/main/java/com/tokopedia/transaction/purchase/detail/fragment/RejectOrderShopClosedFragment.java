@@ -19,6 +19,7 @@ import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
 
 import java.text.DateFormat;
+import java.text.DateFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -32,6 +33,10 @@ import java.util.Locale;
 public class RejectOrderShopClosedFragment extends TkpdFragment {
 
     private RejectOrderShopClosedListener listener;
+
+    private String[] months;
+
+    private String selectedEndDate = "";
 
     private static final String ORDER_DETAIL_DATA_KEY = "ORDER_DETAIL_DATA_KEY";
 
@@ -53,11 +58,12 @@ public class RejectOrderShopClosedFragment extends TkpdFragment {
         EditText notesField = view.findViewById(R.id.notes_field);
         TextView rejectShipmentConfirmButton = view.findViewById(R.id.reject_shipment_confirm_button);
         Calendar calendar = Calendar.getInstance();
+        DateFormatSymbols dateFormatSymbols = new DateFormatSymbols();
+        months = dateFormatSymbols.getMonths();
         startDateField.setText(
                 calendar.get(Calendar.DAY_OF_MONTH)
                         + "/"
-                        + monthNumberZeroGenerator(calendar.get(Calendar.MONTH) + 1)
-                        + Integer.toString(calendar.get(Calendar.MONTH) + 1)
+                        + months[calendar.get(Calendar.MONTH)].substring(0, 3)
                         + "/" + calendar.get(Calendar.YEAR));
         endDateLayout.setOnClickListener(onEndDateClickedListener(endDateField));
         endDateField.setOnClickListener(onEndDateClickedListener(endDateField));
@@ -96,7 +102,6 @@ public class RejectOrderShopClosedFragment extends TkpdFragment {
 
     private void showDatePickerDialog(EditText editText) {
         Calendar calendar = Calendar.getInstance();
-        final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         DatePickerDialog datePickerDialog = new DatePickerDialog(
                 getActivity(),
                 onDateSetListener(editText),
@@ -112,11 +117,15 @@ public class RejectOrderShopClosedFragment extends TkpdFragment {
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                 Calendar newDate = Calendar.getInstance();
                 newDate.set(year, monthOfYear, dayOfMonth);
+                selectedEndDate = String.valueOf(dayOfMonth)
+                        + "/"
+                        + monthNumberZeroGenerator(monthOfYear + 1)
+                        + String.valueOf(monthOfYear + 1)
+                        + "/" + String.valueOf(year);
                 editText.setText(
                         String.valueOf(dayOfMonth)
                                 + "/"
-                                + monthNumberZeroGenerator(monthOfYear + 1)
-                                + String.valueOf(monthOfYear + 1)
+                                + months[monthOfYear].substring(0, 3)
                                 + "/" + String.valueOf(year)
                 );
             }
@@ -138,7 +147,7 @@ public class RejectOrderShopClosedFragment extends TkpdFragment {
                     params.put("order_id",
                             ((OrderDetailData) getArguments().getParcelable(ORDER_DETAIL_DATA_KEY))
                                     .getOrderId());
-                    params.put("close_end", endDateField.getText().toString());
+                    params.put("close_end", selectedEndDate);
                     params.put("closed_note", notesField.getText().toString());
                     params.put("reason_code", "4");
                     listener.onClosedDateSelected(params);

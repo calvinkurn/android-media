@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.purchase.detail.adapter;
 
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,7 +50,7 @@ public class RejectOrderEmptyProductsAdapter extends RecyclerView.Adapter<Reject
                 emptyProductEditables.get(position).getProductImage()
         );
         holder.stockEmptyCheckBox.setOnCheckedChangeListener(
-                onCheckBoxClickedListener(emptyProductEditables.get(position))
+                onCheckBoxClickedListener(holder.emptyStockCard, emptyProductEditables.get(position))
         );
     }
 
@@ -68,12 +69,15 @@ public class RejectOrderEmptyProductsAdapter extends RecyclerView.Adapter<Reject
 
         private CheckBox stockEmptyCheckBox;
 
+        private CardView emptyStockCard;
+
         RejectOrderEmptyProductViewHolder(View itemView) {
             super(itemView);
             productName = itemView.findViewById(R.id.order_detail_product_name);
             productPrice = itemView.findViewById(R.id.order_detail_product_price);
             productImage = itemView.findViewById(R.id.product_image);
             stockEmptyCheckBox = itemView.findViewById(R.id.stock_epmty_checkbox);
+            emptyStockCard = itemView.findViewById(R.id.empty_stock_label);
         }
     }
 
@@ -105,11 +109,14 @@ public class RejectOrderEmptyProductsAdapter extends RecyclerView.Adapter<Reject
     }
 
     private CompoundButton.OnCheckedChangeListener onCheckBoxClickedListener(
+            final CardView emptyStockCardView,
             final EmptyProductEditable emptyProductEditable
     ) {
         return new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                if(checked) emptyStockCardView.setVisibility(View.VISIBLE);
+                else emptyStockCardView.setVisibility(View.INVISIBLE);
                 emptyProductEditable.setSelected(checked);
             }
         };

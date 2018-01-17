@@ -176,6 +176,7 @@
     <string name="title_detail_transaction">Detil Transaksi</string>
     <string name="title_change_awb_instruction">Mohon ubah nomor resi hanya jika resi Anda Invalid</string>
     <string name="sub_title_change_awb_instruction">Karena kami tidak akan memproses resi invalid</string>
+    <string name="label_empty_stock">Stock Kosong</string>
     <string name="title_term_and_condition">Syarat dan Ketentuan</string>
     <string name="title_bottomsheet_insurance">Asuransi Pengiriman</string>
 

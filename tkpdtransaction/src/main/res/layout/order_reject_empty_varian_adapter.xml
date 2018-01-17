@@ -64,14 +64,15 @@
             android:id="@+id/additional_notes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="@dimen/padding_small"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginStart="@dimen/margin_small"
             tools:text="Apa katalu dah" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="end"
-            android:padding="@dimen/padding_vs">
+            android:padding="@dimen/padding_small"
+            android:gravity="end">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -87,6 +88,6 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/grey_400" />
+        android:background="@color/grey_300" />
 
 </LinearLayout>
