@@ -29,15 +29,11 @@ public class TemplateChatContract {
 
         ArrayList<String> getList();
 
-        boolean getSwitchChecked();
-
         TemplateChatSettingAdapter getAdapter();
 
         void successRearrange();
 
-        String getStringOf(int id);
-
-        void showError(String stringOf);
+        void showError(String errorMessage);
 
         void successSwitch();
 

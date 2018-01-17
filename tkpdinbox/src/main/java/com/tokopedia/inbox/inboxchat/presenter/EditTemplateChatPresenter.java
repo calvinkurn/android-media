@@ -100,14 +100,6 @@ public class EditTemplateChatPresenter extends BaseDaggerPresenter<EditTemplateC
         }
     }
 
-    public JsonArray toJsonArray(List<String> yaml) {
-        JsonArray array = new JsonArray();
-        for (String o : yaml) {
-            array.add(o);
-        }
-        return array;
-    }
-
     @Override
     public void deleteTemplate(final int index) {
         deleteTemplateUseCase.execute(DeleteTemplateUseCase.generateParam(index+1), new Subscriber<EditTemplateViewModel>() {

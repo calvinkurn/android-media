@@ -142,6 +142,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         getReplyListUseCase.unsubscribe();
         getTemplateUseCase.unsubscribe();
         replyMessageUseCase.unsubscribe();
+        sendMessageUseCase.unsubscribe();
 
     }
 

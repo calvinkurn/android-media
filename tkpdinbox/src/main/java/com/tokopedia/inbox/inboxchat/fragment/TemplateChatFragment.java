@@ -184,8 +184,8 @@ public class TemplateChatFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onDrag(ItemTemplateChatViewHolder ini) {
-        mItemTouchHelper.startDrag(ini);
+    public void onDrag(ItemTemplateChatViewHolder viewHolder) {
+        mItemTouchHelper.startDrag(viewHolder);
     }
 
     @Override
@@ -212,9 +212,9 @@ public class TemplateChatFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void setChecked(boolean b) {
-        switchTemplate.setChecked(b);
-        if (b) {
+    public void setChecked(boolean enable) {
+        switchTemplate.setChecked(enable);
+        if (enable) {
             templateContainer.setVisibility(View.VISIBLE);
         } else {
             templateContainer.setVisibility(View.GONE);
@@ -248,11 +248,6 @@ public class TemplateChatFragment extends BaseDaggerFragment
     }
 
     @Override
-    public boolean getSwitchChecked() {
-        return switchTemplate.isChecked();
-    }
-
-    @Override
     public TemplateChatSettingAdapter getAdapter() {
         return adapter;
     }
@@ -274,15 +269,9 @@ public class TemplateChatFragment extends BaseDaggerFragment
         loading.setVisibility(View.GONE);
     }
 
-
     @Override
-    public String getStringOf(int id) {
-        return getActivity().getString(id);
-    }
-
-    @Override
-    public void showError(String stringOf) {
-        snackbarError.setText(stringOf);
+    public void showError(String errorMessage) {
+        snackbarError.setText(errorMessage);
         snackbarError.show();
     }
 

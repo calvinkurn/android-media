@@ -50,6 +50,7 @@ public class TemplateChatSettingPresenter extends BaseDaggerPresenter<TemplateCh
     public void detachView() {
         super.detachView();
         getTemplateUseCase.unsubscribe();
+        setAvailabilityTemplateUseCase.unsubscribe();
     }
 
     public void getTemplate() {
@@ -87,11 +88,6 @@ public class TemplateChatSettingPresenter extends BaseDaggerPresenter<TemplateCh
     @Override
     public void switchTemplateAvailability(final boolean enabled) {
         JsonArray array = null;
-//        ArrayList<Integer> arrayList = new ArrayList<>();
-//        for (int i = 0; i < 5; i++) {
-//            arrayList.add(i + 1);
-//        }
-//        array = toJsonArray(arrayList);
         getView().showLoading();
         setAvailabilityTemplateUseCase.execute(SetAvailabilityTemplateUseCase.generateParam(array, enabled), new Subscriber<GetTemplateViewModel>() {
             @Override
@@ -142,9 +138,9 @@ public class TemplateChatSettingPresenter extends BaseDaggerPresenter<TemplateCh
         });
     }
 
-    private JsonArray toJsonArray(List<Integer> yaml) {
+    private JsonArray toJsonArray(List<Integer> list) {
         JsonArray array = new JsonArray();
-        for (Integer o : yaml) {
+        for (Integer o : list) {
             array.add(o);
         }
         return array;
