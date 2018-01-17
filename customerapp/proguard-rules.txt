@@ -312,6 +312,10 @@
 -dontwarn com.nimbusds.jwt.SignedJWT
 -dontwarn com.nimbusds.jwt.JWTClaimsSet
 
--dontwarn com.google.android.gms.iid.InstanceIDListenerService
--dontwarn com.google.android.gms.iid.InstanceID
--dontwarn com.appsflyer.GcmInstanceIdListener
+-dontwarn com.appsflyer.**
+-keep public class com.google.firebase.iid.FirebaseInstanceId {
+    public *;
+}
+-keep public class com.google.android.gms.iid.InstanceID {
+    public *;
+}
