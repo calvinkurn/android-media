@@ -76,7 +76,7 @@ public interface OrderDetailPresenter {
                                       List<WrongProductPriceWeightEditable> editables);
 
     void processInstantCourierShipping(Context context,
-                                       OrderDetailData data);
+                                       String orderId);
 
     void processShipping(Context context,
                          OrderDetailShipmentModel shipmentModel);

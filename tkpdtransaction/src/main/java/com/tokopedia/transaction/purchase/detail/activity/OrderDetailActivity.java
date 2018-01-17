@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -45,13 +46,8 @@ import com.tokopedia.transaction.purchase.detail.fragment.CancelOrderFragment;
 import com.tokopedia.transaction.purchase.detail.fragment.CancelSearchFragment;
 import com.tokopedia.transaction.purchase.detail.fragment.CancelShipmentFragment;
 import com.tokopedia.transaction.purchase.detail.fragment.ChangeAwbFragment;
-import com.tokopedia.transaction.purchase.detail.fragment.RejectOrderBuyerRequest;
-import com.tokopedia.transaction.purchase.detail.fragment.RejectOrderCourierProblemFragment;
-import com.tokopedia.transaction.purchase.detail.fragment.RejectOrderEmptyProductFragment;
-import com.tokopedia.transaction.purchase.detail.fragment.RejectOrderEmptyVarianFragment;
 import com.tokopedia.transaction.purchase.detail.fragment.RejectOrderFragment;
-import com.tokopedia.transaction.purchase.detail.fragment.RejectOrderShopClosedFragment;
-import com.tokopedia.transaction.purchase.detail.fragment.RejectOrderWeightPriceFragment;
+import com.tokopedia.transaction.purchase.detail.fragment.RequestPickupFragment;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.EmptyVarianProductEditable;
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.WrongProductPriceWeightEditable;
@@ -69,26 +65,10 @@ import static com.tokopedia.transaction.purchase.detail.fragment.RejectOrderFrag
  */
 
 public class OrderDetailActivity extends TActivity
-        implements OrderDetailView,
-        FinishOrderDialog.FinishOrderDialogListener,
-        ComplaintDialog.ComplaintDialogListener,
-        CancelOrderFragment.CancelOrderListener,
-        CancelSearchFragment.CancelSearchReplacementListener,
-        AcceptOrderDialog.AcceptOrderListener,
-        RejectOrderFragment.RejectOrderFragmentListener,
-        AcceptPartialOrderDialog.PartialDialogListener,
-        ChangeAwbFragment.ChangeAwbListener,
-        CancelShipmentFragment.CancelShipmentListener,
-        RejectOrderEmptyProductFragment.RejectOrderEmptyStockListener,
-        RejectOrderCourierProblemFragment.RejectOrderCourierReasonListener,
-        RejectOrderBuyerRequest.RejectOrderBuyerRequestListener,
-        RejectOrderShopClosedFragment.RejectOrderShopClosedListener,
-        RejectOrderEmptyVarianFragment.RejectOrderEmptyVarianFragmentListener,
-        RejectOrderWeightPriceFragment.RejectOrderChangeWeightPriceListener {
+        implements OrderDetailView {
 
     public static final int REQUEST_CODE_ORDER_DETAIL = 111;
     private static final String VALIDATION_FRAGMENT_TAG = "validation_fragments";
-    private static final String VALIDATION_FRAGMENT_DIALOG = "validation_fragments";
     private static final String REJECT_ORDER_FRAGMENT_TAG = "reject_order_fragment_teg";
     private static final String EXTRA_ORDER_ID = "EXTRA_ORDER_ID";
     private static final String EXTRA_USER_MODE = "EXTRA_USER_MODE";
@@ -141,6 +121,7 @@ public class OrderDetailActivity extends TActivity
     }
 
     private void initView(OrderDetailData data) {
+        setRejectionNoticeLayout(data);
         setStatusView(data);
         setDriverInfoView(data);
         setItemListView(data);
@@ -149,6 +130,15 @@ public class OrderDetailActivity extends TActivity
         setPriceView(data);
         setButtonView(data);
 
+    }
+
+    private void setRejectionNoticeLayout(OrderDetailData data) {
+        if(data.isRequestCancel()) {
+            ViewGroup rejectionNoticeLayout = findViewById(R.id.header_view);
+            TextView rejectionNoticeSubtitle = findViewById(R.id.rejection_notice_subtitle);
+            rejectionNoticeLayout.setVisibility(View.VISIBLE);
+            rejectionNoticeSubtitle.setText(Html.fromHtml(data.getRequestCancelReason()));
+        }
     }
 
     private void setStatusView(OrderDetailData data) {
@@ -476,8 +466,14 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void onRequestPickup(OrderDetailData data) {
-        presenter.processInstantCourierShipping(this, data);
-        //TODO Bundle important things here, dont put entire model in the bundle!!
+        if (getFragmentManager().findFragmentByTag(VALIDATION_FRAGMENT_TAG) == null) {
+            RequestPickupFragment requestPickupFragment = RequestPickupFragment
+                    .createFragment(data.getOrderId());
+            getFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.animator.enter_bottom, R.animator.enter_bottom)
+                    .add(R.id.main_view, requestPickupFragment, VALIDATION_FRAGMENT_TAG)
+                    .commit();
+        }
     }
 
     @Override
@@ -565,6 +561,7 @@ public class OrderDetailActivity extends TActivity
                 .setCustomAnimations(R.animator.exit_bottom, R.animator.exit_bottom)
                 .remove(getFragmentManager()
                 .findFragmentByTag(VALIDATION_FRAGMENT_TAG)).commit();
+        onRefreshActivity();
     }
 
     @Override
@@ -709,11 +706,6 @@ public class OrderDetailActivity extends TActivity
     }
 
     @Override
-    public void onReject(String reason, String orderId) {
-        presenter.rejectOrder(this, orderId, reason);
-    }
-
-    @Override
     public void changeAwb(String orderId, String refNumber) {
         presenter.confirmChangeAwb(this, orderId, refNumber);
     }
@@ -756,5 +748,10 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void onConfirmWeightPrice(List<WrongProductPriceWeightEditable> listOfEditable) {
         presenter.rejectOrderChangeWeightPrice(this, listOfEditable);
+    }
+
+    @Override
+    public void onConfirmPickup(String orderId) {
+        presenter.processInstantCourierShipping(this, orderId);
     }
 }

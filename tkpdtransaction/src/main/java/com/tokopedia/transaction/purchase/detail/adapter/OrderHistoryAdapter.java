@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.purchase.detail.adapter;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -31,7 +32,7 @@ public class OrderHistoryAdapter extends RecyclerView
     public OrderHistoryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.order_history_adapter, parent, false);
-        return new OrderHistoryViewHolder(view);
+        return new OrderHistoryViewHolder(parent.getContext(), view);
     }
 
     @Override
@@ -41,6 +42,8 @@ public class OrderHistoryAdapter extends RecyclerView
                         + " - "
                         + historyListDatas.get(position).getOrderHistoryDate()
         );
+        setTitleColor(holder, position);
+
         holder.orderHistoryComment.setText(historyListDatas.get(position).getOrderHistoryComment());
         holder.orderHistoryComment.setVisibility(historyListDatas.get(position)
                 .getOrderHistoryComment().equals("") ? View.GONE : View.VISIBLE);
@@ -48,8 +51,23 @@ public class OrderHistoryAdapter extends RecyclerView
                 .setText(Html.fromHtml(historyListDatas.get(position).getOrderHistoryTitle()));
         holder.orderHistoryTime.setText(historyListDatas.get(position).getOrderHistoryTime());
         holder.dot.setColorFilter(Color.parseColor(historyListDatas.get(position).getColor()));
-        holder.dotTrail
-                .setBackgroundColor(Color.parseColor(historyListDatas.get(position).getColor()));
+        if(position == historyListDatas.size() - 1) {
+            holder.dotTrail.setVisibility(View.GONE);
+        } else {
+            holder.dotTrail.setVisibility(View.VISIBLE);
+            holder.dotTrail.setBackgroundColor(
+                    Color.parseColor(historyListDatas.get(position).getColor())
+            );
+        }
+    }
+
+    private void setTitleColor(OrderHistoryViewHolder holder, int position) {
+        if(position == 0) {
+            holder.orderHistoryTitle.setTextColor((Color.parseColor(
+                    historyListDatas.get(position).getColor()
+            )));
+        } else holder.orderHistoryTitle.setTextColor(
+                holder.context.getResources().getColor(R.color.black_70));
     }
 
     @Override
@@ -58,6 +76,8 @@ public class OrderHistoryAdapter extends RecyclerView
     }
 
     class OrderHistoryViewHolder extends RecyclerView.ViewHolder {
+
+        private Context context;
 
         private TextView orderHistoryTitle;
 
@@ -71,8 +91,10 @@ public class OrderHistoryAdapter extends RecyclerView
 
         private TextView orderHistoryComment;
 
-        OrderHistoryViewHolder(View itemView) {
+        OrderHistoryViewHolder(Context context, View itemView) {
             super(itemView);
+
+            this.context = context;
 
             orderHistoryTitle = itemView.findViewById(R.id.history_title);
 

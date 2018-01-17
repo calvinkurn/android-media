@@ -24,8 +24,6 @@ public class RejectOrderFragment extends TkpdFragment {
 
     public static final String REJECT_ORDER_MENU_FRAGMENT_TAG = "reject_order_fragment";
 
-    private RejectOrderFragmentListener listener;
-
     public static RejectOrderFragment createFragment(OrderDetailData orderDetailData) {
         RejectOrderFragment fragment = new RejectOrderFragment();
         Bundle bundle = new Bundle();
@@ -42,13 +40,11 @@ public class RejectOrderFragment extends TkpdFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        listener = (RejectOrderFragmentListener) activity;
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        listener = (RejectOrderFragmentListener) context;
     }
 
     @Nullable
@@ -138,18 +134,6 @@ public class RejectOrderFragment extends TkpdFragment {
         };
     }
 
-    private View.OnClickListener onReasonClickedListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                listener.onReject(
-                        ((TextView) view).getText().toString(),
-                        getArguments().getString(ORDER_DATA_ARGUMENT)
-                );
-            }
-        };
-    }
-
     private void openFragment(Fragment fragmentToOpen) {
         if (getFragmentManager().findFragmentByTag(REJECT_ORDER_MENU_FRAGMENT_TAG) == null) {
             getFragmentManager().beginTransaction()
@@ -159,7 +143,4 @@ public class RejectOrderFragment extends TkpdFragment {
         }
     }
 
-    public interface RejectOrderFragmentListener {
-        void onReject(String reason, String orderId);
-    }
 }

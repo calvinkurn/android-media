@@ -38,7 +38,12 @@ public class OrderDetailMapper {
         viewData.setOrderImage(responseData.getStatus().getImage());
 
         viewData.setBuyerName(responseData.getDetail().getReceiver().getName());
-        viewData.setBuyerUserName(responseData.getDetail().getCustomer().getName());
+        if(responseData.getDetail().getCustomer() != null)
+            viewData.setBuyerUserName(responseData.getDetail().getCustomer().getName());
+        else viewData.setBuyerUserName(responseData.getDetail().getReceiver().getName());
+
+        viewData.setRequestCancel(responseData.getDetail().getRequestCancel() == 1);
+        viewData.setRequestCancelReason(responseData.getDetail().getRequestCancelReason());
         if (responseData.getDetail().getPaymentVerifiedDate() != null) {
             viewData.setPurchaseDate(responseData.getDetail().getPaymentVerifiedDate());
         } else {

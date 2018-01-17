@@ -238,12 +238,12 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
     }
 
     @Override
-    public void processInstantCourierShipping(Context context, OrderDetailData data) {
+    public void processInstantCourierShipping(Context context, String orderId) {
         mainView.showProgressDialog();
         TKPDMapParam<String, String> processShippingParam = new TKPDMapParam<>();
         processShippingParam.put(ACTION_TYPE_KEY, CONFIRM_SHIPPING_CONSTANT);
-        processShippingParam.put(ORDER_ID_KEY, data.getOrderId());
-        orderDetailInteractor.processOrder(sellerActionSubscriber(),
+        processShippingParam.put(ORDER_ID_KEY, orderId);
+        orderDetailInteractor.confirmShipping(sellerActionSubscriber(),
                 AuthUtil.generateParamsNetwork(context, processShippingParam));
     }
 

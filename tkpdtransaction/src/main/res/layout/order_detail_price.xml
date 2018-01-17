@@ -10,13 +10,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:padding="@dimen/padding_small">
+        android:paddingBottom="@dimen/padding_small"
+        android:paddingEnd="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_vertical_margin"
+        android:paddingRight="@dimen/activity_vertical_margin"
+        android:paddingStart="@dimen/activity_vertical_margin"
+        android:paddingTop="@dimen/padding_small">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/label_item_quantity"
-            android:textStyle="bold" />
+            android:textColor="@color/black_70" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -45,13 +50,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:padding="@dimen/padding_small">
+        android:padding="@dimen/padding_small"
+        android:paddingBottom="@dimen/padding_small"
+        android:paddingEnd="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_vertical_margin"
+        android:paddingRight="@dimen/activity_vertical_margin"
+        android:paddingStart="@dimen/activity_vertical_margin"
+        android:paddingTop="@dimen/padding_small">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/label_transaction_total_cart"
-            android:textStyle="bold" />
+            android:textColor="@color/black_70" />
 
         <TextView
             android:id="@+id/product_price"
@@ -67,13 +78,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:padding="@dimen/padding_small">
+        android:padding="@dimen/padding_small"
+        android:paddingBottom="@dimen/padding_small"
+        android:paddingEnd="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_vertical_margin"
+        android:paddingRight="@dimen/activity_vertical_margin"
+        android:paddingStart="@dimen/activity_vertical_margin"
+        android:paddingTop="@dimen/padding_small">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/label_delivery_price"
-            android:textStyle="bold" />
+            android:textColor="@color/black_70" />
 
         <TextView
             android:id="@+id/delivery_price"
@@ -89,13 +106,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:padding="@dimen/padding_small">
+        android:padding="@dimen/padding_small"
+        android:paddingBottom="@dimen/padding_small"
+        android:paddingEnd="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_vertical_margin"
+        android:paddingRight="@dimen/activity_vertical_margin"
+        android:paddingStart="@dimen/activity_vertical_margin"
+        android:paddingTop="@dimen/padding_small">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/label_insurance_price"
-            android:textStyle="bold" />
+            android:textColor="@color/black_70" />
 
         <TextView
             android:id="@+id/insurance_price"
@@ -111,13 +134,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:padding="@dimen/padding_small">
+        android:padding="@dimen/padding_small"
+        android:paddingBottom="@dimen/padding_small"
+        android:paddingEnd="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_vertical_margin"
+        android:paddingRight="@dimen/activity_vertical_margin"
+        android:paddingStart="@dimen/activity_vertical_margin"
+        android:paddingTop="@dimen/padding_small">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/label_additional_cost"
-            android:textStyle="bold" />
+            android:textColor="@color/black_70" />
 
         <TextView
             android:id="@+id/additional_fee"
@@ -132,18 +161,25 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/grey_400" />
+        android:background="@color/grey_300" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:gravity="center_vertical"
-        android:padding="@dimen/padding_small">
+        android:padding="@dimen/padding_small"
+        android:paddingBottom="@dimen/padding_small"
+        android:paddingEnd="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_vertical_margin"
+        android:paddingRight="@dimen/activity_vertical_margin"
+        android:paddingStart="@dimen/activity_vertical_margin"
+        android:paddingTop="@dimen/padding_small">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/label_transaction_total_payment"
+            android:textColor="@color/black_70"
             android:textStyle="bold" />
 
         <TextView
@@ -159,7 +195,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@color/grey_400" />
+        android:layout_height="1dp"
+        android:background="@color/grey_300" />
 
 </LinearLayout>

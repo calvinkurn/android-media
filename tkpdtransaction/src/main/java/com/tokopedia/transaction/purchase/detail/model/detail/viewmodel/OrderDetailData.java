@@ -27,6 +27,10 @@ public class OrderDetailData implements Parcelable{
 
     private String deadlineColorString;
 
+    private boolean isRequestCancel;
+
+    private String requestCancelReason;
+
     private String shopId;
 
     private String shopName;
@@ -106,6 +110,8 @@ public class OrderDetailData implements Parcelable{
         purchaseDate = in.readString();
         responseTimeLimit = in.readString();
         deadlineColorString = in.readString();
+        isRequestCancel = in.readByte() != 0;
+        requestCancelReason = in.readString();
         shopId = in.readString();
         shopName = in.readString();
         shopLogo = in.readString();
@@ -151,6 +157,8 @@ public class OrderDetailData implements Parcelable{
         dest.writeString(purchaseDate);
         dest.writeString(responseTimeLimit);
         dest.writeString(deadlineColorString);
+        dest.writeByte((byte) (isRequestCancel ? 1 : 0));
+        dest.writeString(requestCancelReason);
         dest.writeString(shopId);
         dest.writeString(shopName);
         dest.writeString(shopLogo);
@@ -257,6 +265,22 @@ public class OrderDetailData implements Parcelable{
 
     public void setDeadlineColorString(String deadlineColorString) {
         this.deadlineColorString = deadlineColorString;
+    }
+
+    public boolean isRequestCancel() {
+        return isRequestCancel;
+    }
+
+    public void setRequestCancel(boolean requestCancel) {
+        isRequestCancel = requestCancel;
+    }
+
+    public String getRequestCancelReason() {
+        return requestCancelReason;
+    }
+
+    public void setRequestCancelReason(String requestCancelReason) {
+        this.requestCancelReason = requestCancelReason;
     }
 
     public String getShopId() {

@@ -30,6 +30,12 @@ public class Detail {
     @SerializedName("customer")
     @Expose
     private Customer customer;
+    @SerializedName("request_cancel")
+    @Expose
+    private int requestCancel;
+    @SerializedName("request_cancel_reason")
+    @Expose
+    private String requestCancelReason;
     @SerializedName("drop_shipper")
     @Expose
     private DropShipper dropShipper;
@@ -91,6 +97,22 @@ public class Detail {
 
     public Customer getCustomer() {
         return customer;
+    }
+
+    public int getRequestCancel() {
+        return requestCancel;
+    }
+
+    public void setRequestCancel(int requestCancel) {
+        this.requestCancel = requestCancel;
+    }
+
+    public String getRequestCancelReason() {
+        return requestCancelReason;
+    }
+
+    public void setRequestCancelReason(String requestCancelReason) {
+        this.requestCancelReason = requestCancelReason;
     }
 
     public void setCustomer(Customer customer) {
