@@ -9,6 +9,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -163,20 +164,18 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private void initVar() {
         FeedPlusTypeFactory typeFactory = new FeedPlusTypeFactoryImpl(this);
         adapter = new FeedPlusAdapter(typeFactory);
-
-        //TODO milhamj move this to original adapter
-//        adapter.setOnLoadListener(new TopAdsRecyclerAdapter.OnLoadListener() {
-//            @Override
-//            public void onLoad(int page, int totalCount) {
-//                int size = adapter.getlist().size();
-//                int lastIndex = size - 1;
-//                if (!(adapter.getlist().get(0) instanceof EmptyModel)
-//                        && !(adapter.getlist().get(lastIndex) instanceof RetryModel)
-//                        && !(adapter.getlist().get(lastIndex) instanceof AddFeedViewHolder)
-//                        )
-//                    presenter.fetchNextPage();
-//            }
-//        });
+        adapter.setOnLoadListener(new FeedPlusAdapter.OnLoadListener() {
+            @Override
+            public void onLoad(int totalCount) {
+                int size = adapter.getlist().size();
+                int lastIndex = size - 1;
+                if (!(adapter.getlist().get(0) instanceof EmptyModel)
+                        && !(adapter.getlist().get(lastIndex) instanceof RetryModel)
+                        && !(adapter.getlist().get(lastIndex) instanceof AddFeedViewHolder)
+                        )
+                    presenter.fetchNextPage();
+            }
+        });
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
@@ -201,6 +200,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void prepareView() {
+        adapter.setItemTreshold(2);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
         swipeToRefresh.setOnRefreshListener(this);
@@ -289,6 +289,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onRefresh() {
+        adapter.clearData();
         newFeed.setVisibility(View.GONE);
         presenter.refreshPage();
     }
@@ -544,16 +545,19 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onSuccessGetFeedFirstPage(ArrayList<Visitable> listFeed) {
         adapter.setList(listFeed);
         adapter.notifyDataSetChanged();
+        adapter.setEndlessScrollListener();
     }
 
     @Override
     public void onSuccessGetFeedFirstPageWithAddFeed(ArrayList<Visitable> listFeed) {
         adapter.setList(listFeed);
         adapter.notifyDataSetChanged();
+        adapter.unsetEndlessScrollListener();
     }
 
     @Override
     public void onShowEmptyWithRecentView(ArrayList<Visitable> listFeed, boolean canShowTopads) {
+        adapter.unsetEndlessScrollListener();
         adapter.showEmpty();
         adapter.addList(listFeed);
         if (canShowTopads)
@@ -564,6 +568,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onShowEmpty(boolean canShowTopads) {
+        adapter.unsetEndlessScrollListener();
         adapter.showEmpty();
         if (canShowTopads)
             adapter.addItem(new EmptyTopAdsProductModel(presenter.getUserId()));
@@ -579,7 +584,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void unsetEndlessScroll() {
-
+        adapter.unsetEndlessScrollListener();
     }
 
     @Override
@@ -663,12 +668,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void shouldLoadTopAds(boolean loadTopAds) {
-
+        adapter.unsetEndlessScrollListener();
     }
 
     @Override
     public void hideTopAdsAdapterLoading() {
-
+        adapter.removeLoading();
     }
 
     @Override
@@ -694,6 +699,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onRetryClicked() {
         adapter.removeRetry();
+        adapter.showLoading();
+        adapter.setEndlessScrollListener();
         presenter.fetchNextPage();
     }
 
