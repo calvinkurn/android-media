@@ -75,7 +75,7 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_react_native_official_stores;
+        return R.layout.activity_react_native;
     }
 
     @Override

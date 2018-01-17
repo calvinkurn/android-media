@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.google.gson.reflect.TypeToken;
+import com.journeyapps.barcodescanner.CaptureActivity;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
@@ -20,12 +21,10 @@ import com.tokopedia.inbox.rescenter.shipping.interactor.NetworkParam;
 import com.tokopedia.inbox.rescenter.shipping.interactor.RetrofitInteractor;
 import com.tokopedia.inbox.rescenter.shipping.interactor.RetrofitInteractorImpl;
 import com.tokopedia.inbox.rescenter.shipping.model.InputShippingParamsGetModel;
-import com.tokopedia.inbox.rescenter.shipping.model.ShippingParamsPostModel;
 import com.tokopedia.inbox.rescenter.shipping.model.ResCenterKurir;
+import com.tokopedia.inbox.rescenter.shipping.model.ShippingParamsPostModel;
 import com.tokopedia.inbox.rescenter.shipping.view.InputShippingFragmentView;
 import com.tokopedia.inbox.rescenter.utils.LocalCacheManager;
-
-import info.vividcode.android.zxing.CaptureActivity;
 
 import static com.tokopedia.inbox.rescenter.shipping.fragment.InputShippingFragment.EXTRA_PARAM_ATTACHMENT;
 import static com.tokopedia.inbox.rescenter.shipping.fragment.InputShippingFragment.EXTRA_PARAM_MODEL;
@@ -92,7 +91,8 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
     }
 
     private ResCenterKurir convertCacheToModel(String json) {
-        return CacheUtil.convertStringToModel(json, new TypeToken<ResCenterKurir>() {}.getType());
+        return CacheUtil.convertStringToModel(json, new TypeToken<ResCenterKurir>() {
+        }.getType());
     }
 
     private void requestShippingList() {
@@ -155,7 +155,8 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
     private void storeCacheKurirList(ResCenterKurir kurirList) {
         cacheManager.setKey(viewListener.getParamsModel().getResolutionID());
         cacheManager.setValue(
-                CacheUtil.convertModelToString(kurirList, new TypeToken<ResCenterKurir>() {}.getType())
+                CacheUtil.convertModelToString(kurirList, new TypeToken<ResCenterKurir>() {
+                }.getType())
         );
         cacheManager.setCacheDuration(1800000); // expired in 30minutes
         cacheManager.store();
@@ -310,8 +311,8 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
 
     @Override
     public void onShippingRefChanged(Editable editable) {
-        String shippingRef = editable.toString().replaceAll("\\s+","");
-        isShippingRefValid = (shippingRef.length()>=8 && shippingRef.length()<=17);
+        String shippingRef = editable.toString().replaceAll("\\s+", "");
+        isShippingRefValid = (shippingRef.length() >= 8 && shippingRef.length() <= 17);
 
         checkFormValidity();
     }
@@ -326,13 +327,13 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
 
     @Override
     public void onListAttachmentChanged(int itemCount) {
-        isListAttachmentValid = (itemCount>1);
+        isListAttachmentValid = (itemCount > 1);
 
         checkFormValidity();
     }
 
-    private void checkFormValidity(){
-        if(isShippingRefValid && isShippingSpinnerValid && isListAttachmentValid){
+    private void checkFormValidity() {
+        if (isShippingRefValid && isShippingSpinnerValid && isListAttachmentValid) {
             viewListener.setConfirmButtonEnabled();
         } else {
             viewListener.setConfirmButtonDisabled();
@@ -343,7 +344,7 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
         viewListener.getErrorSpinner().setVisibility(View.GONE);
         viewListener.getShippingRefNum().setError(null);
 
-        if (params.getShippingNumber().replaceAll("\\s+","").length() == 0) {
+        if (params.getShippingNumber().replaceAll("\\s+", "").length() == 0) {
             viewListener.getShippingRefNum().setError(viewListener.getActivity().getString(R.string.error_field_required));
             return false;
         }
@@ -360,7 +361,7 @@ public class InputShippingFragmentImpl implements InputShippingFragmentPresenter
 
         if (isInstanceForEdit()
                 && isShippingRefNumSame(params.getShippingNumber())
-                        && isShippingsSame(params.getShippingID())) {
+                && isShippingsSame(params.getShippingID())) {
             viewListener.getShippingRefNum().setError(viewListener.getActivity().getString(R.string.error_update_receipt_number));
             return false;
         }

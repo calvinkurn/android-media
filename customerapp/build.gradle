@@ -275,6 +275,7 @@ dependencies {
     compile project(':tkpdreactnative')
     compile project(':tkpdloyalty')
     compile project(':tkpdreputation')
+    compile project(':tkpdtokocash')
     compile project(':tkpdflight')
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {

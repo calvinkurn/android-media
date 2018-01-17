@@ -61,6 +61,7 @@ public class TkpdBaseURL {
 
     public static String WALLET_DOMAIN = "https://www.tokocash.com/";
     public static String TOKOPOINT_API_DOMAIN = "https://api.tokopedia.com/tokoplus/";
+    public static String PROMO_API_DOMAIN = "https://www.tokopedia.com/promo/";
 
     public static class Product {
         public static final String V4_PRODUCT = "v4/product/";
@@ -789,6 +790,9 @@ public class TkpdBaseURL {
         public static final String POST_COMPLAINT = "api/v1/cs/complaint";
         public static final String GET_OAUTH_INFO_ACCOUNT = "api/v1/me/profile";
         public static final String REVOKE_ACCESS_TOKOCASH = "api/v1/me/client/revoke";
+        public static final String GET_QR_INFO = "api/v1/qr/{identifier}";
+        public static final String POST_QR_PAYMENT = "api/v1/paymentqr";
+        public static final String GET_BALANCE = "api/v1/wallet/balance";
         public static final String REQUEST_OTP_LOGIN = "oauth/otp";
         public static final String VERIFY_OTP_LOGIN = "oauth/verify_native";
         public static final String AUTHORIZE = "oauth/authorize_native";
@@ -992,5 +996,10 @@ public class TkpdBaseURL {
     public class Purchase {
         public static final String PATH_ORDER_DETAIL = "/v4/order/detail";
         public static final String PATH_ORDER_HISTORY = "/v4/order/history";
+    }
+
+    public class Promo {
+        public static final String PATH_MENU_INDEX = "wp-json/wp/v2/hmenu";
+        public static final String PATH_PROMO_LIST = "wp-json/wp/v2/posts";
     }
 }

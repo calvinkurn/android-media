@@ -23,7 +23,7 @@
             android:adjustViewBounds="true"
             android:src="@drawable/ic_loading_toped"
             android:layout_margin="3dp"
-            android:background="@color/transparent"/>
+            android:background="@android:color/transparent"/>
 
         <TextView
             android:id="@+id/text_new"

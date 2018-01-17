@@ -35,7 +35,7 @@ ext {
     rulesVersion = "0.5"
     apolloVersion = '0.3.0'
     lottieVersion = '2.0.0-rc1'
-    reactNativeVersion = '0.46.4'
+    reactNativeVersion = '0.51.0'
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
@@ -124,7 +124,7 @@ ext {
     ]
 
     miscDependencies = [
-            captureActivity       : "info.vividcode.android.zxing:capture-activity:2.3.0-1.2",
+            scannerZxing          : "com.journeyapps:zxing-android-embedded:3.5.0",
             facebook              : "com.facebook.android:facebook-android-sdk:4.26.0",
             parcelerApi           : "org.parceler:parceler-api:1.1.6",
             parceler              : "org.parceler:parceler:1.1.6",
