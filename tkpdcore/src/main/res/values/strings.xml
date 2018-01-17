@@ -672,6 +672,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="item_all">Semua</string>
     <string name="item_unread">Belum Dibaca</string>
     <string name="chat_edit_text">Tulis pesan ...</string>
+    <string name="add_template_chat">Tambah Template</string>
 
     <!-- Strings related to inbox -->
 

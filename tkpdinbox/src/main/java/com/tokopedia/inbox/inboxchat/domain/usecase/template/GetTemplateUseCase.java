@@ -1,10 +1,10 @@
-package com.tokopedia.inbox.inboxchat.domain.usecase;
+package com.tokopedia.inbox.inboxchat.domain.usecase.template;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.inbox.inboxchat.data.repository.TemplateRepository;
+import com.tokopedia.inbox.inboxchat.data.repository.template.TemplateRepository;
 import com.tokopedia.inbox.inboxchat.viewmodel.GetTemplateViewModel;
 
 import rx.Observable;
