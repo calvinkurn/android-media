@@ -179,8 +179,8 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
 
     @Override
     public void onErrorCheckShopName(Throwable t) {
-        textInputShopName.setError(ShopErrorHandler.getErrorMessage(t));
-        trackingOpenShop.eventOpenShopBiodataNameError(ShopErrorHandler.getErrorMessage(t));
+        textInputShopName.setError(ShopErrorHandler.getErrorMessage(getActivity(), t));
+        trackingOpenShop.eventOpenShopBiodataNameError(ShopErrorHandler.getErrorMessage(getActivity(), t));
     }
 
     @Override
@@ -195,16 +195,16 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
 
     @Override
     public void onErrorCheckShopDomain(Throwable t) {
-        textInputDomainName.setError(ShopErrorHandler.getErrorMessage(t));
-        trackingOpenShop.eventOpenShopBiodataDomainError(ShopErrorHandler.getErrorMessage(t));
+        textInputDomainName.setError(ShopErrorHandler.getErrorMessage(getActivity(), t));
+        trackingOpenShop.eventOpenShopBiodataDomainError(ShopErrorHandler.getErrorMessage(getActivity(), t));
     }
 
     @Override
     public void onErrorReserveShop(Throwable t) {
         hideSubmitLoading();
         Crashlytics.logException(t);
-        String message = ShopErrorHandler.getErrorMessage(t);
-        trackingOpenShop.eventOpenShopBiodataError(message);
+        String message = ShopErrorHandler.getErrorMessage(getActivity(), t);
+        sendErrorTracking(message);
         snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(getActivity(),
                 message,
                 new NetworkErrorHelper.RetryClickedListener() {
@@ -214,6 +214,13 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
                     }
                 });
         snackbarRetry.showRetrySnackbar();
+    }
+
+    private void sendErrorTracking(String errorMessage) {
+        trackingOpenShop.eventOpenShopBiodataError(errorMessage);
+        String generatedErrorMessage = ShopErrorHandler.getGeneratedErrorMessage(errorMessage.toCharArray(),
+                editTextInputShopName.getText().toString(), editTextInputDomainName.getTextWithoutPrefix());
+        trackingOpenShop.eventOpenShopBiodataErrorWithData(generatedErrorMessage);
     }
 
     @Override
