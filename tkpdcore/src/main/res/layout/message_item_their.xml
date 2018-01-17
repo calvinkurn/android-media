@@ -111,7 +111,7 @@
         android:layout_marginRight="@dimen/margin_small"
         android:visibility="gone"/>
 
-    <ImageView
+    <com.tokopedia.core.customwidget.SquareImageView
         android:id="@+id/image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
