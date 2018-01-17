@@ -26,11 +26,6 @@ public class UnifyTracking extends TrackingUtils {
 
     public static final String EXTRA_LABEL = "label";
 
-    public static void eventGeneral(Map<String,Object> dataLayers) {
-        getGTMEngine().clearEnhanceEcommerce();
-        sendGTMEvent(dataLayers);
-    }
-
     public static void eventHomeTab(String label) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.HOMEPAGE_UNIFY,
