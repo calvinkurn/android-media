@@ -19,7 +19,6 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SendReviewValidateMap
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SendSmileyReputationMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.ShopFavoritedMapper;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper.SkipReviewMapper;
-import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.CloudCheckShopFavoriteDataSource;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.CloudDeleteReviewResponseDataSource;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.CloudFaveShopDataSource;
@@ -32,7 +31,6 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.CloudSendReviewSubmit
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.CloudSendSmileyReputationDataSource;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.CloudSkipReviewDataSource;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.LocalInboxReputationDataSource;
-import com.tokopedia.tkpd.tkpdreputation.productreview.data.source.ProductReviewGetCountCloud;
 import com.tokopedia.tkpd.tkpdreputation.productreview.data.source.ProductReviewGetHelpfulReviewCloud;
 import com.tokopedia.tkpd.tkpdreputation.productreview.data.source.ProductReviewGetListProductCloud;
 import com.tokopedia.tkpd.tkpdreputation.productreview.data.source.ProductReviewGetStarCountCloud;
@@ -191,12 +189,6 @@ public class ReputationFactory {
 
     public ProductReviewGetStarCountCloud createCloudGetReviewStarCount() {
         return new ProductReviewGetStarCountCloud(
-                reputationReviewApi
-        );
-    }
-
-    public ProductReviewGetCountCloud createCloudGetReviewCount() {
-        return new ProductReviewGetCountCloud(
                 reputationReviewApi
         );
     }

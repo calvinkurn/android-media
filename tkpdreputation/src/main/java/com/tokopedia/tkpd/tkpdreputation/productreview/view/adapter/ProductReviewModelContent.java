@@ -1,0 +1,234 @@
+package com.tokopedia.tkpd.tkpdreputation.productreview.view.adapter;
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageAttachmentViewModel;
+
+import java.util.List;
+
+/**
+ * Created by zulfikarrahman on 1/16/18.
+ */
+
+public class ProductReviewModelContent implements ProductReviewModel, Parcelable {
+    private boolean reviewIsAnonymous;
+    private String reviewerName;
+    private String reviewerId;
+    private float reviewStar;
+    private String reviewMessage;
+    private String reviewTime;
+    private List<ImageAttachmentViewModel> reviewAttachment;
+    private String sellerName;
+    private String shopId;
+    private String reviewId;
+    private boolean reviewHasReplied;
+    private String responseMessage;
+    private String responseCreateTime;
+    private boolean sellerRepliedOwner;
+    private boolean reviewCanReported;
+    private String reputationId;
+    private String productId;
+
+    @Override
+    public int type(ProductReviewTypeFactoryAdapter typeFactory) {
+        return typeFactory.type(this);
+    }
+
+    public void setReviewIsAnonymous(boolean reviewIsAnonymous) {
+        this.reviewIsAnonymous = reviewIsAnonymous;
+    }
+
+    public void setReviewerName(String reviewerName) {
+        this.reviewerName = reviewerName;
+    }
+
+    public void setReviewerId(String reviewerId) {
+        this.reviewerId = reviewerId;
+    }
+
+    public void setReviewStar(float reviewStar) {
+        this.reviewStar = reviewStar;
+    }
+
+    public void setReviewMessage(String reviewMessage) {
+        this.reviewMessage = reviewMessage;
+    }
+
+    public void setReviewTime(String reviewTime) {
+        this.reviewTime = reviewTime;
+    }
+
+    public void setReviewAttachment(List<ImageAttachmentViewModel> reviewAttachment) {
+        this.reviewAttachment = reviewAttachment;
+    }
+
+    public void setSellerName(String sellerName) {
+        this.sellerName = sellerName;
+    }
+
+    public void setShopId(String shopId) {
+        this.shopId = shopId;
+    }
+
+    public void setReviewId(String reviewId) {
+        this.reviewId = reviewId;
+    }
+
+    public void setReviewHasReplied(boolean reviewHasReplied) {
+        this.reviewHasReplied = reviewHasReplied;
+    }
+
+    public void setResponseMessage(String responseMessage) {
+        this.responseMessage = responseMessage;
+    }
+
+    public void setResponseCreateTime(String responseCreateTime) {
+        this.responseCreateTime = responseCreateTime;
+    }
+
+    public void setSellerRepliedOwner(boolean sellerRepliedOwner) {
+        this.sellerRepliedOwner = sellerRepliedOwner;
+    }
+
+    public void setReviewCanReported(boolean reviewCanReported) {
+        this.reviewCanReported = reviewCanReported;
+    }
+
+    public boolean isReviewIsAnonymous() {
+        return reviewIsAnonymous;
+    }
+
+    public String getReviewerName() {
+        return reviewerName;
+    }
+
+    public String getReviewerId() {
+        return reviewerId;
+    }
+
+    public float getReviewStar() {
+        return reviewStar;
+    }
+
+    public String getReviewMessage() {
+        return reviewMessage;
+    }
+
+    public String getReviewTime() {
+        return reviewTime;
+    }
+
+    public List<ImageAttachmentViewModel> getReviewAttachment() {
+        return reviewAttachment;
+    }
+
+    public String getSellerName() {
+        return sellerName;
+    }
+
+    public String getShopId() {
+        return shopId;
+    }
+
+    public String getReviewId() {
+        return reviewId;
+    }
+
+    public boolean isReviewHasReplied() {
+        return reviewHasReplied;
+    }
+
+    public String getResponseMessage() {
+        return responseMessage;
+    }
+
+    public String getResponseCreateTime() {
+        return responseCreateTime;
+    }
+
+    public boolean isSellerRepliedOwner() {
+        return sellerRepliedOwner;
+    }
+
+    public boolean isReviewCanReported() {
+        return reviewCanReported;
+    }
+
+    public ProductReviewModelContent() {
+    }
+
+    public String getReputationId() {
+        return reputationId;
+    }
+
+    public void setReputationId(String reputationId) {
+        this.reputationId = reputationId;
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte(this.reviewIsAnonymous ? (byte) 1 : (byte) 0);
+        dest.writeString(this.reviewerName);
+        dest.writeString(this.reviewerId);
+        dest.writeFloat(this.reviewStar);
+        dest.writeString(this.reviewMessage);
+        dest.writeString(this.reviewTime);
+        dest.writeTypedList(this.reviewAttachment);
+        dest.writeString(this.sellerName);
+        dest.writeString(this.shopId);
+        dest.writeString(this.reviewId);
+        dest.writeByte(this.reviewHasReplied ? (byte) 1 : (byte) 0);
+        dest.writeString(this.responseMessage);
+        dest.writeString(this.responseCreateTime);
+        dest.writeByte(this.sellerRepliedOwner ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.reviewCanReported ? (byte) 1 : (byte) 0);
+        dest.writeString(this.reputationId);
+        dest.writeString(this.productId);
+    }
+
+    protected ProductReviewModelContent(Parcel in) {
+        this.reviewIsAnonymous = in.readByte() != 0;
+        this.reviewerName = in.readString();
+        this.reviewerId = in.readString();
+        this.reviewStar = in.readFloat();
+        this.reviewMessage = in.readString();
+        this.reviewTime = in.readString();
+        this.reviewAttachment = in.createTypedArrayList(ImageAttachmentViewModel.CREATOR);
+        this.sellerName = in.readString();
+        this.shopId = in.readString();
+        this.reviewId = in.readString();
+        this.reviewHasReplied = in.readByte() != 0;
+        this.responseMessage = in.readString();
+        this.responseCreateTime = in.readString();
+        this.sellerRepliedOwner = in.readByte() != 0;
+        this.reviewCanReported = in.readByte() != 0;
+        this.reputationId = in.readString();
+        this.productId = in.readString();
+    }
+
+    public static final Creator<ProductReviewModelContent> CREATOR = new Creator<ProductReviewModelContent>() {
+        @Override
+        public ProductReviewModelContent createFromParcel(Parcel source) {
+            return new ProductReviewModelContent(source);
+        }
+
+        @Override
+        public ProductReviewModelContent[] newArray(int size) {
+            return new ProductReviewModelContent[size];
+        }
+    };
+}

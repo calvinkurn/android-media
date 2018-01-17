@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/border_bottom_05dp"
+        android:padding="@dimen/padding_small">
+
+        <ImageView
+            android:id="@+id/icon_like"
+            android:layout_width="@dimen/image_width_xxs"
+            android:layout_height="@dimen/image_width_xxs"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/margin_vs"
+            android:src="@drawable/ic_icon_repsis_like" />
+
+        <TextView
+            android:id="@+id/text_counter_like"
+            style="@style/TextView.Micro.BlackDisabled"
+            android:layout_toRightOf="@+id/icon_like"
+            tools:text="Anda dan 2 orang terbantu" />
+
+        <ImageView
+            android:id="@+id/reply_chevron"
+            android:layout_width="@dimen/image_width_xxs"
+            android:layout_height="@dimen/image_width_xxs"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/margin_vs"
+            android:layout_marginStart="@dimen/margin_vs"
+            android:src="@drawable/ic_arrow_up_grey" />
+
+
+        <TextView
+            android:id="@+id/see_reply_button"
+            style="@style/TextView.Micro.BlackSecondary"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/reply_chevron"
+            android:text="@string/see_reply" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/reply_review_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_med"
+        android:padding="@dimen/padding_small">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/reply_overflow"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/seller_reply_name"
+                style="@style/TextView.Small.BlackSecondary"
+                tools:text="Oleh Pretty Sugar Shop" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="@dimen/margin_vvs"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/seller_label"
+                    style="@style/TextView.Micro.WhitePrimary"
+                    android:layout_marginRight="@dimen/margin_vs"
+                    android:background="@drawable/label_seller"
+                    android:gravity="center_horizontal"
+                    android:paddingBottom="@dimen/padding_vvvs"
+                    android:paddingLeft="@dimen/padding_vs"
+                    android:paddingRight="@dimen/padding_vs"
+                    android:paddingTop="@dimen/padding_vvvs"
+                    android:text="@string/seller"
+                    android:textSize="10sp" />
+
+
+                <TextView
+                    android:id="@+id/seller_reply_time"
+                    style="@style/TextView.Micro.BlackDisabled"
+                    android:textSize="10sp"
+                    tools:text="31 Jul 2016, pukul 11:48" />
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/seller_reply"
+                style="@style/TextView.Micro.BlackSecondary"
+                android:layout_marginTop="@dimen/margin_vs"
+                android:enabled="true"
+                android:focusable="true"
+                android:fontFamily="sans-serif"
+                android:longClickable="true"
+                android:textIsSelectable="true"
+                tools:text="Terima kasih sudah mempercayai toko kami. Silahkan melihat-lihat produk” lainnya yang tersedia di toko kami." />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/reply_overflow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:src="@drawable/ic_more_vert_black_24dp" />
+    </RelativeLayout>
+</LinearLayout>
