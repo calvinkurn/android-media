@@ -141,6 +141,8 @@ import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.transaction.wallet.WalletActivity;
 
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -663,7 +665,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Intent getDefaultContactUsIntent(Activity activity, String url) {
         Intent intent = new Intent(activity, ContactUsActivity.class);
         intent.putExtra(InboxRouter.PARAM_URL,
-                URLGenerator.generateURLContactUs(url, activity));
+                URLGenerator.generateURLContactUs(Uri.encode(url), activity));
         return intent;
     }
 
