@@ -9,6 +9,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class Rule {
 
+    @SerializedName("maximum_length")
+    @Expose
+    private int maximumLength;
     @SerializedName("product_text")
     @Expose
     private String productText;
@@ -24,6 +27,10 @@ public class Rule {
     @SerializedName("button_text")
     @Expose
     private String buttonText;
+
+    public int getMaximumLength() {
+        return maximumLength;
+    }
 
     public String getProductText() {
         return productText;

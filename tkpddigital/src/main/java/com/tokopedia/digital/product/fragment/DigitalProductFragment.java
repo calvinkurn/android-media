@@ -41,7 +41,6 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.apprating.AdvancedAppRatingDialog;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -68,7 +67,6 @@ import com.tokopedia.digital.product.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.compoundview.CategoryProductStyle1View;
 import com.tokopedia.digital.product.compoundview.CategoryProductStyle2View;
 import com.tokopedia.digital.product.compoundview.CategoryProductStyle3View;
-import com.tokopedia.digital.product.compoundview.CategoryProductStyle4View;
 import com.tokopedia.digital.product.compoundview.CheckPulsaBalanceView;
 import com.tokopedia.digital.product.compoundview.ClientNumberInputView;
 import com.tokopedia.digital.product.data.mapper.IProductDigitalMapper;
@@ -427,20 +425,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
-    public void renderCategoryProductDataStyle4(CategoryData categoryData,
-                                                HistoryClientNumber historyClientNumber) {
-        this.categoryDataState = categoryData;
-        this.historyClientNumberState = historyClientNumber;
-        actionListener.updateTitleToolbar(categoryData.getName());
-        holderProductDetail.removeAllViews();
-        if (digitalProductView == null)
-            digitalProductView = new CategoryProductStyle4View(getActivity());
-        digitalProductView.setActionListener(this);
-        digitalProductView.renderData(categoryData, historyClientNumber);
-        holderProductDetail.addView(digitalProductView);
-    }
-
-    @Override
     public void renderCheckPulsaBalanceData() {
         DigitalProductFragmentPermissionsDispatcher.renderCheckPulsaBalanceWithCheck(this);
     }
@@ -700,7 +684,14 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
-    public void onButtonBuyClicked(BaseDigitalProductView.PreCheckoutProduct preCheckoutProduct) {
+    public void onButtonBuyClicked(BaseDigitalProductView.PreCheckoutProduct preCheckoutProduct,
+                                   boolean isInstantCheckoutChecked) {
+        if (isInstantCheckoutChecked) {
+            UnifyTracking.eventClickBeliInstantSaldo(categoryDataState.getName(), categoryDataState.getName());
+        } else {
+            UnifyTracking.eventClickBeli(categoryDataState.getName(), categoryDataState.getName());
+        }
+
         if (!preCheckoutProduct.isCanBeCheckout()) {
             showToastMessage(preCheckoutProduct.getErrorCheckout());
             return;
@@ -836,6 +827,11 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                     IDigitalModuleRouter.REQUEST_CODE_DIGITAL_SEARCH_NUMBER
             );
         }
+    }
+
+    @Override
+    public void onItemAutocompletedSelected(OrderClientNumber orderClientNumber) {
+
     }
 
     @Override

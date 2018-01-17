@@ -6,6 +6,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -14,6 +15,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -60,7 +62,6 @@ public class ClientNumberInputView extends LinearLayout {
 
     private ActionListener actionListener;
     private Context context;
-    private ArrayAdapter<String> adapterAutoComplete;
     private AutoCompleteTVAdapter autoCompleteTVAdapter;
     private ClientNumber clientNumber;
 
@@ -144,6 +145,7 @@ public class ClientNumberInputView extends LinearLayout {
         autoCompleteTVAdapter = new AutoCompleteTVAdapter(getContext(), R.layout.item_autocomplete, numberList);
         autoCompleteTextView.setAdapter(autoCompleteTVAdapter);
         autoCompleteTextView.setThreshold(1);
+        autoCompleteTextView.setOnItemClickListener(getItemClickListener());
     }
 
     public String getText() {
@@ -187,6 +189,11 @@ public class ClientNumberInputView extends LinearLayout {
 
     public void setInputTypeText() {
         this.autoCompleteTextView.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+    }
+
+    public void setFilterMaxLength(int maximumLength) {
+        this.autoCompleteTextView.setFilters(
+                new InputFilter[]{new InputFilter.LengthFilter(maximumLength)});
     }
 
     public void setImgOperator(String imgUrl) {
@@ -235,6 +242,16 @@ public class ClientNumberInputView extends LinearLayout {
         }
     }
 
+    private AdapterView.OnItemClickListener getItemClickListener() {
+        return new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                OrderClientNumber orderClientNumber = autoCompleteTVAdapter.getItem(position);
+                actionListener.onItemAutocompletedSelected(orderClientNumber);
+            }
+        };
+    }
+
     @NonNull
     private OnClickListener getButtonContactPickerClickListener() {
         return new OnClickListener() {
@@ -268,6 +285,7 @@ public class ClientNumberInputView extends LinearLayout {
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
                 String tempInput = charSequence.toString();
                 btnClear.setVisibility(tempInput.length() > 0 ? VISIBLE : GONE);
+                actionListener.onClientNumberInputValid(tempInput);
                 if (tempInput.isEmpty()) {
                     actionListener.onClientNumberInputInvalid();
                     tvErrorClientNumber.setText("");
@@ -276,19 +294,15 @@ public class ClientNumberInputView extends LinearLayout {
                     for (Validation validation : clientNumber.getValidation()) {
                         if (!Pattern.matches(validation.getRegex(), tempInput)) {
                             actionListener.onClientNumberInputInvalid();
-                            if (tempInput.isEmpty()) {
-                                tvErrorClientNumber.setText("");
-                                tvErrorClientNumber.setVisibility(GONE);
-                            } else {
-                                tvErrorClientNumber.setText(validation.getError());
-                                tvErrorClientNumber.setVisibility(VISIBLE);
-                            }
+                            tvErrorClientNumber.setText(validation.getError());
+                            tvErrorClientNumber.setVisibility(VISIBLE);
                             break;
-                        } else {
-                            tvErrorClientNumber.setText("");
-                            tvErrorClientNumber.setVisibility(GONE);
-                            actionListener.onClientNumberInputValid(tempInput);
                         }
+//                        else {
+//                            tvErrorClientNumber.setText("");
+//                            tvErrorClientNumber.setVisibility(GONE);
+//                            actionListener.onClientNumberInputValid(tempInput);
+//                        }
                     }
                 }
             }
@@ -336,6 +350,8 @@ public class ClientNumberInputView extends LinearLayout {
         void onClientNumberHasFocus(String clientNumber);
 
         void onClientNumberCleared();
+
+        void onItemAutocompletedSelected(OrderClientNumber orderClientNumber);
     }
 
 }

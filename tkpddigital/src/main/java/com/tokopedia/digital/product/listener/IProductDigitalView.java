@@ -35,8 +35,6 @@ public interface IProductDigitalView extends IBaseView {
     void renderCategoryProductDataStyle3(CategoryData categoryData,
                                          HistoryClientNumber historyClientNumber);
 
-    void renderCategoryProductDataStyle4(CategoryData categoryData,
-                                         HistoryClientNumber historyClientNumber);
     void renderCheckPulsaBalanceData();
 
     void renderErrorStyleNotSupportedProductDigitalData(String message);

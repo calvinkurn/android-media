@@ -250,4 +250,10 @@ public class Product implements Parcelable {
             return new Product(this);
         }
     }
+
+    @Override
+    public String toString() {
+        return desc;
+    }
+
 }

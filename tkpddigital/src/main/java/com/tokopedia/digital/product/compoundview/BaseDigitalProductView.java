@@ -26,6 +26,9 @@ import butterknife.ButterKnife;
  */
 public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout {
 
+    public static final int WIDGET = 0;
+    public static final int NATIVE = 1;
+
     protected ActionListener actionListener;
     protected Context context;
 
@@ -36,6 +39,7 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
     protected H historyClientNumber;
 
     protected BottomSheetView bottomSheetView;
+    protected int source = 1;
 
     public void setActionListener(ActionListener actionListener) {
         this.actionListener = actionListener;
@@ -128,7 +132,6 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
 
                 if (data instanceof CategoryData)
                     UnifyTracking.eventCheckInstantSaldo(((CategoryData) data).getName(), ((CategoryData) data).getName(), isChecked);
-
             }
         };
     }
@@ -160,8 +163,12 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
 
     public abstract void clearFocusOnClientNumber();
 
+    public void setSource(int source) {
+        this.source = source;
+    }
+
     public interface ActionListener {
-        void onButtonBuyClicked(PreCheckoutProduct preCheckoutProduct);
+        void onButtonBuyClicked(PreCheckoutProduct preCheckoutProduct, boolean isInstantCheckoutChecked);
 
         void onProductChooserStyle1Clicked(
                 List<Product> productListData, String operatorId, String titleChooser
@@ -192,6 +199,8 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
         void onClientNumberClicked(String clientNumber, ClientNumber number, List<OrderClientNumber> numberList);
 
         void onClientNumberCleared(ClientNumber clientNumber, List<OrderClientNumber> recentClientNumberList);
+
+        void onItemAutocompletedSelected(OrderClientNumber orderClientNumber);
     }
 
     public static class PreCheckoutProduct {

@@ -8,12 +8,20 @@ import android.os.Parcelable;
  */
 public class Rule implements Parcelable {
 
-
+    private int maximumLength;
     private String productText;
     private int productViewStyle;
     private boolean showPrice;
     private boolean enableVoucher;
     private String buttonText;
+
+    public int getMaximumLength() {
+        return maximumLength;
+    }
+
+    public void setMaximumLength(int maximumLength) {
+        this.maximumLength = maximumLength;
+    }
 
     public String getProductText() {
         return productText;
@@ -62,6 +70,7 @@ public class Rule implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.maximumLength);
         dest.writeString(this.productText);
         dest.writeInt(this.productViewStyle);
         dest.writeByte(this.showPrice ? (byte) 1 : (byte) 0);
@@ -73,6 +82,7 @@ public class Rule implements Parcelable {
     }
 
     protected Rule(Parcel in) {
+        this.maximumLength = in.readInt();
         this.productText = in.readString();
         this.productViewStyle = in.readInt();
         this.showPrice = in.readByte() != 0;

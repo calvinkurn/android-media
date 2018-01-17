@@ -18,8 +18,10 @@ import com.tokopedia.digital.product.model.CategoryData;
 import com.tokopedia.digital.product.model.ClientNumber;
 import com.tokopedia.digital.product.model.HistoryClientNumber;
 import com.tokopedia.digital.product.model.Operator;
+import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.product.model.Product;
 import com.tokopedia.digital.utils.DeviceUtil;
+import com.tokopedia.digital.widget.compoundview.WidgetProductChooserView2;
 
 import java.util.List;
 
@@ -52,6 +54,7 @@ public class CategoryProductStyle1View extends
     ImageView tooltipInstantCheckout;
 
     private DigitalProductChooserView digitalProductChooserView;
+    private WidgetProductChooserView2 widgetProductChooserView;
     private ClientNumberInputView clientNumberInputView;
     private ProductAdditionalInfoView productAdditionalInfoView;
     private ProductPriceInfoView productPriceInfoView;
@@ -75,6 +78,7 @@ public class CategoryProductStyle1View extends
     protected void onCreateView() {
         clientNumberInputView = new ClientNumberInputView(context);
         digitalProductChooserView = new DigitalProductChooserView(context);
+        widgetProductChooserView = new WidgetProductChooserView2(context);
         productAdditionalInfoView = new ProductAdditionalInfoView(context);
         productPriceInfoView = new ProductPriceInfoView(context);
         productAdditionalInfoView.setActionListener(this);
@@ -87,18 +91,10 @@ public class CategoryProductStyle1View extends
 
     @Override
     protected void onInitialDataRendered() {
-        tvTitle.setText(TextUtils.isEmpty(data.getTitleText()) ? "" : data.getTitleText());
-        if (!data.getClientNumberList().isEmpty()) {
-            renderClientNumberInputForm();
-        } else {
-            for (Operator operator : data.getOperatorList()) {
-                if (operator.getOperatorId().equalsIgnoreCase(data.getDefaultOperatorId())) {
-                    operatorSelected = operator;
-                    renderProductChooserOptions();
-                    break;
-                }
-            }
+        if (source != WIDGET) {
+            tvTitle.setText(TextUtils.isEmpty(data.getTitleText()) ? "" : data.getTitleText());
         }
+        renderClientNumberInputForm();
         renderInstantCheckoutOption();
         btnBuyDigital.setOnClickListener(getButtonBuyClickListener());
     }
@@ -184,13 +180,10 @@ public class CategoryProductStyle1View extends
     private void renderClientNumberInputForm() {
         final ClientNumber clientNumber = data.getClientNumberList().get(0);
         clearHolder(holderClientNumber);
-        clearHolder(holderChooserProduct);
-        clearHolder(holderAdditionalInfoProduct);
-        clearHolder(holderPriceInfoProduct);
         clientNumberInputView.setActionListener(getActionListenerClientNumberInput());
         clientNumberInputView.renderData(clientNumber);
-        holderClientNumber.addView(clientNumberInputView);
         clientNumberInputView.resetInputTyped();
+        holderClientNumber.addView(clientNumberInputView);
 
         String lastClientNumberHistory = "";
         if (hasLastOrderHistoryData())
@@ -206,10 +199,40 @@ public class CategoryProductStyle1View extends
         }
     }
 
+    private void showProducts() {
+        if (source == NATIVE) {
+            renderProductChooserOptions();
+        } else {
+            renderProductChooserOptionsWidget();
+        }
+    }
+
+    private void renderProductChooserOptionsWidget() {
+        clearHolder(holderChooserProduct);
+        widgetProductChooserView.setListener(getProductChooserListener());
+        widgetProductChooserView.setTitleProduct(operatorSelected.getRule().getProductText());
+        holderChooserProduct.addView(widgetProductChooserView);
+
+        if (hasLastOrderHistoryData() && operatorSelected != null
+                && operatorSelected.getOperatorId().equalsIgnoreCase(
+                historyClientNumber.getLastOrderClientNumber().getOperatorId()
+        )) {
+            for (Product product : operatorSelected.getProductList()) {
+                if (product.getProductId().equalsIgnoreCase(
+                        historyClientNumber.getLastOrderClientNumber().getProductId()
+                )) {
+                    widgetProductChooserView.renderDataView(operatorSelected.getProductList(),
+                            operatorSelected.getRule().isShowPrice(),
+                            product.getProductId()
+                    );
+                    break;
+                }
+            }
+        }
+    }
+
     private void renderProductChooserOptions() {
         clearHolder(holderChooserProduct);
-        clearHolder(holderAdditionalInfoProduct);
-        clearHolder(holderPriceInfoProduct);
         digitalProductChooserView.setActionListener(getActionListenerProductChooser());
         digitalProductChooserView.renderInitDataList(operatorSelected.getProductList());
         digitalProductChooserView.setLabelText(operatorSelected.getRule().getProductText());
@@ -298,12 +321,7 @@ public class CategoryProductStyle1View extends
         return new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (cbInstantCheckout.isChecked())
-                    UnifyTracking.eventClickBeliInstantSaldo(data.getName(), data.getName());
-                else
-                    UnifyTracking.eventClickBeli(data.getName(), data.getName());
-
-                actionListener.onButtonBuyClicked(generatePreCheckoutData());
+                actionListener.onButtonBuyClicked(generatePreCheckoutData(), cbInstantCheckout.isChecked());
             }
         };
     }
@@ -318,28 +336,34 @@ public class CategoryProductStyle1View extends
 
             @Override
             public void onClientNumberInputValid(String tempClientNumber) {
-                String validClientNumber = DeviceUtil.validatePrefixClientNumber(tempClientNumber);
-                outerLoop:
-                for (Operator operator : data.getOperatorList()) {
-                    for (String prefix : operator.getPrefixList()) {
-                        if (validClientNumber.startsWith(prefix)) {
-                            operatorSelected = operator;
-                            clientNumberInputView.enableImageOperator(operator.getImage());
-                            setBtnBuyDigitalText(operatorSelected.getRule().getButtonText());
-                            if (operatorSelected.getRule().getProductViewStyle() == 99) {
-                                renderDefaultProductSelected();
-                            } else {
-                                renderProductChooserOptions();
+                if (tempClientNumber.length() >= 4) {
+                    if (operatorSelected == null) {
+                        String validClientNumber = DeviceUtil.validatePrefixClientNumber(tempClientNumber);
+                        outerLoop:
+                        for (Operator operator : data.getOperatorList()) {
+                            for (String prefix : operator.getPrefixList()) {
+                                if (validClientNumber.startsWith(prefix)) {
+                                    operatorSelected = operator;
+                                    clientNumberInputView.enableImageOperator(operator.getImage());
+                                    clientNumberInputView.setFilterMaxLength(operator.getRule().getMaximumLength());
+                                    if (operatorSelected.getRule().getProductViewStyle() == 99) {
+                                        renderDefaultProductSelected();
+                                    } else {
+                                        showProducts();
+                                    }
+                                    setBtnBuyDigitalText(operatorSelected.getRule().getButtonText());
+                                    break outerLoop;
+                                }
                             }
-                            break outerLoop;
-                        } else {
-                            clientNumberInputView.disableImageOperator();
-                            productSelected = null;
-                            clearHolder(holderChooserProduct);
-                            clearHolder(holderAdditionalInfoProduct);
-                            clearHolder(holderPriceInfoProduct);
                         }
                     }
+                } else {
+                    operatorSelected = null;
+                    productSelected = null;
+                    clientNumberInputView.disableImageOperator();
+                    clearHolder(holderChooserProduct);
+                    clearHolder(holderAdditionalInfoProduct);
+                    clearHolder(holderPriceInfoProduct);
                 }
             }
 
@@ -365,6 +389,27 @@ public class CategoryProductStyle1View extends
                 actionListener.onClientNumberCleared(data.getClientNumberList().get(0),
                         historyClientNumber.getRecentClientNumberList());
             }
+
+            @Override
+            public void onItemAutocompletedSelected(OrderClientNumber orderClientNumber) {
+                actionListener.onItemAutocompletedSelected(orderClientNumber);
+            }
+        };
+    }
+
+    private WidgetProductChooserView2.ProductChoserListener getProductChooserListener() {
+        return new WidgetProductChooserView2.ProductChoserListener() {
+            @Override
+            public void initDataView(Product product) {
+                productSelected = product;
+            }
+
+            @Override
+            public void trackingProduct() {
+                if (productSelected != null)
+                    UnifyTracking.eventSelectProductWidget(data.getName(),
+                            productSelected.getDesc());
+            }
         };
     }
 
@@ -372,8 +417,8 @@ public class CategoryProductStyle1View extends
     private BaseDigitalChooserView.ActionListener<Product> getActionListenerProductChooser() {
         return new BaseDigitalChooserView.ActionListener<Product>() {
             @Override
-            public void onUpdateDataDigitalChooserSelectedRendered(Product data) {
-                productSelected = data;
+            public void onUpdateDataDigitalChooserSelectedRendered(Product product) {
+                productSelected = product;
                 renderAdditionalInfoProduct();
                 renderPriceInfoProduct();
             }
@@ -413,7 +458,6 @@ public class CategoryProductStyle1View extends
         }
         renderAdditionalInfoProduct();
         renderPriceInfoProduct();
-
     }
 
     private void renderPriceInfoProduct() {

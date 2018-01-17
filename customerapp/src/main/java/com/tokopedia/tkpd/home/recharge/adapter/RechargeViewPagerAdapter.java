@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.view.ViewGroup;
 
 import com.tokopedia.core.customView.WrapContentViewPager;
+import com.tokopedia.digital.widget.fragment.WidgetAllStyleRechargeFragment;
 import com.tokopedia.digital.widget.fragment.WidgetFactory;
 import com.tokopedia.digital.widget.model.category.Category;
 
@@ -27,7 +28,8 @@ public class RechargeViewPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         Category category = categoryList.get(position);
-        return WidgetFactory.buildFragment(category, position);
+        return WidgetAllStyleRechargeFragment.newInstance(category, position);
+//        return WidgetFactory.buildFragment(category, position);
     }
 
     @Override

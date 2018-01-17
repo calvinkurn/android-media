@@ -158,6 +158,9 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
                 operatorCategory.setClientNumberList(clientNumberOperatorList);
 
                 Rule operatorRule = new Rule();
+                operatorRule.setMaximumLength(
+                        categoryDetailIncluded.getAttributes().getRule().getMaximumLength()
+                );
                 operatorRule.setEnableVoucher(
                         categoryDetailIncluded.getAttributes().getRule().isEnableVoucher()
                 );
