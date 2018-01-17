@@ -47,7 +47,6 @@
     <dimen name="margin_vvs">3.3dp</dimen>
     <dimen name="margin_vvvs">2dp</dimen>
     <dimen name="margin_small">10dp</dimen>
-    <dimen name="margin_smalls">12dp</dimen>
     <dimen name="margin_sm">15dp</dimen>
     <dimen name="margin_med">20dp</dimen>
     <dimen name="margin_large">30dp</dimen>

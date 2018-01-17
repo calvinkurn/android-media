@@ -8,8 +8,8 @@
     xmlns:tools="http://schemas.android.com/tools">
     <android.support.v7.widget.AppCompatTextView
         android:paddingTop="@dimen/margin_ms"
-        android:paddingLeft="@dimen/margin_smalls"
-        android:paddingRight="@dimen/margin_smalls"
+        android:paddingLeft="@dimen/opportunity_showcase_padding"
+        android:paddingRight="@dimen/opportunity_showcase_padding"
         android:id="@+id/text_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -21,8 +21,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/margin_ms"
-        android:paddingLeft="@dimen/margin_smalls"
-        android:paddingRight="@dimen/margin_smalls"
+        android:paddingLeft="@dimen/opportunity_showcase_padding"
+        android:paddingRight="@dimen/opportunity_showcase_padding"
         android:paddingBottom="@dimen/margin_ms"
         android:lineSpacingExtra="4dp"/>
 
@@ -38,9 +38,9 @@
         android:orientation="horizontal">
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/text_previous"
-            android:paddingLeft="@dimen/margin_smalls"
-            android:paddingTop="@dimen/margin_smalls"
-            android:paddingBottom="@dimen/margin_smalls"
+            android:paddingLeft="@dimen/opportunity_showcase_padding"
+            android:paddingTop="@dimen/opportunity_showcase_padding"
+            android:paddingBottom="@dimen/opportunity_showcase_padding"
             android:layout_width="@dimen/buttom_width_small"
             android:layout_height="wrap_content"
             android:gravity="left"
@@ -58,9 +58,9 @@
         </android.support.v7.widget.LinearLayoutCompat>
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/text_next"
-            android:paddingRight="@dimen/margin_smalls"
-            android:paddingTop="@dimen/margin_smalls"
-            android:paddingBottom="@dimen/margin_smalls"
+            android:paddingRight="@dimen/opportunity_showcase_padding"
+            android:paddingTop="@dimen/opportunity_showcase_padding"
+            android:paddingBottom="@dimen/opportunity_showcase_padding"
             android:layout_width="@dimen/buttom_width_small"
             android:layout_height="wrap_content"
             android:clickable="true"
