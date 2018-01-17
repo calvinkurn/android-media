@@ -28,10 +28,13 @@
                 android:padding="@dimen/padding_med"
                 android:visibility="visible">
 
-                <com.tokopedia.design.text.TkpdTextInputLayout
+                <com.tokopedia.design.text.TkpdHintTextInputLayout
                     android:id="@+id/wrapper_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:hint="@string/title_email"
+                    android:padding="@dimen/padding_small"
+                    style="@style/HintTextInputLayout"
                     android:layout_marginBottom="@dimen/margin_med"
                     >
 
@@ -39,52 +42,54 @@
                         android:id="@+id/register_email"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="-5dp"
                         android:ems="10"
-                        android:hint="@string/title_email"
                         android:imeOptions="actionNext"
+                        android:textSize="@dimen/text_size_16"
                         android:inputType="textEmailAddress"
                         android:maxLines="1"
                         android:textColor="@color/black_70"/>
-                </com.tokopedia.design.text.TkpdTextInputLayout>
+                </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
-                <com.tokopedia.design.text.TkpdTextInputLayout
+                <com.tokopedia.design.text.TkpdHintTextInputLayout
                     android:id="@+id/wrapper_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    style="@style/HintTextInputLayout"
+                    android:hint="@string/title_full_name"
                     android:layout_marginBottom="@dimen/margin_med">
 
                     <EditText
                         android:id="@+id/name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="-5dp"
-                        android:hint="@string/title_full_name"
                         android:imeOptions="actionNext"
                         android:inputType="textCapWords"
+                        android:textSize="@dimen/text_size_16"
                         android:maxLines="1"
                         android:textColor="@color/black_70"/>
 
-                </com.tokopedia.design.text.TkpdTextInputLayout>
+                </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
-                <com.tokopedia.design.text.TkpdTextInputLayout
+                <com.tokopedia.design.text.TkpdHintTextInputLayout
                     android:id="@+id/wrapper_phone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:hint="@string/title_phone_number"
+                    style="@style/HintTextInputLayout"
+
                     >
 
                     <EditText
                         android:id="@+id/register_next_phone_number"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="-5dp"
                         android:digits="0123456789"
-                        android:hint="@string/title_phone_number"
+                        android:textSize="@dimen/text_size_16"
                         android:inputType="number"
                         android:maxLines="1"
                         android:textColor="@color/black_70"/>
 
-                </com.tokopedia.design.text.TkpdTextInputLayout>
+                </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -99,10 +104,12 @@
                     android:textStyle="normal"
                     />
 
-                <com.tokopedia.design.text.TkpdTextInputLayout
+                <com.tokopedia.design.text.TkpdHintTextInputLayout
                     android:id="@+id/wrapper_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    style="@style/HintTextInputLayout"
+                    android:hint="@string/prompt_password"
                     app:passwordToggleDrawable="@drawable/asl_password_visibility"
                     app:passwordToggleEnabled="true">
 
@@ -110,16 +117,15 @@
                         android:id="@+id/register_password"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="-5dp"
-                        android:hint="@string/prompt_password"
                         android:imeActionId="@+id/register_button"
                         android:imeActionLabel="Lanjut"
                         android:imeOptions="actionUnspecified"
+                        android:textSize="@dimen/text_size_16"
                         android:inputType="textPassword"
                         android:maxLines="1"
                         android:textColor="@color/black_70"
                         android:typeface="sans"/>
-                </com.tokopedia.design.text.TkpdTextInputLayout>
+                </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
                 <TextView
                     android:layout_width="wrap_content"

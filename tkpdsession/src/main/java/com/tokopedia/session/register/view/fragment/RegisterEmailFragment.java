@@ -44,6 +44,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.CustomPhoneNumberUtil;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.session.R;
 import com.tokopedia.session.activation.view.activity.ActivationActivity;
@@ -91,10 +92,10 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     TextInputEditText registerPassword;
     TextView registerButton;
     EditText phone;
-    TextInputLayout wrapperName;
-    TextInputLayout wrapperEmail;
-    TextInputLayout wrapperPassword;
-    TextInputLayout wrapperPhone;
+    TkpdHintTextInputLayout wrapperName;
+    TkpdHintTextInputLayout wrapperEmail;
+    TkpdHintTextInputLayout wrapperPassword;
+    TkpdHintTextInputLayout wrapperPhone;
     EditText name;
     TextView registerNextTAndC;
 
@@ -217,7 +218,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
         phone.addTextChangedListener(phoneWatcher(phone));
     }
 
-    private TextWatcher nameWatcher(final TextInputLayout wrapper) {
+    private TextWatcher nameWatcher(final TkpdHintTextInputLayout wrapper) {
         return new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -247,7 +248,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
         };
     }
 
-    private TextWatcher passwordWatcher(final TextInputLayout wrapper) {
+    private TextWatcher passwordWatcher(final TkpdHintTextInputLayout wrapper) {
         return new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -274,7 +275,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
         };
     }
 
-    private TextWatcher emailWatcher(final TextInputLayout wrapper) {
+    private TextWatcher emailWatcher(final TkpdHintTextInputLayout wrapper) {
         return new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -362,7 +363,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     }
 
 
-    private TextWatcher phoneWatcher(final TextInputLayout wrapper) {
+    private TextWatcher phoneWatcher(final TkpdHintTextInputLayout wrapper) {
         return new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -486,7 +487,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
         registerButton.setEnabled(false);
     }
 
-    private void setWrapperError(TextInputLayout wrapper, String s) {
+    private void setWrapperError(TkpdHintTextInputLayout wrapper, String s) {
         if (s == null) {
             wrapper.setError(s);
             wrapper.setErrorEnabled(false);

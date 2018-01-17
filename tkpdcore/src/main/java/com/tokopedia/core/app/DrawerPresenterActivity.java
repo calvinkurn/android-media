@@ -172,9 +172,9 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
     }
 
     protected void updateDrawerData() {
-        Log.d("NISNISLogin", "DrawerPresenterActivity " + sessionHandler.isV4Login());
-
         if (sessionHandler.isV4Login()) {
+            setDataDrawer();
+
             getDrawerProfile();
             getDrawerDeposit();
             getDrawerNotification();

@@ -20,27 +20,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="@dimen/activity_horizontal_margin">
+            android:padding="@dimen/padding_activity">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="-10dp"
-                android:layout_marginLeft="@dimen/margin_vvs"
-                android:layout_marginTop="16dp"
-                android:fontFamily="sans-serif"
-                android:lineSpacingExtra="4sp"
-                android:text="@string/title_email"
-                android:textColor="@color/black_54"
-                android:textSize="12sp"
-                android:textStyle="normal"
-                />
-
-            <android.support.design.widget.TextInputLayout
+            <com.tokopedia.design.text.TkpdHintTextInputLayout
                 android:id="@+id/wrapper_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="@dimen/margin_large"
+                style="@style/HintTextInputLayout"
+                android:hint="@string/title_email"
                 >
 
                 <AutoCompleteTextView
@@ -50,28 +38,17 @@
                     android:imeOptions="actionNext"
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
-                    android:textColor="@color/black_70"
+                    android:textSize="@dimen/font_medium"
+                    android:textColor="@color/font_black_primary_70"
                     />
-            </android.support.design.widget.TextInputLayout>
+            </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="-10dp"
-                android:layout_marginLeft="@dimen/margin_vvs"
-                android:fontFamily="sans-serif"
-                android:lineSpacingExtra="4sp"
-                android:text="@string/title_password"
-                android:textColor="@color/black_54"
-                android:textSize="12sp"
-                android:textStyle="normal"
-                />
-
-            <android.support.design.widget.TextInputLayout
+            <com.tokopedia.design.text.TkpdHintTextInputLayout
                 android:id="@+id/wrapper_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                style="@style/HintTextInputLayout"
+                android:hint="@string/title_password"
                 app:passwordToggleDrawable="@drawable/asl_password_visibility"
                 app:passwordToggleEnabled="true">
 
@@ -84,9 +61,10 @@
                     android:imeOptions="actionUnspecified"
                     android:inputType="textPassword"
                     android:maxLines="1"
+                    android:textSize="@dimen/font_medium"
                     android:textColor="@color/black"
                     android:typeface="sans"/>
-            </android.support.design.widget.TextInputLayout>
+            </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
             <TextView
                 android:id="@+id/forgot_pass"

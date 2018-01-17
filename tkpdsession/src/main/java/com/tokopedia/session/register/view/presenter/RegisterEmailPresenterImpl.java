@@ -3,9 +3,11 @@ package com.tokopedia.session.register.view.presenter;
 import android.text.TextUtils;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.common.utils.ErrorHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.network.retrofit.response.ErrorCode;
 import com.tokopedia.session.R;
 import com.tokopedia.session.register.RegisterConstant;
 import com.tokopedia.session.register.data.model.RegisterViewModel;
@@ -87,7 +89,8 @@ public class RegisterEmailPresenterImpl implements RegisterEmailPresenter, Regis
                 viewListener.showInfo();
                 break;
             default:
-                throw new RuntimeException("ERROR UNKNOWN ACTION");
+                viewListener.onErrorRegister(com.tokopedia.core.network.retrofit.response
+                        .ErrorHandler.getDefaultErrorCodeMessage(ErrorCode.UNSUPPORTED_FLOW));
         }
 
         if (registerViewModel != null) {

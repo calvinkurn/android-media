@@ -50,6 +50,7 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.profile.model.GetUserInfoDomainData;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.cotp.view.viewmodel.InterruptVerificationViewModel;
@@ -119,8 +120,8 @@ public class LoginFragment extends BaseDaggerFragment
     TextView forgotPass;
     LinearLayout loginLayout;
     TextView loginButton;
-    TextInputLayout wrapperEmail;
-    TextInputLayout wrapperPassword;
+    TkpdHintTextInputLayout wrapperEmail;
+    TkpdHintTextInputLayout wrapperPassword;
 
     ArrayAdapter<String> autoCompleteAdapter;
     CallbackManager callbackManager;
@@ -680,7 +681,7 @@ public class LoginFragment extends BaseDaggerFragment
         return phoneNumberBean;
     }
 
-    private void setWrapperError(TextInputLayout wrapper, String s) {
+    private void setWrapperError(TkpdHintTextInputLayout wrapper, String s) {
         if (s == null) {
             wrapper.setError(null);
             wrapper.setErrorEnabled(false);
@@ -690,8 +691,7 @@ public class LoginFragment extends BaseDaggerFragment
         }
     }
 
-
-    private TextWatcher watcher(final TextInputLayout wrapper) {
+    private TextWatcher watcher(final TkpdHintTextInputLayout wrapper) {
         return new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
