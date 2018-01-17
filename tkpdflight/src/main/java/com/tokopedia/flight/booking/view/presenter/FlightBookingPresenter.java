@@ -3,6 +3,7 @@ package com.tokopedia.flight.booking.view.presenter;
 import android.support.annotation.NonNull;
 import android.util.Patterns;
 
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
@@ -121,7 +122,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
             int newTotalPrice = actionCalculateCurrentTotalPrice(flightBookingCartData.getDepartureTrip(), flightBookingCartData.getReturnTrip());
             if (newTotalPrice != oldTotalPrice) {
                 resultTotalPrice = newTotalPrice;
-                getView().showPriceChangesDialog(convertPriceValueToIdrFormat(resultTotalPrice), convertPriceValueToIdrFormat(oldTotalPrice));
+                getView().showPriceChangesDialog(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(resultTotalPrice), CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(oldTotalPrice));
             }
         }
         updateTotalPrice(resultTotalPrice);
@@ -139,9 +140,9 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         List<Fare> fares = new ArrayList<>();
         fares.add(
                 new Fare(
-                        convertPriceValueToIdrFormat(departureFlightDetailViewModel.getAdultNumericPrice()),
-                        convertPriceValueToIdrFormat(departureFlightDetailViewModel.getChildNumericPrice()),
-                        convertPriceValueToIdrFormat(departureFlightDetailViewModel.getInfantNumericPrice()),
+                        CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(departureFlightDetailViewModel.getAdultNumericPrice()),
+                        CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(departureFlightDetailViewModel.getChildNumericPrice()),
+                        CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(departureFlightDetailViewModel.getInfantNumericPrice()),
                         departureFlightDetailViewModel.getAdultNumericPrice(),
                         departureFlightDetailViewModel.getChildNumericPrice(),
                         departureFlightDetailViewModel.getInfantNumericPrice()
@@ -150,9 +151,9 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         if (returnFlightDetailViewModel != null) {
             fares.add(
                     new Fare(
-                            convertPriceValueToIdrFormat(returnFlightDetailViewModel.getAdultNumericPrice()),
-                            convertPriceValueToIdrFormat(returnFlightDetailViewModel.getChildNumericPrice()),
-                            convertPriceValueToIdrFormat(returnFlightDetailViewModel.getInfantNumericPrice()),
+                            CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(returnFlightDetailViewModel.getAdultNumericPrice()),
+                            CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(returnFlightDetailViewModel.getChildNumericPrice()),
+                            CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(returnFlightDetailViewModel.getInfantNumericPrice()),
                             returnFlightDetailViewModel.getAdultNumericPrice(),
                             returnFlightDetailViewModel.getChildNumericPrice(),
                             returnFlightDetailViewModel.getInfantNumericPrice()
@@ -569,8 +570,8 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     @Override
     protected void updateTotalPrice(int totalPrice) {
         getView().getCurrentBookingParamViewModel().setTotalPriceNumeric(totalPrice);
-        getView().getCurrentBookingParamViewModel().setTotalPriceFmt(convertPriceValueToIdrFormat(totalPrice));
-        getView().renderTotalPrices(convertPriceValueToIdrFormat(totalPrice));
+        getView().getCurrentBookingParamViewModel().setTotalPriceFmt(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(totalPrice));
+        getView().renderTotalPrices(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(totalPrice));
     }
 
     @Override

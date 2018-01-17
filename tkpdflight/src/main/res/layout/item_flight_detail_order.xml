@@ -31,6 +31,8 @@
             android:textStyle="normal"
             android:paddingTop="@dimen/padding_vvs"
             android:layout_width="0dp"
+            android:ellipsize="end"
+            android:lines="1"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/flight_label_passenger_data" />

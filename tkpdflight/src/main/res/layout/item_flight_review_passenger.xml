@@ -3,11 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/padding_small">
+    android:paddingTop="@dimen/padding_ms"
+    android:paddingBottom="@dimen/padding_ms">
 
     <TextView
         android:id="@+id/passenger_number"
-        style="@style/TextView.Title.Bold"
+        style="@style/TextView.Small.Bold"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
@@ -17,7 +18,7 @@
 
     <TextView
         android:id="@+id/passenger_name"
-        style="@style/TextView.Title.Bold"
+        style="@style/TextView.Small.Bold"
         android:layout_alignBottom="@+id/passenger_number"
         android:layout_marginEnd="@dimen/margin_vvs"
         android:layout_marginRight="@dimen/margin_vvs"
@@ -40,6 +41,5 @@
         android:layout_alignLeft="@id/passenger_name"
         android:layout_alignStart="@id/passenger_name"
         android:layout_below="@+id/passenger_name"
-        android:layout_marginTop="@dimen/margin_small"
-        android:paddingBottom="@dimen/padding_small" />
+        android:layout_marginTop="@dimen/margin_small"/>
 </RelativeLayout>

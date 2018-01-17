@@ -1,6 +1,7 @@
 package com.tokopedia.flight.booking.view.fragment;
 
 import android.app.Activity;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -87,6 +88,8 @@ public class FlightBookingNewPriceDialogFragment extends DialogFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         tvOldPrice.setText(String.valueOf(MethodChecker.fromHtml(getString(R.string.flight_booking_new_price_strike_label, oldPrice))));
+        // add strikethrough to old price
+        tvOldPrice.setPaintFlags(tvOldPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         tvNewPrice.setText(String.valueOf(newPrice));
     }
 
