@@ -34,6 +34,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_small"
+            android:textColor="@color/black_54"
+            android:textSize="@dimen/text_size_medium"
             android:layout_toEndOf="@id/avatar"
             android:layout_toRightOf="@id/avatar"
             tools:text="      Nisie ih produknya kurang joss. Naik kereta api tut tut tut. Siapa hendak turun. Ke bandnung, surabaya. Bolehlah naik dengan percuma hahaha."/>
