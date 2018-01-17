@@ -21,32 +21,33 @@ public class AnalyticsLog {
     private static final String TOKEN_LOG_NOTIFIER = "2719adf1-18c8-4cc6-8c92-88a07594f7db";
 
     public static void logForceLogout(String url) {
-        AnalyticsLog.log("ErrorType = Force Logout!"
-                + " UserID = " + (SessionHandler.getLoginID(MainApplication.getAppContext())
+        AnalyticsLog.log("ErrorType=Force Logout!"
+                + " UserID=" + (SessionHandler.getLoginID(MainApplication.getAppContext())
                 .equals("") ? "0" : SessionHandler.getLoginID(MainApplication.getAppContext()))
-                + " URL = " + url
-                + " AppPackage = " + GlobalConfig.getPackageApplicationName()
-                + " AppVersion = " + GlobalConfig.VERSION_NAME
-                + " AppCode = " + GlobalConfig.VERSION_CODE
-                + " OSVersion = " + Build.VERSION.RELEASE
-                + " DeviceModel = " + android.os.Build.MODEL
-                + " DeviceID = " + GCMHandler.getRegistrationId(MainApplication.getAppContext())
+                + " URL=" + url
+                + " AppPackage=" + GlobalConfig.getPackageApplicationName()
+                + " AppVersion=" + GlobalConfig.VERSION_NAME
+                + " AppCode=" + GlobalConfig.VERSION_CODE
+                + " OSVersion=" + Build.VERSION.RELEASE
+                + " DeviceModel=" + android.os.Build.MODEL
+                + " DeviceID=" + GCMHandler.getRegistrationId(MainApplication.getAppContext())
 
         );
     }
 
     public static void logNetworkError(String url, int errorCode) {
-        AnalyticsLog.log("Error Type = Error Network! "
-                + " ErrorCode = " + errorCode
-                + " UserID = " + (SessionHandler.getLoginID(MainApplication.getAppContext())
+        AnalyticsLog.log("ErrorType=Error Network! "
+                + " ErrorCode=" + errorCode
+                + " UserID=" + (SessionHandler.getLoginID(MainApplication.getAppContext())
                 .equals("") ? "0" : SessionHandler.getLoginID(MainApplication.getAppContext()))
-                + " URL = " + url
-                + " AppPackage = " + GlobalConfig.getPackageApplicationName()
-                + " AppVersion = " + GlobalConfig.VERSION_NAME
-                + " AppCode = " + GlobalConfig.VERSION_CODE
-                + " OSVersion = " + Build.VERSION.RELEASE
-                + " DeviceModel = " + android.os.Build.MODEL
-                + " DeviceID = " + GCMHandler.getRegistrationId(MainApplication.getAppContext())
+                + " URL=" + url
+                + " AppPackage=" + GlobalConfig.getPackageApplicationName()
+                + " AppVersion=" + GlobalConfig.VERSION_NAME
+                + " AppCode=" + GlobalConfig.VERSION_CODE
+                + " OSVersion=" + Build.VERSION.RELEASE
+                + " DeviceModel=" + android.os.Build.MODEL
+                + " DeviceID=" + GCMHandler.getRegistrationId(MainApplication.getAppContext())
+
         );
     }
 
