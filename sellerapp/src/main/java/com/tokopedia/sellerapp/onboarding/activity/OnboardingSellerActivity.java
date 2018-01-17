@@ -13,7 +13,6 @@ import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.sellerapp.R;
-import com.tokopedia.sellerapp.SellerRouterApplication;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.sellerapp.onboarding.fragment.OnBoardingSellerFragment;
 
@@ -85,8 +84,6 @@ public class OnboardingSellerActivity extends OnboardingActivity {
         } else if (MainApplication.getAppContext() instanceof SellerModuleRouter){
             Intent intent =  ((SellerModuleRouter) MainApplication.getAppContext())
                     .getPhoneVerificationActivationIntent(this);
-            intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
-                    SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
             startActivityForResult(intent, REQUEST_ACTIVATE_PHONE_SELLER);
         }
     }

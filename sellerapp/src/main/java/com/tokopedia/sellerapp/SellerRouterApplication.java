@@ -1,7 +1,6 @@
 package com.tokopedia.sellerapp;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -10,17 +9,11 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.widget.ArrayAdapter;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.SessionRouter;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
-import com.tokopedia.SessionRouter;
-import com.tokopedia.SessionRouter;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.data.executor.JobExecutor;
@@ -38,35 +31,22 @@ import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
-import com.tokopedia.core.manage.general.districtrecommendation.data.entity.AddressEntity;
 import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Token;
 import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationActivity;
-import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationContract;
-import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
-import com.tokopedia.core.manage.general.districtrecommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
-import com.tokopedia.core.router.OnActivityResultListener;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
-import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResCenterActivity;
-import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
-import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
-import com.tokopedia.sellerapp.onboarding.activity.OnboardingSellerActivity;
-import com.tokopedia.sellerapp.truecaller.TruecallerActivity;
-import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
-import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
@@ -90,7 +70,6 @@ import com.tokopedia.inbox.inboxchat.activity.SendMessageActivity;
 import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
 import com.tokopedia.inbox.inboxmessageold.activity.InboxMessageActivity;
 import com.tokopedia.inbox.inboxmessageold.activity.SendMessageActivityOld;
-import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
@@ -100,6 +79,7 @@ import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
+import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.TkpdSeller;
 import com.tokopedia.seller.common.cashback.DataCashbackModel;
@@ -120,23 +100,17 @@ import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
-import com.tokopedia.seller.shop.open.view.model.DestinationViewModel;
-import com.tokopedia.seller.shop.open.view.model.GoogleLocationViewModel;
-import com.tokopedia.seller.shop.open.view.model.LocationViewModel;
-import com.tokopedia.seller.shopsettings.shipping.interactor.EditShippingInteractorImpl;
-import com.tokopedia.seller.shopsettings.shipping.interactor.EditShippingRetrofitInteractor;
-import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenShopData;
-import com.tokopedia.seller.shopsettings.shipping.presenter.EditShippingPresenterImpl;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
+import com.tokopedia.sellerapp.onboarding.activity.OnboardingSellerActivity;
 import com.tokopedia.sellerapp.truecaller.TruecallerActivity;
+import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
-import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.activity.ReputationProduct;
@@ -149,13 +123,10 @@ import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsModule;
 import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
-import com.tokopedia.transaction.addtocart.model.responseatcform.Destination;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
-import com.tokopedia.core.manage.general.districtrecommendation.domain.model.Address;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -164,9 +135,6 @@ import rx.Observable;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PARAM_PRODUCT_PASS_DATA;
-import static com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLocationFragment.REQUEST_CODE_ADDRESS;
-import static com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLocationFragment.REQUEST_CODE_GOOGLE_MAP;
-import static com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLocationFragment.REQUEST_CODE__EDIT_ADDRESS;
 
 /**
  * Created by normansyahputa on 12/15/16.
@@ -176,9 +144,6 @@ public abstract class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, SellerModuleRouter, PdpRouter, GMModuleRouter, TopAdsModuleRouter,
         IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter,
         ReputationRouter, LogisticRouter, SessionRouter {
-
-    public static final String COM_TOKOPEDIA_SELLERAPP_HOME_VIEW_SELLER_HOME_ACTIVITY = "com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity";
-    public static final String COM_TOKOPEDIA_CORE_WELCOME_WELCOME_ACTIVITY = "com.tokopedia.core.welcome.WelcomeActivity";
 
     private DaggerProductComponent.Builder daggerProductBuilder;
     private ProductComponent productComponent;
@@ -879,7 +844,6 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getLoginWebviewIntent(Context context, String name, String url) {
         return LoginActivity.getAutoLoginWebview(context, name, url);
     }
-}
 
     public Intent getKolFollowingPageIntent(Context context, int userId) {
         return null;

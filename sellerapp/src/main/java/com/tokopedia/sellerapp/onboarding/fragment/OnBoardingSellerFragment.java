@@ -147,8 +147,6 @@ public class OnBoardingSellerFragment extends OnBoardingFragment {
                 } else if (MainApplication.getAppContext() instanceof SellerModuleRouter){
                     intent =  ((SellerModuleRouter) MainApplication.getAppContext())
                             .getPhoneVerificationActivationIntent(getActivity());
-                    intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
-                            SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
                     startActivityForResult(intent, REQUEST_ACTIVATE_PHONE_SELLER);
                 }
             }
