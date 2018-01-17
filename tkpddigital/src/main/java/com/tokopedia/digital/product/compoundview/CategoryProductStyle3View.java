@@ -254,6 +254,11 @@ public class CategoryProductStyle3View extends
         clearHolder(holderPriceInfoProduct);
         widgetProductChooserView2.setTitleProduct(operatorSelected.getRule().getProductText());
         widgetProductChooserView2.setListener(getProductChooserListener());
+        widgetProductChooserView2.renderDataView(
+                operatorSelected.getProductList(),
+                operatorSelected.getRule().isShowPrice(),
+                String.valueOf(operatorSelected.getDefaultProductId())
+        );
         holderChooserProduct.addView(widgetProductChooserView2);
 
         if (hasLastOrderHistoryData() && operatorSelected != null) {
@@ -263,9 +268,8 @@ public class CategoryProductStyle3View extends
                 ) && operatorSelected.getOperatorId().equalsIgnoreCase(
                         historyClientNumber.getLastOrderClientNumber().getOperatorId()
                 )) {
-                    widgetProductChooserView2.renderDataView(
+                    widgetProductChooserView2.updateProduct(
                             operatorSelected.getProductList(),
-                            operatorSelected.getRule().isShowPrice(),
                             product.getProductId()
                     );
                     break;

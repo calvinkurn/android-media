@@ -237,6 +237,11 @@ public class CategoryProductStyle2View extends
         clearHolder(holderPriceInfoProduct);
         widgetProductChooserView.setListener(getProductChooserListener());
         widgetProductChooserView.setTitleProduct(operatorSelected.getRule().getProductText());
+        widgetProductChooserView.renderDataView(
+                operatorSelected.getProductList(),
+                operatorSelected.getRule().isShowPrice(),
+                String.valueOf(operatorSelected.getDefaultProductId())
+        );
         holderChooserProduct.addView(widgetProductChooserView);
 
         if (hasLastOrderHistoryData()) {
@@ -245,21 +250,14 @@ public class CategoryProductStyle2View extends
                     if (product.getProductId().equalsIgnoreCase(
                             historyClientNumber.getLastOrderClientNumber().getProductId())
                             ) {
-                        widgetProductChooserView.renderDataView(
+                        widgetProductChooserView.updateProduct(
                                 operatorSelected.getProductList(),
-                                operatorSelected.getRule().isShowPrice(),
                                 product.getProductId()
                         );
                         break;
                     }
                 }
             }
-        } else {
-            widgetProductChooserView.renderDataView(
-                    operatorSelected.getProductList(),
-                    operatorSelected.getRule().isShowPrice(),
-                    operatorSelected.getProductList().get(0).getProductId()
-            );
         }
     }
 

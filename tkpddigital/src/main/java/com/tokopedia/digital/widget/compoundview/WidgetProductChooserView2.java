@@ -132,6 +132,15 @@ public class WidgetProductChooserView2 extends LinearLayout {
         }
     }
 
+    public void updateProduct(List<Product> productList, String productId) {
+        for (int i = 0; i < productList.size(); i++) {
+            if (productList.get(i).getProductId().equals(productId)) {
+                spinnerNominal.setSelection(i);
+                break;
+            }
+        }
+    }
+
     public interface ProductChoserListener {
         void initDataView(Product selectedProduct);
 
