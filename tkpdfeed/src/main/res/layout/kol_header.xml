@@ -5,7 +5,7 @@
               android:layout_height="wrap_content"
               android:orientation="horizontal">
 
-    <ImageView
+    <com.tokopedia.tkpd.tkpdfeed.feedplus.view.customview.RoundedCornerImageView
         android:id="@+id/avatar"
         android:layout_width="@dimen/avatar_size"
         android:layout_height="@dimen/avatar_size"
@@ -13,7 +13,7 @@
         android:layout_marginLeft="@dimen/margin_small"
         android:layout_marginRight="@dimen/margin_small"
         android:layout_marginTop="@dimen/margin_sm"
-        android:background="@drawable/feed_container_rounded_corners_border"
+        android:background="@drawable/feed_container_circle_corners_border"
         tools:src="@drawable/ic_check_green_24dp"/>
 
     <RelativeLayout

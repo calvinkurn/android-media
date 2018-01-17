@@ -135,7 +135,7 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        ImageHandler.LoadImage(holder.avatar, data.getListRecommend().get(position).getImageUrl());
+        ImageHandler.loadImageCircle2(MainApplication.getAppContext(), holder.avatar, data.getListRecommend().get(position).getImageUrl());
         holder.name.setText(MethodChecker.fromHtml(data.getListRecommend().get(position).getName()));
         holder.label.setText(data.getListRecommend().get(position).getLabel());
 

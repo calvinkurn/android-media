@@ -18,6 +18,7 @@
         android:layout_height="@dimen/kol_avatar"
         android:layout_gravity="center"
         android:layout_marginBottom="@dimen/margin_small"
+        android:background="@drawable/feed_container_circle_corners_border"
         tools:src="@drawable/ic_top_ads"
         />
 

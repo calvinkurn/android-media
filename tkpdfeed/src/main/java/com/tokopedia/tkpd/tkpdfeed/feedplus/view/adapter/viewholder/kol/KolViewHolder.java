@@ -82,7 +82,7 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
             title.setText(MethodChecker.fromHtml(element.getTitle()));
         }
         name.setText(MethodChecker.fromHtml(element.getName()));
-        ImageHandler.LoadImage(avatar, element.getAvatar());
+        ImageHandler.loadImageCircle2(MainApplication.getAppContext(), avatar, element.getAvatar());
 
         if (element.isFollowed()) {
             label.setText(element.getTime());

@@ -40,7 +40,9 @@
         layout="@layout/kol_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/separator2"/>
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/title" />
 
     <RelativeLayout
         android:id="@+id/tooltip_image"
