@@ -20,23 +20,28 @@ import rx.functions.Func1;
  * Created by normansyahputa on 1/10/18.
  */
 
-public class CloudGetListOpportunitySource2 {
+public class CloudGetListOpportunitySource {
+
     private ReplacementApi replacementApi;
+    private OpportunityListMapper opportunityListMapper;
+    private OpportunityNewPriceMapper opportunityNewPriceMapper;
 
     @Inject
-    public CloudGetListOpportunitySource2(ReplacementApi replacementApi) {
+    public CloudGetListOpportunitySource(ReplacementApi replacementApi, OpportunityListMapper opportunityListMapper, OpportunityNewPriceMapper opportunityNewPriceMapper) {
         this.replacementApi = replacementApi;
+        this.opportunityListMapper = opportunityListMapper;
+        this.opportunityNewPriceMapper = opportunityNewPriceMapper;
     }
 
     public Observable<OpportunityModel> getOpportunityList(RequestParams requestParams) {
         return replacementApi
                 .getOpportunityList(requestParams.getParamsAllValueInString())
-                .map(new OpportunityListMapper());
+                .map(opportunityListMapper);
     }
 
     public Observable<OpportunityNewPriceData> getOpportunityNewPrice(RequestParams requestParams){
         return replacementApi
                 .getOpportunityPriceInfo(requestParams.getParamsAllValueInString())
-                .map(new OpportunityNewPriceMapper());
+                .map(opportunityNewPriceMapper);
     }
 }

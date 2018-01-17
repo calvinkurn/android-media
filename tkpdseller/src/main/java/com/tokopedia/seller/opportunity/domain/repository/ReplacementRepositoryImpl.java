@@ -6,9 +6,9 @@ import com.tokopedia.seller.opportunity.data.AcceptReplacementModel;
 import com.tokopedia.seller.opportunity.data.OpportunityFilterModel;
 import com.tokopedia.seller.opportunity.data.OpportunityModel;
 import com.tokopedia.seller.opportunity.data.OpportunityNewPriceData;
-import com.tokopedia.seller.opportunity.data.source.CloudGetFilterOpportunitySource2;
-import com.tokopedia.seller.opportunity.data.source.CloudGetListOpportunitySource2;
-import com.tokopedia.seller.opportunity.data.source.CloudActionReplacementSource2;
+import com.tokopedia.seller.opportunity.data.source.CloudActionReplacementSource;
+import com.tokopedia.seller.opportunity.data.source.CloudGetFilterOpportunitySource;
+import com.tokopedia.seller.opportunity.data.source.CloudGetListOpportunitySource;
 
 import rx.Observable;
 
@@ -18,16 +18,16 @@ import rx.Observable;
 
 public class ReplacementRepositoryImpl implements ReplacementRepository {
 
-    private CloudGetListOpportunitySource2 cloudGetListOpportunitySource2;
-    private CloudGetFilterOpportunitySource2 cloudGetFilterOpportunitySource2;
-    private CloudActionReplacementSource2 cloudActionReplacementSource2;
+    private CloudGetListOpportunitySource cloudGetListOpportunitySource;
+    private CloudGetFilterOpportunitySource cloudGetFilterOpportunitySource;
+    private CloudActionReplacementSource cloudActionReplacementSource;
 
-    public ReplacementRepositoryImpl(CloudGetListOpportunitySource2 cloudGetListOpportunitySource2,
-                                     CloudGetFilterOpportunitySource2 cloudGetFilterOpportunitySource2,
-                                     CloudActionReplacementSource2 cloudActionReplacementSource2){
-        this.cloudGetListOpportunitySource2 = cloudGetListOpportunitySource2;
-        this.cloudGetFilterOpportunitySource2 = cloudGetFilterOpportunitySource2;
-        this.cloudActionReplacementSource2 = cloudActionReplacementSource2;
+    public ReplacementRepositoryImpl(CloudGetListOpportunitySource cloudGetListOpportunitySource,
+                                     CloudGetFilterOpportunitySource cloudGetFilterOpportunitySource,
+                                     CloudActionReplacementSource cloudActionReplacementSource){
+        this.cloudGetListOpportunitySource = cloudGetListOpportunitySource;
+        this.cloudGetFilterOpportunitySource = cloudGetFilterOpportunitySource;
+        this.cloudActionReplacementSource = cloudActionReplacementSource;
     }
 
     @Override
@@ -35,7 +35,7 @@ public class ReplacementRepositoryImpl implements ReplacementRepository {
         RequestParams requestParams = RequestParams.EMPTY;
         requestParams.putAll(parameters);
 
-        return cloudActionReplacementSource2
+        return cloudActionReplacementSource
                 .acceptReplacement(requestParams);
     }
 
@@ -43,7 +43,7 @@ public class ReplacementRepositoryImpl implements ReplacementRepository {
     public Observable<OpportunityModel> getOpportunityListFromNetwork(TKPDMapParam<String, Object> parameters) {
         RequestParams requestParams = RequestParams.EMPTY;
         requestParams.putAll(parameters);
-        return cloudGetListOpportunitySource2.getOpportunityList(requestParams);
+        return cloudGetListOpportunitySource.getOpportunityList(requestParams);
     }
 
     @Override
@@ -51,12 +51,12 @@ public class ReplacementRepositoryImpl implements ReplacementRepository {
         RequestParams requestParams = RequestParams.EMPTY;
         requestParams.putAll(parameters);
 
-        return cloudGetFilterOpportunitySource2.getFilter(requestParams);
+        return cloudGetFilterOpportunitySource.getFilter(requestParams);
     }
 
     @Override
     public Observable<OpportunityNewPriceData> getOpportunityReplacementNewPrice(RequestParams parameters) {
-        return cloudGetListOpportunitySource2.getOpportunityNewPrice(parameters);
+        return cloudGetListOpportunitySource.getOpportunityNewPrice(parameters);
     }
 
 }

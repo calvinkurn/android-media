@@ -14,17 +14,19 @@ import rx.Observable;
  * Created by normansyahputa on 1/10/18.
  */
 
-public class CloudGetFilterOpportunitySource2 {
+public class CloudGetFilterOpportunitySource {
 
     private ReplacementApi replacementApi;
+    private OpportunityFilterMapper opportunityFilterMapper;
 
     @Inject
-    public CloudGetFilterOpportunitySource2(ReplacementApi replacementApi) {
+    public CloudGetFilterOpportunitySource(ReplacementApi replacementApi, OpportunityFilterMapper opportunityFilterMapper) {
         this.replacementApi = replacementApi;
+        this.opportunityFilterMapper = opportunityFilterMapper;
     }
 
     public Observable<OpportunityFilterModel> getFilter(RequestParams requestParams){
         return replacementApi.getOpportunityCategory(requestParams.getParamsAllValueInString())
-                .map(new OpportunityFilterMapper());
+                .map(opportunityFilterMapper);
     }
 }

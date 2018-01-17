@@ -2,11 +2,15 @@ package com.tokopedia.seller.opportunity.di.module;
 
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.opportunity.data.source.CloudGetFilterOpportunitySource2;
-import com.tokopedia.seller.opportunity.data.source.CloudGetListOpportunitySource2;
+import com.tokopedia.seller.opportunity.data.mapper.AcceptOpportunityMapper;
+import com.tokopedia.seller.opportunity.data.mapper.OpportunityFilterMapper;
+import com.tokopedia.seller.opportunity.data.mapper.OpportunityListMapper;
+import com.tokopedia.seller.opportunity.data.mapper.OpportunityNewPriceMapper;
+import com.tokopedia.seller.opportunity.data.source.CloudActionReplacementSource;
+import com.tokopedia.seller.opportunity.data.source.CloudGetFilterOpportunitySource;
+import com.tokopedia.seller.opportunity.data.source.CloudGetListOpportunitySource;
 import com.tokopedia.seller.opportunity.data.source.api.ReplacementActApi;
 import com.tokopedia.seller.opportunity.data.source.api.ReplacementApi;
-import com.tokopedia.seller.opportunity.data.source.CloudActionReplacementSource2;
 import com.tokopedia.seller.opportunity.di.scope.OpportunityScope;
 import com.tokopedia.seller.opportunity.domain.interactor.AcceptReplacementUseCase;
 import com.tokopedia.seller.opportunity.domain.interactor.GetOpportunityFilterUseCase;
@@ -32,24 +36,23 @@ import retrofit2.Retrofit;
 public class OpportunityModule {
     @OpportunityScope
     @Provides
-    public ReplacementActApi provideReplacementActApi(@WsV4Qualifier Retrofit retrofit){
+    public ReplacementActApi provideReplacementActApi(@WsV4Qualifier Retrofit retrofit) {
         return retrofit.create(ReplacementActApi.class);
     }
 
     @OpportunityScope
     @Provides
-    public ReplacementApi provideReplacementApi(@WsV4Qualifier Retrofit retrofit){
+    public ReplacementApi provideReplacementApi(@WsV4Qualifier Retrofit retrofit) {
         return retrofit.create(ReplacementApi.class);
     }
 
     @OpportunityScope
     @Provides
     public ReplacementRepository provideReplacementRepository(
-            CloudGetListOpportunitySource2 cloudGetListOpportunitySource2,
-            CloudGetFilterOpportunitySource2 cloudGetFilterOpportunitySource2,
-            CloudActionReplacementSource2 cloudActionReplacementSource2
-    ){
-        return new ReplacementRepositoryImpl(cloudGetListOpportunitySource2,cloudGetFilterOpportunitySource2, cloudActionReplacementSource2);
+            CloudGetListOpportunitySource cloudGetListOpportunitySource,
+            CloudGetFilterOpportunitySource cloudGetFilterOpportunitySource,
+            CloudActionReplacementSource cloudActionReplacementSource) {
+        return new ReplacementRepositoryImpl(cloudGetListOpportunitySource, cloudGetFilterOpportunitySource, cloudActionReplacementSource);
     }
 
     @OpportunityScope
@@ -58,14 +61,38 @@ public class OpportunityModule {
             GetOpportunityUseCase getOpportunityUseCase,
             GetOpportunityFilterUseCase getFilterUseCase,
             GetOpportunityFirstTimeUseCase getOpportunityFirstTimeUseCase,
-            SessionHandler sessionHandler){
-                return new OpportunityListPresenterImpl(getOpportunityUseCase, getFilterUseCase, getOpportunityFirstTimeUseCase, sessionHandler);
+            SessionHandler sessionHandler) {
+        return new OpportunityListPresenterImpl(getOpportunityUseCase, getFilterUseCase, getOpportunityFirstTimeUseCase, sessionHandler);
     }
 
     @OpportunityScope
     @Provides
     public OpportunityPresenter provideOpportunityPresenter(AcceptReplacementUseCase acceptReplacementUseCase,
-                                                            GetOpportunityNewPriceUseCase newPriceUseCase){
-                return new OpportunityImpl(acceptReplacementUseCase, newPriceUseCase);
+                                                            GetOpportunityNewPriceUseCase newPriceUseCase) {
+        return new OpportunityImpl(acceptReplacementUseCase, newPriceUseCase);
+    }
+
+    @OpportunityScope
+    @Provides
+    public OpportunityListMapper provideOpportunityListMapper() {
+        return new OpportunityListMapper();
+    }
+
+    @OpportunityScope
+    @Provides
+    public OpportunityNewPriceMapper provideOpportunityNewPriceMapper() {
+        return new OpportunityNewPriceMapper();
+    }
+
+    @OpportunityScope
+    @Provides
+    public AcceptOpportunityMapper provideAcceptOpportunityMapper() {
+        return new AcceptOpportunityMapper();
+    }
+
+    @OpportunityScope
+    @Provides
+    public OpportunityFilterMapper provideOpportunityFilterMapper() {
+        return new OpportunityFilterMapper();
     }
 }
