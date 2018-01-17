@@ -72,6 +72,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
+            android:visibility="gone"
+            tools:visibility="visible"
             xmlns:android="http://schemas.android.com/apk/res/android">
 
             <android.support.v7.widget.RecyclerView
@@ -88,6 +90,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/cards_ui_chat"
+                android:elevation="300dp"
                 android:layout_marginTop="@dimen/margin_vs"
                 android:paddingBottom="@dimen/padding_vs"
                 android:paddingTop="@dimen/padding_vs"

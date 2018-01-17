@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/padding_small"
+    android:paddingLeft="@dimen/padding_16"
+    android:paddingRight="@dimen/padding_16"
+    android:paddingTop="@dimen/padding_small">
+
+    <android.support.v7.widget.AppCompatTextView
+        style="@style/TextView.TitleBig.Bold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_sm"
+        android:layout_marginTop="@dimen/margin_sm"
+        android:text="@string/flight_booking_contact_information" />
+
+    <com.tokopedia.design.text.TkpdHintTextInputLayout
+        android:id="@+id/til_contact_name"
+        style="@style/HintTextInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_sm"
+        android:layout_marginTop="@dimen/margin_vs"
+        android:hint="@string/flight_booking_contact_name_hint">
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/et_contact_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/widget_card_with_action_separator"
+            android:hint="@string/flight_booking_contact_name_secondary_hint"
+            android:imeActionLabel="@string/label_next"
+            android:lines="1"
+            android:nextFocusForward="@+id/et_contact_email"
+            android:singleLine="true"
+            android:textAppearance="@style/TextView.Title"
+            android:textColor="@color/font_black_secondary_54" />
+    </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
+    <com.tokopedia.design.text.TkpdHintTextInputLayout
+        android:id="@+id/til_contact_email"
+        style="@style/HintTextInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_sm"
+        android:layout_marginTop="@dimen/margin_vs"
+        android:hint="@string/flight_booking_contact_email_hint">
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/et_contact_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/widget_card_with_action_separator"
+            android:hint="@string/flight_booking_contact_email_secondary_hint"
+            android:imeActionLabel="@string/label_next"
+            android:inputType="textEmailAddress"
+            android:lines="1"
+            android:nextFocusForward="@+id/et_phone_number"
+            android:singleLine="true"
+            android:textAppearance="@style/TextView.Title"
+            android:textColor="@color/font_black_secondary_54" />
+    </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
+    <RelativeLayout
+        android:id="@+id/contact_phone_number_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_vs"
+        android:layout_marginTop="@dimen/margin_vs"
+        android:paddingLeft="@dimen/padding_vvs"
+        android:paddingStart="@dimen/padding_vvs">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/contact_phone_number_label"
+            style="@style/TextView.Micro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/flight_booking_contact_phone_number_label" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/contact_phone_number_label"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@drawable/selectable_background_tokopedia"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/et_phone_country_code"
+                    style="@style/TextView.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_vs"
+                    android:drawableEnd="@drawable/ic_arrow_down_grey"
+                    android:drawablePadding="@dimen/padding_small"
+                    android:drawableRight="@drawable/ic_arrow_down_grey"
+                    android:gravity="center_vertical"
+                    tools:text="+62" />
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/grey_300" />
+            </LinearLayout>
+
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/et_phone_number"
+                style="@style/HintTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_sm"
+                android:layout_marginStart="@dimen/margin_sm"
+                android:backgroundTint="@color/widget_card_with_action_separator"
+                android:digits="1234567890"
+                android:hint="@string/flight_booking_contact_telp_hint"
+                android:imeActionLabel="@string/label_done"
+                android:inputType="number"
+                android:lines="1"
+                android:singleLine="true"
+                android:textAppearance="@style/TextView.Title"
+                android:textColor="@color/font_black_secondary_54" />
+
+        </LinearLayout>
+    </RelativeLayout>
+
+    <TextView
+        style="@style/CardWarningStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_sm"
+        android:layout_marginTop="@dimen/margin_sm"
+        android:text="@string/flight_booking_contact_information_card" />
+</LinearLayout>

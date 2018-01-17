@@ -5,7 +5,6 @@ import com.tokopedia.seller.product.edit.data.source.cloud.model.catalogdata.Cat
 import com.tokopedia.seller.product.edit.view.model.categoryrecomm.ProductCategoryPredictionViewModel;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantByPrdModel;
 
 import java.util.List;
 
@@ -33,7 +32,7 @@ public interface ProductAddView extends CustomerView {
 
     void onErrorStoreProductToDraftWhenBackPressed(String errorMessage);
 
-    void onSuccessLoadShopInfo(boolean goldMerchant, boolean freeReturn);
+    void onSuccessLoadShopInfo(boolean goldMerchant, boolean freeReturn, boolean officialStore);
 
     void onErrorLoadShopInfo(String errorMessage);
 

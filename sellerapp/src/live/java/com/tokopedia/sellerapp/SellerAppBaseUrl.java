@@ -30,4 +30,5 @@ public class SellerAppBaseUrl {
     public static final String CHAT_DOMAIN = "https://chat.tokopedia.com";
     public static final String CHAT_WEBSOCKET_DOMAIN = "wss://chat.tokopedia.com";
     public static final String BASE_SCROOGE_CREDIT_CARD_DOMAIN = "https://pay.tokopedia.id/";
+    public static final String BASE_WALLET = "https://www.tokocash.com/";
 }

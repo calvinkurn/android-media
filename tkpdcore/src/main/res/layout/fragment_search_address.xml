@@ -21,7 +21,7 @@
             android:layout_margin="@dimen/margin_vs"
             android:background="@color/grey_100"
             app:iconifiedByDefault="false"
-            app:queryBackground="@color/transparent"
+            app:queryBackground="@android:color/transparent"
             app:queryHint="@string/hint_district_recommendation_search"
             app:searchIcon="@drawable/ic_search_grey" />
     </FrameLayout>

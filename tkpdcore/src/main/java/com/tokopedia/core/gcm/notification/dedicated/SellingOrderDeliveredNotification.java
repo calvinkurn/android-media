@@ -22,16 +22,13 @@ public class SellingOrderDeliveredNotification extends BaseNotification {
 
     @Override
     protected void configureNotificationData(Bundle data) {
-        mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(
-                new Intent(mContext, SellerRouter.getSellingActivityClass())
-        );
+        Intent intent = SellerRouter.getActivitySellingTransactionShippingStatus(mContext);
+        mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(intent);
         mNotificationPass.classParentStack = SellerRouter.getSellingActivityClass();
         mNotificationPass.title = mContext.getString(R.string.title_transaction_order_delivered);
         mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
         mNotificationPass.description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-        Bundle bundle = new Bundle();
-        bundle.putInt(SellerRouter.EXTRA_STATE_TAB_POSITION,
-                SellerRouter.TAB_POSITION_SELLING_SHIPPING_STATUS);
+        Bundle bundle = intent.getExtras();
         mNotificationPass.extraData = bundle;
         mNotificationPass.mIntent.putExtras(bundle);
     }

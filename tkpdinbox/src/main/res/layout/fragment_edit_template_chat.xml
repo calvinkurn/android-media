@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/new_margin_med"
+    android:background="@color/white">
+
+    <RelativeLayout
+        android:id="@+id/input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true">
+
+        <TextView
+            android:id="@+id/counter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:paddingBottom="@dimen/new_margin_small"
+            android:paddingTop="@dimen/new_margin_small"
+            tools:text="36/500" />
+
+        <TextView
+            android:id="@+id/error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:paddingBottom="@dimen/new_margin_small"
+            android:paddingTop="@dimen/new_margin_small"
+            android:textColor="#d50000"
+            android:maxLength="200"
+            android:layout_toLeftOf="@id/counter"
+            android:text="@string/minimal_char_template" />
+
+        <TextView
+            android:id="@+id/submit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="50dp"
+            android:text="@string/title_save"
+            android:background="@drawable/green_button_rounded"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:layout_below="@id/counter"/>
+
+    </RelativeLayout>
+
+
+    <EditText
+        android:id="@+id/edittext"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/input"
+        android:background="@color/white"
+        android:hint="@string/hint_template_chat"
+        android:textSize="@dimen/text_size_l_medium"
+        android:textColorHint="#2e000000"
+        android:gravity="top"/>
+
+</RelativeLayout>

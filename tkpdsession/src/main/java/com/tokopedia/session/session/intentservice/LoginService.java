@@ -463,9 +463,10 @@ public class LoginService extends IntentService implements DownloadServiceConsta
                 throw new RuntimeException("Invalid Observable to get Token");
         }
 
+        bundle.putBoolean(AccountsService.IS_BASIC, true);
         AccountsService accountService = new AccountsService(bundle);
         Observable<Response<String>> observable = accountService.getApi()
-                .getToken(AuthUtil
+                .getTokenOld(AuthUtil
                         .generateParams(getApplicationContext(), params));
         return Observable.zip(Observable.just(accountsParameter), observable, new Func2<AccountsParameter, Response<String>, AccountsParameter>() {
             @Override

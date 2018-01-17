@@ -26,9 +26,14 @@ import static com.tokopedia.core.network.apiservices.etc.apis.home.CategoryApi.H
  */
 public interface AccountsApi {
 
+    @Deprecated
     @FormUrlEncoded
     @POST(TkpdBaseURL.Accounts.PATH_GET_TOKEN)
-    Observable<Response<String>> getToken(@FieldMap Map<String, String> params);
+    Observable<Response<String>> getTokenOld(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Accounts.PATH_GET_TOKEN)
+    Observable<Response<String>> getToken(@FieldMap Map<String, Object> params);
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.Accounts.PATH_GET_TOKEN)
@@ -109,6 +114,11 @@ public interface AccountsApi {
     Observable<Response<TkpdResponse>> requestOtpToEmail(@FieldMap TKPDMapParam<String, Object> parameters);
 
     @FormUrlEncoded
+    @POST(TkpdBaseURL.Accounts.OTP.REQUEST_OTP_EMAIL)
+    Observable<Response<TkpdResponse>> requestOtpToEmail(@Header(HEADER_USER_ID) String userId,
+                                                         @FieldMap TKPDMapParam<String, Object> parameters);
+
+    @FormUrlEncoded
     @POST(TkpdBaseURL.Accounts.DO_REGISTER)
     Observable<Response<TkpdResponse>> registerEmail(@FieldMap Map<String, Object> params);
 
@@ -141,4 +151,23 @@ public interface AccountsApi {
 
     @GET(TkpdBaseURL.Accounts.Wallet.GET_BALANCE)
     Observable<Response<TkpdResponse>> getTokoCash(@QueryMap TKPDMapParam<String, Object> params);
+
+    @GET(TkpdBaseURL.Accounts.ChangeMSISDN.GET_WARNING)
+    Observable<Response<TkpdResponse>> getWarning(@QueryMap TKPDMapParam<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Accounts.ChangeMSISDN.SEND_EMAIL)
+    Observable<Response<TkpdResponse>> sendEmail(@FieldMap TKPDMapParam<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Accounts.ChangeMSISDN.VALIDATE_EMAIL_CODE)
+    Observable<Response<TkpdResponse>> validateEmailCode(@FieldMap TKPDMapParam<String, Object> params);
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Accounts.ChangeMSISDN.VALIDATE)
+    Observable<Response<TkpdResponse>> validateNumber(@FieldMap TKPDMapParam<String, Object> params);
+
+    @GET(TkpdBaseURL.Accounts.PATH_DISCOVER_REGISTER)
+    Observable<Response<TkpdResponse>> discoverRegister();
+
 }
