@@ -160,7 +160,6 @@ dependencies {
     compile rootProject.ext.viewDependencies.recyclerMultiSelect
     compile rootProject.ext.viewDependencies.appIntro
     compile rootProject.ext.miscDependencies.lottie
-    compile rootProject.ext.playServicesDependencies.gcm
 
     compile(rootProject.ext.viewDependencies.ahBottomNavigation) {
         exclude group: 'com.android.support', module: 'design'

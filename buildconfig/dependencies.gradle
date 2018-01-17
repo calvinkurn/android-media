@@ -69,7 +69,6 @@ ext {
             appIndexing     : "com.google.firebase:firebase-appindexing:${playServiceVersion}",
             analytics       : "com.google.android.gms:play-services-analytics:${playServiceVersion}",
             firebase        : "com.google.firebase:firebase-messaging:${playServiceVersion}",
-            gcm             : "com.google.android.gms:play-services-gcm:${playServiceVersion}",
             location        : "com.google.android.gms:play-services-location:${playServiceVersion}",
             maps            : "com.google.android.gms:play-services-maps:${playServiceVersion}",
             auth            : "com.google.android.gms:play-services-auth:${playServiceVersion}",

@@ -311,3 +311,7 @@
 -dontwarn com.crashlytics.android.answers.shim.**
 -dontwarn com.nimbusds.jwt.SignedJWT
 -dontwarn com.nimbusds.jwt.JWTClaimsSet
+
+-dontwarn com.google.android.gms.iid.InstanceIDListenerService
+-dontwarn com.google.android.gms.iid.InstanceID
+-dontwarn com.appsflyer.GcmInstanceIdListener
