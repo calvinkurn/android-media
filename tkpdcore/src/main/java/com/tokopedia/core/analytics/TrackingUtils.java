@@ -5,15 +5,18 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
+import com.google.android.gms.ads.identifier.AdvertisingIdClient;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.firebase.perf.metrics.Trace;
 import com.moe.pushlibrary.PayloadBuilder;
 import com.moengage.push.PushManager;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.anals.UserAttribute;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.container.AppsflyerContainer;
@@ -34,12 +37,20 @@ import com.tokopedia.core.session.model.AccountsParameter;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdCache;
 
 import org.json.JSONArray;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * @author by alvarisi on 9/27/16.
@@ -698,6 +709,57 @@ public class TrackingUtils extends TrackingConfig {
         getGTMEngine().clearEnhanceEcommerce();
         getGTMEngine().eventTrackingEnhancedEcommerce(trackingData);
 
+    }
+
+    public static void fetchAndSaveAdsId(final Context context) {
+        final LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.ADVERTISINGID);
+        if (localCacheHandler.getString(TkpdCache.Key.KEY_ADVERTISINGID) == null || "".equalsIgnoreCase(localCacheHandler.getString(TkpdCache.Key.KEY_ADVERTISINGID).trim())) {
+            Observable.just(true)
+                    .subscribeOn(Schedulers.newThread())
+                    .map(new Func1<Boolean, AdvertisingIdClient.Info>() {
+                        @Override
+                        public AdvertisingIdClient.Info call(Boolean b) {
+                            AdvertisingIdClient.Info adInfo = null;
+                            try {
+                                adInfo = AdvertisingIdClient.getAdvertisingIdInfo(context);
+                            } catch (IOException | GooglePlayServicesNotAvailableException | GooglePlayServicesRepairableException e) {
+                                e.printStackTrace();
+                            }
+                            return adInfo;
+                        }
+                    })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<AdvertisingIdClient.Info>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            e.printStackTrace();
+
+                        }
+
+                        @Override
+                        public void onNext(AdvertisingIdClient.Info info) {
+                            if(info != null) {
+                                localCacheHandler.putString(TkpdCache.Key.KEY_ADVERTISINGID, info.getId());
+                                localCacheHandler.applyEditor();
+                            }
+                        }
+                    });
+        }
+    }
+
+    public static String getAdsId(Context context) {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.ADVERTISINGID);
+        String adsId = localCacheHandler.getString(TkpdCache.Key.KEY_ADVERTISINGID);
+        if (adsId == null || "".equalsIgnoreCase(adsId.trim())) {
+            fetchAndSaveAdsId(context);
+        }
+
+        return adsId;
     }
 }
 

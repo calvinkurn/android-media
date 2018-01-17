@@ -50,13 +50,13 @@ public interface ICartDataInteractor {
                              TKPDMapParam<String, String> paramCart,
                              Subscriber<ResponseTransform<CartData>> subscriber);
 
-    void getParameterTopPay(String adsId, TKPDMapParam<String, String> params, Scheduler schedulers,
+    void getParameterTopPay(TKPDMapParam<String, String> params, Scheduler schedulers,
                             Subscriber<TopPayParameterData> subscriber);
 
     void getThanksTopPay(TKPDMapParam<String, String> params, Scheduler schedulers,
                          Subscriber<ThanksTopPayData> subscriber);
 
-    void checkVoucherCode(final String gAdsId, TKPDMapParam<String, String> stringStringTKPDMapParam,
+    void checkVoucherCode( TKPDMapParam<String, String> stringStringTKPDMapParam,
                           Subscriber<ResponseTransform<VoucherData>> subscriber);
 
     void unSubscribeObservable();

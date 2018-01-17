@@ -89,7 +89,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
         view.showProgressLoading();
         AnalyticsCacheHandler analHandler = new AnalyticsCacheHandler();
         cartDigitalInteractor.checkVoucher(
-                analHandler.getAdsId(), view.getGeneratedAuthParamNetwork(param), getSubscriberCheckVoucher()
+                view.getGeneratedAuthParamNetwork(param), getSubscriberCheckVoucher()
         );
     }
 

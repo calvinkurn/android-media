@@ -11,11 +11,11 @@ import rx.Subscriber;
 public interface IPromoCodeInteractor {
 
     void submitVoucher(
-            String gAdsId, String voucherCode,
+            String voucherCode,
             TKPDMapParam<String, String> param, Subscriber<VoucherViewModel> subscriber);
 
     void submitDigitalVoucher(
-            String gAdsId, String voucherCode,
+            String voucherCode,
             TKPDMapParam<String, String> param, Subscriber<VoucherViewModel> subscriber);
 
 }

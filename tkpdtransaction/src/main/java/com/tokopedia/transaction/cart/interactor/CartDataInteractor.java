@@ -149,10 +149,10 @@ public class CartDataInteractor implements ICartDataInteractor {
     }
 
     @Override
-    public void getParameterTopPay(String adsId, TKPDMapParam<String, String> params, Scheduler scheduler,
+    public void getParameterTopPay(TKPDMapParam<String, String> params, Scheduler scheduler,
                                    Subscriber<TopPayParameterData> subscriber) {
         Observable<Response<TkpdResponse>> observable
-                = txActService.getApi().getParameterDynamicPayment(adsId, params);
+                = txActService.getApi().getParameterDynamicPayment(params);
         compositeSubscription.add(observable
                 .flatMap(new Func1<Response<TkpdResponse>, Observable<TopPayParameterData>>() {
                     @Override
@@ -235,7 +235,7 @@ public class CartDataInteractor implements ICartDataInteractor {
     }
 
     @Override
-    public void checkVoucherCode(final String gAdsId, TKPDMapParam<String, String> param,
+    public void checkVoucherCode( TKPDMapParam<String, String> param,
                                  Subscriber<ResponseTransform<VoucherData>> subscriber) {
         compositeSubscription.add(Observable.just(param)
                 .flatMap(new Func1<TKPDMapParam<String, String>,
@@ -243,7 +243,7 @@ public class CartDataInteractor implements ICartDataInteractor {
                     @Override
                     public Observable<Response<TkpdResponse>>
                     call(TKPDMapParam<String, String> param) {
-                        return txVoucherService.getApi().checkVoucherCode(gAdsId, param);
+                        return txVoucherService.getApi().checkVoucherCode( param);
                     }
                 })
                 .map(new Func1<Response<TkpdResponse>, ResponseTransform<VoucherData>>() {

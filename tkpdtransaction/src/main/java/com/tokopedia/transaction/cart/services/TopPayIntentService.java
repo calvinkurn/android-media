@@ -5,7 +5,6 @@ import android.content.Intent;
 
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.container.GTMContainer;
-import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -183,9 +182,8 @@ public class TopPayIntentService extends IntentService {
         intent.putExtra(TopPayBroadcastReceiver.EXTRA_MESSAGE_TOP_PAY_ACTION,
                 "Melakukan proses checkout");
         sendBroadcast(intent);
-        AnalyticsCacheHandler analHandler = new AnalyticsCacheHandler();
 
-        cartDataInteractor.getParameterTopPay(analHandler.getAdsId(),
+        cartDataInteractor.getParameterTopPay(
                 AuthUtil.generateParamsNetwork(this, params), Schedulers.immediate(),
                 new Subscriber<TopPayParameterData>() {
                     @Override

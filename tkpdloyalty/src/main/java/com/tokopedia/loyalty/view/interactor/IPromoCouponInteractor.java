@@ -17,14 +17,12 @@ import rx.Subscriber;
 public interface IPromoCouponInteractor {
     void getCouponList(TKPDMapParam<String, String> param, Subscriber<List<CouponData>> subscriber);
 
-    void submitVoucher(String gAdsId,
-                       String couponTitle,
+    void submitVoucher(String couponTitle,
                        String voucherCode,
                        TKPDMapParam<String, String> param,
                        Subscriber<CouponViewModel> subscriber);
 
-    void submitDigitalVoucher(String gAdsId,
-                              String couponTitle,
+    void submitDigitalVoucher(String couponTitle,
                               String voucherCode,
                               TKPDMapParam<String, String> param,
                               Subscriber<CouponViewModel> subscriber);

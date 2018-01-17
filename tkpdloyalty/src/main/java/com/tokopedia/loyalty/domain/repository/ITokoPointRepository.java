@@ -38,20 +38,19 @@ public interface ITokoPointRepository {
 
     Observable<String> getCatalogFilterCategory(TKPDMapParam<String, String> param);
 
-    Observable<VoucherViewModel> checkVoucherValidity(String gAdsId,
-                                                      TKPDMapParam<String, String> param, String voucherCode
+    Observable<VoucherViewModel> checkVoucherValidity(TKPDMapParam<String, String> param, String voucherCode
     );
 
     Observable<CouponViewModel> checkCouponValidity(
-            String gAdsId, TKPDMapParam<String, String> param, String voucherCode, String couponTitle
+            TKPDMapParam<String, String> param, String voucherCode, String couponTitle
     );
 
     Observable<VoucherViewModel> checkDigitalVoucherValidity(
-            String gAdsId, TKPDMapParam<String, String> param, String voucherCode
+            TKPDMapParam<String, String> param, String voucherCode
     );
 
     Observable<CouponViewModel> checkDigitalCouponValidity(
-            String gAdsId, TKPDMapParam<String, String> param, String voucherCode, String couponTitle
+            TKPDMapParam<String, String> param, String voucherCode, String couponTitle
     );
 
 }

@@ -45,13 +45,12 @@ public class PromoCouponInteractor implements IPromoCouponInteractor {
     }
 
     @Override
-    public void submitVoucher(String gAdsId,
-                              String couponTitle,
+    public void submitVoucher(String couponTitle,
                               String couponCode,
                               TKPDMapParam<String, String> param,
                               Subscriber<CouponViewModel> subscriber) {
         compositeSubscription.add(
-                tokoplusRepository.checkCouponValidity(gAdsId, param, couponCode, couponTitle)
+                tokoplusRepository.checkCouponValidity(param, couponCode, couponTitle)
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.newThread())
@@ -60,11 +59,11 @@ public class PromoCouponInteractor implements IPromoCouponInteractor {
     }
 
     @Override
-    public void submitDigitalVoucher(String gAdsId,String couponTitle, String voucherCode,
+    public void submitDigitalVoucher(String couponTitle, String voucherCode,
                                      TKPDMapParam<String, String> param,
                                      Subscriber<CouponViewModel> subscriber) {
         compositeSubscription.add(
-                tokoplusRepository.checkDigitalCouponValidity(gAdsId, param, voucherCode, couponTitle)
+                tokoplusRepository.checkDigitalCouponValidity(param, voucherCode, couponTitle)
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.newThread())

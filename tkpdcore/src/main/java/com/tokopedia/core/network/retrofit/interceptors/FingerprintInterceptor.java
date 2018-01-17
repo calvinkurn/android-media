@@ -1,9 +1,9 @@
 package com.tokopedia.core.network.retrofit.interceptors;
 
-import android.os.Build;
 import android.util.Base64;
 
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.fingerprint.Utilities;
 import com.tokopedia.core.analytics.fingerprint.data.FingerprintDataRepository;
 import com.tokopedia.core.analytics.fingerprint.domain.FingerprintRepository;
@@ -12,7 +12,6 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 
 import java.io.IOException;
@@ -35,6 +34,7 @@ public class FingerprintInterceptor implements Interceptor {
     private static final String KEY_FINGERPRINT_DATA = "Fingerprint-Data";
     private static final String KEY_FINGERPRINT_HASH = "Fingerprint-Hash";
     private static final String BEARER = "Bearer ";
+    private static final String KEY_ADSID = "X-GA-ID";
 
     @Override
     public Response intercept(Chain chain) throws IOException {
@@ -58,6 +58,7 @@ public class FingerprintInterceptor implements Interceptor {
         }
         newRequest.addHeader(KEY_ACC_AUTH, BEARER + session.getAccessToken(MainApplication.getAppContext()));
         newRequest.addHeader(KEY_FINGERPRINT_DATA, json);
+        newRequest.addHeader(KEY_ADSID, TrackingUtils.getAdsId(MainApplication.getAppContext()));
 
         return newRequest;
     }

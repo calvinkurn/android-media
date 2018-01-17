@@ -7,7 +7,6 @@ import java.util.Map;
 
 import retrofit2.Response;
 import retrofit2.http.GET;
-import retrofit2.http.Header;
 import retrofit2.http.QueryMap;
 import rx.Observable;
 
@@ -18,6 +17,6 @@ import rx.Observable;
 public interface DigitalApi {
 
     @GET(TkpdBaseURL.DigitalApi.PATH_CHECK_VOUCHER)
-    Observable<Response<TkpdDigitalResponse>> checkVoucher(@Header("X-GA-ID") String gAdsId, @QueryMap Map<String, String> params);
+    Observable<Response<TkpdDigitalResponse>> checkVoucher( @QueryMap Map<String, String> params);
 
 }

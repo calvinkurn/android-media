@@ -31,7 +31,6 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.PasswordGenerator.PGListener;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.welcome.WelcomeActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -99,7 +98,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
         super.onStart();
         handleBranchDefferedDeeplink();
 
-        TrackingUtils.setAdsId();
+        TrackingUtils.fetchAndSaveAdsId(this);
 
     }
 

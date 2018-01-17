@@ -26,7 +26,7 @@ public interface ICartDigitalInteractor {
     );
 
     void checkVoucher(
-            String gAdsId, TKPDMapParam<String, String> paramNetwork, Subscriber<VoucherDigital> subscriber
+             TKPDMapParam<String, String> paramNetwork, Subscriber<VoucherDigital> subscriber
     );
 
     void checkout(

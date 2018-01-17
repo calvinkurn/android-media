@@ -124,7 +124,6 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
         AnalyticsCacheHandler analHandler = new AnalyticsCacheHandler();
 
         promoCouponInteractor.submitVoucher(
-                analHandler.getAdsId(),
                 couponData.getTitle(),
                 couponData.getCode(),
                 AuthUtil.generateParamsNetwork(view.getContext(), param
@@ -140,7 +139,6 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
         param.put(CATEGORY_ID, categoryId);
         AnalyticsCacheHandler analHandler = new AnalyticsCacheHandler();
         promoCouponInteractor.submitDigitalVoucher(
-                analHandler.getAdsId(),
                 couponData.getTitle(),
                 couponData.getCode(),
                 AuthUtil.generateParamsNetwork(view.getContext(), param

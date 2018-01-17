@@ -11,5 +11,5 @@ import rx.Observable;
 
 public interface IVoucherDigitalRepository {
 
-    Observable<VoucherDigital> checkVoucher(String gAdsId, TKPDMapParam<String, String> param);
+    Observable<VoucherDigital> checkVoucher( TKPDMapParam<String, String> param);
 }

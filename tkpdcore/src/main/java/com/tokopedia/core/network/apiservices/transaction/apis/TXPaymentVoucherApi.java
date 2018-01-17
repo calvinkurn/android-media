@@ -8,7 +8,6 @@ import java.util.Map;
 import retrofit2.Response;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
-import retrofit2.http.Header;
 import retrofit2.http.POST;
 import rx.Observable;
 
@@ -19,5 +18,5 @@ public interface TXPaymentVoucherApi {
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.Transaction.PATH_CHECK_VOUCHER_CODE)
-    Observable<Response<TkpdResponse>> checkVoucherCode(@Header("X-GA-ID") String gAdsId, @FieldMap Map<String, String> params);
+    Observable<Response<TkpdResponse>> checkVoucherCode( @FieldMap Map<String, String> params);
 }
