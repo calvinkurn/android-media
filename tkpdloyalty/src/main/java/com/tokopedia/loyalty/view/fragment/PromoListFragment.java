@@ -114,6 +114,11 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
     }
 
     @Override
+    public void renderEmptyResultGetPromoDataList() {
+        handleErrorEmptyState(getString(R.string.message_error_data_empty_get_promo_list));
+    }
+
+    @Override
     public void renderErrorHttpGetPromoDataList(String message) {
         handleErrorEmptyState(message);
     }
@@ -401,9 +406,7 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
-                        endlessRecyclerviewListener.resetState();
-                        dPresenter.setPage(1);
-                        dPresenter.processGetPromoList(filterSelected, promoMenuData.getTitle());
+                        refreshHandler.startRefresh();
                     }
                 });
     }
