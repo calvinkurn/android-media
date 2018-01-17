@@ -13,7 +13,7 @@ import com.tokopedia.core.R;
 
 public enum AppRatingEnum {
     EMPTY(0,0,0),
-    WORST(R.drawable.ic_app_rating_1, R.string.app_rating_desc_bad, R.color.red_1),
+    WORST(R.drawable.ic_app_rating_1, R.string.app_rating_desc_worst, R.color.red_1),
     BAD(R.drawable.ic_app_rating_2, R.string.app_rating_desc_bad, R.color.red_1),
     ORDINARY(R.drawable.ic_app_rating_3, R.string.app_rating_desc_ordinary, R.color.yellow_1),
     GOOD(R.drawable.ic_app_rating_4, R.string.app_rating_desc_good, R.color.medium_green),
