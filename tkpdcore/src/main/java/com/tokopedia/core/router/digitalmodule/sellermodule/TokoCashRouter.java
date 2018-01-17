@@ -16,4 +16,9 @@ public interface TokoCashRouter {
                           int datePickerSelection, int datePickerType);
 
     String getRangeDateFormatted(Context context, long startDate, long endDate);
+
+    //TODO will continue using this method in next sprint
+    Intent goToHistoryTokoCash(Context context);
+
+    Intent goToQRScannerTokoCash(Context context);
 }

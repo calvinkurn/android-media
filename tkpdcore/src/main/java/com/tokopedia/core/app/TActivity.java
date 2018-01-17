@@ -103,13 +103,13 @@ public abstract class TActivity extends BaseActivity {
     }
 
     public boolean onHomeOptionSelected() {
-        KeyboardHandler.DropKeyboard(this, parentView);
+        if (parentView != null) KeyboardHandler.DropKeyboard(this, parentView);
         onBackPressed();
         return true;
     }
 
     public void inflateView(int layoutId) {
-        getLayoutInflater().inflate(layoutId, parentView);
+        if (parentView != null) getLayoutInflater().inflate(layoutId, parentView);
     }
 
     public void hideToolbar() {
@@ -120,7 +120,7 @@ public abstract class TActivity extends BaseActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.setElevation(10);
             toolbar.setBackgroundResource(com.tokopedia.core.R.color.white);
-        }else {
+        } else {
             toolbar.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
         }
         Drawable drawable = ContextCompat.getDrawable(this, R.drawable.ic_toolbar_overflow_level_two_black);
