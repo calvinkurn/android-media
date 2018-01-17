@@ -78,7 +78,7 @@
                 android:lineSpacingExtra="6sp"
                 android:padding="@dimen/padding_vs"
                 android:textColor="@color/white"
-                android:textSize="@dimen/text_size_xxsmall"
+                android:textSize="@dimen/text_size_small"
                 android:textStyle="normal"
                 tools:text="Rp 249000 - Lihat Produk"/>
         </RelativeLayout>
