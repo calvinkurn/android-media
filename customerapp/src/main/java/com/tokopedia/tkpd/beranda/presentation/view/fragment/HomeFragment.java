@@ -1,5 +1,7 @@
 package com.tokopedia.tkpd.beranda.presentation.view.fragment;
 
+import android.Manifest;
+import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -35,6 +37,7 @@ import com.tokopedia.core.drawer.listener.TokoCashUpdateListener;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
 import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.home.TopPicksWebView;
@@ -48,6 +51,7 @@ import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.router.digitalmodule.sellermodule.TokoCashRouter;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -63,6 +67,7 @@ import com.tokopedia.tkpd.beranda.domain.model.brands.BrandDataModel;
 import com.tokopedia.tkpd.beranda.domain.model.category.CategoryLayoutRowModel;
 import com.tokopedia.tkpd.beranda.domain.model.toppicks.TopPicksItemModel;
 import com.tokopedia.tkpd.beranda.listener.HomeCategoryListener;
+import com.tokopedia.tkpd.beranda.listener.HomeFeedListener;
 import com.tokopedia.tkpd.beranda.listener.HomeRecycleScrollListener;
 import com.tokopedia.tkpd.beranda.listener.OnSectionChangeListener;
 import com.tokopedia.tkpd.beranda.presentation.presenter.HomePresenter;
@@ -80,9 +85,6 @@ import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.LayoutSect
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.home.ReactNativeOfficialStoreActivity;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ProductFeedViewModel;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 
 import java.util.ArrayList;
@@ -92,15 +94,18 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.RuntimePermissions;
+
 import static com.tokopedia.core.constants.HomeFragmentBroadcastReceiverConstant.EXTRA_ACTION_RECEIVER;
 
 /**
  * @author by errysuprayogi on 11/27/17.
  */
-
+@RuntimePermissions
 public class HomeFragment extends BaseDaggerFragment implements HomeContract.View,
         SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener, OnSectionChangeListener,
-        TabLayout.OnTabSelectedListener, TokoCashUpdateListener, FeedPlus.View {
+        TabLayout.OnTabSelectedListener, TokoCashUpdateListener, HomeFeedListener {
 
     @Inject
     HomePresenter presenter;
@@ -534,13 +539,29 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             startActivity(BannerWebView.getCallingIntentWithTitle(getActivity(), tokoPointUrl, pageTitle));
     }
 
+
+
+    @Override
+    public void actionScannerQRTokoCash() {
+        HomeFragmentPermissionsDispatcher.scanQRCodeWithCheck(this);
+    }
+
+    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    public void scanQRCode() {
+        Application application = getActivity().getApplication();
+        if (application != null && application instanceof TokoCashRouter) {
+            Intent intent = ((TokoCashRouter) application).goToQRScannerTokoCash(getActivity());
+            startActivity(intent);
+        }
+    }
+
     @Override
     public void onPromoClick(BannerSlidesModel slidesModel) {
         if (getActivity() != null
-                && getActivity().getApplicationContext() instanceof IDigitalModuleRouter
-                && ((IDigitalModuleRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(slidesModel.getApplink())) {
-            ((IDigitalModuleRouter) getActivity().getApplicationContext())
-                    .actionNavigateByApplinksUrl(getActivity(),slidesModel.getApplink(), new Bundle());
+                && getActivity().getApplicationContext() instanceof TkpdCoreRouter
+                && ((TkpdCoreRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(slidesModel.getApplink())) {
+            ((TkpdCoreRouter) getActivity().getApplicationContext())
+                    .actionAppLink(getActivity(),slidesModel.getApplink());
         } else {
             openWebViewURL(slidesModel.getRedirectUrl(),getContext());
         }
@@ -647,53 +668,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void showLoadingProgress() {
-
-    }
-
-    @Override
-    public void finishLoadingProgress() {
-
-    }
-
-    @Override
-    public void setFirstCursor(String firstCursor) {
-
-    }
-
-    @Override
-    public void onShareButtonClicked(String shareUrl, String title, String imgUrl, String contentMessage, String pageRowNumber) {
-
-    }
-
-    @Override
-    public void onGoToProductDetail(int rowNumber, int page, String id, String imageSourceSingle, String name, String productId) {
-
-    }
-
-    @Override
-    public void onGoToProductDetailFromRecentView(String productID, String imgUri, String name, String price) {
-
-    }
-
-    @Override
-    public void onGoToProductDetailFromProductUpload(int rowNumber, int positionFeedCard, int page, int itemPosition, String productId, String imageSourceSingle, String name, String price, String priceInt, String productUrl, String eventLabel) {
-
-    }
-
-    @Override
-    public void onGoToProductDetailFromInspiration(int page,
-                                                   int rowNumber,
-                                                   String productId,
+    public void onGoToProductDetailFromInspiration(String productId,
                                                    String imageSource,
                                                    String name,
-                                                   String price,
-                                                   String priceInt,
-                                                   String productUrl,
-                                                   String source,
-                                                   int positionFeedCard,
-                                                   int itemPosition,
-                                                   String eventLabel) {
+                                                   String price) {
         goToProductDetail(productId, imageSource, name, price);
     }
 
@@ -712,86 +690,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void onGoToFeedDetail(int page, int rowNumber, String feedId) {
-
-    }
-
-    @Override
-    public void onGoToShopDetail(int page, int rowNumber, Integer shopId, String url) {
-
-    }
-
-    @Override
-    public void onCopyClicked(int page, int rowNumber, String id, String s, String name) {
-
-    }
-
-    @Override
-    public void onGoToBlogWebView(String url) {
-
-    }
-
-    @Override
-    public void onOpenVideo(String videoUrl, String subtitle) {
-
-    }
-
-    @Override
-    public void onGoToBuyProduct(ProductFeedViewModel productFeedViewModel) {
-
-    }
-
-    @Override
-    public void onInfoClicked() {
-
-    }
-
-    @Override
-    public void onSuccessGetFeedFirstPage(ArrayList<Visitable> listFeed) {
-
-    }
-
-    @Override
-    public void onErrorGetFeedFirstPage(String errorMessage) {
-
-    }
-
-    @Override
-    public void onSearchShopButtonClicked() {
-
-    }
-
-    @Override
-    public void onFavoritedClicked(int adapterPosition) {
-
-    }
-
-    @Override
-    public void showSnackbar(String s) {
-
-    }
-
-    @Override
-    public void updateFavorite(int adapterPosition) {
-
-    }
-
-    @Override
-    public void onViewMorePromoClicked(int page, int rowNumber) {
-
-    }
-
-    @Override
-    public void showRefresh() {
-
-    }
-
-    @Override
-    public void finishLoading() {
-
-    }
-
-    @Override
     public void updateCursor(String currentCursor) {
         presenter.setCursor(currentCursor);
     }
@@ -803,16 +701,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         adapter.addItems(visitables);
         adapter.notifyItemRangeInserted(posStart, visitables.size());
         recyclerView.addOnScrollListener(feedLoadMoreTriggerListener);
-    }
-
-    @Override
-    public void onSuccessGetFeedFirstPageWithAddFeed(ArrayList<Visitable> listFeed) {
-
-    }
-
-    @Override
-    public void onSeePromo(int page, int rowNumber, String id, String link, String name) {
-
     }
 
     @Override
@@ -830,118 +718,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void onShowAddFeedMore() {
-
-    }
-
-    @Override
-    public void shouldLoadTopAds(boolean loadTopAds) {
-
-    }
-
-    @Override
-    public void hideTopAdsAdapterLoading() {
-        adapter.hideLoading();
-    }
-
-    @Override
-    public int getColor(int black) {
-        return 0;
-    }
-
-    @Override
-    public void onSeeAllRecentView() {
-
-    }
-
-    @Override
-    public void onShowEmptyWithRecentView(ArrayList<Visitable> recentProduct, boolean canShowTopads) {
-
-    }
-
-    @Override
-    public void onShowEmpty(boolean canShowTopads) {
-
-    }
-
-    @Override
-    public void clearData() {
-
-    }
-
-    @Override
     public void unsetEndlessScroll() {
         recyclerView.removeOnScrollListener(feedLoadMoreTriggerListener);
-    }
-
-    @Override
-    public void onShowNewFeed(String totalData) {
-
-    }
-
-    @Override
-    public void onGoToPromoPageFromHeader(int page, int rowNumber) {
-
-    }
-
-    @Override
-    public void onHideNewFeed() {
-
-    }
-
-    @Override
-    public boolean hasFeed() {
-        return false;
-    }
-
-    @Override
-    public void updateFavoriteFromEmpty(String shopId) {
-
-    }
-
-    @Override
-    public void showTopAds(boolean isTopAdsShown) {
-
-    }
-
-    @Override
-    public void onEmptyOfficialStoreClicked() {
-
-    }
-
-    @Override
-    public void onBrandClicked(int page, int rowNumber, OfficialStoreViewModel officialStoreViewModel) {
-
-    }
-
-    @Override
-    public void onSeeAllOfficialStoresFromCampaign(int page, int rowNumber, String redirectUrl) {
-
-    }
-
-    @Override
-    public void onGoToCampaign(int page, int rowNumber, String redirectUrl, String title) {
-
-    }
-
-    @Override
-    public void onSeeAllOfficialStoresFromBrands(int page, int rowNumber) {
-
-    }
-
-    @Override
-    public void onGoToProductDetailFromCampaign(int page, int rowNumber, String productId, String imageSourceSingle, String name, String price) {
-
-    }
-
-    @Override
-    public void onGoToShopDetailFromCampaign(int page, int rowNumber, String shopUrl) {
-
-    }
-
-    @Override
-    public void onContentProviderLinkClicked(String url) {
-
     }
 
     private void openActivity(String depID, String title) {

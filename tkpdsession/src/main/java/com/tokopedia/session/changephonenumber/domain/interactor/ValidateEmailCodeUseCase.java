@@ -15,6 +15,8 @@ import rx.Observable;
  */
 
 public class ValidateEmailCodeUseCase extends UseCase<Boolean> {
+    private static final String PARAM_OS_TYPE = "os_type";
+    private static final String OS_TYPE_ANDROID = "1";
     private static final String PARAM_OTP_CODE = "verif_code";
 
     private final ChangePhoneNumberRepository changePhoneNumberRepository;
@@ -32,9 +34,10 @@ public class ValidateEmailCodeUseCase extends UseCase<Boolean> {
         return changePhoneNumberRepository.validateEmailCode(requestParams.getParameters());
     }
 
-    public static RequestParams getSendEmailParam(String otpCode) {
+    public static RequestParams getValidateEmailCodeParam(String otpCode) {
         RequestParams param = RequestParams.create();
         param.putString(PARAM_OTP_CODE, otpCode);
+        param.putString(PARAM_OS_TYPE, OS_TYPE_ANDROID);
         return param;
     }
 }
