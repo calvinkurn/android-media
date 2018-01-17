@@ -55,10 +55,6 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
                               List<FlightBookingPassengerViewModel> flightPassengerViewModels,
                               String contactName, String country, String email, String phone) {
         getView().showCheckoutLoading();
-        /*flightBookingVerifyUseCase.execute(flightBookingVerifyUseCase.createRequestParams(promoCode,
-                price, adult, cartId, flightPassengerViewModels, contactName, country, email, phone)
-                , getSubscriberVerifyBooking());*/
-
         flightBookingVerifyUseCase.createObservable(
                 flightBookingVerifyUseCase.createRequestParams(
                         promoCode,
@@ -128,7 +124,6 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
                     @Override
                     public void onNext(FlightCheckoutViewModel flightCheckoutViewModel) {
                         getView().setNeedToRefreshOnPassengerInfo();
-                        getView().hideCheckoutLoading();
                         getView().navigateToTopPay(flightCheckoutViewModel);
                     }
                 });

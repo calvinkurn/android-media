@@ -153,8 +153,9 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
 
     @Override
     public void onHelpOptionClicked(String orderId, int status) {
-        String content = getString(R.string.flight_order_flight_default_contact_us_global_prefix) + orderId;
-        String url = FlightUrl.CONTACT_US_FLIGHT_PREFIX + Base64.encodeToString(content.getBytes(), Base64.DEFAULT);
+        String invoice = "&iv=" + orderId;
+        String orderStat = "&ostat=" + status;
+        String url = FlightUrl.CONTACT_US_FLIGHT_PREFIX_GLOBAL + invoice + orderStat;
         if (getActivity().getApplication() instanceof FlightModuleRouter
                 && ((FlightModuleRouter) getActivity().getApplication())
                 .getDefaultContactUsIntent(getActivity(), url) != null) {

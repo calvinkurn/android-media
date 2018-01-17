@@ -9,6 +9,7 @@ import com.tokopedia.flight.search.view.FlightSearchReturnView;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -20,6 +21,7 @@ import rx.Subscriber;
 
 public class FlightSearchReturnPresenter extends BaseDaggerPresenter<FlightSearchReturnView> {
     private FlightBookingGetSingleResultUseCase flightBookingGetSingleResultUseCase;
+    private static final long ONE_HOUR = TimeUnit.HOURS.toMillis(1);
 
     @Inject
     public FlightSearchReturnPresenter(FlightBookingGetSingleResultUseCase flightBookingGetSingleResultUseCase) {
@@ -48,7 +50,6 @@ public class FlightSearchReturnPresenter extends BaseDaggerPresenter<FlightSearc
 
                     @Override
                     public void onNext(FlightSearchViewModel departureFlightSearchViewModel) {
-//                            if (departureFlightSearchViewModel.getArrivalTimeInt() < returnFlightSearchViewModel.getDepartureTimeInt()) {
                         if (isValidReturnJourney(departureFlightSearchViewModel, returnFlightSearchViewModel)) {
                             getView().navigateToCart(returnFlightSearchViewModel);
                         } else {
@@ -67,8 +68,8 @@ public class FlightSearchReturnPresenter extends BaseDaggerPresenter<FlightSearc
                 Date returnDepartureTime = FlightDateUtil.stringToDate(FlightDateUtil.FORMAT_DATE_API, firstReturnRoute.getDepartureTimestamp());
                 long different = returnDepartureTime.getTime() - departureArrivalTime.getTime();
                 if (different >= 0) {
-                    long hours = different / 3600000;
-                    CommonUtils.dumper("diff" + hours);
+                    long hours = different / ONE_HOUR;
+                    CommonUtils.dumper("diff : " + hours);
                     return hours >= 6;
                 } else {
                     return false;

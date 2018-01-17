@@ -381,7 +381,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                                 getView().setContactEmail(profileInfo.getEmail());
                             }
                             if (getView().getContactPhoneNumber().length() == 0) {
-                                getView().setContactPhoneNumber(profileInfo.getPhoneNumber());
+                                getView().setContactPhoneNumber(transform(profileInfo.getPhoneNumber()));
                             }
                         }
                     }
@@ -593,5 +593,24 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
             }
 
         return false;
+    }
+
+    public static String transform(String phoneRawString){
+        phoneRawString = checkStart(phoneRawString);
+        phoneRawString = phoneRawString.replace("-","");
+        StringBuilder phoneNumArr = new StringBuilder(phoneRawString);
+        if (phoneNumArr.length() > 0){
+            phoneNumArr.replace(0,1, "");
+        }
+        return phoneNumArr.toString();
+    }
+
+    private static String checkStart(String phoneRawString) {
+        if(phoneRawString.startsWith("62")){
+            phoneRawString = phoneRawString.replaceFirst("62","0");
+        }else if(phoneRawString.startsWith("+62")) {
+            phoneRawString = phoneRawString.replaceFirst("\\+62","0");
+        }
+        return phoneRawString;
     }
 }

@@ -259,6 +259,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
                 }
                 break;
             case REQUEST_CODE_TOPPAY:
+                hideCheckoutLoading();
                 reviewTime.start();
                 if (getActivity().getApplication() instanceof FlightModuleRouter) {
                     int paymentSuccess = ((FlightModuleRouter) getActivity().getApplication()).getTopPayPaymentSuccessCode();
@@ -560,6 +561,13 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     @Override
     public void navigateToOrderList() {
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(getActivity());
+        if (getActivity().getApplication() instanceof FlightModuleRouter
+                && ((FlightModuleRouter) getActivity().getApplication())
+                .getHomeIntent(getActivity()) != null) {
+            Intent intent = ((FlightModuleRouter) getActivity().getApplication())
+                    .getHomeIntent(getActivity());
+            taskStackBuilder.addNextIntent(intent);
+        }
         Intent homepageFlight = FlightDashboardActivity.getCallingIntent(getActivity());
         Intent ordersFlight = FlightOrderListActivity.getCallingIntent(getActivity());
         taskStackBuilder.addNextIntent(homepageFlight);
