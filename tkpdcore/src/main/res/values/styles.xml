@@ -240,4 +240,8 @@
         <item name="android:progressDrawable">@drawable/tkpd_rating_bar</item>
     </style>
 
+    <style name="Medium.RatingBar" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/app_rating_bar</item>
+    </style>
+
 </resources>

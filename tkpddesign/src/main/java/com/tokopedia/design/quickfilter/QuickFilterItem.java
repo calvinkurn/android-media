@@ -45,4 +45,9 @@ public class QuickFilterItem {
     public void setColorBorder(int colorFilter) {
         this.colorFilter = colorFilter;
     }
+
+    @Override
+    public int hashCode() {
+        return type.hashCode();
+    }
 }

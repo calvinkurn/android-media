@@ -85,7 +85,9 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
 
         String desc = String.format("%s %s", escapeHTML(cpm.getDecription()), cpm.getCta());
         setTextColor(descriptionTxt, desc, cpm.getCta(), ContextCompat.getColor(context, R.color.tkpd_main_green));
+
         if (cpm.getBadges().size() > 0) {
+            badgeContainer.removeAllViews();
             badgeContainer.setVisibility(VISIBLE);
             for (Badge badge : cpm.getBadges()) {
                 ImageView badgeImg = new ImageView(context);
@@ -139,9 +141,9 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
     public void displayAds(CpmModel cpmModel) {
         if (cpmModel.getData().size() > 0) {
             final CpmData data = cpmModel.getData().get(0);
-            if (data.getCpm().getCpmShop() != null) {
+            if (data.getCpm().getCpmShop() != null && isResponseValid(data)) {
                 createViewCpmShop(getContext(), data.getCpm());
-            } else {
+            } else if(data.getCpm().getTemplateId() == 4) {
                 createViewCpmDigital(getContext(), data.getCpm());
             }
             setOnClickListener(new OnClickListener() {
@@ -155,11 +157,16 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         }
     }
 
+    private boolean isResponseValid(CpmData data) {
+        return !data.getCpm().getCta().isEmpty()
+                && !data.getCpm().getPromotedText().isEmpty()
+                && data.getCpm().getBadges().size() > 0;
+    }
+
     @Override
     public void onCanceled() {
 
     }
-
     @Override
     public void hideLoading() {
 

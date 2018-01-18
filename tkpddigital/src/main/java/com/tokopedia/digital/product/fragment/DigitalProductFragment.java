@@ -41,11 +41,12 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.apprating.AdvancedAppRatingDialog;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.session.presenter.Session;
@@ -221,11 +222,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     protected void onFirstTimeLaunched() {
-        String applinkProperties = "category id: " + categoryId + "\n" +
-                "operator id: " + operatorId;
-
-        Toast.makeText(getActivity(), applinkProperties, Toast.LENGTH_SHORT).show();
-
         presenter.processGetCategoryAndBannerData(
                 categoryId, operatorId, productId, clientNumber);
     }
@@ -643,7 +639,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     public void interruptUserNeedLoginOnCheckout(DigitalCheckoutPassData digitalCheckoutPassData) {
         this.digitalCheckoutPassDataState = digitalCheckoutPassData;
-        Intent intent = SessionRouter.getLoginActivityIntent(getActivity());
+        Intent intent = OldSessionRouter.getLoginActivityIntent(getActivity());
         intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
         navigateToActivityRequest(intent, IDigitalModuleRouter.REQUEST_CODE_LOGIN);
     }
