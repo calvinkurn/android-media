@@ -25,10 +25,6 @@ public class SellerAppRouter {
         return RouterUtils.getRouterFromContext(context).getOnBoardingActivityIntent(context);
     }
 
-    public static Intent getTruecallerIntent(Context context) {
-        return RouterUtils.getRouterFromContext(context).getTrueCallerActivityIntent(context);
-    }
-
     public static IAppNotificationReceiver getAppNotificationReceiver() {
         Constructor<?> ctor = null;
         try {

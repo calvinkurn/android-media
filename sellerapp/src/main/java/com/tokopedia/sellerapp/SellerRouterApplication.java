@@ -106,7 +106,6 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.sellerapp.onboarding.activity.OnboardingSellerActivity;
-import com.tokopedia.sellerapp.truecaller.TruecallerActivity;
 import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
@@ -374,11 +373,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getOnBoardingActivityIntent(Context context) {
         return new Intent(context, OnboardingSellerActivity.class);
-    }
-
-    @Override
-    public Intent getTrueCallerActivityIntent(Context context) {
-        return new Intent(context, TruecallerActivity.class);
     }
 
     @Override
@@ -858,11 +852,6 @@ public abstract class SellerRouterApplication extends MainApplication
     public void navigateToChooseAddressActivityRequest(Fragment var1, Intent var2, int var3) {
         Intent instance = ChooseAddressActivity.createInstance(var1.getContext());
         var1.startActivityForResult(instance, var3);
-    }
-
-    @Override
-    public Intent getTrueCallerIntent(Context context) {
-        return TruecallerActivity.getCallingIntent(context);
     }
 
     @Override

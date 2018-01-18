@@ -2,7 +2,7 @@ package com.tokopedia.session.changephonenumber.view.listener;
 
 import android.app.Activity;
 
-import com.tokopedia.otp.securityquestion.domain.pojo.changephonenumberrequest.CheckStatusData;
+import com.tokopedia.session.changephonenumber.data.model.changephonenumberrequest.CheckStatusData;
 
 
 /**

@@ -465,11 +465,11 @@ public class Login extends BaseActivity implements SessionView
 
     @Override
     public void verifyTruecaller() {
-        if (MainApplication.getAppContext() instanceof SessionRouter) {
-            Intent intent = ((SessionRouter) MainApplication.getAppContext()).getTrueCallerIntent
-                    (this);
-            startActivityForResult(intent, 100);
-        }
+//        if (MainApplication.getAppContext() instanceof SessionRouter) {
+//            Intent intent = ((SessionRouter) MainApplication.getAppContext()).getTrueCallerIntent
+//                    (this);
+//            startActivityForResult(intent, 100);
+//        }
     }
 
     @Override

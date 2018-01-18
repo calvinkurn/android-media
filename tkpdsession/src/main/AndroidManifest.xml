@@ -82,12 +82,6 @@
             android:windowSoftInputMode="stateAlwaysHidden"/>
 
         <activity
-            android:name="com.tokopedia.otp.securityquestion.view.activity.SecurityQuestionActivity"
-            android:label="@string/bar_security_question"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"/>
-
-        <activity
             android:name="com.tokopedia.otp.cotp.view.activity.VerificationActivity"
             android:label="@string/title_verify"
             android:screenOrientation="portrait"

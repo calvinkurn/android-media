@@ -22,7 +22,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
-import com.tokopedia.otp.securityquestion.domain.pojo.changephonenumberrequest.CheckStatusData;
+import com.tokopedia.session.changephonenumber.data.model.changephonenumberrequest.CheckStatusData;
 import com.tokopedia.session.R;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberRequestView;
 import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberRequestPresenter;

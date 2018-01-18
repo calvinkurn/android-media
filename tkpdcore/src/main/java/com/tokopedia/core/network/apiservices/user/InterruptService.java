@@ -11,6 +11,7 @@ import retrofit2.Retrofit;
 /**
  * @author Angga.Prasetiyo on 07/12/2015.
  */
+@Deprecated
 public class InterruptService extends AuthService<InterruptApi> {
     private static final String TAG = InterruptService.class.getSimpleName();
 
