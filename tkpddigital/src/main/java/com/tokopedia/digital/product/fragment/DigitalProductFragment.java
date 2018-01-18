@@ -701,7 +701,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             Operator operator = presenter.getSelectedUssdOperator(simPosition);
             String phoneNumber = presenter.getUssdPhoneNumberFromCache(simPosition);
             String carrierName = DeviceUtil.getOperatorName(getActivity(), simPosition);
-            if (presenter.isCarrierSignalsNotAvailable(carrierName)
+            if (carrierName != null && !presenter.isCarrierSignalsNotAvailable(carrierName)
                     && !DeviceUtil.validateNumberAndMatchOperator(categoryDataState.getClientNumberList().get(0).getValidation(),
                     operator, phoneNumber)) {
                 presenter.storeUssdPhoneNumber(simPosition, "");
