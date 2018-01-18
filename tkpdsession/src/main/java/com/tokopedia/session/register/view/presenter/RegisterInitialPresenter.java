@@ -11,7 +11,7 @@ import com.tokopedia.core.network.retrofit.response.ErrorCode;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.session.domain.interactor.DiscoverUseCase;
-import com.tokopedia.session.login.loginemail.LoginAnalytics;
+import com.tokopedia.analytics.LoginAnalytics;
 import com.tokopedia.session.register.domain.interactor.registerinitial.GetFacebookCredentialUseCase;
 import com.tokopedia.session.register.domain.interactor.registerinitial.LoginWebviewUseCase;
 import com.tokopedia.session.register.domain.interactor.registerinitial.LoginWithSosmedUseCase;

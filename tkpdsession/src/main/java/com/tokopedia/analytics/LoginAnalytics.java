@@ -1,4 +1,4 @@
-package com.tokopedia.session.login.loginemail;
+package com.tokopedia.analytics;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;

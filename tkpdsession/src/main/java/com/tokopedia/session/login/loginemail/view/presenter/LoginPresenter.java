@@ -18,7 +18,7 @@ import com.tokopedia.di.SessionModule;
 import com.tokopedia.session.R;
 import com.tokopedia.session.domain.interactor.DiscoverUseCase;
 import com.tokopedia.session.domain.interactor.MakeLoginUseCase;
-import com.tokopedia.session.login.loginemail.LoginAnalytics;
+import com.tokopedia.analytics.LoginAnalytics;
 import com.tokopedia.session.login.loginemail.domain.interactor.LoginEmailUseCase;
 import com.tokopedia.session.login.loginemail.view.subscriber.LoginDiscoverSubscriber;
 import com.tokopedia.session.login.loginemail.view.subscriber.LoginSosmedSubscriber;

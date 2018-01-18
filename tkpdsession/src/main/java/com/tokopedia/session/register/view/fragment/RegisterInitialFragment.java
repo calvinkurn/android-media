@@ -48,7 +48,7 @@ import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActiva
 import com.tokopedia.session.R;
 import com.tokopedia.session.data.viewmodel.SecurityDomain;
 import com.tokopedia.session.google.GoogleSignInActivity;
-import com.tokopedia.session.login.loginemail.LoginAnalytics;
+import com.tokopedia.analytics.LoginAnalytics;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.register.view.activity.CreatePasswordActivity;
 import com.tokopedia.session.register.view.activity.RegisterEmailActivity;

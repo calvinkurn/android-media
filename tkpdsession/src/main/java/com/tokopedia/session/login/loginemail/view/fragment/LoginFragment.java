@@ -62,7 +62,7 @@ import com.tokopedia.session.activation.view.activity.ActivationActivity;
 import com.tokopedia.session.data.viewmodel.SecurityDomain;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.google.GoogleSignInActivity;
-import com.tokopedia.session.login.loginemail.LoginAnalytics;
+import com.tokopedia.analytics.LoginAnalytics;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.login.loginemail.view.presenter.LoginPresenter;
 import com.tokopedia.session.login.loginemail.view.viewlistener.Login;
