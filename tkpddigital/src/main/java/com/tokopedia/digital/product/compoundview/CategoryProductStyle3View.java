@@ -449,6 +449,7 @@ public class CategoryProductStyle3View extends
             @Override
             public void initDataView(Product product) {
                 productSelected = product;
+                renderPriceProductInfo();
             }
 
             @Override

@@ -432,13 +432,15 @@ public class CategoryProductStyle1View extends
             @Override
             public void initDataView(Product product) {
                 productSelected = product;
+                renderPriceProductInfo();
             }
 
             @Override
             public void trackingProduct() {
-                if (productSelected != null)
+                if (productSelected != null) {
                     UnifyTracking.eventSelectProductWidget(data.getName(),
                             productSelected.getDesc());
+                }
             }
         };
     }
@@ -450,7 +452,7 @@ public class CategoryProductStyle1View extends
             public void onUpdateDataDigitalChooserSelectedRendered(Product product) {
                 productSelected = product;
                 renderAdditionalInfoProduct();
-                renderPriceInfoProduct();
+                renderPriceProductInfo();
             }
 
             @Override
@@ -487,10 +489,10 @@ public class CategoryProductStyle1View extends
                     .build();
         }
         renderAdditionalInfoProduct();
-        renderPriceInfoProduct();
+        renderPriceProductInfo();
     }
 
-    private void renderPriceInfoProduct() {
+    private void renderPriceProductInfo() {
         clearHolder(holderPriceInfoProduct);
         if (operatorSelected != null && operatorSelected.getRule().isShowPrice()) {
             productPriceInfoView.renderData(productSelected);
