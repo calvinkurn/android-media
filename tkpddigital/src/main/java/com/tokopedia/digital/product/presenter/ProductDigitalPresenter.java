@@ -712,6 +712,8 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
                                     isCheckUssdButtonActive = false;
                                 }
                             }
+                        }else {
+                            view.renderCheckPulsaBalanceData(i, ussdCode, getPhoneNumberForSim(i, operator, validationList), null, true, carrierName);
                         }
                     }
                 }
@@ -733,12 +735,10 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
     }
 
     private boolean isOperatorListAvailable(CategoryData categoryDataState){
-        if (categoryDataState == null ||
-                categoryDataState.getOperatorList() == null ||
-                categoryDataState.getOperatorList().size() == 0) {
-            return false;
-        }
-        return true;
+
+        return (categoryDataState != null &&
+                categoryDataState.getOperatorList() != null &&
+                categoryDataState.getOperatorList().size() != 0);
     }
 }
 
