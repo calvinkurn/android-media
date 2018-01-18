@@ -7,9 +7,8 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.module.AppModule;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.common.di.qualifier.AuthKeyQualifier;
-import com.tokopedia.abstraction.common.di.qualifier.FreshAccessTokenQualifier;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
+import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 
 import dagger.Component;
 import okhttp3.OkHttpClient;
@@ -33,13 +32,10 @@ public interface BaseAppComponent {
 
     Gson gson();
 
-    @AuthKeyQualifier
-    String provideAuthKey();
-
     UserSession userSession();
 
     AbstractionRouter provideAbstractionRouter();
 
-    @FreshAccessTokenQualifier
-    String provideAccessToken();
+    TkpdAuthInterceptor tkpdAuthInterceptor();
+
 }

@@ -28,6 +28,7 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.inbox.inboxchat.activity.SendMessageActivity;
 import com.tokopedia.inbox.inboxmessageold.activity.SendMessageActivityOld;
+import com.tokopedia.mitratoppers.common.constant.MitraToppersBaseURL;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.utils.WhiteList;
@@ -160,6 +161,8 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         TkpdBaseURL.WALLET_DOMAIN = SellerAppBaseUrl.BASE_WALLET;
 
         AbstractionBaseURL.JS_DOMAIN = SellerAppBaseUrl.BASE_JS_DOMAIN;
+
+        MitraToppersBaseURL.WEB_DOMAIN = SellerAppBaseUrl.BASE_WEB_DOMAIN;
     }
 
     private void generateSellerAppNetworkKeys() {

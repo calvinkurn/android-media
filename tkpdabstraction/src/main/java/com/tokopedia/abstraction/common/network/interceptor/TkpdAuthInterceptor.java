@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.AuthUtil;
 import com.tokopedia.abstraction.common.utils.MethodChecker;
 
@@ -16,6 +17,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+
+import javax.inject.Inject;
 
 import okhttp3.Request;
 import okhttp3.Response;
@@ -45,20 +48,15 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     private static final String RESPONSE_PARAM_STATUS = "status";
     private static final String RESPONSE_PARAM_MESSAGE_ERROR = "message_error";
 
-    private final String authKey;
     private Context context;
-    private String freshAccessToken;
     private AbstractionRouter abstractionRouter;
     protected UserSession userSession;
 
-    public TkpdAuthInterceptor(String authKey,
-                               Context context,
-                               String freshAccessToken,
+    @Inject
+    public TkpdAuthInterceptor(@ApplicationContext Context context,
                                AbstractionRouter abstractionRouter,
                                UserSession userSession) {
-        this.authKey = authKey;
         this.context = context;
-        this.freshAccessToken = freshAccessToken;
         this.abstractionRouter = abstractionRouter;
         this.userSession = userSession;
     }
@@ -159,7 +157,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
                         originRequest.url().uri().getPath(),
                         generateParamBodyString(originRequest),
                         originRequest.method(),
-                        authKey,
+                        userSession.getAccessToken(),
                         contentTypeHeader
                 );
                 break;
@@ -168,7 +166,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
                         originRequest.url().uri().getPath(),
                         generateQueryString(originRequest),
                         originRequest.method(),
-                        authKey,
+                        userSession.getAccessToken(),
                         contentTypeHeader
                 );
                 break;
@@ -331,7 +329,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     }
 
     private Request recreateRequestWithNewAccessToken(Chain chain) {
-        String freshAccessToken = this.freshAccessToken;
+        String freshAccessToken = userSession.getFreshToken();
         return chain.request().newBuilder()
                 .header(HEADER_PARAM_AUTHORIZATION, HEADER_PARAM_BEARER + " " + freshAccessToken)
                 .build();

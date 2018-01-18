@@ -12,6 +12,7 @@ public class MitraToppersActivity extends BaseSimpleActivity {
 
     @Override
     protected Fragment getNewFragment() {
+//        return new TestFragment();
         return new MitraToppersFragment();
     }
 }

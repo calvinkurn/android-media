@@ -6,10 +6,7 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.common.di.qualifier.AuthKeyQualifier;
-import com.tokopedia.abstraction.common.di.qualifier.FreshAccessTokenQualifier;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
-import com.tokopedia.abstraction.common.utils.AuthUtil;
 
 import dagger.Module;
 import dagger.Provides;
@@ -23,21 +20,11 @@ public class InterceptorModule {
 
     @ApplicationScope
     @Provides
-    TkpdAuthInterceptor provideTkpdAuthInterceptor(@AuthKeyQualifier String authKey,
-                                                   Context context,
-                                                   @FreshAccessTokenQualifier String freshAccessToken,
+    TkpdAuthInterceptor provideTkpdAuthInterceptor(@ApplicationContext Context context,
                                                    AbstractionRouter abstractionRouter,
                                                    UserSession userSession){
-        return new TkpdAuthInterceptor(authKey, context, freshAccessToken, abstractionRouter, userSession);
+        return new TkpdAuthInterceptor(context, abstractionRouter, userSession);
     }
-
-    @AuthKeyQualifier
-    @ApplicationScope
-    @Provides
-    String provideAuthKey(@ApplicationContext Context context){
-        return AuthUtil.KEY.KEY_WSV4;
-    }
-
 
     @ApplicationScope
     @Provides
@@ -55,10 +42,4 @@ public class InterceptorModule {
         }
     }
 
-    @FreshAccessTokenQualifier
-    @ApplicationScope
-    @Provides
-    String provideFreshToken(AbstractionRouter abstractionRouter){
-        return abstractionRouter.getSession().getFreshToken();
-    }
 }
