@@ -493,6 +493,7 @@ public class OrderDetailActivity extends TActivity
                     .setCustomAnimations(R.animator.enter_bottom, R.animator.enter_bottom)
                     .add(R.id.main_view, rejectOrderFragment, REJECT_ORDER_FRAGMENT_TAG)
                     .commit();
+            toolbar.setTitle("");
         }
     }
 
@@ -561,6 +562,7 @@ public class OrderDetailActivity extends TActivity
                 .setCustomAnimations(R.animator.exit_bottom, R.animator.exit_bottom)
                 .remove(getFragmentManager()
                 .findFragmentByTag(VALIDATION_FRAGMENT_TAG)).commit();
+        toolbar.setTitle(getString(R.string.title_detail_transaction));
         onRefreshActivity();
     }
 
@@ -676,8 +678,8 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void onBackPressed() {
-        setToolbarCancelSearch(getString(R.string.title_detail_transaction), R.drawable.ic_arrow_back_black);
         if (getFragmentManager().findFragmentByTag(VALIDATION_FRAGMENT_TAG) != null) {
+            toolbar.setTitle(getString(R.string.title_detail_transaction));
             getFragmentManager().beginTransaction()
                     .setCustomAnimations(R.animator.slide_out_right, R.animator.slide_out_right)
                     .remove(getFragmentManager()
@@ -693,6 +695,7 @@ public class OrderDetailActivity extends TActivity
                     .remove(getFragmentManager()
                             .findFragmentByTag(REJECT_ORDER_MENU_FRAGMENT_TAG)).commit();
         }else if(getFragmentManager().findFragmentByTag(REJECT_ORDER_FRAGMENT_TAG) != null) {
+            toolbar.setTitle(getString(R.string.title_detail_transaction));
             getFragmentManager().beginTransaction()
                     .setCustomAnimations(R.animator.slide_out_right, R.animator.slide_out_right)
                     .remove(getFragmentManager()

@@ -82,6 +82,7 @@ public class OrderCourierAdapter extends RecyclerView.Adapter<OrderCourierAdapte
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                notifyDataSetChanged();
                 listener.onCourierSelected(courierViewModel);
             }
         };

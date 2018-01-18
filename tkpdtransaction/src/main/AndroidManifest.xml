@@ -75,7 +75,7 @@
 
         <activity
             android:name=".purchase.detail.activity.ConfirmShippingActivity"
-            android:label="@string/title_activity_people_tx_details"/>
+            android:label="@string/title_confirm_shipment"/>
 
         <service
             android:name=".purchase.services.TxActionIntentService"

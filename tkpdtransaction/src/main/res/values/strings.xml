@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">tkpdtransaction</string>
     <string name="title_change_payment">Ubah Pembayaran</string>
+    <string name="title_confirm_shipment">Konfirmasi Pengiriman</string>
     <string name="message_failed_pick_image">Gambar gagal diambil</string>
     <string name="default_success_message_request_cancel_order">Berhasil mengajukan pembatalan pesanan</string>
     <string name="default_success_message_reject_order">Berhasil membatalkan pesanan</string>
@@ -179,6 +180,8 @@
     <string name="label_empty_stock">Stock Kosong</string>
     <string name="title_term_and_condition">Syarat dan Ketentuan</string>
     <string name="title_bottomsheet_insurance">Asuransi Pengiriman</string>
+    <string name="title_confirm_courier_page">Anda dapat mengganti pengiriman menjadi kurir reguler</string>
+    <string name="subtitle_confirm_courier_page">Dengan persetujuan dari Pembeli</string>
 
     <string name="request_pickup_step_1">Pastikan Barang sudah siap untuk di-pickup</string>
     <string name="request_pickup_step_2">Syarat dan Mohon tidak memberikan ongkos kirim pada driver</string>
