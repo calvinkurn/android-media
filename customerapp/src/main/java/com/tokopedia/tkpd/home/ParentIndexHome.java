@@ -11,7 +11,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
@@ -121,6 +120,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     TkpdProgressDialog progressDialog;
     CompositeSubscription subscription = new CompositeSubscription();
     private int initStateFragment = INIT_STATE_FRAGMENT_HOME;
+
+    private BroadcastReceiver hockeyBroadcastReceiver;
 
     @DeepLink(Constants.Applinks.HOME)
     public static Intent getApplinkCallingIntent(Context context, Bundle extras) {
@@ -260,6 +261,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
         checkAppUpdate();
         checkIsHaveApplinkComeFromDeeplink(getIntent());
+
+        initHockeyBroadcastReceiver();
     }
 
     @Override
@@ -782,6 +785,19 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         }
     }
 
+    private void initHockeyBroadcastReceiver() {
+        hockeyBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent != null && intent.getAction() != null) {
+                    if (intent.getAction().equals(FORCE_HOCKEYAPP)) {
+                        if (!DialogHockeyApp.isDialogShown(ParentIndexHome.this)) showHockeyAppDialog();
+                    }
+                }
+            }
+        };
+    }
+
     private void registerBroadcastHockeyApp() {
         if (!GlobalConfig.isAllowDebuggingTools()) {
             IntentFilter intentFilter = new IntentFilter(FORCE_HOCKEYAPP);
@@ -793,17 +809,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     private void unregisterBroadcastHockeyApp() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(hockeyBroadcastReceiver);
     }
-
-    private BroadcastReceiver hockeyBroadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent != null && intent.getAction() != null) {
-                if (intent.getAction().equals(FORCE_HOCKEYAPP)) {
-                    if (!DialogHockeyApp.isDialogShown(ParentIndexHome.this)) showHockeyAppDialog();
-                }
-            }
-        }
-    };
 
     private void showHockeyAppDialog() {
         DialogHockeyApp.createShow(this,
