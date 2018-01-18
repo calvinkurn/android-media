@@ -251,4 +251,28 @@ yang ditemukan</string>
     <string name="string_success_help">Tokopedia akan mempelajari kasus ini terlebih dahulu dan akan memberikan resolusi dalam waktu 3 hari</string>
     <string name="string_success_input_awb">Terima kasih sudah melakukan pengiriman</string>
     <string name="string_success_finish">Komplain ini telah dinyatakan selesai. Terima kasih.</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="add_template_chat_title">Tambah Template Pesan</string>
+    <string name="edit_template_chat_title">Ubah Template Pesan</string>
+    <string name="limited_template_chat_warning">Hapus salah satu template untuk bisa membuat template baru.</string>
+    <string name="minimum_template_chat_warning">Minimal harus memiliki 1 template.</string>
+    <string name="success_add_template_chat">Berhasil menambahkan template pesan</string>
+    <string name="success_edit_template_chat">Berhasil mengubah template pesan</string>
+    <string name="success_delete_template_chat">Template berhasil dihapus</string>
+    <string name="success_rearrange_template_chat">Berhasil mengubah urutan template</string>
+    <string name="success_switch_template_chat">Berhasil mengubah urutan template</string>
+    <string name="hint_template_chat">Silakan tambahkan template untuk membantu Anda melakukan Chat tanpa perlu mengetik pesan yang sama berulang kali.
+        \n\nContoh:\nHalo, barang ini ready ya. Silakan diorder</string>
+    <string name="delete_chat_template">"Hapus template?"</string>
+    <string name="forever_deleted_template">"Template akan terhapus selamanya"</string>
+    <string name="minimal_char_template">"Template pesan minimal 5 karakter"</string>
+    <string name="maximal_char_template">"Template pesan maksimal %1$d karakter"</string>
+
+    <string name="title_info_list_template">"Kelola Template Pesan"</string>
+    <string name="body_info_list_template">"Ubah dengan tekan tombol edit, atau atur urutan dengan tahan dan geser tombol drag."</string>
+    <string name="caption_switch_template">"Buat hingga 5 template untuk membantu Anda melakukan Chat tanpa perlu mengetik pesan yang sama berulang kali"</string>
+
 </resources>

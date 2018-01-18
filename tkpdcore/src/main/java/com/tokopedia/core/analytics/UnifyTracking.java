@@ -26,10 +26,6 @@ public class UnifyTracking extends TrackingUtils {
 
     public static final String EXTRA_LABEL = "label";
 
-    public static void eventGeneral(Map<String,Object> dataLayers) {
-        sendGTMEvent(dataLayers);
-    }
-
     public static void eventHomeTab(String label) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.HOMEPAGE_UNIFY,
@@ -2555,6 +2551,14 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
+
+    public static void eventClickThumbnailMarketing(String category, String action, String event) {
+        sendGTMEvent(new EventTracking(
+                event, category, action, "").getEvent());
+    }
+
+
+
     public static void eventSellerHomeDashboardClick(String main, String item) {
         sendGTMEvent(new EventTracking(
                         AppEventTracking.Event.HOME_DASHBOARD_CLICK_SELLER,
@@ -3106,5 +3110,51 @@ public class UnifyTracking extends TrackingUtils {
 
     public static void eventTracking(EventTracking eventTracking) {
         sendGTMEvent(eventTracking.getEvent());
+    }
+
+
+    public static void eventPromoListClickCategory(String categoryName){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_PROMO_MICRO_SITE,
+                AppEventTracking.Category.PROMO_MICROSITE_PROMO_LIST,
+                AppEventTracking.Action.PROMO_CLICK_CATEGORY,
+                categoryName
+        ).getEvent());
+    }
+
+    public static void eventPromoListClickSubCategory(String subCategoryName){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_PROMO_MICRO_SITE,
+                AppEventTracking.Category.PROMO_MICROSITE_PROMO_LIST,
+                AppEventTracking.Action.PROMO_CLICK_SUB_CATEGORY,
+                subCategoryName
+        ).getEvent());
+    }
+
+    public static void eventPromoListClickCopyToClipboardPromoCode(String promoName){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_PROMO_MICRO_SITE,
+                AppEventTracking.Category.PROMO_MICROSITE_PROMO_LIST,
+                AppEventTracking.Action.PROMO_CLICK_COPY_PROMO_CODE,
+                promoName
+        ).getEvent());
+    }
+
+    public static void eventPromoTooltipClickOpenTooltip(){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_PROMO_MICRO_SITE,
+                AppEventTracking.Category.PROMO_MICROSITE_PROMO_TOOLTIP,
+                AppEventTracking.Action.PROMO_CLICK_OPEN_TOOLTIP,
+                ""
+        ).getEvent());
+    }
+
+    public static void eventPromoTooltipClickCloseTooltip(){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_PROMO_MICRO_SITE,
+                AppEventTracking.Category.PROMO_MICROSITE_PROMO_TOOLTIP,
+                AppEventTracking.Action.PROMO_CLICK_CLOSE_TOOLTIP,
+                ""
+        ).getEvent());
     }
 }
