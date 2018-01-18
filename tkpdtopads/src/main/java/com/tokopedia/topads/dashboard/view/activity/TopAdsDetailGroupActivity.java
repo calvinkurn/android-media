@@ -1,5 +1,6 @@
 package com.tokopedia.topads.dashboard.view.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -34,6 +35,8 @@ public class TopAdsDetailGroupActivity extends BaseSimpleActivity
     private ShowCaseDialog showCaseDialog;
 
     public static final String TAG = TopAdsDetailGroupFragment.class.getSimpleName();
+
+    private boolean isAdChanged;
 
     @Override
     public String getScreenName() {
@@ -125,10 +128,21 @@ public class TopAdsDetailGroupActivity extends BaseSimpleActivity
                 ad = getIntent().getExtras().getParcelable(TopAdsExtraConstant.EXTRA_AD);
                 adId = getIntent().getStringExtra(TopAdsExtraConstant.EXTRA_AD_ID);
                 forceRefresh = getIntent().getBooleanExtra(TopAdsExtraConstant.EXTRA_FORCE_REFRESH, false);
+                isAdChanged = getIntent().getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
             }
             fragment = TopAdsDetailGroupFragment.createInstance(ad, adId, forceRefresh);
             return fragment;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        Intent intent = new Intent();
+        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, isAdChanged);
+        setResult(Activity.RESULT_OK, intent);
+        finish();
     }
 
     @Override
