@@ -8,6 +8,8 @@ import com.tokopedia.core.network.apiservices.tome.TomeService;
 import com.tokopedia.core.network.apiservices.upload.GenerateHostActService;
 import com.tokopedia.core.network.apiservices.user.FaveShopActService;
 import com.tokopedia.core.network.apiservices.user.ReputationService;
+import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
+import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.tkpd.tkpdreputation.data.mapper.DeleteReviewResponseMapper;
 import com.tokopedia.tkpd.tkpdreputation.data.mapper.GetLikeDislikeMapper;
 import com.tokopedia.tkpd.tkpdreputation.data.mapper.LikeDislikeMapper;
@@ -46,6 +48,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.Send
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SendReviewValidateUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SetReviewFormCacheUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SkipReviewUseCase;
+import com.tokopedia.tkpd.tkpdreputation.productreview.data.source.ReputationReviewApi;
 import com.tokopedia.tkpd.tkpdreputation.uploadimage.data.factory.ImageUploadFactory;
 import com.tokopedia.tkpd.tkpdreputation.uploadimage.data.mapper.GenerateHostMapper;
 import com.tokopedia.tkpd.tkpdreputation.uploadimage.data.mapper.UploadImageMapper;
@@ -56,6 +59,7 @@ import com.tokopedia.tkpd.tkpdreputation.uploadimage.domain.interactor.UploadIma
 
 import dagger.Module;
 import dagger.Provides;
+import retrofit2.Retrofit;
 
 /**
  * @author by nisie on 8/11/17.
@@ -124,7 +128,8 @@ public class ReputationModule {
             DeleteReviewResponseMapper deleteReviewResponseMapper,
             ReplyReviewMapper replyReviewMapper,
             GetLikeDislikeMapper getLikeDislikeMapper,
-            LikeDislikeMapper likeDislikeMapper) {
+            LikeDislikeMapper likeDislikeMapper,
+            ReputationReviewApi reputationReviewApi) {
         return new ReputationFactory(tomeService, reputationService, inboxReputationMapper,
                 inboxReputationDetailMapper, sendSmileyReputationMapper,
                 sendReviewValidateMapper, sendReviewSubmitMapper,
@@ -136,7 +141,14 @@ public class ReputationModule {
                 deleteReviewResponseMapper,
                 replyReviewMapper,
                 getLikeDislikeMapper,
-                likeDislikeMapper);
+                likeDislikeMapper,
+                reputationReviewApi);
+    }
+
+    @ReputationScope
+    @Provides
+    ReputationReviewApi provideReputationReviewApi(@WsV4QualifierWithErrorHander Retrofit retrofit){
+        return retrofit.create(ReputationReviewApi.class);
     }
 
 

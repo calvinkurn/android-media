@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:gravity="center"
+    android:layout_gravity="center"
+    android:layout_height="wrap_content">
+
+    <RatingBar
+        android:id="@+id/product_rating"
+        style="@style/Small.RatingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:isIndicator="true"/>
+
+    <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
+        android:id="@+id/progress_value_review"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        app:rcBackgroundColor="@color/font_black_secondary_54"
+        app:rcMax="100"
+        app:rcProgress="0"
+        app:rcProgressColor="@color/background_star_review"
+        app:rcRadius="6.5dp" />
+
+    <TextView
+        android:id="@+id/counter_review"
+        style="@style/TextView.Micro.BlackSecondary"
+        tools:text="49"/>
+</LinearLayout>

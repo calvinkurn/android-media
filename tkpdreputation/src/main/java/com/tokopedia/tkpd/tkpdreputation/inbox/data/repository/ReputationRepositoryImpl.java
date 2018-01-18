@@ -15,6 +15,10 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendRevie
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewValidateDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.SendSmileyReputationDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SkipReviewDomain;
+import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewlist.DataResponseReviewHelpful;
+import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewlist.DataResponseReviewProduct;
+import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewlist.DataResponseReviewShop;
+import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewstarcount.DataResponseReviewStarCount;
 
 import rx.Observable;
 
@@ -140,5 +144,33 @@ public class ReputationRepositoryImpl implements ReputationRepository {
         return reputationFactory
                 .createCloudLikeDislikeDataSource()
                 .getLikeDislikeReview(requestParams);
+    }
+
+    @Override
+    public Observable<DataResponseReviewProduct> getReviewProductList(String productId, String page, String perPage, String rating) {
+        return reputationFactory
+                .createCloudGetReviewProductList()
+                .getReviewProductList(productId, page, perPage, rating);
+    }
+
+    @Override
+    public Observable<DataResponseReviewShop> getReviewShopList(RequestParams requestParams) {
+        return reputationFactory
+                .createCloudGetReviewShopList()
+                .getReviewShopList(requestParams);
+    }
+
+    @Override
+    public Observable<DataResponseReviewHelpful> getReviewHelpful(String shopId, String productId) {
+        return reputationFactory
+                .createCloudGetReviewHelpful()
+                .getReviewHelpfulList(shopId, productId);
+    }
+
+    @Override
+    public Observable<DataResponseReviewStarCount> getReviewStarCount(String productId) {
+        return reputationFactory
+                .createCloudGetReviewStarCount()
+                .getReviewStarCount(productId);
     }
 }

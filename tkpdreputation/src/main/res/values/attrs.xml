@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="RatingBarReview">
+        <attr name="numstars" format="integer" />
+        <attr name="rating" format="integer" />
+        <attr name="progress_bar_percentage" format="float"/>
+        <attr name="total_review" format="integer"/>
+    </declare-styleable>
+</resources>

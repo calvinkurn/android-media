@@ -31,6 +31,11 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.CloudSendReviewSubmit
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.CloudSendSmileyReputationDataSource;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.CloudSkipReviewDataSource;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.LocalInboxReputationDataSource;
+import com.tokopedia.tkpd.tkpdreputation.productreview.data.source.ProductReviewGetHelpfulReviewCloud;
+import com.tokopedia.tkpd.tkpdreputation.productreview.data.source.ProductReviewGetListProductCloud;
+import com.tokopedia.tkpd.tkpdreputation.productreview.data.source.ProductReviewGetStarCountCloud;
+import com.tokopedia.tkpd.tkpdreputation.productreview.data.source.ReputationReviewApi;
+import com.tokopedia.tkpd.tkpdreputation.shopreview.data.source.ShopReviewGetListReviewCloud;
 
 /**
  * @author by nisie on 8/14/17.
@@ -55,6 +60,7 @@ public class ReputationFactory {
     private final ReplyReviewMapper replyReviewMapper;
     private final GetLikeDislikeMapper getLikeDislikeMapper;
     private final LikeDislikeMapper likeDislikeMapper;
+    private final ReputationReviewApi reputationReviewApi;
 
     public ReputationFactory(TomeService tomeService,
                              ReputationService reputationService,
@@ -72,7 +78,7 @@ public class ReputationFactory {
                              DeleteReviewResponseMapper deleteReviewResponseMapper,
                              ReplyReviewMapper replyReviewMapper,
                              GetLikeDislikeMapper getLikeDislikeMapper,
-                             LikeDislikeMapper likeDislikeMapper) {
+                             LikeDislikeMapper likeDislikeMapper, ReputationReviewApi reputationReviewApi) {
         this.reputationService = reputationService;
         this.globalCacheManager = globalCacheManager;
         this.inboxReputationMapper = inboxReputationMapper;
@@ -90,6 +96,7 @@ public class ReputationFactory {
         this.replyReviewMapper = replyReviewMapper;
         this.getLikeDislikeMapper = getLikeDislikeMapper;
         this.likeDislikeMapper = likeDislikeMapper;
+        this.reputationReviewApi = reputationReviewApi;
     }
 
     public CloudInboxReputationDataSource createCloudInboxReputationDataSource() {
@@ -159,6 +166,30 @@ public class ReputationFactory {
         return new CloudLikeDislikeDataSource(
                 reputationService,
                 likeDislikeMapper
+        );
+    }
+
+    public ProductReviewGetListProductCloud createCloudGetReviewProductList() {
+        return new ProductReviewGetListProductCloud(
+                reputationReviewApi
+        );
+    }
+
+    public ShopReviewGetListReviewCloud createCloudGetReviewShopList() {
+        return new ShopReviewGetListReviewCloud(
+                reputationReviewApi
+        );
+    }
+
+    public ProductReviewGetHelpfulReviewCloud createCloudGetReviewHelpful() {
+        return new ProductReviewGetHelpfulReviewCloud(
+                reputationReviewApi
+        );
+    }
+
+    public ProductReviewGetStarCountCloud createCloudGetReviewStarCount() {
+        return new ProductReviewGetStarCountCloud(
+                reputationReviewApi
         );
     }
 }
