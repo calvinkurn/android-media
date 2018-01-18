@@ -53,7 +53,6 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
     public static final int PER_PAGE = 10;
     @Inject
     FlightOrderListPresenter presenter;
-//    private QuickFilterAdapter filterAdapter;
     private QuickSingleFilterView quickSingleFilterView;
 
     private String selectedFilter;
@@ -84,14 +83,6 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
         View view = inflater.inflate(R.layout.fragment_flight_order_list, container, false);
         quickSingleFilterView = view.findViewById(R.id.quick_filter);
         quickSingleFilterView.setListener(this);
-        /*RecyclerView filtersRecyclerView = view.findViewById(R.id.rv_filters);
-
-        filtersRecyclerView.setHasFixedSize(true);
-        filtersRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
-                LinearLayoutManager.HORIZONTAL, false));
-        filterAdapter = new QuickFilterAdapter();
-        filtersRecyclerView.setAdapter(filterAdapter);
-        filterAdapter.setListener(this);*/
         return view;
     }
 
@@ -129,13 +120,6 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
     public String getSelectedFilter() {
         return String.valueOf(selectedFilter);
     }
-
-/*    @Override
-    public void clearFilter() {
-        selectedFilter = "";
-        showSwipeLoading();
-        loadInitialData();
-    }*/
 
     @Override
     public void selectFilter(String typeFilter) {
