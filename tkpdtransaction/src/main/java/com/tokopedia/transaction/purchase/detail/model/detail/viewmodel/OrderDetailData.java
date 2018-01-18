@@ -1,12 +1,15 @@
 package com.tokopedia.transaction.purchase.detail.model.detail.viewmodel;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 
 /**
  * Created by kris on 11/2/17. Tokopedia
  */
 
-public class OrderDetailData {
+public class OrderDetailData implements Parcelable {
 
     private String orderId;
 
@@ -67,6 +70,64 @@ public class OrderDetailData {
     private String totalPayment;
 
     private ButtonData buttonData;
+
+    private String driverName;
+
+    private String driverPhone;
+
+    private String driverImage;
+
+    private String driverVehicle;
+
+    public OrderDetailData() {
+    }
+
+    protected OrderDetailData(Parcel in) {
+        orderId = in.readString();
+        orderCode = in.readString();
+        orderStatus = in.readString();
+        resoId = in.readString();
+        orderImage = in.readString();
+        purchaseDate = in.readString();
+        responseTimeLimit = in.readString();
+        deadlineColorString = in.readString();
+        shopId = in.readString();
+        shopName = in.readString();
+        shopLogo = in.readString();
+        buyerName = in.readString();
+        courierName = in.readString();
+        shippingAddress = in.readString();
+        partialOrderStatus = in.readString();
+        preorderPeriod = in.readString();
+        preorderPeriodText = in.readString();
+        isPreorder = in.readByte() != 0;
+        dropshipperName = in.readString();
+        dropshipperPhone = in.readString();
+        invoiceNumber = in.readString();
+        invoiceUrl = in.readString();
+        totalItemQuantity = in.readString();
+        productPrice = in.readString();
+        deliveryPrice = in.readString();
+        insurancePrice = in.readString();
+        additionalFee = in.readString();
+        totalPayment = in.readString();
+        driverName = in.readString();
+        driverPhone = in.readString();
+        driverImage = in.readString();
+        driverVehicle = in.readString();
+    }
+
+    public static final Creator<OrderDetailData> CREATOR = new Creator<OrderDetailData>() {
+        @Override
+        public OrderDetailData createFromParcel(Parcel in) {
+            return new OrderDetailData(in);
+        }
+
+        @Override
+        public OrderDetailData[] newArray(int size) {
+            return new OrderDetailData[size];
+        }
+    };
 
     public String getOrderId() {
         return orderId;
@@ -306,5 +367,78 @@ public class OrderDetailData {
 
     public void setOrderCode(String orderCode) {
         this.orderCode = orderCode;
+    }
+
+    public String getDriverName() {
+        return driverName;
+    }
+
+    public void setDriverName(String driverName) {
+        this.driverName = driverName;
+    }
+
+    public String getDriverPhone() {
+        return driverPhone;
+    }
+
+    public void setDriverPhone(String driverPhone) {
+        this.driverPhone = driverPhone;
+    }
+
+    public String getDriverImage() {
+        return driverImage;
+    }
+
+    public void setDriverImage(String driverImage) {
+        this.driverImage = driverImage;
+    }
+
+    public String getDriverVehicle() {
+        return driverVehicle;
+    }
+
+    public void setDriverVehicle(String driverVehicle) {
+        this.driverVehicle = driverVehicle;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(orderId);
+        dest.writeString(orderCode);
+        dest.writeString(orderStatus);
+        dest.writeString(resoId);
+        dest.writeString(orderImage);
+        dest.writeString(purchaseDate);
+        dest.writeString(responseTimeLimit);
+        dest.writeString(deadlineColorString);
+        dest.writeString(shopId);
+        dest.writeString(shopName);
+        dest.writeString(shopLogo);
+        dest.writeString(buyerName);
+        dest.writeString(courierName);
+        dest.writeString(shippingAddress);
+        dest.writeString(partialOrderStatus);
+        dest.writeString(preorderPeriod);
+        dest.writeString(preorderPeriodText);
+        dest.writeByte((byte) (isPreorder ? 1 : 0));
+        dest.writeString(dropshipperName);
+        dest.writeString(dropshipperPhone);
+        dest.writeString(invoiceNumber);
+        dest.writeString(invoiceUrl);
+        dest.writeString(totalItemQuantity);
+        dest.writeString(productPrice);
+        dest.writeString(deliveryPrice);
+        dest.writeString(insurancePrice);
+        dest.writeString(additionalFee);
+        dest.writeString(totalPayment);
+        dest.writeString(driverName);
+        dest.writeString(driverPhone);
+        dest.writeString(driverImage);
+        dest.writeString(driverVehicle);
     }
 }

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="filter_tokocash_selected">#42b549</color>
+    <color name="filter_inside_orange">#ed6b2e</color>
+    <color name="filter_inside_blue">#29bbd1</color>
+    <color name="filter_inside_green">#a2cf63</color>
+    <color name="filter_inside_green_medium">#42b549</color>
+    <color name="separator_grey">#dedede</color>
+    <color name="separator_green">@color/tkpd_main_green</color>
+    <color name="separator_red">#f13700</color>
+
+    <color name="grey_text">#61000000</color>
+    <color name="grey_nonactive_text">#42000000</color>
+</resources>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@drawable/interactive_adapter_template_chat">
+
+    <TextView
+        android:id="@+id/caption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/edit"
+        android:layout_toStartOf="@+id/edit"
+        android:paddingLeft="@dimen/new_margin_med"
+        android:paddingBottom="@dimen/new_margin_sm"
+        android:paddingTop="@dimen/new_margin_sm"
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/text_size_medium"
+        android:maxLines="2"
+        android:scrollbars="horizontal"
+        android:ellipsize="end"
+        android:lineSpacingExtra="1sp"
+        android:text="Hai barang ini ready ga?Hai barang ini ready ga?Hai barang ini ready ga?Hai barang ini ready ga?Hai barang ini ready ga?" />
+
+    <ImageView
+        android:id="@+id/setting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:paddingTop="@dimen/new_margin_sm"
+        android:paddingBottom="@dimen/new_margin_sm"
+        android:paddingRight="@dimen/new_margin_med"
+        android:paddingLeft="@dimen/new_margin_med"
+        android:src="@drawable/ic_drag" />
+
+
+    <ImageView
+        android:id="@+id/edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/setting"
+        android:layout_toStartOf="@+id/setting"
+        android:layout_centerVertical="true"
+        android:paddingTop="@dimen/new_margin_sm"
+        android:paddingBottom="@dimen/new_margin_sm"
+        android:paddingRight="@dimen/new_margin_med"
+        android:paddingLeft="@dimen/new_margin_med"
+        android:src="@drawable/ic_edit" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="1dp"
+        android:layout_height="24dp"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/edit"
+        android:layout_toRightOf="@+id/edit"
+        android:background="#e0e0e0" />
+
+
+    <View
+        android:id="@+id/bottom_divider"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_alignBottom="@+id/caption"
+        android:layout_marginLeft="@dimen/new_margin_med"
+        android:background="#e0e0e0" />
+
+</RelativeLayout>

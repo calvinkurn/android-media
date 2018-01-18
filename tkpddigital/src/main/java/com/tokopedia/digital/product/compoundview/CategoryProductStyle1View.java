@@ -115,7 +115,11 @@ public class CategoryProductStyle1View extends
 
     @Override
     protected void onInstantCheckoutUnChecked() {
-        btnBuyDigital.setText(context.getString(R.string.label_btn_buy_digital));
+        if (operatorSelected != null) {
+            setBtnBuyDigitalText(operatorSelected.getRule().getButtonText());
+        } else {
+            btnBuyDigital.setText(context.getString(R.string.label_btn_buy_digital));
+        }
     }
 
     @Override
@@ -230,21 +234,6 @@ public class CategoryProductStyle1View extends
         }
     }
 
-    @NonNull
-    private OnClickListener getButtonBuyClickListener() {
-        return new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (cbInstantCheckout.isChecked())
-                    UnifyTracking.eventClickBeliInstantSaldo(data.getName(), data.getName());
-                else
-                    UnifyTracking.eventClickBeli(data.getName(), data.getName());
-
-                actionListener.onButtonBuyClicked(generatePreCheckoutData());
-            }
-        };
-    }
-
     private PreCheckoutProduct generatePreCheckoutData() {
         PreCheckoutProduct preCheckoutProduct = new PreCheckoutProduct();
         boolean canBeCheckout = false;
@@ -309,6 +298,21 @@ public class CategoryProductStyle1View extends
     }
 
     @NonNull
+    private OnClickListener getButtonBuyClickListener() {
+        return new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (cbInstantCheckout.isChecked())
+                    UnifyTracking.eventClickBeliInstantSaldo(data.getName(), data.getName());
+                else
+                    UnifyTracking.eventClickBeli(data.getName(), data.getName());
+
+                actionListener.onButtonBuyClicked(generatePreCheckoutData());
+            }
+        };
+    }
+
+    @NonNull
     private ClientNumberInputView.ActionListener getActionListenerClientNumberInput() {
         return new ClientNumberInputView.ActionListener() {
             @Override
@@ -325,6 +329,7 @@ public class CategoryProductStyle1View extends
                         if (validClientNumber.startsWith(prefix)) {
                             operatorSelected = operator;
                             clientNumberInputView.enableImageOperator(operator.getImage());
+                            setBtnBuyDigitalText(operatorSelected.getRule().getButtonText());
                             if (operatorSelected.getRule().getProductViewStyle() == 99) {
                                 renderDefaultProductSelected();
                             } else {
@@ -367,6 +372,34 @@ public class CategoryProductStyle1View extends
         };
     }
 
+    @NonNull
+    private BaseDigitalChooserView.ActionListener<Product> getActionListenerProductChooser() {
+        return new BaseDigitalChooserView.ActionListener<Product>() {
+            @Override
+            public void onUpdateDataDigitalChooserSelectedRendered(Product data) {
+                productSelected = data;
+                renderAdditionalInfoProduct();
+                renderPriceInfoProduct();
+            }
+
+            @Override
+            public void onDigitalChooserClicked(List<Product> data) {
+                actionListener.onProductChooserStyle1Clicked(
+                        data, operatorSelected.getOperatorId(),
+                        operatorSelected != null ? operatorSelected.getRule().getProductText() : ""
+                );
+            }
+        };
+    }
+
+    private void setBtnBuyDigitalText(String buttonText) {
+        if (!TextUtils.isEmpty(buttonText)) {
+            btnBuyDigital.setText(buttonText);
+        } else {
+            btnBuyDigital.setText(context.getString(R.string.label_btn_buy_digital));
+        }
+    }
+
     private void renderDefaultProductSelected() {
         clearHolder(holderChooserProduct);
         clearHolder(holderAdditionalInfoProduct);
@@ -387,25 +420,6 @@ public class CategoryProductStyle1View extends
 
     }
 
-    @NonNull
-    private BaseDigitalChooserView.ActionListener<Product> getActionListenerProductChooser() {
-        return new BaseDigitalChooserView.ActionListener<Product>() {
-            @Override
-            public void onUpdateDataDigitalChooserSelectedRendered(Product data) {
-                productSelected = data;
-                renderAdditionalInfoProduct();
-                renderPriceInfoProduct();
-            }
-
-            @Override
-            public void onDigitalChooserClicked(List<Product> data) {
-                actionListener.onProductChooserStyle1Clicked(
-                        data, operatorSelected != null ? operatorSelected.getRule().getProductText() : ""
-                );
-            }
-        };
-    }
-
     private void renderPriceInfoProduct() {
         clearHolder(holderPriceInfoProduct);
         if (operatorSelected != null && operatorSelected.getRule().isShowPrice()) {
@@ -419,7 +433,6 @@ public class CategoryProductStyle1View extends
         productAdditionalInfoView.renderData(productSelected);
         holderAdditionalInfoProduct.addView(productAdditionalInfoView);
     }
-
 
     private boolean hasLastOrderHistoryData() {
         return historyClientNumber != null && historyClientNumber.getLastOrderClientNumber() != null;
