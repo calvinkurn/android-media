@@ -72,4 +72,6 @@ public interface FlightRepository {
     Observable<List<BannerDetail>> getBanners(Map<String, String> params);
 
     Observable<List<FlightAirportDB>> getPhoneCodeList(String string);
+
+    Observable<FlightAirlineDB> getAirlineById(String airlineId);
 }
