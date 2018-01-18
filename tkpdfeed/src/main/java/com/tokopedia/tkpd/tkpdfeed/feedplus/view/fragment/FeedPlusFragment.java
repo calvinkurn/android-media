@@ -51,6 +51,9 @@ import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.topads.Data;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.topads.Product;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.topads.Shop;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.FollowKolPostUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.BlogWebViewActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.FeedPlusDetailActivity;
@@ -64,6 +67,8 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.productcard.
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.FeedTrackingEventLabel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.LocalAdsClickListener;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.TopAdsInfoClickListener;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareBottomDialog;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsModel;
@@ -75,17 +80,8 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ProductFeedViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.promo.PromoCardViewModel;
-import com.tokopedia.topads.sdk.base.adapter.Item;
-import com.tokopedia.topads.sdk.domain.model.Data;
-import com.tokopedia.topads.sdk.domain.model.Product;
-import com.tokopedia.topads.sdk.domain.model.Shop;
-import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
-import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
-import com.tokopedia.topads.sdk.listener.TopAdsListener;
-import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ClientViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.TopAdsViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.feed.ShopFeedViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.topads.ShopFeedViewModel;
 
 import java.util.ArrayList;
 
@@ -100,7 +96,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         FeedPlus.View.Toppicks,
         FeedPlus.View.Kol,
         SwipeRefreshLayout.OnRefreshListener,
-        TopAdsItemClickListener, TopAdsInfoClickListener, TopAdsListener {
+        LocalAdsClickListener, TopAdsInfoClickListener {
 
     private static final int OPEN_DETAIL = 54;
     private static final int OPEN_KOL_COMMENT = 101;
@@ -250,7 +246,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
         });
     }
 
-    private void trackImpression(Item item, int position) {
+    private void trackImpression(Visitable item, int position) {
         if (isInspirationItem(item)) {
             UnifyTracking.eventR3(AppEventTracking.Action.IMPRESSION,
                     FeedTrackingEventLabel.Impression.FEED_RECOMMENDATION);
@@ -260,18 +256,16 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
     }
 
-    private boolean isPromoItem(Item item) {
-        return item instanceof ClientViewModel
-                && adapter.getlist().get(item.originalPos()) instanceof PromoCardViewModel;
+    private boolean isPromoItem(Visitable item) {
+        return item instanceof PromoCardViewModel;
     }
 
-    private boolean isInspirationItem(Item item) {
-        return item instanceof ClientViewModel
-                && adapter.getlist().get(item.originalPos()) instanceof InspirationViewModel;
+    private boolean isInspirationItem(Visitable item) {
+        return item instanceof InspirationViewModel;
     }
 
-    private boolean isTopads(Item item) {
-        return item.originalPos() == TopAdsViewModel.TOP_ADS_POSITION_TYPE;
+    private boolean isTopads(Visitable item) {
+        return item instanceof FeedTopAdsViewModel;
     }
 
     private boolean itemIsFullScreen() {
@@ -513,7 +507,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void updateFavorite(int adapterPosition) {
-        Object item = ((TopAdsViewModel) adapter.getlist().get(adapterPosition)).getList().get(0);
+        Object item = ((FeedTopAdsViewModel) adapter.getlist().get(adapterPosition)).getList().get(0);
         if (item instanceof ShopFeedViewModel) {
             ShopFeedViewModel castedItem = ((ShopFeedViewModel) item);
             Data currentData = castedItem.getData();
@@ -724,22 +718,22 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onProductItemClicked(Product product) {
+    public void onProductItemClicked(int position, Data data) {
         Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity(),
-                product.getId());
+                data.getProduct().getId());
         getActivity().startActivity(intent);
-        UnifyTracking.eventFeedClickProduct(product.getId(),
+        UnifyTracking.eventFeedClickProduct(data.getProduct().getId(),
                 FeedTrackingEventLabel.Click.TOP_ADS_PRODUCT);
 
     }
 
     @Override
-    public void onShopItemClicked(Shop shop) {
-        Bundle bundle = ShopInfoActivity.createBundle(shop.getId(), "");
+    public void onShopItemClicked(int position, Data data) {
+        Bundle bundle = ShopInfoActivity.createBundle(data.getShop().getId(), "");
         Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
         intent.putExtras(bundle);
         getActivity().startActivity(intent);
-        UnifyTracking.eventFeedClickShop(shop.getId(), FeedTrackingEventLabel.Click.TOP_ADS_SHOP);
+        UnifyTracking.eventFeedClickShop(data.getShop().getId(), FeedTrackingEventLabel.Click.TOP_ADS_SHOP);
 
     }
 
@@ -749,16 +743,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         UnifyTracking.eventFeedClickShop(dataShop.getShop().getId(),
                 FeedTrackingEventLabel.Click.TOP_ADS_FAVORITE);
 
-    }
-
-    @Override
-    public void onTopAdsLoaded() {
-        hideTopAdsAdapterLoading();
-    }
-
-    @Override
-    public void onTopAdsFailToLoad(int errorCode, String message) {
-        hideTopAdsAdapterLoading();
     }
 
     public void scrollToTop() {

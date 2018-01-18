@@ -375,9 +375,10 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
 
     }
 
-    private FeedTopAdsViewModel convertToTopadsViewModel(int page) {
-        return new FeedTopAdsViewModel(page);
-    }
+    //TODO milhamj
+//    private FeedTopAdsViewModel convertToTopadsViewModel(int page) {
+//        return new FeedTopAdsViewModel(page);
+//    }
 
     private KolRecommendationViewModel convertToKolRecommendationViewModel(KolRecommendationDomain domain) {
         return new KolRecommendationViewModel(
