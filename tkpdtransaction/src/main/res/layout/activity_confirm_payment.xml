@@ -82,14 +82,15 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Nomor Resi" />
+                    android:text="@string/label_awb_number" />
 
                 <EditText
                     android:id="@+id/barcode_edit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="isi Nomor Resi"
-                    android:textSize="@dimen/text_size_small" />
+                    android:hint="@string/label_insert_awb"
+                    android:textSize="@dimen/text_size_small"
+                    android:inputType="textCapCharacters"/>
 
             </LinearLayout>
 

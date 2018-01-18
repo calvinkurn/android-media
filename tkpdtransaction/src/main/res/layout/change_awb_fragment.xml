@@ -40,7 +40,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawableEnd="@drawable/ic_barcode"
-                android:drawableRight="@drawable/ic_barcode"/>
+                android:drawableRight="@drawable/ic_barcode"
+                android:inputType="textCapCharacters"/>
 
         </android.support.design.widget.TextInputLayout>
 

@@ -2,6 +2,7 @@
     <string name="app_name">tkpdtransaction</string>
     <string name="title_change_payment">Ubah Pembayaran</string>
     <string name="title_confirm_shipment">Konfirmasi Pengiriman</string>
+    <string name="label_insert_awb">Isi Nomor Resi</string>
     <string name="message_failed_pick_image">Gambar gagal diambil</string>
     <string name="default_success_message_request_cancel_order">Berhasil mengajukan pembatalan pesanan</string>
     <string name="default_success_message_reject_order">Berhasil membatalkan pesanan</string>

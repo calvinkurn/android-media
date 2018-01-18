@@ -25,6 +25,7 @@ public class OrderCourierPresenterImpl implements OrderCourierPresenter {
     private static final String SHIPMENT_NAME = "shipment_name";
     private static final String SHIPPING_REF = "shipping_ref";
     private static final String SP_ID = "sp_id";
+    private static final String CONFIRM_ACTION_CONSTANT = "confirm";
 
     private OrderCourierInteractor interactor;
 
@@ -67,8 +68,9 @@ public class OrderCourierPresenterImpl implements OrderCourierPresenter {
 
     @Override
     public void onConfirmShipping(Context context, OrderDetailShipmentModel editableModel) {
+        view.showLoading();
         TKPDMapParam<String, String> params = new TKPDMapParam<>();
-        params.put(ACTION_TYPE, "confirm");
+        params.put(ACTION_TYPE, CONFIRM_ACTION_CONSTANT);
         params.put(ORDER_ID, editableModel.getOrderId());
         params.put(SHIPPING_REF, editableModel.getShippingRef());
         params.put(SHIPMENT_ID, editableModel.getShipmentId());
@@ -89,6 +91,7 @@ public class OrderCourierPresenterImpl implements OrderCourierPresenter {
 
                     @Override
                     public void onNext(String s) {
+                        view.hideLoading();
                         view.onSuccessConfirm(s);
                     }
                 });
