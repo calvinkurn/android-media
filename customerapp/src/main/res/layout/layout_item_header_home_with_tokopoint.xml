@@ -34,7 +34,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="@dimen/card_view_margin"
-                android:layout_marginBottom="@dimen/card_view_margin"
+                android:paddingBottom="@dimen/padding_vs"
                 android:orientation="vertical"
                 android:paddingTop="@dimen/padding_vs">
 
@@ -60,8 +60,8 @@
                         android:layout_height="wrap_content"
                         android:layout_alignBottom="@id/tv_balance_tokocash"
                         android:layout_alignTop="@id/tv_balance_tokocash"
+                        android:layout_margin="1dp"
                         android:layout_toRightOf="@id/tv_balance_tokocash"
-                        android:padding="1dp"
                         android:visibility="gone"
                         app:srcCompat="@drawable/ic_info" />
 
