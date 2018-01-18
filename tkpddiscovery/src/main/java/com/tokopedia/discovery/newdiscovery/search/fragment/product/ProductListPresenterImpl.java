@@ -224,16 +224,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                             } else {
                                 HeaderViewModel headerViewModel = new HeaderViewModel();
                                 headerViewModel.setSuggestionModel(productViewModel.getSuggestionModel());
-                                if (productViewModel.getOfficialStoreBannerModel() != null
-                                        && !productViewModel.getOfficialStoreBannerModel().getBannerUrl().isEmpty()) {
-                                    headerViewModel.setOfficialStoreBannerModel(productViewModel.getOfficialStoreBannerModel());
-                                }
-                                if(headerViewModel.hasHeader()) {
-                                    list.add(headerViewModel);
-                                    getView().setHeaderTopAds(true);
-                                } else {
-                                    getView().setHeaderTopAds(false);
-                                }
+                                list.add(headerViewModel);
                                 list.addAll(productViewModel.getProductList());
                                 getView().setProductList(list);
                                 getView().showBottomBarNavigation(true);

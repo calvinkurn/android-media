@@ -17,11 +17,10 @@ import okhttp3.ResponseBody;
  */
 public class TkpdErrorResponseInterceptor implements Interceptor {
     private static final int BYTE_COUNT = 2048;
-
     Class<? extends BaseResponseError> responseErrorClass;
     BaseResponseError responseError;
 
-    public TkpdErrorResponseInterceptor (@NonNull Class<? extends BaseResponseError> responseErrorClass) {
+    public TkpdErrorResponseInterceptor(@NonNull Class<? extends BaseResponseError> responseErrorClass) {
         this.responseErrorClass = responseErrorClass;
     }
 
@@ -31,7 +30,7 @@ public class TkpdErrorResponseInterceptor implements Interceptor {
 
         ResponseBody responseBody = null;
         String responseBodyString = "";
-        if (null != response && response.isSuccessful()) {
+        if (mightContainCustomError(response)) {
             responseBody = response.peekBody(BYTE_COUNT);
             responseBodyString = responseBody.string();
 
@@ -45,15 +44,18 @@ public class TkpdErrorResponseInterceptor implements Interceptor {
             if (responseError == null) { // no error object
                 return response;
             } else {
-                if (responseError.hasBody() ) {
+                if (responseError.hasBody()) {
                     throw responseError.createException();
-                }
-                else {
+                } else {
                     return response;
                 }
             }
         }
         return response;
+    }
+
+    protected boolean mightContainCustomError(Response response) {
+        return response != null && response.isSuccessful();
     }
 
 }

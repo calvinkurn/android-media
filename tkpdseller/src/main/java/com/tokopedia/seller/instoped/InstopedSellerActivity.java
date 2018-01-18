@@ -101,7 +101,7 @@ public class InstopedSellerActivity extends InstopedActivity {
                                     InstopedSellerActivity.this, getString(R.string.product_instagram_draft_error_save_resolution));
                         } else {
                             NetworkErrorHelper.showCloseSnackbar(
-                                    InstopedSellerActivity.this, ErrorHandler.getErrorMessage(e, InstopedSellerActivity.this));
+                                    InstopedSellerActivity.this, ErrorHandler.getErrorMessage(e));
                         }
                     }
 

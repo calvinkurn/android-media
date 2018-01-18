@@ -32,7 +32,7 @@ public class ReactNativeHostFactory {
                 .setInitialLifecycleState(LifecycleState.RESUMED)
                 .build();*/
 
-        return createReactNativeHostDev(application);
+        return createReactNativeHost(application);
 
     }
 
@@ -74,7 +74,7 @@ public class ReactNativeHostFactory {
 
             @Override
             protected String getJSMainModuleName() {
-                return "rnscript/index.android";
+                return "index.android";
             }
         };
     }

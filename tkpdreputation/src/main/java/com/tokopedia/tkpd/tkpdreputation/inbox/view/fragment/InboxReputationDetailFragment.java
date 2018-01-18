@@ -22,7 +22,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.apprating.AppRatingDialog;
+import com.tokopedia.core.apprating.SimpleAppRatingDialog;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
@@ -162,10 +162,14 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        presenter.getInboxDetail(
-                passModel.getReputationId(),
-                getArguments().getInt(InboxReputationDetailActivity.ARGS_TAB, -1)
-        );
+        if (passModel != null && !TextUtils.isEmpty(passModel.getReputationId())) {
+            presenter.getInboxDetail(
+                    passModel.getReputationId(),
+                    getArguments().getInt(InboxReputationDetailActivity.ARGS_TAB, -1)
+            );
+        }else{
+            getActivity().finish();
+        }
     }
 
     @Override
@@ -176,7 +180,8 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onErrorGetInboxDetail(String errorMessage) {
-        if (getActivity() != null && mainView != null)
+        if (getActivity() != null
+                && mainView != null)
             NetworkErrorHelper.showEmptyState(getActivity(), mainView, errorMessage,
                     new NetworkErrorHelper.RetryClickedListener() {
                         @Override
@@ -553,7 +558,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     public void showRatingDialog(Bundle bundle) {
         if (bundle != null && bundle.getFloat(InboxReputationFormActivity.ARGS_RATING) >= 3.0) {
-            AppRatingDialog.show(getActivity());
+            SimpleAppRatingDialog.show(getActivity());
         }
     }
 }
