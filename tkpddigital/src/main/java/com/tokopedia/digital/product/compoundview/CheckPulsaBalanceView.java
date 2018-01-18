@@ -39,7 +39,6 @@ public class CheckPulsaBalanceView extends LinearLayout {
     private ActionListener actionListener;
     private Context context;
     private String mobileNumber;
-    private String operatorName;
 
     public CheckPulsaBalanceView(Context context) {
         super(context);
@@ -78,7 +77,7 @@ public class CheckPulsaBalanceView extends LinearLayout {
         this.actionListener = actionListener;
     }
 
-    public void renderData(int simPosition, String ussdCode, String phoneNumber,String error, Boolean activeSim) {
+    public void renderData(int simPosition, String ussdCode, String phoneNumber,String operatorErrorMsg, Boolean activeSim,String operatorName) {
         if (phoneNumber != null && !"".equalsIgnoreCase(phoneNumber.trim()))
             tvPhoneNumber.setText(context.getString(R.string.label_sim) + (simPosition + 1) + "- " + phoneNumber);
         else
@@ -87,28 +86,21 @@ public class CheckPulsaBalanceView extends LinearLayout {
         if (activeSim) {
             this.btnCheckBalance.setOnClickListener(getButtonCheckBalanceClicked(simPosition, ussdCode));
             errorOperator.setVisibility(GONE);
-            if (error != null && operatorName != null) {
+            if (operatorErrorMsg != null && operatorName != null) {
                 tvPhoneNumber.setText(context.getString(R.string.label_sim) + (simPosition + 1) + "- " + operatorName);
-
             }
         } else {
             btnCheckBalance.setBackgroundColor(context.getResources().getColor(R.color.grey_hint));
             errorOperator.setVisibility(VISIBLE);
-            errorOperator.setText(error);
+            errorOperator.setText(operatorErrorMsg);
             if (operatorName != null) {
                 tvPhoneNumber.setText(context.getString(R.string.label_sim) + (simPosition + 1) + "- " + operatorName);
-
             }
         }
-
     }
 
     public String getPhoneNumberText() {
         return this.mobileNumber;
-    }
-
-    public void setOperatorName(String operatorName ){
-        this.operatorName = operatorName;
     }
 
     @NonNull

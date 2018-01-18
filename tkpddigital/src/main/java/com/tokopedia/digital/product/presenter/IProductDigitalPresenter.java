@@ -52,4 +52,6 @@ public interface IProductDigitalPresenter {
 
     boolean isCarrierSignalsNotAvailable(String carrierName);
 
+    void renderCheckPulsa();
+
 }
