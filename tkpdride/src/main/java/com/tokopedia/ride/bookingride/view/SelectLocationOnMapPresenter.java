@@ -248,9 +248,9 @@ public class SelectLocationOnMapPresenter extends BaseDaggerPresenter<SelectLoca
 
             @Override
             public void onNext(ReverseGeoCodeAddress reverseGeoCodeAddres) {
-                String title = reverseGeoCodeAddres.getAddressComponents()[0].getShortName();
+                //String title = reverseGeoCodeAddres.getAddressComponents()[0].getShortName();
                 String address = reverseGeoCodeAddres.getFormattedAddress();
-                handleAddressResult(title, address);
+                handleAddressResult(address, address);
             }
 
             private void handleAddressResult(String title, String address) {

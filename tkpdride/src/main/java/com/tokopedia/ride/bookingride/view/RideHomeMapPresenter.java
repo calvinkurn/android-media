@@ -443,12 +443,12 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
 
             @Override
             public void onNext(ReverseGeoCodeAddress reverseGeoCodeAddres) {
-                String title = reverseGeoCodeAddres.getAddressComponents()[0].getShortName();
+                //String title = reverseGeoCodeAddres.getAddressComponents()[0].getShortName();
                 String address = reverseGeoCodeAddres.getFormattedAddress();
 
 
                 if (isViewAttached() && !isUnsubscribed()) {
-                    getView().renderDefaultPickupLocation(latitude, longitude, title, address);
+                    getView().renderDefaultPickupLocation(latitude, longitude, address, address);
                 }
             }
         });
