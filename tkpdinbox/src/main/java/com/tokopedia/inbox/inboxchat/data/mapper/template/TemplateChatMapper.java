@@ -1,4 +1,4 @@
-package com.tokopedia.inbox.inboxchat.data.mapper;
+package com.tokopedia.inbox.inboxchat.data.mapper.template;
 
 import android.text.TextUtils;
 
@@ -54,17 +54,19 @@ public class TemplateChatMapper implements Func1<Response<TkpdResponse>, GetTemp
 
     private GetTemplateViewModel convertToDomain(TemplateData data) {
         GetTemplateViewModel model = new GetTemplateViewModel();
-        if(data.isIsEnable()){
-            List<Visitable> list = new ArrayList<>();
+        List<Visitable> list = new ArrayList<>();
+        if (data.getTemplates() != null) {
             for (int i = 0; i < data.getTemplates().size(); i++) {
-                if(!data.getTemplates().get(i).equals("_")){
+                if (!data.getTemplates().get(i).equals("_")) {
                     TemplateChatModel templateChatModel = new TemplateChatModel();
                     templateChatModel.setMessage(data.getTemplates().get(i));
                     list.add(templateChatModel);
                 }
             }
-            model.setListTemplate(list);
         }
+        model.setSuccess(data.isSuccess());
+        model.setEnabled(data.isIsEnable());
+        model.setListTemplate(list);
         return model;
     }
 

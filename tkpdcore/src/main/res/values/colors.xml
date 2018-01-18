@@ -123,4 +123,12 @@
 
     <color name="yellow_background">#fffcd3</color>
     <color name="yellow_border">#efe9a1</color>
+
+
+    <color name="red_template">#fdebec</color>
+    <color name="green_template">#f3fef3</color>
+    <color name="clicked_green">#8ad4efd5</color>
+    <color name="add_template_disabled">#26000000</color>
+
+
 </resources>

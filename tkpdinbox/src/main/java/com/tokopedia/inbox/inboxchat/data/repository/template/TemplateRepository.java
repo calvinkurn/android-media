@@ -1,6 +1,8 @@
-package com.tokopedia.inbox.inboxchat.data.repository;
+package com.tokopedia.inbox.inboxchat.data.repository.template;
 
+import com.google.gson.JsonObject;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.inbox.inboxchat.viewmodel.EditTemplateViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.GetTemplateViewModel;
 
 import rx.Observable;
@@ -13,5 +15,5 @@ public interface TemplateRepository {
 
     Observable<GetTemplateViewModel> getTemplate(TKPDMapParam<String, Object> parameters);
 
-
+    Observable<GetTemplateViewModel> setAvailabilityTemplate(JsonObject parameters);
 }

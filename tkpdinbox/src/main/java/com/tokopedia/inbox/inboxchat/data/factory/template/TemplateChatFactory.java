@@ -1,9 +1,9 @@
-package com.tokopedia.inbox.inboxchat.data.factory;
+package com.tokopedia.inbox.inboxchat.data.factory.template;
 
 import com.tokopedia.core.network.apiservices.chat.ChatService;
-import com.tokopedia.inbox.inboxchat.data.mapper.TemplateChatMapper;
-import com.tokopedia.inbox.inboxchat.data.source.CloudGetTemplateChatDataSource;
-import com.tokopedia.inbox.inboxchat.data.source.CloudSearchChatDataSource;
+import com.tokopedia.inbox.inboxchat.data.mapper.template.TemplateChatMapper;
+import com.tokopedia.inbox.inboxchat.data.source.template.CloudGetTemplateChatDataSource;
+import com.tokopedia.inbox.inboxchat.data.source.template.CloudSetTemplateChatDataSource;
 
 /**
  * Created by stevenfredian on 11/27/17.
@@ -23,4 +23,7 @@ public class TemplateChatFactory {
         return new CloudGetTemplateChatDataSource(templateChatMapper, chatService);
     }
 
+    public CloudSetTemplateChatDataSource createCloudSetTemplateDataSource() {
+        return new CloudSetTemplateChatDataSource(templateChatMapper, chatService);
+    }
 }
