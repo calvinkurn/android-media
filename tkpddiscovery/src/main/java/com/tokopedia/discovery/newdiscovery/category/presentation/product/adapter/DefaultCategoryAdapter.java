@@ -85,6 +85,8 @@ public class DefaultCategoryAdapter extends
 
     public interface CategoryListener {
         void onCategoryClick(ChildCategoryModel child);
+
+        void onBannerAdsClicked(String appLink);
     }
 
     public void addDataChild(List<ChildCategoryModel> children) {

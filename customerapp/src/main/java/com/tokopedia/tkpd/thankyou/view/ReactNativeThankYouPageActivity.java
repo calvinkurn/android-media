@@ -13,6 +13,9 @@ import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.apprating.AdvancedAppRatingDialog;
+import com.tokopedia.core.apprating.AppRatingDialog;
+import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.fragment.ReactNativeThankYouPageFragment;
 import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
@@ -22,6 +25,8 @@ import com.tokopedia.tkpdreactnative.react.ReactConst;
 
 public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
+    private static final String PLATFORM = "platform";
+    private static final String DIGITAL = "digital";
 
     private ReactInstanceManager reactInstanceManager;
 
@@ -72,7 +77,7 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_react_native_official_stores;
+        return R.layout.activity_react_native;
     }
 
     @Override
@@ -128,5 +133,34 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
         data.setTemplate(initialProps.getString(ThanksTrackerConst.Key.TEMPLATE));
         data.setId(initialProps.getString(ThanksTrackerConst.Key.ID));
         ThanksTrackerService.start(this, data);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(isDigital()) {
+            AdvancedAppRatingDialog.show(this, new AppRatingDialog.AppRatingListener() {
+                @Override
+                public void onDismiss() {
+                    closeThankyouPage();
+                }
+            });
+        } else {
+            closeThankyouPage();
+        }
+    }
+
+    private boolean isDigital() {
+        Bundle extra = getIntent().getExtras();
+        if(extra != null) {
+            String platform = extra.getString(PLATFORM);
+            if (platform != null && platform.equals(DIGITAL)) {
+                return  true;
+            }
+        }
+        return false;
+    }
+
+    private void closeThankyouPage() {
+        super.onBackPressed();
     }
 }

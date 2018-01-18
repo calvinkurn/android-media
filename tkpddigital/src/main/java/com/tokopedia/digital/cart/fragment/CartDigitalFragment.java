@@ -20,6 +20,8 @@ import android.widget.Toast;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.apprating.AdvancedAppRatingDialog;
+import com.tokopedia.core.apprating.AppRatingDialog;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -688,8 +690,13 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         } else if (requestCode == TopPayActivity.REQUEST_CODE) {
             switch (resultCode) {
                 case TopPayActivity.PAYMENT_SUCCESS:
-                    getActivity().setResult(IDigitalModuleRouter.PAYMENT_SUCCESS);
-                    closeView();
+                    AdvancedAppRatingDialog.show(getActivity(), new AppRatingDialog.AppRatingListener() {
+                        @Override
+                        public void onDismiss() {
+                            getActivity().setResult(IDigitalModuleRouter.PAYMENT_SUCCESS);
+                            closeView();
+                        }
+                    });
                     break;
                 case TopPayActivity.PAYMENT_FAILED:
                     showToastMessage(

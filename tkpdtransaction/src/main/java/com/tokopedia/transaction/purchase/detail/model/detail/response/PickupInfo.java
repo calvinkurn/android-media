@@ -4,22 +4,22 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by Irfan Khoirul on 12/01/18.
+ * Created by Irfan Khoirul on 09/01/18.
  */
 
 public class PickupInfo {
-    @SerializedName("pickup_code")
+    @SerializedName("name")
     @Expose
-    private String pickupCode;
+    private String name;
 
     public PickupInfo() {
     }
 
-    public String getPickupCode() {
-        return pickupCode;
+    public String getName() {
+        return name;
     }
 
-    public void setPickupCode(String pickupCode) {
-        this.pickupCode = pickupCode;
+    public void setName(String name) {
+        this.name = name;
     }
 }

@@ -6,6 +6,7 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.apiservice.DigitalEndpointService;
+import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.widget.data.entity.category.CategoryEntity;
 import com.tokopedia.digital.widget.data.entity.operator.OperatorEntity;
 import com.tokopedia.digital.widget.data.entity.product.ProductEntity;
@@ -32,7 +33,6 @@ import rx.functions.Func1;
 public class DigitalWidgetRepository implements IDigitalWidgetRepository {
 
     private final static String KEY_CATEGORY = "RECHARGE_CATEGORY";
-    private final static String KEY_STATUS = "RECHARGE_STATUS";
     private final static String KEY_PRODUCT = "RECHARGE_PRODUCT";
     private final static String KEY_OPERATOR = "RECHARGE_OPERATOR";
     private final static String KEY_STATUS_CURRENT = "RECHARGE_STATUS_CURRENT";
@@ -250,7 +250,13 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
     @Override
     public Observable<DigitalNumberList> getObservableNumberList(TKPDMapParam<String, String> param) {
         return digitalEndpointService.getApi().getNumberList(param)
-                .map(getFuncTransformNumberList());
+                .map(getFuncTransformNumberList())
+                .onErrorReturn(new Func1<Throwable, DigitalNumberList>() {
+                    @Override
+                    public DigitalNumberList call(Throwable throwable) {
+                        return new DigitalNumberList(new ArrayList<OrderClientNumber>(), null);
+                    }
+                });
     }
 
     private Func1<Response<TkpdDigitalResponse>, DigitalNumberList> getFuncTransformNumberList() {

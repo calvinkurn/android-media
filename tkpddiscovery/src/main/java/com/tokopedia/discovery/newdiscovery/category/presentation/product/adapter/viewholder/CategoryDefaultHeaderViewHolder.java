@@ -15,12 +15,20 @@ import android.widget.TextView;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.widgets.DividerItemDecoration;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.DefaultCategoryAdapter;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ChildCategoryModel;
+import com.tokopedia.topads.sdk.base.Config;
+import com.tokopedia.topads.sdk.base.Endpoint;
+import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
+import com.tokopedia.topads.sdk.view.TopAdsBannerView;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -34,12 +42,14 @@ public class CategoryDefaultHeaderViewHolder extends AbstractViewHolder<Category
 
     @LayoutRes
     public static final int LAYOUT = R.layout.default_category_header;
+    public static final String DEFAULT_ITEM_VALUE = "1";
 
     RecyclerView defaultCategoriesRecyclerView;
     LinearLayout expandLayout;
     LinearLayout hideLayout;
     CardView cardViewCategory;
     TextView totalProduct;
+    private final TopAdsBannerView topAdsBannerView;
 
     private final DefaultCategoryAdapter.CategoryListener categoryListener;
     private DefaultCategoryAdapter categoryAdapter;
@@ -56,9 +66,33 @@ public class CategoryDefaultHeaderViewHolder extends AbstractViewHolder<Category
         this.hideLayout = (LinearLayout) itemView.findViewById(R.id.hide_layout);
         this.cardViewCategory = (CardView) itemView.findViewById(R.id.card_category);
         this.totalProduct = (TextView) itemView.findViewById(R.id.total_product);
+        this.topAdsBannerView = (TopAdsBannerView) itemView.findViewById(R.id.topAdsBannerView);
+    }
+
+    private void initTopAds(String depId) {
+        TopAdsParams adsParams = new TopAdsParams();
+        adsParams.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_DIRECTORY);
+        adsParams.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, depId);
+        adsParams.getParam().put(TopAdsParams.KEY_ITEM, DEFAULT_ITEM_VALUE);
+
+        Config config = new Config.Builder()
+                .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
+                .setUserId(SessionHandler.getLoginID(context))
+                .setEndpoint(Endpoint.CPM)
+                .topAdsParams(adsParams)
+                .build();
+        this.topAdsBannerView.setConfig(config);
+        this.topAdsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
+            @Override
+            public void onBannerAdsClicked(String applink) {
+                categoryListener.onBannerAdsClicked(applink);
+            }
+        });
+        this.topAdsBannerView.loadTopAds();
     }
 
     public void bind(final CategoryHeaderModel categoryHeaderModel) {
+        initTopAds(categoryHeaderModel.getDepartementId());
         activeChildren = new ArrayList<>();
         hideLayout.setVisibility(View.GONE);
         if (categoryHeaderModel.getChildCategoryModelList() != null && categoryHeaderModel.getChildCategoryModelList().size() > 6) {

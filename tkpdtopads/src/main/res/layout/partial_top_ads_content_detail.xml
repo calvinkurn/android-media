@@ -20,21 +20,21 @@
         android:id="@+id/start"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:lv_font_size="@dimen/font_body1"
+        app:lv_font_size="@dimen/font_small"
         app:title="@string/label_top_ads_start"/>
 
     <com.tokopedia.seller.common.widget.LabelView
         android:id="@+id/end"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:lv_font_size="@dimen/font_body1"
+        app:lv_font_size="@dimen/font_small"
         app:title="@string/label_top_ads_end"/>
 
     <com.tokopedia.seller.common.widget.LabelView
         android:id="@+id/daily_budget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:lv_font_size="@dimen/font_body1"
+        app:lv_font_size="@dimen/font_small"
         app:title="@string/label_top_ads_daily_budget"/>
 
     <include layout="@layout/partial_top_ads_content_statistic_detail" />
