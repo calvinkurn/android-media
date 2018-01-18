@@ -107,6 +107,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
     }
 
     public void startShowCase(){
+
         final String showCaseTag = OpportunityListFragment.class.getName();
         if (ShowCasePreference.hasShown(getActivity(), showCaseTag)){
             return;
@@ -499,6 +500,9 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
 
         enableView();
 
+        if(!getUserVisibleHint())
+            return;
+
         startShowCase();
     }
 
@@ -608,6 +612,8 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser && getActivity() != null) {
             ScreenTracking.screen(getScreenName());
+
+            startShowCase();
         }
     }
 }
