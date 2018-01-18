@@ -124,50 +124,45 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
             paramQueryCategory.put(PARAM_IS_RESELLER, PARAM_VALUE_IS_RESELLER);
         }
 
-        TKPDMapParam<String, String> paramQueryBanner = new TKPDMapParam<>();
-        paramQueryBanner.put(PARAM_CATEGORY_ID, categoryId);
-
-        TKPDMapParam<String, String> paramQueryNumberList = new TKPDMapParam<>();
-        paramQueryNumberList.put(PARAM_CATEGORY_ID, categoryId);
+        TKPDMapParam<String, String> paramQueryFavoriteList = new TKPDMapParam<>();
+        paramQueryFavoriteList.put(PARAM_CATEGORY_ID, categoryId);
         if (!TextUtils.isEmpty(operatorId)) {
-            paramQueryNumberList.put(PARAM_OPERATOR_ID, operatorId);
+            paramQueryFavoriteList.put(PARAM_OPERATOR_ID, operatorId);
         }
         if (!TextUtils.isEmpty(productId)) {
-            paramQueryNumberList.put(PARAM_PRODUCT_ID, productId);
+            paramQueryFavoriteList.put(PARAM_PRODUCT_ID, productId);
         }
         if (!TextUtils.isEmpty(clientNumber)) {
-            paramQueryNumberList.put(PARAM_CLIENT_NUMBER, clientNumber);
+            paramQueryFavoriteList.put(PARAM_CLIENT_NUMBER, clientNumber);
         }
-        paramQueryNumberList.put(PARAM_SORT, PARAM_VALUE_SORT);
+        paramQueryFavoriteList.put(PARAM_SORT, PARAM_VALUE_SORT);
 
         view.showInitialProgressLoading();
 
         productDigitalInteractor.getCategoryAndBanner(
                 categoryId,
                 view.getGeneratedAuthParamNetwork(paramQueryCategory),
-                view.getGeneratedAuthParamNetwork(paramQueryBanner),
-                view.getGeneratedAuthParamNetwork(paramQueryNumberList),
-                view.getGeneratedAuthParamNetwork(new TKPDMapParam<String, String>()),
+                view.getGeneratedAuthParamNetwork(paramQueryFavoriteList),
                 getSubscriberProductDigitalData()
         );
     }
 
-    @Override
-    public void processStoreLastInputClientNumberByCategory(
-            String lastClientNumber, String categoryId, String operatorId, String productId
-    ) {
-        LocalCacheHandler localCacheHandler = view.getLastInputClientNumberChaceHandler();
-        localCacheHandler.putString(
-                TkpdCache.Key.DIGITAL_CLIENT_NUMBER_CATEGORY + categoryId, lastClientNumber
-        );
-        localCacheHandler.putString(
-                TkpdCache.Key.DIGITAL_OPERATOR_ID_CATEGORY + categoryId, operatorId
-        );
-        localCacheHandler.putString(
-                TkpdCache.Key.DIGITAL_PRODUCT_ID_CATEGORY + categoryId, productId
-        );
-        localCacheHandler.applyEditor();
-    }
+//    @Override
+//    public void processStoreLastInputClientNumberByCategory(
+//            String lastClientNumber, String categoryId, String operatorId, String productId
+//    ) {
+//        LocalCacheHandler localCacheHandler = view.getLastInputClientNumberChaceHandler();
+//        localCacheHandler.putString(
+//                TkpdCache.Key.DIGITAL_CLIENT_NUMBER_CATEGORY + categoryId, lastClientNumber
+//        );
+//        localCacheHandler.putString(
+//                TkpdCache.Key.DIGITAL_OPERATOR_ID_CATEGORY + categoryId, operatorId
+//        );
+//        localCacheHandler.putString(
+//                TkpdCache.Key.DIGITAL_PRODUCT_ID_CATEGORY + categoryId, productId
+//        );
+//        localCacheHandler.applyEditor();
+//    }
 
     @Override
     public ContactData processGenerateContactDataFromUri(Uri contactURI) {

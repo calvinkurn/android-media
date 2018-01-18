@@ -31,14 +31,10 @@ import com.tokopedia.digital.product.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.compoundview.CategoryProductStyle1View;
 import com.tokopedia.digital.product.compoundview.CategoryProductStyle2View;
 import com.tokopedia.digital.product.compoundview.CategoryProductStyle3View;
-import com.tokopedia.digital.product.data.mapper.IProductDigitalMapper;
 import com.tokopedia.digital.product.data.mapper.ProductDigitalMapper;
 import com.tokopedia.digital.product.domain.DigitalCategoryRepository;
+import com.tokopedia.digital.product.domain.DigitalCategoryUseCase;
 import com.tokopedia.digital.product.domain.IDigitalCategoryRepository;
-import com.tokopedia.digital.product.domain.IUssdCheckBalanceRepository;
-import com.tokopedia.digital.product.domain.UssdCheckBalanceRepository;
-import com.tokopedia.digital.product.interactor.IProductDigitalInteractor;
-import com.tokopedia.digital.product.interactor.ProductDigitalInteractor;
 import com.tokopedia.digital.product.model.CategoryData;
 import com.tokopedia.digital.product.model.ClientNumber;
 import com.tokopedia.digital.product.model.ContactData;
@@ -133,20 +129,17 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
         if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
 
         DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
-        IProductDigitalMapper productDigitalMapper = new ProductDigitalMapper();
         IDigitalWidgetRepository digitalWidgetRepository =
                 new DigitalWidgetRepository(digitalEndpointService, new FavoriteNumberListDataMapper());
         IDigitalCategoryRepository digitalCategoryRepository =
-                new DigitalCategoryRepository(digitalEndpointService, productDigitalMapper);
-        IUssdCheckBalanceRepository ussdCheckBalanceRepository = new UssdCheckBalanceRepository(digitalEndpointService, productDigitalMapper);
+                new DigitalCategoryRepository(digitalEndpointService, new ProductDigitalMapper());
 
-        IProductDigitalInteractor productDigitalInteractor =
-                new ProductDigitalInteractor(
-                        compositeSubscription, digitalWidgetRepository, digitalCategoryRepository,
-                        cacheHandlerLastInputClientNumber, ussdCheckBalanceRepository
-                );
+        DigitalCategoryUseCase digitalCategoryUseCase = new DigitalCategoryUseCase(
+                getActivity(), digitalCategoryRepository, digitalWidgetRepository
+        );
 
-        presenter = new DigitalWidgetPresenter(getActivity(), this, productDigitalInteractor);
+        presenter = new DigitalWidgetPresenter(getActivity(), this,
+                digitalCategoryUseCase);
     }
 
     @Override
@@ -398,18 +391,31 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
     }
 
     @Override
+    public void onDestroy() {
+        if (compositeSubscription != null && compositeSubscription.hasSubscriptions())
+            compositeSubscription.unsubscribe();
+
+        super.onDestroy();
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
+
         if (digitalProductView != null && categoryDataState != null) {
             Operator selectedOperator = digitalProductView.getSelectedOperator();
             Product selectedProduct = digitalProductView.getSelectedProduct();
-            presenter.processStoreLastInputClientNumberByCategory(
-                    digitalProductView.getClientNumber(),
-                    categoryDataState.getCategoryId(),
-                    selectedOperator != null ? selectedOperator.getOperatorId() : "",
-                    selectedProduct != null ? selectedProduct.getProductId() : "",
-                    cacheHandlerLastInputClientNumber
-            );
+
+            presenter.storeLastClientNumberTyped(categoryId, selectedOperator.getOperatorId(),
+                    digitalProductView.getClientNumber(), selectedProduct.getProductId());
+
+//            presenter.processStoreLastInputClientNumberByCategory(
+//                    digitalProductView.getClientNumber(),
+//                    categoryDataState.getCategoryId(),
+//                    selectedOperator != null ? selectedOperator.getOperatorId() : "",
+//                    selectedProduct != null ? selectedProduct.getProductId() : "",
+//                    cacheHandlerLastInputClientNumber
+//            );
         }
     }
 }

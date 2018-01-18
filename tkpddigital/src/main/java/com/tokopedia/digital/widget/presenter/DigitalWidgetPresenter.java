@@ -8,15 +8,13 @@ import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.product.compoundview.BaseDigitalProductView;
-import com.tokopedia.digital.product.interactor.IProductDigitalInteractor;
+import com.tokopedia.digital.product.domain.DigitalCategoryUseCase;
 import com.tokopedia.digital.product.model.CategoryData;
 import com.tokopedia.digital.product.model.ContactData;
 import com.tokopedia.digital.product.model.HistoryClientNumber;
@@ -36,9 +34,6 @@ public class DigitalWidgetPresenter extends BaseDigitalWidgetPresenter implement
     private final String PARAM_VALUE_IS_RESELLER = "1";
 
     private final String PARAM_CATEGORY_ID = "category_id";
-    private final String PARAM_OPERATOR_ID = "operator_id";
-    private final String PARAM_CLIENT_NUMBER = "client_number";
-    private final String PARAM_PRODUCT_ID = "product_id";
 
     private final String PARAM_SORT = "sort";
     private final String PARAM_VALUE_SORT = "label";
@@ -48,20 +43,17 @@ public class DigitalWidgetPresenter extends BaseDigitalWidgetPresenter implement
     private static final String PAKET_DATA_CATEGORY_ID = "2";
     private static final String ROAMING_CATEGORY_ID = "20";
 
-    private LocalCacheHandler localCacheHandlerLastClientNumber;
-    private LocalCacheHandler cacheHandlerRecentInstantCheckoutUsed;
-
     private Context context;
     private IDigitalWidgetView digitalWidgetView;
-    private IProductDigitalInteractor productDigitalInteractor;
+    private DigitalCategoryUseCase digitalCategoryUseCase;
 
     public DigitalWidgetPresenter(Context context,
                                   IDigitalWidgetView digitalWidgetView,
-                                  IProductDigitalInteractor productDigitalInteractor) {
+                                  DigitalCategoryUseCase digitalCategoryUseCase) {
         super(context);
         this.context = context;
         this.digitalWidgetView = digitalWidgetView;
-        this.productDigitalInteractor = productDigitalInteractor;
+        this.digitalCategoryUseCase = digitalCategoryUseCase;
     }
 
     @Override
@@ -71,61 +63,100 @@ public class DigitalWidgetPresenter extends BaseDigitalWidgetPresenter implement
             paramQueryCategory.put(PARAM_IS_RESELLER, PARAM_VALUE_IS_RESELLER);
         }
 
-        TKPDMapParam<String, String> paramQueryBanner = new TKPDMapParam<>();
-        paramQueryBanner.put(PARAM_CATEGORY_ID, categoryId);
+        TKPDMapParam<String, String> paramQueryFavoriteList = new TKPDMapParam<>();
+        paramQueryFavoriteList.put(PARAM_CATEGORY_ID, categoryId);
+        paramQueryFavoriteList.put(PARAM_SORT, PARAM_VALUE_SORT);
 
-        TKPDMapParam<String, String> paramQueryNumberList = new TKPDMapParam<>();
-        paramQueryNumberList.put(PARAM_CATEGORY_ID, categoryId);
-        paramQueryNumberList.put(PARAM_SORT, PARAM_VALUE_SORT);
+//        productDigitalInteractor.getCategoryAndBanner(
+//                categoryId,
+//                getGeneratedAuthParamNetwork(paramQueryCategory),
+//                getGeneratedAuthParamNetwork(paramQueryFavoriteList),
+//                new Subscriber<ProductDigitalData>() {
+//                    @Override
+//                    public void onCompleted() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onNext(ProductDigitalData productDigitalData) {
+//                        CategoryData categoryData = productDigitalData.getCategoryData();
+//                        HistoryClientNumber historyClientNumber =
+//                                productDigitalData.getHistoryClientNumber();
+//                        if (historyClientNumber.getLastOrderClientNumber() == null) {
+//                            String lastSelectedOperatorId = getLastOperatorSelected(categoryData.getCategoryId());
+//                            String lastSelectedProductId = getLastProductSelected(categoryData.getCategoryId());
+//                            String lastTypedClientNumber = getLastClientNumberTyped(categoryData.getCategoryId());
+//                            String verifiedNumber = SessionHandler.getPhoneNumber();
+//                            if (!TextUtils.isEmpty(lastTypedClientNumber)) {
+//                                historyClientNumber.setLastOrderClientNumber(
+//                                        new OrderClientNumber.Builder()
+//                                                .clientNumber(lastTypedClientNumber)
+//                                                .operatorId(lastSelectedOperatorId)
+//                                                .productId(lastSelectedProductId)
+//                                                .build());
+//                            } else if (isPulsaOrPaketDataOrRoaming(categoryData.getCategoryId()) &
+//                                    !TextUtils.isEmpty(verifiedNumber)) {
+//                                historyClientNumber.setLastOrderClientNumber(
+//                                        new OrderClientNumber.Builder()
+//                                                .clientNumber(verifiedNumber)
+//                                                .build());
+//                            }
+//                        }
+//                        renderCategoryDataAndBannerToView(
+//                                categoryData, historyClientNumber
+//                        );
+//                    }
+//                }
+//        );
 
-        productDigitalInteractor.getCategoryAndBanner(
-                categoryId,
-                getGeneratedAuthParamNetwork(paramQueryCategory),
-                getGeneratedAuthParamNetwork(paramQueryBanner),
-                getGeneratedAuthParamNetwork(paramQueryNumberList),
-                getGeneratedAuthParamNetwork(new TKPDMapParam<String, String>()),
-                new Subscriber<ProductDigitalData>() {
-                    @Override
-                    public void onCompleted() {
+        digitalCategoryUseCase.execute(digitalCategoryUseCase.createRequestParam(
+                categoryId, null, null, null, null, null
+        ), new Subscriber<ProductDigitalData>() {
+            @Override
+            public void onCompleted() {
 
-                    }
+            }
 
-                    @Override
-                    public void onError(Throwable e) {
+            @Override
+            public void onError(Throwable e) {
 
-                    }
+            }
 
-                    @Override
-                    public void onNext(ProductDigitalData productDigitalData) {
-                        CategoryData categoryData = productDigitalData.getCategoryData();
-                        HistoryClientNumber historyClientNumber =
-                                productDigitalData.getHistoryClientNumber();
-                        if (historyClientNumber.getLastOrderClientNumber() == null) {
-                            String lastSelectedOperatorId = getLastOperatorSelected(categoryData.getCategoryId());
-                            String lastSelectedProductId = getLastProductSelected(categoryData.getCategoryId());
-                            String lastTypedClientNumber = getLastClientNumberTyped(categoryData.getCategoryId());
-                            String verifiedNumber = SessionHandler.getPhoneNumber();
-                            if (!TextUtils.isEmpty(lastTypedClientNumber)) {
-                                historyClientNumber.setLastOrderClientNumber(
-                                        new OrderClientNumber.Builder()
-                                                .clientNumber(lastTypedClientNumber)
-                                                .operatorId(lastSelectedOperatorId)
-                                                .productId(lastSelectedProductId)
-                                                .build());
-                            } else if (isPulsaOrPaketDataOrRoaming(categoryData.getCategoryId()) &
-                                    !TextUtils.isEmpty(verifiedNumber)) {
-                                historyClientNumber.setLastOrderClientNumber(
-                                        new OrderClientNumber.Builder()
-                                                .clientNumber(verifiedNumber)
-                                                .build());
-                            }
-                        }
-                        renderCategoryDataAndBannerToView(
-                                categoryData, historyClientNumber
-                        );
+            @Override
+            public void onNext(ProductDigitalData productDigitalData) {
+                CategoryData categoryData = productDigitalData.getCategoryData();
+                HistoryClientNumber historyClientNumber =
+                        productDigitalData.getHistoryClientNumber();
+                if (historyClientNumber.getLastOrderClientNumber() == null) {
+                    String lastSelectedOperatorId = getLastOperatorSelected(categoryData.getCategoryId());
+                    String lastSelectedProductId = getLastProductSelected(categoryData.getCategoryId());
+                    String lastTypedClientNumber = getLastClientNumberTyped(categoryData.getCategoryId());
+                    String verifiedNumber = SessionHandler.getPhoneNumber();
+                    if (!TextUtils.isEmpty(lastTypedClientNumber)) {
+                        historyClientNumber.setLastOrderClientNumber(
+                                new OrderClientNumber.Builder()
+                                        .clientNumber(lastTypedClientNumber)
+                                        .operatorId(lastSelectedOperatorId)
+                                        .productId(lastSelectedProductId)
+                                        .build());
+                    } else if (isPulsaOrPaketDataOrRoaming(categoryData.getCategoryId()) &
+                            !TextUtils.isEmpty(verifiedNumber)) {
+                        historyClientNumber.setLastOrderClientNumber(
+                                new OrderClientNumber.Builder()
+                                        .clientNumber(verifiedNumber)
+                                        .build());
                     }
                 }
-        );
+                renderCategoryDataAndBannerToView(
+                        categoryData, historyClientNumber
+                );
+            }
+        });
     }
 
     private void renderCategoryDataAndBannerToView(CategoryData categoryData,
@@ -255,22 +286,22 @@ public class DigitalWidgetPresenter extends BaseDigitalWidgetPresenter implement
         return userLoginId + "_" + (token.isEmpty() ? timeMillis : token);
     }
 
-    @Override
-    public void processStoreLastInputClientNumberByCategory(
-            String lastClientNumber, String categoryId, String operatorId, String productId,
-            LocalCacheHandler cacheHandlerLastInputClientNumber
-    ) {
-        LocalCacheHandler localCacheHandler = cacheHandlerLastInputClientNumber;
-        localCacheHandler.putString(
-                TkpdCache.Key.DIGITAL_CLIENT_NUMBER_CATEGORY + categoryId, lastClientNumber
-        );
-        localCacheHandler.putString(
-                TkpdCache.Key.DIGITAL_OPERATOR_ID_CATEGORY + categoryId, operatorId
-        );
-        localCacheHandler.putString(
-                TkpdCache.Key.DIGITAL_PRODUCT_ID_CATEGORY + categoryId, productId
-        );
-        localCacheHandler.applyEditor();
-    }
+//    @Override
+//    public void processStoreLastInputClientNumberByCategory(
+//            String lastClientNumber, String categoryId, String operatorId, String productId,
+//            LocalCacheHandler cacheHandlerLastInputClientNumber
+//    ) {
+//        LocalCacheHandler localCacheHandler = cacheHandlerLastInputClientNumber;
+//        localCacheHandler.putString(
+//                TkpdCache.Key.DIGITAL_CLIENT_NUMBER_CATEGORY + categoryId, lastClientNumber
+//        );
+//        localCacheHandler.putString(
+//                TkpdCache.Key.DIGITAL_OPERATOR_ID_CATEGORY + categoryId, operatorId
+//        );
+//        localCacheHandler.putString(
+//                TkpdCache.Key.DIGITAL_PRODUCT_ID_CATEGORY + categoryId, productId
+//        );
+//        localCacheHandler.applyEditor();
+//    }
 
 }

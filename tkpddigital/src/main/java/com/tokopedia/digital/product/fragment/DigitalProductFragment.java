@@ -148,6 +148,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private static final String CLIP_DATA_LABEL_VOUCHER_CODE_DIGITAL =
             "CLIP_DATA_LABEL_VOUCHER_CODE_DIGITAL";
 
+    private ProductDigitalPresenter presenter;
+
     private Operator operatorSelectedState;
     private Product productSelectedState;
     private String clientNumberState;
@@ -288,8 +290,10 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
         IProductDigitalInteractor productDigitalInteractor =
                 new ProductDigitalInteractor(
-                        compositeSubscription, digitalWidgetRepository, digitalCategoryRepository,
-                        cacheHandlerLastInputClientNumber, ussdCheckBalanceRepository
+                        compositeSubscription,
+                        digitalWidgetRepository,
+                        digitalCategoryRepository,
+                        ussdCheckBalanceRepository
                 );
         presenter = new ProductDigitalPresenter(this, productDigitalInteractor);
     }
@@ -669,12 +673,16 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         if (digitalProductView != null && categoryDataState != null) {
             Operator selectedOperator = digitalProductView.getSelectedOperator();
             Product selectedProduct = digitalProductView.getSelectedProduct();
-            presenter.processStoreLastInputClientNumberByCategory(
-                    digitalProductView.getClientNumber(),
-                    categoryDataState.getCategoryId(),
-                    selectedOperator != null ? selectedOperator.getOperatorId() : "",
-                    selectedProduct != null ? selectedProduct.getProductId() : ""
-            );
+
+            presenter.storeLastClientNumberTyped(categoryId, selectedOperator.getOperatorId(),
+                    digitalProductView.getClientNumber(), selectedProduct.getProductId());
+
+//            presenter.processStoreLastInputClientNumberByCategory(
+//                    digitalProductView.getClientNumber(),
+//                    categoryDataState.getCategoryId(),
+//                    selectedOperator != null ? selectedOperator.getOperatorId() : "",
+//                    selectedProduct != null ? selectedProduct.getProductId() : ""
+//            );
         }
     }
 

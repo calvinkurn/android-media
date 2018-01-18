@@ -3,7 +3,6 @@ package com.tokopedia.digital.widget.presenter;
 import android.content.ContentResolver;
 import android.net.Uri;
 
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.digital.product.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.model.ContactData;
@@ -24,9 +23,9 @@ public interface IDigitalWidgetPresenter {
 
     ContactData processGenerateContactDataFromUri(Uri contactURI, ContentResolver contentResolver);
 
-    void processStoreLastInputClientNumberByCategory(
-            String lastClientNumber, String categoryId, String operatorId, String productId,
-            LocalCacheHandler cacheHandlerLastInputClientNumber
-    );
+//    void processStoreLastInputClientNumberByCategory(
+//            String lastClientNumber, String categoryId, String operatorId, String productId,
+//            LocalCacheHandler cacheHandlerLastInputClientNumber
+//    );
 
 }

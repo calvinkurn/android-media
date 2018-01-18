@@ -41,7 +41,6 @@ public class ProductDigitalInteractor implements IProductDigitalInteractor {
     public ProductDigitalInteractor(CompositeSubscription compositeSubscription,
                                     IDigitalWidgetRepository digitalWidgetRepository,
                                     IDigitalCategoryRepository categoryRepository,
-                                    LocalCacheHandler localCacheHandler,
                                     IUssdCheckBalanceRepository ussdCheckBalanceRepository) {
         this.compositeSubscription = compositeSubscription;
         this.digitalWidgetRepository = digitalWidgetRepository;
@@ -53,14 +52,12 @@ public class ProductDigitalInteractor implements IProductDigitalInteractor {
     public void getCategoryAndBanner(
             final String pathCategoryId,
             TKPDMapParam<String, String> paramQueryCategory,
-            TKPDMapParam<String, String> paramQueryBanner,
-            TKPDMapParam<String, String> paramQueryNumberList,
-            TKPDMapParam<String, String> paramQueryLastOrder,
+            TKPDMapParam<String, String> paramQueryFavoriteList,
             Subscriber<ProductDigitalData> subscriber) {
         compositeSubscription.add(
                 Observable.zip(
                         categoryRepository.getCategory(pathCategoryId, paramQueryCategory),
-                        getObservableNumberList(paramQueryNumberList),
+                        getObservableNumberList(paramQueryFavoriteList),
                         getZipFunctionProductDigitalData())
                         .subscribeOn(Schedulers.newThread())
                         .observeOn(AndroidSchedulers.mainThread())

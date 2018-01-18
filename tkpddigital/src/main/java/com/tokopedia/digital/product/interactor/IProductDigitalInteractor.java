@@ -16,9 +16,7 @@ public interface IProductDigitalInteractor {
     void getCategoryAndBanner(
             String pathCategoryId,
             TKPDMapParam<String, String> paramQueryCategory,
-            TKPDMapParam<String, String> paramQueryBanner,
-            TKPDMapParam<String, String> paramQueryLastNumber,
-            TKPDMapParam<String, String> paramQueryLastOrder,
+            TKPDMapParam<String, String> paramQueryFavoriteList,
             Subscriber<ProductDigitalData> subscriber
     );
 

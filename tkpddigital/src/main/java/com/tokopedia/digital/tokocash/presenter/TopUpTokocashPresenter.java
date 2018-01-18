@@ -63,14 +63,10 @@ public class TopUpTokocashPresenter implements ITopUpTokocashPresenter {
         if (GlobalConfig.isSellerApp()) {
             paramQueryCategory.put(PARAM_IS_RESELLER, VALUE_RESSELER);
         }
-        TKPDMapParam<String, String> paramQueryBanner = new TKPDMapParam<>();
-        paramQueryBanner.put(CATEGORY_ID, TOPUP_CATEGORY_ID);
 
         productDigitalInteractor.getCategoryAndBanner(
                 TOPUP_CATEGORY_ID,
                 view.getGeneratedAuthParamNetwork(paramQueryCategory),
-                view.getGeneratedAuthParamNetwork(paramQueryBanner),
-                view.getGeneratedAuthParamNetwork(new TKPDMapParam<String, String>()),
                 view.getGeneratedAuthParamNetwork(new TKPDMapParam<String, String>()),
                 getSubscriberProductDigitalData()
 

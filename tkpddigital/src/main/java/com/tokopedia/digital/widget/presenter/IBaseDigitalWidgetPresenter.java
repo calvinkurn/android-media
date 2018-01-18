@@ -15,9 +15,12 @@ public interface IBaseDigitalWidgetPresenter {
 
     void storeLastClientNumberTyped(String categoryId, String clientNumber, Product selectedProduct);
 
-    String getLastClientNumberTyped(String categoryId);
+    void storeLastClientNumberTyped(String categoryId, String operatorId, String clientNumber,
+                                           String productId);
 
     String getLastOperatorSelected(String categoryId);
+
+    String getLastClientNumberTyped(String categoryId);
 
     String getLastProductSelected(String categoryId);
 

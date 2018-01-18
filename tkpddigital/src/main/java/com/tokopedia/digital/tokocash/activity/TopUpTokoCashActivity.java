@@ -141,7 +141,9 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
                 new DigitalWidgetRepository(digitalEndpointService, new FavoriteNumberListDataMapper());
         IProductDigitalInteractor productDigitalInteractor =
                 new ProductDigitalInteractor(
-                        compositeSubscription, digitalWidgetRepository, digitalCategoryRepository, cacheHandler,
+                        compositeSubscription,
+                        digitalWidgetRepository,
+                        digitalCategoryRepository,
                         new UssdCheckBalanceRepository(digitalEndpointService, productDigitalMapper)
                 );
         ITokoCashRepository balanceRepository = new TokoCashRepository(new TokoCashService(

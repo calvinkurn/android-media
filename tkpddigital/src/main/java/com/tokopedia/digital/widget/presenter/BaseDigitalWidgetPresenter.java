@@ -69,12 +69,24 @@ public abstract class BaseDigitalWidgetPresenter implements IBaseDigitalWidgetPr
     }
 
     @Override
-    public String getLastClientNumberTyped(String categoryId) {
+    public void storeLastClientNumberTyped(String categoryId, String operatorId, String clientNumber,
+                                           String productId) {
         if (localCacheHandlerLastClientNumber == null)
             localCacheHandlerLastClientNumber = new LocalCacheHandler(
-                    context, TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER);
-        return localCacheHandlerLastClientNumber.getString(
-                TkpdCache.Key.DIGITAL_CLIENT_NUMBER_CATEGORY + categoryId, "");
+                    context, TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER
+            );
+        localCacheHandlerLastClientNumber.putString(
+                TkpdCache.Key.DIGITAL_CLIENT_NUMBER_CATEGORY + categoryId, clientNumber
+        );
+        localCacheHandlerLastClientNumber.putString(
+                TkpdCache.Key.DIGITAL_OPERATOR_ID_CATEGORY + categoryId,
+                operatorId
+        );
+        localCacheHandlerLastClientNumber.putString(
+                TkpdCache.Key.DIGITAL_PRODUCT_ID_CATEGORY + categoryId,
+                productId
+        );
+        localCacheHandlerLastClientNumber.applyEditor();
     }
 
     @Override
@@ -84,6 +96,15 @@ public abstract class BaseDigitalWidgetPresenter implements IBaseDigitalWidgetPr
                     context, TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER);
         return localCacheHandlerLastClientNumber.getString(
                 TkpdCache.Key.DIGITAL_OPERATOR_ID_CATEGORY + categoryId, "");
+    }
+
+    @Override
+    public String getLastClientNumberTyped(String categoryId) {
+        if (localCacheHandlerLastClientNumber == null)
+            localCacheHandlerLastClientNumber = new LocalCacheHandler(
+                    context, TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER);
+        return localCacheHandlerLastClientNumber.getString(
+                TkpdCache.Key.DIGITAL_CLIENT_NUMBER_CATEGORY + categoryId, "");
     }
 
     @Override
