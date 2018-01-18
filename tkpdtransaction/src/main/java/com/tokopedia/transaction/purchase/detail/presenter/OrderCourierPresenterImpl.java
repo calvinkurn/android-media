@@ -86,6 +86,7 @@ public class OrderCourierPresenterImpl implements OrderCourierPresenter {
 
                     @Override
                     public void onError(Throwable e) {
+                        view.hideLoading();
                         view.onShowError(e.getMessage());
                     }
 

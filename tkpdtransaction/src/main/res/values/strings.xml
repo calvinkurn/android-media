@@ -184,9 +184,10 @@
     <string name="title_confirm_courier_page">Anda dapat mengganti pengiriman menjadi kurir reguler</string>
     <string name="subtitle_confirm_courier_page">Dengan persetujuan dari Pembeli</string>
 
-    <string name="request_pickup_step_1">Pastikan Barang sudah siap untuk di-pickup</string>
-    <string name="request_pickup_step_2">Syarat dan Mohon tidak memberikan ongkos kirim pada driver</string>
-    <string name="request_pickup_step_3">Perkiraan driver mengambil barang: - maksimal jam 3</string>
+    <string name="request_pickup_step_1">Pastikan pesanan sudah siap untuk di-pick up</string>
+    <string name="request_pickup_step_2"><![CDATA[Mohon untuk <b>tidak</b> memberikan ongkos kirim pada driver]]></string>
+    <string name="request_pickup_step_3">Perkiraan driver akan datang untuk mengambil barang:\n - Same day maksimal 4 jam \n- Instan maksimal 2 jam</string>
+    <string name="request_pickup_info">Pelajari informasi lebih lengkap mengenai kurir yang menggunakan layanan pickup disini</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

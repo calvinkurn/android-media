@@ -59,6 +59,7 @@ import javax.inject.Inject;
 
 import static com.tokopedia.transaction.purchase.detail.fragment.RejectOrderBaseFragment.FRAGMENT_REJECT_ORDER_SUB_MENU_TAG;
 import static com.tokopedia.transaction.purchase.detail.fragment.RejectOrderFragment.REJECT_ORDER_MENU_FRAGMENT_TAG;
+import static com.tokopedia.transaction.purchase.detail.fragment.RequestPickupFragment.INFO_FRAGMENT_TAG;
 
 /**
  * Created by kris on 11/2/17. Tokopedia
@@ -133,7 +134,7 @@ public class OrderDetailActivity extends TActivity
     }
 
     private void setRejectionNoticeLayout(OrderDetailData data) {
-        if(data.isRequestCancel()) {
+        if (data.isRequestCancel()) {
             ViewGroup rejectionNoticeLayout = findViewById(R.id.header_view);
             TextView rejectionNoticeSubtitle = findViewById(R.id.rejection_notice_subtitle);
             rejectionNoticeLayout.setVisibility(View.VISIBLE);
@@ -561,7 +562,7 @@ public class OrderDetailActivity extends TActivity
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.animator.exit_bottom, R.animator.exit_bottom)
                 .remove(getFragmentManager()
-                .findFragmentByTag(VALIDATION_FRAGMENT_TAG)).commit();
+                        .findFragmentByTag(VALIDATION_FRAGMENT_TAG)).commit();
         toolbar.setTitle(getString(R.string.title_detail_transaction));
         onRefreshActivity();
     }
@@ -678,29 +679,26 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void onBackPressed() {
-        if (getFragmentManager().findFragmentByTag(VALIDATION_FRAGMENT_TAG) != null) {
+        if (getFragmentManager().findFragmentByTag(INFO_FRAGMENT_TAG) != null) {
+            removeFragmentOnBackPressed(INFO_FRAGMENT_TAG);
+        } else if (getFragmentManager().findFragmentByTag(VALIDATION_FRAGMENT_TAG) != null) {
             toolbar.setTitle(getString(R.string.title_detail_transaction));
-            getFragmentManager().beginTransaction()
-                    .setCustomAnimations(R.animator.slide_out_right, R.animator.slide_out_right)
-                    .remove(getFragmentManager()
-                    .findFragmentByTag(VALIDATION_FRAGMENT_TAG)).commit();
-        } else if(getFragmentManager().findFragmentByTag(FRAGMENT_REJECT_ORDER_SUB_MENU_TAG) != null) {
-            getFragmentManager().beginTransaction()
-                    .setCustomAnimations(R.animator.slide_out_right, R.animator.slide_out_right)
-                    .remove(getFragmentManager()
-                    .findFragmentByTag(FRAGMENT_REJECT_ORDER_SUB_MENU_TAG)).commit();
-        } else if(getFragmentManager().findFragmentByTag(REJECT_ORDER_MENU_FRAGMENT_TAG) != null) {
-            getFragmentManager().beginTransaction()
-                    .setCustomAnimations(R.animator.slide_out_right, R.animator.slide_out_right)
-                    .remove(getFragmentManager()
-                            .findFragmentByTag(REJECT_ORDER_MENU_FRAGMENT_TAG)).commit();
-        }else if(getFragmentManager().findFragmentByTag(REJECT_ORDER_FRAGMENT_TAG) != null) {
+            removeFragmentOnBackPressed(VALIDATION_FRAGMENT_TAG);
+        } else if (getFragmentManager().findFragmentByTag(FRAGMENT_REJECT_ORDER_SUB_MENU_TAG) != null) {
+            removeFragmentOnBackPressed(FRAGMENT_REJECT_ORDER_SUB_MENU_TAG);
+        } else if (getFragmentManager().findFragmentByTag(REJECT_ORDER_MENU_FRAGMENT_TAG) != null) {
+            removeFragmentOnBackPressed(REJECT_ORDER_MENU_FRAGMENT_TAG);
+        } else if (getFragmentManager().findFragmentByTag(REJECT_ORDER_FRAGMENT_TAG) != null) {
             toolbar.setTitle(getString(R.string.title_detail_transaction));
-            getFragmentManager().beginTransaction()
-                    .setCustomAnimations(R.animator.slide_out_right, R.animator.slide_out_right)
-                    .remove(getFragmentManager()
-                            .findFragmentByTag(REJECT_ORDER_FRAGMENT_TAG)).commit();
-        }else super.onBackPressed();
+            removeFragmentOnBackPressed(REJECT_ORDER_FRAGMENT_TAG);
+        } else super.onBackPressed();
+    }
+
+    private void removeFragmentOnBackPressed(String tag) {
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.animator.slide_out_right, R.animator.slide_out_right)
+                .remove(getFragmentManager()
+                        .findFragmentByTag(tag)).commit();
     }
 
     @Override
