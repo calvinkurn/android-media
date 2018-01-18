@@ -134,6 +134,7 @@ import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
+import com.tokopedia.tkpd.tkpdreputation.productreview.view.ProductReviewActivity;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.activity.ReputationProduct;
 import com.tokopedia.tkpd.tkpdreputation.shopreputation.ShopReputationList;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
@@ -384,7 +385,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getProductReputationIntent(Context context) {
-        return new Intent(context, ReputationProduct.class);
+        return new Intent(context, ProductReviewActivity.class);
     }
 
     @Override

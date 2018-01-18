@@ -20,6 +20,8 @@ import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewlist.Dat
 import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewlist.DataResponseReviewShop;
 import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewstarcount.DataResponseReviewStarCount;
 
+import java.util.HashMap;
+
 import rx.Observable;
 
 /**
@@ -154,10 +156,10 @@ public class ReputationRepositoryImpl implements ReputationRepository {
     }
 
     @Override
-    public Observable<DataResponseReviewShop> getReviewShopList(RequestParams requestParams) {
+    public Observable<DataResponseReviewShop> getReviewShopList(HashMap<String, String> params) {
         return reputationFactory
                 .createCloudGetReviewShopList()
-                .getReviewShopList(requestParams);
+                .getReviewShopList(params);
     }
 
     @Override

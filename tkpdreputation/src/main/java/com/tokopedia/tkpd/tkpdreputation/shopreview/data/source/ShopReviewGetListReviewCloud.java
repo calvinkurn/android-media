@@ -1,8 +1,12 @@
 package com.tokopedia.tkpd.tkpdreputation.shopreview.data.source;
 
+import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.core.base.common.util.GetData;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewlist.DataResponseReviewShop;
 import com.tokopedia.tkpd.tkpdreputation.productreview.data.source.ReputationReviewApi;
+
+import java.util.HashMap;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -20,11 +24,12 @@ public class ShopReviewGetListReviewCloud {
     }
 
 
-    public Observable<DataResponseReviewShop> getReviewShopList(RequestParams requestParams) {
-        return reputationReviewApi.getReviewShopList(requestParams.getParameters())
-                .map(new Func1<Response<DataResponseReviewShop>, DataResponseReviewShop>() {
+    public Observable<DataResponseReviewShop> getReviewShopList(HashMap<String, String> params) {
+        return reputationReviewApi.getReviewShopList(params)
+                .map(new GetData<DataResponse<DataResponseReviewShop>>())
+                .map(new Func1<DataResponse<DataResponseReviewShop>, DataResponseReviewShop>() {
                     @Override
-                    public DataResponseReviewShop call(Response<DataResponseReviewShop> dataResponseReviewShopResponse) {
+                    public DataResponseReviewShop call(DataResponse<DataResponseReviewShop> dataResponseReviewShopDataResponse) {
                         return null;
                     }
                 });

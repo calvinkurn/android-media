@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class Review {
 
+    public static final int INACTIVE_LIKE_DISLIKE = -1;
     @SerializedName("review_id")
     @Expose
     private int reviewId;
@@ -42,6 +43,8 @@ public class Review {
     @SerializedName("user")
     @Expose
     private User user;
+    private int totalLike = INACTIVE_LIKE_DISLIKE;
+    private int likeStatus;
 
     public int getReviewId() {
         return reviewId;
@@ -139,4 +142,19 @@ public class Review {
         this.user = user;
     }
 
+    public void setTotalLike(int totalLike) {
+        this.totalLike = totalLike;
+    }
+
+    public void setLikeStatus(int likeStatus) {
+        this.likeStatus = likeStatus;
+    }
+
+    public int getTotalLike() {
+        return totalLike;
+    }
+
+    public int getLikeStatus() {
+        return likeStatus;
+    }
 }

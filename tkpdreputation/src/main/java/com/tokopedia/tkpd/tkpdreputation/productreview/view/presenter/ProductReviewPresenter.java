@@ -1,5 +1,7 @@
 package com.tokopedia.tkpd.tkpdreputation.productreview.view.presenter;
 
+import android.text.TextUtils;
+
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.DeleteReviewResponseUseCase;
@@ -125,7 +127,7 @@ public class ProductReviewPresenter extends BaseDaggerPresenter<ProductReviewCon
     }
 
     public void getHelpfulReview(String productId) {
-        productReviewGetHelpfulUseCase.execute(productReviewGetHelpfulUseCase.createRequestParams(productId),
+        productReviewGetHelpfulUseCase.execute(productReviewGetHelpfulUseCase.createRequestParams(productId, sessionHandler.getLoginID()),
                 getSubscriberGetHelpfulReview());
     }
 
@@ -152,7 +154,7 @@ public class ProductReviewPresenter extends BaseDaggerPresenter<ProductReviewCon
 
     public void getProductReview(String productId, int page, int rating) {
         productReviewGetListUseCase.execute(productReviewGetListUseCase.createRequestParams(productId,
-                String.valueOf(page), String.valueOf(rating)), getSubscriberGetProductReview());
+                String.valueOf(page), String.valueOf(rating), sessionHandler.getLoginID()), getSubscriberGetProductReview());
     }
 
     private Subscriber<DataResponseReviewProduct> getSubscriberGetProductReview() {
@@ -171,7 +173,8 @@ public class ProductReviewPresenter extends BaseDaggerPresenter<ProductReviewCon
 
             @Override
             public void onNext(DataResponseReviewProduct dataResponseReviewProduct) {
-                getView().onGetListReviewProduct(productReviewListMapper.map(dataResponseReviewProduct, sessionHandler.getLoginID()));
+                getView().onGetListReviewProduct(productReviewListMapper.map(dataResponseReviewProduct, sessionHandler.getLoginID()),
+                        !TextUtils.isEmpty(dataResponseReviewProduct.getPaging().getUriNext()));
             }
         };
     }

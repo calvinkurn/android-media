@@ -26,7 +26,7 @@ public interface ReputationReviewApi {
     Observable<Response<DataResponse<DataResponseReviewProduct>>> getReviewProductList(@FieldMap Map<String, String> params);
 
     @GET(TkpdBaseURL.Reputation.PATH_GET_REVIEW_SHOP_LIST)
-    Observable<Response<DataResponse<DataResponseReviewShop>>> getReviewShopList(@FieldMap Map<String, Object> params);
+    Observable<Response<DataResponse<DataResponseReviewShop>>> getReviewShopList(@FieldMap Map<String, String> params);
 
     @GET(TkpdBaseURL.Reputation.PATH_GET_REVIEW_HELPFUL_LIST)
     Observable<Response<DataResponse<DataResponseReviewHelpful>>> getReviewHelpfulList(@FieldMap Map<String, String> params);

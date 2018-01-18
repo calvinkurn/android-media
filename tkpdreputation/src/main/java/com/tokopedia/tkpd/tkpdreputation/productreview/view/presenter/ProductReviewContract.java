@@ -1,8 +1,6 @@
 package com.tokopedia.tkpd.tkpdreputation.productreview.view.presenter;
 
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
-import com.tokopedia.abstraction.base.view.listener.CustomerView;
-import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.DeleteReviewResponseDomain;
@@ -37,11 +35,11 @@ public interface ProductReviewContract {
 
         void onGoToReportReview(String shopId, String reviewId);
 
-        void onGetListReviewProduct(List<ProductReviewModelContent> map);
+        void onGetListReviewProduct(List<ProductReviewModel> map, boolean isHasNextPage);
 
         void onErrorGetListReviewProduct(Throwable e);
 
-        void onGetListReviewHelpful(List<ProductReviewModelContent> map);
+        void onGetListReviewHelpful(List<ProductReviewModel> map);
 
         void onErrorGetListReviewHelpful(Throwable e);
 

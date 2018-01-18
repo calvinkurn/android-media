@@ -10,6 +10,7 @@ import com.tokopedia.core.network.apiservices.user.FaveShopActService;
 import com.tokopedia.core.network.apiservices.user.ReputationService;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdreputation.data.mapper.DeleteReviewResponseMapper;
 import com.tokopedia.tkpd.tkpdreputation.data.mapper.GetLikeDislikeMapper;
 import com.tokopedia.tkpd.tkpdreputation.data.mapper.LikeDislikeMapper;
@@ -49,6 +50,11 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.Send
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SetReviewFormCacheUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.SkipReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.productreview.data.source.ReputationReviewApi;
+import com.tokopedia.tkpd.tkpdreputation.productreview.domain.ProductReviewGetHelpfulUseCase;
+import com.tokopedia.tkpd.tkpdreputation.productreview.domain.ProductReviewGetListUseCase;
+import com.tokopedia.tkpd.tkpdreputation.productreview.domain.ProductReviewGetRatingUseCase;
+import com.tokopedia.tkpd.tkpdreputation.productreview.view.ProductReviewListMapper;
+import com.tokopedia.tkpd.tkpdreputation.productreview.view.presenter.ProductReviewPresenter;
 import com.tokopedia.tkpd.tkpdreputation.uploadimage.data.factory.ImageUploadFactory;
 import com.tokopedia.tkpd.tkpdreputation.uploadimage.data.mapper.GenerateHostMapper;
 import com.tokopedia.tkpd.tkpdreputation.uploadimage.data.mapper.UploadImageMapper;
@@ -547,4 +553,16 @@ public class ReputationModule {
         return new LikeDislikeMapper();
     }
 
+    @ReputationScope
+    @Provides
+    ProductReviewPresenter provideProductReviewPresenter(ProductReviewGetListUseCase productReviewGetListUseCase,
+                                                  ProductReviewGetHelpfulUseCase productReviewGetHelpfulUseCase,
+                                                  ProductReviewGetRatingUseCase productReviewGetRatingUseCase,
+                                                  LikeDislikeReviewUseCase likeDislikeReviewUseCase,
+                                                  DeleteReviewResponseUseCase deleteReviewResponseUseCase,
+                                                  ProductReviewListMapper productReviewListMapper,
+                                                  SessionHandler sessionHandler){
+        return new ProductReviewPresenter(productReviewGetListUseCase, productReviewGetHelpfulUseCase, productReviewGetRatingUseCase,
+                likeDislikeReviewUseCase, deleteReviewResponseUseCase, productReviewListMapper, sessionHandler);
+    }
 }

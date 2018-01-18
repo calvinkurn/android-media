@@ -5,6 +5,8 @@ import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewstarcoun
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -15,6 +17,7 @@ public class ProductReviewGetRatingUseCase extends UseCase<DataResponseReviewSta
     public static final String PRODUCT_ID = "product_id";
     private ReputationRepository reputationRepository;
 
+    @Inject
     public ProductReviewGetRatingUseCase(ReputationRepository reputationRepository) {
         this.reputationRepository = reputationRepository;
     }

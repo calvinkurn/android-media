@@ -7,6 +7,10 @@ package com.tokopedia.tkpd.tkpdreputation.productreview.view.adapter;
 public class ProductReviewModelTitleHeader implements ProductReviewModel {
     private String title;
 
+    public ProductReviewModelTitleHeader(String title) {
+        this.title = title;
+    }
+
     @Override
     public int type(ProductReviewTypeFactoryAdapter typeFactory) {
         return typeFactory.type(this);

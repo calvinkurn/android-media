@@ -289,4 +289,8 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
         return ErrorHandler.getErrorMessage(context, t);
     }
 
+    protected int getCurrentPage(){
+        return endlessRecyclerViewScrollListener.getCurrentPage();
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.tkpdreputation.productreview.view.adapter;
 
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -118,6 +119,13 @@ public class ProductReviewContentViewHolder extends AbstractViewHolder<ProductRe
             seeReplyText.setVisibility(View.GONE);
             replyArrow.setVisibility(View.GONE);
         }
+
+        if(element.isLikeStatus()){
+            iconLike.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_like_pressed));
+        }else{
+            iconLike.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_like_normal));
+        }
+        counterLike.setText(String.valueOf(element.getTotalLike()));
 
         adapter.addList(convertToAdapterViewModel(element.getReviewAttachment()));
         adapter.notifyDataSetChanged();
