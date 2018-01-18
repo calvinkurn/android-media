@@ -677,11 +677,8 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
             return false;
         }
         carrierName = carrierName.toLowerCase();
-        if ((carrierName.contains(noServiceStr.toLowerCase()) || carrierName.contains(noSignalStr.toLowerCase()))) {
-            return true;
-        } else {
-            return false;
-        }
+        return (carrierName.contains(noServiceStr.toLowerCase()) || carrierName.contains(noSignalStr.toLowerCase()));
+
     }
 
 
