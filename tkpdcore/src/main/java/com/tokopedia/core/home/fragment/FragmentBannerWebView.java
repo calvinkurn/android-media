@@ -138,9 +138,8 @@ public class FragmentBannerWebView extends Fragment {
             }
         }
 
-        if (TrackingUtils.getBoolean(AppEventTracking.GTM.OVERRIDE_BANNER) ||
-                FragmentBannerWebView.this.getArguments().getBoolean(EXTRA_OVERRIDE_URL, false)) {
-            if (((Uri.parse(url).getHost().contains(Uri.parse(TkpdBaseURL.WEB_DOMAIN).getHost()))
+
+        if (((Uri.parse(url).getHost().contains(Uri.parse(TkpdBaseURL.WEB_DOMAIN).getHost()))
                     || Uri.parse(url).getHost().contains(Uri.parse(TkpdBaseURL.MOBILE_DOMAIN).getHost()))
                     && !url.endsWith(".pl")) {
                 switch ((DeepLinkChecker.getDeepLinkType(url))) {
@@ -168,9 +167,6 @@ public class FragmentBannerWebView extends Fragment {
                     default:
                         return false;
                 }
-            } else {
-                return false;
-            }
         } else {
             String query = Uri.parse(url).getQueryParameter(LOGIN_TYPE);
             if (query != null && query.equals(QUERY_PARAM_PLUS)) {
