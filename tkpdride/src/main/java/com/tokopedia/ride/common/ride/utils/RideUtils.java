@@ -167,15 +167,14 @@ public class RideUtils {
     }
 
     public static String getShortAddress(ReverseGeoCodeAddress reverseGeoCodeAddres) {
-        String shortName = "";
-
-        if (reverseGeoCodeAddres != null && reverseGeoCodeAddres.getAddressComponents() != null) {
-            shortName = reverseGeoCodeAddres.getAddressComponents()[0].getShortName();
-            if (reverseGeoCodeAddres.getAddressComponents().length >= 2) {
-                shortName += " " + reverseGeoCodeAddres.getAddressComponents()[1].getShortName();
+        if (reverseGeoCodeAddres != null) {
+            String completeAddress = reverseGeoCodeAddres.getFormattedAddress();
+            if (completeAddress != null && completeAddress.contains(",")) {
+                return completeAddress.split(",")[0];
+            } else {
+                return completeAddress;
             }
         }
-
-        return shortName;
+        return "";
     }
 }
