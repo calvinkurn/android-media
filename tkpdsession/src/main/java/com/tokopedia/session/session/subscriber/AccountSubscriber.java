@@ -23,6 +23,7 @@ import retrofit2.Response;
  * <p>
  * migrate retrofit 2 by Angga.Prasetiyo
  */
+@Deprecated
 public class AccountSubscriber extends rx.Subscriber<Response<String>> implements DownloadServiceConstant {
 
     public static final String TAG = "Steven";

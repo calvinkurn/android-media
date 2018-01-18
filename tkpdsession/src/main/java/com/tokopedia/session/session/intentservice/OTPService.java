@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  * Created by nisie on 12/20/16.
  */
-
+@Deprecated
 public class OTPService extends IntentService {
 
 

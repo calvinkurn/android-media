@@ -62,6 +62,7 @@ import permissions.dispatcher.RuntimePermissions;
  * modify by m.normansyah 9-11-2015,
  * complete MVP
  */
+@Deprecated
 @RuntimePermissions
 public class FragmentSecurityQuestion extends Fragment implements SecurityQuestionView, IncomingSmsReceiver.ReceiveSMSListener {
 

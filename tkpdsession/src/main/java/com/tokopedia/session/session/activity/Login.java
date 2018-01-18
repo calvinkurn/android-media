@@ -105,6 +105,7 @@ import permissions.dispatcher.RuntimePermissions;
  * inside session package :
  * 1. Logout Fragment currently dialog is discard when rotate.
  */
+@Deprecated
 @RuntimePermissions
 public class Login extends BaseActivity implements SessionView
         , DownloadResultReceiver.Receiver

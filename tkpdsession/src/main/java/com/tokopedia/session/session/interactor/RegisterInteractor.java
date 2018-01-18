@@ -9,6 +9,7 @@ import java.util.Map;
 /**
  * Created by stevenfredian on 6/21/16.
  */
+@Deprecated
 public interface RegisterInteractor {
 
     void downloadProvider(Context context, DiscoverLoginListener listener);

@@ -9,6 +9,7 @@ import org.parceler.Parcel;
 /**
  * Created by m.normansyah on 16/11/2015.
  */
+@Deprecated
 @Parcel
 public class RegisterSuccessModel implements Parcelable {
     @SerializedName("is_active")

@@ -12,6 +12,7 @@ import java.util.List;
 /**
  * Created by m.normansyah on 04/11/2015.
  */
+@Deprecated
 public interface LoginView extends BaseView {
     String TAG = "MNORMANSYAH";
     String TEST_INT_KEY = "O";

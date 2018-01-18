@@ -44,7 +44,6 @@ import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
 import com.tokopedia.session.session.interactor.SignInInteractor;
 import com.tokopedia.session.session.interactor.SignInInteractorImpl;
-import com.tokopedia.session.session.presenter.Login;
 import com.tokopedia.tkpd.deeplink.WhitelistItem;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.deeplink.di.component.DaggerDeeplinkComponent;
@@ -358,7 +357,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         data.setEmail(" ");
         data.setPassword(uriData.getPathSegments().get(1));
         data.setAttempt(uriData.getQueryParameter("a"));
-        data.setGrantType(Login.GRANT_PASSWORD);
+        data.setGrantType(SignInInteractor.GRANT_PASSWORD);
         data.setPasswordType(SignInInteractor.ACTIVATION_CODE);
         return data;
     }

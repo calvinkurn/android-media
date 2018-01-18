@@ -9,7 +9,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -74,7 +73,7 @@ import com.tokopedia.session.register.view.activity.SmartLockActivity;
 import com.tokopedia.session.register.view.subscriber.registerinitial.GetFacebookCredentialSubscriber;
 import com.tokopedia.session.register.view.viewmodel.DiscoverItemViewModel;
 import com.tokopedia.session.register.view.viewmodel.createpassword.CreatePasswordViewModel;
-import com.tokopedia.session.session.fragment.WebViewLoginFragment;
+import com.tokopedia.session.session.WebViewLoginFragment;
 
 import java.util.ArrayList;
 

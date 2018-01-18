@@ -25,6 +25,7 @@ import retrofit2.Response;
 /**
  * Created by stevenfredian on 9/1/16.
  */
+@Deprecated
 public abstract class BaseAccountSubscriber extends rx.Subscriber<Response<TkpdResponse>> implements DownloadServiceConstant {
 
     public static final String TAG = "Subscriber A";

@@ -7,6 +7,7 @@ import android.os.ResultReceiver;
 /**
  * Created by stevenfredian on 8/25/16.
  */
+@Deprecated
 public class ResetPasswordResultReceiver extends ResultReceiver {
 
     private Receiver mReceiver;

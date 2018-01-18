@@ -31,7 +31,7 @@ import java.util.Map;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-
+@Deprecated
 public class RegisterService extends IntentService implements DownloadServiceConstant{
 
     public static final String TAG = "RegisterService";

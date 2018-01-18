@@ -7,6 +7,7 @@ import com.tokopedia.core.presenter.BaseView;
 /**
  * Created by noiz354 on 1/25/16.
  */
+@Deprecated
 public interface RegisterNewNextView extends BaseView {
     String PASSWORD = "RegisterNewNextFragment PASSWORD";
     String EMAIL = "RegisterNewNextFragment EMAIL";

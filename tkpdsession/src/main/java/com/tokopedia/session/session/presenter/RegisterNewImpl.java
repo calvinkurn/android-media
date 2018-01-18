@@ -34,6 +34,7 @@ import java.util.Map;
 /**
  * Created by m.normansyah on 1/25/16.
  */
+@Deprecated
 public class RegisterNewImpl extends RegisterNew implements TextWatcher{
     RegisterService registerService;
     RegisterViewModel registerViewModel;

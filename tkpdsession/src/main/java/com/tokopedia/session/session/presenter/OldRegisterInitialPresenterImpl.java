@@ -18,12 +18,12 @@ import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.service.constant.DownloadServiceConstant;
-import com.tokopedia.core.session.model.OldCreatePasswordModel;
 import com.tokopedia.core.session.model.FacebookModel;
 import com.tokopedia.core.session.model.InfoModel;
 import com.tokopedia.core.session.model.LoginFacebookViewModel;
 import com.tokopedia.core.session.model.LoginGoogleModel;
 import com.tokopedia.core.session.model.LoginProviderModel;
+import com.tokopedia.core.session.model.OldCreatePasswordModel;
 import com.tokopedia.core.session.model.RegisterViewModel;
 import com.tokopedia.core.session.model.SecurityModel;
 import com.tokopedia.core.session.presenter.SessionView;
@@ -31,8 +31,6 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.FacebookContainer;
 import com.tokopedia.session.R;
 import com.tokopedia.session.register.view.fragment.OldRegisterInitialFragment;
-import com.tokopedia.session.session.interactor.LoginInteractor;
-import com.tokopedia.session.session.interactor.LoginInteractorImpl;
 import com.tokopedia.session.session.interactor.RegisterInteractor;
 import com.tokopedia.session.session.interactor.RegisterInteractorImpl;
 import com.tokopedia.session.session.model.LoginModel;
@@ -50,6 +48,7 @@ import static com.tokopedia.session.session.presenter.Login.PROVIDER_LIST;
  * Created by stevenfredian on 10/18/16.
  */
 
+@Deprecated
 public class OldRegisterInitialPresenterImpl extends OldRegisterInitialPresenter {
 
     RegisterInitialView view;

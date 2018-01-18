@@ -1,4 +1,4 @@
-package com.tokopedia.session.session.fragment;
+package com.tokopedia.session.session;
 
 import android.app.Activity;
 import android.content.DialogInterface;

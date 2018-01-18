@@ -19,6 +19,7 @@ import java.util.Calendar;
 /**
  * Created by m.normansyah on 1/25/16.
  */
+@Deprecated
 public class RegisterNewNextImpl extends RegisterNewNext implements DatePickerUtil.onDateSelectedListener{
 
     public static final int MAX_PHONE_NUMBER = 13;

@@ -27,6 +27,7 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by stevenfredian on 6/21/16.
  */
+@Deprecated
 public class LoginInteractorImpl implements LoginInteractor {
 
     LoginImpl presenter;

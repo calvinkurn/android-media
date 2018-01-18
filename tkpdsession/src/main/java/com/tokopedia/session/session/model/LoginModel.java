@@ -4,6 +4,7 @@ package com.tokopedia.session.session.model;
  * Created by m.normansyah on 05/11/2015.
  * Modified by m.normansyah on 17-11-2015, this is just interface
  */
+@Deprecated
 public class LoginModel {
 
     public static final int NEED_TO_CREATE_PASSWORD_AFTER_LOGIN = 1;

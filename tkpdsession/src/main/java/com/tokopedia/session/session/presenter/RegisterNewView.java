@@ -8,6 +8,7 @@ import java.util.List;
 /**
  * Created by m.normansyah on 1/22/16.
  */
+@Deprecated
 public interface RegisterNewView extends BaseView {
     String TAG = "MNORMANSYAH";
     String messageTAG = "RegisterNewView ";

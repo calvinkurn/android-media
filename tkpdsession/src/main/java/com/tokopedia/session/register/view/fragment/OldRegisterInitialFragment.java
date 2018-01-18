@@ -68,6 +68,7 @@ import static com.tokopedia.session.google.GoogleSignInActivity.RC_SIGN_IN_GOOGL
 /**
  * Created by stevenfredian on 10/18/16.
  */
+@Deprecated
 @RuntimePermissions
 public class OldRegisterInitialFragment extends Fragment
         implements RegisterInitialView {

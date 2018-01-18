@@ -11,6 +11,7 @@ import retrofit2.Retrofit;
  * <p>
  * migrate retrofit 2 by Angga.Prasetiyo
  */
+@Deprecated
 public class RegisterService extends BaseService<RegisterApi> {
     @Override
     protected void initApiService(Retrofit retrofit) {

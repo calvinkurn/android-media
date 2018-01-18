@@ -9,6 +9,7 @@ import java.util.HashMap;
 /**
  * Created by noiz354 on 1/27/16.
  */
+@Deprecated
 public interface RegisterThirdView extends BaseView{
     void setData(HashMap<String, Object> data);
     boolean checkValidation();

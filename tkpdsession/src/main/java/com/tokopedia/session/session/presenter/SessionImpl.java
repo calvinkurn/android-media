@@ -17,6 +17,7 @@ import com.tokopedia.core.session.presenter.SessionView;
 /**
  * Created by m.normansyah on 04/11/2015.
  */
+@Deprecated
 public class SessionImpl implements Session {
     Context context;
     SessionView sessionView;

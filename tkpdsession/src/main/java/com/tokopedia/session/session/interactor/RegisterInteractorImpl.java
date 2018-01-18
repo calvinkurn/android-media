@@ -30,6 +30,7 @@ import rx.subscriptions.CompositeSubscription;
  * <p>
  * migrate retrofit 2 by Angga.Prasetiyo
  */
+@Deprecated
 public class RegisterInteractorImpl implements RegisterInteractor {
     CompositeSubscription compositeSubscription;
     AccountsService accountsService;

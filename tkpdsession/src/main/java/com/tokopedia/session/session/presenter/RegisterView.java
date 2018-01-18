@@ -12,6 +12,7 @@ import com.tokopedia.core.session.model.RegisterViewModel;
  * @since  12/11/2015.
  * @version 2
  */
+@Deprecated
 public interface RegisterView extends BaseView {
     String TAG = "MNORMANSYAH";
     String messageTAG = RegisterView.class.getSimpleName();

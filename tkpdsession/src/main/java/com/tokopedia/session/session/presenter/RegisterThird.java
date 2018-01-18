@@ -10,6 +10,7 @@ import java.util.HashMap;
 /**
  * Created by noiz354 on 1/27/16.
  */
+@Deprecated
 public abstract class RegisterThird extends BaseImpl<RegisterThirdView> {
 
     public static final

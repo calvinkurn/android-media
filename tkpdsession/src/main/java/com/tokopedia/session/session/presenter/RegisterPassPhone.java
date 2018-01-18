@@ -3,6 +3,7 @@ package com.tokopedia.session.session.presenter;
 /**
  * Created by Nisie on 3/28/16.
  */
+@Deprecated
 public interface RegisterPassPhone {
 
     String messageTAG = "RegisterNext : ";

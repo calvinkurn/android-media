@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by stevenfredian on 10/18/16.
  */
-
+@Deprecated
 public interface RegisterInitialView extends BaseView{
     void showProvider(List<LoginProviderModel.ProvidersBean> providerList);
 

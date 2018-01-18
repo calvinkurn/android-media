@@ -7,6 +7,7 @@ import org.parceler.Parcel;
 /**
  * Created by m.normansyah on 17/11/2015.
  */
+@Deprecated
 @Parcel
 public class LoginEmailModel {
     @SerializedName("is_login")

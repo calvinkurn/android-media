@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Created by stevenfredian on 10/18/16.
  */
-
+@Deprecated
 public abstract class OldRegisterInitialPresenter extends BaseImpl<RegisterInitialView> {
 
     public OldRegisterInitialPresenter(RegisterInitialView view) {

@@ -7,7 +7,7 @@ import android.os.ResultReceiver;
 /**
  * Created by nisie on 12/20/16.
  */
-
+@Deprecated
 public class OTPResultReceiver extends ResultReceiver {
 
     private OTPResultReceiver.Receiver mReceiver;

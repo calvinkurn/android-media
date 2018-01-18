@@ -17,6 +17,7 @@ import java.util.List;
 /**
  * Created by m.normansyah on 04/11/2015.
  */
+@Deprecated
 public interface Login {
     String TAG = "MNORMANSYAH";
     String messageTAG = "Login : ";

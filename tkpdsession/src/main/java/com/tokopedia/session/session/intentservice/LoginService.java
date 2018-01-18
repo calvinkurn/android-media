@@ -54,7 +54,7 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
-
+@Deprecated
 public class LoginService extends IntentService implements DownloadServiceConstant {
 
     public static final String TAG = "LoginService";

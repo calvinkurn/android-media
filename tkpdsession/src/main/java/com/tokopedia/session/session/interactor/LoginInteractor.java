@@ -7,6 +7,7 @@ import com.tokopedia.core.session.model.LoginProviderModel;
 /**
  * Created by stevenfredian on 6/21/16.
  */
+@Deprecated
 public interface LoginInteractor {
 
     void downloadProvider(Context activity, DiscoverLoginListener discoverLoginListener);

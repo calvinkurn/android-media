@@ -10,6 +10,7 @@ import java.util.HashMap;
 /**
  * Created by m.normansyah on 1/25/16.
  */
+@Deprecated
 public abstract class RegisterNew extends BaseImpl<RegisterNewView> {
     public static final String
         EMAIL = "EMAIL",

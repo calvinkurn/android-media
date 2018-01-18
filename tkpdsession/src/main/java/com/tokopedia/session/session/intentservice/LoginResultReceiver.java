@@ -7,6 +7,7 @@ import android.os.ResultReceiver;
 /**
  * Created by stevenfredian on 8/23/16.
  */
+@Deprecated
 public class LoginResultReceiver extends ResultReceiver{
 
     private Receiver mReceiver;

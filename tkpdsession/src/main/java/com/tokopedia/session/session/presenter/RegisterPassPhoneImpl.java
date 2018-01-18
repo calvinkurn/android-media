@@ -22,6 +22,7 @@ import java.util.List;
 /**
  * Created by Nisie on 3/28/16.
  */
+@Deprecated
 public class RegisterPassPhoneImpl extends RegisterThird implements DatePickerUtil.onDateSelectedListener {
     public static final String DEMO_EMAIL = "pentolan.jakarta@gmail.com";
     OldCreatePasswordModel createPassModel;

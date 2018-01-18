@@ -22,7 +22,7 @@ import java.util.Map;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-
+@Deprecated
 public class ResetPasswordService extends IntentService implements DownloadServiceConstant{
 
     public static final String TAG = "ResetPasswordService";

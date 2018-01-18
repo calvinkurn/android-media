@@ -60,6 +60,7 @@ import static com.tokopedia.core.service.constant.DownloadServiceConstant.LOGIN_
  * Modified by m.normansyah on 17-11-2015, change to GSON
  * Modified by m.normansyah on 21-11-2015, move all download or upload to the internet
  */
+@Deprecated
 public class LoginImpl implements Login {
 
     private static final String REMEMBER_ACC_STATE = "REMEMBER_ACC_STATE";

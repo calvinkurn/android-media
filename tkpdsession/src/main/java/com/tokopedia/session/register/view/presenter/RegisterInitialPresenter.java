@@ -19,7 +19,7 @@ import com.tokopedia.session.register.view.subscriber.registerinitial.GetFaceboo
 import com.tokopedia.session.register.view.subscriber.registerinitial.RegisterDiscoverSubscriber;
 import com.tokopedia.session.register.view.subscriber.registerinitial.RegisterSosmedSubscriber;
 import com.tokopedia.session.register.view.viewlistener.RegisterInitial;
-import com.tokopedia.session.session.fragment.WebViewLoginFragment;
+import com.tokopedia.session.session.WebViewLoginFragment;
 
 import javax.inject.Inject;
 

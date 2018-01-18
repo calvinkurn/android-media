@@ -9,6 +9,7 @@ import com.tokopedia.core.session.model.RegisterViewModel;
 /**
  * Created by m.normansyah on 1/25/16.
  */
+@Deprecated
 public abstract class RegisterNewNext extends BaseImpl<RegisterNewNextView>{
     public static final String TAG = "MNORMANSYAH";
     public static final String message = "RegisterNewNext : ";
