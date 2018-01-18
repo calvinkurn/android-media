@@ -680,9 +680,9 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
 
             @Override
             public void onNext(ReverseGeoCodeAddress reverseGeoCodeAddres) {
-                //String title = reverseGeoCodeAddres.getAddressComponents()[0].getShortName();
+                String title = RideUtils.getShortAddress(reverseGeoCodeAddres);
                 String address = reverseGeoCodeAddres.getFormattedAddress();
-                handleAddressResult(address, address);
+                handleAddressResult(title, address);
             }
 
             private void handleAddressResult(String title, String address) {

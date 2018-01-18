@@ -259,9 +259,9 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
 
             @Override
             public void onNext(ReverseGeoCodeAddress reverseGeoCodeAddres) {
-                //String title = reverseGeoCodeAddres.getAddressComponents()[0].getShortName();
+                String title = RideUtils.getShortAddress(reverseGeoCodeAddres);
                 String address = reverseGeoCodeAddres.getFormattedAddress();
-                handleAddressResult(address, address);
+                handleAddressResult(title, address);
             }
 
             private void handleAddressResult(String title, String address) {
@@ -443,12 +443,12 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
 
             @Override
             public void onNext(ReverseGeoCodeAddress reverseGeoCodeAddres) {
-                //String title = reverseGeoCodeAddres.getAddressComponents()[0].getShortName();
+                String title = RideUtils.getShortAddress(reverseGeoCodeAddres);
                 String address = reverseGeoCodeAddres.getFormattedAddress();
 
 
                 if (isViewAttached() && !isUnsubscribed()) {
-                    getView().renderDefaultPickupLocation(latitude, longitude, address, address);
+                    getView().renderDefaultPickupLocation(latitude, longitude, title, address);
                 }
             }
         });

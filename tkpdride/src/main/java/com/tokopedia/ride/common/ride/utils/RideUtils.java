@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.view.activity.RideHomeActivity;
+import com.tokopedia.ride.common.place.data.entity.ReverseGeoCodeAddress;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -163,5 +164,18 @@ public class RideUtils {
                 Toast.makeText(context, context.getString(R.string.msg_shortcut_created_failed), Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+    public static String getShortAddress(ReverseGeoCodeAddress reverseGeoCodeAddres) {
+        String shortName = "";
+
+        if (reverseGeoCodeAddres != null && reverseGeoCodeAddres.getAddressComponents() != null) {
+            shortName = reverseGeoCodeAddres.getAddressComponents()[0].getShortName();
+            if (reverseGeoCodeAddres.getAddressComponents().length >= 2) {
+                shortName += " " + reverseGeoCodeAddres.getAddressComponents()[1].getShortName();
+            }
+        }
+
+        return shortName;
     }
 }

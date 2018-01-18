@@ -30,6 +30,7 @@ import com.tokopedia.ride.bookingride.domain.GetLocationAddressUseCase;
 import com.tokopedia.ride.bookingride.view.fragment.RideHomeMapFragment;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.place.data.entity.ReverseGeoCodeAddress;
+import com.tokopedia.ride.common.ride.utils.RideUtils;
 
 import javax.inject.Inject;
 
@@ -248,9 +249,9 @@ public class SelectLocationOnMapPresenter extends BaseDaggerPresenter<SelectLoca
 
             @Override
             public void onNext(ReverseGeoCodeAddress reverseGeoCodeAddres) {
-                //String title = reverseGeoCodeAddres.getAddressComponents()[0].getShortName();
+                String title = RideUtils.getShortAddress(reverseGeoCodeAddres);
                 String address = reverseGeoCodeAddres.getFormattedAddress();
-                handleAddressResult(address, address);
+                handleAddressResult(title, address);
             }
 
             private void handleAddressResult(String title, String address) {
