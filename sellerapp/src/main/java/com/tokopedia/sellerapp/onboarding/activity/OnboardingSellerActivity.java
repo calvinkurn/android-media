@@ -9,7 +9,7 @@ import android.view.View;
 
 import com.tokopedia.core.onboarding.OnboardingActivity;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.SellerRouterApplication;
@@ -82,7 +82,7 @@ public class OnboardingSellerActivity extends OnboardingActivity {
             startActivity(intent);
             finish();
         } else {
-            Intent intent = SessionRouter.getPhoneVerificationActivationActivityIntent(this);
+            Intent intent = OldSessionRouter.getPhoneVerificationActivationActivityIntent(this);
             startActivityForResult(intent, REQUEST_ACTIVATE_PHONE_SELLER);
         }
     }

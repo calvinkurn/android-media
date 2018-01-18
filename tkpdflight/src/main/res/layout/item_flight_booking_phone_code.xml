@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="@dimen/padding_med">
+
+    <TextView
+        android:id="@+id/country_name"
+        android:layout_marginRight="@dimen/margin_vs"
+        style="@style/TextView.Small"
+        tools:text="Indonesia" />
+
+    <TextView
+        android:id="@+id/country_phone_code"
+        style="@style/TextView.Small.Bold"
+        tools:text="(+62)" />
+</LinearLayout>

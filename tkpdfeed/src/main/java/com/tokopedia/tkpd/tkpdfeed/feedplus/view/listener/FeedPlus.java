@@ -24,6 +24,7 @@ public interface FeedPlus {
 
         void finishLoadingProgress();
 
+
         interface Kol {
             void onGoToKolProfile(int page, int rowNumber, String url);
 
@@ -188,6 +189,8 @@ public interface FeedPlus {
                                              String imageSourceSingle, String name, String price);
 
         void onGoToShopDetailFromCampaign(int page, int rowNumber, String shopUrl);
+
+        void onContentProductLinkClicked(String url);
     }
 
     interface Presenter extends CustomerPresenter<View> {

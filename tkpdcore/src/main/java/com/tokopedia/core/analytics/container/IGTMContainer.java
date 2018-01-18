@@ -32,6 +32,7 @@ public interface IGTMContainer {
 
     /**
      * Method for send open screen event
+     *
      * @param screenName screen name of opened screen
      * @return GTM Container Instance
      */
@@ -39,6 +40,7 @@ public interface IGTMContainer {
 
     /**
      * Method for send campaign in deeplink
+     *
      * @param campaign campaign values that user get from deeplink (utm)
      * @return GTM Container Instance
      */
@@ -48,6 +50,7 @@ public interface IGTMContainer {
 
     /**
      * Method for track checkout session when user checkout on cart step 2
+     *
      * @param checkout detail checkout values
      * @return GTM Container Instance
      */
@@ -63,6 +66,7 @@ public interface IGTMContainer {
 
     /**
      * Method for track add to cart session user, sent when user successfully add to cart
+     *
      * @param cart detail product
      * @return GTM Container Instance
      */
@@ -114,13 +118,22 @@ public interface IGTMContainer {
 
     void event(String name, Map<String, Object> data);
 
-    void enhanceClickFeedRecomItem(Map<String, Object> objects, String eventLabel, String productUrl, String actionField);
+    void impressionHotlistTracking(String hotlistName, String promoName, String promoCode);
 
-    void eventImpressionFeedInspiration(List<Object> objects, String eventLabel);
+    void clickCopyButtonHotlistPromo(String hotlistName, String promoName, String promoCode);
 
-    void eventImpressionFeedUploadedProduct(List<Object> list, String eventLabel);
+    void clickTncButtonHotlistPromo(String hotlistName, String promoName, String promoCode);
+
 
     void eventTrackingEnhancedEcommerce(Map<String, Object> trackingData);
 
     void clearEnhanceEcommerce();
+
+    void eventImpressionPromoList(List<Object> list, String promoName);
+
+    void eventClickPromoListItem(List<Object> list, String promoName);
+
+    void eventImpressionCategoryLifestyle(List<Object> list);
+
+    void eventClickCategoryLifestyle(String categoryUrl, List<Object> list);
 }

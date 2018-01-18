@@ -35,21 +35,15 @@ import javax.inject.Inject;
  * Created by kris on 8/2/17. Tokopedia
  */
 
-public class ListPaymentTypeActivity extends TActivity
-        implements ListPaymentTypeView, BcaOneClickDeleteListener, DeleteCreditCardDialog.DeleteCreditCardDialogListener{
+public class ListPaymentTypeActivity extends TActivity implements ListPaymentTypeView, BcaOneClickDeleteListener {
 
     private RelativeLayout rootView;
-
     private TkpdProgressDialog progressDialog;
-
     private TkpdProgressDialog mainProgressDialog;
-
     private RefreshHandler refreshHandler;
-
     private PaymentSettingMainAdapter paymentSettingsAdapter;
 
-    @Inject
-    ListPaymentTypePresenterImpl presenter;
+    @Inject ListPaymentTypePresenterImpl presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +52,6 @@ public class ListPaymentTypeActivity extends TActivity
         initInjector();
         presenter.setViewListener(this);
         initView();
-
     }
 
     private void initInjector() {
@@ -69,14 +62,14 @@ public class ListPaymentTypeActivity extends TActivity
         component.inject(this);
     }
 
-
     protected void initView() {
-        rootView = (RelativeLayout) findViewById(R.id.payment_list_root_view);
-        RecyclerView paymentOptionMainRecyclerView = (RecyclerView)
-                findViewById(R.id.payment_option_main_recycler_view);
+        rootView = findViewById(R.id.payment_list_root_view);
+        RecyclerView paymentOptionMainRecyclerView = findViewById(R.id.payment_option_main_recycler_view);
+
         paymentSettingsAdapter = new PaymentSettingMainAdapter(presenter, this);
         paymentOptionMainRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         paymentOptionMainRecyclerView.setAdapter(paymentSettingsAdapter);
+
         progressDialog = new TkpdProgressDialog(ListPaymentTypeActivity.this,
                 TkpdProgressDialog.NORMAL_PROGRESS);
         mainProgressDialog = new TkpdProgressDialog(ListPaymentTypeActivity.this,
@@ -87,14 +80,13 @@ public class ListPaymentTypeActivity extends TActivity
                 fetchData();
             }
         });
+
         showMainDialog();
         fetchData();
     }
 
     private void fetchData() {
         presenter.onGetAllPaymentList(this);
-        /*presenter.onGetCreditCardList(this);
-        presenter.onGetBcaOneClickList(paymentListModelSubscriber());*/
     }
 
     @Override
@@ -125,8 +117,7 @@ public class ListPaymentTypeActivity extends TActivity
     @Override
     public void successDeleteCreditCard(String message) {
         NetworkErrorHelper.showSnackbar(this, message);
-        refreshHandler.finishRefresh();
-        presenter.onGetAllPaymentList(this);
+        fetchData();
     }
 
     @Override
@@ -177,7 +168,7 @@ public class ListPaymentTypeActivity extends TActivity
 
     @Override
     public void onDeleteCreditCardClicked(String tokenId, String cardId) {
-        DeleteCreditCardDialog creditCardDialog = DeleteCreditCardDialog.createDialog(tokenId,
+        DeleteCreditCardDialog creditCardDialog = DeleteCreditCardDialog.newInstance(tokenId,
                 cardId);
         creditCardDialog.show(getFragmentManager(), "delete_credit_card_dialog");
     }
@@ -232,7 +223,7 @@ public class ListPaymentTypeActivity extends TActivity
     }
 
     private void showErrorSnackbar(Throwable e) {
-        if(e instanceof ResponseRuntimeException) {
+        if (e instanceof ResponseRuntimeException) {
             NetworkErrorHelper.showSnackbar(ListPaymentTypeActivity.this, e.getMessage());
         }
     }
@@ -255,6 +246,9 @@ public class ListPaymentTypeActivity extends TActivity
             case EDIT_AUTHENTICATION_PAGE:
                 refreshHandler.startRefresh();
                 break;
+            case CREDIT_CARD_DETAIL_REQUEST_CODE:
+                recreate();
+                break;
         }
     }
 
@@ -270,12 +264,6 @@ public class ListPaymentTypeActivity extends TActivity
                 refreshHandler.startRefresh();
             }
         };
-    }
-
-
-    @Override
-    public void onConfirmDelete(String tokenId) {
-        presenter.onCreditCardDeleted(this, tokenId);
     }
 
     @Override

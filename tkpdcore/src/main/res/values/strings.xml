@@ -672,6 +672,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="item_all">Semua</string>
     <string name="item_unread">Belum Dibaca</string>
     <string name="chat_edit_text">Tulis pesan ...</string>
+    <string name="add_template_chat">Tambah Template</string>
 
     <!-- Strings related to inbox -->
 
@@ -1906,6 +1907,7 @@ di Tokopedia Sekarang!</string>
 
 
     <string name="template_people_total_fav_shop">XYZ Toko Favoritku</string>
+    <string name="template_people_total_following">Following List</string>
     <string name="message_success_people_unfav">Sukses menghapus toko favorit</string>
     <string name="message_success_people_fav">Sukses menambahkan toko favorit</string>
     <string name="failed_create_ticket">Gagal membuat tiket</string>
@@ -2134,11 +2136,23 @@ di Tokopedia Sekarang!</string>
     <string name="product_share_app_subtitle">Pilih cara berbagimu</string>
     <string name="title_share_feed">Bagikan Post ini</string>
     <string name="bri_transfer_info">*) Penarikan dana ke rekening BRI akan dikenakan biaya transfer Rp 1,500.- oleh bank BRI</string>
+
     <string name="app_rating_button_rate">Beri Rating</string>
     <string name="app_rating_button_later">Nanti</string>
     <string name="app_rating_title">Beri Rating Aplikasi Kami</string>
     <string name="app_rating_message">Jika Kamu suka dengan aplikasi Tokopedia, silakan berikan dukungan Kamu dengan memberi rating 5 bintang dan ulasan di Google Play.</string>
+    <string name="app_rating_title_2">Bagaimana penilaian Kamu terhadap aplikasi Tokopedia?</string>
+    <string name="app_rating_message_2">Geser kanan atau kiri untuk memberikan rating</string>
+    <string name="app_rating_button_send">Kirim</string>
+    <string name="app_rating_button_close">Tutup</string>
+    <string name="app_rating_desc_worst">Sangat Buruk</string>
+    <string name="app_rating_desc_bad">Buruk</string>
+    <string name="app_rating_desc_ordinary">Biasa</string>
+    <string name="app_rating_desc_good">Bagus</string>
+    <string name="app_rating_desc_super">Super</string>
     <string name="code_error">Kode error :</string>
 
     <string name="notif_channel_general">Notifikasi</string>
+    <string name="title_hockeyapp_download">Nakama harus menggunakan aplikasi Tokopedia versi beta</string>
+    <string name="title_download">Download</string>
 </resources>

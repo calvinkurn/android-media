@@ -570,7 +570,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                                 public void onError(Throwable e) {
                                     hideProgressDialog();
                                     CommonUtils.UniversalToast(GalleryActivity.this,
-                                            ErrorHandler.getErrorMessage(e, GalleryActivity.this));
+                                            ErrorHandler.getErrorMessage(e));
                                 }
 
                                 @Override

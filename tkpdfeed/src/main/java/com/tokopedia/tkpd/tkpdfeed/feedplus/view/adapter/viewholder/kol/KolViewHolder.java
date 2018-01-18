@@ -144,6 +144,7 @@ public class KolViewHolder extends AbstractViewHolder<KolViewModel> {
             commentText.setText(String.valueOf(element.getTotalComment()));
         }
 
+        commentButton.setVisibility(element.isShowComment() ? View.VISIBLE : View.GONE);
         setListener(element);
     }
 

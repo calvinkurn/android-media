@@ -30,7 +30,7 @@ public class SpinnerTextView extends BaseCustomView {
 
     }
 
-    private static final int DEFAULT_INDEX_NOT_SELECTED = -1;
+    public static final int DEFAULT_INDEX_NOT_SELECTED = -1;
     private TextInputLayout textInputLayout;
     private AutoCompleteTextView textAutoComplete;
     private ImageView imageViewChevron;

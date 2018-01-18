@@ -24,6 +24,9 @@ public class Shipment {
     @SerializedName("awb")
     @Expose
     private String awb;
+    @SerializedName("info")
+    @Expose
+    private Info info;
 
     public Integer getId() {
         return id;
@@ -73,4 +76,11 @@ public class Shipment {
         this.awb = awb;
     }
 
+    public Info getInfo() {
+        return info;
+    }
+
+    public void setInfo(Info info) {
+        this.info = info;
+    }
 }
