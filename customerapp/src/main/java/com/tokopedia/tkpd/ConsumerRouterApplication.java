@@ -80,6 +80,7 @@ import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.activity.DigitalWebActivity;
 import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
+import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.TkpdFlight;
 import com.tokopedia.flight.contactus.model.FlightContactUsPassData;
@@ -90,6 +91,7 @@ import com.tokopedia.inbox.inboxchat.activity.SendMessageActivity;
 import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
 import com.tokopedia.inbox.inboxmessageold.activity.InboxMessageActivity;
 import com.tokopedia.inbox.inboxmessageold.activity.SendMessageActivityOld;
+import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
@@ -148,9 +150,12 @@ import com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.activity.Reputat
 import com.tokopedia.tkpd.tkpdreputation.shopreputation.ShopReputationList;
 import com.tokopedia.tkpd.truecaller.TruecallerActivity;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
+import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
+import com.tokopedia.tokocash.historytokocash.presentation.activity.HistoryTokoCashActivity;
+import com.tokopedia.tokocash.qrpayment.presentation.activity.CustomScannerTokoCashActivity;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.transaction.wallet.WalletActivity;
@@ -777,7 +782,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                                     String avatar) {
 
         if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
-            return SendMessageActivity.getAskBuyerIntent(context, toUserId, customerName,
+            return ChatRoomActivity.getAskBuyerIntent(context, toUserId, customerName,
                     customSubject, customMessage, source, avatar);
         else
             return SendMessageActivityOld.getAskBuyerIntent(context, toUserId, customerName,
@@ -789,7 +794,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                                      String customSubject, String customMessage, String source, String avatar) {
 
         if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
-            return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName,
+            return ChatRoomActivity.getAskSellerIntent(context, toShopId, shopName,
                     customSubject, customMessage, source, avatar);
         else
             return SendMessageActivityOld.getAskSellerIntent(context, toShopId, shopName,
@@ -801,7 +806,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Intent getAskUserIntent(Context context, String userId, String userName, String source,
                                    String avatar) {
         if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
-            return SendMessageActivity.getAskUserIntent(context, userId, userName, source, avatar);
+            return ChatRoomActivity.getAskUserIntent(context, userId, userName, source, avatar);
         else
             return SendMessageActivityOld.getAskUserIntent(context, userId, userName, source);
 
@@ -812,7 +817,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName,
                                      String customSubject, String source) {
         if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
-            return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName, customSubject, source);
+            return ChatRoomActivity.getAskSellerIntent(context, toShopId, shopName, customSubject, source);
         else
             return SendMessageActivityOld.getAskSellerIntent(context, toShopId, shopName, customSubject, source);
 
@@ -965,6 +970,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public String getRangeDateFormatted(Context context, long startDate, long endDate) {
         return DateLabelUtils.getRangeDateFormatted(context, startDate, endDate);
+    }
+
+    @Override
+    public Intent goToHistoryTokoCash(Context context) {
+        return HistoryTokoCashActivity.newInstance(context);
+    }
+
+    @Override
+    public Intent goToQRScannerTokoCash(Context context) {
+        return CustomScannerTokoCashActivity.newInstance(context);
     }
 
     @Override
@@ -1126,7 +1141,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         }
         return mapUrlUseCase.getData(mapUrlUseCase.setRequestParam(finalSegments.toString())).applink;
     }
-      
+
     public Intent getKolFollowingPageIntent(Context context, int userId) {
         return KolFollowingListActivity.getCallingIntent(context, userId);
     }
