@@ -52,6 +52,7 @@ public class TopAdsCreateNewGroupUseCase extends UseCase<TopAdsDetailGroupViewMo
                     @Override
                     public TopAdsDetailGroupViewModel call(DataResponseCreateGroup dataResponseCreateGroup) {
                         TopAdsDetailGroupViewModel topAdsDetailGroupViewModel = new TopAdsDetailGroupViewModel();
+                        topAdsDetailGroupViewModel.setGroupId(Long.valueOf(dataResponseCreateGroup.getGroupId()));
                         topAdsDetailGroupViewModel.setStartDate(dataResponseCreateGroup.getGroupStartDate());
                         topAdsDetailGroupViewModel.setEndDate(dataResponseCreateGroup.getGroupEndDate());
                         topAdsDetailGroupViewModel.setPriceBid(dataResponseCreateGroup.getPriceBid());

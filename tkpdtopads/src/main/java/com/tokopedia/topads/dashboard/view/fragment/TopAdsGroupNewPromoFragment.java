@@ -12,6 +12,7 @@ import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsCreatePromoExistingGroupActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsCreatePromoNewGroupActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsCreatePromoWithoutGroupActivity;
+import com.tokopedia.topads.dashboard.view.activity.TopAdsDetailGroupActivity;
 
 /**
  * Created by zulfikarrahman on 2/22/17.
@@ -67,6 +68,14 @@ public class TopAdsGroupNewPromoFragment extends TopAdsBaseManageGroupPromoFragm
         if (requestCode == REQUEST_CODE_AD_STATUS && data != null) {
             boolean adStatusChanged = data.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
             if (adStatusChanged) {
+                long groupId = data.getLongExtra(TopAdsNewScheduleNewGroupFragment.EXTRA_NEW_GROUP_ID, -1);
+                if(groupId != -1){
+                    Intent intent = new Intent(getActivity(), TopAdsDetailGroupActivity.class);
+                    intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, ad.getId());
+                    intent.putExtra(TopAdsExtraConstant.EXTRA_AD, ad);
+                    startActivityForResult(intent, REQUEST_CODE_AD_CHANGE);
+                }
+
                 Intent intent = new Intent();
                 intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
                 getActivity().setResult(Activity.RESULT_OK, intent);
