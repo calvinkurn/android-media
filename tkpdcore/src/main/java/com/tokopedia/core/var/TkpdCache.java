@@ -225,6 +225,7 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
         public static final String HOME_TICKER_CACHE = "HOME_TICKER_CACHE";
         public static final String KEY_TOKOPOINT_DRAWER_DATA = "KEY_TOKOPOINT_DRAWER_DATA";
         public static final String KEY_APP_RATING_VERSION = "APP_RATING_VERSION";
+        public static final String KEY_ADVANCED_APP_RATING_VERSION = "ADVANCED_APP_RATING_VERSION";
     }
 
     public class RemoteConfigKey {
@@ -237,6 +238,8 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
 
         public static final String MAINAPP_RATING_TITLE = "mainapp_rating_title";
         public static final String MAINAPP_RATING_MESSAGE = "mainapp_rating_message";
+        public static final String MAINAPP_SHOW_SIMPLE_APP_RATING = "mainapp_show_simple_app_rating";
+        public static final String MAINAPP_SHOW_ADVANCED_APP_RATING = "mainapp_show_advanced_app_rating";
 
         public static final String NOTIFICATION_LOGGER = "notification_logger";
     }

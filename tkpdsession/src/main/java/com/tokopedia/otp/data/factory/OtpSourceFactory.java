@@ -11,8 +11,10 @@ import com.tokopedia.otp.data.source.CloudOtpSource;
 
 /**
  * Created by nisie on 3/7/17.
+ * @deprecated do not use.
  */
 
+@Deprecated
 public class OtpSourceFactory {
     private final Context context;
     private AccountsService accountsService;

@@ -119,7 +119,6 @@ dependencies {
     compile rootProject.ext.playServicesDependencies.base
     compile rootProject.ext.playServicesDependencies.appIndexing
     compile rootProject.ext.playServicesDependencies.analytics
-    compile rootProject.ext.playServicesDependencies.gcm
     compile rootProject.ext.playServicesDependencies.firebase
     compile rootProject.ext.playServicesDependencies.location
     compile rootProject.ext.playServicesDependencies.maps
@@ -166,7 +165,8 @@ dependencies {
         exclude group: 'com.android.support', module: 'design'
     }
 
-    compile rootProject.ext.miscDependencies.captureActivity
+    compile rootProject.ext.miscDependencies.scannerZxing
+    compile rootProject.ext.miscDependencies.multiDex
     compile rootProject.ext.miscDependencies.parcelerApi
     apt rootProject.ext.miscDependencies.parceler
     compile rootProject.ext.miscDependencies.gson

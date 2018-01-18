@@ -241,7 +241,7 @@ public class GTMContainer implements IGTMContainer {
         authEvent.setUserID(SessionHandler.getGTMLoginID(context));
         authEvent.setShopID(SessionHandler.getShopID(context));
         authEvent.setShopId(SessionHandler.getShopID(context));
-        authEvent.setUserSeller(SessionHandler.getShopID(context).equals("0") ? 0 : 1);
+        authEvent.setUserSeller(SessionHandler.isUserHasShop(context)? 1 : 0);
 
         CommonUtils.dumper("GAv4 appdata " + new JSONObject(authEvent.getAuthDataLayar()).toString());
 
@@ -258,7 +258,7 @@ public class GTMContainer implements IGTMContainer {
         authEvent.setUserID(SessionHandler.getGTMLoginID(context));
         authEvent.setShopId(shopID);
         authEvent.setShopType(shopType);
-        authEvent.setUserSeller(SessionHandler.getShopID(context).equals("0") ? 0 : 1);
+        authEvent.setUserSeller(SessionHandler.isUserHasShop(context) ? 1 : 0);
 
         CommonUtils.dumper("GAv4 appdata " + new JSONObject(authEvent.getAuthDataLayar()).toString());
 
@@ -439,19 +439,19 @@ public class GTMContainer implements IGTMContainer {
     @Override
     public void eventClickHotlistProductFeatured(Hotlist hotlist) {
         GTMDataLayer.pushGeneral(context,
-                DataLayer.mapOf("event",AppEventTracking.Event.EVENT_INTERNAL_PROMO_MULTI,
-                        "eventCategory",AppEventTracking.Category.CATEGORY_HOTLIST,
-                        "eventAction",String.format("feature product hotlist %s - click product %s", hotlist.getHotlistAlias(), hotlist.getProductList().get(0).getProductName()),
-                        "eventLabel",String.format("%s - %s", hotlist.getScreenName(), hotlist.getPosition(),
-                        "ecommerce",DataLayer.mapOf(
-                                "click", DataLayer.mapOf(
-                                        "actionField", DataLayer.mapOf(
-                                                "list", "hotlist"),
+                DataLayer.mapOf("event", AppEventTracking.Event.EVENT_INTERNAL_PROMO_MULTI,
+                        "eventCategory", AppEventTracking.Category.CATEGORY_HOTLIST,
+                        "eventAction", String.format("feature product hotlist %s - click product %s", hotlist.getHotlistAlias(), hotlist.getProductList().get(0).getProductName()),
+                        "eventLabel", String.format("%s - %s", hotlist.getScreenName(), hotlist.getPosition(),
+                                "ecommerce", DataLayer.mapOf(
+                                        "click", DataLayer.mapOf(
+                                                "actionField", DataLayer.mapOf(
+                                                        "list", "hotlist"),
                                                 "products", hotlist.getProduct().toArray(new Object[hotlist.getProduct().size()])
+                                        )
                                 )
                         )
-                )
-        ));
+                ));
     }
 
     @Override
@@ -473,23 +473,65 @@ public class GTMContainer implements IGTMContainer {
     }
 
     @Override
-    public void enhanceClickFeedRecomItem(Map<String, Object> objects,
-                                          String eventLabel,
-                                          String productUrl,
-                                          String actionField) {
+    public void impressionHotlistTracking(String hotlistName, String promoName, String promoCode) {
+        clearEventTracking();
+        GTMDataLayer.pushGeneral(
+                context,
+                DataLayer.mapOf(
+                        "event", "clickHotlist",
+                        "eventCategory", "hotlist page",
+                        "eventAction", "hotlist promo impression",
+                        "eventLabel", String.format("%s - %s - %s", hotlistName, promoName, promoCode)
+                )
+        );
+    }
 
+
+    @Override
+    public void clickCopyButtonHotlistPromo(String hotlistName, String promoName, String promoCode) {
+        clearEventTracking();
+        GTMDataLayer.pushGeneral(
+                context,
+                DataLayer.mapOf(
+                        "event", "clickHotlist",
+                        "eventCategory", "hotlist page",
+                        "eventAction", "hotlist promo click salin kode",
+                        "eventLabel", String.format("%s - %s - %s", hotlistName, promoName, promoCode)
+                )
+        );
+    }
+
+    @Override
+    public void clickTncButtonHotlistPromo(String hotlistName, String promoName, String promoCode) {
+        clearEventTracking();
+        GTMDataLayer.pushGeneral(
+                context,
+                DataLayer.mapOf(
+                        "event", "clickHotlist",
+                        "eventCategory", "hotlist page",
+                        "eventAction", "hotlist promo click syarat ketentuan",
+                        "eventLabel", String.format("%s - %s - %s", hotlistName, promoName, promoCode)
+                )
+        );
+    }
+
+    @Override
+    public void eventImpressionPromoList(List<Object> list, String promoName) {
         clearEnhanceEcommerce();
 
         GTMDataLayer.pushGeneral(
                 context,
-                DataLayer.mapOf("event", "productClick",
-                        "eventCategory", "homepage",
-                        "eventAction", "feed - click card item",
-                        "eventLabel", eventLabel,
-                        "ecommerce", DataLayer.mapOf("click",
-                                DataLayer.mapOf("actionField",
-                                        DataLayer.mapOf("list", actionField),
-                                        "products", DataLayer.listOf(objects)
+                DataLayer.mapOf(
+                        "event", "promoView",
+                        "eventCategory", "promo microsite - promo list",
+                        "eventAction", "impression on promo",
+                        "eventLabel", promoName,
+                        "ecommerce", DataLayer.mapOf(
+                                "promoView", DataLayer.mapOf(
+                                        "promotions", DataLayer.listOf(
+                                                list.toArray(new Object[list.size()]
+                                                )
+                                        )
                                 )
                         )
                 )
@@ -497,44 +539,47 @@ public class GTMContainer implements IGTMContainer {
     }
 
     @Override
-    public void eventImpressionFeedInspiration(List<Object> objects, String eventLabel) {
+    public void eventClickPromoListItem(List<Object> list, String promoName) {
         clearEnhanceEcommerce();
 
         GTMDataLayer.pushGeneral(
                 context,
-                DataLayer.mapOf("event", "productView",
-                        "eventCategory", "homepage",
-                        "eventAction", "feed - item impression",
-                        "eventLabel", eventLabel,
+                DataLayer.mapOf(
+                        "event", "promoView",
+                        "eventCategory", "promo microsite - promo list",
+                        "eventAction", "impression on promo",
+                        "eventLabel", promoName,
                         "ecommerce", DataLayer.mapOf(
-                                "currencyCode", "IDR",
-                                "impressions", DataLayer.listOf(
-                                        objects.toArray(new Object[objects.size()])
-                                ))
+                                "promoClick", DataLayer.mapOf(
+                                        "promotions", DataLayer.listOf(
+                                                list.toArray(new Object[list.size()]
+                                                )
+                                        )
+                                )
                         )
-        );
-    }
-
-    @Override
-    public void eventImpressionFeedUploadedProduct(List<Object> list, String eventLabel) {
-        clearEnhanceEcommerce();
-
-        GTMDataLayer.pushGeneral(
-                context,
-                DataLayer.mapOf("event", "productView",
-                        "eventCategory", "homepage",
-                        "eventAction", "feed - item impression",
-                        "eventLabel", eventLabel,
-                        "ecommerce", DataLayer.mapOf(
-                                "currencyCode", "IDR",
-                                "impressions", DataLayer.listOf(
-                                        list.toArray(new Object[list.size()])
-                                ))
                 )
         );
     }
 
-    private void clearEnhanceEcommerce() {
+    private void clearEventTracking() {
+        GTMDataLayer.pushGeneral(
+                context,
+                DataLayer.mapOf("event", null,
+                        "eventCategory", null,
+                        "eventAction", null,
+                        "eventLabel", null
+                )
+        );
+    }
+
+    @Override
+    public void eventTrackingEnhancedEcommerce(Map<String, Object> trackingData) {
+        GTMDataLayer.pushGeneral(context, trackingData);
+
+    }
+
+    @Override
+    public void clearEnhanceEcommerce() {
         GTMDataLayer.pushGeneral(
                 context,
                 DataLayer.mapOf("event", null,
@@ -546,4 +591,34 @@ public class GTMContainer implements IGTMContainer {
         );
     }
 
+    @Override
+    public void eventImpressionCategoryLifestyle(List<Object> list) {
+        clearEnhanceEcommerce();
+        GTMDataLayer.pushGeneral(
+                context, DataLayer.mapOf("event", "promoView",
+                        "eventCategory", "category page",
+                        "eventAction", "subcategory impression",
+                        "eventLabel", "",
+                        "ecommerce", DataLayer.mapOf(
+                                "promoView", DataLayer.mapOf(
+                                        "promotions", DataLayer.listOf(list.toArray(new Object[list.size()]))))
+                        )
+        );
+    }
+
+    @Override
+    public void eventClickCategoryLifestyle(String categoryUrl, List<Object> list) {
+        clearEnhanceEcommerce();
+        GTMDataLayer.pushGeneral(
+                context, DataLayer.mapOf("event", "promoClick",
+                        "eventCategory", "category page",
+                        "eventAction", "click subcategory",
+                        "eventLabel", categoryUrl,
+                        "ecommerce", DataLayer.mapOf(
+                                "promoClick", DataLayer.mapOf(
+                                        "promotions", DataLayer.listOf(list.toArray(new Object[list.size()])))),
+                        "destinationURL", categoryUrl
+                )
+        );
+    }
 }

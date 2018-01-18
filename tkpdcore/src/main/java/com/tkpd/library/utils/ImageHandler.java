@@ -73,6 +73,15 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
                 .into(imageview);
     }
 
+    public static void loadImageWithId(ImageView imageview, int resId, int placeholder) {
+        Glide.with(imageview.getContext())
+                .load(resId)
+                .placeholder(placeholder)
+                .dontAnimate()
+                .error(resId)
+                .into(imageview);
+    }
+
     public static void loadImageWithIdWithoutPlaceholder(ImageView imageview, int resId) {
         Glide.with(imageview.getContext())
                 .load(resId)
@@ -220,6 +229,24 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
                     .placeholder(R.drawable.loading_page)
                     .dontAnimate()
                     .error(resId)
+                    .into(imageview);
+        } else {
+            Glide.with(imageview.getContext())
+                    .load(url)
+                    .placeholder(resId)
+                    .error(resId)
+                    .into(imageview);
+        }
+    }
+
+    public static void loadImageChat(ImageView imageview, String url, int resId) {
+        if (url != null && !TextUtils.isEmpty(url)) {
+            Glide.with(imageview.getContext())
+                    .load(url)
+                    .placeholder(R.drawable.loading_page)
+                    .dontAnimate()
+                    .error(resId)
+                    .fitCenter()
                     .into(imageview);
         } else {
             Glide.with(imageview.getContext())
