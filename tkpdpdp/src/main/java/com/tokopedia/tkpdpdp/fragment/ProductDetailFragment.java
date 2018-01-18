@@ -48,9 +48,8 @@ import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.product.model.share.ShareData;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
-import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
@@ -58,6 +57,7 @@ import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.share.ShareActivity;
 import com.tokopedia.core.util.AppIndexHandler;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
@@ -825,7 +825,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             return true;
         } else if (i == R.id.action_cart) {
             if (!SessionHandler.isV4Login(getActivity())) {
-                Intent intent = SessionRouter.getLoginActivityIntent(context);
+                Intent intent = OldSessionRouter.getLoginActivityIntent(context);
                 intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
                 intent.putExtra("product_id", String.valueOf(productData.getInfo().getProductId()));
                 navigateToActivityRequest(intent, ProductDetailFragment.REQUEST_CODE_LOGIN);
@@ -1191,4 +1191,10 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             expandedAppBar();
         }
     }
+
+    @Override
+    public boolean isSellerApp() {
+        return GlobalConfig.isSellerApp();
+    }
+
 }

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="top"
+    android:orientation="horizontal">
+
+    <android.support.v7.widget.AppCompatImageButton
+        android:id="@+id/image_button_minus"
+        style="@style/ImageButton.Counter"
+        android:src="@drawable/bg_button_counter_minus" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/margin_vs"
+        android:layout_marginRight="@dimen/margin_vs">
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/decimal_input_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="center_vertical"
+            android:textSize="@dimen/font_title"
+            tools:text="12" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey_400"
+            android:layout_marginBottom="@dimen/margin_vvs"/>
+
+    </LinearLayout>
+
+    <android.support.v7.widget.AppCompatImageButton
+        android:id="@+id/image_button_plus"
+        style="@style/ImageButton.Counter"
+        android:src="@drawable/bg_button_counter_plus" />
+
+</LinearLayout>

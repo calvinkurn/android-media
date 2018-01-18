@@ -25,8 +25,6 @@ import com.tokopedia.core.util.SessionHandler;
 public interface TkpdCoreRouter {
     String EXTRAS = "extras";
 
-    void startInstopedActivity(Context context);
-
     void startInstopedActivityForResult(Activity activity, int resultCode, int maxResult);
 
     void startInstopedActivityForResult(Context context, Fragment fragment, int resultCode, int maxResult);
@@ -36,8 +34,6 @@ public interface TkpdCoreRouter {
     void goToManageProduct(Context context);
 
     void goToDraftProductList(Context context);
-
-    void goToManageEtalase(Context context);
 
     void clearEtalaseCache();
 
@@ -59,6 +55,12 @@ public interface TkpdCoreRouter {
 
     Intent getHomeIntent(Context context);
 
+    Intent getOnBoardingActivityIntent(Context context);
+
+    Intent getTrueCallerActivityIntent(Context context);
+
+    Intent getPhoneVerificationActivityIntent(Context context);
+
     Class<?> getHomeClass(Context context) throws ClassNotFoundException;
 
     DrawerHelper getDrawer(AppCompatActivity activity,
@@ -68,8 +70,6 @@ public interface TkpdCoreRouter {
 
 
     void onLogout(AppComponent appComponent);
-
-    void goToProfileCompletion(Context context);
 
     void goToCreateMerchantRedirect(Context context);
 
@@ -99,6 +99,30 @@ public interface TkpdCoreRouter {
 
     ApplinkUnsupported getApplinkUnsupported(Activity activity);
 
+    Intent getIntentCreateShop(Context context);
+
+    Intent getSplashScreenIntent(Context context);
+
+    Class getDeepLinkClass();
+
+    Intent getIntentManageShop(Context context);
+
+    android.app.Fragment getFragmentShopSettings();
+
+    android.app.Fragment getFragmentSellingNewOrder();
+
+    Class getSellingActivityClass();
+
+    Intent getActivitySellingTransactionNewOrder(Context context);
+
+    Intent getActivitySellingTransactionConfirmShipping(Context context);
+
+    Intent getActivitySellingTransactionShippingStatus(Context context);
+
+    Intent getActivitySellingTransactionList(Context context);
+
+    Intent getActivitySellingTransactionOpportunity(Context context);
+
     Intent getHomeHotlistIntent(Context context);
 
     NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass,
@@ -109,4 +133,11 @@ public interface TkpdCoreRouter {
     Intent getInboxReputationIntent(Context context);
 
     Intent getResolutionCenterIntent(Context context);
+
+    String applink(Activity activity, String deeplink);
+
+    Intent getKolFollowingPageIntent(Context context, int userId);
+
+    Intent getChangePhoneNumberIntent(Context context, String email, String phoneNumber);
+
 }

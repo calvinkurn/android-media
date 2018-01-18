@@ -43,7 +43,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             style="@style/Button.Submit.Green"
-            android:text="@string/button_ok"/>
+            android:text="@string/title_ok"/>
     </LinearLayout>
 
 </LinearLayout>

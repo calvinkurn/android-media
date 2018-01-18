@@ -6,6 +6,7 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.posapp.PosSessionHandler;
@@ -63,8 +64,13 @@ public class SessionRNModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    @Deprecated
     public void getEnv(Promise promise) {
-        promise.resolve(GlobalConfig.FLAVOR);
+        if (getCurrentActivity() != null && getCurrentActivity().getApplication() instanceof TkpdCoreRouter){
+            promise.resolve(((TkpdCoreRouter) getCurrentActivity().getApplication()).getFlavor());
+        } else {
+            promise.resolve("");
+        }
     }
 
     @ReactMethod

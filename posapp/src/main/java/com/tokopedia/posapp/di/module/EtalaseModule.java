@@ -8,7 +8,6 @@ import com.tokopedia.posapp.data.factory.EtalaseFactory;
 import com.tokopedia.posapp.data.mapper.GetEtalaseMapper;
 import com.tokopedia.posapp.data.repository.EtalaseRepository;
 import com.tokopedia.posapp.data.repository.EtalaseRepositoryImpl;
-import com.tokopedia.posapp.data.source.cloud.api.TomeApi;
 import com.tokopedia.posapp.data.source.cloud.api.GatewayProductApi;
 import com.tokopedia.posapp.di.scope.EtalaseScope;
 import com.tokopedia.posapp.domain.usecase.GetEtalaseCacheUseCase;
@@ -27,18 +26,13 @@ import retrofit2.Retrofit;
 @Module
 public class EtalaseModule {
     @Provides
-    TomeApi provideTomeApi(@TomeQualifier Retrofit retrofit) {
-        return retrofit.create(TomeApi.class);
-    }
-
-    @Provides
     GetEtalaseMapper provideGetEtalaseMapper(Gson gson) {
         return new GetEtalaseMapper(gson);
     }
 
     @Provides
-    EtalaseFactory provideEtalaseFactory(GatewayProductApi posProductApi, TomeApi tomeApi, GetEtalaseMapper getEtalaseMapper) {
-        return new EtalaseFactory(posProductApi, tomeApi, getEtalaseMapper);
+    EtalaseFactory provideEtalaseFactory(GatewayProductApi posProductApi, GetEtalaseMapper getEtalaseMapper) {
+        return new EtalaseFactory(posProductApi, getEtalaseMapper);
     }
 
     @Provides

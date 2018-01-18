@@ -21,7 +21,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/padding_small"
-                style="@style/TextView.Body1.Bold"
+                style="@style/TextView.Small.Bold"
                 android:text="@string/payment_total_label"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
@@ -34,7 +34,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:padding="@dimen/padding_small"
-                style="@style/TextView.Body1.Bold"
+                style="@style/TextView.Small.Bold"
                 tools:text="Rp 34.697.000" />
 
             <LinearLayout
@@ -54,7 +54,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    style="@style/TextView.Body1"
+                    style="@style/TextView.Small"
                     android:text="Scan kartu kredit"/>
             </LinearLayout>
 
@@ -68,7 +68,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAlignment="center"
-                    style="@style/TextView.Body1"
+                    style="@style/TextView.Small"
                     android:text="Silahkan masukkan kartu kredit"/>
 
                 <TextView
@@ -76,7 +76,7 @@
                     android:layout_height="wrap_content"
                     android:textAlignment="center"
                     android:layout_marginTop="@dimen/margin_large"
-                    style="@style/TextView.Body1"
+                    style="@style/TextView.Small"
                     android:text="Atau gunakan Pembayaran Online"/>
 
             </LinearLayout>

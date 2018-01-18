@@ -33,6 +33,41 @@
                 android:layout_marginTop="@dimen/margin_vs"
                 android:layout_marginBottom="@dimen/margin_vs"
                 android:id="@+id/customview_opportunity_detail_summary_view"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@drawable/bg_line_separator"/>
+
+                <com.tokopedia.seller.opportunity.customview.OpportunityPriceInfoView
+                    android:id="@+id/price_item"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@drawable/bg_line_separator"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginEnd="16dp"/>
+
+                <com.tokopedia.seller.opportunity.customview.OpportunityPriceInfoView
+                    android:id="@+id/shipping_fee"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@drawable/bg_line_separator"/>
+            </LinearLayout>
             <Button
                 android:id="@+id/button_take_opportunity"
                 android:text="@string/take_opportunity"

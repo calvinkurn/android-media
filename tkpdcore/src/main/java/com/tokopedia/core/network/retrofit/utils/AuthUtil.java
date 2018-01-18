@@ -432,6 +432,23 @@ public class AuthUtil {
         params.putString(PARAM_HASH, hash);
         params.putString(PARAM_OS_TYPE, "1");
         params.putString(PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
+
+        return params;
+    }
+
+    public static TKPDMapParam<String, Object> generateParamsNetworkObject(Context context,
+                                                                           TKPDMapParam<String, Object> params,
+                                                                           String userId) {
+
+        String deviceId = GCMHandler.getRegistrationId(context);
+        String hash = md5(userId + "~" + deviceId);
+
+        params.put(PARAM_USER_ID, userId);
+        params.put(PARAM_DEVICE_ID, deviceId);
+        params.put(PARAM_HASH, hash);
+        params.put(PARAM_OS_TYPE, "1");
+        params.put(PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
+
         return params;
     }
 

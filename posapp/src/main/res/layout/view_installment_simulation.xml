@@ -16,7 +16,7 @@
         android:id="@+id/text_installment_percentage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/TextView.Body1.Bold"
+        style="@style/TextView.Small.Bold"
         android:text="@string/installment_percentage_label" />
 
     <TableLayout
@@ -33,7 +33,7 @@
                 android:background="@drawable/border_grey"
                 android:padding="@dimen/padding_vs"
                 android:textSize="@dimen/fontvs"
-                style="@style/TextView.Body1.Bold"
+                style="@style/TextView.Small.Bold"
                 android:text="@string/installment_tenure_label" />
 
             <TextView
@@ -42,7 +42,7 @@
                 android:background="@drawable/border_grey"
                 android:padding="@dimen/padding_vs"
                 android:textSize="@dimen/fontvs"
-                style="@style/TextView.Body1.Bold"
+                style="@style/TextView.Small.Bold"
                 android:textAlignment="center"
                 android:text="@string/installment_3m_label" />
 
@@ -52,7 +52,7 @@
                 android:background="@drawable/border_grey"
                 android:padding="@dimen/padding_vs"
                 android:textSize="@dimen/fontvs"
-                style="@style/TextView.Body1.Bold"
+                style="@style/TextView.Small.Bold"
                 android:textAlignment="center"
                 android:text="@string/installment_6m_label" />
 
@@ -62,7 +62,7 @@
                 android:background="@drawable/border_grey"
                 android:padding="@dimen/padding_vs"
                 android:textSize="@dimen/fontvs"
-                style="@style/TextView.Body1.Bold"
+                style="@style/TextView.Small.Bold"
                 android:textAlignment="center"
                 android:text="@string/installment_12m_label" />
 
@@ -72,7 +72,7 @@
                 android:background="@drawable/border_grey"
                 android:padding="@dimen/padding_vs"
                 android:textSize="@dimen/fontvs"
-                style="@style/TextView.Body1.Bold"
+                style="@style/TextView.Small.Bold"
                 android:textAlignment="center"
                 android:text="@string/installment_18m_label" />
 
@@ -82,7 +82,7 @@
                 android:background="@drawable/border_grey"
                 android:padding="@dimen/padding_vs"
                 android:textSize="@dimen/fontvs"
-                style="@style/TextView.Body1.Bold"
+                style="@style/TextView.Small.Bold"
                 android:textAlignment="center"
                 android:text="@string/installment_24m_label" />
         </TableRow>
@@ -97,7 +97,7 @@
                 android:background="@drawable/border"
                 android:padding="@dimen/padding_vs"
                 android:textSize="@dimen/fontvs"
-                style="@style/TextView.Body1"
+                style="@style/TextView.Small"
                 android:text="@string/installment_monthly_label" />
 
             <TextView
@@ -107,7 +107,7 @@
                 android:background="@drawable/border"
                 android:padding="@dimen/padding_vs"
                 android:textSize="@dimen/fontvs"
-                style="@style/TextView.Body1"
+                style="@style/TextView.Small"
                 tools:text="3.000.000" />
 
             <TextView
@@ -117,7 +117,7 @@
                 android:background="@drawable/border"
                 android:padding="@dimen/padding_vs"
                 android:textSize="@dimen/fontvs"
-                style="@style/TextView.Body1"
+                style="@style/TextView.Small"
                 tools:text="1.000.000" />
 
             <TextView
@@ -127,7 +127,7 @@
                 android:background="@drawable/border"
                 android:padding="@dimen/padding_vs"
                 android:textSize="@dimen/fontvs"
-                style="@style/TextView.Body1"
+                style="@style/TextView.Small"
                 tools:text="500.000" />
 
             <TextView
@@ -137,7 +137,7 @@
                 android:background="@drawable/border"
                 android:padding="@dimen/padding_vs"
                 android:textSize="@dimen/fontvs"
-                style="@style/TextView.Body1"
+                style="@style/TextView.Small"
                 tools:text="300.000" />
 
             <TextView
@@ -147,7 +147,7 @@
                 android:background="@drawable/border"
                 android:padding="@dimen/padding_vs"
                 android:textSize="@dimen/fontvs"
-                style="@style/TextView.Body1"
+                style="@style/TextView.Small"
                 tools:text="250.000" />
         </TableRow>
     </TableLayout>

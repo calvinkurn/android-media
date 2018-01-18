@@ -17,6 +17,9 @@ public class Error {
     private static final String KEY_TITLE = "title";
     private static final String KEY_DETAIL = "detail";
 
+    public Error() {
+    }
+
     public Error(JSONObject object) throws JSONException {
         if(!object.isNull(KEY_CODE)) {
             setCode(object.getInt(KEY_CODE));

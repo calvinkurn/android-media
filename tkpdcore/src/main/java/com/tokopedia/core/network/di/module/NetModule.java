@@ -18,6 +18,7 @@ import com.tokopedia.core.network.di.qualifier.MojitoNoRetryAuth;
 import com.tokopedia.core.network.di.qualifier.MojitoSmallTimeoutNoAuth;
 import com.tokopedia.core.network.di.qualifier.MojitoGetWishlistQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoWishlistActionQualifier;
+import com.tokopedia.core.network.di.qualifier.TomeBearerAuth;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.di.qualifier.UploadWsV4Qualifier;
@@ -138,7 +139,7 @@ public class NetModule {
     @TomeQualifier
     @ApplicationScope
     @Provides
-    public Retrofit provideTomeRetrofit(@NoAuth OkHttpClient okHttpClient,
+    public Retrofit provideTomeRetrofit(@TomeBearerAuth OkHttpClient okHttpClient,
                                           Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TkpdBaseURL.TOME_DOMAIN).client(okHttpClient).build();
     }

@@ -34,7 +34,6 @@ public class PosApplication extends PosRouterApplication {
         GlobalConfig.PACKAGE_APPLICATION = GlobalConfig.PACKAGE_POS_APP;
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
-        GlobalConfig.FLAVOR = BuildConfig.FLAVOR;
     }
 
     private void generatePosAppBaseUrl() {

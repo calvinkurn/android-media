@@ -77,11 +77,6 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     @Override
-    public void startInstopedActivity(Context context) {
-
-    }
-
-    @Override
     public void startInstopedActivityForResult(Activity activity, int resultCode, int maxResult) {
 
     }
@@ -103,11 +98,6 @@ public class PosRouterApplication extends MainApplication implements
 
     @Override
     public void goToDraftProductList(Context context) {
-
-    }
-
-    @Override
-    public void goToManageEtalase(Context context) {
 
     }
 
@@ -177,6 +167,21 @@ public class PosRouterApplication extends MainApplication implements
         return intent;
     }
 
+    @Override
+    public Intent getOnBoardingActivityIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getTrueCallerActivityIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getPhoneVerificationActivityIntent(Context context) {
+        return null;
+    }
+
     public Class getHomeActivity(Context context){
         if(isOutletSelected(context)) {
             return ProductListActivity.class;
@@ -200,11 +205,6 @@ public class PosRouterApplication extends MainApplication implements
         PosSessionHandler.clearPosUserData(this);
         PosCacheHandler.clearUserData(this);
         SchedulerService.cancelCacheScheduler(getApplicationContext());
-    }
-
-    @Override
-    public void goToProfileCompletion(Context context) {
-
     }
 
     @Override
@@ -234,7 +234,7 @@ public class PosRouterApplication extends MainApplication implements
 
     @Override
     public String getFlavor() {
-        return null;
+        return BuildConfig.FLAVOR;
     }
 
     @Override
@@ -308,6 +308,66 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     @Override
+    public Intent getIntentCreateShop(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getSplashScreenIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public Class getDeepLinkClass() {
+        return null;
+    }
+
+    @Override
+    public Intent getIntentManageShop(Context context) {
+        return null;
+    }
+
+    @Override
+    public android.app.Fragment getFragmentShopSettings() {
+        return null;
+    }
+
+    @Override
+    public android.app.Fragment getFragmentSellingNewOrder() {
+        return null;
+    }
+
+    @Override
+    public Class getSellingActivityClass() {
+        return null;
+    }
+
+    @Override
+    public Intent getActivitySellingTransactionNewOrder(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getActivitySellingTransactionConfirmShipping(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getActivitySellingTransactionShippingStatus(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getActivitySellingTransactionList(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getActivitySellingTransactionOpportunity(Context context) {
+        return null;
+    }
+
+    @Override
     public Intent getHomeHotlistIntent(Context context) {
         return null;
     }
@@ -329,6 +389,21 @@ public class PosRouterApplication extends MainApplication implements
 
     @Override
     public Intent getResolutionCenterIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public String applink(Activity activity, String deeplink) {
+        return null;
+    }
+
+    @Override
+    public Intent getKolFollowingPageIntent(Context context, int userId) {
+        return null;
+    }
+
+    @Override
+    public Intent getChangePhoneNumberIntent(Context context, String email, String phoneNumber) {
         return null;
     }
 
