@@ -16,6 +16,7 @@ import rx.Observable;
  * <p>
  * migrate retrofit 2 by Angga.Prasetiyo
  */
+@Deprecated
 public interface RegisterApi {
 
     String USER_EMAIL = "user_email";

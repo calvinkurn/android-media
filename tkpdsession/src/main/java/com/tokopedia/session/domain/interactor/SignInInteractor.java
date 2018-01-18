@@ -1,4 +1,4 @@
-package com.tokopedia.session.session.interactor;
+package com.tokopedia.session.domain.interactor;
 
 import com.tokopedia.core.session.model.AccountsModel;
 import com.tokopedia.core.session.model.AccountsParameter;
@@ -8,7 +8,7 @@ import com.tokopedia.core.session.model.SecurityModel;
 /**
  * Created by stevenfredian on 1/27/17.
  */
-
+@Deprecated
 public interface SignInInteractor {
 
     String UUID_KEY = "uuid";

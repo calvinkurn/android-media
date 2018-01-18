@@ -57,7 +57,7 @@ import com.tokopedia.session.register.view.subscriber.registerinitial.GetFaceboo
 import com.tokopedia.session.register.view.viewlistener.RegisterInitial;
 import com.tokopedia.session.register.view.viewmodel.DiscoverItemViewModel;
 import com.tokopedia.session.register.view.viewmodel.createpassword.CreatePasswordViewModel;
-import com.tokopedia.session.session.WebViewLoginFragment;
+import com.tokopedia.session.WebViewLoginFragment;
 
 import java.util.ArrayList;
 

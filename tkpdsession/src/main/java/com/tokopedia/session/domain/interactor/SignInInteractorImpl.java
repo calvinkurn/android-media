@@ -1,4 +1,4 @@
-package com.tokopedia.session.session.interactor;
+package com.tokopedia.session.domain.interactor;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -36,7 +36,7 @@ import rx.schedulers.Schedulers;
 /**
  * Created by stevenfredian on 1/19/17.
  */
-
+@Deprecated
 public class SignInInteractorImpl implements SignInInteractor{
 
     private SessionHandler sessionHandler;

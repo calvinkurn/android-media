@@ -28,7 +28,7 @@ import com.tokopedia.session.register.domain.interactor.registerinitial.GetFaceb
 import com.tokopedia.session.register.domain.interactor.registerinitial.LoginWebviewUseCase;
 import com.tokopedia.session.register.domain.interactor.registerinitial.LoginWithSosmedUseCase;
 import com.tokopedia.session.register.view.subscriber.registerinitial.GetFacebookCredentialSubscriber;
-import com.tokopedia.session.session.WebViewLoginFragment;
+import com.tokopedia.session.WebViewLoginFragment;
 
 import java.util.ArrayList;
 

@@ -71,7 +71,7 @@ import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.google.GoogleSignInActivity;
 import com.tokopedia.session.login.loginphonenumber.view.activity.LoginPhoneNumberActivity;
 import com.tokopedia.session.register.view.activity.SmartLockActivity;
-import com.tokopedia.session.session.WebViewLoginFragment;
+import com.tokopedia.session.WebViewLoginFragment;
 import com.tokopedia.session.session.model.LoginModel;
 import com.tokopedia.session.session.presenter.Login;
 import com.tokopedia.session.session.presenter.LoginImpl;
