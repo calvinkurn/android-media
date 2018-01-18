@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +22,7 @@ import com.tokopedia.transaction.R;
 public class RequestPickupFragment extends Fragment {
 
     private static final String ORDER_ID_ARGUMENT = "ORDER_ID_ARGUMENT";
-    public static final String INSTANT_COURIER_INFO_URL = "https://www.tokopedia.com/bantuan/penjual/pengiriman-penjual/layanan-pengiriman-dengan-sistem-pick-up-pengiriman-penjual/ ";
+    public static final String INSTANT_COURIER_INFO_URL = "https://www.tokopedia.com/bantuan/penjual/pengiriman-penjual/layanan-pengiriman-dengan-sistem-pick-up-pengiriman-penjual/";
     public static final String INFO_FRAGMENT_TAG = "info_fragment";
 
     private ConfirmRequestPickupListener listener;
@@ -52,9 +53,12 @@ public class RequestPickupFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.request_pickup_fragment, container, false);
         Button confirmRequestPickup = view.findViewById(R.id.request_pickup_confirm_button);
-        TextView infoButton = view.findViewById(R.id.request_pickup_info);
+        TextView requestPickupStep2 = view.findViewById(R.id.request_pickup_step_2_text);
+        requestPickupStep2.setText(Html.fromHtml(getString(R.string.request_pickup_step_2)));
+        TextView requestPickupInfo = view.findViewById(R.id.request_pickup_info);
+        requestPickupInfo.setText(Html.fromHtml(getString(R.string.request_pickup_info)));
         confirmRequestPickup.setOnClickListener(onConfirmRequestPickup());
-        infoButton.setOnClickListener(onInfoButtonClickedListener());
+        requestPickupInfo.setOnClickListener(onInfoButtonClickedListener());
         return view;
     }
 

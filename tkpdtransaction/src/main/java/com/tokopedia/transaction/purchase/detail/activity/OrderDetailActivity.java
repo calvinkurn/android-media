@@ -755,4 +755,19 @@ public class OrderDetailActivity extends TActivity
     public void onConfirmPickup(String orderId) {
         presenter.processInstantCourierShipping(this, orderId);
     }
+
+    @Override
+    public void onWebViewSuccessLoad() {
+
+    }
+
+    @Override
+    public void onWebViewErrorLoad() {
+
+    }
+
+    @Override
+    public void onWebViewProgressLoad() {
+
+    }
 }

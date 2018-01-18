@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.purchase.detail.activity;
 
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.transaction.purchase.detail.dialog.AcceptOrderDialog;
 import com.tokopedia.transaction.purchase.detail.dialog.AcceptPartialOrderDialog;
 import com.tokopedia.transaction.purchase.detail.dialog.ComplaintDialog;
@@ -36,7 +37,8 @@ public interface OrderDetailView extends FinishOrderDialog.FinishOrderDialogList
         RejectOrderShopClosedFragment.RejectOrderShopClosedListener,
         RejectOrderEmptyVarianFragment.RejectOrderEmptyVarianFragmentListener,
         RejectOrderWeightPriceFragment.RejectOrderChangeWeightPriceListener,
-        RequestPickupFragment.ConfirmRequestPickupListener{
+        RequestPickupFragment.ConfirmRequestPickupListener,
+        FragmentGeneralWebView.OnFragmentInteractionListener {
 
     void onReceiveDetailData(OrderDetailData data);
 
