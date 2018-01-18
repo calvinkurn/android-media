@@ -3,7 +3,6 @@ package com.tokopedia.tkpd.tkpdreputation.productreview.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,17 +11,22 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.tkpd.tkpdreputation.R;
+import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
+import com.tokopedia.tkpd.tkpdreputation.di.ReputationModule;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.DeleteReviewResponseDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationReportActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewstarcount.DataResponseReviewStarCount;
+import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewstarcount.DetailReviewStarCount;
 import com.tokopedia.tkpd.tkpdreputation.productreview.view.adapter.ProductReviewModel;
 import com.tokopedia.tkpd.tkpdreputation.productreview.view.adapter.ProductReviewModelContent;
+import com.tokopedia.tkpd.tkpdreputation.productreview.view.adapter.ProductReviewModelTitleHeader;
 import com.tokopedia.tkpd.tkpdreputation.productreview.view.adapter.ProductReviewTypeFactoryAdapter;
 import com.tokopedia.tkpd.tkpdreputation.productreview.view.presenter.ProductReviewContract;
 import com.tokopedia.tkpd.tkpdreputation.productreview.view.presenter.ProductReviewPresenter;
@@ -71,7 +75,13 @@ public class ProductReviewFragment extends BaseListFragment<ProductReviewModel, 
 
     @Override
     protected void initInjector() {
-
+        DaggerReputationComponent
+                .builder()
+                .reputationModule(new ReputationModule())
+                .appComponent(getComponent(AppComponent.class))
+                .build()
+                .inject(this);
+        productReviewPresenter.attachView(this);
     }
 
     @Override
@@ -97,7 +107,7 @@ public class ProductReviewFragment extends BaseListFragment<ProductReviewModel, 
 
     @Override
     public void loadData(int page) {
-        if(page == 1) {
+        if (page == 1) {
             productReviewPresenter.getRatingReview(productId);
             productReviewPresenter.getHelpfulReview(productId);
         }
@@ -173,8 +183,11 @@ public class ProductReviewFragment extends BaseListFragment<ProductReviewModel, 
     }
 
     @Override
-    public void onGetListReviewProduct(List<ProductReviewModelContent> map) {
-
+    public void onGetListReviewProduct(List<ProductReviewModel> map, boolean isHasNextPage) {
+        if (getCurrentPage() == 0) {
+            map.add(new ProductReviewModelTitleHeader(getString(R.string.product_review_label_helpful_review)));
+        }
+        renderList(map, isHasNextPage);
     }
 
     @Override
@@ -183,8 +196,11 @@ public class ProductReviewFragment extends BaseListFragment<ProductReviewModel, 
     }
 
     @Override
-    public void onGetListReviewHelpful(List<ProductReviewModelContent> map) {
-
+    public void onGetListReviewHelpful(List<ProductReviewModel> map) {
+        map.add(new ProductReviewModelTitleHeader(getString(R.string.product_review_label_all_review)));
+        for (int i = 0; i < map.size(); i++) {
+            getAdapter().addElement(i, map.get(i));
+        }
     }
 
     @Override
@@ -197,6 +213,31 @@ public class ProductReviewFragment extends BaseListFragment<ProductReviewModel, 
         ratingProduct.setText(dataResponseReviewStarCount.getRatingScore());
         ratingProductStar.setRating(Integer.parseInt(dataResponseReviewStarCount.getRatingScore()));
         counterReview.setText(String.valueOf(dataResponseReviewStarCount.getTotalReview()));
+        for (DetailReviewStarCount detailReviewStarCount : dataResponseReviewStarCount.getDetail()) {
+            Float percentageFloatReview = Float.valueOf(detailReviewStarCount.getPercentage().replace("%", "")) / 100f;
+            switch (detailReviewStarCount.getRate()) {
+                case 5:
+                    fiveStarReview.setPercentageProgress(percentageFloatReview);
+                    fiveStarReview.setTotalReview(detailReviewStarCount.getTotalReview());
+                    break;
+                case 4:
+                    fourStarReview.setPercentageProgress(percentageFloatReview);
+                    fourStarReview.setTotalReview(detailReviewStarCount.getTotalReview());
+                    break;
+                case 3:
+                    threeStarReview.setPercentageProgress(percentageFloatReview);
+                    threeStarReview.setTotalReview(detailReviewStarCount.getTotalReview());
+                    break;
+                case 2:
+                    twoStarReview.setPercentageProgress(percentageFloatReview);
+                    twoStarReview.setTotalReview(detailReviewStarCount.getTotalReview());
+                    break;
+                case 1:
+                    oneStarReview.setPercentageProgress(percentageFloatReview);
+                    oneStarReview.setTotalReview(detailReviewStarCount.getTotalReview());
+                    break;
+            }
+        }
     }
 
     @Override

@@ -19,6 +19,8 @@ import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewlist.Dat
 import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewlist.DataResponseReviewShop;
 import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewstarcount.DataResponseReviewStarCount;
 
+import java.util.HashMap;
+
 import rx.Observable;
 
 /**
@@ -59,7 +61,7 @@ public interface ReputationRepository {
 
     Observable<LikeDislikeDomain> likeDislikeReview(RequestParams requestParams);
 
-    Observable<DataResponseReviewShop> getReviewShopList(RequestParams requestParams);
+    Observable<DataResponseReviewShop> getReviewShopList(HashMap<String, String> params);
 
     Observable<DataResponseReviewHelpful> getReviewHelpful(String shopId, String productId);
 

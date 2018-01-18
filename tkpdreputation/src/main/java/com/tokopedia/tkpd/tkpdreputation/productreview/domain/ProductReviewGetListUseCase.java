@@ -1,13 +1,22 @@
 package com.tokopedia.tkpd.tkpdreputation.productreview.domain;
 
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.design.utils.StringUtils;
+import com.tokopedia.tkpd.tkpdreputation.domain.interactor.GetLikeDislikeReviewUseCase;
+import com.tokopedia.tkpd.tkpdreputation.domain.model.GetLikeDislikeReviewDomain;
+import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeListDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository;
 import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewlist.DataResponseReviewProduct;
+import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewlist.Review;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
 import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * Created by zulfikarrahman on 1/15/18.
@@ -20,28 +29,69 @@ public class ProductReviewGetListUseCase extends UseCase<DataResponseReviewProdu
     public static final String PER_PAGE = "per_page";
     public static final String RATING = "rating";
     public static final String DEFAULT_PER_PAGE = "10";
+    public static final String USER_ID = "user_id";
     private final ReputationRepository reputationRepository;
+    private GetLikeDislikeReviewUseCase getLikeDislikeReviewUseCase;
 
-    public ProductReviewGetListUseCase(ReputationRepository reputationRepository) {
+    @Inject
+    public ProductReviewGetListUseCase(ReputationRepository reputationRepository,
+                                       GetLikeDislikeReviewUseCase getLikeDislikeReviewUseCase) {
         this.reputationRepository = reputationRepository;
+        this.getLikeDislikeReviewUseCase = getLikeDislikeReviewUseCase;
     }
 
     @Override
-    public Observable<DataResponseReviewProduct> createObservable(RequestParams requestParams) {
+    public Observable<DataResponseReviewProduct> createObservable(final RequestParams requestParams) {
         return reputationRepository.getReviewProductList(
                 requestParams.getString(PRODUCT_ID, ""),
                 requestParams.getString(PAGE, ""),
                 requestParams.getString(PER_PAGE, ""),
                 requestParams.getString(RATING, "")
-                );
+                )
+                .flatMap(new Func1<DataResponseReviewProduct, Observable<DataResponseReviewProduct>>() {
+                    @Override
+                    public Observable<DataResponseReviewProduct> call(final DataResponseReviewProduct dataResponseReviewProduct) {
+                        return getLikeDislikeReviewUseCase.createObservable(
+                                GetLikeDislikeReviewUseCase.getParam(createReviewIds(dataResponseReviewProduct), requestParams.getString(USER_ID, "")))
+                                .map(new Func1<GetLikeDislikeReviewDomain, DataResponseReviewProduct>() {
+                                    @Override
+                                    public DataResponseReviewProduct call(GetLikeDislikeReviewDomain getLikeDislikeReviewDomain) {
+                                        return mapLikeModelToReviewModel(getLikeDislikeReviewDomain, dataResponseReviewProduct);
+                                    }
+                                });
+                    }
+                });
     }
 
-    public RequestParams createRequestParams(String productId, String page, String rating){
+    private DataResponseReviewProduct mapLikeModelToReviewModel(GetLikeDislikeReviewDomain getLikeDislikeReviewDomain,
+                                                                DataResponseReviewProduct dataResponseReviewProduct) {
+        for(Review review : dataResponseReviewProduct.getList()) {
+            for (LikeDislikeListDomain likeDislikeListDomain : getLikeDislikeReviewDomain.getList()) {
+                if(likeDislikeListDomain.getReviewId() == review.getReviewId()){
+                    review.setTotalLike(likeDislikeListDomain.getTotalLike());
+                    review.setLikeStatus(likeDislikeListDomain.getLikeStatus());
+                    break;
+                }
+            }
+        }
+        return dataResponseReviewProduct;
+    }
+
+    private String createReviewIds(DataResponseReviewProduct dataResponseReviewProduct) {
+        List<String> listIds = new ArrayList<>();
+        for(Review review :dataResponseReviewProduct.getList()){
+            listIds.add(String.valueOf(review.getReviewId()));
+        }
+        return StringUtils.convertListToStringDelimiter(listIds,"~");
+    }
+
+    public RequestParams createRequestParams(String productId, String page, String rating, String userId) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(PRODUCT_ID, productId);
         requestParams.putString(PAGE, page);
         requestParams.putString(PER_PAGE, DEFAULT_PER_PAGE);
         requestParams.putString(RATING, rating);
+        requestParams.putString(USER_ID, userId);
         return requestParams;
     }
 }
