@@ -296,21 +296,21 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         sessionHandler.setGoldMerchant(shopModel.info.shopIsGold);
     }
 
-    @Override
-    public void onForceHockeyApp() {
-        if (!DialogHockeyApp.isDialogShown(this)) showHoeckeyAppDialog();
-    }
+//    @Override
+//    public void onForceHockeyApp() {
+//        if (!DialogHockeyApp.isDialogShown(this)) showHoeckeyAppDialog();
+//    }
 
-    private void showHoeckeyAppDialog() {
-        DialogHockeyApp.createShow(this,
-                new DialogHockeyApp.ActionListener() {
-                    @Override
-                    public void onDialogClicked() {
-                        Intent intent = new Intent(Intent.ACTION_VIEW);
-                        intent.setData(Uri.parse(HockeyAppHelper.getHockeyappDownloadUrl()));
-                        startActivity(intent);
-                    }
-                });
-    }
+//    private void showHoeckeyAppDialog() {
+//        DialogHockeyApp.createShow(this,
+//                new DialogHockeyApp.ActionListener() {
+//                    @Override
+//                    public void onDialogClicked() {
+//                        Intent intent = new Intent(Intent.ACTION_VIEW);
+//                        intent.setData(Uri.parse(HockeyAppHelper.getHockeyappDownloadUrl()));
+//                        startActivity(intent);
+//                    }
+//                });
+//    }
 
 }
