@@ -700,6 +700,7 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
 
                         if (ussdCode == null || "".equalsIgnoreCase(ussdCode.trim())) {
 
+                            //show the card if signal is not available with error message
                             if (isCarrierSignalsNotAvailable(carrierName)) {
                                 String operatorErrorMsg = view.getActivity().getString(R.string.label_no_signal);
                                 carrierName = operatorErrorMsg;
