@@ -119,24 +119,6 @@ public class InboxReputationActivity extends DrawerPresenterActivity implements 
                     .title_tab_buyer_review)));
         }
 
-        if (GlobalConfig.isSellerApp()) {
-            if (sellerReputationFragment != null) {
-                indicator.addTab(indicator.newTab().setText(R.string.title_reputation_history));
-            }
-            if (goToReputationHistory) {
-                viewPager.setCurrentItem(TAB_SELLER_REPUTATION_HISTORY);
-            }
-        } else {
-            if (!SessionHandler.isUserHasShop(this)) {
-                indicator.addTab(indicator.newTab().setText(getString(R.string.title_menu_all)));
-                indicator.setVisibility(View.GONE);
-            } else {
-                indicator.addTab(indicator.newTab().setText(getString(R.string.title_menu_all)));
-                indicator.addTab(indicator.newTab().setText(getString(R.string.title_my_product)));
-                indicator.addTab(indicator.newTab().setText(getString(R.string.title_my_review)));
-            }
-        }
-
     }
 
     protected SectionsPagerAdapter getViewPagerAdapter() {
