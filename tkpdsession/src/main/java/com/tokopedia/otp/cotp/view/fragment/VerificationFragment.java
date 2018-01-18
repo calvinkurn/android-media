@@ -44,8 +44,8 @@ import com.tokopedia.otp.cotp.view.presenter.VerificationPresenter;
 import com.tokopedia.otp.cotp.view.viewlistener.Verification;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationViewModel;
+import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
-import com.tokopedia.otp.phoneverification.view.fragment.PhoneVerificationFragment;
 import com.tokopedia.session.R;
 
 import java.util.concurrent.TimeUnit;
@@ -149,8 +149,8 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     public void onResume() {
         super.onResume();
         if (getArguments() != null
-                && getArguments().getInt(VerificationActivity.PARAM_DEFAULT_FRAGMENT_TYPE)
-                == VerificationActivity.TYPE_SMS) {
+                && getArguments().getString(VerificationActivity.PARAM_REQUEST_OTP_MODE, "")
+                .equals(RequestOtpUseCase.MODE_SMS)) {
             smsReceiver.registerSmsReceiver(getActivity());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 showCheckSMSPermission();
@@ -163,8 +163,8 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         super.onPause();
         if (smsReceiver != null
                 && getArguments() != null
-                && getArguments().getInt(VerificationActivity.PARAM_DEFAULT_FRAGMENT_TYPE) ==
-                VerificationActivity.TYPE_SMS) {
+                && getArguments().getString(VerificationActivity.PARAM_REQUEST_OTP_MODE, "")
+                .equals(RequestOtpUseCase.MODE_SMS)) {
             getActivity().unregisterReceiver(smsReceiver);
         }
     }
@@ -205,8 +205,9 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
     private VerificationViewModel createViewModel(Bundle bundle) {
         return new VerificationViewModel(
-                bundle.getInt(VerificationActivity.PARAM_DEFAULT_FRAGMENT_TYPE, -1),
+                bundle.getString(VerificationActivity.PARAM_REQUEST_OTP_MODE, ""),
                 bundle.getInt(VerificationActivity.PARAM_IMAGE, -1),
+                bundle.getString(VerificationActivity.PARAM_IMAGE_URL, ""),
                 bundle.getString(VerificationActivity.PARAM_MESSAGE, ""),
                 bundle.getString(VerificationActivity.PARAM_APP_SCREEN, "")
         );
@@ -325,7 +326,13 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
     private void initData() {
         int imageId = viewModel.getIconResId();
-        ImageHandler.loadImageWithId(icon, imageId);
+        if (imageId != 0)
+            ImageHandler.loadImageWithId(icon, imageId);
+        else if (!TextUtils.isEmpty(viewModel.getImageUrl())) {
+            ImageHandler.LoadImage(icon, viewModel.getImageUrl());
+        } else {
+            icon.setVisibility(View.GONE);
+        }
         message.setText(MethodChecker.fromHtml(viewModel.getMessage()));
         verifyButton.setEnabled(false);
         presenter.requestOTP(viewModel, verificationPassModel);
@@ -450,7 +457,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         TextView or = finishCountdownView.findViewById(R.id.or);
 
         if (verificationPassModel != null
-                && verificationPassModel.getListAvailableMethods().size() > 1) {
+                && verificationPassModel.canUseOtherMethod()) {
             or.setVisibility(View.VISIBLE);
             useOtherMethod.setVisibility(View.VISIBLE);
 
@@ -473,7 +480,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         noCodeText.setVisibility(View.GONE);
 
         if (verificationPassModel != null
-                && verificationPassModel.getListAvailableMethods().size() > 1) {
+                && verificationPassModel.canUseOtherMethod()) {
             countdownText.setVisibility(View.VISIBLE);
             countdownText.setTextColor(MethodChecker.getColor(getActivity(), R.color.tkpd_main_green));
             countdownText.setText(R.string.login_with_other_method);

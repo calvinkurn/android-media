@@ -2,6 +2,8 @@ package com.tokopedia.otp.cotp.view.viewlistener;
 
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.otp.cotp.view.viewmodel.ListVerificationMethod;
+import com.tokopedia.otp.cotp.view.viewmodel.MethodItem;
 
 /**
  * @author by nisie on 11/30/17.
@@ -10,10 +12,19 @@ import com.tokopedia.core.base.presentation.CustomerView;
 public interface SelectVerification {
 
     interface View extends CustomerView {
-        void onMethodSelected(int type);
+        void onMethodSelected(MethodItem methodItem);
+
+        void showLoading();
+
+        void dismissLoading();
+
+        void onSuccessGetList(ListVerificationMethod listVerificationMethod);
+
+        void onErrorGetList(String errorCodeMessage);
     }
 
     interface Presenter extends CustomerPresenter<View> {
 
+        void getMethodList(String phoneNumber);
     }
 }

@@ -459,9 +459,9 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         }
 
         VerificationPassModel passModel = new VerificationPassModel(phone, email,
-                getListAvailableMethod(securityDomain, phone),
                 RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION,
-                interruptVerificationViewModel);
+                interruptVerificationViewModel,
+                securityDomain.getUserCheckSecurity2() == TYPE_SQ_PHONE);
         cacheManager.setKey(VerificationActivity.PASS_MODEL);
         cacheManager.setValue(CacheUtil.convertModelToString(passModel,
                 new TypeToken<VerificationPassModel>() {
@@ -472,23 +472,6 @@ public class RegisterInitialFragment extends BaseDaggerFragment
         Intent intent = VerificationActivity.getSecurityQuestionVerificationIntent(getActivity(),
                 securityDomain.getUserCheckSecurity2());
         startActivityForResult(intent, REQUEST_SECURITY_QUESTION);
-    }
-
-    private ArrayList<MethodItem> getListAvailableMethod(SecurityDomain securityDomain, String phone) {
-        ArrayList<MethodItem> list = new ArrayList<>();
-        if (securityDomain.getUserCheckSecurity2() == TYPE_SQ_PHONE) {
-            list.add(new MethodItem(
-                    VerificationActivity.TYPE_SMS,
-                    R.drawable.ic_verification_sms,
-                    MethodItem.getSmsMethodText(MethodItem.getMaskedPhoneNumber(phone))
-            ));
-            list.add(new MethodItem(
-                    VerificationActivity.TYPE_PHONE_CALL,
-                    R.drawable.ic_verification_call,
-                    MethodItem.getCallMethodText(MethodItem.getMaskedPhoneNumber(phone))
-            ));
-        }
-        return list;
     }
 
     @Override

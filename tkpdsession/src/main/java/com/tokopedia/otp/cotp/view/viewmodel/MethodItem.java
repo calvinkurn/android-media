@@ -12,20 +12,35 @@ import com.tokopedia.session.R;
 
 public class MethodItem implements Parcelable {
 
-    private int type;
+    private String mode;
     private int iconResId;
     private String methodText;
+    private String imageUrl;
+    private String verificationText;
 
-    public MethodItem(int type, int iconResId, String methodText) {
-        this.type = type;
+    public MethodItem(String mode, int iconResId, String methodText) {
+        this.mode = mode;
         this.iconResId = iconResId;
         this.methodText = methodText;
+        this.imageUrl = "";
+        this.verificationText = "";
+
+    }
+
+    public MethodItem(String mode, String imageUrl, String methodText, String verificationText) {
+        this.mode = mode;
+        this.iconResId = 0;
+        this.imageUrl = imageUrl;
+        this.methodText = methodText;
+        this.verificationText = verificationText;
     }
 
     protected MethodItem(Parcel in) {
-        type = in.readInt();
+        mode = in.readString();
         iconResId = in.readInt();
         methodText = in.readString();
+        imageUrl = in.readString();
+        verificationText = in.readString();
     }
 
     public static final Creator<MethodItem> CREATOR = new Creator<MethodItem>() {
@@ -40,8 +55,8 @@ public class MethodItem implements Parcelable {
         }
     };
 
-    public int getType() {
-        return type;
+    public String getMode() {
+        return mode;
     }
 
     public int getIconResId() {
@@ -59,9 +74,11 @@ public class MethodItem implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(type);
+        dest.writeString(mode);
         dest.writeInt(iconResId);
         dest.writeString(methodText);
+        dest.writeString(imageUrl);
+        dest.writeString(verificationText);
     }
 
     public static String getSmsMethodText(String phoneNumber) {
@@ -77,5 +94,13 @@ public class MethodItem implements Parcelable {
     public static String getMaskedPhoneNumber(String phone) {
         phone = phone.substring(phone.length() - 4);
         return String.format(("**** - **** - %s"), phone);
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public String getVerificationText() {
+        return verificationText;
     }
 }

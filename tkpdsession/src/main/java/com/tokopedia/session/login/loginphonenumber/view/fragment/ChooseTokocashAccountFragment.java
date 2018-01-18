@@ -34,6 +34,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
+import com.tokopedia.otp.cotp.view.viewmodel.InterruptVerificationViewModel;
 import com.tokopedia.otp.cotp.view.viewmodel.MethodItem;
 import com.tokopedia.otp.cotp.view.viewmodel.VerificationPassModel;
 import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
@@ -221,12 +222,25 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
     public void goToSecurityQuestion(AccountTokocash accountTokocash, LoginTokoCashViewModel
             loginTokoCashViewModel) {
 
+        InterruptVerificationViewModel interruptVerificationViewModel;
+        if (loginTokoCashViewModel.getMakeLoginDomain().getSecurityDomain()
+                .getUserCheckSecurity2() == TYPE_SQ_PHONE) {
+            interruptVerificationViewModel = InterruptVerificationViewModel
+                    .createDefaultSmsInterruptPage(loginTokoCashViewModel.getUserInfoDomain()
+                            .getGetUserInfoDomainData().getPhone());
+        } else {
+            interruptVerificationViewModel = InterruptVerificationViewModel
+                    .createDefaultEmailInterruptPage(loginTokoCashViewModel.getUserInfoDomain()
+                            .getGetUserInfoDomainData().getEmail());
+        }
+
         VerificationPassModel passModel = new VerificationPassModel(
                 loginTokoCashViewModel.getUserInfoDomain().getGetUserInfoDomainData().getPhone(),
                 accountTokocash.getEmail(),
-                getListAvailableMethod(loginTokoCashViewModel.getMakeLoginDomain().getSecurityDomain(),
-                        loginTokoCashViewModel.getUserInfoDomain().getGetUserInfoDomainData().getPhone()),
-                RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION);
+                RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION,
+                interruptVerificationViewModel,
+                loginTokoCashViewModel.getMakeLoginDomain().getSecurityDomain()
+                        .getUserCheckSecurity2() == TYPE_SQ_PHONE);
         cacheManager.setKey(VerificationActivity.PASS_MODEL);
         cacheManager.setValue(CacheUtil.convertModelToString(passModel,
                 new TypeToken<VerificationPassModel>() {
@@ -239,24 +253,6 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
         intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         startActivity(intent);
         getActivity().finish();
-    }
-
-
-    private ArrayList<MethodItem> getListAvailableMethod(SecurityDomain securityDomain, String phone) {
-        ArrayList<MethodItem> list = new ArrayList<>();
-        if (securityDomain.getUserCheckSecurity2() == TYPE_SQ_PHONE) {
-            list.add(new MethodItem(
-                    VerificationActivity.TYPE_SMS,
-                    R.drawable.ic_verification_sms,
-                    MethodItem.getSmsMethodText(phone)
-            ));
-            list.add(new MethodItem(
-                    VerificationActivity.TYPE_PHONE_CALL,
-                    R.drawable.ic_verification_call,
-                    MethodItem.getCallMethodText(phone)
-            ));
-        }
-        return list;
     }
 
     @Override

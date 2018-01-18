@@ -73,7 +73,7 @@ import dagger.Provides;
 public class
 SessionModule {
 
-    private static final String HMAC_SERVICE = "HMAC_SERVICE";
+    public static final String HMAC_SERVICE = "HMAC_SERVICE";
     public static final String BEARER_SERVICE = "BEARER_SERVICE";
     private static final String WS_SERVICE = "WS_SERVICE";
     public static final String LOGIN_CACHE = "LOGIN_CACHE";

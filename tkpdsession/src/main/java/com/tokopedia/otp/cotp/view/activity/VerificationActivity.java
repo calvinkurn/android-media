@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
@@ -34,14 +33,10 @@ public class VerificationActivity extends TActivity implements HasComponent {
 
     public static final String PASS_MODEL = "VerificationPassModel";
 
-    public static final int TYPE_SMS = 1;
-    public static final int TYPE_PHONE_CALL = 2;
-    public static final int TYPE_EMAIL = 3;
-
-    public static final String PARAM_DEFAULT_FRAGMENT_TYPE = "fragmentType";
-    public static final String PARAM_OTP_TYPE = "otpType";
+    public static final String PARAM_REQUEST_OTP_MODE = "fragmentType";
 
     public static final String PARAM_IMAGE = "image";
+    public static final String PARAM_IMAGE_URL = "image_url";
     public static final String PARAM_PHONE_NUMBER = "phone";
     public static final String PARAM_EMAIL = "email";
     public static final String PARAM_APP_SCREEN = "app_screen";
@@ -76,7 +71,7 @@ public class VerificationActivity extends TActivity implements HasComponent {
             fragmentTransaction.addToBackStack(FIRST_FRAGMENT_TAG);
         } else {
             fragment =
-                    getFragment(getIntent().getExtras().getInt(PARAM_DEFAULT_FRAGMENT_TYPE, -1), bundle);
+                    getDefaultFragment(getIntent().getExtras().getString(PARAM_REQUEST_OTP_MODE, ""), bundle);
             fragmentTransaction.add(R.id.container, fragment, FIRST_FRAGMENT_TAG);
             fragmentTransaction.addToBackStack(FIRST_FRAGMENT_TAG);
         }
@@ -95,16 +90,16 @@ public class VerificationActivity extends TActivity implements HasComponent {
         }
     }
 
-    private Fragment getFragment(int type, Bundle bundle) {
+    private Fragment getDefaultFragment(String mode, Bundle bundle) {
         Fragment fragment;
-        switch (type) {
-            case TYPE_SMS: {
+        switch (mode) {
+            case RequestOtpUseCase.MODE_SMS: {
                 String phoneNumber = passModel.getPhoneNumber();
                 int otpType = passModel.getOtpType();
                 fragment = VerificationFragment.createInstance(createSmsBundle(phoneNumber, otpType));
                 break;
             }
-            case TYPE_EMAIL: {
+            case RequestOtpUseCase.MODE_EMAIL: {
                 String email = passModel.getEmail();
                 fragment = VerificationFragment.createInstance(createEmailBundle(email));
                 break;
@@ -146,14 +141,19 @@ public class VerificationActivity extends TActivity implements HasComponent {
         }
     }
 
-    public void goToVerificationPage(int type) {
+    /**
+     * @param mode should be from {@link com.tokopedia.otp.domain.interactor.RequestOtpUseCase}
+     * Do not use this for dynamic verification page. This should only be used for default page.
+     *
+     */
+    public void goToDefaultVerificationPage(String mode) {
         if (!(getSupportFragmentManager().findFragmentById(R.id.container) instanceof
                 VerificationFragment)) {
 
             getSupportFragmentManager().popBackStack(FIRST_FRAGMENT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
-            Fragment fragment = getFragment(type, getIntent().getExtras());
+            Fragment fragment = getDefaultFragment(mode, getIntent().getExtras());
             fragmentTransaction.setCustomAnimations(com.tokopedia.core.R.animator.slide_in_left, 0, 0, com
                     .tokopedia.core.R.animator.slide_out_right);
             fragmentTransaction.add(R.id.container, fragment, FIRST_FRAGMENT_TAG);
@@ -162,38 +162,20 @@ public class VerificationActivity extends TActivity implements HasComponent {
         }
     }
 
-    public void goToSmsVerification() {
-        if (getIntent().getExtras() != null
-                && (!(getSupportFragmentManager().findFragmentById(R.id.container) instanceof
-                VerificationFragment))) {
+    /**
+     * @param methodItem should be from {@link com.tokopedia.otp.cotp.view.fragment.ChooseVerificationMethodFragment}
+     * Use this for dynamic otp.
+     */
+    public void goToVerificationPage(MethodItem methodItem) {
+        if (!(getSupportFragmentManager().findFragmentById(R.id.container) instanceof
+                VerificationFragment)) {
 
             getSupportFragmentManager().popBackStack(FIRST_FRAGMENT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            String phoneNumber = passModel.getPhoneNumber();
-            int otpType = passModel.getOtpType();
-
-            Fragment fragment = VerificationFragment.createInstance(createSmsBundle(phoneNumber, otpType));
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.setCustomAnimations(com.tokopedia.core.R.animator.slide_in_left, 0, 0,
-                    com.tokopedia.core.R.animator.slide_out_right);
-            fragmentTransaction.add(R.id.container, fragment, FIRST_FRAGMENT_TAG);
-            fragmentTransaction.addToBackStack(FIRST_FRAGMENT_TAG);
-            fragmentTransaction.commit();
-        }
-    }
 
-    public void goToCallVerification() {
-        if (getIntent().getExtras() != null
-                && (!(getSupportFragmentManager().findFragmentById(R.id.container) instanceof
-                VerificationFragment))) {
-
-            getSupportFragmentManager().popBackStack(FIRST_FRAGMENT_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            String phoneNumber = passModel.getPhoneNumber();
-            int otpType = passModel.getOtpType();
-
-            Fragment fragment = VerificationFragment.createInstance(createCallBundle(phoneNumber, otpType));
-            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.setCustomAnimations(com.tokopedia.core.R.animator.slide_in_left, 0, 0,
-                    com.tokopedia.core.R.animator.slide_out_right);
+            Fragment fragment = VerificationFragment.createInstance(createDynamicBundle(methodItem));
+            fragmentTransaction.setCustomAnimations(com.tokopedia.core.R.animator.slide_in_left, 0, 0, com
+                    .tokopedia.core.R.animator.slide_out_right);
             fragmentTransaction.add(R.id.container, fragment, FIRST_FRAGMENT_TAG);
             fragmentTransaction.addToBackStack(FIRST_FRAGMENT_TAG);
             fragmentTransaction.commit();
@@ -202,7 +184,7 @@ public class VerificationActivity extends TActivity implements HasComponent {
 
     private Bundle createSmsBundle(String phoneNumber, int otpType) {
         Bundle bundle = new Bundle();
-        bundle.putInt(PARAM_DEFAULT_FRAGMENT_TYPE, TYPE_SMS);
+        bundle.putString(PARAM_REQUEST_OTP_MODE, RequestOtpUseCase.MODE_SMS);
         bundle.putInt(PARAM_IMAGE, R.drawable.ic_verification_sms);
         bundle.putString(PARAM_PHONE_NUMBER, phoneNumber);
         bundle.putString(PARAM_MESSAGE, createSmsMessage(phoneNumber, otpType));
@@ -210,24 +192,30 @@ public class VerificationActivity extends TActivity implements HasComponent {
         return bundle;
     }
 
-    private Bundle createCallBundle(String phoneNumber, int otpType) {
-        Bundle bundle = new Bundle();
-        bundle.putInt(PARAM_DEFAULT_FRAGMENT_TYPE, TYPE_PHONE_CALL);
-        bundle.putInt(PARAM_IMAGE, R.drawable.ic_verification_call);
-        bundle.putString(PARAM_PHONE_NUMBER, phoneNumber);
-        bundle.putString(PARAM_MESSAGE, createCallMessage(phoneNumber, otpType));
-        bundle.putString(PARAM_APP_SCREEN, AppScreen.SCREEN_COTP_CALL);
-        return bundle;
-    }
-
     private Bundle createEmailBundle(String email) {
         Bundle bundle = new Bundle();
-        bundle.putInt(PARAM_DEFAULT_FRAGMENT_TYPE, TYPE_EMAIL);
+        bundle.putString(PARAM_REQUEST_OTP_MODE, RequestOtpUseCase.MODE_EMAIL);
         bundle.putInt(PARAM_IMAGE, R.drawable.ic_verification_email);
         bundle.putString(PARAM_EMAIL, email);
         bundle.putString(PARAM_MESSAGE, createEmailMessage(email));
         bundle.putString(PARAM_APP_SCREEN, AppScreen.SCREEN_COTP_EMAIL);
         return bundle;
+    }
+
+    private Bundle createDynamicBundle(MethodItem methodItem) {
+        Bundle bundle = new Bundle();
+        bundle.putString(PARAM_REQUEST_OTP_MODE, methodItem.getMode());
+        bundle.putInt(PARAM_IMAGE, 0);
+        bundle.putString(PARAM_IMAGE_URL, methodItem.getImageUrl());
+        bundle.putString(PARAM_PHONE_NUMBER, passModel.getPhoneNumber());
+        bundle.putString(PARAM_EMAIL, passModel.getEmail());
+        bundle.putString(PARAM_MESSAGE, methodItem.getVerificationText());
+        bundle.putString(PARAM_APP_SCREEN, getDynamicAppScreen(methodItem.getMode()));
+        return bundle;
+    }
+
+    private String getDynamicAppScreen(String mode) {
+        return "Input OTP " + mode;
     }
 
     private String getMaskedPhone(String phoneNumber, int otpType) {
@@ -245,15 +233,6 @@ public class VerificationActivity extends TActivity implements HasComponent {
         if (!TextUtils.isEmpty(phoneNumber)) {
             return getString(R.string.verification_code_sent_to) + " " + getMaskedPhone
                     (phoneNumber, otpType);
-        } else {
-            return "";
-        }
-    }
-
-    private String createCallMessage(String phoneNumber, int otpType) {
-        if (!TextUtils.isEmpty(phoneNumber)) {
-            return getString(R.string.verification_code_sent_to_call)
-                    + " " + getMaskedPhone(phoneNumber, otpType);
         } else {
             return "";
         }
@@ -283,20 +262,19 @@ public class VerificationActivity extends TActivity implements HasComponent {
         Intent intent = new Intent(context, VerificationActivity.class);
         Bundle bundle = new Bundle();
         if (typeSecurityQuestion == LoginFragment.TYPE_SQ_PHONE) {
-            bundle.putInt(PARAM_DEFAULT_FRAGMENT_TYPE, TYPE_SMS);
+            bundle.putString(PARAM_REQUEST_OTP_MODE, RequestOtpUseCase.MODE_SMS);
         } else {
-            bundle.putInt(PARAM_DEFAULT_FRAGMENT_TYPE, TYPE_EMAIL);
+            bundle.putString(PARAM_REQUEST_OTP_MODE, RequestOtpUseCase.MODE_EMAIL);
         }
         intent.putExtras(bundle);
         return intent;
     }
 
-    public static Intent getCallingIntent(Context context, int defaultType) {
+    public static Intent getCallingIntent(Context context, String requestMode) {
         Intent intent = new Intent(context, VerificationActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putInt(PARAM_DEFAULT_FRAGMENT_TYPE, defaultType);
+        bundle.putString(PARAM_REQUEST_OTP_MODE, requestMode);
         intent.putExtras(bundle);
         return intent;
     }
-
 }

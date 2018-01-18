@@ -2,7 +2,7 @@ package com.tokopedia.otp.cotp.view.viewmodel;
 
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
+import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.session.R;
 
 /**
@@ -11,7 +11,7 @@ import com.tokopedia.session.R;
 
 public class InterruptVerificationViewModel {
 
-    int type;
+    String mode;
     String appScreenName;
     int iconId;
     String userName;
@@ -20,17 +20,17 @@ public class InterruptVerificationViewModel {
     private boolean hasOtherMethod;
 
 
-    public InterruptVerificationViewModel(int type, String appScreenName, int iconId,
+    public InterruptVerificationViewModel(String mode, String appScreenName, int iconId,
                                           String promptText, String buttonText) {
-        this.type = type;
+        this.mode = mode;
         this.appScreenName = appScreenName;
         this.iconId = iconId;
         this.promptText = promptText;
         this.buttonText = buttonText;
     }
 
-    public int getType() {
-        return type;
+    public String getMode() {
+        return mode;
     }
 
     public String getAppScreenName() {
@@ -55,7 +55,7 @@ public class InterruptVerificationViewModel {
 
     public static InterruptVerificationViewModel createDefaultSmsInterruptPage(String phone) {
         return new InterruptVerificationViewModel(
-                VerificationActivity.TYPE_SMS,
+                RequestOtpUseCase.MODE_SMS,
                 AppScreen.SCREEN_INTERRUPT_VERIFICATION_SMS,
                 R.drawable.ic_verification_sms,
                 MainApplication.getAppContext().getString(R.string.to_verify_sms)
@@ -67,7 +67,7 @@ public class InterruptVerificationViewModel {
 
     public static InterruptVerificationViewModel createDefaultEmailInterruptPage(String email) {
         return new InterruptVerificationViewModel(
-                VerificationActivity.TYPE_EMAIL,
+                RequestOtpUseCase.MODE_EMAIL,
                 AppScreen.SCREEN_INTERRUPT_VERIFICATION_EMAIL,
                 R.drawable.ic_verification_email,
                 MainApplication.getAppContext().getString(R.string.to_verify_email)

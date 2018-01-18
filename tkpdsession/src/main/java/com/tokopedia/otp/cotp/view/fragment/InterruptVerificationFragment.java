@@ -86,7 +86,7 @@ public class InterruptVerificationFragment extends BaseDaggerFragment {
             VerificationPassModel passModel = globalCacheManager.getConvertObjData(VerificationActivity.PASS_MODEL,
                     VerificationPassModel.class);
             viewModel = passModel.getInterruptModel();
-            viewModel.setHasOtherMethod(passModel.getListAvailableMethods().size() > 1);
+            viewModel.setHasOtherMethod(passModel.canUseOtherMethod());
         } else {
             getActivity().finish();
         }
@@ -114,7 +114,7 @@ public class InterruptVerificationFragment extends BaseDaggerFragment {
             @Override
             public void onClick(View v) {
                 if (getActivity() instanceof VerificationActivity) {
-                    ((VerificationActivity) getActivity()).goToVerificationPage(viewModel.getType());
+                    ((VerificationActivity) getActivity()).goToDefaultVerificationPage(viewModel.getMode());
                 }
             }
         });

@@ -261,10 +261,11 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
     private void goToVerification() {
         GlobalCacheManager cacheManager = new GlobalCacheManager();
 
-        VerificationPassModel passModel = new VerificationPassModel(cleanPhoneNumber
-                (newPhoneNumber), email,
-                getListAvailableMethod(cleanPhoneNumber(newPhoneNumber)), RequestOtpUseCase
-                .OTP_TYPE_CHANGE_PHONE_NUMBER);
+        VerificationPassModel passModel = new VerificationPassModel(
+                cleanPhoneNumber(newPhoneNumber),
+                email,
+                RequestOtpUseCase.OTP_TYPE_CHANGE_PHONE_NUMBER,
+                true);
         cacheManager.setKey(VerificationActivity.PASS_MODEL);
         cacheManager.setValue(CacheUtil.convertModelToString(passModel,
                 new TypeToken<VerificationPassModel>() {
@@ -272,7 +273,7 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
         cacheManager.store();
 
         Intent intent = VerificationActivity.getCallingIntent(getActivity(),
-                VerificationActivity.TYPE_SMS);
+                RequestOtpUseCase.MODE_SMS);
         startActivityForResult(intent, REQUEST_VERIFY_CODE);
     }
 
@@ -283,22 +284,6 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
         if (requestCode == REQUEST_VERIFY_CODE && resultCode == Activity.RESULT_OK) {
             presenter.submitNumber(cleanPhoneNumber(newPhoneNumber));
         }
-    }
-
-    private ArrayList<MethodItem> getListAvailableMethod(String phone) {
-        ArrayList<MethodItem> list = new ArrayList<>();
-        list.add(new MethodItem(
-                VerificationActivity.TYPE_SMS,
-                com.tokopedia.session.R.drawable.ic_verification_sms,
-                MethodItem.getSmsMethodText(phone)
-        ));
-        list.add(new MethodItem(
-                VerificationActivity.TYPE_PHONE_CALL,
-                com.tokopedia.session.R.drawable.ic_verification_call,
-                MethodItem.getCallMethodText(phone)
-        ));
-
-        return list;
     }
 
     private String cleanPhoneNumber(EditText newPhoneNumber) {

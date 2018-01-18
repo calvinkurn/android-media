@@ -77,25 +77,7 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
 
     private void handleOtp(VerificationViewModel viewModel, VerificationPassModel passModel) {
         switch (viewModel.getType()) {
-            case VerificationActivity.TYPE_SMS:
-                if (!TextUtils.isEmpty(passModel.getPhoneNumber())) {
-                    requestOtpUseCase.execute(RequestOtpUseCase.getParamAfterLogin(
-                            RequestOtpUseCase.MODE_SMS,
-                            passModel.getPhoneNumber(),
-                            passModel.getOtpType()
-                    ), new RequestOtpSubscriber(getView()));
-                }
-                break;
-            case VerificationActivity.TYPE_PHONE_CALL:
-                if (!TextUtils.isEmpty(passModel.getPhoneNumber())) {
-                    requestOtpUseCase.execute(RequestOtpUseCase.getParamAfterLogin(
-                            RequestOtpUseCase.MODE_CALL,
-                            passModel.getPhoneNumber(),
-                            passModel.getOtpType()
-                    ), new RequestOtpSubscriber(getView()));
-                }
-                break;
-            case VerificationActivity.TYPE_EMAIL:
+            case RequestOtpUseCase.MODE_EMAIL:
                 if (!TextUtils.isEmpty(passModel.getEmail())) {
                     requestOtpEmailUseCase.execute(RequestOtpWithEmailUseCase.getParam(
                             passModel.getEmail(),
@@ -104,33 +86,20 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
                     ), new RequestOtpSubscriber(getView()));
                 }
             default:
-                throw new RuntimeException("Verification Type not supported");
+                if (!TextUtils.isEmpty(passModel.getPhoneNumber())) {
+                    requestOtpUseCase.execute(RequestOtpUseCase.getParamAfterLogin(
+                            viewModel.getType(),
+                            passModel.getPhoneNumber(),
+                            passModel.getOtpType()
+                    ), new RequestOtpSubscriber(getView()));
+                }
+                break;
         }
     }
 
     private void handleOtpSecurityQuestion(VerificationViewModel viewModel, VerificationPassModel passModel) {
         switch (viewModel.getType()) {
-            case VerificationActivity.TYPE_SMS:
-                if (!TextUtils.isEmpty(passModel.getPhoneNumber())) {
-                    requestOtpUseCase.execute(RequestOtpUseCase.getParamBeforeLogin(
-                            RequestOtpUseCase.MODE_SMS,
-                            passModel.getPhoneNumber(),
-                            passModel.getOtpType(),
-                            sessionHandler.getTempLoginSession(MainApplication.getAppContext())
-                    ), new RequestOtpSubscriber(getView()));
-                }
-                break;
-            case VerificationActivity.TYPE_PHONE_CALL:
-                if (!TextUtils.isEmpty(passModel.getPhoneNumber())) {
-                    requestOtpUseCase.execute(RequestOtpUseCase.getParamBeforeLogin(
-                            RequestOtpUseCase.MODE_CALL,
-                            passModel.getPhoneNumber(),
-                            passModel.getOtpType(),
-                            sessionHandler.getTempLoginSession(MainApplication.getAppContext())
-                    ), new RequestOtpSubscriber(getView()));
-                }
-                break;
-            case VerificationActivity.TYPE_EMAIL:
+            case RequestOtpUseCase.MODE_EMAIL:
                 if (!TextUtils.isEmpty(passModel.getEmail())) {
                     requestOtpEmailUseCase.execute(RequestOtpWithEmailUseCase.getParam(
                             passModel.getEmail(),
@@ -140,7 +109,15 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
                 }
                 break;
             default:
-                throw new RuntimeException("Verification Type not supported");
+                if (!TextUtils.isEmpty(passModel.getPhoneNumber())) {
+                    requestOtpUseCase.execute(RequestOtpUseCase.getParamBeforeLogin(
+                            viewModel.getType(),
+                            passModel.getPhoneNumber(),
+                            passModel.getOtpType(),
+                            sessionHandler.getTempLoginSession(MainApplication.getAppContext())
+                    ), new RequestOtpSubscriber(getView()));
+                }
+                break;
         }
     }
 

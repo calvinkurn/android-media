@@ -169,4 +169,8 @@ public interface AccountsApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.User.PATH_GET_QUESTION_FORM)
     Observable<Response<TkpdResponse>> getQuestionForm(@FieldMap TKPDMapParam<String, Object> parameters);
+
+    @GET(TkpdBaseURL.Accounts.OTP.PATH_GET_METHOD_LIST)
+    Observable<Response<TkpdResponse>> getVerificationMethodList(@QueryMap TKPDMapParam<String,
+            Object> parameters);
 }
