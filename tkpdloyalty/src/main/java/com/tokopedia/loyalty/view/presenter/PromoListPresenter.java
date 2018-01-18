@@ -71,7 +71,7 @@ public class PromoListPresenter implements IPromoListPresenter {
                     }
                     view.renderPromoDataList(promoData, true);
                 } else {
-                    view.renderErrorGetPromoDataList("Empty Data");
+                    view.renderEmptyResultGetPromoDataList();
                 }
             }
         });

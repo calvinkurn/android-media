@@ -572,7 +572,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
         adapter.addReply(item);
         finishLoading();
         replyColumn.setText("");
-        scrollToBottom();
 
         setResult();
     }
@@ -626,7 +625,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         item.setDummy(true);
         item.setSenderId(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
         adapter.addReply(item);
-        scrollToBottom();
+        recyclerView.scrollToPosition(adapter.getList().size()-1);
     }
 
 
