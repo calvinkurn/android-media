@@ -161,7 +161,6 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
             );
         }
 
-
         return calculateTotalFareAndAmenities(
                 fares,
                 baseCartData.getAdult(),
@@ -494,6 +493,9 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         } else if (!isValidEmail(getView().getContactEmail())) {
             isValid = false;
             getView().showContactEmailInvalidError(R.string.flight_booking_contact_email_invalid_error);
+        } else if (!isEmailWithoutProhibitSymbol(getView().getContactEmail())) {
+            isValid = false;
+            getView().showContactEmailInvalidSymbolError(R.string.flight_booking_contact_email_invalid_symbol_error);
         } else if (getView().getContactPhoneNumber().length() == 0) {
             isValid = false;
             getView().showContactPhoneNumberEmptyError(R.string.flight_booking_contact_phone_empty_error);
@@ -511,6 +513,10 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
             getView().showPassengerInfoNotFullfilled(R.string.flight_booking_passenger_not_fullfilled_error);
         }
         return isValid;
+    }
+
+    private boolean isEmailWithoutProhibitSymbol(String contactEmail) {
+        return !contactEmail.contains("+");
     }
 
     private boolean isAllPassengerFilled(List<FlightBookingPassengerViewModel> passengerViewModels) {

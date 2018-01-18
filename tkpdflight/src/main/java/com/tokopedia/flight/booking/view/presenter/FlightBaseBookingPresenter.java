@@ -73,9 +73,41 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                         BaseCartData baseCartData = cloneViewModel(getCurrentCartData());
                         if (flightBookingCartData != null && flightBookingCartData.getNewFarePrices().size() > 0) {
                             List<Fare> fares = new ArrayList<>();
+                            List<String> journeyAffected = new ArrayList<>();
                             for (NewFarePrice newFare : flightBookingCartData.getNewFarePrices()) {
-                                fares.add(newFare.getFare());
+//                                fares.add(newFare.getFare());
+                                if (newFare.getId().equalsIgnoreCase(getView().getDepartureFlightDetailViewModel().getId())){
+                                    journeyAffected.add(newFare.getId());
+                                    fares.add(newFare.getFare());
+                                }
+                                if (getView().getReturnFlightDetailViewModel()!= null &&
+                                        newFare.getId().equalsIgnoreCase(getView().getReturnFlightDetailViewModel().getId())){
+                                    journeyAffected.add(newFare.getId());
+                                    fares.add(newFare.getFare());
+                                }
                             }
+                            if (!journeyAffected.contains(getView().getDepartureFlightDetailViewModel().getId())){
+                                fares.add(new Fare(
+                                        CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(getView().getDepartureFlightDetailViewModel().getAdultNumericPrice()),
+                                        CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(getView().getDepartureFlightDetailViewModel().getChildNumericPrice()),
+                                        CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(getView().getDepartureFlightDetailViewModel().getInfantNumericPrice()),
+                                        getView().getDepartureFlightDetailViewModel().getAdultNumericPrice(),
+                                        getView().getDepartureFlightDetailViewModel().getChildNumericPrice(),
+                                        getView().getDepartureFlightDetailViewModel().getInfantNumericPrice()
+                                ));
+                            }
+
+                            if (getView().getReturnFlightDetailViewModel() != null && !journeyAffected.contains(getView().getReturnFlightDetailViewModel().getId())){
+                                fares.add(new Fare(
+                                        CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(getView().getReturnFlightDetailViewModel().getAdultNumericPrice()),
+                                        CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(getView().getReturnFlightDetailViewModel().getChildNumericPrice()),
+                                        CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(getView().getReturnFlightDetailViewModel().getInfantNumericPrice()),
+                                        getView().getReturnFlightDetailViewModel().getAdultNumericPrice(),
+                                        getView().getReturnFlightDetailViewModel().getChildNumericPrice(),
+                                        getView().getReturnFlightDetailViewModel().getInfantNumericPrice()
+                                ));
+                            }
+
                             int newTotalPrice = calculateTotalFareAndAmenities(
                                     fares,
                                     baseCartData.getAdult(),
@@ -139,8 +171,11 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                 });
     }
 
-    protected int calculateTotalFareAndAmenities(List<Fare> newFares, int adult, int child, int infant, List<FlightBookingAmenityViewModel> amenities) {
+    protected int calculateTotalFareAndAmenities(List<Fare> newFares,
+                                                 int adult, int child, int infant,
+                                                 List<FlightBookingAmenityViewModel> amenities) {
         int newTotalPrice = 0;
+
         for (Fare newFare : newFares) {
             newTotalPrice += newFare.getAdultNumeric() * adult;
             newTotalPrice += newFare.getChildNumeric() * child;

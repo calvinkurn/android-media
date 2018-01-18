@@ -418,12 +418,16 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
                     if (data != null && data.hasExtra(FlightDetailActivity.EXTRA_FLIGHT_SELECTED)) {
                         String selectedId = data.getStringExtra(FlightDetailActivity.EXTRA_FLIGHT_SELECTED);
                         if (!TextUtils.isEmpty(selectedId)) {
-                            onFlightSearchFragmentListener.selectFlight(selectedId);
+                            onSelectedFromDetail(selectedId);
                         }
                     }
                     break;
             }
         }
+    }
+
+    protected void onSelectedFromDetail(String selectedId){
+        onFlightSearchFragmentListener.selectFlight(selectedId);
     }
 
     @Override

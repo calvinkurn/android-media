@@ -45,7 +45,8 @@ public class FlightBookingGetSingleResultUseCase extends UseCase<FlightSearchVie
                 .flatMap(new Func1<FlightSearchViewModel, Observable<FlightSearchViewModel>>() {
                     @Override
                     public Observable<FlightSearchViewModel> call(FlightSearchViewModel flightSearchViewModel) {
-                        return Observable.zip(flightRepository.getAirlineList(),
+                        return Observable.zip(
+                                flightRepository.getAirlineList(),
                                 flightRepository.getAirportList(""),
                                 Observable.just(flightSearchViewModel),
                                 new Func3<List<FlightAirlineDB>, List<FlightAirportDB>,

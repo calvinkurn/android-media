@@ -13,7 +13,13 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import rx.Observable;
+import rx.Scheduler;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.functions.Func2;
+import rx.schedulers.Schedulers;
 
 /**
  * @author by alvarisi on 1/10/18.
@@ -78,5 +84,40 @@ public class FlightSearchReturnPresenter extends BaseDaggerPresenter<FlightSearc
             }
         }
         return true;
+    }
+
+    public void onFlightSearchSelected(String selectedFlightDeparture, final String selectedFlightReturn) {
+        Observable.zip(
+                flightBookingGetSingleResultUseCase.createObservable(flightBookingGetSingleResultUseCase.createRequestParam(false, selectedFlightDeparture)),
+                flightBookingGetSingleResultUseCase.createObservable(flightBookingGetSingleResultUseCase.createRequestParam(true, selectedFlightReturn)),
+                new Func2<FlightSearchViewModel, FlightSearchViewModel, Boolean>() {
+                    @Override
+                    public Boolean call(FlightSearchViewModel departureViewModel, FlightSearchViewModel returnViewModel) {
+                        return isValidReturnJourney(departureViewModel, returnViewModel);
+                    }
+                }
+        )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        if (aBoolean) {
+                            getView().navigateToCart(selectedFlightReturn);
+                        } else {
+                            getView().showReturnTimeShouldGreaterThanArrivalDeparture();
+                        }
+                    }
+                });
     }
 }

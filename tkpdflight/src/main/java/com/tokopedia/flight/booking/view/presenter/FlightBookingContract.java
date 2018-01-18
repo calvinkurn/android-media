@@ -101,6 +101,8 @@ public interface FlightBookingContract {
         void setContactEmail(String email);
 
         void setContactPhoneNumber(String phone);
+
+        void showContactEmailInvalidSymbolError(@StringRes int resId);
     }
 
     interface Presenter extends FlightBaseBookingContact.Presenter<View> {

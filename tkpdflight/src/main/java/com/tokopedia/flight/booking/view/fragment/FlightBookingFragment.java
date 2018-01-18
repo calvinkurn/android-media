@@ -628,4 +628,9 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     public void setContactPhoneNumber(String phone) {
         etPhoneNumber.setText(phone);
     }
+
+    @Override
+    public void showContactEmailInvalidSymbolError(int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
 }

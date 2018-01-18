@@ -102,9 +102,6 @@ public class FlightSearchReturnFragment extends FlightSearchFragment implements 
     @Override
     public void onItemClicked(FlightSearchViewModel flightSearchViewModel) {
         flightSearchReturnPresenter.onFlightSearchSelected(flightSearchPassDataViewModel.getDepartureDate(), flightSearchPassDataViewModel.getReturnDate(), selectedFlightDeparture, flightSearchViewModel);
-       /* if (onFlightSearchFragmentListener != null) {
-            onFlightSearchFragmentListener.selectFlight(flightSearchViewModel.getId());
-        }*/
     }
 
     @Override
@@ -143,5 +140,16 @@ public class FlightSearchReturnFragment extends FlightSearchFragment implements 
         if (onFlightSearchFragmentListener != null) {
             onFlightSearchFragmentListener.selectFlight(returnFlightSearchViewModel.getId());
         }
+    }
+
+    @Override
+    public void navigateToCart(String selectedFlightReturn) {
+        if (onFlightSearchFragmentListener != null) {
+            onFlightSearchFragmentListener.selectFlight(selectedFlightReturn);
+        }
+    }
+
+    protected void onSelectedFromDetail(String selectedId){
+        flightSearchReturnPresenter.onFlightSearchSelected(selectedFlightDeparture, selectedId);
     }
 }
