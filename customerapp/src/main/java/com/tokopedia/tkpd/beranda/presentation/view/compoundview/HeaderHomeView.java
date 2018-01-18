@@ -111,24 +111,28 @@ public class HeaderHomeView extends BaseCustomView {
     }
 
     private void renderVisibilityTitleOnlyTokoCash(boolean isVisibleButtonAction) {
-        if (!isVisibleButtonAction && scannerQR.getVisibility() == GONE
-                && !headerViewModel.isPendingTokocashChecked()) {
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)
-                    tvBalanceTokocash.getLayoutParams();
-            tvTitleTokocash.setVisibility(VISIBLE);
-            params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-            tvBalanceTokocash.setLayoutParams(params);
-        } else {
+        if (headerViewModel.getHomeHeaderWalletActionData().getTypeAction() ==
+                HomeHeaderWalletAction.TYPE_ACTION_ACTIVATION) {
             if (headerViewModel.getCashBackData() != null &&
                     headerViewModel.getCashBackData().getAmount() == 0) {
                 tvTitleTokocash.setVisibility(VISIBLE);
             } else {
                 tvTitleTokocash.setVisibility(GONE);
             }
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)
-                    tvBalanceTokocash.getLayoutParams();
-            params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-            tvBalanceTokocash.setLayoutParams(params);
+        } else {
+            if (!isVisibleButtonAction && scannerQR.getVisibility() == GONE) {
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)
+                        tvBalanceTokocash.getLayoutParams();
+                tvTitleTokocash.setVisibility(VISIBLE);
+                params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                tvBalanceTokocash.setLayoutParams(params);
+            } else {
+                tvTitleTokocash.setVisibility(GONE);
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)
+                        tvBalanceTokocash.getLayoutParams();
+                params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                tvBalanceTokocash.setLayoutParams(params);
+            }
         }
     }
 
