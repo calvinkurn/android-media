@@ -25,7 +25,6 @@ import android.widget.TextView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.core.PreviewProductImage;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
@@ -35,7 +34,6 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.productdetail.PdpRouter;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketConstant;
@@ -284,10 +282,12 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToWebView(String url) {
+    public void onGoToWebView(String url, String id) {
         UnifyTracking.eventClickThumbnailMarketing(TopChatTrackingEventLabel.Category.INBOX_CHAT,
                 TopChatTrackingEventLabel.Action.CLICK_THUMBNAIL,
-                TopChatTrackingEventLabel.Name.INBOX_CHAT);
+                TopChatTrackingEventLabel.Name.INBOX_CHAT,
+                id
+                );
         KeyboardHandler.DropKeyboard(getActivity(), getView());
         startActivity(ChatMarketingThumbnailActivity.getCallingIntent(getActivity(), url));
     }
