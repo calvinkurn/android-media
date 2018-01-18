@@ -113,12 +113,19 @@ public class InboxReputationActivity extends DrawerPresenterActivity implements 
                     .title_tab_my_review)));
         }
 
-        if (!sessionHandler.getShopID(this).equals("0")
-                && !sessionHandler.getShopID(this).equals("")) {
+        if (sessionHandler.isUserHasShop(this)) {
             indicator.addTab(indicator.newTab().setText(getString(R.string
                     .title_tab_buyer_review)));
         }
 
+        if (GlobalConfig.isSellerApp()) {
+            if (sellerReputationFragment != null) {
+                indicator.addTab(indicator.newTab().setText(R.string.title_reputation_history));
+            }
+            if (goToReputationHistory) {
+                viewPager.setCurrentItem(TAB_SELLER_REPUTATION_HISTORY);
+            }
+        }
     }
 
     protected SectionsPagerAdapter getViewPagerAdapter() {
@@ -128,17 +135,13 @@ public class InboxReputationActivity extends DrawerPresenterActivity implements 
     protected List<Fragment> getFragmentList() {
         List<Fragment> fragmentList = new ArrayList<>();
         if (GlobalConfig.isSellerApp()) {
-            if (!sessionHandler.getShopID(this).equals("0")
-                    && !sessionHandler.getShopID(this).equals("")) {
-                fragmentList.add(InboxReputationFragment.createInstance(TAB_BUYER_REVIEW));
-            }
+            fragmentList.add(InboxReputationFragment.createInstance(TAB_BUYER_REVIEW));
             fragmentList.add(sellerReputationFragment);
         } else {
-            if (!SessionHandler.isUserHasShop(this)) {
+            fragmentList.add(InboxReputationFragment.createInstance(TAB_WAITING_REVIEW));
+            fragmentList.add(InboxReputationFragment.createInstance(TAB_MY_REVIEW));
+            if (sessionHandler.isUserHasShop(this)) {
                 fragmentList.add(InboxReputationFragment.createInstance(TAB_BUYER_REVIEW));
-            } else {
-                fragmentList.add(InboxReputationFragment.createInstance(TAB_WAITING_REVIEW));
-                fragmentList.add(InboxReputationFragment.createInstance(TAB_MY_REVIEW));
             }
         }
 
