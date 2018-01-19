@@ -500,15 +500,11 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     public void onSuccessLoadShopInfo(boolean isGoldMerchant, boolean isFreeReturn, boolean officialStore) {
         productAdditionalInfoViewHolder.updateViewGoldMerchant(isGoldMerchant);
         productDetailViewHolder.setGoldMerchant(isGoldMerchant);
-        setOfficialStore(officialStore);
+        productDetailViewHolder.setOfficialStore(officialStore);
         productDetailViewHolder.updateViewFreeReturn(isFreeReturn);
         valueIndicatorScoreModel.setFreeReturnActive(isFreeReturn);
 
         saveDefaultModel();
-    }
-
-    protected void setOfficialStore(boolean officialStore) {
-        productDetailViewHolder.setOfficialStore(officialStore);
     }
 
     @Override

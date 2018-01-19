@@ -153,11 +153,6 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
     }
 
     @Override
-    protected void setOfficialStore(boolean officialStore) {
-        productDetailViewHolder.setOfficialStoreFromDraft(officialStore);
-    }
-
-    @Override
     public boolean hasDataAdded() {
         // this is to enable always save to draft
         return true;
