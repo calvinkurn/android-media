@@ -3,8 +3,11 @@ package com.tokopedia.tkpd.thankyou.data.mapper;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.gson.Gson;
 import com.tokopedia.core.analytics.PurchaseTracking;
+import com.tokopedia.core.analytics.nishikino.model.Product;
+import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.seller.selling.model.orderShipping.Order;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.GraphqlResponse;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.PaymentGraphql;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.OrderData;
@@ -12,6 +15,7 @@ import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.OrderDetail;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.PaymentData;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.PaymentMethod;
 import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
+import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,20 +66,32 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
 
             if (paymentData.getOrders() != null) {
                 for (OrderData orderData : paymentData.getOrders()) {
-                    PurchaseTracking.marketplace(
-                            getShopId(orderData),
-                            String.valueOf(paymentData.getPaymentId()),
-                            getPaymentType(paymentData.getPaymentMethod()),
-                            getLogisticType(orderData),
-                            sessionHandler.getLoginID(),
-                            getEcommerceData(orderData)
-                    );
+                    PurchaseTracking.marketplace(getTrackignData(orderData));
                 }
             }
             return true;
         }
 
         return false;
+    }
+
+    private Purchase getTrackignData(OrderData orderData) {
+        Purchase purchase = new Purchase();
+        purchase.setEvent(PurchaseTracking.TRANSACTION);
+        purchase.setShopId(getShopId(orderData));
+        purchase.setPaymentId(String.valueOf(paymentData.getPaymentId()));
+        purchase.setPaymentType(getPaymentType(paymentData.getPaymentMethod()));
+        purchase.setTransactionID(orderData.getOrderId());
+        purchase.setLogisticType(getLogisticType(orderData));
+        purchase.setUserId(sessionHandler.getLoginID());
+        purchase.setShipping(orderData.getShippingPrice());
+        purchase.setRevenue(paymentData.getPaymentAmount());
+
+        for(Product product : getProductList(orderData)){
+            purchase.addProduct(product.getProduct());
+        }
+
+        return purchase;
     }
 
     private boolean isResponseValid(Response<GraphqlResponse<PaymentGraphql>> graphqlResponse) {
@@ -85,9 +101,9 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
                 && graphqlResponse.body().getData().getPayment() != null;
     }
 
-    private Object getShopId(OrderData orderData) {
+    private String getShopId(OrderData orderData) {
         if(orderData.getShop() != null) {
-            return orderData.getShop().getShopId();
+            return String.valueOf(orderData.getShop().getShopId());
         }
 
         return "";
@@ -126,34 +142,32 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         return "";
     }
 
-    private Map<String, Object> getEcommerceData(OrderData orderData) {
-        return DataLayer.mapOf(
-                CURRENCY_CODE, "IDR",
-                PURCHASE, getPurchaseData(orderData)
-        );
-    }
+//    private Map<String, Object> getEcommerceData(OrderData orderData) {
+//        return DataLayer.mapOf(
+//                CURRENCY_CODE, "IDR",
+//                PURCHASE, getPurchaseData(orderData)
+//        );
+//    }
 
-    private Map<String, Object> getPurchaseData(OrderData orderData) {
-        List<Object> products = getProductList(orderData);
-        return DataLayer.mapOf(
-                ACTION_FIELD, getActionField(orderData),
-                PRODUCTS, DataLayer.listOf(products.toArray(new Object[products.size()]))
-        );
-    }
+//    private Map<String, Object> getPurchaseData(OrderData orderData) {
+//        List<Object> products = getProductList(orderData);
+//        return DataLayer.mapOf(
+//                ACTION_FIELD, getActionField(orderData),
+//                PRODUCTS, DataLayer.listOf(products.toArray(new Object[products.size()]))
+//        );
+//    }
 
-    private List<Object> getProductList(OrderData orderData) {
-        List<Object> products = new ArrayList<>();
+    private List<Product> getProductList(OrderData orderData) {
+        List<Product> products = new ArrayList<>();
         for (OrderDetail orderDetail : orderData.getOrderDetail()) {
+            Product p = new Product();
+            p.setProductID(String.valueOf(orderDetail.getProductId()));
+            p.setProductName(getProductName(orderDetail));
+            p.setPrice(orderDetail.getProductPrice());
+            p.setCategory(getProductCategory(orderDetail));
+            p.setQty(orderDetail.getQuantity());
 
-            products.add(DataLayer.mapOf(
-                    ID, orderDetail.getProductId(),
-                    NAME, getProductName(orderDetail),
-                    PRICE, orderDetail.getProductPrice(),
-                    BRAND, "other",
-                    CATEGORY, getProductCategory(orderDetail),
-                    VARIANT, "other",
-                    QUANTITY, orderDetail.getQuantity()
-            ));
+            products.add(p);
         }
         return products;
     }
@@ -174,16 +188,16 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
 
         return "";
     }
-
-    private Map<String, Object> getActionField(OrderData orderData) {
-        return DataLayer.mapOf(
-                ID, orderData.getOrderId(),
-                AFFILIATION, getShopName(orderData),
-                REVENUE, paymentData.getPaymentAmount(),
-                SHIPPING, orderData.getShippingPrice(),
-                COUPON, paymentData.getCoupon()
-        );
-    }
+//
+//    private Map<String, Object> getActionField(OrderData orderData) {
+//        return DataLayer.mapOf(
+//                ID, orderData.getOrderId(),
+//                AFFILIATION, getShopName(orderData),
+//                REVENUE, paymentData.getPaymentAmount(),
+//                SHIPPING, orderData.getShippingPrice(),
+//                COUPON, paymentData.getCoupon()
+//        );
+//    }
 
     private String getShopName(OrderData orderData) {
         if(orderData.getShop() != null) {

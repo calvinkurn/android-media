@@ -14,6 +14,90 @@ public class Purchase {
     private Map<String, Object> Purchase = new HashMap<>();
     private List<Object> ListProduct = new ArrayList<>();
     private String Currency;
+    private String shopId;
+    private String paymentId;
+    private String paymentType;
+    private String logisticType;
+    private String userId;
+    private String event;
+
+    public String getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(String shopId) {
+        this.shopId = shopId;
+    }
+
+    public String getPaymentId() {
+        return paymentId;
+    }
+
+    public void setPaymentId(String paymentId) {
+        this.paymentId = paymentId;
+    }
+
+    public String getPaymentType() {
+        return paymentType;
+    }
+
+    public void setPaymentType(String paymentType) {
+        this.paymentType = paymentType;
+    }
+
+    public String getLogisticType() {
+        return logisticType;
+    }
+
+    public void setLogisticType(String logisticType) {
+        this.logisticType = logisticType;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getEvent() {
+        return event;
+    }
+
+    public void setEvent(String event) {
+        this.event = event;
+    }
+
+    public static final String EVENT = "event";
+    public static final String PAYMENT_ID = "payment_id";
+    public static final String PAYMENT_STATUS = "payment_status";
+    public static final String PAYMENT_TYPE = "payment_type";
+    public static final String SHOP_ID = "shop_id";
+    public static final String SHOP_TYPE = "shopType";
+    public static final String LOGISTIC_TYPE = "logistic_type";
+    public static final String ECOMMERCE = "ecommerce";
+    public static final String USER_ID = "userId";
+
+    public static final String CURRENCY_CODE = "currencyCode";
+    public static final String PURCHASE = "purchase";
+
+    public static final String ACTION_FIELD = "actionField";
+    public static final String PRODUCTS = "products";
+
+    public static final String ID = "id";
+    public static final String AFFILIATION = "affiliation";
+    public static final String REVENUE = "revenue";
+    public static final String TAX = "tax";
+    public static final String SHIPPING = "shipping";
+    public static final String COUPON = "coupon";
+
+    public static final String NAME = "name";
+    public static final String PRICE = "price";
+    public static final String BRAND = "brand";
+    private static final String CATEGORY = "category";
+    private static final String VARIANT = "variant";
+    private static final String QUANTITY = "quantity";
 
     public Purchase() {
 
@@ -69,9 +153,4 @@ public class Purchase {
         ListProduct = null;
         Currency = null;
     }
-
-
-
-
-
 }

@@ -123,5 +123,5 @@ public interface IGTMContainer {
 
     void clearEnhanceEcommerce();
 
-    void eventPurchaseEE(Object shopId, String paymentId, String paymentMethod, String logisticType, String loginID, Object data);
+    void eventPurchaseEE(Purchase purchase);
 }
