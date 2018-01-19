@@ -10,6 +10,7 @@ import com.tokopedia.flight.common.di.module.FlightModule;
 import com.tokopedia.flight.common.di.qualifier.FlightQualifier;
 import com.tokopedia.flight.common.di.scope.FlightScope;
 import com.tokopedia.flight.common.domain.FlightRepository;
+import com.tokopedia.flight.common.view.BaseFlightActivity;
 
 import dagger.Component;
 import retrofit2.Retrofit;
@@ -31,4 +32,6 @@ public interface FlightComponent {
     Gson gson();
 
     UserSession userSession();
+
+    void inject(BaseFlightActivity baseFlightActivity);
 }

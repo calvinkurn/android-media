@@ -11,6 +11,7 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.applink.ApplinkConstant;
+import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.view.BaseFlightActivity;
 import com.tokopedia.flight.dashboard.di.DaggerFlightDashboardComponent;
 import com.tokopedia.flight.dashboard.di.FlightDashboardComponent;
@@ -61,5 +62,10 @@ public class FlightDashboardActivity extends BaseFlightActivity implements HasCo
         return DaggerFlightDashboardComponent.builder()
                 .flightComponent(FlightComponentInstance.getFlightComponent(getApplication()))
                 .build();
+    }
+
+    @Override
+    public String getScreenName() {
+        return FlightAnalytics.Screen.HOMEPAGE;
     }
 }
