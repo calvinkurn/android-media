@@ -12,8 +12,6 @@ import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.analytics.nishikino.model.Promotion;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 
-import java.util.List;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -124,4 +122,6 @@ public interface IGTMContainer {
     void eventTrackingEnhancedEcommerce(Map<String, Object> trackingData);
 
     void clearEnhanceEcommerce();
+
+    void eventPurchaseEE(Object shopId, String paymentId, String paymentMethod, String logisticType, String loginID, Object data);
 }

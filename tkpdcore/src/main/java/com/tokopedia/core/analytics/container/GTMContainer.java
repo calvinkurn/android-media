@@ -16,6 +16,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.PurchaseTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.model.Hotlist;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
@@ -35,7 +36,6 @@ import com.tokopedia.core.var.TkpdCache;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -541,6 +541,24 @@ public class GTMContainer implements IGTMContainer {
                         "eventAction", null,
                         "eventLabel", null,
                         "ecommerce", null
+                )
+        );
+    }
+
+    @Override
+    public void eventPurchaseEE(Object shopId, String paymentId, String paymentMethod, String logisticType, String loginID, Object data) {
+        GTMDataLayer.pushGeneral(
+                context,
+                DataLayer.mapOf(
+                        PurchaseTracking.EVENT, PurchaseTracking.TRANSACTION,
+                        PurchaseTracking.EVENT_CATEGORY, PurchaseTracking.PURCHASE,
+                        PurchaseTracking.SHOP_ID, shopId,
+                        PurchaseTracking.PAYMENT_ID, paymentId,
+                        PurchaseTracking.PAYMENT_TYPE, paymentMethod,
+                        PurchaseTracking.PAYMENT_STATUS, "",
+                        PurchaseTracking.LOGISTIC_TYPE, logisticType,
+                        PurchaseTracking.USER_ID, loginID,
+                        PurchaseTracking.ECOMMERCE, data
                 )
         );
     }

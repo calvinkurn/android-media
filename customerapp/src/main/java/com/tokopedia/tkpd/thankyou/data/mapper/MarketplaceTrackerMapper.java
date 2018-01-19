@@ -25,19 +25,7 @@ import rx.functions.Func1;
  */
 
 public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<PaymentGraphql>>, Boolean> {
-    private static final String DATA = "data";
 
-    private static final String EVENT = "event";
-    private static final String EVENT_CATEGORY = "eventCategory";
-    private static final String PAYMENT_ID = "payment_id";
-    private static final String PAYMENT_STATUS = "payment_status";
-    private static final String PAYMENT_TYPE = "payment_type";
-    private static final String SHOP_ID = "shop_id";
-    private static final String SHOP_TYPE = "shopType";
-    private static final String LOGISTIC_TYPE = "logistic_type";
-    private static final String ECOMMERCE = "ecommerce";
-
-    private static final String USER_ID = "userId";
     private static final String CURRENCY_CODE = "currencyCode";
 
     private static final String PURCHASE = "purchase";
@@ -74,7 +62,14 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
 
             if (paymentData.getOrders() != null) {
                 for (OrderData orderData : paymentData.getOrders()) {
-                    PurchaseTracking.marketplace(getTrackingData(orderData));
+                    PurchaseTracking.marketplace(
+                            getShopId(orderData),
+                            String.valueOf(paymentData.getPaymentId()),
+                            getPaymentType(paymentData.getPaymentMethod()),
+                            getLogisticType(orderData),
+                            sessionHandler.getLoginID(),
+                            getEcommerceData(orderData)
+                    );
                 }
             }
             return true;
@@ -88,19 +83,6 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
                 && graphqlResponse.body() != null
                 && graphqlResponse.body().getData() != null
                 && graphqlResponse.body().getData().getPayment() != null;
-    }
-
-    private Map<String, Object> getTrackingData(OrderData orderData) {
-        return DataLayer.mapOf(
-                EVENT, PurchaseTracking.TRANSACTION,
-                EVENT_CATEGORY, PURCHASE,
-                SHOP_ID, getShopId(orderData),
-                PAYMENT_ID, String.valueOf(paymentData.getPaymentId()),
-                PAYMENT_TYPE, getPaymentType(paymentData.getPaymentMethod()),
-                LOGISTIC_TYPE, getLogisticType(orderData),
-                USER_ID, sessionHandler.getLoginID(),
-                ECOMMERCE, getEcommerceData(orderData)
-        );
     }
 
     private Object getShopId(OrderData orderData) {

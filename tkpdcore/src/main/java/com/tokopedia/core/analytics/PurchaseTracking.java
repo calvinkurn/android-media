@@ -8,9 +8,20 @@ import java.util.Map;
 
 public class PurchaseTracking extends TrackingUtils {
     public static final String TRANSACTION = "transaction";
+    public static final String PURCHASE = "purchase";
+    public static final String EVENT = "event";
+    public static final String EVENT_CATEGORY = "eventCategory";
+    public static final String PAYMENT_ID = "payment_id";
+    public static final String PAYMENT_STATUS = "payment_status";
+    public static final String PAYMENT_TYPE = "payment_type";
+    public static final String SHOP_ID = "shop_id";
+    public static final String LOGISTIC_TYPE = "logistic_type";
+    public static final String ECOMMERCE = "ecommerce";
 
-    public static void marketplace(Map<String, Object> data) {
-        getGTMEngine().eventTrackingEnhancedEcommerce(data);
+    public static final String USER_ID = "userId";
+
+    public static void marketplace(Object shopId, String paymentId, String paymentMethod, String logisticType, String loginID, Object data) {
+        getGTMEngine().eventPurchaseEE(shopId, paymentId, paymentMethod, logisticType, loginID, data);
         getGTMEngine().sendScreen(AppScreen.SCREEN_FINISH_TX);
         getGTMEngine().clearEnhanceEcommerce();
     }
