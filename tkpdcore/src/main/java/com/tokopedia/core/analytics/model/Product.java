@@ -199,4 +199,18 @@ public class Product extends BaseAnalyticsModel {
                 "userId", getUserId()
         );
     }
+
+    public Map<String, Object> getProductAsDataLayerForSearchResultItemClick() {
+        return DataLayer.mapOf(
+                "name", getName(),
+                "id", getId(),
+                "price", getPrice(),
+                "brand", getBrand(),
+                "category", getCategoryName(),
+                "variant", getVariant(),
+                "list", getList(),
+                "position", getPosition(),
+                "userId", getUserId()
+        );
+    }
 }

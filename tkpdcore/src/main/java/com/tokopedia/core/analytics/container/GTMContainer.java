@@ -663,16 +663,4 @@ public class GTMContainer implements IGTMContainer {
                 )
         );
     }
-
-    private void clearEnhanceEcommerce() {
-        GTMDataLayer.pushGeneral(
-                context,
-                DataLayer.mapOf("event", null,
-                        "eventCategory", null,
-                        "eventAction", null,
-                        "eventLabel", null,
-                        "ecommerce", null
-                )
-        );
-    }
 }
