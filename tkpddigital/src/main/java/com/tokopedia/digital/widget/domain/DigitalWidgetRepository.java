@@ -14,7 +14,7 @@ import com.tokopedia.digital.widget.data.entity.response.ResponseFavoriteList;
 import com.tokopedia.digital.widget.data.entity.response.ResponseFavoriteNumber;
 import com.tokopedia.digital.widget.data.entity.response.ResponseMetaFavoriteNumber;
 import com.tokopedia.digital.widget.data.entity.status.StatusEntity;
-import com.tokopedia.digital.widget.data.mapper.IFavoriteNumberMapper;
+import com.tokopedia.digital.widget.data.mapper.FavoriteNumberListDataMapper;
 import com.tokopedia.digital.widget.model.DigitalNumberList;
 
 import java.util.ArrayList;
@@ -38,10 +38,10 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
     private final static String KEY_STATUS_CURRENT = "RECHARGE_STATUS_CURRENT";
 
     private final DigitalEndpointService digitalEndpointService;
-    private final IFavoriteNumberMapper favoriteNumberMapper;
+    private final FavoriteNumberListDataMapper favoriteNumberMapper;
 
     public DigitalWidgetRepository(DigitalEndpointService digitalEndpointService,
-                                   IFavoriteNumberMapper favoriteNumberMapper) {
+                                   FavoriteNumberListDataMapper favoriteNumberMapper) {
         this.digitalEndpointService = digitalEndpointService;
         this.favoriteNumberMapper = favoriteNumberMapper;
     }
@@ -249,7 +249,7 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
 
     @Override
     public Observable<DigitalNumberList> getObservableNumberList(TKPDMapParam<String, String> param) {
-        return digitalEndpointService.getApi().getNumberList(param)
+        return digitalEndpointService.getApi().getFavoriteList(param)
                 .map(getFuncTransformNumberList())
                 .onErrorReturn(new Func1<Throwable, DigitalNumberList>() {
                     @Override

@@ -12,6 +12,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.digital.common.domain.DigitalCategoryUseCase2;
 import com.tokopedia.digital.product.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.domain.DigitalCategoryUseCase;
 import com.tokopedia.digital.product.model.CategoryData;
@@ -37,11 +38,11 @@ public class DigitalWidgetPresenter extends BaseDigitalWidgetPresenter implement
 
     private Context context;
     private IDigitalWidgetView digitalWidgetView;
-    private DigitalCategoryUseCase digitalCategoryUseCase;
+    private DigitalCategoryUseCase2 digitalCategoryUseCase;
 
     public DigitalWidgetPresenter(Context context,
                                   IDigitalWidgetView digitalWidgetView,
-                                  DigitalCategoryUseCase digitalCategoryUseCase) {
+                                  DigitalCategoryUseCase2 digitalCategoryUseCase) {
         super(context);
         this.context = context;
         this.digitalWidgetView = digitalWidgetView;

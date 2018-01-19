@@ -12,9 +12,8 @@ import java.util.List;
  * @author rizkyfadillah on 10/2/2017.
  */
 
-public class FavoriteNumberListDataMapper implements IFavoriteNumberMapper {
+public class FavoriteNumberListDataMapper {
 
-    @Override
     public DigitalNumberList transformDigitalFavoriteNumberItemDataList(ResponseFavoriteList responseFavoriteNumbers) {
         DigitalNumberList digitalNumberList;
         if (!responseFavoriteNumbers.getResponseNumberList().isEmpty()) {
@@ -36,4 +35,5 @@ public class FavoriteNumberListDataMapper implements IFavoriteNumberMapper {
         }
         return digitalNumberList;
     }
+
 }

@@ -813,7 +813,7 @@ public class TkpdBaseURL {
         public static final String PATH_OPERATOR = "operator/list";
         public static final String PATH_PRODUCT = "product/list";
         public static final String PATH_RECENT_NUMBER = "recent-number";
-        public static final String PATH_NUMBER_LIST = "favorite/list";
+        public static final String PATH_FAVORITE_LIST = "favorite/list";
         public static final String PATH_LAST_ORDER = "last-order";
         public static final String PATH_SALDO = "saldo";
         public static final String PATH_GET_CART = "cart";

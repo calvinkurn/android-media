@@ -92,6 +92,17 @@ public class WidgetOperatorChooserView2 extends LinearLayout {
         }
     }
 
+    public void updateOperator(List<Operator> operators, String operatorId) {
+        for (int i = 0, operatorsSize = operators.size(); i < operatorsSize; i++) {
+            Operator operator = operators.get(i);
+            if (String.valueOf(operator.getOperatorId())
+                    .equalsIgnoreCase(String.valueOf(operatorId))) {
+                spinnerOperator.setSelection(i);
+                listener.onCheckChangeOperator(operator);
+            }
+        }
+    }
+
     public interface OperatorChoserListener {
         void onCheckChangeOperator(Operator rechargeOperatorModel);
 

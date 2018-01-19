@@ -170,6 +170,7 @@ public class CategoryProductStyle3View extends
         clearHolder(holderAdditionalInfoProduct);
         clearHolder(holderPriceInfoProduct);
         widgetOperatorChooserView2.setListener(getListenerOperatorChooser());
+        widgetOperatorChooserView2.renderDataView(data.getOperatorList(), data.getDefaultOperatorId());
         holderChooserOperator.addView(widgetOperatorChooserView2);
 
         if (hasLastOrderHistoryData()) {
@@ -177,7 +178,7 @@ public class CategoryProductStyle3View extends
                 if (operator.getOperatorId().equalsIgnoreCase(
                         historyClientNumber.getLastOrderClientNumber().getOperatorId()
                 )) {
-                    widgetOperatorChooserView2.renderDataView(
+                    widgetOperatorChooserView2.updateOperator(
                             data.getOperatorList(),
                             operator.getOperatorId());
                     break;
@@ -356,8 +357,17 @@ public class CategoryProductStyle3View extends
     private WidgetOperatorChooserView2.OperatorChoserListener getListenerOperatorChooser() {
         return new WidgetOperatorChooserView2.OperatorChoserListener() {
             @Override
-            public void onCheckChangeOperator(Operator rechargeOperatorModel) {
-
+            public void onCheckChangeOperator(Operator operator) {
+                operatorSelected = operator;
+                setBtnBuyDigitalText(operatorSelected.getRule().getButtonText());
+                if (!operator.getClientNumberList().isEmpty()) {
+                    renderClientNumberInputForm(operator);
+                    if (operatorSelected.getRule().getProductViewStyle() == 99) {
+                        renderDefaultProductSelected();
+                    } else {
+                        showProducts();
+                    }
+                }
             }
 
             @Override

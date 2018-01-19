@@ -406,8 +406,8 @@ public class CategoryProductStyle2View extends
         return new BaseDigitalChooserView.ActionListener<Product>() {
 
             @Override
-            public void onUpdateDataDigitalChooserSelectedRendered(Product data) {
-                productSelected = data;
+            public void onUpdateDataDigitalChooserSelectedRendered(Product product) {
+                productSelected = product;
                 renderAdditionalProductInfo();
                 renderPriceProductInfo();
             }

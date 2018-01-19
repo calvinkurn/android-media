@@ -41,13 +41,14 @@ public class DigitalCategoryRepository implements IDigitalCategoryRepository {
     public Observable<CategoryData> getCategory(
             String categoryId, TKPDMapParam<String, String> param
     ) {
-        return Observable.concat(getCategoryFromDB(categoryId), getCategoryFromCloud(categoryId, param))
-                .first(new Func1<CategoryData, Boolean>() {
-                    @Override
-                    public Boolean call(CategoryData categoryData) {
-                        return categoryData != null;
-                    }
-                });
+        return getCategoryFromCloud(categoryId, param);
+//        return Observable.concat(getCategoryFromDB(categoryId), getCategoryFromCloud(categoryId, param))
+//                .first(new Func1<CategoryData, Boolean>() {
+//                    @Override
+//                    public Boolean call(CategoryData categoryData) {
+//                        return categoryData != null;
+//                    }
+//                });
     }
 
     private Observable<CategoryData> getCategoryFromCloud(
@@ -55,13 +56,13 @@ public class DigitalCategoryRepository implements IDigitalCategoryRepository {
     ) {
         return digitalEndpointService.getApi()
                 .getCategory(categoryId, param)
-                .map(getFuncTransformCategoryData())
-                .doOnNext(new Action1<CategoryData>() {
-                    @Override
-                    public void call(CategoryData categoryData) {
-                        saveCategoryToCache(categoryData);
-                    }
-                });
+                .map(getFuncTransformCategoryData());
+//                .doOnNext(new Action1<CategoryData>() {
+//                    @Override
+//                    public void call(CategoryData categoryData) {
+//                        saveCategoryToCache(categoryData);
+//                    }
+//                });
     }
 
     private void saveCategoryToCache(CategoryData categoryData) {
