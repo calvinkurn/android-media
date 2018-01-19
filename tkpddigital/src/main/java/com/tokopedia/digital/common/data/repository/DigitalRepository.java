@@ -3,10 +3,12 @@ package com.tokopedia.digital.common.data.repository;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.common.data.source.CategoryDetailDataSource;
 import com.tokopedia.digital.common.data.source.FavoriteListDataSource;
+import com.tokopedia.digital.common.data.source.StatusDataSource;
 import com.tokopedia.digital.product.view.model.CategoryData;
 import com.tokopedia.digital.widget.data.entity.category.CategoryEntity;
 import com.tokopedia.digital.widget.data.entity.status.StatusEntity;
 import com.tokopedia.digital.widget.view.model.DigitalNumberList;
+import com.tokopedia.digital.widget.view.model.status.Status;
 
 import java.util.List;
 
@@ -20,11 +22,14 @@ public class DigitalRepository implements IDigitalRepository {
 
     private CategoryDetailDataSource categoryDetailDataSource;
     private FavoriteListDataSource favoriteListDataSource;
+    private StatusDataSource statusDataSource;
 
     public DigitalRepository(CategoryDetailDataSource categoryDetailDataSource,
-                             FavoriteListDataSource favoriteListDataSource) {
+                             FavoriteListDataSource favoriteListDataSource,
+                             StatusDataSource statusDataSource) {
         this.categoryDetailDataSource = categoryDetailDataSource;
         this.favoriteListDataSource = favoriteListDataSource;
+        this.statusDataSource = statusDataSource;
     }
 
     @Override
@@ -43,8 +48,8 @@ public class DigitalRepository implements IDigitalRepository {
     }
 
     @Override
-    public Observable<StatusEntity> getObservableStatusNetwork() {
-        return null;
+    public Observable<Status> getObservableStatusNetwork() {
+        return statusDataSource.getStatus();
     }
 
 }

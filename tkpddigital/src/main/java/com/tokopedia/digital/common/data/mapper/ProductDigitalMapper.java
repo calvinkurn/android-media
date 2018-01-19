@@ -223,13 +223,4 @@ public class ProductDigitalMapper {
         return categoryData;
     }
 
-    public PulsaBalance transformPulsaBalance(
-            ResponsePulsaBalance responsePulsaBalance) throws MapperDataException {
-        return new PulsaBalance.Builder()
-                .mobileBalance(responsePulsaBalance.getAttributes().getBalance())
-                .plainBalance(responsePulsaBalance.getAttributes().getBalancePlain())
-                .success(responsePulsaBalance.getAttributes().isSuccess())
-                .expireDate(responsePulsaBalance.getAttributes().getExpireDate()).build();
-    }
-
 }

@@ -33,6 +33,7 @@ import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
+import com.tokopedia.digital.product.data.mapper.USSDMapper;
 import com.tokopedia.digital.product.view.activity.DigitalChooserActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
@@ -138,12 +139,13 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
                 new DigitalCategoryRepository(digitalEndpointService, productDigitalMapper);
         IDigitalWidgetRepository digitalWidgetRepository =
                 new DigitalWidgetRepository(digitalEndpointService, new FavoriteNumberListDataMapper());
+        USSDMapper ussdMapper = new USSDMapper();
         IProductDigitalInteractor productDigitalInteractor =
                 new ProductDigitalInteractor(
                         compositeSubscription,
                         digitalWidgetRepository,
                         digitalCategoryRepository,
-                        new UssdCheckBalanceRepository(digitalEndpointService, productDigitalMapper)
+                        new UssdCheckBalanceRepository(digitalEndpointService, ussdMapper)
                 );
         ITokoCashRepository balanceRepository = new TokoCashRepository(new TokoCashService(
                 sessionHandler.getAccessToken(this)));

@@ -5,6 +5,7 @@ import com.tokopedia.digital.product.view.model.CategoryData;
 import com.tokopedia.digital.widget.data.entity.category.CategoryEntity;
 import com.tokopedia.digital.widget.data.entity.status.StatusEntity;
 import com.tokopedia.digital.widget.view.model.DigitalNumberList;
+import com.tokopedia.digital.widget.view.model.status.Status;
 
 import java.util.List;
 
@@ -22,6 +23,6 @@ public interface IDigitalRepository {
 
     Observable<List<CategoryEntity>> getCategoryList();
 
-    Observable<StatusEntity> getObservableStatusNetwork();
+    Observable<Status> getObservableStatusNetwork();
 
 }

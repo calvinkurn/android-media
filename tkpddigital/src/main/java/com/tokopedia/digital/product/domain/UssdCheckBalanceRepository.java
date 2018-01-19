@@ -9,6 +9,7 @@ import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.common.data.entity.requestbody.pulsabalance.RequestBodyPulsaBalance;
 import com.tokopedia.digital.common.data.entity.response.ResponsePulsaBalance;
 import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
+import com.tokopedia.digital.product.data.mapper.USSDMapper;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
 
 import retrofit2.Response;
@@ -21,12 +22,12 @@ import rx.functions.Func1;
 
 public class UssdCheckBalanceRepository implements IUssdCheckBalanceRepository {
     private final DigitalEndpointService digitalEndpointService;
-    private final ProductDigitalMapper productDigitalMapper;
+    private final USSDMapper ussdMapper;
 
     public UssdCheckBalanceRepository(DigitalEndpointService digitalEndpointService,
-                                      ProductDigitalMapper productDigitalMapper) {
+                                      USSDMapper ussdMapper) {
         this.digitalEndpointService = digitalEndpointService;
-        this.productDigitalMapper = productDigitalMapper;
+        this.ussdMapper = ussdMapper;
     }
 
     @Override
@@ -39,7 +40,7 @@ public class UssdCheckBalanceRepository implements IUssdCheckBalanceRepository {
                     @Override
                     public PulsaBalance call(Response<TkpdDigitalResponse> tkpdDigitalResponseResponse) {
                         ResponsePulsaBalance responsePulsaBalance =tkpdDigitalResponseResponse.body().convertDataObj(ResponsePulsaBalance.class);
-                        return productDigitalMapper.transformPulsaBalance(responsePulsaBalance);
+                        return ussdMapper.transformPulsaBalance(responsePulsaBalance);
                     }
                 });
     }

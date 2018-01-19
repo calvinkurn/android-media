@@ -64,6 +64,7 @@ import com.tokopedia.digital.common.view.compoundview.CategoryProductStyle1View;
 import com.tokopedia.digital.common.view.compoundview.CategoryProductStyle2View;
 import com.tokopedia.digital.common.view.compoundview.CategoryProductStyle3View;
 import com.tokopedia.digital.common.view.compoundview.ClientNumberInputView;
+import com.tokopedia.digital.product.data.mapper.USSDMapper;
 import com.tokopedia.digital.product.domain.DigitalCategoryRepository;
 import com.tokopedia.digital.product.domain.IDigitalCategoryRepository;
 import com.tokopedia.digital.product.domain.IUssdCheckBalanceRepository;
@@ -285,7 +286,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                 new DigitalWidgetRepository(digitalEndpointService, new FavoriteNumberListDataMapper());
         IDigitalCategoryRepository digitalCategoryRepository =
                 new DigitalCategoryRepository(digitalEndpointService, productDigitalMapper);
-        IUssdCheckBalanceRepository ussdCheckBalanceRepository = new UssdCheckBalanceRepository(digitalEndpointService, productDigitalMapper);
+        USSDMapper ussdMapper = new USSDMapper();
+        IUssdCheckBalanceRepository ussdCheckBalanceRepository = new UssdCheckBalanceRepository(
+                digitalEndpointService, ussdMapper);
 
         IProductDigitalInteractor productDigitalInteractor =
                 new ProductDigitalInteractor(
