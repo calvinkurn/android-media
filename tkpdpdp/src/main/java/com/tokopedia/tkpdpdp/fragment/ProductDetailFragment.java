@@ -291,8 +291,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             }
         });
 
-        nestedScrollView.setFillViewport(true);
-
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP ) {
             CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBarLayout.getLayoutParams();
             params.setBehavior(new FlingBehavior(R.id.nested_scroll_pdp));
