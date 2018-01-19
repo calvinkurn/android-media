@@ -123,7 +123,6 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
         String applinks = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
         String category = Uri.parse(applinks).getHost();
         if (category != null && category.equals(Constants.ARG_NOTIFICATION_APPLINK_TOPCHAT)) {
-            if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT)) {
                 if (mActivitiesLifecycleCallbacks.getLiveActivityOrNull() != null
                         && mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof ChatNotifInterface) {
                     NotificationReceivedListener listener = (NotificationReceivedListener) MainApplication.currentActivity();
@@ -139,13 +138,6 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                     Intent intent = new Intent(mContext, DeepLinkHandlerActivity.class);
                     applinkBuildAndShowNotification.process(mContext, intent);
                 }
-            }
-        } else if (category != null && category.equals(Constants.ARG_NOTIFICATION_APPLINK_MESSAGE)) {
-            if (!remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT)) {
-                ApplinkPushNotificationBuildAndShow buildAndShow = new ApplinkPushNotificationBuildAndShow(data);
-                Intent intent = new Intent(mContext, DeepLinkHandlerActivity.class);
-                buildAndShow.process(mContext, intent);
-            }
         } else {
             ApplinkPushNotificationBuildAndShow buildAndShow = new ApplinkPushNotificationBuildAndShow(data);
             Intent intent = new Intent(mContext, DeepLinkHandlerActivity.class);

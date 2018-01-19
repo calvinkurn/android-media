@@ -10,8 +10,6 @@ import android.content.Intent;
 
 public interface TkpdInboxRouter {
 
-    String ENABLE_TOPCHAT = "enable_topchat";
-
     String TX_ASK_SELLER = "tx_ask_seller";
     String TX_ASK_BUYER = "tx_ask_buyer";
     String SHOP = "shop";
@@ -32,7 +30,6 @@ public interface TkpdInboxRouter {
 
     Intent getAskUserIntent(Context context, String toUserId, String userName, String source, String avatarUrl);
 
-    Intent getTimeMachineIntent(Context context);
-
     Intent getInboxMessageIntent(Context context);
+
 }

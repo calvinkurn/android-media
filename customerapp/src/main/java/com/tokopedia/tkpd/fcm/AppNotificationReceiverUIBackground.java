@@ -152,21 +152,6 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
         String customIndex = "";
         String serverId = "";
         switch (category) {
-            case Constants.ARG_NOTIFICATION_APPLINK_MESSAGE:
-                if (!remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT)) {
-                    customIndex = data.getString(Constants.ARG_NOTIFICATION_APPLINK_MESSAGE_CUSTOM_INDEX);
-                    if (!TextUtils.isEmpty(Uri.parse(applinks).getLastPathSegment())) {
-                        serverId = Uri.parse(applinks).getLastPathSegment();
-                    }
-                    saveApplinkPushNotification(
-                            category,
-                            convertBundleToJsonString(data),
-                            customIndex,
-                            serverId,
-                            new SavePushNotificationCallback()
-                    );
-                }
-                break;
             case Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION:
                 customIndex = data.getString(Constants.ARG_NOTIFICATION_APPLINK_DISCUSSION_CUSTOM_INDEX);
                 if (!TextUtils.isEmpty(Uri.parse(applinks).getLastPathSegment())) {
@@ -192,20 +177,18 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
                 break;
 
             case Constants.ARG_NOTIFICATION_APPLINK_TOPCHAT:
-                if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT)) {
-                    if (mActivitiesLifecycleCallbacks.getLiveActivityOrNull() != null
-                            && mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof ChatNotifInterface) {
-                        NotificationReceivedListener listener = (NotificationReceivedListener) MainApplication.currentActivity();
-                        listener.onGetNotif(data);
-                    } else {
-                        String applink = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
-                        String fullname = data
-                                .getString("full_name");
-                        applink += "?" + "fullname=" + fullname;
-                        data.putString(Constants.ARG_NOTIFICATION_APPLINK, applink);
-                        ApplinkBuildAndShowNotification applinkBuildAndShowNotification = new ApplinkBuildAndShowNotification(mContext);
-                        applinkBuildAndShowNotification.showApplinkNotification(data);
-                    }
+                if (mActivitiesLifecycleCallbacks.getLiveActivityOrNull() != null
+                        && mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof ChatNotifInterface) {
+                    NotificationReceivedListener listener = (NotificationReceivedListener) MainApplication.currentActivity();
+                    listener.onGetNotif(data);
+                } else {
+                    String applink = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
+                    String fullname = data
+                            .getString("full_name");
+                    applink += "?" + "fullname=" + fullname;
+                    data.putString(Constants.ARG_NOTIFICATION_APPLINK, applink);
+                    ApplinkBuildAndShowNotification applinkBuildAndShowNotification = new ApplinkBuildAndShowNotification(mContext);
+                    applinkBuildAndShowNotification.showApplinkNotification(data);
                 }
                 break;
             default:

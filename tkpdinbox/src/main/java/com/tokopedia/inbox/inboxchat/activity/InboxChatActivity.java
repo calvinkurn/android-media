@@ -6,14 +6,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.DrawerPresenterActivity;
@@ -24,10 +22,7 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.SellerAppRouter;
-import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
@@ -36,7 +31,6 @@ import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
 import com.tokopedia.inbox.inboxchat.adapter.ChatPagerAdapter;
 import com.tokopedia.inbox.inboxchat.fragment.InboxChatFragment;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
-import com.tokopedia.inbox.inboxmessageold.activity.InboxMessageActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,17 +85,10 @@ public class InboxChatActivity extends DrawerPresenterActivity
             homeIntent = HomeRouter.getHomeActivity(context);
         }
 
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
         Intent destination;
-        if(remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT)) {
-            destination = new Intent(context, InboxChatActivity.class)
-                    .setData(uri.build())
-                    .putExtras(extras);
-        } else {
-            destination = new Intent(context, InboxMessageActivity.class)
-                    .setData(uri.build())
-                    .putExtras(extras);
-        }
+        destination = new Intent(context, InboxChatActivity.class)
+                .setData(uri.build())
+                .putExtras(extras);
         return destination;
     }
 
