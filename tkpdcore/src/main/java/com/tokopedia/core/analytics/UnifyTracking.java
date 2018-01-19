@@ -2552,9 +2552,9 @@ public class UnifyTracking extends TrackingUtils {
     }
 
 
-    public static void eventClickThumbnailMarketing(String category, String action, String event) {
+    public static void eventClickThumbnailMarketing(String category, String action, String event, String id) {
         sendGTMEvent(new EventTracking(
-                event, category, action, "").getEvent());
+                event, category, action, id).getEvent());
     }
 
 

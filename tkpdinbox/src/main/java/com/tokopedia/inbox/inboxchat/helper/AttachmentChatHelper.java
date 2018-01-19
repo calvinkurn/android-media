@@ -55,7 +55,7 @@ public class AttachmentChatHelper {
                 @Override
                 public void onClick(View view) {
                     if (attachment != null && attachment.getFallbackAttachment()!=null) {
-                        viewListener.onGoToWebView(attachment.getAttributes().getUrl());
+                        viewListener.onGoToWebView(attachment.getAttributes().getUrl(), attachment.getId());
                     }
                 }
             });
@@ -71,7 +71,7 @@ public class AttachmentChatHelper {
         setMessage(attachment, viewListener, message);
     }
 
-    private void setMessage(Attachment attachment, final ChatRoomContract.View viewListener, final TextView message){
+    private void setMessage(final Attachment attachment, final ChatRoomContract.View viewListener, final TextView message){
         if(attachment.getFallbackAttachment().getMessage()!=null){
             final FallbackAttachment fallback = attachment.getFallbackAttachment();
             String string = String.format("%s\n%s", fallback.getMessage(), fallback.getSpan());
@@ -81,7 +81,7 @@ public class AttachmentChatHelper {
             spannable.setSpan(new ClickableSpan() {
                                   @Override
                                   public void onClick(View view) {
-                                      viewListener.onGoToWebView(fallback.getUrl());
+                                      viewListener.onGoToWebView(fallback.getUrl(), attachment.getId());
                                   }
 
                                   @Override
