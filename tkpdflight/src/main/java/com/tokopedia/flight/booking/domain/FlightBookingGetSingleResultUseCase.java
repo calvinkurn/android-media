@@ -10,7 +10,6 @@ import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -76,7 +75,25 @@ public class FlightBookingGetSingleResultUseCase extends UseCase<FlightSearchVie
                                                 );
                                             }
                                         }).toList(),
-                                Observable.just(flightSearchViewModel),
+                                Observable.just(flightSearchViewModel).zipWith(flightRepository.getAirportById(flightSearchViewModel.getDepartureAirport()), new Func2<FlightSearchViewModel, FlightAirportDB, FlightSearchViewModel>() {
+                                    @Override
+                                    public FlightSearchViewModel call(FlightSearchViewModel flightSearchViewModel, FlightAirportDB airportDB) {
+                                        if (airportDB != null) {
+                                            flightSearchViewModel.setDepartureAirportCity(airportDB.getCityName());
+                                            flightSearchViewModel.setDepartureAirportName(airportDB.getAirportName());
+                                        }
+                                        return flightSearchViewModel;
+                                    }
+                                }).zipWith(flightRepository.getAirportById(flightSearchViewModel.getArrivalAirport()), new Func2<FlightSearchViewModel, FlightAirportDB, FlightSearchViewModel>() {
+                                    @Override
+                                    public FlightSearchViewModel call(FlightSearchViewModel flightSearchViewModel, FlightAirportDB airportDB) {
+                                        if (airportDB != null) {
+                                            flightSearchViewModel.setArrivalAirportCity(airportDB.getCityName());
+                                            flightSearchViewModel.setArrivalAirportName(airportDB.getAirportName());
+                                        }
+                                        return flightSearchViewModel;
+                                    }
+                                }),
                                 new Func2<List<Route>, FlightSearchViewModel, FlightSearchViewModel>() {
                                     @Override
                                     public FlightSearchViewModel call(List<Route> routes, FlightSearchViewModel flightSearchViewModel) {
@@ -113,8 +130,8 @@ public class FlightBookingGetSingleResultUseCase extends UseCase<FlightSearchVie
                                     public FlightSearchViewModel call(List<FlightAirlineDB> flightAirlineDBS, FlightSearchViewModel flightSearchViewModel) {
                                         flightSearchViewModel.setAirlineDataList(flightAirlineDBS);
                                         for (Route route : flightSearchViewModel.getRouteList()) {
-                                            for (FlightAirlineDB flightAirlineDB : flightAirlineDBS){
-                                                if (route.getAirline().equalsIgnoreCase(flightAirlineDB.getId())){
+                                            for (FlightAirlineDB flightAirlineDB : flightAirlineDBS) {
+                                                if (route.getAirline().equalsIgnoreCase(flightAirlineDB.getId())) {
                                                     route.setAirlineLogo(flightAirlineDB.getLogo());
                                                     route.setAirlineName(flightAirlineDB.getName());
                                                 }
