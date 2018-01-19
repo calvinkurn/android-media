@@ -34,11 +34,6 @@ public class TopAdsResponseError extends BaseResponseError {
         return ERROR_KEY;
     }
 
-    @Override
-    public boolean isResponseErrorValid() {
-        return hasBody();
-    }
-
     public boolean hasBody(){
         return (errors!= null && errors.size() > 0);
     }

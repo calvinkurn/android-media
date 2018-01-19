@@ -29,6 +29,8 @@ import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.inbox.inboxchat.activity.SendMessageActivity;
 import com.tokopedia.inbox.inboxmessageold.activity.SendMessageActivityOld;
 import com.tokopedia.mitratoppers.common.constant.MitraToppersBaseURL;
+import com.tokopedia.mitratoppers.common.constant.MitraToppersClientKey;
+import com.tokopedia.mitratoppers.common.data.source.cloud.api.MitraToppersApi;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.utils.WhiteList;
@@ -163,6 +165,8 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         AbstractionBaseURL.JS_DOMAIN = SellerAppBaseUrl.BASE_JS_DOMAIN;
 
         MitraToppersBaseURL.WEB_DOMAIN = SellerAppBaseUrl.BASE_WEB_DOMAIN;
+        MitraToppersBaseURL.PATH_MITRA_TOPPERS = SellerAppBaseUrl.PATH_MITRA_TOPPERS;
+        MitraToppersClientKey.CLIENT_KEY_1 = SellerAppNetworkKeys.MITRA_TOPPERS_CLIENT_KEY;
     }
 
     private void generateSellerAppNetworkKeys() {

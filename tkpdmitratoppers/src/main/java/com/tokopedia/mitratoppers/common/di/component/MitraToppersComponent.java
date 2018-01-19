@@ -23,9 +23,5 @@ public interface MitraToppersComponent {
     @ApplicationContext
     Context context();
 
-    Retrofit.Builder getRetrofitBuilder();
-
-    OkHttpClient.Builder getHttpClientBuilder();
-
     void inject(TestFragment testFragment);
 }

@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 
 import dagger.Component;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
 /**
@@ -37,5 +38,7 @@ public interface BaseAppComponent {
     AbstractionRouter provideAbstractionRouter();
 
     TkpdAuthInterceptor tkpdAuthInterceptor();
+
+    HttpLoggingInterceptor httpLoggingInterceptor();
 
 }

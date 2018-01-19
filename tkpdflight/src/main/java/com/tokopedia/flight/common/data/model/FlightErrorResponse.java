@@ -32,8 +32,4 @@ public class FlightErrorResponse extends BaseResponseError {
         return new FlightException(errorList);
     }
 
-    @Override
-    public boolean hasCustomAdditionalError() {
-        return false;
-    }
 }

@@ -2,6 +2,7 @@ package com.tokopedia.flight.common.di.module;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.flight.airline.data.FlightAirlineDataListSource;
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListBackgroundSource;
@@ -43,16 +44,8 @@ public class FlightModule {
 
     @FlightScope
     @Provides
-    public HttpLoggingInterceptor provideHttpLoggingInterceptor() {
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-        return logging;
-    }
-
-    @FlightScope
-    @Provides
     public OkHttpClient provideOkHttpClient(OkHttpClient.Builder okHttpClientBuilder,
-                                            HttpLoggingInterceptor httpLoggingInterceptor,
+                                            @ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
                                             FlightAuthInterceptor flightAuthInterceptor) {
         return okHttpClientBuilder
                 .addInterceptor(flightAuthInterceptor)

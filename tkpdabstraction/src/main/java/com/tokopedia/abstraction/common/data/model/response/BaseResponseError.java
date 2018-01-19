@@ -12,6 +12,15 @@ public abstract class BaseResponseError {
     public abstract String getErrorKey();
 
     /**
+     * Check if this response error is valid
+     *
+     * @return
+     */
+    public boolean isResponseErrorValid() {
+        return hasBody();
+    }
+
+    /**
      * @return if the error is filled, return true
      */
     public abstract boolean hasBody();
@@ -20,10 +29,5 @@ public abstract class BaseResponseError {
      * @return the exception from this Error
      */
     public abstract RuntimeException createException();
-
-    /**
-     * @return the error has additional content
-     */
-    public abstract boolean hasCustomAdditionalError();
 
 }

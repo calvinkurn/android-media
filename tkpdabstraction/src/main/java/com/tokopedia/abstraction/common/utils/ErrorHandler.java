@@ -1,9 +1,11 @@
 package com.tokopedia.abstraction.common.utils;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.common.network.constant.ResponseStatus;
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
@@ -30,7 +32,7 @@ public class ErrorHandler {
             switch (code) {
                 case ResponseStatus.SC_REQUEST_TIMEOUT:
                 case ResponseStatus.SC_GATEWAY_TIMEOUT:
-                     return context.getString(R.string.default_request_error_timeout);
+                    return context.getString(R.string.default_request_error_timeout);
                 case ResponseStatus.SC_INTERNAL_SERVER_ERROR:
                     return context.getString(R.string.default_request_error_internal_server);
                 case ResponseStatus.SC_FORBIDDEN:
@@ -42,6 +44,9 @@ public class ErrorHandler {
                 default:
                     return context.getString(R.string.default_request_error_unknown);
             }
+        } else if (e instanceof MessageErrorException &&
+                !TextUtils.isEmpty(e.getMessage())) {
+            return e.getMessage();
         } else {
             return context.getString(R.string.default_request_error_unknown);
         }

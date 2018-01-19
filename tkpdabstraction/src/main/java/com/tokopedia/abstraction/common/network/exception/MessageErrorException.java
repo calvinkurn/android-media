@@ -1,0 +1,11 @@
+package com.tokopedia.abstraction.common.network.exception;
+
+/**
+ * Created by normansyahputa on 1/16/17.
+ * this class represent message error delivered by web service.
+ */
+public class MessageErrorException extends RuntimeException {
+    public MessageErrorException(String message) {
+        super(message);
+    }
+}

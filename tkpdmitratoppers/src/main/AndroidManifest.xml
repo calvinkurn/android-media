@@ -7,6 +7,7 @@
             android:name=".dashboard.MitraToppersActivity"
             android:label="@string/title_mitra_toppers"
             android:screenOrientation="portrait"
+            android:exported="true"
             android:theme="@style/Theme.Green"/>
     </application>
 

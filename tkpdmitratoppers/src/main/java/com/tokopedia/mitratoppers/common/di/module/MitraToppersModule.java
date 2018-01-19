@@ -1,11 +1,15 @@
 package com.tokopedia.mitratoppers.common.di.module;
 
+import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
+import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.mitratoppers.common.constant.MitraToppersBaseURL;
 import com.tokopedia.mitratoppers.common.data.source.cloud.api.MitraToppersApi;
 import com.tokopedia.mitratoppers.common.di.MitraToppersQualifier;
 import com.tokopedia.mitratoppers.common.di.scope.MitraToppersScope;
+import com.tokopedia.mitratoppers.common.exception.model.HeaderErrorResponse;
+import com.tokopedia.mitratoppers.common.interceptor.HeaderErrorResponseInterceptor;
 
 import dagger.Module;
 import dagger.Provides;
@@ -34,25 +38,21 @@ public class MitraToppersModule {
 
     @MitraToppersQualifier
     @Provides
-    public HttpLoggingInterceptor provideHttpLoggingInterceptor() {
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-        } else {
-            logging.setLevel(HttpLoggingInterceptor.Level.NONE);
-        }
-        return logging;
+    public OkHttpClient provideOkHttpClient(OkHttpClient.Builder okHttpClientBuilder,
+                                            TkpdAuthInterceptor tkpdAuthInterceptor,
+                                            @ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
+                                            @MitraToppersQualifier HeaderErrorResponseInterceptor errorResponseInterceptor) {
+        return okHttpClientBuilder
+                .addInterceptor(tkpdAuthInterceptor)
+                .addInterceptor(errorResponseInterceptor)
+                .addInterceptor(httpLoggingInterceptor)
+                .build();
     }
 
     @MitraToppersQualifier
     @Provides
-    public OkHttpClient provideOkHttpClient(OkHttpClient.Builder okHttpClientBuilder,
-                                            TkpdAuthInterceptor tkpdAuthInterceptor,
-                                            @MitraToppersQualifier HttpLoggingInterceptor httpLoggingInterceptor) {
-        return okHttpClientBuilder
-                .addInterceptor(tkpdAuthInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
-                .build();
+    public HeaderErrorResponseInterceptor provideTkpdErrorResponseInterceptor() {
+        return new HeaderErrorResponseInterceptor(HeaderErrorResponse.class);
     }
 
 }

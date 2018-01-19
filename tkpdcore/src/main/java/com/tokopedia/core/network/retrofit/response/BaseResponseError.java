@@ -15,10 +15,10 @@ public abstract class BaseResponseError {
 
     /**
      * Check if this response error is valid
-     *
-     * @return
      */
-    public abstract boolean isResponseErrorValid();
+    public boolean isResponseErrorValid() {
+        return hasBody();
+    }
 
     /**
      * @return if the error is filled, return true
