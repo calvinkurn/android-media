@@ -68,7 +68,7 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
 
     public void onCreateShop() {
         if (!TextUtils.isEmpty(shopAd.getName())) {
-            Intent intent = TopAdsCreatePromoShopActivity.createIntent(getActivity(), shopAd.getName());
+            Intent intent = TopAdsCreatePromoShopActivity.createIntent(getActivity(), shopAd);
             startActivityForResult(intent, REQUEST_CODE_AD_STATUS);
         }
     }
@@ -89,6 +89,14 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
             if (startDate == null || endDate == null) {
                 return;
             }
+
+            long shopExtraId = intent.getLongExtra(TopAdsNewScheduleShopFragment.EXTRA_NEW_SHOP, -1);
+            if(shopExtraId != -1){
+                Intent newIntent = new Intent(getActivity(), TopAdsDetailShopActivity.class);
+                newIntent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, Long.toString(shopExtraId));
+                startActivityForResult(newIntent, REQUEST_CODE_AD_STATUS);
+            }
+
             boolean adStatusChanged = intent.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
             if (adStatusChanged) {
                 populateShop();
