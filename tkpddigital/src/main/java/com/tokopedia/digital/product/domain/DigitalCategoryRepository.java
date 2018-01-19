@@ -7,11 +7,11 @@ import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.digital.apiservice.DigitalEndpointService;
-import com.tokopedia.digital.product.data.entity.response.Category;
-import com.tokopedia.digital.product.data.entity.response.ResponseCategoryDetailData;
-import com.tokopedia.digital.product.data.entity.response.ResponseCategoryDetailIncluded;
-import com.tokopedia.digital.product.data.mapper.IProductDigitalMapper;
+import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
+import com.tokopedia.digital.common.data.entity.response.Category;
+import com.tokopedia.digital.common.data.entity.response.ResponseCategoryDetailData;
+import com.tokopedia.digital.common.data.entity.response.ResponseCategoryDetailIncluded;
+import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
 import com.tokopedia.digital.product.view.model.CategoryData;
 
 import retrofit2.Response;
@@ -27,11 +27,11 @@ public class DigitalCategoryRepository implements IDigitalCategoryRepository {
     private static final String KEY_CATEGORY_ID = "KEY_CATEGORY_ID";
 
     private final DigitalEndpointService digitalEndpointService;
-    private final IProductDigitalMapper productDigitalMapper;
+    private final ProductDigitalMapper productDigitalMapper;
     private GlobalCacheManager globalCacheManager = new GlobalCacheManager();
 
     public DigitalCategoryRepository(DigitalEndpointService digitalEndpointService,
-                                     IProductDigitalMapper productDigitalMapper) {
+                                     ProductDigitalMapper productDigitalMapper) {
         this.digitalEndpointService = digitalEndpointService;
         this.productDigitalMapper = productDigitalMapper;
     }

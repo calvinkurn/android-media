@@ -32,12 +32,11 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
-import com.tokopedia.digital.apiservice.DigitalEndpointService;
+import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.product.view.activity.DigitalChooserActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
-import com.tokopedia.digital.product.data.mapper.IProductDigitalMapper;
-import com.tokopedia.digital.product.data.mapper.ProductDigitalMapper;
+import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
 import com.tokopedia.digital.product.domain.DigitalCategoryRepository;
 import com.tokopedia.digital.product.domain.IDigitalCategoryRepository;
 import com.tokopedia.digital.product.domain.UssdCheckBalanceRepository;
@@ -134,7 +133,7 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
                 this, TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER);
         if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
         DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
-        IProductDigitalMapper productDigitalMapper = new ProductDigitalMapper();
+        ProductDigitalMapper productDigitalMapper = new ProductDigitalMapper();
         IDigitalCategoryRepository digitalCategoryRepository =
                 new DigitalCategoryRepository(digitalEndpointService, productDigitalMapper);
         IDigitalWidgetRepository digitalWidgetRepository =

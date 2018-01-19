@@ -32,7 +32,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
-import com.tokopedia.digital.apiservice.DigitalEndpointService;
+import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.cart.activity.InstantCheckoutActivity;
 import com.tokopedia.digital.cart.activity.OtpVerificationActivity;
 import com.tokopedia.digital.cart.compoundview.CheckoutHolderView;

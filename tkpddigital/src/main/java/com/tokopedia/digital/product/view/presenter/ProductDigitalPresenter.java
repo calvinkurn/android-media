@@ -31,8 +31,8 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
-import com.tokopedia.digital.product.data.entity.requestbody.pulsabalance.Attributes;
-import com.tokopedia.digital.product.data.entity.requestbody.pulsabalance.RequestBodyPulsaBalance;
+import com.tokopedia.digital.common.data.entity.requestbody.pulsabalance.Attributes;
+import com.tokopedia.digital.common.data.entity.requestbody.pulsabalance.RequestBodyPulsaBalance;
 import com.tokopedia.digital.product.domain.interactor.IProductDigitalInteractor;
 import com.tokopedia.digital.product.view.listener.IProductDigitalView;
 import com.tokopedia.digital.product.view.model.BannerData;
@@ -563,9 +563,7 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
         attributes.setIdentifier(view.getDigitalIdentifierParam());
         requestBodyPulsaBalance.setAttributes(attributes);
         return requestBodyPulsaBalance;
-
     }
-
 
     @Override
     public List<Operator> getSelectedUssdOperatorList(int selectedSim) {
@@ -616,7 +614,6 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
             }
         }
         return result;
-
     }
 
     private void startUssdCheckBalanceTimer() {

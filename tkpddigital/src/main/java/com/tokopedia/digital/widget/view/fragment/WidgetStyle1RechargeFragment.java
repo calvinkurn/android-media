@@ -17,7 +17,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
-import com.tokopedia.digital.apiservice.DigitalEndpointService;
+import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.digital.widget.view.compoundview.WidgetClientNumberView;
 import com.tokopedia.digital.widget.view.compoundview.WidgetProductChooserView;

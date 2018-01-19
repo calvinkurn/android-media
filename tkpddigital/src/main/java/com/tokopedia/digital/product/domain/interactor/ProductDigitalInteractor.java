@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.digital.product.data.entity.requestbody.pulsabalance.RequestBodyPulsaBalance;
+import com.tokopedia.digital.common.data.entity.requestbody.pulsabalance.RequestBodyPulsaBalance;
 import com.tokopedia.digital.product.domain.IDigitalCategoryRepository;
 import com.tokopedia.digital.product.domain.IUssdCheckBalanceRepository;
 import com.tokopedia.digital.product.view.model.BannerData;

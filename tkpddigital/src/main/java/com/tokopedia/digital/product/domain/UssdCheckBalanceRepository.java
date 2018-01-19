@@ -5,10 +5,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
-import com.tokopedia.digital.apiservice.DigitalEndpointService;
-import com.tokopedia.digital.product.data.entity.requestbody.pulsabalance.RequestBodyPulsaBalance;
-import com.tokopedia.digital.product.data.entity.response.ResponsePulsaBalance;
-import com.tokopedia.digital.product.data.mapper.IProductDigitalMapper;
+import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
+import com.tokopedia.digital.common.data.entity.requestbody.pulsabalance.RequestBodyPulsaBalance;
+import com.tokopedia.digital.common.data.entity.response.ResponsePulsaBalance;
+import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
 
 import retrofit2.Response;
@@ -21,10 +21,10 @@ import rx.functions.Func1;
 
 public class UssdCheckBalanceRepository implements IUssdCheckBalanceRepository {
     private final DigitalEndpointService digitalEndpointService;
-    private final IProductDigitalMapper productDigitalMapper;
+    private final ProductDigitalMapper productDigitalMapper;
 
     public UssdCheckBalanceRepository(DigitalEndpointService digitalEndpointService,
-                                      IProductDigitalMapper productDigitalMapper) {
+                                      ProductDigitalMapper productDigitalMapper) {
         this.digitalEndpointService = digitalEndpointService;
         this.productDigitalMapper = productDigitalMapper;
     }

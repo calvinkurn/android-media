@@ -14,7 +14,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.customView.WrapContentViewPager;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.digital.apiservice.DigitalEndpointService;
+import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.widget.data.mapper.FavoriteNumberListDataMapper;
 import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
 import com.tokopedia.digital.widget.view.model.category.Category;

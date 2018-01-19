@@ -304,7 +304,9 @@ public class CategoryProductStyle2View extends
                     .detail("")
                     .build();
         }
-        renderAdditionalProductInfo();
+        if (source != WIDGET) {
+            renderAdditionalProductInfo();
+        }
         renderPriceProductInfo();
     }
 

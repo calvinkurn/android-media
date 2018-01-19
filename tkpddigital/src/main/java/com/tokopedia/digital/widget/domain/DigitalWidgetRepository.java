@@ -5,7 +5,7 @@ import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.digital.apiservice.DigitalEndpointService;
+import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.digital.widget.data.entity.category.CategoryEntity;
 import com.tokopedia.digital.widget.data.entity.operator.OperatorEntity;

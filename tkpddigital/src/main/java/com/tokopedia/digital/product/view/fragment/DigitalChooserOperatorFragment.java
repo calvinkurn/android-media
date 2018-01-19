@@ -20,7 +20,7 @@ import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
-import com.tokopedia.digital.apiservice.DigitalEndpointService;
+import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.product.view.adapter.OperatorChooserAdapter;
 import com.tokopedia.digital.product.view.listener.IOperatorChooserView;
 import com.tokopedia.digital.product.view.presenter.IOperatorChooserPresenter;

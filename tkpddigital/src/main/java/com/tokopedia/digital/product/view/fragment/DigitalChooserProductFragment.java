@@ -13,7 +13,7 @@ import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
-import com.tokopedia.digital.apiservice.DigitalEndpointService;
+import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.product.view.adapter.ProductChooserAdapter;
 import com.tokopedia.digital.product.view.listener.IProductChooserView;
 import com.tokopedia.digital.product.view.model.Promo;

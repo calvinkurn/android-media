@@ -57,7 +57,7 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
-import com.tokopedia.digital.apiservice.DigitalEndpointService;
+import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.product.view.activity.DigitalChooserActivity;
 import com.tokopedia.digital.product.view.activity.DigitalSearchNumberActivity;
 import com.tokopedia.digital.product.view.activity.DigitalUssdActivity;
@@ -69,8 +69,7 @@ import com.tokopedia.digital.common.view.compoundview.CategoryProductStyle2View;
 import com.tokopedia.digital.common.view.compoundview.CategoryProductStyle3View;
 import com.tokopedia.digital.product.view.compoundview.CheckPulsaBalanceView;
 import com.tokopedia.digital.common.view.compoundview.ClientNumberInputView;
-import com.tokopedia.digital.product.data.mapper.IProductDigitalMapper;
-import com.tokopedia.digital.product.data.mapper.ProductDigitalMapper;
+import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
 import com.tokopedia.digital.product.domain.DigitalCategoryRepository;
 import com.tokopedia.digital.product.domain.IDigitalCategoryRepository;
 import com.tokopedia.digital.product.domain.IUssdCheckBalanceRepository;
@@ -281,7 +280,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         );
         if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
         DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
-        IProductDigitalMapper productDigitalMapper = new ProductDigitalMapper();
+        ProductDigitalMapper productDigitalMapper = new ProductDigitalMapper();
         IDigitalWidgetRepository digitalWidgetRepository =
                 new DigitalWidgetRepository(digitalEndpointService, new FavoriteNumberListDataMapper());
         IDigitalCategoryRepository digitalCategoryRepository =

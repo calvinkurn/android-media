@@ -1,6 +1,6 @@
 package com.tokopedia.digital.product.domain;
 
-import com.tokopedia.digital.product.data.entity.requestbody.pulsabalance.RequestBodyPulsaBalance;
+import com.tokopedia.digital.common.data.entity.requestbody.pulsabalance.RequestBodyPulsaBalance;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
 
 import rx.Observable;
@@ -10,7 +10,9 @@ import rx.Observable;
  */
 
 public interface IUssdCheckBalanceRepository {
+
     Observable<PulsaBalance> processPulsaBalanceUssdResponse(
             RequestBodyPulsaBalance requestBodyPulsaBalance
     );
+
 }
