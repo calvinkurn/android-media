@@ -10,8 +10,8 @@ public class PurchaseTracking extends TrackingUtils {
     public static final String TRANSACTION = "transaction";
 
     public static void marketplace(Map<String, Object> data) {
-        getGTMEngine().clearEnhanceEcommerce();
         getGTMEngine().eventTrackingEnhancedEcommerce(data);
+        getGTMEngine().clearEnhanceEcommerce();
     }
 
     public static void digital(Map<String, Object> data) {

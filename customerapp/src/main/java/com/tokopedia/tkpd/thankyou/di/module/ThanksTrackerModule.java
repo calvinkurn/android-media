@@ -69,9 +69,8 @@ public class ThanksTrackerModule {
 
     @Provides
     @ThanksTrackerScope
-    MarketplaceTrackerMapper provideMarketplaceTrackerMapper(Gson gson,
-                                                             SessionHandler sessionHandler) {
-        return new MarketplaceTrackerMapper(gson, sessionHandler);
+    MarketplaceTrackerMapper provideMarketplaceTrackerMapper(SessionHandler sessionHandler) {
+        return new MarketplaceTrackerMapper(sessionHandler);
     }
 
     @Provides
