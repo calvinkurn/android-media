@@ -24,8 +24,10 @@
             android:text="@string/hello_x" />
 
         <TextView
-            style="@style/TextView.Title"
+            style="@style/TextView.Small"
             android:layout_marginBottom="@dimen/margin_large"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
             android:gravity="center"
             android:text="@string/shop_open_label_info_title_shop" />
 
