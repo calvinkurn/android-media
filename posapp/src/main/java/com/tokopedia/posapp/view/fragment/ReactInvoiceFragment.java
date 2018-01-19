@@ -4,7 +4,6 @@ import android.os.Bundle;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.posapp.react.PosReactConst;
-import com.tokopedia.posapp.view.activity.InvoiceActivity;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.app.ReactNativeFragment;
 
@@ -12,10 +11,10 @@ import com.tokopedia.tkpdreactnative.react.app.ReactNativeFragment;
  * Created by okasurya on 10/13/17.
  */
 
-public class InvoiceFragment extends ReactNativeFragment {
+public class ReactInvoiceFragment extends ReactNativeFragment {
 
-    public static InvoiceFragment newInstance(Bundle bundle) {
-        InvoiceFragment fragment = new InvoiceFragment();
+    public static ReactInvoiceFragment newInstance(Bundle bundle) {
+        ReactInvoiceFragment fragment = new ReactInvoiceFragment();
         fragment.setArguments(bundle);
         return fragment;
     }

@@ -5,6 +5,8 @@ package com.tokopedia.posapp.react;
  */
 
 public interface PosReactConst {
+    String USER_ID = "user_id";
+
     interface Screen {
         String MAIN_POS_O2O = "pos";
         String PARAM_POS_PAGE = "POS_PAGE";

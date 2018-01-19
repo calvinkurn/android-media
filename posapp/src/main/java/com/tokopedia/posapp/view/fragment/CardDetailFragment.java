@@ -10,8 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.view.CardDetail;
 import com.tokopedia.posapp.view.activity.PaymentProcessingActivity;

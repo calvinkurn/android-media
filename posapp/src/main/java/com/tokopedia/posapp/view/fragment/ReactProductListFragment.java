@@ -16,19 +16,19 @@ import com.tokopedia.posapp.react.PosReactConst;
  * Created by okasurya on 8/24/17.
  */
 
-public class ProductListFragment extends ReactNativeFragment {
+public class ReactProductListFragment extends ReactNativeFragment {
 
     public static final String SHOP_ID = "SHOP_ID";
     public static final String ETALASE_ID = "ETALASE_ID";
     private static final String USER_ID = "USER_ID";
     public static final String CLEAR_STATE = "clearState";
 
-    public static ProductListFragment newInstance(String shopId, String etalaseId) {
+    public static ReactProductListFragment newInstance(String shopId, String etalaseId) {
         Bundle args = new Bundle();
         args.putString(SHOP_ID, shopId);
         args.putString(ETALASE_ID, etalaseId);
         args.putString(PosReactConst.Screen.PARAM_POS_PAGE, PosReactConst.Page.PRODUCT_LIST);
-        ProductListFragment fragment = new ProductListFragment();
+        ReactProductListFragment fragment = new ReactProductListFragment();
         fragment.setArguments(args);
         return fragment;
     }

@@ -52,6 +52,7 @@ public class ReactNativeActivity extends BaseActivity implements DefaultHardware
         super.onDestroy();
         if(reactRootView != null) {
             reactRootView.unmountReactApplication();
+            reactRootView = null;
         }   
         if (reactInstanceManager != null) {
             reactInstanceManager.onHostDestroy(this);

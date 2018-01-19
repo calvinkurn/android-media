@@ -13,7 +13,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.base.activity.ReactDrawerPresenterActivity;
-import com.tokopedia.posapp.view.fragment.TransactionHistoryFragment;
+import com.tokopedia.posapp.view.fragment.ReactTransactionHistoryFragment;
 
 /**
  * Created by okasurya on 9/20/17.
@@ -52,7 +52,7 @@ public class TransactionHistoryActivity extends ReactDrawerPresenterActivity {
 
     @Override
     protected void initView() {
-        TransactionHistoryFragment fragment = TransactionHistoryFragment.newInstance();
+        ReactTransactionHistoryFragment fragment = ReactTransactionHistoryFragment.newInstance();
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         if (getFragmentManager().findFragmentById(R.id.container) == null) {
             fragmentTransaction.add(R.id.container, fragment, fragment.getClass().getSimpleName());

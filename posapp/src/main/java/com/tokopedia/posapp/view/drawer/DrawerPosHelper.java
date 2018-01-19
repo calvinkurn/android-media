@@ -2,12 +2,10 @@ package com.tokopedia.posapp.view.drawer;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.design.widget.Snackbar;
 import android.view.View;
 
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
 import com.tokopedia.core.drawer2.view.DrawerAdapter;
 import com.tokopedia.core.drawer2.view.DrawerHelper;

@@ -10,11 +10,11 @@ import com.tokopedia.tkpdreactnative.react.app.ReactNativeFragment;
  * Created by okasurya on 9/26/17.
  */
 
-public class TransactionHistoryFragment extends ReactNativeFragment {
-    public static TransactionHistoryFragment newInstance() {
+public class ReactTransactionHistoryFragment extends ReactNativeFragment {
+    public static ReactTransactionHistoryFragment newInstance() {
         Bundle args = new Bundle();
         args.putString(PosReactConst.Screen.PARAM_POS_PAGE, PosReactConst.Page.TRANSACTION_HISTORY);
-        TransactionHistoryFragment fragment = new TransactionHistoryFragment();
+        ReactTransactionHistoryFragment fragment = new ReactTransactionHistoryFragment();
         fragment.setArguments(args);
         return fragment;
     }

@@ -1,27 +1,23 @@
 package com.tokopedia.posapp.view.activity;
 
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
 import android.view.KeyEvent;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactInstanceManager;
-import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.deeplink.Constants;
-import com.tokopedia.posapp.view.fragment.InvoiceFragment;
+import com.tokopedia.posapp.view.fragment.ReactInvoiceFragment;
+import com.tokopedia.tkpdreactnative.react.app.ReactFragmentActivity;
+import com.tokopedia.tkpdreactnative.react.app.ReactNativeFragment;
 
 /**
  * Created by okasurya on 10/11/17.
  */
 
-public class InvoiceActivity extends BasePresenterActivity {
+public class InvoiceActivity extends ReactFragmentActivity {
 
     public static final String DATA = "data";
     private static final String IS_ERROR = "isError";
@@ -60,73 +56,13 @@ public class InvoiceActivity extends BasePresenterActivity {
     }
 
     @Override
-    protected void setupURIPass(Uri data) {
-
+    protected ReactNativeFragment getReactNativeFragment() {
+        return ReactInvoiceFragment.newInstance(getReactNativeProps());
     }
 
     @Override
-    protected void setupBundlePass(Bundle extras) {
-
-    }
-
-    @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_simple_fragment;
-    }
-
-    @Override
-    protected void initView() {
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        getSupportActionBar().setDisplayShowHomeEnabled(false);
-        getSupportActionBar().setHomeButtonEnabled(false);
-        if(getIntent().getBooleanExtra(IS_ERROR, false)) {
-            getSupportActionBar().setTitle("Error");
-        } else {
-            getSupportActionBar().setTitle("Invoice");
-        }
-
-        InvoiceFragment fragment = InvoiceFragment.newInstance(getIntent().getExtras());
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        if (getSupportFragmentManager().findFragmentByTag(
-                InvoiceFragment.class.getSimpleName()) == null) {
-            fragmentTransaction.replace(R.id.container,
-                    fragment,
-                    fragment.getClass().getSimpleName());
-        } else {
-            fragmentTransaction.replace(R.id.container,
-                    getFragmentManager().findFragmentByTag(InvoiceFragment.class.getSimpleName()));
-        }
-
-        fragmentTransaction.commit();
-    }
-
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
-    }
-
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_MENU && reactInstanceManager != null) {
-            reactInstanceManager.showDevOptionsDialog();
-            return true;
-        }
-        return super.onKeyUp(keyCode, event);
+    protected String getToolbarTitle() {
+        return null;
     }
 
     @Override

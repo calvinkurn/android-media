@@ -17,7 +17,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.base.activity.ReactDrawerPresenterActivity;
 import com.tokopedia.posapp.deeplink.Constants;
-import com.tokopedia.posapp.view.fragment.ProductListFragment;
+import com.tokopedia.posapp.view.fragment.ReactProductListFragment;
 
 /**
  * Created by okasurya on 8/24/17.
@@ -70,7 +70,7 @@ public class ProductListActivity extends ReactDrawerPresenterActivity {
 
     @Override
     protected void initView() {
-        ProductListFragment fragment = ProductListFragment.newInstance(SessionHandler.getShopID(this), "etalase");
+        ReactProductListFragment fragment = ReactProductListFragment.newInstance(SessionHandler.getShopID(this), "etalase");
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         if (getFragmentManager().findFragmentById(R.id.container) == null) {
             fragmentTransaction.add(R.id.container, fragment, fragment.getClass().getSimpleName());
