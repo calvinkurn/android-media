@@ -73,7 +73,7 @@ public class PeopleInfoHeaderView extends BaseView<InputOutputData, PeopleInfoFr
             textFavorite.setOnClickListener(new FavoritedShopClick(peopleInfoData));
         }
 
-        textFollowing.setVisibility(GlobalConfig.isSellerApp() ? VISIBLE : GONE);
+        textFollowing.setVisibility(GlobalConfig.isSellerApp() ? GONE : VISIBLE);
 
         textFollowing.setOnClickListener(new FollowingClick(peopleInfoData));
 
