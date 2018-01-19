@@ -131,6 +131,7 @@ import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.sellerapp.truecaller.TruecallerActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.session.activity.Login;
+import com.tokopedia.tkpd.tkpdreputation.shopreview.view.ShopReviewFragment;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
@@ -379,8 +380,8 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public android.app.Fragment getShopReputationFragment() {
-        return ShopReputationList.create();
+    public android.app.Fragment getShopReputationFragment(String shopId, String shopDomain) {
+        return ShopReviewFragment.createInstance(shopId, shopDomain);
     }
 
     @Override

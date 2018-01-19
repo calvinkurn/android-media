@@ -24,6 +24,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationRepo
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewstarcount.DataResponseReviewStarCount;
 import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewstarcount.DetailReviewStarCount;
+import com.tokopedia.tkpd.tkpdreputation.productreview.view.adapter.ProductReviewContentViewHolder;
 import com.tokopedia.tkpd.tkpdreputation.productreview.view.adapter.ProductReviewModel;
 import com.tokopedia.tkpd.tkpdreputation.productreview.view.adapter.ProductReviewModelContent;
 import com.tokopedia.tkpd.tkpdreputation.productreview.view.adapter.ProductReviewModelTitleHeader;
@@ -42,7 +43,7 @@ import javax.inject.Inject;
  */
 
 public class ProductReviewFragment extends BaseListFragment<ProductReviewModel, ProductReviewTypeFactoryAdapter>
-        implements ProductReviewContract.View {
+        implements ProductReviewContract.View, ProductReviewContentViewHolder.ListenerReviewHolder {
 
     public static final String EXTRA_PRODUCT_ID = "product_id";
 
@@ -198,9 +199,15 @@ public class ProductReviewFragment extends BaseListFragment<ProductReviewModel, 
     @Override
     public void onGetListReviewHelpful(List<ProductReviewModel> map) {
         if(map.size() >0) {
-            map.add(new ProductReviewModelTitleHeader(getString(R.string.product_review_label_helpful_review)));
-            for (int i = 0; i < map.size(); i++) {
-                getAdapter().addElement(i, map.get(i));
+            if(isLoadingInitialData){
+                isLoadingInitialData = false;
+                map.add(0, new ProductReviewModelTitleHeader(getString(R.string.product_review_label_helpful_review)));
+                renderList(map);
+            }else{
+                map.add(0, new ProductReviewModelTitleHeader(getString(R.string.product_review_label_helpful_review)));
+                for (int i = 0; i < map.size(); i++) {
+                    getAdapter().addElement(i, map.get(i));
+                }
             }
         }
     }
@@ -216,7 +223,7 @@ public class ProductReviewFragment extends BaseListFragment<ProductReviewModel, 
         ratingProductStar.setRating(Float.parseFloat(dataResponseReviewStarCount.getRatingScore()));
         counterReview.setText(getString(R.string.product_review_counter_review_formatted, dataResponseReviewStarCount.getTotalReview()));
         for (DetailReviewStarCount detailReviewStarCount : dataResponseReviewStarCount.getDetail()) {
-            Float percentageFloatReview = Float.parseFloat(detailReviewStarCount.getPercentage().replace("%", ""));
+            Float percentageFloatReview = Float.parseFloat(detailReviewStarCount.getPercentage().replace("%", "").replace(",", "."));
             switch (detailReviewStarCount.getRate()) {
                 case 5:
                     fiveStarReview.setPercentageProgress(percentageFloatReview);

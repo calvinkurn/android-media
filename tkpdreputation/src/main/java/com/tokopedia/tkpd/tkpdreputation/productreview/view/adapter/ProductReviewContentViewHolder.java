@@ -19,7 +19,6 @@ import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ImageUploadAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageAttachmentViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
-import com.tokopedia.tkpd.tkpdreputation.productreview.view.presenter.ProductReviewContract;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,10 +31,9 @@ public class ProductReviewContentViewHolder extends AbstractViewHolder<ProductRe
     public static final int LAYOUT = R.layout.item_product_review;
     private static final int MAX_CHAR = 50;
     private static final String MORE_DESCRIPTION = "<font color='#42b549'>Selengkapnya</font>";
-    private static final String BY = "Oleh";
 
     boolean isReplyOpened = false;
-    private ProductReviewContract.View viewListener;
+    private ListenerReviewHolder viewListener;
 
     private TextView reviewerName;
     private TextView reviewTime;
@@ -55,8 +53,9 @@ public class ProductReviewContentViewHolder extends AbstractViewHolder<ProductRe
     private ImageView replyOverflow;
     private ImageView iconLike;
     private TextView counterLike;
+    private View containerReplyView;
 
-    public ProductReviewContentViewHolder(View itemView, ProductReviewContract.View viewListener) {
+    public ProductReviewContentViewHolder(View itemView, ListenerReviewHolder viewListener) {
         super(itemView);
         this.viewListener = viewListener;
         reviewerName = (TextView) itemView.findViewById(R.id.reviewer_name);
@@ -81,21 +80,25 @@ public class ProductReviewContentViewHolder extends AbstractViewHolder<ProductRe
         replyOverflow = (ImageView) itemView.findViewById(R.id.reply_overflow);
         iconLike = itemView.findViewById(R.id.icon_like);
         counterLike = itemView.findViewById(R.id.text_counter_like);
+        containerReplyView = itemView.findViewById(R.id.container_reply_view);
     }
 
     @Override
     public void bind(final ProductReviewModelContent element) {
-
-        reviewerName.setText(com.tokopedia.core.util.MethodChecker.fromHtml(getReviewerNameText(element)));
+        reviewerName.setText(MethodChecker.fromHtml(getString(R.string.product_review_label_formatted_name, getReviewerNameText(element))));
         reviewerName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 viewListener.onGoToProfile(element.getReviewerId());
             }
         });
-
-        String time = getFormattedTime(element.getReviewTime());
-        reviewTime.setText(time);
+        containerReplyView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                toggleReply();
+            }
+        });
+        reviewTime.setText(element.getReviewTime());
 
         reviewStar.setRating(element.getReviewStar());
         review.setText(getReview(element.getReviewMessage()));
@@ -111,7 +114,6 @@ public class ProductReviewContentViewHolder extends AbstractViewHolder<ProductRe
 
         reviewOverflow.setOnClickListener(onReviewOverflowClicked(element));
 
-
         if (element.isReviewHasReplied()) {
             setSellerReply(element);
         } else {
@@ -125,6 +127,7 @@ public class ProductReviewContentViewHolder extends AbstractViewHolder<ProductRe
             public void onClick(View view) {
                 viewListener.onLikeDislikePressed(element.getReviewId(), element.isLikeStatus()? 0 : 1,  element.getProductId());
                 element.setLikeStatus(!element.isLikeStatus());
+                element.setTotalLike(element.isLikeStatus() ? element.getTotalLike() + 1 : element.getTotalLike() - 1);
                 setLikeStatus(element);
             }
         });
@@ -140,7 +143,19 @@ public class ProductReviewContentViewHolder extends AbstractViewHolder<ProductRe
         }else{
             iconLike.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_like_normal));
         }
-        counterLike.setText(String.valueOf(element.getTotalLike()));
+        if(element.isLogin()) {
+            if (element.isLikeStatus() && element.getTotalLike() > 1) {
+                counterLike.setText(itemView.getContext().getString(R.string.product_review_label_counter_like_1_formatted, element.getTotalLike() - 1));
+            } else if(element.isLikeStatus() && element.getTotalLike() == 1) {
+                counterLike.setText(R.string.product_review_label_counter_like_2_formatted);
+            }else if(!element.isLikeStatus() && element.getTotalLike() <1){
+                counterLike.setText(R.string.product_review_label_counter_like_3_formatted);
+            }else{
+                counterLike.setText(itemView.getContext().getString(R.string.product_review_label_counter_like_4_formatted, element.getTotalLike()));
+            }
+        }else{
+            counterLike.setText(itemView.getContext().getString(R.string.product_review_label_counter_like_4_formatted, element.getTotalLike()));
+        }
     }
 
     private ArrayList<ImageUpload> convertToAdapterViewModel(List<ImageAttachmentViewModel> reviewAttachment) {
@@ -180,31 +195,17 @@ public class ProductReviewContentViewHolder extends AbstractViewHolder<ProductRe
     }
 
     private void setSellerReply(final ProductReviewModelContent element) {
-        replyReviewLayout.setVisibility(View.VISIBLE);
         seeReplyText.setVisibility(View.VISIBLE);
         replyArrow.setVisibility(View.VISIBLE);
 
-        seeReplyText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggleReply();
-            }
-        });
-        replyArrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggleReply();
-            }
-        });
-
-        sellerName.setText(MethodChecker.fromHtml(getFormattedReplyName(element.getSellerName())));
+        sellerName.setText(MethodChecker.fromHtml(getString(R.string.product_review_label_formatted_name, element.getSellerName())));
         sellerName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 viewListener.onGoToShopInfo(element.getShopId());
             }
         });
-        sellerReplyTime.setText(getFormattedTime(element.getResponseCreateTime()));
+        sellerReplyTime.setText(element.getResponseCreateTime());
         sellerReply.setText(MethodChecker.fromHtml(element.getResponseMessage()));
         replyOverflow.setVisibility(View.VISIBLE);
         replyOverflow.setOnClickListener(new View.OnClickListener() {
@@ -250,10 +251,6 @@ public class ProductReviewContentViewHolder extends AbstractViewHolder<ProductRe
 
     }
 
-    private String getFormattedReplyName(String responseBy) {
-        return BY + " <b>" + responseBy + "</b>";
-    }
-
     private String getFormattedTime(String reviewTime) {
         return TimeConverter.generateTimeYearly(reviewTime.replace("WIB", ""));
     }
@@ -271,10 +268,9 @@ public class ProductReviewContentViewHolder extends AbstractViewHolder<ProductRe
 
     private String getReviewerNameText(ProductReviewModelContent element) {
         if (element.isReviewIsAnonymous()) {
-            return getString(R.string.by) + " " +
-                    getAnonymousName(element.getReviewerName());
+            return getAnonymousName(element.getReviewerName());
         } else {
-            return getString(R.string.by) + " " + element.getReviewerName();
+            return element.getReviewerName();
         }
     }
 
@@ -313,5 +309,21 @@ public class ProductReviewContentViewHolder extends AbstractViewHolder<ProductRe
 
             }
         };
+    }
+
+    public interface ListenerReviewHolder{
+        void onGoToProfile(String reviewerId);
+
+        void goToPreviewImage(int position, ArrayList<ImageUpload> list);
+
+        void onGoToShopInfo(String shopId);
+
+        void onDeleteReviewResponse(ProductReviewModelContent element);
+
+        void onSmoothScrollToReplyView(int adapterPosition);
+
+        void onGoToReportReview(String shopId, String reviewId);
+
+        void onLikeDislikePressed(String reviewId, int likeStatus, String productId);
     }
 }

@@ -30,7 +30,7 @@ public class ShopReviewGetListReviewCloud {
                 .map(new Func1<DataResponse<DataResponseReviewShop>, DataResponseReviewShop>() {
                     @Override
                     public DataResponseReviewShop call(DataResponse<DataResponseReviewShop> dataResponseReviewShopDataResponse) {
-                        return null;
+                        return dataResponseReviewShopDataResponse.getData();
                     }
                 });
     }

@@ -5,9 +5,11 @@ import android.text.TextUtils;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageAttachmentViewModel;
 import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewlist.DataResponseReviewHelpful;
 import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewlist.DataResponseReviewProduct;
+import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewlist.DataResponseReviewShop;
 import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewlist.Owner;
 import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewlist.Review;
 import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewlist.ReviewImageAttachment;
+import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewlist.ReviewShop;
 import com.tokopedia.tkpd.tkpdreputation.productreview.view.adapter.ProductReviewModel;
 import com.tokopedia.tkpd.tkpdreputation.productreview.view.adapter.ProductReviewModelContent;
 
@@ -50,6 +52,7 @@ public class ProductReviewListMapper {
             productReviewModelContent.setShopId(String.valueOf(dataResponseReviewProduct.getOwner().getShop().getShopId()));
             productReviewModelContent.setLikeStatus(review.getLikeStatus() == LIKE_STATUS_ACTIVE);
             productReviewModelContent.setTotalLike(review.getTotalLike());
+            productReviewModelContent.setLogin(!TextUtils.isEmpty(userId));
             productReviewModelContent.setReviewId(String.valueOf(review.getReviewId()));
             reviewModelContents.add(productReviewModelContent);
         }
@@ -77,6 +80,7 @@ public class ProductReviewListMapper {
             productReviewModelContent.setLikeStatus(review.getLikeStatus() == LIKE_STATUS_ACTIVE);
             productReviewModelContent.setTotalLike(review.getTotalLike());
             productReviewModelContent.setReviewId(String.valueOf(review.getReviewId()));
+            productReviewModelContent.setLogin(!TextUtils.isEmpty(userId));
             reviewModelContents.add(productReviewModelContent);
         }
         return reviewModelContents;
@@ -106,5 +110,34 @@ public class ProductReviewListMapper {
         }else {
             return review.getReviewCreateTime().getDateTimeFmt1();
         }
+    }
+
+    public List<ProductReviewModelContent> map(DataResponseReviewShop dataResponseReviewShop, String userId) {
+        List<ProductReviewModelContent> productReviewModelContents = new ArrayList<>();
+        for(ReviewShop review : dataResponseReviewShop.getList()){
+            ProductReviewModelContent productReviewModelContent = new ProductReviewModelContent();
+            productReviewModelContent.setResponseCreateTime(review.getReviewResponse().getResponseTime().getDateTimeFmt1());
+            productReviewModelContent.setResponseMessage(review.getReviewResponse().getResponseMessage());
+            productReviewModelContent.setReviewCanReported(isReviewCanReported(userId, review));
+            productReviewModelContent.setReputationId(String.valueOf(review.getReputationId()));
+            productReviewModelContent.setProductId(String.valueOf(review.getProduct().getProductId()));
+            productReviewModelContent.setReviewerId(String.valueOf(review.getUser().getUserId()));
+            productReviewModelContent.setReviewAttachment(generateImageAttachmentModel(review));
+            productReviewModelContent.setReviewIsAnonymous(review.getReviewAnonymous() == 1);
+            productReviewModelContent.setReviewStar(review.getProductRating());
+            productReviewModelContent.setSellerName(dataResponseReviewShop.getOwner().getUser().getUserFullName());
+            productReviewModelContent.setReviewTime(getReviewCreateTime(review));
+            productReviewModelContent.setReviewMessage(review.getReviewMessage());
+            productReviewModelContent.setReviewerName(review.getUser().getFullName());
+            productReviewModelContent.setReviewHasReplied(!TextUtils.isEmpty(review.getReviewResponse().getResponseMessage()));
+            productReviewModelContent.setSellerRepliedOwner(isUserOwnedReplied(userId, dataResponseReviewShop.getOwner()));
+            productReviewModelContent.setShopId(String.valueOf(dataResponseReviewShop.getOwner().getShop().getShopId()));
+            productReviewModelContent.setLikeStatus(review.getLikeStatus() == LIKE_STATUS_ACTIVE);
+            productReviewModelContent.setTotalLike(review.getTotalLike());
+            productReviewModelContent.setLogin(!TextUtils.isEmpty(userId));
+            productReviewModelContent.setReviewId(String.valueOf(review.getReviewId()));
+            productReviewModelContents.add(productReviewModelContent);
+        }
+        return productReviewModelContents;
     }
 }

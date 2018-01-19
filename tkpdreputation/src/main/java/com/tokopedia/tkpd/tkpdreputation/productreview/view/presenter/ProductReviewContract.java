@@ -23,18 +23,6 @@ public interface ProductReviewContract {
 
     interface View extends BaseListViewListener<ProductReviewModel>{
 
-        void onGoToProfile(String reviewerId);
-
-        void goToPreviewImage(int position, ArrayList<ImageUpload> list);
-
-        void onGoToShopInfo(String shopId);
-
-        void onDeleteReviewResponse(ProductReviewModelContent element);
-
-        void onSmoothScrollToReplyView(int adapterPosition);
-
-        void onGoToReportReview(String shopId, String reviewId);
-
         void onGetListReviewProduct(List<ProductReviewModel> map, boolean isHasNextPage);
 
         void onErrorGetListReviewProduct(Throwable e);
@@ -54,7 +42,5 @@ public interface ProductReviewContract {
         void onSuccessDeleteReview(DeleteReviewResponseDomain deleteReviewResponseDomain);
 
         void onErrorDeleteReview(Throwable e);
-
-        void onLikeDislikePressed(String reviewId, int likeStatus, String productId);
     }
 }
