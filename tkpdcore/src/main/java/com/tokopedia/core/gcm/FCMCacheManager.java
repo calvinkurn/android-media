@@ -10,7 +10,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
@@ -24,7 +23,6 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,11 +31,6 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func0;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 /**
  * @author by Herdi_WORK on 13.12.16.
@@ -277,8 +270,10 @@ public class FCMCacheManager {
     public static boolean isFcmExpired(Context context) {
         LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
         long lastFCMUpdate = cache.getLong(GCM_ID_TIMESTAMP, 0);
-        if (lastFCMUpdate <= 0)
+        if (lastFCMUpdate <= 0) {
+            FCMCacheManager.storeFcmTimestamp(context);
             return false;
+        }
 
         return (System.currentTimeMillis() - lastFCMUpdate) >= GCM_ID_EXPIRED_TIME;
     }
