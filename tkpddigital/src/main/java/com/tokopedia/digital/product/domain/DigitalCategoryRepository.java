@@ -12,11 +12,10 @@ import com.tokopedia.digital.product.data.entity.response.Category;
 import com.tokopedia.digital.product.data.entity.response.ResponseCategoryDetailData;
 import com.tokopedia.digital.product.data.entity.response.ResponseCategoryDetailIncluded;
 import com.tokopedia.digital.product.data.mapper.IProductDigitalMapper;
-import com.tokopedia.digital.product.model.CategoryData;
+import com.tokopedia.digital.product.view.model.CategoryData;
 
 import retrofit2.Response;
 import rx.Observable;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**

@@ -19,8 +19,8 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.digital.product.model.Operator;
-import com.tokopedia.digital.product.model.Validation;
+import com.tokopedia.digital.product.view.model.Operator;
+import com.tokopedia.digital.product.view.model.Validation;
 import com.tokopedia.digital.utils.data.RequestBodyAppsFlyer;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 

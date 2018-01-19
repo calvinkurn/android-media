@@ -2,7 +2,7 @@ package com.tokopedia.digital.widget.data.mapper;
 
 import com.tokopedia.core.network.entity.homeMenu.HomeCategoryMenuItem;
 import com.tokopedia.digital.exception.MapperDataException;
-import com.tokopedia.digital.widget.model.DigitalCategoryItemData;
+import com.tokopedia.digital.widget.view.model.DigitalCategoryItemData;
 
 import java.util.List;
 

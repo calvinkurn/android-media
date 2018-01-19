@@ -3,8 +3,12 @@ package com.tokopedia.digital.common.data.repository;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.product.data.source.CategoryDetailDataSource;
 import com.tokopedia.digital.product.data.source.FavoriteListDataSource;
-import com.tokopedia.digital.product.model.CategoryData;
-import com.tokopedia.digital.widget.model.DigitalNumberList;
+import com.tokopedia.digital.product.view.model.CategoryData;
+import com.tokopedia.digital.widget.data.entity.category.CategoryEntity;
+import com.tokopedia.digital.widget.data.entity.status.StatusEntity;
+import com.tokopedia.digital.widget.view.model.DigitalNumberList;
+
+import java.util.List;
 
 import rx.Observable;
 
@@ -31,6 +35,16 @@ public class DigitalRepository implements IDigitalRepository {
     @Override
     public Observable<DigitalNumberList> getFavoriteList(TKPDMapParam<String, String> param) {
         return favoriteListDataSource.getFavoriteList(param);
+    }
+
+    @Override
+    public Observable<List<CategoryEntity>> getCategoryList() {
+        return null;
+    }
+
+    @Override
+    public Observable<StatusEntity> getObservableStatusNetwork() {
+        return null;
     }
 
 }

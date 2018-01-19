@@ -4,7 +4,7 @@ import android.app.Application;
 import android.content.Intent;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.digital.product.model.CategoryData;
+import com.tokopedia.digital.product.view.model.CategoryData;
 import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashBalanceData;
 
 /**

@@ -1,9 +1,9 @@
 package com.tokopedia.digital.widget.data.mapper;
 
-import com.tokopedia.digital.product.model.OrderClientNumber;
+import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.digital.widget.data.entity.response.ResponseFavoriteList;
 import com.tokopedia.digital.widget.data.entity.response.ResponseFavoriteNumber;
-import com.tokopedia.digital.widget.model.DigitalNumberList;
+import com.tokopedia.digital.widget.view.model.DigitalNumberList;
 
 import java.util.ArrayList;
 import java.util.List;

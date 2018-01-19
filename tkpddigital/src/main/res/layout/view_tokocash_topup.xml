@@ -25,7 +25,7 @@
         android:layout_marginTop="@dimen/margin_vs"
         android:background="@color/grey_300" />
 
-    <com.tokopedia.digital.product.compoundview.DigitalProductChooserView
+    <com.tokopedia.digital.product.view.compoundview.DigitalProductChooserView
         android:id="@+id/digital_product_chooser_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

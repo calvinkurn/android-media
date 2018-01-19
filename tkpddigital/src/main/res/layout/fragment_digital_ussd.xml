@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.tokopedia.digital.product.fragment.DigitalUssdFragment">
+    tools:context=".product.view.fragment.DigitalUssdFragment">
 
     <LinearLayout
         android:layout_width="match_parent"

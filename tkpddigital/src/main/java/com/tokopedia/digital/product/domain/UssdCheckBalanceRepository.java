@@ -9,7 +9,7 @@ import com.tokopedia.digital.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.product.data.entity.requestbody.pulsabalance.RequestBodyPulsaBalance;
 import com.tokopedia.digital.product.data.entity.response.ResponsePulsaBalance;
 import com.tokopedia.digital.product.data.mapper.IProductDigitalMapper;
-import com.tokopedia.digital.product.model.PulsaBalance;
+import com.tokopedia.digital.product.view.model.PulsaBalance;
 
 import retrofit2.Response;
 import rx.Observable;

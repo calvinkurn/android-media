@@ -12,7 +12,7 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.widget.data.mapper.ICategoryDigitalListDataMapper;
-import com.tokopedia.digital.widget.model.DigitalCategoryItemData;
+import com.tokopedia.digital.widget.view.model.DigitalCategoryItemData;
 
 import java.util.List;
 

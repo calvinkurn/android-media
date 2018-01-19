@@ -1,10 +1,7 @@
 package com.tokopedia.digital.product.domain;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.digital.product.model.BannerData;
-import com.tokopedia.digital.product.model.CategoryData;
-
-import java.util.List;
+import com.tokopedia.digital.product.view.model.CategoryData;
 
 import rx.Observable;
 

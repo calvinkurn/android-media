@@ -8,7 +8,7 @@ import com.tokopedia.digital.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.product.data.entity.response.ResponseCategoryDetailData;
 import com.tokopedia.digital.product.data.entity.response.ResponseCategoryDetailIncluded;
 import com.tokopedia.digital.product.data.mapper.ProductDigitalMapper;
-import com.tokopedia.digital.product.model.CategoryData;
+import com.tokopedia.digital.product.view.model.CategoryData;
 
 import retrofit2.Response;
 import rx.Observable;

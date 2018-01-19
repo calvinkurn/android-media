@@ -1,22 +1,18 @@
 package com.tokopedia.digital.product.data.mapper;
 
 import com.tokopedia.digital.exception.MapperDataException;
-import com.tokopedia.digital.product.data.entity.response.ResponseBanner;
 import com.tokopedia.digital.product.data.entity.response.ResponseCategoryDetailData;
 import com.tokopedia.digital.product.data.entity.response.ResponseCategoryDetailIncluded;
-import com.tokopedia.digital.product.data.entity.response.ResponseLastOrderData;
 import com.tokopedia.digital.product.data.entity.response.ResponsePulsaBalance;
-import com.tokopedia.digital.product.data.entity.response.ResponseRecentNumberData;
-import com.tokopedia.digital.product.model.BannerData;
-import com.tokopedia.digital.product.model.CategoryData;
-import com.tokopedia.digital.product.model.ClientNumber;
-import com.tokopedia.digital.product.model.Operator;
-import com.tokopedia.digital.product.model.OrderClientNumber;
-import com.tokopedia.digital.product.model.Product;
-import com.tokopedia.digital.product.model.Promo;
-import com.tokopedia.digital.product.model.PulsaBalance;
-import com.tokopedia.digital.product.model.Rule;
-import com.tokopedia.digital.product.model.Teaser;
+import com.tokopedia.digital.product.view.model.BannerData;
+import com.tokopedia.digital.product.view.model.CategoryData;
+import com.tokopedia.digital.product.view.model.ClientNumber;
+import com.tokopedia.digital.product.view.model.Operator;
+import com.tokopedia.digital.product.view.model.Product;
+import com.tokopedia.digital.product.view.model.Promo;
+import com.tokopedia.digital.product.view.model.PulsaBalance;
+import com.tokopedia.digital.product.view.model.Rule;
+import com.tokopedia.digital.product.view.model.Teaser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,12 +61,12 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
                 clientNumberCategory.setHelp(field.getHelp());
                 clientNumberCategory.setPlaceholder(field.getPlaceholder());
                 clientNumberCategory.setText(field.getText());
-                List<com.tokopedia.digital.product.model.Validation> validationCategoryList
+                List<com.tokopedia.digital.product.view.model.Validation> validationCategoryList
                         = new ArrayList<>();
                 for (com.tokopedia.digital.product.data.entity.response.Validation validation
                         : field.getValidation()) {
-                    com.tokopedia.digital.product.model.Validation validationCategory =
-                            new com.tokopedia.digital.product.model.Validation();
+                    com.tokopedia.digital.product.view.model.Validation validationCategory =
+                            new com.tokopedia.digital.product.view.model.Validation();
                     validationCategory.setError(validation.getError());
                     validationCategory.setRegex(validation.getRegex());
                     validationCategoryList.add(validationCategory);
@@ -141,12 +137,12 @@ public class ProductDigitalMapper implements IProductDigitalMapper {
                     clientNumberOperator.setHelp(field.getHelp());
                     clientNumberOperator.setPlaceholder(field.getPlaceholder());
                     clientNumberOperator.setText(field.getText());
-                    List<com.tokopedia.digital.product.model.Validation> validationCategoryList
+                    List<com.tokopedia.digital.product.view.model.Validation> validationCategoryList
                             = new ArrayList<>();
                     for (com.tokopedia.digital.product.data.entity.response.Validation validation
                             : field.getValidation()) {
-                        com.tokopedia.digital.product.model.Validation validationCategory =
-                                new com.tokopedia.digital.product.model.Validation();
+                        com.tokopedia.digital.product.view.model.Validation validationCategory =
+                                new com.tokopedia.digital.product.view.model.Validation();
                         validationCategory.setError(validation.getError());
                         validationCategory.setRegex(validation.getRegex());
                         validationCategoryList.add(validationCategory);

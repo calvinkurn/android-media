@@ -1,6 +1,6 @@
 package com.tokopedia.digital.tokocash.presenter;
 
-import com.tokopedia.digital.product.compoundview.BaseDigitalProductView;
+import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 
 /**
  * Created by nabillasabbaha on 8/21/17.
