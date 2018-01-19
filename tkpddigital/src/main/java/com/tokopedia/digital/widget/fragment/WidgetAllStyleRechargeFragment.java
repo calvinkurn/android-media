@@ -78,7 +78,6 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
 
     private CompositeSubscription compositeSubscription;
 
-    private LocalCacheHandler cacheHandlerLastInputClientNumber;
     private LocalCacheHandler cacheHandlerRecentInstantCheckoutUsed;
 
     @BindView(R2.id.holder_product_detail)
@@ -122,10 +121,6 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
 
     @Override
     protected void initialPresenter() {
-        cacheHandlerLastInputClientNumber = new LocalCacheHandler(
-                getActivity(), TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER
-        );
-
         if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
 
         DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
@@ -135,7 +130,7 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
                 new DigitalCategoryRepository(digitalEndpointService, new ProductDigitalMapper());
 
         DigitalCategoryUseCase digitalCategoryUseCase = new DigitalCategoryUseCase(
-                getActivity(), digitalCategoryRepository, digitalWidgetRepository
+                getContext(), digitalCategoryRepository, digitalWidgetRepository
         );
 
         presenter = new DigitalWidgetPresenter(getActivity(), this,
@@ -408,14 +403,6 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
 
             presenter.storeLastClientNumberTyped(categoryId, selectedOperator.getOperatorId(),
                     digitalProductView.getClientNumber(), selectedProduct.getProductId());
-
-//            presenter.processStoreLastInputClientNumberByCategory(
-//                    digitalProductView.getClientNumber(),
-//                    categoryDataState.getCategoryId(),
-//                    selectedOperator != null ? selectedOperator.getOperatorId() : "",
-//                    selectedProduct != null ? selectedProduct.getProductId() : "",
-//                    cacheHandlerLastInputClientNumber
-//            );
         }
     }
 }
