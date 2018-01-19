@@ -23,6 +23,8 @@ import android.view.ViewGroup;
 import com.google.firebase.perf.metrics.Trace;
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -82,6 +84,7 @@ import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategorySe
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.LayoutSections;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.SellViewModel;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.home.ReactNativeOfficialStoreActivity;
@@ -154,7 +157,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     protected String getScreenName() {
-        return null;
+        return AppScreen.UnifyScreenTracker.SCREEN_UNIFY_HOME_BERANDA;
     }
 
     @Override
@@ -362,7 +365,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void focusView(String title) {
         if (title.equalsIgnoreCase("Jual")) {
-            recyclerView.smoothScrollToPosition(adapter.getItemCount() - 1);
+            for (int i = 0; i < adapter.getItemCount(); i++) {
+                if (adapter.getItem(i) instanceof SellViewModel) {
+                    recyclerView.smoothScrollToPosition(i);
+                    break;
+                }
+            }
         } else {
             for (int i = 0; i < adapter.getItemCount(); i++) {
                 Visitable visitable = adapter.getItem(i);
@@ -816,14 +824,19 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser && getView() != null) {
-            restartBanner();
+        trackScreen(isVisibleToUser);
+        restartBanner(isVisibleToUser);
+    }
+
+    private void restartBanner(boolean isVisibleToUser) {
+        if ((isVisibleToUser && getView() != null) && adapter != null) {
+            adapter.notifyDataSetChanged();
         }
     }
 
-    private void restartBanner() {
-        if (adapter != null) {
-            adapter.notifyDataSetChanged();
+    private void trackScreen(boolean isVisibleToUser) {
+        if (isVisibleToUser && isAdded() && getActivity() != null) {
+            ScreenTracking.screen(getScreenName());
         }
     }
 
