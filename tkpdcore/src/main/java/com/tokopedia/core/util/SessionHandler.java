@@ -695,8 +695,8 @@ public class SessionHandler {
         localCacheHandler.applyEditor();
     }
 
-    public String getAccessTokenTokoCash() {
-        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TOKOCASH_SESSION);
+    public static String getAccessTokenTokoCash() {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(MainApplication.getAppContext(), TOKOCASH_SESSION);
         return localCacheHandler.getString(ACCESS_TOKEN_TOKOCASH, "");
     }
 
