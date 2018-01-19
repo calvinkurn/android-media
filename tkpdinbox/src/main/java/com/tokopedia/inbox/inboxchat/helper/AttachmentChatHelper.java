@@ -71,7 +71,7 @@ public class AttachmentChatHelper {
         setMessage(attachment, viewListener, message);
     }
 
-    private void setMessage(Attachment attachment, final ChatRoomContract.View viewListener, final TextView message){
+    private void setMessage(final Attachment attachment, final ChatRoomContract.View viewListener, final TextView message){
         if(attachment.getFallbackAttachment().getMessage()!=null){
             final FallbackAttachment fallback = attachment.getFallbackAttachment();
             String string = String.format("%s\n%s", fallback.getMessage(), fallback.getSpan());
