@@ -256,7 +256,16 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     @Override
     public void addTemplateString(String message) {
-        UnifyTracking.eventClickTemplate(TopChatTrackingEventLabel.Category.INBOX_CHAT,
+        String labelCategory = TopChatTrackingEventLabel.Category.INBOX_CHAT;
+        if (!getArguments().getBoolean(PARAM_WEBSOCKET)) {
+            if (getArguments().getString(PARAM_SENDER_TAG).equals(ChatRoomActivity.ROLE_SELLER)) {
+                labelCategory = TopChatTrackingEventLabel.Category.SHOP_PAGE;
+            } else {
+                labelCategory = TopChatTrackingEventLabel.Category.PRODUCT_PAGE;
+            }
+        }
+
+        UnifyTracking.eventClickTemplate(labelCategory,
                 TopChatTrackingEventLabel.Action.TEMPLATE_CHAT_CLICK,
                 TopChatTrackingEventLabel.Name.INBOX_CHAT);
         String text =  replyColumn.getText().toString();
