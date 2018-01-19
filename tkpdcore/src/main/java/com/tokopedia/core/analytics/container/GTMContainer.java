@@ -592,6 +592,37 @@ public class GTMContainer implements IGTMContainer {
     }
 
     @Override
+    public void eventImpressionCategoryLifestyle(List<Object> list) {
+        clearEnhanceEcommerce();
+        GTMDataLayer.pushGeneral(
+                context, DataLayer.mapOf("event", "promoView",
+                        "eventCategory", "category page",
+                        "eventAction", "subcategory impression",
+                        "eventLabel", "",
+                        "ecommerce", DataLayer.mapOf(
+                                "promoView", DataLayer.mapOf(
+                                        "promotions", DataLayer.listOf(list.toArray(new Object[list.size()]))))
+                        )
+        );
+    }
+
+    @Override
+    public void eventClickCategoryLifestyle(String categoryUrl, List<Object> list) {
+        clearEnhanceEcommerce();
+        GTMDataLayer.pushGeneral(
+                context, DataLayer.mapOf("event", "promoClick",
+                        "eventCategory", "category page",
+                        "eventAction", "click subcategory",
+                        "eventLabel", categoryUrl,
+                        "ecommerce", DataLayer.mapOf(
+                                "promoClick", DataLayer.mapOf(
+                                        "promotions", DataLayer.listOf(list.toArray(new Object[list.size()])))),
+                        "destinationURL", categoryUrl
+                )
+        );
+    }
+
+    @Override
     public void enhanceClickSearchResultProduct(Map<String, Object> objects,
                                                 String keyword,
                                                 String actionField) {
