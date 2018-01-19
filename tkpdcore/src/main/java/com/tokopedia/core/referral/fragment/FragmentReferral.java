@@ -48,7 +48,7 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
     RelativeLayout referralCodeLayout;
 
     private ProgressDialog progressBar;
-    private static final int REFERRAL_PHONE_VERIFY_REQUEST_CODE = 1011;
+    public static final int REFERRAL_PHONE_VERIFY_REQUEST_CODE = 1011;
 
     public static FragmentReferral newInstance() {
         FragmentReferral fragmentReferral = new FragmentReferral();
@@ -123,6 +123,7 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
             });
         }else{
             referralCodeLayout.setVisibility(View.INVISIBLE);
+            //appShareButton.setText(getString(R.string.drawer_title_appshare));
         }
 
     }

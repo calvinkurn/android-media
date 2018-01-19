@@ -2129,7 +2129,7 @@ di Tokopedia Sekarang!</string>
     <string name="app_share_title">Tokopedia, Satu Aplikasi untuk Semua Kebutuhan</string>
     <string name="app_share_contents"><![CDATA[Mudahnya beli produk idaman, pulsa, token listrik, tiket liburan, hingga bayar berbagai tagihan, semua dimulai dari aplikasi Tokopedia. Kamu juga bisa mulai & kembangkan bisnis di sini. Yuk, download sekarang!]]></string>
     <string name="app_share_label">Share ke Temanmu, Yuk!</string>
-    <string name="app_share_label_desc"><![CDATA[Ayo share kode ini dan dapatkan voucher cashback TokoCash 25% hingga Rp20.000 saat mereka melakukan transaksi pertama di Tokopedia.]]></string>
+    <string name="app_share_referral_label_desc"><![CDATA[Ayo share kode ini dan dapatkan voucher cashback TokoCash 25% hingga Rp20.000 saat mereka melakukan transaksi pertama di Tokopedia.]]></string>
     <string name="app_share_btn_label">Undang Teman</string>
     <string name="tambah_produk">+ Tambah Produk</string>
     <string name="product_share_subtitle">Dimana saja dan kapan saja</string>
@@ -2143,8 +2143,6 @@ di Tokopedia Sekarang!</string>
     <string name="app_rating_message">Jika Kamu suka dengan aplikasi Tokopedia, silakan berikan dukungan Kamu dengan memberi rating 5 bintang dan ulasan di Google Play.</string>
 
     <string name="title_app_referral_howitworks">Info lebih lanjut</string>
-    <string name="label_landing_url">landing url</string>
-
     <string name="app_rating_title_2">Bagaimana penilaian Kamu terhadap aplikasi Tokopedia?</string>
     <string name="app_rating_message_2">Geser kanan atau kiri untuk memberikan rating</string>
     <string name="app_rating_button_send">Kirim</string>
@@ -2160,6 +2158,9 @@ di Tokopedia Sekarang!</string>
     <string name="title_hockeyapp_download">Nakama harus menggunakan aplikasi Tokopedia versi beta</string>
     <string name="title_download">Download</string>
     <string name="app_share_explore_btn_label">Mulai Belanja</string>
+    <string name="app_share_label_desc"><![CDATA[Sudah merasakan berbagai kemudahan dengan aplikasi Tokopedia? Ayo ajak orang-orang terdekatmu untuk ikut menikmati mudahnya beli, bayar ini itu lewat aplikasi Tokopedia]]></string>
+    <string name="drawer_title_referral_appshare">Dapatkan Tokocash</string>
+
 
 </resources>
 

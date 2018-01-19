@@ -65,19 +65,25 @@ public class ReferralFriendsWelcomePresenter implements IReferralFriendsWelcomeP
     @Override
     public String getReferralWelcomeMsg() {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(view.getActivity());
-        String msg = remoteConfig.getString(TkpdCache.RemoteConfigKey.APP_SHARE_WELCOME_MESSAGE);
+        String welcomeMessage = remoteConfig.getString(TkpdCache.RemoteConfigKey.APP_SHARE_WELCOME_MESSAGE);
         String username= SessionHandler.getLoginName(view.getActivity());
         username = username == null?"":username;
         try{
             owner = URLDecoder.decode(owner, "UTF-8");// here is double encoding characters that's why i am decoding it twice.
             owner = URLDecoder.decode(owner, "UTF-8");
 
-            msg = String.format(msg,username,owner);
+            //  welcomeMessage = String.format("%s , %s",username,owner); it throws Exception
+            welcomeMessage = welcomeMessage.replaceFirst("%s",username);
+            welcomeMessage = welcomeMessage.replaceFirst("%s",owner);
+
+
         }catch (UnsupportedEncodingException e){
+
+        }catch (Exception e){
 
         }
 
-        return msg;
+        return welcomeMessage;
 
     }
 
