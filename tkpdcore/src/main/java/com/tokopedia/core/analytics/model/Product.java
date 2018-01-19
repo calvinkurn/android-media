@@ -13,6 +13,10 @@ public class Product extends BaseAnalyticsModel {
 
     private String brand;
     private String variant;
+    private String quantity;
+    private String shopType;
+    private String shopName;
+    private String cartId;
     private String price;
     private String type;
     private String categoryName;
@@ -126,20 +130,52 @@ public class Product extends BaseAnalyticsModel {
         this.variant = variant;
     }
 
-    public int getPosition() {
-        return position;
+    public String getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(String quantity) {
+        this.quantity = quantity;
+    }
+
+    public String getShopType() {
+        return shopType;
+    }
+
+    public void setShopType(String shopType) {
+        this.shopType = shopType;
+    }
+
+    public String getShopName() {
+        return shopName;
+    }
+
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
+    }
+
+    public String getCartId() {
+        return cartId;
+    }
+
+    public void setCartId(String cartId) {
+        this.cartId = cartId;
     }
 
     public void setPosition(int position) {
         this.position = position;
     }
 
-    public String getList() {
-        return list;
+    public int getPosition() {
+        return position;
     }
 
     public void setList(String list) {
         this.list = list;
+    }
+
+    public String getList() {
+        return list;
     }
 
     public String getUserId() {
@@ -150,7 +186,7 @@ public class Product extends BaseAnalyticsModel {
         this.userId = userId;
     }
 
-    public Map<String, Object> getProductAsDataLayerForSearchResultItemClick() {
+    public Map<String, Object> getProductAsDataLayerForFeedRecomItemClick() {
         return DataLayer.mapOf(
                 "name", getName(),
                 "id", getId(),

@@ -1,6 +1,7 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment.product;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
@@ -16,13 +17,14 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.SearchTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.SessionHandler;
@@ -213,7 +215,7 @@ public class ProductListFragment extends SearchSectionFragment
             showBottomBarNavigation(false);
         } else {
             setProductList(initMappingProduct());
-            setHeaderTopAds(adapter.hasHeader());
+            setHeaderTopAds(true);
             showBottomBarNavigation(true);
         }
 
@@ -224,11 +226,6 @@ public class ProductListFragment extends SearchSectionFragment
         List<Visitable> list = new ArrayList<>();
         HeaderViewModel headerViewModel = new HeaderViewModel();
         headerViewModel.setSuggestionModel(productViewModel.getSuggestionModel());
-
-        if (productViewModel.getOfficialStoreBannerModel() != null
-                && !productViewModel.getOfficialStoreBannerModel().getBannerUrl().isEmpty()) {
-            headerViewModel.setOfficialStoreBannerModel(productViewModel.getOfficialStoreBannerModel());
-        }
 
         if (headerViewModel.hasHeader()) {
             list.add(headerViewModel);
@@ -498,6 +495,13 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
+    public void onBannerAdsClicked(String appLink) {
+        if (!TextUtils.isEmpty(appLink)) {
+            ((TkpdCoreRouter) getActivity().getApplication()).actionApplink(getActivity(), appLink);
+        }
+    }
+
+    @Override
     public void onEmptyButtonClicked() {
         showSearchInputView();
     }
@@ -535,7 +539,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void launchLoginActivity(Bundle extras) {
-        Intent intent = SessionRouter.getLoginActivityIntent(getContext());
+        Intent intent = OldSessionRouter.getLoginActivityIntent(getContext());
         intent.putExtras(extras);
         startActivityForResult(intent, REQUEST_CODE_LOGIN);
     }

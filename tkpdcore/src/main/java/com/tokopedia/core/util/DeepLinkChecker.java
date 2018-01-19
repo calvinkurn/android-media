@@ -123,6 +123,10 @@ public class DeepLinkChecker {
         return (linkSegment.get(0).equals("catalog"));
     }
 
+    private static boolean isContent(List<String> linkSegment) {
+        return (linkSegment.get(0).equals("content"));
+    }
+
     private static boolean isPromo(List<String> linkSegment) {
         return linkSegment.size() > 0 && (linkSegment.get(0).equals("promo"));
     }
@@ -170,6 +174,7 @@ public class DeepLinkChecker {
                 && !isHelp(linkSegment)
                 && !isBrowse(linkSegment)
                 && !isHot(linkSegment)
+                && !isContent(linkSegment)
                 && !isCatalog(linkSegment)
                 && !isTopPicks(linkSegment));
     }
@@ -182,7 +187,6 @@ public class DeepLinkChecker {
                 && !linkSegment.get(0).equals("reset.pl")
                 && !linkSegment.get(0).equals("activation.pl"));
     }
-
 
     private static boolean isSearch(String url) {
         return (getLinkSegment(url).get(0).equals("search"));
@@ -256,7 +260,6 @@ public class DeepLinkChecker {
                 BrowseProductRouter.getHotlistIntent(context, url)
         );
     }
-
 
     public static void openCatalog(String url, Context context) {
         context.startActivity(DetailProductRouter.getCatalogDetailActivity(context, getLinkSegment(url).get(1)));

@@ -5,13 +5,11 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
+import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.data.model.request.GetSuggestionBody;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.domain.TopAdsGroupAdsRepository;
-import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailGroupDomainModel;
-import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 
 import javax.inject.Inject;
 

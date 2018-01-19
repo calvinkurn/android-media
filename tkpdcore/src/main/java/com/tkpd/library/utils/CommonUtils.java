@@ -1,6 +1,7 @@
 package com.tkpd.library.utils;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -30,6 +31,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.response.ResponseStatus;
@@ -51,8 +54,6 @@ import java.util.List;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import info.vividcode.android.zxing.CaptureActivity;
 
 public class CommonUtils {
 
@@ -341,16 +342,20 @@ public class CommonUtils {
         return sdf.format(currenTimeZone);
     }
 
-    public static Intent requestBarcodeScanner(Context context){
-		return new Intent(context, CaptureActivity.class);
-	}
+    public static void requestBarcodeScanner(Fragment fragment, Class customClass) {
+        IntentIntegrator.forFragment(fragment).setCaptureActivity(customClass).initiateScan();
+    }
 
-    public static String getBarcode(Intent data) {
-        try {
-            return data.getStringExtra("SCAN_RESULT");
-        } catch (Exception e) {
-            return "";
+    public static void requestBarcodeScanner(android.support.v4.app.Fragment fragment, Class customClass) {
+        IntentIntegrator.forSupportFragment(fragment).setCaptureActivity(customClass).initiateScan();
+    }
+
+    public static String getBarcode(int requestCode, int resultCode, Intent data) {
+        IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (scanResult != null && scanResult.getContents() != null) {
+            return scanResult.getContents();
         }
+        return "";
     }
 
     public static String replaceCreditCardNumber(String text) {

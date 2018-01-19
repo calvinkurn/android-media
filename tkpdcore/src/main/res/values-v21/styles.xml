@@ -105,4 +105,11 @@
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
+    <style name="Medium.RatingBar" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressTint">@color/yellow_600</item>
+        <item name="android:progressBackgroundTint">@color/grey_400</item>
+        <item name="android:secondaryProgressTint">@color/grey_400</item>
+        <item name="android:padding">0dp</item>
+    </style>
+
 </resources>
