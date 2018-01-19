@@ -127,12 +127,14 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
     @Override
     public int type(EmptyTopAdsModel emptyModel) {
         return 0;
+        //TODO milhamj
 //        return EmptyTopAdsViewHolder.LAYOUT;
     }
 
     @Override
     public int type(EmptyTopAdsProductModel emptyModel) {
         return 0;
+        //TODO milhamj
 //        return EmptyTopAdsProductViewHolder.LAYOUT;
     }
 
@@ -202,6 +204,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
             viewHolder = new PromotedProductViewHolder(view, viewListener);
         else if (type == RecentViewViewHolder.LAYOUT)
             viewHolder = new RecentViewViewHolder(view, viewListener);
+        //TODO milhamj
 //        else if (type == EmptyTopAdsViewHolder.LAYOUT)
 //            viewHolder = new EmptyTopAdsViewHolder(view, topAdsItemClickListener);
 //        else if (type == EmptyTopAdsProductViewHolder.LAYOUT)
