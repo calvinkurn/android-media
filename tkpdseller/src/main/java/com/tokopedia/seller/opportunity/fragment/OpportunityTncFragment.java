@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -36,6 +37,7 @@ import com.tokopedia.seller.opportunity.di.component.DaggerOpportunityComponent;
 import javax.inject.Inject;
 
 public class OpportunityTncFragment extends BaseWebViewFragment implements OpportunityView {
+    public static final String ACCEPTED_OPPORTUNITY = "ACCEPTED_OPPORTUNITY";
     private OpportunityItemViewModel opportunityItemViewModel;
 
     private OnOpportunityFragmentListener listener;
@@ -148,7 +150,9 @@ public class OpportunityTncFragment extends BaseWebViewFragment implements Oppor
     public void onSuccessTakeOpportunity(ActionViewData actionViewData) {
         finishLoadingProgress();
         CommonUtils.UniversalToast(getActivity(), actionViewData.getMessage());
-        getActivity().setResult(Activity.RESULT_OK);
+        Intent intent = new Intent();
+        intent.putExtra(ACCEPTED_OPPORTUNITY, true);
+        getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }
 
