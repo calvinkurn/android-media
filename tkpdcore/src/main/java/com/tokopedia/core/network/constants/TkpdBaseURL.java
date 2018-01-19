@@ -966,16 +966,16 @@ public class TkpdBaseURL {
                 + REPUTATION_VERSION + "/likedislike";
         public static final String PATH_LIKE_DISLIKE_REVIEW = "review/api/"
                 + REPUTATION_VERSION + "/likedislike";
-        public static final String PATH_GET_REVIEW_PRODUCT_LIST = "review/api/"
-                + REPUTATION_VERSION + "product";
-        public static final String PATH_GET_REVIEW_SHOP_LIST = "review/api/"
-                + REPUTATION_VERSION + "shop";
-        public static final String PATH_GET_REVIEW_HELPFUL_LIST = "review/api/"
-                + REPUTATION_VERSION + "mosthelpful";
-        public static final String PATH_GET_REVIEW_PRODUCT_RATING = "review/api/"
-                + REPUTATION_VERSION + "rating";
-        public static final String PATH_GET_REVIEW_PRODUCT_COUNT = "review/api/"
-                + REPUTATION_VERSION + "total/p/";
+        public static final String PATH_GET_REVIEW_PRODUCT_LIST = "reputationapp/review/api/"
+                + REPUTATION_VERSION + "/product";
+        public static final String PATH_GET_REVIEW_SHOP_LIST = "reputationapp/review/api/"
+                + REPUTATION_VERSION + "/shop";
+        public static final String PATH_GET_REVIEW_HELPFUL_LIST = "reputationapp/review/api/"
+                + REPUTATION_VERSION + "/mosthelpful";
+        public static final String PATH_GET_REVIEW_PRODUCT_RATING = "reputationapp/review/api/"
+                + REPUTATION_VERSION + "/rating";
+        public static final String PATH_GET_REVIEW_PRODUCT_COUNT = "reputationapp/review/api/"
+                + REPUTATION_VERSION + "/total/p/";
     }
 
     public class TkpdCart {

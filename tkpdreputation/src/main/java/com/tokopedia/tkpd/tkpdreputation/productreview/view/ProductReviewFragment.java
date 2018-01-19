@@ -185,7 +185,7 @@ public class ProductReviewFragment extends BaseListFragment<ProductReviewModel, 
     @Override
     public void onGetListReviewProduct(List<ProductReviewModel> map, boolean isHasNextPage) {
         if (getCurrentPage() == 0) {
-            map.add(new ProductReviewModelTitleHeader(getString(R.string.product_review_label_helpful_review)));
+            map.add(0, new ProductReviewModelTitleHeader(getString(R.string.product_review_label_all_review)));
         }
         renderList(map, isHasNextPage);
     }
@@ -197,9 +197,11 @@ public class ProductReviewFragment extends BaseListFragment<ProductReviewModel, 
 
     @Override
     public void onGetListReviewHelpful(List<ProductReviewModel> map) {
-        map.add(new ProductReviewModelTitleHeader(getString(R.string.product_review_label_all_review)));
-        for (int i = 0; i < map.size(); i++) {
-            getAdapter().addElement(i, map.get(i));
+        if(map.size() >0) {
+            map.add(new ProductReviewModelTitleHeader(getString(R.string.product_review_label_helpful_review)));
+            for (int i = 0; i < map.size(); i++) {
+                getAdapter().addElement(i, map.get(i));
+            }
         }
     }
 
@@ -211,10 +213,10 @@ public class ProductReviewFragment extends BaseListFragment<ProductReviewModel, 
     @Override
     public void onGetRatingReview(DataResponseReviewStarCount dataResponseReviewStarCount) {
         ratingProduct.setText(dataResponseReviewStarCount.getRatingScore());
-        ratingProductStar.setRating(Integer.parseInt(dataResponseReviewStarCount.getRatingScore()));
-        counterReview.setText(String.valueOf(dataResponseReviewStarCount.getTotalReview()));
+        ratingProductStar.setRating(Float.parseFloat(dataResponseReviewStarCount.getRatingScore()));
+        counterReview.setText(getString(R.string.product_review_counter_review_formatted, dataResponseReviewStarCount.getTotalReview()));
         for (DetailReviewStarCount detailReviewStarCount : dataResponseReviewStarCount.getDetail()) {
-            Float percentageFloatReview = Float.valueOf(detailReviewStarCount.getPercentage().replace("%", "")) / 100f;
+            Float percentageFloatReview = Float.parseFloat(detailReviewStarCount.getPercentage().replace("%", ""));
             switch (detailReviewStarCount.getRate()) {
                 case 5:
                     fiveStarReview.setPercentageProgress(percentageFloatReview);
@@ -263,5 +265,10 @@ public class ProductReviewFragment extends BaseListFragment<ProductReviewModel, 
     @Override
     public void onErrorDeleteReview(Throwable e) {
 
+    }
+
+    @Override
+    public void onLikeDislikePressed(String reviewId, int likeStatus, String productId) {
+        productReviewPresenter.postLikeDislikeReview(reviewId, likeStatus, productId);
     }
 }

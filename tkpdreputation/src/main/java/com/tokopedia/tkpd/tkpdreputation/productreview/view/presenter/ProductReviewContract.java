@@ -54,5 +54,7 @@ public interface ProductReviewContract {
         void onSuccessDeleteReview(DeleteReviewResponseDomain deleteReviewResponseDomain);
 
         void onErrorDeleteReview(Throwable e);
+
+        void onLikeDislikePressed(String reviewId, int likeStatus, String productId);
     }
 }

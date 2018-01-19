@@ -120,15 +120,27 @@ public class ProductReviewContentViewHolder extends AbstractViewHolder<ProductRe
             replyArrow.setVisibility(View.GONE);
         }
 
+        iconLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                viewListener.onLikeDislikePressed(element.getReviewId(), element.isLikeStatus()? 0 : 1,  element.getProductId());
+                element.setLikeStatus(!element.isLikeStatus());
+                setLikeStatus(element);
+            }
+        });
+        setLikeStatus(element);
+
+        adapter.addList(convertToAdapterViewModel(element.getReviewAttachment()));
+        adapter.notifyDataSetChanged();
+    }
+
+    void setLikeStatus(ProductReviewModelContent element) {
         if(element.isLikeStatus()){
             iconLike.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_like_pressed));
         }else{
             iconLike.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_like_normal));
         }
         counterLike.setText(String.valueOf(element.getTotalLike()));
-
-        adapter.addList(convertToAdapterViewModel(element.getReviewAttachment()));
-        adapter.notifyDataSetChanged();
     }
 
     private ArrayList<ImageUpload> convertToAdapterViewModel(List<ImageAttachmentViewModel> reviewAttachment) {

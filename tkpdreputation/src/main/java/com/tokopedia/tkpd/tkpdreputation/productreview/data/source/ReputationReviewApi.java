@@ -14,6 +14,7 @@ import retrofit2.Response;
 import retrofit2.http.FieldMap;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
+import retrofit2.http.QueryMap;
 import rx.Observable;
 
 /**
@@ -23,14 +24,14 @@ import rx.Observable;
 public interface ReputationReviewApi {
 
     @GET(TkpdBaseURL.Reputation.PATH_GET_REVIEW_PRODUCT_LIST)
-    Observable<Response<DataResponse<DataResponseReviewProduct>>> getReviewProductList(@FieldMap Map<String, String> params);
+    Observable<Response<DataResponse<DataResponseReviewProduct>>> getReviewProductList(@QueryMap Map<String, String> params);
 
     @GET(TkpdBaseURL.Reputation.PATH_GET_REVIEW_SHOP_LIST)
-    Observable<Response<DataResponse<DataResponseReviewShop>>> getReviewShopList(@FieldMap Map<String, String> params);
+    Observable<Response<DataResponse<DataResponseReviewShop>>> getReviewShopList(@QueryMap Map<String, String> params);
 
     @GET(TkpdBaseURL.Reputation.PATH_GET_REVIEW_HELPFUL_LIST)
-    Observable<Response<DataResponse<DataResponseReviewHelpful>>> getReviewHelpfulList(@FieldMap Map<String, String> params);
+    Observable<Response<DataResponse<DataResponseReviewHelpful>>> getReviewHelpfulList(@QueryMap Map<String, String> params);
 
     @GET(TkpdBaseURL.Reputation.PATH_GET_REVIEW_PRODUCT_RATING)
-    Observable<Response<DataResponse<DataResponseReviewStarCount>>> getReviewStarCount(@FieldMap Map<String, String> params);
+    Observable<Response<DataResponse<DataResponseReviewStarCount>>> getReviewStarCount(@QueryMap Map<String, String> params);
 }

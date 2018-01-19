@@ -176,22 +176,6 @@ public class ProductReviewModelContent implements ProductReviewModel, Parcelable
         this.productId = productId;
     }
 
-    public void setLikeStatus(boolean likeStatus) {
-        this.likeStatus = likeStatus;
-    }
-
-    public boolean isLikeStatus() {
-        return likeStatus;
-    }
-
-    public void setTotalLike(int totalLike) {
-        this.totalLike = totalLike;
-    }
-
-    public int getTotalLike() {
-        return totalLike;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -216,8 +200,6 @@ public class ProductReviewModelContent implements ProductReviewModel, Parcelable
         dest.writeByte(this.reviewCanReported ? (byte) 1 : (byte) 0);
         dest.writeString(this.reputationId);
         dest.writeString(this.productId);
-        dest.writeByte(this.likeStatus ? (byte) 1 : (byte) 0);
-        dest.writeInt(this.totalLike);
     }
 
     protected ProductReviewModelContent(Parcel in) {
@@ -238,8 +220,6 @@ public class ProductReviewModelContent implements ProductReviewModel, Parcelable
         this.reviewCanReported = in.readByte() != 0;
         this.reputationId = in.readString();
         this.productId = in.readString();
-        this.likeStatus = in.readByte() != 0;
-        this.totalLike = in.readInt();
     }
 
     public static final Creator<ProductReviewModelContent> CREATOR = new Creator<ProductReviewModelContent>() {
@@ -253,4 +233,20 @@ public class ProductReviewModelContent implements ProductReviewModel, Parcelable
             return new ProductReviewModelContent[size];
         }
     };
+
+    public void setLikeStatus(boolean likeStatus) {
+        this.likeStatus = likeStatus;
+    }
+
+    public boolean isLikeStatus() {
+        return likeStatus;
+    }
+
+    public void setTotalLike(int totalLike) {
+        this.totalLike = totalLike;
+    }
+
+    public int getTotalLike() {
+        return totalLike;
+    }
 }
