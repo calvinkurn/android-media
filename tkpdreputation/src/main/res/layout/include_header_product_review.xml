@@ -2,9 +2,11 @@
 <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:gravity="center"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/white"
     tools:showIn="@layout/fragment_product_review">
 
     <LinearLayout
@@ -22,7 +24,7 @@
 
             <TextView
                 android:id="@+id/rating_value"
-                style="@style/TextView.SubHeadline"
+                style="@style/TextView.SubHeadline.Bold"
                 android:layout_marginRight="@dimen/margin_vs"
                 tools:text="4.0" />
 
@@ -59,30 +61,35 @@
             android:id="@+id/five_star"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:rating="5"
             app:numstars="5" />
 
         <com.tokopedia.tkpd.tkpdreputation.productreview.view.widget.RatingBarReview
             android:id="@+id/four_star"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:numstars="4" />
+            app:rating="4"
+            app:numstars="5" />
 
         <com.tokopedia.tkpd.tkpdreputation.productreview.view.widget.RatingBarReview
             android:id="@+id/three_star"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:numstars="3" />
+            app:rating="3"
+            app:numstars="5" />
 
         <com.tokopedia.tkpd.tkpdreputation.productreview.view.widget.RatingBarReview
             android:id="@+id/two_star"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:numstars="2" />
+            app:rating="2"
+            app:numstars="5" />
 
         <com.tokopedia.tkpd.tkpdreputation.productreview.view.widget.RatingBarReview
             android:id="@+id/one_star"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:numstars="1" />
+            app:rating="1"
+            app:numstars="5" />
     </LinearLayout>
 </LinearLayout>

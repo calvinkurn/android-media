@@ -11,7 +11,7 @@ import com.tokopedia.tkpd.tkpdreputation.R;
  */
 
 public class ProductReviewTitleHeaderViewHolder extends AbstractViewHolder<ProductReviewModelTitleHeader> {
-    public static final int LAYOUT = R.layout.fragment_product_review;
+    public static final int LAYOUT = R.layout.item_product_review_header;
 
     private TextView title;
 

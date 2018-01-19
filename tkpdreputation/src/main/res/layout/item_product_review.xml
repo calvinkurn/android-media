@@ -11,9 +11,7 @@
         android:id="@+id/review_layout"
         layout="@layout/review_layout_product"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        tools:visibility="visible"/>
+        android:layout_height="wrap_content"/>
 
     <include
         layout="@layout/seller_reply_layout_product"/>
