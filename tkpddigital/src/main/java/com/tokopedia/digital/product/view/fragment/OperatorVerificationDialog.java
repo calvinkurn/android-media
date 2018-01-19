@@ -50,6 +50,7 @@ public class OperatorVerificationDialog extends DialogFragment {
     private List<Operator> selectedOperatorList;
     private boolean isEdit;
     private int selectedSimIndex = 0;
+
     public static final String ARG_PARAM_EXTRA_RESULT_MOBILE_NUMBER_KEY =
             "ARG_PARAM_EXTRA_RESULT_MOBILE_NUMBER_KEY";
     public static final String EXTRA_CALLBACK_OPERATOR_DATA =
