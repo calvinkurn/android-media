@@ -1,13 +1,9 @@
 package com.tokopedia.tkpd.thankyou.data.mapper;
 
-import com.google.android.gms.tagmanager.DataLayer;
-import com.google.gson.Gson;
 import com.tokopedia.core.analytics.PurchaseTracking;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.selling.model.orderShipping.Order;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.GraphqlResponse;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.PaymentGraphql;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.OrderData;
@@ -15,11 +11,9 @@ import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.OrderDetail;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.PaymentData;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.payment.PaymentMethod;
 import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
-import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import retrofit2.Response;
 import rx.functions.Func1;
@@ -81,13 +75,14 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         purchase.setShopId(getShopId(orderData));
         purchase.setPaymentId(String.valueOf(paymentData.getPaymentId()));
         purchase.setPaymentType(getPaymentType(paymentData.getPaymentMethod()));
-        purchase.setTransactionID(orderData.getOrderId());
+        purchase.setTransactionID(String.valueOf(orderData.getOrderId()));
         purchase.setLogisticType(getLogisticType(orderData));
         purchase.setUserId(sessionHandler.getLoginID());
-        purchase.setShipping(orderData.getShippingPrice());
-        purchase.setRevenue(paymentData.getPaymentAmount());
+        purchase.setShipping(String.valueOf(orderData.getShippingPrice()));
+        purchase.setRevenue(String.valueOf(paymentData.getPaymentAmount()));
+        purchase.setCurrency("IDR");
 
-        for(Product product : getProductList(orderData)){
+        for (Product product : getProductList(orderData)) {
             purchase.addProduct(product.getProduct());
         }
 
@@ -102,7 +97,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
     }
 
     private String getShopId(OrderData orderData) {
-        if(orderData.getShop() != null) {
+        if (orderData.getShop() != null) {
             return String.valueOf(orderData.getShop().getShopId());
         }
 
@@ -142,21 +137,6 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         return "";
     }
 
-//    private Map<String, Object> getEcommerceData(OrderData orderData) {
-//        return DataLayer.mapOf(
-//                CURRENCY_CODE, "IDR",
-//                PURCHASE, getPurchaseData(orderData)
-//        );
-//    }
-
-//    private Map<String, Object> getPurchaseData(OrderData orderData) {
-//        List<Object> products = getProductList(orderData);
-//        return DataLayer.mapOf(
-//                ACTION_FIELD, getActionField(orderData),
-//                PRODUCTS, DataLayer.listOf(products.toArray(new Object[products.size()]))
-//        );
-//    }
-
     private List<Product> getProductList(OrderData orderData) {
         List<Product> products = new ArrayList<>();
         for (OrderDetail orderDetail : orderData.getOrderDetail()) {
@@ -173,7 +153,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
     }
 
     private String getProductName(OrderDetail orderDetail) {
-        if(orderDetail.getProduct() != null) {
+        if (orderDetail.getProduct() != null) {
             return orderDetail.getProduct().getProductName();
         }
 
@@ -181,26 +161,16 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
     }
 
     private String getProductCategory(OrderDetail orderDetail) {
-        if(orderDetail.getProduct() != null
+        if (orderDetail.getProduct() != null
                 && orderDetail.getProduct().getProductCategory() != null) {
             return orderDetail.getProduct().getProductCategory().getCategoryName();
         }
 
         return "";
     }
-//
-//    private Map<String, Object> getActionField(OrderData orderData) {
-//        return DataLayer.mapOf(
-//                ID, orderData.getOrderId(),
-//                AFFILIATION, getShopName(orderData),
-//                REVENUE, paymentData.getPaymentAmount(),
-//                SHIPPING, orderData.getShippingPrice(),
-//                COUPON, paymentData.getCoupon()
-//        );
-//    }
 
     private String getShopName(OrderData orderData) {
-        if(orderData.getShop() != null) {
+        if (orderData.getShop() != null) {
             return orderData.getShop().getShopName();
         }
 
