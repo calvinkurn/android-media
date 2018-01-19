@@ -392,7 +392,7 @@ public abstract class SellerRouterApplication extends MainApplication
         Intent intent = new Intent(context, WelcomeActivity.class);
         if (SessionHandler.isV4Login(context)) {
             if (SessionHandler.isUserHasShop(context)) {
-                return DashboardActivity.createInstance((Activity) context);
+                return DashboardActivity.createInstance(context);
             } else {
                 return intent;
             }
