@@ -359,7 +359,7 @@ public class PromoListFragment extends BasePresenterFragment implements IPromoLi
         if (getActivity().getApplication() instanceof TkpdCoreRouter) {
             TkpdCoreRouter tkpdCoreRouter = (TkpdCoreRouter) getActivity().getApplication();
             if (!TextUtils.isEmpty(appLink) && tkpdCoreRouter.isSupportedDelegateDeepLink(appLink))
-                tkpdCoreRouter.actionAppLink(getActivity(), appLink);
+                tkpdCoreRouter.actionApplinkFromActivity(getActivity(), appLink);
             else tkpdCoreRouter.actionOpenGeneralWebView(getActivity(), redirectUrl);
         }
         dPresenter.sendClickItemPromoListTrackingData(promoData, position, promoMenuData.getTitle());
