@@ -166,12 +166,13 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
         MitraToppersBaseURL.WEB_DOMAIN = SellerAppBaseUrl.BASE_WEB_DOMAIN;
         MitraToppersBaseURL.PATH_MITRA_TOPPERS = SellerAppBaseUrl.PATH_MITRA_TOPPERS;
-        MitraToppersClientKey.CLIENT_KEY_1 = SellerAppNetworkKeys.MITRA_TOPPERS_CLIENT_KEY;
     }
 
     private void generateSellerAppNetworkKeys() {
         AuthUtil.KEY.KEY_CREDIT_CARD_VAULT = SellerAppNetworkKeys.CREDIT_CARD_VAULT_AUTH_KEY;
         AuthUtil.KEY.ZEUS_WHITELIST = SellerAppNetworkKeys.ZEUS_WHITELIST;
+
+        MitraToppersClientKey.CLIENT_KEY_1 = SellerAppNetworkKeys.MITRA_TOPPERS_CLIENT_KEY;
     }
 
     public void initializeDatabase() {

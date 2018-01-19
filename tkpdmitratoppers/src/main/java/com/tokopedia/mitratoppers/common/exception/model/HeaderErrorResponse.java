@@ -5,6 +5,8 @@ import com.google.gson.annotations.SerializedName;
 import com.tokopedia.abstraction.common.data.model.response.BaseResponseError;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 
+import java.io.IOException;
+
 /**
  * Created by zulfikarrahman on 12/29/17.
  */
@@ -26,7 +28,7 @@ public class HeaderErrorResponse extends BaseResponseError {
     }
 
     @Override
-    public RuntimeException createException() {
+    public IOException createException() {
         return new MessageErrorException(header.getMessages().get(0));
     }
 }

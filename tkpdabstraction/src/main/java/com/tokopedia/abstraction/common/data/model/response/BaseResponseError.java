@@ -1,5 +1,7 @@
 package com.tokopedia.abstraction.common.data.model.response;
 
+import java.io.IOException;
+
 /**
  * Created by User on 9/15/2017.
  */
@@ -28,6 +30,6 @@ public abstract class BaseResponseError {
     /**
      * @return the exception from this Error
      */
-    public abstract RuntimeException createException();
+    public abstract IOException createException();
 
 }

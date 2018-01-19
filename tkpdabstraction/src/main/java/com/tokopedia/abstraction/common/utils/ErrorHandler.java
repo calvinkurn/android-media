@@ -11,10 +11,6 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
-/**
- * Created by User on 11/28/2017.
- */
-
 public class ErrorHandler {
 
     public static String getErrorMessage(final Context context, Throwable e) {
@@ -22,8 +18,6 @@ public class ErrorHandler {
             return context.getString(R.string.msg_no_connection);
         } else if (e instanceof SocketTimeoutException) {
             return context.getString(R.string.default_request_error_timeout);
-        } else if (e instanceof IOException) {
-            return context.getString(R.string.default_request_error_internal_server);
         } else if (e instanceof RuntimeException &&
                 e.getLocalizedMessage() != null &&
                 !e.getLocalizedMessage().equals("") &&
@@ -47,6 +41,8 @@ public class ErrorHandler {
         } else if (e instanceof MessageErrorException &&
                 !TextUtils.isEmpty(e.getMessage())) {
             return e.getMessage();
+        } else if (e instanceof IOException) {
+            return context.getString(R.string.default_request_error_internal_server);
         } else {
             return context.getString(R.string.default_request_error_unknown);
         }
