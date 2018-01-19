@@ -77,9 +77,9 @@ public class TopAdsCreatePromoNewGroupActivity extends BaseStepperActivity<TopAd
 
 
     private void setResultAdSaved() {
-        Intent intent = new Intent();
-        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
-        setResult(Activity.RESULT_OK, intent);
+//        Intent intent = new Intent();
+//        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
+//        setResult(Activity.RESULT_OK, intent);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.tokopedia.topads.dashboard.view.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -36,6 +37,7 @@ public class TopAdsDetailProductActivity extends BaseSimpleActivity implements T
     public static final String TAG = TopAdsDetailProductFragment.class.getSimpleName();
 
     private ShowCaseDialog showCaseDialog;
+    private boolean isAdChanged;
 
     @DeepLink(Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL)
     public static Intent getCallingApplinkIntent(Context context, Bundle extras) {
@@ -79,6 +81,7 @@ public class TopAdsDetailProductActivity extends BaseSimpleActivity implements T
             if (getIntent() != null && getIntent().getExtras() != null) {
                 ad = getIntent().getExtras().getParcelable(TopAdsExtraConstant.EXTRA_AD);
                 adId = getIntent().getStringExtra(TopAdsExtraConstant.EXTRA_AD_ID);
+                isAdChanged = getIntent().getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
             }
             fragment = TopAdsDetailProductFragment.createInstance(ad, adId);
             return fragment;
@@ -109,6 +112,7 @@ public class TopAdsDetailProductActivity extends BaseSimpleActivity implements T
 
     @Override
     public void onBackPressed() {
+
         if (isTaskRoot()) {
             //coming from deeplink
             String deepLink = getIntent().getStringExtra(DeepLink.URI);
@@ -121,6 +125,11 @@ public class TopAdsDetailProductActivity extends BaseSimpleActivity implements T
             }
         } else {
             super.onBackPressed();
+
+            Intent intent = new Intent();
+            intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, isAdChanged);
+            setResult(Activity.RESULT_OK, intent);
+            finish();
         }
     }
 
