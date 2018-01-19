@@ -61,6 +61,7 @@ public class ChangePhoneNumberEmailVerificationFragment extends BaseDaggerFragme
     TextView countdownText;
     TextView verifyButton;
     TextView errorOtp;
+    TextView limitOtpText;
     View limitOtp;
     View finishCountdownView;
     CountDownTimer countDownTimer;
@@ -127,6 +128,7 @@ public class ChangePhoneNumberEmailVerificationFragment extends BaseDaggerFragme
         limitOtp = view.findViewById(R.id.limit_otp);
         errorOtp = view.findViewById(R.id.error_otp);
         finishCountdownView = view.findViewById(R.id.finish_countdown);
+        limitOtpText = view.findViewById(R.id.limit_otp_text);
     }
 
     private void setViewListener() {
@@ -253,7 +255,8 @@ public class ChangePhoneNumberEmailVerificationFragment extends BaseDaggerFragme
 
     @Override
     public void onSendEmailError(String message) {
-        if (message.contains(getString(R.string.limit_otp_reached))) {
+        if (message.contains(getString(R.string.limit_otp_email_reached))) {
+            limitOtpText.setText(message);
             limitOtp.setVisibility(View.VISIBLE);
             setLimitReachedCountdownText();
         } else {

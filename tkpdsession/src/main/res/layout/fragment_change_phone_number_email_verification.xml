@@ -22,6 +22,7 @@
             android:background="#f05f68" />
 
         <TextView
+            android:id="@+id/limit_otp_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
