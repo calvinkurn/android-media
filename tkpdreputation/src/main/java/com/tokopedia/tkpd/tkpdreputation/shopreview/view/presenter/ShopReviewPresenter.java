@@ -12,6 +12,8 @@ import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewlist.Dat
 import com.tokopedia.tkpd.tkpdreputation.productreview.view.ProductReviewListMapper;
 import com.tokopedia.tkpd.tkpdreputation.shopreview.domain.ShopReviewUseCase;
 
+import javax.inject.Inject;
+
 import rx.Subscriber;
 
 /**
@@ -26,6 +28,7 @@ public class ShopReviewPresenter extends BaseDaggerPresenter<ShopReviewContract.
     private final ProductReviewListMapper productReviewListMapper;
     private final SessionHandler sessionHandler;
 
+    @Inject
     public ShopReviewPresenter(ShopReviewUseCase shopReviewUseCase,
                                LikeDislikeReviewUseCase likeDislikeReviewUseCase,
                                DeleteReviewResponseUseCase deleteReviewResponseUseCase,
