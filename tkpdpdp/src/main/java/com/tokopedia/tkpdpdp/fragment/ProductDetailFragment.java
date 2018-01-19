@@ -16,6 +16,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.util.Linkify;
@@ -155,6 +156,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private LastUpdateView lastUpdateView;
     private LatestTalkView latestTalkView;
     private ProgressBar progressBar;
+    private NestedScrollView nestedScrollView;
 
     Toolbar toolbar;
     AppBarLayout appBarLayout;
@@ -247,6 +249,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         lastUpdateView = (LastUpdateView) view.findViewById(R.id.view_last_update);
         latestTalkView = (LatestTalkView) view.findViewById(R.id.view_latest_discussion);
         progressBar = (ProgressBar) view.findViewById(R.id.view_progress);
+        nestedScrollView = view.findViewById(R.id.nested_scroll_pdp);
 
         toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         appBarLayout = (AppBarLayout) view.findViewById(R.id.appbar);
