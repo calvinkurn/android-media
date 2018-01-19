@@ -652,6 +652,10 @@ public class ProductDetailViewHolder extends ProductViewHolder
 
     public void setOfficialStore(boolean officialStore) {
         this.officialStore = officialStore;
+    }
+
+    public void setOfficialStoreFromDraft(boolean officialStore) {
+        setOfficialStore(officialStore);
         setPriceValue(priceSpinnerCounterInputView.getCounterValue());
     }
 
