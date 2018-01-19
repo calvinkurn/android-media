@@ -49,6 +49,8 @@ public class RejectOrderEmptyProductsAdapter extends RecyclerView.Adapter<Reject
                 holder.productImage,
                 emptyProductEditables.get(position).getProductImage()
         );
+        holder.stockEmptyCheckBox.setOnCheckedChangeListener(null);
+        holder.stockEmptyCheckBox.setSelected(emptyProductEditables.get(position).isSelected());
         holder.stockEmptyCheckBox.setOnCheckedChangeListener(
                 onCheckBoxClickedListener(holder.emptyStockCard, emptyProductEditables.get(position))
         );

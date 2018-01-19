@@ -145,6 +145,7 @@
     <string name="button_order_detail_change_courier">Ganti Kurir</string>
     <string name="button_order_detail_request_pickup">Request Pickup</string>
     <string name="button_order_detail_confirm">Konfirmasi</string>
+    <string name="button_order_detail_confirm_request_pickup">Konfirmasi Request Pickup</string>
     <string name="button_order_detail_finish">Selesai</string>
     <string name="button_order_detail_change_awb">Ganti Resi</string>
     <string name="button_order_detail_view_complaint">Lihat Komplain</string>
@@ -184,9 +185,9 @@
     <string name="title_confirm_courier_page">Anda dapat mengganti pengiriman menjadi kurir reguler</string>
     <string name="subtitle_confirm_courier_page">Dengan persetujuan dari Pembeli</string>
 
-    <string name="request_pickup_step_1">Pastikan pesanan sudah siap untuk di-pick up</string>
+    <string name="request_pickup_step_1">Pastikan pesanan sudah siap untuk di pick up</string>
     <string name="request_pickup_step_2"><![CDATA[Mohon untuk <b>tidak</b> memberikan ongkos kirim pada driver]]></string>
-    <string name="request_pickup_step_3">Perkiraan driver akan datang untuk mengambil barang:\n - Same day maksimal 4 jam \n- Instan maksimal 2 jam</string>
+    <string name="request_pickup_step_3">Perkiraan driver akan datang untuk mengambil barang:\n - Same day maksimal 4 jam \n - Instan maksimal 2 jam</string>
     <string name="request_pickup_info"><![CDATA[Pelajari informasi lebih lengkap mengenai kurir yang menggunakan layanan pickup <font color = \'#42b549\'>disini</font>]]></string>
 
     <!-- TODO: Remove or change this placeholder text -->

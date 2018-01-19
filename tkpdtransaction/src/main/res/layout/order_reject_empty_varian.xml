@@ -7,10 +7,22 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <LinearLayout
+    <Button
+        android:id="@+id/reject_order_confirm_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/green_button_rounded_unify"
+        android:gravity="center"
+        android:text="@string/title_save"
+        android:textAllCaps="false"
+        android:textColor="@color/white" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_above="@id/reject_order_confirm_button">
 
         <LinearLayout
             android:id="@+id/product_layout"
@@ -68,18 +80,6 @@
             android:layout_height="wrap_content" />
 
     </LinearLayout>
-
-
-    <Button
-        android:id="@+id/reject_order_confirm_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/green_button_rounded_unify"
-        android:gravity="center"
-        android:text="@string/title_save"
-        android:textAllCaps="false"
-        android:textColor="@color/white" />
 
 
 </RelativeLayout>
