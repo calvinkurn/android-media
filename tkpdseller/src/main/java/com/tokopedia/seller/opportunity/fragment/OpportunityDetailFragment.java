@@ -349,8 +349,15 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
-                case REQUEST_OPEN_SNAPSHOT:
                 case REQUEST_OPEN_TNC:
+                    Intent intent = new Intent();
+                    intent.putExtra(OpportunityTncFragment.ACCEPTED_OPPORTUNITY, true);
+                    getActivity().setResult(Activity.RESULT_OK, intent);
+                    getActivity().finish();
+                    break;
+                case REQUEST_OPEN_SNAPSHOT:
+                default:
+                    getActivity().setResult(Activity.RESULT_OK);
                     getActivity().finish();
                     break;
             }
