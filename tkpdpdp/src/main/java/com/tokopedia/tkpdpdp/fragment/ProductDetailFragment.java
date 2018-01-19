@@ -506,8 +506,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         this.newShopView.renderData(successResult);
         this.videoDescriptionLayout.renderData(successResult);
         this.priceSimulationView.renderData(successResult);
-        this.mostHelpfulReviewView.renderData(successResult);
-        this.latestTalkView.renderData(successResult);
         this.interactionListener.onProductDetailLoaded(successResult);
         this.presenter.sendAnalytics(successResult);
         this.presenter.sendAppsFlyerData(context, successResult, AFInAppEventType.CONTENT_VIEW);
@@ -1178,7 +1176,6 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     public void showLatestTalkView(LatestTalkViewModel latestTalkViewModel) {
         this.productData.setLatestTalkViewModel(latestTalkViewModel);
         this.latestTalkView.renderData(this.productData);
-        this.latestTalkView.setVisibility(View.VISIBLE);
     }
 
     @Override
