@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.widget.Toast;
+import android.util.Log;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -35,11 +35,13 @@ public class FlightDetailOrderActivity extends BaseSimpleActivity implements Has
     @DeepLink(ApplinkConstant.FLIGHT_ORDER_DETAIL)
     public static Intent getCallingApplinkIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        FlightOrderDetailPassData passData = new FlightOrderDetailPassData();
+        passData.setOrderId(extras.getString("id"));
+
         Intent intent = new Intent(context, FlightDetailOrderActivity.class);
-        Toast.makeText(context, "id : " + extras.getString(EXTRA_ORDER_PASS_DETAIL), Toast.LENGTH_SHORT).show();
+        intent.putExtra(EXTRA_ORDER_PASS_DETAIL, passData);
         return intent
-                .setData(uri.build())
-                .putExtras(extras);
+                .setData(uri.build());
     }
 
     @Override
