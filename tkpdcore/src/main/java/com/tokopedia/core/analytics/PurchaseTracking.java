@@ -11,11 +11,13 @@ public class PurchaseTracking extends TrackingUtils {
 
     public static void marketplace(Map<String, Object> data) {
         getGTMEngine().eventTrackingEnhancedEcommerce(data);
+        getGTMEngine().sendScreen(AppScreen.SCREEN_FINISH_TX);
         getGTMEngine().clearEnhanceEcommerce();
     }
 
     public static void digital(Map<String, Object> data) {
-        getGTMEngine().clearEnhanceEcommerce();
         getGTMEngine().event(TRANSACTION, data);
+        getGTMEngine().sendScreen(AppScreen.SCREEN_FINISH_TX);
+        getGTMEngine().clearEnhanceEcommerce();
     }
 }
