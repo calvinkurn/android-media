@@ -154,6 +154,7 @@ query FeedQuery($userID: Int!, $limit: Int!, $cursor: String) {
                          isLiked
                          isFollowed
                          createTime
+                         showComment
                          userName
                          userPhoto
                          userInfo
@@ -180,6 +181,7 @@ query FeedQuery($userID: Int!, $limit: Int!, $cursor: String) {
                           isLiked
                           isFollowed
                           createTime
+                          showComment
                           userName
                           userPhoto
                           userInfo
@@ -214,6 +216,14 @@ query FeedQuery($userID: Int!, $limit: Int!, $cursor: String) {
                           title_id
                           subtitle_en
                           subtitle_id
+              }
+              kol_cta {
+                  img_header
+                  title
+                  subtitle
+                  button_text
+                  click_url
+                  click_applink
               }
             }
           }

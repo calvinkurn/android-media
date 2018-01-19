@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:content="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:layout_marginTop="@dimen/new_margin_med"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/iv_content_product"
+        android:layout_width="match_parent"
+        android:scaleType="centerCrop"
+        android:layout_height="100dp" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_sm">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|top"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_14"
+                android:textColor="@color/black_70"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:gravity="center"
+                content:text="hello, sebo"/>
+
+            <TextView
+                android:id="@+id/tv_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_12"
+                android:textColor="@color/black_70"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_marginTop="@dimen/margin_vs"
+                content:text="hai juga sebo"/>
+
+            <Button
+                android:id="@+id/btn_content"
+                android:layout_width="110dp"
+                android:layout_height="35dp"
+                android:layout_marginTop="@dimen/margin_small"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:background="@drawable/bg_button_enable"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:padding="@dimen/padding_vvs"
+                android:textSize="@dimen/text_size_13"
+                content:text="Cari Sebo"/>
+        </LinearLayout>
+    </FrameLayout>
+
+</LinearLayout>

@@ -85,8 +85,9 @@ dependencies {
     })
     androidTestCompile 'com.android.support:support-annotations:24.1.0'
     testCompile 'junit:junit:4.12'
-
+    compile group: 'org.apache.commons', name: 'commons-text', version: '1.0'
     compile rootProject.ext.supportLibDependencies.appCompactV7
     compile rootProject.ext.supportLibDependencies.design
     compile rootProject.ext.supportLibDependencies.cardViewV7
+    compile rootProject.ext.networkDependencies.glide
 }

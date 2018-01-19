@@ -11,9 +11,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.nishikino.Nishikino;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.service.constant.DownloadServiceConstant;
 import com.tokopedia.core.session.model.CreatePasswordModel;
@@ -51,7 +49,7 @@ public class RegisterNewImpl extends RegisterNew implements TextWatcher{
     public RegisterNewImpl(RegisterNewView view){
         super(view);
         registerService = new RegisterService();
-        facade = RegisterInteractorImpl.createInstance(this);
+        facade = RegisterInteractorImpl.createInstance();
     }
 
     public static class RegisterUtil{
