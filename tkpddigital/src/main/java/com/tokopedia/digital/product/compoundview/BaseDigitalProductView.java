@@ -150,7 +150,7 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
 
     protected abstract void onInstantCheckoutChecked();
 
-    public abstract void renderClientNumberFromContact(String clientNumber);
+    public abstract void renderClientNumber(String clientNumber);
 
     public abstract boolean isInstantCheckoutChecked();
 

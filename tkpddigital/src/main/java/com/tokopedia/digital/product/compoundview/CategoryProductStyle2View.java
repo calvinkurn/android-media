@@ -118,7 +118,7 @@ public class CategoryProductStyle2View extends
     }
 
     @Override
-    public void renderClientNumberFromContact(String clientNumber) {
+    public void renderClientNumber(String clientNumber) {
         clientNumberInputView.setText(clientNumber);
     }
 

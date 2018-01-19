@@ -1024,7 +1024,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     private void renderContactDataToClientNumber(ContactData contactData) {
-        digitalProductView.renderClientNumberFromContact(contactData.getContactNumber());
+        digitalProductView.renderClientNumber(contactData.getContactNumber());
     }
 
     private void handleCallbackSearchNumber(OrderClientNumber orderClientNumber) {
@@ -1059,7 +1059,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             }
         }
 
-        digitalProductView.renderClientNumberFromContact(orderClientNumber.getClientNumber());
+        digitalProductView.renderClientNumber(orderClientNumber.getClientNumber());
         digitalProductView.clearFocusOnClientNumber();
 
         if (selectedOperator != null) {
@@ -1074,7 +1074,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     private void handleStyle1(OrderClientNumber orderClientNumber) {
-        digitalProductView.renderClientNumberFromContact(orderClientNumber.getClientNumber());
+        digitalProductView.renderClientNumber(orderClientNumber.getClientNumber());
         digitalProductView.clearFocusOnClientNumber();
 
         if (orderClientNumber.getOperatorId() != null) {

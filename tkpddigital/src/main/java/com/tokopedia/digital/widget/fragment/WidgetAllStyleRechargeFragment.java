@@ -27,14 +27,16 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.apiservice.DigitalEndpointService;
+import com.tokopedia.digital.common.data.repository.DigitalRepository;
+import com.tokopedia.digital.common.data.repository.IDigitalRepository;
+import com.tokopedia.digital.common.domain.DigitalCategoryUseCase2;
 import com.tokopedia.digital.product.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.compoundview.CategoryProductStyle1View;
 import com.tokopedia.digital.product.compoundview.CategoryProductStyle2View;
 import com.tokopedia.digital.product.compoundview.CategoryProductStyle3View;
 import com.tokopedia.digital.product.data.mapper.ProductDigitalMapper;
-import com.tokopedia.digital.product.domain.DigitalCategoryRepository;
-import com.tokopedia.digital.product.domain.DigitalCategoryUseCase;
-import com.tokopedia.digital.product.domain.IDigitalCategoryRepository;
+import com.tokopedia.digital.product.data.source.CategoryDetailDataSource;
+import com.tokopedia.digital.product.data.source.FavoriteListDataSource;
 import com.tokopedia.digital.product.model.CategoryData;
 import com.tokopedia.digital.product.model.ClientNumber;
 import com.tokopedia.digital.product.model.ContactData;
@@ -43,8 +45,6 @@ import com.tokopedia.digital.product.model.Operator;
 import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.product.model.Product;
 import com.tokopedia.digital.widget.data.mapper.FavoriteNumberListDataMapper;
-import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
-import com.tokopedia.digital.widget.domain.IDigitalWidgetRepository;
 import com.tokopedia.digital.widget.listener.IDigitalWidgetView;
 import com.tokopedia.digital.widget.model.category.Category;
 import com.tokopedia.digital.widget.presenter.DigitalWidgetPresenter;
@@ -124,13 +124,17 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
         if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
 
         DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
-        IDigitalWidgetRepository digitalWidgetRepository =
-                new DigitalWidgetRepository(digitalEndpointService, new FavoriteNumberListDataMapper());
-        IDigitalCategoryRepository digitalCategoryRepository =
-                new DigitalCategoryRepository(digitalEndpointService, new ProductDigitalMapper());
-
-        DigitalCategoryUseCase digitalCategoryUseCase = new DigitalCategoryUseCase(
-                getContext(), digitalCategoryRepository, digitalWidgetRepository
+        CategoryDetailDataSource categoryDetailDataSource = new CategoryDetailDataSource(
+                digitalEndpointService, new ProductDigitalMapper()
+        );
+        FavoriteListDataSource favoriteListDataSource = new FavoriteListDataSource(
+                digitalEndpointService, new FavoriteNumberListDataMapper()
+        );
+        IDigitalRepository digitalRepository = new DigitalRepository(
+                categoryDetailDataSource, favoriteListDataSource
+        );
+        DigitalCategoryUseCase2 digitalCategoryUseCase = new DigitalCategoryUseCase2(
+                getContext(), digitalRepository
         );
 
         presenter = new DigitalWidgetPresenter(getActivity(), this,
@@ -329,7 +333,7 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
     }
 
     private void renderContactDataToClientNumber(ContactData contactData) {
-        digitalProductView.renderClientNumberFromContact(contactData.getContactNumber());
+        digitalProductView.renderClientNumber(contactData.getContactNumber());
     }
 
     private void navigateToActivityRequest(Intent intent, int requestCode) {
