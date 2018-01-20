@@ -143,9 +143,9 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
             Product p = new Product();
             p.setProductID(String.valueOf(orderDetail.getProductId()));
             p.setProductName(getProductName(orderDetail));
-            p.setPrice(orderDetail.getProductPrice());
+            p.setPrice(String.valueOf(orderDetail.getProductPrice()));
             p.setCategory(getProductCategory(orderDetail));
-            p.setQty(orderDetail.getQuantity());
+            p.setQty(String.valueOf(orderDetail.getQuantity()));
 
             products.add(p);
         }
