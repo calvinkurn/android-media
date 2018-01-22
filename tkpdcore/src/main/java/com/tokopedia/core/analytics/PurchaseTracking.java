@@ -28,8 +28,8 @@ public class PurchaseTracking extends TrackingUtils {
         getGTMEngine().clearEnhanceEcommerce();
     }
 
-    public static void digital(Map<String, Object> data) {
-        getGTMEngine().event(TRANSACTION, data);
+    public static void digital(Purchase purchase) {
+        getGTMEngine().eventPurchaseEE(purchase);
         getGTMEngine().sendScreen(AppScreen.SCREEN_FINISH_TX);
         getGTMEngine().clearEnhanceEcommerce();
     }

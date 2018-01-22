@@ -21,6 +21,7 @@ public class GTMDataLayer {
 
     static void pushGeneral(Context context, Map<String, Object> values) {
         Log.i("GAv4", "UA-9801603-15: Send General");
+        Log.d("GAv4", values.toString());
 
         GTMBody gtmBody = new GTMBody();
         gtmBody.context = context;

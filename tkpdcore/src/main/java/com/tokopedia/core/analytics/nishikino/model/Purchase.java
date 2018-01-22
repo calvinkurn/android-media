@@ -10,16 +10,32 @@ import java.util.Map;
  */
 public class Purchase {
 
+    public static final String EVENT = "event";
+    public static final String PAYMENT_ID = "payment_id";
+    public static final String PAYMENT_TYPE = "payment_type";
+    public static final String SHOP_ID = "shop_id";
+    public static final String LOGISTIC_TYPE = "logistic_type";
+    public static final String ECOMMERCE = "ecommerce";
+    public static final String USER_ID = "userId";
+
+    public static final String ID = "id";
+
+    public static final String NAME = "name";
+
     private Map<String, Object> ActionField = new HashMap<>();
     private Map<String, Object> Purchase = new HashMap<>();
     private List<Object> ListProduct = new ArrayList<>();
-    private String Currency;
+    private String currency;
     private String shopId;
     private String paymentId;
     private String paymentType;
     private String logisticType;
     private String userId;
     private String event;
+
+    public Purchase() {
+
+    }
 
     public String getShopId() {
         return shopId;
@@ -69,40 +85,6 @@ public class Purchase {
         this.event = event;
     }
 
-    public static final String EVENT = "event";
-    public static final String PAYMENT_ID = "payment_id";
-    public static final String PAYMENT_STATUS = "payment_status";
-    public static final String PAYMENT_TYPE = "payment_type";
-    public static final String SHOP_ID = "shop_id";
-    public static final String SHOP_TYPE = "shopType";
-    public static final String LOGISTIC_TYPE = "logistic_type";
-    public static final String ECOMMERCE = "ecommerce";
-    public static final String USER_ID = "userId";
-
-    public static final String CURRENCY_CODE = "currencyCode";
-    public static final String PURCHASE = "purchase";
-
-    public static final String ACTION_FIELD = "actionField";
-    public static final String PRODUCTS = "products";
-
-    public static final String ID = "id";
-    public static final String AFFILIATION = "affiliation";
-    public static final String REVENUE = "revenue";
-    public static final String TAX = "tax";
-    public static final String SHIPPING = "shipping";
-    public static final String COUPON = "coupon";
-
-    public static final String NAME = "name";
-    public static final String PRICE = "price";
-    public static final String BRAND = "brand";
-    private static final String CATEGORY = "category";
-    private static final String VARIANT = "variant";
-    private static final String QUANTITY = "quantity";
-
-    public Purchase() {
-
-    }
-
     public void setTransactionID(Object id) {
         ActionField.put("id", id);
     }
@@ -130,14 +112,14 @@ public class Purchase {
     }
 
     public void setCurrency(String currency) {
-        this.Currency = currency;
+        this.currency = currency;
     }
 
     public Map<String, Object> getPurchase() {
         try {
             Purchase.put("actionField", ActionField);
             Purchase.put("products", ListProduct);
-            Purchase.put("currencyCode", Currency);
+            Purchase.put("currencyCode", currency);
         }catch (Exception e) {
             e.printStackTrace();
         }
@@ -151,6 +133,6 @@ public class Purchase {
         setTransactionID(null);
         setVoucherCode(null);
         ListProduct = null;
-        Currency = null;
+        currency = null;
     }
 }
