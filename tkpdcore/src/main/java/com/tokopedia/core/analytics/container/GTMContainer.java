@@ -597,17 +597,17 @@ public class GTMContainer implements IGTMContainer {
         GTMDataLayer.pushGeneral(
                 context,
                 DataLayer.mapOf(
-                        Purchase.EVENT, PurchaseTracking.TRANSACTION,
-                        "eventCategory", "purchase category",
-                        "eventAction", "purchase action",
-                        "eventLabel", "purchase label",
+                        AppEventTracking.EVENT, PurchaseTracking.TRANSACTION,
+                        AppEventTracking.EVENT_CATEGORY, "purchase category",
+                        AppEventTracking.EVENT_ACTION, "purchase action",
+                        AppEventTracking.EVENT_LABEL, "purchase label",
                         Purchase.SHOP_ID, purchase.getShopId(),
                         Purchase.PAYMENT_ID, purchase.getPaymentId(),
                         Purchase.PAYMENT_TYPE, purchase.getPaymentType(),
                         Purchase.LOGISTIC_TYPE, purchase.getLogisticType(),
                         Purchase.USER_ID, purchase.getUserId(),
-                        Purchase.ECOMMERCE, DataLayer.mapOf(
-                                "purchase", purchase.getPurchase()
+                        AppEventTracking.ECOMMERCE, DataLayer.mapOf(
+                                Purchase.PURCHASE, purchase.getPurchase()
                         )
                 )
         );
@@ -618,17 +618,17 @@ public class GTMContainer implements IGTMContainer {
         GTMDataLayer.pushGeneral(
                 context,
                 DataLayer.mapOf(
-                        Purchase.EVENT, PurchaseTracking.TRANSACTION,
-                        "eventCategory", "purchase category digital",
-                        "eventAction", "purchase action digital",
-                        "eventLabel", "purchase label digital",
+                        AppEventTracking.EVENT, PurchaseTracking.TRANSACTION,
+                        AppEventTracking.EVENT_CATEGORY, "purchase category digital",
+                        AppEventTracking.EVENT_ACTION, "purchase action digital",
+                        AppEventTracking.EVENT_LABEL, "purchase label digital",
                         Purchase.SHOP_ID, purchase.getShopId(),
                         Purchase.PAYMENT_ID, purchase.getPaymentId(),
                         Purchase.PAYMENT_TYPE, purchase.getPaymentType(),
                         Purchase.USER_ID, purchase.getUserId(),
                         Purchase.PAYMENT_STATUS, purchase.getPaymentStatus(),
-                        Purchase.ECOMMERCE, DataLayer.mapOf(
-                                "purchase", purchase.getPurchase()
+                        AppEventTracking.ECOMMERCE, DataLayer.mapOf(
+                                Purchase.PURCHASE, purchase.getPurchase()
                         )
                 )
         );

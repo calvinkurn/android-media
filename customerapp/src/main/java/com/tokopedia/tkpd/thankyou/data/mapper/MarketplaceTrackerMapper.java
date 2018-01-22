@@ -80,7 +80,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         purchase.setUserId(sessionHandler.getLoginID());
         purchase.setShipping(String.valueOf(orderData.getShippingPrice()));
         purchase.setRevenue(String.valueOf(paymentData.getPaymentAmount()));
-        purchase.setCurrency("IDR");
+        purchase.setCurrency(Purchase.DEFAULT_CURRENCY_VALUE);
 
         for (Product product : getProductList(orderData)) {
             purchase.addProduct(product.getProduct());
@@ -140,14 +140,14 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
     private List<Product> getProductList(OrderData orderData) {
         List<Product> products = new ArrayList<>();
         for (OrderDetail orderDetail : orderData.getOrderDetail()) {
-            Product p = new Product();
-            p.setProductID(String.valueOf(orderDetail.getProductId()));
-            p.setProductName(getProductName(orderDetail));
-            p.setPrice(String.valueOf(orderDetail.getProductPrice()));
-            p.setCategory(getProductCategory(orderDetail));
-            p.setQty(String.valueOf(orderDetail.getQuantity()));
+            Product product = new Product();
+            product.setProductID(String.valueOf(orderDetail.getProductId()));
+            product.setProductName(getProductName(orderDetail));
+            product.setPrice(String.valueOf(orderDetail.getProductPrice()));
+            product.setCategory(getProductCategory(orderDetail));
+            product.setQty(String.valueOf(orderDetail.getQuantity()));
 
-            products.add(p);
+            products.add(product);
         }
         return products;
     }

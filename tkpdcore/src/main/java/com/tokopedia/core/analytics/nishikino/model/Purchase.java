@@ -9,8 +9,6 @@ import java.util.Map;
  * Created by ricoharisin on 9/29/15.
  */
 public class Purchase {
-
-    public static final String EVENT = "event";
     public static final String PAYMENT_ID = "payment_id";
     public static final String PAYMENT_STATUS = "payment_status";
     public static final String PAYMENT_TYPE = "payment_type";
@@ -18,6 +16,8 @@ public class Purchase {
     public static final String LOGISTIC_TYPE = "logistic_type";
     public static final String ECOMMERCE = "ecommerce";
     public static final String USER_ID = "userId";
+    public static final String PURCHASE = "purchase";
+    public static final String DEFAULT_CURRENCY_VALUE = "IDR";
 
     public static final String ID = "id";
 

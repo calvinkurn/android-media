@@ -217,7 +217,6 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
         public static final String CONFIG_SHOW_HIDE_APP_SHARE_BUTTON = "mainapp_show_app_share_button";
         public static final String CONFIG_APP_SHARE_DESCRIPTION = "app_share_description";
         public static final String CONFIG_MAINAPP_ACTIVATE_BRANCH_LINKS = "mainapp_activate_branch_links";
-//        public static final String CART_CACHE_TRACKER = "CART_CACHE_TRACKER";
         public static final String HOME_CATEGORY_CACHE = "HOME_CATEGORY_CACHE";
         public static final String HOME_BRAND_OS_CACHE = "HOME_BRAND_OS_CACHE";
         public static final String HOME_BANNER_CACHE = "HOME_BANNER_CACHE";

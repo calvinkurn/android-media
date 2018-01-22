@@ -15,7 +15,9 @@ import rx.functions.Func1;
  */
 
 public class DigitalTrackerMapper implements Func1<Response<DigitalDataWrapper<PurchaseData>>, Boolean> {
-    private static final String DATA = "data";
+    // apparently digital doesnt need shipping but this value seems to be mandatory on EE
+    private static final String DEFAULT_DIGITAL_SHIPPING = "0";
+
     private SessionHandler sessionHandler;
 
     public DigitalTrackerMapper(SessionHandler sessionHandler) {
@@ -42,14 +44,13 @@ public class DigitalTrackerMapper implements Func1<Response<DigitalDataWrapper<P
         purchase.setUserId(sessionHandler.getLoginID());
         if(isActionFieldValid(data)) {
             purchase.setTransactionID(data.getEcommerce().getPurchase().getActionField().getId());
-            purchase.setShipping("0");
+            purchase.setShipping(DEFAULT_DIGITAL_SHIPPING);
             purchase.setVoucherCode(data.getEcommerce().getPurchase().getActionField().getCoupon());
             purchase.setRevenue(data.getEcommerce().getPurchase().getActionField().getRevenue());
         }
+        purchase.setCurrency(Purchase.DEFAULT_CURRENCY_VALUE);
 
-        purchase.setCurrency("IDR");
-
-        if(isPurchaseValid(data)) {
+        if(isPurchaseValid(data) && data.getEcommerce().getPurchase().getProducts() != null) {
             for (Product product : data.getEcommerce().getPurchase().getProducts()) {
                 purchase.addProduct(mapProduct(product).getProduct());
             }
