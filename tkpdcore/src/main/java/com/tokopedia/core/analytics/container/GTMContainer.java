@@ -593,7 +593,7 @@ public class GTMContainer implements IGTMContainer {
     }
 
     @Override
-    public void eventPurchaseEE(Purchase purchase) {
+    public void eventPurchaseMarketplace(Purchase purchase) {
         GTMDataLayer.pushGeneral(
                 context,
                 DataLayer.mapOf(
@@ -606,6 +606,27 @@ public class GTMContainer implements IGTMContainer {
                         Purchase.PAYMENT_TYPE, purchase.getPaymentType(),
                         Purchase.LOGISTIC_TYPE, purchase.getLogisticType(),
                         Purchase.USER_ID, purchase.getUserId(),
+                        Purchase.ECOMMERCE, DataLayer.mapOf(
+                                "purchase", purchase.getPurchase()
+                        )
+                )
+        );
+    }
+
+    @Override
+    public void eventPurchaseDigital(Purchase purchase) {
+        GTMDataLayer.pushGeneral(
+                context,
+                DataLayer.mapOf(
+                        Purchase.EVENT, PurchaseTracking.TRANSACTION,
+                        "eventCategory", "purchase category digital",
+                        "eventAction", "purchase action digital",
+                        "eventLabel", "purchase label digital",
+                        Purchase.SHOP_ID, purchase.getShopId(),
+                        Purchase.PAYMENT_ID, purchase.getPaymentId(),
+                        Purchase.PAYMENT_TYPE, purchase.getPaymentType(),
+                        Purchase.USER_ID, purchase.getUserId(),
+                        Purchase.PAYMENT_STATUS, purchase.getPaymentStatus(),
                         Purchase.ECOMMERCE, DataLayer.mapOf(
                                 "purchase", purchase.getPurchase()
                         )

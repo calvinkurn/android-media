@@ -128,7 +128,9 @@ public interface IGTMContainer {
 
     void clearEnhanceEcommerce();
 
-    void eventPurchaseEE(Purchase purchase);
+    void eventPurchaseMarketplace(Purchase purchase);
+
+    void eventPurchaseDigital(Purchase purchase);
 
     void eventImpressionPromoList(List<Object> list, String promoName);
 

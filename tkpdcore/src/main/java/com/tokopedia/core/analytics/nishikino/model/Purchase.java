@@ -12,6 +12,7 @@ public class Purchase {
 
     public static final String EVENT = "event";
     public static final String PAYMENT_ID = "payment_id";
+    public static final String PAYMENT_STATUS = "payment_status";
     public static final String PAYMENT_TYPE = "payment_type";
     public static final String SHOP_ID = "shop_id";
     public static final String LOGISTIC_TYPE = "logistic_type";
@@ -32,6 +33,7 @@ public class Purchase {
     private String logisticType;
     private String userId;
     private String event;
+    private String paymentStatus;
 
     public Purchase() {
 
@@ -102,6 +104,14 @@ public class Purchase {
     }
 
     public void setVoucherCode(Object voucherCode) { ActionField.put("coupon", voucherCode); }
+
+    public String getPaymentStatus() {
+        return paymentStatus;
+    }
+
+    public void setPaymentStatus(String paymentStatus) {
+        this.paymentStatus = paymentStatus;
+    }
 
     public void addProduct(Map<String, Object> Product) {
         ListProduct.add(Product);

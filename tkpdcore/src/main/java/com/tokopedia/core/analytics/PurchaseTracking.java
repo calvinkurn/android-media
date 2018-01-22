@@ -2,8 +2,6 @@ package com.tokopedia.core.analytics;
 
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 
-import java.util.Map;
-
 /**
  * Created by okasurya on 12/8/17.
  */
@@ -23,14 +21,14 @@ public class PurchaseTracking extends TrackingUtils {
     public static final String USER_ID = "userId";
 
     public static void marketplace(Purchase purchase) {
-        getGTMEngine().eventPurchaseEE(purchase);
+        getGTMEngine().eventPurchaseMarketplace(purchase);
         getGTMEngine().sendScreen(AppScreen.SCREEN_FINISH_TX);
         getGTMEngine().clearEnhanceEcommerce();
     }
 
     public static void digital(Purchase purchase) {
-        getGTMEngine().eventPurchaseEE(purchase);
-        getGTMEngine().sendScreen(AppScreen.SCREEN_FINISH_TX);
         getGTMEngine().clearEnhanceEcommerce();
+        getGTMEngine().eventPurchaseDigital(purchase);
+        getGTMEngine().sendScreen(AppScreen.SCREEN_FINISH_TX);
     }
 }
