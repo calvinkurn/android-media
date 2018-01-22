@@ -182,6 +182,9 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
             return;
         }
         setSuggestionBidText(data.getData().get(0).getMedian(), data.getData().get(0).getMedianFmt());
+        if (TextUtils.isEmpty(maxPriceEditText.getTextWithoutPrefix())) {
+            maxPriceEditText.setText(String.valueOf(data.getData().get(0).getMedian()));
+        }
     }
 
     protected void setSuggestionBidText(long suggestionBidValue, @Nullable String suggestionBidText){
