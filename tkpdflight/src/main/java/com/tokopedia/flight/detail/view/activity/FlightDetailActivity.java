@@ -127,8 +127,8 @@ public class FlightDetailActivity extends BaseTabActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         initInjector();
+        super.onCreate(savedInstanceState);
     }
 
     protected FlightComponent getFlightComponent() {

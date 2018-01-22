@@ -3,6 +3,7 @@ package com.tokopedia.flight.common.di.component;
 import android.content.Context;
 
 import com.google.gson.Gson;
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
@@ -33,6 +34,8 @@ public interface FlightComponent {
     Gson gson();
 
     UserSession userSession();
+
+    AnalyticTracker analyticTracker();
 
     void inject(BaseFlightActivity baseFlightActivity);
 

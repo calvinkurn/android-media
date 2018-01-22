@@ -63,7 +63,7 @@ public class FlightDetailRouteViewModelMapper {
         return flightDetailRouteViewModels;
     }
 
-    public FlightDetailRouteViewModel transform(JourneyEntity journeyEntity, RouteEntity route) {
+    public FlightDetailRouteViewModel transform(RouteEntity route) {
         FlightDetailRouteViewModel flightDetailRouteViewModel = null;
         if (route != null) {
             flightDetailRouteViewModel = new FlightDetailRouteViewModel();
@@ -78,10 +78,10 @@ public class FlightDetailRouteViewModelMapper {
 //            flightDetailRouteViewModel.setDepartureAirportName(route.getDepartureAirportName());
             flightDetailRouteViewModel.setDepartureTimestamp(route.getDepartureTime());
             flightDetailRouteViewModel.setDepartureAirportCode(route.getDepartureAirportCode());
-            flightDetailRouteViewModel.setDuration(journeyEntity.getDuration());
+            flightDetailRouteViewModel.setDuration(route.getDuration());
+            flightDetailRouteViewModel.setLayover(route.getLayover());
             flightDetailRouteViewModel.setPnr(route.getPnr());
             flightDetailRouteViewModel.setFlightNumber(route.getFlightNumber());
-            flightDetailRouteViewModel.setLayover(String.valueOf(route.getLayoverMinute()));
             flightDetailRouteViewModel.setRefundable(route.isRefundable());
             flightDetailRouteViewModel.setInfos(flightDetailRouteInfoViewModelMapper.transform(route.getFreeAmenities()));
 //            flightDetailRouteViewModel.setAmenities(route.getAmenities());
@@ -94,7 +94,7 @@ public class FlightDetailRouteViewModelMapper {
         FlightDetailRouteViewModel flightDetailRouteViewModel;
         if (routeEntities != null) {
             for (RouteEntity route : routeEntities) {
-                flightDetailRouteViewModel = transform(journeyEntity, route);
+                flightDetailRouteViewModel = transform(route);
                 if (flightDetailRouteViewModel != null) {
                     flightDetailRouteViewModels.add(flightDetailRouteViewModel);
                 }
