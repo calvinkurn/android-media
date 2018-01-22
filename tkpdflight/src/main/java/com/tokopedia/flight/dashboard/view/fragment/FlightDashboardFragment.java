@@ -29,6 +29,7 @@ import com.tokopedia.flight.airport.view.fragment.FlightAirportPickerFragment;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.banner.view.adapter.FlightBannerPagerAdapter;
 import com.tokopedia.flight.common.constant.FlightUrl;
+import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.dashboard.di.FlightDashboardComponent;
 import com.tokopedia.flight.dashboard.view.activity.FlightClassesActivity;
 import com.tokopedia.flight.dashboard.view.activity.FlightSelectPassengerActivity;
@@ -229,8 +230,8 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     }
 
     @Override
-    protected String getScreenName() {
-        return null;
+    public String getScreenName() {
+        return FlightAnalytics.Screen.HOMEPAGE;
     }
 
 
@@ -486,7 +487,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         if (getActivity().getApplication() instanceof FlightModuleRouter
                 && ((FlightModuleRouter) getActivity().getApplication())
                     .getBannerWebViewIntent(getActivity(), bannerList.get(position).getAttributes().getImgUrl()) != null) {
-
+            presenter.onBannerItemClick(position, bannerList.get(position));
             startActivity(((FlightModuleRouter) getActivity().getApplication())
                     .getBannerWebViewIntent(getActivity(), bannerList.get(position).getAttributes().getImgUrl()));
         }

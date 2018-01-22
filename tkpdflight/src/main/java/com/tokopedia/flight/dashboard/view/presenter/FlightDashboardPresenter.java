@@ -324,6 +324,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     @Override
     public void onSearchTicketButtonClicked() {
         if (validateSearchParam(getView().getCurrentDashboardViewModel())) {
+            flightAnalytics.eventSearchClick(getView().getScreenName());
             deleteFlightCacheUseCase.execute(DeleteFlightCacheUseCase.createRequestParam(), new Subscriber<Boolean>() {
                 @Override
                 public void onCompleted() {
@@ -357,6 +358,11 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         } else {
             getView().closePage();
         }
+    }
+
+    @Override
+    public void onBannerItemClick(int position, BannerDetail bannerDetail) {
+        flightAnalytics.eventPromotionClick(position + 1, bannerDetail.getAttributes().getTitle(), bannerDetail.getAttributes().getImgUrl());
     }
 
     private void getBannerData() {

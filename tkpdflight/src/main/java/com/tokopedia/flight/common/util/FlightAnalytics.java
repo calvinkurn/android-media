@@ -26,11 +26,11 @@ public class FlightAnalytics {
         );
     }
 
-    public void eventPromotionClick(String label) {
+    public void eventPromotionClick(int position, String label, String imgUrl) {
         analyticTracker.sendEventTracking(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.CLICK_PROMOTION,
-                label
+                position + "-" + label + "-" + imgUrl
         );
     }
 
