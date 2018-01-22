@@ -7,7 +7,7 @@ import com.tokopedia.digital.widget.view.model.category.Category;
 /**
  * Created by nabillasabbaha on 7/21/17.
  */
-
+@Deprecated
 public class WidgetFactory {
 
     public static final String STYLE_ONE = "style_1";

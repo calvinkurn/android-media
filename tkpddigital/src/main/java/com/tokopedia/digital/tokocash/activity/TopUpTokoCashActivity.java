@@ -39,11 +39,9 @@ import com.tokopedia.digital.common.data.repository.DigitalCategoryRepository;
 import com.tokopedia.digital.common.data.repository.IDigitalCategoryRepository;
 import com.tokopedia.digital.common.data.source.CategoryDetailDataSource;
 import com.tokopedia.digital.common.data.source.FavoriteListDataSource;
+import com.tokopedia.digital.common.domain.DigitalCategoryUseCase;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.data.mapper.USSDMapper;
-import com.tokopedia.digital.product.domain.UssdCheckBalanceRepository;
-import com.tokopedia.digital.product.domain.interactor.IProductDigitalInteractor;
-import com.tokopedia.digital.product.domain.interactor.ProductDigitalInteractor;
 import com.tokopedia.digital.product.view.activity.DigitalChooserActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.digital.product.view.model.CategoryData;
@@ -154,13 +152,6 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
                 categoryDetailDataSource, favoriteListDataSource
         );
 
-        IProductDigitalInteractor productDigitalInteractor =
-                new ProductDigitalInteractor(
-                        compositeSubscription,
-                        digitalCategoryRepository,
-                        new UssdCheckBalanceRepository(digitalEndpointService, ussdMapper)
-                );
-
         ITokoCashRepository balanceRepository = new TokoCashRepository(new TokoCashService(
                 sessionHandler.getAccessToken(this)));
 
@@ -169,7 +160,11 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
                 new JobExecutor(),
                 new UIThread());
 
-        presenter = new TopUpTokocashPresenter(getApplicationContext(), productDigitalInteractor, balanceInteractor, this);
+        DigitalCategoryUseCase digitalCategoryUseCase = new DigitalCategoryUseCase(this,
+                digitalCategoryRepository);
+
+        presenter = new TopUpTokocashPresenter(getApplicationContext(), digitalCategoryUseCase,
+                balanceInteractor, this);
     }
 
     @Override

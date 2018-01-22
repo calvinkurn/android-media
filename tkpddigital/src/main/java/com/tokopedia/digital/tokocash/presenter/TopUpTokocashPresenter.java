@@ -9,13 +9,11 @@ import com.tokopedia.core.network.exception.ServerErrorException;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.digital.common.domain.DigitalCategoryUseCase;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
-import com.tokopedia.digital.product.domain.interactor.IProductDigitalInteractor;
 import com.tokopedia.digital.product.view.model.ProductDigitalData;
 import com.tokopedia.digital.tokocash.errorhandle.ResponseTokoCashRuntimeException;
 import com.tokopedia.digital.tokocash.interactor.ITokoCashBalanceInteractor;
@@ -43,14 +41,15 @@ public class TopUpTokocashPresenter implements ITopUpTokocashPresenter {
     private SessionHandler sessionHandler;
     private Context context;
 
-    private final IProductDigitalInteractor productDigitalInteractor;
+    private DigitalCategoryUseCase digitalCategoryUseCase;
     private final ITokoCashBalanceInteractor balanceInteractor;
     private final TopUpTokoCashListener view;
 
-    public TopUpTokocashPresenter(Context context, IProductDigitalInteractor productDigitalInteractor,
+    public TopUpTokocashPresenter(Context context,
+                                  DigitalCategoryUseCase digitalCategoryUseCase,
                                   ITokoCashBalanceInteractor balanceInteractor,
                                   TopUpTokoCashListener view) {
-        this.productDigitalInteractor = productDigitalInteractor;
+        this.digitalCategoryUseCase = digitalCategoryUseCase;
         this.balanceInteractor = balanceInteractor;
         this.view = view;
         this.context = context;
@@ -59,17 +58,9 @@ public class TopUpTokocashPresenter implements ITopUpTokocashPresenter {
 
     @Override
     public void processGetCategoryTopUp() {
-        TKPDMapParam<String, String> paramQueryCategory = new TKPDMapParam<>();
-        if (GlobalConfig.isSellerApp()) {
-            paramQueryCategory.put(PARAM_IS_RESELLER, VALUE_RESSELER);
-        }
-
-        productDigitalInteractor.getCategoryAndBanner(
-                TOPUP_CATEGORY_ID,
-                view.getGeneratedAuthParamNetwork(paramQueryCategory),
-                view.getGeneratedAuthParamNetwork(new TKPDMapParam<String, String>()),
+        digitalCategoryUseCase.execute(
+                digitalCategoryUseCase.createRequestParam(TOPUP_CATEGORY_ID, null),
                 getSubscriberProductDigitalData()
-
         );
     }
 

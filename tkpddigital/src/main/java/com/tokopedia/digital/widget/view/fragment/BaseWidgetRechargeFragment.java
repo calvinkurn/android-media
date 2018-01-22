@@ -40,7 +40,7 @@ import permissions.dispatcher.RuntimePermissions;
  * Created by nabillasabbaha on 7/18/17.
  * Modified by rizkyfadillah on 10/17/2017.
  */
-
+@Deprecated
 @RuntimePermissions
 public abstract class BaseWidgetRechargeFragment<P> extends BasePresenterFragmentV4<P> {
 
