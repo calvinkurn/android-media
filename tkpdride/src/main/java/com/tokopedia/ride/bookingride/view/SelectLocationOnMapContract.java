@@ -33,6 +33,8 @@ public interface SelectLocationOnMapContract {
         void hideCrossLoading();
 
         void enableDoneButton();
+
+        PlacePassViewModel getDefaultLocation();
     }
 
     interface Presenter extends CustomerPresenter<View> {

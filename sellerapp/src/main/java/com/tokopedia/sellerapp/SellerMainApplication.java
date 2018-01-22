@@ -25,6 +25,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
+import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 import com.tokopedia.inbox.inboxchat.activity.SendMessageActivity;
 import com.tokopedia.inbox.inboxmessageold.activity.SendMessageActivityOld;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
@@ -182,7 +183,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     @Override
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName, String customSubject, String customMessage, String source, String avatar) {
         if(remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
-            return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName,
+            return ChatRoomActivity.getAskSellerIntent(context, toShopId, shopName,
                     customSubject, customMessage, source, avatar);
         else
             return SendMessageActivityOld.getAskSellerIntent(context, toShopId, shopName,

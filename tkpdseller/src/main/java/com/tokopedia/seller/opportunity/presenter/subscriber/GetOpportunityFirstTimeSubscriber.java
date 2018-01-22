@@ -68,6 +68,7 @@ public class GetOpportunityFirstTimeSubscriber extends Subscriber<OpportunityFir
             sortingTypeViewModel.setName(sortData.getName());
             sortingTypeViewModel.setValue(sortData.getValue());
             sortingTypeViewModel.setKey(sortData.getKey());
+            sortingTypeViewModel.setSelected(sortData.isDefault());
             list.add(sortingTypeViewModel);
         }
         return list;

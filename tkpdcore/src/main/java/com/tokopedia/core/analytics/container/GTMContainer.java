@@ -36,6 +36,7 @@ import com.tokopedia.core.var.TkpdCache;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -515,6 +516,52 @@ public class GTMContainer implements IGTMContainer {
         );
     }
 
+    @Override
+    public void eventImpressionPromoList(List<Object> list, String promoName) {
+        clearEnhanceEcommerce();
+
+        GTMDataLayer.pushGeneral(
+                context,
+                DataLayer.mapOf(
+                        "event", "promoView",
+                        "eventCategory", "promo microsite - promo list",
+                        "eventAction", "impression on promo",
+                        "eventLabel", promoName,
+                        "ecommerce", DataLayer.mapOf(
+                                "promoView", DataLayer.mapOf(
+                                        "promotions", DataLayer.listOf(
+                                                list.toArray(new Object[list.size()]
+                                                )
+                                        )
+                                )
+                        )
+                )
+        );
+    }
+
+    @Override
+    public void eventClickPromoListItem(List<Object> list, String promoName) {
+        clearEnhanceEcommerce();
+
+        GTMDataLayer.pushGeneral(
+                context,
+                DataLayer.mapOf(
+                        "event", "promoView",
+                        "eventCategory", "promo microsite - promo list",
+                        "eventAction", "impression on promo",
+                        "eventLabel", promoName,
+                        "ecommerce", DataLayer.mapOf(
+                                "promoClick", DataLayer.mapOf(
+                                        "promotions", DataLayer.listOf(
+                                                list.toArray(new Object[list.size()]
+                                                )
+                                        )
+                                )
+                        )
+                )
+        );
+    }
+
     private void clearEventTracking() {
         GTMDataLayer.pushGeneral(
                 context,
@@ -562,6 +609,36 @@ public class GTMContainer implements IGTMContainer {
                         Purchase.ECOMMERCE, DataLayer.mapOf(
                                 "purchase", purchase.getPurchase()
                         )
+                )
+        );
+    }
+
+    public void eventImpressionCategoryLifestyle(List<Object> list) {
+        clearEnhanceEcommerce();
+        GTMDataLayer.pushGeneral(
+                context, DataLayer.mapOf("event", "promoView",
+                        "eventCategory", "category page",
+                        "eventAction", "subcategory impression",
+                        "eventLabel", "",
+                        "ecommerce", DataLayer.mapOf(
+                                "promoView", DataLayer.mapOf(
+                                        "promotions", DataLayer.listOf(list.toArray(new Object[list.size()]))))
+                        )
+        );
+    }
+
+    @Override
+    public void eventClickCategoryLifestyle(String categoryUrl, List<Object> list) {
+        clearEnhanceEcommerce();
+        GTMDataLayer.pushGeneral(
+                context, DataLayer.mapOf("event", "promoClick",
+                        "eventCategory", "category page",
+                        "eventAction", "click subcategory",
+                        "eventLabel", categoryUrl,
+                        "ecommerce", DataLayer.mapOf(
+                                "promoClick", DataLayer.mapOf(
+                                        "promotions", DataLayer.listOf(list.toArray(new Object[list.size()])))),
+                        "destinationURL", categoryUrl
                 )
         );
     }
