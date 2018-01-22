@@ -260,19 +260,26 @@ public class FCMCacheManager {
     public static void storeRegId(String id, Context context) {
         LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
         cache.putString(GCM_ID, id);
+        cache.applyEditor();
+    }
+
+    public static void storeFcmTimestamp(Context context) {
+        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
         cache.putLong(GCM_ID_TIMESTAMP, System.currentTimeMillis());
         cache.applyEditor();
     }
 
-    public static boolean isFcmTimeStampExistAndExpired(Context context) {
+    public static boolean isFcmExpired(Context context) {
         LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
-        long fcmLatestRetrieveTime = cache.getLong(GCM_ID_TIMESTAMP, 0);
-        return fcmLatestRetrieveTime != 0 &&
-                (System.currentTimeMillis() - fcmLatestRetrieveTime >= GCM_ID_EXPIRED_TIME);
+        return (System.currentTimeMillis() - cache.getLong(GCM_ID_TIMESTAMP, 0) >= GCM_ID_EXPIRED_TIME);
+    }
+
+    public static void setFcmExpired(Context context) {
+        LocalCacheHandler.clearSingleCacheKey(context, GCM_STORAGE, GCM_ID_TIMESTAMP);
     }
 
     public static void checkAndSyncFcmId(final Context context) {
-        if (FCMCacheManager.isFcmTimeStampExistAndExpired(context)) {
+        if (FCMCacheManager.isFcmExpired(context)) {
             // force FCM token refresh to be called
             Observable.just(true).map(new Func1<Boolean, Boolean>() {
                 @Override
