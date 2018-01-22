@@ -31,6 +31,8 @@ public class ProductReviewContentViewHolder extends AbstractViewHolder<ProductRe
     public static final int LAYOUT = R.layout.item_product_review;
     private static final int MAX_CHAR = 50;
     private static final String MORE_DESCRIPTION = "<font color='#42b549'>Selengkapnya</font>";
+    public static final int UNLIKE_STATUS = 3;
+    public static final int LIKE_STATUS_ACTIVE = 1;
 
     boolean isReplyOpened = false;
     private ListenerReviewHolder viewListener;
@@ -125,7 +127,7 @@ public class ProductReviewContentViewHolder extends AbstractViewHolder<ProductRe
         iconLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                viewListener.onLikeDislikePressed(element.getReviewId(), element.isLikeStatus()? 0 : 1,  element.getProductId());
+                viewListener.onLikeDislikePressed(element.getReviewId(), element.isLikeStatus()? UNLIKE_STATUS : LIKE_STATUS_ACTIVE,  element.getProductId());
                 element.setLikeStatus(!element.isLikeStatus());
                 element.setTotalLike(element.isLikeStatus() ? element.getTotalLike() + 1 : element.getTotalLike() - 1);
                 setLikeStatus(element);

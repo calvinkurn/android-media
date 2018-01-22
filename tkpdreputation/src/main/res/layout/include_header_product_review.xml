@@ -6,7 +6,7 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@drawable/bg_border_grey_05dp"
     tools:showIn="@layout/fragment_product_review">
 
     <LinearLayout
@@ -40,7 +40,7 @@
             android:layout_height="20dp"
             android:isIndicator="true"
             android:numStars="5"
-            android:rating="3" />
+            android:rating="3" />sssssss
 
         <TextView
             android:id="@+id/total_review"
@@ -49,6 +49,10 @@
 
     </LinearLayout>
 
+    <View
+        android:background="@color/grey_200"
+        android:layout_width="0.5dp"
+        android:layout_height="match_parent"/>
 
     <LinearLayout
         android:orientation="vertical"

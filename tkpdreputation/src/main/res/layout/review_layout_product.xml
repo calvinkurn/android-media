@@ -6,7 +6,7 @@
     android:id="@+id/review_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@drawable/border_bottom_05dp"
     android:orientation="vertical">
 
     <RelativeLayout

@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.DeleteReviewResponseDomain;
-import com.tokopedia.tkpd.tkpdreputation.productreview.view.adapter.ProductReviewModelContent;
+import com.tokopedia.tkpd.tkpdreputation.shopreview.view.adapter.ShopReviewModelContent;
 
 /**
  * Created by zulfikarrahman on 1/19/18.
@@ -15,14 +15,18 @@ public interface ShopReviewContract {
 
     }
 
-    interface View extends BaseListViewListener<ProductReviewModelContent> {
+    interface View extends BaseListViewListener<ShopReviewModelContent> {
 
         void onErrorDeleteReview(Throwable e);
 
-        void onSuccessDeleteReview(DeleteReviewResponseDomain deleteReviewResponseDomain);
+        void onSuccessDeleteReview(DeleteReviewResponseDomain deleteReviewResponseDomain, String reviewId);
 
         void onErrorPostLikeDislike(Throwable e);
 
-        void onSuccessPostLikeDislike(LikeDislikeDomain likeDislikeDomain);
+        void onSuccessPostLikeDislike(LikeDislikeDomain likeDislikeDomain, String reviewId);
+
+        void hideProgressLoading();
+
+        void showProgressLoading();
     }
 }

@@ -4,12 +4,9 @@ import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.DeleteReviewResponseDomain;
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewstarcount.DataResponseReviewStarCount;
 import com.tokopedia.tkpd.tkpdreputation.productreview.view.adapter.ProductReviewModel;
-import com.tokopedia.tkpd.tkpdreputation.productreview.view.adapter.ProductReviewModelContent;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,12 +32,16 @@ public interface ProductReviewContract {
 
         void onErrorGetRatingView(Throwable e);
 
-        void onSuccessPostLikeDislike(LikeDislikeDomain likeDislikeDomain);
+        void onSuccessPostLikeDislike(LikeDislikeDomain likeDislikeDomain, String reviewId);
 
         void onErrorPostLikeDislike(Throwable e);
 
-        void onSuccessDeleteReview(DeleteReviewResponseDomain deleteReviewResponseDomain);
+        void onSuccessDeleteReview(DeleteReviewResponseDomain deleteReviewResponseDomain, String reviewId);
 
         void onErrorDeleteReview(Throwable e);
+
+        void showProgressLoading();
+
+        void hideProgressLoading();
     }
 }

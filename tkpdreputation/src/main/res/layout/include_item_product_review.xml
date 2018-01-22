@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:background="@drawable/bg_border_grey_05dp"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/review_layout"
+        layout="@layout/review_layout_product"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <include
+        layout="@layout/seller_reply_layout_product"/>
+</LinearLayout>

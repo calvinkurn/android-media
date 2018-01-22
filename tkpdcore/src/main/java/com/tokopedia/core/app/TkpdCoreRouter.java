@@ -52,7 +52,7 @@ public interface TkpdCoreRouter {
 
     void actionOpenGeneralWebView(Activity activity, String mobileUrl);
 
-    android.app.Fragment getShopReputationFragment(String shopId, String shopDomain);
+    Fragment getShopReputationFragment(String shopId, String shopDomain);
 
     Intent getHomeIntent(Context context);
 

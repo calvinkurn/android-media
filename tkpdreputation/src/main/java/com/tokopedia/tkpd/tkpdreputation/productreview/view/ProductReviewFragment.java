@@ -1,7 +1,9 @@
 package com.tokopedia.tkpd.tkpdreputation.productreview.view;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,9 +11,12 @@ import android.view.ViewGroup;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -24,6 +29,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationRepo
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewstarcount.DataResponseReviewStarCount;
 import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewstarcount.DetailReviewStarCount;
+import com.tokopedia.tkpd.tkpdreputation.productreview.view.adapter.ProductReviewAdapter;
 import com.tokopedia.tkpd.tkpdreputation.productreview.view.adapter.ProductReviewContentViewHolder;
 import com.tokopedia.tkpd.tkpdreputation.productreview.view.adapter.ProductReviewModel;
 import com.tokopedia.tkpd.tkpdreputation.productreview.view.adapter.ProductReviewModelContent;
@@ -58,6 +64,7 @@ public class ProductReviewFragment extends BaseListFragment<ProductReviewModel, 
     private RatingBarReview threeStarReview;
     private RatingBarReview twoStarReview;
     private RatingBarReview oneStarReview;
+    private ProgressDialog progressDialog;
 
     private String productId;
 
@@ -103,6 +110,8 @@ public class ProductReviewFragment extends BaseListFragment<ProductReviewModel, 
         threeStarReview = view.findViewById(R.id.three_star);
         twoStarReview = view.findViewById(R.id.two_star);
         oneStarReview = view.findViewById(R.id.one_star);
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage(getString(R.string.title_loading));
         return view;
     }
 
@@ -193,17 +202,17 @@ public class ProductReviewFragment extends BaseListFragment<ProductReviewModel, 
 
     @Override
     public void onErrorGetListReviewProduct(Throwable e) {
-
+        showGetListError(e);
     }
 
     @Override
     public void onGetListReviewHelpful(List<ProductReviewModel> map) {
-        if(map.size() >0) {
-            if(isLoadingInitialData){
+        if (map.size() > 0) {
+            if (isLoadingInitialData) {
                 isLoadingInitialData = false;
                 map.add(0, new ProductReviewModelTitleHeader(getString(R.string.product_review_label_helpful_review)));
                 renderList(map);
-            }else{
+            } else {
                 map.add(0, new ProductReviewModelTitleHeader(getString(R.string.product_review_label_helpful_review)));
                 for (int i = 0; i < map.size(); i++) {
                     getAdapter().addElement(i, map.get(i));
@@ -249,33 +258,50 @@ public class ProductReviewFragment extends BaseListFragment<ProductReviewModel, 
         }
     }
 
+    @NonNull
+    @Override
+    protected BaseListAdapter<ProductReviewModel, ProductReviewTypeFactoryAdapter> createAdapterInstance() {
+        return new ProductReviewAdapter(getAdapterTypeFactory());
+    }
+
     @Override
     public void onErrorGetRatingView(Throwable e) {
 
     }
 
     @Override
-    public void onSuccessPostLikeDislike(LikeDislikeDomain likeDislikeDomain) {
-
+    public void onSuccessPostLikeDislike(LikeDislikeDomain likeDislikeDomain, String reviewId) {
+        ((ProductReviewAdapter) getAdapter()).updateLikeStatus(likeDislikeDomain.getLikeStatus(),
+                likeDislikeDomain.getTotalLike(), reviewId);
     }
 
     @Override
     public void onErrorPostLikeDislike(Throwable e) {
-
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(e));
     }
 
     @Override
-    public void onSuccessDeleteReview(DeleteReviewResponseDomain deleteReviewResponseDomain) {
-
+    public void onSuccessDeleteReview(DeleteReviewResponseDomain deleteReviewResponseDomain, String reviewId) {
+        ((ProductReviewAdapter) getAdapter()).updateDeleteReview(reviewId);
     }
 
     @Override
     public void onErrorDeleteReview(Throwable e) {
-
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(e));
     }
 
     @Override
     public void onLikeDislikePressed(String reviewId, int likeStatus, String productId) {
         productReviewPresenter.postLikeDislikeReview(reviewId, likeStatus, productId);
+    }
+
+    @Override
+    public void showProgressLoading() {
+        progressDialog.show();
+    }
+
+    @Override
+    public void hideProgressLoading() {
+        progressDialog.dismiss();
     }
 }

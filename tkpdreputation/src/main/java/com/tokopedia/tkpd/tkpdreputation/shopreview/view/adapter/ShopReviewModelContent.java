@@ -13,10 +13,14 @@ import com.tokopedia.tkpd.tkpdreputation.productreview.view.adapter.ProductRevie
 public class ShopReviewModelContent extends ProductReviewModelContent {
     private String productName;
     private String productImageUrl;
+    private String productPageUrl;
+
+    public ShopReviewModelContent() {
+    }
 
     @Override
     public int type(ProductReviewTypeFactoryAdapter typeFactory) {
-        if(typeFactory instanceof  ShopReviewTypeFactoryAdapter){
+        if (typeFactory instanceof ShopReviewTypeFactoryAdapter) {
             return ((ShopReviewTypeFactoryAdapter) typeFactory).type(this);
         }
         return 0;
@@ -62,8 +66,12 @@ public class ShopReviewModelContent extends ProductReviewModelContent {
         dest.writeByte(this.reviewCanReported ? (byte) 1 : (byte) 0);
         dest.writeString(this.reputationId);
         dest.writeString(this.productId);
+        dest.writeByte(this.likeStatus ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.totalLike);
+        dest.writeByte(this.isLogin ? (byte) 1 : (byte) 0);
         dest.writeString(this.productName);
         dest.writeString(this.productImageUrl);
+        dest.writeString(this.productPageUrl);
     }
 
     protected ShopReviewModelContent(Parcel in) {
@@ -84,8 +92,12 @@ public class ShopReviewModelContent extends ProductReviewModelContent {
         this.reviewCanReported = in.readByte() != 0;
         this.reputationId = in.readString();
         this.productId = in.readString();
+        this.likeStatus = in.readByte() != 0;
+        this.totalLike = in.readInt();
+        this.isLogin = in.readByte() != 0;
         this.productName = in.readString();
         this.productImageUrl = in.readString();
+        this.productPageUrl = in.readString();
     }
 
     public static final Creator<ShopReviewModelContent> CREATOR = new Creator<ShopReviewModelContent>() {
@@ -99,4 +111,12 @@ public class ShopReviewModelContent extends ProductReviewModelContent {
             return new ShopReviewModelContent[size];
         }
     };
+
+    public String getProductPageUrl() {
+        return productPageUrl;
+    }
+
+    public void setProductPageUrl(String productPageUrl) {
+        this.productPageUrl = productPageUrl;
+    }
 }
