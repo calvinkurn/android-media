@@ -30,6 +30,11 @@ import rx.functions.Func1;
  * Modified by rizkyfadillah at 10/6/17.
  */
 
+// TODO: all implementation of this repository should be removed
+    // change to DigitalWidgetUseCase and new DigitalWidgetRepository
+    // without operator/list and product/list
+
+@Deprecated
 public class DigitalWidgetRepository implements IDigitalWidgetRepository {
 
     private final static String KEY_CATEGORY = "RECHARGE_CATEGORY";

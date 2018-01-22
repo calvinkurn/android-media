@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragmentV4;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
@@ -27,16 +28,16 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
-import com.tokopedia.digital.common.data.repository.DigitalRepository;
-import com.tokopedia.digital.common.data.repository.IDigitalRepository;
+import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
+import com.tokopedia.digital.common.data.repository.DigitalCategoryRepository;
+import com.tokopedia.digital.common.data.repository.IDigitalCategoryRepository;
+import com.tokopedia.digital.common.data.source.CategoryDetailDataSource;
+import com.tokopedia.digital.common.data.source.FavoriteListDataSource;
 import com.tokopedia.digital.common.domain.DigitalCategoryUseCase;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.common.view.compoundview.CategoryProductStyle1View;
 import com.tokopedia.digital.common.view.compoundview.CategoryProductStyle2View;
 import com.tokopedia.digital.common.view.compoundview.CategoryProductStyle3View;
-import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
-import com.tokopedia.digital.common.data.source.CategoryDetailDataSource;
-import com.tokopedia.digital.common.data.source.FavoriteListDataSource;
 import com.tokopedia.digital.product.view.model.CategoryData;
 import com.tokopedia.digital.product.view.model.ClientNumber;
 import com.tokopedia.digital.product.view.model.ContactData;
@@ -125,12 +126,12 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
 
         DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
         CategoryDetailDataSource categoryDetailDataSource = new CategoryDetailDataSource(
-                digitalEndpointService, new ProductDigitalMapper()
+                digitalEndpointService, new GlobalCacheManager(), new ProductDigitalMapper()
         );
         FavoriteListDataSource favoriteListDataSource = new FavoriteListDataSource(
                 digitalEndpointService, new FavoriteNumberListDataMapper()
         );
-        IDigitalRepository digitalRepository = new DigitalRepository(
+        IDigitalCategoryRepository digitalRepository = new DigitalCategoryRepository(
                 categoryDetailDataSource, favoriteListDataSource
         );
         DigitalCategoryUseCase digitalCategoryUseCase = new DigitalCategoryUseCase(

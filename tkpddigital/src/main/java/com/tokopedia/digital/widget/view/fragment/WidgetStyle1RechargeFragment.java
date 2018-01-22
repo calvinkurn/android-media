@@ -59,7 +59,7 @@ import rx.subscriptions.CompositeSubscription;
  * The difference between style 1 and 99 is style 1 can have prefix while style 99 can't
  * @author rizkyfadillah on 10/16/2017.
  */
-
+@Deprecated
 public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDigitalWidgetStyle1Presenter> implements IDigitalWidgetStyle1View {
 
     private static final String STATE_CLIENT_NUMBER = "STATE_CLIENT_NUMBER";

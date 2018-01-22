@@ -14,7 +14,7 @@ import rx.Observable;
  * Created by nabillasabbaha on 7/28/17.
  * Modified by rizkyfadillah at 10/6/17.
  */
-
+@Deprecated
 public interface IDigitalWidgetRepository {
 
     Observable<List<CategoryEntity>> getObservableCategoryData();

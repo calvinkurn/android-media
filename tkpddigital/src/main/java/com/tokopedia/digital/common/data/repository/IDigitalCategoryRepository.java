@@ -3,10 +3,6 @@ package com.tokopedia.digital.common.data.repository;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.product.view.model.CategoryData;
 import com.tokopedia.digital.widget.view.model.DigitalNumberList;
-import com.tokopedia.digital.widget.view.model.category.Category;
-import com.tokopedia.digital.widget.view.model.status.Status;
-
-import java.util.List;
 
 import rx.Observable;
 
@@ -14,14 +10,10 @@ import rx.Observable;
  * Created by Rizky on 19/01/18.
  */
 
-public interface IDigitalRepository {
+public interface IDigitalCategoryRepository {
 
     Observable<CategoryData> getCategory(String categoryId, TKPDMapParam<String, String> param);
 
     Observable<DigitalNumberList> getFavoriteList(TKPDMapParam<String, String> param);
-
-    Observable<List<Category>> getCategoryList();
-
-    Observable<Status> getObservableStatusNetwork();
 
 }

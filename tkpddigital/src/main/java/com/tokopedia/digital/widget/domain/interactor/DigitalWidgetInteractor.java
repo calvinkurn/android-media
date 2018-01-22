@@ -31,6 +31,10 @@ import rx.subscriptions.CompositeSubscription;
  * Modified by rizkyfadillah at 10/6/17.
  */
 
+// TODO: should not use this class anymore
+    // use DigitalWidgetUseCase instead
+
+@Deprecated
 public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
 
     private final static int STATE_CATEGORY_NON_ACTIVE = 2;
@@ -100,7 +104,6 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
                         .subscribeOn(Schedulers.from(threadExecutor))
                         .observeOn(postExecutionThread.getScheduler())
                         .subscribe(subscriber));
-
     }
 
     @Override

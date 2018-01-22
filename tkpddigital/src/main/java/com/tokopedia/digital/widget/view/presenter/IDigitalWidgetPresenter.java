@@ -23,9 +23,4 @@ public interface IDigitalWidgetPresenter {
 
     ContactData processGenerateContactDataFromUri(Uri contactURI, ContentResolver contentResolver);
 
-//    void processStoreLastInputClientNumberByCategory(
-//            String lastClientNumber, String categoryId, String operatorId, String productId,
-//            LocalCacheHandler cacheHandlerLastInputClientNumber
-//    );
-
 }

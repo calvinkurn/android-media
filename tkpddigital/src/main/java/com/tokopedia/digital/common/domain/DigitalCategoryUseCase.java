@@ -7,7 +7,7 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.digital.common.data.repository.IDigitalRepository;
+import com.tokopedia.digital.common.data.repository.IDigitalCategoryRepository;
 import com.tokopedia.digital.product.view.model.BannerData;
 import com.tokopedia.digital.product.view.model.CategoryData;
 import com.tokopedia.digital.product.view.model.HistoryClientNumber;
@@ -33,9 +33,9 @@ public class DigitalCategoryUseCase extends UseCase<ProductDigitalData> {
     private final String PARAM_SORT = "sort";
 
     private Context context;
-    private IDigitalRepository digitalRepository;
+    private IDigitalCategoryRepository digitalRepository;
 
-    public DigitalCategoryUseCase(Context context, IDigitalRepository digitalRepository) {
+    public DigitalCategoryUseCase(Context context, IDigitalCategoryRepository digitalRepository) {
         this.context = context;
         this.digitalRepository = digitalRepository;
     }

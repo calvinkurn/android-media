@@ -8,7 +8,7 @@ import rx.Observable;
 /**
  * @author anggaprasetiyo on 4/25/17.
  */
-
+@Deprecated
 public interface IDigitalCategoryRepository {
 
     Observable<CategoryData> getCategory(

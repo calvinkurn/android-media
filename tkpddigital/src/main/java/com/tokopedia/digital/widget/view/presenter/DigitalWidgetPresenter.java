@@ -99,6 +99,7 @@ public class DigitalWidgetPresenter extends BaseDigitalWidgetPresenter implement
                                                    HistoryClientNumber historyClientNumber) {
         if (categoryData.isSupportedStyle()) {
             switch (categoryData.getOperatorStyle()) {
+                // TODO: implement style 99 correctly
                 case CategoryData.STYLE_PRODUCT_CATEGORY_1:
                     digitalWidgetView.renderCategoryProductDataStyle1(
                             categoryData, historyClientNumber

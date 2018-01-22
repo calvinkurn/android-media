@@ -54,7 +54,7 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * @author rizkyfadillah on 10/16/2017.
  */
-
+@Deprecated
 public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDigitalWidgetStyle2Presenter> implements IDigitalWidgetStyle2View {
 
     private static final String STATE_CLIENT_NUMBER = "STATE_CLIENT_NUMBER";

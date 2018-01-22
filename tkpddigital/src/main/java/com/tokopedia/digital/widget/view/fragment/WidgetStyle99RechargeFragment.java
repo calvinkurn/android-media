@@ -46,7 +46,7 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by Rizky on 10/01/18.
  */
-
+@Deprecated
 public class WidgetStyle99RechargeFragment extends BaseWidgetRechargeFragment<IDigitalWidgetStyle1Presenter>
         implements IDigitalWidgetStyle1View {
 

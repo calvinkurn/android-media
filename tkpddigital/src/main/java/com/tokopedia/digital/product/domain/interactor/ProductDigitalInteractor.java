@@ -6,7 +6,7 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.common.data.entity.requestbody.pulsabalance.RequestBodyPulsaBalance;
-import com.tokopedia.digital.product.domain.IDigitalCategoryRepository;
+import com.tokopedia.digital.common.data.repository.IDigitalCategoryRepository;
 import com.tokopedia.digital.product.domain.IUssdCheckBalanceRepository;
 import com.tokopedia.digital.product.view.model.BannerData;
 import com.tokopedia.digital.product.view.model.CategoryData;
@@ -14,7 +14,6 @@ import com.tokopedia.digital.product.view.model.HistoryClientNumber;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.digital.product.view.model.ProductDigitalData;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
-import com.tokopedia.digital.widget.domain.IDigitalWidgetRepository;
 import com.tokopedia.digital.widget.view.model.DigitalNumberList;
 
 import java.util.ArrayList;
@@ -33,17 +32,14 @@ import rx.subscriptions.CompositeSubscription;
 
 public class ProductDigitalInteractor implements IProductDigitalInteractor {
     private final CompositeSubscription compositeSubscription;
-    private final IDigitalCategoryRepository categoryRepository;
+    private final IDigitalCategoryRepository digitalCategoryRepository;
     private final IUssdCheckBalanceRepository ussdCheckBalanceRepository;
-    private IDigitalWidgetRepository digitalWidgetRepository;
 
     public ProductDigitalInteractor(CompositeSubscription compositeSubscription,
-                                    IDigitalWidgetRepository digitalWidgetRepository,
                                     IDigitalCategoryRepository categoryRepository,
                                     IUssdCheckBalanceRepository ussdCheckBalanceRepository) {
         this.compositeSubscription = compositeSubscription;
-        this.digitalWidgetRepository = digitalWidgetRepository;
-        this.categoryRepository = categoryRepository;
+        this.digitalCategoryRepository = categoryRepository;
         this.ussdCheckBalanceRepository = ussdCheckBalanceRepository;
     }
 
@@ -55,7 +51,7 @@ public class ProductDigitalInteractor implements IProductDigitalInteractor {
             Subscriber<ProductDigitalData> subscriber) {
         compositeSubscription.add(
                 Observable.zip(
-                        categoryRepository.getCategory(pathCategoryId, paramQueryCategory),
+                        digitalCategoryRepository.getCategory(pathCategoryId, paramQueryCategory),
                         getObservableNumberList(paramQueryFavoriteList),
                         getZipFunctionProductDigitalData())
                         .subscribeOn(Schedulers.newThread())
@@ -68,7 +64,7 @@ public class ProductDigitalInteractor implements IProductDigitalInteractor {
     private Observable<DigitalNumberList> getObservableNumberList
             (TKPDMapParam<String, String> paramQueryLastNumber) {
         if (SessionHandler.isV4Login(MainApplication.getAppContext())) {
-            return digitalWidgetRepository.getObservableNumberList(paramQueryLastNumber);
+            return digitalCategoryRepository.getFavoriteList(paramQueryLastNumber);
         } else {
             List<OrderClientNumber> orderClientNumbers = new ArrayList<>();
             DigitalNumberList digitalNumberList = new DigitalNumberList(orderClientNumbers, null);

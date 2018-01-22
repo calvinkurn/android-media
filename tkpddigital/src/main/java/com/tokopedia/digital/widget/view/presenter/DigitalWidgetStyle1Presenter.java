@@ -25,7 +25,7 @@ import rx.Subscriber;
  * Created by nabillasabbaha on 7/21/17.
  * Modified by rizkyfadillah at 10/6/17.
  */
-
+@Deprecated
 public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
         implements IDigitalWidgetStyle1Presenter {
 

@@ -30,6 +30,7 @@ import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.R;
+import com.tokopedia.digital.common.domain.DigitalCategoryUseCase;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.common.data.entity.requestbody.pulsabalance.Attributes;
 import com.tokopedia.digital.common.data.entity.requestbody.pulsabalance.RequestBodyPulsaBalance;
@@ -69,6 +70,7 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
 
     private IProductDigitalView view;
     private IProductDigitalInteractor productDigitalInteractor;
+    private DigitalCategoryUseCase digitalCategoryUseCase;
 
     //private String currentMobileNumber;
     private final static String simSlotName[] = {
@@ -95,74 +97,27 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
     private int ussdTimeOutTime = 30 * 1000;
     private boolean ussdTimeOut = false;
 
-    private final String PARAM_IS_RESELLER = "is_reseller";
-    private final String PARAM_VALUE_IS_RESELLER = "1";
-
-    private final String PARAM_CATEGORY_ID = "category_id";
-    private final String PARAM_OPERATOR_ID = "operator_id";
-    private final String PARAM_CLIENT_NUMBER = "client_number";
-    private final String PARAM_PRODUCT_ID = "product_id";
-
-    private final String PARAM_SORT = "sort";
     private final String PARAM_VALUE_SORT = "label";
 
     private final static String balance = "balance";
 
     public ProductDigitalPresenter(IProductDigitalView view,
-                                   IProductDigitalInteractor productDigitalInteractor) {
+                                   IProductDigitalInteractor productDigitalInteractor,
+                                   DigitalCategoryUseCase digitalCategoryUseCase) {
         super(view.getActivity());
         this.view = view;
         this.productDigitalInteractor = productDigitalInteractor;
+        this.digitalCategoryUseCase = digitalCategoryUseCase;
     }
 
     @Override
     public void processGetCategoryAndBannerData(
             String categoryId, String operatorId, String productId, String clientNumber
     ) {
-        TKPDMapParam<String, String> paramQueryCategory = new TKPDMapParam<>();
-        if (GlobalConfig.isSellerApp()) {
-            paramQueryCategory.put(PARAM_IS_RESELLER, PARAM_VALUE_IS_RESELLER);
-        }
-
-        TKPDMapParam<String, String> paramQueryFavoriteList = new TKPDMapParam<>();
-        paramQueryFavoriteList.put(PARAM_CATEGORY_ID, categoryId);
-        if (!TextUtils.isEmpty(operatorId)) {
-            paramQueryFavoriteList.put(PARAM_OPERATOR_ID, operatorId);
-        }
-        if (!TextUtils.isEmpty(productId)) {
-            paramQueryFavoriteList.put(PARAM_PRODUCT_ID, productId);
-        }
-        if (!TextUtils.isEmpty(clientNumber)) {
-            paramQueryFavoriteList.put(PARAM_CLIENT_NUMBER, clientNumber);
-        }
-        paramQueryFavoriteList.put(PARAM_SORT, PARAM_VALUE_SORT);
-
-        view.showInitialProgressLoading();
-
-        productDigitalInteractor.getCategoryAndBanner(
-                categoryId,
-                view.getGeneratedAuthParamNetwork(paramQueryCategory),
-                view.getGeneratedAuthParamNetwork(paramQueryFavoriteList),
-                getSubscriberProductDigitalData()
-        );
+        digitalCategoryUseCase.execute(digitalCategoryUseCase.createRequestParam(
+                categoryId, PARAM_VALUE_SORT
+        ), getSubscriberProductDigitalData());
     }
-
-//    @Override
-//    public void processStoreLastInputClientNumberByCategory(
-//            String lastClientNumber, String categoryId, String operatorId, String productId
-//    ) {
-//        LocalCacheHandler localCacheHandler = view.getLastInputClientNumberChaceHandler();
-//        localCacheHandler.putString(
-//                TkpdCache.Key.DIGITAL_CLIENT_NUMBER_CATEGORY + categoryId, lastClientNumber
-//        );
-//        localCacheHandler.putString(
-//                TkpdCache.Key.DIGITAL_OPERATOR_ID_CATEGORY + categoryId, operatorId
-//        );
-//        localCacheHandler.putString(
-//                TkpdCache.Key.DIGITAL_PRODUCT_ID_CATEGORY + categoryId, productId
-//        );
-//        localCacheHandler.applyEditor();
-//    }
 
     @Override
     public ContactData processGenerateContactDataFromUri(Uri contactURI) {

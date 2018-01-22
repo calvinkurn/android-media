@@ -17,6 +17,7 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.widget.data.mapper.FavoriteNumberListDataMapper;
 import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
+import com.tokopedia.digital.widget.domain.interactor.DigitalWidgetUseCase;
 import com.tokopedia.digital.widget.view.model.category.Category;
 import com.tokopedia.digital.widget.view.model.mapper.CategoryMapper;
 import com.tokopedia.digital.widget.view.model.mapper.StatusMapper;
@@ -72,12 +73,15 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
         this.mRechargeCategory = new ArrayList<>();
         cacheHandler = new LocalCacheHandler(context, TkpdCache.CACHE_RECHARGE_WIDGET_TAB_SELECTION);
 
+        DigitalWidgetRepository digitalWidgetRepository = new DigitalWidgetRepository(
+                new DigitalEndpointService(), new FavoriteNumberListDataMapper());
+
+        DigitalWidgetUseCase digitalWidgetUseCase = new DigitalWidgetUseCase(context,
+                digitalWidgetRepository, new StatusMapper(), new CategoryMapper());
+
         rechargeCategoryPresenter = new RechargeCategoryPresenterImpl(context, this,
-                new RechargeNetworkInteractorImpl(
-                        new DigitalWidgetRepository(
-                                new DigitalEndpointService(), new FavoriteNumberListDataMapper()),
-                        new CategoryMapper(),
-                        new StatusMapper()));
+                digitalWidgetUseCase);
+
 //        rechargeCategoryPresenter.fetchDataRechargeCategory();
     }
 

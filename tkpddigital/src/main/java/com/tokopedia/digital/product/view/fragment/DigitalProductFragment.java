@@ -41,6 +41,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -59,14 +60,17 @@ import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
+import com.tokopedia.digital.common.data.repository.DigitalCategoryRepository;
+import com.tokopedia.digital.common.data.repository.IDigitalCategoryRepository;
+import com.tokopedia.digital.common.data.source.CategoryDetailDataSource;
+import com.tokopedia.digital.common.data.source.FavoriteListDataSource;
+import com.tokopedia.digital.common.domain.DigitalCategoryUseCase;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.common.view.compoundview.CategoryProductStyle1View;
 import com.tokopedia.digital.common.view.compoundview.CategoryProductStyle2View;
 import com.tokopedia.digital.common.view.compoundview.CategoryProductStyle3View;
 import com.tokopedia.digital.common.view.compoundview.ClientNumberInputView;
 import com.tokopedia.digital.product.data.mapper.USSDMapper;
-import com.tokopedia.digital.product.domain.DigitalCategoryRepository;
-import com.tokopedia.digital.product.domain.IDigitalCategoryRepository;
 import com.tokopedia.digital.product.domain.IUssdCheckBalanceRepository;
 import com.tokopedia.digital.product.domain.UssdCheckBalanceRepository;
 import com.tokopedia.digital.product.domain.interactor.IProductDigitalInteractor;
@@ -96,8 +100,6 @@ import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.digital.utils.LinearLayoutManagerNonScroll;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 import com.tokopedia.digital.widget.data.mapper.FavoriteNumberListDataMapper;
-import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
-import com.tokopedia.digital.widget.domain.IDigitalWidgetRepository;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -276,28 +278,45 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     protected void initialPresenter() {
         bannerAdapter = new BannerAdapter(this);
+
         cacheHandlerLastInputClientNumber = new LocalCacheHandler(
                 getActivity(), TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER
         );
+
         if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
+
         DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
+
         ProductDigitalMapper productDigitalMapper = new ProductDigitalMapper();
-        IDigitalWidgetRepository digitalWidgetRepository =
-                new DigitalWidgetRepository(digitalEndpointService, new FavoriteNumberListDataMapper());
-        IDigitalCategoryRepository digitalCategoryRepository =
-                new DigitalCategoryRepository(digitalEndpointService, productDigitalMapper);
+        FavoriteNumberListDataMapper favoriteNumberListDataMapper = new FavoriteNumberListDataMapper();
         USSDMapper ussdMapper = new USSDMapper();
+
+        CategoryDetailDataSource categoryDetailDataSource = new CategoryDetailDataSource(
+                digitalEndpointService, new GlobalCacheManager(), productDigitalMapper
+        );
+        FavoriteListDataSource favoriteListDataSource = new FavoriteListDataSource(
+                digitalEndpointService, favoriteNumberListDataMapper
+        );
+
+        IDigitalCategoryRepository digitalCategoryRepository = new DigitalCategoryRepository(
+                categoryDetailDataSource, favoriteListDataSource
+        );
+
         IUssdCheckBalanceRepository ussdCheckBalanceRepository = new UssdCheckBalanceRepository(
                 digitalEndpointService, ussdMapper);
 
         IProductDigitalInteractor productDigitalInteractor =
                 new ProductDigitalInteractor(
                         compositeSubscription,
-                        digitalWidgetRepository,
                         digitalCategoryRepository,
                         ussdCheckBalanceRepository
                 );
-        presenter = new ProductDigitalPresenter(this, productDigitalInteractor);
+
+        DigitalCategoryUseCase digitalCategoryUseCase = new DigitalCategoryUseCase(
+                getActivity(), digitalCategoryRepository
+        );
+
+        presenter = new ProductDigitalPresenter(this, productDigitalInteractor, digitalCategoryUseCase);
     }
 
     @Override

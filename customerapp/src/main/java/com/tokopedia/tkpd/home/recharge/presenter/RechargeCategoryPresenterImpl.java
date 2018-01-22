@@ -5,11 +5,13 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
+import com.tokopedia.digital.widget.domain.interactor.DigitalWidgetUseCase;
 import com.tokopedia.digital.widget.errorhandle.WidgetRuntimeException;
 import com.tokopedia.digital.widget.view.model.category.Category;
 import com.tokopedia.digital.widget.view.model.status.Status;
 import com.tokopedia.tkpd.home.recharge.interactor.RechargeNetworkInteractor;
 import com.tokopedia.tkpd.home.recharge.view.RechargeCategoryView;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
 
@@ -26,23 +28,21 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
 
     private Context context;
     private RechargeCategoryView view;
-    private RechargeNetworkInteractor rechargeNetworkInteractor;
+    private DigitalWidgetUseCase digitalWidgetUseCase;
     private List<Category> categoryList;
 
+    // TODO: should not used RechargeNetworkInteractor anymore
+
     public RechargeCategoryPresenterImpl(Context context, RechargeCategoryView view,
-                                         RechargeNetworkInteractor rechargeNetworkInteractor) {
+                                         DigitalWidgetUseCase digitalWidgetUseCase) {
         this.context = context;
         this.view = view;
-        this.rechargeNetworkInteractor = rechargeNetworkInteractor;
+        this.digitalWidgetUseCase = digitalWidgetUseCase;
     }
 
     @Override
     public void fetchDataRechargeCategory() {
-        rechargeNetworkInteractor.getStatus(getStatusSubscriber());
-    }
-
-    private Subscriber<Status> getStatusSubscriber() {
-        return new Subscriber<Status>() {
+        digitalWidgetUseCase.execute(RequestParams.EMPTY, new Subscriber<List<Category>>() {
             @Override
             public void onCompleted() {
 
@@ -50,25 +50,45 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
 
             @Override
             public void onError(Throwable e) {
-                if (e instanceof WidgetRuntimeException) {
-                    view.renderErrorMessage();
-                } else {
-                    view.renderErrorNetwork();
-                }
+
             }
 
             @Override
-            public void onNext(Status status) {
-                if (status != null) {
-                    if (status.isMaintenance() || !isVersionMatch(status)) {
-                        view.failedRenderDataRechargeCategory();
-                    } else {
-                        rechargeNetworkInteractor.getCategoryData(getCategoryDataSubscriber());
-                    }
-                }
+            public void onNext(List<Category> categories) {
+                categoryList = categories;
+                finishPrepareRechargeModule();
             }
-        };
+        });
     }
+
+//    private Subscriber<Status> getStatusSubscriber() {
+//        return new Subscriber<Status>() {
+//            @Override
+//            public void onCompleted() {
+//
+//            }
+//
+//            @Override
+//            public void onError(Throwable e) {
+//                if (e instanceof WidgetRuntimeException) {
+//                    view.renderErrorMessage();
+//                } else {
+//                    view.renderErrorNetwork();
+//                }
+//            }
+//
+//            @Override
+//            public void onNext(Status status) {
+//                if (status != null) {
+//                    if (status.isMaintenance() || !isVersionMatch(status)) {
+//                        view.failedRenderDataRechargeCategory();
+//                    } else {
+//                        rechargeNetworkInteractor.getCategoryData(getCategoryDataSubscriber());
+//                    }
+//                }
+//            }
+//        };
+//    }
 
     private Subscriber<List<Category>> getCategoryDataSubscriber() {
         return new Subscriber<List<Category>>() {
@@ -118,6 +138,6 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
 
     @Override
     public void onDestroy() {
-        rechargeNetworkInteractor.onDestroy();
+//        rechargeNetworkInteractor.onDestroy();
     }
 }
