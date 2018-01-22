@@ -76,8 +76,6 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
         Intent intent;
         switch (item.getId()) {
             case TkpdState.DrawerPosition.LOGIN:
-                Log.d("NISNISLogin", "DrawerHelper " + context.toString());
-
                 intent = ((TkpdCoreRouter) context.getApplication()).getLoginIntent(context);
                 context.startActivityForResult(intent, REQUEST_LOGIN);
                 break;

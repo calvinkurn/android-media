@@ -4,15 +4,23 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.Display;
+import android.view.DragEvent;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,12 +28,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.facebook.AccessToken;
@@ -111,16 +121,18 @@ public class LoginFragment extends BaseDaggerFragment
 
     public static final String AUTO_LOGIN_EMAIL = "email";
     public static final String AUTO_LOGIN_PASS = "pw";
+    private static final int MINIMAL_HEIGHT = 1200;
 
     AutoCompleteTextView emailEditText;
     TextInputEditText passwordEditText;
-    View loginView;
+    ScrollView loginView;
     View loadingView;
     TextView forgotPass;
     LinearLayout loginLayout;
     TextView loginButton;
     TkpdHintTextInputLayout wrapperEmail;
     TkpdHintTextInputLayout wrapperPassword;
+    FloatingActionButton loadMoreFab;
 
     ArrayAdapter<String> autoCompleteAdapter;
     CallbackManager callbackManager;
@@ -212,6 +224,7 @@ public class LoginFragment extends BaseDaggerFragment
         loginButton = view.findViewById(R.id.accounts_sign_in);
         wrapperEmail = view.findViewById(R.id.wrapper_email);
         wrapperPassword = view.findViewById(R.id.wrapper_password);
+        loadMoreFab = view.findViewById(R.id.fab);
         prepareView();
         presenter.attachView(this);
         return view;
@@ -257,6 +270,33 @@ public class LoginFragment extends BaseDaggerFragment
                         .toString());
                 intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
                 startActivity(intent);
+            }
+        });
+
+        Display display = getActivity().getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int height = size.y;
+
+        if (height < MINIMAL_HEIGHT) {
+            loadMoreFab.setVisibility(View.VISIBLE);
+        } else {
+            loadMoreFab.setVisibility(View.GONE);
+        }
+
+        loginView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged() {
+                if (loginView != null) {
+                    if (loginView.getChildAt(0).getBottom() <= (loginView.getHeight() + loginView
+                            .getScrollY())) {
+
+                        //scroll view is at bottom
+                        Log.d("NISNIS", "IS AT BOTTOM");
+                    } else {
+                        Log.d("NISNIS", "IS NOT AT BOTTOM");
+                    }
+                }
             }
         });
     }
