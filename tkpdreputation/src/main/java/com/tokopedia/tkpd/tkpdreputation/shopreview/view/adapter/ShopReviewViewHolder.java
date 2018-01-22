@@ -38,10 +38,20 @@ public class ShopReviewViewHolder extends ProductReviewContentViewHolder {
             productName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    shopReviewHolderListener.onGoToDetailProduct(shopReviewModelContent.getProductPageUrl());
+                    goToProductDetail(shopReviewModelContent);
+                }
+            });
+            productImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    goToProductDetail(shopReviewModelContent);
                 }
             });
         }
+    }
+
+    private void goToProductDetail(ShopReviewModelContent shopReviewModelContent) {
+        shopReviewHolderListener.onGoToDetailProduct(shopReviewModelContent.getProductId());
     }
 
     public interface ShopReviewHolderListener{

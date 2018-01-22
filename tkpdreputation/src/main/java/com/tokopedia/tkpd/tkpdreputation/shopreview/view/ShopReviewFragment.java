@@ -16,6 +16,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.router.productdetail.PdpRouter;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.di.ReputationModule;
@@ -188,8 +189,11 @@ public class ShopReviewFragment extends BaseListFragment<ShopReviewModelContent,
     }
 
     @Override
-    public void onGoToDetailProduct(String productUrl) {
-        ((PdpRouter) getActivity().getApplication()).goToProductDetail(getActivity(), productUrl);
+    public void onGoToDetailProduct(String productId) {
+        ProductPass productPass = ProductPass.Builder.aProductPass()
+                .setProductId(productId)
+                .build();
+        ((PdpRouter) getActivity().getApplication()).goToProductDetail(getActivity(), productPass);
     }
 
     @Override
