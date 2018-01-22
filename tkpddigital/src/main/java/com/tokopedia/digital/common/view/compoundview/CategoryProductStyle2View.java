@@ -455,9 +455,10 @@ public class CategoryProductStyle2View extends
             preCheckoutProduct.setErrorCheckout(
                     context.getString(R.string.message_error_digital_operator_not_selected)
             );
-        } else if (!operatorSelected.getClientNumberList().isEmpty() && !isClientNumberValid()) {
+        } else if (!operatorSelected.getClientNumberList().isEmpty() &&
+                !isClientNumberValid()) {
             if (clientNumberInputView.getText().isEmpty()) {
-                preCheckoutProduct.setErrorCheckout(
+                clientNumberInputView.setErrorText(
                         context.getString(
                                 R.string.message_error_digital_client_number_not_filled
                         ) + " " + operatorSelected.getClientNumberList().get(0).getText()
@@ -466,7 +467,7 @@ public class CategoryProductStyle2View extends
             } else {
                 for (Validation validation : operatorSelected.getClientNumberList().get(0).getValidation()) {
                     if (!Pattern.matches(validation.getRegex(), getClientNumber())) {
-                        preCheckoutProduct.setErrorCheckout(
+                        clientNumberInputView.setErrorText(
                                 validation.getError() + " " +
                                         operatorSelected.getClientNumberList().get(0).getText().toLowerCase()
                         );
@@ -506,12 +507,16 @@ public class CategoryProductStyle2View extends
     }
 
     private boolean isClientNumberValid() {
-        for (Validation validation : operatorSelected.getClientNumberList().get(0).getValidation()) {
-            if (!Pattern.matches(validation.getRegex(), getClientNumber())) {
-                return false;
+        if (clientNumberInputView.getText().isEmpty()) {
+            return false;
+        } else {
+            for (Validation validation : data.getClientNumberList().get(0).getValidation()) {
+                if (!Pattern.matches(validation.getRegex(), getClientNumber())) {
+                    return false;
+                }
             }
+            return true;
         }
-        return true;
     }
 
     private boolean hasLastOrderHistoryData() {

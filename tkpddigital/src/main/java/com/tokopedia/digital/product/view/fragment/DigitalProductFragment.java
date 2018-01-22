@@ -713,7 +713,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         }
 
         if (!preCheckoutProduct.isCanBeCheckout()) {
-            showToastMessage(preCheckoutProduct.getErrorCheckout());
+            if (!TextUtils.isEmpty(preCheckoutProduct.getErrorCheckout())) {
+                showToastMessage(preCheckoutProduct.getErrorCheckout());
+            }
             return;
         }
         preCheckoutProduct.setVoucherCodeCopied(voucherCodeCopiedState);

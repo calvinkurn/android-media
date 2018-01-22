@@ -218,7 +218,9 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
     public void onButtonBuyClicked(BaseDigitalProductView.PreCheckoutProduct preCheckoutProduct,
                                    boolean isInstantCheckoutChecked) {
         if (!preCheckoutProduct.isCanBeCheckout()) {
-            showToastMessage(preCheckoutProduct.getErrorCheckout());
+            if (!TextUtils.isEmpty(preCheckoutProduct.getErrorCheckout())) {
+                showToastMessage(preCheckoutProduct.getErrorCheckout());
+            }
             return;
         }
 

@@ -273,7 +273,7 @@ public class CategoryProductStyle1View extends
         boolean canBeCheckout = false;
         if (!data.getClientNumberList().isEmpty() && !isClientNumberValid()) {
             if (clientNumberInputView.getText().isEmpty()) {
-                preCheckoutProduct.setErrorCheckout(
+                clientNumberInputView.setErrorText(
                         context.getString(
                                 R.string.message_error_digital_client_number_not_filled
                         ) + " " + data.getClientNumberList().get(0).getText().toLowerCase()
@@ -281,7 +281,7 @@ public class CategoryProductStyle1View extends
             } else {
                 for (Validation validation : data.getClientNumberList().get(0).getValidation()) {
                     if (!Pattern.matches(validation.getRegex(), getClientNumber())) {
-                        preCheckoutProduct.setErrorCheckout(
+                        clientNumberInputView.setErrorText(
                                 validation.getError() + " " +
                                         data.getClientNumberList().get(0).getText().toLowerCase()
                         );
@@ -343,12 +343,16 @@ public class CategoryProductStyle1View extends
     }
 
     private boolean isClientNumberValid() {
-        for (Validation validation : data.getClientNumberList().get(0).getValidation()) {
-            if (!Pattern.matches(validation.getRegex(), getClientNumber())) {
-                return false;
+        if (clientNumberInputView.getText().isEmpty()) {
+            return false;
+        } else {
+            for (Validation validation : data.getClientNumberList().get(0).getValidation()) {
+                if (!Pattern.matches(validation.getRegex(), getClientNumber())) {
+                    return false;
+                }
             }
+            return true;
         }
-        return true;
     }
 
     @NonNull

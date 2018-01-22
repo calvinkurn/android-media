@@ -155,6 +155,11 @@ public class ClientNumberInputView extends LinearLayout {
         this.autoCompleteTextView.setText(text);
     }
 
+    public void setErrorText(String errorMessage) {
+        tvErrorClientNumber.setText(errorMessage);
+        tvErrorClientNumber.setVisibility(VISIBLE);
+    }
+
     public void setHint(String hint) {
         this.autoCompleteTextView.setHint(hint);
     }
@@ -284,10 +289,10 @@ public class ClientNumberInputView extends LinearLayout {
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
                 String tempInput = charSequence.toString();
                 btnClear.setVisibility(tempInput.length() > 0 ? VISIBLE : GONE);
+                tvErrorClientNumber.setText("");
+                tvErrorClientNumber.setVisibility(GONE);
                 if (tempInput.isEmpty()) {
                     actionListener.onClientNumberInputInvalid();
-                    tvErrorClientNumber.setText("");
-                    tvErrorClientNumber.setVisibility(GONE);
                 } else {
                     actionListener.onClientNumberInputValid(tempInput);
                 }
