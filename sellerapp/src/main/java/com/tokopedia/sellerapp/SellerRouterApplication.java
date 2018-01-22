@@ -649,6 +649,17 @@ public abstract class SellerRouterApplication extends MainApplication
                     customSubject, customMessage, source);
     }
 
+
+    @Override
+    public Intent getAskSellerIntent(Context context, String toShopId, String shopName, String customSubject, String customMessage, String source, String avatar) {
+        if(remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
+            return ChatRoomActivity.getAskSellerIntent(context, toShopId, shopName,
+                    customSubject, customMessage, source, avatar);
+        else
+            return SendMessageActivityOld.getAskSellerIntent(context, toShopId, shopName,
+                    customSubject, customMessage, source);
+    }
+
     @Override
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName, String
             source, String avatar) {
