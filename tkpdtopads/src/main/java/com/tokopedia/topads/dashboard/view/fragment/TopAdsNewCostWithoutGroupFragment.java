@@ -73,7 +73,6 @@ public class TopAdsNewCostWithoutGroupFragment extends TopAdsNewCostFragment<Top
 
     @Override
     protected void onClickedNext() {
-        if (firstTimeCheck()) return;
         if (!isError()) {
             super.onClickedNext();
             if (stepperModel == null) {
