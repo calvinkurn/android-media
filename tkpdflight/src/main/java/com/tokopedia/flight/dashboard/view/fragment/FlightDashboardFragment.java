@@ -67,6 +67,9 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     private static final String EXTRA_PASSENGER = "EXTRA_PASSENGER";
     private static final String EXTRA_CLASS = "EXTRA_CLASS";
 
+    private String[] extrasTripDeparture;
+    private String[] extrasTripReturn;
+
     AppCompatImageView reverseAirportImageView;
     LinearLayout airportDepartureLayout;
     AppCompatTextView airportDepartureTextInputView;
@@ -108,10 +111,6 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            Toast.makeText(getContext(), "trip : " + getArguments().getString(EXTRA_TRIP), Toast.LENGTH_SHORT).show();
-        }
     }
 
     @Nullable
@@ -247,8 +246,14 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.attachView(this);
-        presenter.initialize();
+        if (getArguments() != null) {
+            presenter.initialize(true);
+            transformExtras(getArguments());
+        } else {
+            presenter.initialize(false);
+        }
         KeyboardHandler.hideSoftKeyboard(getActivity());
+
     }
 
     @Override
@@ -523,6 +528,39 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
             startActivity(((FlightModuleRouter) getActivity().getApplication())
                     .getBannerWebViewIntent(getActivity(), FlightUrl.ALL_PROMO_LINK));
         }
+    }
+
+    private void transformExtras(Bundle extrasBundle) {
+        // transform trip extras
+        String[] tempExtras = extrasBundle.getString(EXTRA_TRIP).split(",");
+        extrasTripDeparture = tempExtras[0].split("_");
+        if(tempExtras.length > 1) {
+            viewModel.setOneWay(false);
+            extrasTripReturn = tempExtras[1].split("_");
+
+        }
+
+        // transform passenger count
+        tempExtras = extrasBundle.getString(EXTRA_PASSENGER).split("-");
+        FlightPassengerViewModel flightPassengerViewModel = new FlightPassengerViewModel(Integer.parseInt(tempExtras[0]), Integer.parseInt(tempExtras[1]), Integer.parseInt(tempExtras[2]));
+        presenter.onFlightPassengerChange(flightPassengerViewModel);
+
+        // transform class
+        int classId = Integer.parseInt(extrasBundle.getString(EXTRA_CLASS));
+        String classTitle = "";
+        switch (classId) {
+            case 1 :
+                classTitle = "Ekonomi";
+                break;
+            case 2 :
+                classTitle = "Bisnis";
+                break;
+            case 3 :
+                classTitle = "Utama";
+                break;
+        }
+        FlightClassViewModel flightClassViewModel = new FlightClassViewModel(Integer.parseInt(extrasBundle.getString(EXTRA_CLASS)), classTitle);
+        presenter.onFlightClassesChange(flightClassViewModel);
     }
 
     @Override

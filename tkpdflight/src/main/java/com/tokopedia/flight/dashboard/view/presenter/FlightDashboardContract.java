@@ -67,7 +67,7 @@ public interface FlightDashboardContract {
 
         void onRoundTripChecked();
 
-        void initialize();
+        void initialize(boolean fromApplink);
 
         void onReverseAirportButtonClicked();
 
