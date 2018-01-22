@@ -67,7 +67,7 @@ public class FragmentHotListV2 extends TkpdBaseV4Fragment implements HotListView
 
     @Override
     protected String getScreenName() {
-        return AppScreen.SCREEN_HOME_HOTLIST;
+        return AppScreen.UnifyScreenTracker.SCREEN_UNIFY_HOME_HOTLIST;
     }
 
     private Unbinder unbinder;

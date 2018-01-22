@@ -81,11 +81,19 @@ public class KeroppiParam {
 
         params.put(CAT_ID, orderData.getCatId());
         params.put(INSURANCE, "1");
-        params.put(PRODUCT_INSURANCE, "0");
+        params.put(PRODUCT_INSURANCE, isProductMustInsurance(orderData));
         String rawPrice = getRawPrice(orderData.getPriceTotal());
         params.put(ORDER_VALUE, rawPrice);
 
         return params;
+    }
+
+    private static String isProductMustInsurance(OrderData orderData) {
+        if (orderData.getMustInsurance() == null) {
+            return "0";
+        } else {
+            return String.valueOf(orderData.getMustInsurance());
+        }
     }
 
     private static String generatePath(String districtID, String postalCode, String lat,
@@ -117,11 +125,20 @@ public class KeroppiParam {
         params.put(TOKEN, token);
         params.put(ORDER_VALUE, cartItem.getCartTotalProductPrice());
         params.put(CAT_ID, cartItem.getCartCatId());
-        params.put(PRODUCT_INSURANCE, cartItem.getCartInsuranceProd() == 1 ? "1" : "0");
+        params.put(PRODUCT_INSURANCE, getProductInsurance(cartItem));
         params.put(UT, ut);
         params.put(INSURANCE, "1");
 
         return params;
+    }
+
+    private static String getProductInsurance(CartItem cartItem) {
+        for (CartProduct cartProduct : cartItem.getCartProducts()) {
+            if (cartProduct.getProductMustInsurance().equals("1")) {
+                return "1";
+            }
+        }
+        return "0";
     }
 
 }

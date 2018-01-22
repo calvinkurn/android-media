@@ -72,7 +72,7 @@ public interface RetrofitInteractor {
                               @NonNull ProductVariantListener listener);
 
     void getPromo(@NonNull Context context, @NonNull String targetType, @NonNull String userId,
-                              @NonNull PromoListener listener);
+                  @NonNull String shopType, @NonNull PromoListener listener);
 
     void getMostHelpfulReview(@NonNull Context context, @NonNull String productId,
                               @NonNull String shopId, @NonNull MostHelpfulListener listener);

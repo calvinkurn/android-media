@@ -307,10 +307,12 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             case 1:
                 spInsurance.setSelection(0);
                 spInsurance.setEnabled(false);
+                orderData.setMustInsurance(1);
                 break;
             default:
                 spInsurance.setSelection(1);
                 spInsurance.setEnabled(true);
+                orderData.setMustInsurance(0);
                 break;
         }
         if (data.getProductPreorder() != null
@@ -628,7 +630,9 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 renderFormAddress(orderData.getAddress());
                 viewFieldLocation.setVisibility(View.GONE);
                 clearRetryInstantCourierSnackbar();
-                setInsuranceInfoButtonVisibility(product);
+                if (product.getInsuranceMode() != null) {
+                    setInsuranceInfoButtonVisibility(product);
+                }
             }
             if (product.getMaxHoursId() != null && product.getDescHoursId() != null) {
                 arrowMaxHour.setText(product.getMaxHoursId());
@@ -667,8 +671,13 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             } else if (product.getInsuranceMode() == KeroppiConstants.InsuranceType.NO) {
                 spInsurance.setEnabled(false);
                 spInsurance.setSelection(1);
-            } else {
+            } else if (product.getInsuranceMode() == KeroppiConstants.InsuranceType.OPTIONAL) {
                 spInsurance.setEnabled(true);
+                if (product.getInsuranceUsedDefault() == KeroppiConstants.InsuranceUsedDefault.YES) {
+                    spInsurance.setSelection(0);
+                } else if (product.getInsuranceUsedDefault() == KeroppiConstants.InsuranceUsedDefault.NO) {
+                    spInsurance.setSelection(1);
+                }
             }
         } else {
             spInsurance.setEnabled(true);

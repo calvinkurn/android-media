@@ -7,7 +7,7 @@
 
     <TextView
         android:id="@+id/suggestion_text_view"
-        style="@style/TextView.Body1.BlackSecondary"
+        style="@style/TextView.Small.BlackSecondary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
@@ -17,11 +17,9 @@
 
     <TextView
         android:id="@+id/result_count_text_view"
-        style="@style/TextView.Body1.BlackSecondary"
+        style="@style/TextView.Small.BlackSecondary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/result_count_padding"
-        android:paddingRight="@dimen/result_count_padding"
-        android:paddingTop="@dimen/result_count_padding"
+        android:padding="@dimen/result_count_padding"
         tools:text="7.828.192 Produk" />
 </LinearLayout>

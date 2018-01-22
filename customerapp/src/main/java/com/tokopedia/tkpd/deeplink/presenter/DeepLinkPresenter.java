@@ -14,4 +14,7 @@ public interface DeepLinkPresenter extends DeepLinkAnalyticsPresenter {
     void checkUriLogin(Uri uriData);
 
     void actionGotUrlFromApplink(Uri uriData);
+
+    void mapUrlToApplink(Uri uri);
+
 }

@@ -8,9 +8,11 @@ import android.os.Parcelable;
  */
 
 public class Product implements Parcelable {
+    public static final int STATUS_OUT_OF_STOCK = 3;
+    public static final int STATUS_INACTIVE = 2;
 
     private Attributes attributes;
-    private int id;
+    private String id;
     private Relationship relationships;
     private String type;
 
@@ -19,7 +21,7 @@ public class Product implements Parcelable {
 
     protected Product(Parcel in) {
         attributes = in.readParcelable(Attributes.class.getClassLoader());
-        id = in.readInt();
+        id = in.readString();
         relationships = in.readParcelable(Relationship.class.getClassLoader());
         type = in.readString();
     }
@@ -44,7 +46,7 @@ public class Product implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(attributes, flags);
-        dest.writeInt(id);
+        dest.writeString(id);
         dest.writeParcelable(relationships, flags);
         dest.writeString(type);
     }
@@ -57,11 +59,11 @@ public class Product implements Parcelable {
         this.attributes = attributes;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
