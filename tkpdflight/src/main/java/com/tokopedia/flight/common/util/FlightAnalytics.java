@@ -4,6 +4,8 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
+import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
+import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 
 import java.util.ArrayList;
@@ -127,27 +129,75 @@ public class FlightAnalytics {
         );
     }
 
-    public void eventDetailPriceTabClick(String label) {
+    public void eventDetailPriceTabClick(FlightDetailViewModel viewModel) {
+        StringBuilder result = new StringBuilder();
+
+        if (viewModel.getRouteList() != null && viewModel.getRouteList().size() > 0) {
+            List<String> airlines = new ArrayList<>();
+            for (FlightDetailRouteViewModel airlineDB : viewModel.getRouteList()) {
+                if (!airlines.contains(airlineDB.getAirlineCode())) {
+                    airlines.add(airlineDB.getAirlineCode());
+                }
+            }
+            result.append(TextUtils.join(",", airlines));
+
+            String timeResult = viewModel.getRouteList().get(0).getDepartureTimestamp();
+            timeResult += "-" + viewModel.getRouteList().get(viewModel.getRouteList().size() - 1).getArrivalTimestamp();
+            result.append(timeResult);
+        }
+        result.append(Label.NORMAL_PRICE);
         analyticTracker.sendEventTracking(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.CLICK_PRICE_TAB,
-                label
+                result.toString()
         );
     }
 
-    public void eventDetailFacilitiesTabClick(String label) {
+    public void eventDetailFacilitiesTabClick(FlightDetailViewModel viewModel) {
+        StringBuilder result = new StringBuilder();
+
+        if (viewModel.getRouteList() != null && viewModel.getRouteList().size() > 0) {
+            List<String> airlines = new ArrayList<>();
+            for (FlightDetailRouteViewModel airlineDB : viewModel.getRouteList()) {
+                if (!airlines.contains(airlineDB.getAirlineCode())) {
+                    airlines.add(airlineDB.getAirlineCode());
+                }
+            }
+            result.append(TextUtils.join(",", airlines));
+
+            String timeResult = viewModel.getRouteList().get(0).getDepartureTimestamp();
+            timeResult += "-" + viewModel.getRouteList().get(viewModel.getRouteList().size() - 1).getArrivalTimestamp();
+            result.append(timeResult);
+        }
+        result.append(Label.NORMAL_PRICE);
         analyticTracker.sendEventTracking(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.CLICK_FACILITIES_TAB,
-                label
+                result.toString()
         );
     }
 
-    public void eventDetailTabClick(String label) {
+    public void eventDetailTabClick(FlightDetailViewModel viewModel) {
+        StringBuilder result = new StringBuilder();
+
+        if (viewModel.getRouteList() != null && viewModel.getRouteList().size() > 0) {
+            List<String> airlines = new ArrayList<>();
+            for (FlightDetailRouteViewModel airlineDB : viewModel.getRouteList()) {
+                if (!airlines.contains(airlineDB.getAirlineCode())) {
+                    airlines.add(airlineDB.getAirlineCode());
+                }
+            }
+            result.append(TextUtils.join(",", airlines));
+
+            String timeResult = viewModel.getRouteList().get(0).getDepartureTimestamp();
+            timeResult += "-" + viewModel.getRouteList().get(viewModel.getRouteList().size() - 1).getArrivalTimestamp();
+            result.append(timeResult);
+        }
+        result.append(Label.NORMAL_PRICE);
         analyticTracker.sendEventTracking(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.CLICK_DETAIL_TAB,
-                label
+                result.toString()
         );
     }
 

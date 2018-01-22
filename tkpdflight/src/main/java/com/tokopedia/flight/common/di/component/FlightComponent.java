@@ -11,6 +11,7 @@ import com.tokopedia.flight.common.di.qualifier.FlightQualifier;
 import com.tokopedia.flight.common.di.scope.FlightScope;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.common.view.BaseFlightActivity;
+import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 
 import dagger.Component;
 import retrofit2.Retrofit;
@@ -34,4 +35,6 @@ public interface FlightComponent {
     UserSession userSession();
 
     void inject(BaseFlightActivity baseFlightActivity);
+
+    void inject(FlightDetailActivity flightDetailActivity);
 }
