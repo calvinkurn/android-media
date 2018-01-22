@@ -390,6 +390,11 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     }
 
     @Override
+    public void onErrorVerifyOtpCode(int resId) {
+        onErrorVerifyOtpCode(getString(resId));
+    }
+
+    @Override
     public void showLoadingProgress() {
         if (progressDialog == null)
             progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog

@@ -4,6 +4,7 @@ import com.tokopedia.core.network.retrofit.response.ErrorCode;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.otp.cotp.view.viewlistener.Verification;
 import com.tokopedia.otp.data.model.ValidateOtpLoginDomain;
+import com.tokopedia.session.R;
 
 import rx.Subscriber;
 
@@ -33,7 +34,7 @@ public class ValidateOtpLoginSubscriber extends Subscriber<ValidateOtpLoginDomai
     public void onNext(ValidateOtpLoginDomain validateOTPLoginDomain) {
         view.dismissLoadingProgress();
         if (!validateOTPLoginDomain.getValidateOtpDomain().isSuccess()) {
-            view.onErrorVerifyOtpCode(ErrorHandler.getDefaultErrorCodeMessage(ErrorCode.UNSUPPORTED_FLOW));
+            view.onErrorVerifyOtpCode(R.string.default_request_error_unknown);
         } else if (validateOTPLoginDomain.getValidateOtpDomain().isSuccess()
                 && validateOTPLoginDomain.getMakeLoginDomain().isLogin()) {
             if (!validateOTPLoginDomain.getMakeLoginDomain().isMsisdnVerified()) {

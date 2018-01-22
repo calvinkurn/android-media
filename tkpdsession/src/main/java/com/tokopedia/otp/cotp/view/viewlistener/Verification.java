@@ -30,6 +30,8 @@ public interface Verification {
         void onGoToPhoneVerification();
 
         void onErrorVerifyLogin(String errorMessage);
+
+        void onErrorVerifyOtpCode(int resId);
     }
 
     interface Presenter extends CustomerPresenter<Verification.View> {
