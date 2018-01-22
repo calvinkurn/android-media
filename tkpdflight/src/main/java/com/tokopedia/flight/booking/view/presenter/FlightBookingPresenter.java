@@ -19,6 +19,7 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.mapper.FlightBookingCartDataMapper;
+import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
@@ -57,18 +58,39 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     private FlightBookingCartDataMapper flightBookingCartDataMapper;
     private FlightBookingGetPhoneCodeUseCase flightBookingGetPhoneCodeUseCase;
     private CompositeSubscription compositeSubscription;
+    private FlightAnalytics flightAnalytics;
 
     @Inject
     public FlightBookingPresenter(FlightBookingGetSingleResultUseCase flightBookingGetSingleResultUseCase,
                                   FlightAddToCartUseCase flightAddToCartUseCase,
                                   FlightBookingCartDataMapper flightBookingCartDataMapper,
-                                  FlightBookingGetPhoneCodeUseCase flightBookingGetPhoneCodeUseCase) {
+                                  FlightBookingGetPhoneCodeUseCase flightBookingGetPhoneCodeUseCase, FlightAnalytics flightAnalytics) {
         super(flightAddToCartUseCase, flightBookingCartDataMapper);
         this.flightBookingGetSingleResultUseCase = flightBookingGetSingleResultUseCase;
         this.flightAddToCartUseCase = flightAddToCartUseCase;
         this.flightBookingCartDataMapper = flightBookingCartDataMapper;
         this.flightBookingGetPhoneCodeUseCase = flightBookingGetPhoneCodeUseCase;
+        this.flightAnalytics = flightAnalytics;
         this.compositeSubscription = new CompositeSubscription();
+    }
+
+    public static String transform(String phoneRawString) {
+        phoneRawString = checkStart(phoneRawString);
+        phoneRawString = phoneRawString.replace("-", "");
+        StringBuilder phoneNumArr = new StringBuilder(phoneRawString);
+        if (phoneNumArr.length() > 0) {
+            phoneNumArr.replace(0, 1, "");
+        }
+        return phoneNumArr.toString();
+    }
+
+    private static String checkStart(String phoneRawString) {
+        if (phoneRawString.startsWith("62")) {
+            phoneRawString = phoneRawString.replaceFirst("62", "0");
+        } else if (phoneRawString.startsWith("+62")) {
+            phoneRawString = phoneRawString.replaceFirst("\\+62", "0");
+        }
+        return phoneRawString;
     }
 
     @Override
@@ -201,11 +223,13 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
 
     @Override
     public void onDepartureInfoClicked() {
+        flightAnalytics.eventDetailClick(getView().getCurrentCartPassData().getDepartureTrip());
         getView().navigateToDetailTrip(getView().getCurrentCartPassData().getDepartureTrip());
     }
 
     @Override
     public void onReturnInfoClicked() {
+        flightAnalytics.eventDetailClick(getView().getCurrentCartPassData().getDepartureTrip());
         getView().navigateToDetailTrip(getView().getCurrentCartPassData().getReturnTrip());
     }
 
@@ -260,6 +284,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                     @Override
                     public void onNext(FlightBookingCartData flightBookingCartData) {
                         if (isViewAttached()) {
+                            flightAnalytics.eventAddToCart(flightBookingCartData.getDepartureTrip(), flightBookingCartData.getReturnTrip());
                             getView().hideFullPageLoading();
                             renderUi(flightBookingCartData);
                         }
@@ -337,7 +362,6 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     public void onResume() {
 
     }
-
 
     @Override
     public void onPause() {
@@ -475,7 +499,6 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         return getView().getReturnTripId() != null && getView().getReturnTripId().length() > 0;
     }
 
-
     private boolean validateFields() {
         boolean isValid = true;
         if (getView().getContactName().length() == 0) {
@@ -600,24 +623,5 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
             }
 
         return false;
-    }
-
-    public static String transform(String phoneRawString){
-        phoneRawString = checkStart(phoneRawString);
-        phoneRawString = phoneRawString.replace("-","");
-        StringBuilder phoneNumArr = new StringBuilder(phoneRawString);
-        if (phoneNumArr.length() > 0){
-            phoneNumArr.replace(0,1, "");
-        }
-        return phoneNumArr.toString();
-    }
-
-    private static String checkStart(String phoneRawString) {
-        if(phoneRawString.startsWith("62")){
-            phoneRawString = phoneRawString.replaceFirst("62","0");
-        }else if(phoneRawString.startsWith("+62")) {
-            phoneRawString = phoneRawString.replaceFirst("\\+62","0");
-        }
-        return phoneRawString;
     }
 }

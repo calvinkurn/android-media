@@ -201,11 +201,30 @@ public class FlightAnalytics {
         );
     }
 
-    public void eventDetailClick(String label) {
+    public String transform(FlightDetailViewModel viewModel) {
+        StringBuilder result = new StringBuilder();
+        if (viewModel.getRouteList() != null && viewModel.getRouteList().size() > 0) {
+            List<String> airlines = new ArrayList<>();
+            for (FlightDetailRouteViewModel airlineDB : viewModel.getRouteList()) {
+                if (!airlines.contains(airlineDB.getAirlineCode())) {
+                    airlines.add(airlineDB.getAirlineCode());
+                }
+            }
+            result.append(TextUtils.join(",", airlines));
+
+            String timeResult = viewModel.getRouteList().get(0).getDepartureTimestamp();
+            timeResult += "-" + viewModel.getRouteList().get(viewModel.getRouteList().size() - 1).getArrivalTimestamp();
+            result.append(timeResult);
+        }
+        result.append(Label.NORMAL_PRICE);
+        return result.toString();
+    }
+
+    public void eventDetailClick(FlightDetailViewModel viewModel) {
         analyticTracker.sendEventTracking(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.BOOKING_DETAIL,
-                label
+                transform(viewModel)
         );
     }
 
@@ -257,11 +276,12 @@ public class FlightAnalytics {
         );
     }
 
-    public void eventAddToCart(String label) {
+    public void eventAddToCart(FlightDetailViewModel viewModel) {
+
         analyticTracker.sendEventTracking(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.ADD_TO_CART,
-                label
+                transform(viewModel)
         );
     }
 
@@ -271,6 +291,13 @@ public class FlightAnalytics {
                 Category.SELECT_PASSENGER,
                 adult + "-" + children + "-" + infant
         );
+    }
+
+    public void eventAddToCart(FlightDetailViewModel departureViewModel, FlightDetailViewModel returnViewModel) {
+        if (departureViewModel != null)
+            eventAddToCart(departureViewModel);
+        if (returnViewModel != null)
+            eventAddToCart(returnViewModel);
     }
 
     public static final class Screen {
