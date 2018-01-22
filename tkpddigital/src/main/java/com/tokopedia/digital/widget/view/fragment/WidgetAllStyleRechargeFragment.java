@@ -248,17 +248,7 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
     }
 
     @Override
-    public void onProductChooserStyle1Clicked(List<Product> productListData, String operatorId, String titleChooser) {
-
-    }
-
-    @Override
-    public void onProductChooserStyle2Clicked(List<Product> productListData, String titleChooser) {
-
-    }
-
-    @Override
-    public void onProductChooserStyle3Clicked(List<Product> productListData, String operatorId, String titleChooser) {
+    public void onProductChooserClicked(List<Product> productListData, String operatorId, String titleChooser) {
 
     }
 

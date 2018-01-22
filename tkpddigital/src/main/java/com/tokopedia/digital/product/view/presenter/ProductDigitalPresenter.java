@@ -114,6 +114,8 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
     public void processGetCategoryAndBannerData(
             String categoryId, String operatorId, String productId, String clientNumber
     ) {
+        view.showInitialProgressLoading();
+
         digitalCategoryUseCase.execute(digitalCategoryUseCase.createRequestParam(
                 categoryId, PARAM_VALUE_SORT
         ), getSubscriberProductDigitalData());

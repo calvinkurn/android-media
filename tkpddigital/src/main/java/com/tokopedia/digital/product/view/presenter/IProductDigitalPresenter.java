@@ -20,10 +20,6 @@ public interface IProductDigitalPresenter {
             String categoryId, String operatorId, String productId, String clientNumber
     );
 
-//    void processStoreLastInputClientNumberByCategory(
-//            String lastClientNumber, String categoryId, String operatorId, String productId
-//    );
-
     ContactData processGenerateContactDataFromUri(Uri contactURI);
 
     void processStateDataToReRender();

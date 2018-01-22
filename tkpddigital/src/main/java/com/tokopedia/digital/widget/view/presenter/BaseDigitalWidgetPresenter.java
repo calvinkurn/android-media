@@ -45,6 +45,7 @@ public abstract class BaseDigitalWidgetPresenter implements IBaseDigitalWidgetPr
         );
     }
 
+    @Deprecated
     @Override
     public void storeLastClientNumberTyped(String categoryId, String clientNumber, Product selectedProduct) {
         if (localCacheHandlerLastClientNumber == null)

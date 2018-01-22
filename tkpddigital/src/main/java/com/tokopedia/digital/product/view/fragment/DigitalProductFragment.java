@@ -697,13 +697,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
             presenter.storeLastClientNumberTyped(categoryId, selectedOperator.getOperatorId(),
                     digitalProductView.getClientNumber(), selectedProduct.getProductId());
-
-//            presenter.processStoreLastInputClientNumberByCategory(
-//                    digitalProductView.getClientNumber(),
-//                    categoryDataState.getCategoryId(),
-//                    selectedOperator != null ? selectedOperator.getOperatorId() : "",
-//                    selectedProduct != null ? selectedProduct.getProductId() : ""
-//            );
         }
     }
 
@@ -742,31 +735,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
-    public void onProductChooserStyle1Clicked(List<Product> productListData, String operatorId, String titleChooser) {
-        UnifyTracking.eventSelectProduct(categoryDataState.getName(), categoryDataState.getName());
-
-        startActivityForResult(
-                DigitalChooserActivity.newInstanceProductChooser(
-                        getActivity(), categoryId, operatorId, titleChooser
-                ),
-                IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER
-        );
-    }
-
-    @Override
-    public void onProductChooserStyle2Clicked(List<Product> productListData, String titleChooser) {
-        UnifyTracking.eventSelectProduct(categoryDataState.getName(), categoryDataState.getName());
-
-        startActivityForResult(
-                DigitalChooserActivity.newInstanceProductChooser(
-                        getActivity(), categoryId, operatorSelectedState.getOperatorId(), titleChooser
-                ),
-                IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER
-        );
-    }
-
-    @Override
-    public void onProductChooserStyle3Clicked(List<Product> productListData, String operatorId, String titleChooser) {
+    public void onProductChooserClicked(List<Product> productListData, String operatorId, String titleChooser) {
         UnifyTracking.eventSelectProduct(categoryDataState.getName(), categoryDataState.getName());
 
         startActivityForResult(
