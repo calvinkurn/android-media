@@ -19,6 +19,7 @@ public class DefaultSearchSubscriber<D2 extends BaseDiscoveryContract.View>
     private static final int DISCOVERY_URL_CATEGORY = 2;
     private static final int DISCOVERY_URL_SEARCH = 3;
     private static final int DISCOVERY_URL_CATALOG = 4;
+    private static final int DISCOVERY_URL_IMAGE_SEARCH = 4;
     private static final int DISCOVERY_URL_UNKNOWN = -1;
 
     private final SearchParameter searchParameter;
@@ -29,6 +30,12 @@ public class DefaultSearchSubscriber<D2 extends BaseDiscoveryContract.View>
     public DefaultSearchSubscriber(SearchParameter searchParameter, boolean forceSearch, D2 discoveryView) {
         this.searchParameter = searchParameter;
         this.forceSearch = forceSearch;
+        this.discoveryView = discoveryView;
+    }
+
+    public DefaultSearchSubscriber(D2 discoveryView) {
+        this.searchParameter = null;
+//        this.forceSearch = forceSearch;
         this.discoveryView = discoveryView;
     }
 

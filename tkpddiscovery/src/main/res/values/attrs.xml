@@ -3,6 +3,7 @@
     <declare-styleable name="DiscoverySearchView">
         <attr name="searchBackground" format="integer" />
         <attr name="searchVoiceIcon" format="integer" />
+        <attr name="searchImageIcon" format="integer" />
         <attr name="searchCloseIcon" format="integer" />
         <attr name="searchBackIcon" format="integer" />
         <attr name="searchSuggestionIcon" format="integer" />

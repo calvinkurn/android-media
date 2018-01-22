@@ -49,6 +49,14 @@
                 android:src="@drawable/ic_navigation_arrow_back" />
 
             <ImageButton
+                android:id="@+id/action_image_search_btn"
+                style="@style/MSV_ImageButton"
+                android:layout_toLeftOf="@+id/action_voice_btn"
+                android:layout_toStartOf="@+id/action_voice_btn"
+                android:tint="@color/grey"
+                android:src="@drawable/ic_camera_alt_black_24dp" />
+
+            <ImageButton
                 android:id="@+id/action_voice_btn"
                 style="@style/MSV_ImageButton"
                 android:layout_alignParentEnd="true"

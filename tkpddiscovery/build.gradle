@@ -2,6 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'android-apt'
 apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'maven-publish'
+apply plugin: 'com.apollographql.android'
 
 def getArtifactVersionCode() {
     return project.hasProperty('artifactVersion') ? artifactVersion : '1.0';
@@ -122,6 +123,13 @@ dependencies {
 
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
+    compile rootProject.ext.apolloDependencies.apolloRxSupport
+    compile rootProject.ext.apolloDependencies.apolloRuntime
+    compile rootProject.ext.apolloDependencies.apolloAndroidSupport
+
+    compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
+    apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
 
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler

@@ -41,6 +41,11 @@ public class BaseDiscoveryPresenter<T extends CustomerView, D extends BaseDiscov
         checkDiscoveryViewAttached();
     }
 
+    @Override
+    public void requestImageSearch(byte[] imageByteArray) {
+        checkDiscoveryViewAttached();
+    }
+
     private void checkDiscoveryViewAttached() {
         if (!isDiscoveryViewAttached()) {
             throw new BaseDiscoveryPresenter.DiscoveryViewNotAttachedException();

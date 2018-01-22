@@ -1,5 +1,7 @@
 package com.tokopedia.discovery.newdiscovery.base;
 
+import com.tokopedia.core.network.entity.discovery.ImageSearchResponse;
+import com.tokopedia.discovery.imagesearch.domain.model.ImageSearchResultModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 
@@ -23,6 +25,8 @@ public interface BaseDiscoveryContract {
 
         void onHandleResponseSearch(ProductViewModel productViewModel);
 
+        void onHandleImageSearchResponse(ImageSearchResponse imageSearchResponse);
+
         void onHandleResponseIntermediary(String departmentId);
 
         void onHandleOfficialStorePage();
@@ -39,5 +43,7 @@ public interface BaseDiscoveryContract {
         void setDiscoveryView(D discoveryView);
 
         void requestProduct(SearchParameter searchParameter, boolean forceSearch, boolean requestOfficialStoreBanner);
+
+        void requestImageSearch(byte[] imageByteArray);
     }
 }

@@ -3,6 +3,8 @@ package com.tokopedia.discovery.newdiscovery.di.module;
 import android.content.Context;
 
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
+import com.tokopedia.discovery.imagesearch.di.module.ImageSearchModule;
+import com.tokopedia.discovery.imagesearch.domain.usecase.GetImageSearchUseCase;
 import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.AddWishlistActionUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
@@ -23,7 +25,7 @@ import dagger.Provides;
  */
 
 @SearchScope
-@Module(includes = {ProductModule.class, BannerModule.class, ApiModule.class, CatalogModule.class, ShopModule.class, AttributeModule.class})
+@Module(includes = {ProductModule.class, ImageSearchModule.class, BannerModule.class, ApiModule.class, CatalogModule.class, ShopModule.class, AttributeModule.class})
 public class SearchModule {
 
     @SearchScope
@@ -40,8 +42,8 @@ public class SearchModule {
 
     @SearchScope
     @Provides
-    SearchPresenter provideSearchPresenter(GetProductUseCase getProductUseCase) {
-        return new SearchPresenter(getProductUseCase);
+    SearchPresenter provideSearchPresenter(GetProductUseCase getProductUseCase, GetImageSearchUseCase getImageSearchUseCase) {
+        return new SearchPresenter(getProductUseCase, getImageSearchUseCase);
     }
 
 }

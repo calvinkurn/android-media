@@ -24,20 +24,27 @@ import java.util.UUID;
  */
 public class UploadImageDialog {
 
-    private static final int REQUEST_CAMERA = 1;
-    private static final int REQUEST_GALLERY = 2;
+    public static final int REQUEST_CAMERA = 1;
+    public static final int REQUEST_GALLERY = 2;
     private final Context context;
+    private Activity activity;
     private Fragment fragment;
     private String cameraFileLoc;
 
     public interface UploadImageDialogListener {
         void onSuccess(String data);
+
         void onFailed();
     }
 
     public UploadImageDialog(Fragment fragment) {
         this.fragment = fragment;
         this.context = fragment.getActivity();
+    }
+
+    public UploadImageDialog(Activity fragment) {
+        this.activity = fragment;
+        this.context = fragment;
     }
 
     public void openImagePicker() {
@@ -56,7 +63,11 @@ public class UploadImageDialog {
     }
 
     private void startActivity(Intent intent, int requestCode) {
-        fragment.startActivityForResult(intent, requestCode);
+        if (fragment != null)
+            fragment.startActivityForResult(intent, requestCode);
+
+        else if (activity != null)
+            activity.startActivityForResult(intent, requestCode);
     }
 
     public File getOutputMediaFile() {
@@ -88,7 +99,7 @@ public class UploadImageDialog {
     }
 
     public void onResult(int requestCode, int resultCode, Intent intent, UploadImageDialogListener listener) {
-        if(requestCode == REQUEST_CAMERA || requestCode == REQUEST_GALLERY) {
+        if (requestCode == REQUEST_CAMERA || requestCode == REQUEST_GALLERY) {
             switch (resultCode) {
                 case GalleryBrowser.RESULT_CODE:
                     BitmapFactory.Options options = new BitmapFactory.Options();

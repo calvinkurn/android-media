@@ -70,6 +70,11 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
+            android:name=".imagesearch.domain.usecase.ImageSearchResultActivity"
+            android:label="Image Search"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Tokopedia3" />
+        <activity
             android:name=".intermediary.view.adapter.YoutubeIntermediaryActivity"
             android:screenOrientation="landscape" />
         <activity android:name=".categorynav.view.CategoryNavigationActivity" />

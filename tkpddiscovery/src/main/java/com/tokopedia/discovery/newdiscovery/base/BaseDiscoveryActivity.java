@@ -1,6 +1,7 @@
 package com.tokopedia.discovery.newdiscovery.base;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.tkpd.library.utils.URLParser;
 import com.tokopedia.core.app.BaseActivity;
@@ -8,7 +9,10 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.core.TkpdOkHttpBuilder;
+import com.tokopedia.core.network.entity.discovery.ImageSearchResponse;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
+import com.tokopedia.discovery.imagesearch.domain.model.ImageSearchResultModel;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
 import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
@@ -103,6 +107,14 @@ public class BaseDiscoveryActivity
     public void onHandleResponseSearch(ProductViewModel productViewModel) {
         SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop());
         finish();
+    }
+
+    @Override
+    public void onHandleImageSearchResponse(ImageSearchResponse imageSearchResponse) {
+
+        // TODO: 1/18/18 handle image Search Response from SDK
+
+        Toast.makeText(this,imageSearchResponse.getOasSearch().getAuctions().size() + " results fetched.", Toast.LENGTH_SHORT).show();
     }
 
     @Override

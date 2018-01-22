@@ -1,15 +1,25 @@
 package com.tokopedia.discovery.newdiscovery.base;
 
+import android.Manifest;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.FrameLayout;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
@@ -17,23 +27,39 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.manage.people.profile.customdialog.UploadImageDialog;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.helper.OfficialStoreQueryHelper;
-import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
+import com.tokopedia.discovery.imagesearch.domain.usecase.SearchImageAsyncTask;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
 
 /**
  * Created by hangnadi on 10/3/17.
  */
 
+@RuntimePermissions
 public class DiscoveryActivity extends BaseDiscoveryActivity implements
         DiscoverySearchView.SearchViewListener,
+        DiscoverySearchView.ImageSearchClickListener,
         DiscoverySearchView.OnQueryTextListener,
         BottomNavigationListener {
 
@@ -45,6 +71,9 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
     private MenuItem searchItem;
     private boolean isLastRequestForceSearch;
+
+    private boolean fromCamera;
+    private UploadImageDialog uploadDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,6 +148,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         searchView.setActivity(this);
         searchView.setOnQueryTextListener(this);
         searchView.setOnSearchViewListener(this);
+        searchView.setOnImageSearchClickListener(this);
     }
 
     protected void setLastQuerySearchView(String lastQuerySearchView) {
@@ -349,9 +379,57 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     }
 
     @Override
+    public void onImageSearchClicked() {
+        uploadDialog = new UploadImageDialog(DiscoveryActivity.this);
+        showUploadDialog();
+    }
+
+    public void showUploadDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(getString(com.tokopedia.core.R.string.dialog_upload_option));
+        builder.setPositiveButton(getString(com.tokopedia.core.R.string.title_gallery), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                DiscoveryActivityPermissionsDispatcher.actionImagePickerWithCheck(DiscoveryActivity.this);
+
+            }
+        }).setNegativeButton(getString(com.tokopedia.core.R.string.title_camera), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                DiscoveryActivityPermissionsDispatcher.actionCameraWithCheck(DiscoveryActivity.this);
+            }
+        });
+
+        Dialog dialog = builder.create();
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.show();
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
+
+        if (requestCode == UploadImageDialog.REQUEST_CAMERA || requestCode == UploadImageDialog.REQUEST_GALLERY) {
+
+            fromCamera = requestCode == UploadImageDialog.REQUEST_CAMERA;
+
+            uploadDialog.onResult(
+                    requestCode,
+                    resultCode,
+                    data,
+                    new UploadImageDialog.UploadImageDialogListener() {
+                        @Override
+                        public void onSuccess(String imagePath) {
+                            onImagePickedSuccess(imagePath);
+                        }
+
+                        @Override
+                        public void onFailed() {
+                            showSnackBarView(getString(com.tokopedia.core.R.string.error_gallery_valid));
+                        }
+                    });
+
+        } else if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case DiscoverySearchView.REQUEST_VOICE:
                     List<String> results = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
@@ -364,5 +442,193 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
                     break;
             }
         }
+    }
+
+    private void onImagePickedSuccess(String imagePath) {
+
+        File imgFile = new File(imagePath);
+        if (imgFile.exists()) {
+            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+
+            myBitmap = resize(myBitmap, 400, 400);
+
+            if (fromCamera) {
+                addImageToGallery(myBitmap);
+            }
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            myBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+
+            byte[] byteArray = stream.toByteArray();
+
+
+            /*SearchImageAsyncTask searchImageAsyncTask = new SearchImageAsyncTask(this);
+            searchImageAsyncTask.execute(byteArray);*/
+
+
+            getPresenter().requestImageSearch(byteArray);
+        }
+
+
+    }
+
+    private Bitmap resize(Bitmap image, int maxWidth, int maxHeight) {
+        if (maxHeight > 0 && maxWidth > 0) {
+            int width = image.getWidth();
+            int height = image.getHeight();
+            float ratioBitmap = (float) width / (float) height;
+            float ratioMax = (float) maxWidth / (float) maxHeight;
+
+            int finalWidth = maxWidth;
+            int finalHeight = maxHeight;
+            if (ratioMax > ratioBitmap) {
+                finalWidth = (int) ((float) maxHeight * ratioBitmap);
+            } else {
+                finalHeight = (int) ((float) maxWidth / ratioBitmap);
+            }
+            image = Bitmap.createScaledBitmap(image, finalWidth, finalHeight, true);
+            return image;
+        } else {
+            return image;
+        }
+    }
+
+    public void addImageToGallery(final Bitmap filePath) {
+
+        Random generator = new Random();
+        int n = 10000;
+        n = generator.nextInt(n);
+        String fname = "Image-" + n;
+        MediaStore.Images.Media.insertImage(getContentResolver(), filePath, fname, "");
+
+
+        /*ContentValues values = new ContentValues();
+
+        values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+        values.put(MediaStore.MediaColumns.DATA, filePath);
+
+        getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);*/
+    }
+
+    private void saveImage(Bitmap bitmap) {
+
+        File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        Random generator = new Random();
+        int n = 10000;
+        n = generator.nextInt(n);
+        String fname = "Image-" + n + ".jpg";
+
+        File file = new File(dir, fname);
+        FileOutputStream fOut;
+        try {
+            fOut = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 70, fOut);
+            fOut.flush();
+            fOut.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void saveImageToGallery(Bitmap finalBitmap) {
+
+        String root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
+        File myDir = new File(root);
+        myDir.mkdirs();
+        Random generator = new Random();
+        int n = 10000;
+        n = generator.nextInt(n);
+        String fname = "Image-" + n + ".jpg";
+        File file = new File(myDir, fname);
+        if (file.exists()) file.delete();
+        Log.i("LOAD", root + fname);
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void showSnackBarView(String message) {
+        if (message == null) {
+            NetworkErrorHelper.showSnackbar(this);
+        } else {
+            NetworkErrorHelper.showSnackbar(this, message);
+        }
+    }
+
+    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+    public void actionImagePicker() {
+        uploadDialog.openImagePicker();
+
+    }
+
+    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    public void actionCamera() {
+        uploadDialog.openCamera();
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        DiscoveryActivityPermissionsDispatcher.onRequestPermissionsResult(
+                DiscoveryActivity.this, requestCode, grantResults);
+
+    }
+
+    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    void showRationaleForStorageAndCamera(final PermissionRequest request) {
+        List<String> listPermission = new ArrayList<>();
+        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        listPermission.add(Manifest.permission.CAMERA);
+
+        RequestPermissionUtil.onShowRationale(this, request, listPermission);
+    }
+
+    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showRationaleForStorage(final PermissionRequest request) {
+        RequestPermissionUtil.onShowRationale(this, request, Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @OnPermissionDenied(Manifest.permission.CAMERA)
+    void showDeniedForCamera() {
+        RequestPermissionUtil.onPermissionDenied(this, Manifest.permission.CAMERA);
+    }
+
+    @OnNeverAskAgain(Manifest.permission.CAMERA)
+    void showNeverAskForCamera() {
+        RequestPermissionUtil.onNeverAskAgain(this, Manifest.permission.CAMERA);
+    }
+
+    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showDeniedForStorage() {
+        RequestPermissionUtil.onPermissionDenied(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showNeverAskForStorage() {
+        RequestPermissionUtil.onNeverAskAgain(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    void showDeniedForStorageAndCamera() {
+        List<String> listPermission = new ArrayList<>();
+        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        listPermission.add(Manifest.permission.CAMERA);
+
+        RequestPermissionUtil.onPermissionDenied(this, listPermission);
+    }
+
+    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    void showNeverAskForStorageAndCamera() {
+        List<String> listPermission = new ArrayList<>();
+        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        listPermission.add(Manifest.permission.CAMERA);
+
+        RequestPermissionUtil.onNeverAskAgain(this, listPermission);
     }
 }
