@@ -94,7 +94,12 @@ public class OpportunityTncFragment extends BaseWebViewFragment implements Oppor
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if(presenter == null)
+            return;
+
+        presenter.unsubscribeObservable();
         presenter.detachView();
+
     }
 
     @Override
@@ -104,6 +109,8 @@ public class OpportunityTncFragment extends BaseWebViewFragment implements Oppor
 
     @Override
     protected String getUrl() {
+        if(opportunityItemViewModel == null)
+            return null;
         return opportunityItemViewModel.getReplacementTnc();
     }
 
@@ -164,12 +171,6 @@ public class OpportunityTncFragment extends BaseWebViewFragment implements Oppor
     private void finishLoadingProgress() {
         if (progressDialog != null)
             progressDialog.dismiss();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        presenter.unsubscribeObservable();
     }
 
     @Override

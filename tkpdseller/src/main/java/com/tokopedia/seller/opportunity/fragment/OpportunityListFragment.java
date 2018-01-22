@@ -118,6 +118,9 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
 
         final ArrayList<ShowCaseObject> showCaseList = new ArrayList<>();
 
+        if(opportunityList == null)
+            return;
+
         opportunityList.postDelayed(new Runnable() {
             @Override
             public void run() {
