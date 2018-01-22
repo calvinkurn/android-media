@@ -306,6 +306,11 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public void actionApplinkFromActivity(Activity activity, String linkUrl) {
+
+    }
+
+    @Override
     public void actionApplink(Activity activity, String linkUrl, String extra) {
 
     }
