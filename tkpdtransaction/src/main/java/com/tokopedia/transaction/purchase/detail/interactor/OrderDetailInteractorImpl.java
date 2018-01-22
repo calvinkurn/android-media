@@ -142,6 +142,15 @@ public class OrderDetailInteractorImpl implements OrderDetailInteractor {
     }
 
     @Override
+    public void cancelShipping(Subscriber<String> subscriber, TKPDMapParam<String, String> params) {
+        compositeSubscription.add(orderDetailRepository.processShipping(params)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .subscribe(subscriber));
+    }
+
+    @Override
     public void retryPickup(Subscriber<String> subscriber, TKPDMapParam<String, String> params) {
         compositeSubscription.add(orderDetailRepository.retryPickup(params)
                 .subscribeOn(Schedulers.newThread())

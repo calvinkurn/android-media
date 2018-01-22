@@ -738,7 +738,7 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void cancelShipment(String orderId, String notes) {
-        presenter.rejectOrder(this, orderId, notes);
+        presenter.cancelShipping(this, orderId, notes);
     }
 
     @Override

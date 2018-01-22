@@ -42,6 +42,8 @@ public interface OrderDetailInteractor {
 
     void confirmShipping(Subscriber<String> subscriber, TKPDMapParam<String, String> params);
 
+    void cancelShipping(Subscriber<String> subscriber, TKPDMapParam<String, String> params);
+
     void retryPickup(Subscriber<String> subscriber, TKPDMapParam<String, String> params);
 
     void onActivityClosed();

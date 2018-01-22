@@ -81,6 +81,8 @@ public interface OrderDetailPresenter {
     void processShipping(Context context,
                          OrderDetailShipmentModel shipmentModel);
 
+    void cancelShipping(Context context, String orderId, String reason);
+
     void retryOrder(Context context, OrderDetailData data);
 
     void processFinish(Context context, String orderId, String orderStatus);

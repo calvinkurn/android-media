@@ -264,6 +264,17 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
     }
 
     @Override
+    public void cancelShipping(Context context, String orderId, String reason) {
+        mainView.showProgressDialog();
+        TKPDMapParam<String, String> processShippingParam = new TKPDMapParam<>();
+        processShippingParam.put(ACTION_TYPE_KEY, CONFIRM_SHIPPING_CONSTANT);
+        processShippingParam.put(ORDER_ID_KEY, orderId);
+        processShippingParam.put(REASON_KEY, reason);
+        orderDetailInteractor.processOrder(sellerActionSubscriber(),
+                AuthUtil.generateParamsNetwork(context, processShippingParam));
+    }
+
+    @Override
     public void retryOrder(Context context, OrderDetailData data) {
         mainView.showProgressDialog();
         TKPDMapParam<String, String> retryPickUpParams = new TKPDMapParam<>();
