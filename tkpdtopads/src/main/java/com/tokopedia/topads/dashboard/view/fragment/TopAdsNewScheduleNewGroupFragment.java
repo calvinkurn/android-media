@@ -80,7 +80,7 @@ public class TopAdsNewScheduleNewGroupFragment extends TopAdsNewScheduleFragment
     protected Intent setMoreResulAdSaved(Intent intent, TopAdsDetailAdViewModel topAdsDetailAdViewModel) {
         if(topAdsDetailAdViewModel != null && topAdsDetailAdViewModel instanceof TopAdsDetailGroupViewModel){
             intent.putExtra(EXTRA_NEW_GROUP_ID, ((TopAdsDetailGroupViewModel)topAdsDetailAdViewModel).getGroupId());
-            intent.putExtra(EXTRA_IS_ENOUGH_DEPOSIT, ((TopAdsDetailGroupViewModel)topAdsDetailAdViewModel).isEnoughDeposit())
+            intent.putExtra(EXTRA_IS_ENOUGH_DEPOSIT, ((TopAdsDetailGroupViewModel)topAdsDetailAdViewModel).isEnoughDeposit());
         }
         return intent;
     }
