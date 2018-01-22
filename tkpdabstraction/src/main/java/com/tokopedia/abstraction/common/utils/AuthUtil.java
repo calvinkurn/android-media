@@ -167,8 +167,6 @@ public class AuthUtil {
         return headerMap;
     }
 
-
-
     public static Map<String, String> generateHeaders(String path, String strParam, String method, String authKey, String userId) {
         Map<String, String> finalHeader = getDefaultHeaderMap(path, strParam, method, CONTENT_TYPE, authKey, DATE_FORMAT, userId);
         finalHeader.put(HEADER_X_APP_VERSION, Integer.toString(GlobalConfig.VERSION_CODE));
