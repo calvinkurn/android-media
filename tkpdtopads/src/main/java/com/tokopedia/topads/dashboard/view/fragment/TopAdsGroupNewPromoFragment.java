@@ -69,10 +69,12 @@ public class TopAdsGroupNewPromoFragment extends TopAdsBaseManageGroupPromoFragm
         if (requestCode == REQUEST_CODE_AD_STATUS && data != null) {
             boolean adStatusChanged = data.getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
             if (adStatusChanged) {
+                boolean isEnoughDeposit = data.getBooleanExtra(TopAdsNewScheduleNewGroupFragment.EXTRA_IS_ENOUGH_DEPOSIT, false);
                 long productId = data.getLongExtra(TopAdsNewCostWithoutGroupFragment.EXTRA_NEW_PRODUCT_ID, -1);
                 if(productId != -1){
                     Intent intent = TopAdsDetailProductActivity.getCallingIntent(getActivity(), Long.toString(productId));
                     intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
+                    intent.putExtra(TopAdsNewScheduleNewGroupFragment.EXTRA_IS_ENOUGH_DEPOSIT, isEnoughDeposit);
                     getActivity().startActivity(intent);
                 }
 
@@ -81,6 +83,7 @@ public class TopAdsGroupNewPromoFragment extends TopAdsBaseManageGroupPromoFragm
                     Intent intent = new Intent(getActivity(), TopAdsDetailGroupActivity.class);
                     intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, groupId);
                     intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
+                    intent.putExtra(TopAdsNewScheduleNewGroupFragment.EXTRA_IS_ENOUGH_DEPOSIT, isEnoughDeposit)
                     getActivity().startActivity(intent);
                 }
 

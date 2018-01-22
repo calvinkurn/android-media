@@ -87,6 +87,10 @@ public class TopAdsNewScheduleShopFragment extends TopAdsNewScheduleFragment<Top
         Intent intent = new Intent();
         intent.putExtra(EXTRA_NEW_SHOP, topAdsDetailAdViewModel.getId());
         intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
+        if(topAdsDetailAdViewModel != null && topAdsDetailAdViewModel instanceof TopAdsDetailShopViewModel){
+            intent.putExtra(TopAdsNewScheduleNewGroupFragment.EXTRA_IS_ENOUGH_DEPOSIT,
+                    ((TopAdsDetailShopViewModel)topAdsDetailAdViewModel).isEnoughDeposit());
+        }
         getActivity().setResult(Activity.RESULT_OK, intent);
     }
 

@@ -90,10 +90,12 @@ public class TopAdsDashboardShopFragment extends TopAdsDashboardFragment<TopAdsD
                 return;
             }
 
+            boolean isEnoughDeposit = intent.getBooleanExtra(TopAdsNewScheduleNewGroupFragment.EXTRA_IS_ENOUGH_DEPOSIT, false);
             long shopExtraId = intent.getLongExtra(TopAdsNewScheduleShopFragment.EXTRA_NEW_SHOP, -1);
             if(shopExtraId != -1){
                 Intent newIntent = new Intent(getActivity(), TopAdsDetailShopActivity.class);
                 newIntent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, Long.toString(shopExtraId));
+                newIntent.putExtra(TopAdsNewScheduleNewGroupFragment.EXTRA_IS_ENOUGH_DEPOSIT,isEnoughDeposit);
                 startActivityForResult(newIntent, REQUEST_CODE_AD_STATUS);
             }
 

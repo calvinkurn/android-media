@@ -25,6 +25,15 @@ public class TopAdsDetailProductDomainModel {
     private String adTitle;
     private long suggestionBidValue;
     private String suggestionBidButton;
+    private boolean isEnoughDeposit;
+
+    public boolean isEnoughDeposit() {
+        return isEnoughDeposit;
+    }
+
+    public void setEnoughDeposit(boolean enoughDeposit) {
+        isEnoughDeposit = enoughDeposit;
+    }
 
     public String getAdEndDate() {
         return adEndDate;

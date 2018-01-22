@@ -23,6 +23,7 @@ import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.ProductAd;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsDetailProductFragment;
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsNewScheduleNewGroupFragment;
 import com.tokopedia.topads.dashboard.view.listener.OneUseGlobalLayoutListener;
 import com.tokopedia.topads.common.view.utils.ShowCaseDialogFactory;
 import com.tokopedia.showcase.ShowCaseContentPosition;
@@ -78,12 +79,14 @@ public class TopAdsDetailProductActivity extends BaseSimpleActivity implements T
         }else{
             ProductAd ad = null;
             String adId = null;
+            boolean isEnoughDeposit = false;
             if (getIntent() != null && getIntent().getExtras() != null) {
                 ad = getIntent().getExtras().getParcelable(TopAdsExtraConstant.EXTRA_AD);
                 adId = getIntent().getStringExtra(TopAdsExtraConstant.EXTRA_AD_ID);
                 isAdChanged = getIntent().getBooleanExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, false);
+                isEnoughDeposit = getIntent().getBooleanExtra(TopAdsNewScheduleNewGroupFragment.EXTRA_IS_ENOUGH_DEPOSIT, false);
             }
-            fragment = TopAdsDetailProductFragment.createInstance(ad, adId);
+            fragment = TopAdsDetailProductFragment.createInstance(ad, adId, isEnoughDeposit);
             return fragment;
         }
     }

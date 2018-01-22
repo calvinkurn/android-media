@@ -25,6 +25,7 @@ public class TopAdsNewScheduleNewGroupFragment extends TopAdsNewScheduleFragment
         TopAdsDetailGroupViewModel, TopAdsDetailNewGroupPresenter> implements TopAdsDetailNewGroupView{
 
     public static final String EXTRA_NEW_GROUP_ID = "EXTRA_NEW_GROUP_ID";
+    public static final String EXTRA_IS_ENOUGH_DEPOSIT = "EXTRA_IS_ENOUGH_DEPOSIT";
 
     @Override
     protected void initView(View view) {
@@ -79,6 +80,7 @@ public class TopAdsNewScheduleNewGroupFragment extends TopAdsNewScheduleFragment
     protected Intent setMoreResulAdSaved(Intent intent, TopAdsDetailAdViewModel topAdsDetailAdViewModel) {
         if(topAdsDetailAdViewModel != null && topAdsDetailAdViewModel instanceof TopAdsDetailGroupViewModel){
             intent.putExtra(EXTRA_NEW_GROUP_ID, ((TopAdsDetailGroupViewModel)topAdsDetailAdViewModel).getGroupId());
+            intent.putExtra(EXTRA_IS_ENOUGH_DEPOSIT, ((TopAdsDetailGroupViewModel)topAdsDetailAdViewModel).isEnoughDeposit())
         }
         return intent;
     }

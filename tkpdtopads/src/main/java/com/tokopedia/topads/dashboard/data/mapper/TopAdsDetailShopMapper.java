@@ -46,6 +46,7 @@ public class TopAdsDetailShopMapper implements Func1<Response<DataResponse<List<
         domainModel.setAdEndTime(dataModel.getAdEndTime());
         domainModel.setAdImage(dataModel.getAdImage());
         domainModel.setAdTitle(dataModel.getAdTitle());
+        domainModel.setEnoughDeposit(dataModel.isEnoughDeposit());
         return domainModel;
     }
 }

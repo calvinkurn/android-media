@@ -56,6 +56,17 @@ public class DataResponseCreateGroup {
     @SerializedName("keyword_total")
     @Expose
     private String keywordTotal;
+    @SerializedName("is_enough_deposit")
+    @Expose
+    private boolean isEnoughDeposit;
+
+    public boolean isEnoughDeposit() {
+        return isEnoughDeposit;
+    }
+
+    public void setEnoughDeposit(boolean enoughDeposit) {
+        isEnoughDeposit = enoughDeposit;
+    }
 
     public String getKeywordTotal() {
         return keywordTotal;

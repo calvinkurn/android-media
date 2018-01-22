@@ -61,6 +61,7 @@ public class TopAdsCreateNewGroupUseCase extends UseCase<TopAdsDetailGroupViewMo
                         topAdsDetailGroupViewModel.setEndTime(dataResponseCreateGroup.getGroupEndTime());
                         topAdsDetailGroupViewModel.setScheduled("1".equals(dataResponseCreateGroup.getGroupSchedule()));
                         topAdsDetailGroupViewModel.setStatus(Integer.parseInt(dataResponseCreateGroup.getStatus()));
+                        topAdsDetailGroupViewModel.setEnoughDeposit(dataResponseCreateGroup.isEnoughDeposit());
                         return topAdsDetailGroupViewModel;
                     }
                 });

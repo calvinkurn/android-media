@@ -101,6 +101,18 @@ public class BottomSheetView extends BottomSheetDialog {
         } else {
             btnOpsiBottomSheet.setVisibility(View.GONE);
         }
+
+        if(bottomSheetField.getLabelCloseButton() != null){
+            btnCloseBottomSheet.setText(bottomSheetField.getLabelCloseButton());
+        }
+    }
+
+    public void setBtnCloseOnClick(View.OnClickListener onClickListener){
+        btnCloseBottomSheet.setOnClickListener(onClickListener);
+    }
+
+    public void setBtnOpsiOnClick(View.OnClickListener onClickListener){
+        btnOpsiBottomSheet.setOnClickListener(onClickListener);
     }
 
     private View.OnClickListener getClickTextLinkListener(final String url) {
@@ -138,6 +150,7 @@ public class BottomSheetView extends BottomSheetDialog {
         private final String urlTextLink;
         private final String urlButton;
         private final String labelButton;
+        private final String labelCloseButton;
         private final String labelTextLink;
         private final String appLinkButton;
 
@@ -150,7 +163,12 @@ public class BottomSheetView extends BottomSheetDialog {
             this.urlButton = builder.urlButton;
             this.labelTextLink = builder.labelTextLink;
             this.labelButton = builder.labelButton;
+            this.labelCloseButton = builder.labelCloseButton;
 
+        }
+
+        public String getLabelCloseButton() {
+            return labelCloseButton;
         }
 
         public String getTitle() {
@@ -195,6 +213,7 @@ public class BottomSheetView extends BottomSheetDialog {
             private String appLinkButton;
             private String labelTextLink;
             private String labelButton;
+            private String labelCloseButton;
 
             public BottomSheetFieldBuilder setTitle(String title) {
                 this.title = title;
@@ -223,6 +242,11 @@ public class BottomSheetView extends BottomSheetDialog {
                 this.urlButton = url;
                 this.appLinkButton = "";
                 this.labelButton = labelButton;
+                return this;
+            }
+
+            public BottomSheetFieldBuilder setCloseButton(String labelCloseButton){
+                this.labelCloseButton= labelCloseButton;
                 return this;
             }
 

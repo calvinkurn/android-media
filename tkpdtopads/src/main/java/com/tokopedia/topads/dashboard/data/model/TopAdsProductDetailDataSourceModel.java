@@ -72,6 +72,17 @@ public class TopAdsProductDetailDataSourceModel {
     @SerializedName("is_suggestion_bid_button")
     @Expose
     private String suggestionBidButton;
+    @SerializedName("is_enough_deposit")
+    @Expose
+    private boolean isEnoughDeposit;
+
+    public boolean isEnoughDeposit() {
+        return isEnoughDeposit;
+    }
+
+    public void setEnoughDeposit(boolean enoughDeposit) {
+        isEnoughDeposit = enoughDeposit;
+    }
 
     public String getAdId() {
         return adId;
