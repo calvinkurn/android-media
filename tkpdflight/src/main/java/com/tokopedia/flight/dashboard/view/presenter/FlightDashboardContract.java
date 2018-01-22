@@ -69,6 +69,8 @@ public interface FlightDashboardContract {
 
         void initialize(boolean fromApplink);
 
+        void actionGetAirportById(String airportId, boolean isDepartureAirport);
+
         void onReverseAirportButtonClicked();
 
         void onDepartureDateButtonClicked();

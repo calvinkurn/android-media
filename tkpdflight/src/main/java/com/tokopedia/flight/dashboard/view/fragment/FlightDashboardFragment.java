@@ -67,9 +67,6 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     private static final String EXTRA_PASSENGER = "EXTRA_PASSENGER";
     private static final String EXTRA_CLASS = "EXTRA_CLASS";
 
-    private String[] extrasTripDeparture;
-    private String[] extrasTripReturn;
-
     AppCompatImageView reverseAirportImageView;
     LinearLayout airportDepartureLayout;
     AppCompatTextView airportDepartureTextInputView;
@@ -246,7 +243,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.attachView(this);
-        if (getArguments() != null) {
+        if (getArguments().containsKey(EXTRA_TRIP) && getArguments().containsKey(EXTRA_CLASS) && getArguments().containsKey(EXTRA_PASSENGER)) {
             presenter.initialize(true);
             transformExtras(getArguments());
         } else {
@@ -533,11 +530,29 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     private void transformExtras(Bundle extrasBundle) {
         // transform trip extras
         String[] tempExtras = extrasBundle.getString(EXTRA_TRIP).split(",");
-        extrasTripDeparture = tempExtras[0].split("_");
+        String[] extrasTripDeparture = tempExtras[0].split("_");
+        String[] tripDate = extrasTripDeparture[2].split("-");
+
+        /**
+         * Urutan trip setelah di split berdasarkan , dan _ :
+         * [0] = ID Airport Departure
+         * [1] = ID Airport Arrival
+         * [2] = Tanggal
+         *
+         * Tanggal setelah di split :
+         * [0] = tahun
+         * [1] = bulan
+         * [2] = hari
+         */
+        presenter.actionGetAirportById(extrasTripDeparture[0], true);
+        presenter.actionGetAirportById(extrasTripDeparture[1], false);
+        presenter.onDepartureDateChange(Integer.parseInt(tripDate[0]), Integer.parseInt(tripDate[1]), Integer.parseInt(tripDate[2]));
+
         if(tempExtras.length > 1) {
             viewModel.setOneWay(false);
-            extrasTripReturn = tempExtras[1].split("_");
-
+            String[] extrasTripReturn = tempExtras[1].split("_");
+            tripDate = extrasTripReturn[2].split("-");
+            presenter.onReturnDateChange(Integer.parseInt(tripDate[0]), Integer.parseInt(tripDate[1]), Integer.parseInt(tripDate[2]));
         }
 
         // transform passenger count

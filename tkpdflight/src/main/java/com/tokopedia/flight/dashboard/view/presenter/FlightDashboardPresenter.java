@@ -13,6 +13,7 @@ import com.tokopedia.flight.banner.domain.interactor.BannerGetDataUseCase;
 import com.tokopedia.flight.common.data.domain.DeleteFlightCacheUseCase;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
+import com.tokopedia.flight.dashboard.domain.GetFlightAirportByIdUseCase;
 import com.tokopedia.flight.dashboard.domain.GetFlightClassesUseCase;
 import com.tokopedia.flight.dashboard.view.fragment.cache.FlightDashboardCache;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
@@ -43,6 +44,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     private FlightDashboardValidator validator;
     private DeleteFlightCacheUseCase deleteFlightCacheUseCase;
     private GetFlightClassesUseCase getFlightClassesUseCase;
+    private GetFlightAirportByIdUseCase getFlightAirportByIdUseCase;
     private FlightClassViewModelMapper flightClassViewModelMapper;
     private FlightDashboardCache flightDashboardCache;
     private UserSession userSession;
@@ -52,6 +54,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                                     FlightDashboardValidator validator,
                                     DeleteFlightCacheUseCase deleteFlightCacheUseCase,
                                     GetFlightClassesUseCase getFlightClassesUseCase,
+                                    GetFlightAirportByIdUseCase getFlightAirportByIdUseCase,
                                     FlightClassViewModelMapper flightClassViewModelMapper,
                                     FlightDashboardCache flightDashboardCache,
                                     UserSession userSession) {
@@ -59,6 +62,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         this.validator = validator;
         this.deleteFlightCacheUseCase = deleteFlightCacheUseCase;
         this.getFlightClassesUseCase = getFlightClassesUseCase;
+        this.getFlightAirportByIdUseCase = getFlightAirportByIdUseCase;
         this.flightClassViewModelMapper = flightClassViewModelMapper;
         this.flightDashboardCache = flightDashboardCache;
         this.userSession = userSession;
@@ -134,6 +138,30 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                         getView().setDashBoardViewModel(flightDashboardViewModel);
                         renderUi();
                     }
+                }
+            }
+        });
+    }
+
+    @Override
+    public void actionGetAirportById(String airportId, final boolean isDepartureAirport) {
+        getFlightAirportByIdUseCase.execute(getFlightAirportByIdUseCase.createRequestParams(airportId), new Subscriber<FlightAirportDB>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                throwable.printStackTrace();
+            }
+
+            @Override
+            public void onNext(FlightAirportDB flightAirportDB) {
+                if (isDepartureAirport) {
+                    onDepartureAirportChange(flightAirportDB);
+                } else {
+                    onArrivalAirportChange(flightAirportDB);
                 }
             }
         });
