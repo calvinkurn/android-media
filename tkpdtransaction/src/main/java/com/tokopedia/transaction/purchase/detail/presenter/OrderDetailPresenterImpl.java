@@ -267,10 +267,10 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
     public void cancelShipping(Context context, String orderId, String reason) {
         mainView.showProgressDialog();
         TKPDMapParam<String, String> processShippingParam = new TKPDMapParam<>();
-        processShippingParam.put(ACTION_TYPE_KEY, CONFIRM_SHIPPING_CONSTANT);
+        processShippingParam.put(ACTION_TYPE_KEY, REJECT_ORDER_CONSTANT);
         processShippingParam.put(ORDER_ID_KEY, orderId);
         processShippingParam.put(REASON_KEY, reason);
-        orderDetailInteractor.processOrder(sellerActionSubscriber(),
+        orderDetailInteractor.cancelShipping(sellerActionSubscriber(),
                 AuthUtil.generateParamsNetwork(context, processShippingParam));
     }
 

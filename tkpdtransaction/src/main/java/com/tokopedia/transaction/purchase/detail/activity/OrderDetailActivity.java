@@ -577,12 +577,17 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void dismissSellerActionFragment() {
-        getFragmentManager().beginTransaction()
+        //Alternative 1 refresh activity
+        /*getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.animator.exit_bottom, R.animator.exit_bottom)
                 .remove(getFragmentManager()
                         .findFragmentByTag(VALIDATION_FRAGMENT_TAG)).commit();
         toolbar.setTitle(getString(R.string.title_detail_transaction));
-        onRefreshActivity();
+        onRefreshActivity();*/
+
+        //Alternative 2 close activity
+        setResult(Activity.RESULT_OK);
+        finish();
     }
 
     @Override
