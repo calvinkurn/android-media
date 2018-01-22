@@ -12,25 +12,26 @@ import java.util.List;
  */
 
 public class ProductReviewModelContent implements ProductReviewModel, Parcelable {
-    private boolean reviewIsAnonymous;
-    private String reviewerName;
-    private String reviewerId;
-    private float reviewStar;
-    private String reviewMessage;
-    private String reviewTime;
-    private List<ImageAttachmentViewModel> reviewAttachment;
-    private String sellerName;
-    private String shopId;
-    private String reviewId;
-    private boolean reviewHasReplied;
-    private String responseMessage;
-    private String responseCreateTime;
-    private boolean sellerRepliedOwner;
-    private boolean reviewCanReported;
-    private String reputationId;
-    private String productId;
+    protected boolean reviewIsAnonymous;
+    protected String reviewerName;
+    protected String reviewerId;
+    protected float reviewStar;
+    protected String reviewMessage;
+    protected String reviewTime;
+    protected List<ImageAttachmentViewModel> reviewAttachment;
+    protected String sellerName;
+    protected String shopId;
+    protected String reviewId;
+    protected boolean reviewHasReplied;
+    protected String responseMessage;
+    protected String responseCreateTime;
+    protected boolean sellerRepliedOwner;
+    protected boolean reviewCanReported;
+    protected String reputationId;
+    protected String productId;
     private boolean likeStatus;
     private int totalLike;
+    private boolean isLogin;
 
     @Override
     public int type(ProductReviewTypeFactoryAdapter typeFactory) {
@@ -248,5 +249,13 @@ public class ProductReviewModelContent implements ProductReviewModel, Parcelable
 
     public int getTotalLike() {
         return totalLike;
+    }
+
+    public boolean isLogin() {
+        return isLogin;
+    }
+
+    public void setLogin(boolean login) {
+        isLogin = login;
     }
 }

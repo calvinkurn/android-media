@@ -11,9 +11,9 @@ import com.tokopedia.tkpd.tkpdreputation.productreview.view.presenter.ProductRev
  */
 
 public class ProductReviewTypeFactoryAdapter extends BaseAdapterTypeFactory {
-    private final ProductReviewContract.View viewListener;
+    protected final ProductReviewContentViewHolder.ListenerReviewHolder viewListener;
 
-    public ProductReviewTypeFactoryAdapter(ProductReviewContract.View viewListener) {
+    public ProductReviewTypeFactoryAdapter(ProductReviewContentViewHolder.ListenerReviewHolder viewListener) {
         this.viewListener = viewListener;
     }
 
