@@ -77,6 +77,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     View bannerLayout;
     BannerView bannerView;
     List<BannerDetail> bannerList;
+
     @Inject
     FlightDashboardPresenter presenter;
     private FlightDashboardViewModel viewModel;

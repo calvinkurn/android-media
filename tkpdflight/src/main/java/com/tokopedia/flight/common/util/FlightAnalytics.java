@@ -42,27 +42,19 @@ public class FlightAnalytics {
         );
     }
 
-    public void eventOriginClick(String label) {
+    public void eventOriginClick(String cityName, String airportId) {
         analyticTracker.sendEventTracking(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.SELECT_ORIGIN,
-                label
+                cityName + "|" + airportId
         );
     }
 
-    public void eventDestinationClick(String label) {
+    public void eventDestinationClick(String cityName, String airportId) {
         analyticTracker.sendEventTracking(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.SELECT_DESTINATION,
-                label
-        );
-    }
-
-    public void eventPassengerClick(String label) {
-        analyticTracker.sendEventTracking(GENERIC_EVENT,
-                GENERIC_CATEGORY,
-                Category.SELECT_PASSENGER,
-                label
+                cityName + "|" + airportId
         );
     }
 
@@ -183,6 +175,14 @@ public class FlightAnalytics {
                 GENERIC_CATEGORY,
                 Category.ADD_TO_CART,
                 label
+        );
+    }
+
+    public void eventPassengerClick(int adult, int children, int infant) {
+        analyticTracker.sendEventTracking(GENERIC_EVENT,
+                GENERIC_CATEGORY,
+                Category.SELECT_PASSENGER,
+                adult + "-" + children + "-" + infant
         );
     }
 

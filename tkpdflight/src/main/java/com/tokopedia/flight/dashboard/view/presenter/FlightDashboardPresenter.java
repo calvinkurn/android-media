@@ -11,6 +11,7 @@ import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.banner.domain.interactor.BannerGetDataUseCase;
 import com.tokopedia.flight.common.data.domain.DeleteFlightCacheUseCase;
+import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
 import com.tokopedia.flight.dashboard.domain.GetFlightClassesUseCase;
@@ -46,6 +47,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     private FlightClassViewModelMapper flightClassViewModelMapper;
     private FlightDashboardCache flightDashboardCache;
     private UserSession userSession;
+    private FlightAnalytics flightAnalytics;
 
     @Inject
     public FlightDashboardPresenter(BannerGetDataUseCase bannerGetDataUseCase,
@@ -54,7 +56,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                                     GetFlightClassesUseCase getFlightClassesUseCase,
                                     FlightClassViewModelMapper flightClassViewModelMapper,
                                     FlightDashboardCache flightDashboardCache,
-                                    UserSession userSession) {
+                                    UserSession userSession, FlightAnalytics flightAnalytics) {
         this.bannerGetDataUseCase = bannerGetDataUseCase;
         this.validator = validator;
         this.deleteFlightCacheUseCase = deleteFlightCacheUseCase;
@@ -62,16 +64,19 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         this.flightClassViewModelMapper = flightClassViewModelMapper;
         this.flightDashboardCache = flightDashboardCache;
         this.userSession = userSession;
+        this.flightAnalytics = flightAnalytics;
     }
 
     @Override
     public void onSingleTripChecked() {
+        flightAnalytics.eventTripTypeClick(getView().getString(R.string.flight_dashboard_analytic_one_way).toString());
         getView().getCurrentDashboardViewModel().setOneWay(true);
         getView().renderSingleTripView();
     }
 
     @Override
     public void onRoundTripChecked() {
+        flightAnalytics.eventTripTypeClick(getView().getString(R.string.flight_dashboard_analytic_round_trip).toString());
         getView().getCurrentDashboardViewModel().setOneWay(false);
         getView().renderRoundTripView();
     }
@@ -262,6 +267,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     @Override
     public void onFlightClassesChange(FlightClassViewModel viewModel) {
+        flightAnalytics.eventClassClick(viewModel.getTitle());
         FlightDashboardViewModel flightDashboardViewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
         flightDashboardViewModel.setFlightClass(viewModel);
         getView().setDashBoardViewModel(flightDashboardViewModel);
@@ -270,6 +276,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     @Override
     public void onFlightPassengerChange(FlightPassengerViewModel passengerViewModel) {
+        flightAnalytics.eventPassengerClick(passengerViewModel.getAdult(), passengerViewModel.getChildren(), passengerViewModel.getInfant());
         FlightDashboardViewModel flightDashboardViewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
         flightDashboardViewModel.setFlightPassengerViewModel(passengerViewModel);
         flightDashboardViewModel.setFlightPassengerFmt(buildPassengerTextFormatted(passengerViewModel));
@@ -279,6 +286,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     @Override
     public void onDepartureAirportChange(FlightAirportDB departureAirport) {
+        flightAnalytics.eventOriginClick(departureAirport.getCityName(), departureAirport.getAirportId());
         FlightDashboardViewModel flightDashboardViewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
         flightDashboardViewModel.setDepartureAirport(departureAirport);
         String code = buildAirportFmt(departureAirport);
@@ -300,6 +308,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     @Override
     public void onArrivalAirportChange(FlightAirportDB arrivalAirport) {
+        flightAnalytics.eventDestinationClick(arrivalAirport.getCityName(), arrivalAirport.getAirportId());
         FlightDashboardViewModel flightDashboardViewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
         flightDashboardViewModel.setArrivalAirport(arrivalAirport);
         String code = arrivalAirport.getAirportId();
@@ -415,4 +424,6 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         }
         return viewModel;
     }
+
+
 }
