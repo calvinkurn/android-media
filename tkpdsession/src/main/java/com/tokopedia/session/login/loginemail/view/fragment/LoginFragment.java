@@ -290,13 +290,23 @@ public class LoginFragment extends BaseDaggerFragment
                 if (loginView != null) {
                     if (loginView.getChildAt(0).getBottom() <= (loginView.getHeight() + loginView
                             .getScrollY())) {
-
-                        //scroll view is at bottom
-                        Log.d("NISNIS", "IS AT BOTTOM");
+                        loadMoreFab.hide();
                     } else {
-                        Log.d("NISNIS", "IS NOT AT BOTTOM");
+                        loadMoreFab.show();
                     }
                 }
+            }
+        });
+
+        loadMoreFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loginView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        loginView.fullScroll(View.FOCUS_DOWN);
+                    }
+                });
             }
         });
     }
