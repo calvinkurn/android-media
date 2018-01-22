@@ -39,9 +39,9 @@ public class DigitalTrackerMapper implements Func1<Response<DigitalDataWrapper<P
         purchase.setPaymentId(data.getPaymentId());
         purchase.setPaymentType(data.getPaymentType());
         purchase.setPaymentStatus(data.getPaymentStatus());
+        purchase.setUserId(sessionHandler.getLoginID());
         if(isActionFieldValid(data)) {
             purchase.setTransactionID(data.getEcommerce().getPurchase().getActionField().getId());
-            purchase.setUserId(sessionHandler.getLoginID());
             purchase.setShipping("0");
             purchase.setVoucherCode(data.getEcommerce().getPurchase().getActionField().getCoupon());
             purchase.setRevenue(data.getEcommerce().getPurchase().getActionField().getRevenue());
