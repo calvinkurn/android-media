@@ -71,10 +71,10 @@ import javax.inject.Inject;
 public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel, FilterSearchAdapterTypeFactory> implements FlightSearchView,
         FilterSearchAdapterTypeFactory.OnFlightSearchListener{
 
-    private static final int EMPTY_MARGIN = 0;
     public static final String TAG = FlightSearchFragment.class.getSimpleName();
     public static final int MAX_PROGRESS = 100;
     protected static final String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
+    private static final int EMPTY_MARGIN = 0;
     private static final int REQUEST_CODE_SEARCH_FILTER = 1;
     private static final int REQUEST_CODE_SEE_DETAIL_FLIGHT = 2;
     private static final String SAVED_FILTER_MODEL = "svd_filter_model";
@@ -291,6 +291,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
     @Override
     public void onItemClicked(FlightSearchViewModel flightSearchViewModel) {
+        flightSearchPresenter.onSearchItemClicked(flightSearchViewModel);
         if (onFlightSearchFragmentListener != null) {
             onFlightSearchFragmentListener.selectFlight(flightSearchViewModel.getId());
         }
@@ -622,6 +623,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
     @Override
     public void onDetailClicked(FlightSearchViewModel flightSearchViewModel) {
+        flightSearchPresenter.onSeeDetailItemClicked(flightSearchViewModel);
         FlightDetailViewModel flightDetailViewModel = new FlightDetailViewModel();
         flightDetailViewModel.build(flightSearchViewModel);
         flightDetailViewModel.build(flightSearchPassDataViewModel);
