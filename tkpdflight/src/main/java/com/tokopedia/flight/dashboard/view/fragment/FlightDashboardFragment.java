@@ -16,6 +16,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.KeyboardHandler;
@@ -62,6 +63,10 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     private static final int REQUEST_CODE_SEARCH = 5;
     private static final int REQUEST_CODE_LOGIN = 6;
 
+    private static final String EXTRA_TRIP = "EXTRA_TRIP";
+    private static final String EXTRA_PASSENGER = "EXTRA_PASSENGER";
+    private static final String EXTRA_CLASS = "EXTRA_CLASS";
+
     AppCompatImageView reverseAirportImageView;
     LinearLayout airportDepartureLayout;
     AppCompatTextView airportDepartureTextInputView;
@@ -85,9 +90,28 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         return new FlightDashboardFragment();
     }
 
+    public static FlightDashboardFragment getInstance(String extrasTrip, String extrasPassenger, String extrasClass) {
+        FlightDashboardFragment flightDashboardFragment = new FlightDashboardFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_TRIP, extrasTrip);
+        bundle.putString(EXTRA_PASSENGER, extrasPassenger);
+        bundle.putString(EXTRA_CLASS, extrasClass);
+        flightDashboardFragment.setArguments(bundle);
+        return flightDashboardFragment;
+    }
+
     @Override
     protected void initInjector() {
         getComponent(FlightDashboardComponent.class).inject(this);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (getArguments() != null) {
+            Toast.makeText(getContext(), "trip : " + getArguments().getString(EXTRA_TRIP), Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Nullable
