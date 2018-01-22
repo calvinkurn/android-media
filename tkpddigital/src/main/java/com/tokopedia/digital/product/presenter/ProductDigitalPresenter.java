@@ -43,6 +43,7 @@ import com.tokopedia.digital.product.model.Operator;
 import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.product.model.ProductDigitalData;
 import com.tokopedia.digital.product.model.PulsaBalance;
+import com.tokopedia.digital.product.model.Validation;
 import com.tokopedia.digital.product.service.USSDAccessibilityService;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.digital.utils.ServerErrorHandlerUtil;
@@ -66,6 +67,7 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
     private static final String PULSA_CATEGORY_ID = "1";
     private static final String PAKET_DATA_CATEGORY_ID = "2";
     private static final String ROAMING_CATEGORY_ID = "20";
+    private static final int MAX_SIM_COUNT = 2;
 
     private IProductDigitalView view;
     private IProductDigitalInteractor productDigitalInteractor;
@@ -417,12 +419,8 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
                 && categoryData.getSlug().equalsIgnoreCase(CategoryData.SLUG_PRODUCT_CATEGORY_PULSA)
                 && android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                 && view.isUserLoggedIn()) {
-            renderCheckPulsaBalanceDataToView();
+            renderCheckPulsa();
         }
-    }
-
-    private void renderCheckPulsaBalanceDataToView() {
-        view.renderCheckPulsaBalanceData();
     }
 
     @Override
@@ -433,6 +431,7 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
                 dailUssdToCheckBalance(simSlot, ussdCode);
             } else {
                 view.showMessageAlert(view.getActivity().getString(R.string.error_message_ussd_msg_not_parsed), view.getActivity().getString(R.string.message_ussd_title));
+                renderCheckPulsa();
             }
         } else {
             view.showAccessibilityAlertDialog();
@@ -577,9 +576,11 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
         List<Operator> selectedOperatorList = new ArrayList<>();
         String simOperatorName = DeviceUtil.getOperatorName(view.getActivity(), selectedSim);
         CategoryData categoryData = view.getCategoryDataState();
-        for (Operator operator : categoryData.getOperatorList()) {
-            if (DeviceUtil.verifyUssdOperator(simOperatorName, operator.getName())) {
-                selectedOperatorList.add(operator);
+        if(categoryData !=null && categoryData.getOperatorList() != null) {
+            for (Operator operator : categoryData.getOperatorList()) {
+                if (DeviceUtil.verifyUssdOperator(simOperatorName, operator.getName())) {
+                    selectedOperatorList.add(operator);
+                }
             }
         }
         return selectedOperatorList;
@@ -666,6 +667,79 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
             localCacheHandler.putString(TkpdCache.Key.KEY_USSD_SIM2, number);
         }
         localCacheHandler.applyEditor();
+    }
+
+    @Override
+    public boolean isCarrierSignalsNotAvailable(String carrierName) {
+        final String noSignalStr = view.getActivity().getString(R.string.label_no_signal);
+        final String noServiceStr = view.getActivity().getString(R.string.label_no_service);
+        if (carrierName == null) {
+            return false;
+        }
+        carrierName = carrierName.toLowerCase();
+        return (carrierName.contains(noServiceStr.toLowerCase()) || carrierName.contains(noSignalStr.toLowerCase()));
+
+    }
+
+
+    @Override
+    public void renderCheckPulsa() {
+        view.removeCheckPulsaCards();
+        CategoryData categoryDataState=view.getCategoryDataState();
+
+        if(isOperatorListAvailable(categoryDataState)) {
+            if (RequestPermissionUtil.checkHasPermission(view.getActivity(), Manifest.permission.READ_PHONE_STATE)) {
+                List<Validation> validationList = categoryDataState.getClientNumberList().get(0).getValidation();
+                boolean isCheckUssdButtonActive = true;
+
+                for (int i = 0; i < MAX_SIM_COUNT; i++) {
+                    String carrierName = DeviceUtil.getOperatorName(view.getActivity(), i);
+                    Operator operator = getSelectedUssdOperator(i);
+                    String ussdCode = operator.getUssdCode();
+                    if(carrierName != null) {
+
+                        if (ussdCode == null || "".equalsIgnoreCase(ussdCode.trim())) {
+
+                            //show the card if signal is not available with error message
+                            if (isCarrierSignalsNotAvailable(carrierName)) {
+                                String operatorErrorMsg = view.getActivity().getString(R.string.label_no_signal);
+                                carrierName = operatorErrorMsg;
+                                view.renderCheckPulsaBalanceData(i, ussdCode, getPhoneNumberForSim(i ,operator, validationList), operatorErrorMsg, true, carrierName);
+                                isCheckUssdButtonActive = true;
+                            } else {
+                                //if check button was not active for previous sim, then do not show another card for inactive case
+                                if (isCheckUssdButtonActive || i != (MAX_SIM_COUNT-1)){
+                                    view.renderCheckPulsaBalanceData(i, ussdCode, getPhoneNumberForSim(i ,operator, validationList), view.getActivity().getString(R.string.label_operator_not_support), false, carrierName);
+                                    isCheckUssdButtonActive = false;
+                                }
+                            }
+                        }else {
+                            view.renderCheckPulsaBalanceData(i, ussdCode, getPhoneNumberForSim(i, operator, validationList), null, true, carrierName);
+                        }
+                    }
+                }
+            } else {
+                view.renderCheckPulsaBalanceData(0, "", "", null, true, null);
+            }
+        }
+    }
+
+    private String getPhoneNumberForSim(int simIndex, Operator operator, List<Validation> validationList){
+        String phoneNumber = getUssdPhoneNumberFromCache(simIndex);
+        if (!DeviceUtil.validateNumberAndMatchOperator(validationList, operator, phoneNumber)) {
+            phoneNumber = getDeviceMobileNumber(simIndex);
+            if (!DeviceUtil.validateNumberAndMatchOperator(validationList, operator, phoneNumber)) {
+                phoneNumber = "";
+            }
+        }
+        return phoneNumber;
+    }
+
+    private boolean isOperatorListAvailable(CategoryData categoryDataState){
+
+        return (categoryDataState != null &&
+                categoryDataState.getOperatorList() != null &&
+                categoryDataState.getOperatorList().size() != 0);
     }
 }
 

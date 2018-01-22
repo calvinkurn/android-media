@@ -61,9 +61,9 @@ public class ChangePhoneNumberEmailVerificationFragment extends BaseDaggerFragme
     TextView countdownText;
     TextView verifyButton;
     TextView errorOtp;
+    TextView limitOtpText;
     View limitOtp;
     View finishCountdownView;
-    TextView noCodeText;
     CountDownTimer countDownTimer;
     TkpdProgressDialog progressDialog;
     private String phoneNumber;
@@ -128,7 +128,7 @@ public class ChangePhoneNumberEmailVerificationFragment extends BaseDaggerFragme
         limitOtp = view.findViewById(R.id.limit_otp);
         errorOtp = view.findViewById(R.id.error_otp);
         finishCountdownView = view.findViewById(R.id.finish_countdown);
-        noCodeText = view.findViewById(R.id.no_code);
+        limitOtpText = view.findViewById(R.id.limit_otp_text);
     }
 
     private void setViewListener() {
@@ -180,8 +180,8 @@ public class ChangePhoneNumberEmailVerificationFragment extends BaseDaggerFragme
             setLimitReachedCountdownText();
         }
 
-        String text = String.format("%s<br/><b>%s</b>",
-                getString(R.string.verification_code_sent_to),
+        String text = String.format("%s <b>%s</b>.",
+                getString(R.string.verification_code_email_sent_to),
                 email);
         message.setText(MethodChecker.fromHtml(text));
         limitOtp.setVisibility(View.GONE);
@@ -255,7 +255,8 @@ public class ChangePhoneNumberEmailVerificationFragment extends BaseDaggerFragme
 
     @Override
     public void onSendEmailError(String message) {
-        if (message.contains(getString(R.string.limit_otp_reached))) {
+        if (message.contains(getString(R.string.limit_otp_email_reached))) {
+            limitOtpText.setText(message);
             limitOtp.setVisibility(View.VISIBLE);
             setLimitReachedCountdownText();
         } else {
@@ -313,7 +314,6 @@ public class ChangePhoneNumberEmailVerificationFragment extends BaseDaggerFragme
     private void setFinishedCountdownText() {
         countdownText.setVisibility(View.GONE);
         finishCountdownView.setVisibility(View.VISIBLE);
-        noCodeText.setVisibility(View.VISIBLE);
 
         TextView resend = finishCountdownView.findViewById(R.id.resend);
         resend.setOnClickListener(new View.OnClickListener() {
@@ -327,14 +327,12 @@ public class ChangePhoneNumberEmailVerificationFragment extends BaseDaggerFragme
     private void setLimitReachedCountdownText() {
 
         finishCountdownView.setVisibility(View.GONE);
-        noCodeText.setVisibility(View.GONE);
         countdownText.setVisibility(View.GONE);
     }
 
     private void setRunningCountdownText(String countdown) {
         countdownText.setVisibility(View.VISIBLE);
         finishCountdownView.setVisibility(View.GONE);
-        noCodeText.setVisibility(View.GONE);
 
         countdownText.setTextColor(MethodChecker.getColor(getContext(), R.color.black_38));
 
