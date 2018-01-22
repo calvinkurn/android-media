@@ -72,7 +72,7 @@ public class CampaignModule {
     @Provides
     OkHttpClient provideOkHttpClientRide() {
 
-        return OkHttpFactory.create().buildClientDefaultAuth();
+        return OkHttpFactory.create().buildClientCampaignAuth();
     }
 
 }

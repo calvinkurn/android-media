@@ -5,36 +5,62 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 
+import okhttp3.Interceptor;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
+
 /**
  * Created by sandeepgoyal on 02/01/18.
  */
 
-public class CampaignInterceptor extends TkpdAuthInterceptor{
-
-    private static final String HEADER_DATE_FORMAT = "dd MMM yy HH:mm ZZZ";
-    private static final String CONTENT_TYPE = "application/x-www-form-urlencoded";
-    private static final String HEADER_DATE = "X-Date";
-    private static final String HEADER_DEVICE = "X-Device";
-    private static final String HEADER_USER_ID = "Tkpd-UserId";
-    private static final String HEADER_AUTHORIZATION = "Authorization";
-    private static final String HEADER_X_AUTHORIZATION = "X-Tkpd-Authorization";
-    private static final String AUTO_RIDE = "AUTO_RIDE";
+public class CampaignInterceptor extends TkpdBaseInterceptor{
 
     @Override
-    protected Map<String, String> getHeaderMap(String path, String strParam, String method, String authKey, String contentTypeHeader) {
-        Map<String, String> headerMap = AuthUtil.getDefaultHeaderMap(path, strParam, method, CONTENT_TYPE, authKey, HEADER_DATE_FORMAT);
-        SimpleDateFormat dateFormat = new SimpleDateFormat(HEADER_DATE_FORMAT, Locale.ENGLISH);
-        String date = dateFormat.format(new Date());
-        headerMap.put(HEADER_DATE, date);
-        headerMap.put(HEADER_USER_ID, SessionHandler.getLoginID(MainApplication.getAppContext()));
-        headerMap.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
+    protected Response getResponse(Chain chain, Request request) throws IOException {
+        Response response= super.getResponse(chain,request);
+        String bodyResponse = response.body().string();
+        return createNewResponse(response, bodyResponse);
+    }
 
-        headerMap.put(HEADER_X_AUTHORIZATION, headerMap.get(HEADER_AUTHORIZATION));
-        return headerMap;
+    protected Response createNewResponse(Response response, String responseString) {
+        try {
+            JSONObject jsonObject = new JSONObject(responseString);
+            if (jsonObject.has("data")) {
+                String newResponseString = jsonObject.getString("data");
+                return constructNewResponse(response, newResponseString);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return response;
+        }
+        return response;
+    }
+
+    protected Response constructNewResponse(Response oldResponse, String oldBodyResponse) {
+        ResponseBody body = ResponseBody.create(oldResponse.body().contentType(), oldBodyResponse);
+
+        Response.Builder builder = new Response.Builder();
+        builder.body(body)
+                .headers(oldResponse.headers())
+                .message(oldResponse.message())
+                .handshake(oldResponse.handshake())
+                .protocol(oldResponse.protocol())
+                .cacheResponse(oldResponse.cacheResponse())
+                .priorResponse(oldResponse.priorResponse())
+                .code(oldResponse.code())
+                .request(oldResponse.request())
+                .networkResponse(oldResponse.networkResponse());
+
+        return builder.build();
     }
 }

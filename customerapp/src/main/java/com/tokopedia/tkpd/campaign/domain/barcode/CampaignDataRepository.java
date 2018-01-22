@@ -3,6 +3,7 @@ package com.tokopedia.tkpd.campaign.domain.barcode;
 
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.tkpd.campaign.data.entity.CampaignRequestEntity;
 import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
 
 import rx.Observable;

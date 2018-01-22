@@ -1,15 +1,13 @@
 package com.tokopedia.tkpd.campaign.source.api;
 
+import com.tokopedia.tkpd.campaign.data.entity.CampaignRequestEntity;
 import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
-import com.tokopedia.tkpd.campaign.domain.barcode.CampaignDataRepository;
 
 import java.util.Map;
 
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
-import retrofit2.http.GET;
 import retrofit2.http.POST;
-import retrofit2.http.QueryMap;
 import rx.Observable;
 
 /**

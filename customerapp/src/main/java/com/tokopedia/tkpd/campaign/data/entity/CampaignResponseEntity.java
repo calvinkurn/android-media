@@ -4,46 +4,106 @@ import com.google.gson.annotations.SerializedName;
 
 public class CampaignResponseEntity{
 
-	@SerializedName("message")
-	private String message;
+	@SerializedName("updated_at")
+	private String updatedAt;
 
-	@SerializedName("tkp_campaign_id")
-	private int campaignId;
+	@SerializedName("campaign_type")
+	private int campaignType;
 
-	@SerializedName("tkp_campaign_name")
-	private String campaignName;
+	@SerializedName("name")
+	private String name;
 
-	public void setMessage(String message){
-		this.message = message;
+	@SerializedName("created_at")
+	private String createdAt;
+
+	@SerializedName("id")
+	private int id;
+
+	@SerializedName("title")
+	private String title;
+
+	@SerializedName("url")
+	private String url;
+
+	@SerializedName("status")
+	private int status;
+
+	public void setUpdatedAt(String updatedAt){
+		this.updatedAt = updatedAt;
 	}
 
-	public String getMessage(){
-		return message;
+	public String getUpdatedAt(){
+		return updatedAt;
 	}
 
-	public void setCampaignId(int campaignId){
-		this.campaignId = campaignId;
+	public void setCampaignType(int campaignType){
+		this.campaignType = campaignType;
 	}
 
-	public int getCampaignId(){
-		return campaignId;
+	public int getCampaignType(){
+		return campaignType;
 	}
 
-	public void setCampaignName(String campaignUrl){
-		this.campaignName = campaignUrl;
+	public void setName(String name){
+		this.name = name;
 	}
 
-	public String getCampaignName(){
-		return campaignName;
+	public String getName(){
+		return name;
+	}
+
+	public void setCreatedAt(String createdAt){
+		this.createdAt = createdAt;
+	}
+
+	public String getCreatedAt(){
+		return createdAt;
+	}
+
+	public void setId(int id){
+		this.id = id;
+	}
+
+	public int getId(){
+		return id;
+	}
+
+	public void setTitle(String title){
+		this.title = title;
+	}
+
+	public String getTitle(){
+		return title;
+	}
+
+	public void setUrl(String url){
+		this.url = url;
+	}
+
+	public String getUrl(){
+		return url;
+	}
+
+	public void setStatus(int status){
+		this.status = status;
+	}
+
+	public int getStatus(){
+		return status;
 	}
 
 	@Override
  	public String toString(){
 		return 
 			"CampaignResponseEntity{" + 
-			"message = '" + message + '\'' + 
-			",campaign_id = '" + campaignId + '\'' + 
-			",campaign_url = '" + campaignName + '\'' +
+			"updated_at = '" + updatedAt + '\'' + 
+			",campaign_type = '" + campaignType + '\'' + 
+			",name = '" + name + '\'' + 
+			",created_at = '" + createdAt + '\'' + 
+			",id = '" + id + '\'' + 
+			",title = '" + title + '\'' + 
+			",url = '" + url + '\'' + 
+			",status = '" + status + '\'' + 
 			"}";
 		}
 }
