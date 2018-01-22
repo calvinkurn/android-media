@@ -96,6 +96,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     @Override
     public void onButtonSubmitClicked() {
         if (validateFields()) {
+            flightAnalytics.eventBookingNextClick(getView().getString(R.string.flight_booking_analytics_customer_page));
             getView().getCurrentBookingParamViewModel().setContactName(getView().getContactName());
             getView().getCurrentBookingParamViewModel().setContactEmail(getView().getContactEmail());
             getView().getCurrentBookingParamViewModel().setContactPhone(getView().getContactPhoneNumber());

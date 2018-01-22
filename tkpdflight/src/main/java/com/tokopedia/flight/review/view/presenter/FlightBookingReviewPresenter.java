@@ -7,6 +7,7 @@ import com.tokopedia.flight.booking.view.viewmodel.BaseCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.mapper.FlightBookingCartDataMapper;
 import com.tokopedia.flight.common.data.model.FlightException;
+import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.data.model.FlightCheckoutEntity;
@@ -37,17 +38,20 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
     private final FlightCheckVoucherCodeUseCase flightCheckVoucherCodeUseCase;
     private final FlightBookingCheckoutUseCase flightBookingCheckoutUseCase;
     private final FlightBookingVerifyUseCase flightBookingVerifyUseCase;
+    private FlightAnalytics flightAnalytics;
 
     @Inject
     public FlightBookingReviewPresenter(FlightCheckVoucherCodeUseCase flightCheckVoucherCodeUseCase,
                                         FlightBookingCheckoutUseCase flightBookingCheckoutUseCase,
                                         FlightAddToCartUseCase flightAddToCartUseCase,
                                         FlightBookingCartDataMapper flightBookingCartDataMapper,
-                                        FlightBookingVerifyUseCase flightBookingVerifyUseCase) {
+                                        FlightBookingVerifyUseCase flightBookingVerifyUseCase,
+                                        FlightAnalytics flightAnalytics) {
         super(flightAddToCartUseCase, flightBookingCartDataMapper);
         this.flightCheckVoucherCodeUseCase = flightCheckVoucherCodeUseCase;
         this.flightBookingCheckoutUseCase = flightBookingCheckoutUseCase;
         this.flightBookingVerifyUseCase = flightBookingVerifyUseCase;
+        this.flightAnalytics = flightAnalytics;
     }
 
     @Override
@@ -118,11 +122,13 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
                             } else {
                                 getView().showErrorInEmptyState(FlightErrorUtil.getMessageFromException(getView().getActivity(), e));
                             }
+                            flightAnalytics.eventFailedPurchaseAttempt();
                         }
                     }
 
                     @Override
                     public void onNext(FlightCheckoutViewModel flightCheckoutViewModel) {
+                        flightAnalytics.eventPurchaseAttempt(flightCheckoutViewModel);
                         getView().setNeedToRefreshOnPassengerInfo();
                         getView().navigateToTopPay(flightCheckoutViewModel);
                     }
@@ -132,6 +138,7 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
     @Override
     public void checkVoucherCode(String cartId, String voucherCode) {
         getView().showProgressDialog();
+        flightAnalytics.eventVoucherClick(voucherCode);
         flightCheckVoucherCodeUseCase.execute(flightCheckVoucherCodeUseCase.createRequestParams(cartId, voucherCode), getSubscriberCheckVoucherCode());
     }
 
@@ -191,12 +198,14 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
                 if (isViewAttached()) {
                     getView().hideProgressDialog();
                     getView().onErrorCheckVoucherCode(e);
+                    flightAnalytics.eventVoucherErrors(getView().getVoucherCode(), e.getMessage());
                 }
             }
 
             @Override
             public void onNext(AttributesVoucher attributesVoucher) {
                 getView().hideProgressDialog();
+                flightAnalytics.eventVoucherSuccess(attributesVoucher.getVoucherCode(), attributesVoucher.getMessage());
                 getView().onSuccessCheckVoucherCode(attributesVoucher);
                 getView().updateFinalTotal(attributesVoucher, getView().getCurrentBookingReviewModel());
             }

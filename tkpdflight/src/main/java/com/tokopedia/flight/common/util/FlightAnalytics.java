@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
+import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 
 import java.util.ArrayList;
@@ -252,27 +253,27 @@ public class FlightAnalytics {
         );
     }
 
-    public void eventVoucherSuccess(String label) {
+    public void eventVoucherSuccess(String label, String message) {
         analyticTracker.sendEventTracking(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.VOUCHER_SUCCESS,
-                label
+                label + "- " + message
         );
     }
 
-    public void eventVoucherErrors(String label) {
+    public void eventVoucherErrors(String label, String message) {
         analyticTracker.sendEventTracking(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.VOUCHER_ERROR,
-                label
+                label + "- " + message
         );
     }
 
-    public void eventPurchaseAttempt(String label) {
+    public void eventPurchaseAttempt(FlightCheckoutViewModel viewModel) {
         analyticTracker.sendEventTracking(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.PURCHASE_ATTEMPT,
-                label
+                viewModel.getTransactionId()
         );
     }
 
@@ -298,6 +299,15 @@ public class FlightAnalytics {
             eventAddToCart(departureViewModel);
         if (returnViewModel != null)
             eventAddToCart(returnViewModel);
+    }
+
+    public void eventFailedPurchaseAttempt() {
+        analyticTracker.sendEventTracking(
+                GENERIC_EVENT,
+                GENERIC_CATEGORY,
+                Category.PURCHASE_ATTEMPT,
+                Label.FAILED_PURCHASE
+        );
     }
 
     public static final class Screen {
@@ -335,6 +345,7 @@ public class FlightAnalytics {
     }
 
     private static class Label {
+        public static String FAILED_PURCHASE = "FAILED";
         static String NORMAL_PRICE = "Normal Price";
     }
 
