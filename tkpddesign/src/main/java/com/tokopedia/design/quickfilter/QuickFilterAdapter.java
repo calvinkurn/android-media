@@ -19,6 +19,7 @@ import java.util.List;
  * Created by nabillasabbaha on 11/22/17.
  */
 
+@Deprecated
 public class QuickFilterAdapter extends RecyclerView.Adapter {
 
     private List<QuickFilterItem> filterList;

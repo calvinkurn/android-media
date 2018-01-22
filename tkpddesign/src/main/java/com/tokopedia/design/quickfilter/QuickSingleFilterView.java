@@ -23,7 +23,7 @@ public class QuickSingleFilterView extends BaseCustomView {
     private QuickFilterItem defaultItem = null;
     private View rootView;
     private RecyclerView recyclerView;
-    private BaseQuickSingleFilterAdapter adapterFilter;
+    protected BaseQuickSingleFilterAdapter adapterFilter;
     private ActionListener listener;
 
     public QuickSingleFilterView(@NonNull Context context) {
@@ -52,23 +52,19 @@ public class QuickSingleFilterView extends BaseCustomView {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
                 LinearLayoutManager.HORIZONTAL, false));
-
-        adapterFilter = new QuickSingleFilterAdapter(getFilterTokoCashListener());
+        initialAdapter();
         recyclerView.setAdapter(adapterFilter);
     }
 
-    public void setAdapterFilter(BaseQuickSingleFilterAdapter adapterFilter) {
-        this.adapterFilter = adapterFilter;
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
-                LinearLayoutManager.HORIZONTAL, false));
-        recyclerView.setAdapter(adapterFilter);
+    protected void initialAdapter() {
+        this.adapterFilter = new QuickSingleFilterAdapter(getFilterTokoCashListener());
     }
 
     public void renderFilter(List<QuickFilterItem> quickFilterItems) {
         adapterFilter.addFilterTokoCashList(quickFilterItems);
     }
 
-    private QuickSingleFilterListener getFilterTokoCashListener() {
+    protected QuickSingleFilterListener getFilterTokoCashListener() {
         return new QuickSingleFilterListener() {
 
             @Override
@@ -93,10 +89,14 @@ public class QuickSingleFilterView extends BaseCustomView {
                     int indexOf = items.indexOf(defaultItem);
                     if (indexOf != -1) {
                         items.get(indexOf).setSelected(true);
-                        listener.selectFilter(items.get(indexOf).getType());
+                        if (listener != null) {
+                            listener.selectFilter(items.get(indexOf).getType());
+                        }
                     }
                 } else {
-                    listener.selectFilter(quickFilterItem.getType());
+                    if (listener != null) {
+                        listener.selectFilter(quickFilterItem.getType());
+                    }
                 }
                 adapterFilter.notifyDataSetChanged();
             }
