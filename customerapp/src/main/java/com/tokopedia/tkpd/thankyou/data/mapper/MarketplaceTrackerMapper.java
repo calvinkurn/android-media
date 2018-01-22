@@ -24,26 +24,6 @@ import rx.functions.Func1;
 
 public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<PaymentGraphql>>, Boolean> {
 
-    private static final String CURRENCY_CODE = "currencyCode";
-
-    private static final String PURCHASE = "purchase";
-    private static final String ACTION_FIELD = "actionField";
-
-    private static final String PRODUCTS = "products";
-    private static final String ID = "id";
-    private static final String AFFILIATION = "affiliation";
-    private static final String REVENUE = "revenue";
-    private static final String TAX = "tax";
-    private static final String SHIPPING = "shipping";
-
-    private static final String COUPON = "coupon";
-    private static final String NAME = "name";
-    private static final String PRICE = "price";
-    private static final String BRAND = "brand";
-    private static final String CATEGORY = "category";
-    private static final String VARIANT = "variant";
-    private static final String QUANTITY = "quantity";
-
     private SessionHandler sessionHandler;
 
     private PaymentData paymentData;
