@@ -12,9 +12,9 @@ import android.widget.ImageView;
 import com.journeyapps.barcodescanner.BarcodeResult;
 import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
 import com.tokopedia.tokocash.di.TokoCashComponent;
@@ -22,6 +22,7 @@ import com.tokopedia.tokocash.qrpayment.domain.GetInfoQrTokoCashUseCase;
 import com.tokopedia.tokocash.qrpayment.presentation.contract.InfoQrTokoCashContract;
 import com.tokopedia.tokocash.qrpayment.presentation.model.InfoQrTokoCash;
 import com.tokopedia.tokocash.qrpayment.presentation.presenter.InfoQrTokoCashPresenter;
+import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
 
@@ -47,10 +48,11 @@ public class CustomScannerTokoCashActivity extends BaseScannerQRActivity impleme
     }
 
     @Inject
-    public InfoQrTokoCashPresenter presenter;
+    InfoQrTokoCashPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        initInjector();
         super.onCreate(savedInstanceState);
     }
 
@@ -80,15 +82,8 @@ public class CustomScannerTokoCashActivity extends BaseScannerQRActivity impleme
     }
 
     @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
-    }
-
-    @Override
     protected void initView() {
-        initInjector();
-        presenter.attachView(this);
-        toolbar.setTitle(getString(R.string.title_scan_qr));
+        updateTitle(getString(R.string.title_scan_qr));
 
         torch = (ImageView) findViewById(R.id.switch_flashlight);
         torch.setVisibility(!hasFlash() ? View.GONE : View.VISIBLE);
@@ -158,9 +153,10 @@ public class CustomScannerTokoCashActivity extends BaseScannerQRActivity impleme
 
     private void initInjector() {
         tokoCashComponent = DaggerTokoCashComponent.builder()
-                .appComponent(getApplicationComponent())
+                .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
                 .build();
         tokoCashComponent.inject(this);
+        presenter.attachView(this);
     }
 
     @Override
@@ -171,10 +167,10 @@ public class CustomScannerTokoCashActivity extends BaseScannerQRActivity impleme
     }
 
     @Override
-    public void showErrorGetInfo() {
+    public void showErrorGetInfo(String message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.title_dialog_wrong_scan));
-        builder.setMessage(getString(R.string.msg_dialog_wrong_scan));
+        builder.setMessage(message);
         builder.setPositiveButton(getString(R.string.btn_dialog_wrong_scan),
                 new DialogInterface.OnClickListener() {
                     @Override

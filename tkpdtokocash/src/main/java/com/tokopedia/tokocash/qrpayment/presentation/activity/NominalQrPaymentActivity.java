@@ -3,6 +3,7 @@ package com.tokopedia.tokocash.qrpayment.presentation.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.text.InputFilter;
 import android.view.View;
@@ -11,10 +12,10 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.text.watcher.NumberTextWatcher;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.tokocash.R;
@@ -26,6 +27,7 @@ import com.tokopedia.tokocash.qrpayment.presentation.model.BalanceTokoCash;
 import com.tokopedia.tokocash.qrpayment.presentation.model.InfoQrTokoCash;
 import com.tokopedia.tokocash.qrpayment.presentation.model.QrPaymentTokoCash;
 import com.tokopedia.tokocash.qrpayment.presentation.presenter.QrPaymentPresenter;
+import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
 
@@ -33,7 +35,7 @@ import javax.inject.Inject;
  * Created by nabillasabbaha on 1/3/18.
  */
 
-public class NominalQrPaymentActivity extends TActivity implements QrPaymentContract.View,
+public class NominalQrPaymentActivity extends BaseSimpleActivity implements QrPaymentContract.View,
         HasComponent<TokoCashComponent> {
 
     private static final int REQUEST_CODE_SUCCESS = 121;
@@ -66,16 +68,25 @@ public class NominalQrPaymentActivity extends TActivity implements QrPaymentCont
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        inflateView(R.layout.activity_nominal_qr);
         initInjector();
         presenter.attachView(this);
 
-        toolbar.setTitle(getString(R.string.title_input_nominal));
+        updateTitle(getString(R.string.title_input_nominal));
         infoQrTokoCash = getIntent().getParcelableExtra(INFO_QR);
 
         initView();
         setVar();
         presenter.getBalanceTokoCash();
+    }
+
+    @Override
+    protected Fragment getNewFragment() {
+        return null;
+    }
+
+    @Override
+    protected int getLayoutRes() {
+        return R.layout.activity_nominal_qr;
     }
 
     private void setVar() {
@@ -108,11 +119,6 @@ public class NominalQrPaymentActivity extends TActivity implements QrPaymentCont
     }
 
     @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
-    }
-
-    @Override
     public TokoCashComponent getComponent() {
         if (tokoCashComponent == null) initInjector();
         return tokoCashComponent;
@@ -120,7 +126,7 @@ public class NominalQrPaymentActivity extends TActivity implements QrPaymentCont
 
     private void initInjector() {
         tokoCashComponent = DaggerTokoCashComponent.builder()
-                .appComponent(getApplicationComponent())
+                .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
                 .build();
         tokoCashComponent.inject(this);
     }

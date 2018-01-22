@@ -27,6 +27,10 @@ public interface AbstractionRouter {
 
     void refreshToken();
 
+    void sendErrorNetworkAnalytics(String url, int errorCode);
+
+    void sendForceLogoutAnalytics(String url);
+
     UserSession getSession();
 
     AnalyticTracker getAnalyticTracker();

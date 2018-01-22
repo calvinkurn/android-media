@@ -19,6 +19,16 @@ def getTkpdCore() {
             rootProject.ext.tkpdDependencies.core : project(':tkpdcore');
 }
 
+def getTkpdUseCase() {
+    return project.hasProperty('isArtifact') ?
+            rootProject.ext.tkpdDependencies.core : project(':tkpdusecase');
+}
+
+def getTkpdAbstraction() {
+    return project.hasProperty('isArtifact') ?
+            rootProject.ext.tkpdDependencies.core : project(':tkpdabstraction');
+}
+
 def getTkpdPayment() {
     return project.hasProperty('isArtifact') ?
             rootProject.ext.tkpdDependencies.payment : project(':tkpdpayment');
@@ -108,6 +118,8 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
+    compile getTkpdAbstraction()
+    compile getTkpdUseCase()
     compile getTkpdCore()
     compile getTkpdDesign()
     compile getTkpdPayment()
@@ -118,6 +130,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-all:1.10.19'
 
+    provided rootProject.ext.miscDependencies.javaxAnnotation
     compile rootProject.ext.miscDependencies.dagger
     apt rootProject.ext.miscDependencies.daggerCompiler
 

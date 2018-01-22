@@ -2,6 +2,7 @@ package com.tokopedia.tokocash.qrpayment.presentation.activity;
 
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.view.KeyEvent;
 import android.view.View;
@@ -13,7 +14,7 @@ import com.google.zxing.ResultPoint;
 import com.journeyapps.barcodescanner.BarcodeCallback;
 import com.journeyapps.barcodescanner.BarcodeResult;
 import com.journeyapps.barcodescanner.DecoratedBarcodeView;
-import com.tokopedia.core.app.TActivity;
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ import java.util.List;
  * Created by nabillasabbaha on 12/29/17.
  */
 
-public abstract class BaseScannerQRActivity extends TActivity {
+public abstract class BaseScannerQRActivity extends BaseSimpleActivity {
 
     protected DecoratedBarcodeView decoratedBarcodeView;
     protected View scannerLaser;
@@ -29,9 +30,18 @@ public abstract class BaseScannerQRActivity extends TActivity {
     private TranslateAnimation mAnimation;
 
     @Override
+    protected Fragment getNewFragment() {
+        return null;
+    }
+
+    @Override
+    protected int getLayoutRes() {
+        return getInflateViewId();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        inflateView(getInflateViewId());
 
         decoratedBarcodeView = (DecoratedBarcodeView) findViewById(getIdDecoratedBarcodeView());
         scannerLaser = (View) findViewById(getIdScannerLaser());

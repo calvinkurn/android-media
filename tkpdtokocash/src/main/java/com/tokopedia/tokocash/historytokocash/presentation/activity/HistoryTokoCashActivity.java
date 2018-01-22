@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,9 +19,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
@@ -29,9 +30,9 @@ import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.design.quickfilter.QuickFilterAdapter;
 import com.tokopedia.tokocash.R;
-import com.tokopedia.tokocash.historytokocash.data.mapper.FilterHistoryTokoCashMapper;
 import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
 import com.tokopedia.tokocash.di.TokoCashComponent;
+import com.tokopedia.tokocash.historytokocash.data.mapper.FilterHistoryTokoCashMapper;
 import com.tokopedia.tokocash.historytokocash.domain.GetHistoryDataUseCase;
 import com.tokopedia.tokocash.historytokocash.presentation.DatePickerTokoCashUtil;
 import com.tokopedia.tokocash.historytokocash.presentation.adapter.HistoryTokoCashAdapter;
@@ -40,6 +41,7 @@ import com.tokopedia.tokocash.historytokocash.presentation.model.HeaderHistory;
 import com.tokopedia.tokocash.historytokocash.presentation.model.ItemHistory;
 import com.tokopedia.tokocash.historytokocash.presentation.model.TokoCashHistoryData;
 import com.tokopedia.tokocash.historytokocash.presentation.presenter.TokoCashHistoryPresenter;
+import com.tokopedia.usecase.RequestParams;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -53,7 +55,7 @@ import javax.inject.Inject;
  * Created by nabillasabbaha on 12/27/17.
  */
 
-public class HistoryTokoCashActivity extends TActivity implements TokoCashHistoryContract.View,
+public class HistoryTokoCashActivity extends BaseSimpleActivity implements TokoCashHistoryContract.View,
         HasComponent<TokoCashComponent> {
 
     private static final int SELECTION_TYPE_PERIOD_DATE = 0;
@@ -118,12 +120,16 @@ public class HistoryTokoCashActivity extends TActivity implements TokoCashHistor
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        inflateView(R.layout.activity_history_tokocash);
         initInjector();
         presenter.attachView(this);
         initView();
         initVar();
         setActionVar();
+    }
+
+    @Override
+    protected int getLayoutRes() {
+        return R.layout.activity_history_tokocash;
     }
 
     @Override
@@ -164,7 +170,7 @@ public class HistoryTokoCashActivity extends TActivity implements TokoCashHistor
     }
 
     private void initVar() {
-        toolbar.setTitle(getString(R.string.title_menu_history_tokocash));
+        updateTitle(getString(R.string.title_menu_history_tokocash));
         initialRangeDateFilter();
         initialFilterRecyclerView();
         initialHistoryRecyclerView();
@@ -447,11 +453,6 @@ public class HistoryTokoCashActivity extends TActivity implements TokoCashHistor
     }
 
     @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
-    }
-
-    @Override
     public TokoCashComponent getComponent() {
         if (tokoCashComponent == null) initInjector();
         return tokoCashComponent;
@@ -459,7 +460,7 @@ public class HistoryTokoCashActivity extends TActivity implements TokoCashHistor
 
     private void initInjector() {
         tokoCashComponent = DaggerTokoCashComponent.builder()
-                .appComponent(getApplicationComponent())
+                .baseAppComponent(((BaseMainApplication)getApplication()).getBaseAppComponent())
                 .build();
         tokoCashComponent.inject(this);
     }
@@ -468,5 +469,10 @@ public class HistoryTokoCashActivity extends TActivity implements TokoCashHistor
     protected void onDestroy() {
         presenter.onDestroyPresenter();
         super.onDestroy();
+    }
+
+    @Override
+    protected Fragment getNewFragment() {
+        return null;
     }
 }

@@ -1,9 +1,9 @@
 package com.tokopedia.tokocash.qrpayment.presentation.contract;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.presentation.CustomerPresenter;
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.tokocash.qrpayment.presentation.model.InfoQrTokoCash;
+import com.tokopedia.usecase.RequestParams;
 
 /**
  * Created by nabillasabbaha on 1/2/18.
@@ -15,7 +15,7 @@ public interface InfoQrTokoCashContract {
 
         RequestParams getInfoTokoCashParam();
 
-        void showErrorGetInfo();
+        void showErrorGetInfo(String message);
 
         void showErrorNetwork(String message);
 

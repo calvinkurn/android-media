@@ -3,6 +3,7 @@ package com.tokopedia.tokocash.qrpayment.presentation.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -15,18 +16,24 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.tokocash.R;
+import com.tokopedia.tokocash.di.TokoCashComponent;
 import com.tokopedia.tokocash.qrpayment.presentation.model.QrPaymentTokoCash;
+import com.tokopedia.tokocash.qrpayment.presentation.presenter.SuccessQrPaymentPresenter;
+
+import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
+
+import javax.inject.Inject;
 
 /**
  * Created by nabillasabbaha on 12/18/17.
  */
 
-public class SuccessPaymentQRActivity extends TActivity {
+public class SuccessPaymentQRActivity extends BaseSimpleActivity implements HasComponent<TokoCashComponent> {
 
     private static final String MERCHANT_NAME = "merchant_name";
     private static final String AMOUNT = "amount";
@@ -45,6 +52,10 @@ public class SuccessPaymentQRActivity extends TActivity {
     private LinearLayout failedTransactionLayout;
     private boolean isTransactionSuccess;
     private Button btnRetryScan;
+    private TokoCashComponent tokoCashComponent;
+
+    @Inject
+    SuccessQrPaymentPresenter presenter;
 
     public static Intent newInstance(Context context, QrPaymentTokoCash qrPaymentTokoCash,
                                      String merchantName, String amount, boolean isTransactionSuccess) {
@@ -59,7 +70,6 @@ public class SuccessPaymentQRActivity extends TActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        inflateView(R.layout.activity_success_payment_qr);
 
         initView();
         initVar();
@@ -82,7 +92,7 @@ public class SuccessPaymentQRActivity extends TActivity {
     private void initVar() {
         isTransactionSuccess = getIntent().getBooleanExtra(IS_TRANSACTION_SUCCESS, false);
         if (isTransactionSuccess) {
-            toolbar.setTitle(getString(R.string.title_success_payment));
+            updateTitle(getString(R.string.title_success_payment));
             successTransactionLayout.setVisibility(View.VISIBLE);
             failedTransactionLayout.setVisibility(View.GONE);
             qrPaymentTokoCash = getIntent().getParcelableExtra(QR_PAYMENT_DATA);
@@ -96,7 +106,7 @@ public class SuccessPaymentQRActivity extends TActivity {
             tokoCashBalance.setText(String.valueOf("Rp " +
                     tokocashBalanceString.replace(",", ".")));
         } else {
-            toolbar.setTitle(getString(R.string.title_failed_payment));
+            updateTitle(getString(R.string.title_failed_payment));
             successTransactionLayout.setVisibility(View.GONE);
             failedTransactionLayout.setVisibility(View.VISIBLE);
             btnRetryScan.setOnClickListener(new View.OnClickListener() {
@@ -131,8 +141,7 @@ public class SuccessPaymentQRActivity extends TActivity {
         backToHomeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                GlobalCacheManager cache = new GlobalCacheManager();
-                cache.delete(TkpdCache.Key.KEY_TOKOCASH_BALANCE_CACHE);
+                presenter.deleteCacheTokoCashBalance();
                 onBackPressed();
             }
         });
@@ -146,7 +155,25 @@ public class SuccessPaymentQRActivity extends TActivity {
     }
 
     @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
+    protected Fragment getNewFragment() {
+        return null;
+    }
+
+    @Override
+    protected int getLayoutRes() {
+        return R.layout.activity_success_payment_qr;
+    }
+
+    @Override
+    public TokoCashComponent getComponent() {
+        if (tokoCashComponent == null) initInjector();
+        return tokoCashComponent;
+    }
+
+    private void initInjector() {
+        tokoCashComponent = DaggerTokoCashComponent.builder()
+                .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
+                .build();
+        tokoCashComponent.inject(this);
     }
 }
