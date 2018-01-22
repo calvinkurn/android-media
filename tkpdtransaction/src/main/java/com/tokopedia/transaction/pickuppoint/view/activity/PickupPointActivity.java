@@ -54,6 +54,7 @@ public class PickupPointActivity extends BaseActivity
         implements PickupPointContract.View, PickupPointAdapter.Listener {
 
     private static final int REQUEST_CODE_MAP = 100;
+    private static final int CONTENT_PADDING_BOTTOM = 80;
 
     @BindView(R2.id.toolbar)
     Toolbar toolbar;
@@ -262,17 +263,26 @@ public class PickupPointActivity extends BaseActivity
 
     @Override
     public void showNoConnection(@NonNull String message) {
-        contentScrollView.setVisibility(View.GONE);
+        setContentPaddingVisibility(false);
         btnChoosePickupBooth.setVisibility(View.GONE);
         NetworkErrorHelper.showEmptyState(getActivity(), networkErrorView, message,
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
-                        contentScrollView.setVisibility(View.VISIBLE);
+                        setContentPaddingVisibility(true);
                         btnChoosePickupBooth.setVisibility(View.VISIBLE);
                         doQuery((HashMap<String, String>) getIntent().getSerializableExtra(INTENT_REQ_PARAMS));
                     }
                 });
+    }
+
+    private void setContentPaddingVisibility(boolean visible) {
+        if (visible) {
+            int paddingInDp = (int) (CONTENT_PADDING_BOTTOM * getResources().getDisplayMetrics().density);
+            contentScrollView.setPadding(0, 0, 0, paddingInDp);
+        } else {
+            contentScrollView.setPadding(0, 0, 0, 0);
+        }
     }
 
     @Override
