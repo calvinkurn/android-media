@@ -64,7 +64,6 @@ public class TopAdsNewCostNewGroupFragment extends TopAdsNewCostFragment<TopAdsC
 
     @Override
     protected void onClickedNext() {
-        if (firstTimeCheck()) return;
         if(!isError()) {
             super.onClickedNext();
             if (stepperListener != null) {

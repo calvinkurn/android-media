@@ -42,7 +42,6 @@ public class TopAdsEditCostShopFragment extends TopAdsEditCostFragment<TopAdsDet
 
     @Override
     protected void onClickedNext() {
-        if (firstTimeCheck()) return;
         if (!isError()) {
             super.onClickedNext();
             if (detailAd != null) {

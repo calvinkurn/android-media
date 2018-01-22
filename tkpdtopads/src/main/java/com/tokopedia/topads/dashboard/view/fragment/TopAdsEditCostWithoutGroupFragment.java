@@ -53,7 +53,6 @@ public class TopAdsEditCostWithoutGroupFragment extends TopAdsEditCostFragment<T
 
     @Override
     protected void onClickedNext() {
-        if (firstTimeCheck()) return;
         if(!isError()) {
             super.onClickedNext();
             if (detailAd != null) {
