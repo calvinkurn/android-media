@@ -329,9 +329,9 @@ public class CategoryProductStyle2View extends
     getActionListenerRadioChooserOperator() {
         return new BaseDigitalRadioChooserView.ActionListener<Operator>() {
             @Override
-            public void onUpdateDataDigitalRadioChooserSelectedRendered(Operator data) {
-                operatorSelected = data;
-                if (!data.getClientNumberList().isEmpty()) {
+            public void onUpdateDataDigitalRadioChooserSelectedRendered(Operator operator) {
+                operatorSelected = operator;
+                if (!operatorSelected.getClientNumberList().isEmpty()) {
                     renderClientNumberInputForm(operatorSelected);
                 }
                 if (operatorSelected.getRule().getProductViewStyle() == 99) {
@@ -420,9 +420,9 @@ public class CategoryProductStyle2View extends
             }
 
             @Override
-            public void onDigitalChooserClicked(List<Product> data) {
+            public void onDigitalChooserClicked(List<Product> products) {
                 actionListener.onProductChooserClicked(
-                        data, operatorSelected.getOperatorId(),
+                        products, operatorSelected.getOperatorId(),
                         operatorSelected != null ? operatorSelected.getRule().getProductText() : ""
                 );
             }

@@ -135,23 +135,6 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
 
         if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
 
-        DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
-
-        ProductDigitalMapper productDigitalMapper = new ProductDigitalMapper();
-        FavoriteNumberListDataMapper favoriteNumberListDataMapper = new FavoriteNumberListDataMapper();
-        USSDMapper ussdMapper = new USSDMapper();
-
-        CategoryDetailDataSource categoryDetailDataSource = new CategoryDetailDataSource(
-                digitalEndpointService, new GlobalCacheManager(), productDigitalMapper
-        );
-        FavoriteListDataSource favoriteListDataSource = new FavoriteListDataSource(
-                digitalEndpointService, favoriteNumberListDataMapper
-        );
-
-        IDigitalCategoryRepository digitalCategoryRepository = new DigitalCategoryRepository(
-                categoryDetailDataSource, favoriteListDataSource
-        );
-
         ITokoCashRepository balanceRepository = new TokoCashRepository(new TokoCashService(
                 sessionHandler.getAccessToken(this)));
 
@@ -159,6 +142,19 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
                 new CompositeSubscription(),
                 new JobExecutor(),
                 new UIThread());
+
+        DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
+
+        CategoryDetailDataSource categoryDetailDataSource = new CategoryDetailDataSource(
+                digitalEndpointService, new GlobalCacheManager(), new ProductDigitalMapper()
+        );
+        FavoriteListDataSource favoriteListDataSource = new FavoriteListDataSource(
+                digitalEndpointService, new FavoriteNumberListDataMapper()
+        );
+
+        IDigitalCategoryRepository digitalCategoryRepository = new DigitalCategoryRepository(
+                categoryDetailDataSource, favoriteListDataSource
+        );
 
         DigitalCategoryUseCase digitalCategoryUseCase = new DigitalCategoryUseCase(this,
                 digitalCategoryRepository);

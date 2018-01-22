@@ -393,19 +393,19 @@ public class CategoryProductStyle3View extends
             public void onUpdateDataDigitalChooserSelectedRendered(Operator operator) {
                 operatorSelected = operator;
                 setBtnBuyDigitalText(operatorSelected.getRule().getButtonText());
-                if (!operator.getClientNumberList().isEmpty()) {
-                    renderClientNumberInputForm(operator);
-                    if (operatorSelected.getRule().getProductViewStyle() == 99) {
-                        renderDefaultProductSelected();
-                    } else {
-                        showProducts();
-                    }
+                if (!operatorSelected.getClientNumberList().isEmpty()) {
+                    renderClientNumberInputForm(operatorSelected);
+                }
+                if (operatorSelected.getRule().getProductViewStyle() == 99) {
+                    renderDefaultProductSelected();
+                } else {
+                    showProducts();
                 }
             }
 
             @Override
-            public void onDigitalChooserClicked(List<Operator> data) {
-                actionListener.onOperatorChooserStyle3Clicked(data, "");
+            public void onDigitalChooserClicked(List<Operator> operators) {
+                actionListener.onOperatorChooserStyle3Clicked(operators, "");
             }
         };
     }
@@ -479,16 +479,16 @@ public class CategoryProductStyle3View extends
     private BaseDigitalChooserView.ActionListener<Product> getActionListenerProductChooser() {
         return new BaseDigitalChooserView.ActionListener<Product>() {
             @Override
-            public void onUpdateDataDigitalChooserSelectedRendered(Product data) {
-                productSelected = data;
+            public void onUpdateDataDigitalChooserSelectedRendered(Product product) {
+                productSelected = product;
                 renderAdditionalProductInfo();
                 renderPriceProductInfo();
             }
 
             @Override
-            public void onDigitalChooserClicked(List<Product> data) {
+            public void onDigitalChooserClicked(List<Product> products) {
                 actionListener.onProductChooserClicked(
-                        data, operatorSelected.getOperatorId(), operatorSelected != null
+                        products, operatorSelected.getOperatorId(), operatorSelected != null
                                 ? operatorSelected.getRule().getProductText() : ""
                 );
             }
