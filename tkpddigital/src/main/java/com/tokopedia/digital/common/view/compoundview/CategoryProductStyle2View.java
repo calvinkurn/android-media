@@ -61,10 +61,10 @@ public class CategoryProductStyle2View extends
     @BindView(R2.id.tooltip_instant_checkout)
     ImageView tooltipInstantCheckout;
 
-    private WidgetProductChooserView2 widgetProductChooserView;
-    private DigitalProductChooserView digitalProductChooserView;
     private DigitalOperatorRadioChooserView digitalOperatorRadioChooserView;
     private ClientNumberInputView clientNumberInputView;
+    private WidgetProductChooserView2 widgetProductChooserView;
+    private DigitalProductChooserView digitalProductChooserView;
     private ProductAdditionalInfoView productAdditionalInfoView;
     private ProductPriceInfoView productPriceInfoView;
 
@@ -510,7 +510,7 @@ public class CategoryProductStyle2View extends
         if (clientNumberInputView.getText().isEmpty()) {
             return false;
         } else {
-            for (Validation validation : data.getClientNumberList().get(0).getValidation()) {
+            for (Validation validation : operatorSelected.getClientNumberList().get(0).getValidation()) {
                 if (!Pattern.matches(validation.getRegex(), getClientNumber())) {
                     return false;
                 }

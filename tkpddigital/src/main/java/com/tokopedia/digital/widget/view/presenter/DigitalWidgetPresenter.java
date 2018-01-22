@@ -99,14 +99,12 @@ public class DigitalWidgetPresenter extends BaseDigitalWidgetPresenter implement
                                                    HistoryClientNumber historyClientNumber) {
         if (categoryData.isSupportedStyle()) {
             switch (categoryData.getOperatorStyle()) {
-                // TODO: implement style 99 correctly
                 case CategoryData.STYLE_PRODUCT_CATEGORY_1:
                     digitalWidgetView.renderCategoryProductDataStyle1(
                             categoryData, historyClientNumber
                     );
                     break;
                 case CategoryData.STYLE_PRODUCT_CATEGORY_2:
-                case CategoryData.STYLE_PRODUCT_CATEGORY_99:
                     digitalWidgetView.renderCategoryProductDataStyle2(
                             categoryData, historyClientNumber
                     );
@@ -115,6 +113,11 @@ public class DigitalWidgetPresenter extends BaseDigitalWidgetPresenter implement
                 case CategoryData.STYLE_PRODUCT_CATEGORY_4:
                 case CategoryData.STYLE_PRODUCT_CATEGORY_5:
                     digitalWidgetView.renderCategoryProductDataStyle3(
+                            categoryData, historyClientNumber
+                    );
+                    break;
+                case CategoryData.STYLE_PRODUCT_CATEGORY_99:
+                    digitalWidgetView.renderCategoryProductDataStyle99(
                             categoryData, historyClientNumber
                     );
                     break;

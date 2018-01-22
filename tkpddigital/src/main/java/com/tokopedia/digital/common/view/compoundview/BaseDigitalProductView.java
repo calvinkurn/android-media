@@ -178,8 +178,6 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
                 List<Operator> operatorListData, String titleChooser
         );
 
-        void onCannotBeCheckoutProduct(String messageError);
-
         void onButtonContactPickerClicked();
 
         void onProductDetailLinkClicked(String url);

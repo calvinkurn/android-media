@@ -582,7 +582,7 @@ public class CategoryProductStyle3View extends
         if (clientNumberInputView.getText().isEmpty()) {
             return false;
         } else {
-            for (Validation validation : data.getClientNumberList().get(0).getValidation()) {
+            for (Validation validation : operatorSelected.getClientNumberList().get(0).getValidation()) {
                 if (!Pattern.matches(validation.getRegex(), getClientNumber())) {
                     return false;
                 }

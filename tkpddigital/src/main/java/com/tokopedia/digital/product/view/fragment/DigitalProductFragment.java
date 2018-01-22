@@ -69,6 +69,7 @@ import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.common.view.compoundview.CategoryProductStyle1View;
 import com.tokopedia.digital.common.view.compoundview.CategoryProductStyle2View;
 import com.tokopedia.digital.common.view.compoundview.CategoryProductStyle3View;
+import com.tokopedia.digital.common.view.compoundview.CategoryProductStyle99View;
 import com.tokopedia.digital.common.view.compoundview.ClientNumberInputView;
 import com.tokopedia.digital.product.data.mapper.USSDMapper;
 import com.tokopedia.digital.product.domain.IUssdCheckBalanceRepository;
@@ -445,6 +446,20 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
+    public void renderCategoryProductDataStyle99(CategoryData categoryData,
+                                                HistoryClientNumber historyClientNumber) {
+        this.categoryDataState = categoryData;
+        this.historyClientNumberState = historyClientNumber;
+        actionListener.updateTitleToolbar(categoryData.getName());
+        holderProductDetail.removeAllViews();
+        if (digitalProductView == null)
+            digitalProductView = new CategoryProductStyle99View(getActivity());
+        digitalProductView.setActionListener(this);
+        digitalProductView.renderData(categoryData, historyClientNumber);
+        holderProductDetail.addView(digitalProductView);
+    }
+
+    @Override
     public void renderCheckPulsaBalanceData() {
         DigitalProductFragmentPermissionsDispatcher.renderCheckPulsaBalanceWithCheck(this);
     }
@@ -763,11 +778,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                 ),
                 IDigitalModuleRouter.REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER
         );
-    }
-
-    @Override
-    public void onCannotBeCheckoutProduct(String messageError) {
-        showToastMessage(messageError);
     }
 
     @Override

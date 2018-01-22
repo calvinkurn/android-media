@@ -117,6 +117,7 @@
         android:paddingLeft="@dimen/padding_vvs"
         android:paddingRight="@null"
         android:paddingStart="@dimen/padding_vvs"
+        android:paddingBottom="@dimen/digital_padding_4"
         android:text="@string/title_empty_stock"
         android:textColor="@color/red_600"
         android:textSize="@dimen/fontvs"

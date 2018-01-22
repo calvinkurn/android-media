@@ -38,6 +38,7 @@ import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.common.view.compoundview.CategoryProductStyle1View;
 import com.tokopedia.digital.common.view.compoundview.CategoryProductStyle2View;
 import com.tokopedia.digital.common.view.compoundview.CategoryProductStyle3View;
+import com.tokopedia.digital.common.view.compoundview.CategoryProductStyle99View;
 import com.tokopedia.digital.product.view.model.CategoryData;
 import com.tokopedia.digital.product.view.model.ClientNumber;
 import com.tokopedia.digital.product.view.model.ContactData;
@@ -215,6 +216,18 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
     }
 
     @Override
+    public void renderCategoryProductDataStyle99(CategoryData categoryData, HistoryClientNumber historyClientNumber) {
+        this.categoryDataState = categoryData;
+        holderProductDetail.removeAllViews();
+        if (digitalProductView == null)
+            digitalProductView = new CategoryProductStyle99View(getActivity());
+        digitalProductView.setSource(BaseDigitalProductView.WIDGET);
+        digitalProductView.setActionListener(this);
+        digitalProductView.renderData(categoryData, historyClientNumber);
+        holderProductDetail.addView(digitalProductView);
+    }
+
+    @Override
     public void onButtonBuyClicked(BaseDigitalProductView.PreCheckoutProduct preCheckoutProduct,
                                    boolean isInstantCheckoutChecked) {
         if (!preCheckoutProduct.isCanBeCheckout()) {
@@ -256,11 +269,6 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
 
     @Override
     public void onOperatorChooserStyle3Clicked(List<Operator> operatorListData, String titleChooser) {
-
-    }
-
-    @Override
-    public void onCannotBeCheckoutProduct(String messageError) {
 
     }
 

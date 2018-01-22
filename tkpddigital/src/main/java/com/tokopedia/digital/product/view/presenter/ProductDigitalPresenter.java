@@ -333,7 +333,6 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
                     );
                     break;
                 case CategoryData.STYLE_PRODUCT_CATEGORY_2:
-                case CategoryData.STYLE_PRODUCT_CATEGORY_99:
                     view.renderCategoryProductDataStyle2(
                             categoryData, historyClientNumber
                     );
@@ -345,6 +344,10 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
                             categoryData, historyClientNumber
                     );
                     break;
+                case CategoryData.STYLE_PRODUCT_CATEGORY_99:
+                    view.renderCategoryProductDataStyle99(
+                            categoryData, historyClientNumber
+                    );
             }
             if (!GlobalConfig.isSellerApp()) {
                 view.renderBannerListData(

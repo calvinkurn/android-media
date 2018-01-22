@@ -15,4 +15,6 @@ public interface IDigitalWidgetView {
 
     void renderCategoryProductDataStyle3(CategoryData categoryData, HistoryClientNumber historyClientNumber);
 
+    void renderCategoryProductDataStyle99(CategoryData categoryData, HistoryClientNumber historyClientNumber);
+
 }
