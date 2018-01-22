@@ -4,6 +4,7 @@ import android.text.TextUtils;
 import android.util.Base64;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
@@ -36,11 +37,12 @@ import rx.Subscriber;
 public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetailOrderContract.View> implements FlightDetailOrderContract.Presenter {
 
     private final FlightGetOrderUseCase flightGetOrderUseCase;
-
+    private UserSession userSession;
     private int totalPrice = 0;
 
     @Inject
-    public FlightDetailOrderPresenter(FlightGetOrderUseCase flightGetOrderUseCase) {
+    public FlightDetailOrderPresenter(UserSession userSession, FlightGetOrderUseCase flightGetOrderUseCase) {
+        this.userSession = userSession;
         this.flightGetOrderUseCase = flightGetOrderUseCase;
     }
 
@@ -56,7 +58,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
 
     @Override
     public void onHelpButtonClicked() {
-        getView().navigateToWebview(FlightUrl.CONTACT_US );
+        getView().navigateToWebview(FlightUrl.CONTACT_US);
     }
 
     @Override
@@ -121,7 +123,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     }
 
     private String generateInvoiceLink(String orderId) {
-        return FlightUrl.getUrlPdf(orderId);
+        return FlightUrl.getUrlInvoice(orderId, userSession.getUserId());
     }
 
     private String generateTicketLink(String orderId) {
@@ -193,27 +195,32 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         int passengerChildCount = 0;
         int passengerInfantCount = 0;
 
-        for(FlightOrderPassengerViewModel flightOrderPassengerViewModel : flightOrder.getPassengerViewModels()) {
+        for (FlightOrderPassengerViewModel flightOrderPassengerViewModel : flightOrder.getPassengerViewModels()) {
             // add to passenger count
             switch (flightOrderPassengerViewModel.getType()) {
-                case 0 : passengerAdultCount++;
+                case 0:
+                    passengerAdultCount++;
                     break;
-                case 1 : passengerChildCount++;
+                case 1:
+                    passengerChildCount++;
                     break;
-                case 2 : passengerInfantCount++;
+                case 2:
+                    passengerInfantCount++;
                     break;
             }
 
-            for(FlightBookingAmenityViewModel amenityViewModel : flightOrderPassengerViewModel.getAmenities()) {
+            for (FlightBookingAmenityViewModel amenityViewModel : flightOrderPassengerViewModel.getAmenities()) {
                 switch (Integer.toString(amenityViewModel.getAmenityType())) {
-                    case FlightAmenityType.LUGGAGE : String key = String.format("%s - %s", amenityViewModel.getDepartureId(), amenityViewModel.getArrivalId());
+                    case FlightAmenityType.LUGGAGE:
+                        String key = String.format("%s - %s", amenityViewModel.getDepartureId(), amenityViewModel.getArrivalId());
                         if (luggages.containsKey(key)) {
                             luggages.put(key, luggages.get(key) + amenityViewModel.getPriceNumeric());
                         } else {
                             luggages.put(key, amenityViewModel.getPriceNumeric());
                         }
                         break;
-                    case FlightAmenityType.MEAL : key = String.format("%s - %s", amenityViewModel.getDepartureId(), amenityViewModel.getArrivalId());
+                    case FlightAmenityType.MEAL:
+                        key = String.format("%s - %s", amenityViewModel.getDepartureId(), amenityViewModel.getArrivalId());
                         if (meals.containsKey(key)) {
                             meals.put(key, meals.get(key) + amenityViewModel.getPriceNumeric());
                         } else {
@@ -233,15 +240,15 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         totalPrice += flightOrder.getTotalInfantNumeric();
 
         // add simpleViewModel price for adult passenger
-        if(passengerAdultCount > 0)
+        if (passengerAdultCount > 0)
             simpleViewModelList.add(formatPassengerFarePriceDetail(getView().getString(R.string.select_passenger_adult_title), passengerAdultCount, flightOrder.getTotalAdultNumeric()));
 
         // add simpleViewModel price for child passenger
-        if(passengerChildCount > 0)
+        if (passengerChildCount > 0)
             simpleViewModelList.add(formatPassengerFarePriceDetail(getView().getString(R.string.select_passenger_children_title), passengerChildCount, flightOrder.getTotalChildNumeric()));
 
         // add simpleViewModel price for infant passenger
-        if(passengerInfantCount > 0)
+        if (passengerInfantCount > 0)
             simpleViewModelList.add(formatPassengerFarePriceDetail(getView().getString(R.string.select_passenger_infant_title), passengerInfantCount, flightOrder.getTotalInfantNumeric()));
 
         for (Map.Entry<String, Integer> entry : luggages.entrySet()) {
@@ -262,9 +269,9 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     }
 
     private SimpleViewModel formatPassengerFarePriceDetail(
-                                                           String label,
-                                                           int passengerCount,
-                                                           int price) {
+            String label,
+            int passengerCount,
+            int price) {
         return new SimpleViewModel(
                 String.format("%s x%d",
                         label,
