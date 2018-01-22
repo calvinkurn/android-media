@@ -6,10 +6,8 @@ import android.content.pm.PackageManager;
 import android.util.Log;
 
 import com.tokopedia.digital.widget.domain.interactor.DigitalWidgetUseCase;
-import com.tokopedia.digital.widget.errorhandle.WidgetRuntimeException;
 import com.tokopedia.digital.widget.view.model.category.Category;
 import com.tokopedia.digital.widget.view.model.status.Status;
-import com.tokopedia.tkpd.home.recharge.interactor.RechargeNetworkInteractor;
 import com.tokopedia.tkpd.home.recharge.view.RechargeCategoryView;
 import com.tokopedia.usecase.RequestParams;
 
@@ -30,8 +28,6 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
     private RechargeCategoryView view;
     private DigitalWidgetUseCase digitalWidgetUseCase;
     private List<Category> categoryList;
-
-    // TODO: should not used RechargeNetworkInteractor anymore
 
     public RechargeCategoryPresenterImpl(Context context, RechargeCategoryView view,
                                          DigitalWidgetUseCase digitalWidgetUseCase) {

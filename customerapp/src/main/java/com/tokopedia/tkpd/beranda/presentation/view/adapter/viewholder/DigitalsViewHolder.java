@@ -15,8 +15,9 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.customView.WrapContentViewPager;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
-import com.tokopedia.digital.widget.data.mapper.FavoriteNumberListDataMapper;
-import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
+import com.tokopedia.digital.common.data.repository.DigitalWidgetRepository;
+import com.tokopedia.digital.common.data.source.CategoryListDataSource;
+import com.tokopedia.digital.common.data.source.StatusDataSource;
 import com.tokopedia.digital.widget.domain.interactor.DigitalWidgetUseCase;
 import com.tokopedia.digital.widget.view.model.category.Category;
 import com.tokopedia.digital.widget.view.model.mapper.CategoryMapper;
@@ -25,7 +26,6 @@ import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.beranda.listener.HomeCategoryListener;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
 import com.tokopedia.tkpd.home.recharge.adapter.RechargeViewPagerAdapter;
-import com.tokopedia.tkpd.home.recharge.interactor.RechargeNetworkInteractorImpl;
 import com.tokopedia.tkpd.home.recharge.presenter.RechargeCategoryPresenter;
 import com.tokopedia.tkpd.home.recharge.presenter.RechargeCategoryPresenterImpl;
 import com.tokopedia.tkpd.home.recharge.view.RechargeCategoryView;
@@ -73,16 +73,23 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
         this.mRechargeCategory = new ArrayList<>();
         cacheHandler = new LocalCacheHandler(context, TkpdCache.CACHE_RECHARGE_WIDGET_TAB_SELECTION);
 
+        DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
+
+        StatusDataSource statusDataSource = new StatusDataSource(digitalEndpointService,
+                new StatusMapper());
+
+        CategoryListDataSource categoryListDataSource = new CategoryListDataSource(digitalEndpointService,
+                new CategoryMapper());
+
         DigitalWidgetRepository digitalWidgetRepository = new DigitalWidgetRepository(
-                new DigitalEndpointService(), new FavoriteNumberListDataMapper());
+                statusDataSource, categoryListDataSource
+        );
 
         DigitalWidgetUseCase digitalWidgetUseCase = new DigitalWidgetUseCase(context,
-                digitalWidgetRepository, new StatusMapper(), new CategoryMapper());
+                digitalWidgetRepository);
 
         rechargeCategoryPresenter = new RechargeCategoryPresenterImpl(context, this,
                 digitalWidgetUseCase);
-
-//        rechargeCategoryPresenter.fetchDataRechargeCategory();
     }
 
     @Override
