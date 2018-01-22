@@ -43,7 +43,7 @@ public class OrderWidgetJobService extends JobService implements GetNewOrderView
 
     public void getNewOrder() {
         if(SessionHandler.isV4Login(this) && SessionHandler.isUserHasShop(this)) {
-            presenter.getNewOrderAndCount();
+            presenter.getNewOrderAndCountAsync();
         }else{
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
             int[] appWidgetIds =  appWidgetManager.getAppWidgetIds(new ComponentName(this, NewOrderWidget.class));
