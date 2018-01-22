@@ -302,10 +302,12 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
 
         // this is temporary hotfix,
         // because the new logistic API (if user click cargo or express) make the user cannot checkout
-        for (int i = couriersModel.getCourier().size() - 1; i >= 0; i--) {
-            Courier courier = couriersModel.getCourier().get(i);
-            if (courier.isExpressCourierId() || courier.isCargoCourierId()) {
-                couriersModel.getCourier().remove(i);
+        if (couriersModel.getCourier()!= null && couriersModel.getCourier().size() > 0) {
+            for (int i = couriersModel.getCourier().size() - 1; i >= 0; i--) {
+                Courier courier = couriersModel.getCourier().get(i);
+                if (courier.isExpressCourierId() || courier.isCargoCourierId()) {
+                    couriersModel.getCourier().remove(i);
+                }
             }
         }
         // end hotfix
