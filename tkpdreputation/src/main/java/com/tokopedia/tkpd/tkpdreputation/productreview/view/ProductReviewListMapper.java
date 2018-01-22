@@ -74,6 +74,7 @@ public class ProductReviewListMapper {
             productReviewModelContent.setReviewStar(review.getProductRating());
             productReviewModelContent.setSellerName(dataResponseReviewHelpful.getOwner().getUser().getUserFullName());
             productReviewModelContent.setReviewTime(getReviewCreateTime(review));
+            productReviewModelContent.setReviewMessage(review.getReviewMessage());
             productReviewModelContent.setReviewerName(review.getUser().getFullName());
             productReviewModelContent.setReviewHasReplied(!TextUtils.isEmpty(review.getReviewResponse().getResponseMessage()));
             productReviewModelContent.setSellerRepliedOwner(isUserOwnedReplied(userId, dataResponseReviewHelpful.getOwner()));
