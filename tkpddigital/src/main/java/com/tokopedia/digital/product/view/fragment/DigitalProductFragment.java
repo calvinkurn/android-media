@@ -695,8 +695,11 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             Operator selectedOperator = digitalProductView.getSelectedOperator();
             Product selectedProduct = digitalProductView.getSelectedProduct();
 
-            presenter.storeLastClientNumberTyped(categoryId, selectedOperator.getOperatorId(),
-                    digitalProductView.getClientNumber(), selectedProduct.getProductId());
+            presenter.storeLastClientNumberTyped(
+                    categoryId,
+                    selectedOperator != null ? selectedOperator.getOperatorId() : "",
+                    digitalProductView.getClientNumber(),
+                    selectedProduct != null ? selectedProduct.getProductId() : "");
         }
     }
 
