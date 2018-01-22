@@ -1,18 +1,13 @@
 package com.tokopedia.mitratoppers.common.di.module;
 
-import android.content.Context;
-
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.mitratoppers.common.constant.MitraToppersBaseURL;
 import com.tokopedia.mitratoppers.common.data.source.cloud.api.MitraToppersApi;
 import com.tokopedia.mitratoppers.common.di.MitraToppersQualifier;
 import com.tokopedia.mitratoppers.common.di.scope.MitraToppersScope;
 import com.tokopedia.mitratoppers.common.exception.model.HeaderErrorResponse;
 import com.tokopedia.mitratoppers.common.interceptor.HeaderErrorResponseInterceptor;
-import com.tokopedia.mitratoppers.common.interceptor.MitraToppersAuthInterceptor;
 
 import dagger.Module;
 import dagger.Provides;
@@ -41,12 +36,11 @@ public class MitraToppersModule {
 
     @MitraToppersQualifier
     @Provides
-    public OkHttpClient provideOkHttpClient(OkHttpClient.Builder okHttpClientBuilder,
-                                            MitraToppersAuthInterceptor mitraToppersHMACAuthInterceptor,
+    public OkHttpClient provideOkHttpClient(TkpdAuthInterceptor tkpdAuthInterceptor,
                                             @ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
                                             @MitraToppersQualifier HeaderErrorResponseInterceptor errorResponseInterceptor) {
-        return okHttpClientBuilder
-                .addInterceptor(mitraToppersHMACAuthInterceptor)
+        return new OkHttpClient.Builder()
+                .addInterceptor(tkpdAuthInterceptor)
                 .addInterceptor(errorResponseInterceptor)
                 .addInterceptor(httpLoggingInterceptor)
                 .build();
@@ -56,13 +50,6 @@ public class MitraToppersModule {
     @Provides
     public HeaderErrorResponseInterceptor provideTkpdErrorResponseInterceptor() {
         return new HeaderErrorResponseInterceptor(HeaderErrorResponse.class);
-    }
-
-    @Provides
-    public MitraToppersAuthInterceptor provideMitraToppersAuthInterceptor(@ApplicationContext Context context,
-                                                                          AbstractionRouter router,
-                                                                          UserSession userSession) {
-        return new MitraToppersAuthInterceptor(context, router, userSession);
     }
 
 }

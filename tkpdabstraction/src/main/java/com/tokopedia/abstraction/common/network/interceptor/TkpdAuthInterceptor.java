@@ -51,14 +51,23 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     private Context context;
     private AbstractionRouter abstractionRouter;
     protected UserSession userSession;
+    protected String authKey;
+
+    public TkpdAuthInterceptor(@ApplicationContext Context context,
+                               AbstractionRouter abstractionRouter,
+                               UserSession userSession) {
+        this(context, abstractionRouter, userSession, AuthUtil.KEY.KEY_WSV4);
+    }
 
     @Inject
     public TkpdAuthInterceptor(@ApplicationContext Context context,
                                AbstractionRouter abstractionRouter,
-                               UserSession userSession) {
+                               UserSession userSession,
+                               String authKey) {
         this.context = context;
         this.abstractionRouter = abstractionRouter;
         this.userSession = userSession;
+        this.authKey = authKey;
     }
 
     private Lock lock = new ReentrantLock();
@@ -157,7 +166,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
                         originRequest.url().uri().getPath(),
                         generateParamBodyString(originRequest),
                         originRequest.method(),
-                        userSession.getAccessToken(),
+                        authKey,
                         contentTypeHeader
                 );
                 break;
@@ -166,7 +175,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
                         originRequest.url().uri().getPath(),
                         generateQueryString(originRequest),
                         originRequest.method(),
-                        userSession.getAccessToken(),
+                        authKey,
                         contentTypeHeader
                 );
                 break;

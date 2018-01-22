@@ -13,14 +13,12 @@ import okhttp3.Response;
 
 public class HeaderErrorResponseInterceptor extends ErrorResponseInterceptor {
 
-    public static final int HEADER_SUCCESS_CODE = 200;
-
     public HeaderErrorResponseInterceptor(@NonNull Class<? extends BaseResponseError> responseErrorClass) {
         super(responseErrorClass);
     }
 
     @Override
     protected boolean mightContainCustomError(Response response) {
-        return response != null && response.code() != HEADER_SUCCESS_CODE;
+        return response != null && !response.isSuccessful();
     }
 }
