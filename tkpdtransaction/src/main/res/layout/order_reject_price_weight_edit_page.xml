@@ -53,29 +53,6 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="end|top"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Jumlah:"
-                    android:textSize="@dimen/text_size_small" />
-
-                <TextView
-                    android:id="@+id/order_detail_item_quantity"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/label_color"
-                    android:textSize="@dimen/text_size_small"
-                    tools:text="1 Barang" />
-
-            </LinearLayout>
-
         </LinearLayout>
 
         <LinearLayout
@@ -91,11 +68,12 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical">
 
                 <Spinner
                     android:id="@+id/currency_spinner"
-                    android:layout_width="wrap_content"
+                    android:layout_width="@dimen/img_thumb_holder"
                     android:layout_height="wrap_content" />
 
                 <EditText
@@ -121,11 +99,12 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical">
 
                 <Spinner
                     android:id="@+id/weight_spinner"
-                    android:layout_width="wrap_content"
+                    android:layout_width="@dimen/img_thumb_holder"
                     android:layout_height="wrap_content" />
 
                 <EditText

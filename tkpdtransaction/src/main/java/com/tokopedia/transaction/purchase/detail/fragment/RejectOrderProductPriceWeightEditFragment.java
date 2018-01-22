@@ -12,7 +12,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
+import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.SimpleSpinnerAdapter;
 import com.tokopedia.core.app.TkpdFragment;
@@ -50,6 +52,8 @@ public class RejectOrderProductPriceWeightEditFragment extends TkpdFragment {
                 .getParcelable(EDITABLE_EXTRA);
         View view = inflater.inflate(R.layout.order_reject_price_weight_edit_page, container, false);
         ViewGroup mainContainer = view.findViewById(R.id.main_container);
+        TextView orderDetailProductName = view.findViewById(R.id.order_detail_product_name);
+        TextView orderDetailProductPrice = view.findViewById(R.id.order_detail_product_price);
         ImageView imageView = view.findViewById(R.id.product_image);
         Spinner currencySpinner = view.findViewById(R.id.currency_spinner);
         EditText priceEditText = view.findViewById(R.id.price);
@@ -57,6 +61,8 @@ public class RejectOrderProductPriceWeightEditFragment extends TkpdFragment {
         EditText weightEditText = view.findViewById(R.id.weight_amount);
         Button rejectOrderConfirmButton = view.findViewById(R.id.reject_order_confirm_button);
         ImageHandler.LoadImage(imageView, editable.getProductImage());
+        orderDetailProductName.setText(editable.getProductName());
+        orderDetailProductPrice.setText(editable.getProductPrice());
         priceEditText.setText(editable.getProductPriceUnformatted());
         weightEditText.setText(editable.getProductWeightUnformatted());
         rejectOrderConfirmButton.setOnClickListener(onConfirmButtonClickedListener(
@@ -86,18 +92,33 @@ public class RejectOrderProductPriceWeightEditFragment extends TkpdFragment {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                editable.setProductPrice(
+                if(priceSpinner.getSelectedItemPosition() == 0) {
+                    editable.setProductPrice(
+                            priceSpinner.getSelectedItem()
+                                    + " "
+                                    + CurrencyFormatHelper.ConvertToRupiah(
+                                            priceEditText.getText().toString())
+                                    .replace(",", ".")
+                    );
+                } else editable.setProductPrice(
                         priceSpinner.getSelectedItem()
                                 + " "
-                                + priceEditText.getText().toString());
+                                + CurrencyFormatHelper.ConvertToDollar(
+                                        priceEditText.getText().toString())
+                );
+
                 editable.setProductWeight(
                         weightSpinner.getSelectedItem()
                                 + " "
                                 + weightEditText.getText().toString());
                 editable.setProductPriceUnformatted(priceEditText.getText().toString());
                 editable.setProductWeightUnformatted(weightEditText.getText().toString());
-                editable.setWeightMode(priceSpinner.getSelectedItemPosition() + SPINNER_MODE_OFFSET);
-                editable.setWeightMode(weightSpinner.getSelectedItemPosition() + SPINNER_MODE_OFFSET);
+                editable.setWeightMode(
+                        priceSpinner.getSelectedItemPosition() + SPINNER_MODE_OFFSET
+                );
+                editable.setWeightMode(
+                        weightSpinner.getSelectedItemPosition() + SPINNER_MODE_OFFSET
+                );
 
                 getTargetFragment().onActivityResult(
                         FRAGMENT_EDIT_WEIGHT_PRICE_REQUEST_CODE,
@@ -115,8 +136,8 @@ public class RejectOrderProductPriceWeightEditFragment extends TkpdFragment {
 
     private List<String> listOfWeight() {
         List<String> weightList = new ArrayList<>();
-        weightList.add("gram");
-        weightList.add("kg");
+        weightList.add("Gram(g)");
+        weightList.add("Kg");
         return weightList;
     }
 

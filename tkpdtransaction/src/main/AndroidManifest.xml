@@ -77,9 +77,14 @@
             android:name=".purchase.detail.activity.ConfirmShippingActivity"
             android:label="@string/title_confirm_shipment"/>
 
+        <activity
+            android:name=".purchase.detail.activity.CustomScannerBarcodeActivity"
+            android:label="@string/title_scan_awb"/>
+
         <service
             android:name=".purchase.services.TxActionIntentService"
             android:exported="false" />
+
         <service
             android:name=".cart.services.TopPayIntentService"
             android:exported="false" />

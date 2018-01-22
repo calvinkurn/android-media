@@ -15,22 +15,30 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
-import com.tokopedia.seller.opportunity.activity.OpportunityTncActivity;
-import com.tokopedia.seller.opportunity.analytics.OpportunityTrackingEventLabel;
-import com.tokopedia.seller.opportunity.snapshot.SnapShotProduct;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.activity.OpportunityDetailActivity;
+import com.tokopedia.seller.opportunity.activity.OpportunityTncActivity;
+import com.tokopedia.seller.opportunity.analytics.OpportunityTrackingEventLabel;
 import com.tokopedia.seller.opportunity.customview.OpportunityDetailProductView;
 import com.tokopedia.seller.opportunity.customview.OpportunityDetailStatusView;
 import com.tokopedia.seller.opportunity.customview.OpportunityDetailSummaryView;
+import com.tokopedia.seller.opportunity.customview.OpportunityPriceInfoView;
+import com.tokopedia.seller.opportunity.data.OpportunityNewPriceData;
+import com.tokopedia.seller.opportunity.di.component.DaggerOpportunityComponent;
+import com.tokopedia.seller.opportunity.di.component.OpportunityComponent;
+import com.tokopedia.seller.opportunity.di.module.OpportunityModule;
 import com.tokopedia.seller.opportunity.listener.OpportunityView;
 import com.tokopedia.seller.opportunity.presentation.ActionViewData;
-import com.tokopedia.seller.opportunity.presenter.OpportunityImpl;
 import com.tokopedia.seller.opportunity.presenter.OpportunityPresenter;
+import com.tokopedia.seller.opportunity.snapshot.SnapShotProduct;
+import com.tokopedia.seller.opportunity.viewmodel.OpportunityPriceInfoViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityItemViewModel;
+
+import javax.inject.Inject;
 
 /**
  * Created by hangnadi on 2/27/17.
@@ -48,8 +56,17 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
     OpportunityDetailProductView productView;
     OpportunityDetailSummaryView summaryView;
     TkpdProgressDialog progressDialog;
+    OpportunityPriceInfoView itemPriceView;
+    OpportunityPriceInfoView shippingFeeView;
+
+    private OpportunityComponent opportunityComponent;
+
+    @Inject
+    OpportunityPresenter presenter;
 
     private OpportunityItemViewModel oppItemViewModel;
+
+
 
     public static Fragment createInstance(Bundle bundle) {
         OpportunityDetailFragment fragment = new OpportunityDetailFragment();
@@ -114,9 +131,31 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
         BottomSheetView bottomSheetView = new BottomSheetView(getActivity());
         bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
                 .BottomSheetFieldBuilder()
-                .setTitle(getActivity().getString(R.string.title_tooltip_reputation_multiplier))
-                .setBody(getActivity().getString(R.string.body_tooltip_reputation_multiplier))
+                .setTitle(getActivity().getString(R.string.opportunity_detail_info_reputation_multiplier_title))
+                .setBody(getActivity().getString(R.string.opportunity_detail_info_reputation_multiplier_content))
                 .setImg(R.drawable.ic_reputation_value)
+                .build());
+        bottomSheetView.show();
+    }
+
+    public void onReputationShippingFee(){
+        BottomSheetView bottomSheetView = new BottomSheetView(getActivity());
+        bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
+                .BottomSheetFieldBuilder()
+                .setTitle(context.getString(R.string.opportunity_detail_info_delivery_price_title))
+                .setBody(context.getString(R.string.opportunity_detail_info_delivery_price_content))
+                .setImg(R.drawable.ic_shipping_fee)
+                .build());
+        bottomSheetView.show();
+    }
+
+    public void onReputationProductPrice(){
+        BottomSheetView bottomSheetView = new BottomSheetView(context);
+        bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
+                .BottomSheetFieldBuilder()
+                .setTitle(context.getString(R.string.opportunity_detail_info_product_price_title))
+                .setBody(context.getString(R.string.opportunity_detail_info_product_price_content))
+                .setImg(R.drawable.ic_product_price)
                 .build());
         bottomSheetView.show();
     }
@@ -164,12 +203,19 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
 
     @Override
     protected void initialPresenter() {
-        presenter = new OpportunityImpl(getActivity(), this);
+        opportunityComponent.inject(this);
+        presenter.attachView(this);
     }
 
     @Override
     protected void initialListener(Activity activity) {
-
+        if(activity != null && activity instanceof BaseActivity){
+            opportunityComponent = DaggerOpportunityComponent
+                    .builder()
+                    .opportunityModule(new OpportunityModule())
+                    .appComponent(((BaseActivity)activity).getApplicationComponent())
+                    .build();
+        }
     }
 
     @Override
@@ -185,18 +231,20 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
     @Override
     protected void initView(View view) {
         buttonView = view.findViewById(R.id.button_take_opportunity);
-        statusView = (OpportunityDetailStatusView)
-                view.findViewById(R.id.customview_opportunity_detail_status_view);
-        productView = (OpportunityDetailProductView)
-                view.findViewById(R.id.customview_opportunity_detail_product_view);
-        summaryView = (OpportunityDetailSummaryView)
-                view.findViewById(R.id.customview_opportunity_detail_summary_view);
+        statusView = view.findViewById(R.id.customview_opportunity_detail_status_view);
+        productView = view.findViewById(R.id.customview_opportunity_detail_product_view);
+        summaryView = view.findViewById(R.id.customview_opportunity_detail_summary_view);
+
+        itemPriceView = view.findViewById(R.id.price_item);
+        shippingFeeView = view.findViewById(R.id.shipping_fee);
 
         oppItemViewModel = getArguments().getParcelable(OpportunityDetailActivity.OPPORTUNITY_EXTRA_PARAM);
         if (oppItemViewModel != null) {
             statusView.renderData(oppItemViewModel);
             productView.renderData(oppItemViewModel);
             summaryView.renderData(oppItemViewModel);
+            showLoadingProgress();
+            presenter.getNewPriceInfo();
             buttonView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -246,9 +294,49 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
     }
 
     @Override
+    public void onSuccessNewPrice(OpportunityNewPriceData opportunityNewPriceData) {
+        finishLoadingProgress();
+
+        itemPriceView.setVisibility(View.VISIBLE);
+        shippingFeeView.setVisibility(View.VISIBLE);
+
+        OpportunityPriceInfoViewModel datas = new OpportunityPriceInfoViewModel();
+        datas.setTitle(getString(R.string.item_price_label));
+        datas.setStrikeThroughText(opportunityNewPriceData.getOldItemPriceIdr());
+        datas.setNonStrikeThroughText(opportunityNewPriceData.getNewItemPriceIdr());
+
+        itemPriceView.renderData(datas);
+        itemPriceView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onReputationProductPrice();
+            }
+        });
+
+        datas = new OpportunityPriceInfoViewModel();
+        datas.setTitle(getString(R.string.shipping_fee_label));
+        datas.setStrikeThroughText(opportunityNewPriceData.getOldShippingPriceIdr());
+        datas.setNonStrikeThroughText(opportunityNewPriceData.getNewShippingPriceIdr());
+
+        shippingFeeView.renderData(datas);
+        shippingFeeView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onReputationShippingFee();
+            }
+        });
+    }
+
+    @Override
     public void onErrorTakeOpportunity(String errorMessage) {
         finishLoadingProgress();
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onErrorPriceInfo(String errorMessage) {
+        itemPriceView.setVisibility(View.GONE);
+        shippingFeeView.setVisibility(View.GONE);
     }
 
     private void finishLoadingProgress() {

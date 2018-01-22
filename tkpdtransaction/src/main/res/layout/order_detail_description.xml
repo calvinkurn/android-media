@@ -40,10 +40,13 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/buyer_description_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_med"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
 
             <TextView
                 android:layout_width="match_parent"
@@ -53,6 +56,30 @@
 
             <TextView
                 android:id="@+id/description_buyer_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black_70"
+                tools:text="Ryan Handy" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/seller_description_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_med"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/label_seller_shop"
+                android:textColor="@color/label_text_color" />
+
+            <TextView
+                android:id="@+id/description_shop_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black_70"

@@ -52,6 +52,7 @@ import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDet
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.EmptyVarianProductEditable;
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.WrongProductPriceWeightEditable;
 import com.tokopedia.transaction.purchase.detail.presenter.OrderDetailPresenterImpl;
+import com.tokopedia.transaction.purchase.receiver.TxListUIReceiver;
 
 import java.util.List;
 
@@ -251,6 +252,7 @@ public class OrderDetailActivity extends TActivity
         totalPayment.setText(data.getTotalPayment());
     }
 
+
     private void setButtonView(OrderDetailData data) {
         OrderDetailButtonLayout buttonLayout = findViewById(R.id.button_layout);
         buttonLayout.initButton(this, presenter, data);
@@ -272,18 +274,32 @@ public class OrderDetailActivity extends TActivity
 
     private void setDescriptionView(OrderDetailData data) {
         TextView descriptionDate = findViewById(R.id.description_date);
-        TextView descriptionBuyerName = findViewById(R.id.description_buyer_name);
+        if (getExtraUserMode() == SELLER_MODE) setBuyerInfo(data);
+        else setShopInfo(data);
         TextView descriptionCourierName = findViewById(R.id.description_courier_name);
         TextView descriptionShippingAddess = findViewById(R.id.description_shipping_address);
         TextView descriptionPartialOrderStatus = findViewById(R.id.description_partial_order_status);
         descriptionDate.setText(data.getPurchaseDate());
-        descriptionBuyerName.setText(data.getBuyerUserName());
         descriptionCourierName.setText(data.getCourierName());
         descriptionShippingAddess.setText(data.getShippingAddress());
         descriptionPartialOrderStatus.setText(data.getPartialOrderStatus());
         setResponseTimeView(data);
         setPreorderView(data);
         setDropshipperView(data);
+    }
+
+    private void setShopInfo(OrderDetailData data) {
+        ViewGroup descriptionSellerLayout = findViewById(R.id.seller_description_layout);
+        TextView descriptionShopName = findViewById(R.id.description_shop_name);
+        descriptionShopName.setText(data.getShopName());
+        descriptionSellerLayout.setVisibility(View.VISIBLE);
+    }
+
+    private void setBuyerInfo(OrderDetailData data) {
+        ViewGroup descriptionBuyerLayout = findViewById(R.id.buyer_description_layout);
+        TextView descriptionBuyerName = findViewById(R.id.description_buyer_name);
+        descriptionBuyerLayout.setVisibility(View.VISIBLE);
+        descriptionBuyerName.setText(data.getBuyerUserName());
     }
 
     private void setDropshipperView(OrderDetailData data) {
@@ -415,12 +431,14 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void onOrderFinished(String message) {
         Toast.makeText(this, getString(R.string.success_finish_order_message), Toast.LENGTH_LONG).show();
+        TxListUIReceiver.sendBroadcastForceRefreshListData(this);
         finish();
     }
 
     @Override
     public void onOrderCancelled(String message) {
         Toast.makeText(this, getString(R.string.success_request_cancel_order), Toast.LENGTH_LONG).show();
+        TxListUIReceiver.sendBroadcastForceRefreshListData(this);
         finish();
     }
 
@@ -648,6 +666,7 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void onConfirmFinish(String orderId, String orderStatus) {
         presenter.processFinish(this, orderId, orderStatus);
+        TxListUIReceiver.sendBroadcastForceRefreshListData(this);
     }
 
     @Override
@@ -669,6 +688,7 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void cancelSearch(String orderId, int reasonId, String notes) {
         presenter.cancelReplacement(this, orderId, reasonId, notes);
+        TxListUIReceiver.sendBroadcastForceRefreshListData(this);
     }
 
     @Override

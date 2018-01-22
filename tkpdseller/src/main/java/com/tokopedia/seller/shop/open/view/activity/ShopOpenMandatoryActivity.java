@@ -8,18 +8,18 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
+import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
+import com.tokopedia.seller.shop.open.di.component.DaggerShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.di.module.ShopOpenDomainModule;
+import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryInfoFragment;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLocationFragment;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryLogisticFragment;
 import com.tokopedia.seller.shop.open.view.model.ShopOpenStepperModel;
-import com.tokopedia.seller.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
-import com.tokopedia.seller.shop.open.di.component.DaggerShopOpenDomainComponent;
-import com.tokopedia.seller.shop.open.view.fragment.ShopOpenMandatoryInfoFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,7 +89,7 @@ public class ShopOpenMandatoryActivity extends BaseStepperActivity<ShopOpenStepp
     protected void onResume() {
         super.onResume();
         if (!SessionHandler.isMsisdnVerified()) {
-            Intent intent = SessionRouter.getPhoneVerificationActivationActivityIntent(this);
+            Intent intent = OldSessionRouter.getPhoneVerificationActivationActivityIntent(this);
             startActivityForResult(intent, REQUEST_PHONE_VERIFICATION);
         }
     }

@@ -2,6 +2,7 @@
     <string name="app_name">tkpdtransaction</string>
     <string name="title_change_payment">Ubah Pembayaran</string>
     <string name="title_confirm_shipment">Konfirmasi Pengiriman</string>
+    <string name="title_scan_awb">Scan Barcode</string>
     <string name="label_insert_awb">Isi Nomor Resi</string>
     <string name="message_failed_pick_image">Gambar gagal diambil</string>
     <string name="default_success_message_request_cancel_order">Berhasil mengajukan pembatalan pesanan</string>
@@ -77,6 +78,7 @@
     <string name="label_transaction_date_transaction">Tanggal Transaksi</string>
     <string name="label_transaction_date_purchase">Tanggal Pembelian :</string>
     <string name="label_purchase_of">Pembelian Oleh : </string>
+    <string name="label_seller_shop">Penjual: </string>
     <string name="label_item_quantity">Jumlah Barang</string>
     <string name="label_delivery_price">Ongkos Kirim</string>
     <string name="label_transaction_total_payment">Total Pembayaran</string>

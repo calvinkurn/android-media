@@ -60,11 +60,27 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="@dimen/new_margin_med"
         android:textColor="@color/grey_500"
         tools:text="13:16 wib"
         android:textAllCaps="true"
         android:textSize="@dimen/fontvs" />
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:layout_width="@dimen/chat_width"
+        tools:layout_height="@dimen/chat_width"
+        android:maxWidth="@dimen/chat_width"
+        android:maxHeight="@dimen/chat_width"
+        android:src="@color/red_100"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="@dimen/margin_vs"
+        android:layout_below="@id/name"
+        android:visibility="gone"
+        android:adjustViewBounds="true"
+        tools:visibility="visible"/>
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/main"
@@ -72,7 +88,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@id/name"
+        android:layout_below="@id/image"
         android:layout_marginTop="@dimen/margin_vs"
         android:background="@drawable/right_bubble"
         android:padding="@dimen/padding_small">
@@ -102,6 +118,7 @@
         android:layout_below="@+id/main"
         android:layout_alignTop="@+id/hour"
         android:layout_alignBottom="@+id/hour"
+        android:adjustViewBounds="true"
         tools:src="@drawable/checked_thin"/>
 
     <TextView

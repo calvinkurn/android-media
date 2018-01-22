@@ -23,7 +23,7 @@ import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.topads.api.TopAdsApi;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
@@ -52,7 +52,7 @@ import com.tokopedia.tkpd.deeplink.di.component.DeeplinkComponent;
 import com.tokopedia.tkpd.deeplink.domain.GetShopInfoUseCase;
 import com.tokopedia.tkpd.deeplink.domain.interactor.MapUrlUseCase;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
-import com.tokopedia.tkpd.home.ReactNativeActivity;
+import com.tokopedia.tkpd.home.ReactNativeDiscoveryActivity;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 
 import java.io.UnsupportedEncodingException;
@@ -316,7 +316,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 } else {
                     Intent intentHome = HomeRouter.getHomeActivity(context);
                     intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    Intent intentPhoneVerif = SessionRouter.getPhoneVerificationActivationActivityIntent(context);
+                    Intent intentPhoneVerif = OldSessionRouter.getPhoneVerificationActivationActivityIntent(context);
 
                     context.startActivities(new Intent[]
                             {
@@ -509,11 +509,12 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openDiscoveryPage(String url) {
-        context.startActivity(ReactNativeActivity.createDiscoveryPageReactNativeActivity(
-                context,
-                ReactConst.Screen.DISCOVERY_PAGE,
-                "",
-                DeepLinkChecker.getDiscoveryPageId(url)));
+      context.startActivity(ReactNativeDiscoveryActivity.createCallingIntent(
+              context,
+              ReactConst.Screen.DISCOVERY_PAGE,
+              "",
+              DeepLinkChecker.getDiscoveryPageId(url))
+      );
     }
 
     private void openHomepageHot() {
