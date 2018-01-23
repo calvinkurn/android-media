@@ -160,4 +160,9 @@ public class Operator implements Parcelable {
             return new Operator[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

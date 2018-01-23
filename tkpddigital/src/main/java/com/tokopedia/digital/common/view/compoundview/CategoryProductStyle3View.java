@@ -175,6 +175,7 @@ public class CategoryProductStyle3View extends
         clearHolder(holderChooserProduct);
         clearHolder(holderAdditionalInfoProduct);
         clearHolder(holderPriceInfoProduct);
+
         widgetOperatorChooserView2.setListener(getListenerOperatorChooser());
         widgetOperatorChooserView2.renderDataView(data.getOperatorList(), data.getDefaultOperatorId());
         holderChooserOperator.addView(widgetOperatorChooserView2);
@@ -366,13 +367,13 @@ public class CategoryProductStyle3View extends
             public void onCheckChangeOperator(Operator operator) {
                 operatorSelected = operator;
                 setBtnBuyDigitalText(operatorSelected.getRule().getButtonText());
-                if (!operator.getClientNumberList().isEmpty()) {
-                    renderClientNumberInputForm(operator);
-                    if (operatorSelected.getRule().getProductViewStyle() == 99) {
-                        renderDefaultProductSelected();
-                    } else {
-                        showProducts();
-                    }
+                if (!operatorSelected.getClientNumberList().isEmpty()) {
+                    renderClientNumberInputForm(operatorSelected);
+                }
+                if (operatorSelected.getRule().getProductViewStyle() == 99) {
+                    renderDefaultProductSelected();
+                } else {
+                    showProducts();
                 }
             }
 

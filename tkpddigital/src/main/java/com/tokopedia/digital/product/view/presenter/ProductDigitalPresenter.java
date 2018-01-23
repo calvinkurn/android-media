@@ -348,6 +348,7 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
                     view.renderCategoryProductDataStyle99(
                             categoryData, historyClientNumber
                     );
+                    break;
             }
             if (!GlobalConfig.isSellerApp()) {
                 view.renderBannerListData(
