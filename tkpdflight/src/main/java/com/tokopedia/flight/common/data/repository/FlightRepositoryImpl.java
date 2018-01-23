@@ -211,6 +211,23 @@ public class FlightRepositoryImpl implements FlightRepository {
     }
 
     @Override
+    public Observable<FlightClassEntity> getFlightClassById(final int classId) {
+        return flightClassesDataSource.getClasses()
+                .flatMap(new Func1<List<FlightClassEntity>, Observable<FlightClassEntity>>() {
+                    @Override
+                    public Observable<FlightClassEntity> call(final List<FlightClassEntity> flightClassEntities) {
+                        return Observable.from(flightClassEntities)
+                                .filter(new Func1<FlightClassEntity, Boolean>() {
+                                    @Override
+                                    public Boolean call(FlightClassEntity flightClassEntity) {
+                                        return flightClassEntity.getId() == classId;
+                                    }
+                                });
+                    }
+                });
+    }
+
+    @Override
     public Observable<List<FlightSearchSingleRouteDB>> getFlightSearch(RequestParams requestParams) {
         if (FlightSearchParamUtil.isReturning(requestParams)) {
             return flightSearchReturnDataListSource.getDataList(requestParams);

@@ -17,6 +17,7 @@ import com.tokopedia.flight.common.data.domain.DeleteFlightCacheUseCase;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
 import com.tokopedia.flight.dashboard.domain.GetFlightAirportByIdUseCase;
+import com.tokopedia.flight.dashboard.domain.GetFlightClassByIdUseCase;
 import com.tokopedia.flight.dashboard.domain.GetFlightClassesUseCase;
 import com.tokopedia.flight.dashboard.view.fragment.FlightDashboardFragment;
 import com.tokopedia.flight.dashboard.view.fragment.cache.FlightDashboardCache;
@@ -50,6 +51,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     private DeleteFlightCacheUseCase deleteFlightCacheUseCase;
     private GetFlightClassesUseCase getFlightClassesUseCase;
     private GetFlightAirportByIdUseCase getFlightAirportByIdUseCase;
+    private GetFlightClassByIdUseCase getFlightClassByIdUseCase;
     private FlightClassViewModelMapper flightClassViewModelMapper;
     private FlightDashboardCache flightDashboardCache;
     private UserSession userSession;
@@ -60,6 +62,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                                     DeleteFlightCacheUseCase deleteFlightCacheUseCase,
                                     GetFlightClassesUseCase getFlightClassesUseCase,
                                     GetFlightAirportByIdUseCase getFlightAirportByIdUseCase,
+                                    GetFlightClassByIdUseCase getFlightClassByIdUseCase,
                                     FlightClassViewModelMapper flightClassViewModelMapper,
                                     FlightDashboardCache flightDashboardCache,
                                     UserSession userSession) {
@@ -68,6 +71,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         this.deleteFlightCacheUseCase = deleteFlightCacheUseCase;
         this.getFlightClassesUseCase = getFlightClassesUseCase;
         this.getFlightAirportByIdUseCase = getFlightAirportByIdUseCase;
+        this.getFlightClassByIdUseCase = getFlightClassByIdUseCase;
         this.flightClassViewModelMapper = flightClassViewModelMapper;
         this.flightDashboardCache = flightDashboardCache;
         this.userSession = userSession;
@@ -167,6 +171,25 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                 } else {
                     onArrivalAirportChange(flightAirportDB);
                 }
+            }
+        });
+    }
+
+    private void actionGetClassById(int classId) {
+        getFlightClassByIdUseCase.execute(getFlightClassByIdUseCase.createRequestParams(classId), new Subscriber<FlightClassEntity>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+
+            }
+
+            @Override
+            public void onNext(FlightClassEntity flightClassEntity) {
+                onFlightClassesChange(flightClassViewModelMapper.transform(flightClassEntity));
             }
         });
     }
@@ -430,20 +453,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
             // transform class
             int classId = Integer.parseInt(extrasClass);
-            String classTitle = "";
-            switch (classId) {
-                case 1:
-                    classTitle = "Ekonomi";
-                    break;
-                case 2:
-                    classTitle = "Bisnis";
-                    break;
-                case 3:
-                    classTitle = "Utama";
-                    break;
-            }
-            FlightClassViewModel flightClassViewModel = new FlightClassViewModel(classId, classTitle);
-            onFlightClassesChange(flightClassViewModel);
+            actionGetClassById(classId);
 
         } catch (Exception e) {
             e.printStackTrace();

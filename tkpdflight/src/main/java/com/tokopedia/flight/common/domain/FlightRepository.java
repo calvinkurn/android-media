@@ -35,6 +35,8 @@ public interface FlightRepository {
 
     Observable<List<FlightClassEntity>> getFlightClasses();
 
+    Observable<FlightClassEntity> getFlightClassById(int classId);
+
     Observable<List<FlightAirlineDB>> getAirlineList();
 
     Observable<List<FlightAirlineDB>> getAirlineList(List<String> distinctSearchResultList);
