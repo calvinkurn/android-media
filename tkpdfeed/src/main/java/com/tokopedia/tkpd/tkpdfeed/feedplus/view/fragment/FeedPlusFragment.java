@@ -147,7 +147,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     protected String getScreenName() {
-        return AppScreen.SCREEN_HOME_PRODUCT_FEED;
+        return AppScreen.UnifyScreenTracker.SCREEN_UNIFY_HOME_FEED;
     }
 
     @Override
@@ -957,8 +957,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onContentProviderLinkClicked(String url) {
-        startActivity(ContentProductWebViewActivity.getCallingIntent(getActivity(), url));
+    public void onContentProductLinkClicked(String url) {
+        ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity(), url);
     }
 
     @Override
@@ -1041,7 +1041,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToListKolRecommendation(int page, int rowNumber, String url) {
-        startActivity(KolProfileWebViewActivity.getCallingIntent(getActivity(), url));
+        ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity(), url);
     }
 
     @Override

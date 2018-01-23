@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
@@ -36,6 +35,7 @@ import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -692,6 +692,26 @@ public class TrackingUtils extends TrackingConfig {
     public static void eventTrackingEnhancedEcommerce(Map<String, Object> trackingData) {
         getGTMEngine().clearEnhanceEcommerce();
         getGTMEngine().eventTrackingEnhancedEcommerce(trackingData);
+    }
+
+    public static void eventImpressionPromoList(List<Object> list, String promoName) {
+        getGTMEngine().clearEnhanceEcommerce();
+        getGTMEngine().eventImpressionPromoList(list, promoName);
+    }
+
+    public static void eventClickPromoListItem(List<Object> list, String promoName) {
+        getGTMEngine().clearEnhanceEcommerce();
+        getGTMEngine().eventClickPromoListItem(list, promoName);
+    }
+
+
+
+    public static void eventCategoryLifestyleImpression(List<Object> list) {
+        getGTMEngine().eventImpressionCategoryLifestyle(list);
+    }
+
+    public static void eventCategoryLifestyleClick(String categoryUrl, List<Object> list) {
+        getGTMEngine().eventClickCategoryLifestyle(categoryUrl, list);
     }
 }
 

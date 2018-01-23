@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -36,22 +35,20 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.session.baseFragment.BaseFragment;
+import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.RequestPermissionUtil;
-import com.tokopedia.seller.fragment.FragmentShopShippingDetailV2;
-import com.tokopedia.seller.selling.presenter.adapter.BaseSellingAdapter;
-import com.tokopedia.seller.selling.view.viewHolder.BaseSellingViewHolder;
 import com.tokopedia.seller.selling.SellingService;
 import com.tokopedia.seller.selling.presenter.Shipping;
 import com.tokopedia.seller.selling.presenter.ShippingImpl;
 import com.tokopedia.seller.selling.presenter.ShippingView;
+import com.tokopedia.seller.selling.presenter.adapter.BaseSellingAdapter;
+import com.tokopedia.seller.selling.view.viewHolder.BaseSellingViewHolder;
 import com.tokopedia.seller.selling.view.viewHolder.ShippingViewHolder;
-import com.tokopedia.core.session.baseFragment.BaseFragment;
-import com.tokopedia.core.util.PagingHandler;
-import com.tokopedia.core.util.RefreshHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -137,7 +134,7 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
 
     @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     public void onScanBarcode() {
-        startActivityForResult(CommonUtils.requestBarcodeScanner(getActivity()), REQUEST_CODE_BARCODE);
+        CommonUtils.requestBarcodeScanner(this, CustomScannerBarcodeActivity.class);
     }
 
     public void requestRefNumDialog(final int pos) {
@@ -593,12 +590,11 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        presenter.updateRefNumBarcode(getBarcodePosition,
+                CommonUtils.getBarcode(requestCode, resultCode, data));
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
-                case REQUEST_CODE_BARCODE:
-                    presenter.updateRefNumBarcode(getBarcodePosition, CommonUtils.getBarcode(data));
-                    break;
                 case REQUEST_CODE_PROCESS_RESULT:
                     shouldRefreshList = true;
                     break;

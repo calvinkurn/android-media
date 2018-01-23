@@ -100,13 +100,13 @@ public abstract class TActivity extends BaseActivity {
     }
 
     public boolean onHomeOptionSelected() {
-        KeyboardHandler.DropKeyboard(this, parentView);
+        if (parentView != null) KeyboardHandler.DropKeyboard(this, parentView);
         onBackPressed();
         return true;
     }
 
     public void inflateView(int layoutId) {
-        getLayoutInflater().inflate(layoutId, parentView);
+        if (parentView != null) getLayoutInflater().inflate(layoutId, parentView);
     }
 
     public void hideToolbar() {

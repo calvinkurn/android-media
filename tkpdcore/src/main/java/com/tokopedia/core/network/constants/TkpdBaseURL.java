@@ -60,7 +60,8 @@ public class TkpdBaseURL {
     public static String BASE_API_DOMAIN = "https://api.tokopedia.com/";
 
     public static String WALLET_DOMAIN = "https://www.tokocash.com/";
-    public static String TOKOPOINT_API_DOMAIN = "https://api.tokopedia.com/tokoplus/";
+    public static String TOKOPOINT_API_DOMAIN = "https://gw.tokopedia.com/tokopoints/api/";
+    public static String PROMO_API_DOMAIN = "https://www.tokopedia.com/promo/";
 
     public static class Product {
         public static final String V4_PRODUCT = "v4/product/";
@@ -788,6 +789,9 @@ public class TkpdBaseURL {
         public static final String POST_COMPLAINT = "api/v1/cs/complaint";
         public static final String GET_OAUTH_INFO_ACCOUNT = "api/v1/me/profile";
         public static final String REVOKE_ACCESS_TOKOCASH = "api/v1/me/client/revoke";
+        public static final String GET_QR_INFO = "api/v1/qr/{identifier}";
+        public static final String POST_QR_PAYMENT = "api/v1/paymentqr";
+        public static final String GET_BALANCE = "api/v1/wallet/balance";
         public static final String REQUEST_OTP_LOGIN = "oauth/otp";
         public static final String VERIFY_OTP_LOGIN = "oauth/verify_native";
         public static final String AUTHORIZE = "oauth/authorize_native";
@@ -894,10 +898,7 @@ public class TkpdBaseURL {
 
     public static class Replacement {
         public static final String URL_REPLACEMENT = BASE_DOMAIN + "";
-        public static final String PATH_GET_OPPORTUNITY = "v4/order/replacement/list";
-        public static final String PATH_GET_CATEGORY = "v4/order/replacement/category";
 
-        public static final String PATH_ACCEPT_REPLACEMENT = "v4/order/replacement";
         public static final String PATH_CANCEL_REPLACEMENT = "v4/replacement/cancel";
     }
 
@@ -928,7 +929,13 @@ public class TkpdBaseURL {
         public static final String DELETE = "/tc/v1/delete";
         public static final String SEND_MESSAGE = "/tc/v1/send";
         public static final String GET_TOPCHAT_NOTIFICATION = "tc/v1/notif_unreads";
-        public static final String GET_TEMPLATE = "tc/v1/chat_templates";
+        public static final String GET_TEMPLATE = "tc/v1/templates";
+        public static final String GET_TEMPLATE_OLD = "tc/v1/chat_templates";
+        public static final String UPDATE_TEMPLATE = "/tc/v1/templates/{index}";
+        public static final String DELETE_TEMPLATE = "/tc/v1/templates/{index}";
+        public static final String SET_TEMPLATE = "tc/v1/templates";
+        public static final String SET_TEMPLATE_OLD = "tc/v1/update_chat_templates";
+        public static final String CREATE_TEMPLATE = "tc/v1/templates";
     }
 
     public static class Reputation {
@@ -991,5 +998,10 @@ public class TkpdBaseURL {
     public class Purchase {
         public static final String PATH_ORDER_DETAIL = "/v4/order/detail";
         public static final String PATH_ORDER_HISTORY = "/v4/order/history";
+    }
+
+    public class Promo {
+        public static final String PATH_MENU_INDEX = "wp-json/wp/v2/hmenu";
+        public static final String PATH_PROMO_LIST = "wp-json/wp/v2/posts";
     }
 }
