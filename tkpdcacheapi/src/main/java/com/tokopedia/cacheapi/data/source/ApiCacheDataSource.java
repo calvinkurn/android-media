@@ -1,15 +1,12 @@
 package com.tokopedia.cacheapi.data.source;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.cacheapi.data.source.cache.CacheApiVersionCache;
-import com.tokopedia.cacheapi.data.source.db.CacheApiData;
 import com.tokopedia.cacheapi.data.source.db.CacheApiDataManager;
 import com.tokopedia.cacheapi.data.source.db.CacheApiWhitelist;
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
+import com.tokopedia.cacheapi.util.CommonUtils;
 
 import java.util.Collection;
-
-import javax.inject.Inject;
 
 import okhttp3.Response;
 import rx.Observable;
@@ -25,7 +22,6 @@ public class ApiCacheDataSource {
     private CacheApiVersionCache cacheApiVersionCache;
     private CacheApiDataManager cacheApiDataManager;
 
-    @Inject
     public ApiCacheDataSource(CacheApiVersionCache cacheApiVersionCache, CacheApiDataManager cacheApiDataManager) {
         this.cacheApiVersionCache = cacheApiVersionCache;
         this.cacheApiDataManager = cacheApiDataManager;

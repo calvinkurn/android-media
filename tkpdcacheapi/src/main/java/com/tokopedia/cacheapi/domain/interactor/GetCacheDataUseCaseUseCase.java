@@ -1,10 +1,7 @@
 package com.tokopedia.cacheapi.domain.interactor;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.cacheapi.data.source.db.CacheApiData;
 import com.tokopedia.cacheapi.domain.ApiCacheRepository;
+import com.tokopedia.usecase.RequestParams;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -15,8 +12,8 @@ import rx.functions.Func1;
 
 public class GetCacheDataUseCaseUseCase extends BaseApiCacheInterceptorUseCase<String> {
 
-    public GetCacheDataUseCaseUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, ApiCacheRepository apiCacheRepository) {
-        super(threadExecutor, postExecutionThread, apiCacheRepository);
+    public GetCacheDataUseCaseUseCase(ApiCacheRepository apiCacheRepository) {
+        super(apiCacheRepository);
     }
 
     @Override

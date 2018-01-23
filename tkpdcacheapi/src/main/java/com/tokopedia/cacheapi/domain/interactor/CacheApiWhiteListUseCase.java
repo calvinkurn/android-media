@@ -1,15 +1,11 @@
 package com.tokopedia.cacheapi.domain.interactor;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.cacheapi.domain.ApiCacheRepository;
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import java.util.Collection;
-
-import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -23,12 +19,7 @@ public class CacheApiWhiteListUseCase extends UseCase<Boolean> {
 
     private ApiCacheRepository apiCacheRepository;
 
-    @Inject
-    public CacheApiWhiteListUseCase(
-            ThreadExecutor threadExecutor,
-            PostExecutionThread postExecutionThread,
-            ApiCacheRepository apiCacheRepository) {
-        super(threadExecutor, postExecutionThread);
+    public CacheApiWhiteListUseCase(ApiCacheRepository apiCacheRepository) {
         this.apiCacheRepository = apiCacheRepository;
     }
 

@@ -1,12 +1,8 @@
 package com.tokopedia.cacheapi.domain.interactor;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.cacheapi.domain.ApiCacheRepository;
-
-import javax.inject.Inject;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import rx.Observable;
 
@@ -18,12 +14,7 @@ public class CacheApiClearAllUseCase extends UseCase<Boolean> {
 
     private ApiCacheRepository apiCacheRepository;
 
-    @Inject
-    public CacheApiClearAllUseCase(
-            ThreadExecutor threadExecutor,
-            PostExecutionThread postExecutionThread,
-            ApiCacheRepository apiCacheRepository) {
-        super(threadExecutor, postExecutionThread);
+    public CacheApiClearAllUseCase(ApiCacheRepository apiCacheRepository) {
         this.apiCacheRepository = apiCacheRepository;
     }
 

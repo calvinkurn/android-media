@@ -5,16 +5,13 @@ import android.text.TextUtils;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.cacheapi.domain.mapper.CacheApiWhiteListMapper;
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.cacheapi.util.CacheApiUtils;
-import com.tokopedia.core.util.EncoderDecoder;
+import com.tokopedia.cacheapi.util.CommonUtils;
+import com.tokopedia.cacheapi.util.EncoderDecoder;
 
-import java.util.Calendar;
 import java.util.Collection;
-
-import javax.inject.Inject;
 
 import okhttp3.Response;
 import rx.Observable;
@@ -31,7 +28,6 @@ public class CacheApiDataManager {
 
     private static final String CACHE_API_KEY = "BU}~GV2(K)%z$1+H";
 
-    @Inject
     public CacheApiDataManager() {
 
     }

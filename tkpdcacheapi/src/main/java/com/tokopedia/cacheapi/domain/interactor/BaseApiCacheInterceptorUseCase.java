@@ -1,11 +1,9 @@
 package com.tokopedia.cacheapi.domain.interactor;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.cacheapi.data.source.db.CacheApiData;
 import com.tokopedia.cacheapi.domain.ApiCacheRepository;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import rx.Observable;
 
@@ -23,11 +21,7 @@ public abstract class BaseApiCacheInterceptorUseCase<E> extends UseCase<E> {
     protected final ApiCacheRepository apiCacheRepository;
     protected CacheApiData cacheApiData;
 
-    public BaseApiCacheInterceptorUseCase(
-            ThreadExecutor threadExecutor,
-            PostExecutionThread postExecutionThread,
-            ApiCacheRepository apiCacheRepository) {
-        super(threadExecutor, postExecutionThread);
+    public BaseApiCacheInterceptorUseCase(ApiCacheRepository apiCacheRepository) {
         this.apiCacheRepository = apiCacheRepository;
     }
 

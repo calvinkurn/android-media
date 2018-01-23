@@ -3,7 +3,6 @@ package com.tokopedia.cacheapi.util;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.cacheapi.constant.CacheApiConstant;
 import com.tokopedia.cacheapi.constant.HTTPMethodDef;
 import com.tokopedia.core.network.retrofit.response.BaseResponseError;
@@ -164,7 +163,7 @@ public class CacheApiUtils {
         try {
             ResponseBody responseBody = response.body();
             if (HttpHeaders.hasBody(response)) {
-                BufferedSource source = CacheApiUtils.getNativeSource(response);
+                BufferedSource source = getNativeSource(response);
                 source.request(Long.MAX_VALUE);
                 Buffer buffer = source.buffer();
                 Charset charset = UTF8;

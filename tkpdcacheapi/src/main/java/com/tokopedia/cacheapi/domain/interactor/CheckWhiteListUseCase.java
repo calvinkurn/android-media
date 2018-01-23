@@ -1,9 +1,7 @@
 package com.tokopedia.cacheapi.domain.interactor;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.cacheapi.domain.ApiCacheRepository;
+import com.tokopedia.usecase.RequestParams;
 
 import rx.Observable;
 
@@ -13,11 +11,8 @@ import rx.Observable;
 
 public class CheckWhiteListUseCase extends BaseApiCacheInterceptorUseCase<Boolean> {
 
-    public CheckWhiteListUseCase(
-            ThreadExecutor threadExecutor,
-            PostExecutionThread postExecutionThread,
-            ApiCacheRepository apiCacheRepository) {
-        super(threadExecutor, postExecutionThread, apiCacheRepository);
+    public CheckWhiteListUseCase(ApiCacheRepository apiCacheRepository) {
+        super(apiCacheRepository);
     }
 
     @Override

@@ -1,15 +1,8 @@
 package com.tokopedia.cacheapi.interceptor;
 
+import android.content.Context;
 import android.text.TextUtils;
 
-import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.data.executor.JobExecutor;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.cacheapi.constant.CacheApiConstant;
 import com.tokopedia.cacheapi.data.repository.ApiCacheRepositoryImpl;
 import com.tokopedia.cacheapi.data.source.ApiCacheDataSource;
@@ -22,7 +15,8 @@ import com.tokopedia.cacheapi.domain.interactor.ClearTimeOutCache;
 import com.tokopedia.cacheapi.domain.interactor.GetCacheDataUseCaseUseCase;
 import com.tokopedia.cacheapi.domain.interactor.SaveToDbUseCase;
 import com.tokopedia.cacheapi.util.CacheApiUtils;
-import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.cacheapi.util.CommonUtils;
+import com.tokopedia.usecase.RequestParams;
 
 import java.io.IOException;
 
@@ -38,6 +32,14 @@ import okhttp3.ResponseBody;
  */
 
 public class ApiCacheInterceptor implements Interceptor {
+
+    private Context context;
+    private String versionName;
+
+    public ApiCacheInterceptor(Context context, String versionName) {
+        this.context = context;
+        this.versionName = versionName;
+    }
 
     @Override
     public Response intercept(Chain chain) throws IOException {
@@ -55,19 +57,15 @@ public class ApiCacheInterceptor implements Interceptor {
     private Response getCacheResponse(Chain chain) throws Throwable {
         Request request = chain.request();
 
-        ThreadExecutor threadExecutor = new JobExecutor();
-        PostExecutionThread postExecutionThread = new UIThread();
-        String versionName = MainApplication.getAppContext().getPackageManager().getPackageInfo(MainApplication.getAppContext().getPackageName(), 0).versionName;
-        ApiCacheRepository apiCacheRepository = new ApiCacheRepositoryImpl(new ApiCacheDataSource(new CacheApiVersionCache(
-                new LocalCacheHandler(MainApplication.getAppContext(), TkpdCache.CACHE_API), versionName),
-                new CacheApiDataManager())
+        ApiCacheRepository apiCacheRepository = new ApiCacheRepositoryImpl(new ApiCacheDataSource(
+                new CacheApiVersionCache(context, versionName), new CacheApiDataManager())
         );
 
-        new ClearTimeOutCache(threadExecutor, postExecutionThread, apiCacheRepository).executeSync(RequestParams.EMPTY);
+        new ClearTimeOutCache(apiCacheRepository).executeSync(RequestParams.EMPTY);
 
-        CheckWhiteListUseCase checkWhiteListUseCase = new CheckWhiteListUseCase(threadExecutor, postExecutionThread, apiCacheRepository);
-        GetCacheDataUseCaseUseCase getCacheDataUseCase = new GetCacheDataUseCaseUseCase(threadExecutor, postExecutionThread, apiCacheRepository);
-        SaveToDbUseCase saveToDbUseCase = new SaveToDbUseCase(threadExecutor, postExecutionThread, apiCacheRepository);
+        CheckWhiteListUseCase checkWhiteListUseCase = new CheckWhiteListUseCase(apiCacheRepository);
+        GetCacheDataUseCaseUseCase getCacheDataUseCase = new GetCacheDataUseCaseUseCase(apiCacheRepository);
+        SaveToDbUseCase saveToDbUseCase = new SaveToDbUseCase(apiCacheRepository);
 
         RequestParams requestParams = RequestParams.create();
 

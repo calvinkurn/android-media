@@ -1,14 +1,11 @@
 package com.tokopedia.cacheapi.data.repository;
 
 import com.tokopedia.cacheapi.data.source.ApiCacheDataSource;
-import com.tokopedia.cacheapi.data.source.db.CacheApiData;
 import com.tokopedia.cacheapi.data.source.db.CacheApiWhitelist;
 import com.tokopedia.cacheapi.domain.ApiCacheRepository;
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
 
 import java.util.Collection;
-
-import javax.inject.Inject;
 
 import okhttp3.Response;
 import rx.Observable;
@@ -21,7 +18,6 @@ public class ApiCacheRepositoryImpl implements ApiCacheRepository {
 
     private ApiCacheDataSource apiCacheDataSource;
 
-    @Inject
     public ApiCacheRepositoryImpl(ApiCacheDataSource apiCacheDataSource) {
         this.apiCacheDataSource = apiCacheDataSource;
     }

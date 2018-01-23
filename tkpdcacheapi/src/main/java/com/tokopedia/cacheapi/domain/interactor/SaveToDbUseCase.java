@@ -1,10 +1,8 @@
 package com.tokopedia.cacheapi.domain.interactor;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.cacheapi.data.source.db.CacheApiWhitelist;
 import com.tokopedia.cacheapi.domain.ApiCacheRepository;
+import com.tokopedia.usecase.RequestParams;
 
 import okhttp3.Response;
 import rx.Observable;
@@ -18,8 +16,8 @@ public class SaveToDbUseCase extends BaseApiCacheInterceptorUseCase<Boolean> {
 
     public static final String RESPONSE = "RESPONSE";
 
-    public SaveToDbUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, ApiCacheRepository apiCacheRepository) {
-        super(threadExecutor, postExecutionThread, apiCacheRepository);
+    public SaveToDbUseCase(ApiCacheRepository apiCacheRepository) {
+        super(apiCacheRepository);
     }
 
     @Override
