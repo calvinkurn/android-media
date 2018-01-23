@@ -62,11 +62,10 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     private static final int REQUEST_CODE_AIRPORT_CLASSES = 4;
     private static final int REQUEST_CODE_SEARCH = 5;
     private static final int REQUEST_CODE_LOGIN = 6;
-    private static final int MAX_PASSENGER_VALUE = 7;
 
-    private static final String EXTRA_TRIP = "EXTRA_TRIP";
-    private static final String EXTRA_PASSENGER = "EXTRA_PASSENGER";
-    private static final String EXTRA_CLASS = "EXTRA_CLASS";
+    public static final String EXTRA_TRIP = "EXTRA_TRIP";
+    public static final String EXTRA_PASSENGER = "EXTRA_PASSENGER";
+    public static final String EXTRA_CLASS = "EXTRA_CLASS";
 
     AppCompatImageView reverseAirportImageView;
     LinearLayout airportDepartureLayout;
@@ -247,7 +246,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         if (getArguments().containsKey(EXTRA_TRIP) && getArguments().containsKey(EXTRA_CLASS) && getArguments().containsKey(EXTRA_PASSENGER)
                 && getArguments().getString(EXTRA_TRIP) != null && getArguments().getString(EXTRA_PASSENGER) != null && getArguments().getString(EXTRA_CLASS) != null) {
             presenter.initialize(true);
-            transformExtras(getArguments());
+            presenter.transformExtras(getArguments().getString(EXTRA_TRIP), getArguments().getString(EXTRA_PASSENGER), getArguments().getString(EXTRA_CLASS));
         } else {
             presenter.initialize(false);
         }
@@ -400,6 +399,11 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     }
 
     @Override
+    public void showApplinkErrorMessage(int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
     public void navigateToLoginPage() {
         if (getActivity().getApplication() instanceof FlightModuleRouter
                 && ((FlightModuleRouter) getActivity().getApplication()).getLoginIntent() != null) {
@@ -527,63 +531,6 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
             startActivity(((FlightModuleRouter) getActivity().getApplication())
                     .getBannerWebViewIntent(getActivity(), FlightUrl.ALL_PROMO_LINK));
         }
-    }
-
-    private void transformExtras(Bundle extrasBundle) {
-        // transform trip extras
-        String[] tempExtras = extrasBundle.getString(EXTRA_TRIP).split(",");
-        String[] extrasTripDeparture = tempExtras[0].split("_");
-        String[] tripDate = extrasTripDeparture[2].split("-");
-
-        /**
-         * Urutan trip setelah di split berdasarkan , dan _ :
-         * [0] = ID Airport Departure
-         * [1] = ID Airport Arrival
-         * [2] = Tanggal
-         *
-         * Tanggal setelah di split :
-         * [0] = tahun
-         * [1] = bulan
-         * [2] = hari
-         */
-        presenter.actionGetAirportById(extrasTripDeparture[0], true);
-        presenter.actionGetAirportById(extrasTripDeparture[1], false);
-        presenter.onDepartureDateChange(Integer.parseInt(tripDate[0]), Integer.parseInt(tripDate[1]), Integer.parseInt(tripDate[2]));
-
-        if(tempExtras.length > 1) {
-            viewModel.setOneWay(false);
-            String[] extrasTripReturn = tempExtras[1].split("_");
-            tripDate = extrasTripReturn[2].split("-");
-            presenter.onReturnDateChange(Integer.parseInt(tripDate[0]), Integer.parseInt(tripDate[1]), Integer.parseInt(tripDate[2]));
-        }
-
-        // transform passenger count
-        tempExtras = extrasBundle.getString(EXTRA_PASSENGER).split("-");
-        if (Integer.parseInt(tempExtras[1]) > Integer.parseInt(tempExtras[0]) || Integer.parseInt(tempExtras[2]) > Integer.parseInt(tempExtras[0])) {
-            showMessageErrorInSnackBar(R.string.select_passenger_infant_greater_than_adult_error_message);
-        } else if (Integer.parseInt(tempExtras[1]) + Integer.parseInt(tempExtras[0]) > MAX_PASSENGER_VALUE) {
-            showMessageErrorInSnackBar(R.string.select_passenger_total_passenger_error_message);
-        } else {
-            FlightPassengerViewModel flightPassengerViewModel = new FlightPassengerViewModel(Integer.parseInt(tempExtras[0]), Integer.parseInt(tempExtras[1]), Integer.parseInt(tempExtras[2]));
-            presenter.onFlightPassengerChange(flightPassengerViewModel);
-        }
-
-        // transform class
-        int classId = Integer.parseInt(extrasBundle.getString(EXTRA_CLASS));
-        String classTitle = "";
-        switch (classId) {
-            case 1 :
-                classTitle = "Ekonomi";
-                break;
-            case 2 :
-                classTitle = "Bisnis";
-                break;
-            case 3 :
-                classTitle = "Utama";
-                break;
-        }
-        FlightClassViewModel flightClassViewModel = new FlightClassViewModel(Integer.parseInt(extrasBundle.getString(EXTRA_CLASS)), classTitle);
-        presenter.onFlightClassesChange(flightClassViewModel);
     }
 
     @Override

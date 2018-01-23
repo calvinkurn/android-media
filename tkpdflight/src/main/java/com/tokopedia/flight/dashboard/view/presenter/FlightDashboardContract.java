@@ -1,5 +1,6 @@
 package com.tokopedia.flight.dashboard.view.presenter;
 
+import android.os.Bundle;
 import android.support.annotation.StringRes;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
@@ -48,6 +49,8 @@ public interface FlightDashboardContract {
 
         void showFlightClassPassengerIsEmpty(@StringRes int resId);
 
+        void showApplinkErrorMessage(@StringRes int resId);
+
         void navigateToSearchPage(FlightDashboardViewModel currentDashboardViewModel);
 
         void showAirportShouldDifferentCity(@StringRes int resId);
@@ -68,8 +71,6 @@ public interface FlightDashboardContract {
         void onRoundTripChecked();
 
         void initialize(boolean fromApplink);
-
-        void actionGetAirportById(String airportId, boolean isDepartureAirport);
 
         void onReverseAirportButtonClicked();
 
@@ -94,6 +95,8 @@ public interface FlightDashboardContract {
         void onDestroyView();
 
         void onLoginResultReceived();
+
+        void transformExtras(String extrasTrip, String extrasPassenger, String extrasClass);
 
     }
 }

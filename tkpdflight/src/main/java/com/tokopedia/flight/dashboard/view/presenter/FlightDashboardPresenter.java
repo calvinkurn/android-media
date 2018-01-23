@@ -1,8 +1,11 @@
 package com.tokopedia.flight.dashboard.view.presenter;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
@@ -15,6 +18,7 @@ import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
 import com.tokopedia.flight.dashboard.domain.GetFlightAirportByIdUseCase;
 import com.tokopedia.flight.dashboard.domain.GetFlightClassesUseCase;
+import com.tokopedia.flight.dashboard.view.fragment.FlightDashboardFragment;
 import com.tokopedia.flight.dashboard.view.fragment.cache.FlightDashboardCache;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardViewModel;
@@ -39,6 +43,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     private static final String DEVICE_ID = "4";
     private static final String CATEGORY_ID = "27";
+    private static final int MAX_PASSENGER_VALUE = 7;
 
     private BannerGetDataUseCase bannerGetDataUseCase;
     private FlightDashboardValidator validator;
@@ -143,8 +148,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         });
     }
 
-    @Override
-    public void actionGetAirportById(String airportId, final boolean isDepartureAirport) {
+    private void actionGetAirportById(String airportId, final boolean isDepartureAirport) {
         getFlightAirportByIdUseCase.execute(getFlightAirportByIdUseCase.createRequestParams(airportId), new Subscriber<FlightAirportDB>() {
             @Override
             public void onCompleted() {
@@ -378,6 +382,71 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
             onInitialize(false);
         } else {
             getView().closePage();
+        }
+    }
+
+    @Override
+    public void transformExtras(String extrasTrip, String extrasPassenger, String extrasClass) {
+        try {
+            // transform trip extras
+            String[] tempExtras = extrasTrip.split(",");
+            String[] extrasTripDeparture = tempExtras[0].split("_");
+            String[] tripDate = extrasTripDeparture[2].split("-");
+
+            /**
+             * Urutan trip setelah di split berdasarkan , dan _ :
+             * [0] = ID Airport Departure
+             * [1] = ID Airport Arrival
+             * [2] = Tanggal
+             *
+             * Tanggal setelah di split :
+             * [0] = tahun
+             * [1] = bulan
+             * [2] = hari
+             */
+            actionGetAirportById(extrasTripDeparture[0], true);
+            actionGetAirportById(extrasTripDeparture[1], false);
+            onDepartureDateChange(Integer.parseInt(tripDate[0]), Integer.parseInt(tripDate[1]), Integer.parseInt(tripDate[2]));
+
+            if (tempExtras.length > 1) {
+                String[] extrasTripReturn = tempExtras[1].split("_");
+                tripDate = extrasTripReturn[2].split("-");
+                onReturnDateChange(Integer.parseInt(tripDate[0]), Integer.parseInt(tripDate[1]), Integer.parseInt(tripDate[2]));
+                onRoundTripChecked();
+            } else {
+                onSingleTripChecked();
+            }
+
+            // transform passenger count
+            tempExtras = extrasPassenger.split("-");
+            if (Integer.parseInt(tempExtras[1]) > Integer.parseInt(tempExtras[0]) || Integer.parseInt(tempExtras[2]) > Integer.parseInt(tempExtras[0])) {
+                getView().showApplinkErrorMessage(R.string.select_passenger_infant_greater_than_adult_error_message);
+            } else if (Integer.parseInt(tempExtras[1]) + Integer.parseInt(tempExtras[0]) > MAX_PASSENGER_VALUE) {
+                getView().showApplinkErrorMessage(R.string.select_passenger_total_passenger_error_message);
+            } else {
+                FlightPassengerViewModel flightPassengerViewModel = new FlightPassengerViewModel(Integer.parseInt(tempExtras[0]), Integer.parseInt(tempExtras[1]), Integer.parseInt(tempExtras[2]));
+                onFlightPassengerChange(flightPassengerViewModel);
+            }
+
+            // transform class
+            int classId = Integer.parseInt(extrasClass);
+            String classTitle = "";
+            switch (classId) {
+                case 1:
+                    classTitle = "Ekonomi";
+                    break;
+                case 2:
+                    classTitle = "Bisnis";
+                    break;
+                case 3:
+                    classTitle = "Utama";
+                    break;
+            }
+            FlightClassViewModel flightClassViewModel = new FlightClassViewModel(classId, classTitle);
+            onFlightClassesChange(flightClassViewModel);
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
