@@ -31,14 +31,7 @@ public class OkHttpClientModule {
 
     @ApplicationScope
     @Provides
-    public OkHttpClient.Builder provideOkHttpClientBuilder(TkpdBaseInterceptor tkpdBaseInterceptor,
-                                                           OkHttpRetryPolicy okHttpRetryPolicy,
-                                                           DebugInterceptor debugInterceptor) {
-
-        return new TkpdOkHttpBuilder(new OkHttpClient.Builder())
-                .setOkHttpRetryPolicy(okHttpRetryPolicy)
-                .addInterceptor(debugInterceptor)
-                .addInterceptor(tkpdBaseInterceptor)
-                .getBuilder();
+    public OkHttpClient.Builder provideOkHttpClientBuilder() {
+        return new OkHttpClient().newBuilder();
     }
 }

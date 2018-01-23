@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.common.utils.AuthUtil;
+import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 
 import java.io.IOException;
 import java.net.UnknownHostException;

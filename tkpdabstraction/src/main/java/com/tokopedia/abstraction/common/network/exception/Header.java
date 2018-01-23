@@ -1,4 +1,4 @@
-package com.tokopedia.mitratoppers.common.exception.model;
+package com.tokopedia.abstraction.common.network.exception;
 
 import android.os.Parcel;
 import android.os.Parcelable;

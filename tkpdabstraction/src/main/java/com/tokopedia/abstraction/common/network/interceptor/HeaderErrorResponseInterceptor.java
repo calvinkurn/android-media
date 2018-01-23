@@ -1,9 +1,8 @@
-package com.tokopedia.mitratoppers.common.interceptor;
+package com.tokopedia.abstraction.common.network.interceptor;
 
 import android.support.annotation.NonNull;
 
 import com.tokopedia.abstraction.common.data.model.response.BaseResponseError;
-import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 
 import okhttp3.Response;
 

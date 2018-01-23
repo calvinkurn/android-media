@@ -9,20 +9,19 @@ import com.google.gson.annotations.SerializedName;
 
 public class DataResponse<T> {
 
-    @SerializedName(value="data", alternate={"result"})
+    @SerializedName("header")
+    @Expose
+    private Header header;
+    @SerializedName(value="data")
     @Expose
     private T data;
 
-    @SerializedName("eof")
-    @Expose
-    private boolean eof;
-
-    public boolean isEof() {
-        return eof;
+    public Header getHeader() {
+        return header;
     }
 
-    public void setEof(boolean eof) {
-        this.eof = eof;
+    public void setHeader(Header header) {
+        this.header = header;
     }
 
     public T getData() {

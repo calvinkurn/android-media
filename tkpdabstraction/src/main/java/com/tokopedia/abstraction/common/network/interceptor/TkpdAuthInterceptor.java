@@ -5,8 +5,8 @@ import android.content.Context;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.common.utils.AuthUtil;
-import com.tokopedia.abstraction.common.utils.MethodChecker;
+import com.tokopedia.abstraction.common.utils.network.AuthUtil;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 import org.json.JSONArray;
 import org.json.JSONException;

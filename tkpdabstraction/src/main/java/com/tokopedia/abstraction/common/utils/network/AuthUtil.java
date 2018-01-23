@@ -1,8 +1,12 @@
-package com.tokopedia.abstraction.common.utils;
+package com.tokopedia.abstraction.common.utils.network;
 
 import android.content.Context;
 import android.support.v4.util.ArrayMap;
 import android.util.Base64;
+
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.abstraction.common.utils.MapNulRemover;
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;

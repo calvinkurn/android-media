@@ -1,4 +1,4 @@
-package com.tokopedia.abstraction.common.utils;
+package com.tokopedia.abstraction.common.utils.network;
 
 import android.content.Context;
 import android.text.TextUtils;

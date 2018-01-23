@@ -1,9 +1,8 @@
-package com.tokopedia.mitratoppers.common.exception.model;
+package com.tokopedia.abstraction.common.network.exception;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.abstraction.common.data.model.response.BaseResponseError;
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 
 import java.io.IOException;
 

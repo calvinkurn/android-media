@@ -13,8 +13,8 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.mitratoppers.MitraToppersComponentInstance;
 import com.tokopedia.mitratoppers.R;
 import com.tokopedia.mitratoppers.common.data.source.cloud.api.MitraToppersApi;
-import com.tokopedia.mitratoppers.common.di.component.DaggerMitraToppersComponent;
 import com.tokopedia.mitratoppers.common.di.component.MitraToppersComponent;
+import com.tokopedia.mitratoppers.dashboard.data.model.response.preapprove.ResponsePreApprove;
 
 import javax.inject.Inject;
 
@@ -58,22 +58,6 @@ public class TestFragment extends BaseDaggerFragment {
         super.onResume();
         mitraToppersApi.preApproveBalance(userSession.getShopId())
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Subscriber<Response<String>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Log.i("Test", "error");
-            }
-
-            @Override
-            public void onNext(Response<String> stringResponse) {
-                Log.i("Test", "success");
-            }
-        });
+                .observeOn(AndroidSchedulers.mainThread());
     }
 }

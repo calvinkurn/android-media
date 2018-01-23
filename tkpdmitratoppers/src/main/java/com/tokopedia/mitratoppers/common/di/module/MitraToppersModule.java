@@ -1,13 +1,12 @@
 package com.tokopedia.mitratoppers.common.di.module;
 
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
+import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.mitratoppers.common.constant.MitraToppersBaseURL;
 import com.tokopedia.mitratoppers.common.data.source.cloud.api.MitraToppersApi;
 import com.tokopedia.mitratoppers.common.di.MitraToppersQualifier;
 import com.tokopedia.mitratoppers.common.di.scope.MitraToppersScope;
-import com.tokopedia.mitratoppers.common.exception.model.HeaderErrorResponse;
-import com.tokopedia.mitratoppers.common.interceptor.HeaderErrorResponseInterceptor;
 
 import dagger.Module;
 import dagger.Provides;
@@ -38,18 +37,12 @@ public class MitraToppersModule {
     @Provides
     public OkHttpClient provideOkHttpClient(TkpdAuthInterceptor tkpdAuthInterceptor,
                                             @ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
-                                            @MitraToppersQualifier HeaderErrorResponseInterceptor errorResponseInterceptor) {
+                                            HeaderErrorResponseInterceptor errorResponseInterceptor) {
         return new OkHttpClient.Builder()
                 .addInterceptor(tkpdAuthInterceptor)
                 .addInterceptor(errorResponseInterceptor)
                 .addInterceptor(httpLoggingInterceptor)
                 .build();
-    }
-
-    @MitraToppersQualifier
-    @Provides
-    public HeaderErrorResponseInterceptor provideTkpdErrorResponseInterceptor() {
-        return new HeaderErrorResponseInterceptor(HeaderErrorResponse.class);
     }
 
 }
