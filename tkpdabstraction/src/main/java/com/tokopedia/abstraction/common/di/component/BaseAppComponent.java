@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.module.AppModule;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
+import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 
 import dagger.Component;
@@ -38,6 +39,8 @@ public interface BaseAppComponent {
     AbstractionRouter provideAbstractionRouter();
 
     TkpdAuthInterceptor tkpdAuthInterceptor();
+
+    HeaderErrorResponseInterceptor headerErrorResponseInterceptor();
 
     HttpLoggingInterceptor httpLoggingInterceptor();
 

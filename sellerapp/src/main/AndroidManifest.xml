@@ -21,7 +21,7 @@
 
         <!-- TODO remove this -->
         <activity
-            android:name="com.tokopedia.mitratoppers.dashboard.MitraToppersActivity"
+            android:name="com.tokopedia.mitratoppers.dashboard.MitraToppersDashboardActivity"
             android:label="@string/title_mitra_toppers"
             android:screenOrientation="portrait"
             android:exported="true"

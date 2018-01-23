@@ -13,7 +13,7 @@ import com.tokopedia.mitratoppers.common.constant.MitraToppersBaseURL;
  * Created by nathan on 8/18/17.
  */
 
-public class MitraToppersFragment extends BaseWebViewFragment {
+public class MitraToppersDashboardFragment extends BaseWebViewFragment {
 
     private UserSession userSession;
 

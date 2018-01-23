@@ -3,7 +3,7 @@ package com.tokopedia.mitratoppers;
 import android.content.Context;
 import android.content.Intent;
 
-import com.tokopedia.mitratoppers.dashboard.MitraToppersActivity;
+import com.tokopedia.mitratoppers.dashboard.MitraToppersDashboardActivity;
 
 /**
  * put the implementation body for TkpdMitraToppers here, instead of
@@ -13,6 +13,6 @@ import com.tokopedia.mitratoppers.dashboard.MitraToppersActivity;
 
 public class MitraToppersRouterInternal {
     public static Intent getMitraToppersActivityIntent(Context context){
-        return new Intent(context, MitraToppersActivity.class);
+        return new Intent(context, MitraToppersDashboardActivity.class);
     }
 }

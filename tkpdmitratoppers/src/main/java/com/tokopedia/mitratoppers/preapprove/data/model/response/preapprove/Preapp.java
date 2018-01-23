@@ -1,4 +1,4 @@
-package com.tokopedia.mitratoppers.dashboard.data.model.response.preapprove;
+package com.tokopedia.mitratoppers.preapprove.data.model.response.preapprove;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

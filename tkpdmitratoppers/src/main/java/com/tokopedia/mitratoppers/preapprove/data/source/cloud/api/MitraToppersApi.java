@@ -1,8 +1,8 @@
-package com.tokopedia.mitratoppers.common.data.source.cloud.api;
+package com.tokopedia.mitratoppers.preapprove.data.source.cloud.api;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.mitratoppers.common.constant.MitraToppersBaseURL;
-import com.tokopedia.mitratoppers.dashboard.data.model.response.preapprove.ResponsePreApprove;
+import com.tokopedia.mitratoppers.preapprove.data.model.response.preapprove.ResponsePreApprove;
 
 import retrofit2.Response;
 import retrofit2.http.GET;
