@@ -300,4 +300,5 @@
     <string name="flight_order_refund_button_card">Order Detail</string>
     <string name="flight_order_detail_button_label">Order Detail</string>
     <string name="flight_order_failed_button_label">Pesan Ulang</string>
+    <string name="flight_invoice_toolbar_title">Invoice</string>
 </resources>

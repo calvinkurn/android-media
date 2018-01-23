@@ -84,7 +84,6 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     private FlightSimpleAdapter flightBookingReviewPriceAdapter;
     private FlightOrderDetailPassData flightOrderDetailPassData;
     private FlightOrder flightOrder;
-
     private String eticketLink = "";
     private String invoiceLink = "";
     private String cancelMessage = "";
@@ -210,11 +209,11 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         containerDownloadInvoice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
-                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(invoiceLink));
-                    startActivity(browserIntent);
-                } catch (Exception e) {
-
+                if (getActivity().getApplication() instanceof FlightModuleRouter
+                        && ((FlightModuleRouter) getActivity().getApplication())
+                        .getWebviewActivity(getActivity(), invoiceLink) != null) {
+                    startActivity(((FlightModuleRouter) getActivity().getApplication())
+                            .getWebviewActivity(getActivity(), invoiceLink));
                 }
             }
         });
@@ -269,7 +268,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Override
     public void updatePassengerList(List<FlightDetailPassenger> flightDetailPassengers) {
-        if(flightBookingReviewPassengerAdapter.getDataSize() < 2) {
+        if (flightBookingReviewPassengerAdapter.getDataSize() < 2) {
             removePassengerRecyclerDivider();
         }
 
@@ -350,7 +349,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     }
 
     @Override
-    public String getCancelMessage()  {
+    public String getCancelMessage() {
         return cancelMessage;
     }
 

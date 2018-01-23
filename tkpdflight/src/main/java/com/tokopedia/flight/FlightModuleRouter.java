@@ -3,6 +3,7 @@ package com.tokopedia.flight;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.contactus.model.FlightContactUsPassData;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
@@ -26,6 +27,8 @@ public interface FlightModuleRouter {
     int getTopPayPaymentCancelCode();
 
     Intent getBannerWebViewIntent(Activity activity, String url);
+
+    Intent getWebviewActivity(Activity activity, String url);
 
     Intent getHomeIntent(Context context);
 
