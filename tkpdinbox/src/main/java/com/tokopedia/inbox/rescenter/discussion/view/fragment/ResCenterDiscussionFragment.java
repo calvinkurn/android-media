@@ -25,6 +25,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.gallery.GalleryActivity;
+import com.tokopedia.core.gallery.GalleryType;
 import com.tokopedia.core.gallery.MediaItem;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.ImageUploadHandler;
@@ -320,7 +321,7 @@ public class ResCenterDiscussionFragment extends BaseDaggerFragment
     public void actionImagePicker() {
         if (TrackingUtils.getGtmString(AppEventTracking.GTM.RESOLUTION_CENTER_UPLOAD_VIDEO).equals("true")) {
             startActivityForResult(
-                    GalleryActivity.createIntent(getActivity()),
+                    GalleryActivity.createIntent(getActivity(), GalleryType.ofAll()),
                     REQUEST_CODE_GALLERY
             );
         } else {
