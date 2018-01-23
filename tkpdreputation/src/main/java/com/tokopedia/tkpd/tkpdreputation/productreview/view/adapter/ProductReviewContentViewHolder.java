@@ -127,10 +127,12 @@ public class ProductReviewContentViewHolder extends AbstractViewHolder<ProductRe
         iconLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                viewListener.onLikeDislikePressed(element.getReviewId(), element.isLikeStatus()? UNLIKE_STATUS : LIKE_STATUS_ACTIVE,  element.getProductId());
-                element.setLikeStatus(!element.isLikeStatus());
-                element.setTotalLike(element.isLikeStatus() ? element.getTotalLike() + 1 : element.getTotalLike() - 1);
-                setLikeStatus(element);
+                if(!element.isHelpful()) {
+                    viewListener.onLikeDislikePressed(element.getReviewId(), element.isLikeStatus() ? UNLIKE_STATUS : LIKE_STATUS_ACTIVE, element.getProductId());
+                    element.setLikeStatus(!element.isLikeStatus());
+                    element.setTotalLike(element.isLikeStatus() ? element.getTotalLike() + 1 : element.getTotalLike() - 1);
+                    setLikeStatus(element);
+                }
             }
         });
         setLikeStatus(element);
@@ -150,7 +152,7 @@ public class ProductReviewContentViewHolder extends AbstractViewHolder<ProductRe
                 counterLike.setText(itemView.getContext().getString(R.string.product_review_label_counter_like_1_formatted, element.getTotalLike() - 1));
             } else if(element.isLikeStatus() && element.getTotalLike() == 1) {
                 counterLike.setText(R.string.product_review_label_counter_like_2_formatted);
-            }else if(!element.isLikeStatus() && element.getTotalLike() <1){
+            }else if(!element.isLikeStatus() && element.getTotalLike() <1 && !element.isHelpful()){
                 counterLike.setText(R.string.product_review_label_counter_like_3_formatted);
             }else{
                 counterLike.setText(itemView.getContext().getString(R.string.product_review_label_counter_like_4_formatted, element.getTotalLike()));

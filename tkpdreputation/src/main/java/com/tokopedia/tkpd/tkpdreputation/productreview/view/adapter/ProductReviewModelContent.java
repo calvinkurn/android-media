@@ -32,6 +32,7 @@ public class ProductReviewModelContent implements ProductReviewModel, Parcelable
     protected boolean likeStatus;
     protected int totalLike;
     protected boolean isLogin;
+    protected boolean isHelpful;
 
     @Override
     public int type(ProductReviewTypeFactoryAdapter typeFactory) {
@@ -40,6 +41,14 @@ public class ProductReviewModelContent implements ProductReviewModel, Parcelable
 
     public void setReviewIsAnonymous(boolean reviewIsAnonymous) {
         this.reviewIsAnonymous = reviewIsAnonymous;
+    }
+
+    public boolean isHelpful() {
+        return isHelpful;
+    }
+
+    public void setHelpful(boolean helpful) {
+        isHelpful = helpful;
     }
 
     public void setReviewerName(String reviewerName) {
@@ -228,6 +237,7 @@ public class ProductReviewModelContent implements ProductReviewModel, Parcelable
         dest.writeByte(this.likeStatus ? (byte) 1 : (byte) 0);
         dest.writeInt(this.totalLike);
         dest.writeByte(this.isLogin ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isHelpful ? (byte) 1 : (byte) 0);
     }
 
     protected ProductReviewModelContent(Parcel in) {
@@ -251,6 +261,7 @@ public class ProductReviewModelContent implements ProductReviewModel, Parcelable
         this.likeStatus = in.readByte() != 0;
         this.totalLike = in.readInt();
         this.isLogin = in.readByte() != 0;
+        this.isHelpful = in.readByte() != 0;
     }
 
     public static final Creator<ProductReviewModelContent> CREATOR = new Creator<ProductReviewModelContent>() {

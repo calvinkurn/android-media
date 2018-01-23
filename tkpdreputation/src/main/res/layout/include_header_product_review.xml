@@ -40,7 +40,7 @@
             android:layout_height="20dp"
             android:isIndicator="true"
             android:numStars="5"
-            android:rating="3" />sssssss
+            android:rating="3" />
 
         <TextView
             android:id="@+id/total_review"

@@ -162,9 +162,9 @@ public class ProductReviewPresenter extends BaseDaggerPresenter<ProductReviewCon
         };
     }
 
-    public void getProductReview(String productId, int page, int rating) {
+    public void getProductReview(String productId, int page, String rating) {
         productReviewGetListUseCase.execute(productReviewGetListUseCase.createRequestParams(productId,
-                String.valueOf(page), String.valueOf(rating), sessionHandler.getLoginID()), getSubscriberGetProductReview());
+                String.valueOf(page), rating, sessionHandler.getLoginID()), getSubscriberGetProductReview());
     }
 
     private Subscriber<DataResponseReviewProduct> getSubscriberGetProductReview() {
