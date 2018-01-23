@@ -76,7 +76,7 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
         colorBorder[5] = R.color.tkpd_main_green;
 
         List<SimpleViewModel> filtersMap = new ArrayList<>();
-        filtersMap.add(new SimpleViewModel("700,800,600,102,101,200,300,650", getView().getString(R.string.flight_order_status_all_label)));
+        filtersMap.add(new SimpleViewModel("", getView().getString(R.string.flight_order_status_all_label)));
         filtersMap.add(new SimpleViewModel("700,800", getView().getString(R.string.flight_order_status_success_label)));
         filtersMap.add(new SimpleViewModel("600", getView().getString(R.string.flight_order_status_failed_label)));
         filtersMap.add(new SimpleViewModel("102,101", getView().getString(R.string.flight_order_status_waiting_for_payment_label)));

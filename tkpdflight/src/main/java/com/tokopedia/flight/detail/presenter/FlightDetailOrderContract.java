@@ -34,25 +34,8 @@ public interface FlightDetailOrderContract {
 
         String getString(int id, Object... args);
 
-        void updateViewExpired();
-
-        void updateViewConfirmed();
-
-        void updateViewFailed();
-
-        void updateViewFinished();
-
-        void updateViewProgress();
-
-        void updateViewReadyForQueue();
-
-        void updateViewRefunded();
-
-        void updateViewWaitingForPayment();
-
-        void updateViewWaitingForThirdParty();
-
-        void updateViewWaitingForTransfer();
+        void updateViewStatus(String orderStatusString, int color, boolean isTicketVisible, boolean isScheduleVisible,
+                              boolean isCancelVisible, boolean isReorderVisible);
 
         Activity getActivity();
 

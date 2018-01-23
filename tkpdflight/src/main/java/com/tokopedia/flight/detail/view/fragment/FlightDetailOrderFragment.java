@@ -57,7 +57,7 @@ import javax.inject.Inject;
 public class FlightDetailOrderFragment extends BaseDaggerFragment implements FlightDetailOrderContract.View, ExpandableOnClickListener {
 
     public static final String EXTRA_ORDER_DETAIL_PASS = "EXTRA_ORDER_DETAIL_PASS";
-    private static final String CANCEL_SOLUTION_ID = "1377";
+    private static final String CANCEL_SOLUTION_ID = "1378";
     private static final int CONTACT_US_REQUEST_CODE = 100;
     @Inject
     FlightDetailOrderPresenter flightDetailOrderPresenter;
@@ -292,56 +292,6 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         this.cancelMessage = cancelMessage;
     }
 
-    @Override
-    public void updateViewExpired() {
-        updateViewStatus(R.string.flight_label_transaction_failed, R.color.deep_orange_500, false, false, false, true);
-    }
-
-    @Override
-    public void updateViewConfirmed() {
-        updateViewStatus(R.string.flight_label_transaction_success, R.color.font_black_primary_70, true, false, true, false);
-    }
-
-    @Override
-    public void updateViewFailed() {
-        updateViewStatus(R.string.flight_label_canceled_ticket, R.color.font_black_primary_70, false, false, false, false);
-    }
-
-    @Override
-    public void updateViewFinished() {
-        updateViewStatus(R.string.flight_label_transaction_success, R.color.font_black_primary_70, true, false, true, false);
-    }
-
-    @Override
-    public void updateViewProgress() {
-        updateViewStatus(R.string.flight_label_waiting_for_confirm, R.color.font_black_primary_70, false, false, false, false);
-    }
-
-    @Override
-    public void updateViewReadyForQueue() {
-        updateViewStatus(R.string.flight_label_waiting_for_confirm, R.color.font_black_primary_70, false, false, false, false);
-    }
-
-    @Override
-    public void updateViewRefunded() {
-        updateViewStatus(R.string.flight_label_refunded, R.color.font_black_primary_70, false, false, false, false);
-    }
-
-    @Override
-    public void updateViewWaitingForPayment() {
-        updateViewStatus(R.string.flight_label_waiting_payment, R.color.deep_orange_500, false, false, false, false);
-    }
-
-    @Override
-    public void updateViewWaitingForThirdParty() {
-        updateViewStatus(R.string.flight_label_waiting_for_confirm, R.color.font_black_primary_70, false, false, false, false);
-    }
-
-    @Override
-    public void updateViewWaitingForTransfer() {
-        updateViewStatus(R.string.flight_label_waiting_payment, R.color.deep_orange_500, false, false, false, false);
-    }
-
     private void removePassengerRecyclerDivider() {
         recyclerViewPassenger.clearItemDecoration();
     }
@@ -366,8 +316,9 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         imageExpendablePassenger.setRotation(0);
     }
 
-    void updateViewStatus(int orderStatusString, int color, boolean isTicketVisible, boolean isScheduleVisible,
-                          boolean isCancelVisible, boolean isReorderVisible) {
+    @Override
+    public void updateViewStatus(String orderStatusString, int color, boolean isTicketVisible, boolean isScheduleVisible,
+                                 boolean isCancelVisible, boolean isReorderVisible) {
         orderStatus.setText(orderStatusString);
         orderStatus.setTextColor(ContextCompat.getColor(getActivity(), color));
         if (isTicketVisible) {

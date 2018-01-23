@@ -1,7 +1,6 @@
 package com.tokopedia.flight.detail.presenter;
 
 import android.text.TextUtils;
-import android.util.Base64;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
@@ -66,11 +65,6 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         getView().navigateToFlightHomePage();
     }
 
-    private String generateGeneralFlightContactUs() {
-        return Base64.encodeToString(getView().getActivity().getString(R.string.flight_order_flight_default_contact_us).getBytes(), Base64.DEFAULT);
-    }
-
-
     private Subscriber<FlightOrder> getSubscriberGetDetailOrder(final FlightOrderDetailPassData flightOrderDetailPassData) {
         return new Subscriber<FlightOrder>() {
             @Override
@@ -99,7 +93,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                         FlightDateUtil.FORMAT_DATE_LOCAL_DETAIL_ORDER, flightOrder.getCreateTime()),
                         generateTicketLink(flightOrder.getId()), generateInvoiceLink(flightOrder.getId()),
                         generateCancelMessage(flightOrderJourneyList, flightOrder.getPassengerViewModels()));
-                generateStatus(flightOrder.getStatus());
+                generateStatus(flightOrder.getStatus(), flightOrder.getStatusString());
             }
         };
     }
@@ -130,37 +124,37 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         return FlightUrl.getUrlPdf(orderId);
     }
 
-    private void generateStatus(int status) {
+    private void generateStatus(int status, String statusString) {
         switch (status) {
             case FlightStatusOrderType.EXPIRED:
-                getView().updateViewExpired();
+                getView().updateViewStatus(statusString, R.color.deep_orange_500, false, false, false, true);
                 break;
             case FlightStatusOrderType.CONFIRMED:
-                getView().updateViewConfirmed();
+                getView().updateViewStatus(statusString, R.color.font_black_primary_70, true, false, true, false);
                 break;
             case FlightStatusOrderType.FAILED:
-                getView().updateViewFailed();
+                getView().updateViewStatus(statusString, R.color.font_black_primary_70, false, false, false, false);
                 break;
             case FlightStatusOrderType.FINISHED:
-                getView().updateViewFinished();
+                getView().updateViewStatus(statusString, R.color.font_black_primary_70, true, false, true, false);
                 break;
             case FlightStatusOrderType.PROGRESS:
-                getView().updateViewProgress();
+                getView().updateViewStatus(statusString, R.color.font_black_primary_70, false, false, false, false);
                 break;
             case FlightStatusOrderType.READY_FOR_QUEUE:
-                getView().updateViewReadyForQueue();
+                getView().updateViewStatus(statusString, R.color.font_black_primary_70, false, false, false, false);
                 break;
             case FlightStatusOrderType.REFUNDED:
-                getView().updateViewRefunded();
+                getView().updateViewStatus(statusString, R.color.font_black_primary_70, false, false, false, false);
                 break;
             case FlightStatusOrderType.WAITING_FOR_PAYMENT:
-                getView().updateViewWaitingForPayment();
+                getView().updateViewStatus(statusString, R.color.deep_orange_500, false, false, false, false);
                 break;
             case FlightStatusOrderType.WAITING_FOR_THIRD_PARTY:
-                getView().updateViewWaitingForThirdParty();
+                getView().updateViewStatus(statusString, R.color.font_black_primary_70, false, false, false, false);
                 break;
             case FlightStatusOrderType.WAITING_FOR_TRANSFER:
-                getView().updateViewWaitingForTransfer();
+                getView().updateViewStatus(statusString, R.color.deep_orange_500, false, false, false, false);
                 break;
             default:
                 break;
