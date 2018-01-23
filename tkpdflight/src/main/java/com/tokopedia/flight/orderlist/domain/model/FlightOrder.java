@@ -1,5 +1,7 @@
 package com.tokopedia.flight.orderlist.domain.model;
 
+import com.tokopedia.flight.orderlist.data.cloud.entity.PaymentInfoEntity;
+
 import java.util.List;
 
 /**
@@ -22,6 +24,7 @@ public class FlightOrder {
     private String currency;
     private List<FlightOrderJourney> journeys;
     private List<FlightOrderPassengerViewModel> passengerViewModels;
+    private PaymentInfoEntity payment;
 
     public FlightOrder() {
     }
@@ -144,5 +147,13 @@ public class FlightOrder {
 
     public void setStatusString(String statusString) {
         this.statusString = statusString;
+    }
+
+    public PaymentInfoEntity getPayment() {
+        return payment;
+    }
+
+    public void setPayment(PaymentInfoEntity payment) {
+        this.payment = payment;
     }
 }

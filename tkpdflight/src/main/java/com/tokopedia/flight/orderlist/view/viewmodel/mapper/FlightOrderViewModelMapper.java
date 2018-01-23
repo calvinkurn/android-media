@@ -68,6 +68,7 @@ public class FlightOrderViewModelMapper {
                     waitingForPaymentViewModel.setOrderJourney(flightOrder.getJourneys());
                     waitingForPaymentViewModel.setStatus(flightOrder.getStatus());
                     waitingForPaymentViewModel.setTitle(flightOrder.getStatusString());
+                    waitingForPaymentViewModel.setPayment(flightOrder.getPayment());
                     visitables.add(waitingForPaymentViewModel);
                     break;
                 case FlightStatusOrderType.REFUNDED:

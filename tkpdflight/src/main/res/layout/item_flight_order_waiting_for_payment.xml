@@ -49,6 +49,8 @@
 
                     <include layout="@layout/partial_flight_order_journey_view" />
 
+                    <include layout="@layout/partial_flight_order_payment_info" />
+
                     <include layout="@layout/partial_flight_order_departure_schedule" />
                 </LinearLayout>
 

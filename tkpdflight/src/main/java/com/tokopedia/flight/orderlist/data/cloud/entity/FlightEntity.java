@@ -43,6 +43,9 @@ public class FlightEntity {
     @SerializedName("passengers")
     @Expose
     private List<PassengerEntity> passengers;
+    @SerializedName("payment")
+    @Expose
+    private PaymentInfoEntity payment;
 
     public FlightEntity() {
     }
@@ -89,5 +92,9 @@ public class FlightEntity {
 
     public int getTotalInfantNumeric() {
         return totalInfantNumeric;
+    }
+
+    public PaymentInfoEntity getPayment() {
+        return payment;
     }
 }

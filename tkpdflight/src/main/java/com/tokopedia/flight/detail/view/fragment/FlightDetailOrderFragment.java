@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -88,6 +89,12 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     private String invoiceLink = "";
     private String cancelMessage = "";
     private boolean isPassengerInfoShowed = true;
+    private LinearLayout paymentInfoLayout;
+    private TextView tvPaymentDescriptionLabel;
+    private TextView tvPaymentDescription;
+    private TextView tvPaymentCost;
+    private TextView tvPaymentCostLabel;
+    private TextView tvPaymentDueDate;
 
     public static Fragment createInstance(FlightOrderDetailPassData flightOrderDetailPassData) {
         FlightDetailOrderFragment flightDetailOrderFragment = new FlightDetailOrderFragment();
@@ -135,6 +142,13 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         buttonCancelTicket = view.findViewById(R.id.button_cancel);
         buttonRescheduleTicket = view.findViewById(R.id.button_reschedule);
         buttonReorder = view.findViewById(R.id.button_reorder);
+
+        paymentInfoLayout = (LinearLayout) view.findViewById(R.id.payment_info_layout);
+        tvPaymentDescriptionLabel = (TextView) view.findViewById(R.id.tv_payment_description_label);
+        tvPaymentDescription = (TextView) view.findViewById(R.id.tv_payment_description);
+        tvPaymentCost = (TextView) view.findViewById(R.id.tv_payment_cost);
+        tvPaymentCostLabel = (TextView) view.findViewById(R.id.tv_payment_cost_label);
+        tvPaymentDueDate = (TextView) view.findViewById(R.id.tv_payment_due_date);
         progressDialog = new ProgressDialog(getActivity());
 
         setViewClickListener();
@@ -152,6 +166,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         progressDialog.setMessage(getString(R.string.flight_booking_loading_title));
         progressDialog.setCancelable(false);
         orderId.setText(flightOrderDetailPassData.getOrderId());
+
         return view;
     }
 
@@ -424,5 +439,43 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     @Override
     public void onCloseExpand(int position) {
         // do something to scroll the view
+    }
+
+    @Override
+    public void showPaymentInfoLayout() {
+        paymentInfoLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hidePaymentInfoLayout() {
+        paymentInfoLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void setPaymentLabel(int resId) {
+        tvPaymentDescriptionLabel.setText(resId);
+    }
+
+    @Override
+    public void setPaymentDescription(CharSequence description) {
+        tvPaymentDescriptionLabel.setText(description);
+    }
+
+    @Override
+    public void setTotalTransfer(String price) {
+        tvPaymentCost.setVisibility(View.VISIBLE);
+        tvPaymentCost.setText(price);
+    }
+
+    @Override
+    public void hideTotalTransfer() {
+        tvPaymentCostLabel.setVisibility(View.GONE);
+        tvPaymentCost.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void setPaymentDueDate(String dueDate) {
+        tvPaymentDueDate.setVisibility(View.VISIBLE);
+        tvPaymentDueDate.setText(dueDate);
     }
 }

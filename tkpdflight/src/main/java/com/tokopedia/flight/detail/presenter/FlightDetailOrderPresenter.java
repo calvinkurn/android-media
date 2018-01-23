@@ -1,6 +1,9 @@
 package com.tokopedia.flight.detail.presenter;
 
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.style.RelativeSizeSpan;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
@@ -14,6 +17,8 @@ import com.tokopedia.flight.common.util.FlightAmenityType;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightPassengerTitleType;
 import com.tokopedia.flight.common.util.FlightStatusOrderType;
+import com.tokopedia.flight.orderlist.data.cloud.entity.ManualTransferEntity;
+import com.tokopedia.flight.orderlist.data.cloud.entity.PaymentInfoEntity;
 import com.tokopedia.flight.orderlist.domain.FlightGetOrderUseCase;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
@@ -95,8 +100,77 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                         generateTicketLink(flightOrder.getId()), generateInvoiceLink(flightOrder.getId()),
                         generateCancelMessage(flightOrderJourneyList, flightOrder.getPassengerViewModels()));
                 generateStatus(flightOrder.getStatus(), flightOrder.getStatusString());
+                renderPaymentInfo(flightOrder);
             }
         };
+    }
+
+    private void renderPaymentInfo(FlightOrder flightOrder) {
+        if (flightOrder.getPayment() != null && flightOrder.getPayment().getGatewayName().length() > 0) {
+            getView().showPaymentInfoLayout();
+            if (flightOrder.getPayment().getManualTransfer() != null && flightOrder.getPayment().getManualTransfer().getAccountBankName().length() > 0) {
+                getView().setPaymentLabel(R.string.flight_order_payment_manual_label);
+                getView().setPaymentDescription(renderManualPaymentDescriptionText(flightOrder.getPayment().getManualTransfer()));
+                getView().setTotalTransfer(flightOrder.getPayment().getManualTransfer().getTotal());
+            } else {
+                getView().setPaymentLabel(R.string.flight_order_payment_label);
+                getView().setPaymentDescription(renderPaymentDescriptionText(flightOrder.getPayment()));
+                getView().hideTotalTransfer();
+            }
+
+            getView().setPaymentDueDate(FlightDateUtil.formatDate(FlightDateUtil.FORMAT_DATE_API, FlightDateUtil.DEFAULT_VIEW_TIME_FORMAT, flightOrder.getPayment().getExpireOn()));
+
+        } else {
+            getView().hidePaymentInfoLayout();
+        }
+    }
+
+    private CharSequence renderPaymentDescriptionText(PaymentInfoEntity payment) {
+        SpannableStringBuilder text = new SpannableStringBuilder();
+        text.append(payment.getGatewayName());
+        makeBold(text);
+        SpannableStringBuilder desc = new SpannableStringBuilder();
+        desc.append(payment.getTransactionCode());
+        makeSmall(desc);
+        text.append("\n");
+        text.append(desc);
+        return text;
+    }
+
+    private CharSequence renderManualPaymentDescriptionText(ManualTransferEntity manualTransfer) {
+        SpannableStringBuilder text = new SpannableStringBuilder();
+        text.append(manualTransfer.getAccountBankName());
+        makeBold(text);
+        SpannableStringBuilder desc = new SpannableStringBuilder();
+        String newLine = "\n";
+        StringBuilder result = new StringBuilder();
+        result.append(getView().getString(R.string.flight_order_a_n_prefix) + " " + manualTransfer.getAccountName() + newLine);
+        result.append(getView().getString(R.string.flight_order_branch_prefix) + " " + manualTransfer.getAccountBranch() + newLine);
+        result.append(manualTransfer.getAccountNo());
+        makeSmall(desc.append(result.toString()));
+        text.append("\n");
+        text.append(desc);
+        return text;
+    }
+
+    private SpannableStringBuilder makeBold(SpannableStringBuilder text) {
+        if (TextUtils.isEmpty(text)) {
+            return text;
+        }
+        text.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
+                0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        text.setSpan(new RelativeSizeSpan(1.25f),
+                0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return text;
+    }
+
+    private SpannableStringBuilder makeSmall(SpannableStringBuilder text) {
+        if (TextUtils.isEmpty(text)) {
+            return text;
+        }
+        text.setSpan(new RelativeSizeSpan(0.75f),
+                0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return text;
     }
 
     private String generateCancelMessage(List<FlightOrderJourney> flightOrder, List<FlightOrderPassengerViewModel> passengerViewModels) {

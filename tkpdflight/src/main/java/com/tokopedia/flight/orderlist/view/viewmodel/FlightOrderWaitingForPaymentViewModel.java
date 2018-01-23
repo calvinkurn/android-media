@@ -1,6 +1,7 @@
 package com.tokopedia.flight.orderlist.view.viewmodel;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.flight.orderlist.data.cloud.entity.PaymentInfoEntity;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderTypeFactory;
 
@@ -11,6 +12,8 @@ import java.util.List;
  */
 
 public class FlightOrderWaitingForPaymentViewModel extends FlightOrderBaseViewModel implements Visitable<FlightOrderTypeFactory> {
+
+    private PaymentInfoEntity payment;
 
     public FlightOrderWaitingForPaymentViewModel() {
     }
@@ -58,5 +61,13 @@ public class FlightOrderWaitingForPaymentViewModel extends FlightOrderBaseViewMo
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public PaymentInfoEntity getPayment() {
+        return payment;
+    }
+
+    public void setPayment(PaymentInfoEntity payment) {
+        this.payment = payment;
     }
 }
