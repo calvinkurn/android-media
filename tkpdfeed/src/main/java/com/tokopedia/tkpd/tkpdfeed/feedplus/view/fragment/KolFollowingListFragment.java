@@ -222,7 +222,7 @@ public class KolFollowingListFragment extends BaseDaggerFragment
     public void onListItemClicked(KolFollowingViewModel item) {
         String url = item.getProfileApplink();
         if (!TextUtils.isEmpty(url)) {
-            ((TkpdCoreRouter) getActivity().getApplication()).actionAppLink(getActivity()
+            ((TkpdCoreRouter) getActivity().getApplication()).actionApplinkFromActivity(getActivity()
                     , url);
         }
     }
