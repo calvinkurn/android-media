@@ -380,7 +380,7 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public android.app.Fragment getShopReputationFragment(String shopId, String shopDomain) {
+    public Fragment getShopReputationFragment(String shopId, String shopDomain) {
         return ShopReviewFragment.createInstance(shopId, shopDomain);
     }
 

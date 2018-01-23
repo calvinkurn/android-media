@@ -42,11 +42,12 @@ public class ShopReviewPresenter extends BaseDaggerPresenter<ShopReviewContract.
     }
 
     public void deleteReview(String reviewId, String reputationId, String productId){
+        getView().showProgressLoading();
         deleteReviewResponseUseCase.execute(DeleteReviewResponseUseCase.getParam(reviewId, productId, sessionHandler.getShopID(), reputationId),
-                getSubscriberDeleteReview());
+                getSubscriberDeleteReview(reviewId));
     }
 
-    private Subscriber<DeleteReviewResponseDomain> getSubscriberDeleteReview() {
+    private Subscriber<DeleteReviewResponseDomain> getSubscriberDeleteReview(final String reviewId) {
         return new Subscriber<DeleteReviewResponseDomain>() {
             @Override
             public void onCompleted() {
@@ -56,23 +57,30 @@ public class ShopReviewPresenter extends BaseDaggerPresenter<ShopReviewContract.
             @Override
             public void onError(Throwable e) {
                 if(isViewAttached()){
+                    getView().hideProgressLoading();
                     getView().onErrorDeleteReview(e);
                 }
             }
 
             @Override
             public void onNext(DeleteReviewResponseDomain deleteReviewResponseDomain) {
-                getView().onSuccessDeleteReview(deleteReviewResponseDomain);
+                getView().hideProgressLoading();
+                if(deleteReviewResponseDomain.isSuccess()) {
+                    getView().onSuccessDeleteReview(deleteReviewResponseDomain, reviewId);
+                }else{
+                    getView().onErrorDeleteReview(new RuntimeException());
+                }
             }
         };
     }
 
     public void postLikeDislikeReview(String reviewId, int likeStatus, String productId){
+        getView().showProgressLoading();
         likeDislikeReviewUseCase.execute(LikeDislikeReviewUseCase.getParam(reviewId, likeStatus, productId, sessionHandler.getShopID()),
-                getSubscriberPostLikeDislike());
+                getSubscriberPostLikeDislike(reviewId));
     }
 
-    private Subscriber<LikeDislikeDomain> getSubscriberPostLikeDislike() {
+    private Subscriber<LikeDislikeDomain> getSubscriberPostLikeDislike(final String reviewId) {
         return new Subscriber<LikeDislikeDomain>() {
             @Override
             public void onCompleted() {
@@ -82,19 +90,21 @@ public class ShopReviewPresenter extends BaseDaggerPresenter<ShopReviewContract.
             @Override
             public void onError(Throwable e) {
                 if(isViewAttached()){
+                    getView().hideProgressLoading();
                     getView().onErrorPostLikeDislike(e);
                 }
             }
 
             @Override
             public void onNext(LikeDislikeDomain likeDislikeDomain) {
-                getView().onSuccessPostLikeDislike(likeDislikeDomain);
+                getView().hideProgressLoading();
+                getView().onSuccessPostLikeDislike(likeDislikeDomain, reviewId);
             }
         };
     }
 
     public void getShopReview(String shopDomain, String shopId, int page) {
-        shopReviewUseCase.execute(shopReviewUseCase.createRequestParams(shopDomain, shopId, String.valueOf(page)),
+        shopReviewUseCase.execute(shopReviewUseCase.createRequestParams(shopDomain, shopId, String.valueOf(page), sessionHandler.getLoginID()),
                 getSubscriberGetShopReview());
     }
 

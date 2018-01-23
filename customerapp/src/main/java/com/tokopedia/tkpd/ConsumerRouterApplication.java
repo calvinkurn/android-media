@@ -143,6 +143,8 @@ import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.KolFollowingListActivity;
+import com.tokopedia.tkpd.tkpdreputation.shopreview.view.ShopReviewFragment;
+import com.tokopedia.tkpd.tkpdreputation.productreview.view.ProductReviewActivity;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.activity.ReputationProduct;
@@ -584,13 +586,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public android.app.Fragment getShopReputationFragment() {
-        return ShopReputationList.create();
+    public Fragment getShopReputationFragment(String shopId, String shopDomain) {
+        return ShopReviewFragment.createInstance(shopId, shopDomain);
     }
 
     @Override
     public Intent getProductReputationIntent(Context context) {
-        return new Intent(context, ReputationProduct.class);
+        return new Intent(context, ProductReviewActivity.class);
     }
 
     @Override

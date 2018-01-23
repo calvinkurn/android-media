@@ -12,14 +12,18 @@ import com.tokopedia.tkpd.tkpdreputation.productreview.view.adapter.ProductRevie
 
 public class ShopReviewTypeFactoryAdapter extends ProductReviewTypeFactoryAdapter {
 
-    public ShopReviewTypeFactoryAdapter(ProductReviewContentViewHolder.ListenerReviewHolder viewListener) {
+    private ShopReviewViewHolder.ShopReviewHolderListener shopReviewHolderListener;
+
+    public ShopReviewTypeFactoryAdapter(ProductReviewContentViewHolder.ListenerReviewHolder viewListener,
+                                        ShopReviewViewHolder.ShopReviewHolderListener shopReviewHolderListener) {
         super(viewListener);
+        this.shopReviewHolderListener = shopReviewHolderListener;
     }
 
     @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
         if(type == ShopReviewViewHolder.LAYOUT){
-            return new ShopReviewViewHolder(parent, viewListener);
+            return new ShopReviewViewHolder(parent, viewListener, shopReviewHolderListener);
         }else{
             return super.createViewHolder(parent, type);
         }
