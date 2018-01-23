@@ -6,4 +6,8 @@
         <attr name="progress_bar_percentage" format="float"/>
         <attr name="total_review" format="integer"/>
     </declare-styleable>
+    <declare-styleable name="ProductReviewItemFilterView">
+        <attr name="counter_rating" format="integer" />
+        <attr name="isActive" format="boolean"/>
+    </declare-styleable>
 </resources>

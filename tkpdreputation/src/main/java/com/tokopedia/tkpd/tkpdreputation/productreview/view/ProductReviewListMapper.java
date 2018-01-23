@@ -83,6 +83,8 @@ public class ProductReviewListMapper {
             productReviewModelContent.setTotalLike(review.getTotalLike());
             productReviewModelContent.setReviewId(String.valueOf(review.getReviewId()));
             productReviewModelContent.setLogin(!TextUtils.isEmpty(userId));
+            productReviewModelContent.setProductId("");
+            productReviewModelContent.setHelpful(true);
             reviewModelContents.add(productReviewModelContent);
         }
         return reviewModelContents;

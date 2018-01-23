@@ -51,14 +51,18 @@ public class ProductReviewGetListUseCase extends UseCase<DataResponseReviewProdu
                 .flatMap(new Func1<DataResponseReviewProduct, Observable<DataResponseReviewProduct>>() {
                     @Override
                     public Observable<DataResponseReviewProduct> call(final DataResponseReviewProduct dataResponseReviewProduct) {
-                        return getLikeDislikeReviewUseCase.createObservable(
-                                GetLikeDislikeReviewUseCase.getParam(createReviewIds(dataResponseReviewProduct), requestParams.getString(USER_ID, "")))
-                                .map(new Func1<GetLikeDislikeReviewDomain, DataResponseReviewProduct>() {
-                                    @Override
-                                    public DataResponseReviewProduct call(GetLikeDislikeReviewDomain getLikeDislikeReviewDomain) {
-                                        return mapLikeModelToReviewModel(getLikeDislikeReviewDomain, dataResponseReviewProduct);
-                                    }
-                                });
+                        if(dataResponseReviewProduct.getList()!= null && dataResponseReviewProduct.getList().size() > 0) {
+                            return getLikeDislikeReviewUseCase.createObservable(
+                                    GetLikeDislikeReviewUseCase.getParam(createReviewIds(dataResponseReviewProduct), requestParams.getString(USER_ID, "")))
+                                    .map(new Func1<GetLikeDislikeReviewDomain, DataResponseReviewProduct>() {
+                                        @Override
+                                        public DataResponseReviewProduct call(GetLikeDislikeReviewDomain getLikeDislikeReviewDomain) {
+                                            return mapLikeModelToReviewModel(getLikeDislikeReviewDomain, dataResponseReviewProduct);
+                                        }
+                                    });
+                        }else{
+                            return Observable.just(dataResponseReviewProduct);
+                        }
                     }
                 });
     }

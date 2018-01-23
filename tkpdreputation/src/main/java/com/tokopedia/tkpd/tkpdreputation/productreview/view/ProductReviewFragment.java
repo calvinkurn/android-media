@@ -20,6 +20,10 @@ import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.design.quickfilter.QuickFilterItem;
+import com.tokopedia.design.quickfilter.QuickSingleFilterView;
+import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem;
+import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterView;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.di.ReputationModule;
@@ -37,6 +41,7 @@ import com.tokopedia.tkpd.tkpdreputation.productreview.view.adapter.ProductRevie
 import com.tokopedia.tkpd.tkpdreputation.productreview.view.adapter.ProductReviewTypeFactoryAdapter;
 import com.tokopedia.tkpd.tkpdreputation.productreview.view.presenter.ProductReviewContract;
 import com.tokopedia.tkpd.tkpdreputation.productreview.view.presenter.ProductReviewPresenter;
+import com.tokopedia.tkpd.tkpdreputation.productreview.view.widget.ProductReviewItemFilterView;
 import com.tokopedia.tkpd.tkpdreputation.productreview.view.widget.RatingBarReview;
 
 import java.util.ArrayList;
@@ -64,7 +69,10 @@ public class ProductReviewFragment extends BaseListFragment<ProductReviewModel, 
     private RatingBarReview threeStarReview;
     private RatingBarReview twoStarReview;
     private RatingBarReview oneStarReview;
+    private CustomViewQuickFilterView customViewQuickFilterView;
     private ProgressDialog progressDialog;
+
+    List<ProductReviewModel> listReviewHelpful;
 
     private String productId;
 
@@ -110,18 +118,50 @@ public class ProductReviewFragment extends BaseListFragment<ProductReviewModel, 
         threeStarReview = view.findViewById(R.id.three_star);
         twoStarReview = view.findViewById(R.id.two_star);
         oneStarReview = view.findViewById(R.id.one_star);
+        customViewQuickFilterView = view.findViewById(R.id.filter_review);
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
+        setupFilterView();
         return view;
+    }
+
+    private void setupFilterView() {
+        List<QuickFilterItem> quickFilterItemList = new ArrayList<>();
+        for (int i = 1; i <= 5; i++) {
+            CustomViewQuickFilterItem quickFilterItem = new CustomViewQuickFilterItem();
+            quickFilterItem.setType(String.valueOf(i));
+            ProductReviewItemFilterView productReviewItemFilterView = new ProductReviewItemFilterView(getActivity());
+            productReviewItemFilterView.setActive(true);
+            productReviewItemFilterView.setRating(i);
+            quickFilterItem.setDefaultView(productReviewItemFilterView);
+
+            ProductReviewItemFilterView productReviewItemFilterViewActive = new ProductReviewItemFilterView(getActivity());
+            productReviewItemFilterView.setActive(false);
+            productReviewItemFilterView.setRating(i);
+            quickFilterItem.setSelectedView(productReviewItemFilterViewActive);
+
+            quickFilterItemList.add(quickFilterItem);
+        }
+        customViewQuickFilterView.renderFilter(quickFilterItemList);
+        customViewQuickFilterView.setListener(new QuickSingleFilterView.ActionListener() {
+            @Override
+            public void selectFilter(String typeFilter) {
+                loadInitialData();
+            }
+        });
     }
 
     @Override
     public void loadData(int page) {
-        if (page == 1) {
+        String itemSelected;
+        if (page <= 1 && !customViewQuickFilterView.isAnyItemSelected()) {
+            itemSelected = "";
             productReviewPresenter.getRatingReview(productId);
             productReviewPresenter.getHelpfulReview(productId);
+        } else {
+            itemSelected = customViewQuickFilterView.getSelectedFilter();
         }
-        productReviewPresenter.getProductReview(productId, page, 0);
+        productReviewPresenter.getProductReview(productId, page, itemSelected);
     }
 
     @Override
@@ -194,8 +234,13 @@ public class ProductReviewFragment extends BaseListFragment<ProductReviewModel, 
 
     @Override
     public void onGetListReviewProduct(List<ProductReviewModel> map, boolean isHasNextPage) {
-        if (getCurrentPage() == 0) {
+        if (isLoadingInitialData && !customViewQuickFilterView.isAnyItemSelected()) {
             map.add(0, new ProductReviewModelTitleHeader(getString(R.string.product_review_label_all_review)));
+            if (listReviewHelpful != null) {
+                for (int i = 0; i < listReviewHelpful.size(); i++) {
+                    map.add(i, listReviewHelpful.get(i));
+                }
+            }
         }
         renderList(map, isHasNextPage);
     }
@@ -208,20 +253,16 @@ public class ProductReviewFragment extends BaseListFragment<ProductReviewModel, 
     @Override
     public void onGetListReviewHelpful(List<ProductReviewModel> map) {
         if (map.size() > 0) {
-            if (isLoadingInitialData) {
-                isLoadingInitialData = false;
-                setListReviewHelpful(map);
-            } else {
-                setListReviewHelpful(map);
-            }
+            setListReviewHelpful(map);
         }
     }
 
-    void setListReviewHelpful(List<ProductReviewModel> map) {
+    private void setListReviewHelpful(List<ProductReviewModel> map) {
         map.add(0, new ProductReviewModelTitleHeader(getString(R.string.product_review_label_helpful_review)));
         for (int i = 0; i < map.size(); i++) {
             getAdapter().addElement(i, map.get(i));
         }
+        listReviewHelpful = map;
     }
 
     @Override

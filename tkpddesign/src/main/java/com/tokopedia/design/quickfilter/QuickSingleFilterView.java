@@ -25,6 +25,7 @@ public class QuickSingleFilterView extends BaseCustomView {
     private RecyclerView recyclerView;
     protected BaseQuickSingleFilterAdapter adapterFilter;
     private ActionListener listener;
+    private String selectedType = "";
 
     public QuickSingleFilterView(@NonNull Context context) {
         super(context);
@@ -89,18 +90,21 @@ public class QuickSingleFilterView extends BaseCustomView {
                     int indexOf = items.indexOf(defaultItem);
                     if (indexOf != -1) {
                         items.get(indexOf).setSelected(true);
-                        if (listener != null) {
-                            listener.selectFilter(items.get(indexOf).getType());
-                        }
+                        setSelectedFilter(items.get(indexOf).getType());
                     }
                 } else {
-                    if (listener != null) {
-                        listener.selectFilter(quickFilterItem.getType());
-                    }
+                    setSelectedFilter(quickFilterItem.getType());
                 }
                 adapterFilter.notifyDataSetChanged();
             }
         };
+    }
+
+    private void setSelectedFilter(String type) {
+        selectedType = type;
+        if (listener != null) {
+            listener.selectFilter(type);
+        }
     }
 
     public void setDefaultItem(QuickFilterItem defaultItem) {
@@ -121,6 +125,26 @@ public class QuickSingleFilterView extends BaseCustomView {
             }
         }, 100);
 
+    }
+
+    public String getSelectedFilter(){
+        return selectedType;
+    }
+
+    public boolean isAnyItemSelected(){
+        if(defaultItem != null){
+            return true;
+        }else {
+            boolean isItemSelected = false;
+            for (int i= 0; i<adapterFilter.getDataList().size(); i++) {
+                QuickFilterItem quickFilterItem = (QuickFilterItem) adapterFilter.getDataList().get(i);
+                if (quickFilterItem.isSelected()) {
+                    isItemSelected = true;
+                    break;
+                }
+            }
+            return isItemSelected;
+        }
     }
 
     public interface ActionListener {

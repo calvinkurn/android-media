@@ -46,14 +46,18 @@ public class ShopReviewUseCase extends UseCase<DataResponseReviewShop> {
                 .flatMap(new Func1<DataResponseReviewShop, Observable<DataResponseReviewShop>>() {
                     @Override
                     public Observable<DataResponseReviewShop> call(final DataResponseReviewShop dataResponseReviewShop) {
-                        return getLikeDislikeReviewUseCase.createObservable(
-                                GetLikeDislikeReviewUseCase.getParam(createReviewIds(dataResponseReviewShop), requestParams.getString(USER_ID, "")))
-                                .map(new Func1<GetLikeDislikeReviewDomain, DataResponseReviewShop>() {
-                                    @Override
-                                    public DataResponseReviewShop call(GetLikeDislikeReviewDomain getLikeDislikeReviewDomain) {
-                                        return mapLikeModelToReviewModel(getLikeDislikeReviewDomain, dataResponseReviewShop);
-                                    }
-                                });
+                        if(dataResponseReviewShop.getList()!= null && dataResponseReviewShop.getList().size() > 0) {
+                            return getLikeDislikeReviewUseCase.createObservable(
+                                    GetLikeDislikeReviewUseCase.getParam(createReviewIds(dataResponseReviewShop), requestParams.getString(USER_ID, "")))
+                                    .map(new Func1<GetLikeDislikeReviewDomain, DataResponseReviewShop>() {
+                                        @Override
+                                        public DataResponseReviewShop call(GetLikeDislikeReviewDomain getLikeDislikeReviewDomain) {
+                                            return mapLikeModelToReviewModel(getLikeDislikeReviewDomain, dataResponseReviewShop);
+                                        }
+                                    });
+                        }else{
+                            return Observable.just(dataResponseReviewShop);
+                        }
                     }
                 });
     }

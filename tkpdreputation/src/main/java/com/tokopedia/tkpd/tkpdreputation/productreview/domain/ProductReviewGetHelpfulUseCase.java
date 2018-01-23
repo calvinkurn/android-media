@@ -47,24 +47,28 @@ public class ProductReviewGetHelpfulUseCase extends UseCase<DataResponseReviewHe
                 .flatMap(new Func1<DataResponseReviewHelpful, Observable<DataResponseReviewHelpful>>() {
                     @Override
                     public Observable<DataResponseReviewHelpful> call(DataResponseReviewHelpful dataResponseReviewHelpful) {
-                        return getLikeDislikeReviewUseCase.createObservable(
-                                GetLikeDislikeReviewUseCase.getParam(createReviewIds(dataResponseReviewHelpful), requestParams.getString(USER_ID, "")))
-                                .onErrorReturn(new Func1<Throwable, GetLikeDislikeReviewDomain>() {
-                                    @Override
-                                    public GetLikeDislikeReviewDomain call(Throwable throwable) {
-                                        return null;
-                                    }
-                                })
-                                .zipWith(Observable.just(dataResponseReviewHelpful), new Func2<GetLikeDislikeReviewDomain, DataResponseReviewHelpful, DataResponseReviewHelpful>() {
-                                    @Override
-                                    public DataResponseReviewHelpful call(GetLikeDislikeReviewDomain getLikeDislikeReviewDomain, DataResponseReviewHelpful dataResponseReviewHelpful) {
-                                        if(getLikeDislikeReviewDomain != null) {
-                                            return mapLikeModelToReviewModel(getLikeDislikeReviewDomain, dataResponseReviewHelpful);
-                                        }else{
-                                            return dataResponseReviewHelpful;
+                        if(dataResponseReviewHelpful.getList()!= null && dataResponseReviewHelpful.getList().size() > 0) {
+                            return getLikeDislikeReviewUseCase.createObservable(
+                                    GetLikeDislikeReviewUseCase.getParam(createReviewIds(dataResponseReviewHelpful), requestParams.getString(USER_ID, "")))
+                                    .onErrorReturn(new Func1<Throwable, GetLikeDislikeReviewDomain>() {
+                                        @Override
+                                        public GetLikeDislikeReviewDomain call(Throwable throwable) {
+                                            return null;
                                         }
-                                    }
-                                });
+                                    })
+                                    .zipWith(Observable.just(dataResponseReviewHelpful), new Func2<GetLikeDislikeReviewDomain, DataResponseReviewHelpful, DataResponseReviewHelpful>() {
+                                        @Override
+                                        public DataResponseReviewHelpful call(GetLikeDislikeReviewDomain getLikeDislikeReviewDomain, DataResponseReviewHelpful dataResponseReviewHelpful) {
+                                            if (getLikeDislikeReviewDomain != null) {
+                                                return mapLikeModelToReviewModel(getLikeDislikeReviewDomain, dataResponseReviewHelpful);
+                                            } else {
+                                                return dataResponseReviewHelpful;
+                                            }
+                                        }
+                                    });
+                        }else{
+                            return Observable.just(dataResponseReviewHelpful);
+                        }
                     }
                 });
     }
