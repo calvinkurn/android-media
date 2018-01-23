@@ -8,9 +8,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
+import android.support.v7.widget.CardView;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
@@ -65,7 +69,7 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
     OpportunityPresenter presenter;
 
     private OpportunityItemViewModel oppItemViewModel;
-
+    private CardView priceInfoContainer;
 
 
     public static Fragment createInstance(Bundle bundle) {
@@ -211,6 +215,7 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
         statusView = view.findViewById(R.id.customview_opportunity_detail_status_view);
         productView = view.findViewById(R.id.customview_opportunity_detail_product_view);
         summaryView = view.findViewById(R.id.customview_opportunity_detail_summary_view);
+        priceInfoContainer = view.findViewById(R.id.price_info_container);
 
         productPriceDifferentInfoView = view.findViewById(R.id.price_item);
         deliveryPriceDifferentInfoView = view.findViewById(R.id.shipping_fee);
@@ -272,6 +277,7 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
 
     @Override
     public void onSuccessNewPrice(final OpportunityNewPriceData opportunityNewPriceData) {
+        priceInfoContainer.setVisibility(View.VISIBLE);
         finishLoadingProgress();
         if (opportunityNewPriceData.getNewItemPrice() >= 0 && !TextUtils.isEmpty(opportunityNewPriceData.getNewItemPriceIdr())) {
             displayDetailPrice(productPriceDifferentInfoView, opportunityNewPriceData.getNewItemPriceIdr(), opportunityNewPriceData.getOldItemPriceIdr(),
@@ -330,8 +336,8 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
 
     @Override
     public void onErrorPriceInfo(String errorMessage) {
-        productPriceDifferentInfoView.setVisibility(View.GONE);
-        deliveryPriceDifferentInfoView.setVisibility(View.GONE);
+        priceInfoContainer.setVisibility(View.GONE);
+
     }
 
     private void finishLoadingProgress() {
