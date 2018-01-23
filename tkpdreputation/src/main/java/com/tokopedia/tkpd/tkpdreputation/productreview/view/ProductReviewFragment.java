@@ -210,14 +210,17 @@ public class ProductReviewFragment extends BaseListFragment<ProductReviewModel, 
         if (map.size() > 0) {
             if (isLoadingInitialData) {
                 isLoadingInitialData = false;
-                map.add(0, new ProductReviewModelTitleHeader(getString(R.string.product_review_label_helpful_review)));
-                renderList(map);
+                setListReviewHelpful(map);
             } else {
-                map.add(0, new ProductReviewModelTitleHeader(getString(R.string.product_review_label_helpful_review)));
-                for (int i = 0; i < map.size(); i++) {
-                    getAdapter().addElement(i, map.get(i));
-                }
+                setListReviewHelpful(map);
             }
+        }
+    }
+
+    void setListReviewHelpful(List<ProductReviewModel> map) {
+        map.add(0, new ProductReviewModelTitleHeader(getString(R.string.product_review_label_helpful_review)));
+        for (int i = 0; i < map.size(); i++) {
+            getAdapter().addElement(i, map.get(i));
         }
     }
 
