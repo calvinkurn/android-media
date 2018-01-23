@@ -2,7 +2,7 @@
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/coordinatorLayout"
+    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -148,7 +148,7 @@
         android:id="@+id/fab"
         android:layout_width="@dimen/fab_button_diameter"
         android:layout_height="@dimen/fab_button_diameter"
-        android:layout_gravity="bottom|end"
+        android:layout_gravity="bottom"
         android:layout_margin="@dimen/fab_margin"
         android:background="@color/tkpd_dark_green"
         android:src="@drawable/ic_action_filter_white_24dp"

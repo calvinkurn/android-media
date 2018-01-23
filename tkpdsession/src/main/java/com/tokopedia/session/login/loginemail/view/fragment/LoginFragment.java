@@ -127,6 +127,7 @@ public class LoginFragment extends BaseDaggerFragment
     TextInputEditText passwordEditText;
     ScrollView loginView;
     View loadingView;
+    View rootView;
     TextView forgotPass;
     LinearLayout loginLayout;
     TextView loginButton;
@@ -215,6 +216,7 @@ public class LoginFragment extends BaseDaggerFragment
             savedInstanceState) {
         setHasOptionsMenu(true);
         View view = inflater.inflate(R.layout.fragment_login, parent, false);
+        rootView = view.findViewById(R.id.root);
         emailEditText = view.findViewById(R.id.email_auto);
         passwordEditText = view.findViewById(R.id.password);
         loginView = view.findViewById(R.id.login_form);
@@ -279,9 +281,9 @@ public class LoginFragment extends BaseDaggerFragment
         int height = size.y;
 
         if (height < MINIMAL_HEIGHT) {
-            loadMoreFab.setVisibility(View.VISIBLE);
+            loadMoreFab.show();
         } else {
-            loadMoreFab.setVisibility(View.GONE);
+            loadMoreFab.hide();
         }
 
         loginView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
@@ -307,6 +309,21 @@ public class LoginFragment extends BaseDaggerFragment
                         loginView.fullScroll(View.FOCUS_DOWN);
                     }
                 });
+            }
+        });
+
+        rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver
+                .OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                int heightDiff = rootView.getRootView().getHeight() - rootView.getHeight();
+
+                if (heightDiff > 100) {
+                    loadMoreFab.hide();
+                } else {
+                    loadMoreFab.show();
+
+                }
             }
         });
     }
