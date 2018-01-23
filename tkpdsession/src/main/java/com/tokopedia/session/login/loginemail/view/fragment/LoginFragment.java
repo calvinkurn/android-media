@@ -289,7 +289,12 @@ public class LoginFragment extends BaseDaggerFragment
         loginView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             @Override
             public void onScrollChanged() {
-                if (loginView != null) {
+                Display display = getActivity().getWindowManager().getDefaultDisplay();
+                Point size = new Point();
+                display.getSize(size);
+                int height = size.y;
+
+                if (loginView != null && height < MINIMAL_HEIGHT) {
                     if (loginView.getChildAt(0).getBottom() <= (loginView.getHeight() + loginView
                             .getScrollY())) {
                         loadMoreFab.hide();
@@ -312,20 +317,6 @@ public class LoginFragment extends BaseDaggerFragment
             }
         });
 
-        rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver
-                .OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                int heightDiff = rootView.getRootView().getHeight() - rootView.getHeight();
-
-                if (heightDiff > 100) {
-                    loadMoreFab.hide();
-                } else {
-                    loadMoreFab.show();
-
-                }
-            }
-        });
     }
 
     @Override

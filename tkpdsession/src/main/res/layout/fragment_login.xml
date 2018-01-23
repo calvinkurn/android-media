@@ -148,11 +148,11 @@
         android:id="@+id/fab"
         android:layout_width="@dimen/fab_button_diameter"
         android:layout_height="@dimen/fab_button_diameter"
-        android:layout_gravity="bottom"
+        android:layout_gravity="bottom|center"
         android:layout_margin="@dimen/fab_margin"
         android:background="@color/tkpd_dark_green"
         android:src="@drawable/ic_action_filter_white_24dp"
         android:visibility="gone"
         app:backgroundTint="@color/green_500"
-        app:layout_anchorGravity="bottom"/>
+        app:layout_anchorGravity="bottom|center"/>
 </android.support.design.widget.CoordinatorLayout>
