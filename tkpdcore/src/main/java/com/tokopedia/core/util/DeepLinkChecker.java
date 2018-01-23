@@ -128,7 +128,7 @@ public class DeepLinkChecker {
     }
 
     private static boolean isPromo(List<String> linkSegment) {
-        return linkSegment.size() > 0 && (linkSegment.get(0).equals("promo"));
+        return linkSegment.size() > 0 && (linkSegment.get(0).equals("promo") || linkSegment.get(0).equals("sale"));
     }
 
     private static boolean isHome(String url, List<String> linkSegment) {
