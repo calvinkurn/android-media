@@ -62,6 +62,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     private static final int REQUEST_CODE_AIRPORT_CLASSES = 4;
     private static final int REQUEST_CODE_SEARCH = 5;
     private static final int REQUEST_CODE_LOGIN = 6;
+    private static final int MAX_PASSENGER_VALUE = 7;
 
     private static final String EXTRA_TRIP = "EXTRA_TRIP";
     private static final String EXTRA_PASSENGER = "EXTRA_PASSENGER";
@@ -558,8 +559,14 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
         // transform passenger count
         tempExtras = extrasBundle.getString(EXTRA_PASSENGER).split("-");
-        FlightPassengerViewModel flightPassengerViewModel = new FlightPassengerViewModel(Integer.parseInt(tempExtras[0]), Integer.parseInt(tempExtras[1]), Integer.parseInt(tempExtras[2]));
-        presenter.onFlightPassengerChange(flightPassengerViewModel);
+        if (Integer.parseInt(tempExtras[1]) > Integer.parseInt(tempExtras[0]) || Integer.parseInt(tempExtras[2]) > Integer.parseInt(tempExtras[0])) {
+            showMessageErrorInSnackBar(R.string.select_passenger_infant_greater_than_adult_error_message);
+        } else if (Integer.parseInt(tempExtras[1]) + Integer.parseInt(tempExtras[0]) > MAX_PASSENGER_VALUE) {
+            showMessageErrorInSnackBar(R.string.select_passenger_total_passenger_error_message);
+        } else {
+            FlightPassengerViewModel flightPassengerViewModel = new FlightPassengerViewModel(Integer.parseInt(tempExtras[0]), Integer.parseInt(tempExtras[1]), Integer.parseInt(tempExtras[2]));
+            presenter.onFlightPassengerChange(flightPassengerViewModel);
+        }
 
         // transform class
         int classId = Integer.parseInt(extrasBundle.getString(EXTRA_CLASS));
