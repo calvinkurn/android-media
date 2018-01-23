@@ -2,11 +2,13 @@ package com.tokopedia.core.referral.listner;
 
 import android.app.Activity;
 
+import com.tokopedia.core.base.presentation.CustomerView;
+
 /**
  * Created by ashwanityagi on 18/09/17.
  */
 
-public interface ReferralView {
+public interface ReferralView extends CustomerView {
 
     void renderVoucherCode(String voucherCode);
 

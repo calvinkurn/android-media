@@ -14,14 +14,21 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.manage.general.ManageWebViewActivity;
+import com.tokopedia.core.referral.di.DaggerReferralComponent;
+import com.tokopedia.core.referral.di.ReferralComponent;
+import com.tokopedia.core.referral.di.ReferralModule;
 import com.tokopedia.core.referral.listner.ReferralView;
 import com.tokopedia.core.referral.presenter.IReferralPresenter;
 import com.tokopedia.core.referral.presenter.ReferralPresenter;
 import com.tokopedia.core.router.OtpRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdUrl;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -34,7 +41,8 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> implements ReferralView {
 
-    private ReferralPresenter presenter;
+    @Inject
+    ReferralPresenter presenter;
 
     @BindView(R2.id.btn_app_share)
     TextView appShareButton;
@@ -77,6 +85,7 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
     }
 
     @Override
@@ -86,9 +95,10 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
 
     @Override
     protected void initialPresenter() {
-        presenter = new ReferralPresenter(this);
-        presenter.initialize();
+
     }
+
+
 
     @Override
     protected void initialListener(Activity activity) {
@@ -107,6 +117,8 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
 
     @Override
     protected void initView(View view) {
+        presenter.attachView(this);
+        presenter.initialize();
         appShareButton.setOnClickListener(getButtonAppShareClickListner());
         referralContentTextView.setText(presenter.getReferralContents());
         if (presenter.isAppShowReferralButtonActivated()) {
@@ -123,8 +135,16 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
             });
         }else{
             referralCodeLayout.setVisibility(View.INVISIBLE);
-            //appShareButton.setText(getString(R.string.drawer_title_appshare));
         }
+    }
+
+    @Override
+    protected void initInjector() {
+        ReferralComponent referralComponent = DaggerReferralComponent.builder()
+                .referralModule(new ReferralModule())
+                .appComponent(((BasePresenterActivity)context).getApplicationComponent())
+                .build();
+        referralComponent.inject(this);
 
     }
 
@@ -229,6 +249,7 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
             progressBar = new ProgressDialog(getActivity());
         }
         progressBar.show();
+
     }
 
     @Override
@@ -238,4 +259,9 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
+    }
 }
