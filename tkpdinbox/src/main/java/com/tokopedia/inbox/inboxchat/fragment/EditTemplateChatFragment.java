@@ -199,9 +199,6 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                UnifyTracking.eventClickTemplate(TopChatTrackingEventLabel.Category.UPDATE_TEMPLATE,
-                        TopChatTrackingEventLabel.Action.UPDATE_TEMPLATE,
-                        TopChatTrackingEventLabel.Name.INBOX_CHAT);
                 presenter.submitText(editText.getText().toString(), message, list);
             }
         });
