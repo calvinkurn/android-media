@@ -199,7 +199,7 @@ public class SecurityQuestionFragment extends BaseDaggerFragment
             new android.support.v7.app.AlertDialog.Builder(getActivity())
                     .setMessage(RequestPermissionUtil.getNeedPermissionMessage(Manifest.permission.READ_SMS)
                     )
-                    .setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
+                    .setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             SecurityQuestionFragmentPermissionsDispatcher
