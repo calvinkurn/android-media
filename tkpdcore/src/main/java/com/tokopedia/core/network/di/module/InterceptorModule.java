@@ -140,10 +140,8 @@ public class InterceptorModule {
     @ApplicationScope
     @Provides
     public TopAdsAuthInterceptor provideTopAdsAuthInterceptor(
-            SessionHandler sessionHandler,
-            @ApplicationContext Context context) {
-        String oAuthString = "Bearer " + sessionHandler.getAccessToken(context);
-        return new TopAdsAuthInterceptor(oAuthString);
+            SessionHandler sessionHandler) {
+        return new TopAdsAuthInterceptor(sessionHandler);
     }
 
     @TopAdsQualifier

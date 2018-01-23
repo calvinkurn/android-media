@@ -85,9 +85,6 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
     public static final String TOKOPEDIA = "Tokopedia";
 
     public static final int RESULT_CODE = 323;
-    public static final int DEF_WIDTH_CMPR = 2048;
-    public static final int DEF_QLTY_COMPRESS = 95;
-    public static final int WIDTH_DOWNLOAD = 2048;
 
     String FRAGMENT;
     int position;
@@ -419,10 +416,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         Fragment fragment = supportFragmentManager.findFragmentByTag(ImageGalleryFragment.FRAGMENT_TAG);
         if (fragment != null && fragment instanceof ImageGalleryFragment && path != null) {
             if (compressToTkpd) {
-                String fileNameToMove = FileUtils.generateUniqueFileName();
-                File photo = FileUtils.writeImageToTkpdPath(
-                        FileUtils.compressImage(path, DEF_WIDTH_CMPR, DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
-                        fileNameToMove);
+                File photo = FileUtils.writeImageToTkpdPath(path);
                 if (photo != null) {
                     finishWithSingleImage(photo.getAbsolutePath());
                 }
@@ -441,10 +435,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                 ArrayList<String> tkpdPaths = new ArrayList<>();
                 for (int i = 0, sizei = paths.size(); i < sizei; i++) {
                     String path = paths.get(i);
-                    String fileNameToMove = FileUtils.generateUniqueFileName();
-                    File photo = FileUtils.writeImageToTkpdPath(
-                            FileUtils.compressImage(path, DEF_WIDTH_CMPR, DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
-                            fileNameToMove);
+                    File photo = FileUtils.writeImageToTkpdPath(path);
                     if (photo != null) {
                         tkpdPaths.add(photo.getAbsolutePath());
 
@@ -546,12 +537,8 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                         case ImageGalleryAlbumFragment.FRAGMENT_TAG:
                         case ImageGalleryFragment.FRAGMENT_TAG:
                             if (imagePathCamera != null) {
-                                Intent intent = new Intent();
                                 if (compressToTkpd) {
-                                    String fileNameToMove = FileUtils.generateUniqueFileName();
-                                    File photo = FileUtils.writeImageToTkpdPath(
-                                            FileUtils.compressImage(imagePathCamera, DEF_WIDTH_CMPR, DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
-                                            fileNameToMove);
+                                    File photo = FileUtils.writeImageToTkpdPath(imagePathCamera);
                                     if (photo != null) {
                                         FileUtils.deleteAllCacheTkpdFile(imagePathCamera);
                                         finishWithSingleImage(photo.getAbsolutePath());

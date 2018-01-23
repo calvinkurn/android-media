@@ -283,6 +283,13 @@ public final class AppScreen {
     public static final String SCREEN_CHANGE_PHONE_NUMBER_WARNING = "Warning";
     public static final String SCREEN_CHANGE_PHONE_NUMBER_INPUT = "Change Number";
 
+    public static class UnifyScreenTracker {
+        public static final String SCREEN_UNIFY_HOME_BERANDA = "/";
+        public static final String SCREEN_UNIFY_HOME_FEED = "/feed";
+        public static final String SCREEN_UNIFY_HOME_SHOP_FAVORIT = "/fav-shop";
+        public static final String SCREEN_UNIFY_HOME_HOTLIST = "/hotlist";
+    }
+
     private AppScreen() {
 
     }
