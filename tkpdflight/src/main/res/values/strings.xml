@@ -301,4 +301,7 @@
     <string name="flight_order_detail_button_label">Order Detail</string>
     <string name="flight_order_failed_button_label">Pesan Ulang</string>
     <string name="flight_invoice_toolbar_title">Invoice</string>
+    <string name="flight_luggage_prefix">Bagasi</string>
+    <string name="flight_meal_prefix">Makanan</string>
+    <string name="flight_birthdate_prefix">Tanggal Lahir</string>
 </resources>

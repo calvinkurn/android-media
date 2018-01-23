@@ -83,27 +83,6 @@ public abstract class FlightOrderBaseViewHolder<T extends Visitable> extends Abs
             makeBold(itemView.getContext(), text);
         }
         return text;
-
-/*        SpannableStringBuilder text = new SpannableStringBuilder();
-        if (TextUtils.isEmpty(airportId)) {
-            // id is more than one
-            if (TextUtils.isEmpty(cityCode)) {
-                text.append(cityName);
-                return makeBold(itemView.getContext(), text);
-            } else {
-                text.append(cityCode);
-            }
-        } else {
-            text.append(airportId);
-        }
-        makeBold(itemView.getContext(), text);
-        if (!TextUtils.isEmpty(cityName)) {
-            SpannableStringBuilder cityNameText = new SpannableStringBuilder(cityName);
-            makeSmall(cityNameText);
-            text.append("\n");
-            text.append(cityNameText);
-        }
-        return text;*/
     }
 
     private SpannableStringBuilder makeSmall(SpannableStringBuilder text) {

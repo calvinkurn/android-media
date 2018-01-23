@@ -101,8 +101,15 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
             getView().getCurrentBookingParamViewModel().setContactEmail(getView().getContactEmail());
             getView().getCurrentBookingParamViewModel().setContactPhone(getView().getContactPhoneNumber());
             FlightBookingReviewModel flightBookingReviewModel =
-                    new FlightBookingReviewModel(getView().getCurrentBookingParamViewModel(),
-                            getView().getCurrentCartPassData(), getView().getDepartureTripId(), getView().getReturnTripId());
+                    new FlightBookingReviewModel(
+                            getView().getCurrentBookingParamViewModel(),
+                            getView().getCurrentCartPassData(),
+                            getView().getDepartureTripId(),
+                            getView().getReturnTripId(),
+                            getView().getString(R.string.flight_luggage_prefix),
+                            getView().getString(R.string.flight_meal_prefix),
+                            getView().getString(R.string.flight_birthdate_prefix)
+                    );
             getView().navigateToReview(flightBookingReviewModel);
         }
     }
@@ -264,7 +271,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                             }
                         })
                 .onBackpressureDrop()
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<FlightBookingCartData>() {
@@ -376,9 +383,9 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
 
     @Override
     public void onGetProfileData() {
-        getView().getProfileObservable()
+        compositeSubscription.add(getView().getProfileObservable()
                 .onBackpressureDrop()
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<ProfileInfo>() {
@@ -410,7 +417,8 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                             }
                         }
                     }
-                });
+                })
+        );
     }
 
     @Override
@@ -420,7 +428,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
 
     @Override
     public void onDestroyView() {
-        if (compositeSubscription != null) {
+        if (compositeSubscription != null && compositeSubscription.hasSubscriptions()) {
             compositeSubscription.unsubscribe();
         }
         detachView();

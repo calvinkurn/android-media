@@ -15,4 +15,5 @@
 
     <color name="card_title_red">#fdebec</color>
     <color name="card_title_green">#f3fef3</color>
+    <color name="widget_card_with_action_bg_dark">#42b549</color>
 </resources>

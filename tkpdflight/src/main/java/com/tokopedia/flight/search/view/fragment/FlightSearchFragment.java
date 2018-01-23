@@ -69,7 +69,7 @@ import javax.inject.Inject;
  */
 
 public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel, FilterSearchAdapterTypeFactory> implements FlightSearchView,
-        FilterSearchAdapterTypeFactory.OnFlightSearchListener{
+        FilterSearchAdapterTypeFactory.OnFlightSearchListener {
 
     public static final String TAG = FlightSearchFragment.class.getSimpleName();
     public static final int MAX_PROGRESS = 100;
@@ -82,6 +82,8 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     private static final String SAVED_STAT_MODEL = "svd_stat_model";
     private static final String SAVED_AIRPORT_COMBINE = "svd_airport_combine";
     private static final String SAVED_PROGRESS = "svd_progress";
+    private static final float DEFAULT_DIMENS_MULTIPLIER = 0.5f;
+    private static final int PADDING_SEARCH_LIST = 60;
     @Inject
     public FlightSearchPresenter flightSearchPresenter;
     protected FlightSearchPassDataViewModel flightSearchPassDataViewModel;
@@ -96,6 +98,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     private SwipeToRefresh swipeToRefresh;
     private boolean needRefreshFromCache;
     private boolean inFilterMode = false;
+
 
     public static FlightSearchFragment newInstance(FlightSearchPassDataViewModel passDataViewModel) {
         Bundle args = new Bundle();
@@ -428,7 +431,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         }
     }
 
-    protected void onSelectedFromDetail(String selectedId){
+    protected void onSelectedFromDetail(String selectedId) {
         onFlightSearchFragmentListener.selectFlight(selectedId);
     }
 
@@ -477,7 +480,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
                     EMPTY_MARGIN,
                     EMPTY_MARGIN,
                     EMPTY_MARGIN,
-                    (int) (scale * 60 + 0.5f)
+                    (int) (scale * PADDING_SEARCH_LIST + DEFAULT_DIMENS_MULTIPLIER)
             );
             getAdapter().addElement(flightSearchViewModelList);
         }

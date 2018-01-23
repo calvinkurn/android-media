@@ -268,15 +268,9 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         if (getView().getPassengerFirstName().isEmpty() || getView().getPassengerFirstName().length() == 0) {
             isValid = false;
             getView().showPassengerNameEmptyError(R.string.flight_booking_passenger_first_name_empty_error);
-        /*} else if (getView().getPassengerFirstName().length() > 48) {
-            isValid = false;
-            getView().showPassengerFirstNameShouldNoMoreThanMaxError(R.string.flight_booking_passenger_first_name_max_error);*/
         } else if (getView().getPassengerFirstName().length() > 0 && !isAlphabetAndSpaceOnly(getView().getPassengerFirstName())) {
             isValid = false;
             getView().showPassengerFirstNameShouldAlphabetAndSpaceOnlyError(R.string.flight_booking_passenger_first_name_alpha_space_error);
-       /* } else if (getView().getPassengerLastName().length() > 48) {
-            isValid = false;
-            getView().showPassengerLastNameShouldNoMoreThanMaxError(R.string.flight_booking_passenger_last_name_max_error);*/
         } else if ((getView().getPassengerFirstName().length() + getView().getPassengerLastName().length()) > 48) {
             isValid = false;
             getView().showPassengerFirstNameShouldNoMoreThanMaxError(R.string.flight_booking_passenger_first_last_name_max_error);

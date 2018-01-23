@@ -14,7 +14,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -22,6 +21,7 @@ import rx.functions.Func1;
  */
 
 public class FlightAirlineDataListSource extends DataListSource<AirlineData, FlightAirlineDB> {
+    private static final String DEFAULT_EMPTY_VALUE = "";
     private FlightAirlineDataListDBSource flightAirlineDataListDBSource;
     private FlightAirlineDataListCloudSource flightAirlineDataListCloudSource;
 
@@ -34,6 +34,10 @@ public class FlightAirlineDataListSource extends DataListSource<AirlineData, Fli
         this.flightAirlineDataListCloudSource = flightAirlineDataListCloudSource;
     }
 
+    public static HashMap<String, Object> generateGetParam(String idToSearch) {
+        return FlightAirlineParamUtil.generateMap(idToSearch);
+    }
+
     public Observable<List<FlightAirlineDB>> getAirlineList(final String idToSearch) {
         final HashMap<String, Object> map = generateGetParam(idToSearch);
         return getDataList(map);
@@ -41,10 +45,6 @@ public class FlightAirlineDataListSource extends DataListSource<AirlineData, Fli
 
     public Observable<List<FlightAirlineDB>> getAirlineList() {
         return getDataList(null);
-    }
-
-    public static HashMap<String, Object> generateGetParam(String idToSearch) {
-        return FlightAirlineParamUtil.generateMap(idToSearch);
     }
 
     public Observable<FlightAirlineDB> getAirline(final String airlineId) {
@@ -84,7 +84,13 @@ public class FlightAirlineDataListSource extends DataListSource<AirlineData, Fli
                 }).onErrorReturn(new Func1<Throwable, FlightAirlineDB>() {
                     @Override
                     public FlightAirlineDB call(Throwable throwable) {
-                        return new FlightAirlineDB(airlineId, "", "", "", 0);
+                        return new FlightAirlineDB(
+                                airlineId,
+                                DEFAULT_EMPTY_VALUE,
+                                DEFAULT_EMPTY_VALUE,
+                                DEFAULT_EMPTY_VALUE,
+                                0
+                        );
                     }
                 });
     }

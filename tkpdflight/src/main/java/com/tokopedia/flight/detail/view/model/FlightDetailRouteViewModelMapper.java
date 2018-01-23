@@ -68,14 +68,8 @@ public class FlightDetailRouteViewModelMapper {
         if (route != null) {
             flightDetailRouteViewModel = new FlightDetailRouteViewModel();
             flightDetailRouteViewModel.setAirlineCode(route.getAirlineId());
-            /*flightDetailRouteViewModel.setAirlineName(route.getAirlineName());
-            flightDetailRouteViewModel.setAirlineLogo(route.getAirlineLogo());*/
-//            flightDetailRouteViewModel.setArrivalAirportCity(route.getArrivalAirportCity());
-//            flightDetailRouteViewModel.setArrivalAirportName(route.getArrivalAirportName());
             flightDetailRouteViewModel.setArrivalTimestamp(route.getArrivalTime());
             flightDetailRouteViewModel.setArrivalAirportCode(route.getArrivalAirportCode());
-//            flightDetailRouteViewModel.setDepartureAirportCity(route.getDepartureAirportCity());
-//            flightDetailRouteViewModel.setDepartureAirportName(route.getDepartureAirportName());
             flightDetailRouteViewModel.setDepartureTimestamp(route.getDepartureTime());
             flightDetailRouteViewModel.setDepartureAirportCode(route.getDepartureAirportCode());
             flightDetailRouteViewModel.setDuration(route.getDuration());
@@ -84,7 +78,6 @@ public class FlightDetailRouteViewModelMapper {
             flightDetailRouteViewModel.setFlightNumber(route.getFlightNumber());
             flightDetailRouteViewModel.setRefundable(route.isRefundable());
             flightDetailRouteViewModel.setInfos(flightDetailRouteInfoViewModelMapper.transform(route.getFreeAmenities()));
-//            flightDetailRouteViewModel.setAmenities(route.getAmenities());
         }
         return flightDetailRouteViewModel;
     }

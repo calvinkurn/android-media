@@ -55,7 +55,7 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
                 if (page == 1) {
                     buildAndRenderFilterList();
                 }
-                getView().renderList(visitables, visitables.size() >= perPage );
+                getView().renderList(visitables, visitables.size() >= perPage);
             }
         });
     }
@@ -84,13 +84,12 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
         filtersMap.add(new SimpleViewModel("650", getView().getString(R.string.flight_order_status_refund_label)));
 
         List<QuickFilterItem> filterItems = new ArrayList<>();
-        int colorInd = 0;
         boolean isAnyItemSelected = false;
         for (SimpleViewModel entry : filtersMap) {
             QuickFilterItem finishFilter = new QuickFilterItem();
             finishFilter.setName(entry.getDescription());
             finishFilter.setType(entry.getLabel());
-            finishFilter.setColorBorder(colorBorder[colorInd]);
+            finishFilter.setColorBorder(R.color.tkpd_main_green);
             if (getView().getSelectedFilter().equalsIgnoreCase(entry.getLabel())) {
                 isAnyItemSelected = true;
                 finishFilter.setSelected(true);
@@ -98,13 +97,9 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
                 finishFilter.setSelected(false);
             }
             filterItems.add(finishFilter);
-            colorInd++;
-            if (colorInd >= colorBorder.length) {
-                colorInd = 0;
-            }
         }
 
-        if (!isAnyItemSelected && filterItems.size()>0){
+        if (!isAnyItemSelected && filterItems.size() > 0) {
             filterItems.get(0).setSelected(true);
         }
 

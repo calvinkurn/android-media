@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.common.constant.FlightUrl;
@@ -192,13 +193,13 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         for (FlightOrderPassengerViewModel flightOrderPassengerViewModel : flightOrder.getPassengerViewModels()) {
             // add to passenger count
             switch (flightOrderPassengerViewModel.getType()) {
-                case 0:
+                case FlightBookingPassenger.ADULT:
                     passengerAdultCount++;
                     break;
-                case 1:
+                case FlightBookingPassenger.CHILDREN:
                     passengerChildCount++;
                     break;
-                case 2:
+                case FlightBookingPassenger.INFANT:
                     passengerInfantCount++;
                     break;
             }

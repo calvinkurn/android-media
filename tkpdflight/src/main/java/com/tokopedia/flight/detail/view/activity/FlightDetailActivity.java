@@ -114,12 +114,12 @@ public class FlightDetailActivity extends BaseTabActivity {
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-
+                // no op
             }
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-
+                // no op
             }
         };
     }

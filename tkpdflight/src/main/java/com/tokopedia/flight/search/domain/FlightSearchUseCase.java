@@ -51,26 +51,10 @@ public class FlightSearchUseCase extends UseCase<List<FlightSearchViewModel>> {
                 if (flightSearchSingleRouteDBs == null) {
                     return Observable.just((List<FlightSearchViewModel>) new ArrayList<FlightSearchViewModel>());
                 }
-//                final List<String> searchResDistinctAirlineIds = new ArrayList<>();
-
-                // convert from List of DBModel to List of ViewModel
                 List<FlightSearchViewModel> flightSearchViewModelList = new ArrayList<>();
                 for (int i = 0, sizei = flightSearchSingleRouteDBs.size(); i < sizei; i++) {
                     flightSearchViewModelList.add(new FlightSearchViewModel(flightSearchSingleRouteDBs.get(i)));
                 }
-
-                /*// select distinct all airline and airports in routes
-                for (int i = 0, sizei = flightSearchViewModelList.size(); i < sizei; i++) {
-                    FlightSearchViewModel flightSearchViewModel = flightSearchViewModelList.get(i);
-                    List<Route> routeList = flightSearchViewModel.getRouteList();
-                    for (int j = 0, sizej = routeList.size(); j < sizej; j++) {
-                        Route route = routeList.get(j);
-                        String airline = route.getAirline();
-                        if (!TextUtils.isEmpty(airline) && !searchResDistinctAirlineIds.contains(airline)) {
-                            searchResDistinctAirlineIds.add(airline);
-                        }
-                    }
-                }*/
 
                 return Observable.from(flightSearchViewModelList)
                         .flatMap(new Func1<FlightSearchViewModel, Observable<FlightSearchViewModel>>() {
@@ -176,16 +160,6 @@ public class FlightSearchUseCase extends UseCase<List<FlightSearchViewModel>> {
                         })
                         .toList();
 
-               /* //get airlines info *from cache first* to merge with the view model
-                return Observable.zip(
-                        flightRepository.getAirportList(""),
-                        flightRepository.getAirlineList(searchResDistinctAirlineIds),
-                        new Func2<List<FlightAirportDB>, List<FlightAirlineDB>, List<FlightSearchViewModel>>() {
-                            @Override
-                            public List<FlightSearchViewModel> call(List<FlightAirportDB> flightAirportDBs, List<FlightAirlineDB> flightAirlineDBs) {
-                                return mergeViewModel(flightSearchViewModelList, flightAirportDBs, flightAirlineDBs);
-                            }
-                        });*/
             }
         });
     }
