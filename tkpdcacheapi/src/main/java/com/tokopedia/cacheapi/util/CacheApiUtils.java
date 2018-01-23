@@ -1,5 +1,8 @@
 package com.tokopedia.cacheapi.util;
 
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.text.TextUtils;
 
 import com.tokopedia.cacheapi.constant.HTTPMethodDef;
@@ -203,5 +206,16 @@ public class CacheApiUtils {
         } else {
             return input;
         }
+    }
+
+    public static String getVersionCode(Context context) {
+        String versionName = "";
+        try {
+            PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            versionName = pInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return versionName;
     }
 }

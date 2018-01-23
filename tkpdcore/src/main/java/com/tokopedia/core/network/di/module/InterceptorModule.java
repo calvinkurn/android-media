@@ -1,14 +1,13 @@
 package com.tokopedia.core.network.di.module;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.cacheapi.interceptor.ApiCacheInterceptor;
 import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.di.scope.ApplicationScope;
-import com.tokopedia.core.cache.interceptor.ApiCacheInterceptor;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.retrofit.interceptors.BearerInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
@@ -27,7 +26,6 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 
 import javax.inject.Named;
-import javax.inject.Qualifier;
 
 import dagger.Module;
 import dagger.Provides;
@@ -42,8 +40,8 @@ public class InterceptorModule {
 
     @ApplicationScope
     @Provides
-    public ApiCacheInterceptor provideApiCacheInterceptor() {
-        return new ApiCacheInterceptor();
+    public ApiCacheInterceptor provideApiCacheInterceptor(@ApplicationContext Context context) {
+        return new ApiCacheInterceptor(context);
     }
 
     @ApplicationScope

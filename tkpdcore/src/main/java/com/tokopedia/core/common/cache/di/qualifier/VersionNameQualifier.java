@@ -1,4 +1,4 @@
-package com.tokopedia.cacheapi.di.qualifier;
+package com.tokopedia.core.common.cache.di.qualifier;
 
 import javax.inject.Qualifier;
 

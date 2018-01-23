@@ -6,6 +6,12 @@ import com.google.gson.Gson;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.image.ImageHandler;
+import com.tokopedia.cacheapi.data.source.ApiCacheDataSource;
+import com.tokopedia.cacheapi.data.source.db.CacheApiDataManager;
+import com.tokopedia.cacheapi.domain.ApiCacheRepository;
+import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
+import com.tokopedia.cacheapi.domain.interactor.CacheApiDataDeleteUseCase;
+import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TActivity;
@@ -15,13 +21,7 @@ import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.di.scope.ApplicationScope;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.cache.data.source.ApiCacheDataSource;
-import com.tokopedia.core.cache.data.source.db.CacheApiDataManager;
-import com.tokopedia.core.cache.di.module.CacheModule;
-import com.tokopedia.core.cache.di.qualifier.ApiCacheQualifier;
-import com.tokopedia.core.cache.domain.ApiCacheRepository;
-import com.tokopedia.core.cache.domain.interactor.CacheApiClearAllUseCase;
-import com.tokopedia.core.cache.domain.interactor.CacheApiWhiteListUseCase;
+import com.tokopedia.core.common.cache.di.module.CacheModule;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.core.OkHttpRetryPolicy;
 import com.tokopedia.core.network.di.qualifier.AceQualifier;
@@ -137,18 +137,17 @@ public interface AppComponent {
 
     ImageHandler imageHandler();
 
-    @ApiCacheQualifier
-    LocalCacheHandler localCacheHandler();
-
     CacheApiDataManager cacheApiDataManager();
 
     ApiCacheRepository apiCacheRepository();
 
-    CacheApiWhiteListUseCase cacheApiWhiteListUseCase();
-
     ApiCacheDataSource apiCacheDataSource();
 
+    CacheApiWhiteListUseCase cacheApiWhiteListUseCase();
+
     CacheApiClearAllUseCase cacheApiClearAllUseCase();
+
+    CacheApiDataDeleteUseCase cacheApiDataDeleteUseCase();
 
     BearerInterceptor bearerInterceptor();
 

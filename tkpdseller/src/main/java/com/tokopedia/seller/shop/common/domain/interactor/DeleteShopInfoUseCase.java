@@ -1,11 +1,10 @@
 package com.tokopedia.seller.shop.common.domain.interactor;
 
+import com.tokopedia.cacheapi.domain.interactor.CacheApiDataDeleteUseCase;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.cache.domain.interactor.CacheApiDataDeleteUseCase;
-import com.tokopedia.core.cache.domain.model.CacheApiDataDomain;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 
 import javax.inject.Inject;
@@ -28,7 +27,7 @@ public class DeleteShopInfoUseCase extends UseCase<Boolean> {
 
     @Override
     public Observable<Boolean> createObservable(RequestParams requestParams) {
-        RequestParams newRequestParams = CacheApiDataDeleteUseCase.createParams(TkpdBaseURL.BASE_DOMAIN,
+        com.tokopedia.usecase.RequestParams newRequestParams = CacheApiDataDeleteUseCase.createParams(TkpdBaseURL.BASE_DOMAIN,
                 TkpdBaseURL.Shop.PATH_SHOP + TkpdBaseURL.Shop.PATH_GET_SHOP_INFO);
         return cacheApiDataDeleteUseCase.createObservable(newRequestParams);
     }

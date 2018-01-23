@@ -1,6 +1,6 @@
 package com.tokopedia.sellerapp.utils;
 
-import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
+import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.seller.product.common.utils.ProductWhiteList;
 import com.tokopedia.seller.shop.common.utils.ShopWhiteList;

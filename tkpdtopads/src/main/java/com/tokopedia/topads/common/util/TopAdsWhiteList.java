@@ -1,8 +1,7 @@
 package com.tokopedia.topads.common.util;
 
-import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
+import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.seller.product.variant.data.cloud.api.TomeApi;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 
 import java.util.ArrayList;

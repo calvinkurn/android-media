@@ -35,12 +35,18 @@ import okhttp3.ResponseBody;
 public class ApiCacheInterceptor implements Interceptor {
 
     private Context context;
-    private String versionName;
     private ResponseValidator responseValidator;
 
-    public ApiCacheInterceptor(Context context, String versionName, ResponseValidator responseValidator) {
+    public void setResponseValidator(ResponseValidator responseValidator) {
+        this.responseValidator = responseValidator;
+    }
+
+    public ApiCacheInterceptor(Context context) {
+        this(context, null);
+    }
+
+    public ApiCacheInterceptor(Context context, ResponseValidator responseValidator) {
         this.context = context;
-        this.versionName = versionName;
         this.responseValidator = responseValidator;
     }
 
@@ -60,6 +66,7 @@ public class ApiCacheInterceptor implements Interceptor {
     private Response getCacheResponse(Chain chain) throws Throwable {
         Request request = chain.request();
 
+        String versionName = CacheApiUtils.getVersionCode(context);
         ApiCacheRepository apiCacheRepository = new ApiCacheRepositoryImpl(new ApiCacheDataSource(
                 new CacheApiVersionCache(context, versionName), new CacheApiDataManager())
         );
