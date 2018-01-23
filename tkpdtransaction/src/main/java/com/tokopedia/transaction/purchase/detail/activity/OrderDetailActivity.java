@@ -12,6 +12,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -31,6 +32,7 @@ import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.bottomsheet.BottomSheetCallAction;
+import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.purchase.detail.adapter.OrderItemAdapter;
 import com.tokopedia.transaction.purchase.detail.customview.OrderDetailButtonLayout;
@@ -116,7 +118,7 @@ public class OrderDetailActivity extends TActivity
         setDescriptionView(data);
         setPriceView(data);
         setButtonView(data);
-
+        setPickupPointView(data);
     }
 
     private void setStatusView(OrderDetailData data) {
@@ -295,6 +297,32 @@ public class OrderDetailActivity extends TActivity
             responseTime.setBackgroundResource(R.drawable.dark_blue_rounded_label);
             GradientDrawable drawableBorder = (GradientDrawable) responseTime.getBackground().getCurrent().mutate();
             drawableBorder.setColor(Color.parseColor(data.getDeadlineColorString()));
+        }
+    }
+
+    private void setPickupPointView(OrderDetailData data) {
+        LinearLayout layoutPickupPointPinCode = findViewById(R.id.layout_pickup_point_pin_code);
+        if (data.getPickupPinCode() != null) {
+            ImageButton btPinCodeInfo = findViewById(R.id.bt_pin_code_info);
+            TextView tvPinCode = findViewById(R.id.tv_pin_code);
+            tvPinCode.setText(data.getPickupPinCode());
+            btPinCodeInfo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    BottomSheetView bottomSheetView = new BottomSheetView(OrderDetailActivity.this);
+                    bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
+                            .BottomSheetFieldBuilder()
+                            .setTitle(getString(R.string.title_bottomsheet_pin_code_pickup_booth))
+                            .setBody(getString(R.string.message_bottomsheet_pin_code_pickup_booth))
+                            .setImg(R.drawable.ic_pickup_point_pin_code)
+                            .build());
+
+                    bottomSheetView.show();
+                }
+            });
+            layoutPickupPointPinCode.setVisibility(View.VISIBLE);
+        } else {
+            layoutPickupPointPinCode.setVisibility(View.GONE);
         }
     }
 
