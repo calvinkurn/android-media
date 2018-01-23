@@ -15,7 +15,8 @@ import com.tokopedia.cacheapi.domain.interactor.ClearTimeOutCache;
 import com.tokopedia.cacheapi.domain.interactor.GetCacheDataUseCaseUseCase;
 import com.tokopedia.cacheapi.domain.interactor.SaveToDbUseCase;
 import com.tokopedia.cacheapi.util.CacheApiUtils;
-import com.tokopedia.cacheapi.util.CommonUtils;
+import com.tokopedia.cacheapi.util.LoggingUtils;
+import com.tokopedia.cacheapi.util.ResponseValidator;
 import com.tokopedia.usecase.RequestParams;
 
 import java.io.IOException;
@@ -35,10 +36,12 @@ public class ApiCacheInterceptor implements Interceptor {
 
     private Context context;
     private String versionName;
+    private ResponseValidator responseValidator;
 
-    public ApiCacheInterceptor(Context context, String versionName) {
+    public ApiCacheInterceptor(Context context, String versionName, ResponseValidator responseValidator) {
         this.context = context;
         this.versionName = versionName;
+        this.responseValidator = responseValidator;
     }
 
     @Override
@@ -76,25 +79,25 @@ public class ApiCacheInterceptor implements Interceptor {
         boolean inWhiteList = checkWhiteListUseCase.getData(requestParams);
 
         if (!inWhiteList) {
-            CommonUtils.dumper(String.format("Not registered in white list: %s", request.url().toString()));
+            LoggingUtils.dumper(String.format("Not registered in white list: %s", request.url().toString()));
             throw new Exception("Not registered in white list");
         }
         requestParams.putString(BaseApiCacheInterceptorUseCase.PARAM_REQUEST_PARAM, CacheApiUtils.getRequestParam(request));
         String cachedResponseData = getCacheDataUseCase.getData(requestParams);
+        Response originalResponse = getDefaultResponse(chain);
         if (TextUtils.isEmpty(cachedResponseData)) {
-            CommonUtils.dumper(String.format("Data is not here, fetch and save: %s", request.url().toString()));
-            Response response = getDefaultResponse(chain);
-            if (CacheApiUtils.isResponseValidToBeCached(response)) {
-                requestParams.putObject(SaveToDbUseCase.RESPONSE, response);
+            LoggingUtils.dumper(String.format("Data is not here, fetch and save: %s", request.url().toString()));
+            if (responseValidator == null || responseValidator.isResponseValidToBeCached(originalResponse)) {
+                requestParams.putObject(SaveToDbUseCase.RESPONSE, originalResponse);
                 saveToDbUseCase.executeSync(requestParams);
             }
-            return response;
+            return originalResponse;
         } else {
-            CommonUtils.dumper(String.format("Data exist, return data from db: %s", request.url().toString()));
+            LoggingUtils.dumper(String.format("Data exist, return data from db: %s", request.url().toString()));
             Response.Builder builder = new Response.Builder();
             builder.request(request);
-            builder.protocol(Protocol.HTTP_1_1);
-            builder.code(CacheApiConstant.CODE_OK);
+            builder.protocol(originalResponse.protocol());
+            builder.code(originalResponse.code());
             builder.message("");
             builder.body(ResponseBody.create(MediaType.parse(CacheApiConstant.TYPE_APPLICATION_JSON), cachedResponseData));
             return builder.build();

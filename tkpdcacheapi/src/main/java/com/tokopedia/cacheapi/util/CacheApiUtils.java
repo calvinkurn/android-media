@@ -2,12 +2,7 @@ package com.tokopedia.cacheapi.util;
 
 import android.text.TextUtils;
 
-import com.google.gson.Gson;
-import com.tokopedia.cacheapi.constant.CacheApiConstant;
 import com.tokopedia.cacheapi.constant.HTTPMethodDef;
-import com.tokopedia.core.network.retrofit.response.BaseResponseError;
-import com.tokopedia.core.network.retrofit.response.TkpdV4ResponseError;
-import com.tokopedia.core.network.retrofit.response.TopAdsResponseError;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -19,7 +14,6 @@ import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
-import okhttp3.internal.http.HttpHeaders;
 import okio.Buffer;
 import okio.BufferedSource;
 import okio.GzipSource;
@@ -124,36 +118,6 @@ public class CacheApiUtils {
     }
 
     /**
-     * Check if response is valid to be cached or not
-     *
-     * @param response
-     * @return
-     */
-    public static boolean isResponseValidToBeCached(Response response) {
-        if (response.code() != CacheApiConstant.CODE_OK) {
-            return false;
-        }
-        if (isStatusOkAndResponseError(response, TkpdV4ResponseError.class)) {
-            return false;
-        }
-        if (isStatusOkAndResponseError(response, TopAdsResponseError.class)) {
-            return false;
-        }
-        return true;
-    }
-
-    private static boolean isStatusOkAndResponseError(Response response, Class<? extends BaseResponseError> responseErrorClass) {
-        try {
-            Gson gson = new Gson();
-            ResponseBody responseBody = response.peekBody(BYTE_COUNT);
-            BaseResponseError responseError = gson.fromJson(responseBody.string(), responseErrorClass);
-            return responseError.isResponseErrorValid();
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    /**
      * Get response body from response object
      *
      * @param response
@@ -162,18 +126,16 @@ public class CacheApiUtils {
     public static String getResponseBody(Response response) {
         try {
             ResponseBody responseBody = response.body();
-            if (HttpHeaders.hasBody(response)) {
-                BufferedSource source = getNativeSource(response);
-                source.request(Long.MAX_VALUE);
-                Buffer buffer = source.buffer();
-                Charset charset = UTF8;
-                MediaType contentType = responseBody.contentType();
-                if (contentType != null) {
-                    charset = contentType.charset(UTF8);
-                }
-                if (isPlaintext(buffer)) {
-                    return readFromBuffer(buffer.clone(), charset);
-                }
+            BufferedSource source = getNativeSource(response);
+            source.request(Long.MAX_VALUE);
+            Buffer buffer = source.buffer();
+            Charset charset = UTF8;
+            MediaType contentType = responseBody.contentType();
+            if (contentType != null) {
+                charset = contentType.charset(UTF8);
+            }
+            if (isPlaintext(buffer)) {
+                return readFromBuffer(buffer.clone(), charset);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -223,7 +185,7 @@ public class CacheApiUtils {
             if (source.buffer().size() < DEFAULT_MAX_CONTENT_LENGTH) {
                 return getNativeSource(source, true);
             } else {
-                CommonUtils.dumper("gzip encoded response was too long");
+                LoggingUtils.dumper("gzip encoded response was too long");
             }
         }
         return response.body().source();

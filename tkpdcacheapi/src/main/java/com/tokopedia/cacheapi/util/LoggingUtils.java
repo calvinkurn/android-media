@@ -2,7 +2,7 @@ package com.tokopedia.cacheapi.util;
 
 import android.util.Log;
 
-public class CommonUtils {
+public class LoggingUtils {
 
     public static void dumper(String str) {
         if (true) {

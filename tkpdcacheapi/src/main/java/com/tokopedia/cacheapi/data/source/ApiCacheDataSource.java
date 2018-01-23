@@ -4,7 +4,7 @@ import com.tokopedia.cacheapi.data.source.cache.CacheApiVersionCache;
 import com.tokopedia.cacheapi.data.source.db.CacheApiDataManager;
 import com.tokopedia.cacheapi.data.source.db.CacheApiWhitelist;
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
-import com.tokopedia.cacheapi.util.CommonUtils;
+import com.tokopedia.cacheapi.util.LoggingUtils;
 
 import java.util.Collection;
 
@@ -31,14 +31,14 @@ public class ApiCacheDataSource {
         return cacheApiVersionCache.isWhiteListVersionUpdated().flatMap(new Func1<Boolean, Observable<Boolean>>() {
             @Override
             public Observable<Boolean> call(Boolean aBoolean) {
-                CommonUtils.dumper(String.format("Need to update white list: %b", aBoolean));
+                LoggingUtils.dumper(String.format("Need to update white list: %b", aBoolean));
                 if (!aBoolean) {
                     return Observable.just(false);
                 }
                 return Observable.zip(deleteAllCacheData(), cacheApiDataManager.deleteAllWhiteListData(), new Func2<Boolean, Boolean, Boolean>() {
                     @Override
                     public Boolean call(Boolean aBoolean, Boolean aBoolean2) {
-                        CommonUtils.dumper(String.format("Delete white list and cache finished"));
+                        LoggingUtils.dumper(String.format("Delete white list and cache finished"));
                         return true;
                     }
                 }).flatMap(new Func1<Boolean, Observable<Boolean>>() {

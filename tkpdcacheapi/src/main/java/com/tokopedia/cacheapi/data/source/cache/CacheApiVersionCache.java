@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
-import com.tokopedia.cacheapi.util.CommonUtils;
+import com.tokopedia.cacheapi.util.LoggingUtils;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -31,7 +31,7 @@ public class CacheApiVersionCache {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
                 String storedVersionName = sharedPreferences.getString(CACHE_API_VERSION, null);
-                CommonUtils.dumper(String.format("Current vs local version: %s - %s", storedVersionName, versionName));
+                LoggingUtils.dumper(String.format("Current vs local version: %s - %s", storedVersionName, versionName));
                 // Fresh install or different version
                 boolean whiteListVersionUpdated = TextUtils.isEmpty(storedVersionName) || !storedVersionName.equals(versionName);
                 subscriber.onNext(whiteListVersionUpdated);

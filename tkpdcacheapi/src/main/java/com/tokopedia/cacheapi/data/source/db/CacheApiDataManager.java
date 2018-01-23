@@ -8,7 +8,7 @@ import com.raizlabs.android.dbflow.sql.language.Where;
 import com.tokopedia.cacheapi.domain.mapper.CacheApiWhiteListMapper;
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.cacheapi.util.CacheApiUtils;
-import com.tokopedia.cacheapi.util.CommonUtils;
+import com.tokopedia.cacheapi.util.LoggingUtils;
 import com.tokopedia.cacheapi.util.EncoderDecoder;
 
 import java.util.Collection;
@@ -58,10 +58,10 @@ public class CacheApiDataManager {
         return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
-                CommonUtils.dumper(String.format("Inserting White List"));
+                LoggingUtils.dumper(String.format("Inserting White List"));
                 for (CacheApiWhiteListDomain cacheApiWhiteListDomain : cacheApiDatas) {
                     CacheApiWhitelist whiteList = CacheApiWhiteListMapper.from(cacheApiWhiteListDomain);
-                    CommonUtils.dumper(String.format("Insert white list: %s - %s", whiteList.getHost(), whiteList.getPath()));
+                    LoggingUtils.dumper(String.format("Insert white list: %s - %s", whiteList.getHost(), whiteList.getPath()));
                     whiteList.save();
                 }
                 subscriber.onNext(true);
@@ -88,7 +88,7 @@ public class CacheApiDataManager {
                         .where(CacheApiData_Table.host.eq(host))
                         .and(CacheApiData_Table.path.eq(path))
                         .and(CacheApiData_Table.request_param.eq(getEncrypted(param)));
-                CommonUtils.dumper("CachedData : " + selection.toString());
+                LoggingUtils.dumper("CachedData : " + selection.toString());
                 CacheApiData cacheApiData = selection.querySingle();
                 String cachedResponseBody = null;
                 if (cacheApiData != null) {
