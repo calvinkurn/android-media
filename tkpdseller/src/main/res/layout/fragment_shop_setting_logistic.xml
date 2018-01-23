@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/vg_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -56,6 +57,8 @@
                 android:layout_marginRight="@dimen/margin_sm"
                 android:layout_marginTop="@dimen/margin_ms"
                 android:gravity="center"
+                android:visibility="gone"
+                tools:visibility="visible"
                 android:text="@string/openshop_make_sure_pickup_location"
                 android:textAlignment="center" />
 

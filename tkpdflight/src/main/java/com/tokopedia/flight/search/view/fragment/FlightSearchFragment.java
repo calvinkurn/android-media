@@ -205,6 +205,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
     protected void setUpSwipeRefresh(View view) {
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
+        swipeToRefresh.setSwipeDistance();
         swipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
