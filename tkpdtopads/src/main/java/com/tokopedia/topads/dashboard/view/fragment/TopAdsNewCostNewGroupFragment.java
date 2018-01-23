@@ -63,7 +63,7 @@ public class TopAdsNewCostNewGroupFragment extends TopAdsNewCostFragment<TopAdsC
 
     @Override
     protected void onClickedNext() {
-        if (!isError()) {
+        if (!isPriceError()) {
             super.onClickedNext();
             if (stepperListener != null) {
                 trackingNewCostTopads();

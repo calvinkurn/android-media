@@ -73,7 +73,7 @@ public class TopAdsNewCostWithoutGroupFragment extends TopAdsNewCostFragment<Top
 
     @Override
     protected void onClickedNext() {
-        if (!isError()) {
+        if (!isPriceError()) {
             super.onClickedNext();
             if (stepperModel == null) {
                 stepperModel = new TopAdsCreatePromoWithoutGroupModel();
