@@ -7,8 +7,11 @@ import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.ride.bookingride.domain.model.NearbyRides;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
+import com.tokopedia.ride.common.place.data.entity.NearbyRoads;
 import com.tokopedia.ride.common.place.domain.model.OverviewPolyline;
+import com.tokopedia.ride.common.ride.domain.model.Location;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,6 +50,8 @@ public interface RideHomeMapContract {
 
         void renderTripPolyline(List<OverviewPolyline> overviewPolylines);
 
+        void renderNearbyCabs(NearbyRoads nearbyRoads);
+
         void setSourceLocation(PlacePassViewModel location);
 
         void hideMarkerCenter();
@@ -75,6 +80,8 @@ public interface RideHomeMapContract {
 
         void getOverviewPolyline(double sourceLat, double sourceLng,
                                  double destinationLat, double destinationLng);
+
+        void getNearbyRoadsData(ArrayList<Location> locationArrayList);
 
         void actionMyLocation();
 

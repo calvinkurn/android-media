@@ -2,6 +2,7 @@ package com.tokopedia.ride.common.place.domain;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.ride.common.place.data.entity.DistanceMatrixEntity;
+import com.tokopedia.ride.common.place.data.entity.NearbyRoads;
 import com.tokopedia.ride.common.place.data.entity.ReverseGeoCodeAddress;
 import com.tokopedia.ride.common.place.domain.model.OverviewPolyline;
 
@@ -19,5 +20,7 @@ public interface PlaceRepository {
     Observable<DistanceMatrixEntity> getDistanceMatrix(TKPDMapParam<String, Object> param);
 
     Observable<ReverseGeoCodeAddress> getAddressFromGoogleAPI(String key, String address);
+
+    Observable<NearbyRoads> getNearByRoadsFromGoogleAPI(String points, String key);
 
 }

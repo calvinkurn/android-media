@@ -17,6 +17,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -56,12 +57,14 @@ import com.tokopedia.ride.bookingride.view.activity.GooglePlacePickerActivity;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.animator.RouteMapAnimator;
 import com.tokopedia.ride.common.configuration.MapConfiguration;
+import com.tokopedia.ride.common.place.data.entity.NearbyRoads;
 import com.tokopedia.ride.common.place.domain.model.OverviewPolyline;
 import com.tokopedia.ride.common.ride.di.RideComponent;
 import com.tokopedia.ride.common.ride.domain.model.Location;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import javax.inject.Inject;
 
@@ -125,6 +128,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     private OnFragmentInteractionListener interactionListener;
     private int toolBarHeightinPx;
     private ArrayList<Marker> rideMarkerList = new ArrayList<>();
+    private ArrayList<Marker> nearbyMarkerList = new ArrayList<>();
 
     public interface OnFragmentInteractionListener {
         void onSourceAndDestinationChanged(PlacePassViewModel source, PlacePassViewModel destination);
@@ -349,6 +353,13 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         }
     }
 
+    private void displayNearByCabs(Double lat, Double lng) {
+
+        ArrayList<Location> locationArrayList = getRandomLocations(lat, lng);
+
+        presenter.getNearbyRoadsData(locationArrayList);
+    }
+
     @Override
     public void onMapDragStarted() {
         //set source as go to pin
@@ -379,11 +390,16 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         if (googleMap == null) return;
         //set address based on current address and refresh the product list
         //add validation if user already pick destination
+        double latitude = googleMap.getCameraPosition().target.latitude;
+        double longitude = googleMap.getCameraPosition().target.longitude;
+
         if (!isAlreadySelectDestination) {
-            double latitude = googleMap.getCameraPosition().target.latitude;
-            double longitude = googleMap.getCameraPosition().target.longitude;
+
             presenter.actionMapDragStopped(latitude, longitude);
+
+
         }
+        displayNearByCabs(latitude, longitude);
         //animate marker to lift down
         /*
         AccelerateDecelerateInterpolator interpolator = new AccelerateDecelerateInterpolator();
@@ -499,6 +515,8 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     public void moveMapToLocation(double latitude, double longitude) {
         if (googleMap != null) {
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), SELECT_SOURCE_MAP_ZOOM));
+
+            displayNearByCabs(latitude, longitude);
         }
     }
 
@@ -685,11 +703,64 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         );
     }
 
+    @Override
+    public void renderNearbyCabs(NearbyRoads nearbyRoads) {
+
+        if (!nearbyMarkerList.isEmpty()) {
+            for (Marker marker : nearbyMarkerList) {
+                marker.remove();
+            }
+        }
+
+        nearbyMarkerList.clear();
+
+        for (NearbyRoads.SnappedPoints snappedPoints : nearbyRoads.getSnappedPointsArrayList()) {
+            Marker marker = googleMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(snappedPoints.getLocation().getLatitude(), snappedPoints.getLocation().getLongitude()))
+                    .icon(getMarkerIcon(R.drawable.car_map_icon)));
+
+            nearbyMarkerList.add(marker);
+        }
+    }
+
     public BitmapDescriptor getMarkerIcon(int resourceId) {
         Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), resourceId);
         Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, getResources().getDimensionPixelSize(R.dimen.marker_width), getResources().getDimensionPixelSize(R.dimen.marker_height), false);
         return BitmapDescriptorFactory.fromBitmap(resizedBitmap);
     }
+
+    public ArrayList<Location> getRandomLocations(double x0, double y0) {
+
+        ArrayList<Location> randomLocations = new ArrayList<>();
+
+        Random random = new Random();
+
+        // Convert radius from meters to degrees
+        double radiusInDegrees = 2222700 / 111000f;
+
+        Log.e("Radius in degree", String.valueOf(radiusInDegrees));
+
+        for (int i = 0; i < 5; i++) {
+            double u = random.nextDouble();
+            double v = random.nextDouble();
+            double w = radiusInDegrees * Math.sqrt(u);
+            double t = 2 * Math.PI * v;
+            double x = w * Math.cos(t);
+            double y = w * Math.sin(t);
+
+            // Adjust the x-coordinate for the shrinking of the east-west distances
+            double new_x = x / Math.cos(Math.toRadians(y0));
+            double foundLongitude = new_x + x0;
+            double foundLatitude = y + y0;
+
+            Location location = new Location();
+            location.setLatitude(foundLatitude);
+            location.setLongitude(foundLongitude);
+            randomLocations.add(location);
+        }
+        return randomLocations;
+    }
+
 
     @OnClick(R2.id.iv_my_location_button)
     public void actionMyLocationButtonClicked() {

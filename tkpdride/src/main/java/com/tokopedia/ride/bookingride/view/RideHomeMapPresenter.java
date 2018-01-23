@@ -34,12 +34,14 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.domain.GetLocationAddressUseCase;
+import com.tokopedia.ride.bookingride.domain.GetNearbyRoadsUseCase;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
 import com.tokopedia.ride.bookingride.domain.GetPeopleAddressesUseCase;
 import com.tokopedia.ride.bookingride.domain.GetUserAddressUseCase;
 import com.tokopedia.ride.bookingride.view.fragment.RideHomeMapFragment;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.configuration.MapConfiguration;
+import com.tokopedia.ride.common.place.data.entity.NearbyRoads;
 import com.tokopedia.ride.common.place.data.entity.ReverseGeoCodeAddress;
 import com.tokopedia.ride.common.place.domain.model.OverviewPolyline;
 import com.tokopedia.ride.common.ride.domain.model.RideAddress;
@@ -47,6 +49,7 @@ import com.tokopedia.ride.common.ride.utils.GoogleAPIClientObservable;
 import com.tokopedia.ride.common.ride.utils.PendingResultObservable;
 import com.tokopedia.ride.common.ride.utils.RideUtils;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -72,6 +75,7 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
     private LocationRequest mLocationRequest;
     private final GetOverviewPolylineUseCase getOverviewPolylineUseCase;
     private GetUserAddressUseCase getUserAddressUseCase;
+    private GetNearbyRoadsUseCase getNearbyRoadsUseCase;
     private boolean isMapDragging = false;
     private Location mCurrentLocation;
     private boolean mRenderProductListBasedOnLocationUpdates;
@@ -82,10 +86,11 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
 
 
     @Inject
-    public RideHomeMapPresenter(GetOverviewPolylineUseCase getOverviewPolylineUseCase, GetUserAddressUseCase getUserAddressUseCase, GetLocationAddressUseCase getLocationAddressUseCase) {
+    public RideHomeMapPresenter(GetOverviewPolylineUseCase getOverviewPolylineUseCase, GetUserAddressUseCase getUserAddressUseCase, GetNearbyRoadsUseCase getNearbyRoadsUseCase, GetLocationAddressUseCase getLocationAddressUseCase) {
         this.getOverviewPolylineUseCase = getOverviewPolylineUseCase;
         this.getUserAddressUseCase = getUserAddressUseCase;
         this.getLocationAddressUseCase = getLocationAddressUseCase;
+        this.getNearbyRoadsUseCase = getNearbyRoadsUseCase;
     }
 
     @Override
@@ -373,6 +378,37 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
             public void onNext(List<OverviewPolyline> overviewPolylines) {
                 if (isViewAttached() && !isUnsubscribed() && getView().isAlreadySelectDestination()) {
                     getView().renderTripPolyline(overviewPolylines);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void getNearbyRoadsData(ArrayList<com.tokopedia.ride.common.ride.domain.model.Location> locationArrayList) {
+        if (getView() == null || getView().getActivity() == null) {
+            return;
+        }
+
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject("Coordinates", locationArrayList);
+
+        requestParams.putString(GetNearbyRoadsUseCase.PARAM_KEY, "AIzaSyCRkgwGBe8ZxjcK07Cnl3Auf72BpgA6lLo");
+
+        getNearbyRoadsUseCase.execute(requestParams, new Subscriber<NearbyRoads>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(NearbyRoads nearbyRoads) {
+                if (isViewAttached() && !isUnsubscribed()) {
+                    getView().renderNearbyCabs(nearbyRoads);
                 }
             }
         });
