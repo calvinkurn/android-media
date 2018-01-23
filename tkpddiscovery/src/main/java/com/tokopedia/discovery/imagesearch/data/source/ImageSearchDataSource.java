@@ -1,22 +1,9 @@
 package com.tokopedia.discovery.imagesearch.data.source;
 
-import android.util.Base64;
-
-import com.aliyuncs.DefaultAcsClient;
-import com.aliyuncs.http.FormatType;
-import com.aliyuncs.http.HttpResponse;
-import com.aliyuncs.profile.DefaultProfile;
-import com.aliyuncs.profile.IClientProfile;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
-import com.tokopedia.core.network.entity.discovery.ImageSearchResponse;
-import com.tokopedia.discovery.imagesearch.data.mapper.ImageSearchResultMapper;
-import com.tokopedia.discovery.imagesearch.domain.model.ImageSearchResultModel;
-import com.tokopedia.discovery.imagesearch.domain.usecase.RoaSearchRequest;
-
-import java.lang.reflect.Type;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.discovery.newdiscovery.data.mapper.ProductMapper;
+import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
 
 import rx.Observable;
 
@@ -26,21 +13,18 @@ import rx.Observable;
 
 public class ImageSearchDataSource {
 
-    private final ImageSearchResultMapper imageSearchResultMapper;
+    private final ProductMapper productMapper;
+    private final BrowseApi searchApi;
 
-    public ImageSearchDataSource(ImageSearchResultMapper imageSearchResultMapper) {
-        this.imageSearchResultMapper = imageSearchResultMapper;
+    public ImageSearchDataSource(ProductMapper productMapper, BrowseApi browseApi) {
+        this.productMapper = productMapper;
+        this.searchApi = browseApi;
     }
 
 
-    public Observable<ImageSearchResultModel> getImageSearch(RequestParams param) {
+    public Observable<SearchResultModel> getImageSearch(TKPDMapParam<String, Object> param) {
 
-        // TODO: 1/17/18 Get Results from SDK and
+        return searchApi.browseProductsV3(param).map(productMapper);
 
-
-        /*SearchImageAsyncTask searchImageAsyncTask = new SearchImageAsyncTask(this);
-            searchImageAsyncTask.execute(byteArray);*/
-
-        return null;
     }
 }

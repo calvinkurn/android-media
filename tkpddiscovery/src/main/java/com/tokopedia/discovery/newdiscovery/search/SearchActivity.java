@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -43,8 +42,8 @@ import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRAS_SEA
 public class SearchActivity extends DiscoveryActivity
         implements SearchContract.View, RedirectionListener {
 
-    public static final int TAB_THIRD_POSITION= 2;
-    public static final int TAB_SECOND_POSITION= 1;
+    public static final int TAB_THIRD_POSITION = 2;
+    public static final int TAB_SECOND_POSITION = 1;
     public static final int TAB_PRODUCT = 0;
 
     private static final String EXTRA_PRODUCT_VIEW_MODEL = "PRODUCT_VIEW_MODEL";
@@ -65,6 +64,7 @@ public class SearchActivity extends DiscoveryActivity
     SearchPresenter searchPresenter;
 
     private SearchComponent searchComponent;
+    private boolean forImageSearch;
 
     public SearchComponent getSearchComponent() {
         return searchComponent;
@@ -111,7 +111,7 @@ public class SearchActivity extends DiscoveryActivity
         boolean forceSwipeToShop;
         String searchQuery = getIntent().getStringExtra(BrowseProductRouter.EXTRAS_SEARCH_TERM);
 
-        if(savedInstanceState!=null){
+        if (savedInstanceState != null) {
             forceSwipeToShop = isForceSwipeToShop();
         } else {
             forceSwipeToShop = getIntent().getBooleanExtra(EXTRA_FORCE_SWIPE_TO_SHOP, false);
@@ -119,7 +119,13 @@ public class SearchActivity extends DiscoveryActivity
         if (productViewModel != null) {
             setLastQuerySearchView(productViewModel.getQuery());
             loadSection(productViewModel, forceSwipeToShop);
-            setToolbarTitle(productViewModel.getQuery());
+
+            forImageSearch = productViewModel.isImageSearch();
+
+            if (!forImageSearch)
+                setToolbarTitle(productViewModel.getQuery());
+            else
+                setToolbarTitle("Image Search");
         } else if (!TextUtils.isEmpty(searchQuery)) {
             onProductQuerySubmit(searchQuery);
         } else {
@@ -165,13 +171,11 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     private void setActiveTab(final boolean swipeToShop) {
-        viewPager.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener()
-        {
+        viewPager.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
-            public void onGlobalLayout()
-            {
+            public void onGlobalLayout() {
                 viewPager.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                if(swipeToShop){
+                if (swipeToShop) {
                     viewPager.setCurrentItem(getShopTabPosition());
                 } else {
                     viewPager.setCurrentItem(getActiveTabPosition());
@@ -215,6 +219,14 @@ public class SearchActivity extends DiscoveryActivity
 
             }
         });
+    }
+
+    public boolean isForImageSearch() {
+        return forImageSearch;
+    }
+
+    public void setForImageSearch(boolean forImageSearch) {
+        this.forImageSearch = forImageSearch;
     }
 
     private CatalogFragment getCatalogFragment(String query) {
@@ -307,6 +319,7 @@ public class SearchActivity extends DiscoveryActivity
         searchView.showSearch(true, DiscoverySearchView.TAB_DEFAULT_SUGGESTION);
         searchView.setFinishOnClose(false);
     }
+
     @Override
     protected void onDestroy() {
         searchPresenter.detachView();

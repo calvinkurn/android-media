@@ -1,8 +1,7 @@
 package com.tokopedia.discovery.imagesearch.data.repository;
 
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.discovery.imagesearch.domain.model.ImageSearchResultModel;
+import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
 
 import rx.Observable;
 
@@ -12,5 +11,5 @@ import rx.Observable;
 
 public interface ImageSearchRepository {
 
-    Observable<ImageSearchResultModel> getImageSearchResults( RequestParams param);
+    Observable<SearchResultModel> getImageSearchResults(TKPDMapParam<String, Object> param);
 }

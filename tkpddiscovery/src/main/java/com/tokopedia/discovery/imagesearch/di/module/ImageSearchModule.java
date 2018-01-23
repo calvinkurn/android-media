@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.apiservices.mojito.apis.MojitoApi;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
@@ -16,6 +17,7 @@ import com.tokopedia.discovery.imagesearch.data.repository.ImageSearchRepository
 import com.tokopedia.discovery.imagesearch.data.repository.ImageSearchRepositoryImpl;
 import com.tokopedia.discovery.imagesearch.data.source.ImageSearchDataSource;
 import com.tokopedia.discovery.imagesearch.domain.usecase.GetImageSearchUseCase;
+import com.tokopedia.discovery.newdiscovery.data.mapper.ProductMapper;
 
 import dagger.Module;
 import dagger.Provides;
@@ -37,8 +39,8 @@ public class ImageSearchModule {
     }
 
     @Provides
-    ImageSearchRepository imageSearchRepository(ImageSearchDataSource productDataSource) {
-        return new ImageSearchRepositoryImpl(productDataSource);
+    ImageSearchRepository imageSearchRepository(ImageSearchDataSource imageSearchDataSource) {
+        return new ImageSearchRepositoryImpl(imageSearchDataSource);
     }
 
     @Provides
@@ -53,8 +55,8 @@ public class ImageSearchModule {
     }
 
     @Provides
-    ImageSearchDataSource imageSearchDataSource(ImageSearchResultMapper imageSearchResultMapper) {
-        return new ImageSearchDataSource(imageSearchResultMapper);
+    ImageSearchDataSource imageSearchDataSource(ProductMapper productMapper, BrowseApi browseApi) {
+        return new ImageSearchDataSource(productMapper, browseApi);
     }
 
     @Provides

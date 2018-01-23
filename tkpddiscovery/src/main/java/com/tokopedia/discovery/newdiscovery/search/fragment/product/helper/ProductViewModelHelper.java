@@ -19,6 +19,22 @@ import java.util.List;
 
 public class ProductViewModelHelper {
 
+    public static ProductViewModel convertToProductViewModel(SearchResultModel searchResultModel, boolean imageSearch) {
+        ProductViewModel productViewModel = new ProductViewModel();
+        productViewModel.setProductList(convertToProductItemList(searchResultModel.getProductList()));
+        productViewModel.setQuery(searchResultModel.getQuery());
+        productViewModel.setShareUrl(searchResultModel.getShareUrl());
+        productViewModel.setHasCatalog(searchResultModel.isHasCatalog());
+        productViewModel.setSuggestionModel(createSuggestionModel(searchResultModel));
+        productViewModel.setTotalData(searchResultModel.getTotalData());
+        productViewModel.setImageSearch(imageSearch);
+        if (searchResultModel.getOfficialStoreBannerModel() != null) {
+            productViewModel.setOfficialStoreBannerModel(searchResultModel.getOfficialStoreBannerModel());
+        }
+        productViewModel.setAdditionalParams(searchResultModel.getAdditionalParams());
+        return productViewModel;
+    }
+
     public static ProductViewModel convertToProductViewModel(SearchResultModel searchResultModel) {
         ProductViewModel productViewModel = new ProductViewModel();
         productViewModel.setProductList(convertToProductItemList(searchResultModel.getProductList()));

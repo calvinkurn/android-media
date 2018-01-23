@@ -1,7 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment.product;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
@@ -122,7 +121,9 @@ public class ProductListFragment extends SearchSectionFragment
     private void loadDataFromArguments() {
         productViewModel = getArguments().getParcelable(ARG_VIEW_MODEL);
         if (productViewModel != null) {
-            setSearchParameter(productViewModel.getSearchParameter());
+
+            if (productViewModel.getSearchParameter() != null)
+                setSearchParameter(productViewModel.getSearchParameter());
             setForceSearch(productViewModel.isForceSearch());
         }
     }
@@ -130,7 +131,7 @@ public class ProductListFragment extends SearchSectionFragment
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        if (savedInstanceState!=null) {
+        if (savedInstanceState != null) {
             switchLayoutType();
         }
     }
@@ -159,6 +160,8 @@ public class ProductListFragment extends SearchSectionFragment
         initTopAdsParams();
         setupAdapter();
         setupListener();
+        if (productViewModel.isImageSearch())
+            disableSwipeRefresh();
     }
 
 
@@ -254,7 +257,8 @@ public class ProductListFragment extends SearchSectionFragment
             adsParams.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, getSearchParameter().getDepartmentId());
         }
         enrichWithFilterAndSortParams(adsParams);
-        topAdsConfig.setTopAdsParams(adsParams);
+        if (!productViewModel.isImageSearch())
+            topAdsConfig.setTopAdsParams(adsParams);
     }
 
     @Override
@@ -298,7 +302,7 @@ public class ProductListFragment extends SearchSectionFragment
                 = generateLoadMoreParameter(startRow, productViewModel.getQuery());
         HashMap<String, String> additionalParams
                 = NetworkParamHelper.getParamMap(productViewModel.getAdditionalParams());
-        presenter.loadMoreData(searchParameter,  additionalParams);
+        presenter.loadMoreData(searchParameter, additionalParams);
     }
 
     @Override
@@ -353,8 +357,10 @@ public class ProductListFragment extends SearchSectionFragment
     @Override
     protected List<AHBottomNavigationItem> getBottomNavigationItems() {
         List<AHBottomNavigationItem> items = new ArrayList<>();
-        items.add(new AHBottomNavigationItem(getString(R.string.sort), R.drawable.ic_sort_black));
-        items.add(new AHBottomNavigationItem(getString(R.string.filter), R.drawable.ic_filter_list_black));
+        if (!productViewModel.isImageSearch()) {
+            items.add(new AHBottomNavigationItem(getString(R.string.sort), R.drawable.ic_sort_black));
+            items.add(new AHBottomNavigationItem(getString(R.string.filter), R.drawable.ic_filter_list_black));
+        }
         items.add(new AHBottomNavigationItem(getString(adapter.getTitleTypeRecyclerView()), adapter.getIconTypeRecyclerView()));
         items.add(new AHBottomNavigationItem(getString(R.string.share), R.drawable.ic_share_black));
         return items;
@@ -367,10 +373,16 @@ public class ProductListFragment extends SearchSectionFragment
             public boolean onTabSelected(final int position, boolean wasSelected) {
                 switch (position) {
                     case 0:
-                        openSortActivity();
+                        if (productViewModel.isImageSearch())
+                            switchLayoutType();
+                        else
+                            openSortActivity();
                         return true;
                     case 1:
-                        openFilterActivity();
+                        if (productViewModel.isImageSearch())
+                            startShareActivity(productViewModel.getShareUrl());
+                        else
+                            openFilterActivity();
                         return true;
                     case 2:
                         switchLayoutType();

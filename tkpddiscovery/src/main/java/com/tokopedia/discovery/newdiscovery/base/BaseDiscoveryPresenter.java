@@ -4,8 +4,6 @@ import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 
-import rx.Subscriber;
-
 /**
  * Created by hangnadi on 10/3/17.
  */
@@ -38,6 +36,11 @@ public class BaseDiscoveryPresenter<T extends CustomerView, D extends BaseDiscov
 
     @Override
     public void requestProduct(SearchParameter searchParameter, boolean forceSearch, boolean requestOfficialStoreBanner) {
+        checkDiscoveryViewAttached();
+    }
+
+    @Override
+    public void requestImageSearchProduct(SearchParameter imageSearchProductParameter) {
         checkDiscoveryViewAttached();
     }
 

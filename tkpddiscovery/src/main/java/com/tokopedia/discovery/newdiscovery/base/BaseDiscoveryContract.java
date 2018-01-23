@@ -1,7 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.base;
 
 import com.tokopedia.core.network.entity.discovery.ImageSearchResponse;
-import com.tokopedia.discovery.imagesearch.domain.model.ImageSearchResultModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 
@@ -44,6 +43,9 @@ public interface BaseDiscoveryContract {
 
         void requestProduct(SearchParameter searchParameter, boolean forceSearch, boolean requestOfficialStoreBanner);
 
+        void requestImageSearchProduct(SearchParameter imageSearchProductParameter);
+
         void requestImageSearch(byte[] imageByteArray);
+
     }
 }

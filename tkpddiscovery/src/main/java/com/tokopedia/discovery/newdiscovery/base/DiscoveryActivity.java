@@ -21,19 +21,23 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
+import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.manage.people.profile.customdialog.UploadImageDialog;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.entity.discovery.ImageSearchResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.helper.OfficialStoreQueryHelper;
-import com.tokopedia.discovery.imagesearch.domain.usecase.SearchImageAsyncTask;
+import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
@@ -67,13 +71,14 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     private FrameLayout container;
     private AHBottomNavigation bottomNavigation;
     protected DiscoverySearchView searchView;
-    protected View loadingView;
+    protected ProgressBar loadingView;
 
     private MenuItem searchItem;
     private boolean isLastRequestForceSearch;
 
     private boolean fromCamera;
     private UploadImageDialog uploadDialog;
+    private TkpdProgressDialog tkpdProgressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -457,18 +462,58 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
             }
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
             myBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-
             byte[] byteArray = stream.toByteArray();
-
 
             /*SearchImageAsyncTask searchImageAsyncTask = new SearchImageAsyncTask(this);
             searchImageAsyncTask.execute(byteArray);*/
 
+//            showLoadingView(true);
 
+            tkpdProgressDialog = new TkpdProgressDialog(this, 1);
+            tkpdProgressDialog.showDialog();
             getPresenter().requestImageSearch(byteArray);
         }
+    }
+
+    @Override
+    public void onHandleImageSearchResponse(ImageSearchResponse imageSearchResponse) {
 
 
+        showLoadingView(false);
+
+        StringBuilder productIDs = new StringBuilder();
+        int productCount = imageSearchResponse.getOasSearch().getAuctions().size();
+
+        if (productCount > 100)
+            productCount = 100;
+
+        for (int i = 0; i < productCount; i++) {
+            productIDs.append(imageSearchResponse.getOasSearch().getAuctions().get(i).getProductId());
+            if (i != productCount - 1) {
+                productIDs.append(",");
+            }
+        }
+
+        SearchParameter imageSearchProductParameter = new SearchParameter();
+        imageSearchProductParameter.setStartRow(productCount);
+        imageSearchProductParameter.setQueryKey(String.valueOf(productIDs));
+        imageSearchProductParameter.setSource("toppicks");
+
+        getPresenter().requestImageSearchProduct(imageSearchProductParameter);
+        /*Intent intent = new Intent(this, ImageSearchResultActivity.class);
+        intent.putExtra("Response", imageSearchResponse);
+        startActivity(intent);*/
+
+//        Toast.makeText(this,imageSearchResponse.getOasSearch().getAuctions().size() + " results fetched.", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onHandleResponseSearch(ProductViewModel productViewModel) {
+
+        if (tkpdProgressDialog != null)
+            tkpdProgressDialog.dismiss();
+        SearchActivity.moveTo(this, productViewModel, isForceSwipeToShop());
+        finish();
     }
 
     private Bitmap resize(Bitmap image, int maxWidth, int maxHeight) {

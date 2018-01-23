@@ -50,7 +50,17 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
         super.requestProduct(searchParameter, forceSearch, requestOfficialStore);
         getProductUseCase.execute(
                 GetProductUseCase.createInitializeSearchParam(searchParameter, forceSearch, requestOfficialStore),
-                new DefaultSearchSubscriber(searchParameter, forceSearch, getBaseDiscoveryView())
+                new DefaultSearchSubscriber(searchParameter, forceSearch, getBaseDiscoveryView(), false)
+        );
+    }
+
+
+    @Override
+    public void requestImageSearchProduct(SearchParameter imageSearchProductParameter) {
+        super.requestImageSearchProduct(imageSearchProductParameter);
+        getImageSearchUseCase.execute(
+                GetImageSearchUseCase.initializeSearchRequestParam(imageSearchProductParameter),
+                new DefaultSearchSubscriber(imageSearchProductParameter, false, getBaseDiscoveryView(), true)
         );
     }
 

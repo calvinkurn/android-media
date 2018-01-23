@@ -1,9 +1,7 @@
 package com.tokopedia.discovery.imagesearch.data.subscriber;
 
 import com.tokopedia.core.network.entity.discovery.ImageSearchResponse;
-import com.tokopedia.discovery.imagesearch.domain.model.ImageSearchResultModel;
 import com.tokopedia.discovery.newdiscovery.base.BaseDiscoveryContract;
-import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 
 import rx.Subscriber;
 
@@ -15,11 +13,9 @@ public class DefaultImageSearchSubscriber<D2 extends BaseDiscoveryContract.View>
         extends Subscriber<ImageSearchResponse> {
 
 
-    private boolean forceSearch;
     private D2 discoveryView;
 
     public DefaultImageSearchSubscriber(D2 discoveryView) {
-//        this.forceSearch = forceSearch;
         this.discoveryView = discoveryView;
     }
 

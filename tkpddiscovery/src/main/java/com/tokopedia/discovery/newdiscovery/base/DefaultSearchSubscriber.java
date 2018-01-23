@@ -26,11 +26,13 @@ public class DefaultSearchSubscriber<D2 extends BaseDiscoveryContract.View>
 
     private boolean forceSearch;
     private D2 discoveryView;
+    private boolean imageSearch;
 
-    public DefaultSearchSubscriber(SearchParameter searchParameter, boolean forceSearch, D2 discoveryView) {
+    public DefaultSearchSubscriber(SearchParameter searchParameter, boolean forceSearch, D2 discoveryView, boolean imageSearch) {
         this.searchParameter = searchParameter;
         this.forceSearch = forceSearch;
         this.discoveryView = discoveryView;
+        this.imageSearch = imageSearch;
     }
 
     public DefaultSearchSubscriber(D2 discoveryView) {
@@ -60,9 +62,10 @@ public class DefaultSearchSubscriber<D2 extends BaseDiscoveryContract.View>
                 discoveryView.onHandleResponseIntermediary(searchResult.getDepartmentId());
                 break;
             case DISCOVERY_URL_SEARCH:
-                ProductViewModel model = ProductViewModelHelper.convertToProductViewModel(searchResult);
+                ProductViewModel model = ProductViewModelHelper.convertToProductViewModel(searchResult, imageSearch);
                 model.setSearchParameter(searchParameter);
                 model.setForceSearch(forceSearch);
+                model.setImageSearch(imageSearch);
                 discoveryView.onHandleResponseSearch(model);
                 break;
             case DISCOVERY_URL_CATALOG:
