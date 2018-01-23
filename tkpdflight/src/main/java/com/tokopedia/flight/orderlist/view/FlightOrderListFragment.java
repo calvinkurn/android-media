@@ -6,10 +6,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,13 +16,11 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
-import com.tokopedia.design.quickfilter.QuickFilterAdapter;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.QuickSingleFilterView;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.common.constant.FlightUrl;
-import com.tokopedia.flight.common.di.module.FlightModule;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import com.tokopedia.flight.detail.view.activity.FlightDetailOrderActivity;
@@ -40,7 +37,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-;
 
 /**
  * @author by zulfikarrahman on 11/28/17.
@@ -77,6 +73,7 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
     protected BaseListAdapter<Visitable, FlightOrderTypeFactory> createAdapterInstance() {
         return new BaseListAdapter<>(getAdapterTypeFactory());
     }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -166,7 +163,7 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
 
     @Override
     public void onReBookingClicked(FlightOrderBaseViewModel item) {
-        android.support.v4.app.TaskStackBuilder taskStackBuilder = android.support.v4.app.TaskStackBuilder.create(getActivity());
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(getActivity());
         if (getActivity().getApplication() instanceof FlightModuleRouter
                 && ((FlightModuleRouter) getActivity().getApplication())
                 .getHomeIntent(getActivity()) != null) {

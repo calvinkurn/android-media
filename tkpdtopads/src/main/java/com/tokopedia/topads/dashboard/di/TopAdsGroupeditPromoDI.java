@@ -42,7 +42,7 @@ public class TopAdsGroupeditPromoDI {
         JobExecutor threadExecutor = new JobExecutor();
         UIThread postExecutionThread = new UIThread();
 
-        TopAdsManagementService topAdsManagementService = new TopAdsManagementService(new SessionHandler(context).getAccessToken(context));
+        TopAdsManagementService topAdsManagementService = new TopAdsManagementService(new SessionHandler(context));
         TopAdsManagementApi topAdsManagementApi = topAdsManagementService.getApi();
 
         TopAdsSearchGroupMapper topAdsSearchGroupMapper = new TopAdsSearchGroupMapper();

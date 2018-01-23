@@ -51,7 +51,6 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.onboarding.OnboardingActivity;
 import com.tokopedia.core.product.model.share.ShareData;
-import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.CustomerRouter;
@@ -132,6 +131,7 @@ import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.session.activity.Login;
+import com.tokopedia.tkpd.applink.AppLinkWebsiteActivity;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.datepicker.DatePickerUtil;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
@@ -141,6 +141,7 @@ import com.tokopedia.tkpd.deeplink.data.repository.DeeplinkRepository;
 import com.tokopedia.tkpd.deeplink.data.repository.DeeplinkRepositoryImpl;
 import com.tokopedia.tkpd.deeplink.domain.interactor.MapUrlUseCase;
 import com.tokopedia.tkpd.drawer.DrawerBuyerHelper;
+import com.tokopedia.tkpd.flight.FlightGetProfileInfoData;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
@@ -171,7 +172,6 @@ import javax.inject.Inject;
 
 import okhttp3.Response;
 import rx.Observable;
-import rx.functions.Func1;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
@@ -246,7 +246,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public ShopComponent getShopComponent() {
-        if(shopComponent == null){
+        if (shopComponent == null) {
             shopComponent = daggerShopBuilder.appComponent(getApplicationComponent()).build();
         }
         return shopComponent;
@@ -266,12 +266,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getIntentCreateShop(Context context){
+    public Intent getIntentCreateShop(Context context) {
         return TkpdSeller.getIntentCreateEditShop(context, true, false);
     }
 
     @Override
-    public Intent getSplashScreenIntent(Context context){
+    public Intent getSplashScreenIntent(Context context) {
         return new Intent(context, ConsumerSplashScreen.class);
     }
 
@@ -281,7 +281,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getIntentManageShop(Context context){
+    public Intent getIntentManageShop(Context context) {
         return TkpdSeller.getIntentManageShop(context);
     }
 
@@ -559,38 +559,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Observable<ProfileInfo> getProfile() {
-        Bundle bundle = new Bundle();
-        SessionHandler sessionHandler = new SessionHandler(this);
-        String authKey = sessionHandler.getAccessToken(this);
-        authKey = sessionHandler.getTokenType(this) + " " + authKey;
-        bundle.putString(AccountsService.AUTH_KEY, authKey);
-
-        AccountsService accountsService = new AccountsService(bundle);
-
-        ProfileSourceFactory profileSourceFactory =
-                new ProfileSourceFactory(
-                        this,
-                        accountsService,
-                        new GetUserInfoMapper(),
-                        null,
-                        sessionHandler
-                );
-
-        GetUserInfoUseCase getUserInfoUseCase = new GetUserInfoUseCase(
-                new JobExecutor(),
-                new UIThread(),
-                new ProfileRepositoryImpl(profileSourceFactory)
-        );
-        return getUserInfoUseCase.createObservable(GetUserInfoUseCase.generateParam()).map(new Func1<GetUserInfoDomainModel, ProfileInfo>() {
-            @Override
-            public ProfileInfo call(GetUserInfoDomainModel getUserInfoDomainModel) {
-                ProfileInfo profileInfo = new ProfileInfo();
-                profileInfo.setFullname(getUserInfoDomainModel.getGetUserInfoDomainData().getFullName());
-                profileInfo.setPhoneNumber(getUserInfoDomainModel.getGetUserInfoDomainData().getPhone());
-                profileInfo.setEmail(getUserInfoDomainModel.getGetUserInfoDomainData().getEmail());
-                return profileInfo;
-            }
-        });
+        FlightGetProfileInfoData profileInfoData = new FlightGetProfileInfoData(this);
+        return profileInfoData.getProfileInfoPrefillBooking();
     }
 
     @Override
@@ -641,6 +611,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void actionApplink(Activity activity, String linkUrl) {
+        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
+        Intent intent = activity.getIntent();
+        intent.setData(Uri.parse(linkUrl));
+        deepLinkDelegate.dispatchFrom(activity, intent);
+    }
+
+    @Override
+    public void actionApplinkFromActivity(Activity activity, String linkUrl) {
         DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
         Intent intent = activity.getIntent();
         intent.setData(Uri.parse(linkUrl));
@@ -1180,6 +1158,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent getWebviewActivity(Activity activity, String url) {
+        return AppLinkWebsiteActivity.newInstance(activity, url);
+    }
+
+    @Override
     public DialogFragment getLoyaltyTokoPointNotificationDialogFragment(TokoPointDrawerData.PopUpNotif popUpNotif) {
         return LoyaltyNotifFragmentDialog.newInstance(popUpNotif);
     }
@@ -1233,6 +1216,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Intent intent = GeolocationActivity.createInstance(fragment.getActivity(), locationPass);
         fragment.startActivityForResult(intent, requestCode);
     }
+
     @Override
     public Intent getTrueCallerIntent(Context context) {
         return TruecallerActivity.getCallingIntent(context);

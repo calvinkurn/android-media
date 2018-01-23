@@ -1,7 +1,5 @@
 package com.tokopedia.flight.orderlist.view.viewmodel;
 
-import android.support.annotation.StringRes;
-
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderTypeFactory;
@@ -21,6 +19,7 @@ public class FlightOrderWaitingForPaymentViewModel extends FlightOrderBaseViewMo
     public int type(FlightOrderTypeFactory typeFactory) {
         return typeFactory.type(this);
     }
+
     public String getId() {
         return id;
     }
@@ -53,11 +52,11 @@ public class FlightOrderWaitingForPaymentViewModel extends FlightOrderBaseViewMo
         this.orderJourney = orderJourney;
     }
 
-    public int getTitle() {
+    public String getTitle() {
         return title;
     }
 
-    public void setTitle(@StringRes int title) {
+    public void setTitle(String title) {
         this.title = title;
     }
 }

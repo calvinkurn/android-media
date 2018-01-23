@@ -21,6 +21,7 @@ import java.util.List;
  */
 
 public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapter.ViewHolder> {
+    private static final int PARAM_EMPTY_MARGIN = 0;
     private List<SimpleViewModel> viewModels;
     private boolean isArrowVisible;
     private boolean isClickable;
@@ -83,7 +84,9 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
         this.isTitleBold = isTitleBold;
     }
 
-    public void setTitleOnly(boolean isTitleOnly) { this.isTitleOnly = isTitleOnly; }
+    public void setTitleOnly(boolean isTitleOnly) {
+        this.isTitleOnly = isTitleOnly;
+    }
 
     public void setTitleHalfView(boolean titleHalfView) {
         isTitleHalfView = titleHalfView;
@@ -139,7 +142,12 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
             } else {
                 layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT;
                 layoutParams.weight = 0;
-                layoutParams.setMargins(0,0,10,0);
+                layoutParams.setMargins(
+                        PARAM_EMPTY_MARGIN,
+                        PARAM_EMPTY_MARGIN,
+                        10,
+                        PARAM_EMPTY_MARGIN
+                );
                 titleTextView.setLayoutParams(layoutParams);
                 titleTextView.setMinWidth(150);
             }

@@ -62,6 +62,8 @@ public interface FlightDashboardContract {
         void renderBannerView(List<BannerDetail> bannerList);
 
         void hideBannerView();
+
+        String getScreenName();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -95,6 +97,8 @@ public interface FlightDashboardContract {
         void onDestroyView();
 
         void onLoginResultReceived();
+
+        void onBannerItemClick(int position, BannerDetail bannerDetail);
 
         void transformExtras(String extrasTrip, String extrasPassenger, String extrasClass);
 

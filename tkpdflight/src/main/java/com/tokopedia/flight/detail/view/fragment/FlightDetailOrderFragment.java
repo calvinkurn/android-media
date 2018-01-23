@@ -57,7 +57,7 @@ import javax.inject.Inject;
 public class FlightDetailOrderFragment extends BaseDaggerFragment implements FlightDetailOrderContract.View, ExpandableOnClickListener {
 
     public static final String EXTRA_ORDER_DETAIL_PASS = "EXTRA_ORDER_DETAIL_PASS";
-    private static final String CANCEL_SOLUTION_ID = "1377";
+    private static final String CANCEL_SOLUTION_ID = "1378";
     private static final int CONTACT_US_REQUEST_CODE = 100;
     @Inject
     FlightDetailOrderPresenter flightDetailOrderPresenter;
@@ -84,7 +84,6 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     private FlightSimpleAdapter flightBookingReviewPriceAdapter;
     private FlightOrderDetailPassData flightOrderDetailPassData;
     private FlightOrder flightOrder;
-
     private String eticketLink = "";
     private String invoiceLink = "";
     private String cancelMessage = "";
@@ -210,11 +209,11 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         containerDownloadInvoice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
-                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(invoiceLink));
-                    startActivity(browserIntent);
-                } catch (Exception e) {
-
+                if (getActivity().getApplication() instanceof FlightModuleRouter
+                        && ((FlightModuleRouter) getActivity().getApplication())
+                        .getWebviewActivity(getActivity(), invoiceLink) != null) {
+                    startActivity(((FlightModuleRouter) getActivity().getApplication())
+                            .getWebviewActivity(getActivity(), invoiceLink));
                 }
             }
         });
@@ -269,7 +268,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Override
     public void updatePassengerList(List<FlightDetailPassenger> flightDetailPassengers) {
-        if(flightBookingReviewPassengerAdapter.getDataSize() < 2) {
+        if (flightBookingReviewPassengerAdapter.getDataSize() < 2) {
             removePassengerRecyclerDivider();
         }
 
@@ -290,56 +289,6 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         this.eticketLink = eTicketLink;
         this.invoiceLink = invoiceLink;
         this.cancelMessage = cancelMessage;
-    }
-
-    @Override
-    public void updateViewExpired() {
-        updateViewStatus(R.string.flight_label_transaction_failed, R.color.deep_orange_500, false, false, false, true);
-    }
-
-    @Override
-    public void updateViewConfirmed() {
-        updateViewStatus(R.string.flight_label_transaction_success, R.color.font_black_primary_70, true, false, true, false);
-    }
-
-    @Override
-    public void updateViewFailed() {
-        updateViewStatus(R.string.flight_label_canceled_ticket, R.color.font_black_primary_70, false, false, false, false);
-    }
-
-    @Override
-    public void updateViewFinished() {
-        updateViewStatus(R.string.flight_label_transaction_success, R.color.font_black_primary_70, true, false, true, false);
-    }
-
-    @Override
-    public void updateViewProgress() {
-        updateViewStatus(R.string.flight_label_waiting_for_confirm, R.color.font_black_primary_70, false, false, false, false);
-    }
-
-    @Override
-    public void updateViewReadyForQueue() {
-        updateViewStatus(R.string.flight_label_waiting_for_confirm, R.color.font_black_primary_70, false, false, false, false);
-    }
-
-    @Override
-    public void updateViewRefunded() {
-        updateViewStatus(R.string.flight_label_refunded, R.color.font_black_primary_70, false, false, false, false);
-    }
-
-    @Override
-    public void updateViewWaitingForPayment() {
-        updateViewStatus(R.string.flight_label_waiting_payment, R.color.deep_orange_500, false, false, false, false);
-    }
-
-    @Override
-    public void updateViewWaitingForThirdParty() {
-        updateViewStatus(R.string.flight_label_waiting_for_confirm, R.color.font_black_primary_70, false, false, false, false);
-    }
-
-    @Override
-    public void updateViewWaitingForTransfer() {
-        updateViewStatus(R.string.flight_label_waiting_payment, R.color.deep_orange_500, false, false, false, false);
     }
 
     private void removePassengerRecyclerDivider() {
@@ -366,8 +315,9 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         imageExpendablePassenger.setRotation(0);
     }
 
-    void updateViewStatus(int orderStatusString, int color, boolean isTicketVisible, boolean isScheduleVisible,
-                          boolean isCancelVisible, boolean isReorderVisible) {
+    @Override
+    public void updateViewStatus(String orderStatusString, int color, boolean isTicketVisible, boolean isScheduleVisible,
+                                 boolean isCancelVisible, boolean isReorderVisible) {
         orderStatus.setText(orderStatusString);
         orderStatus.setTextColor(ContextCompat.getColor(getActivity(), color));
         if (isTicketVisible) {
@@ -399,7 +349,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     }
 
     @Override
-    public String getCancelMessage()  {
+    public String getCancelMessage() {
         return cancelMessage;
     }
 

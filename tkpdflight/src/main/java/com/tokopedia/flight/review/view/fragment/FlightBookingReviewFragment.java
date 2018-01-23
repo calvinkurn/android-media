@@ -105,8 +105,6 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     private FlightSimpleAdapter flightBookingReviewPriceAdapter;
     private boolean isPassengerInfoPageNeedToRefresh = false;
 
-    private AttributesVoucher voucher;
-
 
     public static FlightBookingReviewFragment createInstance(FlightBookingReviewModel flightBookingReviewModel) {
         FlightBookingReviewFragment flightBookingReviewFragment = new FlightBookingReviewFragment();
@@ -234,9 +232,13 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
         recyclerViewDetailPrice.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewDetailPrice.setAdapter(flightBookingReviewPriceAdapter);
 
-        updateFinalTotal(voucher, getCurrentBookingReviewModel());
+        updateFinalTotal(getCurrentBookingReviewModel());
         reviewTime.setExpiredDate(flightBookingReviewModel.getDateFinishTime());
         reviewTime.start();
+    }
+
+    private void updateFinalTotal(FlightBookingReviewModel currentBookingReviewModel) {
+        updateFinalTotal(null, currentBookingReviewModel);
     }
 
     @Override
@@ -289,6 +291,11 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
     }
 
     @Override
+    public String getVoucherCode() {
+        return voucherCartView.getVoucherCode();
+    }
+
+    @Override
     public void updateFinalTotal(AttributesVoucher attributesVoucher, FlightBookingReviewModel currentBookingReviewModel) {
 
         int totalFinal = 0;
@@ -331,9 +338,8 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
 
     @Override
     public void disableVoucherDiscount() {
-        voucher = null;
         KeyboardHandler.hideSoftKeyboard(getActivity());
-        updateFinalTotal(voucher, getCurrentBookingReviewModel());
+        updateFinalTotal(getCurrentBookingReviewModel());
     }
 
     @Override
@@ -465,7 +471,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements F
                 CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(totalPrice)
         );
         reviewTotalPrice.setText(flightBookingReviewModel.getTotalPrice());
-        updateFinalTotal(voucher, getCurrentBookingReviewModel());
+        updateFinalTotal(getCurrentBookingReviewModel());
     }
 
     @Override

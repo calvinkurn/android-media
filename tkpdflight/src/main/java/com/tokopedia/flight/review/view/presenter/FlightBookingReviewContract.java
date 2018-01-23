@@ -70,6 +70,7 @@ public interface FlightBookingReviewContract {
 
         void updateFinalTotal(AttributesVoucher attributesVoucher, FlightBookingReviewModel currentBookingReviewModel);
 
+        String getVoucherCode();
     }
 
     interface Presenter extends FlightBaseBookingContact.Presenter<View>{

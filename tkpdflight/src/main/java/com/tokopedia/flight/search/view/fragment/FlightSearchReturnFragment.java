@@ -152,4 +152,10 @@ public class FlightSearchReturnFragment extends FlightSearchFragment implements 
     protected void onSelectedFromDetail(String selectedId){
         flightSearchReturnPresenter.onFlightSearchSelected(selectedFlightDeparture, selectedId);
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        flightSearchReturnPresenter.onDestroy();
+    }
 }

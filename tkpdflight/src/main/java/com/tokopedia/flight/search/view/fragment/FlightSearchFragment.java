@@ -69,12 +69,12 @@ import javax.inject.Inject;
  */
 
 public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel, FilterSearchAdapterTypeFactory> implements FlightSearchView,
-        FilterSearchAdapterTypeFactory.OnFlightSearchListener{
+        FilterSearchAdapterTypeFactory.OnFlightSearchListener {
 
-    private static final int EMPTY_MARGIN = 0;
     public static final String TAG = FlightSearchFragment.class.getSimpleName();
     public static final int MAX_PROGRESS = 100;
     protected static final String EXTRA_PASS_DATA = "EXTRA_PASS_DATA";
+    private static final int EMPTY_MARGIN = 0;
     private static final int REQUEST_CODE_SEARCH_FILTER = 1;
     private static final int REQUEST_CODE_SEE_DETAIL_FLIGHT = 2;
     private static final String SAVED_FILTER_MODEL = "svd_filter_model";
@@ -82,6 +82,8 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     private static final String SAVED_STAT_MODEL = "svd_stat_model";
     private static final String SAVED_AIRPORT_COMBINE = "svd_airport_combine";
     private static final String SAVED_PROGRESS = "svd_progress";
+    private static final float DEFAULT_DIMENS_MULTIPLIER = 0.5f;
+    private static final int PADDING_SEARCH_LIST = 60;
     @Inject
     public FlightSearchPresenter flightSearchPresenter;
     protected FlightSearchPassDataViewModel flightSearchPassDataViewModel;
@@ -96,6 +98,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     private SwipeToRefresh swipeToRefresh;
     private boolean needRefreshFromCache;
     private boolean inFilterMode = false;
+
 
     public static FlightSearchFragment newInstance(FlightSearchPassDataViewModel passDataViewModel) {
         Bundle args = new Bundle();
@@ -205,6 +208,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
     protected void setUpSwipeRefresh(View view) {
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
+        swipeToRefresh.setSwipeDistance();
         swipeToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -291,6 +295,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
     @Override
     public void onItemClicked(FlightSearchViewModel flightSearchViewModel) {
+        flightSearchPresenter.onSearchItemClicked(flightSearchViewModel);
         if (onFlightSearchFragmentListener != null) {
             onFlightSearchFragmentListener.selectFlight(flightSearchViewModel.getId());
         }
@@ -426,7 +431,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         }
     }
 
-    protected void onSelectedFromDetail(String selectedId){
+    protected void onSelectedFromDetail(String selectedId) {
         onFlightSearchFragmentListener.selectFlight(selectedId);
     }
 
@@ -475,7 +480,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
                     EMPTY_MARGIN,
                     EMPTY_MARGIN,
                     EMPTY_MARGIN,
-                    (int) (scale * 60 + 0.5f)
+                    (int) (scale * PADDING_SEARCH_LIST + DEFAULT_DIMENS_MULTIPLIER)
             );
             getAdapter().addElement(flightSearchViewModelList);
         }
@@ -622,6 +627,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
     @Override
     public void onDetailClicked(FlightSearchViewModel flightSearchViewModel) {
+        flightSearchPresenter.onSeeDetailItemClicked(flightSearchViewModel);
         FlightDetailViewModel flightDetailViewModel = new FlightDetailViewModel();
         flightDetailViewModel.build(flightSearchViewModel);
         flightDetailViewModel.build(flightSearchPassDataViewModel);

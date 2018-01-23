@@ -14,8 +14,7 @@
         style="@style/TextView.Micro.BlackDisabled"
         android:lineSpacingExtra="10sp"
         android:text="@string/shop_open_optional_pinpoint_location_text"
-        android:layout_marginBottom="@dimen/margin_small"
-        android:drawableRight="@drawable/ic_info"/>
+        android:layout_marginBottom="@dimen/margin_small"/>
 
     <FrameLayout
         android:id="@+id/empty_map_view"
