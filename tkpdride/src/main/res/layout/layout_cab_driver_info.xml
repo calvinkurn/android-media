@@ -8,6 +8,34 @@
     android:orientation="vertical"
     android:visibility="visible">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#eaffeb"
+        android:paddingBottom="@dimen/keyline_1_minus_8dp"
+        android:paddingLeft="@dimen/keyline_1"
+        android:paddingTop="@dimen/keyline_1_minus_8dp">
+
+        <ImageView
+            android:id="@+id/image_payment_method_icon"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/tokocash"
+            android:tint="@color/black_54" />
+
+        <TextView
+            android:id="@+id/tv_payment_method"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/keyline_1"
+            android:text="Payment with TokoCash"
+            android:textColor="@color/black_54"
+            android:textSize="@dimen/fontvs" />
+    </LinearLayout>
+
     <TextView
         android:id="@+id/driver_eta_text"
         android:layout_width="wrap_content"
@@ -122,10 +150,6 @@
         </LinearLayout>
     </RelativeLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="#e3e3e3" />
 
     <LinearLayout
         android:id="@+id/layout_on_trip_action"

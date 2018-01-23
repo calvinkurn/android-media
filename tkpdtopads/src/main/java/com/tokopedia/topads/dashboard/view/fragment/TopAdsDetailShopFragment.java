@@ -44,7 +44,7 @@ public class TopAdsDetailShopFragment extends TopAdsDetailStatisticFragment<TopA
     protected void initialPresenter() {
         super.initialPresenter();
         presenter = new TopAdsDetailShopViewPresenterImpl(getActivity(), this,
-                new TopAdsProductAdInteractorImpl(new TopAdsManagementService(new SessionHandler(getActivity()).getAccessToken(getActivity())),
+                new TopAdsProductAdInteractorImpl(new TopAdsManagementService(new SessionHandler(getActivity())),
                         new TopAdsCacheDataSourceImpl(getActivity())),
                 new TopAdsShopAdInteractorImpl(getActivity()));
     }
