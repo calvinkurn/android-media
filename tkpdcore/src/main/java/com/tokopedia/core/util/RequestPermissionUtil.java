@@ -124,7 +124,7 @@ public class RequestPermissionUtil {
                 Toast.makeText(context, R.string.permission_send_sms_neverask, Toast.LENGTH_LONG).show();
                 break;
             case Manifest.permission.CALL_PHONE:
-                Toast.makeText(context, R.string.permission_sms_neverask, Toast.LENGTH_LONG).show();
+                Toast.makeText(context, R.string.permission_phone_neverask, Toast.LENGTH_LONG).show();
                 break;
             default:
                 Toast.makeText(context, R.string.permission_multi_neverask, Toast.LENGTH_LONG).show();
@@ -142,7 +142,7 @@ public class RequestPermissionUtil {
                                        String permission) {
         new android.support.v7.app.AlertDialog.Builder(context)
                 .setMessage(getNeedPermissionMessage(permission))
-                .setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         request.proceed();
@@ -161,7 +161,7 @@ public class RequestPermissionUtil {
                                        List<String> permission) {
         new android.support.v7.app.AlertDialog.Builder(context)
                 .setMessage(getNeedPermissionMessage(permission))
-                .setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         request.proceed();

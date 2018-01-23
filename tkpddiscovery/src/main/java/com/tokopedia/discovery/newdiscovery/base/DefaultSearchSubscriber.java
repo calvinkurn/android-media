@@ -54,7 +54,7 @@ public class DefaultSearchSubscriber<D2 extends BaseDiscoveryContract.View>
     public void onNext(SearchResultModel searchResult) {
         switch (defineResponse(searchResult)) {
             case DISCOVERY_URL_HOTLIST:
-                discoveryView.onHandleResponseHotlist(searchResult.getRedirectUrl());
+                discoveryView.onHandleResponseHotlist(searchResult.getRedirectUrl(), searchResult.getQuery());
                 break;
             case DISCOVERY_URL_CATEGORY:
                 discoveryView.onHandleResponseIntermediary(searchResult.getDepartmentId());

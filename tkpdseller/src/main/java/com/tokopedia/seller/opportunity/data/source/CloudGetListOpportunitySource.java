@@ -1,35 +1,47 @@
 package com.tokopedia.seller.opportunity.data.source;
 
-import android.content.Context;
-
-import com.tokopedia.core.network.apiservices.replacement.OpportunityService;
+import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.seller.opportunity.data.OpportunityModel;
+import com.tokopedia.seller.opportunity.data.OpportunityNewPriceData;
 import com.tokopedia.seller.opportunity.data.mapper.OpportunityListMapper;
+import com.tokopedia.seller.opportunity.data.mapper.OpportunityNewPriceMapper;
+import com.tokopedia.seller.opportunity.data.source.api.ReplacementApi;
 
+import javax.inject.Inject;
+
+import retrofit2.Response;
 import rx.Observable;
+import rx.functions.Func1;
 
 /**
- * Created by nisie on 3/3/17.
+ * Created by normansyahputa on 1/10/18.
  */
+
 public class CloudGetListOpportunitySource {
 
-    private final Context context;
-    private final OpportunityService opportunityService;
-    private final OpportunityListMapper mapper;
+    private ReplacementApi replacementApi;
+    private OpportunityListMapper opportunityListMapper;
+    private OpportunityNewPriceMapper opportunityNewPriceMapper;
 
-    public CloudGetListOpportunitySource(Context context,
-                                         OpportunityService opportunityService,
-                                         OpportunityListMapper mapper) {
-        this.context = context;
-        this.opportunityService = opportunityService;
-        this.mapper = mapper;
+    @Inject
+    public CloudGetListOpportunitySource(ReplacementApi replacementApi, OpportunityListMapper opportunityListMapper, OpportunityNewPriceMapper opportunityNewPriceMapper) {
+        this.replacementApi = replacementApi;
+        this.opportunityListMapper = opportunityListMapper;
+        this.opportunityNewPriceMapper = opportunityNewPriceMapper;
     }
 
-    public Observable<OpportunityModel> getOpportunityList(TKPDMapParam<String, Object> params) {
-        return opportunityService.getApi()
-                .getOpportunityList(AuthUtil.generateParamsNetwork2(context, params))
-                .map(mapper);
+    public Observable<OpportunityModel> getOpportunityList(RequestParams requestParams) {
+        return replacementApi
+                .getOpportunityList(requestParams.getParamsAllValueInString())
+                .map(opportunityListMapper);
+    }
+
+    public Observable<OpportunityNewPriceData> getOpportunityNewPrice(RequestParams requestParams){
+        return replacementApi
+                .getOpportunityPriceInfo(requestParams.getParamsAllValueInString())
+                .map(opportunityNewPriceMapper);
     }
 }

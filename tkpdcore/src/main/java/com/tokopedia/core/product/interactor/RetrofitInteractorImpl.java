@@ -835,10 +835,10 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
 
     @Override
     public void getPromo(@NonNull Context context,
-                         @NonNull String targetType, @NonNull String userId,
+                         @NonNull String targetType, @NonNull String userId,  @NonNull String shopType,
                          final @NonNull PromoListener listener) {
         Observable<Response<PromoWidgetResponse>> observable = galadrielservice
-                .getApi().getPromoWidget(GaladrielApi.VALUE_PDP_WIDGET, targetType, GaladrielApi.VALUE_DEVICE, GaladrielApi.VALUE_LANG, userId);
+                .getApi().getPromoWidget(GaladrielApi.VALUE_PDP_WIDGET, targetType, GaladrielApi.VALUE_DEVICE, GaladrielApi.VALUE_LANG, userId, shopType);
 
         Subscriber<DataPromoWidget> subscriber = new Subscriber<DataPromoWidget>() {
             @Override

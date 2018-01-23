@@ -152,6 +152,7 @@
     <item name="recycler_view_hot_list" type="id"/>
     <item name="category_view_all" type="id"/>
     <item name="top_ads_view" type="id"/>
+    <item name="top_ads_banner" type="id"/>
     <item name="nested_intermediary" type="id"/>
     <item name="banner_container" type="id"/>
     <item name="view_pager_intermediary" type="id"/>

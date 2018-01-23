@@ -29,25 +29,25 @@
             android:orientation="horizontal">
 
             <TextView
-                style="@style/TextView.Body1.BlackSecondary"
+                style="@style/TextView.Small.BlackSecondary"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:text="@string/label_top_ads_daily_spend"/>
 
             <TextView
                 android:id="@+id/text_view_daily_spent"
-                style="@style/TextView.Body1.Bold"
+                style="@style/TextView.Small.Bold"
                 tools:text="@string/app_name"/>
 
             <TextView
-                style="@style/TextView.Body1"
+                style="@style/TextView.Small"
                 android:layout_marginLeft="@dimen/padding_vs"
                 android:layout_marginRight="@dimen/padding_vs"
                 android:text="@string/top_ads_spent_separator"/>
 
             <TextView
                 android:id="@+id/text_view_daily_total"
-                style="@style/TextView.Body1.BlackSecondary"
+                style="@style/TextView.Small.BlackSecondary"
                 tools:text="@string/app_name"/>
         </LinearLayout>
     </LinearLayout>

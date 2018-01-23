@@ -32,6 +32,7 @@
             <meta-data android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
+
         <activity
             android:name=".dashboard.view.activity.DashboardActivity"
             android:exported="true"
@@ -51,6 +52,10 @@
                 android:name="APPS_HOME"
                 android:value="true" />
         </activity>
+
+        <activity
+            android:screenOrientation="portrait"
+            android:name="com.tokopedia.seller.shop.open.view.activity.ShopOpenMandatoryActivity"/>
 
         <meta-data
             android:name="com.crashlytics.ApiKey"

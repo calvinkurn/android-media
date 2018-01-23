@@ -30,7 +30,7 @@ public class SpinnerTextView extends BaseCustomView {
 
     }
 
-    private static final int DEFAULT_INDEX_NOT_SELECTED = -1;
+    public static final int DEFAULT_INDEX_NOT_SELECTED = -1;
     private TextInputLayout textInputLayout;
     private AutoCompleteTextView textAutoComplete;
     private ImageView imageViewChevron;
@@ -82,7 +82,7 @@ public class SpinnerTextView extends BaseCustomView {
             values = styledAttributes.getTextArray(R.styleable.SpinnerTextView_spinner_values);
             enabled = styledAttributes.getBoolean(R.styleable.SpinnerTextView_spinner_enabled, true);
             textSize = styledAttributes.getDimension(R.styleable.SpinnerTextView_spinner_text_size,
-                    getResources().getDimension(R.dimen.font_subheading));
+                    getResources().getDimension(R.dimen.font_title));
         } finally {
             styledAttributes.recycle();
         }
