@@ -18,4 +18,8 @@ public class ShipmentDetailPresenter implements IShipmentDetailPresenter {
 
     }
 
+    @Override
+    public void getShipmentData() {
+
+    }
 }

@@ -8,4 +8,7 @@ import com.tokopedia.transaction.checkout.view.view.IShipmentChoiceView;
  */
 
 public interface IShipmentChoicePresenter extends CustomerPresenter<IShipmentChoiceView> {
+
+    void loadShipmentChoice();
+
 }

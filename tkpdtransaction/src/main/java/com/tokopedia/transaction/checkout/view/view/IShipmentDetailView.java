@@ -7,4 +7,13 @@ import com.tokopedia.core.base.presentation.CustomerView;
  */
 
 public interface IShipmentDetailView extends CustomerView {
+
+    void showLoading();
+
+    void hideLoading();
+
+    void renderInstantShipment();
+
+    void renderRegularShipment();
+
 }

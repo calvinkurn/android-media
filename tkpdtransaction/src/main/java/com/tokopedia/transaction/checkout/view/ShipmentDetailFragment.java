@@ -3,6 +3,7 @@ package com.tokopedia.transaction.checkout.view;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
@@ -10,24 +11,38 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.MapView;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
+import com.tokopedia.transaction.checkout.view.adapter.CourierChoiceAdapter;
+import com.tokopedia.transaction.checkout.view.adapter.ShipmentChoiceAdapter;
 import com.tokopedia.transaction.checkout.view.view.IShipmentDetailView;
 
 import butterknife.BindView;
+import butterknife.OnCheckedChanged;
+import butterknife.OnClick;
 
 /**
  * Created by Irfan Khoirul on 24/01/18.
  */
 
-public class ShipmentDetailFragment extends BasePresenterFragment implements IShipmentDetailView {
+public class ShipmentDetailFragment extends BasePresenterFragment implements IShipmentDetailView,
+        CourierChoiceAdapter.ViewListener {
 
+    @BindView(R2.id.scroll_view_content)
+    ScrollView scrollViewContent;
+    @BindView(R2.id.ll_network_error_view)
+    LinearLayout llNetworkErrorView;
+    @BindView(R2.id.pb_loading)
+    ProgressBar pbLoading;
     @BindView(R2.id.sp_shipment_choice)
     Spinner spShipmentChoice;
     @BindView(R2.id.rv_courier_choice)
@@ -58,8 +73,8 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
     LinearLayout llInsurance;
     @BindView(R2.id.separator_insurance)
     View separatorInsurance;
-    @BindView(R2.id.img_bt_partly_accept)
-    ImageButton imgBtPartlyAccept;
+    @BindView(R2.id.img_bt_partly_accept_info)
+    ImageButton imgBtPartlyAcceptInfo;
     @BindView(R2.id.switch_partly_accept)
     Switch switchPartlyAccept;
     @BindView(R2.id.ll_partial_order)
@@ -86,6 +101,8 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
     TextView tvTotalShippingFee;
     @BindView(R2.id.bt_save)
     Button btSave;
+
+    private CourierChoiceAdapter courierChoiceAdapter;
 
     @Override
     protected boolean isRetainInstance() {
@@ -149,6 +166,98 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
 
     @Override
     protected void setActionVar() {
+
+    }
+
+    @Override
+    public void showLoading() {
+        scrollViewContent.setVisibility(View.GONE);
+        pbLoading.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoading() {
+        pbLoading.setVisibility(View.GONE);
+        scrollViewContent.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void renderInstantShipment() {
+
+    }
+
+    @Override
+    public void renderRegularShipment() {
+        flPinpointMap.setVisibility(View.GONE);
+    }
+
+    private void setupRecyclerView() {
+        courierChoiceAdapter = new CourierChoiceAdapter(this);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(),
+                LinearLayoutManager.VERTICAL, false);
+        rvCourierChoice.setLayoutManager(linearLayoutManager);
+        rvCourierChoice.setAdapter(courierChoiceAdapter);
+    }
+
+    private void renderNoPinpoint() {
+        btChangePinpoint.setVisibility(View.GONE);
+        btChoosePinpoint.setVisibility(View.VISIBLE);
+        tvNoPonpointInformation.setVisibility(View.VISIBLE);
+    }
+
+    private void renderPinpoint() {
+        btChoosePinpoint.setVisibility(View.GONE);
+        tvNoPonpointInformation.setVisibility(View.GONE);
+        btChangePinpoint.setVisibility(View.VISIBLE);
+    }
+
+    @OnCheckedChanged(R2.id.switch_insurance)
+    void onSwitchInsuranceChanged() {
+
+    }
+
+    @OnCheckedChanged(R2.id.switch_partly_accept)
+    void onSwitchPartlyAcceptChanged() {
+
+    }
+
+    @OnCheckedChanged(R2.id.switch_dropshipper)
+    void onSwitchDropshipperChanged() {
+        llDropshipperInfo.setVisibility(View.VISIBLE);
+    }
+
+    @OnClick(R2.id.img_bt_insurance_info)
+    void onInsuranceInfoClick() {
+        showBottomSheet(getString(R.string.title_bottomsheet_insurance),
+                "", R.drawable.ic_insurance);
+    }
+
+    @OnClick(R2.id.img_bt_partly_accept_info)
+    void onPartlyAcceptInfoClick() {
+        showBottomSheet(getString(R.string.title_bottomsheet_insurance),
+                "", R.drawable.ic_insurance);
+    }
+
+    @OnClick(R2.id.img_bt_dropshipper_info)
+    void onDropshipperInfoClick() {
+        showBottomSheet(getString(R.string.title_bottomsheet_insurance),
+                "", R.drawable.ic_insurance);
+    }
+
+    private void showBottomSheet(String title, String message, int image) {
+        BottomSheetView bottomSheetView = new BottomSheetView(getActivity());
+        bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
+                .BottomSheetFieldBuilder()
+                .setTitle(title)
+                .setBody(message)
+                .setImg(image)
+                .build());
+
+        bottomSheetView.show();
+    }
+
+    @Override
+    public void onCourierItemClick() {
 
     }
 }

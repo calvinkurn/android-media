@@ -2,12 +2,17 @@ package com.tokopedia.transaction.checkout.view;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
+import com.tokopedia.transaction.checkout.view.adapter.ShipmentChoiceAdapter;
+import com.tokopedia.transaction.checkout.view.presenter.IShipmentChoicePresenter;
 import com.tokopedia.transaction.checkout.view.view.IShipmentChoiceView;
 
 import butterknife.BindView;
@@ -16,10 +21,18 @@ import butterknife.BindView;
  * Created by Irfan Khoirul on 24/01/18.
  */
 
-public class ShipmentChoiceFragment extends BasePresenterFragment implements IShipmentChoiceView {
+public class ShipmentChoiceFragment extends BasePresenterFragment implements IShipmentChoiceView,
+        ShipmentChoiceAdapter.ViewListener {
 
     @BindView(R2.id.rv_shipment_choice)
     RecyclerView rvShipmentChoice;
+    @BindView(R2.id.ll_network_error_view)
+    LinearLayout llNetworkErrorView;
+    @BindView(R2.id.pb_loading)
+    ProgressBar pbLoading;
+
+    private ShipmentChoiceAdapter shipmentChoiceAdapter;
+    private IShipmentChoicePresenter presenter;
 
     @Override
     protected boolean isRetainInstance() {
@@ -69,12 +82,12 @@ public class ShipmentChoiceFragment extends BasePresenterFragment implements ISh
 
     @Override
     protected void initView(View view) {
-
+        presenter.loadShipmentChoice();
     }
 
     @Override
     protected void setViewListener() {
-
+        setupRecyclerView();
     }
 
     @Override
@@ -87,4 +100,26 @@ public class ShipmentChoiceFragment extends BasePresenterFragment implements ISh
 
     }
 
+    private void setupRecyclerView() {
+        shipmentChoiceAdapter = new ShipmentChoiceAdapter(this);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(),
+                LinearLayoutManager.VERTICAL, false);
+        rvShipmentChoice.setLayoutManager(linearLayoutManager);
+        rvShipmentChoice.setAdapter(shipmentChoiceAdapter);
+    }
+
+    @Override
+    public void showLoading() {
+        pbLoading.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoading() {
+        pbLoading.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onShipmentItemClick() {
+
+    }
 }

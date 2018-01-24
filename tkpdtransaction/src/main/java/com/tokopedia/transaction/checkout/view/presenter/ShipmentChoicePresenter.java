@@ -18,4 +18,9 @@ public class ShipmentChoicePresenter implements IShipmentChoicePresenter {
     public void detachView() {
 
     }
+
+    @Override
+    public void loadShipmentChoice() {
+
+    }
 }

@@ -19,16 +19,16 @@ import butterknife.ButterKnife;
 
 public class ShipmentChoiceAdapter extends RecyclerView.Adapter<ShipmentChoiceAdapter.ShipmentViewHolder> {
 
-    private Listener listener;
+    private ViewListener viewListener;
 
-    public ShipmentChoiceAdapter(Listener listener) {
-        this.listener = listener;
+    public ShipmentChoiceAdapter(ViewListener viewListener) {
+        this.viewListener = viewListener;
     }
 
     @Override
     public ShipmentViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.holder_item_shipment_choice, parent, false);
+                .inflate(R.layout.holder_item_shipment, parent, false);
 
         return new ShipmentViewHolder(itemView);
     }
@@ -43,8 +43,8 @@ public class ShipmentChoiceAdapter extends RecyclerView.Adapter<ShipmentChoiceAd
         return 0;
     }
 
-    public interface Listener {
-        void onItemClick();
+    public interface ViewListener {
+        void onShipmentItemClick();
     }
 
     protected class ShipmentViewHolder extends RecyclerView.ViewHolder {

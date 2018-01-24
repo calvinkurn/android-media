@@ -14,20 +14,20 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/tv_shipment_type"
+            android:id="@+id/tv_courier_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="14sp"
-            tools:text="Same Day" />
+            tools:text="JNE" />
 
         <TextView
-            android:id="@+id/tv_price_range"
+            android:id="@+id/tv_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_ms"
             android:layout_marginStart="@dimen/margin_ms"
             android:textSize="12sp"
-            tools:text="Mulai dari Rp 15.000" />
+            tools:text="Rp 15.000" />
 
         <View
             android:layout_width="0dp"
@@ -49,7 +49,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="12sp"
-        tools:text="(6 - 8 jam pengiriman)" />
-
+        tools:text="1 hari kerja" />
 
 </LinearLayout>
