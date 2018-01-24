@@ -28,7 +28,6 @@ import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.inbox.inboxchat.activity.SendMessageActivity;
 import com.tokopedia.inbox.inboxmessageold.activity.SendMessageActivityOld;
 import com.tokopedia.mitratoppers.common.constant.MitraToppersBaseURL;
-import com.tokopedia.mitratoppers.common.constant.MitraToppersClientKey;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.utils.WhiteList;
@@ -169,8 +168,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     private void generateSellerAppNetworkKeys() {
         AuthUtil.KEY.KEY_CREDIT_CARD_VAULT = SellerAppNetworkKeys.CREDIT_CARD_VAULT_AUTH_KEY;
         AuthUtil.KEY.ZEUS_WHITELIST = SellerAppNetworkKeys.ZEUS_WHITELIST;
-
-        MitraToppersClientKey.CLIENT_KEY_1 = SellerAppNetworkKeys.MITRA_TOPPERS_CLIENT_KEY;
     }
 
     public void initializeDatabase() {
