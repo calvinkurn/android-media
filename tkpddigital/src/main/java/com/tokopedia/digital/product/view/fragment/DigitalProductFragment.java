@@ -195,14 +195,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         void updateTitleToolbar(String title);
     }
 
-    public static Fragment newInstance(String categoryId) {
-        Fragment fragment = new DigitalProductFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(ARG_PARAM_EXTRA_CATEGORY_ID, categoryId);
-        fragment.setArguments(bundle);
-        return fragment;
-    }
-
     public static Fragment newInstance(
             String categoryId, String operatorId, String productId, String clientNumber) {
         Fragment fragment = new DigitalProductFragment();
@@ -393,6 +385,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     public void renderCategory(BaseDigitalProductView digitalProductView, CategoryData categoryData, HistoryClientNumber historyClientNumber) {
         this.categoryDataState = categoryData;
+        this.historyClientNumberState = historyClientNumber;
+        actionListener.updateTitleToolbar(categoryData.getName());
         holderProductDetail.removeAllViews();
         if (this.digitalProductView == null) {
             this.digitalProductView = digitalProductView;
