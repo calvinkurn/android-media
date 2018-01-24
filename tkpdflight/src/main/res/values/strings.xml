@@ -311,4 +311,5 @@
     <string name="flight_order_payment_label">Metode Pembayaran</string>
     <string name="flight_order_a_n_prefix">a.n.</string>
     <string name="flight_order_branch_prefix">Cabang</string>
+    <string name="flight_error_pick_journey">Terjadi kesalahan, Silakan ulangi kembali.</string>
 </resources>

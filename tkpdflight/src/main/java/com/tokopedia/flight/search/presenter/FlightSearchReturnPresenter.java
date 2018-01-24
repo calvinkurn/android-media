@@ -35,9 +35,7 @@ public class FlightSearchReturnPresenter extends BaseDaggerPresenter<FlightSearc
         this.compositeSubscription = new CompositeSubscription();
     }
 
-    public void onFlightSearchSelected(String departureDate,
-                                       String returnDate,
-                                       String selectedFlightDeparture,
+    public void onFlightSearchSelected(String selectedFlightDeparture,
                                        final FlightSearchViewModel returnFlightSearchViewModel) {
         flightBookingGetSingleResultUseCase.execute(flightBookingGetSingleResultUseCase.createRequestParam(false, selectedFlightDeparture),
                 new Subscriber<FlightSearchViewModel>() {
@@ -50,8 +48,7 @@ public class FlightSearchReturnPresenter extends BaseDaggerPresenter<FlightSearc
                     public void onError(Throwable e) {
                         e.printStackTrace();
                         if (isViewAttached()) {
-
-
+                            getView().showErrorPickJourney();
                         }
                     }
 
@@ -96,30 +93,32 @@ public class FlightSearchReturnPresenter extends BaseDaggerPresenter<FlightSearc
                     public Boolean call(FlightSearchViewModel departureViewModel, FlightSearchViewModel returnViewModel) {
                         return isValidReturnJourney(departureViewModel, returnViewModel);
                     }
-                }
-                )
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber<Boolean>() {
-                            @Override
-                            public void onCompleted() {
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
 
-                            }
+                    }
 
-                            @Override
-                            public void onError(Throwable e) {
-                                e.printStackTrace();
-                            }
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        if (isViewAttached()) {
+                            getView().showErrorPickJourney();
+                        }
+                    }
 
-                            @Override
-                            public void onNext(Boolean aBoolean) {
-                                if (aBoolean) {
-                                    getView().navigateToCart(selectedFlightReturn);
-                                } else {
-                                    getView().showReturnTimeShouldGreaterThanArrivalDeparture();
-                                }
-                            }
-                        })
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        if (aBoolean) {
+                            getView().navigateToCart(selectedFlightReturn);
+                        } else {
+                            getView().showReturnTimeShouldGreaterThanArrivalDeparture();
+                        }
+                    }
+                })
         );
     }
 

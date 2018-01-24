@@ -79,6 +79,9 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.utils.DateLabelUtils;
+import com.tokopedia.di.DaggerSessionComponent;
+import com.tokopedia.di.SessionComponent;
+import com.tokopedia.di.SessionModule;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.activity.DigitalWebActivity;
@@ -142,6 +145,8 @@ import com.tokopedia.tkpd.deeplink.data.repository.DeeplinkRepositoryImpl;
 import com.tokopedia.tkpd.deeplink.domain.interactor.MapUrlUseCase;
 import com.tokopedia.tkpd.drawer.DrawerBuyerHelper;
 import com.tokopedia.tkpd.flight.FlightGetProfileInfoData;
+import com.tokopedia.tkpd.flight.di.DaggerFlightConsumerComponent;
+import com.tokopedia.tkpd.flight.di.FlightConsumerComponent;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
@@ -192,8 +197,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     ReactNativeHost reactNativeHost;
     @Inject
     ReactUtils reactUtils;
+
     private DaggerProductComponent.Builder daggerProductBuilder;
     private DaggerReactNativeComponent.Builder daggerReactNativeBuilder;
+    private DaggerFlightConsumerComponent.Builder daggerFlightBuilder;
+    private FlightConsumerComponent flightConsumerComponent;
     private ProductComponent productComponent;
     private DaggerShopComponent.Builder daggerShopBuilder;
     private ShopComponent shopComponent;
@@ -224,12 +232,27 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         getReactNativeComponent().inject(this);
     }
 
+    private FlightConsumerComponent getFlightConsumerComponent() {
+        if (flightConsumerComponent == null) {
+            flightConsumerComponent = daggerFlightBuilder.build();
+        }
+        return flightConsumerComponent;
+    }
+
     private void initializeDagger() {
         daggerProductBuilder = DaggerProductComponent.builder().productModule(new ProductModule());
         daggerReactNativeBuilder = DaggerReactNativeComponent.builder()
                 .appComponent(getApplicationComponent())
                 .reactNativeModule(new ReactNativeModule(this));
         daggerShopBuilder = DaggerShopComponent.builder().shopModule(new ShopModule());
+
+        SessionComponent sessionComponent =
+                DaggerSessionComponent.builder()
+                        .appComponent(getApplicationComponent())
+                        .sessionModule(new SessionModule())
+                        .build();
+        daggerFlightBuilder = DaggerFlightConsumerComponent.builder()
+                .sessionComponent(sessionComponent);
     }
 
     private void initRemoteConfig() {
@@ -559,8 +582,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Observable<ProfileInfo> getProfile() {
-        FlightGetProfileInfoData profileInfoData = new FlightGetProfileInfoData(this);
-        return profileInfoData.getProfileInfoPrefillBooking();
+        return FlightGetProfileInfoData
+                .newInstance(getFlightConsumerComponent())
+                .inject()
+                .getProfileInfoPrefillBooking();
     }
 
     @Override

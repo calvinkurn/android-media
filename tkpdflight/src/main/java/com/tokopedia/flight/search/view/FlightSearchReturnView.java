@@ -13,4 +13,6 @@ public interface FlightSearchReturnView extends FlightSearchView {
     void navigateToCart(FlightSearchViewModel returnFlightSearchViewModel);
 
     void navigateToCart(String selectedFlightReturn);
+
+    void showErrorPickJourney();
 }
