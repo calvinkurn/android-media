@@ -26,6 +26,8 @@ import com.tokopedia.core.util.TkpdWebView;
 
 /**
  * Created by okasurya on 1/23/18.
+ * For simple webview, without any override url and such logic, just load a url
+ * For another usage please use other webview, currently we have a lot of em
  */
 
 public class SimpleWebViewFragment extends Fragment {
@@ -67,6 +69,15 @@ public class SimpleWebViewFragment extends Fragment {
             super.onReceivedSslError(view, handler, error);
             handler.cancel();
             progressBar.setVisibility(View.GONE);
+        }
+
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            /**
+             * do not use override url here. please use another webview to do that task.
+             * e.g.: {@link com.tokopedia.core.webview.fragment.FragmentGeneralWebView}
+             */
+            return super.shouldOverrideUrlLoading(view, url);
         }
 
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
