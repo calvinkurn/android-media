@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.network.mapper.DataResponseMapper;
 import com.tokopedia.mitratoppers.preapprove.data.source.cloud.api.MitraToppersApi;
 import com.tokopedia.mitratoppers.common.di.MitraToppersQualifier;
 import com.tokopedia.mitratoppers.preapprove.data.model.response.preapprove.ResponsePreApprove;
