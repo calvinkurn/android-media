@@ -4,7 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RadioButton;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.tokopedia.transaction.R;
@@ -49,14 +49,14 @@ public class ShipmentChoiceAdapter extends RecyclerView.Adapter<ShipmentChoiceAd
 
     protected class ShipmentViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.rb_selected_item)
-        RadioButton rbSelectedItem;
         @BindView(R2.id.tv_shipment_type)
         TextView tvShipmentType;
-        @BindView(R2.id.tv_delivery_time_range)
-        TextView tvDeliveryTimeRange;
         @BindView(R2.id.tv_price_range)
         TextView tvPriceRange;
+        @BindView(R2.id.btn_check)
+        ImageButton btnCheck;
+        @BindView(R2.id.tv_delivery_time_range)
+        TextView tvDeliveryTimeRange;
 
         ShipmentViewHolder(View itemView) {
             super(itemView);

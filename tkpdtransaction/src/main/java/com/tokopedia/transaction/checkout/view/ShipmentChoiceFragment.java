@@ -3,23 +3,20 @@ package com.tokopedia.transaction.checkout.view;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
+import com.tokopedia.transaction.checkout.view.view.IShipmentChoiceView;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 /**
  * Created by Irfan Khoirul on 24/01/18.
  */
 
-public class ShipmentChoiceFragment extends BasePresenterFragment {
+public class ShipmentChoiceFragment extends BasePresenterFragment implements IShipmentChoiceView {
 
     @BindView(R2.id.rv_shipment_choice)
     RecyclerView rvShipmentChoice;

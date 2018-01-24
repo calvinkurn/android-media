@@ -193,6 +193,20 @@
     <string name="label_colon">:</string>
     <string name="title_bottomsheet_pin_code_pickup_booth">Kode Pin</string>
     <string name="message_bottomsheet_pin_code_pickup_booth">Tunjukkan Kode Pin untuk verifikasi pada saat pengambilan barang</string>
+    <string name="label_choose_courier">Pilih Kurir</string>
+    <string name="label_shipment_type">Jenis Pengiriman</string>
+    <string name="label_change_pinpoint">Ubah Pinpoint</string>
+    <string name="label_no_pinpoint_choosen">Tandai lokasi tujuan pengiriman dalam peta jika Anda menggunakan Go-Send, Grab Parcel, dan Ninja Express.</string>
+    <string name="label_choose_pinpoint">Pilih Lokasi Tujuan dalam Peta</string>
+    <string name="label_dropshipper_new">Dropshipper</string>
+    <string name="label_accept_partial_order_new">Terima Sebagian</string>
+    <string name="label_shipment_fee">Total Ongkos Kirim</string>
+    <string name="label_order_shipping_address_new">Alamat Pengiriman</string>
+    <string name="label_shipment_insurance">Asuransi Pengiriman</string>
+    <string name="image_desc_button_insurance_info">Button insurance info</string>
+    <string name="image_desc_button_dropshipper_info">Button dropshipper info</string>
+    <string name="image_desc_button_partial_order_info">Button partial order info</string>
+
     <string-array name="pickup_point">
         <item>Alfamart</item>
     </string-array>

@@ -22,11 +22,12 @@
                 android:layout_marginBottom="4dp"
                 android:layout_marginLeft="@dimen/new_margin_med"
                 android:layout_marginRight="@dimen/new_margin_med"
-                android:text="Jenis Pengiriman"
+                android:text="@string/label_shipment_type"
                 android:textColor="@color/label_text_color"
                 android:textSize="12sp" />
 
             <Spinner
+                android:id="@+id/sp_shipment_choice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/new_margin_med"
@@ -39,14 +40,16 @@
                 android:layout_marginLeft="@dimen/new_margin_med"
                 android:layout_marginRight="@dimen/new_margin_med"
                 android:layout_marginTop="@dimen/margin_ms"
-                android:text="Pilih Kurir"
+                android:text="@string/label_choose_courier"
                 android:textSize="12sp" />
 
             <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_courier_choice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
             <TextView
+                android:id="@+id/tv_shipment_information"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="#f9fef9"
@@ -55,11 +58,12 @@
                 tools:text="Perkiraan tiba : max 8 jam sejak pesanan terkirim" />
 
             <FrameLayout
+                android:id="@+id/fl_pinpoint_map"
                 android:layout_width="match_parent"
                 android:layout_height="160dp">
 
                 <com.google.android.gms.maps.MapView xmlns:map="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/mapview"
+                    android:id="@+id/map_view_pinpoint"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:clickable="false"
@@ -68,28 +72,31 @@
                     map:mapType="normal" />
 
                 <Button
+                    android:id="@+id/bt_change_pinpoint"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
                     android:layout_margin="@dimen/margin_sm"
-                    android:text="Ubah Pinpoint"
+                    android:text="@string/label_change_pinpoint"
                     android:textAllCaps="false"
                     android:textSize="12sp"
                     android:visibility="visible" />
 
                 <TextView
+                    android:id="@+id/tv_no_ponpoint_information"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="#bbbdbdbd"
                     android:gravity="center"
-                    android:text="Tandai lokasi tujuan pengiriman dalam peta jika Anda menggunakan Go-Send, Grab Parcel, dan Ninja Express." />
+                    android:text="@string/label_no_pinpoint_choosen" />
 
                 <Button
+                    android:id="@+id/bt_choose_pinpoint"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|center_horizontal"
                     android:layout_marginTop="16dp"
-                    android:text="Pilih Lokasi Tujuan dalam Peta"
+                    android:text="@string/label_choose_pinpoint"
                     android:textAllCaps="false"
                     android:textSize="12sp" />
 
@@ -102,11 +109,12 @@
                 android:layout_marginLeft="@dimen/new_margin_med"
                 android:layout_marginRight="@dimen/new_margin_med"
                 android:layout_marginTop="@dimen/margin_ms"
-                android:text="Alamat Pengiriman"
+                android:text="@string/label_order_shipping_address_new"
                 android:textColor="@color/label_text_color"
                 android:textSize="12sp" />
 
             <TextView
+                android:id="@+id/tv_shipment_address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/new_margin_med"
@@ -124,7 +132,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="32dp"
+            android:layout_height="16dp"
             android:background="@color/grey_200" />
 
         <LinearLayout
@@ -134,68 +142,30 @@
             android:paddingTop="16dp">
 
             <LinearLayout
+                android:id="@+id/ll_insurance"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/new_margin_med"
                 android:layout_marginRight="@dimen/new_margin_med"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/tv_label_insurance"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Asuransi Pengiriman"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="14sp" />
-
-                <Switch
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/tv_label_insurance"
-                android:layout_marginLeft="@dimen/new_margin_med"
-                android:layout_marginRight="@dimen/new_margin_med"
-                android:layout_marginTop="4dp"
-                android:textSize="12sp"
-                tools:text="RT 6 RW 3, Slipi, Kebon Jeruk, Jakarta Barat, DKI Jakarta, 11410, Indonesia" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginLeft="@dimen/new_margin_med"
-                android:layout_marginRight="@dimen/new_margin_med"
-                android:layout_marginTop="@dimen/margin_ms"
-                android:background="@drawable/bg_line_separator" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/new_margin_med"
-                android:layout_marginRight="@dimen/new_margin_med"
-                android:layout_marginTop="@dimen/margin_ms"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingBottom="16dp">
-
-                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Terima Sebagian"
+                    android:text="@string/label_shipment_insurance"
                     android:textColor="@color/title_text_color"
                     android:textSize="14sp" />
 
                 <ImageButton
+                    android:id="@+id/img_bt_insurance_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@color/transparent"
+                    android:contentDescription="@string/image_desc_button_insurance_info"
                     android:paddingLeft="@dimen/padding_ms"
-                    android:paddingRight="@dimen/margin_ms"
+                    android:paddingRight="@dimen/padding_ms"
                     android:src="@drawable/info_icon" />
 
                 <View
@@ -204,21 +174,167 @@
                     android:layout_weight="1" />
 
                 <Switch
+                    android:id="@+id/switch_insurance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/tv_special_insurance_condition"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    tools:text="Tidak Tersedia" />
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/separator_insurance"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/margin_ms"
+                android:background="@drawable/bg_line_separator" />
+
+            <LinearLayout
+                android:id="@+id/ll_partial_order"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/new_margin_med"
+                android:layout_marginRight="@dimen/new_margin_med"
+                android:layout_marginTop="@dimen/margin_ms"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_accept_partial_order_new"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="14sp" />
+
+                <ImageButton
+                    android:id="@+id/img_bt_partly_accept"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/transparent"
+                    android:contentDescription="@string/image_desc_button_partial_order_info"
+                    android:paddingLeft="@dimen/padding_ms"
+                    android:paddingRight="@dimen/padding_ms"
+                    android:src="@drawable/info_icon" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <Switch
+                    android:id="@+id/switch_partly_accept"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
             </LinearLayout>
 
             <View
+                android:id="@+id/separator_partial_order"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
+                android:layout_marginLeft="@dimen/new_margin_med"
+                android:layout_marginRight="@dimen/new_margin_med"
+                android:layout_marginTop="@dimen/margin_ms"
+                android:background="@drawable/bg_line_separator" />
+
+            <LinearLayout
+                android:id="@+id/ll_dropshipper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/new_margin_med"
+                android:layout_marginRight="@dimen/new_margin_med"
+                android:layout_marginTop="@dimen/margin_ms"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_dropshipper_new"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="14sp" />
+
+                <ImageButton
+                    android:id="@+id/img_bt_dropshipper_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/transparent"
+                    android:contentDescription="@string/image_desc_button_dropshipper_info"
+                    android:paddingLeft="@dimen/padding_ms"
+                    android:paddingRight="@dimen/padding_ms"
+                    android:src="@drawable/info_icon" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <Switch
+                    android:id="@+id/switch_dropshipper"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_dropshipper_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/new_margin_med"
+                android:layout_marginRight="@dimen/new_margin_med"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/text_input_layout_shipper_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Nama Pengirim">
+
+                    <EditText
+                        android:id="@+id/et_shipper_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_vs"
+                        android:imeOptions="actionNext"
+                        android:inputType="text"
+                        android:textSize="@dimen/font_small" />
+                </android.support.design.widget.TextInputLayout>
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/text_input_layout_shipper_phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Nomor Telepon">
+
+                    <EditText
+                        android:id="@+id/et_shipper_phone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_vs"
+                        android:imeOptions="actionNext"
+                        android:inputType="text"
+                        android:textSize="@dimen/font_small" />
+                </android.support.design.widget.TextInputLayout>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="16dp"
                 android:background="@color/grey_400" />
 
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="32dp"
+            android:layout_height="16dp"
             android:background="@color/grey_200" />
 
         <LinearLayout
@@ -230,24 +346,26 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Total Ongkos Kirim" />
+                android:text="@string/label_shipment_fee" />
 
             <TextView
+                android:id="@+id/tv_total_shipping_fee"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:fontFamily="sans-serif-medium"
-                android:gravity="right|end"
-                android:text="Rp 125.500"
-                android:textColor="@color/colorRed" />
+                android:gravity="end"
+                android:textColor="@color/colorRed"
+                tools:text="Rp 125.500" />
 
         </LinearLayout>
 
         <Button
+            android:id="@+id/bt_save"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/tkpd_main_green"
-            android:text="Simpan"
+            android:text="@string/title_save"
             android:textAllCaps="false"
             android:textColor="@color/white" />
 
