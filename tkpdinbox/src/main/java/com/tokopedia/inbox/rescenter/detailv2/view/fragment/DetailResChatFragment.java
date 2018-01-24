@@ -34,6 +34,7 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.gallery.GalleryActivity;
+import com.tokopedia.core.gallery.GalleryType;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.manage.people.address.model.Destination;
@@ -176,7 +177,7 @@ public class DetailResChatFragment
     public void actionImagePicker() {
         if (TrackingUtils.getGtmString(AppEventTracking.GTM.RESOLUTION_CENTER_UPLOAD_VIDEO).equals("true")) {
             startActivityForResult(
-                    GalleryActivity.createIntent(getActivity()),
+                    GalleryActivity.createIntent(getActivity(), GalleryType.ofAll()),
                     ImageUploadHandler.REQUEST_CODE_GALLERY
             );
         } else {

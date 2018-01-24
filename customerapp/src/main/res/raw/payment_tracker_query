@@ -5,6 +5,32 @@
     orders{
     	order_id
     	phone
+    	order_detail{
+            order_detail_id
+            product{
+                category{
+                    category_id
+                    category_name
+                }
+                product_id
+                product_name
+                product_price
+            }
+            product_id
+            product_price
+            quantity
+            subtotal_price
+    	}
+    	shop{
+    	    is_official
+    	    shop_id
+    	    shop_name
+    	}
+    	shipping{
+    	    shipping_id
+    	    shipping_name
+    	}
+    	shipping_price
     }
     partial {
     	amount
@@ -42,5 +68,6 @@
       	}
       }
     }
+    payment_amount
   }
 }

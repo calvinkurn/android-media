@@ -1,14 +1,26 @@
-package com.tokopedia.tkpd.thankyou.data.pojo.marketplace.tracker;
+package com.tokopedia.tkpd.thankyou.data.pojo.digital.response;
 
-/**
- * Created by okasurya on 12/12/17.
- */
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class ActionField {
+    @SerializedName("id")
+    @Expose
     private String id;
+    @SerializedName("affiliation")
+    @Expose
     private String affiliation;
+    @SerializedName("revenue")
+    @Expose
     private String revenue;
+    @SerializedName("tax")
+    @Expose
     private String tax;
+    @SerializedName("shipping")
+    @Expose
     private String shipping;
+    @SerializedName("coupon")
+    @Expose
     private String coupon;
 
     public String getId() {
