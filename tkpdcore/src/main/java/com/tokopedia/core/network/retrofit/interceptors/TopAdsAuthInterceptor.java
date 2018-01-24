@@ -22,21 +22,10 @@ public class TopAdsAuthInterceptor extends TkpdAuthInterceptor {
     private static final String HEADER_USER_ID = "Tkpd-UserId";
     private static final String HEADER_AUTHORIZATION = "Authorization";
     private static final String HEADER_X_AUTHORIZATION = "X-Tkpd-Authorization";
-    @Deprecated
-    private String bearerToken;
     private SessionHandler sessionHandler;
 
     public TopAdsAuthInterceptor(SessionHandler sessionHandler){
         this.sessionHandler = sessionHandler;
-    }
-
-    /**
-     * this class shouldn't be used for latest feature.
-     * @param bearerToken
-     */
-    @Deprecated
-    public TopAdsAuthInterceptor(String bearerToken) {
-        this.bearerToken = bearerToken;
     }
 
     protected Map<String, String> getHeaderMap(String path, String strParam, String method, String authKey, String contentTypeHeader) {
@@ -58,11 +47,7 @@ public class TopAdsAuthInterceptor extends TkpdAuthInterceptor {
         // headerMap.put("Tkpd-UserId", SessionHandler.getLoginID(MainApplication.getAppContext()));
         headerMap.put("X-Device", "android-" + GlobalConfig.VERSION_NAME);
         headerMap.put("X-Tkpd-Authorization", headerMap.get("Authorization"));
-        if(sessionHandler == null) {
-            headerMap.put("Authorization", "Bearer " + sessionHandler.getAccessToken());
-        }else{
-            headerMap.put("Authorization", bearerToken);
-        }
+        headerMap.put("Authorization", "Bearer " + sessionHandler.getAuthAccessToken());
         return headerMap;
     }
 }

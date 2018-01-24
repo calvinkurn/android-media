@@ -13,4 +13,5 @@
     <string name="label_copy_promo_code_loyalty_module">Salin Kode</string>
     <string name="label_promo_code_loyalty_module">Kode Promo</string>
     <string name="label_period_promo_loyalty_module">Priode Promo</string>
+    <string name="message_error_data_empty_get_promo_list">Promo tidak tersedia</string>
 </resources>

@@ -106,7 +106,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
     protected void initialPresenter() {
         super.initialPresenter();
         presenter = new TopAdsDetailProductViewPresenterImpl(getActivity(), this, new TopAdsProductAdInteractorImpl(
-                new TopAdsManagementService(new SessionHandler(getActivity()).getAccessToken(getActivity())),
+                new TopAdsManagementService(new SessionHandler(getActivity())),
                 new TopAdsCacheDataSourceImpl(getActivity())));
     }
 

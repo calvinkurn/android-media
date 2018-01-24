@@ -7,6 +7,7 @@ import com.tokopedia.transaction.addtocart.model.responseatcform.Destination;
 import com.tokopedia.transaction.addtocart.model.responseatcform.ProductDetail;
 import com.tokopedia.transaction.addtocart.model.responseatcform.Shop;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
+import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 
 /**
  * @author anggaprasetiyo on 11/18/16.
@@ -124,11 +125,20 @@ public class KeroppiParam {
         params.put(TOKEN, token);
         params.put(ORDER_VALUE, cartItem.getCartTotalProductPrice());
         params.put(CAT_ID, cartItem.getCartCatId());
-        params.put(PRODUCT_INSURANCE, cartItem.getCartInsuranceProd() == 1 ? "1" : "0");
+        params.put(PRODUCT_INSURANCE, getProductInsurance(cartItem));
         params.put(UT, ut);
         params.put(INSURANCE, "1");
 
         return params;
+    }
+
+    private static String getProductInsurance(CartItem cartItem) {
+        for (CartProduct cartProduct : cartItem.getCartProducts()) {
+            if (cartProduct.getProductMustInsurance().equals("1")) {
+                return "1";
+            }
+        }
+        return "0";
     }
 
 }

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
@@ -83,5 +84,10 @@ public class EditTemplateChatActivity extends BasePresenterActivity implements H
         }else {
             toolbar.setTitle(getString(R.string.edit_template_chat_title));
         }
+    }
+
+    @Override
+    public String getScreenName() {
+        return AppScreen.SCREEN_TEMPLATE_CHAT_SET;
     }
 }
