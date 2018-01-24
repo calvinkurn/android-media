@@ -5,7 +5,6 @@ import android.support.v7.widget.AppCompatTextView;
 import android.view.View;
 
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderAdapter;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
@@ -68,8 +67,7 @@ public class FlightOrderSuccessViewHolder extends FlightOrderBaseViewHolder<Flig
             @Override
             public void onClick(View view) {
                 if (adapterInteractionListener != null) {
-
-                    adapterInteractionListener.onDownloadETicket(FlightUrl.getUrlPdf(item.getId()));
+                    adapterInteractionListener.onDownloadETicket(item.getId(), item.getPdf());
                 }
             }
         });

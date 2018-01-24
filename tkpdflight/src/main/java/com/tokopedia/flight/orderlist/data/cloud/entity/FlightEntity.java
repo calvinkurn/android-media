@@ -37,6 +37,9 @@ public class FlightEntity {
     @SerializedName("currency")
     @Expose
     private String currency;
+    @SerializedName("pdf")
+    @Expose
+    private String pdf;
     @SerializedName("journeys")
     @Expose
     private List<JourneyEntity> journeys;
@@ -96,5 +99,9 @@ public class FlightEntity {
 
     public PaymentInfoEntity getPayment() {
         return payment;
+    }
+
+    public String getPdf() {
+        return pdf;
     }
 }

@@ -119,6 +119,12 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
     }
 
     @Override
+    public void navigateToOpenBrowser(String urlPdf) {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(urlPdf));
+        startActivity(browserIntent);
+    }
+
+    @Override
     public void selectFilter(String typeFilter) {
         selectedFilter = typeFilter;
         showSwipeLoading();
@@ -138,10 +144,11 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
     }
 
     @Override
-    public void onHelpOptionClicked(String orderId, int status) {
-        String invoice = "&iv=" + orderId;
-        String orderStat = "&ostat=" + status;
-        String url = FlightUrl.CONTACT_US_FLIGHT_PREFIX_GLOBAL + invoice + orderStat;
+    public void onHelpOptionClicked(String invoiceId, int status) {
+        StringBuilder result = new StringBuilder(FlightUrl.CONTACT_US_FLIGHT_PREFIX_GLOBAL);
+        result.append("&iv=" + invoiceId);
+        result.append("&ostat=" + status);
+        String url = result.toString();
         if (getActivity().getApplication() instanceof FlightModuleRouter
                 && ((FlightModuleRouter) getActivity().getApplication())
                 .getDefaultContactUsIntent(getActivity(), url) != null) {
@@ -176,9 +183,8 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
     }
 
     @Override
-    public void onDownloadETicket(String urlPdf) {
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(urlPdf));
-        startActivity(browserIntent);
+    public void onDownloadETicket(String invoiceId, String filename) {
+        presenter.onDownloadEticket(invoiceId, filename);
     }
 
     @Override
