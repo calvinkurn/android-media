@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
@@ -97,12 +98,13 @@ public class CartFragment extends BasePresenterFragment implements
 
     @Override
     protected void initView(View view) {
-
+        cartRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        cartRecyclerView.setAdapter(cartListAdapter);
     }
 
     @Override
     protected void setViewListener() {
-
+        dPresenter.processGetCartData();
     }
 
     @Override
@@ -142,7 +144,12 @@ public class CartFragment extends BasePresenterFragment implements
 
     @Override
     public void onCartItemActionRemarkClicked(CartItemHolderData cartItemHolderData, int position) {
+        cartListAdapter.updateEditableRemark(position);
+    }
 
+    @Override
+    public void onCartItemRemarkEditChange(CartItemData cartItemData, int position, String remark) {
+        cartListAdapter.updateRemark(position, remark);
     }
 
     @Override
@@ -202,7 +209,7 @@ public class CartFragment extends BasePresenterFragment implements
 
     @Override
     public void renderCartListData(List<CartItemData> cartItemDataList) {
-
+        cartListAdapter.addDataList(cartItemDataList);
     }
 
     @Override
@@ -238,5 +245,9 @@ public class CartFragment extends BasePresenterFragment implements
     @Override
     public void enableSwipeRefresh() {
 
+    }
+
+    public static CartFragment newInstance() {
+        return new CartFragment();
     }
 }

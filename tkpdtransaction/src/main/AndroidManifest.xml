@@ -36,6 +36,13 @@
             android:label="@string/title_activity_cart"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".checkout.view.CartActivity"
+            android:label="@string/title_activity_cart"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".cart.activity.ShipmentCartActivity"
             android:label="@string/title_activity_cart_shipment"

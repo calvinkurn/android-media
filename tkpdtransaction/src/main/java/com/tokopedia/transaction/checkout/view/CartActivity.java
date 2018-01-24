@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.checkout.view;
 
+import android.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -33,7 +34,10 @@ public class CartActivity extends BasePresenterActivity {
 
     @Override
     protected void initView() {
-
+        Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
+        if (fragment == null || !(fragment instanceof CartFragment))
+            getFragmentManager().beginTransaction().replace(R.id.container,
+                    CartFragment.newInstance()).commit();
     }
 
     @Override

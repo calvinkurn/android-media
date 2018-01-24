@@ -1,14 +1,18 @@
 package com.tokopedia.transaction.checkout.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemHolderData;
 
 import java.util.ArrayList;
@@ -23,6 +27,7 @@ import javax.inject.Inject;
 public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final ActionListener actionListener;
     private List<CartItemHolderData> cartItemHolderDataList;
+    private boolean onBind;
 
     @Inject
     public CartListAdapter(ActionListener actionListener) {
@@ -38,15 +43,65 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+        onBind = true;
         CartItemHolder holderView = (CartItemHolder) holder;
-        CartItemHolderData data = cartItemHolderDataList.get(position);
+        final CartItemHolderData data = cartItemHolderDataList.get(position);
 
         holderView.tvShopName.setText(data.getCartItemData().getOriginData().getShopName());
         holderView.tvProductName.setText(data.getCartItemData().getOriginData().getProductName());
         holderView.tvProductPrice.setText(data.getCartItemData().getOriginData().getPriceFormatted());
         holderView.tvProductWeight.setText(data.getCartItemData().getOriginData().getWeightFormatted());
-        holderView.etQty.setText(data.getCartItemData().getUpdatedData().getQuantity());
+//        holderView.etQty.setText(data.getCartItemData().getUpdatedData().getQuantity());
+
+        if (!TextUtils.isEmpty(data.getCartItemData().getUpdatedData().getRemark())) {
+            holderView.etRemark.setVisibility(View.VISIBLE);
+        } else {
+            holderView.etRemark.setVisibility(View.GONE);
+        }
+
+        holderView.etRemark.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if (actionId == EditorInfo.IME_ACTION_SEND) {
+                    actionListener.onCartItemRemarkEditChange(
+                            data.getCartItemData(), position, textView.getText().toString()
+                    );
+                    return true;
+                }
+                return false;
+            }
+        });
+//        holderView.etRemark.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable editable) {
+//                actionListener.onCartItemRemarkEditChange(data.getCartItemData(), position, editable.toString());
+//            }
+//        });
+
+        holderView.tvActionRemark.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                actionListener.onCartItemActionRemarkClicked(data, position);
+            }
+        });
+        if (data.isEditableRemark()) {
+            holderView.tvActionRemark.setVisibility(View.VISIBLE);
+            holderView.etRemark.setEnabled(false);
+        } else {
+            holderView.tvActionRemark.setVisibility(View.GONE);
+            holderView.etRemark.setEnabled(true);
+        }
         holderView.etRemark.setText(data.getCartItemData().getUpdatedData().getRemark());
 
         holderView.tvInfoRFreeReturn.setVisibility(
@@ -61,12 +116,37 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         holderView.tvInfoRFreeReturn.setText(data.getCartItemData().getOriginData().getCashBackInfo());
 
 
+        onBind = false;
     }
 
     @Override
     public int getItemCount() {
         return cartItemHolderDataList.size();
     }
+
+    public void addDataList(List<CartItemData> cartItemDataList) {
+        for (CartItemData cartItemData : cartItemDataList) {
+            CartItemHolderData cartItemHolderData = new CartItemHolderData();
+            cartItemHolderData.setCartItemData(cartItemData);
+            cartItemHolderData.setEditableRemark(false);
+            cartItemHolderData.setErrorItem(false);
+            cartItemHolderData.setMessageError("");
+            cartItemHolderData.setEditableRemark(false);
+            cartItemHolderDataList.add(cartItemHolderData);
+        }
+        notifyDataSetChanged();
+    }
+
+    public void updateEditableRemark(int position) {
+        cartItemHolderDataList.get(0).setEditableRemark(true);
+        if (onBind) notifyItemChanged(position);
+    }
+
+    public void updateRemark(int position, String remark) {
+        cartItemHolderDataList.get(0).getCartItemData().getUpdatedData().setRemark(remark);
+        if (!onBind) notifyItemChanged(position);
+    }
+
 
     public interface ActionListener {
 
@@ -82,6 +162,7 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         void onCartItemActionRemarkClicked(CartItemHolderData cartItemHolderData, int position);
 
+        void onCartItemRemarkEditChange(CartItemData cartItemData, int position, String remark);
     }
 
     public class CartItemHolder extends RecyclerView.ViewHolder {
@@ -107,7 +188,7 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             this.tvProductPrice = itemView.findViewById(R.id.tv_product_price);
             this.tvProductWeight = itemView.findViewById(R.id.tv_product_weight);
             this.tvShopName = itemView.findViewById(R.id.tv_shop_name);
-            this.etQty = itemView.findViewById(R.id.et_quantity_product);
+            this.etQty = itemView.findViewById(R.id.et_qty);
             this.btnQtyPlus = itemView.findViewById(R.id.btn_qty_plus);
             this.btnQtyMinus = itemView.findViewById(R.id.btn_qty_min);
             this.tvInfoRFreeReturn = itemView.findViewById(R.id.tv_info_free_return);
