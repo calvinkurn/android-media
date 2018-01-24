@@ -239,13 +239,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.attachView(this);
-        if (getArguments().containsKey(EXTRA_TRIP) && getArguments().containsKey(EXTRA_CLASS) && getArguments().containsKey(EXTRA_PASSENGER)
-                && getArguments().getString(EXTRA_TRIP) != null && getArguments().getString(EXTRA_PASSENGER) != null && getArguments().getString(EXTRA_CLASS) != null) {
-            presenter.initialize(true);
-            presenter.transformExtras(getArguments().getString(EXTRA_TRIP), getArguments().getString(EXTRA_PASSENGER), getArguments().getString(EXTRA_CLASS));
-        } else {
-            presenter.initialize(false);
-        }
+        presenter.initialize();
         KeyboardHandler.hideSoftKeyboard(getActivity());
 
     }
@@ -255,6 +249,26 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         return FlightAnalytics.Screen.HOMEPAGE;
     }
 
+    @Override
+    public boolean isFromApplink() {
+        return getArguments().containsKey(EXTRA_TRIP) && getArguments().containsKey(EXTRA_CLASS) && getArguments().containsKey(EXTRA_PASSENGER)
+                && getArguments().getString(EXTRA_TRIP) != null && getArguments().getString(EXTRA_PASSENGER) != null && getArguments().getString(EXTRA_CLASS) != null;
+    }
+
+    @Override
+    public String getTripArguments() {
+        return getArguments().getString(EXTRA_TRIP);
+    }
+
+    @Override
+    public String getPassengerArguments() {
+        return getArguments().getString(EXTRA_PASSENGER);
+    }
+
+    @Override
+    public String getClassArguments() {
+        return getArguments().getString(EXTRA_CLASS);
+    }
 
     @Override
     public void renderSingleTripView() {

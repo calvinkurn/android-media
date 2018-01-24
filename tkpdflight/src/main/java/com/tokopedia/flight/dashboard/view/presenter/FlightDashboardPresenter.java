@@ -92,9 +92,9 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     }
 
     @Override
-    public void initialize(boolean fromApplink) {
+    public void initialize() {
         if (userSession.isLoggedIn()) {
-            onInitialize(fromApplink);
+            onInitialize(getView().isFromApplink());
         } else {
             getView().navigateToLoginPage();
         }
@@ -107,6 +107,10 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         if (!fromApplink) {
             actionLoadFromCache();
             actionGetClassesAndSetDefaultClass();
+        } else if (fromApplink) {
+            transformExtras(getView().getTripArguments(),
+                    getView().getPassengerArguments(),
+                    getView().getClassArguments());
         }
     }
 
@@ -415,8 +419,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         }
     }
 
-    @Override
-    public void transformExtras(String extrasTrip, String extrasPassenger, String extrasClass) {
+    private void transformExtras(String extrasTrip, String extrasPassenger, String extrasClass) {
         try {
             // transform trip extras
             String[] tempExtras = extrasTrip.split(",");

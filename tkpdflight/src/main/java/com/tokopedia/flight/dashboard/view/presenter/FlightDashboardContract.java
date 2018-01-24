@@ -63,6 +63,14 @@ public interface FlightDashboardContract {
         void hideBannerView();
 
         String getScreenName();
+
+        boolean isFromApplink();
+
+        String getTripArguments();
+
+        String getPassengerArguments();
+
+        String getClassArguments();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -71,7 +79,7 @@ public interface FlightDashboardContract {
 
         void onRoundTripChecked();
 
-        void initialize(boolean fromApplink);
+        void initialize();
 
         void onReverseAirportButtonClicked();
 
@@ -98,8 +106,6 @@ public interface FlightDashboardContract {
         void onLoginResultReceived();
 
         void onBannerItemClick(int position, BannerDetail bannerDetail);
-
-        void transformExtras(String extrasTrip, String extrasPassenger, String extrasClass);
 
     }
 }
