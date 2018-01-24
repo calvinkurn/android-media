@@ -111,8 +111,8 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
         }
         if (!data.getInfo().getProductStatus().equals(PRD_STATE_ACTIVE)) {
             listener.onProductStatusError();
-            if (TextUtils.isEmpty(data.getInfo().getProductStatusTitle())
-                    && TextUtils.isEmpty(data.getInfo().getProductStatusMessage())) {
+            if (!TextUtils.isEmpty(data.getInfo().getProductStatusTitle())
+                    && !TextUtils.isEmpty(data.getInfo().getProductStatusMessage())) {
                 errorProductContainer.setVisibility(VISIBLE);
                 errorProductTitle.setText(data.getInfo().getProductStatusTitle());
                 errorProductSubitle.setText(data.getInfo().getProductStatusMessage());
