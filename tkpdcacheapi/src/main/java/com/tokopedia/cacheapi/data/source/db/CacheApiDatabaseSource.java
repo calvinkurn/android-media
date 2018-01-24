@@ -5,6 +5,8 @@ import android.text.TextUtils;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
+import com.tokopedia.cacheapi.data.source.db.model.CacheApiData;
+import com.tokopedia.cacheapi.data.source.db.model.CacheApiWhitelist;
 import com.tokopedia.cacheapi.domain.mapper.CacheApiWhiteListMapper;
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.cacheapi.util.CacheApiUtils;
@@ -27,10 +29,6 @@ public class CacheApiDatabaseSource {
     private static final long DIVIDE_FOR_SECONDS = 1000L;
 
     private static final String CACHE_API_KEY = "BU}~GV2(K)%z$1+H";
-
-    public CacheApiDatabaseSource() {
-
-    }
 
     public Observable<CacheApiWhitelist> getWhiteList(final String host, final String path) {
         return Observable.unsafeCreate(new Observable.OnSubscribe<CacheApiWhitelist>() {

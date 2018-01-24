@@ -2,9 +2,7 @@ package com.tokopedia.cacheapi.domain;
 
 import android.support.annotation.Nullable;
 
-import com.tokopedia.cacheapi.data.source.db.CacheApiData;
-import com.tokopedia.cacheapi.data.source.db.CacheApiWhitelist;
-import com.tokopedia.cacheapi.domain.model.CacheApiDataDomain;
+import com.tokopedia.cacheapi.data.source.db.model.CacheApiWhitelist;
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
 
 import java.util.Collection;

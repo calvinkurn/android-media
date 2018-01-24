@@ -1,6 +1,6 @@
 package com.tokopedia.cacheapi.domain.interactor;
 
-import com.tokopedia.cacheapi.data.source.db.CacheApiWhitelist;
+import com.tokopedia.cacheapi.data.source.db.model.CacheApiWhitelist;
 import com.tokopedia.cacheapi.domain.CacheApiRepository;
 import com.tokopedia.usecase.RequestParams;
 

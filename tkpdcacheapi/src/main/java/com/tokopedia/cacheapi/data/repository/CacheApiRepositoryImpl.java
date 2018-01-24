@@ -1,7 +1,7 @@
 package com.tokopedia.cacheapi.data.repository;
 
 import com.tokopedia.cacheapi.data.source.CacheApiDataSource;
-import com.tokopedia.cacheapi.data.source.db.CacheApiWhitelist;
+import com.tokopedia.cacheapi.data.source.db.model.CacheApiWhitelist;
 import com.tokopedia.cacheapi.domain.CacheApiRepository;
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
 
