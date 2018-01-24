@@ -6,9 +6,7 @@
     android:foregroundGravity="center_vertical"
     android:gravity="center_vertical"
     android:orientation="vertical"
-    android:paddingLeft="@dimen/padding_small_sm"
-    android:paddingRight="@dimen/padding_small_sm"
-    android:paddingTop="@dimen/padding_small_sm">
+    android:padding="@dimen/padding_small_sm">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -53,10 +51,5 @@
         android:textSize="12sp"
         tools:text="(6 - 8 jam pengiriman)" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="@dimen/padding_small_sm"
-        android:background="@drawable/bg_line_separator" />
 
 </LinearLayout>
