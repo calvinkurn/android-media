@@ -32,6 +32,7 @@ import com.tokopedia.core.util.TkpdWebView;
 
 public class SimpleWebViewFragment extends Fragment {
     private static final String SEAMLESS = "seamless";
+    public static final int PROGRESS_COMPLETED = 100;
     private ProgressBar progressBar;
     private TkpdWebView webview;
     private static final String EXTRA_URL = "url";
@@ -40,7 +41,7 @@ public class SimpleWebViewFragment extends Fragment {
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
             try {
-                if (newProgress == 100) {
+                if (newProgress == PROGRESS_COMPLETED) {
                     view.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
                     getActivity().setProgressBarIndeterminateVisibility(false);
@@ -147,11 +148,10 @@ public class SimpleWebViewFragment extends Fragment {
     }
 
     private void optimizeWebView() {
-        if (Build.VERSION.SDK_INT >= 19) {
-            webview.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-        } else {
-            webview.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-
-        }
+        webview.setLayerType(
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT ?
+                    View.LAYER_TYPE_HARDWARE : View.LAYER_TYPE_SOFTWARE,
+                null
+        );
     }
 }
