@@ -483,6 +483,7 @@ public class TkpdBaseURL {
         public static final String URL_TX_PAYMENT_EMONEY = BASE_DOMAIN + "v4/";
         public static final String URL_TX_PAYMENT_SPRINT_ASIA = BASE_DOMAIN + "v4/";
         public static final String URL_TX_PAYMENT_VOUCHER = BASE_DOMAIN + "v4/tx-voucher/";
+        public static final String URL_PICKUP_POINT = BASE_API_DOMAIN + "v4/action/tx-cart/";
 
         public static final String PATH_DO_WITHDRAW = "do_withdraw.pl";
         public static final String PATH_SEND_OTP_VERIFY_BANK_ACCOUNT = "send_otp_verify_bank_account.pl";
@@ -550,11 +551,15 @@ public class TkpdBaseURL {
         public static final String PATH_TX_PAYMENT_EMONEY = "tx-payment-emoney.pl";
 
         public static final String GET_COUPON_LIST = "coupon/list/";
+
+        public static final String PATH_EDIT_PICKUP_POINT = "edit_pickupstore_point";
+        public static final String PATH_REMOVE_PICKUP_POINT = "remove_pickupstore_point";
     }
 
     public static class Shipment {
         public static final String PATH_RATES = "rates/v1";
         public static final String PATH_DISTRICT_RECOMMENDATION = "/v2/district-recommendation";
+        public static final String PATH_PICKUP_STORE = "/v2/store-location";
     }
 
     public static class Upload {

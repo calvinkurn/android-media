@@ -129,6 +129,8 @@ public class OrderDetailData implements Parcelable {
         }
     };
 
+    private String pickupPinCode;
+
     public String getOrderId() {
         return orderId;
     }
@@ -440,5 +442,13 @@ public class OrderDetailData implements Parcelable {
         dest.writeString(driverPhone);
         dest.writeString(driverImage);
         dest.writeString(driverVehicle);
+    }
+
+    public String getPickupPinCode() {
+        return pickupPinCode;
+    }
+
+    public void setPickupPinCode(String pickupPinCode) {
+        this.pickupPinCode = pickupPinCode;
     }
 }

@@ -98,6 +98,8 @@ import com.tokopedia.transaction.cart.presenter.CartPresenter;
 import com.tokopedia.transaction.cart.presenter.ICartPresenter;
 import com.tokopedia.transaction.cart.receivers.TopPayBroadcastReceiver;
 import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
+import com.tokopedia.transaction.pickuppoint.domain.usecase.GetPickupPointsUseCase;
+import com.tokopedia.transaction.pickuppoint.view.activity.PickupPointActivity;
 import com.tokopedia.transaction.utils.LinearLayoutManagerNonScroll;
 import com.tokopedia.transaction.utils.ValueConverter;
 
@@ -109,6 +111,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_CART_ITEM;
+
 
 /**
  * @author anggaprasetiyo on 11/1/16.
@@ -117,6 +121,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         PaymentGatewayFragment.ActionListener, CartItemAdapter.CartItemActionListener,
         TopPayBroadcastReceiver.ActionListener, TopAdsItemClickListener {
     private static final String ANALYTICS_GATEWAY_PAYMENT_FAILED = "payment failed";
+    private static final int REQUEST_CHOOSE_PICKUP_POINT = 9;
 
     @BindView(R2.id.pb_main_loading)
     ProgressBar pbMainLoading;
@@ -297,6 +302,11 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
         getActivity().registerReceiver(topPayBroadcastReceiver, new IntentFilter(
                 TopPayBroadcastReceiver.ACTION_TOP_PAY
         ));
+    }
+
+    @Override
+    protected void initInjector() {
+
     }
 
     @Override
@@ -874,6 +884,44 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     }
 
     @Override
+    public void onClearPickupPoint(final CartItem cartItem) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(R.string.label_dialog_title_cancel_pickup);
+        builder.setMessage(R.string.label_dialog_message_cancel_pickup_booth);
+        builder.setPositiveButton(R.string.title_yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+//                pickupPointLayout.unSetData(AddToCartActivity.this);
+//                spShippingAgency.setEnabled(true);
+//                spShippingAgency.setSelection(0);
+//                pickupBooth = null;
+
+                // TODO : Request ke API stich,
+                presenter.processRemovePickupPoint(cartItem.getCartString(), "1234");
+                // TODO : Jika result success, go to edit cart shipment, set first available logistic, jika failed show toast
+                // renderInitialLoadingCartInfo();
+                // renderVisibleMainCartContainer();
+//                navigateToActivityRequest(ShipmentCartActivity.createInstance(getActivity(), cartItem),
+//                        ShipmentCartActivity.INTENT_REQUEST_CODE);
+            }
+        });
+        builder.setNegativeButton(R.string.title_no, null);
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    @Override
+    public void onEditPickupPoint(CartItem cartData) {
+        navigateToActivityRequest(PickupPointActivity.createInstance(getActivity(),
+                cartData.getCartDestination().getAddressDistrict(),
+                GetPickupPointsUseCase.generateParams(cartData.getStore())),
+                REQUEST_CHOOSE_PICKUP_POINT);
+        // TODO : Open PickupPointActivity
+        // TODO : Request ke API stich,
+        // TODO : Jika success, ganti view dg pickup point baru, jika failed show toast
+    }
+
+    @Override
     public void onGetParameterTopPaySuccess(TopPayParameterData data) {
         hideProgressLoading();
         PaymentPassData paymentPassData = new PaymentPassData();
@@ -1026,6 +1074,9 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
                 promoCodeLayout.setVisibility(View.GONE);
                 cancelPromoLayout.setOnClickListener(onPromoCancelled());
             }
+        } else if (requestCode == REQUEST_CHOOSE_PICKUP_POINT && resultCode == Activity.RESULT_OK) {
+            CartItem cartItem = data.getParcelableExtra(INTENT_CART_ITEM);
+            presenter.processUpdatePickupPoint(cartItem.getCartString(), "", "");
         }
     }
 
