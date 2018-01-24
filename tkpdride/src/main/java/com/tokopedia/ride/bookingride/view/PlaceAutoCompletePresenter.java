@@ -755,7 +755,7 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                                 address.setAddressId(place.getId());
                                 address.setLatitude(place.getLatLng().latitude);
                                 address.setLongitude(place.getLatLng().longitude);
-                                address.setType(PlaceAutoCompeleteViewModel.TYPE.GOOGLE_PLACE);
+                                address.setType(PlaceAutoCompeleteViewModel.TYPE.NEARBY_PLACE);
                                 addresses.add(address);
                             }
 
