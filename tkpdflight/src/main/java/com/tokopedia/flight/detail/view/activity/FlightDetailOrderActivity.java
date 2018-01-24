@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.AbstractionRouter;
@@ -17,10 +15,9 @@ import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.applink.ApplinkConstant;
 import com.tokopedia.flight.detail.view.fragment.FlightDetailOrderFragment;
-import com.tokopedia.flight.orderlist.di.FlightOrderComponent;
-import com.tokopedia.flight.orderlist.view.FlightOrderListActivity;
-import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 import com.tokopedia.flight.orderlist.di.DaggerFlightOrderComponent;
+import com.tokopedia.flight.orderlist.di.FlightOrderComponent;
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 
 /**
  * Created by zulfikarrahman on 12/12/17.

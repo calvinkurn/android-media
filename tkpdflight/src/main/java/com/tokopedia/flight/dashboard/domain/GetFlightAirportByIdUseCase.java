@@ -15,6 +15,7 @@ import rx.Observable;
 
 public class GetFlightAirportByIdUseCase extends UseCase<FlightAirportDB> {
     private static final String PARAM_AIRPORT_ID = "PARAM_AIRPORT_ID";
+    private static final String DEFAULT_AIRPORT_ID = "JKTA";
 
     private FlightRepository flightRepository;
 
@@ -25,7 +26,7 @@ public class GetFlightAirportByIdUseCase extends UseCase<FlightAirportDB> {
 
     @Override
     public Observable<FlightAirportDB> createObservable(RequestParams requestParams) {
-        return flightRepository.getAirportById(requestParams.getString(PARAM_AIRPORT_ID, "JKTA"));
+        return flightRepository.getAirportById(requestParams.getString(PARAM_AIRPORT_ID, DEFAULT_AIRPORT_ID));
     }
 
     public RequestParams createRequestParams(String airportId) {

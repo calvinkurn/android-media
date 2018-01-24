@@ -1,6 +1,5 @@
 package com.tokopedia.flight.dashboard.view.presenter;
 
-import android.os.Bundle;
 import android.support.annotation.StringRes;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;

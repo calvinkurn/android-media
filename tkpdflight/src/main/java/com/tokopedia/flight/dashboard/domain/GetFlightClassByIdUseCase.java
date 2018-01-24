@@ -15,6 +15,7 @@ import rx.Observable;
 
 public class GetFlightClassByIdUseCase extends UseCase<FlightClassEntity> {
     private static final String PARAM_CLASS_ID = "PARAM_CLASS_ID";
+    private static final int DEFAULT_CLASS_ID = 1;
 
     private FlightRepository flightRepository;
 
@@ -25,7 +26,7 @@ public class GetFlightClassByIdUseCase extends UseCase<FlightClassEntity> {
 
     @Override
     public Observable<FlightClassEntity> createObservable(RequestParams requestParams) {
-        return flightRepository.getFlightClassById(requestParams.getInt(PARAM_CLASS_ID, 1));
+        return flightRepository.getFlightClassById(requestParams.getInt(PARAM_CLASS_ID, DEFAULT_CLASS_ID));
     }
 
     public RequestParams createRequestParams(int classId) {

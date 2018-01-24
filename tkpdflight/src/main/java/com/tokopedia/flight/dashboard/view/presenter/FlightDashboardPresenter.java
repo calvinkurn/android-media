@@ -1,6 +1,5 @@
 package com.tokopedia.flight.dashboard.view.presenter;
 
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -18,7 +17,6 @@ import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassE
 import com.tokopedia.flight.dashboard.domain.GetFlightAirportByIdUseCase;
 import com.tokopedia.flight.dashboard.domain.GetFlightClassByIdUseCase;
 import com.tokopedia.flight.dashboard.domain.GetFlightClassesUseCase;
-import com.tokopedia.flight.dashboard.view.fragment.FlightDashboardFragment;
 import com.tokopedia.flight.dashboard.view.fragment.cache.FlightDashboardCache;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardViewModel;
@@ -439,14 +437,13 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
             actionGetAirportById(extrasTripDeparture[0], true);
             actionGetAirportById(extrasTripDeparture[1], false);
             onDepartureDateChange(Integer.parseInt(tripDate[0]), Integer.parseInt(tripDate[1]), Integer.parseInt(tripDate[2]));
+            onSingleTripChecked();
 
             if (tempExtras.length > 1) {
                 String[] extrasTripReturn = tempExtras[1].split("_");
                 tripDate = extrasTripReturn[2].split("-");
                 onReturnDateChange(Integer.parseInt(tripDate[0]), Integer.parseInt(tripDate[1]), Integer.parseInt(tripDate[2]));
                 onRoundTripChecked();
-            } else {
-                onSingleTripChecked();
             }
 
             // transform passenger count
