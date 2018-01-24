@@ -397,17 +397,17 @@ public class RideHomeMapPresenter extends BaseDaggerPresenter<RideHomeMapContrac
         getNearbyRoadsUseCase.execute(requestParams, new Subscriber<NearbyRoads>() {
             @Override
             public void onCompleted() {
-
+                getView().onErrorRenderNearbyCabs();
             }
 
             @Override
             public void onError(Throwable e) {
-
+                getView().onErrorRenderNearbyCabs();
             }
 
             @Override
             public void onNext(NearbyRoads nearbyRoads) {
-                if (isViewAttached() && !isUnsubscribed()) {
+                if (isViewAttached()) {
                     getView().renderNearbyCabs(nearbyRoads);
                 }
             }

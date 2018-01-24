@@ -52,6 +52,8 @@ public interface RideHomeMapContract {
 
         void renderNearbyCabs(NearbyRoads nearbyRoads);
 
+        void onErrorRenderNearbyCabs();
+
         void setSourceLocation(PlacePassViewModel location);
 
         void hideMarkerCenter();
