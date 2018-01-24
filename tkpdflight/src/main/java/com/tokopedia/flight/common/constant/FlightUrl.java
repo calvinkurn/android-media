@@ -25,8 +25,8 @@ public class FlightUrl {
     public static String PULSA_BASE_URL = "https://pulsa-api-staging.tokopedia.com/";
     public static String BANNER_PATH = PULSA_BASE_URL + "v1.4/banner";
 
-    public static String getUrlPdf(String orderId) {
-        return BASE_URL + FLIGHT_PATH + "pdf/generate?invoice_id=" + orderId + "&pdf=filename.pdf";
+    public static String getUrlPdf(String orderId, String filename) {
+        return BASE_URL + FLIGHT_PATH + "pdf/generate?invoice_id=" + orderId + "&pdf=" + filename;
     }
 
     public static String getUrlInvoice(String orderId, String userId) {

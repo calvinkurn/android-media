@@ -12,6 +12,7 @@ public class FlightOrderSuccessViewModel implements Visitable<FlightOrderTypeFac
     private String id;
     private String title;
     private String createTime;
+    private String pdf;
     private int status;
     private FlightOrderJourney orderJourney;
 
@@ -61,5 +62,13 @@ public class FlightOrderSuccessViewModel implements Visitable<FlightOrderTypeFac
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getPdf() {
+        return pdf;
+    }
+
+    public void setPdf(String pdf) {
+        this.pdf = pdf;
     }
 }

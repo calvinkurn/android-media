@@ -22,6 +22,7 @@ public class FlightOrder {
     private String totalInfant;
     private int totalInfantNumeric;
     private String currency;
+    private String pdf;
     private List<FlightOrderJourney> journeys;
     private List<FlightOrderPassengerViewModel> passengerViewModels;
     private PaymentInfoEntity payment;
@@ -155,5 +156,13 @@ public class FlightOrder {
 
     public void setPayment(PaymentInfoEntity payment) {
         this.payment = payment;
+    }
+
+    public String getPdf() {
+        return pdf;
+    }
+
+    public void setPdf(String pdf) {
+        this.pdf = pdf;
     }
 }

@@ -68,8 +68,7 @@ public class FlightOrderSuccessViewHolder extends FlightOrderBaseViewHolder<Flig
             @Override
             public void onClick(View view) {
                 if (adapterInteractionListener != null) {
-
-                    adapterInteractionListener.onDownloadETicket(FlightUrl.getUrlPdf(item.getId()));
+                    adapterInteractionListener.onDownloadETicket(FlightUrl.getUrlPdf(item.getId(), item.getPdf()));
                 }
             }
         });
