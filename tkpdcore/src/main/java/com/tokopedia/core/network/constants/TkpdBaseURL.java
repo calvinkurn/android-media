@@ -407,6 +407,7 @@ public class TkpdBaseURL {
         public static final String URL_ADDRESS = TOME_DOMAIN + "v1/web-service/apps/";
         public static final String PATH_IS_FAVORITE_SHOP = "v1/user/isfollowing";
         public static final String PATH_GET_SHOP_PRODUCT = "v1/web-service/shop/get_shop_product";
+        public static final String PATH_PRODUCT_VARIANT = "v2/product/{productId}/variant";
     }
 
     public static class ResCenter {
@@ -577,12 +578,6 @@ public class TkpdBaseURL {
         public static final String PATH_UPLOAD_VIDEO = "/upload/video";
         public static final String PATH_UPLOAD_ATTACHMENT = "/upload/attachment";
         public static final String PATH_GENERATE_HOST_RESO = "/v4/action/resolution-center/generate_token_host.pl";
-    }
-
-    public static class Tome {
-        public static final String PATH_IS_FAVORITE_SHOP = "v1/user/isfollowing";
-        public static final String PATH_GET_SHOP_PRODUCT = "v1/web-service/shop/get_shop_product";
-        public static final String PATH_PRODUCT_VARIANT = "v2/product/{productId}/variant";
     }
 
     public static class Ace {
