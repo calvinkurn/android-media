@@ -304,4 +304,11 @@
     <string name="flight_luggage_prefix">Bagasi</string>
     <string name="flight_meal_prefix">Makanan</string>
     <string name="flight_birthdate_prefix">Tanggal Lahir</string>
+    <string name="flight_order_payment_due_date_label">Batas Akhir Pembayaran</string>
+    <string name="flight_order_total_label">Jumlah Pembayaran</string>
+    <string name="flight_order_unique_code_label">Kode Unik Pembayaran</string>
+    <string name="flight_order_payment_manual_label">Rekening Tujuan</string>
+    <string name="flight_order_payment_label">Metode Pembayaran</string>
+    <string name="flight_order_a_n_prefix">a.n.</string>
+    <string name="flight_order_branch_prefix">Cabang</string>
 </resources>

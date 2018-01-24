@@ -40,6 +40,7 @@ public class FlightOrderMapper {
             flightOrder.setTotalInfantNumeric(orderEntity.getAttributes().getFlight().getTotalInfantNumeric());
             flightOrder.setJourneys(flightOrderJourneyMapper.transform(orderEntity.getAttributes().getFlight().getJourneys()));
             flightOrder.setPassengerViewModels(passengerViewModelMapper.transform(orderEntity.getAttributes().getFlight().getPassengers()));
+            flightOrder.setPayment(orderEntity.getAttributes().getFlight().getPayment());
         }
         return flightOrder;
     }

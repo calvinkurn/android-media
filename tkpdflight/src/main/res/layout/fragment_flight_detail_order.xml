@@ -67,9 +67,9 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:paddingBottom="@dimen/padding_vvvs"
-                android:paddingTop="@dimen/padding_vvvs"
                 android:paddingLeft="@dimen/padding_small"
                 android:paddingRight="@dimen/padding_small"
+                android:paddingTop="@dimen/padding_vvvs"
                 android:weightSum="2">
 
                 <TextView
@@ -85,6 +85,91 @@
                     android:layout_weight="1"
                     tools:text="1 Sep 2017, 05:00 WIB" />
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/payment_info_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/padding_vvvs"
+                    android:paddingLeft="@dimen/padding_small"
+                    android:paddingRight="@dimen/padding_small"
+                    android:paddingTop="@dimen/padding_vvvs"
+                    android:weightSum="2">
+
+                    <TextView
+                        android:id="@+id/tv_payment_description_label"
+                        style="@style/TextView.Small.BlackSecondary"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        tools:text="Rekening Tujuan" />
+
+                    <TextView
+                        android:id="@+id/tv_payment_description"
+                        style="@style/TextView.Small"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        tools:text="1 Sep 2017, 05:00 WIB" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/padding_vvvs"
+                    android:paddingLeft="@dimen/padding_small"
+                    android:paddingRight="@dimen/padding_small"
+                    android:paddingTop="@dimen/padding_vvvs"
+                    android:weightSum="2">
+
+                    <TextView
+                        android:id="@+id/tv_payment_cost_label"
+                        style="@style/TextView.Small.BlackSecondary"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="Jumlah Pembayaran" />
+
+                    <TextView
+                        android:id="@+id/tv_payment_cost"
+                        style="@style/TextView.Small.Bold"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:textColor="@color/flightPriceColor"
+                        tools:text="Rp100.000" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/padding_vvvs"
+                    android:paddingLeft="@dimen/padding_small"
+                    android:paddingRight="@dimen/padding_small"
+                    android:paddingTop="@dimen/padding_vvvs"
+                    android:weightSum="2">
+
+                    <TextView
+                        style="@style/TextView.Small.BlackSecondary"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="Batas Akhir Pembayaran" />
+
+                    <TextView
+                        android:id="@+id/tv_payment_due_date"
+                        style="@style/TextView.Small.Bold"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        tools:text="1 Nov 2018" />
+                </LinearLayout>
+            </LinearLayout>
+
 
             <View
                 android:layout_width="match_parent"
@@ -112,8 +197,7 @@
                         style="@style/TextView.Small.BlackSecondary"
                         android:layout_marginEnd="@dimen/margin_vvs"
                         android:layout_marginRight="@dimen/margin_vvs"
-                        android:text="@string/flight_label_order_id_detail"
-                         />
+                        android:text="@string/flight_label_order_id_detail" />
 
                     <TextView
                         android:id="@+id/order_id_detail"
@@ -164,8 +248,8 @@
                 android:id="@+id/recycler_view_flight"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:descendantFocusability="blocksDescendants"
                 android:background="@color/background_apps"
+                android:descendantFocusability="blocksDescendants"
                 android:nestedScrollingEnabled="false" />
 
         </LinearLayout>
@@ -189,10 +273,10 @@
                     android:id="@+id/title_expendable_passenger"
                     style="@style/style_expandable_flight_detail_order_title"
                     android:layout_width="0dp"
-                    android:textSize="18sp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/flight_label_passenger_data" />
+                    android:text="@string/flight_label_passenger_data"
+                    android:textSize="18sp" />
 
                 <android.support.v7.widget.AppCompatImageView
                     android:id="@+id/image_expendable_passenger"
@@ -254,7 +338,7 @@
 
                     <TextView
                         style="@style/TextView.Small.Green"
-                        android:text="@string/flight_label_invoice"/>
+                        android:text="@string/flight_label_invoice" />
 
                 </LinearLayout>
             </RelativeLayout>
