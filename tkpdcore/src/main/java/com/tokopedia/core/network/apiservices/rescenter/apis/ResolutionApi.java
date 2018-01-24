@@ -8,6 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import okhttp3.MultipartBody;
@@ -38,6 +39,14 @@ public interface ResolutionApi {
     String PATH_TROUBLE_ID = "trouble_id";
     String PATH_CONVERSATION_ID = "conversation_id";
     //Version 2
+
+
+    @GET(TkpdBaseURL.ResCenterV2.GET_INBOX_RESOLUTION_V2_BUYER)
+    Observable<Response<TkpdResponse>> getInboxBuyer(@QueryMap HashMap<String, Object> params);
+
+    @GET(TkpdBaseURL.ResCenterV2.GET_INBOX_RESOLUTION_V2_SELLER)
+    Observable<Response<TkpdResponse>> getInboxSeller(@QueryMap HashMap<String, Object> params);
+
 
     @GET(TkpdBaseURL.ResCenterV2.GET_RESOLUTION_STEP_1)
     Observable<Response<TkpdResponse>> getProductProblemList(@Path(PATH_ORDER_ID) String orderId,

@@ -1,0 +1,28 @@
+package com.tokopedia.inbox.rescenter.inboxv2.domain.usecase;
+
+import com.tokopedia.core.base.domain.UseCaseWithParams;
+import com.tokopedia.inbox.rescenter.inboxv2.data.factory.ResoInboxFactory;
+import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.InboxItemResultViewModel;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
+
+import rx.Observable;
+
+/**
+ * Created by yfsx on 24/01/18.
+ */
+
+public class GetInboxBuyerUseCase extends UseCase<InboxItemResultViewModel> {
+
+
+    private ResoInboxFactory factory;
+
+    public GetInboxBuyerUseCase(ResoInboxFactory factory) {
+        this.factory = factory;
+    }
+
+    @Override
+    public Observable<InboxItemResultViewModel> createObservable(RequestParams requestParams) {
+        return factory.getInboxBuyer(requestParams);
+    }
+}
