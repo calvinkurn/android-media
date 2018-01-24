@@ -97,7 +97,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                 getView().updatePrice(transformToSimpleModelPrice(flightOrder), CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(totalPrice));
                 getView().updateOrderData(FlightDateUtil.formatDate(FlightDateUtil.FORMAT_DATE_API_DETAIL,
                         FlightDateUtil.FORMAT_DATE_LOCAL_DETAIL_ORDER, flightOrder.getCreateTime()),
-                        generateTicketLink(flightOrder.getId(), flightOrder.getPdf()), generateInvoiceLink(flightOrder.getId()),
+                        generateTicketLink(flightOrder.getId(), flightOrder.getPdf(), userSession.getUserId()), generateInvoiceLink(flightOrder.getId()),
                         generateCancelMessage(flightOrderJourneyList, flightOrder.getPassengerViewModels()));
                 generateStatus(flightOrder.getStatus(), flightOrder.getStatusString());
                 renderPaymentInfo(flightOrder);
@@ -195,8 +195,8 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         return FlightUrl.getUrlInvoice(orderId, userSession.getUserId());
     }
 
-    private String generateTicketLink(String orderId, String pdf) {
-        return FlightUrl.getUrlPdf(orderId, pdf);
+    private String generateTicketLink(String orderId, String pdf, String userId) {
+        return FlightUrl.getUrlPdf(orderId, pdf, userId);
     }
 
     private void generateStatus(int status, String statusString) {

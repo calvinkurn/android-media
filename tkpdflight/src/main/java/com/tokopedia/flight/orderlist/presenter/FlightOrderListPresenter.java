@@ -2,9 +2,11 @@ package com.tokopedia.flight.orderlist.presenter;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
+import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.orderlist.contract.FlightOrderListContract;
 import com.tokopedia.flight.orderlist.domain.FlightGetOrdersUseCase;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
@@ -23,12 +25,15 @@ import rx.Subscriber;
 
 public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderListContract.View>
         implements FlightOrderListContract.Presenter {
+    private UserSession userSession;
     private FlightGetOrdersUseCase flightGetOrdersUseCase;
     private FlightOrderViewModelMapper flightOrderViewModelMapper;
 
     @Inject
-    public FlightOrderListPresenter(FlightGetOrdersUseCase flightGetOrdersUseCase,
+    public FlightOrderListPresenter(UserSession userSession,
+                                    FlightGetOrdersUseCase flightGetOrdersUseCase,
                                     FlightOrderViewModelMapper flightOrderViewModelMapper) {
+        this.userSession = userSession;
         this.flightGetOrdersUseCase = flightGetOrdersUseCase;
         this.flightOrderViewModelMapper = flightOrderViewModelMapper;
     }
@@ -64,6 +69,11 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
     public void onDestroyView() {
         detachView();
         flightGetOrdersUseCase.unsubscribe();
+    }
+
+    @Override
+    public void onDownloadEticket(String invoiceId, String filename) {
+        getView().navigateToOpenBrowser(FlightUrl.getUrlPdf(invoiceId, filename, userSession.getUserId()));
     }
 
     private void buildAndRenderFilterList() {
