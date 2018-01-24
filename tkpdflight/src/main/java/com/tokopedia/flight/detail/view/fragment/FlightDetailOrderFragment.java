@@ -458,7 +458,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Override
     public void setPaymentDescription(CharSequence description) {
-        tvPaymentDescriptionLabel.setText(description);
+        tvPaymentDescription.setText(description);
     }
 
     @Override

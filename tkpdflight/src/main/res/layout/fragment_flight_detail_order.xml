@@ -109,7 +109,7 @@
                         style="@style/TextView.Small.BlackSecondary"
                         android:layout_width="0dp"
                         android:layout_weight="1"
-                        android:text="Rekening Tujuan" />
+                        tools:text="Rekening Tujuan" />
 
                     <TextView
                         android:id="@+id/tv_payment_description"
