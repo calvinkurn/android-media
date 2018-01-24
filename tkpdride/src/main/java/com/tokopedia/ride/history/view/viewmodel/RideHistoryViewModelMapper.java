@@ -45,7 +45,11 @@ public class RideHistoryViewModelMapper {
         viewModel.setRequestId(rideHistory.getRequestId());
         viewModel.setDriverName(rideHistory.getDriver() == null ? "" : rideHistory.getDriver().getName());
         viewModel.setDriverPictureUrl(rideHistory.getDriver() == null ? "" : rideHistory.getDriver().getPictureUrl());
-        viewModel.setDisplayStatus(RideHistoryViewModel.transformToDisplayStatus(rideHistory.getStatus()));
+        if (rideHistory.getPayment().getPendingAmount() > 0) {
+            viewModel.setDisplayStatus("PENDING AMOUNT");
+        } else {
+            viewModel.setDisplayStatus(transformToDisplayStatus(rideHistory.getStatus()));
+        }
 
         if (rideHistory.getVehicle() != null) {
             viewModel.setLicensePlateNumber(rideHistory.getVehicle().getLicensePlate());
@@ -94,5 +98,42 @@ public class RideHistoryViewModelMapper {
         }
 
         return PaymentMode.DEFAULT_DISPLAY_NAME;
+    }
+
+    public static String transformToDisplayStatus(String status) {
+        switch (status) {
+            case "arriving":
+            case "ARRIVING":
+                return "ARRIVING";
+
+            case "accepted":
+            case "ACCEPTED":
+                return "ACCEPTED";
+
+            case "no_drivers_available":
+            case "NO_DRIVERS_AVAILABLE":
+                return "DRIVER NOT AVAILABLE";
+
+            case "processing":
+            case "PROCESSING":
+                return "PROCESSING";
+
+            case "in_progress":
+            case "IN_PROGRESS":
+                return "ON TRIP";
+
+            case "driver_canceled":
+            case "DRIVER_CANCELED":
+                return "DRIVER CANCELED";
+
+            case "rider_canceled":
+            case "RIDER_CANCELED":
+                return "YOU CANCELED";
+
+            case "completed":
+            case "COMPLETED":
+                return "COMPLETED";
+        }
+        return status;
     }
 }
