@@ -171,6 +171,6 @@ public interface AccountsApi {
     Observable<Response<TkpdResponse>> getQuestionForm(@FieldMap TKPDMapParam<String, Object> parameters);
 
     @GET(TkpdBaseURL.Accounts.OTP.PATH_GET_METHOD_LIST)
-    Observable<Response<TkpdResponse>> getVerificationMethodList(@QueryMap TKPDMapParam<String,
+    Observable<Response<String>> getVerificationMethodList(@QueryMap TKPDMapParam<String,
             Object> parameters);
 }

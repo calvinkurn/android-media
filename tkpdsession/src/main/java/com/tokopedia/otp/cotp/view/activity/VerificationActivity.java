@@ -204,13 +204,13 @@ public class VerificationActivity extends TActivity implements HasComponent {
 
     private Bundle createDynamicBundle(MethodItem methodItem) {
         Bundle bundle = new Bundle();
-        bundle.putString(PARAM_REQUEST_OTP_MODE, methodItem.getMode());
+        bundle.putString(PARAM_REQUEST_OTP_MODE, methodItem.getModeName());
         bundle.putInt(PARAM_IMAGE, 0);
         bundle.putString(PARAM_IMAGE_URL, methodItem.getImageUrl());
         bundle.putString(PARAM_PHONE_NUMBER, passModel.getPhoneNumber());
         bundle.putString(PARAM_EMAIL, passModel.getEmail());
         bundle.putString(PARAM_MESSAGE, methodItem.getVerificationText());
-        bundle.putString(PARAM_APP_SCREEN, getDynamicAppScreen(methodItem.getMode()));
+        bundle.putString(PARAM_APP_SCREEN, getDynamicAppScreen(methodItem.getModeName()));
         return bundle;
     }
 

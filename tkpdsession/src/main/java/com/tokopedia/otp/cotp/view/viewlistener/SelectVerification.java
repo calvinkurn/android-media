@@ -25,6 +25,6 @@ public interface SelectVerification {
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void getMethodList(String phoneNumber);
+        void getMethodList(String phoneNumber, int otpType);
     }
 }

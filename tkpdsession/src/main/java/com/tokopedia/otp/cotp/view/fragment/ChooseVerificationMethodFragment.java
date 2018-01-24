@@ -127,7 +127,8 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        presenter.getMethodList(passModel.getPhoneNumber());
+        presenter.getMethodList(passModel.getPhoneNumber(),
+                passModel.getOtpType());
     }
 
     @Override
@@ -161,7 +162,7 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
                     new NetworkErrorHelper.RetryClickedListener() {
                         @Override
                         public void onRetryClicked() {
-                            presenter.getMethodList(passModel.getPhoneNumber());
+                            presenter.getMethodList(passModel.getPhoneNumber(), passModel.getOtpType());
                         }
                     });
         } else {
@@ -169,7 +170,7 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
                     new NetworkErrorHelper.RetryClickedListener() {
                         @Override
                         public void onRetryClicked() {
-                            presenter.getMethodList(passModel.getPhoneNumber());
+                            presenter.getMethodList(passModel.getPhoneNumber(), passModel.getOtpType());
                         }
                     });
         }

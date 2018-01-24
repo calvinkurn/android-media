@@ -12,23 +12,14 @@ import com.tokopedia.session.R;
 
 public class MethodItem implements Parcelable {
 
-    private String mode;
+    private String modeName;
     private int iconResId;
     private String methodText;
     private String imageUrl;
     private String verificationText;
 
-    public MethodItem(String mode, int iconResId, String methodText) {
-        this.mode = mode;
-        this.iconResId = iconResId;
-        this.methodText = methodText;
-        this.imageUrl = "";
-        this.verificationText = "";
-
-    }
-
     public MethodItem(String mode, String imageUrl, String methodText, String verificationText) {
-        this.mode = mode;
+        this.modeName = mode;
         this.iconResId = 0;
         this.imageUrl = imageUrl;
         this.methodText = methodText;
@@ -36,7 +27,7 @@ public class MethodItem implements Parcelable {
     }
 
     protected MethodItem(Parcel in) {
-        mode = in.readString();
+        modeName = in.readString();
         iconResId = in.readInt();
         methodText = in.readString();
         imageUrl = in.readString();
@@ -55,12 +46,8 @@ public class MethodItem implements Parcelable {
         }
     };
 
-    public String getMode() {
-        return mode;
-    }
-
-    public int getIconResId() {
-        return iconResId;
+    public String getModeName() {
+        return modeName;
     }
 
     public String getMethodText() {
@@ -74,7 +61,7 @@ public class MethodItem implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(mode);
+        dest.writeString(modeName);
         dest.writeInt(iconResId);
         dest.writeString(methodText);
         dest.writeString(imageUrl);

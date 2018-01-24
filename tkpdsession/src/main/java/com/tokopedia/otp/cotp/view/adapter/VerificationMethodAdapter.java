@@ -58,8 +58,8 @@ public class VerificationMethodAdapter extends RecyclerView.Adapter<Verification
 
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
-        ImageHandler.loadImageWithIdWithoutPlaceholder(holder.icon, list.get(position)
-                .getIconResId());
+        ImageHandler.LoadImage(holder.icon, list.get(position)
+                .getImageUrl());
         holder.methodText.setText(MethodChecker.fromHtml(list.get(position).getMethodText()));
         holder.mainView.setOnClickListener(new View.OnClickListener() {
             @Override
