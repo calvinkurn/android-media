@@ -3,6 +3,7 @@ package com.tokopedia.mitratoppers.preapprove.view.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,15 +79,24 @@ public class MitraToppersPreApproveLabelFragment extends BaseDaggerFragment impl
     @Override
     public void onSuccessGetPreApprove(final ResponsePreApprove responsePreApprove) {
         hideLoading();
-        labelView.setContent(responsePreApprove.getPreapp().getRatePerMonth3m().getAmountIdr());
-        labelView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = MitraToppersPreApproveWebViewActivity.getIntent(getContext(),
-                        responsePreApprove.getUrl());
-                startActivity(intent);
-            }
-        });
+        String amountString = responsePreApprove.getPreapp().getRatePerMonth3m().getAmountIdr();
+        if (TextUtils.isEmpty(amountString)) {
+            rootView.setVisibility(View.GONE);
+            return;
+        } else {
+            labelView.setContent(amountString);
+        }
+        final String preApproveUrl = responsePreApprove.getUrl();
+        if (!TextUtils.isEmpty(preApproveUrl)) {
+            labelView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = MitraToppersPreApproveWebViewActivity.getIntent(getContext(),
+                            preApproveUrl);
+                    startActivity(intent);
+                }
+            });
+        }
         rootView.setVisibility(View.VISIBLE);
     }
 

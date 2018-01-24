@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.mitratoppers.common.constant.MitraToppersBaseURL;
+import com.tokopedia.mitratoppers.common.data.interceptor.MitraToppersAuthInterceptor;
 import com.tokopedia.mitratoppers.preapprove.data.source.cloud.api.MitraToppersApi;
 import com.tokopedia.mitratoppers.common.di.MitraToppersQualifier;
 import com.tokopedia.mitratoppers.common.di.scope.MitraToppersScope;
@@ -36,11 +37,11 @@ public class MitraToppersModule {
     //TODO add api cache interceptor to cache the response
     @MitraToppersQualifier
     @Provides
-    public OkHttpClient provideOkHttpClient(TkpdAuthInterceptor tkpdAuthInterceptor,
+    public OkHttpClient provideOkHttpClient(MitraToppersAuthInterceptor mitraToppersAuthInterceptor,
                                             @ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
                                             HeaderErrorResponseInterceptor errorResponseInterceptor) {
         return new OkHttpClient.Builder()
-                .addInterceptor(tkpdAuthInterceptor)
+                .addInterceptor(mitraToppersAuthInterceptor)
                 .addInterceptor(errorResponseInterceptor)
                 .addInterceptor(httpLoggingInterceptor)
                 .build();
