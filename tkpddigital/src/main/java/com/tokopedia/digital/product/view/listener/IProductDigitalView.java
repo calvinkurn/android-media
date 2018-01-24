@@ -47,11 +47,7 @@ public interface IProductDigitalView extends IBaseView {
 
     HistoryClientNumber getHistoryClientNumberState();
 
-    void closeViewWithMessageAlert(String message);
-
     void showSnackBarCallbackCloseView(String message);
-
-    LocalCacheHandler getLastInputClientNumberChaceHandler();
 
     boolean isUserLoggedIn();
 
@@ -64,8 +60,6 @@ public interface IProductDigitalView extends IBaseView {
     void renderPulsaBalance(PulsaBalance pulsaBalance,int selectedSim);
 
     void showPulsaBalanceError(String message);
-
-    Activity getActivity();
     
     void showMessageAlert(String message,String title);
 

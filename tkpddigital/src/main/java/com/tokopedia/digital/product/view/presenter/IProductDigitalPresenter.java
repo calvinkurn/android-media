@@ -9,6 +9,7 @@ import java.util.List;
  */
 
 public interface IProductDigitalPresenter {
+
     String TAG = IProductDigitalPresenter.class.getSimpleName();
 
     void processGetCategoryAndBannerData(

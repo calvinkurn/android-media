@@ -182,7 +182,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private CompositeSubscription compositeSubscription;
     private BaseDigitalProductView<CategoryData, Operator, Product, HistoryClientNumber> digitalProductView;
 
-    private LocalCacheHandler cacheHandlerLastInputClientNumber;
     private LocalCacheHandler cacheHandlerRecentInstantCheckoutUsed;
 
     private ActionListener actionListener;
@@ -278,10 +277,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     protected void initialPresenter() {
         bannerAdapter = new BannerAdapter(this);
 
-        cacheHandlerLastInputClientNumber = new LocalCacheHandler(
-                getActivity(), TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER
-        );
-
         if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
 
         DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
@@ -309,7 +304,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                 getActivity(), digitalCategoryRepository
         );
 
-        presenter = new ProductDigitalPresenter(this, productDigitalInteractor, digitalCategoryUseCase);
+        presenter = new ProductDigitalPresenter(getActivity(), this, productDigitalInteractor, digitalCategoryUseCase);
     }
 
     @Override
@@ -551,14 +546,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
-    public void closeViewWithMessageAlert(String message) {
-        Intent intent = new Intent();
-        intent.putExtra(IDigitalModuleRouter.EXTRA_MESSAGE, message);
-        getActivity().setResult(Activity.RESULT_OK, intent);
-        getActivity().finish();
-    }
-
-    @Override
     public void showSnackBarCallbackCloseView(String message) {
         View view = getView();
         if (view != null) {
@@ -576,11 +563,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
             closeView();
         }
-    }
-
-    @Override
-    public LocalCacheHandler getLastInputClientNumberChaceHandler() {
-        return cacheHandlerLastInputClientNumber;
     }
 
     @Override

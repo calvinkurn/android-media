@@ -1,6 +1,7 @@
 package com.tokopedia.digital.product.view.presenter;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -61,6 +62,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
     private static final String PAKET_DATA_CATEGORY_ID = "2";
     private static final String ROAMING_CATEGORY_ID = "20";
 
+    private Activity activity;
     private IProductDigitalView view;
     private IProductDigitalInteractor productDigitalInteractor;
     private DigitalCategoryUseCase digitalCategoryUseCase;
@@ -94,10 +96,11 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
 
     private final static String balance = "balance";
 
-    public ProductDigitalPresenter(IProductDigitalView view,
+    public ProductDigitalPresenter(Activity activity, IProductDigitalView view,
                                    IProductDigitalInteractor productDigitalInteractor,
                                    DigitalCategoryUseCase digitalCategoryUseCase) {
-        super(view.getActivity());
+        super(activity);
+        this.activity = activity;
         this.view = view;
         this.productDigitalInteractor = productDigitalInteractor;
         this.digitalCategoryUseCase = digitalCategoryUseCase;
@@ -216,7 +219,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
                                                    HistoryClientNumber historyClientNumber) {
         if (categoryData.isSupportedStyle()) {
             BaseDigitalProductView digitalProductView = ViewFactory
-                    .renderCategoryDataAndBannerToView(view.getActivity(),
+                    .renderCategoryDataAndBannerToView(activity,
                             categoryData.getOperatorStyle());
 
             view.renderCategory(digitalProductView, categoryData, historyClientNumber);
@@ -253,12 +256,13 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
 
     @Override
     public void processToCheckBalance(String ussdMobileNumber, int simSlot, String ussdCode) {
-        if (checkAccessibilitySettingsOn(view.getActivity())) {
+        if (checkAccessibilitySettingsOn(activity)) {
             if (ussdCode != null && !"".equalsIgnoreCase(ussdCode.trim())) {
                 view.registerUssdReciever();
                 dailUssdToCheckBalance(simSlot, ussdCode);
             } else {
-                view.showMessageAlert(view.getActivity().getString(R.string.error_message_ussd_msg_not_parsed), view.getActivity().getString(R.string.message_ussd_title));
+                view.showMessageAlert(activity.getString(R.string.error_message_ussd_msg_not_parsed),
+                        activity.getString(R.string.message_ussd_title));
             }
         } else {
             view.showAccessibilityAlertDialog();
@@ -277,12 +281,12 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
 
         //works only for API >= 23
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (DeviceUtil.getPhoneHandle(view.getActivity(), simPosition) != null) {
-                intent.putExtra(accoutHandleKey, (Parcelable) DeviceUtil.getPhoneHandle(view.getActivity(), simPosition));
+            if (DeviceUtil.getPhoneHandle(activity, simPosition) != null) {
+                intent.putExtra(accoutHandleKey, (Parcelable) DeviceUtil.getPhoneHandle(activity, simPosition));
             }
         }
-        if (RequestPermissionUtil.checkHasPermission(view.getActivity(), Manifest.permission.CALL_PHONE)) {
-            view.getActivity().startActivity(intent);
+        if (RequestPermissionUtil.checkHasPermission(activity, Manifest.permission.CALL_PHONE)) {
+            activity.startActivity(intent);
         }
         ussdTimeOut = false;
         startUssdCheckBalanceTimer();
@@ -309,7 +313,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                if (view == null || view.getActivity() == null) {
+                if (view == null || activity == null) {
                     return;
                 }
                 if (e instanceof UnknownHostException || e instanceof ConnectException) {
@@ -341,7 +345,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
 
             @Override
             public void onNext(PulsaBalance pulsaBalance) {
-                if (view != null && view.getActivity() != null) {
+                if (view != null && activity != null) {
                     view.renderPulsaBalance(pulsaBalance, selectedSim);
                 }
             }
@@ -399,7 +403,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
     @Override
     public List<Operator> getSelectedUssdOperatorList(int selectedSim) {
         List<Operator> selectedOperatorList = new ArrayList<>();
-        String simOperatorName = DeviceUtil.getOperatorName(view.getActivity(), selectedSim);
+        String simOperatorName = DeviceUtil.getOperatorName(activity, selectedSim);
         CategoryData categoryData = view.getCategoryDataState();
         for (Operator operator : categoryData.getOperatorList()) {
             if (DeviceUtil.verifyUssdOperator(simOperatorName, operator.getName())) {
@@ -431,7 +435,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
     @Override
     public String getDeviceMobileNumber(int selectedSim) {
         String currentMobileNumber = null;
-        currentMobileNumber = DeviceUtil.getMobileNumber(view.getActivity(), selectedSim);
+        currentMobileNumber = DeviceUtil.getMobileNumber(activity, selectedSim);
         return currentMobileNumber;
     }
 
@@ -453,8 +457,8 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
             @Override
             public void run() {
                 ussdTimeOut = true;
-                if (view != null && view.getActivity() != null) {
-                    view.showPulsaBalanceError(view.getActivity().getString(R.string.error_message_ussd_msg_not_parsed));
+                if (view != null && activity != null) {
+                    view.showPulsaBalanceError(activity.getString(R.string.error_message_ussd_msg_not_parsed));
                 }
             }
         }, ussdTimeOutTime);
@@ -470,7 +474,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
 
     @Override
     public String getUssdPhoneNumberFromCache(int selectedSim) {
-        LocalCacheHandler localCacheHandler = new LocalCacheHandler(view.getActivity(), TkpdCache.DIGITAL_USSD_MOBILE_NUMBER);
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(activity, TkpdCache.DIGITAL_USSD_MOBILE_NUMBER);
         if (selectedSim == 0) {
             return localCacheHandler.getString(TkpdCache.Key.KEY_USSD_SIM1);
         } else if (selectedSim == 1) {
@@ -482,7 +486,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
     @Override
     public void storeUssdPhoneNumber(int selectedSim, String number) {
         number = DeviceUtil.formatPrefixClientNumber(number);
-        LocalCacheHandler localCacheHandler = new LocalCacheHandler(view.getActivity(), TkpdCache.DIGITAL_USSD_MOBILE_NUMBER);
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(activity, TkpdCache.DIGITAL_USSD_MOBILE_NUMBER);
         if (selectedSim == 0) {
             localCacheHandler.putString(TkpdCache.Key.KEY_USSD_SIM1, number);
         } else if (selectedSim == 1) {
