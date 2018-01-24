@@ -22,13 +22,13 @@ import rx.functions.Func1;
  * Created by nathan on 9/30/17.
  */
 
-public class CacheApiDataManager {
+public class CacheApiDatabaseSource {
 
     private static final long DIVIDE_FOR_SECONDS = 1000L;
 
     private static final String CACHE_API_KEY = "BU}~GV2(K)%z$1+H";
 
-    public CacheApiDataManager() {
+    public CacheApiDatabaseSource() {
 
     }
 

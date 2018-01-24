@@ -6,7 +6,7 @@ import com.google.gson.Gson;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.cacheapi.data.source.CacheApiDataSource;
-import com.tokopedia.cacheapi.data.source.db.CacheApiDataManager;
+import com.tokopedia.cacheapi.data.source.db.CacheApiDatabaseSource;
 import com.tokopedia.cacheapi.domain.CacheApiRepository;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiDataDeleteUseCase;
@@ -135,7 +135,7 @@ public interface AppComponent {
 
     ImageHandler imageHandler();
 
-    CacheApiDataManager cacheApiDataManager();
+    CacheApiDatabaseSource cacheApiDatabaseSource();
 
     CacheApiRepository apiCacheRepository();
 

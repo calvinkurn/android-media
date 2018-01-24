@@ -1,7 +1,7 @@
 package com.tokopedia.cacheapi.data.source;
 
 import com.tokopedia.cacheapi.data.source.cache.CacheApiVersionCache;
-import com.tokopedia.cacheapi.data.source.db.CacheApiDataManager;
+import com.tokopedia.cacheapi.data.source.db.CacheApiDatabaseSource;
 import com.tokopedia.cacheapi.data.source.db.CacheApiWhitelist;
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.cacheapi.util.LoggingUtils;
@@ -20,11 +20,11 @@ import rx.functions.Func2;
 public class CacheApiDataSource {
 
     private CacheApiVersionCache cacheApiVersionCache;
-    private CacheApiDataManager cacheApiDataManager;
+    private CacheApiDatabaseSource cacheApiDatabaseSource;
 
-    public CacheApiDataSource(CacheApiVersionCache cacheApiVersionCache, CacheApiDataManager cacheApiDataManager) {
+    public CacheApiDataSource(CacheApiVersionCache cacheApiVersionCache, CacheApiDatabaseSource cacheApiDataManager) {
         this.cacheApiVersionCache = cacheApiVersionCache;
-        this.cacheApiDataManager = cacheApiDataManager;
+        this.cacheApiDatabaseSource = cacheApiDataManager;
     }
 
     public Observable<Boolean> bulkInsert(final Collection<CacheApiWhiteListDomain> cacheApiDatas) {
@@ -35,7 +35,7 @@ public class CacheApiDataSource {
                 if (!aBoolean) {
                     return Observable.just(false);
                 }
-                return Observable.zip(deleteAllCacheData(), cacheApiDataManager.deleteAllWhiteListData(), new Func2<Boolean, Boolean, Boolean>() {
+                return Observable.zip(deleteAllCacheData(), cacheApiDatabaseSource.deleteAllWhiteListData(), new Func2<Boolean, Boolean, Boolean>() {
                     @Override
                     public Boolean call(Boolean aBoolean, Boolean aBoolean2) {
                         LoggingUtils.dumper(String.format("Delete white list and cache finished"));
@@ -44,7 +44,7 @@ public class CacheApiDataSource {
                 }).flatMap(new Func1<Boolean, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(Boolean aBoolean) {
-                        return cacheApiDataManager.insertWhiteList(cacheApiDatas).flatMap(new Func1<Boolean, Observable<Boolean>>() {
+                        return cacheApiDatabaseSource.insertWhiteList(cacheApiDatas).flatMap(new Func1<Boolean, Observable<Boolean>>() {
                             @Override
                             public Observable<Boolean> call(Boolean aBoolean) {
                                 if (!aBoolean) {
@@ -60,34 +60,34 @@ public class CacheApiDataSource {
     }
 
     public Observable<CacheApiWhitelist> getWhiteList(String host, String path) {
-        return cacheApiDataManager.getWhiteList(host, path);
+        return cacheApiDatabaseSource.getWhiteList(host, path);
     }
 
     public Observable<Boolean> isInWhiteList(String host, String path) {
-        return cacheApiDataManager.isInWhiteList(host, path);
+        return cacheApiDatabaseSource.isInWhiteList(host, path);
     }
 
     public Observable<String> getCachedResponse(String host, String path, String param) {
-        return cacheApiDataManager.getCachedResponse(host, path, param);
+        return cacheApiDatabaseSource.getCachedResponse(host, path, param);
     }
 
     public Observable<Boolean> deleteAllCacheData() {
-        return cacheApiDataManager.deleteAllCacheData();
+        return cacheApiDatabaseSource.deleteAllCacheData();
     }
 
     public Observable<Boolean> deleteExpiredCachedData() {
-        return cacheApiDataManager.deleteExpiredCachedData();
+        return cacheApiDatabaseSource.deleteExpiredCachedData();
     }
 
     public Observable<Boolean> deleteCachedData(String host, String path) {
-        return cacheApiDataManager.deleteCachedData(host, path);
+        return cacheApiDatabaseSource.deleteCachedData(host, path);
     }
 
     public Observable<Boolean> deleteWhiteList(String host, String path) {
-        return cacheApiDataManager.deleteWhiteList(host, path);
+        return cacheApiDatabaseSource.deleteWhiteList(host, path);
     }
 
     public Observable<Boolean> updateResponse(Response response, int expiredTime) {
-        return cacheApiDataManager.updateResponse(response, expiredTime);
+        return cacheApiDatabaseSource.updateResponse(response, expiredTime);
     }
 }
