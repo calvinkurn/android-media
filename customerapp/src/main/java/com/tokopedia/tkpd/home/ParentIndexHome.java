@@ -1,7 +1,9 @@
 package com.tokopedia.tkpd.home;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
@@ -9,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -51,6 +54,7 @@ import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.home.GetUserInfoListener;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
+import com.tokopedia.core.network.retrofit.utils.DialogHockeyApp;
 import com.tokopedia.core.onboarding.NewOnboardingActivity;
 import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
@@ -58,6 +62,8 @@ import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionView;
+import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
@@ -113,6 +119,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     TkpdProgressDialog progressDialog;
     CompositeSubscription subscription = new CompositeSubscription();
     private int initStateFragment = INIT_STATE_FRAGMENT_HOME;
+
+    private BroadcastReceiver hockeyBroadcastReceiver;
 
     @DeepLink(Constants.Applinks.HOME)
     public static Intent getApplinkCallingIntent(Context context, Bundle extras) {
@@ -253,6 +261,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         checkAppUpdate();
         checkIsHaveApplinkComeFromDeeplink(getIntent());
 
+        initHockeyBroadcastReceiver();
     }
 
     @Override
@@ -522,6 +531,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         Log.d(TAG, messageTAG + "onPause");
         super.onPause();
         viewPagerIndex = mViewPager.getCurrentItem();
+
+        unregisterBroadcastHockeyApp();
     }
 
     @Override
@@ -565,6 +576,9 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         super.onResume();
 
         NotificationModHandler.showDialogNotificationIfNotShowing(this);
+
+        // Register to receive broadcast hockeyapp
+        registerBroadcastHockeyApp();
     }
 
     private void setScrollFeedListener() {
@@ -770,4 +784,40 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         }
     }
 
+    private void initHockeyBroadcastReceiver() {
+        hockeyBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent != null && intent.getAction() != null) {
+                    if (intent.getAction().equals(FORCE_HOCKEYAPP)) {
+                        if (!DialogHockeyApp.isDialogShown(ParentIndexHome.this)) showHockeyAppDialog();
+                    }
+                }
+            }
+        };
+    }
+
+    private void registerBroadcastHockeyApp() {
+        if (!GlobalConfig.isAllowDebuggingTools()) {
+            IntentFilter intentFilter = new IntentFilter(FORCE_HOCKEYAPP);
+            LocalBroadcastManager.getInstance(this).registerReceiver(hockeyBroadcastReceiver,
+                    new IntentFilter(intentFilter));
+        }
+    }
+
+    private void unregisterBroadcastHockeyApp() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(hockeyBroadcastReceiver);
+    }
+
+    private void showHockeyAppDialog() {
+        DialogHockeyApp.createShow(this,
+                new DialogHockeyApp.ActionListener() {
+                    @Override
+                    public void onDialogClicked() {
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse(HockeyAppHelper.getHockeyappDownloadUrl()));
+                        startActivity(intent);
+                    }
+                });
+    }
 }

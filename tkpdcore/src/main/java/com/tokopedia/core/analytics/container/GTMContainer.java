@@ -16,6 +16,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.PurchaseTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.model.Hotlist;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
@@ -592,6 +593,47 @@ public class GTMContainer implements IGTMContainer {
     }
 
     @Override
+    public void eventPurchaseMarketplace(Purchase purchase) {
+        GTMDataLayer.pushGeneral(
+                context,
+                DataLayer.mapOf(
+                        AppEventTracking.EVENT, PurchaseTracking.TRANSACTION,
+                        AppEventTracking.EVENT_CATEGORY, "purchase category",
+                        AppEventTracking.EVENT_ACTION, "purchase action",
+                        AppEventTracking.EVENT_LABEL, "purchase label",
+                        Purchase.SHOP_ID, purchase.getShopId(),
+                        Purchase.PAYMENT_ID, purchase.getPaymentId(),
+                        Purchase.PAYMENT_TYPE, purchase.getPaymentType(),
+                        Purchase.LOGISTIC_TYPE, purchase.getLogisticType(),
+                        Purchase.USER_ID, purchase.getUserId(),
+                        AppEventTracking.ECOMMERCE, DataLayer.mapOf(
+                                Purchase.PURCHASE, purchase.getPurchase()
+                        )
+                )
+        );
+    }
+
+    @Override
+    public void eventPurchaseDigital(Purchase purchase) {
+        GTMDataLayer.pushGeneral(
+                context,
+                DataLayer.mapOf(
+                        AppEventTracking.EVENT, PurchaseTracking.TRANSACTION,
+                        AppEventTracking.EVENT_CATEGORY, "purchase category digital",
+                        AppEventTracking.EVENT_ACTION, "purchase action digital",
+                        AppEventTracking.EVENT_LABEL, "purchase label digital",
+                        Purchase.SHOP_ID, purchase.getShopId(),
+                        Purchase.PAYMENT_ID, purchase.getPaymentId(),
+                        Purchase.PAYMENT_TYPE, purchase.getPaymentType(),
+                        Purchase.USER_ID, purchase.getUserId(),
+                        Purchase.PAYMENT_STATUS, purchase.getPaymentStatus(),
+                        AppEventTracking.ECOMMERCE, DataLayer.mapOf(
+                                Purchase.PURCHASE, purchase.getPurchase()
+                        )
+                )
+        );
+    }
+
     public void eventImpressionCategoryLifestyle(List<Object> list) {
         clearEnhanceEcommerce();
         GTMDataLayer.pushGeneral(

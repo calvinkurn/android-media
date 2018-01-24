@@ -1,11 +1,8 @@
-package com.tokopedia.tkpd.thankyou.data.pojo.marketplace.tracker;
+package com.tokopedia.tkpd.thankyou.data.pojo.digital.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-/**
- * Created by okasurya on 12/12/17.
- */
 public class Product {
     @SerializedName("name")
     @Expose
@@ -28,9 +25,6 @@ public class Product {
     @SerializedName("quantity")
     @Expose
     private int quantity;
-    @SerializedName("coupon")
-    @Expose
-    private String coupon;
 
     public String getName() {
         return name;
@@ -86,13 +80,5 @@ public class Product {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
-    }
-
-    public String getCoupon() {
-        return coupon;
-    }
-
-    public void setCoupon(String coupon) {
-        this.coupon = coupon;
     }
 }

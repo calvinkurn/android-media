@@ -1,13 +1,10 @@
-package com.tokopedia.tkpd.thankyou.data.pojo.marketplace.tracker;
+package com.tokopedia.tkpd.thankyou.data.pojo.digital.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-/**
- * Created by okasurya on 12/12/17.
- */
 public class Purchase {
     @SerializedName("actionField")
     @Expose

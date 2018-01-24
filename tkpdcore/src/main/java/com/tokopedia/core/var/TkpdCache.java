@@ -210,7 +210,6 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
         public static final String KEY_USSD_SIM2 = "KEY_USSD_SIM2";
 
         public static final String KEY_TOKOCASH_BALANCE_CACHE = "TOKOCASH_BALANCE_CACHE";
-        public static final String CART_CACHE_TRACKER = "CART_CACHE_TRACKER";
         public static final String HOME_CATEGORY_CACHE = "HOME_CATEGORY_CACHE";
         public static final String HOME_BRAND_OS_CACHE = "HOME_BRAND_OS_CACHE";
         public static final String HOME_BANNER_CACHE = "HOME_BANNER_CACHE";

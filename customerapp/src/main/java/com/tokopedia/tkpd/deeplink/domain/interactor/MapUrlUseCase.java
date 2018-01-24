@@ -2,12 +2,10 @@ package com.tokopedia.tkpd.deeplink.domain.interactor;
 
 import android.text.TextUtils;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.tkpd.deeplink.WhitelistItem;
 import com.tokopedia.tkpd.deeplink.data.repository.DeeplinkRepository;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import java.util.List;
 
@@ -24,9 +22,7 @@ public class MapUrlUseCase extends UseCase<WhitelistItem> {
 
     private DeeplinkRepository deeplinkRepository;
 
-    public MapUrlUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread,
-                         DeeplinkRepository deeplinkRepository) {
-        super(threadExecutor, postExecutionThread);
+    public MapUrlUseCase(DeeplinkRepository deeplinkRepository) {
         this.deeplinkRepository = deeplinkRepository;
     }
 

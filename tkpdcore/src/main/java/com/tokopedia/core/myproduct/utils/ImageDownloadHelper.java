@@ -1,7 +1,6 @@
 package com.tokopedia.core.myproduct.utils;
 
 import android.content.Context;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
@@ -33,8 +32,6 @@ public class ImageDownloadHelper {
     private Context context;
 
     private static final int WIDTH_DOWNLOAD = 2048;
-    private static final int DEF_WIDTH_CMPR = 2048;
-    private static final int DEF_QLTY_COMPRESS = 95;
 
     private boolean needCompressTkpd = false;
 
@@ -115,11 +112,7 @@ public class ImageDownloadHelper {
                                 String cacheFilePath = cacheFile.getAbsolutePath();
                                 File photo;
                                 if (needCompressTkpd) {
-                                    String fileNameToMove = FileUtils.generateUniqueFileName();
-                                    photo = FileUtils.writeImageToTkpdPath(
-                                            FileUtils.compressImage(
-                                                    cacheFilePath, DEF_WIDTH_CMPR, DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
-                                            fileNameToMove);
+                                    photo = FileUtils.writeImageToTkpdPath(cacheFilePath);
                                 } else {
                                     photo = writeImageToTkpdPath(cacheFile);
                                 }
@@ -144,7 +137,7 @@ public class ImageDownloadHelper {
         File dest = null;
         try {
 
-            File directory = new File(FileUtils.getFolderPathForUploadNoRand(Environment.getExternalStorageDirectory().getAbsolutePath()));
+            File directory = new File(FileUtils.getFolderPathForUpload());
             if (!directory.exists()) {
                 directory.mkdirs();
             }
