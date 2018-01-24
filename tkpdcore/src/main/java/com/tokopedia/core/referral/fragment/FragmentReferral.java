@@ -123,6 +123,7 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
         referralContentTextView.setText(presenter.getReferralContents());
         if (presenter.isAppShowReferralButtonActivated()) {
             referralCodeLayout.setVisibility(View.VISIBLE);
+            TextViewHelpLink.setVisibility(View.VISIBLE);
             TextViewHelpLink.setText(presenter.getHowItWorks());
             renderVoucherCode(presenter.getVoucherCodeFromCache());
             TextViewHelpLink.setOnClickListener(new View.OnClickListener() {
@@ -135,6 +136,7 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
             });
         }else{
             referralCodeLayout.setVisibility(View.INVISIBLE);
+            TextViewHelpLink.setVisibility(View.INVISIBLE);
         }
     }
 

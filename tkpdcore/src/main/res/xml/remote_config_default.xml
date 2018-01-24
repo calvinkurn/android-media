@@ -123,6 +123,6 @@
     </entry>
     <entry>
         <key>app_show_referral_button</key>
-        <value>true</value>
+        <value>false</value>
     </entry>
 </defaultsMap>
