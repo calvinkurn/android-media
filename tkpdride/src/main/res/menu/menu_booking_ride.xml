@@ -10,4 +10,9 @@
         android:id="@+id/action_payment"
         android:title="@string/booking_ride_menu_payment"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_add_to_home_screen"
+        android:title="@string/booking_ride_menu_add_to_home_screen"
+        app:showAsAction="never" />
 </menu>

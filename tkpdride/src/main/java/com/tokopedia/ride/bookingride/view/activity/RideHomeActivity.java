@@ -79,6 +79,7 @@ import com.tokopedia.ride.common.ride.di.DaggerRideComponent;
 import com.tokopedia.ride.common.ride.di.RideComponent;
 import com.tokopedia.ride.common.ride.domain.model.GetPending;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
+import com.tokopedia.ride.common.ride.utils.RideUtils;
 import com.tokopedia.ride.completetrip.view.CompleteTripActivity;
 import com.tokopedia.ride.history.view.RideHistoryActivity;
 import com.tokopedia.ride.ontrip.domain.GetRideRequestDetailUseCase;
@@ -824,6 +825,9 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
             return true;
         } else if (i == R.id.action_payment) {
             actionNavigateToPayment();
+            return true;
+        } else if (i == R.id.action_add_to_home_screen) {
+            RideUtils.addUberShortcutOnLauncher(this, getString(R.string.label_book_uber_shortcut), getString(R.string.label_book_uber_shortcut));
             return true;
         } else {
             return super.onOptionsItemSelected(item);

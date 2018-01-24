@@ -23,6 +23,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.gallery.GalleryActivity;
+import com.tokopedia.core.gallery.GalleryType;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.RequestPermissionUtil;
@@ -329,7 +330,7 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
     public void actionImagePicker() {
         if (TrackingUtils.getGtmString(AppEventTracking.GTM.RESOLUTION_CENTER_UPLOAD_VIDEO).equals("true")) {
             startActivityForResult(
-                    GalleryActivity.createIntent(getActivity()),
+                    GalleryActivity.createIntent(getActivity(), GalleryType.ofAll()),
                     REQUEST_CODE_GALLERY
             );
         } else {

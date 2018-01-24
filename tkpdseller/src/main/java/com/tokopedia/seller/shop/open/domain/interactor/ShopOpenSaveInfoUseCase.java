@@ -6,6 +6,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.seller.base.domain.interactor.UploadImageUseCase;
 import com.tokopedia.seller.base.domain.model.ImageUploadDomainModel;
 import com.tokopedia.seller.shop.open.data.model.UploadShopImageModel;
@@ -15,6 +16,7 @@ import com.tokopedia.seller.shop.open.domain.model.ShopOpenSaveInfoResponseModel
 import com.tokopedia.seller.shop.setting.constant.ShopSettingNetworkConstant;
 
 import java.util.HashMap;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -80,13 +82,21 @@ public class ShopOpenSaveInfoUseCase extends UseCase<ShopOpenSaveInfoResponseMod
                     .flatMap(new Func1<ImageUploadDomainModel<UploadShopImageModel>, Observable<ShopOpenSaveInfoRequestDomainModel>>() {
                         @Override
                         public Observable<ShopOpenSaveInfoRequestDomainModel> call(final ImageUploadDomainModel<UploadShopImageModel> dataImageUploadDomainModel) {
-                            return shopOpenSaveInfoRepository.openShopPicture(dataImageUploadDomainModel.getDataResultImageUpload().getData().getUpload().getSrc(),
+                            final UploadShopImageModel uploadShopImageModel = dataImageUploadDomainModel.getDataResultImageUpload();
+                            if (uploadShopImageModel == null) {
+                                throw new RuntimeException();
+                            }
+                            List<String> errorMessageList = uploadShopImageModel.getMessageError();
+                            if (errorMessageList != null && errorMessageList.size() > 0 && !TextUtils.isEmpty(errorMessageList.get(0))) {
+                                throw  new ErrorMessageException(errorMessageList.get(0));
+                            }
+                            return shopOpenSaveInfoRepository.openShopPicture(uploadShopImageModel.getData().getUpload().getSrc(),
                                     dataImageUploadDomainModel.getServerId(), dataImageUploadDomainModel.getUrl())
                                     .flatMap(new Func1<String, Observable<ShopOpenSaveInfoRequestDomainModel>>() {
                                         @Override
                                         public Observable<ShopOpenSaveInfoRequestDomainModel> call(String picUploaded) {
                                             ShopOpenSaveInfoRequestDomainModel dataRequest = new ShopOpenSaveInfoRequestDomainModel();
-                                            dataRequest.setPicSrc(dataImageUploadDomainModel.getDataResultImageUpload().getData().getUpload().getSrc());
+                                            dataRequest.setPicSrc(uploadShopImageModel.getData().getUpload().getSrc());
                                             dataRequest.setPicUploaded(picUploaded);
                                             dataRequest.setServerId(dataImageUploadDomainModel.getServerId());
                                             return Observable.just(dataRequest);
