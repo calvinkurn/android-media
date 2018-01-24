@@ -4,9 +4,15 @@ package com.tokopedia.transaction.checkout.view.data;
  * Created by kris on 1/23/18. Tokopedia
  */
 
-public class MultipleAddressShippingAdapterData {
+public class MultipleAddressShipmentAdapterData {
 
     private String senderName;
+
+    private String productImageUrl;
+
+    private String productPrice;
+
+    private String productName;
 
     private MultipleAddressItemData itemData;
 
@@ -28,6 +34,30 @@ public class MultipleAddressShippingAdapterData {
 
     public void setItemData(MultipleAddressItemData itemData) {
         this.itemData = itemData;
+    }
+
+    public String getProductImageUrl() {
+        return productImageUrl;
+    }
+
+    public void setProductImageUrl(String productImageUrl) {
+        this.productImageUrl = productImageUrl;
+    }
+
+    public String getProductPrice() {
+        return productPrice;
+    }
+
+    public void setProductPrice(String productPrice) {
+        this.productPrice = productPrice;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 
     public String getCourier() {

@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.checkout.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -9,7 +10,8 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.checkout.view.data.MultipleAddressShippingAdapterData;
+import com.tokopedia.transaction.checkout.view.data.MultipleAddressItemData;
+import com.tokopedia.transaction.checkout.view.data.MultipleAddressShipmentAdapterData;
 
 import java.util.List;
 
@@ -17,34 +19,35 @@ import java.util.List;
  * Created by kris on 1/23/18. Tokopedia
  */
 
-public class MultipleShippingAddressAdapter extends RecyclerView.Adapter
-        <MultipleShippingAddressAdapter.MultipleShippingAddressViewHolder>{
+public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
+        <MultipleAddressShipmentAdapter.MultipleShippingAddressViewHolder>{
 
-    private List<MultipleAddressShippingAdapterData> addressDataList;
+    private List<MultipleAddressShipmentAdapterData> addressDataList;
 
-    public MultipleShippingAddressAdapter(List<MultipleAddressShippingAdapterData> addressDataList) {
+    public MultipleAddressShipmentAdapter(List<MultipleAddressShipmentAdapterData> addressDataList) {
         this.addressDataList = addressDataList;
     }
 
     @Override
     public MultipleShippingAddressViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = View
-                .inflate(parent.getContext(), R.layout.multiple_address_shipping_adapter, parent);
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.multiple_address_shipment_adapter, parent, false);
         return new MultipleShippingAddressViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(MultipleShippingAddressViewHolder holder, int position) {
-        MultipleAddressShippingAdapterData data = addressDataList.get(position);
+        MultipleAddressShipmentAdapterData data = addressDataList.get(position);
+        MultipleAddressItemData itemData = data.getItemData();
         holder.senderName.setText(data.getSenderName());
         ImageHandler.LoadImage(holder.productImage, data.getProductImageUrl());
         holder.productPrice.setText(data.getProductPrice());
-        holder.productWeight.setText(data.getProductWeight());
-        holder.productQty.setText(data.getProductQty());
-        holder.notesField.setText(data.getNotesField());
-        holder.addressTitle.setText(data.getAddressTitle());
-        holder.addressReceiverName.setText(data.getAddressReceiverName());
-        holder.address.setText(data.getAddress());
+        holder.productWeight.setText(itemData.getProductWeight());
+        holder.productQty.setText(itemData.getProductQty());
+        holder.notesField.setText(itemData.getProductNotes());
+        holder.addressTitle.setText(itemData.getAddressTitle());
+        holder.addressReceiverName.setText(itemData.getAddressReceiverName());
+        holder.address.setText(itemData.getAddress());
         holder.subTotalAmount.setText(data.getSubTotalAmount());
     }
 
@@ -59,6 +62,8 @@ public class MultipleShippingAddressAdapter extends RecyclerView.Adapter
         private TextView senderName;
 
         private ImageView productImage;
+
+        private TextView productName;
 
         private TextView productPrice;
 

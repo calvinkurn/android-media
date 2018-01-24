@@ -6,12 +6,6 @@ package com.tokopedia.transaction.checkout.view.data;
 
 public class MultipleAddressItemData {
 
-    private String productImageUrl;
-
-    private String productName;
-
-    private String productPrice;
-
     private String productWeight;
 
     private String productQty;
@@ -24,29 +18,6 @@ public class MultipleAddressItemData {
 
     private String address;
 
-    public String getProductImageUrl() {
-        return productImageUrl;
-    }
-
-    public void setProductImageUrl(String productImageUrl) {
-        this.productImageUrl = productImageUrl;
-    }
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
-
-    public String getProductPrice() {
-        return productPrice;
-    }
-
-    public void setProductPrice(String productPrice) {
-        this.productPrice = productPrice;
-    }
 
     public String getProductWeight() {
         return productWeight;
@@ -69,7 +40,7 @@ public class MultipleAddressItemData {
     }
 
     public void setProductNotes(String productNotes) {
-        this.productImageUrl = productNotes;
+        this.productNotes = productNotes;
     }
 
     public String getAddressTitle() {
