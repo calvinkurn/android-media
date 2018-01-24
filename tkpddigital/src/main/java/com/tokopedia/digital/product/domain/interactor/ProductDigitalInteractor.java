@@ -51,7 +51,7 @@ public class ProductDigitalInteractor implements IProductDigitalInteractor {
             Subscriber<ProductDigitalData> subscriber) {
         compositeSubscription.add(
                 Observable.zip(
-                        digitalCategoryRepository.getCategory(pathCategoryId, paramQueryCategory),
+                        digitalCategoryRepository.getCategoryFromCloud(pathCategoryId, paramQueryCategory),
                         getObservableNumberList(paramQueryFavoriteList),
                         getZipFunctionProductDigitalData())
                         .subscribeOn(Schedulers.newThread())

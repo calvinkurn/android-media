@@ -41,10 +41,10 @@ public class DigitalWidgetUseCase extends UseCase<List<Category>> {
                     public Observable<List<Category>> call(Status status) {
                         if (status.isMaintenance() || !isVersionMatch(status)) {
                             // failed
+                            return null;
                         } else {
                             return digitalWidgetRepository.getObservableCategoryData();
                         }
-                        return null;
                     }
                 });
     }

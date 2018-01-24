@@ -148,12 +148,9 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
         CategoryDetailDataSource categoryDetailDataSource = new CategoryDetailDataSource(
                 digitalEndpointService, new GlobalCacheManager(), new ProductDigitalMapper()
         );
-        FavoriteListDataSource favoriteListDataSource = new FavoriteListDataSource(
-                digitalEndpointService, new FavoriteNumberListDataMapper()
-        );
 
         IDigitalCategoryRepository digitalCategoryRepository = new DigitalCategoryRepository(
-                categoryDetailDataSource, favoriteListDataSource
+                categoryDetailDataSource, null
         );
 
         DigitalCategoryUseCase digitalCategoryUseCase = new DigitalCategoryUseCase(this,

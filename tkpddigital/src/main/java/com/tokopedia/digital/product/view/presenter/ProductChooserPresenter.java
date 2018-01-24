@@ -1,8 +1,8 @@
 package com.tokopedia.digital.product.view.presenter;
 
+import com.tokopedia.digital.product.domain.GetProductsByOperatorIdUseCase;
 import com.tokopedia.digital.product.view.listener.IProductChooserView;
-import com.tokopedia.digital.widget.domain.interactor.IDigitalWidgetInteractor;
-import com.tokopedia.digital.widget.view.model.product.Product;
+import com.tokopedia.digital.product.view.model.Product;
 
 import java.util.List;
 
@@ -14,35 +14,40 @@ import rx.Subscriber;
 
 public class ProductChooserPresenter implements IProductChooserPresenter {
 
-    private IDigitalWidgetInteractor digitalWidgetInteractor;
     private IProductChooserView view;
+    private GetProductsByOperatorIdUseCase getProductsByOperatorId;
 
-    public ProductChooserPresenter(IProductChooserView view, IDigitalWidgetInteractor digitalWidgetInteractor) {
+    public ProductChooserPresenter(IProductChooserView view,
+                                   GetProductsByOperatorIdUseCase getProductsByOperatorId) {
         this.view = view;
-        this.digitalWidgetInteractor = digitalWidgetInteractor;
+        this.getProductsByOperatorId = getProductsByOperatorId;
     }
 
     @Override
     public void getProductsByCategoryIdAndOperatorId(String categoryId, String operatorId) {
         view.showInitialProgressLoading();
-        digitalWidgetInteractor.getProductsByOperatorId(new Subscriber<List<Product>>() {
-            @Override
-            public void onCompleted() {
 
-            }
+        getProductsByOperatorId.execute(
+                getProductsByOperatorId.createRequestParam(categoryId, operatorId),
+                new Subscriber<List<com.tokopedia.digital.product.view.model.Product>>() {
+                    @Override
+                    public void onCompleted() {
 
-            @Override
-            public void onError(Throwable e) {
+                    }
 
-            }
+                    @Override
+                    public void onError(Throwable e) {
 
-            @Override
-            public void onNext(List<Product> products) {
-                view.hideInitialProgressLoading();
-                if (!products.isEmpty()) {
-                    view.showProducts(products);
+                    }
+
+                    @Override
+                    public void onNext(List<Product> products) {
+                        view.hideInitialProgressLoading();
+                        if (!products.isEmpty()) {
+                            view.showProducts(products);
+                        }
+                    }
                 }
-            }
-        }, Integer.valueOf(categoryId), operatorId);
+        );
     }
 }

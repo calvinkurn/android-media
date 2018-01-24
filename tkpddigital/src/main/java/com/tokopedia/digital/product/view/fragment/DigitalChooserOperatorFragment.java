@@ -18,11 +18,17 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
+import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
+import com.tokopedia.digital.common.data.repository.DigitalCategoryRepository;
+import com.tokopedia.digital.common.data.source.CategoryDetailDataSource;
+import com.tokopedia.digital.product.domain.GetOperatorsByCategoryIdUseCase;
 import com.tokopedia.digital.product.view.adapter.OperatorChooserAdapter;
 import com.tokopedia.digital.product.view.listener.IOperatorChooserView;
+import com.tokopedia.digital.product.view.model.Operator;
 import com.tokopedia.digital.product.view.presenter.IOperatorChooserPresenter;
 import com.tokopedia.digital.product.view.presenter.OperatorChooserPresenter;
 import com.tokopedia.digital.widget.data.mapper.FavoriteNumberListDataMapper;
@@ -30,7 +36,6 @@ import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
 import com.tokopedia.digital.widget.domain.interactor.DigitalWidgetInteractor;
 import com.tokopedia.digital.widget.view.model.mapper.OperatorMapper;
 import com.tokopedia.digital.widget.view.model.mapper.ProductMapper;
-import com.tokopedia.digital.widget.view.model.operator.Operator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -119,6 +124,8 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment<IOpera
     protected void initialPresenter() {
         if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
 
+        DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
+
         DigitalWidgetInteractor digitalWidgetInteractor = new DigitalWidgetInteractor(
                 compositeSubscription,
                 new DigitalWidgetRepository(new DigitalEndpointService(), new FavoriteNumberListDataMapper()),
@@ -127,7 +134,19 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment<IOpera
                 new JobExecutor(),
                 new UIThread());
 
-        presenter = new OperatorChooserPresenter(this, digitalWidgetInteractor);
+        CategoryDetailDataSource categoryDetailDataSource = new CategoryDetailDataSource(
+                digitalEndpointService, new GlobalCacheManager(), new ProductDigitalMapper()
+        );
+
+        DigitalCategoryRepository digitalCategoryRepository = new DigitalCategoryRepository(
+                categoryDetailDataSource, null
+        );
+
+        GetOperatorsByCategoryIdUseCase getOperatorsByCategoryIdUseCase = new GetOperatorsByCategoryIdUseCase(
+                getActivity(),  digitalCategoryRepository
+        );
+
+        presenter = new OperatorChooserPresenter(this, getOperatorsByCategoryIdUseCase);
     }
 
     @Override
@@ -212,7 +231,7 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment<IOpera
     private void fiterData(String query) {
         List<Operator> searchOperatorList = new ArrayList<>();
         for (int i = 0; i < operators.size(); i++) {
-            if (operators.get(i).getAttributes().getName().toLowerCase()
+            if (operators.get(i).getName().toLowerCase()
                     .contains(query.toLowerCase())) {
                 searchOperatorList.add(operators.get(i));
             }

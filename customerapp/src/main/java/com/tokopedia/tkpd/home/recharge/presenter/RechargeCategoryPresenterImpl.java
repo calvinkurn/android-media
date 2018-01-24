@@ -27,9 +27,11 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
     private Context context;
     private RechargeCategoryView view;
     private DigitalWidgetUseCase digitalWidgetUseCase;
+
     private List<Category> categoryList;
 
-    public RechargeCategoryPresenterImpl(Context context, RechargeCategoryView view,
+    public RechargeCategoryPresenterImpl(Context context,
+                                         RechargeCategoryView view,
                                          DigitalWidgetUseCase digitalWidgetUseCase) {
         this.context = context;
         this.view = view;

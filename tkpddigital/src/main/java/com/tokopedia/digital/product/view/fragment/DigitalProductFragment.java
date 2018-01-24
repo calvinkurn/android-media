@@ -287,24 +287,18 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
 
         DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
-
-        ProductDigitalMapper productDigitalMapper = new ProductDigitalMapper();
-        FavoriteNumberListDataMapper favoriteNumberListDataMapper = new FavoriteNumberListDataMapper();
-        USSDMapper ussdMapper = new USSDMapper();
-
         CategoryDetailDataSource categoryDetailDataSource = new CategoryDetailDataSource(
-                digitalEndpointService, new GlobalCacheManager(), productDigitalMapper
+                digitalEndpointService, new GlobalCacheManager(), new ProductDigitalMapper()
         );
         FavoriteListDataSource favoriteListDataSource = new FavoriteListDataSource(
-                digitalEndpointService, favoriteNumberListDataMapper
+                digitalEndpointService, new FavoriteNumberListDataMapper()
         );
-
         IDigitalCategoryRepository digitalCategoryRepository = new DigitalCategoryRepository(
                 categoryDetailDataSource, favoriteListDataSource
         );
 
         IUssdCheckBalanceRepository ussdCheckBalanceRepository = new UssdCheckBalanceRepository(
-                digitalEndpointService, ussdMapper);
+                digitalEndpointService, new USSDMapper());
 
         IProductDigitalInteractor productDigitalInteractor =
                 new ProductDigitalInteractor(
@@ -447,7 +441,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void renderCategoryProductDataStyle99(CategoryData categoryData,
-                                                HistoryClientNumber historyClientNumber) {
+                                                 HistoryClientNumber historyClientNumber) {
         this.categoryDataState = categoryData;
         this.historyClientNumberState = historyClientNumber;
         actionListener.updateTitleToolbar(categoryData.getName());
@@ -869,7 +863,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             case IDigitalModuleRouter.REQUEST_CODE_DIGITAL_OPERATOR_CHOOSER:
                 if (resultCode == Activity.RESULT_OK && data != null)
                     handleCallBackOperatorChooser(
-                            (com.tokopedia.digital.widget.view.model.operator.Operator) data.getParcelableExtra(
+                            (Operator) data.getParcelableExtra(
                                     DigitalChooserActivity.EXTRA_CALLBACK_OPERATOR_DATA
                             )
                     );
@@ -1105,12 +1099,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         digitalProductView.renderUpdateProductSelected(product);
     }
 
-    private void handleCallBackOperatorChooser(com.tokopedia.digital.widget.view.model.operator.Operator operatorWidget) {
-        for (Operator operator : categoryDataState.getOperatorList()) {
-            if (operator.getOperatorId().equals(String.valueOf(operatorWidget.getId()))) {
-                digitalProductView.renderUpdateOperatorSelected(operator);
-            }
-        }
+    private void handleCallBackOperatorChooser(Operator operator) {
+        digitalProductView.renderUpdateOperatorSelected(operator);
     }
 
     @Override

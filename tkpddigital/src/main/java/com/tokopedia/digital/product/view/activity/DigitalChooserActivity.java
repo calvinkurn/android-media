@@ -14,7 +14,8 @@ import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.view.fragment.DigitalChooserOperatorFragment;
 import com.tokopedia.digital.product.view.fragment.DigitalChooserProductFragment;
-import com.tokopedia.digital.widget.view.model.operator.Operator;
+import com.tokopedia.digital.product.view.model.Operator;
+import com.tokopedia.digital.product.view.model.Product;
 
 /**
  * @author anggaprasetiyo on 5/8/17.
@@ -148,7 +149,7 @@ public class DigitalChooserActivity extends BasePresenterActivity implements
     }
 
     @Override
-    public void onProductItemSelected(com.tokopedia.digital.product.view.model.Product product) {
+    public void onProductItemSelected(Product product) {
         setResult(RESULT_OK, new Intent().putExtra(EXTRA_CALLBACK_PRODUCT_DATA, product));
         finish();
     }

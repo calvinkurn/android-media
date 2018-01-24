@@ -28,6 +28,11 @@ public class DigitalCategoryRepository implements IDigitalCategoryRepository {
     }
 
     @Override
+    public Observable<CategoryData> getCategoryFromCloud(String categoryId, TKPDMapParam<String, String> param) {
+        return categoryDetailDataSource.getDataFromCloud(categoryId, param);
+    }
+
+    @Override
     public Observable<DigitalNumberList> getFavoriteList(TKPDMapParam<String, String> param) {
         return favoriteListDataSource.getFavoriteList(param);
     }

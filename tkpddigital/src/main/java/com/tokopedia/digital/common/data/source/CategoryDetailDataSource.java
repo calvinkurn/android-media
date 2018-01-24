@@ -40,21 +40,42 @@ public class CategoryDetailDataSource {
     public Observable<CategoryData> getCategory(String categoryId, TKPDMapParam<String, String> param) {
         // TODO: compare category version from api and db
         // if different then fetch category data from api
-        return getDataFromCloud(categoryId, param);
+        return Observable.concat(getDataFromLocal(categoryId), getDataFromCloud(categoryId, param))
+                .first(new Func1<CategoryData, Boolean>() {
+                    @Override
+                    public Boolean call(CategoryData categoryData) {
+                        return categoryData != null;
+                    }
+                });
     }
 
-    private Observable<CategoryData> getDataFromCloud(String categoryId, TKPDMapParam<String, String> param) {
+    private Observable<CategoryData> getDataFromLocal(String categoryId) {
+        CategoryData categoryData = CacheUtil.convertStringToModel(
+                globalCacheManager.getValueString(TkpdCache.Key.DIGITAL_CATEGORY_DETAIL + "/" + categoryId),
+                new TypeToken<CategoryData>() {
+                }.getType());
+
+        return Observable.just(categoryData)
+                .onErrorReturn(new Func1<Throwable, CategoryData>() {
+                    @Override
+                    public CategoryData call(Throwable throwable) {
+                        return null;
+                    }
+                });
+    }
+
+    public Observable<CategoryData> getDataFromCloud(String categoryId, TKPDMapParam<String, String> param) {
         return digitalEndpointService.getApi()
                 .getCategory(categoryId, param)
                 .map(getFuncTransformCategoryData())
-                .doOnNext(saveToCache());
+                .doOnNext(saveToCache(categoryId));
     }
 
-    private Action1<CategoryData> saveToCache() {
+    private Action1<CategoryData> saveToCache(final String categoryId) {
         return new Action1<CategoryData>() {
             @Override
             public void call(CategoryData categoryData) {
-                globalCacheManager.setKey(TkpdCache.Key.DIGITAL_CATEGORY_DETAIL);
+                globalCacheManager.setKey(TkpdCache.Key.DIGITAL_CATEGORY_DETAIL + "/" + categoryId);
                 globalCacheManager.setValue(CacheUtil.convertModelToString(categoryData,
                         new TypeToken<CategoryData>() {
                         }.getType()));

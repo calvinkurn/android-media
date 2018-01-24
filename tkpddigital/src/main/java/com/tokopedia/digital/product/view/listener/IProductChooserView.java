@@ -1,6 +1,6 @@
 package com.tokopedia.digital.product.view.listener;
 
-import com.tokopedia.digital.widget.view.model.product.Product;
+import com.tokopedia.digital.product.view.model.Product;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface IProductChooserView {
 
-    void showProducts(List<Product> operators);
+    void showProducts(List<Product> products);
 
     void showInitialProgressLoading();
 

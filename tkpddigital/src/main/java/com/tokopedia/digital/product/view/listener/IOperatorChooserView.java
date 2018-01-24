@@ -1,6 +1,6 @@
 package com.tokopedia.digital.product.view.listener;
 
-import com.tokopedia.digital.widget.view.model.operator.Operator;
+import com.tokopedia.digital.product.view.model.Operator;
 
 import java.util.List;
 

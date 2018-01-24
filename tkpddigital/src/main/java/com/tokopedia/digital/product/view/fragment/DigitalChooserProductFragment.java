@@ -9,22 +9,19 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.base.data.executor.JobExecutor;
-import com.tokopedia.core.base.presentation.UIThread;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
+import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
+import com.tokopedia.digital.common.data.repository.DigitalCategoryRepository;
+import com.tokopedia.digital.common.data.source.CategoryDetailDataSource;
+import com.tokopedia.digital.product.domain.GetProductsByOperatorIdUseCase;
 import com.tokopedia.digital.product.view.adapter.ProductChooserAdapter;
 import com.tokopedia.digital.product.view.listener.IProductChooserView;
-import com.tokopedia.digital.product.view.model.Promo;
+import com.tokopedia.digital.product.view.model.Product;
 import com.tokopedia.digital.product.view.presenter.IProductChooserPresenter;
 import com.tokopedia.digital.product.view.presenter.ProductChooserPresenter;
-import com.tokopedia.digital.widget.data.mapper.FavoriteNumberListDataMapper;
-import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
-import com.tokopedia.digital.widget.domain.interactor.DigitalWidgetInteractor;
-import com.tokopedia.digital.widget.view.model.mapper.OperatorMapper;
-import com.tokopedia.digital.widget.view.model.mapper.ProductMapper;
-import com.tokopedia.digital.widget.view.model.product.Product;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +60,7 @@ public class DigitalChooserProductFragment extends BasePresenterFragment<IProduc
     private ActionListener actionListener;
 
     public interface ActionListener {
-        void onProductItemSelected(com.tokopedia.digital.product.view.model.Product product);
+        void onProductItemSelected(Product product);
     }
 
     public static Fragment newInstance(String categoryId, String operatorId, String productStyleView) {
@@ -105,15 +102,21 @@ public class DigitalChooserProductFragment extends BasePresenterFragment<IProduc
     protected void initialPresenter() {
         if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
 
-        DigitalWidgetInteractor digitalWidgetInteractor = new DigitalWidgetInteractor(
-                compositeSubscription,
-                new DigitalWidgetRepository(new DigitalEndpointService(), new FavoriteNumberListDataMapper()),
-                new ProductMapper(),
-                new OperatorMapper(),
-                new JobExecutor(),
-                new UIThread());
+        DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
 
-        presenter = new ProductChooserPresenter(this, digitalWidgetInteractor);
+        CategoryDetailDataSource categoryDetailDataSource = new CategoryDetailDataSource(
+                digitalEndpointService, new GlobalCacheManager(), new ProductDigitalMapper()
+        );
+
+        DigitalCategoryRepository digitalCategoryRepository = new DigitalCategoryRepository(
+                categoryDetailDataSource, null
+        );
+
+        GetProductsByOperatorIdUseCase getProductsByOperatorIdUseCase = new GetProductsByOperatorIdUseCase(
+                context, digitalCategoryRepository
+        );
+
+        presenter = new ProductChooserPresenter(this, getProductsByOperatorIdUseCase);
     }
 
     @Override
@@ -158,40 +161,12 @@ public class DigitalChooserProductFragment extends BasePresenterFragment<IProduc
     }
 
     @Override
-    public void onProductItemSelected(Product productWidget) {
-        com.tokopedia.digital.product.view.model.Product product = map(productWidget);
+    public void onProductItemSelected(Product product) {
         actionListener.onProductItemSelected(product);
     }
 
-    private com.tokopedia.digital.product.view.model.Product map(Product productWidget) {
-        com.tokopedia.digital.product.view.model.Product product = new com.tokopedia.digital.product.view.model.Product();
-        product.setDesc(productWidget.getAttributes().getDesc());
-        product.setDetail(productWidget.getAttributes().getDetail());
-        product.setDetailUrl(productWidget.getAttributes().getDetailUrl());
-        product.setDetailUrlText(productWidget.getAttributes().getDetailUrlText());
-        product.setInfo(productWidget.getAttributes().getInfo());
-        product.setPrice(productWidget.getAttributes().getPrice());
-        product.setPricePlain(productWidget.getAttributes().getPricePlain());
-        product.setProductId(productWidget.getId()); // changed from int to String
-        product.setProductType(productWidget.getType());
-        if (productWidget.getAttributes().getPromo() != null) {
-            Promo promo = new Promo();
-            promo.setBonusText(productWidget.getAttributes().getPromo().getBonusText());
-//        promo.setId(productWidget.getAttributes().getPromo().getId());
-            promo.setNewPrice(productWidget.getAttributes().getPromo().getNewPrice());
-            promo.setNewPricePlain(productWidget.getAttributes().getPromo().getNewPricePlain()); // changed from int to long
-            promo.setTag(productWidget.getAttributes().getPromo().getTag());
-            promo.setTerms(productWidget.getAttributes().getPromo().getTerms());
-            promo.setValueText(productWidget.getAttributes().getPromo().getValueText());
-            product.setPromo(promo);
-        }
-        product.setStatus(productWidget.getAttributes().getStatus());
-
-        return product;
-    }
-
     @Override
-    public void showProducts(List<com.tokopedia.digital.widget.view.model.product.Product> products) {
+    public void showProducts(List<Product> products) {
         this.productListData.clear();
         this.productListData.addAll(products);
         productChooserAdapter.notifyDataSetChanged();

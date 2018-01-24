@@ -33,11 +33,11 @@ public class DigitalCategoryUseCase extends UseCase<ProductDigitalData> {
     private final String PARAM_SORT = "sort";
 
     private Context context;
-    private IDigitalCategoryRepository digitalRepository;
+    private IDigitalCategoryRepository digitalCategoryRepository;
 
-    public DigitalCategoryUseCase(Context context, IDigitalCategoryRepository digitalRepository) {
+    public DigitalCategoryUseCase(Context context, IDigitalCategoryRepository digitalCategoryRepository) {
         this.context = context;
-        this.digitalRepository = digitalRepository;
+        this.digitalCategoryRepository = digitalCategoryRepository;
     }
 
     @Override
@@ -52,7 +52,7 @@ public class DigitalCategoryUseCase extends UseCase<ProductDigitalData> {
         paramQueryFavoriteList.put(PARAM_SORT, sort);
 
         return Observable.zip(
-                digitalRepository.getCategory(categoryId, getGeneratedAuthParamNetwork(paramQueryCategory)),
+                digitalCategoryRepository.getCategoryFromCloud(categoryId, getGeneratedAuthParamNetwork(paramQueryCategory)),
                 getFavoriteList(getGeneratedAuthParamNetwork(paramQueryFavoriteList)),
                 getZipFunctionProductDigitalData());
     }
@@ -60,7 +60,7 @@ public class DigitalCategoryUseCase extends UseCase<ProductDigitalData> {
     private Observable<DigitalNumberList> getFavoriteList
             (TKPDMapParam<String, String> paramQueryLastNumber) {
         if (SessionHandler.isV4Login(MainApplication.getAppContext())) {
-            return digitalRepository.getFavoriteList(paramQueryLastNumber);
+            return digitalCategoryRepository.getFavoriteList(paramQueryLastNumber);
         } else {
             List<OrderClientNumber> orderClientNumbers = new ArrayList<>();
             DigitalNumberList digitalNumberList = new DigitalNumberList(orderClientNumbers, null);

@@ -1,8 +1,8 @@
 package com.tokopedia.digital.product.view.presenter;
 
+import com.tokopedia.digital.product.domain.GetOperatorsByCategoryIdUseCase;
 import com.tokopedia.digital.product.view.listener.IOperatorChooserView;
-import com.tokopedia.digital.widget.domain.interactor.IDigitalWidgetInteractor;
-import com.tokopedia.digital.widget.view.model.operator.Operator;
+import com.tokopedia.digital.product.view.model.Operator;
 
 import java.util.List;
 
@@ -14,38 +14,42 @@ import rx.Subscriber;
 
 public class OperatorChooserPresenter implements IOperatorChooserPresenter {
 
-    private IDigitalWidgetInteractor widgetInteractor;
+    private GetOperatorsByCategoryIdUseCase getOperatorsByCategoryIdUseCase;
     private IOperatorChooserView view;
 
-    public OperatorChooserPresenter(IOperatorChooserView view, IDigitalWidgetInteractor widgetInteractor) {
+    public OperatorChooserPresenter(IOperatorChooserView view,
+                                    GetOperatorsByCategoryIdUseCase getOperatorsByCategoryIdUseCase) {
         this.view = view;
-        this.widgetInteractor = widgetInteractor;
+        this.getOperatorsByCategoryIdUseCase = getOperatorsByCategoryIdUseCase;
     }
 
     @Override
     public void getOperatorsByCategoryId(String categoryId) {
         view.showInitialProgressLoading();
 
-        widgetInteractor.getOperatorsByCategoryId(new Subscriber<List<Operator>>() {
-            @Override
-            public void onCompleted() {
+        getOperatorsByCategoryIdUseCase.execute(
+                getOperatorsByCategoryIdUseCase.createRequestParam(categoryId),
+                new Subscriber<List<Operator>>() {
+                    @Override
+                    public void onCompleted() {
 
-            }
+                    }
 
-            @Override
-            public void onError(Throwable e) {
+                    @Override
+                    public void onError(Throwable e) {
 
-            }
+                    }
 
-            @Override
-            public void onNext(List<Operator> operators) {
-                view.hideInitialProgressLoading();
+                    @Override
+                    public void onNext(List<Operator> operators) {
+                        view.hideInitialProgressLoading();
 
-                if (!operators.isEmpty()) {
-                    view.showOperators(operators);
+                        if (!operators.isEmpty()) {
+                            view.showOperators(operators);
+                        }
+                    }
                 }
-            }
-        }, Integer.valueOf(categoryId));
+        );
     }
 
 }
