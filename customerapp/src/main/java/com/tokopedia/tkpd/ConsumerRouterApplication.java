@@ -1130,7 +1130,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public String applink(Activity activity, String deeplink) {
         DeeplinkRepository deeplinkRepository = new DeeplinkRepositoryImpl(this, new GlobalCacheManager());
-        MapUrlUseCase mapUrlUseCase = new MapUrlUseCase(new JobExecutor(), new UIThread(), deeplinkRepository);
+        MapUrlUseCase mapUrlUseCase = new MapUrlUseCase(deeplinkRepository);
         Uri uri = Uri.parse(deeplink);
         final List<String> linkSegments = uri.getPathSegments();
         StringBuilder finalSegments = new StringBuilder();
