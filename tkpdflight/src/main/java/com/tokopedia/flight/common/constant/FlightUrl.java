@@ -26,7 +26,7 @@ public class FlightUrl {
     public static String BANNER_PATH = PULSA_BASE_URL + "v1.4/banner";
 
     public static String getUrlPdf(String orderId, String filename, String userId) {
-        return BASE_URL + FLIGHT_PATH + "pdf/generate?invoice_id=" + orderId + "&pdf=" + filename + "&user_id=" + userId;
+        return WEB_DOMAIN + "pesawat/pdf/generate?invoice_id=" + orderId + "&pdf=" + filename + "&user_id=" + userId;
     }
 
     public static String getUrlInvoice(String orderId, String userId) {
