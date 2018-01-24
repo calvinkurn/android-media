@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -47,6 +48,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
     private static final String SEAMLESS = "seamless";
     private static final String LOGIN_TYPE = "login_type";
     private static final String QUERY_PARAM_PLUS = "plus";
+    private static final String KOL_URL = "tokopedia.com/content";
     private static final int LOGIN_GPLUS = 123453;
     private static boolean isAlreadyFirstRedirect;
     private TkpdWebView WebViewGeneral;
@@ -111,8 +113,33 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
                 }
                 super.onProgressChanged(view, newProgress);
             }
+
+            @Override
+            public void onReceivedTitle(WebView view, String title) {
+                super.onReceivedTitle(view, title);
+                if (getActivity() instanceof AppCompatActivity
+                        && ((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
+                    String decodedUrl = Uri.decode(url).toLowerCase();
+
+                    if (!TextUtils.isEmpty(title)
+                            && Uri.parse(title).getScheme() == null
+                            && isKolUrl(decodedUrl)) {
+                        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(
+                                title
+                        );
+                    } else {
+                        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(
+                                getString(R.string.title_activity_deep_link)
+                        );
+                    }
+                }
+            }
         });
         return fragmentView;
+    }
+
+    private boolean isKolUrl(String url) {
+        return url.contains(KOL_URL);
     }
 
     public WebView getWebview() {
