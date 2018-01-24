@@ -133,6 +133,10 @@ public class ReferralActivity extends BasePresenterActivity implements HasCompon
 
     private String getToolbarTitle() {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(ReferralActivity.this);
-        return remoteConfig.getString(TkpdCache.RemoteConfigKey.APP_REFERRAL_TITLE, getString(R.string.drawer_title_appshare));
+        if(remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_REFERRAL_BUTTON)){
+            return remoteConfig.getString(TkpdCache.RemoteConfigKey.APP_REFERRAL_TITLE, getString(R.string.drawer_title_referral_appshare));
+        }else{
+            return getString(R.string.drawer_title_appshare);
+        }
     }
 }

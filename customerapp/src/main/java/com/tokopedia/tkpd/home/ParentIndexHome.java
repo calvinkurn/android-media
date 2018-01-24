@@ -253,8 +253,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         checkAppUpdate();
         checkIsHaveApplinkComeFromDeeplink(getIntent());
 
-        //After logout fetch and save ads id again
-        TrackingUtils.fetchAndSaveAdsId(this);
     }
 
     @Override

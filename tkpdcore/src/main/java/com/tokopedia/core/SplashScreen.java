@@ -97,9 +97,6 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     protected void onStart() {
         super.onStart();
         handleBranchDefferedDeeplink();
-
-        TrackingUtils.fetchAndSaveAdsId(this);
-
     }
 
     private void moveToHome() {
