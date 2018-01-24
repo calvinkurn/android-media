@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.SearchTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -305,6 +307,7 @@ public class ShopListFragment extends SearchSectionFragment
         Intent intent = new Intent(getContext(), ShopInfoActivity.class);
         intent.putExtras(ShopInfoActivity.createBundle(shopItem.getShopId(), shopItem.getShopDomain()));
         lastSelectedItemPosition = adapterPosition;
+        UnifyTracking.eventSearchResultShopItemClick(query, shopItem.getShopName());
         startActivityForResult(intent, REQUEST_CODE_GOTO_SHOP_DETAIL);
     }
 
