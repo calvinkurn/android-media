@@ -475,13 +475,13 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     private void sendItemClickTrackingEvent(ProductItem item) {
+        String userId = SessionHandler.isV4Login(getContext()) ?
+                SessionHandler.getLoginID(getContext()) : "";
+
         SearchTracking.trackEventClickSearchResultProduct(
-                item.getProductName(),
-                item.getProductID(),
-                item.getPrice(),
-                item.getPosition(),
-                SessionHandler.isV4Login(getContext()) ? SessionHandler.getLoginID(getContext()) : "",
-                productViewModel.getQuery());
+                item.getProductAsObjectDataLayer(userId),
+                productViewModel.getQuery()
+        );
     }
 
     @Override
