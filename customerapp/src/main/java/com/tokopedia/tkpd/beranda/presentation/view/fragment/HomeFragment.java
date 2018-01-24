@@ -23,6 +23,8 @@ import android.view.ViewGroup;
 import com.google.firebase.perf.metrics.Trace;
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -37,6 +39,7 @@ import com.tokopedia.core.drawer.listener.TokoCashUpdateListener;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
 import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.home.TopPicksWebView;
@@ -81,9 +84,10 @@ import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategorySe
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.LayoutSections;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.SellViewModel;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
-import com.tokopedia.tkpd.home.ReactNativeActivity;
+import com.tokopedia.tkpd.home.ReactNativeOfficialStoreActivity;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 
 import java.util.ArrayList;
@@ -153,7 +157,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     protected String getScreenName() {
-        return null;
+        return AppScreen.UnifyScreenTracker.SCREEN_UNIFY_HOME_BERANDA;
     }
 
     @Override
@@ -361,7 +365,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void focusView(String title) {
         if (title.equalsIgnoreCase("Jual")) {
-            recyclerView.smoothScrollToPosition(adapter.getItemCount() - 1);
+            for (int i = 0; i < adapter.getItemCount(); i++) {
+                if (adapter.getItem(i) instanceof SellViewModel) {
+                    recyclerView.smoothScrollToPosition(i);
+                    break;
+                }
+            }
         } else {
             for (int i = 0; i < adapter.getItemCount(); i++) {
                 Visitable visitable = adapter.getItem(i);
@@ -440,10 +449,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
         if (firebaseRemoteConfig.getBoolean(MAINAPP_SHOW_REACT_OFFICIAL_STORE)) {
             getActivity().startActivity(
-                    ReactNativeActivity.createOfficialStoresReactNativeActivity(
+                    ReactNativeOfficialStoreActivity.createCallingIntent(
                             getActivity(), ReactConst.Screen.OFFICIAL_STORE,
-                            getString(R.string.react_native_banner_official_title)
-                    )
+                            getString(R.string.react_native_banner_official_title))
             );
         } else {
             openWebViewBrandsURL(TkpdBaseURL.OfficialStore.URL_WEBVIEW);
@@ -558,10 +566,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onPromoClick(BannerSlidesModel slidesModel) {
         if (getActivity() != null
-                && getActivity().getApplicationContext() instanceof IDigitalModuleRouter
-                && ((IDigitalModuleRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(slidesModel.getApplink())) {
-            ((IDigitalModuleRouter) getActivity().getApplicationContext())
-                    .actionNavigateByApplinksUrl(getActivity(),slidesModel.getApplink(), new Bundle());
+                && getActivity().getApplicationContext() instanceof TkpdCoreRouter
+                && ((TkpdCoreRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(slidesModel.getApplink())) {
+            ((TkpdCoreRouter) getActivity().getApplicationContext())
+                    .actionAppLink(getActivity(),slidesModel.getApplink());
         } else {
             openWebViewURL(slidesModel.getRedirectUrl(),getContext());
         }
@@ -816,14 +824,19 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser && getView() != null) {
-            restartBanner();
+        trackScreen(isVisibleToUser);
+        restartBanner(isVisibleToUser);
+    }
+
+    private void restartBanner(boolean isVisibleToUser) {
+        if ((isVisibleToUser && getView() != null) && adapter != null) {
+            adapter.notifyDataSetChanged();
         }
     }
 
-    private void restartBanner() {
-        if (adapter != null) {
-            adapter.notifyDataSetChanged();
+    private void trackScreen(boolean isVisibleToUser) {
+        if (isVisibleToUser && isAdded() && getActivity() != null) {
+            ScreenTracking.screen(getScreenName());
         }
     }
 

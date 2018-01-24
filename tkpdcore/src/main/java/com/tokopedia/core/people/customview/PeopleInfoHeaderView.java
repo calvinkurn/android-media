@@ -14,6 +14,7 @@ import com.tokopedia.core.people.model.InputOutputData;
 import com.tokopedia.core.people.model.PeopleFavShop;
 import com.tokopedia.core.people.model.PeopleInfoData;
 import com.tokopedia.core.people.presenter.PeopleInfoFragmentPresenter;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 
 import butterknife.BindView;
@@ -71,6 +72,8 @@ public class PeopleInfoHeaderView extends BaseView<InputOutputData, PeopleInfoFr
         if (data.getPeopleFavShopData().getDataRandomFavShop().getTotalFave() != 0) {
             textFavorite.setOnClickListener(new FavoritedShopClick(peopleInfoData));
         }
+
+        textFollowing.setVisibility(GlobalConfig.isSellerApp() ? GONE : VISIBLE);
 
         textFollowing.setOnClickListener(new FollowingClick(peopleInfoData));
 

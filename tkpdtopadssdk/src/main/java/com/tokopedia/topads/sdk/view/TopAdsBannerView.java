@@ -85,7 +85,9 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
 
         String desc = String.format("%s %s", escapeHTML(cpm.getDecription()), cpm.getCta());
         setTextColor(descriptionTxt, desc, cpm.getCta(), ContextCompat.getColor(context, R.color.tkpd_main_green));
+
         if (cpm.getBadges().size() > 0) {
+            badgeContainer.removeAllViews();
             badgeContainer.setVisibility(VISIBLE);
             for (Badge badge : cpm.getBadges()) {
                 ImageView badgeImg = new ImageView(context);
@@ -165,7 +167,6 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
     public void onCanceled() {
 
     }
-
     @Override
     public void hideLoading() {
 

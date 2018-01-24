@@ -15,6 +15,12 @@ public interface AppEventTracking {
     String DEFAULT_EVENT = "Event";
     String ACCOUNTS_KEY = "accounts";
 
+    String EVENT = "event";
+    String EVENT_CATEGORY = "eventCategory";
+    String EVENT_ACTION = "eventAction";
+    String EVENT_LABEL = "eventLabel";
+    String ECOMMERCE = "ecommerce";
+
     interface GTMKey {
         String ACCOUNTS_TYPE = "ACCOUNTS_TYPE";
     }
@@ -88,6 +94,7 @@ public interface AppEventTracking {
         String USER_INTERACTION_HOMEPAGE = "userInteractionHomePage";
         String RECHARGE_TRACKING = "rechargeTracking";
         String EVENT_TOKO_POINT = "eventTokopoint";
+        String CLICK_PROMO_MICRO_SITE = "clickPromoMicrosite";
 
         String SHOP_MANAGE = "clickManageShop";
         String NOTES = "clickNotes";
@@ -272,6 +279,9 @@ public interface AppEventTracking {
         String ONBOARDING = "onboarding";
         String RESOLUTION_CENTER = "resolution center";
         String MANAGE_PROFILE = "pengaturan profile";
+
+        String PROMO_MICROSITE_PROMO_LIST ="promo microsite - promo list";
+        String PROMO_MICROSITE_PROMO_TOOLTIP ="promo microsite - promo tooltip";
     }
 
     interface Action {
@@ -429,6 +439,14 @@ public interface AppEventTracking {
 
         String CLICK_CHANGE_PHONE_NUMBER = "click on ubah";
         String SUCCESS_CHANGE_PHONE_NUMBER = "success change phone number";
+
+        String PROMO_CLICK_CATEGORY = "user click on category";
+        String PROMO_CLICK_SUB_CATEGORY = "user click on subcategory";
+        String PROMO_CLICK_COPY_PROMO_CODE = "user click salin kode";
+
+        String PROMO_CLICK_OPEN_TOOLTIP ="user click on tooltip";
+        String PROMO_CLICK_CLOSE_TOOLTIP ="user click tutup";
+
     }
 
     interface ImageEditor{

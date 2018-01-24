@@ -56,9 +56,9 @@ public class AdvancedAppRatingDialog extends AppRatingDialog {
             @Override
             public void onClick(View v) {
                 UnifyTracking.eventClickAppRating(LABEL_CLICK_ADVANCED_APP_RATING + appRatingView.getRating());
-                saveVersionCodeForState();
                 dialog.dismiss();
                 if(appRatingView.getRating() > 3) {
+                    saveVersionCodeForState();
                     openPlayStore();
                 }
             }

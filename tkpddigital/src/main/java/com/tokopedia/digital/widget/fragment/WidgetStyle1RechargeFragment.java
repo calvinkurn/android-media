@@ -363,6 +363,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
         widgetClientNumberView.setImgOperatorVisible();
         widgetProductChooserView.setTitleProduct(operatorModel.getAttributes().getRule().getProductText());
         widgetProductChooserView.setVisibilityProduct(operatorModel.getAttributes().getRule().isShowProduct());
+        widgetWrapperBuyView.setBuyButtonText(selectedOperator.getAttributes().getRule().getButtonLabel());
     }
 
     @Override
