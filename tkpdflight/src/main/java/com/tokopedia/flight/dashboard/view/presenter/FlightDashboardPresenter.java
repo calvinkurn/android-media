@@ -94,20 +94,20 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     @Override
     public void initialize() {
         if (userSession.isLoggedIn()) {
-            onInitialize(getView().isFromApplink());
+            onInitialize();
         } else {
             getView().navigateToLoginPage();
         }
     }
 
-    private void onInitialize(boolean fromApplink) {
+    private void onInitialize() {
         setupViewModel();
         getBannerData();
 
-        if (!fromApplink) {
+        if (!getView().isFromApplink()) {
             actionLoadFromCache();
             actionGetClassesAndSetDefaultClass();
-        } else if (fromApplink) {
+        } else {
             transformExtras(getView().getTripArguments(),
                     getView().getPassengerArguments(),
                     getView().getClassArguments());
@@ -413,7 +413,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     @Override
     public void onLoginResultReceived() {
         if (userSession.isLoggedIn()) {
-            onInitialize(false);
+            onInitialize();
         } else {
             getView().closePage();
         }

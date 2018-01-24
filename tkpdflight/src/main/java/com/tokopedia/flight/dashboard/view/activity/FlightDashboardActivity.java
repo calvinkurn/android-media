@@ -62,7 +62,7 @@ public class FlightDashboardActivity extends BaseFlightActivity implements HasCo
 
     @Override
     protected Fragment getNewFragment() {
-        if (getIntent() != null) {
+        if (getIntent().hasExtra(EXTRA_TRIP) && getIntent().hasExtra(EXTRA_PASSENGER) && getIntent().hasExtra(EXTRA_CLASS)) {
             return FlightDashboardFragment.getInstance(
                 getIntent().getStringExtra(EXTRA_TRIP),
                 getIntent().getStringExtra(EXTRA_PASSENGER),
