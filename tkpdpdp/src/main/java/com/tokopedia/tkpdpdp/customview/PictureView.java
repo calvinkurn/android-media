@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.TextureView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -25,6 +26,11 @@ import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STATE_ACTIVE;
+import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STATE_PENDING;
+import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STATE_WAREHOUSE;
+import static com.tokopedia.core.product.model.productdetail.ProductShopInfo.SHOP_STATUS_ACTIVE;
 
 /**
  * @author Angga.Prasetiyo on 29/10/2015.
@@ -103,22 +109,15 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
             indicator.notifyDataSetChanged();
             imagePagerAdapter.setActionListener(new PagerAdapterAction(data));
         }
-        if (data.getInfo().getProductStatus().equals("-1")) {
-            if (data.getInfo().getProductStatusMessage() != null && data.getInfo().getProductStatusTitle() != null) {
+        if (!data.getInfo().getProductStatus().equals(PRD_STATE_ACTIVE)) {
+            listener.onProductStatusError();
+            if (!TextUtils.isEmpty(data.getInfo().getProductStatusTitle())
+                    && !TextUtils.isEmpty(data.getInfo().getProductStatusMessage())) {
                 errorProductContainer.setVisibility(VISIBLE);
                 errorProductTitle.setText(data.getInfo().getProductStatusTitle());
                 errorProductSubitle.setText(data.getInfo().getProductStatusMessage());
             }
-            listener.onProductStatusError();
-        } else if (data.getInfo().getProductStatus().equals("3") &
-                data.getShopInfo().getShopStatus() == 1 &&
-                !TextUtils.isEmpty(data.getInfo().getProductStatusTitle())) {
-            errorProductContainer.setVisibility(VISIBLE);
-            errorProductTitle.setText(data.getInfo().getProductStatusTitle());
-            errorProductSubitle.setText(data.getInfo().getProductStatusMessage());
-        } else if (!data.getInfo().getProductStatus().equals("1")) {
-            listener.onProductStatusError();
-        } else if (data.getShopInfo().getShopStatus()!=1) {
+        } else if (data.getShopInfo().getShopStatus() != SHOP_STATUS_ACTIVE) {
             errorProductContainer.setVisibility(VISIBLE);
             errorProductTitle.setText(data.getShopInfo().getShopStatusTitle() != null
                     && !data.getShopInfo().getShopStatusTitle().isEmpty()
@@ -127,7 +126,7 @@ public class PictureView extends BaseView<ProductDetailData, ProductDetailView> 
                     && !data.getShopInfo().getShopStatusMessage().isEmpty()
                     ? data.getShopInfo().getShopStatusMessage() : "");
 
-        }else {
+        } else {
             errorProductContainer.setVisibility(GONE);
         }
     }
