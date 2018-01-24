@@ -3,7 +3,7 @@ package com.tokopedia.flight.common.util;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.tokopedia.abstraction.common.utils.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.flight.common.data.model.FlightError;
 import com.tokopedia.flight.common.data.model.FlightException;
 

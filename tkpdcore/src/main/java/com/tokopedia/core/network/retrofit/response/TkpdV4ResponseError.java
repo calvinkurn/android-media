@@ -40,10 +40,7 @@ public class TkpdV4ResponseError extends BaseResponseError {
         if (status.equalsIgnoreCase(STATUS_OK)) {
             return false;
         }
-        if (!hasBody()) {
-            return false;
-        }
-        return true;
+        return hasBody();
     }
 
     @Override

@@ -1,17 +1,15 @@
-package com.tokopedia.abstraction.common.utils;
+package com.tokopedia.abstraction.common.utils.network;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.common.network.constant.ResponseStatus;
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
-
-/**
- * Created by User on 11/28/2017.
- */
 
 public class ErrorHandler {
 
@@ -20,8 +18,6 @@ public class ErrorHandler {
             return context.getString(R.string.msg_no_connection);
         } else if (e instanceof SocketTimeoutException) {
             return context.getString(R.string.default_request_error_timeout);
-        } else if (e instanceof IOException) {
-            return context.getString(R.string.default_request_error_internal_server);
         } else if (e instanceof RuntimeException &&
                 e.getLocalizedMessage() != null &&
                 !e.getLocalizedMessage().equals("") &&
@@ -30,7 +26,7 @@ public class ErrorHandler {
             switch (code) {
                 case ResponseStatus.SC_REQUEST_TIMEOUT:
                 case ResponseStatus.SC_GATEWAY_TIMEOUT:
-                     return context.getString(R.string.default_request_error_timeout);
+                    return context.getString(R.string.default_request_error_timeout);
                 case ResponseStatus.SC_INTERNAL_SERVER_ERROR:
                     return context.getString(R.string.default_request_error_internal_server);
                 case ResponseStatus.SC_FORBIDDEN:
@@ -42,6 +38,11 @@ public class ErrorHandler {
                 default:
                     return context.getString(R.string.default_request_error_unknown);
             }
+        } else if (e instanceof MessageErrorException &&
+                !TextUtils.isEmpty(e.getMessage())) {
+            return e.getMessage();
+        } else if (e instanceof IOException) {
+            return context.getString(R.string.default_request_error_internal_server);
         } else {
             return context.getString(R.string.default_request_error_unknown);
         }

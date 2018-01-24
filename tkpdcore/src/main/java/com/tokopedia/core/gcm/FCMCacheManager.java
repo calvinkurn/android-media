@@ -262,6 +262,11 @@ public class FCMCacheManager {
     public static void storeRegId(String id, Context context) {
         LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
         cache.putString(GCM_ID, id);
+        cache.applyEditor();
+    }
+
+    public static void storeFcmTimestamp(Context context) {
+        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
         cache.putLong(GCM_ID_TIMESTAMP, System.currentTimeMillis());
         cache.applyEditor();
     }

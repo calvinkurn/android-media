@@ -1,4 +1,4 @@
-package com.tokopedia.abstraction.common.utils;
+package com.tokopedia.abstraction.common.utils.view;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.support.annotation.Nullable;
 
 import com.tokopedia.abstraction.R;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 
 /**
  * @author ricoharisin

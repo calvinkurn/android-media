@@ -1,8 +1,12 @@
-package com.tokopedia.abstraction.common.utils;
+package com.tokopedia.abstraction.common.utils.network;
 
 import android.content.Context;
 import android.support.v4.util.ArrayMap;
 import android.util.Base64;
+
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.abstraction.common.utils.MapNulRemover;
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
@@ -166,8 +170,6 @@ public class AuthUtil {
         headerMap.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
         return headerMap;
     }
-
-
 
     public static Map<String, String> generateHeaders(String path, String strParam, String method, String authKey, String userId) {
         Map<String, String> finalHeader = getDefaultHeaderMap(path, strParam, method, CONTENT_TYPE, authKey, DATE_FORMAT, userId);
@@ -382,7 +384,6 @@ public class AuthUtil {
         //      params.put(PARAM_X_TKPD_USER_ID, userId);
         return params;
     }
-
 
     private static String calculateRFC2104HMAC(String authString, String authKey) {
         try {

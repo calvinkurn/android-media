@@ -1,25 +1,31 @@
-package com.tokopedia.mitratoppers.dashboard;
+package com.tokopedia.abstraction.base.view.fragment;
 
 import android.net.Uri;
 import android.os.Bundle;
 
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.base.view.fragment.BaseWebViewFragment;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.abstraction.common.utils.URLGenerator;
-import com.tokopedia.mitratoppers.common.constant.MitraToppersBaseURL;
+import com.tokopedia.abstraction.common.utils.network.URLGenerator;
 
-/**
- * Created by nathan on 8/18/17.
- */
-
-public class MitraToppersFragment extends BaseWebViewFragment {
+public class BaseSessionWebViewFragment extends BaseWebViewFragment {
+    public static final String ARGS_URL = "arg_url";
 
     private UserSession userSession;
+    private String url;
+
+    public static BaseSessionWebViewFragment newInstance(String url) {
+        BaseSessionWebViewFragment fragment = new BaseSessionWebViewFragment();
+        Bundle args = new Bundle();
+        args.putString(ARGS_URL, url);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        url = getArguments().getString(ARGS_URL);
+
         userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
     }
 
@@ -38,7 +44,7 @@ public class MitraToppersFragment extends BaseWebViewFragment {
         return userSession.getUserId();
     }
 
-    private static String getMitraToppersUrl() {
-        return MitraToppersBaseURL.WEB_DOMAIN + MitraToppersBaseURL.PATH_MITRA_TOPPERS;
+    private String getMitraToppersUrl() {
+        return url;
     }
 }

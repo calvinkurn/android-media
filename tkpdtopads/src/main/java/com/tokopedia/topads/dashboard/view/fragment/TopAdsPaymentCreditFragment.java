@@ -8,7 +8,7 @@ import android.webkit.WebView;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.fragment.BaseWebViewFragment;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.abstraction.common.utils.URLGenerator;
+import com.tokopedia.abstraction.common.utils.network.URLGenerator;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.dashboard.data.model.data.DataCredit;

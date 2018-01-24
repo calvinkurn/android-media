@@ -7,9 +7,9 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.webkit.WebView;
 
-import com.tokopedia.abstraction.common.utils.AuthUtil;
+import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.abstraction.common.utils.URLGenerator;
+import com.tokopedia.abstraction.common.utils.network.URLGenerator;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;

@@ -1,4 +1,4 @@
-package com.tokopedia.abstraction.common.utils;
+package com.tokopedia.abstraction.common.utils.view;
 
 import android.annotation.SuppressLint;
 

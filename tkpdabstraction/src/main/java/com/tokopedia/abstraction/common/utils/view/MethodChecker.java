@@ -1,4 +1,4 @@
-package com.tokopedia.abstraction.common.utils;
+package com.tokopedia.abstraction.common.utils.view;
 
 import android.app.Activity;
 import android.content.Context;
@@ -19,6 +19,8 @@ import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.ValueCallback;
 import android.webkit.WebSettings;
+
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 
 import java.io.File;
 

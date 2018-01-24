@@ -1,4 +1,4 @@
-package com.tokopedia.abstraction.common.utils;
+package com.tokopedia.abstraction.common.utils.network;
 
 import com.tokopedia.abstraction.constant.AbstractionBaseURL;
 
