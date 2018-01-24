@@ -251,8 +251,13 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     @Override
     public boolean isFromApplink() {
-        return getArguments().containsKey(EXTRA_TRIP) && getArguments().containsKey(EXTRA_CLASS) && getArguments().containsKey(EXTRA_PASSENGER)
-                && getArguments().getString(EXTRA_TRIP) != null && getArguments().getString(EXTRA_PASSENGER) != null && getArguments().getString(EXTRA_CLASS) != null;
+        return getArguments() != null &&
+                getArguments().containsKey(EXTRA_TRIP) &&
+                getArguments().containsKey(EXTRA_CLASS) &&
+                getArguments().containsKey(EXTRA_PASSENGER) &&
+                getArguments().getString(EXTRA_TRIP) != null &&
+                getArguments().getString(EXTRA_PASSENGER) != null &&
+                getArguments().getString(EXTRA_CLASS) != null;
     }
 
     @Override
