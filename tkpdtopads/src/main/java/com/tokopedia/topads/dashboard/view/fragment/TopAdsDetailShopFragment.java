@@ -54,15 +54,15 @@ public class TopAdsDetailShopFragment extends TopAdsDetailStatisticFragment<TopA
     @Override
     public void onAdLoaded(ShopAd ad) {
         super.onAdLoaded(ad);
-        if(isEnoughDeposit){
+        if(!isEnoughDeposit){
             final BottomSheetView bottomSheetView = new BottomSheetView(getActivity());
 
             bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
                     .BottomSheetFieldBuilder()
-                    .setTitle("Promo Belum Aktif")
-                    .setBody("Promo TopAds berhasil ditambahkan, namun belum aktif. Tambah kredit TopAds sekarang untuk mengaktifkan promo Anda.")
-                    .setUrlButton("", "Lihat Detail Promo Produk")
-                    .setCloseButton("Tambah Kredit TopAds")
+                    .setTitle(getString(R.string.promo_not_active))
+                    .setBody(getString(R.string.promo_not_active_body))
+                    .setUrlButton("", getString(R.string.promo_not_active_url_button))
+                    .setCloseButton(getString(R.string.promo_not_active_add_top_ads_credit))
                     .build());
 
             bottomSheetView.setBtnCloseOnClick(new View.OnClickListener() {

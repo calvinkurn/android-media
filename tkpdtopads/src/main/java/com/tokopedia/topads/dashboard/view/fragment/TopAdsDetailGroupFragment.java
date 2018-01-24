@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -144,10 +145,13 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
         super.onTurnOnAdSuccess(dataResponseActionAds);
     }
 
+    private static final String TAG = "TopAdsDetailGroupFragme";
+
     @Override
     public void onAdLoaded(GroupAd ad) {
         super.onAdLoaded(ad);
-        if(isEnoughDeposit){
+        Log.d(TAG, "isEnoughDeposit -> "+isEnoughDeposit);
+        if(!isEnoughDeposit){
             final BottomSheetView bottomSheetView = new BottomSheetView(getActivity());
 
             bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField

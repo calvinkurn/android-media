@@ -158,7 +158,7 @@ public class TopAdsDetailProductFragment extends TopAdsDetailStatisticFragment<T
     @Override
     public void onAdLoaded(ProductAd ad) {
         super.onAdLoaded(ad);
-        if(isEnoughDeposit){
+        if(!isEnoughDeposit){
             final BottomSheetView bottomSheetView = new BottomSheetView(getActivity());
 
             bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField

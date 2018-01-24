@@ -10,18 +10,14 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 /**
  * Created by normansyahputa on 10/20/17.
  */
 
 public class TopAdsAuthInterceptor extends TkpdAuthInterceptor {
-    private static final String HEADER_DATE_FORMAT = "dd MMM yy HH:mm ZZZ";
-    private static final String CONTENT_TYPE = "";
-    private static final String HEADER_DATE = "X-Date";
-    private static final String HEADER_DEVICE = "X-Device";
-    private static final String HEADER_USER_ID = "Tkpd-UserId";
-    private static final String HEADER_AUTHORIZATION = "Authorization";
-    private static final String HEADER_X_AUTHORIZATION = "X-Tkpd-Authorization";
+    @Nullable
     private SessionHandler sessionHandler;
 
     public TopAdsAuthInterceptor(SessionHandler sessionHandler){
@@ -47,7 +43,11 @@ public class TopAdsAuthInterceptor extends TkpdAuthInterceptor {
         // headerMap.put("Tkpd-UserId", SessionHandler.getLoginID(MainApplication.getAppContext()));
         headerMap.put("X-Device", "android-" + GlobalConfig.VERSION_NAME);
         headerMap.put("X-Tkpd-Authorization", headerMap.get("Authorization"));
-        headerMap.put("Authorization", "Bearer " + sessionHandler.getAuthAccessToken());
+        if(sessionHandler == null) {
+            headerMap.put("Authorization", "Bearer " + SessionHandler.getAccessToken());
+        }else{
+            headerMap.put("Authorization", "Bearer " + sessionHandler.getAuthAccessToken());
+        }
         return headerMap;
     }
 }
