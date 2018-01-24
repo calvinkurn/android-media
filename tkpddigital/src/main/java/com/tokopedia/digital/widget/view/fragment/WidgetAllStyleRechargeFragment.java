@@ -35,10 +35,6 @@ import com.tokopedia.digital.common.data.source.CategoryDetailDataSource;
 import com.tokopedia.digital.common.data.source.FavoriteListDataSource;
 import com.tokopedia.digital.common.domain.DigitalCategoryUseCase;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
-import com.tokopedia.digital.common.view.compoundview.CategoryProductStyle1View;
-import com.tokopedia.digital.common.view.compoundview.CategoryProductStyle2View;
-import com.tokopedia.digital.common.view.compoundview.CategoryProductStyle3View;
-import com.tokopedia.digital.common.view.compoundview.CategoryProductStyle99View;
 import com.tokopedia.digital.product.view.model.CategoryData;
 import com.tokopedia.digital.product.view.model.ClientNumber;
 import com.tokopedia.digital.product.view.model.ContactData;
@@ -179,52 +175,66 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
 
     }
 
-    @Override
-    public void renderCategoryProductDataStyle1(CategoryData categoryData, HistoryClientNumber historyClientNumber) {
-        this.categoryDataState = categoryData;
-        holderProductDetail.removeAllViews();
-        if (digitalProductView == null)
-            digitalProductView = new CategoryProductStyle1View(getActivity());
-        digitalProductView.setSource(BaseDigitalProductView.WIDGET);
-        digitalProductView.setActionListener(this);
-        digitalProductView.renderData(categoryData, historyClientNumber);
-        holderProductDetail.addView(digitalProductView);
-    }
+//    @Override
+//    public void renderCategoryProductDataStyle1(CategoryData categoryData, HistoryClientNumber historyClientNumber) {
+//        this.categoryDataState = categoryData;
+//        holderProductDetail.removeAllViews();
+//        if (digitalProductView == null)
+//            digitalProductView = new CategoryProductStyle1View(getActivity());
+//        digitalProductView.setSource(BaseDigitalProductView.WIDGET);
+//        digitalProductView.setActionListener(this);
+//        digitalProductView.renderData(categoryData, historyClientNumber);
+//        holderProductDetail.addView(digitalProductView);
+//    }
+//
+//    @Override
+//    public void renderCategoryProductDataStyle2(CategoryData categoryData, HistoryClientNumber historyClientNumber) {
+//        this.categoryDataState = categoryData;
+//        holderProductDetail.removeAllViews();
+//        if (digitalProductView == null)
+//            digitalProductView = new CategoryProductStyle2View(getActivity());
+//        digitalProductView.setSource(BaseDigitalProductView.WIDGET);
+//        digitalProductView.setActionListener(this);
+//        digitalProductView.renderData(categoryData, historyClientNumber);
+//        holderProductDetail.addView(digitalProductView);
+//    }
+//
+//    @Override
+//    public void renderCategoryProductDataStyle3(CategoryData categoryData, HistoryClientNumber historyClientNumber) {
+//        this.categoryDataState = categoryData;
+//        holderProductDetail.removeAllViews();
+//        if (digitalProductView == null)
+//            digitalProductView = new CategoryProductStyle3View(getActivity());
+//        digitalProductView.setSource(BaseDigitalProductView.WIDGET);
+//        digitalProductView.setActionListener(this);
+//        digitalProductView.renderData(categoryData, historyClientNumber);
+//        holderProductDetail.addView(digitalProductView);
+//    }
+//
+//    @Override
+//    public void renderCategoryProductDataStyle99(CategoryData categoryData, HistoryClientNumber historyClientNumber) {
+//        this.categoryDataState = categoryData;
+//        holderProductDetail.removeAllViews();
+//        if (digitalProductView == null)
+//            digitalProductView = new CategoryProductStyle99View(getActivity());
+//        digitalProductView.setSource(BaseDigitalProductView.WIDGET);
+//        digitalProductView.setActionListener(this);
+//        digitalProductView.renderData(categoryData, historyClientNumber);
+//        holderProductDetail.addView(digitalProductView);
+//    }
 
     @Override
-    public void renderCategoryProductDataStyle2(CategoryData categoryData, HistoryClientNumber historyClientNumber) {
+    public void renderCategory(BaseDigitalProductView digitalProductView, CategoryData categoryData,
+                               HistoryClientNumber historyClientNumber) {
         this.categoryDataState = categoryData;
         holderProductDetail.removeAllViews();
-        if (digitalProductView == null)
-            digitalProductView = new CategoryProductStyle2View(getActivity());
-        digitalProductView.setSource(BaseDigitalProductView.WIDGET);
-        digitalProductView.setActionListener(this);
-        digitalProductView.renderData(categoryData, historyClientNumber);
-        holderProductDetail.addView(digitalProductView);
-    }
-
-    @Override
-    public void renderCategoryProductDataStyle3(CategoryData categoryData, HistoryClientNumber historyClientNumber) {
-        this.categoryDataState = categoryData;
-        holderProductDetail.removeAllViews();
-        if (digitalProductView == null)
-            digitalProductView = new CategoryProductStyle3View(getActivity());
-        digitalProductView.setSource(BaseDigitalProductView.WIDGET);
-        digitalProductView.setActionListener(this);
-        digitalProductView.renderData(categoryData, historyClientNumber);
-        holderProductDetail.addView(digitalProductView);
-    }
-
-    @Override
-    public void renderCategoryProductDataStyle99(CategoryData categoryData, HistoryClientNumber historyClientNumber) {
-        this.categoryDataState = categoryData;
-        holderProductDetail.removeAllViews();
-        if (digitalProductView == null)
-            digitalProductView = new CategoryProductStyle99View(getActivity());
-        digitalProductView.setSource(BaseDigitalProductView.WIDGET);
-        digitalProductView.setActionListener(this);
-        digitalProductView.renderData(categoryData, historyClientNumber);
-        holderProductDetail.addView(digitalProductView);
+        if (this.digitalProductView == null) {
+            this.digitalProductView = digitalProductView;
+        }
+        this.digitalProductView.setSource(BaseDigitalProductView.WIDGET);
+        this.digitalProductView.setActionListener(this);
+        this.digitalProductView.renderData(categoryData, historyClientNumber);
+        holderProductDetail.addView(this.digitalProductView);
     }
 
     @Override

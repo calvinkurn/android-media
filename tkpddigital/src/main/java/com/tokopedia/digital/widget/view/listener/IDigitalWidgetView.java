@@ -1,5 +1,6 @@
 package com.tokopedia.digital.widget.view.listener;
 
+import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.view.model.CategoryData;
 import com.tokopedia.digital.product.view.model.HistoryClientNumber;
 
@@ -9,12 +10,6 @@ import com.tokopedia.digital.product.view.model.HistoryClientNumber;
 
 public interface IDigitalWidgetView {
 
-    void renderCategoryProductDataStyle1(CategoryData categoryData, HistoryClientNumber historyClientNumber);
-
-    void renderCategoryProductDataStyle2(CategoryData categoryData, HistoryClientNumber historyClientNumber);
-
-    void renderCategoryProductDataStyle3(CategoryData categoryData, HistoryClientNumber historyClientNumber);
-
-    void renderCategoryProductDataStyle99(CategoryData categoryData, HistoryClientNumber historyClientNumber);
+    void renderCategory(BaseDigitalProductView digitalProductView, CategoryData categoryData, HistoryClientNumber historyClientNumber);
 
 }

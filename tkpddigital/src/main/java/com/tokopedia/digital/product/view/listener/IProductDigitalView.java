@@ -7,6 +7,7 @@ import android.content.ContentResolver;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.digital.cart.listener.IBaseView;
+import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.view.model.BannerData;
 import com.tokopedia.digital.product.view.model.CategoryData;
 import com.tokopedia.digital.product.view.model.HistoryClientNumber;
@@ -26,18 +27,6 @@ public interface IProductDigitalView extends IBaseView {
 
     void renderStateSelectedAllData();
 
-    void renderCategoryProductDataStyle1(CategoryData categoryData,
-                                         HistoryClientNumber historyClientNumber);
-
-    void renderCategoryProductDataStyle2(CategoryData categoryData,
-                                         HistoryClientNumber historyClientNumber);
-
-    void renderCategoryProductDataStyle3(CategoryData categoryData,
-                                         HistoryClientNumber historyClientNumber);
-
-    void renderCategoryProductDataStyle99(CategoryData categoryData,
-                                          HistoryClientNumber historyClientNumber);
-
     void renderCheckPulsaBalanceData();
 
     void renderErrorStyleNotSupportedProductDigitalData(String message);
@@ -50,8 +39,6 @@ public interface IProductDigitalView extends IBaseView {
 
     void renderErrorTimeoutConnectionProductDigitalData(String message);
 
-    ContentResolver getContentResolver();
-
     CategoryData getCategoryDataState();
 
     List<BannerData> getBannerDataListState();
@@ -59,12 +46,6 @@ public interface IProductDigitalView extends IBaseView {
     List<BannerData> getOtherBannerDataListState();
 
     HistoryClientNumber getHistoryClientNumberState();
-
-    String getVersionInfoApplication();
-
-    String getUserLoginId();
-
-    Application getMainApplication();
 
     void closeViewWithMessageAlert(String message);
 
@@ -87,5 +68,7 @@ public interface IProductDigitalView extends IBaseView {
     Activity getActivity();
     
     void showMessageAlert(String message,String title);
+
+    void renderCategory(BaseDigitalProductView digitalProductView, CategoryData categoryData, HistoryClientNumber historyClientNumber);
 
 }

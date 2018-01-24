@@ -1,9 +1,18 @@
 package com.tokopedia.digital.widget.view.presenter;
 
+import android.content.ContentResolver;
 import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
+import com.tokopedia.digital.product.view.model.ContactData;
 import com.tokopedia.digital.widget.view.model.product.Product;
 
 /**
@@ -11,14 +20,14 @@ import com.tokopedia.digital.widget.view.model.product.Product;
  * Modified by rizkyfadillah at 10/6/17.
  */
 
-public abstract class BaseDigitalWidgetPresenter implements IBaseDigitalWidgetPresenter {
+public abstract class BaseDigitalPresenter implements IBaseDigitalPresenter {
 
     private final Context context;
 
     private LocalCacheHandler localCacheHandlerLastClientNumber;
     private LocalCacheHandler cacheHandlerRecentInstantCheckoutUsed;
 
-    public BaseDigitalWidgetPresenter(Context context) {
+    public BaseDigitalPresenter(Context context) {
         this.context = context;
     }
 
@@ -115,6 +124,96 @@ public abstract class BaseDigitalWidgetPresenter implements IBaseDigitalWidgetPr
                     context, TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER);
         return localCacheHandlerLastClientNumber.getString(
                 TkpdCache.Key.DIGITAL_PRODUCT_ID_CATEGORY + categoryId, "");
+    }
+
+    @Override
+    public ContactData processGenerateContactDataFromUri(Uri contactURI, ContentResolver contentResolver) {
+        String id = contactURI.getLastPathSegment();
+        ContactData contact = new ContactData();
+        String contactWhere = ContactsContract.CommonDataKinds.Phone._ID + " = ? AND "
+                + ContactsContract.Data.MIMETYPE + " = ?";
+
+        String[] contactWhereParams = new String[]{
+                id,
+                ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE
+        };
+        Cursor cursorPhone = contentResolver.query(
+                ContactsContract.Data.CONTENT_URI, null, contactWhere, contactWhereParams, null
+        );
+
+        if (cursorPhone != null) {
+            if (cursorPhone.getCount() > 0) {
+                if (cursorPhone.moveToNext()) {
+                    if (Integer.parseInt(cursorPhone.getString(
+                            cursorPhone.getColumnIndex(
+                                    ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0
+                            ) {
+                        String givenName = cursorPhone.getString(
+                                cursorPhone.getColumnIndex(
+                                        ContactsContract.Contacts.DISPLAY_NAME
+                                )
+                        );
+
+                        int contactType = cursorPhone.getInt(
+                                cursorPhone.getColumnIndex(
+                                        ContactsContract.CommonDataKinds.Phone.TYPE
+                                )
+                        );
+                        contact.setContactNumber(cursorPhone.getString(cursorPhone.getColumnIndex(
+                                ContactsContract.CommonDataKinds.Phone.NUMBER
+                        )));
+                        contact.setGivenName(givenName);
+                        contact.setContactType(contactType);
+                    }
+                    cursorPhone.moveToNext();
+                }
+            }
+            cursorPhone.close();
+        }
+        String phoneFormatted = contact.getContactNumber();
+        if (phoneFormatted.startsWith("62")) {
+            phoneFormatted = phoneFormatted.replaceFirst("62", "0");
+        }
+        if (phoneFormatted.startsWith("+62")) {
+            phoneFormatted = phoneFormatted.replace("+62", "0");
+        }
+        phoneFormatted = phoneFormatted.replace(".", "");
+
+        //noinspection ResultOfMethodCallIgnored
+        phoneFormatted.replaceAll("[^0-9]+", "");
+        contact.setContactNumber(phoneFormatted.replaceAll("\\D+", ""));
+        return contact;
+    }
+
+    @NonNull
+    private String generateATokenRechargeCheckout(String userLoginId) {
+        String timeMillis = String.valueOf(System.currentTimeMillis());
+        String token = AuthUtil.md5(timeMillis);
+        return userLoginId + "_" + (token.isEmpty() ? timeMillis : token);
+    }
+
+    @Override
+    public DigitalCheckoutPassData generateCheckoutPassData(
+            BaseDigitalProductView.PreCheckoutProduct preCheckoutProduct,
+            String versionInfoApplication,
+            String userLoginId
+    ) {
+        String clientNumber = preCheckoutProduct.getClientNumber();
+        return new DigitalCheckoutPassData.Builder()
+                .action(DigitalCheckoutPassData.DEFAULT_ACTION)
+                .categoryId(preCheckoutProduct.getCategoryId())
+                .clientNumber(clientNumber)
+                .instantCheckout(preCheckoutProduct.isInstantCheckout() ? "1" : "0")
+                .isPromo(preCheckoutProduct.isPromo() ? "1" : "0")
+                .operatorId(preCheckoutProduct.getOperatorId())
+                .productId(preCheckoutProduct.getProductId())
+                .utmCampaign((preCheckoutProduct.getCategoryName()))
+                .utmContent(versionInfoApplication)
+                .idemPotencyKey(generateATokenRechargeCheckout(userLoginId))
+                .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
+                .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
+                .voucherCodeCopied(preCheckoutProduct.getVoucherCodeCopied())
+                .build();
     }
 
 }

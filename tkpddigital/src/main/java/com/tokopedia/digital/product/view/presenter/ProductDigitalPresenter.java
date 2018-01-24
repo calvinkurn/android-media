@@ -1,15 +1,12 @@
 package com.tokopedia.digital.product.view.presenter;
 
 import android.Manifest;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Parcelable;
-import android.provider.ContactsContract;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -20,10 +17,7 @@ import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
 import com.tokopedia.core.network.exception.ServerErrorException;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
-import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
-import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
@@ -38,7 +32,6 @@ import com.tokopedia.digital.product.service.USSDAccessibilityService;
 import com.tokopedia.digital.product.view.listener.IProductDigitalView;
 import com.tokopedia.digital.product.view.model.BannerData;
 import com.tokopedia.digital.product.view.model.CategoryData;
-import com.tokopedia.digital.product.view.model.ContactData;
 import com.tokopedia.digital.product.view.model.HistoryClientNumber;
 import com.tokopedia.digital.product.view.model.Operator;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
@@ -46,7 +39,8 @@ import com.tokopedia.digital.product.view.model.ProductDigitalData;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.digital.utils.ServerErrorHandlerUtil;
-import com.tokopedia.digital.widget.view.presenter.BaseDigitalWidgetPresenter;
+import com.tokopedia.digital.widget.view.ViewFactory;
+import com.tokopedia.digital.widget.view.presenter.BaseDigitalPresenter;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -60,7 +54,7 @@ import rx.Subscriber;
  * @author anggaprasetiyo on 4/26/17.
  */
 
-public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
+public class ProductDigitalPresenter extends BaseDigitalPresenter
         implements IProductDigitalPresenter {
 
     private static final String PULSA_CATEGORY_ID = "1";
@@ -121,66 +115,6 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
     }
 
     @Override
-    public ContactData processGenerateContactDataFromUri(Uri contactURI) {
-        String id = contactURI.getLastPathSegment();
-        ContactData contact = new ContactData();
-        ContentResolver contentResolver = view.getContentResolver();
-        String contactWhere = ContactsContract.CommonDataKinds.Phone._ID + " = ? AND "
-                + ContactsContract.Data.MIMETYPE + " = ?";
-
-        String[] contactWhereParams = new String[]{
-                id,
-                ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE
-        };
-        Cursor cursorPhone = contentResolver.query(
-                ContactsContract.Data.CONTENT_URI, null, contactWhere, contactWhereParams, null
-        );
-
-        if (cursorPhone != null) {
-            if (cursorPhone.getCount() > 0) {
-                if (cursorPhone.moveToNext()) {
-                    if (Integer.parseInt(cursorPhone.getString(
-                            cursorPhone.getColumnIndex(
-                                    ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0
-                            ) {
-                        String givenName = cursorPhone.getString(
-                                cursorPhone.getColumnIndex(
-                                        ContactsContract.Contacts.DISPLAY_NAME
-                                )
-                        );
-
-                        int contactType = cursorPhone.getInt(
-                                cursorPhone.getColumnIndex(
-                                        ContactsContract.CommonDataKinds.Phone.TYPE
-                                )
-                        );
-                        contact.setContactNumber(cursorPhone.getString(cursorPhone.getColumnIndex(
-                                ContactsContract.CommonDataKinds.Phone.NUMBER
-                        )));
-                        contact.setGivenName(givenName);
-                        contact.setContactType(contactType);
-                    }
-                    cursorPhone.moveToNext();
-                }
-            }
-            cursorPhone.close();
-        }
-        String phoneFormatted = contact.getContactNumber();
-        if (phoneFormatted.startsWith("62")) {
-            phoneFormatted = phoneFormatted.replaceFirst("62", "0");
-        }
-        if (phoneFormatted.startsWith("+62")) {
-            phoneFormatted = phoneFormatted.replace("+62", "0");
-        }
-        phoneFormatted = phoneFormatted.replace(".", "");
-
-        //noinspection ResultOfMethodCallIgnored
-        phoneFormatted.replaceAll("[^0-9]+", "");
-        contact.setContactNumber(phoneFormatted.replaceAll("\\D+", ""));
-        return contact;
-    }
-
-    @Override
     public void processStateDataToReRender() {
         CategoryData categoryData = view.getCategoryDataState();
         List<BannerData> bannerDataList = view.getBannerDataListState();
@@ -192,52 +126,6 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
             );
             view.renderStateSelectedAllData();
         }
-    }
-
-    @Override
-    public void processAddToCartProduct(DigitalCheckoutPassData digitalCheckoutPassData) {
-        if (view.isUserLoggedIn()) {
-            if (view.getMainApplication() instanceof IDigitalModuleRouter) {
-                IDigitalModuleRouter digitalModuleRouter =
-                        (IDigitalModuleRouter) view.getMainApplication();
-                view.navigateToActivityRequest(
-                        digitalModuleRouter.instanceIntentCartDigitalProduct(digitalCheckoutPassData),
-                        IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL
-                );
-            }
-        } else {
-            view.interruptUserNeedLoginOnCheckout(digitalCheckoutPassData);
-        }
-    }
-
-    @Override
-    public DigitalCheckoutPassData generateCheckoutPassData(
-            BaseDigitalProductView.PreCheckoutProduct preCheckoutProduct
-    ) {
-
-        String clientNumber = preCheckoutProduct.getClientNumber();
-        return new DigitalCheckoutPassData.Builder()
-                .action(DigitalCheckoutPassData.DEFAULT_ACTION)
-                .categoryId(preCheckoutProduct.getCategoryId())
-                .clientNumber(clientNumber)
-                .instantCheckout(preCheckoutProduct.isInstantCheckout() ? "1" : "0")
-                .isPromo(preCheckoutProduct.isPromo() ? "1" : "0")
-                .operatorId(preCheckoutProduct.getOperatorId())
-                .productId(preCheckoutProduct.getProductId())
-                .utmCampaign((preCheckoutProduct.getCategoryName()))
-                .utmContent(view.getVersionInfoApplication())
-                .idemPotencyKey(generateATokenRechargeCheckout())
-                .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
-                .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
-                .voucherCodeCopied(preCheckoutProduct.getVoucherCodeCopied())
-                .build();
-    }
-
-    @NonNull
-    private String generateATokenRechargeCheckout() {
-        String timeMillis = String.valueOf(System.currentTimeMillis());
-        String token = AuthUtil.md5(timeMillis);
-        return view.getUserLoginId() + "_" + (token.isEmpty() ? timeMillis : token);
     }
 
     @NonNull
@@ -309,6 +197,7 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
                                         .build());
                     }
                 }
+
                 renderCategoryDataAndBannerToView(
                         categoryData, bannerDataList, otherBannerDataList, historyClientNumber
                 );
@@ -326,30 +215,12 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
                                                    List<BannerData> otherBannerDataList,
                                                    HistoryClientNumber historyClientNumber) {
         if (categoryData.isSupportedStyle()) {
-            switch (categoryData.getOperatorStyle()) {
-                case CategoryData.STYLE_PRODUCT_CATEGORY_1:
-                    view.renderCategoryProductDataStyle1(
-                            categoryData, historyClientNumber
-                    );
-                    break;
-                case CategoryData.STYLE_PRODUCT_CATEGORY_2:
-                    view.renderCategoryProductDataStyle2(
-                            categoryData, historyClientNumber
-                    );
-                    break;
-                case CategoryData.STYLE_PRODUCT_CATEGORY_3:
-                case CategoryData.STYLE_PRODUCT_CATEGORY_4:
-                case CategoryData.STYLE_PRODUCT_CATEGORY_5:
-                    view.renderCategoryProductDataStyle3(
-                            categoryData, historyClientNumber
-                    );
-                    break;
-                case CategoryData.STYLE_PRODUCT_CATEGORY_99:
-                    view.renderCategoryProductDataStyle99(
-                            categoryData, historyClientNumber
-                    );
-                    break;
-            }
+            BaseDigitalProductView digitalProductView = ViewFactory
+                    .renderCategoryDataAndBannerToView(view.getActivity(),
+                            categoryData.getOperatorStyle());
+
+            view.renderCategory(digitalProductView, categoryData, historyClientNumber);
+
             if (!GlobalConfig.isSellerApp()) {
                 view.renderBannerListData(
                         categoryData.getName(),
@@ -619,5 +490,6 @@ public class ProductDigitalPresenter extends BaseDigitalWidgetPresenter
         }
         localCacheHandler.applyEditor();
     }
+
 }
 

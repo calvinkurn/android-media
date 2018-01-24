@@ -24,7 +24,7 @@ import rx.Subscriber;
  * Modified by rizkyfadillah at 10/6/17.
  */
 @Deprecated
-public class DigitalWidgetStyle2Presenter extends BaseDigitalWidgetPresenter
+public class DigitalWidgetStyle2Presenter extends BaseDigitalPresenter
         implements IDigitalWidgetStyle2Presenter {
 
     private final IDigitalWidgetInteractor widgetInteractor;

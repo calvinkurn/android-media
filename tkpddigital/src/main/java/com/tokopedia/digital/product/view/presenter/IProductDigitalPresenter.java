@@ -1,10 +1,5 @@
 package com.tokopedia.digital.product.view.presenter;
 
-import android.net.Uri;
-
-import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
-import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
-import com.tokopedia.digital.product.view.model.ContactData;
 import com.tokopedia.digital.product.view.model.Operator;
 
 import java.util.List;
@@ -20,15 +15,7 @@ public interface IProductDigitalPresenter {
             String categoryId, String operatorId, String productId, String clientNumber
     );
 
-    ContactData processGenerateContactDataFromUri(Uri contactURI);
-
     void processStateDataToReRender();
-
-    void processAddToCartProduct(DigitalCheckoutPassData digitalCheckoutPassData);
-
-    DigitalCheckoutPassData generateCheckoutPassData(
-            BaseDigitalProductView.PreCheckoutProduct preCheckoutProduct
-    );
 
     void processToCheckBalance(String ussdMobileNumber, int simSlot, String ussdCode);
 

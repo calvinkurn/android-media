@@ -25,6 +25,7 @@ import com.tokopedia.digital.product.view.fragment.DigitalProductFragment;
 
 public class DigitalProductActivity extends BasePresenterActivity
         implements DigitalProductFragment.ActionListener {
+
     public static final String EXTRA_CATEGORY_PASS_DATA = "EXTRA_CATEGORY_PASS_DATA";
     private static final String EXTRA_STATE_TITLE_TOOLBAR = "EXTRA_STATE_TITLE_TOOLBAR";
 

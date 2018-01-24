@@ -26,7 +26,7 @@ import rx.Subscriber;
  * Modified by rizkyfadillah at 10/6/17.
  */
 @Deprecated
-public class DigitalWidgetStyle1Presenter extends BaseDigitalWidgetPresenter
+public class DigitalWidgetStyle1Presenter extends BaseDigitalPresenter
         implements IDigitalWidgetStyle1Presenter {
 
     private static final String PULSA_CATEGORY_ID = "1";
