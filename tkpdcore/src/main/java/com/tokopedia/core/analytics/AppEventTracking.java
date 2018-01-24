@@ -15,6 +15,12 @@ public interface AppEventTracking {
     String DEFAULT_EVENT = "Event";
     String ACCOUNTS_KEY = "accounts";
 
+    String EVENT = "event";
+    String EVENT_CATEGORY = "eventCategory";
+    String EVENT_ACTION = "eventAction";
+    String EVENT_LABEL = "eventLabel";
+    String ECOMMERCE = "ecommerce";
+
     interface GTMKey {
         String ACCOUNTS_TYPE = "ACCOUNTS_TYPE";
     }

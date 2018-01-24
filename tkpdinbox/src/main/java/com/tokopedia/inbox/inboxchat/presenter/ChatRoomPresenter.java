@@ -408,7 +408,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         }
     }
 
-    public void stopTyping(String messageId) throws JSONException {
+    public void stopTyping(String messageId) throws Exception {
         JSONObject json = new JSONObject();
         json.put("code", ChatWebSocketConstant.EVENT_TOPCHAT_END_TYPING);
         JSONObject data = new JSONObject();

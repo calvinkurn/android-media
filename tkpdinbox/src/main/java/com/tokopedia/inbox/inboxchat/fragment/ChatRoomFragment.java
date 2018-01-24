@@ -209,7 +209,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                             try {
                                 presenter.stopTyping(getArguments().getString(ChatRoomActivity
                                         .PARAM_MESSAGE_ID));
-                            } catch (JSONException e) {
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
