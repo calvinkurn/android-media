@@ -16,10 +16,8 @@ import retrofit2.Retrofit;
 
 public class TopAdsManagementService extends BearerService<TopAdsManagementApi> {
 
-    private SessionHandler sessionHandler;
     public TopAdsManagementService(SessionHandler sessionHandler) {
         super(sessionHandler.getAuthAccessToken());
-        this.sessionHandler = sessionHandler;
     }
 
     @Override
@@ -34,7 +32,7 @@ public class TopAdsManagementService extends BearerService<TopAdsManagementApi> 
 
     @Override
     protected String getOauthAuthorization() {
-        return "Bearer " + sessionHandler.getAuthAccessToken();
+        return null;
     }
 
     @Override
@@ -47,7 +45,7 @@ public class TopAdsManagementService extends BearerService<TopAdsManagementApi> 
         return RetrofitFactory.createRetrofitDefaultConfig(processedBaseUrl)
                 .client(OkHttpFactory.create()
                         .addOkHttpRetryPolicy(getOkHttpRetryPolicy())
-                        .buildClientTopAdsAuth(sessionHandler))
+                        .buildClientTopAdsAuth(null))
                 .build();
     }
 }
