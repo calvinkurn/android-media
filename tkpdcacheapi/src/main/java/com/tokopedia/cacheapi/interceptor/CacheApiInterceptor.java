@@ -41,7 +41,7 @@ public class CacheApiInterceptor implements Interceptor {
     }
 
     public CacheApiInterceptor(Context context) {
-        this(context, null);
+        this(context, new CacheApiResponseValidator());
     }
 
     public CacheApiInterceptor(Context context, CacheApiResponseValidator responseValidator) {

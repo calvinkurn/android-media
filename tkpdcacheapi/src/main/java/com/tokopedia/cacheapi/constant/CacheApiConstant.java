@@ -5,6 +5,6 @@ package com.tokopedia.cacheapi.constant;
  */
 
 public class CacheApiConstant {
-    public static final int CODE_OK = 200;
+    
     public static final String TYPE_APPLICATION_JSON = "application/json";
 }
