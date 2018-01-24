@@ -9,7 +9,7 @@ import dagger.Module;
  */
 
 @ResoInboxScope
-@Module(includes = {CreateResoModule.class})
+@Module(includes = {ResoInboxModule.class})
 public class ResoInboxDataModule {
 
 }

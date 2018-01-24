@@ -22,7 +22,7 @@ public interface ResoInboxFragmentListener {
 
         void onSuccessLoadMoreInbox(InboxItemResultViewModel result);
 
-        void onErrorLoadMorenbox(String err);
+        void onErrorLoadMoreInbox(String err);
 
     }
 

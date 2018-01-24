@@ -96,7 +96,13 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
     }
 
     @Override
-    public void onErrorLoadMorenbox(String err) {
+    public void onErrorLoadMoreInbox(String err) {
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
     }
 }

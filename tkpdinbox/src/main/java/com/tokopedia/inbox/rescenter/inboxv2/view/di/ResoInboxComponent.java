@@ -12,7 +12,7 @@ import dagger.Component;
 
 
 @ResoInboxScope
-@Component(modules = CreateResoModule.class, dependencies = AppComponent.class)
+@Component(modules = ResoInboxModule.class, dependencies = AppComponent.class)
 public interface ResoInboxComponent {
     void inject(ResoInboxFragment fragment);
 

@@ -164,6 +164,7 @@ public class DrawerBuyerHelper extends DrawerHelper
                     TkpdState.DrawerPosition.SELLER_TOP_ADS,
                     true));
         }
+        data.add(getResoMenu());
         data.add(new DrawerItem(context.getString(R.string.drawer_title_setting),
                 R.drawable.icon_setting,
                 TkpdState.DrawerPosition.SETTINGS,
@@ -255,6 +256,13 @@ public class DrawerBuyerHelper extends DrawerHelper
                 TkpdState.DrawerPosition.SHOP_TRANSACTION_LIST,
                 drawerCache.getBoolean(IS_SHOP_OPENED, false)));
         return sellerMenu;
+    }
+
+    private DrawerGroup getResoMenu() {
+        DrawerGroup resoMenu = new DrawerGroup("Komplain Saya",
+                R.drawable.icon_pembelian,
+                TkpdState.DrawerPosition.RESO_MENU);
+        return resoMenu;
     }
 
     private DrawerGroup getBuyerMenu() {

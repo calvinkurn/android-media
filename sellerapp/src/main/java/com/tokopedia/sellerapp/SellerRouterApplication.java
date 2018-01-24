@@ -55,6 +55,7 @@ import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
@@ -854,6 +855,16 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getResolutionCenterIntent(Context context) {
         return InboxResCenterActivity.createIntent(context);
+    }
+
+    @Override
+    public Intent getResolutionCenterIntentBuyer(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getResolutionCenterIntentSeller(Context context) {
+        return ResoInboxActivity.newSellerInstance(context);
     }
 
     @Override

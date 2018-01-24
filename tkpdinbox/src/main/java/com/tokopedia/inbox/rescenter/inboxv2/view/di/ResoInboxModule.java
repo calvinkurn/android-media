@@ -7,6 +7,7 @@ import com.tokopedia.inbox.rescenter.inboxv2.data.mapper.GetInboxMapper;
 import com.tokopedia.inbox.rescenter.inboxv2.domain.usecase.GetInboxBuyerUseCase;
 import com.tokopedia.inbox.rescenter.inboxv2.domain.usecase.GetInboxSellerUseCase;
 
+import dagger.Module;
 import dagger.Provides;
 import retrofit2.Retrofit;
 
@@ -14,6 +15,7 @@ import retrofit2.Retrofit;
  * Created by yfsx on 24/01/18.
  */
 
+@Module
 public class ResoInboxModule {
     @ResoInboxScope
     @Provides
