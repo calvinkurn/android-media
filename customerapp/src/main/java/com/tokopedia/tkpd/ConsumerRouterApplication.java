@@ -609,6 +609,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public void actionApplinkFromActivity(Activity activity, String linkUrl) {
+        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
+        Intent intent = activity.getIntent();
+        intent.setData(Uri.parse(linkUrl));
+        deepLinkDelegate.dispatchFrom(activity, intent);
+    }
+
+    @Override
     public void actionApplink(Activity activity, String linkUrl, String extra) {
         DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
         Intent intent = activity.getIntent();
@@ -1122,7 +1130,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public String applink(Activity activity, String deeplink) {
         DeeplinkRepository deeplinkRepository = new DeeplinkRepositoryImpl(this, new GlobalCacheManager());
-        MapUrlUseCase mapUrlUseCase = new MapUrlUseCase(new JobExecutor(), new UIThread(), deeplinkRepository);
+        MapUrlUseCase mapUrlUseCase = new MapUrlUseCase(deeplinkRepository);
         Uri uri = Uri.parse(deeplink);
         final List<String> linkSegments = uri.getPathSegments();
         StringBuilder finalSegments = new StringBuilder();

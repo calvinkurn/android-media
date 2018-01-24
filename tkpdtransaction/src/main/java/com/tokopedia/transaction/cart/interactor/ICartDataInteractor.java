@@ -65,8 +65,6 @@ public interface ICartDataInteractor {
                             List<CartItem> cartItemList,
                             KeroRatesListener listener);
 
-    void saveCartDataToCache(CheckoutData checkoutData, List<CartItem> cartItemList);
-
     interface KeroRatesListener {
         void onSuccess(CartRatesData cartRatesData);
 

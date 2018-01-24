@@ -56,7 +56,7 @@ public class PromoListPresenter implements IPromoListPresenter {
 
             @Override
             public void onError(Throwable e) {
-                handleError(e);
+                handleErrorInitialPage(e);
             }
 
             @Override
@@ -124,7 +124,7 @@ public class PromoListPresenter implements IPromoListPresenter {
 
             @Override
             public void onError(Throwable e) {
-                handleError(e);
+                handleErrorNextPage(e, page);
             }
 
             @Override
@@ -147,7 +147,7 @@ public class PromoListPresenter implements IPromoListPresenter {
         });
     }
 
-    private void handleError(Throwable e) {
+    private void handleErrorInitialPage(Throwable e) {
         e.printStackTrace();
         if (e instanceof UnknownHostException) {
                              /* Ini kalau ga ada internet */
@@ -167,6 +167,25 @@ public class PromoListPresenter implements IPromoListPresenter {
         } else {
                              /* Ini diluar dari segalanya hahahaha */
             view.renderErrorHttpGetPromoDataList(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+        }
+    }
+
+    private void handleErrorNextPage(Throwable e, int actualPage) {
+        e.printStackTrace();
+        if (e instanceof UnknownHostException) {
+                             /* Ini kalau ga ada internet */
+            view.renderErrorLoadNextPage(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL, actualPage);
+        } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
+                            /* Ini kalau timeout */
+            view.renderErrorLoadNextPage(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT, actualPage);
+        } else if (e instanceof HttpErrorException) {
+                            /* Ini Http error, misal 403, 500, 404,
+                            code http errornya bisa diambil
+                             e.getErrorCode */
+            view.renderErrorLoadNextPage(e.getMessage(), actualPage);
+        } else {
+                             /* Ini diluar dari segalanya hahahaha */
+            view.renderErrorLoadNextPage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT, actualPage);
         }
     }
 }
