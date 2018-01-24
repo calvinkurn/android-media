@@ -209,7 +209,7 @@ public class Product extends BaseAnalyticsModel {
                 "category", getCategoryName(),
                 "variant", getVariant(),
                 "list", getList(),
-                "position", getPosition(),
+                "position", Integer.toString(getPosition()),
                 "userId", getUserId()
         );
     }
