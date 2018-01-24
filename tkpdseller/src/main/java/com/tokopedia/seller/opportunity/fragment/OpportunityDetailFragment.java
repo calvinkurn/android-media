@@ -7,9 +7,14 @@ import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
+import android.support.v7.widget.CardView;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
@@ -26,7 +31,7 @@ import com.tokopedia.seller.opportunity.analytics.OpportunityTrackingEventLabel;
 import com.tokopedia.seller.opportunity.customview.OpportunityDetailProductView;
 import com.tokopedia.seller.opportunity.customview.OpportunityDetailStatusView;
 import com.tokopedia.seller.opportunity.customview.OpportunityDetailSummaryView;
-import com.tokopedia.seller.opportunity.customview.OpportunityPriceInfoView;
+import com.tokopedia.seller.opportunity.customview.PriceDifferentInfoView;
 import com.tokopedia.seller.opportunity.data.OpportunityNewPriceData;
 import com.tokopedia.seller.opportunity.di.component.DaggerOpportunityComponent;
 import com.tokopedia.seller.opportunity.di.component.OpportunityComponent;
@@ -35,7 +40,6 @@ import com.tokopedia.seller.opportunity.listener.OpportunityView;
 import com.tokopedia.seller.opportunity.presentation.ActionViewData;
 import com.tokopedia.seller.opportunity.presenter.OpportunityPresenter;
 import com.tokopedia.seller.opportunity.snapshot.SnapShotProduct;
-import com.tokopedia.seller.opportunity.viewmodel.OpportunityPriceInfoViewModel;
 import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.OpportunityItemViewModel;
 
 import javax.inject.Inject;
@@ -56,8 +60,8 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
     OpportunityDetailProductView productView;
     OpportunityDetailSummaryView summaryView;
     TkpdProgressDialog progressDialog;
-    OpportunityPriceInfoView itemPriceView;
-    OpportunityPriceInfoView shippingFeeView;
+    PriceDifferentInfoView productPriceDifferentInfoView;
+    PriceDifferentInfoView deliveryPriceDifferentInfoView;
 
     private OpportunityComponent opportunityComponent;
 
@@ -65,7 +69,7 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
     OpportunityPresenter presenter;
 
     private OpportunityItemViewModel oppItemViewModel;
-
+    private CardView priceInfoContainer;
 
 
     public static Fragment createInstance(Bundle bundle) {
@@ -100,7 +104,6 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
                             AppEventTracking.Action.CLICK,
                             OpportunityTrackingEventLabel.EventLabel.YES
                     );
-
                     presenter.acceptOpportunity();
                     dialogInterface.dismiss();
                 }
@@ -131,31 +134,9 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
         BottomSheetView bottomSheetView = new BottomSheetView(getActivity());
         bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
                 .BottomSheetFieldBuilder()
-                .setTitle(getActivity().getString(R.string.opportunity_detail_info_reputation_multiplier_title))
-                .setBody(getActivity().getString(R.string.opportunity_detail_info_reputation_multiplier_content))
+                .setTitle(getString(R.string.opportunity_detail_info_reputation_multiplier_title))
+                .setBody(getString(R.string.opportunity_detail_info_reputation_multiplier_content))
                 .setImg(R.drawable.ic_reputation_value)
-                .build());
-        bottomSheetView.show();
-    }
-
-    public void onReputationShippingFee(){
-        BottomSheetView bottomSheetView = new BottomSheetView(getActivity());
-        bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
-                .BottomSheetFieldBuilder()
-                .setTitle(context.getString(R.string.opportunity_detail_info_delivery_price_title))
-                .setBody(context.getString(R.string.opportunity_detail_info_delivery_price_content))
-                .setImg(R.drawable.ic_shipping_fee)
-                .build());
-        bottomSheetView.show();
-    }
-
-    public void onReputationProductPrice(){
-        BottomSheetView bottomSheetView = new BottomSheetView(context);
-        bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
-                .BottomSheetFieldBuilder()
-                .setTitle(context.getString(R.string.opportunity_detail_info_product_price_title))
-                .setBody(context.getString(R.string.opportunity_detail_info_product_price_content))
-                .setImg(R.drawable.ic_product_price)
                 .build());
         bottomSheetView.show();
     }
@@ -234,9 +215,10 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
         statusView = view.findViewById(R.id.customview_opportunity_detail_status_view);
         productView = view.findViewById(R.id.customview_opportunity_detail_product_view);
         summaryView = view.findViewById(R.id.customview_opportunity_detail_summary_view);
+        priceInfoContainer = view.findViewById(R.id.price_info_container);
 
-        itemPriceView = view.findViewById(R.id.price_item);
-        shippingFeeView = view.findViewById(R.id.shipping_fee);
+        productPriceDifferentInfoView = view.findViewById(R.id.price_item);
+        deliveryPriceDifferentInfoView = view.findViewById(R.id.shipping_fee);
 
         oppItemViewModel = getArguments().getParcelable(OpportunityDetailActivity.OPPORTUNITY_EXTRA_PARAM);
         if (oppItemViewModel != null) {
@@ -294,37 +276,56 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
     }
 
     @Override
-    public void onSuccessNewPrice(OpportunityNewPriceData opportunityNewPriceData) {
+    public void onSuccessNewPrice(final OpportunityNewPriceData opportunityNewPriceData) {
+        priceInfoContainer.setVisibility(View.VISIBLE);
         finishLoadingProgress();
+        if (opportunityNewPriceData.getNewItemPrice() >= 0 && !TextUtils.isEmpty(opportunityNewPriceData.getNewItemPriceIdr())) {
+            displayDetailPrice(productPriceDifferentInfoView, opportunityNewPriceData.getNewItemPriceIdr(), opportunityNewPriceData.getOldItemPriceIdr(),
+                    getString(R.string.opportunity_detail_info_product_price_title),
+                    R.drawable.ic_product_price,
+                    getString(R.string.opportunity_detail_info_product_price_content),
+                    getString(R.string.opportunity_detail_info_different_product_price_content));
+        }
+        if (opportunityNewPriceData.getNewShippingPrice() >= 0 && !TextUtils.isEmpty(opportunityNewPriceData.getNewShippingPriceIdr())) {
+            displayDetailPrice(deliveryPriceDifferentInfoView, opportunityNewPriceData.getNewShippingPriceIdr(), opportunityNewPriceData.getOldShippingPriceIdr(),
+                    getString(R.string.opportunity_detail_info_shipping_price_title),
+                    R.drawable.ic_shipping_fee,
+                    getString(R.string.opportunity_detail_info_delivery_price_content),
+                    getString(R.string.opportunity_detail_info_different_delivery_price_content));
+        }
+    }
 
-        itemPriceView.setVisibility(View.VISIBLE);
-        shippingFeeView.setVisibility(View.VISIBLE);
-
-        OpportunityPriceInfoViewModel datas = new OpportunityPriceInfoViewModel();
-        datas.setTitle(getString(R.string.item_price_label));
-        datas.setStrikeThroughText(opportunityNewPriceData.getOldItemPriceIdr());
-        datas.setNonStrikeThroughText(opportunityNewPriceData.getNewItemPriceIdr());
-
-        itemPriceView.renderData(datas);
-        itemPriceView.setOnClickListener(new View.OnClickListener() {
+    private void displayDetailPrice(PriceDifferentInfoView priceDifferentInfoView, final String newPrice, final String oldPrice,
+                                    final String titleInfo, final @DrawableRes int imageResource, final String defaultInfo, final String differentPriceInfo) {
+        priceDifferentInfoView.setVisibility(View.VISIBLE);
+        priceDifferentInfoView.setNewPrice(newPrice);
+        if (isPriceDifferent(newPrice, oldPrice)) {
+            priceDifferentInfoView.setOldPrice(oldPrice);
+        }
+        priceDifferentInfoView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onReputationProductPrice();
+                String infoContent = defaultInfo;
+                if (isPriceDifferent(newPrice, oldPrice)){
+                    infoContent = differentPriceInfo;
+                }
+                BottomSheetView bottomSheetView = new BottomSheetView(getActivity());
+                bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
+                        .BottomSheetFieldBuilder()
+                        .setTitle(titleInfo)
+                        .setBody(infoContent)
+                        .setImg(imageResource)
+                        .build());
+                bottomSheetView.show();
             }
         });
+    }
 
-        datas = new OpportunityPriceInfoViewModel();
-        datas.setTitle(getString(R.string.shipping_fee_label));
-        datas.setStrikeThroughText(opportunityNewPriceData.getOldShippingPriceIdr());
-        datas.setNonStrikeThroughText(opportunityNewPriceData.getNewShippingPriceIdr());
-
-        shippingFeeView.renderData(datas);
-        shippingFeeView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onReputationShippingFee();
-            }
-        });
+    private boolean isPriceDifferent(String newPrice, String oldPrice) {
+        if (TextUtils.isEmpty(newPrice) || TextUtils.isEmpty(oldPrice)) {
+            return false;
+        }
+        return !newPrice.equalsIgnoreCase(oldPrice);
     }
 
     @Override
@@ -335,8 +336,8 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
 
     @Override
     public void onErrorPriceInfo(String errorMessage) {
-        itemPriceView.setVisibility(View.GONE);
-        shippingFeeView.setVisibility(View.GONE);
+        priceInfoContainer.setVisibility(View.GONE);
+
     }
 
     private void finishLoadingProgress() {
@@ -354,8 +355,15 @@ public class OpportunityDetailFragment extends BasePresenterFragment<Opportunity
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
-                case REQUEST_OPEN_SNAPSHOT:
                 case REQUEST_OPEN_TNC:
+                    Intent intent = new Intent();
+                    intent.putExtra(OpportunityTncFragment.ACCEPTED_OPPORTUNITY, true);
+                    getActivity().setResult(Activity.RESULT_OK, intent);
+                    getActivity().finish();
+                    break;
+                case REQUEST_OPEN_SNAPSHOT:
+                default:
+                    getActivity().setResult(Activity.RESULT_OK);
                     getActivity().finish();
                     break;
             }
