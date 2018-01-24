@@ -1,6 +1,6 @@
 package com.tokopedia.cacheapi.domain.interactor;
 
-import com.tokopedia.cacheapi.domain.ApiCacheRepository;
+import com.tokopedia.cacheapi.domain.CacheApiRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -10,12 +10,12 @@ import rx.Observable;
  * Created by normansyahputa on 8/30/17.
  */
 
-public class ClearTimeOutCache extends UseCase<Boolean> {
+public class CacheApiClearTimeOutCacheUseCase extends UseCase<Boolean> {
 
-    private ApiCacheRepository apiCacheRepository;
+    private CacheApiRepository apiCacheRepository;
 
-    public ClearTimeOutCache(ApiCacheRepository apiCacheRepository) {
-        this.apiCacheRepository = apiCacheRepository;
+    public CacheApiClearTimeOutCacheUseCase(CacheApiRepository cacheApiRepository) {
+        this.apiCacheRepository = cacheApiRepository;
     }
 
     @Override

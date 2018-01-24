@@ -3,11 +3,11 @@ package com.tokopedia.core.common.cache.di.module;
 import android.content.Context;
 import android.content.pm.PackageManager;
 
-import com.tokopedia.cacheapi.data.repository.ApiCacheRepositoryImpl;
-import com.tokopedia.cacheapi.data.source.ApiCacheDataSource;
+import com.tokopedia.cacheapi.data.repository.CacheApiRepositoryImpl;
+import com.tokopedia.cacheapi.data.source.CacheApiDataSource;
 import com.tokopedia.cacheapi.data.source.cache.CacheApiVersionCache;
 import com.tokopedia.cacheapi.data.source.db.CacheApiDataManager;
-import com.tokopedia.cacheapi.domain.ApiCacheRepository;
+import com.tokopedia.cacheapi.domain.CacheApiRepository;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiDataDeleteUseCase;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
@@ -45,30 +45,30 @@ public class CacheModule {
     }
 
     @Provides
-    ApiCacheRepository provideApiCacheRepository(ApiCacheDataSource apiCacheDataSource) {
-        return new ApiCacheRepositoryImpl(apiCacheDataSource);
+    CacheApiRepository provideApiCacheRepository(CacheApiDataSource apiCacheDataSource) {
+        return new CacheApiRepositoryImpl(apiCacheDataSource);
     }
 
     @Provides
-    ApiCacheDataSource provideApiCacheDataSource(CacheApiVersionCache cacheApiVersionCache, CacheApiDataManager cacheApiDataManager) {
-        return new ApiCacheDataSource(cacheApiVersionCache, cacheApiDataManager);
+    CacheApiDataSource provideApiCacheDataSource(CacheApiVersionCache cacheApiVersionCache, CacheApiDataManager cacheApiDataManager) {
+        return new CacheApiDataSource(cacheApiVersionCache, cacheApiDataManager);
     }
 
     @Provides
     CacheApiWhiteListUseCase provideCacheApiWhiteListUseCase(
-            ApiCacheRepository apiCacheRepository){
+            CacheApiRepository apiCacheRepository){
         return new CacheApiWhiteListUseCase(apiCacheRepository);
     }
 
     @Provides
     CacheApiClearAllUseCase provideCacheApiClearAllUseCase(
-            ApiCacheRepository apiCacheRepository){
+            CacheApiRepository apiCacheRepository){
         return new CacheApiClearAllUseCase(apiCacheRepository);
     }
 
     @Provides
     CacheApiDataDeleteUseCase provideCacheApiDataDeleteUseCase(
-            ApiCacheRepository apiCacheRepository){
+            CacheApiRepository apiCacheRepository){
         return new CacheApiDataDeleteUseCase(apiCacheRepository);
     }
 

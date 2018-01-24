@@ -1,8 +1,8 @@
 package com.tokopedia.cacheapi.data.repository;
 
-import com.tokopedia.cacheapi.data.source.ApiCacheDataSource;
+import com.tokopedia.cacheapi.data.source.CacheApiDataSource;
 import com.tokopedia.cacheapi.data.source.db.CacheApiWhitelist;
-import com.tokopedia.cacheapi.domain.ApiCacheRepository;
+import com.tokopedia.cacheapi.domain.CacheApiRepository;
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
 
 import java.util.Collection;
@@ -14,56 +14,56 @@ import rx.Observable;
  * Created by normansyahputa on 8/14/17.
  */
 
-public class ApiCacheRepositoryImpl implements ApiCacheRepository {
+public class CacheApiRepositoryImpl implements CacheApiRepository {
 
-    private ApiCacheDataSource apiCacheDataSource;
+    private CacheApiDataSource cacheApiDataSource;
 
-    public ApiCacheRepositoryImpl(ApiCacheDataSource apiCacheDataSource) {
-        this.apiCacheDataSource = apiCacheDataSource;
+    public CacheApiRepositoryImpl(CacheApiDataSource cacheApiDataSource) {
+        this.cacheApiDataSource = cacheApiDataSource;
     }
 
     @Override
-    public Observable<Boolean> insertWhiteList(final Collection<CacheApiWhiteListDomain> cacheApiDatas) {
-        return apiCacheDataSource.bulkInsert(cacheApiDatas);
+    public Observable<Boolean> insertWhiteList(final Collection<CacheApiWhiteListDomain> domainList) {
+        return cacheApiDataSource.bulkInsert(domainList);
     }
 
     @Override
     public Observable<Boolean> deleteWhiteList(String host, String path) {
-        return apiCacheDataSource.deleteWhiteList(host, path);
+        return cacheApiDataSource.deleteWhiteList(host, path);
     }
 
     @Override
     public Observable<Boolean> deleteCachedData(String host, String path) {
-        return apiCacheDataSource.deleteCachedData(host, path);
+        return cacheApiDataSource.deleteCachedData(host, path);
     }
 
     @Override
     public Observable<Boolean> isInWhiteList(String host, String path) {
-        return apiCacheDataSource.isInWhiteList(host, path);
+        return cacheApiDataSource.isInWhiteList(host, path);
     }
 
     @Override
     public Observable<CacheApiWhitelist> getWhiteList(String host, String path) {
-        return apiCacheDataSource.getWhiteList(host, path);
+        return cacheApiDataSource.getWhiteList(host, path);
     }
 
     @Override
     public Observable<Boolean> deleteAllCacheData() {
-        return apiCacheDataSource.deleteAllCacheData();
+        return cacheApiDataSource.deleteAllCacheData();
     }
 
     @Override
     public Observable<Boolean> deleteExpiredCachedData() {
-        return apiCacheDataSource.deleteExpiredCachedData();
+        return cacheApiDataSource.deleteExpiredCachedData();
     }
 
     @Override
     public Observable<String> getCachedResponse(String host, String path, String requestParam) {
-        return apiCacheDataSource.getCachedResponse(host, path, requestParam);
+        return cacheApiDataSource.getCachedResponse(host, path, requestParam);
     }
 
     @Override
     public Observable<Boolean> updateResponse(Response response, int expiredTime) {
-        return apiCacheDataSource.updateResponse(response, expiredTime);
+        return cacheApiDataSource.updateResponse(response, expiredTime);
     }
 }

@@ -1,6 +1,6 @@
 package com.tokopedia.cacheapi.domain.interactor;
 
-import com.tokopedia.cacheapi.domain.ApiCacheRepository;
+import com.tokopedia.cacheapi.domain.CacheApiRepository;
 import com.tokopedia.cacheapi.util.CacheApiUtils;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -16,10 +16,10 @@ public class CacheApiDataDeleteUseCase extends UseCase<Boolean> {
     private static final String PARAM_DOMAIN = "PARAM_DOMAIN";
     private static final String PARAM_PATH = "PARAM_PATH";
 
-    private ApiCacheRepository apiCacheRepository;
+    private CacheApiRepository apiCacheRepository;
 
-    public CacheApiDataDeleteUseCase(ApiCacheRepository apiCacheRepository) {
-        this.apiCacheRepository = apiCacheRepository;
+    public CacheApiDataDeleteUseCase(CacheApiRepository cacheApiRepository) {
+        this.apiCacheRepository = cacheApiRepository;
     }
 
     @Override

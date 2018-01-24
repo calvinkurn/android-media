@@ -4,26 +4,25 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.tokopedia.cacheapi.constant.CacheApiConstant;
-import com.tokopedia.cacheapi.data.repository.ApiCacheRepositoryImpl;
-import com.tokopedia.cacheapi.data.source.ApiCacheDataSource;
+import com.tokopedia.cacheapi.data.repository.CacheApiRepositoryImpl;
+import com.tokopedia.cacheapi.data.source.CacheApiDataSource;
 import com.tokopedia.cacheapi.data.source.cache.CacheApiVersionCache;
 import com.tokopedia.cacheapi.data.source.db.CacheApiDataManager;
-import com.tokopedia.cacheapi.domain.ApiCacheRepository;
+import com.tokopedia.cacheapi.domain.CacheApiRepository;
 import com.tokopedia.cacheapi.domain.interactor.BaseApiCacheInterceptorUseCase;
-import com.tokopedia.cacheapi.domain.interactor.CheckWhiteListUseCase;
-import com.tokopedia.cacheapi.domain.interactor.ClearTimeOutCache;
-import com.tokopedia.cacheapi.domain.interactor.GetCacheDataUseCaseUseCase;
-import com.tokopedia.cacheapi.domain.interactor.SaveToDbUseCase;
+import com.tokopedia.cacheapi.domain.interactor.CacheApiCheckWhiteListUseCase;
+import com.tokopedia.cacheapi.domain.interactor.CacheApiClearTimeOutCacheUseCase;
+import com.tokopedia.cacheapi.domain.interactor.CacheApiGetCacheDataUseCase;
+import com.tokopedia.cacheapi.domain.interactor.CacheApiSaveToDbUseCase;
 import com.tokopedia.cacheapi.util.CacheApiUtils;
 import com.tokopedia.cacheapi.util.LoggingUtils;
-import com.tokopedia.cacheapi.util.ResponseValidator;
+import com.tokopedia.cacheapi.util.CacheApiResponseValidator;
 import com.tokopedia.usecase.RequestParams;
 
 import java.io.IOException;
 
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
-import okhttp3.Protocol;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
@@ -32,20 +31,20 @@ import okhttp3.ResponseBody;
  * Created by normansyahputa on 8/9/17.
  */
 
-public class ApiCacheInterceptor implements Interceptor {
+public class CacheApiInterceptor implements Interceptor {
 
     private Context context;
-    private ResponseValidator responseValidator;
+    private CacheApiResponseValidator responseValidator;
 
-    public void setResponseValidator(ResponseValidator responseValidator) {
+    public void setResponseValidator(CacheApiResponseValidator responseValidator) {
         this.responseValidator = responseValidator;
     }
 
-    public ApiCacheInterceptor(Context context) {
+    public CacheApiInterceptor(Context context) {
         this(context, null);
     }
 
-    public ApiCacheInterceptor(Context context, ResponseValidator responseValidator) {
+    public CacheApiInterceptor(Context context, CacheApiResponseValidator responseValidator) {
         this.context = context;
         this.responseValidator = responseValidator;
     }
@@ -67,15 +66,15 @@ public class ApiCacheInterceptor implements Interceptor {
         Request request = chain.request();
 
         String versionName = CacheApiUtils.getVersionCode(context);
-        ApiCacheRepository apiCacheRepository = new ApiCacheRepositoryImpl(new ApiCacheDataSource(
+        CacheApiRepository cacheApiRepository = new CacheApiRepositoryImpl(new CacheApiDataSource(
                 new CacheApiVersionCache(context, versionName), new CacheApiDataManager())
         );
 
-        new ClearTimeOutCache(apiCacheRepository).executeSync(RequestParams.EMPTY);
+        new CacheApiClearTimeOutCacheUseCase(cacheApiRepository).executeSync(RequestParams.EMPTY);
 
-        CheckWhiteListUseCase checkWhiteListUseCase = new CheckWhiteListUseCase(apiCacheRepository);
-        GetCacheDataUseCaseUseCase getCacheDataUseCase = new GetCacheDataUseCaseUseCase(apiCacheRepository);
-        SaveToDbUseCase saveToDbUseCase = new SaveToDbUseCase(apiCacheRepository);
+        CacheApiCheckWhiteListUseCase checkWhiteListUseCase = new CacheApiCheckWhiteListUseCase(cacheApiRepository);
+        CacheApiGetCacheDataUseCase getCacheDataUseCase = new CacheApiGetCacheDataUseCase(cacheApiRepository);
+        CacheApiSaveToDbUseCase saveToDbUseCase = new CacheApiSaveToDbUseCase(cacheApiRepository);
 
         RequestParams requestParams = RequestParams.create();
 
@@ -95,7 +94,7 @@ public class ApiCacheInterceptor implements Interceptor {
         if (TextUtils.isEmpty(cachedResponseData)) {
             LoggingUtils.dumper(String.format("Data is not here, fetch and save: %s", request.url().toString()));
             if (responseValidator == null || responseValidator.isResponseValidToBeCached(originalResponse)) {
-                requestParams.putObject(SaveToDbUseCase.RESPONSE, originalResponse);
+                requestParams.putObject(CacheApiSaveToDbUseCase.RESPONSE, originalResponse);
                 saveToDbUseCase.executeSync(requestParams);
             }
             return originalResponse;

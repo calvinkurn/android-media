@@ -6,7 +6,7 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-public class EncoderDecoder {
+public class EncryptionUtils {
 	
 	public static String Encrypt(String text, String initialVector) {
 		byte[] raw = new byte[] {'g','g','g','g','t','t','t','t','t','u','j','k','r','r','r','r'};   

@@ -1,7 +1,7 @@
 package com.tokopedia.cacheapi.domain.interactor;
 
 import com.tokopedia.cacheapi.data.source.db.CacheApiData;
-import com.tokopedia.cacheapi.domain.ApiCacheRepository;
+import com.tokopedia.cacheapi.domain.CacheApiRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -18,11 +18,11 @@ public abstract class BaseApiCacheInterceptorUseCase<E> extends UseCase<E> {
     public static final String PARAM_PATH = "PARAM_PATH";
     public static final String PARAM_REQUEST_PARAM = "PARAM_REQUEST_PARAM";
 
-    protected final ApiCacheRepository apiCacheRepository;
+    protected final CacheApiRepository cacheApiRepository;
     protected CacheApiData cacheApiData;
 
-    public BaseApiCacheInterceptorUseCase(ApiCacheRepository apiCacheRepository) {
-        this.apiCacheRepository = apiCacheRepository;
+    public BaseApiCacheInterceptorUseCase(CacheApiRepository cacheApiRepository) {
+        this.cacheApiRepository = cacheApiRepository;
     }
 
     @Override

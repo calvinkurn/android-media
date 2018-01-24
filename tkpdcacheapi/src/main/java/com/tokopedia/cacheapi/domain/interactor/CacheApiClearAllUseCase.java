@@ -1,6 +1,6 @@
 package com.tokopedia.cacheapi.domain.interactor;
 
-import com.tokopedia.cacheapi.domain.ApiCacheRepository;
+import com.tokopedia.cacheapi.domain.CacheApiRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -12,10 +12,10 @@ import rx.Observable;
 
 public class CacheApiClearAllUseCase extends UseCase<Boolean> {
 
-    private ApiCacheRepository apiCacheRepository;
+    private CacheApiRepository apiCacheRepository;
 
-    public CacheApiClearAllUseCase(ApiCacheRepository apiCacheRepository) {
-        this.apiCacheRepository = apiCacheRepository;
+    public CacheApiClearAllUseCase(CacheApiRepository cacheApiRepository) {
+        this.apiCacheRepository = cacheApiRepository;
     }
 
     @Override

@@ -9,7 +9,7 @@ import com.tokopedia.cacheapi.domain.mapper.CacheApiWhiteListMapper;
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.cacheapi.util.CacheApiUtils;
 import com.tokopedia.cacheapi.util.LoggingUtils;
-import com.tokopedia.cacheapi.util.EncoderDecoder;
+import com.tokopedia.cacheapi.util.EncryptionUtils;
 
 import java.util.Collection;
 
@@ -174,10 +174,10 @@ public class CacheApiDataManager {
     }
 
     private String getEncrypted(String text) {
-        return EncoderDecoder.Encrypt(text, CACHE_API_KEY);
+        return EncryptionUtils.Encrypt(text, CACHE_API_KEY);
     }
 
     private String getDecrypted(String text) {
-        return EncoderDecoder.Decrypt(text, CACHE_API_KEY);
+        return EncryptionUtils.Decrypt(text, CACHE_API_KEY);
     }
 }

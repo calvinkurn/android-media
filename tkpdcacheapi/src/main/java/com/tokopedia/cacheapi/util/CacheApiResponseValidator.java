@@ -8,7 +8,7 @@ import okhttp3.Response;
  * Created by nathan on 1/23/18.
  */
 
-public abstract class ResponseValidator {
+public abstract class CacheApiResponseValidator {
 
     private Response response;
 

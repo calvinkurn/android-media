@@ -1,6 +1,6 @@
 package com.tokopedia.cacheapi.domain.interactor;
 
-import com.tokopedia.cacheapi.domain.ApiCacheRepository;
+import com.tokopedia.cacheapi.domain.CacheApiRepository;
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -17,10 +17,10 @@ public class CacheApiWhiteListUseCase extends UseCase<Boolean> {
 
     public static final String ADD_WHITELIST_COLLECTIONS = "ADD_WHITELIST_COLLECTIONS";
 
-    private ApiCacheRepository apiCacheRepository;
+    private CacheApiRepository apiCacheRepository;
 
-    public CacheApiWhiteListUseCase(ApiCacheRepository apiCacheRepository) {
-        this.apiCacheRepository = apiCacheRepository;
+    public CacheApiWhiteListUseCase(CacheApiRepository cacheApiRepository) {
+        this.apiCacheRepository = cacheApiRepository;
     }
 
     @Override

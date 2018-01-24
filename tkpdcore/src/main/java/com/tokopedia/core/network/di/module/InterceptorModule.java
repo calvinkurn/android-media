@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.cacheapi.interceptor.ApiCacheInterceptor;
+import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.di.scope.ApplicationScope;
@@ -40,8 +40,8 @@ public class InterceptorModule {
 
     @ApplicationScope
     @Provides
-    public ApiCacheInterceptor provideApiCacheInterceptor(@ApplicationContext Context context) {
-        return new ApiCacheInterceptor(context);
+    public CacheApiInterceptor provideApiCacheInterceptor(@ApplicationContext Context context) {
+        return new CacheApiInterceptor(context);
     }
 
     @ApplicationScope

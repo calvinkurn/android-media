@@ -16,7 +16,7 @@ import rx.Observable;
  * Created by normansyahputa on 8/14/17.
  */
 
-public interface ApiCacheRepository {
+public interface CacheApiRepository {
 
     Observable<CacheApiWhitelist> getWhiteList(String host, String path);
 

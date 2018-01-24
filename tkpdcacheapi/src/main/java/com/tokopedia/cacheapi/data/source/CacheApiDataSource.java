@@ -17,12 +17,12 @@ import rx.functions.Func2;
  * Created by normansyahputa on 8/9/17.
  */
 
-public class ApiCacheDataSource {
+public class CacheApiDataSource {
 
     private CacheApiVersionCache cacheApiVersionCache;
     private CacheApiDataManager cacheApiDataManager;
 
-    public ApiCacheDataSource(CacheApiVersionCache cacheApiVersionCache, CacheApiDataManager cacheApiDataManager) {
+    public CacheApiDataSource(CacheApiVersionCache cacheApiVersionCache, CacheApiDataManager cacheApiDataManager) {
         this.cacheApiVersionCache = cacheApiVersionCache;
         this.cacheApiDataManager = cacheApiDataManager;
     }

@@ -4,11 +4,10 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.readystatesoftware.chuck.ChuckInterceptor;
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.image.ImageHandler;
-import com.tokopedia.cacheapi.data.source.ApiCacheDataSource;
+import com.tokopedia.cacheapi.data.source.CacheApiDataSource;
 import com.tokopedia.cacheapi.data.source.db.CacheApiDataManager;
-import com.tokopedia.cacheapi.domain.ApiCacheRepository;
+import com.tokopedia.cacheapi.domain.CacheApiRepository;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiDataDeleteUseCase;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
@@ -46,7 +45,6 @@ import com.tokopedia.core.util.SessionHandler;
 
 import dagger.Component;
 import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
 /**
@@ -139,9 +137,9 @@ public interface AppComponent {
 
     CacheApiDataManager cacheApiDataManager();
 
-    ApiCacheRepository apiCacheRepository();
+    CacheApiRepository apiCacheRepository();
 
-    ApiCacheDataSource apiCacheDataSource();
+    CacheApiDataSource apiCacheDataSource();
 
     CacheApiWhiteListUseCase cacheApiWhiteListUseCase();
 
