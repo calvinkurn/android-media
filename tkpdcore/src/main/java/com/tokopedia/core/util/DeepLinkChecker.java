@@ -50,6 +50,7 @@ public class DeepLinkChecker {
     public static final int FLIGHT = 18;
 
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
+    private static final String FLIGHT_SEGMENT = "pesawat";
 
     public static int getDeepLinkType(String url) {
         Uri uriData = Uri.parse(url);
@@ -108,7 +109,7 @@ public class DeepLinkChecker {
     }
 
     private static boolean isFlight(List<String> linkSegment) {
-        return linkSegment.size() > 0 && linkSegment.get(0).equals("pesawat");
+        return linkSegment.size() > 0 && linkSegment.get(0).equalsIgnoreCase(FLIGHT_SEGMENT);
     }
 
     public static List<String> getLinkSegment(String url) {

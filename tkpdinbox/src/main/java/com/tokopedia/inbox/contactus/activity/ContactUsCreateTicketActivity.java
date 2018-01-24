@@ -73,7 +73,6 @@ public class ContactUsCreateTicketActivity extends BasePresenterActivity impleme
         }
 
         fragmentTransaction.replace(R.id.main_view, fragment, fragment.getClass().getSimpleName());
-        //fragmentTransaction.addToBackStack(fragment.getClass().getSimpleName());
         fragmentTransaction.commit();
 
         setTitle();
