@@ -42,16 +42,15 @@ public class ResoInboxFragmentPresenter
     public void initPresenterData(Context context, boolean isSeller) {
         this.isSeller = isSeller;
         orderValueActiveList = new ArrayList<>();
+        getInbox();
     }
 
     @Override
     public void getInbox() {
-        if (isSeller)
-            getInboxBuyerUseCase.createObservable(GetInboxParams.getEmptyParams())
-                    .subscribe(new GetInboxSubscriber(context, mainView));
+        if (!isSeller)
+            getInboxSellerUseCase.execute(GetInboxParams.getEmptyParams(), new GetInboxSubscriber(context, mainView));
         else
-            getInboxSellerUseCase.createObservable(GetInboxParams.getEmptyParams())
-                    .subscribe(new GetInboxSubscriber(context, mainView));
+            getInboxSellerUseCase.execute(GetInboxParams.getEmptyParams(), new GetInboxSubscriber(context, mainView));
     }
 
     @Override

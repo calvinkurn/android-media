@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
@@ -17,9 +16,6 @@ import com.tokopedia.inbox.rescenter.inboxv2.view.di.DaggerResoInboxComponent;
 import com.tokopedia.inbox.rescenter.inboxv2.view.listener.ResoInboxFragmentListener;
 import com.tokopedia.inbox.rescenter.inboxv2.view.presenter.ResoInboxFragmentPresenter;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.InboxItemResultViewModel;
-import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.InboxItemViewModel;
-
-import java.util.List;
 
 import javax.inject.Inject;
 

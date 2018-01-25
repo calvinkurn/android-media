@@ -1,11 +1,10 @@
 package com.tokopedia.inbox.rescenter.inboxv2.domain.usecase;
 
-import com.tokopedia.inbox.rescenter.inboxv2.data.factory.ResoInboxFactory;
+import com.tokopedia.core.network.apiservices.rescenter.apis.ResolutionApi;
+import com.tokopedia.inbox.rescenter.inboxv2.data.mapper.GetInboxMapper;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.InboxItemResultViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
-
-import java.util.List;
 
 import rx.Observable;
 
@@ -15,15 +14,17 @@ import rx.Observable;
 
 public class GetInboxSellerUseCase extends UseCase<InboxItemResultViewModel> {
 
-    private ResoInboxFactory factory;
+    private ResolutionApi resolutionApi;
+    private GetInboxMapper getInboxMapper;
 
-    public GetInboxSellerUseCase(ResoInboxFactory factory) {
-        this.factory = factory;
+    public GetInboxSellerUseCase(ResolutionApi resolutionApi, GetInboxMapper getInboxMapper) {
+        this.resolutionApi = resolutionApi;
+        this.getInboxMapper = getInboxMapper;
     }
 
     @Override
     public Observable<InboxItemResultViewModel> createObservable(RequestParams requestParams) {
-        return factory.getInboxSeller(requestParams);
+        return resolutionApi.getInboxSeller(requestParams.getParameters()).map(getInboxMapper);
     }
 
 }
