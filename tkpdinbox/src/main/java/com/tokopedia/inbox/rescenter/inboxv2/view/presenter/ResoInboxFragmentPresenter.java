@@ -47,10 +47,10 @@ public class ResoInboxFragmentPresenter
 
     @Override
     public void getInbox() {
-        if (!isSeller)
+        if (isSeller)
             getInboxSellerUseCase.execute(GetInboxParams.getEmptyParams(), new GetInboxSubscriber(context, mainView));
         else
-            getInboxSellerUseCase.execute(GetInboxParams.getEmptyParams(), new GetInboxSubscriber(context, mainView));
+            getInboxBuyerUseCase.execute(GetInboxParams.getEmptyParams(), new GetInboxSubscriber(context, mainView));
     }
 
     @Override
