@@ -7,6 +7,7 @@ import com.tokopedia.events.data.entity.response.EventResponseEntity;
 import com.tokopedia.events.data.entity.response.EventsDetailsEntity;
 import com.tokopedia.events.data.entity.response.ValidateResponse;
 import com.tokopedia.events.data.entity.response.checkoutreponse.CheckoutResponse;
+import com.tokopedia.events.data.entity.response.searchresponse.SearchResponse;
 import com.tokopedia.events.data.entity.response.seatlayoutresponse.SeatLayoutResponse;
 import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
 import com.tokopedia.events.data.source.EventsApi;
@@ -32,7 +33,7 @@ public class CloudEventsDataStore implements EventDataStore {
     }
 
     @Override
-    public Observable<EventResponseEntity> getSearchEvents(TKPDMapParam<String, Object> params) {
+    public Observable<SearchResponse> getSearchEvents(TKPDMapParam<String, Object> params) {
         return eventsApi.getSearchEvents(params);
     }
 

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/transparent"
-    android:orientation="vertical"
-    android:id="@+id/main_content">
+    android:orientation="vertical">
 
 
     <android.support.v7.widget.Toolbar
@@ -42,8 +42,8 @@
                 android:layout_marginTop="2dp"
                 android:background="@color/white"
                 android:overScrollMode="ifContentScrolls"
-                android:paddingTop="4dp"
                 android:paddingBottom="4dp"
+                android:paddingTop="4dp"
                 app:tabGravity="center"
                 app:tabMaxWidth="0dp"
                 app:tabMode="scrollable"
@@ -60,13 +60,77 @@
     </android.support.v4.widget.NestedScrollView>
 
 
-    <include
-        android:id="@+id/pay_tickets"
-        layout="@layout/btn_book_event"
+    <RelativeLayout
+        android:id="@+id/button_count_layout"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:background="@color/white">
+
+        <TextView
+            android:id="@+id/tiket"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_default"
+            android:layout_marginStart="@dimen/margin_default"
+            android:text="TIKET:"
+            android:textColor="@color/black_70"
+            android:textSize="10sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/ticketcount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/tiket"
+            android:layout_alignStart="@+id/tiket"
+            android:layout_below="@+id/tiket"
+            android:layout_marginTop="3dp"
+            android:text="1 x Festival"
+            android:textColor="@color/green_nob"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="@dimen/margin_default"
+            android:layout_marginRight="@dimen/margin_default"
+            android:text="TOTAL:"
+            android:textColor="@color/black_70"
+            android:textSize="10sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/totalprice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/ticketcount"
+            android:layout_below="@+id/total"
+            android:layout_marginEnd="@dimen/margin_default"
+            android:layout_marginRight="@dimen/margin_default"
+            android:text="TOTAL:"
+            android:textColor="@color/price_pdp"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+
+        <include
+            android:id="@+id/pay_tickets"
+            layout="@layout/btn_lanjutkan_event"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ticketcount"
+            android:layout_gravity="bottom"
+            android:visibility="visible" />
+
+    </RelativeLayout>
 
     <FrameLayout
         android:id="@+id/progress_bar_layout"
@@ -74,6 +138,8 @@
         android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize"
         android:background="@color/black_12"
+        android:clickable="true"
+        android:focusable="true"
         android:visibility="gone">
 
         <ProgressBar

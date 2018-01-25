@@ -38,6 +38,11 @@ public class EventReviewTicketsContractor {
         RequestParams getParams();
 
         android.view.View getRootView();
+
+        void showPromoSuccessMessage(String text,int color);
+        void showCashbackMessage(String text);
+
+        void hideSuccessMessage();
     }
 
     public interface Presenter extends CustomerPresenter<EventReviewTicketsContractor.EventReviewTicketsView> {

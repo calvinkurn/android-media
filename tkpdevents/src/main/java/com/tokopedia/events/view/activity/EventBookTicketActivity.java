@@ -27,6 +27,7 @@ import com.tokopedia.events.view.contractor.EventBookTicketContract;
 import com.tokopedia.events.view.fragment.FragmentAddTickets;
 import com.tokopedia.events.view.presenter.EventBookTicketPresenter;
 import com.tokopedia.events.view.utils.CalendarItemHolder;
+import com.tokopedia.events.view.utils.CurrencyUtil;
 import com.tokopedia.events.view.utils.ImageTextViewHolder;
 import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
 import com.tokopedia.events.view.viewmodel.SchedulesViewModel;
@@ -63,7 +64,13 @@ public class EventBookTicketActivity extends TActivity implements EventBookTicke
     @BindView(R2.id.main_content)
     FrameLayout mainContent;
     @BindView(R2.id.seating_layout_card)
-    View seatLayout;
+    View seatMap;
+    @BindView(R2.id.ticketcount)
+    TextView ticketCount;
+    @BindView(R2.id.totalprice)
+    TextView totalPrice;
+    @BindView(R2.id.button_count_layout)
+    View buttonCountLayout;
 //    @BindView(R2.id.event_address)
 //    View addressView;
 //    @BindView(R2.id.event_time)
@@ -157,14 +164,17 @@ public class EventBookTicketActivity extends TActivity implements EventBookTicke
     }
 
     @Override
-    public void showPayButton(int ticketQuantity, int price) {
-//        buttonTextview.setText(String.format(getString(R.string.pay_button),
-//                CurrencyUtil.convertToCurrencyString(ticketQuantity * price)));
+    public void showPayButton(int ticketQuantity, int price, String type) {
+        totalPrice.setText(CurrencyUtil.convertToCurrencyString(ticketQuantity * price));
+        ticketCount.setText(String.format(getString(R.string.x_type), ticketQuantity, type));
         buttonPayTickets.setVisibility(View.VISIBLE);
+        if (buttonCountLayout.getVisibility() != View.VISIBLE)
+            buttonCountLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hidePayButton() {
+        buttonCountLayout.setVisibility(View.GONE);
         buttonPayTickets.setVisibility(View.GONE);
     }
 
@@ -245,13 +255,16 @@ public class EventBookTicketActivity extends TActivity implements EventBookTicke
 
     @Override
     public void renderSeatLayout(String url) {
-        ImageHandler.loadImageCover2(imgvSeatingLayout, url);
-
     }
 
     @Override
-    public void hideSeatLayout() {
-        seatLayout.setVisibility(View.GONE);
+    public void renderSeatmap(String url) {
+        ImageHandler.loadImageCover2(imgvSeatingLayout, url);
+    }
+
+    @Override
+    public void hideSeatmap() {
+        seatMap.setVisibility(View.GONE);
     }
 
     @Override

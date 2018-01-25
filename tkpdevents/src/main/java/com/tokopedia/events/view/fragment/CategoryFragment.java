@@ -3,6 +3,7 @@ package com.tokopedia.events.view.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -60,8 +61,11 @@ public class CategoryFragment extends TkpdBaseV4Fragment {
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         EventCategoryAdapter eventCategoryAdapter = new EventCategoryAdapter(getActivity(), categoryViewModel.getItems());
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL);
+        dividerItemDecoration.setDrawable(getContext().getResources().getDrawable(R.drawable.recycler_view_divider));
         recyclerview.setLayoutManager(linearLayoutManager);
         recyclerview.setAdapter(eventCategoryAdapter);
+        recyclerview.addItemDecoration(dividerItemDecoration);
 
         return view;
     }

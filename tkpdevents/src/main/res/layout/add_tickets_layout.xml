@@ -1,122 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_marginStart="@dimen/margin_default"
-    android:layout_marginLeft="@dimen/margin_default"
-    android:orientation="horizontal"
-    android:background="@color/white"
-    android:weightSum="2">
+    android:background="@color/white">
 
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/tv_ticket_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginStart="@dimen/margin_default"
-            android:layout_marginLeft="@dimen/margin_default"
-            android:text="FIRST CLASS"
-            android:textColor="@color/black_38"
-            android:textSize="14sp" />
-
-        <TextView
-            android:id="@+id/tv_ticket_maxprice"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_default"
-            android:layout_marginLeft="@dimen/margin_default"
-            android:text="@string/rp_5980000"
-            android:visibility="gone"
-            android:textColor="#ff5722" />
-
-        <TextView
-            android:id="@+id/tv_ticket_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_default"
-            android:layout_marginLeft="@dimen/margin_default"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
-            android:text="Ticket desscription"
-            android:textSize="12sp"
-            android:textColor="@color/green_200" />
-
-        <TextView
-            android:id="@+id/ticket_sale_price"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_default"
-            android:layout_marginLeft="@dimen/margin_default"
-            android:layout_marginBottom="8dp"
-            android:textSize="14sp"
-            android:textColor="@color/black_38"
-            android:text="Rp 170000" />
-
-
-    </LinearLayout>
-
-    <FrameLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1">
-
-        <ImageView
-            android:id="@+id/iv_sold_out"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/sold_out"
-            android:visibility="invisible"/>
-
-    <LinearLayout
-        android:id="@+id/button_layout"
+    <TextView
+        android:id="@+id/tv_ticket_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_marginStart="@dimen/margin_default"
         android:layout_marginLeft="@dimen/margin_default"
-        android:orientation="horizontal"
-        android:gravity="center">
+        android:layout_marginStart="@dimen/margin_default"
+        android:layout_marginTop="@dimen/margin_default"
+        android:text="First Class"
+        android:textAllCaps="false"
+        android:textColor="@color/black_70"
+        android:textSize="14sp"
+        android:textStyle="bold" />
 
-        <ImageButton
-            android:id="@+id/btn_decrement"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_marginEnd="@dimen/margin_default"
-            android:layout_marginRight="@dimen/margin_default"
-            android:layout_marginLeft="@dimen/margin_default"
-            android:background="#00000000"
-            android:scaleType="fitXY"
-            android:src="@drawable/ic_minus"
-            android:tint="#42b549" />
+    <TextView
+        android:id="@+id/tv_ticket_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_ticket_name"
+        android:layout_marginLeft="@dimen/margin_default"
+        android:layout_marginStart="@dimen/margin_default"
+        android:layout_marginTop="@dimen/margin_default"
+        android:text="Anak kecil di bawah umur 12 tahun harus didampingi orang dewasa berusia 18 tahun ke atas. Harga tiket sudah termasuk biaya layanan."
+        android:textColor="@color/black_54"
+        android:textSize="12sp"
+        android:textStyle="normal" />
+
+    <TextView
+        android:id="@+id/ticket_sale_price"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/frameLayout"
+        android:layout_alignLeft="@+id/tv_ticket_description"
+        android:layout_alignStart="@+id/tv_ticket_description"
+        android:layout_marginTop="25dp"
+        android:text="Rp 170000"
+        android:textColor="@color/price_pdp"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+
+    <FrameLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/tv_ticket_description"
+        android:layout_marginBottom="@dimen/margin_default"
+        android:layout_marginEnd="@dimen/margin_default"
+        android:layout_marginRight="@dimen/margin_default"
+        android:layout_marginTop="25dp">
 
         <TextView
-            android:id="@+id/tv_ticket_cnt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
+            android:id="@+id/tv_sold_out"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:gravity="center"
-            android:text="0"
+            android:text="HABIS TERJUAL"
             android:textColor="@color/black_38"
-            android:textSize="20sp" />
+            android:textSize="16sp"
+            android:textStyle="normal"
+            android:visibility="gone" />
 
-        <ImageButton
-            android:id="@+id/btn_increment"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_marginStart="@dimen/margin_default"
+        <LinearLayout
+            android:id="@+id/button_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/margin_default"
-            android:background="#00000000"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_plus"
-            android:tint="#42b549" />
-    </LinearLayout>
+            android:layout_marginStart="@dimen/margin_default"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/btn_decrement"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginLeft="@dimen/margin_default"
+                android:background="@color/transparent"
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/ic_minus_square"
+                android:tint="@color/green_nob" />
+
+            <TextView
+                android:id="@+id/tv_ticket_cnt"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:gravity="center"
+                android:text="0"
+                android:textColor="@color/black_54"
+                android:background="@drawable/rounded_rectange_transparent"
+                android:textSize="12sp"
+                android:textStyle="normal" />
+
+            <ImageButton
+                android:id="@+id/btn_increment"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="#00000000"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/ic_plus_square"
+                android:tint="#42b549" />
+        </LinearLayout>
     </FrameLayout>
-</LinearLayout>
+</RelativeLayout>

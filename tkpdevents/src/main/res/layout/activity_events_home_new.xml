@@ -5,14 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-        <android.support.v7.widget.Toolbar xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/app_bar"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:background="@color/tkpd_main_green"
-            android:minHeight="?attr/actionBarSize"
-            android:layout_gravity="top"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+    <android.support.v7.widget.Toolbar xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_gravity="top"
+        android:background="@color/tkpd_main_green"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:contentInsetStartWithNavigation="0dp"
+        android:elevation="0dp"
+        android:minHeight="?attr/actionBarSize"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
     <android.support.design.widget.CoordinatorLayout xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
@@ -43,25 +47,52 @@
 
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="180dp"
+                        android:layout_height="wrap_content"
                         android:background="@color/white">
 
                         <com.tkpd.library.ui.widget.TouchViewPager
                             android:id="@+id/event_bannerpager"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent" />
+                            android:layout_height="180dp" />
 
-                        <com.tokopedia.events.view.utils.CirclePageIndicator
-                            android:id="@+id/pager_indicator"
-                            android:layout_width="100dp"
-                            android:layout_height="12dp"
+                        <FrameLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="72dp"
                             android:layout_alignParentBottom="true"
                             android:layout_alignParentLeft="true"
-                            android:layout_marginBottom="5dp"
-                            android:layout_marginLeft="8dp"
-                            app:fillColor="@color/orange_nob"
-                            app:radius="4dp"
-                            android:padding="2dp" />
+                            android:layout_below="@id/event_bannerpager"
+                            android:background="@color/grey_100">
+
+                            <com.tokopedia.events.view.utils.CirclePageIndicator
+                                android:id="@+id/pager_indicator"
+                                android:layout_width="100dp"
+                                android:layout_height="12dp"
+                                android:layout_gravity="start|center_vertical"
+                                android:layout_marginLeft="@dimen/margin_default"
+                                android:layout_marginStart="@dimen/margin_default"
+                                android:padding="2dp"
+                                app:fillColor="@color/green_nob"
+                                app:pageColor="@color/grey_400"
+                                app:radius="4dp"
+                                app:strokeColor="@color/grey_400" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical|right"
+                                android:layout_marginRight="32dp"
+                                android:gravity="top"
+                                android:textStyle="normal"
+                                android:text="Lihat Semua Promo"
+                                android:textColor="@color/green_nob" />
+
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:layout_gravity="center_vertical|right"
+                                android:layout_marginRight="@dimen/margin_default"
+                                app:srcCompat="@drawable/ic_arrow_right" />
+                        </FrameLayout>
                     </RelativeLayout>
 
                 </LinearLayout>
@@ -72,10 +103,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:background="@color/white"
+                app:layout_scrollFlags="scroll|snap"
                 app:tabGravity="fill"
                 app:tabMode="scrollable"
-                app:tabSelectedTextColor="@color/colorGreen"
-                app:tabTextColor="@color/black_70" />
+                app:tabSelectedTextColor="@color/green_nob"
+                app:tabIndicatorColor="@color/green_nob"
+                app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
+                app:tabTextColor="@color/black_38" />
 
         </android.support.design.widget.AppBarLayout>
 
@@ -95,6 +130,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/black_12"
+        android:clickable="true"
+        android:focusable="true"
         android:visibility="gone">
 
         <ProgressBar

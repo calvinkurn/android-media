@@ -69,10 +69,10 @@ public class EventBookTicketPresenter
                 getStringExtra(EventsDetailsPresenter.EXTRA_SEATING_URL);
         this.dateRange = dataModel.getTimeRange();
         getView().renderFromDetails(dataModel);
-        if (!seatingURL.equals("empty"))
-            getView().renderSeatLayout(seatingURL);
+        if (dataModel.getSeatMapImage() != null && !dataModel.getSeatMapImage().isEmpty())
+            getView().renderSeatmap(dataModel.getSeatMapImage());
         else
-            getView().hideSeatLayout();
+            getView().hideSeatmap();
         if (!dataModel.getTimeRange().contains("1970"))
             getView().initTablayout();
         schedulesList = dataModel.getSchedulesViewModels();
@@ -80,23 +80,6 @@ public class EventBookTicketPresenter
 
     @Override
     public void validateSelection() {
-
-    }
-
-    @Override
-    public void attachView(EventBookTicketContract.EventBookTicketView view) {
-        super.attachView(view);
-    }
-
-    public void payTicketsClick() {
-        ValidateShow validateShow = new ValidateShow();
-        validateShow.setQuantity(selectedPackageViewModel.getSelectedQuantity());
-        validateShow.setGroupId(selectedPackageViewModel.getProductGroupId());
-        validateShow.setPackageId(selectedPackageViewModel.getId());
-        validateShow.setScheduleId(selectedPackageViewModel.getProductScheduleId());
-        validateShow.setProductId(selectedPackageViewModel.getProductId());
-        postValidateShowUseCase.setValidateShowModel(validateShow);
-        getView().showProgressBar();
         postValidateShowUseCase.execute(RequestParams.EMPTY, new Subscriber<ValidateResponse>() {
             @Override
             public void onCompleted() {
@@ -130,6 +113,23 @@ public class EventBookTicketPresenter
 
             }
         });
+    }
+
+    @Override
+    public void attachView(EventBookTicketContract.EventBookTicketView view) {
+        super.attachView(view);
+    }
+
+    public void payTicketsClick() {
+        ValidateShow validateShow = new ValidateShow();
+        validateShow.setQuantity(selectedPackageViewModel.getSelectedQuantity());
+        validateShow.setGroupId(selectedPackageViewModel.getProductGroupId());
+        validateShow.setPackageId(selectedPackageViewModel.getId());
+        validateShow.setScheduleId(selectedPackageViewModel.getProductScheduleId());
+        validateShow.setProductId(selectedPackageViewModel.getProductId());
+        postValidateShowUseCase.setValidateShowModel(validateShow);
+        getView().showProgressBar();
+        validateSelection();
 
     }
 
@@ -137,9 +137,7 @@ public class EventBookTicketPresenter
         if (mSelectedPackage != -1 && mSelectedPackage != index) {
             selectedPackageViewModel.setSelectedQuantity(0);
             selectedViewHolder.setTvTicketCnt(selectedPackageViewModel.getSelectedQuantity());
-            selectedViewHolder.setTvTicketCntColor(getView().getActivity().getResources().getColor(R.color.black_38));
-            selectedViewHolder.setTvTicketNameColor(getView().getActivity().getResources().getColor(R.color.black_38));
-            selectedViewHolder.setTicketSalePriceColor(getView().getActivity().getResources().getColor(R.color.black_38));
+            selectedViewHolder.setTicketViewColor(getView().getActivity().getResources().getColor(R.color.white));
             mSelectedPackage = index;
             selectedPackageViewModel = packageVM;
             selectedViewHolder = ticketViewHolder;
@@ -152,11 +150,9 @@ public class EventBookTicketPresenter
         if (selectedCount < selectedPackageViewModel.getMaxQty()) {
             selectedPackageViewModel.setSelectedQuantity(++selectedCount);
             selectedViewHolder.setTvTicketCnt(selectedCount);
-            selectedViewHolder.setTvTicketCntColor(getView().getActivity().getResources().getColor(R.color.black_70));
-            selectedViewHolder.setTvTicketNameColor(getView().getActivity().getResources().getColor(R.color.black_70));
-            selectedViewHolder.setTicketSalePriceColor(getView().getActivity().getResources().getColor(R.color.black_70));
+            selectedViewHolder.setTicketViewColor(getView().getActivity().getResources().getColor(R.color.light_green));
         }
-        getView().showPayButton(selectedCount, selectedPackageViewModel.getSalesPrice());
+        getView().showPayButton(selectedCount, selectedPackageViewModel.getSalesPrice(),selectedPackageViewModel.getDisplayName());
     }
 
     public void removeTickets() {
@@ -164,12 +160,12 @@ public class EventBookTicketPresenter
         if (selectedCount != 0) {
             selectedPackageViewModel.setSelectedQuantity(--selectedCount);
             selectedViewHolder.setTvTicketCnt(selectedCount);
-            getView().showPayButton(selectedCount, selectedPackageViewModel.getSalesPrice());
+            getView().showPayButton(selectedCount, selectedPackageViewModel.getSalesPrice(),selectedPackageViewModel.getDisplayName());
         }
         if (selectedCount == 0) {
-            selectedViewHolder.setTvTicketCntColor(getView().getActivity().getResources().getColor(R.color.black_38));
-            selectedViewHolder.setTvTicketNameColor(getView().getActivity().getResources().getColor(R.color.black_38));
-            selectedViewHolder.setTicketSalePriceColor(getView().getActivity().getResources().getColor(R.color.black_38));
+            selectedViewHolder.setTicketViewColor(getView().getActivity().getResources().getColor(R.color.white));
+            mSelectedPackage = -1;
+            selectedViewHolder = null;
             getView().hidePayButton();
         }
     }

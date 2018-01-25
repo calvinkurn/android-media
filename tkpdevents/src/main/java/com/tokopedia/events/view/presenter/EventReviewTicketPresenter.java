@@ -17,10 +17,11 @@ import com.tokopedia.core.drawer2.data.pojo.profile.ProfileModel;
 import com.tokopedia.core.drawer2.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.core.drawer2.domain.ProfileRepository;
 import com.tokopedia.core.drawer2.domain.interactor.ProfileUseCase;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.user.PeopleService;
-import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.events.R;
 import com.tokopedia.events.data.entity.response.Form;
 import com.tokopedia.events.data.entity.response.checkoutreponse.CheckoutResponse;
 import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
@@ -65,6 +66,7 @@ public class EventReviewTicketPresenter
     String promocode;
     String email;
     String number;
+    boolean isPromoCodeCase;
     ArrayList<String> hints = new ArrayList<>();
     ArrayList<String> errors = new ArrayList<>();
 
@@ -105,13 +107,19 @@ public class EventReviewTicketPresenter
 
     @Override
     public void proceedToPayment() {
-        postVerifyCartUseCase.setCartItems(convertPackageToCartItem(checkoutData));
+        isPromoCodeCase = false;
         verifyCart();
     }
 
     @Override
     public void updatePromoCode(String code) {
         this.promocode = code;
+        if (code.length() > 0) {
+            isPromoCodeCase = true;
+            verifyCart();
+        } else {
+            getView().hideSuccessMessage();
+        }
     }
 
     @Override
@@ -150,7 +158,7 @@ public class EventReviewTicketPresenter
                 Intent intent = ((TkpdCoreRouter) getView().getActivity().getApplication()).
                         getLoginIntent(getView().getActivity());
                 intent.removeExtra(SessionView.MOVE_TO_CART_KEY);
-                intent.putExtra(SessionView.MOVE_TO_CART_KEY,SessionView.EVENTS_CART);
+                intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.EVENTS_CART);
                 getView().getActivity().startActivity(intent);
                 getView().hideProgressBar();
             }
@@ -265,7 +273,7 @@ public class EventReviewTicketPresenter
 
     public void verifyCart() {
         getView().showProgressBar();
-
+        postVerifyCartUseCase.setCartItems(convertPackageToCartItem(checkoutData));
         postVerifyCartUseCase.execute(RequestParams.EMPTY, new Subscriber<VerifyCartResponse>() {
             @Override
             public void onCompleted() {
@@ -276,13 +284,43 @@ public class EventReviewTicketPresenter
             public void onError(Throwable throwable) {
                 Log.d("ReviewTicketPresenter", "onError");
                 throwable.printStackTrace();
+                getView().hideProgressBar();
+                NetworkErrorHelper.showEmptyState(getView().getActivity(),
+                        getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
+                            @Override
+                            public void onRetryClicked() {
+                                verifyCart();
+                            }
+                        });
             }
 
             @Override
             public void onNext(VerifyCartResponse verifyCartResponse) {
                 Log.d("ReviewTicketPresenter", verifyCartResponse.toString());
-                postPaymentUseCase.setVerfiedCart(verifyCartResponse.getCart());
-                getPaymentLink();
+
+                if ("Kode Promo tidak ditemukan".equals(verifyCartResponse.getCart().getPromocodeFailureMessage())) {
+                    getView().hideProgressBar();
+                    getView().showPromoSuccessMessage("Kode Promo tidak ditemukan",
+                            getView().getActivity().getResources().getColor(R.color.red_a700));
+                } else {
+                    getView().hideProgressBar();
+                    getView().showPromoSuccessMessage(verifyCartResponse.getCart().getPromocodeSuccessMessage(),
+                            getView().getActivity().getResources().getColor(R.color.red_a700));
+                    String cashBackDiscount = "Total Discount : "
+                            + verifyCartResponse.getCart().getPromocodeDiscount()
+                            + " and Total Cashback : " + verifyCartResponse.getCart().getPromocodeCashback();
+                    getView().showCashbackMessage(cashBackDiscount);
+                }
+
+                if (!isPromoCodeCase) {
+                    if ("failure".equals(verifyCartResponse.getStatus().getResult())) {
+                        getView().hideProgressBar();
+                        getView().showMessage("Silahkan Isi Data Pelanggan Tambahan");
+                    } else {
+                        postPaymentUseCase.setVerfiedCart(verifyCartResponse.getCart());
+                        getPaymentLink();
+                    }
+                }
             }
         });
     }
@@ -298,6 +336,16 @@ public class EventReviewTicketPresenter
             public void onError(Throwable throwable) {
                 Log.d("PaymentLinkUseCase", "ON ERROR");
                 throwable.printStackTrace();
+//                getView().hideProgressBar();
+//                getView().showMessage("Kode Promo tidak ditemukan");
+                getView().hideProgressBar();
+                NetworkErrorHelper.showEmptyState(getView().getActivity(),
+                        getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
+                            @Override
+                            public void onRetryClicked() {
+                                getPaymentLink();
+                            }
+                        });
             }
 
             @Override
@@ -336,6 +384,8 @@ public class EventReviewTicketPresenter
 
     private void getAndInitForms() {
         List<Form> forms = checkoutData.getForms();
+        if (forms == null)
+            return;
         ArrayList<String> regex = new ArrayList<>();
         for (Form form : forms) {
             hints.add(form.getTitle());
@@ -343,8 +393,9 @@ public class EventReviewTicketPresenter
             errors.add(form.getErrorMessage());
         }
         String[] t = new String[1];
+        String[] u = new String[1];
         String[] hint = hints.toArray(t);
-        String[] validatorRegex = regex.toArray(t);
+        String[] validatorRegex = regex.toArray(u);
         getView().initForms(hint, validatorRegex);
     }
 

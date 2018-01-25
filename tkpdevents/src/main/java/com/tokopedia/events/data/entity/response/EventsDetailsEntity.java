@@ -203,6 +203,9 @@ public class EventsDetailsEntity {
     @SerializedName("city_name")
     @Expose
     private String cityName;
+    @SerializedName("seatmap_image")
+    @Expose
+    private String seatmapImage;
     @SerializedName("schedules")
     @Expose
     private List<Schedule> schedules = null;
@@ -746,4 +749,11 @@ public class EventsDetailsEntity {
         this.forms = forms;
     }
 
+    public String getSeatmapImage() {
+        return seatmapImage;
+    }
+
+    public void setSeatmapImage(String seatmapImage) {
+        this.seatmapImage = seatmapImage;
+    }
 }

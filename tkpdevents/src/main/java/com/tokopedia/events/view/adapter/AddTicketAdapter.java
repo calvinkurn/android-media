@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.events.R;
@@ -43,8 +42,7 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(
                 parent.getContext());
-        View v =
-                inflater.inflate(R.layout.add_tickets_layout, parent, false);
+        View v = inflater.inflate(R.layout.add_tickets_layout, parent, false);
         TicketViewHolder holder = new TicketViewHolder(v);
         return holder;
     }
@@ -62,8 +60,6 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public class TicketViewHolder extends RecyclerView.ViewHolder {
         @BindView(R2.id.tv_ticket_name)
         TextView tvTicketName;
-        @BindView(R2.id.tv_ticket_maxprice)
-        TextView tvTicketMaxprice;
         @BindView(R2.id.ticket_sale_price)
         TextView ticketSalePrice;
         @BindView(R2.id.btn_decrement)
@@ -72,8 +68,8 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         TextView tvTicketCnt;
         @BindView(R2.id.btn_increment)
         ImageButton btnIncrement;
-        @BindView(R2.id.iv_sold_out)
-        ImageView ivSoldOut;
+        @BindView(R2.id.tv_sold_out)
+        TextView tvSoldOut;
         @BindView(R2.id.button_layout)
         View buttonLayout;
         @BindView(R2.id.tv_ticket_description)
@@ -82,9 +78,12 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         PackageViewModel holderViewModel;
         int index;
 
+        View thisView;
+
 
         public TicketViewHolder(View view) {
             super(view);
+            thisView = view;
             ButterKnife.bind(this, view);
         }
 
@@ -97,19 +96,26 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             ticketSalePrice.setText("Rp" + " " + CurrencyUtil.convertToCurrencyString(viewModel.getSalesPrice()));
             tvTicketCnt.setText(String.valueOf(viewModel.getSelectedQuantity()));
             if (holderViewModel.getSelectedQuantity() > 0) {
-                btnDecrement.setAlpha(1.0f);
+                //btnDecrement.setAlpha(1.0f);
+                btnDecrement.setColorFilter(mContext.getResources().getColor(R.color.green_nob));
                 btnDecrement.setClickable(true);
             } else {
-                btnDecrement.setAlpha(0.2f);
+                //btnDecrement.setAlpha(0.2f);
+                btnDecrement.setColorFilter(mContext.getResources().getColor(R.color.grey_button));
                 btnDecrement.setClickable(false);
             }
-            if(holderViewModel.getAvailable()>0) {
-                ivSoldOut.setVisibility(View.INVISIBLE);
+            if (holderViewModel.getAvailable() > 0) {
+                tvSoldOut.setVisibility(View.INVISIBLE);
                 buttonLayout.setVisibility(View.VISIBLE);
-            }
-            else {
-                ivSoldOut.setVisibility(View.VISIBLE);
+                setTvTicketNameColor(mContext.getResources().getColor(R.color.black_70));
+                setTickeyDescriptionColor(mContext.getResources().getColor(R.color.black_54));
+                setTicketSalePriceColor(mContext.getResources().getColor(R.color.orange_nob));
+            } else {
+                tvSoldOut.setVisibility(View.VISIBLE);
                 buttonLayout.setVisibility(View.INVISIBLE);
+                setTvTicketNameColor(mContext.getResources().getColor(R.color.black_38));
+                setTickeyDescriptionColor(mContext.getResources().getColor(R.color.black_38));
+                setTicketSalePriceColor(mContext.getResources().getColor(R.color.black_38));
             }
 
         }
@@ -118,26 +124,26 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         void onClickIncrement() {
             mPresenter.addTickets(index, holderViewModel, this);
             if (holderViewModel.getSelectedQuantity() > 0) {
-                btnDecrement.setAlpha(1.0f);
+                btnDecrement.setColorFilter(mContext.getResources().getColor(R.color.green_nob));
                 btnDecrement.setClickable(true);
             } else {
-                btnDecrement.setAlpha(0.2f);
+                btnDecrement.setColorFilter(mContext.getResources().getColor(R.color.grey_button));
                 btnDecrement.setClickable(false);
             }
-            notifyDataSetChanged();
+            //notifyItemChanged(index,holderViewModel);
         }
 
         @OnClick(R2.id.btn_decrement)
         void onClickDecrement() {
             mPresenter.removeTickets();
             if (holderViewModel.getSelectedQuantity() > 0) {
-                btnDecrement.setAlpha(1.0f);
+                btnDecrement.setColorFilter(mContext.getResources().getColor(R.color.green_nob));
                 btnDecrement.setClickable(true);
             } else {
-                btnDecrement.setAlpha(0.2f);
+                btnDecrement.setColorFilter(mContext.getResources().getColor(R.color.grey_button));
                 btnDecrement.setClickable(false);
             }
-            notifyDataSetChanged();
+            //notifyItemChanged(index,holderViewModel);
         }
 
         public void setTvTicketCnt(int count) {
@@ -154,6 +160,16 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         public void setTvTicketCntColor(int color) {
             tvTicketCnt.setTextColor(color);
+        }
+
+        public void setTickeyDescriptionColor(int color) {
+            tickeyDescriptionText.setTextColor(color);
+        }
+
+        public void setTicketViewColor(int color) {
+            btnDecrement.setColorFilter(mContext.getResources().getColor(R.color.grey_button));
+            btnDecrement.setClickable(false);
+            thisView.setBackgroundColor(color);
         }
     }
 }

@@ -2,12 +2,14 @@ package com.tokopedia.events.view.contractor;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.support.v4.app.FragmentManager;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.events.view.viewmodel.CategoryViewModel;
-import com.tokopedia.events.view.viewmodel.PackageViewModel;
+import com.tokopedia.events.domain.model.searchdomainmodel.ValuesItemDomain;
+import com.tokopedia.events.view.adapter.FiltersAdapter;
+import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 
 import java.util.List;
 
@@ -23,7 +25,7 @@ public class EventSearchContract {
 
         void navigateToActivityRequest(Intent intent, int requestCode);
 
-        void renderFromSearchResults(List<CategoryViewModel> categoryViewModels);
+        void renderFromSearchResults(List<CategoryItemsViewModel> categoryItemsViewModels);
 
         void showProgressBar();
 
@@ -32,6 +34,8 @@ public class EventSearchContract {
         RequestParams getParams();
 
         android.view.View getRootView();
+
+        FragmentManager getFragmentManagerInstance();
     }
 
     public interface EventSearchPresenter extends CustomerPresenter<EventSearchView>{
@@ -45,5 +49,9 @@ public class EventSearchContract {
         void searchTextChanged(String searchText);
 
         void searchSubmitted(String searchText);
+
+        boolean onOptionMenuClick(int id);
+
+        void onClickFilterItem(ValuesItemDomain filterItem, FiltersAdapter.FilterViewHolder viewHolder);
     }
 }

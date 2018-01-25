@@ -33,7 +33,7 @@ public class EventsDetailsViewModel implements Parcelable {
     private Integer rating;
     private Integer isFeatured;
     private Integer isFoodAvailable;
-
+    private String seatMapImage;
     private Boolean dateRange;
     private List<SchedulesViewModel> schedulesViewModels;
 
@@ -163,6 +163,15 @@ public class EventsDetailsViewModel implements Parcelable {
         this.hasSeatLayout = hasSeatLayout;
     }
 
+    public String getSeatMapImage() {
+        return seatMapImage;
+    }
+
+    public void setSeatMapImage(String seatMapImage) {
+        this.seatMapImage = seatMapImage;
+    }
+
+
 
     public Integer getRating() {
         return rating;
@@ -280,6 +289,7 @@ public class EventsDetailsViewModel implements Parcelable {
         dest.writeValue(this.rating);
         dest.writeValue(this.isFeatured);
         dest.writeValue(this.isFoodAvailable);
+        dest.writeString(this.seatMapImage);
         dest.writeValue(this.dateRange);
         dest.writeTypedList(this.schedulesViewModels);
         dest.writeTypedList(this.forms);
@@ -308,6 +318,7 @@ public class EventsDetailsViewModel implements Parcelable {
         this.rating = (Integer) in.readValue(Integer.class.getClassLoader());
         this.isFeatured = (Integer) in.readValue(Integer.class.getClassLoader());
         this.isFoodAvailable = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.seatMapImage = in.readString();
         this.dateRange = (Boolean) in.readValue(Boolean.class.getClassLoader());
         this.schedulesViewModels = in.createTypedArrayList(SchedulesViewModel.CREATOR);
         this.forms = in.createTypedArrayList(Form.CREATOR);

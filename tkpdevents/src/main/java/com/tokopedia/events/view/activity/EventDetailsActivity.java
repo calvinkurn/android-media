@@ -119,10 +119,6 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         tvExpandableDescription.setInterpolator(new OvershootInterpolator());
         tvExpandableTermsNCondition.setInterpolator(new OvershootInterpolator());
 
-
-        mPresenter.attachView(this);
-        mPresenter.getEventDetails();
-
         setupToolbar();
         toolbar.setTitle("Events");
 
@@ -151,6 +147,9 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
             }
         });
 
+        mPresenter.initialize();
+        mPresenter.attachView(this);
+        mPresenter.getEventDetails();
     }
 
     @Override
@@ -214,7 +213,7 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         if (homedata.getHasSeatLayout() != 1)
             seatingLayoutCard.setVisibility(View.GONE);
 
-        String buttonText = getString(R.string.book_ticket) + " " +
+        String buttonText = getString(R.string.lanjutkan) + " " +
                 String.format(getString(R.string.starting_from),
                         "Rp " + CurrencyUtil.convertToCurrencyString(homedata.getSalesPrice()));
         buttonTextView.setText(buttonText);
@@ -222,6 +221,10 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
 
     @Override
     public void renderSeatLayout(String url) {
+    }
+
+    @Override
+    public void renderSeatmap(String url) {
         ImageHandler.loadImageCover2(imgvSeatingLayout, url);
     }
 

@@ -167,8 +167,8 @@ public class EventModule {
     @Provides
     @EventScope
     GetSeatLayoutUseCase providesGetSeatLayoutUseCase(ThreadExecutor threadExecutor,
-                                                       PostExecutionThread postExecutionThread,
-                                                       EventRepository eventRepository) {
+                                                      PostExecutionThread postExecutionThread,
+                                                      EventRepository eventRepository) {
         return new GetSeatLayoutUseCase(threadExecutor, postExecutionThread, eventRepository);
     }
 

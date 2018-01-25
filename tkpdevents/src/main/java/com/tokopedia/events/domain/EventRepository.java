@@ -9,6 +9,7 @@ import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartRespon
 import com.tokopedia.events.domain.model.EventsCategoryDomain;
 import com.tokopedia.events.domain.model.EventLocationDomain;
 import com.tokopedia.events.domain.model.EventDetailsDomain;
+import com.tokopedia.events.domain.model.searchdomainmodel.SearchDomainModel;
 
 import java.util.List;
 
@@ -22,7 +23,7 @@ public interface EventRepository {
 
     Observable<List<EventsCategoryDomain>> getEvents(TKPDMapParam<String, Object> params);
 
-    Observable<List<EventsCategoryDomain>> getSearchEvents(TKPDMapParam<String, Object> params);
+    Observable<SearchDomainModel> getSearchEvents(TKPDMapParam<String, Object> params);
 
     Observable<List<EventLocationDomain>> getEventsLocationList(TKPDMapParam<String, Object> params);
 

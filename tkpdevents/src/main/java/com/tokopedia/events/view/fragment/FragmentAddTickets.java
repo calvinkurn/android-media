@@ -23,8 +23,6 @@ public class FragmentAddTickets extends Fragment {
     private int mTicketTypeCount;
     private List<PackageViewModel> mPackages;
 
-    //    EventComponent eventComponent;
-//    @Inject
     EventBookTicketPresenter mPresenter;
 
 
@@ -62,9 +60,9 @@ public class FragmentAddTickets extends Fragment {
         RecyclerView scrollView = (RecyclerView) inflater.inflate(R.layout.fragment_add_tickets, container, false);
         scrollView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         scrollView.setAdapter(new AddTicketAdapter(getActivity(), mPackages, mPresenter));
+        scrollView.setHasFixedSize(true);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL);
         dividerItemDecoration.setDrawable(getContext().getResources().getDrawable(R.drawable.recycler_view_divider));
-
         scrollView.addItemDecoration(dividerItemDecoration);
 
         return scrollView;
@@ -76,21 +74,5 @@ public class FragmentAddTickets extends Fragment {
         super.onAttach(context);
 
     }
-
-//    @Override
-//    public void onDetach() {
-//        super.onDetach();
-//    }
-//
-//    private void executeInjector() {
-//        if (eventComponent == null) initInjector();
-//        eventComponent.inject(this);
-//    }
-//
-//    private void initInjector() {
-//        eventComponent = DaggerEventComponent.builder()
-//                .appComponent(((MainApplication) getActivity().getApplication()).getAppComponent())
-//                .build();
-//    }
 
 }

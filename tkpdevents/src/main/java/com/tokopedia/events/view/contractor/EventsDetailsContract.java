@@ -28,6 +28,8 @@ public class EventsDetailsContract {
 
         void renderSeatLayout(String url);
 
+        void renderSeatmap(String url);
+
         void renderFromCloud(EventsDetailsViewModel data);
 
         RequestParams getParams();

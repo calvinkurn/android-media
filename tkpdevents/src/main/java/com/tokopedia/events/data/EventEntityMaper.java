@@ -96,6 +96,7 @@ public class EventEntityMaper {
         eventDetailsDomain.setIsFoodAvailable(eventsDetailsEntity.getIsFoodAvailable());
         eventDetailsDomain.setGenre(eventsDetailsEntity.getGenre());
         eventDetailsDomain.setForms(eventsDetailsEntity.getForms());
+        eventDetailsDomain.setSeatMapImage(eventsDetailsEntity.getSeatmapImage());
         List<ScheduleDomain> scheduleDomainList = new ArrayList<>();
         try {
             for (Schedule item : eventsDetailsEntity.getSchedules()) {

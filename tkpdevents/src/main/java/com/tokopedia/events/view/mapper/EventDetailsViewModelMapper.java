@@ -41,6 +41,7 @@ public class EventDetailsViewModelMapper {
         target.setThumbnailApp(source.getThumbnailApp());
         target.setThumbsDown(source.getThumbsDown());
         target.setThumbsUp(source.getThumbsUp());
+        target.setSeatMapImage(source.getSeatMapImage());
         target.setForms(source.getForms());
         target.setTimeRange(convertEpochToString(source.getMinStartDate()) + " - " + convertEpochToString(source.getMaxEndDate()));
         int size = source.getSchedules().size();

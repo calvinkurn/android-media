@@ -1,5 +1,7 @@
 package com.tokopedia.events.view.utils;
 
+import android.util.Log;
+
 import com.tokopedia.events.domain.model.EventsCategoryDomain;
 import com.tokopedia.events.domain.model.EventsItemDomain;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
@@ -19,6 +21,10 @@ public class Utils {
         if(singleInstance == null)
             singleInstance = new Utils();
         return singleInstance;
+    }
+
+    private Utils(){
+        Log.d("UTILS","Utils Instance created");
     }
 
     public List<CategoryViewModel> convertIntoCategoryListVeiwModel(List<EventsCategoryDomain> categoryList) {

@@ -27,6 +27,7 @@
                 android:layout_weight="1"
                 android:text="Category Title"
                 android:textColor="@color/black"
+                android:textStyle="normal"
                 android:textSize="18sp" />
 
             <TextView

@@ -3,8 +3,11 @@ package com.tokopedia.events.view.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
@@ -16,14 +19,12 @@ import com.tokopedia.events.R2;
 import com.tokopedia.events.di.DaggerEventComponent;
 import com.tokopedia.events.di.EventComponent;
 import com.tokopedia.events.di.EventModule;
-import com.tokopedia.events.view.adapter.CategoryFragmentPagerAdapter;
+import com.tokopedia.events.view.adapter.EventCategoryAdapter;
 import com.tokopedia.events.view.contractor.EventSearchContract;
-import com.tokopedia.events.view.customview.EventCategoryView;
 import com.tokopedia.events.view.customview.SearchInputView;
 import com.tokopedia.events.view.presenter.EventSearchPresenter;
-import com.tokopedia.events.view.viewmodel.CategoryViewModel;
+import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -43,10 +44,6 @@ public class EventSearchActivity extends TActivity implements
     @Inject
     public EventSearchPresenter mPresenter;
 
-    @BindView(R2.id.category_view_pager)
-    ViewPager categoryViewPager;
-    @BindView(R2.id.tabs)
-    TabLayout tabs;
     @BindView(R2.id.main_content)
     FrameLayout mainContent;
 
@@ -57,6 +54,9 @@ public class EventSearchActivity extends TActivity implements
     @BindView(R2.id.search_input_view)
     SearchInputView searchInputView;
 
+    @BindView(R2.id.rv_search_results)
+    RecyclerView rvSearchResults;
+
     Unbinder unbinder;
 
     @Override
@@ -66,11 +66,12 @@ public class EventSearchActivity extends TActivity implements
         unbinder = ButterKnife.bind(this);
         initInjector();
         executeInjector();
-        mPresenter.attachView(this);
         ButterKnife.bind(this);
-        setupToolbar();
         searchInputView.setListener(this);
+        mPresenter.attachView(this);
+        setupToolbar();
         toolbar.setTitle("Events");
+        mPresenter.initialize();
     }
 
     public static Intent getCallingIntent(Activity activity) {
@@ -103,20 +104,11 @@ public class EventSearchActivity extends TActivity implements
     }
 
     @Override
-    public void renderFromSearchResults(List<CategoryViewModel> categoryViewModels) {
-        ArrayList<EventCategoryView> eventCategoryViews = new ArrayList<>();
-        for (CategoryViewModel categoryViewModel : categoryViewModels) {
-            if (categoryViewModel.getItems() == null || categoryViewModel.getItems().size() == 0) {
-                continue;
-            }
-        }
-
-        CategoryFragmentPagerAdapter categoryTabsPagerAdapter =
-                new CategoryFragmentPagerAdapter(getSupportFragmentManager(), categoryViewModels);
-        categoryViewPager.setAdapter(categoryTabsPagerAdapter);
-        tabs.setupWithViewPager(categoryViewPager);
-        categoryViewPager.setCurrentItem(0);
-        categoryViewPager.setSaveFromParentEnabled(false);
+    public void renderFromSearchResults(List<CategoryItemsViewModel> categoryItemsViewModels) {
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        EventCategoryAdapter eventCategoryAdapter = new EventCategoryAdapter(getActivity(), categoryItemsViewModels);
+        rvSearchResults.setLayoutManager(linearLayoutManager);
+        rvSearchResults.setAdapter(eventCategoryAdapter);
     }
 
     @Override
@@ -139,6 +131,11 @@ public class EventSearchActivity extends TActivity implements
         return null;
     }
 
+    @Override
+    public FragmentManager getFragmentManagerInstance() {
+        return getSupportFragmentManager();
+    }
+
     private void executeInjector() {
         if (eventComponent == null) initInjector();
         eventComponent.inject(this);
@@ -149,5 +146,21 @@ public class EventSearchActivity extends TActivity implements
                 .appComponent(getApplicationComponent())
                 .eventModule(new EventModule(this))
                 .build();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_event_search, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return mPresenter.onOptionMenuClick(item.getItemId());
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }

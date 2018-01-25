@@ -65,7 +65,6 @@
             <android.support.v4.widget.NestedScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="50dp"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
                 <LinearLayout
@@ -82,27 +81,30 @@
 
                     <View
                         android:layout_width="match_parent"
-                        android:layout_height="1px"
-                        android:background="?android:attr/listDivider" />
+                        android:layout_height="2dp"
+                        android:background="@color/grey_100" />
 
                     <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:visibility="gone">
 
                         <include
                             android:id="@+id/seating_layout_card"
                             layout="@layout/seating_layout"
-                            android:visibility="gone"/>
+                            android:visibility="gone" />
                     </FrameLayout>
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1px"
-                        android:background="?android:attr/listDivider" />
+                    <!--<View-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="1px"-->
+                    <!--android:background="?android:attr/listDivider" />-->
 
                     <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:paddingBottom="70dp">
 
                         <include layout="@layout/terms_conditions" />
                     </FrameLayout>
@@ -114,9 +116,9 @@
 
             <include
                 android:id="@+id/btn_book"
-                layout="@layout/btn_book_event"
+                layout="@layout/btn_lanjutkan_event"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="bottom" />
         </android.support.design.widget.CoordinatorLayout>
 
@@ -125,6 +127,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/black_12"
+            android:clickable="true"
+            android:focusable="true"
             android:visibility="gone">
 
             <ProgressBar

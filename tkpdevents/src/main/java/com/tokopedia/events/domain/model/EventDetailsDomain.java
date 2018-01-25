@@ -53,6 +53,16 @@ public class EventDetailsDomain {
     private String saleEndTime;
     private Boolean dateRange;
     private String cityName;
+    private String seatMapImage;
+
+    public String getSeatMapImage() {
+        return seatMapImage;
+    }
+
+    public void setSeatMapImage(String seatMapImage) {
+        this.seatMapImage = seatMapImage;
+    }
+
     private List<ScheduleDomain> schedules = null;
 
     public List<Form> getForms() {

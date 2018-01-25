@@ -8,12 +8,14 @@ import com.tokopedia.events.data.entity.response.EventResponseEntity;
 import com.tokopedia.events.data.entity.response.EventsDetailsEntity;
 import com.tokopedia.events.data.entity.response.ValidateResponse;
 import com.tokopedia.events.data.entity.response.checkoutreponse.CheckoutResponse;
+import com.tokopedia.events.data.entity.response.searchresponse.SearchResponse;
 import com.tokopedia.events.data.entity.response.seatlayoutresponse.SeatLayoutResponse;
 import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
 import com.tokopedia.events.domain.EventRepository;
 import com.tokopedia.events.domain.model.EventDetailsDomain;
 import com.tokopedia.events.domain.model.EventsCategoryDomain;
 import com.tokopedia.events.domain.model.EventLocationDomain;
+import com.tokopedia.events.domain.model.searchdomainmodel.SearchDomainModel;
 
 import java.util.List;
 
@@ -53,16 +55,14 @@ public class EventRepositoryData implements EventRepository {
     }
 
     @Override
-    public Observable<List<EventsCategoryDomain>> getSearchEvents(TKPDMapParam<String, Object> params) {
+    public Observable<SearchDomainModel> getSearchEvents(TKPDMapParam<String, Object> params) {
         return eventsDataStoreFactory
                 .createCloudDataStore()
-                .getSearchEvents(params).map(new Func1<EventResponseEntity, List<EventsCategoryDomain>>() {
+                .getSearchEvents(params).map(new Func1<SearchResponse, SearchDomainModel>() {
                     @Override
-                    public List<EventsCategoryDomain> call(EventResponseEntity eventResponseEntity) {
-                        CommonUtils.dumper("inside EventResponseEntity = " + eventResponseEntity);
-                        EventEntityMaper eventEntityMaper = new EventEntityMaper();
-
-                        return eventEntityMaper.tranform(eventResponseEntity);
+                    public SearchDomainModel call(SearchResponse searchResponseEntity) {
+                        CommonUtils.dumper("inside SearchResponseEntity = " + searchResponseEntity);
+                        return EventSearchMapper.getSearchMapper().convertToSearchDomain(searchResponseEntity);
                     }
                 });
     }

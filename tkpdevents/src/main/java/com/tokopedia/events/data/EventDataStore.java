@@ -7,6 +7,7 @@ import com.tokopedia.events.data.entity.response.EventResponseEntity;
 import com.tokopedia.events.data.entity.response.EventsDetailsEntity;
 import com.tokopedia.events.data.entity.response.ValidateResponse;
 import com.tokopedia.events.data.entity.response.checkoutreponse.CheckoutResponse;
+import com.tokopedia.events.data.entity.response.searchresponse.SearchResponse;
 import com.tokopedia.events.data.entity.response.seatlayoutresponse.SeatLayoutResponse;
 import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
 
@@ -21,7 +22,7 @@ public interface EventDataStore {
 
     Observable<EventResponseEntity> getEvents(TKPDMapParam<String, Object> params);
 
-    Observable<EventResponseEntity> getSearchEvents(TKPDMapParam<String, Object> params);
+    Observable<SearchResponse> getSearchEvents(TKPDMapParam<String, Object> params);
 
     Observable<EventLocationEntity> getEventsLocationList(TKPDMapParam<String, Object> params);
 

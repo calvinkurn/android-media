@@ -29,7 +29,7 @@ public class EventBookTicketContract {
 
         void setHolder(int resID, String label, ImageTextViewHolder holder);
 
-        void showPayButton(int ticketQuantity, int price);
+        void showPayButton(int ticketQuantity, int price,String type);
         void hidePayButton();
 
         void showProgressBar();
@@ -39,8 +39,9 @@ public class EventBookTicketContract {
         void initTablayout();
 
         void renderSeatLayout(String url);
+        void renderSeatmap(String url);
 
-        void hideSeatLayout();
+        void hideSeatmap();
 
         android.view.View getRootView();
 

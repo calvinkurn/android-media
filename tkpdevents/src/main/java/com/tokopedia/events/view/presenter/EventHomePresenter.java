@@ -113,8 +113,10 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
         } else if (id == R.id.action_faq) {
             startGeneralWebView(FAQURL);
             return true;
+        } else {
+            getView().getActivity().onBackPressed();
+            return true;
         }
-        return false;
     }
 
     public void getEventsList() {

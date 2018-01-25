@@ -42,6 +42,8 @@
 
                     <com.tokopedia.events.view.customview.SearchInputView
                         android:id="@+id/search_input_view"
+                        android:layout_marginTop="@dimen/margin_default"
+                        android:layout_marginBottom="@dimen/margin_default"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:layout_marginLeft="@dimen/margin_default"
@@ -51,25 +53,15 @@
                 </LinearLayout>
             </android.support.design.widget.CollapsingToolbarLayout>
 
-            <android.support.design.widget.TabLayout
-                android:id="@+id/tabs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                app:tabGravity="fill"
-                app:tabMode="scrollable"
-                app:tabSelectedTextColor="@color/colorGreen"
-                app:tabTextColor="@color/black_70" />
-
         </android.support.design.widget.AppBarLayout>
 
-        <android.support.v4.view.ViewPager
-            android:id="@+id/category_view_pager"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_search_results"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        </android.support.v4.view.ViewPager>
+        </android.support.v7.widget.RecyclerView>
 
 
     </android.support.design.widget.CoordinatorLayout>
@@ -79,6 +71,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/black_12"
+        android:clickable="true"
+        android:focusable="true"
         android:visibility="gone">
 
         <ProgressBar

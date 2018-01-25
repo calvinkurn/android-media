@@ -19,9 +19,9 @@
             android:layout_marginLeft="16dp"
             android:layout_marginTop="20dp"
             android:text="@string/show_tnc"
-            android:textColor="@color/black"
-            android:textSize="14sp"
-            android:textStyle="normal" />
+            android:textColor="@color/black_70"
+            android:textSize="12sp"
+            android:textStyle="bold" />
 
         <at.blogc.android.views.ExpandableTextView
             android:id="@+id/tv_expandable_tnc"
@@ -31,7 +31,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:ellipsize="end"
-            android:textColor="@color/grey_700"
+            android:textColor="@color/grey_500"
             android:maxLines="3"
             android:text="@string/bigcontent"
             android:textSize="12sp"
@@ -45,8 +45,9 @@
             android:layout_marginLeft="16dp"
             android:layout_marginTop="12dp"
             android:text="@string/expand"
-            android:textColor="@color/link_color_green"
-            android:textSize="14sp" />
+            android:textColor="@color/green_nob"
+            android:textStyle="bold"
+            android:textSize="12sp" />
 
 
     </LinearLayout>

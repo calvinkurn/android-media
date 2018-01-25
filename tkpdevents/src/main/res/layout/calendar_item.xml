@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="NOV"
+        android:textStyle="normal"
         android:textSize="12sp"
         android:gravity="center"
         android:textColor="@color/white"/>
@@ -27,11 +28,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="10sp"
+            android:textStyle="normal"
             android:textColor="@color/grey_700"
             android:text="16"
             android:gravity="center"/>
         <TextView
             android:id="@+id/tv_day"
+            android:textStyle="normal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="10sp"

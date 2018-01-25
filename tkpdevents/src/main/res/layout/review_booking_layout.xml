@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/main_content"
     android:background="@color/grey_200">
 
     <ScrollView
@@ -23,9 +23,9 @@
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="1dp"
+                android:layout_marginBottom="@dimen/margin_default"
                 android:elevation="0dp"
-                app:cardCornerRadius="2dp">
+                app:cardCornerRadius="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -33,6 +33,17 @@
                     android:orientation="vertical"
                     android:paddingBottom="@dimen/margin_default"
                     android:paddingTop="@dimen/margin_default">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="@dimen/margin_default"
+                        android:paddingLeft="@dimen/margin_default"
+                        android:paddingStart="@dimen/margin_default"
+                        android:text="Detail Tiket"
+                        android:textColor="@color/black_70"
+                        android:textSize="22sp"
+                        android:textStyle="bold" />
 
                     <ImageView
                         android:id="@+id/event_image_small"
@@ -52,8 +63,9 @@
                         android:paddingLeft="@dimen/margin_default"
                         android:paddingRight="@dimen/margin_default"
                         android:text="The 90s Festival"
-                        android:textColor="@color/grey_800"
-                        android:textSize="14sp" />
+                        android:textColor="@color/grey_150"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/event_address_tv"
@@ -64,7 +76,8 @@
                         android:paddingStart="@dimen/margin_default"
                         android:text="DDA Ground :Dwarka"
                         android:textColor="@color/grey_700"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        android:textStyle="normal" />
 
                     <TextView
                         android:id="@+id/event_time_tv"
@@ -75,61 +88,43 @@
                         android:paddingTop="4dp"
                         android:text="7:30 PM"
                         android:textColor="@color/grey_700"
-                        android:textSize="12sp" />
-                </LinearLayout>
-
-            </android.support.v7.widget.CardView>
-
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="1dp"
-                android:elevation="0dp"
-                app:cardCornerRadius="2dp">
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/margin_default"
-                    android:layout_marginStart="@dimen/margin_default"
-                    android:orientation="vertical"
-                    android:paddingBottom="@dimen/margin_default"
-                    android:paddingTop="@dimen/margin_default">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingBottom="8dp"
-                        android:text="Detail Tiket"
-                        android:textColor="@color/black"
-                        android:textSize="14sp" />
+                        android:textSize="12sp"
+                        android:textStyle="normal" />
 
                     <TextView
                         android:id="@+id/tv_ticket_summary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:paddingLeft="@dimen/margin_default"
+                        android:paddingStart="@dimen/margin_default"
+                        android:paddingTop="4dp"
                         android:text="Ticket Type"
                         android:textColor="@color/grey_700"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        android:textStyle="normal" />
 
                     <TextView
                         android:id="@+id/event_total_tickets"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:paddingLeft="@dimen/margin_default"
+                        android:paddingStart="@dimen/margin_default"
+                        android:paddingTop="4dp"
                         android:text="@string/jumlah_tiket"
                         android:textColor="@color/grey_700"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        android:textStyle="normal" />
                 </LinearLayout>
 
             </android.support.v7.widget.CardView>
 
+
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="1dp"
+                android:layout_marginBottom="@dimen/margin_default"
                 android:elevation="0dp"
-                app:cardCornerRadius="2dp">
+                app:cardCornerRadius="0dp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -146,8 +141,9 @@
                         android:layout_marginStart="@dimen/margin_default"
                         android:paddingBottom="8dp"
                         android:text="Tujuan Pengiriman Tiket"
-                        android:textColor="@color/black"
-                        android:textSize="14sp" />
+                        android:textColor="@color/black_70"
+                        android:textSize="22sp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/update_number"
@@ -164,7 +160,8 @@
                         android:paddingEnd="@dimen/margin_default"
                         android:paddingRight="@dimen/margin_default"
                         android:text="Ubah"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        android:textStyle="normal" />
 
                     <TextView
                         android:id="@+id/tv2"
@@ -175,8 +172,9 @@
                         android:layout_marginLeft="@dimen/margin_default"
                         android:layout_marginStart="@dimen/margin_default"
                         android:text="E-mail"
-                        android:textColor="@color/grey_900"
-                        android:textSize="12sp" />
+                        android:textColor="@color/grey_700"
+                        android:textSize="12sp"
+                        android:textStyle="normal" />
 
                     <EditText
                         android:id="@+id/tv_visitor_names"
@@ -187,8 +185,9 @@
                         android:layout_marginLeft="12dp"
                         android:layout_marginStart="12dp"
                         android:text="Mad Max and 4 Others"
-                        android:textColor="@color/grey_700"
-                        android:textSize="14sp" />
+                        android:textColor="@color/grey_500"
+                        android:textSize="14sp"
+                        android:textStyle="normal" />
 
                     <TextView
                         android:id="@+id/update_email"
@@ -205,7 +204,8 @@
                         android:paddingEnd="@dimen/margin_default"
                         android:paddingRight="@dimen/margin_default"
                         android:text="Ubah"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        android:textStyle="normal" />
 
                     <TextView
                         android:id="@+id/tv3"
@@ -216,8 +216,9 @@
                         android:layout_marginLeft="@dimen/margin_default"
                         android:layout_marginStart="@dimen/margin_default"
                         android:text="No. Telepon"
-                        android:textColor="@color/grey_900"
-                        android:textSize="12sp" />
+                        android:textColor="@color/black_70"
+                        android:textSize="12sp"
+                        android:textStyle="normal" />
 
                     <EditText
                         android:id="@+id/tv_telephone"
@@ -228,8 +229,9 @@
                         android:layout_marginStart="12dp"
                         android:paddingBottom="8dp"
                         android:text="Mad Max and 4 Others"
-                        android:textColor="@color/grey_700"
-                        android:textSize="14sp" />
+                        android:textColor="@color/grey_500"
+                        android:textSize="14sp"
+                        android:textStyle="normal" />
                 </RelativeLayout>
 
             </android.support.v7.widget.CardView>
@@ -238,10 +240,10 @@
                 android:id="@+id/form_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="1dp"
+                android:layout_marginBottom="@dimen/margin_default"
                 android:elevation="0dp"
                 android:visibility="gone"
-                app:cardCornerRadius="2dp">
+                app:cardCornerRadius="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -257,8 +259,9 @@
                         android:layout_marginLeft="@dimen/margin_default"
                         android:layout_marginStart="@dimen/margin_default"
                         android:text="Data Pelanggan Tambahan"
-                        android:textColor="@color/black"
-                        android:textSize="14sp" />
+                        android:textColor="@color/black_70"
+                        android:textSize="22sp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -269,8 +272,9 @@
                         android:layout_marginRight="@dimen/margin_default"
                         android:layout_marginStart="@dimen/margin_default"
                         android:text="Informasi ini akan digunakan pada saat penukaran tiket"
-                        android:textColor="@color/grey_700"
-                        android:textSize="14sp" />
+                        android:textColor="@color/grey_500"
+                        android:textSize="14sp"
+                        android:textStyle="normal" />
 
                     <EditText
                         android:id="@+id/ed_form_1"
@@ -278,8 +282,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="12dp"
                         android:layout_marginStart="12dp"
-                        android:textColor="@color/grey_700"
+                        android:textColor="@color/grey_500"
                         android:textSize="14sp"
+                        android:textStyle="normal"
                         android:visibility="gone" />
 
                     <EditText
@@ -289,8 +294,9 @@
                         android:layout_marginLeft="12dp"
                         android:layout_marginStart="12dp"
                         android:paddingBottom="8dp"
-                        android:textColor="@color/grey_700"
+                        android:textColor="@color/grey_500"
                         android:textSize="14sp"
+                        android:textStyle="normal"
                         android:visibility="gone" />
 
                     <EditText
@@ -300,8 +306,9 @@
                         android:layout_marginLeft="12dp"
                         android:layout_marginStart="12dp"
                         android:paddingBottom="8dp"
-                        android:textColor="@color/grey_700"
+                        android:textColor="@color/grey_500"
                         android:textSize="14sp"
+                        android:textStyle="normal"
                         android:visibility="gone" />
 
                     <EditText
@@ -311,8 +318,9 @@
                         android:layout_marginLeft="12dp"
                         android:layout_marginStart="12dp"
                         android:paddingBottom="8dp"
-                        android:textColor="@color/grey_700"
+                        android:textColor="@color/grey_500"
                         android:textSize="14sp"
+                        android:textStyle="normal"
                         android:visibility="gone" />
                 </LinearLayout>
 
@@ -321,9 +329,9 @@
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="1dp"
+                android:layout_marginBottom="@dimen/margin_default"
                 android:elevation="0dp"
-                app:cardCornerRadius="2dp">
+                app:cardCornerRadius="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -338,8 +346,8 @@
 
                         <CheckBox
                             android:id="@+id/promo_checkbox"
-                            android:layout_width="30dp"
-                            android:layout_height="22dp" />
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
 
                         <TextView
                             android:layout_width="match_parent"
@@ -347,11 +355,12 @@
                             android:layout_marginLeft="@dimen/margin_default"
                             android:layout_marginStart="@dimen/margin_default"
                             android:text="Gunakan Kode Promo Tokopedia"
-                            android:textColor="@color/black"
-                            android:textSize="14sp" />
+                            android:textColor="@color/black_70"
+                            android:textSize="14sp"
+                            android:textStyle="normal" />
                     </LinearLayout>
 
-                    <FrameLayout
+                    <RelativeLayout
                         android:id="@+id/ed_promo_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -362,28 +371,92 @@
 
                         <EditText
                             android:id="@+id/ed_promo"
-                            android:layout_width="wrap_content"
+                            android:layout_width="200dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_marginLeft="@dimen/margin_default"
                             android:layout_marginStart="@dimen/margin_default"
-                            android:hint="Enter PromoCode"
-                            android:textSize="14sp" />
+                            android:hint="@string/kode_promo"
+                            android:paddingEnd="0dp"
+                            android:paddingLeft="0dp"
+                            android:paddingRight="0dp"
+                            android:paddingStart="0dp"
+                            android:textSize="14sp"
+                            android:textStyle="normal" />
 
                         <TextView
                             android:id="@+id/update_promo"
                             android:layout_width="80dp"
                             android:layout_height="32dp"
+                            android:layout_alignParentRight="true"
                             android:layout_gravity="end|center_vertical"
                             android:layout_marginEnd="@dimen/margin_default"
                             android:layout_marginRight="@dimen/margin_default"
                             android:background="@drawable/rounded_rectangle_green_solid"
                             android:foreground="?attr/selectableItemBackground"
                             android:gravity="center"
-                            android:text="Ubah"
+                            android:text="@string/cek_kode"
                             android:textColor="@color/white"
-                            android:textSize="12sp" />
-                    </FrameLayout>
+                            android:textSize="12sp"
+                            android:textStyle="normal" />
+
+                        <TextView
+                            android:id="@+id/batal"
+                            android:layout_width="80dp"
+                            android:layout_height="32dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_below="@+id/update_promo"
+                            android:layout_gravity="end|center_vertical"
+                            android:layout_marginEnd="@dimen/margin_default"
+                            android:layout_marginRight="@dimen/margin_default"
+                            android:layout_marginTop="8dp"
+                            android:background="@drawable/rounded_rectangle_grey_solid"
+                            android:foreground="?attr/selectableItemBackground"
+                            android:gravity="center"
+                            android:text="Batal"
+                            android:textColor="@color/white"
+                            android:textSize="12sp"
+                            android:textStyle="normal"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/tv_promo_success_msg"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_below="@+id/update_promo"
+                            android:layout_gravity="end|center_vertical"
+                            android:layout_marginLeft="@dimen/margin_default"
+                            android:layout_marginStart="@dimen/margin_default"
+                            android:layout_marginTop="8dp"
+                            android:foreground="?attr/selectableItemBackground"
+                            android:gravity="center"
+                            android:text="Suceess mesage"
+                            android:textColor="@color/grey_700"
+                            android:textSize="12sp"
+                            android:textStyle="normal"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/tv_promo_cashback_msg"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_below="@+id/tv_promo_success_msg"
+                            android:layout_gravity="end|center_vertical"
+                            android:layout_marginLeft="@dimen/margin_default"
+                            android:layout_marginStart="@dimen/margin_default"
+                            android:layout_marginTop="8dp"
+                            android:foreground="?attr/selectableItemBackground"
+                            android:gravity="center"
+                            android:text="cashback mesage"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="12sp"
+                            android:textStyle="normal"
+                            android:visibility="gone" />
+
+
+                    </RelativeLayout>
                 </LinearLayout>
 
             </android.support.v7.widget.CardView>
@@ -391,9 +464,8 @@
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="1dp"
                 android:elevation="0dp"
-                app:cardCornerRadius="2dp">
+                app:cardCornerRadius="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -409,21 +481,23 @@
                         android:paddingBottom="8dp"
                         android:paddingEnd="@dimen/margin_default"
                         android:paddingStart="@dimen/margin_default"
-                        android:text="Review and Pay"
-                        android:textColor="@color/black"
-                        android:textSize="14sp" />
+                        android:text="Rincian Harga"
+                        android:textColor="@color/black_70"
+                        android:textSize="22sp"
+                        android:textStyle="bold" />
 
 
-                    <TextView
-                        android:id="@+id/tv_provider_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingBottom="8dp"
-                        android:paddingEnd="@dimen/margin_default"
-                        android:paddingStart="@dimen/margin_default"
-                        android:text="Fare Breakup for RedRocks Entertainment Dabang Tour 2017"
-                        android:textColor="@color/grey_900"
-                        android:textSize="12sp" />
+                    <!--<TextView-->
+                    <!--android:id="@+id/tv_provider_name"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:paddingBottom="8dp"-->
+                    <!--android:paddingEnd="@dimen/margin_default"-->
+                    <!--android:paddingStart="@dimen/margin_default"-->
+                    <!--android:textStyle="normal"-->
+                    <!--android:text="Fare Breakup for RedRocks Entertainment Dabang Tour 2017"-->
+                    <!--android:textColor="@color/grey_900"-->
+                    <!--android:textSize="12sp" />-->
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -439,7 +513,8 @@
                             android:paddingStart="@dimen/margin_default"
                             android:text="Base Fare"
                             android:textColor="@color/grey_700"
-                            android:textSize="12sp" />
+                            android:textSize="12sp"
+                            android:textStyle="normal" />
 
                         <TextView
                             android:id="@+id/tv_base_fare"
@@ -452,8 +527,9 @@
                             android:paddingLeft="@dimen/margin_default"
                             android:paddingStart="@dimen/margin_default"
                             android:text="Rp 540000"
-                            android:textColor="@color/grey_900"
-                            android:textSize="12sp" />
+                            android:textColor="@color/grey_500"
+                            android:textSize="12sp"
+                            android:textStyle="normal" />
 
                         <TextView
                             android:id="@+id/base_fare_break"
@@ -468,7 +544,8 @@
                             android:paddingLeft="@dimen/margin_default"
                             android:paddingStart="@dimen/margin_default"
                             android:text="@string/_2_x_rp100000"
-                            android:textSize="12sp" />
+                            android:textSize="12sp"
+                            android:textStyle="normal" />
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -483,8 +560,9 @@
                             android:paddingEnd="@dimen/margin_default"
                             android:paddingStart="@dimen/margin_default"
                             android:text="Biaya Layannan"
-                            android:textColor="@color/grey_800"
-                            android:textSize="12sp" />
+                            android:textColor="@color/grey_700"
+                            android:textSize="12sp"
+                            android:textStyle="normal" />
 
                         <TextView
                             android:id="@+id/tv_conv_fees"
@@ -497,9 +575,17 @@
                             android:paddingLeft="@dimen/margin_default"
                             android:paddingStart="@dimen/margin_default"
                             android:text="Rp 540000"
-                            android:textColor="@color/grey_800"
-                            android:textSize="12sp" />
+                            android:textColor="@color/grey_500"
+                            android:textSize="12sp"
+                            android:textStyle="normal" />
                     </RelativeLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:layout_marginEnd="@dimen/margin_default"
+                        android:layout_marginStart="@dimen/margin_default"
+                        android:background="@color/black_12" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -513,8 +599,9 @@
                             android:paddingEnd="@dimen/margin_default"
                             android:paddingStart="@dimen/margin_default"
                             android:text="Total Pembayaran"
-                            android:textColor="@color/grey_900"
-                            android:textSize="14sp" />
+                            android:textColor="@color/grey_700"
+                            android:textSize="14sp"
+                            android:textStyle="normal" />
 
                         <TextView
                             android:id="@+id/tv_total_price"
@@ -527,8 +614,9 @@
                             android:paddingLeft="@dimen/margin_default"
                             android:paddingStart="@dimen/margin_default"
                             android:text="Rp 540000"
-                            android:textColor="@color/deep_orange_500"
-                            android:textSize="14sp" />
+                            android:textColor="@color/price_pdp"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
                     </RelativeLayout>
                 </LinearLayout>
 
@@ -540,7 +628,7 @@
         android:id="@+id/btn_go_to_payment"
         layout="@layout/btn_book_event"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:visibility="visible" />
 
@@ -549,6 +637,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/black_12"
+        android:clickable="true"
+        android:focusable="true"
         android:visibility="gone">
 
         <ProgressBar

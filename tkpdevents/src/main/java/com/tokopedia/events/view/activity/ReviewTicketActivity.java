@@ -24,7 +24,6 @@ import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
 import com.tokopedia.events.di.DaggerEventComponent;
@@ -61,8 +60,6 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     EditText tvVisitorNames;
     @BindView(R2.id.tv_telephone)
     EditText tvTelephone;
-    @BindView(R2.id.tv_provider_name)
-    TextView tvProviderName;
     @BindView(R2.id.tv_base_fare)
     TextView tvBaseFare;
     @BindView(R2.id.tv_conv_fees)
@@ -107,6 +104,12 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     EditText edForm4;
     @BindView(R2.id.main_content)
     FrameLayout mainContent;
+    @BindView(R2.id.tv_promo_success_msg)
+    TextView tvPromoSuccessMsg;
+    @BindView(R2.id.tv_promo_cashback_msg)
+    TextView tvPromoCashbackMsg;
+    @BindView(R2.id.batal)
+    TextView batal;
 
 
     EventComponent eventComponent;
@@ -140,9 +143,11 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
                     edPromo.setText(edPromo.getText(), TextView.BufferType.SPANNABLE);
                     edPromo.requestFocus();
                     im.showSoftInput(edPromo, 0);
-                    scrollView.smoothScrollTo(0, edPromo.getBottom());
+                    scrollView.smoothScrollTo(0, edPromoLayout.getBottom());
                 } else {
                     edPromoLayout.setVisibility(View.GONE);
+                    edPromo.setText("");
+                    mPresenter.updatePromoCode("");
                     im.hideSoftInputFromWindow(edPromo.getWindowToken(), 0);
                 }
             }
@@ -168,7 +173,7 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
 
     @Override
     public void showMessage(String message) {
-
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -195,13 +200,12 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
                 packageViewModel.getSelectedQuantity()));
 
 //        tvTelephone.setText(SessionHandler.getPhoneNumber());
-        tvProviderName.setText(String.format(getString(R.string.fare_breakup), packageViewModel.getTitle() + " " + packageViewModel.getDisplayName()));
         int baseFare = packageViewModel.getSelectedQuantity() * packageViewModel.getSalesPrice();
         tvBaseFare.setText("Rp " + CurrencyUtil.convertToCurrencyString(baseFare));
         int convFees = packageViewModel.getConvenienceFee();
         tvConvFees.setText("Rp " + CurrencyUtil.convertToCurrencyString(convFees));
         tvTotalPrice.setText("Rp " + CurrencyUtil.convertToCurrencyString(baseFare + convFees));
-        buttonTextview.setText(String.format(getString(R.string.pay_button), CurrencyUtil.convertToCurrencyString(baseFare + convFees)));
+        buttonTextview.setText(getString(R.string.pay_button));
         tvTicketSummary.setText(String.format(getString(R.string.x_type),
                 packageViewModel.getSelectedQuantity(), packageViewModel.getDisplayName()));
         String baseBreak = String.format(getString(R.string.x_type),
@@ -280,6 +284,27 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
         return mainContent;
     }
 
+    @Override
+    public void showPromoSuccessMessage(String text,int color) {
+        tvPromoSuccessMsg.setText(text);
+        tvPromoSuccessMsg.setTextColor(color);
+        tvPromoSuccessMsg.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showCashbackMessage(String text) {
+        tvPromoCashbackMsg.setText(text);
+        tvPromoCashbackMsg.setVisibility(View.VISIBLE);
+        batal.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideSuccessMessage() {
+        tvPromoSuccessMsg.setVisibility(View.GONE);
+        tvPromoCashbackMsg.setVisibility(View.GONE);
+        batal.setVisibility(View.GONE);
+    }
+
     @OnClick(R2.id.btn_go_to_payment)
     void clickPay() {
         mPresenter.proceedToPayment();
@@ -298,6 +323,11 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     @OnClick(R2.id.update_number)
     void updateNumber() {
         mPresenter.updateNumber(tvTelephone.getText().toString());
+    }
+
+    @OnClick(R2.id.batal)
+    void dismissPromoCode() {
+        mPresenter.updatePromoCode("");
     }
 
     @Override
