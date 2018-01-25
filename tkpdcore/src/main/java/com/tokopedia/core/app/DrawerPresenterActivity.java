@@ -63,7 +63,6 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         sessionHandler = new SessionHandler(this);
         drawerCache = new LocalCacheHandler(this, DrawerHelper.DRAWER_CACHE);
         setupDrawer();
-        //   registerAllBroadcastReceiver();
     }
 
     protected void registerAllBroadcastReceiver() {
@@ -410,7 +409,6 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
     protected void onDestroy() {
         super.onDestroy();
         drawerDataManager.unsubscribe();
-        //     unregisterAllBroadcastReceiver();
     }
 
     @Override

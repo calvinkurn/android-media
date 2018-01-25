@@ -12,8 +12,6 @@ import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 public interface ILoyaltyRouter {
     String LOYALTY_TOKOPOINT_NOTIFICATION_DIALOG_FRAGMENT_TAG
             = "LOYALTY_TOKOPOINT_NOTIFICATION_DIALOG_FRAGMENT_TAG";
-//    String INTENT_ACTION_BROADCAST_RECEIVER_TOKOPOINT =
-//            "com.tokopedia.loyalty.broadcastreceiver.TokoPointDrawerBroadcastReceiver.ACTION_GET_DRAWER_TOKOPOINT_MAIN_APP";
 
     DialogFragment getLoyaltyTokoPointNotificationDialogFragment(TokoPointDrawerData.PopUpNotif popUpNotif);
 
