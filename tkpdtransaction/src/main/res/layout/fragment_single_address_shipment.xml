@@ -5,12 +5,6 @@
     android:background="@color/grey_200"
     android:orientation="vertical">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_cart_order_details"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/ll_button_payment_container" />
-
     <LinearLayout
         android:id="@+id/ll_button_payment_container"
         android:layout_width="match_parent"
@@ -30,5 +24,11 @@
             android:textAllCaps="false"/>
 
     </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_cart_order_details"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/ll_button_payment_container" />
 
 </RelativeLayout>
