@@ -70,7 +70,6 @@
 
                 <data
                     android:host="tokopedia.link"
-                    android:pathPrefix="/sCoc"
                     android:scheme="https" />
             </intent-filter>
         </activity>
