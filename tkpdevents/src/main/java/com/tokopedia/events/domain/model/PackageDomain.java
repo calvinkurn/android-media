@@ -30,11 +30,8 @@ public class PackageDomain {
     private String providerStatus;
     private String venueDetail;
     private Integer startDate;
-    private Integer endDate;
-    private String fetchSectionUrl;
-    private String createdAt;
-
     private String updatedAt;
+    private String createdAt;
 
     public Integer getId() {
         return id;
@@ -250,22 +247,6 @@ public class PackageDomain {
 
     public void setStartDate(Integer startDate) {
         this.startDate = startDate;
-    }
-
-    public Integer getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(Integer endDate) {
-        this.endDate = endDate;
-    }
-
-    public String getFetchSectionUrl() {
-        return fetchSectionUrl;
-    }
-
-    public void setFetchSectionUrl(String fetchSectionUrl) {
-        this.fetchSectionUrl = fetchSectionUrl;
     }
 
     public String getCreatedAt() {

@@ -136,7 +136,7 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
                 break;
             case TkpdState.DrawerPosition.APPSHARE:
                 //context.startActivity(new Intent(context, ReferralActivity.class));
-                context.startActivity( RouterUtils.getActivityIntent(context, "com.tokopedia.events.view.activity.EventsHomeActivity"));
+                context.startActivity( RouterUtils.getActivityIntent(context, "com.tokopedia.movies.view.activity.MoviesHomeActivity"));
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.APPSHARE);
                 break;
             case TkpdState.DrawerPosition.CONTACT_US:

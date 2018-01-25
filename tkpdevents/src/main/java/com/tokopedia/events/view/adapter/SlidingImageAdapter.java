@@ -60,7 +60,7 @@ public class SlidingImageAdapter extends PagerAdapter {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("Naveen", "ImageView is clicked" + categoryItemsViewModels.get(position).getUrl());
+//                Log.d("Naveeneen", "ImageView is clicked" + categoryItemsViewModels.get(position).getUrl());
             }
         });
         view.addView(imageLayout, 0);
