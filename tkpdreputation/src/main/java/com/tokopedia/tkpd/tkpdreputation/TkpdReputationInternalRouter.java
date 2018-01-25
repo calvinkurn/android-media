@@ -7,8 +7,8 @@ import com.tokopedia.tkpd.tkpdreputation.productreview.view.ProductReviewActivit
 
 public class TkpdReputationInternalRouter {
 
-    public static Intent getProductReviewIntent(Context context, String productId) {
-        return ProductReviewActivity.createIntent(context, productId);
+    public static Intent getProductReviewIntent(Context context, String productId, String productName) {
+        return ProductReviewActivity.createIntent(context, productId, productName);
     }
 
 }

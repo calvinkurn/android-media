@@ -7,6 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_border_grey_05dp"
+    app:layout_scrollFlags="scroll|enterAlways"
     tools:showIn="@layout/fragment_product_review">
 
     <LinearLayout

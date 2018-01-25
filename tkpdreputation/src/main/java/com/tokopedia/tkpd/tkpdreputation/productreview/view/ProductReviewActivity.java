@@ -10,21 +10,36 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 
+import static com.tokopedia.tkpd.tkpdreputation.R.string.title_activity_reputation;
+
 /**
  * Created by zulfikarrahman on 1/15/18.
  */
 
 public class ProductReviewActivity extends BaseSimpleActivity implements HasComponent<AppComponent> {
 
-    public static Intent createIntent(Context context, String productId) {
+    public static final String EXTRA_PRODUCT_NAME = "x_prd_nm";
+
+    public static Intent createIntent(Context context, String productId, String productName) {
         Intent intent = new Intent(context, ProductReviewActivity.class);
         intent.putExtra(ProductReviewFragment.EXTRA_PRODUCT_ID, productId);
+        intent.putExtra(EXTRA_PRODUCT_NAME, productName);
         return intent;
     }
 
     @Override
+    protected void setupLayout(Bundle savedInstanceState) {
+        super.setupLayout(savedInstanceState);
+        if (getSupportActionBar()!= null) {
+            String productName = getIntent().getExtras().getString(EXTRA_PRODUCT_NAME);
+            getSupportActionBar().setTitle(getString(title_activity_reputation) + " " + productName);
+        }
+    }
+
+    @Override
     protected Fragment getNewFragment() {
-        return ProductReviewFragment.getInstance(getIntent().getExtras().getString(ProductReviewFragment.EXTRA_PRODUCT_ID));
+        String productId = getIntent().getExtras().getString(ProductReviewFragment.EXTRA_PRODUCT_ID);
+        return ProductReviewFragment.getInstance(productId);
     }
 
     @Override

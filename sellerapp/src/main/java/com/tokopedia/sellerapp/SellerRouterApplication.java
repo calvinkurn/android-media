@@ -351,8 +351,8 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getProductReputationIntent(Context context, String productId) {
-        return TkpdReputationInternalRouter.getProductReviewIntent(context, productId);
+    public Intent getProductReputationIntent(Context context, String productId, String productName) {
+        return TkpdReputationInternalRouter.getProductReviewIntent(context, productId, productName);
     }
 
     @Override

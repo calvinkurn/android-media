@@ -374,12 +374,12 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void onProductRatingClicked(String productId, String shopId, String productName) {
-        presenter.processToReputation(context, productId);
+        presenter.processToReputation(context, productId, productName);
     }
 
     @Override
     public void onProductReviewClicked(String productId, String shopId, String productName) {
-        presenter.processToReputation(context, productId);
+        presenter.processToReputation(context, productId, productName);
     }
 
     @Override

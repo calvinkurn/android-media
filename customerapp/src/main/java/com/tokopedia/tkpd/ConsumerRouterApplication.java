@@ -588,8 +588,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getProductReputationIntent(Context context, String productId) {
-        return TkpdReputationInternalRouter.getProductReviewIntent(context, productId);
+    public Intent getProductReputationIntent(Context context, String productId, String productName) {
+        return TkpdReputationInternalRouter.getProductReviewIntent(context, productId, productName);
     }
 
     @Override
