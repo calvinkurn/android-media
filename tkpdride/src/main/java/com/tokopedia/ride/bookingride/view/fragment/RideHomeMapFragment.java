@@ -136,7 +136,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     private ArrayList<Marker> rideMarkerList = new ArrayList<>();
     private ArrayList<Marker> nearbyMarkerList = new ArrayList<>();
     private boolean isMarkerRotating;
-    private int MAX_CABS_COUNT = 8;
+    private int MAX_CABS_COUNT = 5;
 
     public interface OnFragmentInteractionListener {
         void onSourceAndDestinationChanged(PlacePassViewModel source, PlacePassViewModel destination);
@@ -852,9 +852,9 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         double left = vr.latLngBounds.southwest.longitude;
 
 
-        double radiusInDegrees = Math.abs(y0 - left);
+//        double radiusInDegrees = Math.abs(y0 - left);
 
-//        300 / 111000f;
+        double radiusInDegrees = 350 / 111000f;
 
 
         for (int i = 0; i < 5; i++) {
