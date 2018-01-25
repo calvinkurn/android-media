@@ -27,7 +27,7 @@ public class ValidateOtpLoginSubscriber extends Subscriber<ValidateOtpLoginDomai
     @Override
     public void onError(Throwable e) {
         view.dismissLoadingProgress();
-        view.onErrorVerifyLogin(ErrorHandler.getErrorMessageWithErrorCode(e));
+        view.onErrorVerifyOtpCode(ErrorHandler.getErrorMessageWithErrorCode(e));
     }
 
     @Override

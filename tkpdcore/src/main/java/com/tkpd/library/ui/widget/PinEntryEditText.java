@@ -340,7 +340,7 @@ public class PinEntryEditText extends EditText {
      */
     private void updateColorForLines(boolean hasTextOrIsNext) {
         if (mHasError) {
-            mLinesPaint.setColor(getColorForState(android.R.attr.state_active));
+            mLinesPaint.setColor(getResources().getColor(R.color.red_500));
         } else if (isFocused()) {
             mLinesPaint.setStrokeWidth(mLineStrokeSelected);
             mLinesPaint.setColor(getColorForState(android.R.attr.state_focused));

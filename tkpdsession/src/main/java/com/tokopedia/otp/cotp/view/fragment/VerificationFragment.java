@@ -3,6 +3,7 @@ package com.tokopedia.otp.cotp.view.fragment;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -21,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -77,6 +79,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     private static final String HAS_TIMER = "has_timer";
 
     private static final int REQUEST_VERIFY_PHONE_NUMBER = 243;
+    private static final CharSequence VERIFICATION_CODE = "Kode verifikasi";
 
     ImageView icon;
     TextView message;
@@ -87,6 +90,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     View limitOtp;
     View finishCountdownView;
     TextView noCodeText;
+    ImageView errorImage;
 
     CountDownTimer countDownTimer;
     TkpdProgressDialog progressDialog;
@@ -247,6 +251,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         errorOtp = view.findViewById(R.id.error_otp);
         finishCountdownView = view.findViewById(R.id.finish_countdown);
         noCodeText = view.findViewById(R.id.no_code);
+        errorImage = view.findViewById(R.id.error_image);
         prepareView();
         presenter.attachView(this);
         return view;
@@ -306,7 +311,6 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         verifyButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.grey_500));
         MethodChecker.setBackground(verifyButton, MethodChecker.getDrawable(getActivity(), R
                 .drawable.grey_button_rounded));
-        inputOtp.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
     }
 
     private void enableVerifyButton() {
@@ -314,7 +318,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         verifyButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
         MethodChecker.setBackground(verifyButton, MethodChecker.getDrawable(getActivity(), R
                 .drawable.green_button_rounded));
-        inputOtp.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+        errorImage.setVisibility(View.INVISIBLE);
         errorOtp.setVisibility(View.INVISIBLE);
     }
 
@@ -378,10 +382,22 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
     @Override
     public void onErrorVerifyOtpCode(String errorMessage) {
-        inputOtp.setError(true);
-        errorOtp.setVisibility(View.VISIBLE);
-        inputOtp.setCompoundDrawables(null, null, MethodChecker.getDrawable
-                (getActivity(), R.drawable.ic_cancel_red), null);
+        if (errorMessage.contains(VERIFICATION_CODE)) {
+            inputOtp.setError(true);
+            inputOtp.setFocusableInTouchMode(true);
+            inputOtp.post(new Runnable() {
+                public void run() {
+                    inputOtp.requestFocusFromTouch();
+                    InputMethodManager lManager = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    lManager.showSoftInput(inputOtp, 0);
+                }
+            });
+            errorImage.setVisibility(View.VISIBLE);
+            errorOtp.setVisibility(View.VISIBLE);
+        } else {
+            onErrorVerifyLogin(errorMessage);
+        }
+
     }
 
     @Override
