@@ -150,7 +150,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         getActivity().registerReceiver(
                 homeFragmentBroadcastReceiver,
                 new IntentFilter(
-                        HomeFragmentBroadcastReceiverConstant.INTENT_ACTION
+                        HomeFragmentBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP
                 )
         );
     }
@@ -489,7 +489,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onRequestPendingCashBack() {
-        getActivity().sendBroadcast(new Intent(TokocashPendingDataBroadcastReceiverConstant.INTENT_ACTION));
+        getActivity().sendBroadcast(new Intent(TokocashPendingDataBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP));
     }
 
     @Override
@@ -784,7 +784,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (!HomeFragmentBroadcastReceiverConstant.INTENT_ACTION.equalsIgnoreCase(intent.getAction()))
+            if (!HomeFragmentBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP.equalsIgnoreCase(intent.getAction()))
                 return;
             switch (intent.getIntExtra(EXTRA_ACTION_RECEIVER, 0)) {
                 case HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOPOINT_DATA:
