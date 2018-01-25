@@ -48,6 +48,8 @@ public interface FlightDashboardContract {
 
         void showFlightClassPassengerIsEmpty(@StringRes int resId);
 
+        void showApplinkErrorMessage(@StringRes int resId);
+
         void navigateToSearchPage(FlightDashboardViewModel currentDashboardViewModel);
 
         void showAirportShouldDifferentCity(@StringRes int resId);
@@ -61,6 +63,14 @@ public interface FlightDashboardContract {
         void hideBannerView();
 
         String getScreenName();
+
+        boolean isFromApplink();
+
+        String getTripArguments();
+
+        String getPassengerArguments();
+
+        String getClassArguments();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -96,5 +106,6 @@ public interface FlightDashboardContract {
         void onLoginResultReceived();
 
         void onBannerItemClick(int position, BannerDetail bannerDetail);
+
     }
 }

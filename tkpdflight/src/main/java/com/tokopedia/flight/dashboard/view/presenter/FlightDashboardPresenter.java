@@ -14,6 +14,8 @@ import com.tokopedia.flight.common.data.domain.DeleteFlightCacheUseCase;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
+import com.tokopedia.flight.dashboard.domain.GetFlightAirportByIdUseCase;
+import com.tokopedia.flight.dashboard.domain.GetFlightClassByIdUseCase;
 import com.tokopedia.flight.dashboard.domain.GetFlightClassesUseCase;
 import com.tokopedia.flight.dashboard.view.fragment.cache.FlightDashboardCache;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
@@ -39,11 +41,14 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     private static final String DEVICE_ID = "4";
     private static final String CATEGORY_ID = "27";
+    private static final int MAX_PASSENGER_VALUE = 7;
 
     private BannerGetDataUseCase bannerGetDataUseCase;
     private FlightDashboardValidator validator;
     private DeleteFlightCacheUseCase deleteFlightCacheUseCase;
     private GetFlightClassesUseCase getFlightClassesUseCase;
+    private GetFlightAirportByIdUseCase getFlightAirportByIdUseCase;
+    private GetFlightClassByIdUseCase getFlightClassByIdUseCase;
     private FlightClassViewModelMapper flightClassViewModelMapper;
     private FlightDashboardCache flightDashboardCache;
     private UserSession userSession;
@@ -54,13 +59,18 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                                     FlightDashboardValidator validator,
                                     DeleteFlightCacheUseCase deleteFlightCacheUseCase,
                                     GetFlightClassesUseCase getFlightClassesUseCase,
+                                    GetFlightAirportByIdUseCase getFlightAirportByIdUseCase,
+                                    GetFlightClassByIdUseCase getFlightClassByIdUseCase,
                                     FlightClassViewModelMapper flightClassViewModelMapper,
                                     FlightDashboardCache flightDashboardCache,
-                                    UserSession userSession, FlightAnalytics flightAnalytics) {
+                                    UserSession userSession,
+                                    FlightAnalytics flightAnalytics) {
         this.bannerGetDataUseCase = bannerGetDataUseCase;
         this.validator = validator;
         this.deleteFlightCacheUseCase = deleteFlightCacheUseCase;
         this.getFlightClassesUseCase = getFlightClassesUseCase;
+        this.getFlightAirportByIdUseCase = getFlightAirportByIdUseCase;
+        this.getFlightClassByIdUseCase = getFlightClassByIdUseCase;
         this.flightClassViewModelMapper = flightClassViewModelMapper;
         this.flightDashboardCache = flightDashboardCache;
         this.userSession = userSession;
@@ -92,9 +102,16 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     private void onInitialize() {
         setupViewModel();
-        actionLoadFromCache();
-        actionGetClassesAndSetDefaultClass();
         getBannerData();
+
+        if (!getView().isFromApplink()) {
+            actionLoadFromCache();
+            actionGetClassesAndSetDefaultClass();
+        } else {
+            transformExtras(getView().getTripArguments(),
+                    getView().getPassengerArguments(),
+                    getView().getClassArguments());
+        }
     }
 
     private void actionLoadFromCache() {
@@ -137,6 +154,48 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                         renderUi();
                     }
                 }
+            }
+        });
+    }
+
+    private void actionGetAirportById(String airportId, final boolean isDepartureAirport) {
+        getFlightAirportByIdUseCase.execute(getFlightAirportByIdUseCase.createRequestParams(airportId), new Subscriber<FlightAirportDB>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                throwable.printStackTrace();
+            }
+
+            @Override
+            public void onNext(FlightAirportDB flightAirportDB) {
+                if (isDepartureAirport) {
+                    onDepartureAirportChange(flightAirportDB);
+                } else {
+                    onArrivalAirportChange(flightAirportDB);
+                }
+            }
+        });
+    }
+
+    private void actionGetClassById(int classId) {
+        getFlightClassByIdUseCase.execute(getFlightClassByIdUseCase.createRequestParams(classId), new Subscriber<FlightClassEntity>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+
+            }
+
+            @Override
+            public void onNext(FlightClassEntity flightClassEntity) {
+                onFlightClassesChange(flightClassViewModelMapper.transform(flightClassEntity));
             }
         });
     }
@@ -360,6 +419,56 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         }
     }
 
+    private void transformExtras(String extrasTrip, String extrasPassenger, String extrasClass) {
+        try {
+            // transform trip extras
+            String[] tempExtras = extrasTrip.split(",");
+            String[] extrasTripDeparture = tempExtras[0].split("_");
+            String[] tripDate = extrasTripDeparture[2].split("-");
+
+            /**
+             * Urutan trip setelah di split berdasarkan , dan _ :
+             * [0] = ID Airport Departure
+             * [1] = ID Airport Arrival
+             * [2] = Tanggal
+             *
+             * Tanggal setelah di split :
+             * [0] = tahun
+             * [1] = bulan
+             * [2] = hari
+             */
+            actionGetAirportById(extrasTripDeparture[0], true);
+            actionGetAirportById(extrasTripDeparture[1], false);
+            onDepartureDateChange(Integer.parseInt(tripDate[0]), Integer.parseInt(tripDate[1]), Integer.parseInt(tripDate[2]));
+            onSingleTripChecked();
+
+            if (tempExtras.length > 1) {
+                String[] extrasTripReturn = tempExtras[1].split("_");
+                tripDate = extrasTripReturn[2].split("-");
+                onReturnDateChange(Integer.parseInt(tripDate[0]), Integer.parseInt(tripDate[1]), Integer.parseInt(tripDate[2]));
+                onRoundTripChecked();
+            }
+
+            // transform passenger count
+            tempExtras = extrasPassenger.split("-");
+            if (Integer.parseInt(tempExtras[1]) > Integer.parseInt(tempExtras[0]) || Integer.parseInt(tempExtras[2]) > Integer.parseInt(tempExtras[0])) {
+                getView().showApplinkErrorMessage(R.string.select_passenger_infant_greater_than_adult_error_message);
+            } else if (Integer.parseInt(tempExtras[1]) + Integer.parseInt(tempExtras[0]) > MAX_PASSENGER_VALUE) {
+                getView().showApplinkErrorMessage(R.string.select_passenger_total_passenger_error_message);
+            } else {
+                FlightPassengerViewModel flightPassengerViewModel = new FlightPassengerViewModel(Integer.parseInt(tempExtras[0]), Integer.parseInt(tempExtras[1]), Integer.parseInt(tempExtras[2]));
+                onFlightPassengerChange(flightPassengerViewModel);
+            }
+
+            // transform class
+            int classId = Integer.parseInt(extrasClass);
+            actionGetClassById(classId);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void onBannerItemClick(int position, BannerDetail bannerDetail) {
         flightAnalytics.eventPromotionClick(position + 1, bannerDetail.getAttributes().getTitle(), bannerDetail.getAttributes().getImgUrl());
@@ -430,6 +539,5 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         }
         return viewModel;
     }
-
 
 }
