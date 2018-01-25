@@ -1061,6 +1061,11 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         });
     }
 
+    @Override
+    public void updateRecentView(@NonNull Context context, int productId) {
+        retrofitInteractor.updateRecentView(context,Integer.toString(productId));
+    }
+
     private void openPromoteAds(Context context, String url) {
         Intent topadsIntent = context.getPackageManager()
                 .getLaunchIntentForPackage(GlobalConfig.PACKAGE_SELLER_APP);
@@ -1085,6 +1090,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                 new RetrofitInteractor.ProductVariantListener() {
                     @Override
                     public void onSucccess(ProductVariant productVariant) {
+                        viewListener.updateButtonBuyListener();
                         if (productVariant.getVariant()!=null && productVariant.getVariant().size()>0) {
                             viewListener.addProductVariant(productVariant);
                         }
@@ -1092,7 +1098,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
                     @Override
                     public void onError(String error) {
-
+                        viewListener.showProductDetailRetry();
                     }
                 }
         );

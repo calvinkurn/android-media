@@ -881,6 +881,36 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
     }
 
     @Override
+    public void updateRecentView(@NonNull Context context, @NonNull String productId) {
+        Observable<Response<TkpdResponse>> observable =
+                mojitoAuthService.getApi().updateRecentView(productId,SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : "");
+
+        Subscriber<Response<TkpdResponse>> subscriber = new Subscriber<Response<TkpdResponse>>() {
+            @Override
+            public void onCompleted() {
+                Log.d(TAG, "onCompleted: ");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.d(TAG, "onError: "+e.getMessage());
+            }
+
+            @Override
+            public void onNext(Response<TkpdResponse> variant) {
+                Log.d(TAG, "onNext: ");
+            }
+        };
+
+        compositeSubscription.add(
+                observable.subscribeOn(Schedulers.newThread())
+                        .unsubscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(subscriber)
+        );
+    }
+
+    @Override
     public void getPromo(@NonNull Context context,
                          @NonNull String targetType, @NonNull String userId,  @NonNull String shopType,
                          final @NonNull PromoListener listener) {

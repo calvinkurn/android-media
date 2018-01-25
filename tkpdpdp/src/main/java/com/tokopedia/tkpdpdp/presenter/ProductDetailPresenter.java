@@ -110,4 +110,6 @@ public interface ProductDetailPresenter {
     void processGetGTMTicker();
 
     void onPromoAdsClicked(Context context, String shopId, int itemId, String userId);
+
+    void updateRecentView(final @NonNull Context context, final int productId);
 }

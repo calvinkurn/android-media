@@ -71,6 +71,8 @@ public interface RetrofitInteractor {
     void getProductVariant(@NonNull Context context, @NonNull String productId,
                               @NonNull ProductVariantListener listener);
 
+    void updateRecentView(@NonNull Context context, @NonNull String productId);
+
     void getPromo(@NonNull Context context, @NonNull String targetType, @NonNull String userId,
                   @NonNull String shopType, @NonNull PromoListener listener);
 

@@ -306,4 +306,6 @@ public interface ProductDetailView extends ViewListener {
     void restoreIsAppBarCollapsed(boolean isAppBarCollapsed);
 
     boolean isSellerApp();
+
+    void updateButtonBuyListener();
 }

@@ -41,6 +41,9 @@ public class Child implements Parcelable {
     @SerializedName("price_fmt")
     @Expose
     private String priceFmt;
+    @SerializedName("url")
+    @Expose
+    private String url;
 
     public int getProductId() {
         return productId;
@@ -122,6 +125,13 @@ public class Child implements Parcelable {
         this.priceFmt = priceFmt;
     }
 
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
     protected Child(Parcel in) {
         productId = in.readInt();
@@ -139,6 +149,7 @@ public class Child implements Parcelable {
         isBuyable = in.readByte() != 0x00;
         picture = (PictureChild) in.readValue(PictureChild.class.getClassLoader());
         priceFmt = in.readString();
+        url = in.readString();
     }
 
     @Override
@@ -163,6 +174,7 @@ public class Child implements Parcelable {
         dest.writeByte((byte) (isBuyable ? 0x01 : 0x00));
         dest.writeValue(picture);
         dest.writeString(priceFmt);
+        dest.writeString(url);
     }
 
     @SuppressWarnings("unused")

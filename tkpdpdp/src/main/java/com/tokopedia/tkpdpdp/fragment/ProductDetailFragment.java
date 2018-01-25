@@ -195,6 +195,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     private PromoAttributes promoAttributes;
     private Option variantLevel1;
     private Option variantLevel2;
+    private boolean onClickBuyWhileRequestingVariant = false;
 
 
     public static ProductDetailFragment newInstance(@NonNull ProductPass productPass) {
@@ -398,7 +399,11 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     public void onBuyClick() {
         if (SessionHandler.isV4Login(getActivity())) {
-            if (variantLevel1!=null) {
+
+            if (productData.getInfo().getHasVariant() && variantLevel1 == null) {
+                onClickBuyWhileRequestingVariant = true;
+                //do loading
+            } else if (variantLevel1!=null) {
                 String weightProduct = "";
                 switch (productData.getInfo().getProductWeightUnit()) {
                     case "gr":
@@ -433,6 +438,11 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             bundle.putBoolean("login", true);
             onProductBuySessionNotLogin(bundle);
         }
+    }
+
+    @Override
+    public void updateButtonBuyListener() {
+        if (onClickBuyWhileRequestingVariant) onBuyClick();
     }
 
     public ArrayList<String> getImageURIPaths() {
@@ -960,24 +970,23 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                 if (data.getParcelableExtra(KEY_LEVEL1_SELECTED)!=null && data.getParcelableExtra(KEY_LEVEL1_SELECTED) instanceof Option) {
                     variantLevel1 = data.getParcelableExtra(KEY_LEVEL1_SELECTED);
                     String variantText = variantLevel1.getValue();
-                    if (data.getParcelableExtra(KEY_LEVEL2_SELECTED)!=null && data.getParcelableExtra(KEY_LEVEL2_SELECTED) instanceof Option)
-                    {
+                    if (data.getParcelableExtra(KEY_LEVEL2_SELECTED)!=null && data.getParcelableExtra(KEY_LEVEL2_SELECTED) instanceof Option) {
                         variantLevel2 = data.getParcelableExtra(KEY_LEVEL2_SELECTED);
                         variantText+= (", "+((Option) data.getParcelableExtra(KEY_LEVEL2_SELECTED)).getValue());
                     }
                     priceSimulationView.updateVariant(variantText);
-                }
-                if (resultCode==VariantActivity.SELECTED_VARIANT_RESULT) {
-                    productData = data.getParcelableExtra(KEY_PRODUCT_DETAIL_DATA);
-                    pictureView.renderData(productData);
-                    headerInfoView.renderData(productData);
-                } else if (resultCode==VariantActivity.SELECTED_VARIANT_RESULT_TO_BUY) {
-                    productData = data.getParcelableExtra(KEY_PRODUCT_DETAIL_DATA);
-                    pictureView.renderData(productData);
-                    headerInfoView.renderData(productData);
-                    onBuyClick();
-                } else if (resultCode==VariantActivity.KILL_PDP_BACKGROUND) {
-                    getActivity().finish();
+                    if (data.getParcelableExtra(KEY_PRODUCT_DETAIL_DATA) !=null) {
+                        productData = data.getParcelableExtra(KEY_PRODUCT_DETAIL_DATA);
+                        pictureView.renderData(productData);
+                        headerInfoView.renderData(productData);
+                        shopInfoView.renderData(productData);
+                        presenter.updateRecentView(context,productData.getInfo().getProductId());
+                    }
+                    if (resultCode==VariantActivity.SELECTED_VARIANT_RESULT_TO_BUY) {
+                        onBuyClick();
+                    } else if (resultCode==VariantActivity.KILL_PDP_BACKGROUND) {
+                        getActivity().finish();
+                    }
                 }
             default:
                 break;
