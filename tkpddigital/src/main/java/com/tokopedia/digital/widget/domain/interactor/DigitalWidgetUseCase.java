@@ -11,6 +11,7 @@ import com.tokopedia.digital.widget.view.model.status.Status;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -41,7 +42,8 @@ public class DigitalWidgetUseCase extends UseCase<List<Category>> {
                     public Observable<List<Category>> call(Status status) {
                         if (status.isMaintenance() || !isVersionMatch(status)) {
                             // failed
-                            return null;
+                            List<Category> categories = new ArrayList<>();
+                            return Observable.just(categories);
                         } else {
                             return digitalWidgetRepository.getObservableCategoryData();
                         }

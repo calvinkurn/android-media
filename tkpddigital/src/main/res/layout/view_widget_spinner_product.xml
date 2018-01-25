@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/padding_vvs"
         android:text="@string/title_nominal"
-        android:textSize="@dimen/fontvs"/>
+        android:textSize="@dimen/font_small"/>
 
     <Spinner
         android:id="@+id/spinner_nominal"
