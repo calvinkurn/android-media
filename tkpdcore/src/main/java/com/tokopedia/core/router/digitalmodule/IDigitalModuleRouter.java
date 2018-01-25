@@ -28,8 +28,8 @@ public interface IDigitalModuleRouter {
     int PAYMENT_CANCELLED = 6;
     int PAYMENT_FAILED = 7;
 
-    String INTENT_ACTION_BROADCAST_RECEIVER_TOKOCASH_PENDING =
-            "com.tokopedia.digital.receiver.TokocashPendingDataBroadcastReceiver.ACTION_GET_TOKOCASH_PENDING_DATA";
+//    String INTENT_ACTION_BROADCAST_RECEIVER_TOKOCASH_PENDING =
+//            "com.tokopedia.digital.receiver.TokocashPendingDataBroadcastReceiver.ACTION_GET_TOKOCASH_PENDING_DATA_MAIN_APP";
 
     BroadcastReceiver getBroadcastReceiverTokocashPending();
 

@@ -3,6 +3,7 @@ package com.tokopedia.core.drawer2.data.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,7 +23,7 @@ public class HomeHeaderWalletAction implements Parcelable {
     private String labelActionButton;
     private String appLinkActionButton;
     private String redirectUrlActionButton;
-    private List<String> abTags;
+    private List<String> abTags = new ArrayList<>();
 
     public String getLabelTitle() {
         return labelTitle;
