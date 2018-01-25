@@ -83,4 +83,12 @@ public class MultipleAddressFragment extends TkpdFragment
                 .add(R.id.container, MultipleAddressShipmentFragment.newInstance())
                 .commit();
     }
+
+    @Override
+    public void onItemChoosen(MultipleAddressAdapterData productData, MultipleAddressItemData addressData) {
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.animator.slide_in_left, R.animator.slide_in_left)
+                .add(R.id.container, AddShipmentAddressFragment.newInstance(productData, addressData))
+                .commit();
+    }
 }

@@ -1,10 +1,13 @@
 package com.tokopedia.transaction.checkout.view.data;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by kris on 1/24/18. Tokopedia
  */
 
-public class MultipleAddressItemData {
+public class MultipleAddressItemData implements Parcelable{
 
     private String productWeight;
 
@@ -18,6 +21,29 @@ public class MultipleAddressItemData {
 
     private String address;
 
+    public MultipleAddressItemData() {
+    }
+
+    protected MultipleAddressItemData(Parcel in) {
+        productWeight = in.readString();
+        productQty = in.readString();
+        productNotes = in.readString();
+        addressTitle = in.readString();
+        addressReceiverName = in.readString();
+        address = in.readString();
+    }
+
+    public static final Creator<MultipleAddressItemData> CREATOR = new Creator<MultipleAddressItemData>() {
+        @Override
+        public MultipleAddressItemData createFromParcel(Parcel in) {
+            return new MultipleAddressItemData(in);
+        }
+
+        @Override
+        public MultipleAddressItemData[] newArray(int size) {
+            return new MultipleAddressItemData[size];
+        }
+    };
 
     public String getProductWeight() {
         return productWeight;
@@ -65,5 +91,20 @@ public class MultipleAddressItemData {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(productWeight);
+        parcel.writeString(productQty);
+        parcel.writeString(productNotes);
+        parcel.writeString(addressTitle);
+        parcel.writeString(addressReceiverName);
+        parcel.writeString(address);
     }
 }

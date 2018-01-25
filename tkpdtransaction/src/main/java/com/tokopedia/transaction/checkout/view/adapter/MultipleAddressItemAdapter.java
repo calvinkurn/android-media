@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.checkout.view.data.MultipleAddressAdapterData;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressItemData;
 
 import java.util.List;
@@ -21,9 +22,16 @@ public class MultipleAddressItemAdapter extends RecyclerView.Adapter
 
     private List<MultipleAddressItemData> itemDataList;
 
+    private MultipleAddressItemAdapterListener listener;
 
-    MultipleAddressItemAdapter(List<MultipleAddressItemData> itemDataList) {
+    private MultipleAddressAdapterData productData;
+
+    MultipleAddressItemAdapter(MultipleAddressAdapterData productData,
+                               List<MultipleAddressItemData> itemDataList,
+                               MultipleAddressItemAdapterListener listener) {
         this.itemDataList = itemDataList;
+        this.listener = listener;
+        this.productData = productData;
     }
 
     @Override
@@ -121,11 +129,11 @@ public class MultipleAddressItemAdapter extends RecyclerView.Adapter
 
     }
 
-    private View.OnClickListener onEditOrderClickedListener(MultipleAddressItemData data) {
+    private View.OnClickListener onEditOrderClickedListener(final MultipleAddressItemData data) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                listener.onEditItemChoosen(productData, data);
             }
         };
     }
@@ -146,6 +154,13 @@ public class MultipleAddressItemAdapter extends RecyclerView.Adapter
 
             }
         };
+    }
+
+    public interface MultipleAddressItemAdapterListener {
+
+        void onEditItemChoosen(MultipleAddressAdapterData productData,
+                               MultipleAddressItemData addressData);
+
     }
 
 }

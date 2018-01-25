@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_small">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Dikirim oleh: " />
+
+                <TextView
+                    android:id="@+id/sender_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Adidas"
+                    android:textColor="@color/black_70" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small">
+
+                <ImageView
+                    android:id="@+id/product_image"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    android:src="@drawable/googleg_standard_color_18" />
+
+                <TextView
+                    android:id="@+id/product_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_small"
+                    android:textStyle="bold"
+                    tools:text="Kaos Adidas Camo Tongue Tee... White and Red, XS" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_small"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_small">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Jumlah" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:id="@+id/decrease_quantity"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:src="@drawable/bg_button_counter_minus" />
+
+                    <EditText
+                        android:id="@+id/quantity_field"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content" />
+
+                    <ImageView
+                        android:id="@+id/increase_quantity"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:src="@drawable/bg_button_counter_plus" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/empty_notes_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    android:id="@+id/label_notes_for_seller"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Catatan untuk penjual (optional)" />
+
+                <TextView
+                    android:id="@+id/insert_notes_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_small"
+                    android:layout_marginStart="@dimen/margin_small"
+                    android:layout_toEndOf="@id/label_notes_for_seller"
+                    android:layout_toRightOf="@id/label_notes_for_seller"
+                    android:text="Tulis Catatan"
+                    android:textColor="@color/tkpd_main_green"
+                    android:textStyle="bold" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@id/label_notes_for_seller"
+                    android:layout_marginTop="@dimen/margin_vs"
+                    android:background="@color/grey_400" />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/notes_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Catatan untuk penjual (optional)" />
+
+                <EditText
+                    android:id="@+id/notes_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/address_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                android:gravity="center_vertical">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/address_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:text="Alamat Kantor" />
+
+                    <TextView
+                        android:id="@+id/address_receiver_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black_70"
+                        android:textStyle="bold"
+                        tools:text="Agus Maulana" />
+
+                    <TextView
+                        android:id="@+id/address"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black_70"
+                        tools:text="Jl. Letjen S. Parman Kav.77, Wisma 77 Tower 2, Tokopedia Lt. 2, Jakarta, 0817 1234 5678" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical|end">
+
+                    <ImageView
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        android:src="@drawable/chevron_thin_right" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/save_changes_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/margin_small"
+        android:background="@drawable/green_button_rounded_unify"
+        android:gravity="center"
+        android:text="Simpan Perubahan"
+        android:textColor="@color/white"
+        android:textStyle="bold" />
+
+</RelativeLayout>

@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressAdapterData;
+import com.tokopedia.transaction.checkout.view.data.MultipleAddressItemData;
 
 import java.util.List;
 
@@ -19,8 +20,9 @@ import java.util.List;
  * Created by kris on 1/23/18. Tokopedia
  */
 
-public class MultipleAddressAdapter extends RecyclerView.Adapter
-        <RecyclerView.ViewHolder> {
+public class MultipleAddressAdapter
+        extends RecyclerView.Adapter<RecyclerView.ViewHolder>
+        implements MultipleAddressItemAdapter.MultipleAddressItemAdapterListener {
 
 
     private static final int MULTIPLE_ADDRESS_HEADER_LAYOUT = R.layout.multiple_address_header;
@@ -72,7 +74,7 @@ public class MultipleAddressAdapter extends RecyclerView.Adapter
             itemViewHolder.shippingDestinationList
                     .setLayoutManager(new LinearLayoutManager(itemViewHolder.context));
             itemViewHolder.shippingDestinationList.setAdapter(
-                    new MultipleAddressItemAdapter(data.getItemListData())
+                    new MultipleAddressItemAdapter(data, data.getItemListData(), this)
             );
         } else if (holder instanceof MultipleAddressFooterViewHolder)
             ((MultipleAddressFooterViewHolder) holder).goToCourierPageButton
@@ -83,6 +85,11 @@ public class MultipleAddressAdapter extends RecyclerView.Adapter
     @Override
     public int getItemCount() {
         return HEADER_SIZE + addressData.size() + FOOTER_SIZE;
+    }
+
+    @Override
+    public void onEditItemChoosen(MultipleAddressAdapterData productData, MultipleAddressItemData addressData) {
+        listener.onItemChoosen(productData, addressData);
     }
 
     class MultipleAddressHeaderViewHolder extends RecyclerView.ViewHolder {
@@ -150,6 +157,9 @@ public class MultipleAddressAdapter extends RecyclerView.Adapter
     public interface MultipleAddressAdapterListener {
 
         void onGoToChooseCourier();
+
+        void onItemChoosen(MultipleAddressAdapterData productData,
+                           MultipleAddressItemData addressData);
 
     }
 
