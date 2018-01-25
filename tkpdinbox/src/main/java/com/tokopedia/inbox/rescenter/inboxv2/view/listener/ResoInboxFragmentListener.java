@@ -24,6 +24,8 @@ public interface ResoInboxFragmentListener {
 
         void onErrorLoadMoreInbox(String err);
 
+        void onItemClicked(int resolutionId, String sellerName, String customerName);
+
     }
 
     interface Presenter extends CustomerPresenter<View> {

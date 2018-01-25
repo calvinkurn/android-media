@@ -102,4 +102,9 @@ public class ResoInboxActivity extends BasePresenterActivity implements HasCompo
     public Object getComponent() {
         return getApplicationComponent();
     }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
+    }
 }

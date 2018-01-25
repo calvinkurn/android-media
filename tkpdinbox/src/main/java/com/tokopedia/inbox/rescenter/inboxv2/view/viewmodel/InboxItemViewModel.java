@@ -26,6 +26,8 @@ public class InboxItemViewModel implements Parcelable {
     private String freeReturnText;
     private List<String> imageList;
     private String extraImageCountText;
+    private String customerName;
+    private String sellerName;
 
     public InboxItemViewModel(int id,
                               int actionBy,
@@ -42,7 +44,9 @@ public class InboxItemViewModel implements Parcelable {
                               String lastReplyText,
                               String freeReturnText,
                               List<String> imageList,
-                              String extraImageCountText) {
+                              String extraImageCountText,
+                              String customerName,
+                              String sellerName) {
         this.id = id;
         this.actionBy = actionBy;
         this.inboxMessage = inboxMessage;
@@ -59,6 +63,8 @@ public class InboxItemViewModel implements Parcelable {
         this.freeReturnText = freeReturnText;
         this.imageList = imageList;
         this.extraImageCountText = extraImageCountText;
+        this.customerName = customerName;
+        this.sellerName = sellerName;
     }
 
     public int getId() {
@@ -189,6 +195,22 @@ public class InboxItemViewModel implements Parcelable {
         this.extraImageCountText = extraImageCountText;
     }
 
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    public String getSellerName() {
+        return sellerName;
+    }
+
+    public void setSellerName(String sellerName) {
+        this.sellerName = sellerName;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -212,6 +234,8 @@ public class InboxItemViewModel implements Parcelable {
         dest.writeString(this.freeReturnText);
         dest.writeStringList(this.imageList);
         dest.writeString(this.extraImageCountText);
+        dest.writeString(this.customerName);
+        dest.writeString(this.sellerName);
     }
 
     protected InboxItemViewModel(Parcel in) {
@@ -231,6 +255,8 @@ public class InboxItemViewModel implements Parcelable {
         this.freeReturnText = in.readString();
         this.imageList = in.createStringArrayList();
         this.extraImageCountText = in.readString();
+        this.customerName = in.readString();
+        this.sellerName = in.readString();
     }
 
     public static final Creator<InboxItemViewModel> CREATOR = new Creator<InboxItemViewModel>() {

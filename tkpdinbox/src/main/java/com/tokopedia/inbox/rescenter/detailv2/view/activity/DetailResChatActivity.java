@@ -236,4 +236,10 @@ public class DetailResChatActivity
         }
         initView();
     }
+
+    @Override
+    protected void onDestroy() {
+        setResult(Activity.RESULT_OK);
+        super.onDestroy();
+    }
 }

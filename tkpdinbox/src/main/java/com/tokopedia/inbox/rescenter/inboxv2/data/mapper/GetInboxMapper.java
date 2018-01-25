@@ -76,7 +76,9 @@ public class GetInboxMapper implements Func1<Response<TkpdResponse>, InboxItemRe
                     response.getResolution().getLastReplyTime().getString(),
                     response.getResolution().getFreeReturn() == 1 ? "Ya" : "-",
                     mappingProductImage(response.getResolution().getProduct()),
-                    buildStringForExtraImage(response.getResolution().getProduct())
+                    buildStringForExtraImage(response.getResolution().getProduct()),
+                    response.getCustomer() != null ? response.getCustomer().getName() : "",
+                    response.getShop() != null ? response.getShop().getName() : ""
             );
             itemList.add(item);
         }

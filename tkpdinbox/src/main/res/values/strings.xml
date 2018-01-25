@@ -275,4 +275,9 @@ yang ditemukan</string>
     <string name="body_info_list_template">"Ubah dengan tekan tombol edit, atau atur urutan dengan tahan dan geser tombol drag."</string>
     <string name="caption_switch_template">"Buat hingga 5 template untuk membantu Anda melakukan Chat tanpa perlu mengetik pesan yang sama berulang kali"</string>
 
+
+    <!--reso inbox-->
+    <string name="string_auto_execute">Selesai Otomatis Dalam</string>
+    <string name="string_last_reply">Terakhir Dibalas :</string>
+    <string name="string_free_return">Free Return :</string>
 </resources>
