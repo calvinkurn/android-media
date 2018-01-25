@@ -167,6 +167,7 @@ public interface AppEventTracking {
         String SELLER_INFO = "clickSellerInfo";
         String EVENT_ONBOARDING = "onBoardingEvent";
         String EVENT_RESOLUTION = "clickResolution";
+        String PRODUCT_VIEW = "productView";
     }
 
     interface Category {
@@ -282,6 +283,8 @@ public interface AppEventTracking {
 
         String PROMO_MICROSITE_PROMO_LIST ="promo microsite - promo list";
         String PROMO_MICROSITE_PROMO_TOOLTIP ="promo microsite - promo tooltip";
+        String SORT_BY = "sort by";
+        String FILTER_PRODUCT = "filter product";
     }
 
     interface Action {
@@ -447,6 +450,9 @@ public interface AppEventTracking {
         String PROMO_CLICK_OPEN_TOOLTIP ="user click on tooltip";
         String PROMO_CLICK_CLOSE_TOOLTIP ="user click tutup";
 
+        String CLICK_SHOP = "click - shop";
+        String CLICK_WISHLIST = "click - wishlist";
+        String SORT_BY = "sort by";
     }
 
     interface ImageEditor{
