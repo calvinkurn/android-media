@@ -63,6 +63,10 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     private static final int REQUEST_CODE_SEARCH = 5;
     private static final int REQUEST_CODE_LOGIN = 6;
 
+    public static final String EXTRA_TRIP = "EXTRA_TRIP";
+    public static final String EXTRA_PASSENGER = "EXTRA_PASSENGER";
+    public static final String EXTRA_CLASS = "EXTRA_CLASS";
+
     AppCompatImageView reverseAirportImageView;
     LinearLayout airportDepartureLayout;
     AppCompatTextView airportDepartureTextInputView;
@@ -85,6 +89,16 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     public static FlightDashboardFragment getInstance() {
         return new FlightDashboardFragment();
+    }
+
+    public static FlightDashboardFragment getInstance(String extrasTrip, String extrasPassenger, String extrasClass) {
+        FlightDashboardFragment flightDashboardFragment = new FlightDashboardFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_TRIP, extrasTrip);
+        bundle.putString(EXTRA_PASSENGER, extrasPassenger);
+        bundle.putString(EXTRA_CLASS, extrasClass);
+        flightDashboardFragment.setArguments(bundle);
+        return flightDashboardFragment;
     }
 
     @Override
@@ -227,6 +241,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         presenter.attachView(this);
         presenter.initialize();
         KeyboardHandler.hideSoftKeyboard(getActivity());
+
     }
 
     @Override
@@ -234,6 +249,26 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         return FlightAnalytics.Screen.HOMEPAGE;
     }
 
+    @Override
+    public boolean isFromApplink() {
+        return getArguments().containsKey(EXTRA_TRIP) && getArguments().containsKey(EXTRA_CLASS) && getArguments().containsKey(EXTRA_PASSENGER)
+                && getArguments().getString(EXTRA_TRIP) != null && getArguments().getString(EXTRA_PASSENGER) != null && getArguments().getString(EXTRA_CLASS) != null;
+    }
+
+    @Override
+    public String getTripArguments() {
+        return getArguments().getString(EXTRA_TRIP);
+    }
+
+    @Override
+    public String getPassengerArguments() {
+        return getArguments().getString(EXTRA_PASSENGER);
+    }
+
+    @Override
+    public String getClassArguments() {
+        return getArguments().getString(EXTRA_CLASS);
+    }
 
     @Override
     public void renderSingleTripView() {
@@ -370,6 +405,11 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     @Override
     public void showAirportShouldDifferentCity(@StringRes int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
+    public void showApplinkErrorMessage(int resId) {
         showMessageErrorInSnackBar(resId);
     }
 
