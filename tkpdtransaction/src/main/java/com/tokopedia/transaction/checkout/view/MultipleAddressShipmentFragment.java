@@ -7,7 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.transaction.R;
@@ -22,7 +21,8 @@ import java.util.List;
  * Created by kris on 1/23/18. Tokopedia
  */
 
-public class MultipleAddressShipmentFragment extends TkpdFragment{
+public class MultipleAddressShipmentFragment extends TkpdFragment
+        implements MultipleAddressShipmentAdapter.MultipleAddressShipmentAdapterListener{
 
     public static MultipleAddressShipmentFragment newInstance() {
         return new MultipleAddressShipmentFragment();
@@ -37,10 +37,9 @@ public class MultipleAddressShipmentFragment extends TkpdFragment{
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.multiple_address_shipment_fragment, container, false);
-        TextView goToCourierPageButton = view.findViewById(R.id.go_to_courier_page_button);
         RecyclerView orderAddressList = view.findViewById(R.id.order_shipment_list);
         orderAddressList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        orderAddressList.setAdapter(new MultipleAddressShipmentAdapter(dataList()));
+        orderAddressList.setAdapter(new MultipleAddressShipmentAdapter(dataList(), this));
         /*RecyclerView orderAddressList = view.findViewById(R.id.order_address_list);
         orderAddressList.setLayoutManager(new LinearLayoutManager(getActivity()));
         orderAddressList.setAdapter(new MultipleAddressShipmentAdapter());*/
@@ -77,4 +76,13 @@ public class MultipleAddressShipmentFragment extends TkpdFragment{
         return data;
     }
 
+    @Override
+    public void onConfirmedButtonClicked(List<MultipleAddressShipmentAdapterData> addressDataList) {
+
+    }
+
+    @Override
+    public void onChooseShipment(MultipleAddressShipmentAdapterData addressAdapterData) {
+
+    }
 }

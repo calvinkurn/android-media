@@ -33,8 +33,12 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 
     private List<MultipleAddressShipmentAdapterData> addressDataList;
 
-    public MultipleAddressShipmentAdapter(List<MultipleAddressShipmentAdapterData> addressDataList) {
+    private MultipleAddressShipmentAdapterListener listener;
+
+    public MultipleAddressShipmentAdapter(List<MultipleAddressShipmentAdapterData> addressDataList,
+                                          MultipleAddressShipmentAdapterListener listener) {
         this.addressDataList = addressDataList;
+        this.listener = listener;
     }
 
     @Override
@@ -169,9 +173,17 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                listener.onConfirmedButtonClicked(addressDataList);
             }
         };
+    }
+
+    public interface MultipleAddressShipmentAdapterListener {
+
+        void onConfirmedButtonClicked(List<MultipleAddressShipmentAdapterData> addressDataList);
+
+        void onChooseShipment(MultipleAddressShipmentAdapterData addressAdapterData);
+
     }
 
 }
