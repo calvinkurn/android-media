@@ -78,23 +78,9 @@ public abstract class FlightOrderBaseViewHolder<T extends Visitable> extends Abs
 
     protected CharSequence getAirportTextForView(String airportId, String cityCode, String cityName) {
         SpannableStringBuilder text = new SpannableStringBuilder();
-        if (TextUtils.isEmpty(airportId)) {
-            // id is more than one
-            if (TextUtils.isEmpty(cityCode)) {
-                text.append(cityName);
-                return makeBold(itemView.getContext(), text);
-            } else {
-                text.append(cityCode);
-            }
-        } else {
-            text.append(airportId);
-        }
-        makeBold(itemView.getContext(), text);
         if (!TextUtils.isEmpty(cityName)) {
-            SpannableStringBuilder cityNameText = new SpannableStringBuilder(cityName);
-            makeSmall(cityNameText);
-            text.append("\n");
-            text.append(cityNameText);
+            text.append(cityName);
+            makeBold(itemView.getContext(), text);
         }
         return text;
     }
@@ -144,6 +130,8 @@ public abstract class FlightOrderBaseViewHolder<T extends Visitable> extends Abs
     protected void renderDepartureSchedule(List<FlightOrderJourney> orderJourney) {
         FlightSimpleAdapter departureSchedules = new FlightSimpleAdapter();
         departureSchedules.setDescriptionTextColor(itemView.getContext().getResources().getColor(R.color.font_black_secondary_54));
+        departureSchedules.setTitleHalfView(false);
+        departureSchedules.setContentAllignmentLeft(true);
         LinearLayoutManager flightSimpleAdapterLayoutManager
                 = new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.VERTICAL, false);
         rvDepartureSchedule.setLayoutManager(flightSimpleAdapterLayoutManager);
@@ -161,9 +149,11 @@ public abstract class FlightOrderBaseViewHolder<T extends Visitable> extends Abs
             departureSchedules.notifyDataSetChanged();
         } else {
             List<SimpleViewModel> simpleViewModels = new ArrayList<>();
+            int index = 0;
             for (FlightOrderJourney journey : orderJourney) {
                 simpleViewModels.add(new SimpleViewModel(journey.getDepartureAiportId() + "-" + journey.getArrivalAirportId(),
-                        FlightDateUtil.formatDate(FlightDateUtil.FORMAT_DATE_API, FlightDateUtil.FORMAT_DATE, orderJourney.get(0).getDepartureTime())));
+                        FlightDateUtil.formatDate(FlightDateUtil.FORMAT_DATE_API, FlightDateUtil.FORMAT_DATE, orderJourney.get(index).getDepartureTime())));
+                index++;
             }
             departureSchedules.setTitleBold(true);
             departureSchedules.setArrowVisible(false);

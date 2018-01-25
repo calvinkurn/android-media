@@ -8,7 +8,7 @@
         style="@style/TextView.Micro.BlackSecondary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_med"
+        android:layout_marginTop="@dimen/margin_sm"
         android:text="@string/flight_order_departure_schedule" />
 
     <android.support.v7.widget.RecyclerView

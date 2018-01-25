@@ -25,7 +25,7 @@ public class FlightOrderRefundViewHolder extends FlightOrderBaseViewHolder<Fligh
     private AppCompatTextView tvOrderId;
     private AppCompatTextView tvDepartureCity;
     private AppCompatTextView tvArrivalCity;
-    private AppCompatTextView tvRebooking;
+    private AppCompatTextView tvOrderDetail;
     private FlightOrderRefundViewModel item;
 
     public FlightOrderRefundViewHolder(View itemView, FlightOrderAdapter.OnAdapterInteractionListener adapterInteractionListener) {
@@ -40,11 +40,11 @@ public class FlightOrderRefundViewHolder extends FlightOrderBaseViewHolder<Fligh
         tvOrderId = (AppCompatTextView) view.findViewById(R.id.tv_order_id);
         tvDepartureCity = (AppCompatTextView) view.findViewById(R.id.tv_departure_city);
         tvArrivalCity = (AppCompatTextView) view.findViewById(R.id.tv_arrival_city);
-        tvRebooking = (AppCompatTextView) view.findViewById(R.id.tv_rebooking);
-        tvRebooking.setOnClickListener(new View.OnClickListener() {
+        tvOrderDetail = (AppCompatTextView) view.findViewById(R.id.tv_order_detail);
+        tvOrderDetail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                adapterInteractionListener.onReBookingClicked(item);
+                onDetailOptionClicked();
             }
         });
         view.setOnClickListener(new View.OnClickListener() {

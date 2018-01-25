@@ -48,6 +48,9 @@ public class FlightOrderFailedViewHolder extends FlightOrderBaseViewHolder<Fligh
             }
         });
 
+        // set the title background to red
+        tvTitle.setBackgroundColor(view.getContext().getResources().getColor(R.color.card_title_red));
+
     }
 
 
