@@ -19,7 +19,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Alifa on 11/28/2016.
  */
-
+@Deprecated
 public class WidgetOperatorAdapter extends ArrayAdapter<Operator> {
     private final static int OUT_OF_STOCK = 3;
     private final LayoutInflater inflater;

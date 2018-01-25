@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * @author rizkyfadillah on 10/2/2017.
  */
-
+@Deprecated
 public interface BaseDigitalWidgetView {
 
     void renderNumberList(List<OrderClientNumber> results);

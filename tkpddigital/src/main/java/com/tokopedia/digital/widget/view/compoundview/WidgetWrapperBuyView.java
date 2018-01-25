@@ -33,7 +33,7 @@ import butterknife.OnClick;
 /**
  * Created by nabillasabbaha on 7/18/17.
  */
-
+@Deprecated
 public class WidgetWrapperBuyView extends LinearLayout {
 
     public static final String ARG_UTM_SOURCE = "ARG_UTM_SOURCE";

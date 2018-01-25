@@ -24,7 +24,7 @@ import butterknife.ButterKnife;
 /**
  * Created by nabillasabbaha on 7/18/17.
  */
-
+@Deprecated
 public class WidgetOperatorChooserView extends LinearLayout {
 
     @BindView(R2.id.spinner_operator)

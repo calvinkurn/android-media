@@ -37,7 +37,7 @@ import butterknife.ButterKnife;
 /**
  * Created by nabillasabbaha on 7/18/17.
  */
-
+@Deprecated
 public class WidgetClientNumberView extends LinearLayout {
 
     @BindView(R2.id.client_number_label)

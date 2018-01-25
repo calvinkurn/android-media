@@ -25,7 +25,7 @@ import butterknife.ButterKnife;
 /**
  * Created by nabillasabbaha on 7/18/17.
  */
-
+@Deprecated
 public class WidgetProductChooserView extends LinearLayout {
 
     private final static int OUT_OF_STOCK = 3;

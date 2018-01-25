@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by nabillasabbaha on 8/8/17.
  */
-
+@Deprecated
 public interface IDigitalWidgetStyle2View extends BaseDigitalWidgetView {
 
     void renderDataProducts(List<Product> products);

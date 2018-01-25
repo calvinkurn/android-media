@@ -24,6 +24,7 @@ import butterknife.ButterKnife;
 /**
  * @author Kulomady 05 on 7/14/2016.
  */
+@Deprecated
 public class WidgetNominalAdapter extends ArrayAdapter<Product> {
     private final static int OUT_OF_STOCK = 3;
     private final LayoutInflater inflater;
