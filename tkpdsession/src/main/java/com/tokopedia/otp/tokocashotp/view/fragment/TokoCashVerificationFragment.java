@@ -1,6 +1,7 @@
 package com.tokopedia.otp.tokocashotp.view.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -14,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -72,6 +74,7 @@ public class TokoCashVerificationFragment extends BaseDaggerFragment implements 
     View limitOtp;
     View finishCountdownView;
     TextView noCodeText;
+    ImageView errorImage;
 
     CountDownTimer countDownTimer;
     TkpdProgressDialog progressDialog;
@@ -159,6 +162,7 @@ public class TokoCashVerificationFragment extends BaseDaggerFragment implements 
         errorOtp = view.findViewById(R.id.error_otp);
         finishCountdownView = view.findViewById(R.id.finish_countdown);
         noCodeText = view.findViewById(R.id.no_code);
+        errorImage = view.findViewById(R.id.error_image);
         prepareView();
         presenter.attachView(this);
         return view;
@@ -229,8 +233,7 @@ public class TokoCashVerificationFragment extends BaseDaggerFragment implements 
         verifyButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
         MethodChecker.setBackground(verifyButton, MethodChecker.getDrawable(getActivity(), R
                 .drawable.green_button_rounded));
-        inputOtp.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-        errorOtp.setVisibility(View.INVISIBLE);
+        removeErrorOtp();
     }
 
     @Override
@@ -255,6 +258,8 @@ public class TokoCashVerificationFragment extends BaseDaggerFragment implements 
 
     @Override
     public void onSuccessVerifyOTP(VerifyOtpTokoCashViewModel verifyOtpTokoCashViewModel) {
+        removeErrorOtp();
+
         resetCountDown();
         Intent intent = new Intent();
         Bundle bundle = new Bundle();
@@ -265,6 +270,7 @@ public class TokoCashVerificationFragment extends BaseDaggerFragment implements 
         intent.putExtras(bundle);
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
+
     }
 
     private void resetCountDown() {
@@ -286,9 +292,16 @@ public class TokoCashVerificationFragment extends BaseDaggerFragment implements 
     @Override
     public void onErrorVerifyOtp(String errorMessage) {
         inputOtp.setError(true);
+        inputOtp.setFocusableInTouchMode(true);
+        inputOtp.post(new Runnable() {
+            public void run() {
+                inputOtp.requestFocusFromTouch();
+                InputMethodManager lManager = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                lManager.showSoftInput(inputOtp, 0);
+            }
+        });
+        errorImage.setVisibility(View.VISIBLE);
         errorOtp.setVisibility(View.VISIBLE);
-        inputOtp.setCompoundDrawables(null, null, MethodChecker.getDrawable
-                (getActivity(), R.drawable.ic_cancel_red), null);
     }
 
     @Override
@@ -358,6 +371,8 @@ public class TokoCashVerificationFragment extends BaseDaggerFragment implements 
         resend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                inputOtp.setText("");
+                removeErrorOtp();
                 UnifyTracking.eventTracking(
                         LoginPhoneNumberAnalytics.getResendVerificationTracking(
                                 viewModel.getType()));
@@ -373,6 +388,12 @@ public class TokoCashVerificationFragment extends BaseDaggerFragment implements 
 
             }
         });
+    }
+
+    private void removeErrorOtp() {
+        inputOtp.setError(false);
+        errorOtp.setVisibility(View.INVISIBLE);
+        errorImage.setVisibility(View.INVISIBLE);
     }
 
     private void setLimitReachedCountdownText() {

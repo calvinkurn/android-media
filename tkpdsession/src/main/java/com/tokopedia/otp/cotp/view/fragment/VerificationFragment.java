@@ -318,8 +318,8 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         verifyButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
         MethodChecker.setBackground(verifyButton, MethodChecker.getDrawable(getActivity(), R
                 .drawable.green_button_rounded));
-        errorImage.setVisibility(View.INVISIBLE);
-        errorOtp.setVisibility(View.INVISIBLE);
+        removeErrorOtp();
+
     }
 
     @Override
@@ -350,6 +350,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
     @Override
     public void onSuccessVerifyOTP() {
+        removeErrorOtp();
         resetCountDown();
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
@@ -470,6 +471,8 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         resend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                inputOtp.setText("");
+                removeErrorOtp();
                 presenter.requestOTP(viewModel, verificationPassModel);
             }
         });
@@ -493,6 +496,12 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
             or.setVisibility(View.GONE);
             useOtherMethod.setVisibility(View.GONE);
         }
+    }
+
+    private void removeErrorOtp() {
+        inputOtp.setError(false);
+        errorOtp.setVisibility(View.INVISIBLE);
+        errorImage.setVisibility(View.INVISIBLE);
     }
 
     private void setLimitReachedCountdownText() {
