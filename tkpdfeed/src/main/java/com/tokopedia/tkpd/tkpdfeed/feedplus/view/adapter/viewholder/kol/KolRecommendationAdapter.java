@@ -36,7 +36,7 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
     public KolRecommendationAdapter(FeedPlus.View.Kol kolViewListener) {
         this.kolViewListener = kolViewListener;
         ArrayList<KolRecommendItemViewModel> list = new ArrayList<>();
-        this.data = new KolRecommendationViewModel("", "", list);
+        this.data = new KolRecommendationViewModel("", "", "", list);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

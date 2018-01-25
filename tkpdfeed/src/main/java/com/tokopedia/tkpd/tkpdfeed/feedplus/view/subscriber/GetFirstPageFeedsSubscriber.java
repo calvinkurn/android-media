@@ -383,6 +383,7 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         return new KolRecommendationViewModel(
                 domain.getExploreLink(),
                 domain.getHeaderTitle(),
+                domain.getExploreText(),
                 convertToListKolRecommend(domain.getListRecommendation())
         );
     }

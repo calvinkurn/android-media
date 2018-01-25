@@ -9,12 +9,14 @@ import java.util.List;
 public class KolRecommendationDomain {
     private final String headerTitle;
     private final String exploreLink;
+    private final String exploreText;
     private final List<KolRecommendationItemDomain> listRecommendation;
 
-    public KolRecommendationDomain(String headerTitle, String exploreLink,
+    public KolRecommendationDomain(String headerTitle, String exploreLink, String exploreText,
                                    List<KolRecommendationItemDomain> listRecommendation) {
         this.headerTitle = headerTitle;
         this.exploreLink = exploreLink;
+        this.exploreText = exploreText;
         this.listRecommendation = listRecommendation;
     }
 
@@ -24,6 +26,10 @@ public class KolRecommendationDomain {
 
     public String getExploreLink() {
         return exploreLink;
+    }
+
+    public String getExploreText() {
+        return exploreText;
     }
 
     public List<KolRecommendationItemDomain> getListRecommendation() {
