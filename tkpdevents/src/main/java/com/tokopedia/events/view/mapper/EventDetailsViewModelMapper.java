@@ -84,7 +84,7 @@ public class EventDetailsViewModelMapper {
                 pVM.setThumbnailApp(target.getThumbnailApp());
                 pVM.setAddress(s.getaDdress());
                 try {
-                    pVM.setForm(target.getForms().get(0));
+                    pVM.setForms(target.getForms());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

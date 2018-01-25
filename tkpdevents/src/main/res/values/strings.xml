@@ -29,11 +29,12 @@
     <string name="choose_date">Pilih Tanggal</string>
     <string name="show_tnc"><![CDATA[Syarat & Ketentuan]]></string>
     <string name="seating_layout">Seating Layout</string>
-    <string name="book_ticket">Book Tickets</string>
+    <string name="book_ticket">Beli Tiket</string>
+    <string name="starting_from"> | Mulai Dari %1$s</string>
     <string name="rp_5980000"><strike>Rp 5980000</strike></string>
     <string name="total_tickets">%d Tiket</string>
     <string name="fare_breakup">Fare Breakup for %s</string>
-    <string name="pay_button">Pay Rp %s</string>
+    <string name="pay_button">Bayar Rp %s</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="monday_16_nov">Monday\n16 Nov</string>
@@ -41,6 +42,8 @@
     <string name="x_type">%1$d x %2$s</string>
     <string name="jumlah_tiket">Jumlah Tiket : %1$d</string>
     <string name="_2_x_rp100000">(2 x Rp100000)</string>
+    <string name="no_internet">Check Your Network and Try Again</string>
+    <string name="retry">Retry</string>
 
     <!-- need to changed -->
 

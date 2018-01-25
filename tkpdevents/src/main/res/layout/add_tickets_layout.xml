@@ -24,7 +24,7 @@
             android:layout_marginLeft="@dimen/margin_default"
             android:text="FIRST CLASS"
             android:textColor="@color/black_38"
-            android:textSize="18sp" />
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/tv_ticket_maxprice"
@@ -45,6 +45,7 @@
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
             android:text="Ticket desscription"
+            android:textSize="12sp"
             android:textColor="@color/green_200" />
 
         <TextView
@@ -54,6 +55,7 @@
             android:layout_marginStart="@dimen/margin_default"
             android:layout_marginLeft="@dimen/margin_default"
             android:layout_marginBottom="8dp"
+            android:textSize="14sp"
             android:textColor="@color/black_38"
             android:text="Rp 170000" />
 

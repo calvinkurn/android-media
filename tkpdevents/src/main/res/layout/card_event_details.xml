@@ -14,7 +14,7 @@
         android:layout_marginStart="16dp"
         android:text="The 90s Festival"
         android:textColor="@android:color/black"
-        android:textSize="20sp" />
+        android:textSize="16sp" />
 
     <TextView
         android:id="@+id/text_view_display_tag"
@@ -72,7 +72,7 @@
         android:layout_marginTop="20dp"
         android:text="Deskripsi"
         android:textColor="@color/black"
-        android:textSize="16sp"
+        android:textSize="14sp"
         android:textStyle="normal" />
 
     <at.blogc.android.views.ExpandableTextView
@@ -86,8 +86,9 @@
         android:textColor="@color/grey_700"
         android:maxLines="3"
         android:text="@string/bigcontent"
-        android:textSize="14sp"
-        app:animation_duration="300" />
+        android:textSize="12sp"
+        app:animation_duration="300"
+        android:autoLink="web"/>
 
     <TextView
         android:id="@+id/seemorebutton"

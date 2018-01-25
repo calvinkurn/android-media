@@ -1,20 +1,24 @@
 package com.tokopedia.events.view.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.widget.TouchViewPager;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
 import com.tokopedia.events.di.DaggerEventComponent;
@@ -24,7 +28,6 @@ import com.tokopedia.events.view.adapter.CategoryFragmentPagerAdapter;
 import com.tokopedia.events.view.adapter.SlidingImageAdapter;
 import com.tokopedia.events.view.contractor.EventsContract;
 import com.tokopedia.events.view.customview.EventCategoryView;
-import com.tokopedia.events.view.customview.SearchInputView;
 import com.tokopedia.events.view.presenter.EventHomePresenter;
 import com.tokopedia.events.view.utils.CirclePageIndicator;
 import com.tokopedia.events.view.viewmodel.CategoryViewModel;
@@ -39,15 +42,17 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-import static com.tokopedia.events.view.activity.EventLocationActivity.DEFAULT_DELAY_TEXT_CHANGED;
-
 /**
  * Created by ashwanityagi on 02/11/17.
  */
-public class EventsHomeActivity extends TActivity implements HasComponent<EventComponent>, EventsContract.View, SearchInputView.Listener {
+public class EventsHomeActivity extends TActivity
+        implements HasComponent<EventComponent>,
+        EventsContract.View {
 
     private Unbinder unbinder;
     public static final int REQUEST_CODE_EVENTLOCATIONACTIVITY = 101;
+    public static final int REQUEST_CODE_EVENTSEARCHACTIVITY = 901;
+
 
     EventComponent eventComponent;
     @Inject
@@ -64,11 +69,30 @@ public class EventsHomeActivity extends TActivity implements HasComponent<EventC
     ViewPager categoryViewPager;
     @BindView(R2.id.tabs)
     TabLayout tabs;
+    @BindView(R2.id.main_content)
+    FrameLayout mainContent;
+
+    @BindView(R2.id.progress_bar_layout)
+    View progressBarLayout;
+    @BindView(R2.id.prog_bar)
+    ProgressBar progBar;
+
+    int mBannnerPos;
 
     private SlidingImageAdapter adapter;
 
     public static Intent getCallingIntent(Activity activity) {
         return new Intent(activity, EventsHomeActivity.class);
+    }
+
+    @DeepLink({Constants.Applinks.EVENTS})
+    public static Intent getCallingApplinksTaskStask(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        Intent destination = new Intent(context, EventsHomeActivity.class)
+                .setData(uri.build())
+                .putExtras(extras);
+        destination.putExtra(Constants.EXTRA_FROM_PUSH, true);
+        return destination;
     }
 
     @Override
@@ -115,6 +139,28 @@ public class EventsHomeActivity extends TActivity implements HasComponent<EventC
     }
 
     @Override
+    public int getBannerPosition() {
+        return mBannnerPos;
+    }
+
+    @Override
+    public View getRootView() {
+        return mainContent;
+    }
+
+    @Override
+    public void showProgressBar() {
+        progBar.setVisibility(View.VISIBLE);
+        progressBarLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgressBar() {
+        progBar.setVisibility(View.GONE);
+        progressBarLayout.setVisibility(View.GONE);
+    }
+
+    @Override
     public void showMessage(String message) {
 
     }
@@ -144,21 +190,17 @@ public class EventsHomeActivity extends TActivity implements HasComponent<EventC
 //
 //    }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.menu_event_home, menu);
-//        return super.onCreateOptionsMenu(menu);
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        int id = item.getItemId();
-//        if (id == R.id.action_menu_location) {
-//            navigateToActivityRequest(EventLocationActivity.getCallingIntent(EventsHomeActivity.this), REQUEST_CODE_EVENTLOCATIONACTIVITY);
-//            return true;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_event_home, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        return mPresenter.onOptionMenuClick(id);
+    }
 //
 //    @Override
 //    protected void initVar() {
@@ -220,6 +262,8 @@ public class EventsHomeActivity extends TActivity implements HasComponent<EventC
                 }
 
                 break;
+            case REQUEST_CODE_EVENTSEARCHACTIVITY:
+                break;
         }
 
         super.onActivityResult(requestCode, resultCode, data);
@@ -233,20 +277,22 @@ public class EventsHomeActivity extends TActivity implements HasComponent<EventC
             if (categoryViewModel.getItems() == null || categoryViewModel.getItems().size() == 0) {
                 continue;
             }
-           // EventCategoryView eventCategoryView = new EventCategoryView(this);
+            // EventCategoryView eventCategoryView = new EventCategoryView(this);
             //eventCategoryView.renderData(categoryViewModel.getItems(), categoryViewModel.getTitle());
             if ("carousel".equalsIgnoreCase(categoryViewModel.getName())) {
-                adapter = new SlidingImageAdapter(EventsHomeActivity.this, mPresenter.getCarouselImages(categoryViewModel.getItems()), categoryViewModel.getItems());
+                adapter = new SlidingImageAdapter(EventsHomeActivity.this, mPresenter.getCarouselImages(categoryViewModel.getItems()), mPresenter);
                 setViewPagerListener();
                 tabLayout.setViewPager(viewPager);
+                mPresenter.startBannerSlide(viewPager);
             } else {
 
-               // eventCategoryViews.add(eventCategoryView);
+                // eventCategoryViews.add(eventCategoryView);
                 // holderCategoryListLayout.addView(eventCategoryView);
             }
         }
 
-        CategoryFragmentPagerAdapter categoryTabsPagerAdapter = new CategoryFragmentPagerAdapter(getSupportFragmentManager(), categoryList);
+        CategoryFragmentPagerAdapter categoryTabsPagerAdapter =
+                new CategoryFragmentPagerAdapter(getSupportFragmentManager(), categoryList);
         categoryViewPager.setAdapter(categoryTabsPagerAdapter);
         tabs.setupWithViewPager(categoryViewPager);
         categoryViewPager.setCurrentItem(0);
@@ -264,7 +310,7 @@ public class EventsHomeActivity extends TActivity implements HasComponent<EventC
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageSelected(int arg0) {
-
+                mBannnerPos = arg0;
             }
 
             @Override
@@ -322,14 +368,5 @@ public class EventsHomeActivity extends TActivity implements HasComponent<EventC
 //        setSupportActionBar(toolbar);
 //    }
 
-    @Override
-    public void onSearchTextChanged(String text) {
-
-    }
-
-    @Override
-    public void onSearchSubmitted(String text) {
-
-    }
 
 }

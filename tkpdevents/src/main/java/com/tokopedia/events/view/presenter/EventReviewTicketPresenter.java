@@ -2,8 +2,10 @@ package com.tokopedia.events.view.presenter;
 
 import android.content.Intent;
 import android.util.Log;
+import android.widget.EditText;
 
 import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
@@ -16,7 +18,10 @@ import com.tokopedia.core.drawer2.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.core.drawer2.domain.ProfileRepository;
 import com.tokopedia.core.drawer2.domain.interactor.ProfileUseCase;
 import com.tokopedia.core.network.apiservices.user.PeopleService;
+import com.tokopedia.core.session.presenter.Session;
+import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.events.data.entity.response.Form;
 import com.tokopedia.events.data.entity.response.checkoutreponse.CheckoutResponse;
 import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
 import com.tokopedia.events.domain.model.request.cart.CartItem;
@@ -30,17 +35,19 @@ import com.tokopedia.events.domain.model.request.cart.OtherChargesItem;
 import com.tokopedia.events.domain.model.request.cart.TaxPerQuantityItem;
 import com.tokopedia.events.domain.postusecase.PostPaymentUseCase;
 import com.tokopedia.events.domain.postusecase.PostVerifyCartUseCase;
-import com.tokopedia.events.view.activity.TopPayActivity;
 import com.tokopedia.events.view.contractor.EventReviewTicketsContractor;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
-import com.tokopedia.events.view.viewmodel.PaymentPassData;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
 import rx.Subscriber;
+
+import static com.tokopedia.events.view.activity.ReviewTicketActivity.PAYMENT_REQUEST_CODE;
 
 /**
  * Created by pranaymohapatra on 29/11/17.
@@ -56,6 +63,10 @@ public class EventReviewTicketPresenter
     ProfileUseCase profileUseCase;
     ProfileModel profileModel;
     String promocode;
+    String email;
+    String number;
+    ArrayList<String> hints = new ArrayList<>();
+    ArrayList<String> errors = new ArrayList<>();
 
     @Inject
     public EventReviewTicketPresenter(PostVerifyCartUseCase usecase, PostPaymentUseCase payment) {
@@ -84,27 +95,8 @@ public class EventReviewTicketPresenter
                 new UIThread(),
                 profileRepository
         );
-
-        profileUseCase.execute(RequestParams.EMPTY, new Subscriber<ProfileModel>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-
-            }
-
-            @Override
-            public void onNext(ProfileModel model) {
-                profileModel = model;
-                getView().setEmailID(profileModel.getProfileData().getUserInfo().getUserEmail());
-                getView().hideProgressBar();
-            }
-        });
-
     }
+
 
     @Override
     public void onDestroy() {
@@ -121,6 +113,60 @@ public class EventReviewTicketPresenter
     public void updatePromoCode(String code) {
         this.promocode = code;
     }
+
+    @Override
+    public void validateEditText(EditText view) {
+        String regex = (String) view.getTag();
+        int index = hints.indexOf(view.getHint().toString());
+        if (view.getText().length() > 0 && !validateStringWithRegex(view.getText().toString(), regex)) {
+            view.setError(errors.get(index));
+        } else {
+            updateForm(view.getHint().toString(), view.getText().toString());
+        }
+    }
+
+    @Override
+    public void updateEmail(String mail) {
+        this.email = mail;
+    }
+
+    @Override
+    public void updateNumber(String umber) {
+        this.number = umber;
+    }
+
+    @Override
+    public void getProfile() {
+        profileUseCase.execute(RequestParams.EMPTY, new Subscriber<ProfileModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                Log.d("ProfileUseCase", "ON ERROR");
+                throwable.printStackTrace();
+                Intent intent = ((TkpdCoreRouter) getView().getActivity().getApplication()).
+                        getLoginIntent(getView().getActivity());
+                intent.removeExtra(SessionView.MOVE_TO_CART_KEY);
+                intent.putExtra(SessionView.MOVE_TO_CART_KEY,SessionView.EVENTS_CART);
+                getView().getActivity().startActivity(intent);
+                getView().hideProgressBar();
+            }
+
+            @Override
+            public void onNext(ProfileModel model) {
+                profileModel = model;
+                email = profileModel.getProfileData().getUserInfo().getUserEmail();
+                number = profileModel.getProfileData().getUserInfo().getUserPhone();
+                getView().setEmailID(profileModel.getProfileData().getUserInfo().getUserEmail());
+                getView().setPhoneNumber(number);
+                getView().hideProgressBar();
+            }
+        });
+    }
+
 
     private CartItems convertPackageToCartItem(PackageViewModel packageViewModel) {
         Configuration config = new Configuration();
@@ -151,24 +197,28 @@ public class EventReviewTicketPresenter
         meta.setEntityProductId(packageViewModel.getProductId());
         meta.setEntityScheduleId(packageViewModel.getProductScheduleId());
         List<EntityPassengerItem> passengerItems = new ArrayList<>();
-        EntityPassengerItem passenger = new EntityPassengerItem();
-        passenger.setId(packageViewModel.getForm().getId());
-        passenger.setProductId(packageViewModel.getForm().getProductId());
-        passenger.setName(packageViewModel.getForm().getName());
-        passenger.setTitle(packageViewModel.getForm().getTitle());
-        passenger.setValue(packageViewModel.getForm().getValue());
-        passenger.setElementType(packageViewModel.getForm().getElementType());
-        passenger.setRequired(String.valueOf(packageViewModel.getForm().getRequired()));
-        passenger.setValidatorRegex(packageViewModel.getForm().getValidatorRegex());
-        passenger.setErrorMessage(packageViewModel.getForm().getErrorMessage());
-        passengerItems.add(passenger);
+
+        for (Form form : packageViewModel.getForms()) {
+            EntityPassengerItem passenger = new EntityPassengerItem();
+            passenger.setId(form.getId());
+            passenger.setProductId(form.getProductId());
+            passenger.setName(form.getName());
+            passenger.setTitle(form.getTitle());
+            passenger.setValue(form.getValue());
+            passenger.setElementType(form.getElementType());
+            passenger.setRequired(String.valueOf(form.getRequired()));
+            passenger.setValidatorRegex(form.getValidatorRegex());
+            passenger.setErrorMessage(form.getErrorMessage());
+            passengerItems.add(passenger);
+        }
+
         meta.setEntityPassengers(passengerItems);
         EntityAddress address = new EntityAddress();
         address.setAddress("");
         address.setName("");
         address.setCity("");
-        address.setEmail(profileModel.getProfileData().getUserInfo().getUserEmail());
-        address.setMobileNumber(profileModel.getProfileData().getUserInfo().getUserPhone());
+        address.setEmail(this.email);
+        address.setMobileNumber(this.number);
         address.setLatitude("");
         address.setLongitude("");
         meta.setEntityAddress(address);
@@ -210,7 +260,7 @@ public class EventReviewTicketPresenter
         Intent intent = view.getActivity().getIntent();
         this.checkoutData = intent.getParcelableExtra(EventBookTicketPresenter.EXTRA_PACKAGEVIEWMODEL);
         getView().renderFromPackageVM(checkoutData);
-
+        getAndInitForms();
     }
 
     public void verifyCart() {
@@ -246,30 +296,71 @@ public class EventReviewTicketPresenter
 
             @Override
             public void onError(Throwable throwable) {
-
+                Log.d("PaymentLinkUseCase", "ON ERROR");
+                throwable.printStackTrace();
             }
 
             @Override
             public void onNext(CheckoutResponse checkoutResponse) {
-//                com.tokopedia.payment.model.PaymentPassData paymentPassData = new com.tokopedia.payment.model.PaymentPassData();
+
+                com.tokopedia.payment.model.PaymentPassData paymentPassData = new com.tokopedia.payment.model.PaymentPassData();
+                paymentPassData.queryString = checkoutResponse.getQueryString();
+                paymentPassData.redirectUrl = checkoutResponse.getRedirectUrl();
+                paymentPassData.callbackSuccessUrl = checkoutResponse.getCallbackUrlSuccess();
+                paymentPassData.transactionId = checkoutResponse.getParameter().getTransactionId();
+                paymentPassData.callbackFailedUrl = checkoutResponse.getCallbackUrlFailed();
+                getView().navigateToActivityRequest(com.tokopedia.payment.activity.TopPayActivity.
+                                createInstance(getView().getActivity().getApplicationContext(), paymentPassData),
+                        PAYMENT_REQUEST_CODE);
 //
-//                paymentPassData.queryString = checkoutResponse.getQueryString();
-//                paymentPassData.redirectUrl = checkoutResponse.getRedirectUrl();
-//                paymentPassData.callbackSuccessUrl = checkoutResponse.getCallbackUrlSuccess();
-//                paymentPassData.transactionId = checkoutResponse.getParameter().getTransactionId();
-//                paymentPassData.callbackFailedUrl = checkoutResponse.getCallbackUrlFailed();
+//                com.tokopedia.payment.model.PaymentPassData paymentPassData = new com.tokopedia.payment.model.PaymentPassData();
+//                paymentPassData.queryString =
+//                        "amount=1000000&currency=IDR&customer_email=tkpd.qc%2B47%40gmail.com&customer_name=Cincin+Seller&fee=&items%5Bname%5D=cita+citata+Concert++-+dummy+x+1&items%5Bprice%5D=1000000&items%5Bquantity%5D=1&language=id-ID&merchant_code=tokopediapulsa&nid=&profile_code=PULSA_EVENT&signature=9c6dc817243d807e2a728fad43f3116420f5f10e&state=0&transaction_code=&transaction_date=2017-12-28T07%3A41%3A55Z&transaction_id=1000038823&user_defined_value=%7B%22user_id%22%3A3045010%2C%22voucher_code%22%3A%22%22%2C%22device%22%3A1%2C%22product_id%22%3A614%2C%22price%22%3A1000000%2C%22client_number%22%3A%22%22%2C%22payment_description%22%3A%22%22%2C%22promo_code_id%22%3A0%2C%22discount_amount%22%3A0%2C%22cashback_amount%22%3A0%2C%22cashback_voucher_amount%22%3A0%2C%22cashback_top_cash_amount%22%3A0%2C%22va_code%22%3A%22085729640914%22%2C%22refresh_token%22%3A%22GfDjW5HpRuyqLHR8zVRHFg%22%2C%22access_token%22%3A%22AXXJ-JvwTuuarYhrVurgqA%22%2C%22fingerprint_id%22%3A%22%22%2C%22hide_header_flag%22%3Afalse%2C%22category_code%22%3A%2223%22%2C%22product_code%22%3A%22TICKETEVENT%22%7D";
+//                paymentPassData.redirectUrl = "https://pay-staging.tokopedia.com/v2/payment";
+//                paymentPassData.callbackSuccessUrl = "https://pulsa-staging.tokopedia.com/checkout/back-to-app";
+//                paymentPassData.transactionId = "1000038823";
+//                paymentPassData.callbackFailedUrl = "https://pulsa-staging.tokopedia.com/checkout";
 //                getView().navigateToActivityRequest(com.tokopedia.payment.activity.TopPayActivity.
 //                                createInstance(getView().getActivity(), paymentPassData),
 //                        com.tokopedia.payment.activity.TopPayActivity.REQUEST_CODE);
 
-                PaymentPassData paymentPassData = new PaymentPassData();
-                paymentPassData.convertToPaymenPassData(checkoutResponse);
-                getView().navigateToActivityRequest(TopPayActivity.
-                        createInstance(getView().getActivity(), paymentPassData), TopPayActivity.REQUEST_CODE);
+//                PaymentPassData paymentPassData = new PaymentPassData();
+//                paymentPassData.convertToPaymenPassData(checkoutResponse);
+//                getView().navigateToActivityRequest(TopPayActivity.
+//                        createInstance(getView().getActivity(), paymentPassData), TopPayActivity.REQUEST_CODE);
                 getView().hideProgressBar();
 
             }
         });
+    }
+
+    private void getAndInitForms() {
+        List<Form> forms = checkoutData.getForms();
+        ArrayList<String> regex = new ArrayList<>();
+        for (Form form : forms) {
+            hints.add(form.getTitle());
+            regex.add(form.getValidatorRegex());
+            errors.add(form.getErrorMessage());
+        }
+        String[] t = new String[1];
+        String[] hint = hints.toArray(t);
+        String[] validatorRegex = regex.toArray(t);
+        getView().initForms(hint, validatorRegex);
+    }
+
+
+    private boolean validateStringWithRegex(String field, String regex) {
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(field);
+        return matcher.matches();
+    }
+
+    private void updateForm(String key, String value) {
+        List<Form> forms = checkoutData.getForms();
+        for (Form form : forms) {
+            if (form.getTitle().equals(key))
+                form.setValue(value);
+        }
     }
 
 

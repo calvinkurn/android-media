@@ -5,23 +5,19 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.style.StyleSpan;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -38,6 +34,7 @@ import com.tokopedia.events.di.EventComponent;
 import com.tokopedia.events.di.EventModule;
 import com.tokopedia.events.view.contractor.EventsDetailsContract;
 import com.tokopedia.events.view.presenter.EventsDetailsPresenter;
+import com.tokopedia.events.view.utils.CurrencyUtil;
 import com.tokopedia.events.view.utils.ImageTextViewHolder;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
@@ -90,6 +87,10 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     View progressBarLayout;
     @BindView(R2.id.prog_bar)
     ProgressBar progBar;
+    @BindView(R2.id.main_content)
+    FrameLayout mainContent;
+    @BindView(R2.id.button_textview)
+    TextView buttonTextView;
 
     ImageTextViewHolder timeHolder;
     ImageTextViewHolder locationHolder;
@@ -119,7 +120,6 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         tvExpandableTermsNCondition.setInterpolator(new OvershootInterpolator());
 
 
-
         mPresenter.attachView(this);
         mPresenter.getEventDetails();
 
@@ -129,20 +129,16 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         AppBarLayout appBarLayout = findViewById(R.id.appbarlayout);
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int offset)
-            {
+            public void onOffsetChanged(AppBarLayout appBarLayout, int offset) {
                 Drawable upArrow = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_arrow_back_white, null);
-                if (offset < -200)
-                {
+                if (offset < -200) {
                     upArrow.setColorFilter(Color.parseColor("#000000"), PorterDuff.Mode.SRC_ATOP);
                     getSupportActionBar().setHomeAsUpIndicator(upArrow);
 
 //                    Drawable drawable = ContextCompat.getDrawable(getApplicationContext(),R.drawable.option_menu_icon);
 //                    drawable.setColorFilter(Color.parseColor("#000000"), PorterDuff.Mode.SRC_ATOP);
 //                    toolbar.setOverflowIcon(drawable);
-                }
-                else
-                {
+                } else {
 
                     upArrow.setColorFilter(Color.parseColor("#000000"), PorterDuff.Mode.SRC_ATOP);
                     getSupportActionBar().setHomeAsUpIndicator(upArrow);
@@ -190,39 +186,43 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
         textViewTitle.setText(homedata.getTitle());
         tvExpandableDescription.setText(Html.fromHtml(homedata.getLongRichDesc()));
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            String tnc = homedata.getTnc();
-            tnc = tnc.replace("\n", "<br>").replace("\r" , "");
-            String splitArray[] = tnc.split("~");
-            int flag = 1;
 
-            StringBuffer tncBuffer = new StringBuffer();
+        String tnc = homedata.getTnc();
+//            tnc = tnc.replace("\n", "<br>").replace("\r" , "");
+        String splitArray[] = tnc.split("~");
+        int flag = 1;
 
-            for (String line : splitArray) {
-                if (flag == 1) {
-                    tncBuffer.append("<i>" + line + "</i>");
-                    flag = 2;
-                } else {
-                    tncBuffer.append("<b>" + line + "</b>");
-                    flag = 1;
-                }
+        StringBuilder tncBuffer = new StringBuilder();
 
+        for (String line : splitArray) {
+            if (flag == 1) {
+                tncBuffer.append("<i>").append(line).append("</i>").append("<br>");
+                flag = 2;
+            } else {
+                tncBuffer.append("<b>").append(line).append("</b>").append("<br>");
+                flag = 1;
             }
-            tvExpandableTermsNCondition.setText(Html.fromHtml(tncBuffer.toString()));
-        } else {
-            tvExpandableTermsNCondition.setText(Html.fromHtml(homedata.getTnc()));
         }
-        if(homedata.getDisplayTags().length()<3)
+        tvExpandableTermsNCondition.setText(Html.fromHtml(tncBuffer.toString()));
+//        } else {
+//            tvExpandableTermsNCondition.setText(Html.fromHtml(homedata.getTnc()));
+//        }
+        if (homedata.getDisplayTags().length() < 3)
             tvDisplayTag.setVisibility(View.GONE);
         else
             tvDisplayTag.setText(homedata.getDisplayTags());
         if (homedata.getHasSeatLayout() != 1)
             seatingLayoutCard.setVisibility(View.GONE);
+
+        String buttonText = getString(R.string.book_ticket) + " " +
+                String.format(getString(R.string.starting_from),
+                        "Rp " + CurrencyUtil.convertToCurrencyString(homedata.getSalesPrice()));
+        buttonTextView.setText(buttonText);
     }
 
     @Override
     public void renderSeatLayout(String url) {
-        ImageHandler.loadImageCover2(imgvSeatingLayout,url);
+        ImageHandler.loadImageCover2(imgvSeatingLayout, url);
     }
 
     @Override
@@ -253,6 +253,11 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     public void hideProgressBar() {
         progBar.setVisibility(View.GONE);
         progressBarLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public View getRootView() {
+        return mainContent;
     }
 
     public class ToolbarElevationOffsetListener implements AppBarLayout.OnOffsetChangedListener {

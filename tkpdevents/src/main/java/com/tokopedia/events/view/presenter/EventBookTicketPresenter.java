@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.events.R;
 import com.tokopedia.events.data.entity.response.ValidateResponse;
 import com.tokopedia.events.domain.model.request.verify.ValidateShow;
@@ -20,7 +21,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import retrofit2.Response;
 import rx.Subscriber;
 
 /**
@@ -36,6 +36,8 @@ public class EventBookTicketPresenter
     AddTicketAdapter.TicketViewHolder selectedViewHolder;
     List<SchedulesViewModel> schedulesList;
     PostValidateShowUseCase postValidateShowUseCase;
+    String dateRange;
+    String seatingURL;
 
     public static String EXTRA_PACKAGEVIEWMODEL = "packageviewmodel";
 
@@ -57,8 +59,22 @@ public class EventBookTicketPresenter
 
     @Override
     public void getTicketDetails() {
-        EventsDetailsViewModel dataModel = getView().getActivity().getIntent().getParcelableExtra(EventsDetailsPresenter.EXTRA_EVENT_VIEWMODEL);
+        EventsDetailsViewModel dataModel = getView().
+                getActivity().
+                getIntent().
+                getParcelableExtra(EventsDetailsPresenter.EXTRA_EVENT_VIEWMODEL);
+        seatingURL = getView().
+                getActivity().
+                getIntent().
+                getStringExtra(EventsDetailsPresenter.EXTRA_SEATING_URL);
+        this.dateRange = dataModel.getTimeRange();
         getView().renderFromDetails(dataModel);
+        if (!seatingURL.equals("empty"))
+            getView().renderSeatLayout(seatingURL);
+        else
+            getView().hideSeatLayout();
+        if (!dataModel.getTimeRange().contains("1970"))
+            getView().initTablayout();
         schedulesList = dataModel.getSchedulesViewModels();
     }
 
@@ -80,6 +96,7 @@ public class EventBookTicketPresenter
         validateShow.setScheduleId(selectedPackageViewModel.getProductScheduleId());
         validateShow.setProductId(selectedPackageViewModel.getProductId());
         postValidateShowUseCase.setValidateShowModel(validateShow);
+        getView().showProgressBar();
         postValidateShowUseCase.execute(RequestParams.EMPTY, new Subscriber<ValidateResponse>() {
             @Override
             public void onCompleted() {
@@ -90,17 +107,26 @@ public class EventBookTicketPresenter
             public void onError(Throwable throwable) {
                 Log.d("BookTicketPresenter", "onError");
                 throwable.printStackTrace();
+                getView().hideProgressBar();
+                NetworkErrorHelper.showEmptyState(getView().getActivity(),
+                        getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
+                            @Override
+                            public void onRetryClicked() {
+                                payTicketsClick();
+                            }
+                        });
             }
 
             @Override
             public void onNext(ValidateResponse objectResponse) {
-                if(objectResponse.getStatus()!=400){
+                if (objectResponse.getStatus() != 400) {
                     Intent reviewTicketIntent = new Intent(getView().getActivity(), ReviewTicketActivity.class);
                     reviewTicketIntent.putExtra(EXTRA_PACKAGEVIEWMODEL, selectedPackageViewModel);
                     getView().navigateToActivityRequest(reviewTicketIntent, 100);
                 } else {
                     getView().showMessage(objectResponse.getMessageError());
                 }
+                getView().hideProgressBar();
 
             }
         });
@@ -151,5 +177,14 @@ public class EventBookTicketPresenter
     public void onPageChange(int scheduleIndex) {
         mSelectedSchedule = scheduleIndex;
         mSelectedPackage = -1;
+    }
+
+    public String[] getDateArray() {
+        String[] date = new String[3];
+        date[0] = dateRange.substring(0, 3);//day
+        //Sat, 14 Apr 2018 - Sat, 14 Apr 2018
+        date[1] = dateRange.substring(5, 7).trim();//date
+        date[2] = dateRange.substring(8, 11);//month
+        return date;
     }
 }

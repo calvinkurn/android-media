@@ -28,6 +28,7 @@
                 android:layout_height="@dimen/icon_size_small"
                 android:layout_gravity="center_vertical"
                 android:scaleType="fitXY"
+                android:visibility="gone"
                 android:src="@drawable/ic_keyboard_arrow_down_black_24dp" />
 
             <TextView
@@ -38,7 +39,7 @@
                 android:layout_marginStart="@dimen/margin_default"
                 android:text="@string/seating_layout"
                 android:textColor="@android:color/black"
-                android:textSize="16sp" />
+                android:textSize="14sp" />
 
         </LinearLayout>
 

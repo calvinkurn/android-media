@@ -2,17 +2,15 @@ package com.tokopedia.events.view.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -28,7 +26,7 @@ import com.tokopedia.events.di.EventModule;
 import com.tokopedia.events.view.contractor.EventBookTicketContract;
 import com.tokopedia.events.view.fragment.FragmentAddTickets;
 import com.tokopedia.events.view.presenter.EventBookTicketPresenter;
-import com.tokopedia.events.view.utils.CurrencyUtil;
+import com.tokopedia.events.view.utils.CalendarItemHolder;
 import com.tokopedia.events.view.utils.ImageTextViewHolder;
 import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
 import com.tokopedia.events.view.viewmodel.SchedulesViewModel;
@@ -44,11 +42,10 @@ import butterknife.OnClick;
 public class EventBookTicketActivity extends TActivity implements EventBookTicketContract.EventBookTicketView {
 
 
-//    @BindView(R2.id.collasing_toolbar)
+    //    @BindView(R2.id.collasing_toolbar)
 //    CollapsingToolbarLayout collasingToolbar;
     @BindView(R2.id.tab_layout)
     TabLayout tabLayout;
-
     @BindView(R2.id.pay_tickets)
     View buttonPayTickets;
     @BindView(R2.id.button_textview)
@@ -61,6 +58,12 @@ public class EventBookTicketActivity extends TActivity implements EventBookTicke
     ProgressBar progBar;
     @BindView(R2.id.app_bar)
     Toolbar appBar;
+    @BindView(R2.id.imgv_seating_layout)
+    ImageView imgvSeatingLayout;
+    @BindView(R2.id.main_content)
+    FrameLayout mainContent;
+    @BindView(R2.id.seating_layout_card)
+    View seatLayout;
 //    @BindView(R2.id.event_address)
 //    View addressView;
 //    @BindView(R2.id.event_time)
@@ -136,50 +139,7 @@ public class EventBookTicketActivity extends TActivity implements EventBookTicke
                 detailsViewModel.getSchedulesViewModels());
         bookTicketViewPager.setAdapter(fragmentAdapter);
         bookTicketViewPager.addOnPageChangeListener(new PageChangeListener());
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                Log.d("PranayTabLogs", "OnTabSelected");
-                View tV = tab.getCustomView();
-                if (tV != null)
-                    tV.setBackgroundResource(R.drawable.rounded_rectangle_green_solid);
-                else {
-                    tab.setCustomView(R.layout.calendar_item);
-                    tV = tab.getCustomView();
-                    tV.setBackgroundResource(R.drawable.rounded_rectangle_green_solid);
-                }
-
-                bookTicketViewPager.setCurrentItem(tab.getPosition());
-
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-                Log.d("PranayTabLogs", "OnTabUnselectedSelected");
-
-                View tV = tab.getCustomView();
-                tV.setBackgroundResource(R.drawable.rounded_rectangle_grey_solid);
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-                Log.d("PranayTabLogs", "OnTabReSelected");
-                View tV = tab.getCustomView();
-                tV.setBackgroundResource(R.drawable.rounded_rectangle_green_solid);
-                bookTicketViewPager.setCurrentItem(tab.getPosition());
-            }
-        });
-
-
-        tabLayout.setupWithViewPager(bookTicketViewPager);
-
-        for (int i = 1; i < tabLayout.getTabCount(); i++) {
-            TabLayout.Tab tab = tabLayout.getTabAt(i);
-            tab.setCustomView(R.layout.calendar_item);
-        }
-
-        tabLayout.setSelectedTabIndicatorHeight(0);
+        tabLayout.setVisibility(View.GONE);
     }
 
     @Override
@@ -198,8 +158,8 @@ public class EventBookTicketActivity extends TActivity implements EventBookTicke
 
     @Override
     public void showPayButton(int ticketQuantity, int price) {
-        buttonTextview.setText(String.format(getString(R.string.pay_button),
-                CurrencyUtil.convertToCurrencyString(ticketQuantity * price)));
+//        buttonTextview.setText(String.format(getString(R.string.pay_button),
+//                CurrencyUtil.convertToCurrencyString(ticketQuantity * price)));
         buttonPayTickets.setVisibility(View.VISIBLE);
     }
 
@@ -218,6 +178,85 @@ public class EventBookTicketActivity extends TActivity implements EventBookTicke
     public void hideProgressBar() {
         progBar.setVisibility(View.GONE);
         progressBarLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void initTablayout() {
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                View tV = tab.getCustomView();
+                if (tV != null) {
+                    CalendarItemHolder holder = (CalendarItemHolder) tV.getTag();
+                    String[] date = mPresenter.getDateArray();
+                    holder.setTvMonth(date[2]);
+                    holder.setTvDate(date[1]);
+                    holder.setTvDay(date[0]);
+                    tV.setBackgroundResource(R.drawable.rounded_rectangle_green_solid);
+                } else {
+                    tab.setCustomView(R.layout.calendar_item);
+                    tV = tab.getCustomView();
+                    CalendarItemHolder holder = new CalendarItemHolder();
+                    ButterKnife.bind(holder, tV);
+                    tV.setTag(holder);
+                    String[] date = mPresenter.getDateArray();
+                    holder.setTvMonth(date[2]);
+                    holder.setTvDate(date[1]);
+                    holder.setTvDay(date[0]);
+                    tV.setBackgroundResource(R.drawable.rounded_rectangle_green_solid);
+                }
+                bookTicketViewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                View tV = tab.getCustomView();
+                tV.setBackgroundResource(R.drawable.rounded_rectangle_grey_solid);
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                View tV = tab.getCustomView();
+                CalendarItemHolder holder = (CalendarItemHolder) tV.getTag();
+                String[] date = mPresenter.getDateArray();
+                holder.setTvMonth(date[2]);
+                holder.setTvDate(date[1]);
+                holder.setTvDay(date[0]);
+                tV.setBackgroundResource(R.drawable.rounded_rectangle_green_solid);
+                bookTicketViewPager.setCurrentItem(tab.getPosition());
+            }
+        });
+
+        tabLayout.setupWithViewPager(bookTicketViewPager);
+
+        for (int i = 1; i < tabLayout.getTabCount(); i++) {
+            TabLayout.Tab tab = tabLayout.getTabAt(i);
+            View customView = tab.setCustomView(R.layout.calendar_item).getCustomView();
+            CalendarItemHolder holder = new CalendarItemHolder();
+            ButterKnife.bind(holder, customView);
+            customView.setTag(holder);
+        }
+
+        tabLayout.setSelectedTabIndicatorHeight(0);
+
+        tabLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void renderSeatLayout(String url) {
+        ImageHandler.loadImageCover2(imgvSeatingLayout, url);
+
+    }
+
+    @Override
+    public void hideSeatLayout() {
+        seatLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public View getRootView() {
+        return mainContent;
     }
 
     public class AddTicketFragmentAdapter extends FragmentStatePagerAdapter {
@@ -245,34 +284,26 @@ public class EventBookTicketActivity extends TActivity implements EventBookTicke
 
 
     public class PageChangeListener implements ViewPager.OnPageChangeListener {
-
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            Log.d("PranayTabLogs", "onPAgeScrolled");
-
-
         }
 
         @Override
         public void onPageSelected(int position) {
             mPresenter.onPageChange(position);
-            Log.d("PranayTabLogs", "OnPageSelected");
-
         }
 
         @Override
         public void onPageScrollStateChanged(int state) {
-            Log.d("PranayTabLogs", "OnPageScrollStateChanged");
-
-
         }
     }
 
     @Override
     protected void onResume() {
-        bookTicketViewPager.setCurrentItem(1);
-        bookTicketViewPager.setCurrentItem(0);
-        tabLayout.getTabAt(0).select();
+//        bookTicketViewPager.setCurrentItem(1);
+//        bookTicketViewPager.setCurrentItem(0);
+        if (tabLayout.getVisibility() == View.VISIBLE)
+            tabLayout.getTabAt(0).select();
         super.onResume();
     }
 
@@ -297,4 +328,6 @@ public class EventBookTicketActivity extends TActivity implements EventBookTicke
     protected boolean isLightToolbarThemes() {
         return true;
     }
+
+
 }

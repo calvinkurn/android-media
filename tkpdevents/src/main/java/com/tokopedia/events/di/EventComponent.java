@@ -11,6 +11,7 @@ import com.tokopedia.events.domain.EventRepository;
 import com.tokopedia.events.view.activity.EventBookTicketActivity;
 import com.tokopedia.events.view.activity.EventDetailsActivity;
 import com.tokopedia.events.view.activity.EventLocationActivity;
+import com.tokopedia.events.view.activity.EventSearchActivity;
 import com.tokopedia.events.view.activity.EventsHomeActivity;
 import com.tokopedia.events.view.activity.ReviewTicketActivity;
 import com.tokopedia.events.view.fragment.FragmentAddTickets;
@@ -38,6 +39,8 @@ public interface EventComponent {
     void inject(ReviewTicketActivity activity);
 
     void inject(FragmentAddTickets fragment);
+
+    void inject(EventSearchActivity activity);
 
     //ThreadExecutor threadExecutor();
 

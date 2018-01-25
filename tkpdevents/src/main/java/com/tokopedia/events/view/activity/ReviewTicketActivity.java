@@ -1,14 +1,20 @@
 package com.tokopedia.events.view.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.text.method.ArrowKeyMovementMethod;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +40,7 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnFocusChange;
 
 public class ReviewTicketActivity extends TActivity implements HasComponent<EventComponent>,
         EventReviewTicketsContractor.EventReviewTicketsView {
@@ -84,12 +91,29 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     View updateEmail;
     @BindView(R2.id.update_number)
     View updateNumber;
-
+    @BindView(R2.id.app_bar)
+    Toolbar appBar;
+    @BindView(R2.id.scroll_view)
+    ScrollView scrollView;
+    @BindView(R2.id.form_layout)
+    View formLayout;
+    @BindView(R2.id.ed_form_1)
+    EditText edForm1;
+    @BindView(R2.id.ed_form_2)
+    EditText edForm2;
+    @BindView(R2.id.ed_form_3)
+    EditText edForm3;
+    @BindView(R2.id.ed_form_4)
+    EditText edForm4;
+    @BindView(R2.id.main_content)
+    FrameLayout mainContent;
 
 
     EventComponent eventComponent;
     @Inject
     EventReviewTicketPresenter mPresenter;
+
+    public static final int PAYMENT_REQUEST_CODE = 65000;
 
 
     @Override
@@ -103,12 +127,43 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
         promoCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked)
+                InputMethodManager im = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+
+                if (isChecked) {
                     edPromoLayout.setVisibility(View.VISIBLE);
-                else
+                    edPromo.setTextIsSelectable(false);
+                    edPromo.setFocusable(true);
+                    edPromo.setFocusableInTouchMode(true);
+                    edPromo.setClickable(true);
+                    edPromo.setLongClickable(true);
+                    edPromo.setMovementMethod(ArrowKeyMovementMethod.getInstance());
+                    edPromo.setText(edPromo.getText(), TextView.BufferType.SPANNABLE);
+                    edPromo.requestFocus();
+                    im.showSoftInput(edPromo, 0);
+                    scrollView.smoothScrollTo(0, edPromo.getBottom());
+                } else {
                     edPromoLayout.setVisibility(View.GONE);
+                    im.hideSoftInputFromWindow(edPromo.getWindowToken(), 0);
+                }
             }
         });
+
+        setSupportActionBar(appBar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
+
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            tvVisitorNames.setShowSoftInputOnFocus(false);
+//            tvTelephone.setShowSoftInputOnFocus(false);
+//        }
+//        else {
+//            tvVisitorNames.setTextIsSelectable(true);
+//            tvTelephone.setTextIsSelectable(true);
+//        }
+
+
     }
 
     @Override
@@ -123,14 +178,14 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
 
     @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
-
         startActivityForResult(intent, requestCode);
-        //startActivity(intent);
-
     }
+
 
     @Override
     public void renderFromPackageVM(PackageViewModel packageViewModel) {
+        appBar.setTitle(packageViewModel.getTitle());
+        appBar.setNavigationIcon(R.drawable.ic_arrow_back_black);
         String timerange = packageViewModel.getTimeRange();
         ImageHandler.loadImageCover2(eventImageSmall, packageViewModel.getThumbnailApp());
         eventNameTv.setText(packageViewModel.getDisplayName());
@@ -139,7 +194,7 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
         eventTotalTickets.setText(String.format(getString(R.string.jumlah_tiket),
                 packageViewModel.getSelectedQuantity()));
 
-        tvTelephone.setText(SessionHandler.getPhoneNumber());
+//        tvTelephone.setText(SessionHandler.getPhoneNumber());
         tvProviderName.setText(String.format(getString(R.string.fare_breakup), packageViewModel.getTitle() + " " + packageViewModel.getDisplayName()));
         int baseFare = packageViewModel.getSelectedQuantity() * packageViewModel.getSalesPrice();
         tvBaseFare.setText("Rp " + CurrencyUtil.convertToCurrencyString(baseFare));
@@ -150,7 +205,7 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
         tvTicketSummary.setText(String.format(getString(R.string.x_type),
                 packageViewModel.getSelectedQuantity(), packageViewModel.getDisplayName()));
         String baseBreak = String.format(getString(R.string.x_type),
-                packageViewModel.getSelectedQuantity(), packageViewModel.getSalesPrice().toString());
+                packageViewModel.getSelectedQuantity(), CurrencyUtil.convertToCurrencyString(packageViewModel.getSalesPrice()));
         baseFareBreak.setText("(" + baseBreak + ")");
         hideProgressBar();
     }
@@ -159,6 +214,12 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     public void setEmailID(String emailID) {
         tvVisitorNames.setText(emailID);
     }
+
+    @Override
+    public void setPhoneNumber(String number) {
+        tvTelephone.setText(number);
+    }
+
 
     @Override
     public void showProgressBar() {
@@ -170,6 +231,31 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     public void hideProgressBar() {
         progBar.setVisibility(View.GONE);
         progressBarLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void initForms(String[] hintText, String[] regex) {
+        formLayout.setVisibility(View.VISIBLE);
+        try {
+            edForm1.setHint(hintText[0]);
+            edForm1.setVisibility(View.VISIBLE);
+            edForm1.setTag(regex[0]);
+
+            edForm2.setHint(hintText[1]);
+            edForm2.setVisibility(View.VISIBLE);
+            edForm2.setTag(regex[1]);
+
+            edForm3.setHint(hintText[2]);
+            edForm3.setVisibility(View.VISIBLE);
+            edForm3.setTag(regex[2]);
+
+            edForm4.setHint(hintText[3]);
+            edForm4.setVisibility(View.VISIBLE);
+            edForm4.setTag(regex[3]);
+
+        } catch (IndexOutOfBoundsException e) {
+            e.printStackTrace();
+        }
     }
 
     private void executeInjector() {
@@ -189,6 +275,11 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
         return null;
     }
 
+    @Override
+    public View getRootView() {
+        return mainContent;
+    }
+
     @OnClick(R2.id.btn_go_to_payment)
     void clickPay() {
         mPresenter.proceedToPayment();
@@ -200,13 +291,13 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     }
 
     @OnClick(R2.id.update_email)
-    void updateEmail(){
-
+    void updateEmail() {
+        mPresenter.updateEmail(tvVisitorNames.getText().toString());
     }
 
     @OnClick(R2.id.update_number)
-    void updateNumber(){
-
+    void updateNumber() {
+        mPresenter.updateNumber(tvTelephone.getText().toString());
     }
 
     @Override
@@ -218,7 +309,7 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == com.tokopedia.payment.activity.TopPayActivity.REQUEST_CODE) {
+        if (requestCode == PAYMENT_REQUEST_CODE) {
             switch (resultCode) {
                 case com.tokopedia.payment.activity.TopPayActivity.PAYMENT_SUCCESS:
                     getActivity().setResult(IDigitalModuleRouter.PAYMENT_SUCCESS);
@@ -245,5 +336,20 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
         View view = null;
         if (view != null) NetworkErrorHelper.showSnackbar(getActivity(), message);
         else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @OnFocusChange({
+            R2.id.ed_form_3,
+            R2.id.ed_form_1,
+            R2.id.ed_form_2,
+            R2.id.ed_form_4})
+    void validateEditText(EditText view) {
+        mPresenter.validateEditText(view);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mPresenter.getProfile();
     }
 }

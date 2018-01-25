@@ -3,33 +3,19 @@ package com.tokopedia.events.view.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.TextView;
 
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.events.R;
-import com.tokopedia.events.R2;
-import com.tokopedia.events.di.DaggerEventComponent;
-import com.tokopedia.events.di.EventComponent;
 import com.tokopedia.events.view.adapter.AddTicketAdapter;
 import com.tokopedia.events.view.presenter.EventBookTicketPresenter;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class FragmentAddTickets extends Fragment {
     private static final String ARG_PARAM1 = "typecount";
@@ -37,7 +23,7 @@ public class FragmentAddTickets extends Fragment {
     private int mTicketTypeCount;
     private List<PackageViewModel> mPackages;
 
-//    EventComponent eventComponent;
+    //    EventComponent eventComponent;
 //    @Inject
     EventBookTicketPresenter mPresenter;
 
@@ -54,7 +40,7 @@ public class FragmentAddTickets extends Fragment {
         return fragment;
     }
 
-    public void setData(List<PackageViewModel> packages, EventBookTicketPresenter presenter){
+    public void setData(List<PackageViewModel> packages, EventBookTicketPresenter presenter) {
         this.mPresenter = presenter;
         this.mPackages = packages;
     }
@@ -75,8 +61,7 @@ public class FragmentAddTickets extends Fragment {
 
         RecyclerView scrollView = (RecyclerView) inflater.inflate(R.layout.fragment_add_tickets, container, false);
         scrollView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-        scrollView.setAdapter(new AddTicketAdapter(getActivity(),mPackages,mPresenter));
-
+        scrollView.setAdapter(new AddTicketAdapter(getActivity(), mPackages, mPresenter));
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL);
         dividerItemDecoration.setDrawable(getContext().getResources().getDrawable(R.drawable.recycler_view_divider));
 
