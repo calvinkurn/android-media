@@ -1,10 +1,10 @@
-package com.tokopedia.digital.widget.data.mapper;
+package com.tokopedia.digital.categorylist.data.mapper;
 
 import com.tokopedia.core.network.entity.homeMenu.HomeCategoryMenuItem;
 import com.tokopedia.core.network.entity.homeMenu.LayoutRow;
 import com.tokopedia.core.network.entity.homeMenu.LayoutSection;
 import com.tokopedia.digital.exception.MapperDataException;
-import com.tokopedia.digital.widget.view.model.DigitalCategoryItemData;
+import com.tokopedia.digital.categorylist.view.model.DigitalCategoryItemData;
 
 import java.util.ArrayList;
 import java.util.List;

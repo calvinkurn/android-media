@@ -1,4 +1,4 @@
-package com.tokopedia.digital.widget.view.presenter;
+package com.tokopedia.digital.common.view.presenter;
 
 import android.content.ContentResolver;
 import android.net.Uri;

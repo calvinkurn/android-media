@@ -1,4 +1,4 @@
-package com.tokopedia.digital.widget.domain;
+package com.tokopedia.digital.categorylist.data.repository;
 
 import android.support.annotation.NonNull;
 
@@ -11,8 +11,8 @@ import com.tokopedia.core.network.exception.RuntimeHttpErrorException;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.digital.widget.data.mapper.ICategoryDigitalListDataMapper;
-import com.tokopedia.digital.widget.view.model.DigitalCategoryItemData;
+import com.tokopedia.digital.categorylist.data.mapper.ICategoryDigitalListDataMapper;
+import com.tokopedia.digital.categorylist.view.model.DigitalCategoryItemData;
 
 import java.util.List;
 

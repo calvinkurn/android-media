@@ -8,6 +8,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.R;
+import com.tokopedia.digital.common.view.presenter.BaseDigitalPresenter;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.digital.widget.domain.interactor.IDigitalWidgetInteractor;
 import com.tokopedia.digital.widget.view.listener.IDigitalWidgetStyle1View;

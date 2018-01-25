@@ -3,16 +3,15 @@ package com.tokopedia.digital.widget.view.presenter;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.common.domain.DigitalCategoryUseCase;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
+import com.tokopedia.digital.common.view.presenter.BaseDigitalPresenter;
 import com.tokopedia.digital.product.view.model.CategoryData;
 import com.tokopedia.digital.product.view.model.HistoryClientNumber;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.digital.product.view.model.ProductDigitalData;
-import com.tokopedia.digital.widget.view.ViewFactory;
+import com.tokopedia.digital.common.view.compoundview.ViewFactory;
 import com.tokopedia.digital.widget.view.listener.IDigitalWidgetView;
 
 import rx.Subscriber;

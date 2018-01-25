@@ -40,8 +40,8 @@ import com.tokopedia.digital.product.view.model.ProductDigitalData;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.digital.utils.ServerErrorHandlerUtil;
-import com.tokopedia.digital.widget.view.ViewFactory;
-import com.tokopedia.digital.widget.view.presenter.BaseDigitalPresenter;
+import com.tokopedia.digital.common.view.compoundview.ViewFactory;
+import com.tokopedia.digital.common.view.presenter.BaseDigitalPresenter;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;

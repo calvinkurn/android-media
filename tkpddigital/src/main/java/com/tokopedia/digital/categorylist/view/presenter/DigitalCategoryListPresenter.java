@@ -1,4 +1,4 @@
-package com.tokopedia.digital.widget.view.presenter;
+package com.tokopedia.digital.categorylist.view.presenter;
 
 import android.support.annotation.NonNull;
 
@@ -7,9 +7,9 @@ import com.tokopedia.core.network.exception.RuntimeHttpErrorException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashBalanceData;
-import com.tokopedia.digital.widget.domain.interactor.IDigitalCategoryListInteractor;
-import com.tokopedia.digital.widget.view.listener.IDigitalCategoryListView;
-import com.tokopedia.digital.widget.view.model.DigitalCategoryItemData;
+import com.tokopedia.digital.categorylist.domain.interactor.IDigitalCategoryListInteractor;
+import com.tokopedia.digital.categorylist.view.listener.IDigitalCategoryListView;
+import com.tokopedia.digital.categorylist.view.model.DigitalCategoryItemData;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;

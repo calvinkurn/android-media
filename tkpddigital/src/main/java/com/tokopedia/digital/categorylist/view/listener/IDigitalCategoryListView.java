@@ -1,8 +1,8 @@
-package com.tokopedia.digital.widget.view.listener;
+package com.tokopedia.digital.categorylist.view.listener;
 
 import com.tokopedia.digital.cart.listener.IBaseView;
 import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashBalanceData;
-import com.tokopedia.digital.widget.view.model.DigitalCategoryItemData;
+import com.tokopedia.digital.categorylist.view.model.DigitalCategoryItemData;
 
 import java.util.List;
 

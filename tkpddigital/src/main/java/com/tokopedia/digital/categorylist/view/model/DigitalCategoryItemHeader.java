@@ -1,4 +1,4 @@
-package com.tokopedia.digital.widget.view.model;
+package com.tokopedia.digital.categorylist.view.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

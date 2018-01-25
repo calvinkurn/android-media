@@ -1,4 +1,4 @@
-package com.tokopedia.digital.widget.view.activity;
+package com.tokopedia.digital.categorylist.view.activity;
 
 import android.app.Fragment;
 import android.content.Context;
@@ -10,7 +10,7 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.digital.R;
-import com.tokopedia.digital.widget.view.fragment.DigitalCategoryListFragment;
+import com.tokopedia.digital.categorylist.view.fragment.DigitalCategoryListFragment;
 
 /**
  * @author anggaprasetiyo on 7/3/17.

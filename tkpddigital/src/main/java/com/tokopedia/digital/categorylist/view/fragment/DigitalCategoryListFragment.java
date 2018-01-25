@@ -1,4 +1,4 @@
-package com.tokopedia.digital.widget.view.fragment;
+package com.tokopedia.digital.categorylist.view.fragment;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -38,18 +38,18 @@ import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashBalanceData;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
-import com.tokopedia.digital.widget.view.adapter.DigitalCategoryListAdapter;
-import com.tokopedia.digital.widget.view.compoundview.DigitalItemHeaderHolder;
-import com.tokopedia.digital.widget.data.mapper.CategoryDigitalListDataMapper;
-import com.tokopedia.digital.widget.data.mapper.ICategoryDigitalListDataMapper;
-import com.tokopedia.digital.widget.domain.DigitalCategoryListRepository;
-import com.tokopedia.digital.widget.domain.interactor.DigitalCategoryListInteractor;
-import com.tokopedia.digital.widget.view.listener.IDigitalCategoryListView;
-import com.tokopedia.digital.widget.view.model.DigitalCategoryItemData;
-import com.tokopedia.digital.widget.view.model.DigitalCategoryItemDataError;
-import com.tokopedia.digital.widget.view.model.DigitalCategoryItemHeader;
-import com.tokopedia.digital.widget.view.presenter.DigitalCategoryListPresenter;
-import com.tokopedia.digital.widget.view.presenter.IDigitalCategoryListPresenter;
+import com.tokopedia.digital.categorylist.view.adapter.DigitalCategoryListAdapter;
+import com.tokopedia.digital.categorylist.view.compoundview.DigitalItemHeaderHolder;
+import com.tokopedia.digital.categorylist.data.mapper.CategoryDigitalListDataMapper;
+import com.tokopedia.digital.categorylist.data.mapper.ICategoryDigitalListDataMapper;
+import com.tokopedia.digital.categorylist.data.repository.DigitalCategoryListRepository;
+import com.tokopedia.digital.categorylist.domain.interactor.DigitalCategoryListInteractor;
+import com.tokopedia.digital.categorylist.view.listener.IDigitalCategoryListView;
+import com.tokopedia.digital.categorylist.view.model.DigitalCategoryItemData;
+import com.tokopedia.digital.categorylist.view.model.DigitalCategoryItemDataError;
+import com.tokopedia.digital.categorylist.view.model.DigitalCategoryItemHeader;
+import com.tokopedia.digital.categorylist.view.presenter.DigitalCategoryListPresenter;
+import com.tokopedia.digital.categorylist.view.presenter.IDigitalCategoryListPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +64,7 @@ import rx.subscriptions.CompositeSubscription;
 public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalCategoryListPresenter>
         implements IDigitalCategoryListView, DigitalCategoryListAdapter.ActionListener,
         RefreshHandler.OnRefreshHandlerListener, DigitalItemHeaderHolder.ActionListener {
+
     public static final int NUMBER_OF_COLUMN_GRID_CATEGORY_LIST = 4;
     private static final String EXTRA_STATE_DIGITAL_CATEGORY_LIST_DATA =
             "EXTRA_STATE_DIGITAL_CATEGORY_LIST_DATA";

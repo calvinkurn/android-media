@@ -1,4 +1,4 @@
-package com.tokopedia.digital.widget.view.compoundview;
+package com.tokopedia.digital.categorylist.view.compoundview;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
-import com.tokopedia.digital.widget.view.model.DigitalCategoryItemHeader;
+import com.tokopedia.digital.categorylist.view.model.DigitalCategoryItemHeader;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

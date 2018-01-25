@@ -1,7 +1,7 @@
-package com.tokopedia.digital.widget.domain.interactor;
+package com.tokopedia.digital.categorylist.domain.interactor;
 
 import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashBalanceData;
-import com.tokopedia.digital.widget.view.model.DigitalCategoryItemData;
+import com.tokopedia.digital.categorylist.view.model.DigitalCategoryItemData;
 
 import java.util.List;
 

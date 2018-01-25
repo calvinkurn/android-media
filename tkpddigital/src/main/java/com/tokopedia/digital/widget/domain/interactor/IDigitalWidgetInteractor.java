@@ -15,7 +15,7 @@ import rx.Subscriber;
  * Created by nabillasabbaha on 7/21/17.
  * Modified by rizkyfadillah at 10/9/17.
  */
-
+@Deprecated
 public interface IDigitalWidgetInteractor {
 
     void getOperatorAndProductsFromPrefix(Subscriber<Pair<Operator, List<Product>>> subscriber, int categoryId, String prefix);

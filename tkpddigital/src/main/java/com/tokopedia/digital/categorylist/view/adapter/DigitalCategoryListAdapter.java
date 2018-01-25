@@ -1,4 +1,4 @@
-package com.tokopedia.digital.widget.view.adapter;
+package com.tokopedia.digital.categorylist.view.adapter;
 
 import android.app.Fragment;
 import android.support.v7.widget.RecyclerView;
@@ -12,9 +12,9 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
-import com.tokopedia.digital.widget.view.model.DigitalCategoryItemData;
-import com.tokopedia.digital.widget.view.model.DigitalCategoryItemDataError;
-import com.tokopedia.digital.widget.view.model.DigitalCategoryItemHeader;
+import com.tokopedia.digital.categorylist.view.model.DigitalCategoryItemData;
+import com.tokopedia.digital.categorylist.view.model.DigitalCategoryItemDataError;
+import com.tokopedia.digital.categorylist.view.model.DigitalCategoryItemHeader;
 
 import java.util.ArrayList;
 import java.util.List;

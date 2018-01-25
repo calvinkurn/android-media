@@ -30,7 +30,7 @@
             android:name=".product.view.activity.DigitalWebActivity"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".widget.view.activity.DigitalCategoryListActivity"
+            android:name=".categorylist.view.activity.DigitalCategoryListActivity"
             android:label="@string/title_activity_category_list_digital_module"
             android:screenOrientation="portrait"/>
         <activity
