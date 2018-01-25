@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.common.di.module.AppModule;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.qualifier.AuthKeyQualifier;
 import com.tokopedia.abstraction.common.di.qualifier.FreshAccessTokenQualifier;
-import com.tokopedia.abstraction.common.di.qualifier.OkHttpClientBuilderDefaultQualifier;
+import com.tokopedia.abstraction.common.di.qualifier.OkHttpClientBuilderNonBaseQualifier;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 
 import dagger.Component;
@@ -28,7 +28,7 @@ public interface BaseAppComponent {
     @ApplicationContext
     Context getContext();
 
-    @OkHttpClientBuilderDefaultQualifier
+    @OkHttpClientBuilderNonBaseQualifier
     OkHttpClient.Builder getDefaultOkHttpClientBuilderDefault();
 
     OkHttpClient.Builder getDefaultOkHttpClientBuilder();

@@ -7,5 +7,5 @@ import javax.inject.Qualifier;
  */
 
 @Qualifier
-public @interface OkHttpClientBuilderDefaultQualifier {
+public @interface OkHttpClientBuilderNonBaseQualifier {
 }
