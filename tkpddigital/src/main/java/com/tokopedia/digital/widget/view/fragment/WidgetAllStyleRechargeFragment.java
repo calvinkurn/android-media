@@ -394,7 +394,7 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
         UnifyTracking.eventSelectNumberOnUserProfileWidget(categoryDataState.getName());
     }
 
-    public void showToastMessage(String message) {
+    private void showToastMessage(String message) {
         View view = getView();
         if (view != null) NetworkErrorHelper.showSnackbar(getActivity(), message);
         else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
@@ -416,8 +416,11 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
             Operator selectedOperator = digitalProductView.getSelectedOperator();
             Product selectedProduct = digitalProductView.getSelectedProduct();
 
-            presenter.storeLastClientNumberTyped(categoryId, selectedOperator.getOperatorId(),
-                    digitalProductView.getClientNumber(), selectedProduct.getProductId());
+            presenter.storeLastClientNumberTyped(
+                    categoryId,
+                    selectedOperator != null ? selectedOperator.getOperatorId() : "",
+                    digitalProductView.getClientNumber(),
+                    selectedProduct != null ? selectedProduct.getProductId() : "");
         }
     }
 }
