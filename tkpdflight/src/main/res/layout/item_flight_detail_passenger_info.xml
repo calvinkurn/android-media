@@ -15,13 +15,13 @@
 
         <TextView
             android:id="@+id/title_info"
-            style="@style/TextView.Small.Bold"
+            style="@style/TextView.Micro.Bold"
             android:layout_width="wrap_content"
             tools:text="CGK - DPS" />
 
         <TextView
             android:id="@+id/view_separator"
-            style="@style/TextView.Small.Bold"
+            style="@style/TextView.Micro.Bold"
             android:layout_marginLeft="@dimen/margin_vvs"
             android:layout_marginRight="@dimen/margin_vvs"
             android:text=":" />
@@ -29,7 +29,7 @@
 
     <TextView
         android:id="@+id/desc_info"
-        style="@style/TextView.Small.BlackSecondary"
+        style="@style/TextView.Micro.BlackSecondary"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
