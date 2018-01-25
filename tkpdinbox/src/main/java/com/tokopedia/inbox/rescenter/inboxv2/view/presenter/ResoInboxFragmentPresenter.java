@@ -47,6 +47,7 @@ public class ResoInboxFragmentPresenter
 
     @Override
     public void getInbox() {
+        mainView.showProgressBar();
         if (isSeller)
             getInboxSellerUseCase.execute(GetInboxParams.getEmptyParams(), new GetInboxSubscriber(context, mainView));
         else

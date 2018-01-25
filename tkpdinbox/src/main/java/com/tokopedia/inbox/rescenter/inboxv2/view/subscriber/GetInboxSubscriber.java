@@ -2,7 +2,7 @@ package com.tokopedia.inbox.rescenter.inboxv2.view.subscriber;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.common.utils.ErrorHandler;
+import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.inbox.rescenter.inboxv2.view.listener.ResoInboxFragmentListener;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.InboxItemResultViewModel;
 
@@ -28,8 +28,8 @@ public class GetInboxSubscriber extends Subscriber<InboxItemResultViewModel> {
     }
 
     @Override
-    public void onError(Throwable throwable) {
-        mainView.onErrorGetInbox(ErrorHandler.getErrorMessage(context, throwable));
+    public void onError(Throwable e) {
+        mainView.onErrorGetInbox(ErrorHandler.getErrorMessage(e));
     }
 
     @Override

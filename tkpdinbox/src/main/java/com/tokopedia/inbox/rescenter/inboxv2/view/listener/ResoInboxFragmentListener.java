@@ -24,6 +24,10 @@ public interface ResoInboxFragmentListener {
 
         void onErrorLoadMoreInbox(String err);
 
+        void showProgressBar();
+
+        void dismissProgressBar();
+
         void onItemClicked(int resolutionId, String sellerName, String customerName);
 
     }

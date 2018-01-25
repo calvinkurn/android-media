@@ -10,9 +10,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
@@ -31,8 +33,14 @@ import javax.inject.Inject;
 public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFragmentListener.View {
 
     public static final int REQUEST_DETAIL_RESO = 1234;
+
+
     private RecyclerView rvInbox, rvQuickFilter;
+    private ProgressBar progressBar;
+
     private ResoInboxAdapter inboxAdapter;
+
+
 
     @Inject
     ResoInboxFragmentPresenter presenter;
@@ -51,6 +59,7 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_reso_inbox, container, false);
         rvInbox = (RecyclerView) view.findViewById(R.id.rv_inbox);
         rvQuickFilter = (RecyclerView) view.findViewById(R.id.rv_quick_filter);
+        progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
         return view;
     }
 
@@ -86,6 +95,7 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
 
     @Override
     public void onSuccessGetInbox(InboxItemResultViewModel result) {
+        dismissProgressBar();
         inboxAdapter = new ResoInboxAdapter(getActivity(), this, result.getInboxItemViewModels());
         rvInbox.setAdapter(inboxAdapter);
         inboxAdapter.notifyDataSetChanged();
@@ -94,17 +104,18 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
 
     @Override
     public void onErrorGetInbox(String err) {
-
+        dismissProgressBar();
+        showErrorWithRetry(err);
     }
 
     @Override
     public void onSuccessLoadMoreInbox(InboxItemResultViewModel result) {
-
+        dismissProgressBar();
     }
 
     @Override
     public void onErrorLoadMoreInbox(String err) {
-
+        dismissProgressBar();
     }
 
     @Override
@@ -128,9 +139,32 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
         }
     }
 
+    private void showErrorWithRetry(String message) {
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), message, new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                presenter.getInbox();
+            }
+        });
+    }
+
+    @Override
+    public void showProgressBar() {
+        if (progressBar.getVisibility() == View.GONE) {
+            progressBar.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void dismissProgressBar() {
+        if (progressBar.getVisibility() == View.VISIBLE) {
+            progressBar.setVisibility(View.GONE);
+        }
+    }
     @Override
     public void onDestroy() {
         super.onDestroy();
         presenter.detachView();
     }
+
 }
