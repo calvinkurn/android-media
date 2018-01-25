@@ -189,8 +189,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
         String type = uriData. getQueryParameter(DeeplinkConst.PARAM.TYPE);
         Intent intentToLaunch = null;
-        String shopId = SessionHandler.getShopID(context);
-        if (TextUtils.isEmpty(shopId) || "0".equals(shopId)) {
+        if (!SessionHandler.isUserHasShop(context)) {
             intentToLaunch = new Intent(context, SplashScreenActivity.class);
             intentToLaunch.setData(uriData);
         }

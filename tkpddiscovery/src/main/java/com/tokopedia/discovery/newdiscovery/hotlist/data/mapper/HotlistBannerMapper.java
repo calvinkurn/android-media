@@ -38,6 +38,7 @@ public class HotlistBannerMapper implements Func1<Response<TkpdResponse>, Hotlis
 
     private HotlistBannerModel mappingIntoDomainModel(HotListBannerModel pojoModel) {
         HotlistBannerModel domainModel = new HotlistBannerModel();
+        domainModel.setHotlistTitle(pojoModel.info.title);
         domainModel.setBannerImage(pojoModel.info.coverImg);
         domainModel.setBannerDesc(pojoModel.info.hotlistDescription);
         domainModel.setHotlistPromoInfo(pojoModel.promoInfo != null ? mappingBannerPromo(pojoModel.promoInfo) : null);

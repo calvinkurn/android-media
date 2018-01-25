@@ -50,6 +50,8 @@ public class DeepLinkChecker {
     public static final int DISCOVERY_PAGE = 17;
 
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
+    private static final String KEY_PROMO = "promo";
+    private static final String KEY_SALE = "sale";
 
     public static int getDeepLinkType(String url) {
         Uri uriData = Uri.parse(url);
@@ -123,8 +125,12 @@ public class DeepLinkChecker {
         return (linkSegment.get(0).equals("catalog"));
     }
 
+    private static boolean isContent(List<String> linkSegment) {
+        return (linkSegment.get(0).equals("content"));
+    }
+
     private static boolean isPromo(List<String> linkSegment) {
-        return linkSegment.size() > 0 && (linkSegment.get(0).equals("promo"));
+        return linkSegment.size() > 0 && (linkSegment.get(0).equals(KEY_PROMO) || linkSegment.get(0).equals(KEY_SALE));
     }
 
     private static boolean isHome(String url, List<String> linkSegment) {
@@ -170,6 +176,7 @@ public class DeepLinkChecker {
                 && !isHelp(linkSegment)
                 && !isBrowse(linkSegment)
                 && !isHot(linkSegment)
+                && !isContent(linkSegment)
                 && !isCatalog(linkSegment)
                 && !isTopPicks(linkSegment));
     }
@@ -182,7 +189,6 @@ public class DeepLinkChecker {
                 && !linkSegment.get(0).equals("reset.pl")
                 && !linkSegment.get(0).equals("activation.pl"));
     }
-
 
     private static boolean isSearch(String url) {
         return (getLinkSegment(url).get(0).equals("search"));
@@ -256,7 +262,6 @@ public class DeepLinkChecker {
                 BrowseProductRouter.getHotlistIntent(context, url)
         );
     }
-
 
     public static void openCatalog(String url, Context context) {
         context.startActivity(DetailProductRouter.getCatalogDetailActivity(context, getLinkSegment(url).get(1)));

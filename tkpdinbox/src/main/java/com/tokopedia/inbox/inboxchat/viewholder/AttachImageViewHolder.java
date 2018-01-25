@@ -17,7 +17,7 @@ import com.tokopedia.inbox.inboxchat.viewmodel.AttachImageModel;
 public class AttachImageViewHolder extends AbstractViewHolder<AttachImageModel> {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.attached_image_layout;
+    public static final int LAYOUT = R.layout.thumbnail_chat;
 
     SquareImageView imageView;
     String link;

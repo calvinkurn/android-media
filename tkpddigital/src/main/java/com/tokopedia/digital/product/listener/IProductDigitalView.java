@@ -20,7 +20,6 @@ import java.util.List;
 
 public interface IProductDigitalView extends IBaseView {
 
-
     void renderBannerListData(String title, List<BannerData> bannerDataList);
 
     void renderOtherBannerListData(String title, List<BannerData> otherBannerDataList);
@@ -38,7 +37,7 @@ public interface IProductDigitalView extends IBaseView {
 
     void renderCategoryProductDataStyle4(CategoryData categoryData,
                                          HistoryClientNumber historyClientNumber);
-    void renderCheckPulsaBalanceData();
+    void renderCheckPulsaBalanceData(int selectedSim,String ussdCode, String phoneNumber,String operatorErrorMsg,Boolean isSimActive,String carrierName);
 
     void renderErrorStyleNotSupportedProductDigitalData(String message);
 
@@ -66,8 +65,6 @@ public interface IProductDigitalView extends IBaseView {
 
     Application getMainApplication();
 
-    String getCategoryId();
-
     void closeViewWithMessageAlert(String message);
 
     void showSnackBarCallbackCloseView(String message);
@@ -89,5 +86,7 @@ public interface IProductDigitalView extends IBaseView {
     Activity getActivity();
     
     void showMessageAlert(String message,String title);
+
+    void removeCheckPulsaCards();
 
 }

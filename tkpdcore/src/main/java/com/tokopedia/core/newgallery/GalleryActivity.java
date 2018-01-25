@@ -85,9 +85,6 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
     public static final String TOKOPEDIA = "Tokopedia";
 
     public static final int RESULT_CODE = 323;
-    public static final int DEF_WIDTH_CMPR = 2048;
-    public static final int DEF_QLTY_COMPRESS = 95;
-    public static final int WIDTH_DOWNLOAD = 2048;
 
     String FRAGMENT;
     int position;
@@ -373,7 +370,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
 
     }
 
-    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void initContent() {
         if (supportFragmentManager.findFragmentById(R.id.add_product_container) == null)
             initFragment(FRAGMENT);
@@ -419,10 +416,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         Fragment fragment = supportFragmentManager.findFragmentByTag(ImageGalleryFragment.FRAGMENT_TAG);
         if (fragment != null && fragment instanceof ImageGalleryFragment && path != null) {
             if (compressToTkpd) {
-                String fileNameToMove = FileUtils.generateUniqueFileName();
-                File photo = FileUtils.writeImageToTkpdPath(
-                        FileUtils.compressImage(path, DEF_WIDTH_CMPR, DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
-                        fileNameToMove);
+                File photo = FileUtils.writeImageToTkpdPath(path);
                 if (photo != null) {
                     finishWithSingleImage(photo.getAbsolutePath());
                 }
@@ -441,10 +435,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                 ArrayList<String> tkpdPaths = new ArrayList<>();
                 for (int i = 0, sizei = paths.size(); i < sizei; i++) {
                     String path = paths.get(i);
-                    String fileNameToMove = FileUtils.generateUniqueFileName();
-                    File photo = FileUtils.writeImageToTkpdPath(
-                            FileUtils.compressImage(path, DEF_WIDTH_CMPR, DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
-                            fileNameToMove);
+                    File photo = FileUtils.writeImageToTkpdPath(path);
                     if (photo != null) {
                         tkpdPaths.add(photo.getAbsolutePath());
 
@@ -489,7 +480,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         }
     }
 
-    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void onFabClicked() {
         switch (FRAGMENT) {
             case ImageGalleryAlbumFragment.FRAGMENT_TAG:
@@ -546,12 +537,8 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                         case ImageGalleryAlbumFragment.FRAGMENT_TAG:
                         case ImageGalleryFragment.FRAGMENT_TAG:
                             if (imagePathCamera != null) {
-                                Intent intent = new Intent();
                                 if (compressToTkpd) {
-                                    String fileNameToMove = FileUtils.generateUniqueFileName();
-                                    File photo = FileUtils.writeImageToTkpdPath(
-                                            FileUtils.compressImage(imagePathCamera, DEF_WIDTH_CMPR, DEF_WIDTH_CMPR, DEF_QLTY_COMPRESS),
-                                            fileNameToMove);
+                                    File photo = FileUtils.writeImageToTkpdPath(imagePathCamera);
                                     if (photo != null) {
                                         FileUtils.deleteAllCacheTkpdFile(imagePathCamera);
                                         finishWithSingleImage(photo.getAbsolutePath());
@@ -583,7 +570,7 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
                                 public void onError(Throwable e) {
                                     hideProgressDialog();
                                     CommonUtils.UniversalToast(GalleryActivity.this,
-                                            ErrorHandler.getErrorMessage(e, GalleryActivity.this));
+                                            ErrorHandler.getErrorMessage(e));
                                 }
 
                                 @Override
@@ -636,11 +623,12 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         }
     }
 
-    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void showRationaleForStorageAndCamera(final PermissionRequest request) {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
+        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         RequestPermissionUtil.onShowRationale(this, request, listPermission);
     }
@@ -670,20 +658,22 @@ public class GalleryActivity extends TActivity implements ImageGalleryView {
         RequestPermissionUtil.onNeverAskAgain(this, Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
-    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void showDeniedForStorageAndCamera() {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
+        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         RequestPermissionUtil.onPermissionDenied(this, listPermission);
     }
 
-    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void showNeverAskForStorageAndCamera() {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
+        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         RequestPermissionUtil.onNeverAskAgain(this, listPermission);
     }

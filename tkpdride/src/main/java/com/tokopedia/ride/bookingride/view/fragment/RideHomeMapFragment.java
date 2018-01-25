@@ -38,7 +38,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.PolyUtil;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
@@ -288,7 +288,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
 
     @Override
     public void navigateToLoginPage() {
-        Intent intent = SessionRouter.getLoginActivityIntent(getActivity());
+        Intent intent = OldSessionRouter.getLoginActivityIntent(getActivity());
         intent.putExtra(Session.WHICH_FRAGMENT_KEY,
                 TkpdState.DrawerPosition.LOGIN);
         startActivityForResult(intent, LOGIN_REQUEST_CODE);
@@ -503,14 +503,14 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     }
 
     @Override
-    public void renderDefaultPickupLocation(double latitude, double longitude, String sourceAddress) {
+    public void renderDefaultPickupLocation(double latitude, double longitude, String title, String sourceAddress) {
         source = new PlacePassViewModel();
         source.setAddress(sourceAddress);
-        source.setTitle(sourceAddress);
+        source.setTitle(title);
         source.setAndFormatLatitude(latitude);
         source.setAndFormatLongitude(longitude);
         proccessToRenderRideProduct();
-        setSourceLocationText(sourceAddress);
+        setSourceLocationText(title);
     }
 
     @Override
@@ -562,7 +562,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
 
         Intent intent = GooglePlacePickerActivity.getCallingIntent(getActivity(), R.drawable.marker_red_old);
         intent.putExtra(GooglePlacePickerActivity.EXTRA_REQUEST_CODE, PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE);
-        intent.putExtra(GooglePlacePickerActivity.EXTRA_SOURCE, source);
+        intent.putExtra(GooglePlacePickerActivity.EXTRA_DESTINATION, destination);
         startActivityForResultWithClipReveal(intent, PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE, destinationLayoout);
         //startActivityForResult(intent, PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE);
         RideGATracking.eventClickDestination(getScreenName());

@@ -12,14 +12,14 @@
 
     <TextView
         android:id="@+id/item_transaction_table_left"
-        style="@style/TextView.Body1.BlackSecondary"
+        style="@style/TextView.Small.BlackSecondary"
         android:layout_width="0dp"
         android:layout_weight="1"
         tools:text="test" />
 
     <TextView
         android:id="@+id/item_transaction_table_right"
-        style="@style/TextView.Body1"
+        style="@style/TextView.Small"
         android:lineSpacingExtra="-2sp"
         tools:text="test 123" />
 </LinearLayout>

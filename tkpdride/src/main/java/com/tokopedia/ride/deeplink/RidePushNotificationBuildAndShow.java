@@ -26,6 +26,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.gcm.utils.NotificationChannelId;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.view.activity.RideHomeActivity;
@@ -264,7 +265,7 @@ public class RidePushNotificationBuildAndShow {
 
                 title = String.format(title, activeProductName);
 
-                NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
+                NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, NotificationChannelId.GENERAL)
                         .setSmallIcon(R.drawable.ic_stat_notify_white)
                         .setAutoCancel(true)
                         .setDefaults(DEFAULT_SOUND | DEFAULT_VIBRATE)
@@ -303,7 +304,7 @@ public class RidePushNotificationBuildAndShow {
     }
 
     public static void showDriverCancelledRide(Context context) {
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, NotificationChannelId.GENERAL)
                 .setSmallIcon(R.drawable.ic_stat_notify_white)
                 .setAutoCancel(true)
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.qc_launcher))
@@ -327,7 +328,7 @@ public class RidePushNotificationBuildAndShow {
     }
 
     public static void showInProgressRide(Context context, final RideRequest rideRequest) {
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, NotificationChannelId.GENERAL)
                 .setSmallIcon(R.drawable.ic_stat_notify_white)
                 .setAutoCancel(true)
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.qc_launcher))
@@ -361,7 +362,7 @@ public class RidePushNotificationBuildAndShow {
         } else {
             title += " Uber";
         }
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, NotificationChannelId.GENERAL)
                 .setSmallIcon(R.drawable.ic_stat_notify_white)
                 .setAutoCancel(true)
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.qc_launcher))
@@ -410,7 +411,7 @@ public class RidePushNotificationBuildAndShow {
                 PendingIntent.FLAG_UPDATE_CURRENT
         );
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, NotificationChannelId.GENERAL)
                 .setSmallIcon(R.drawable.ic_stat_notify_white)
                 .setAutoCancel(true)
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.qc_launcher))
@@ -430,7 +431,7 @@ public class RidePushNotificationBuildAndShow {
 
     private static void showNoDriverFoundNotification(Context context) {
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, NotificationChannelId.GENERAL)
                 .setSmallIcon(R.drawable.ic_stat_notify_white)
                 .setAutoCancel(true)
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.qc_launcher))

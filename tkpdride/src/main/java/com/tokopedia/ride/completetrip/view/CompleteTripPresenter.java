@@ -2,6 +2,7 @@ package com.tokopedia.ride.completetrip.view;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.domain.GetPayPendingDataUseCase;
 import com.tokopedia.ride.common.configuration.RideStatus;
@@ -28,6 +29,7 @@ import rx.Subscriber;
 
 public class CompleteTripPresenter extends BaseDaggerPresenter<CompleteTripContract.View>
         implements CompleteTripContract.Presenter {
+    private static final String UBER_SHOURTCUT_ALERT_SHOWN_KEY = "UBER_SHOURTCUT_ALERT_SHOWN_KEY";
     private GetReceiptUseCase getReceiptUseCase;
     private GetRideRequestDetailUseCase getRideRequestDetailUseCase;
     private GiveDriverRatingUseCase giveDriverRatingUseCase;
@@ -79,6 +81,7 @@ public class CompleteTripPresenter extends BaseDaggerPresenter<CompleteTripContr
 
                     getView().showReceiptLayout();
                     getView().renderReceipt(receipt, isPendingPaymentExists);
+                    showPopupToAddShortcutForFirstTime();
 
                     if (getView().isCameFromPushNotif() && !isPendingPaymentExists) {
                         getView().hideRatingLayout();
@@ -236,6 +239,35 @@ public class CompleteTripPresenter extends BaseDaggerPresenter<CompleteTripContr
                 getView().openScroogePage(payPending.getUrl(), payPending.getPostData());
             }
         });
+    }
+
+    @Override
+    public void showPopupToAddShortcutForFirstTime() {
+        if (!isViewAttached()) {
+            return;
+        }
+
+        try {
+            GlobalCacheManager cacheManager = new GlobalCacheManager();
+            String cache = cacheManager.getValueString(UBER_SHOURTCUT_ALERT_SHOWN_KEY);
+            if (cache == null || !cache.equalsIgnoreCase("1")) {
+                getView().showAddShortcutDialog();
+            }
+        } catch (Exception ex) {
+
+        }
+    }
+
+    @Override
+    public void setShortcutDialogIsShowninCache() {
+        try {
+            GlobalCacheManager cacheManager = new GlobalCacheManager();
+            cacheManager.setKey(UBER_SHOURTCUT_ALERT_SHOWN_KEY);
+            cacheManager.setValue("1");
+            cacheManager.store();
+        } catch (Exception ex) {
+
+        }
     }
 
     @Override

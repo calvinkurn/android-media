@@ -9,6 +9,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.constant.TopAdsSuggestionBidInteractionTypeDef;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
@@ -44,8 +45,7 @@ public class TopAdsEditCostExistingGroupFragment extends TopAdsEditCostFragment<
 
     @Override
     protected void onClickedNext() {
-        if (firstTimeCheck()) return;
-        if(!isError()) {
+        if(!isPriceError()) {
             super.onClickedNext();
             if (detailAd != null) {
                 daggerPresenter.saveAd(detailAd);
@@ -59,7 +59,29 @@ public class TopAdsEditCostExistingGroupFragment extends TopAdsEditCostFragment<
     @Override
     protected void initView(View view) {
         super.initView(view);
-        setSuggestionBidText(adFromIntent.getDatum().getMedianFmt());
+        setSuggestionBidText(adFromIntent.getDatum().getMedian(), adFromIntent.getDatum().getMedianFmt());
+    }
+
+    @Override
+    protected void loadAd(TopAdsDetailGroupViewModel detailAd) {
+        super.loadAd(detailAd);
+        detailAd.setSuggestionBidValue(suggestionBidValue);
+        detailAd.setSuggestionBidButton(TopAdsSuggestionBidInteractionTypeDef.SUGGESTION_NOT_IMPLEMENTED);
+        defaultSuggestionBidButtonStatus = TopAdsSuggestionBidInteractionTypeDef.SUGGESTION_NOT_IMPLEMENTED;
+    }
+
+    @Override
+    protected void onSuggestionBidClicked() {
+        super.onSuggestionBidClicked();
+        detailAd.setSuggestionBidButton(TopAdsSuggestionBidInteractionTypeDef.SUGGESTION_IMPLEMENTED);
+    }
+
+    @Override
+    protected void onPriceChanged(double number) {
+        super.onPriceChanged(number);
+        if (suggestionBidValue != number) {
+            detailAd.setSuggestionBidButton(defaultSuggestionBidButtonStatus);
+        }
     }
 
     private void trackingEditCostTopads() {
@@ -82,16 +104,11 @@ public class TopAdsEditCostExistingGroupFragment extends TopAdsEditCostFragment<
 
     @Override
     public void onSuggestionSuccess(GetSuggestionResponse s) {
-        setSuggestionBidText(s);
+        // Do nothing
     }
 
     @Override
     public void onSuggestionError(@Nullable Throwable t) {
-        /* this is empty just to deal with abstraction */
-    }
-
-    @Override
-    protected void onSuggestionTitleUseClick() {
         /* this is empty just to deal with abstraction */
     }
 }

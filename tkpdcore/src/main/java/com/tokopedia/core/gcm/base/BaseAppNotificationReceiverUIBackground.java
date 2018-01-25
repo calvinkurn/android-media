@@ -35,7 +35,6 @@ import com.tokopedia.core.gcm.notification.dedicated.SellingOrderDeliveredNotifi
 import com.tokopedia.core.gcm.notification.dedicated.SellingOrderFinishedNotification;
 import com.tokopedia.core.gcm.notification.dedicated.TicketResponseNotification;
 import com.tokopedia.core.gcm.utils.ActivitiesLifecycleCallbacks;
-import com.tokopedia.core.gcm.utils.GCMUtils;
 import com.tokopedia.core.var.TkpdState;
 
 import org.json.JSONException;
@@ -62,12 +61,6 @@ public abstract class BaseAppNotificationReceiverUIBackground {
     protected ActivitiesLifecycleCallbacks mActivitiesLifecycleCallbacks;
     protected SavePushNotificationUseCase mSavePushNotificationUseCase;
 
-    public interface OnSavePushNotificationCallback {
-        void onSuccessSavePushNotification(String category);
-
-        void onFailedSavePushNotification();
-    }
-
     public BaseAppNotificationReceiverUIBackground(Application application) {
         mFCMCacheManager = new FCMCacheManager(application.getBaseContext());
         mContext = application.getApplicationContext();
@@ -80,8 +73,18 @@ public abstract class BaseAppNotificationReceiverUIBackground {
         );
     }
 
+    protected static int getCode(Bundle data) {
+        int code;
+        try {
+            code = Integer.parseInt(data.getString("tkp_code", "0"));
+        } catch (NumberFormatException e) {
+            code = 0;
+        }
+        return code;
+    }
+
     protected boolean isDedicatedNotification(Bundle data) {
-        return GCMUtils.getCode(data) < 1000 || GCMUtils.getCode(data) >= 1100;
+        return getCode(data) < 1000 || getCode(data) >= 1100;
     }
 
     protected void resetNotificationStatus(Bundle data) {
@@ -212,6 +215,13 @@ public abstract class BaseAppNotificationReceiverUIBackground {
             }
         }
         return json.toString();
+    }
+
+
+    public interface OnSavePushNotificationCallback {
+        void onSuccessSavePushNotification(String category);
+
+        void onFailedSavePushNotification();
     }
 
 }
