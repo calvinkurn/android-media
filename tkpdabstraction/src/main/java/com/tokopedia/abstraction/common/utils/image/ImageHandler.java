@@ -109,6 +109,23 @@ public class ImageHandler {
         }
     }
 
+    public static void loadImageWithPlaceholder(ImageView imageview, String url, int resId) {
+        if (url != null && !TextUtils.isEmpty(url)) {
+            Glide.with(imageview.getContext())
+                    .load(url)
+                    .placeholder(resId)
+                    .dontAnimate()
+                    .error(resId)
+                    .into(imageview);
+        } else {
+            Glide.with(imageview.getContext())
+                    .load(url)
+                    .placeholder(resId)
+                    .error(resId)
+                    .into(imageview);
+        }
+    }
+
     public static int calculateInSampleSize(BitmapFactory.Options options) {
         final int height = options.outHeight;
         final int width = options.outWidth;

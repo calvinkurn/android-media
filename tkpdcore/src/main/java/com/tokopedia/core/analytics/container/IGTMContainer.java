@@ -139,4 +139,10 @@ public interface IGTMContainer {
     void eventImpressionCategoryLifestyle(List<Object> list);
 
     void eventClickCategoryLifestyle(String categoryUrl, List<Object> list);
+
+    void enhanceClickSearchResultProduct(Map<String, Object> objects,
+                                         String keyword,
+                                         String actionField);
+
+    void enhanceImpressionSearchResultProduct(List<Object> objects, String keyword);
 }

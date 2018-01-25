@@ -267,7 +267,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 false, MAX_NUMBER_IMAGE_SELECTED_FROM_GALLERY);
     }
 
-    @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA})
+    @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void onAddFromCamera() {
         GalleryCropWatermarkActivity.moveToImageGalleryCamera(getActivity(), this, DEFAULT_IMAGE_GALLERY_POSITION,
                 true, MAX_NUMBER_IMAGE_SELECTED_FROM_CAMERA);

@@ -43,7 +43,7 @@ public class DeleteMessageListUseCase extends UseCase<DeleteChatListViewModel>{
 
     public static RequestParams generateParam(InboxMessagePass inboxMessagePass, int page)
     {
-        RequestParams requestParams = RequestParams.EMPTY;
+        RequestParams requestParams = RequestParams.create();
         requestParams.putString("tab", "inbox");
         requestParams.putString("filter", "all");
         requestParams.putString("page", String.valueOf(page));

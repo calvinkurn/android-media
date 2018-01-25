@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,11 +53,15 @@ public class FlightMultiAirlineView extends LinearLayout {
         if (airlineLogoList == null || airlineLogoList.size() == 0) {
             airlineLogoList = new ArrayList<>();
             airlineLogoList.add("");
-        }
-        for (int i = 0, sizei = airlineLogoList.size(); i < sizei; i++) {
+        } else if (airlineLogoList.size() > 1) {
             View view = LayoutInflater.from(getContext()).inflate(R.layout.view_airline_logo, this, false);
             ImageView ivAirline = view.findViewById(R.id.iv_airline_logo);
-            ImageHandler.loadImageWithoutPlaceholder(ivAirline, airlineLogoList.get(i),
+            ivAirline.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_multi_airlines));
+            addView(ivAirline);
+        } else if (airlineLogoList.size() == 1) {
+            View view = LayoutInflater.from(getContext()).inflate(R.layout.view_airline_logo, this, false);
+            ImageView ivAirline = view.findViewById(R.id.iv_airline_logo);
+            ImageHandler.loadImageWithoutPlaceholder(ivAirline, airlineLogoList.get(0),
                     R.drawable.ic_airline_default);
             addView(view);
         }
