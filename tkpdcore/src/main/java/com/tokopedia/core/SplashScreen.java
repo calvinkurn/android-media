@@ -33,7 +33,6 @@ import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.PasswordGenerator.PGListener;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.core.welcome.WelcomeActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -236,10 +235,12 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
                     if (error == null) {
                         CommonUtils.dumper(referringParams.toString());
                         try {
-                            String branch_promo = referringParams.getString("branch_promo");
-                            if (branch_promo != null) {
-                                Toast.makeText(SplashScreen.this, branch_promo, Toast.LENGTH_LONG).show();
-                                storeWebToAppPromoCode(branch_promo);
+                            if(referringParams.has("branch_promo")) {
+                                String branch_promo = referringParams.getString("branch_promo");
+                                if (branch_promo != null) {
+                                    Toast.makeText(SplashScreen.this, branch_promo, Toast.LENGTH_LONG).show();
+                                    storeWebToAppPromoCode(branch_promo);
+                                }
                             }
                             String deeplink = referringParams.getString("$android_deeplink_path");
                             Uri uri = Uri.parse(Constants.Schemes.APPLINKS + "://" + deeplink);
