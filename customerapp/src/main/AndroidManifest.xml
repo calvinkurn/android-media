@@ -7,6 +7,7 @@
 
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO"></uses-permission>
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         tools:node="remove"
@@ -237,6 +238,8 @@
             android:theme="@style/Theme.Tokopedia3" />
         <activity android:name=".campaign.view.BarcodeCampaignActivity"
             android:theme="@style/Theme.Transparent.Black"></activity>
+        <activity android:name=".campaign.view.CapturedAudioCampaignActivity"
+            android:launchMode="singleTop"></activity>
     </application>
 
 </manifest>

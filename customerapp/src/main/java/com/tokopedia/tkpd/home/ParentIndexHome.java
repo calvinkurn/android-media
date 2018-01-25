@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.home;
 
 import android.content.Context;
 import android.content.Intent;
+import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
@@ -20,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
@@ -64,7 +66,9 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.beranda.presentation.view.fragment.HomeFragment;
+import com.tokopedia.tkpd.campaign.configuration.ShakeDetector;
 import com.tokopedia.tkpd.campaign.view.BarcodeCampaignActivity;
+import com.tokopedia.tkpd.campaign.view.CapturedAudioCampaignActivity;
 import com.tokopedia.tkpd.fcm.appupdate.FirebaseRemoteAppUpdate;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
@@ -85,7 +89,7 @@ import rx.subscriptions.CompositeSubscription;
  * modified by Hafizh Herdi on 6/15/2016, dynamic personalization message.
  */
 public class ParentIndexHome extends TkpdActivity implements NotificationReceivedListener,
-        GetUserInfoListener, HasComponent {
+        GetUserInfoListener, HasComponent,ShakeDetector.Listener  {
 
     public static final int INIT_STATE_FRAGMENT_HOME = 0;
     public static final int INIT_STATE_FRAGMENT_FEED = 1;
@@ -182,6 +186,9 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         Log.d(TAG, messageTAG + "onCreate");
         super.onCreate(arg0);
 
+        SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        ShakeDetector sd = new ShakeDetector(this);
+        sd.start(sensorManager);
         progressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
         if (arg0 != null) {
             //be16268	commit id untuk memperjelas yang bawah
@@ -395,6 +402,11 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         return intent;
     }
 
+    @Override
+    public void hearShake() {
+        startActivity(CapturedAudioCampaignActivity.getCapturedAudioCampaignActivity(this));
+    }
+
     protected class PagerAdapter extends android.support.v4.app.FragmentStatePagerAdapter {
         SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
 
@@ -507,6 +519,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             case R.id.action_barcode_scan:
                 startActivity(BarcodeCampaignActivity.getBarcodeCamapignIntent(this));
                 return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }

@@ -1,5 +1,4 @@
-package com.tokopedia.tkpd.campaign.domain.barcode;
-
+package com.tokopedia.tkpd.campaign.domain.audio;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
@@ -11,24 +10,24 @@ import com.tokopedia.tkpd.campaign.domain.CampaignDataRepository;
 import rx.Observable;
 
 /**
- * Created by sandeepgoyal on 15/12/17.
+ * Created by sandeepgoyal on 25/01/18.
  */
 
-public class PostBarCodeDataUseCase extends UseCase<CampaignResponseEntity> {
-
-    CampaignDataRepository campaignDataRepository;
-
-    public static final String CAMPAIGN_ID ="tkp_campaign_id";
-    public static final String CAMPAIGN_NAME = "tkp_campaign_name";
+public class PostAudioDataUseCase extends UseCase<CampaignResponseEntity> {
 
 
-    public PostBarCodeDataUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, CampaignDataRepository campaignDataRepository) {
+    public static final String AUDIO_PATH = "tkp_audio_path";
+
+
+    private final CampaignDataRepository campaignDataRepository;
+
+
+    public PostAudioDataUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, CampaignDataRepository campaignDataRepository) {
         super(threadExecutor,postExecutionThread);
         this.campaignDataRepository = campaignDataRepository;
     }
-
     @Override
     public Observable<CampaignResponseEntity> createObservable(RequestParams requestParams) {
-        return campaignDataRepository.getCompaignData(requestParams.getParameters());
+        return campaignDataRepository.getCampaignFromAudio(requestParams.getParameters());
     }
 }

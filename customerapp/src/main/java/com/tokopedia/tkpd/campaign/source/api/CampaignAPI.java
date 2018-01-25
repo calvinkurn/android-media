@@ -19,4 +19,9 @@ public interface CampaignAPI {
     @POST(CampaignURL.BARCODE_CAMPAIGN)
     Observable<CampaignResponseEntity> getCampaign(@FieldMap Map<String, Object> param);
 
+    //TODO Audio_Campagin multipart handling
+    @FormUrlEncoded
+    @POST(CampaignURL.BARCODE_CAMPAIGN)
+    Observable<CampaignResponseEntity> getCampaignAudio(@FieldMap Map<String, Object> param);
+
 }

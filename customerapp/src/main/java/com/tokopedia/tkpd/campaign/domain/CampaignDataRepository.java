@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.campaign.domain.barcode;
+package com.tokopedia.tkpd.campaign.domain;
 
 
 
@@ -14,4 +14,5 @@ import rx.Observable;
 
 public interface CampaignDataRepository {
     Observable<CampaignResponseEntity> getCompaignData(TKPDMapParam<String, Object> params);
+    Observable<CampaignResponseEntity> getCampaignFromAudio(TKPDMapParam<String, Object> params) ;
 }

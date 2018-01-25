@@ -2,22 +2,10 @@ package com.tokopedia.tkpd.campaign.di;
 
 
 import com.google.gson.Gson;
-import com.readystatesoftware.chuck.ChuckInterceptor;
-import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
-import com.tokopedia.core.network.core.OkHttpRetryPolicy;
-import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
-import com.tokopedia.core.network.retrofit.interceptors.RideInterceptor;
-import com.tokopedia.core.network.retrofit.interceptors.TkpdBaseInterceptor;
-import com.tokopedia.ride.common.ride.data.BookingRideDataStoreFactory;
-import com.tokopedia.ride.common.ride.data.BookingRideRepositoryData;
-import com.tokopedia.ride.common.ride.di.RideQualifier;
-import com.tokopedia.ride.common.ride.di.scope.RideScope;
-import com.tokopedia.ride.common.ride.domain.BookingRideRepository;
-import com.tokopedia.tkpd.campaign.domain.barcode.CampaignDataRepository;
+import com.tokopedia.tkpd.campaign.domain.CampaignDataRepository;
 import com.tokopedia.tkpd.campaign.domain.barcode.PostBarCodeDataUseCase;
 import com.tokopedia.tkpd.campaign.source.CampaignData;
 import com.tokopedia.tkpd.campaign.source.CampaignDataFactory;
@@ -28,7 +16,6 @@ import com.tokopedia.tkpd.campaign.view.BarCodeScannerPresenter;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
 /**
