@@ -542,9 +542,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void actionTokoPointClicked(String tokoPointUrl, String pageTitle) {
         if (TextUtils.isEmpty(pageTitle))
-            startActivity(BannerWebView.getCallingIntent(getActivity(), tokoPointUrl));
+            startActivity(SimpleWebViewActivity.getIntent(getActivity(), tokoPointUrl));
         else
-            startActivity(BannerWebView.getCallingIntentWithTitle(getActivity(), tokoPointUrl, pageTitle));
+            startActivity(SimpleWebViewActivity.getIntentWithTitle(getActivity(), tokoPointUrl, pageTitle));
     }
 
 
