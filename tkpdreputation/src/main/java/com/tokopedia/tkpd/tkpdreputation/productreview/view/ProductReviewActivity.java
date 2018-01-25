@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.tkpdreputation.productreview.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -20,7 +21,6 @@ public class ProductReviewActivity extends BaseSimpleActivity implements HasComp
         intent.putExtra(ProductReviewFragment.EXTRA_PRODUCT_ID, productId);
         return intent;
     }
-
 
     @Override
     protected Fragment getNewFragment() {

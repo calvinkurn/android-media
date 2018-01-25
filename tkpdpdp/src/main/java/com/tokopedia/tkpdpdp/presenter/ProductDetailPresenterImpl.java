@@ -166,12 +166,11 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     @Override
-    public void processToReputation(@NonNull Context context, @NonNull Bundle bundle) {
+    public void processToReputation(@NonNull Context context, String productId) {
         UnifyTracking.eventPDPReputation();
         if (context.getApplicationContext() instanceof PdpRouter) {
             Intent intent = ((PdpRouter) context.getApplicationContext())
-                    .getProductReputationIntent(context);
-            intent.putExtras(bundle);
+                    .getProductReputationIntent(context,productId);
             viewListener.navigateToActivity(intent);
         }
     }
