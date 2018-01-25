@@ -16,6 +16,7 @@ import rx.Observable;
 public class CacheApiWhiteListUseCase extends UseCase<Boolean> {
 
     public static final String ADD_WHITELIST_COLLECTIONS = "ADD_WHITELIST_COLLECTIONS";
+    public static final String APP_VERSION_NAME = "APP_VERSION_NAME";
 
     private CacheApiRepository apiCacheRepository;
 
@@ -26,6 +27,7 @@ public class CacheApiWhiteListUseCase extends UseCase<Boolean> {
     @Override
     public Observable<Boolean> createObservable(RequestParams requestParams) {
         Object object = requestParams.getObject(ADD_WHITELIST_COLLECTIONS);
-        return apiCacheRepository.insertWhiteList((Collection<CacheApiWhiteListDomain>) object);
+        String versionName = requestParams.getString(APP_VERSION_NAME, "");
+        return apiCacheRepository.insertWhiteList((Collection<CacheApiWhiteListDomain>) object, versionName);
     }
 }

@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import com.tokopedia.cacheapi.constant.CacheApiConstant;
 import com.tokopedia.cacheapi.data.repository.CacheApiRepositoryImpl;
 import com.tokopedia.cacheapi.data.source.CacheApiDataSource;
-import com.tokopedia.cacheapi.data.source.cache.CacheApiVersionCache;
 import com.tokopedia.cacheapi.data.source.db.CacheApiDatabaseSource;
 import com.tokopedia.cacheapi.domain.CacheApiRepository;
 import com.tokopedia.cacheapi.domain.interactor.BaseApiCacheInterceptorUseCase;
@@ -33,19 +32,17 @@ import okhttp3.ResponseBody;
 
 public class CacheApiInterceptor implements Interceptor {
 
-    private Context context;
     private CacheApiResponseValidator responseValidator;
 
     public void setResponseValidator(CacheApiResponseValidator responseValidator) {
         this.responseValidator = responseValidator;
     }
 
-    public CacheApiInterceptor(Context context) {
-        this(context, new CacheApiResponseValidator());
+    public CacheApiInterceptor() {
+        this(new CacheApiResponseValidator());
     }
 
-    public CacheApiInterceptor(Context context, CacheApiResponseValidator responseValidator) {
-        this.context = context;
+    public CacheApiInterceptor(CacheApiResponseValidator responseValidator) {
         this.responseValidator = responseValidator;
     }
 
@@ -65,10 +62,8 @@ public class CacheApiInterceptor implements Interceptor {
     private Response getCacheResponse(Chain chain) throws Throwable {
         Request request = chain.request();
 
-        String versionName = CacheApiUtils.getVersionCode(context);
-        CacheApiRepository cacheApiRepository = new CacheApiRepositoryImpl(new CacheApiDataSource(
-                new CacheApiVersionCache(context, versionName), new CacheApiDatabaseSource())
-        );
+
+        CacheApiRepository cacheApiRepository = new CacheApiRepositoryImpl(new CacheApiDataSource(new CacheApiDatabaseSource()));
 
         new CacheApiClearTimeOutCacheUseCase(cacheApiRepository).executeSync(RequestParams.EMPTY);
 

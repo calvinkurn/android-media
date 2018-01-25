@@ -24,6 +24,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
+import com.tokopedia.cacheapi.util.CacheApiUtils;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.fingerprint.LocationUtils;
@@ -297,6 +298,7 @@ public abstract class MainApplication extends BaseMainApplication{
         List<CacheApiWhiteListDomain> cacheApiWhiteListDomains = getWhiteList();
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(CacheApiWhiteListUseCase.ADD_WHITELIST_COLLECTIONS, cacheApiWhiteListDomains);
+        requestParams.putObject(CacheApiWhiteListUseCase.APP_VERSION_NAME, CacheApiUtils.getVersionCode(context));
         cacheApiWhiteListUseCase.executeSync(requestParams, new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {

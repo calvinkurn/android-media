@@ -24,10 +24,10 @@ public interface CacheApiRepository {
      * bulk insert
      * {"ws.tokopedia.com","/konyol/coba.pl", 10},{"lucu.female.com","towel/doeng.pl", 100}
      *
-     * @param cacheApiWhiteListDomains
+     * @param domainList
      * @return
      */
-    Observable<Boolean> insertWhiteList(@Nullable Collection<CacheApiWhiteListDomain> cacheApiWhiteListDomains);
+    Observable<Boolean> insertWhiteList(@Nullable Collection<CacheApiWhiteListDomain> domainList, String versionName);
 
     /**
      * bulk delete

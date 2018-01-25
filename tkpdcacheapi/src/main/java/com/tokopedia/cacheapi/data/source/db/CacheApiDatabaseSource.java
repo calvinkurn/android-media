@@ -5,13 +5,17 @@ import android.text.TextUtils;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
+import com.tokopedia.cacheapi.exception.VersionNameNotValidException;
 import com.tokopedia.cacheapi.data.source.db.model.CacheApiData;
+import com.tokopedia.cacheapi.data.source.db.model.CacheApiData_Table;
+import com.tokopedia.cacheapi.data.source.db.model.CacheApiVersion;
 import com.tokopedia.cacheapi.data.source.db.model.CacheApiWhitelist;
+import com.tokopedia.cacheapi.data.source.db.model.CacheApiWhitelist_Table;
 import com.tokopedia.cacheapi.domain.mapper.CacheApiWhiteListMapper;
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.cacheapi.util.CacheApiUtils;
-import com.tokopedia.cacheapi.util.LoggingUtils;
 import com.tokopedia.cacheapi.util.EncryptionUtils;
+import com.tokopedia.cacheapi.util.LoggingUtils;
 
 import java.util.Collection;
 
@@ -30,6 +34,46 @@ public class CacheApiDatabaseSource {
 
     private static final String CACHE_API_KEY = "BU}~GV2(K)%z$1+H";
 
+    public Observable<Boolean> isWhiteListVersionUpdated(final String versionName) {
+        return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                if (TextUtils.isEmpty(versionName)) {
+                    subscriber.onError(new VersionNameNotValidException());
+                    return;
+                }
+                String storedVersionName = "";
+                CacheApiVersion cacheApiVersion = new Select()
+                        .from(CacheApiVersion.class)
+                        .querySingle();
+                if (cacheApiVersion != null) {
+                    storedVersionName = cacheApiVersion.getVersion();
+                }
+                LoggingUtils.dumper(String.format("Stored vs current version: %s - %s", storedVersionName, versionName));
+                // Fresh install or different version
+                boolean whiteListVersionUpdated = !TextUtils.isEmpty(storedVersionName) || !storedVersionName.equalsIgnoreCase(versionName);
+                subscriber.onNext(whiteListVersionUpdated);
+            }
+        });
+    }
+
+    public Observable<Boolean> updateCacheWhiteListVersion(final String versionName) {
+        return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                if (TextUtils.isEmpty(versionName)) {
+                    subscriber.onError(new VersionNameNotValidException());
+                    return;
+                }
+                new Delete().from(CacheApiVersion.class).execute();
+                CacheApiVersion cacheApiVersion = new CacheApiVersion();
+                cacheApiVersion.setVersion(versionName);
+                cacheApiVersion.save();
+                subscriber.onNext(true);
+            }
+        });
+    }
+
     public Observable<CacheApiWhitelist> getWhiteList(final String host, final String path) {
         return Observable.unsafeCreate(new Observable.OnSubscribe<CacheApiWhitelist>() {
             @Override
@@ -47,6 +91,7 @@ public class CacheApiDatabaseSource {
         return getWhiteList(host, path).flatMap(new Func1<CacheApiWhitelist, Observable<Boolean>>() {
             @Override
             public Observable<Boolean> call(CacheApiWhitelist cacheApiWhitelist) {
+                int i = 0/0;
                 return Observable.just(cacheApiWhitelist != null);
             }
         });

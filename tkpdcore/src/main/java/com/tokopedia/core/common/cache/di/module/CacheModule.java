@@ -5,7 +5,6 @@ import android.content.pm.PackageManager;
 
 import com.tokopedia.cacheapi.data.repository.CacheApiRepositoryImpl;
 import com.tokopedia.cacheapi.data.source.CacheApiDataSource;
-import com.tokopedia.cacheapi.data.source.cache.CacheApiVersionCache;
 import com.tokopedia.cacheapi.data.source.db.CacheApiDatabaseSource;
 import com.tokopedia.cacheapi.domain.CacheApiRepository;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
@@ -35,11 +34,6 @@ public class CacheModule {
     }
 
     @Provides
-    CacheApiVersionCache provideCacheApiVersionCache(@ApplicationContext Context context, @VersionNameQualifier String versionName) {
-        return new CacheApiVersionCache(context, versionName);
-    }
-
-    @Provides
     CacheApiDatabaseSource provideCacheApiDatabaseSource() {
         return new CacheApiDatabaseSource();
     }
@@ -50,8 +44,8 @@ public class CacheModule {
     }
 
     @Provides
-    CacheApiDataSource provideApiCacheDataSource(CacheApiVersionCache cacheApiVersionCache, CacheApiDatabaseSource cacheApiDatabaseSource) {
-        return new CacheApiDataSource(cacheApiVersionCache, cacheApiDatabaseSource);
+    CacheApiDataSource provideApiCacheDataSource(CacheApiDatabaseSource cacheApiDatabaseSource) {
+        return new CacheApiDataSource(cacheApiDatabaseSource);
     }
 
     @Provides

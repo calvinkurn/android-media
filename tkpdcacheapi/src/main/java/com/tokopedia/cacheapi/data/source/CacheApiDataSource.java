@@ -1,6 +1,5 @@
 package com.tokopedia.cacheapi.data.source;
 
-import com.tokopedia.cacheapi.data.source.cache.CacheApiVersionCache;
 import com.tokopedia.cacheapi.data.source.db.CacheApiDatabaseSource;
 import com.tokopedia.cacheapi.data.source.db.model.CacheApiWhitelist;
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
@@ -19,16 +18,14 @@ import rx.functions.Func2;
 
 public class CacheApiDataSource {
 
-    private CacheApiVersionCache cacheApiVersionCache;
     private CacheApiDatabaseSource cacheApiDatabaseSource;
 
-    public CacheApiDataSource(CacheApiVersionCache cacheApiVersionCache, CacheApiDatabaseSource cacheApiDataManager) {
-        this.cacheApiVersionCache = cacheApiVersionCache;
+    public CacheApiDataSource(CacheApiDatabaseSource cacheApiDataManager) {
         this.cacheApiDatabaseSource = cacheApiDataManager;
     }
 
-    public Observable<Boolean> bulkInsert(final Collection<CacheApiWhiteListDomain> cacheApiDatas) {
-        return cacheApiVersionCache.isWhiteListVersionUpdated().flatMap(new Func1<Boolean, Observable<Boolean>>() {
+    public Observable<Boolean> bulkInsert(final Collection<CacheApiWhiteListDomain> domainList, final String versionName) {
+        return cacheApiDatabaseSource.isWhiteListVersionUpdated(versionName).flatMap(new Func1<Boolean, Observable<Boolean>>() {
             @Override
             public Observable<Boolean> call(Boolean aBoolean) {
                 LoggingUtils.dumper(String.format("Need to update white list: %b", aBoolean));
@@ -44,13 +41,13 @@ public class CacheApiDataSource {
                 }).flatMap(new Func1<Boolean, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(Boolean aBoolean) {
-                        return cacheApiDatabaseSource.insertWhiteList(cacheApiDatas).flatMap(new Func1<Boolean, Observable<Boolean>>() {
+                        return cacheApiDatabaseSource.insertWhiteList(domainList).flatMap(new Func1<Boolean, Observable<Boolean>>() {
                             @Override
                             public Observable<Boolean> call(Boolean aBoolean) {
                                 if (!aBoolean) {
                                     return Observable.just(false);
                                 }
-                                return cacheApiVersionCache.updateCacheWhiteListVersion();
+                                return cacheApiDatabaseSource.updateCacheWhiteListVersion(versionName);
                             }
                         });
                     }

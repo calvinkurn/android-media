@@ -23,8 +23,8 @@ public class CacheApiRepositoryImpl implements CacheApiRepository {
     }
 
     @Override
-    public Observable<Boolean> insertWhiteList(final Collection<CacheApiWhiteListDomain> domainList) {
-        return cacheApiDataSource.bulkInsert(domainList);
+    public Observable<Boolean> insertWhiteList(final Collection<CacheApiWhiteListDomain> domainList, final String versionName) {
+        return cacheApiDataSource.bulkInsert(domainList, versionName);
     }
 
     @Override
