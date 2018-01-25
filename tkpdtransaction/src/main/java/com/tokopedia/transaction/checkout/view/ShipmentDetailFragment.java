@@ -31,6 +31,7 @@ import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.view.adapter.CourierChoiceAdapter;
+import com.tokopedia.transaction.checkout.view.data.CourierItemData;
 import com.tokopedia.transaction.checkout.view.presenter.IShipmentDetailPresenter;
 import com.tokopedia.transaction.checkout.view.view.IShipmentDetailView;
 
@@ -205,7 +206,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
-                        presenter.getShipmentData();
+                        presenter.loadShipmentData();
                     }
                 });
     }
@@ -223,6 +224,10 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
     @Override
     public void renderRegularShipment() {
         flPinpointMap.setVisibility(View.GONE);
+    }
+
+    private void setupShipmentSpinner() {
+
     }
 
     private void setupRecyclerView() {
@@ -321,7 +326,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
     }
 
     @Override
-    public void onCourierItemClick() {
+    public void onCourierItemClick(CourierItemData courierItemData) {
 
     }
 

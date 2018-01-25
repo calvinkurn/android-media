@@ -13,6 +13,7 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.view.adapter.ShipmentChoiceAdapter;
+import com.tokopedia.transaction.checkout.view.data.ShipmentItemData;
 import com.tokopedia.transaction.checkout.view.presenter.IShipmentChoicePresenter;
 import com.tokopedia.transaction.checkout.view.view.IShipmentChoiceView;
 
@@ -110,7 +111,7 @@ public class ShipmentChoiceFragment extends BasePresenterFragment implements ISh
     }
 
     private void setupRecyclerView() {
-        shipmentChoiceAdapter = new ShipmentChoiceAdapter(this);
+        shipmentChoiceAdapter = new ShipmentChoiceAdapter(presenter.getShipmentChoices(), this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.VERTICAL, false);
         rvShipmentChoice.setLayoutManager(linearLayoutManager);
@@ -141,11 +142,12 @@ public class ShipmentChoiceFragment extends BasePresenterFragment implements ISh
 
     @Override
     public void showData() {
+        shipmentChoiceAdapter.notifyDataSetChanged();
         rvShipmentChoice.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void onShipmentItemClick() {
+    public void onShipmentItemClick(ShipmentItemData shipmentItemData) {
 
     }
 }

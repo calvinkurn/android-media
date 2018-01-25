@@ -9,6 +9,6 @@ import com.tokopedia.transaction.checkout.view.view.IShipmentDetailView;
 
 public interface IShipmentDetailPresenter extends CustomerPresenter<IShipmentDetailView> {
 
-    void getShipmentData();
+    void loadShipmentData();
 
 }

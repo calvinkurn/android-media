@@ -9,6 +9,9 @@ import android.widget.TextView;
 
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
+import com.tokopedia.transaction.checkout.view.data.ShipmentItemData;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -20,8 +23,10 @@ import butterknife.ButterKnife;
 public class ShipmentChoiceAdapter extends RecyclerView.Adapter<ShipmentChoiceAdapter.ShipmentViewHolder> {
 
     private ViewListener viewListener;
+    private List<ShipmentItemData> shipments;
 
-    public ShipmentChoiceAdapter(ViewListener viewListener) {
+    public ShipmentChoiceAdapter(List<ShipmentItemData> shipments, ViewListener viewListener) {
+        this.shipments = shipments;
         this.viewListener = viewListener;
     }
 
@@ -34,27 +39,39 @@ public class ShipmentChoiceAdapter extends RecyclerView.Adapter<ShipmentChoiceAd
     }
 
     @Override
-    public void onBindViewHolder(ShipmentViewHolder holder, int position) {
-
+    public void onBindViewHolder(final ShipmentViewHolder holder, final int position) {
+        ShipmentItemData shipmentItemData = shipments.get(position);
+        holder.tvShipmentType.setText(shipmentItemData.getType());
+        holder.tvPriceRange.setText(shipmentItemData.getPriceRange());
+        holder.tvDeliveryTimeRange.setText(shipmentItemData.getDeliveryTimeRange());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (holder.getAdapterPosition() >= 0 && shipments.size() > holder.getAdapterPosition()) {
+                    holder.imgBtCheck.setImageResource(R.drawable.ic_check_circle_green);
+                    viewListener.onShipmentItemClick(shipments.get(holder.getAdapterPosition()));
+                }
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return shipments.size();
     }
 
     public interface ViewListener {
-        void onShipmentItemClick();
+        void onShipmentItemClick(ShipmentItemData shipmentItemData);
     }
 
-    protected class ShipmentViewHolder extends RecyclerView.ViewHolder {
+    static class ShipmentViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R2.id.tv_shipment_type)
         TextView tvShipmentType;
         @BindView(R2.id.tv_price_range)
         TextView tvPriceRange;
-        @BindView(R2.id.btn_check)
-        ImageButton btnCheck;
+        @BindView(R2.id.img_bt_check)
+        ImageButton imgBtCheck;
         @BindView(R2.id.tv_delivery_time_range)
         TextView tvDeliveryTimeRange;
 
@@ -62,7 +79,6 @@ public class ShipmentChoiceAdapter extends RecyclerView.Adapter<ShipmentChoiceAd
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
-
     }
 
 }

@@ -351,10 +351,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/label_shipment_fee" />
+                    android:text="@string/title_sub_total" />
 
                 <TextView
-                    android:id="@+id/tv_total_shipping_fee"
+                    android:id="@+id/tv_subtotal"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
