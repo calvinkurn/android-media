@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/padding_vvs"
+        android:textColor="@color/digital_voucher_notes"
         android:text="@string/title_nominal"
         android:textSize="@dimen/font_small"/>
 

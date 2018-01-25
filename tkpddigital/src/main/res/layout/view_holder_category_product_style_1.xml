@@ -74,8 +74,10 @@
     <TextView
         android:id="@+id/btn_buy_digital"
         style="@style/DigitalButtonBuy"
+        android:layout_height="@dimen/btn_height"
+        android:layout_weight="0.40"
         android:layout_marginBottom="@dimen/padding_med"
         android:layout_marginTop="@dimen/digital_padding_28"
-        android:text="@string/label_btn_buy_digital" />
+        android:text="@string/label_btn_buy_digital"/>
 
 </LinearLayout>
