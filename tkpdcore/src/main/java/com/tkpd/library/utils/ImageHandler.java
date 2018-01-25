@@ -168,6 +168,7 @@ public class ImageHandler {
                 .placeholder(R.drawable.loading_page)
                 .error(R.drawable.error_drawable)
                 .skipMemoryCache(true)
+                .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into(imageview);
     }
