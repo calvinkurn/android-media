@@ -4,22 +4,40 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/margin_vvs"
-    android:layout_marginBottom="@dimen/margin_vs"
     android:layout_marginRight="@dimen/margin_vvvs"
     android:layout_marginLeft="@dimen/margin_vvvs">
 
     <TextView
+        android:id="@+id/dummy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="" />
+
+    <TextView
         android:id="@+id/text"
         android:layout_width="wrap_content"
-        android:maxWidth="200dp"
+        android:maxWidth="@dimen/max_width_template"
+        android:minWidth="@dimen/min_width_template"
         android:layout_height="wrap_content"
+        android:minHeight="@dimen/min_height_template"
+        android:gravity="center"
         android:background="@drawable/interactive_label_template_chat"
-        android:padding="@dimen/padding_vs"
-        android:scrollbars="horizontal"
+        android:paddingTop="@dimen/new_margin_small"
+        android:paddingBottom="@dimen/new_margin_small"
+        android:paddingLeft="@dimen/margin_small"
+        android:paddingRight="@dimen/margin_small"
         android:singleLine="true"
+        android:ellipsize="marquee"
         android:textSize="@dimen/text_size_small"
         android:textColor="@color/tkpd_main_green"
-        tools:text="Maaf mengganggu" />
+        tools:text="Maafm" />
+
+    <com.tokopedia.core.customwidget.SquareHImageView
+        android:id="@+id/setting"
+        android:layout_width="@dimen/min_height_template"
+        android:layout_height="@dimen/min_height_template"
+        android:background="@drawable/interactive_label_template_chat"
+        android:src="@drawable/ic_setting_chat" />
 
 
 </LinearLayout>

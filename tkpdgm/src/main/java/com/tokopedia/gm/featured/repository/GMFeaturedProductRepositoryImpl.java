@@ -8,7 +8,7 @@ import com.tokopedia.gm.featured.domain.mapper.GMFeaturedProductMapper;
 import com.tokopedia.gm.featured.domain.mapper.GMFeaturedProductSubmitMapper;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
 import com.tokopedia.gm.featured.domain.model.GMFeaturedProductSubmitDomainModel;
-import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
+import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
 
 import rx.Observable;
 

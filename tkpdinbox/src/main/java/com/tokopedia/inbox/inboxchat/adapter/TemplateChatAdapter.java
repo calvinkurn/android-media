@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.inbox.inboxchat.data.factory.TemplateChatFactory;
+import com.tokopedia.inbox.inboxchat.viewmodel.TemplateChatModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +56,15 @@ public class TemplateChatAdapter extends RecyclerView.Adapter<AbstractViewHolder
     public void setList(List<Visitable> list) {
         this.list.clear();
         this.list.addAll(list);
+        notifyDataSetChanged();
+    }
+
+    public void update(ArrayList<String> strings) {
+        list.clear();
+        for (int i = 0; i < strings.size(); i++) {
+            list.add(new TemplateChatModel(strings.get(i)));
+        }
+        list.add(new TemplateChatModel(false));
         notifyDataSetChanged();
     }
 }

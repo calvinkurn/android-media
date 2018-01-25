@@ -10,8 +10,6 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.discovery.model.HotListBannerModel;
 import com.tokopedia.core.discovery.model.ObjContainer;
@@ -20,7 +18,7 @@ import com.tokopedia.core.network.entity.discovery.BrowseShopModel;
 import com.tokopedia.core.product.interactor.CacheInteractorImpl;
 import com.tokopedia.core.product.interactor.RetrofitInteractor;
 import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.PagingHandler;
@@ -147,7 +145,7 @@ public class FragmentDiscoveryPresenterImpl extends FragmentDiscoveryPresenter i
             }
         } else {
             cacheInteractor.deleteProductDetail(productId);
-            Intent intent = SessionRouter.getLoginActivityIntent(context);
+            Intent intent = OldSessionRouter.getLoginActivityIntent(context);
             intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
             intent.putExtra("product_id", String.valueOf(productId));
             view.navigateToActivityRequest(intent, ProductDetailFragment.REQUEST_CODE_LOGIN);

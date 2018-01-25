@@ -142,7 +142,7 @@ public class RequestPermissionUtil {
                                        String permission) {
         new android.support.v7.app.AlertDialog.Builder(context)
                 .setMessage(getNeedPermissionMessage(permission))
-                .setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         request.proceed();
@@ -161,7 +161,7 @@ public class RequestPermissionUtil {
                                        List<String> permission) {
         new android.support.v7.app.AlertDialog.Builder(context)
                 .setMessage(getNeedPermissionMessage(permission))
-                .setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         request.proceed();

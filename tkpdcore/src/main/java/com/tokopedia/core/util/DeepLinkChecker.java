@@ -47,6 +47,7 @@ public class DeepLinkChecker {
     public static final int RECHARGE = 14;
     public static final int BLOG = 15;
     public static final int PELUANG = 16;
+    public static final int DISCOVERY_PAGE = 17;
 
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
 
@@ -85,6 +86,8 @@ public class DeepLinkChecker {
                 return HOT_LIST;
             else if (isCatalog(linkSegment))
                 return CATALOG;
+            else if (isDiscoveryPage(linkSegment))
+                return DISCOVERY_PAGE;
             else if (isPulsa(linkSegment))
                 return RECHARGE;
             else if (isTopPicks(linkSegment))
@@ -120,6 +123,10 @@ public class DeepLinkChecker {
         return (linkSegment.get(0).equals("catalog"));
     }
 
+    private static boolean isContent(List<String> linkSegment) {
+        return (linkSegment.get(0).equals("content"));
+    }
+
     private static boolean isPromo(List<String> linkSegment) {
         return linkSegment.size() > 0 && (linkSegment.get(0).equals("promo"));
     }
@@ -141,6 +148,18 @@ public class DeepLinkChecker {
         return (linkSegment.get(0).equals("toppicks"));
     }
 
+    private static boolean isDiscoveryPage(List<String> linkSegment) {
+        return (linkSegment.get(0).equals("b") && linkSegment.size() == 2 ||
+                linkSegment.get(0).equals("discovery") && linkSegment.size() == 2);
+    }
+
+    public static String getDiscoveryPageId(String url) {
+        if (getDeepLinkType(url)!=DISCOVERY_PAGE) return "";
+        Uri uriData = Uri.parse(url);
+        List<String> linkSegment = uriData.getPathSegments();
+        return linkSegment.get(1);
+    }
+
     private static boolean isHelp(List<String> linkSegment) {
         return (linkSegment.get(0).equals("bantuan"));
     }
@@ -155,6 +174,7 @@ public class DeepLinkChecker {
                 && !isHelp(linkSegment)
                 && !isBrowse(linkSegment)
                 && !isHot(linkSegment)
+                && !isContent(linkSegment)
                 && !isCatalog(linkSegment)
                 && !isTopPicks(linkSegment));
     }
@@ -167,7 +187,6 @@ public class DeepLinkChecker {
                 && !linkSegment.get(0).equals("reset.pl")
                 && !linkSegment.get(0).equals("activation.pl"));
     }
-
 
     private static boolean isSearch(String url) {
         return (getLinkSegment(url).get(0).equals("search"));
@@ -241,7 +260,6 @@ public class DeepLinkChecker {
                 BrowseProductRouter.getHotlistIntent(context, url)
         );
     }
-
 
     public static void openCatalog(String url, Context context) {
         context.startActivity(DetailProductRouter.getCatalogDetailActivity(context, getLinkSegment(url).get(1)));

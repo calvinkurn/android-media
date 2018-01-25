@@ -1,13 +1,12 @@
 package com.tokopedia.digital.widget.domain;
 
-import android.support.v4.util.Pair;
-
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.apiservice.DigitalEndpointService;
+import com.tokopedia.digital.product.model.OrderClientNumber;
 import com.tokopedia.digital.widget.data.entity.category.CategoryEntity;
 import com.tokopedia.digital.widget.data.entity.operator.OperatorEntity;
 import com.tokopedia.digital.widget.data.entity.product.ProductEntity;
@@ -34,7 +33,6 @@ import rx.functions.Func1;
 public class DigitalWidgetRepository implements IDigitalWidgetRepository {
 
     private final static String KEY_CATEGORY = "RECHARGE_CATEGORY";
-    private final static String KEY_STATUS = "RECHARGE_STATUS";
     private final static String KEY_PRODUCT = "RECHARGE_PRODUCT";
     private final static String KEY_OPERATOR = "RECHARGE_OPERATOR";
     private final static String KEY_STATUS_CURRENT = "RECHARGE_STATUS_CURRENT";
@@ -49,12 +47,14 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
     }
 
     @Override
-    public Observable<List<CategoryEntity>> getObservableCategoryData(boolean isUseCache) {
-        if (isUseCache) {
-            return getObservableCategoryDataDB();
-        } else {
-            return getObservableCategoryDataNetwork();
-        }
+    public Observable<List<CategoryEntity>> getObservableCategoryData() {
+        return Observable.concat(getObservableCategoryDataDB(), getObservableCategoryDataNetwork())
+                .first(new Func1<List<CategoryEntity>, Boolean>() {
+                    @Override
+                    public Boolean call(List<CategoryEntity> categoryEntities) {
+                        return categoryEntities != null && !categoryEntities.isEmpty();
+                    }
+                });
     }
 
     private Observable<List<CategoryEntity>> getObservableCategoryDataDB() {
@@ -101,12 +101,14 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
     }
 
     @Override
-    public Observable<List<ProductEntity>> getObservableProducts(boolean useCache) {
-        if (useCache) {
-            return getObservableProductsDB();
-        } else {
-            return getObservableProductsNetwork();
-        }
+    public Observable<List<ProductEntity>> getObservableProducts() {
+        return Observable.concat(getObservableProductsDB(), getObservableProductsNetwork())
+                .first(new Func1<List<ProductEntity>, Boolean>() {
+                    @Override
+                    public Boolean call(List<ProductEntity> products) {
+                        return products != null && !products.isEmpty();
+                    }
+                });
     }
 
     private Observable<List<ProductEntity>> getObservableProductsDB() {
@@ -152,12 +154,14 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
     }
 
     @Override
-    public Observable<List<OperatorEntity>> getObservableOperators(boolean useCache) {
-        if (useCache) {
-            return getObservableOperatorsDB();
-        } else {
-            return getObservableOperatorsNetwork();
-        }
+    public Observable<List<OperatorEntity>> getObservableOperators() {
+        return Observable.concat(getObservableOperatorsDB(), getObservableOperatorsNetwork())
+                .first(new Func1<List<OperatorEntity>, Boolean>() {
+                    @Override
+                    public Boolean call(List<OperatorEntity> operators) {
+                        return operators != null && !operators.isEmpty();
+                    }
+                });
     }
 
     private Observable<List<OperatorEntity>> getObservableOperatorsDB() {
@@ -202,33 +206,26 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
                 });
     }
 
-    public Observable<Pair<StatusEntity, Boolean>> getObservableStatus() {
+    public Observable<StatusEntity> getObservableStatus() {
         return getObservableStatusNetwork()
-                .map(new Func1<StatusEntity, Pair<StatusEntity, Boolean>>() {
+                .map(new Func1<StatusEntity, StatusEntity>() {
                     @Override
-                    public Pair<StatusEntity, Boolean> call(StatusEntity status) {
+                    public StatusEntity call(StatusEntity status) {
                         GlobalCacheManager globalCacheManager = new GlobalCacheManager();
                         String currentStatusString = globalCacheManager.getValueString(KEY_STATUS_CURRENT);
                         String statusString = CacheUtil.convertModelToString(status,
                                 new TypeToken<StatusEntity>() {
                                 }.getType());
-                        boolean useCache;
                         if (currentStatusString != null && !currentStatusString.equals(statusString)) {
                             globalCacheManager.delete(KEY_CATEGORY);
                             globalCacheManager.delete(KEY_OPERATOR);
                             globalCacheManager.delete(KEY_PRODUCT);
 
                             saveStatusToCache(statusString);
-
-                            useCache = false;
                         } else if (currentStatusString == null) {
                             saveStatusToCache(statusString);
-
-                            useCache = false;
-                        } else {
-                            useCache = true;
                         }
-                        return new Pair<>(status, useCache);
+                        return status;
                     }
                 });
     }
@@ -253,7 +250,13 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
     @Override
     public Observable<DigitalNumberList> getObservableNumberList(TKPDMapParam<String, String> param) {
         return digitalEndpointService.getApi().getNumberList(param)
-                .map(getFuncTransformNumberList());
+                .map(getFuncTransformNumberList())
+                .onErrorReturn(new Func1<Throwable, DigitalNumberList>() {
+                    @Override
+                    public DigitalNumberList call(Throwable throwable) {
+                        return new DigitalNumberList(new ArrayList<OrderClientNumber>(), null);
+                    }
+                });
     }
 
     private Func1<Response<TkpdDigitalResponse>, DigitalNumberList> getFuncTransformNumberList() {

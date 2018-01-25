@@ -8,6 +8,7 @@ import android.os.Handler;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.manage.people.password.fragment.ManagePasswordFragment;
@@ -129,6 +130,8 @@ public class ManagePasswordActivity extends BasePresenterActivity<ManagePassword
     private void exit() {
         new GlobalCacheManager().deleteAll();
         SessionHandler.clearUserData(this);
+        TrackingUtils.eventMoEngageLogoutUser();
+
         Intent intent;
         if (GlobalConfig.isSellerApp()) {
             intent = new Intent(this, WelcomeActivity.class);

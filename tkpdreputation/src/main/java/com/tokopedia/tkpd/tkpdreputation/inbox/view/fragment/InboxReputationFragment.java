@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.LinearLayout;
 
+import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
@@ -23,6 +24,7 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
+import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.GlobalConfig;
@@ -232,10 +234,9 @@ public class InboxReputationFragment extends BaseDaggerFragment
                 super.onScrollStateChanged(recyclerView, newState);
                 int lastItemPosition = layoutManager.findLastVisibleItemPosition();
                 int visibleItem = layoutManager.getItemCount() - 1;
-                if (!adapter.isLoading())
-                    presenter.getNextPage(lastItemPosition, visibleItem, "",
-                            timeFilter, scoreFilter, getTab
-                                    ());
+                if (!adapter.isLoading() && !adapter.isEmpty())
+                    presenter.getNextPage(lastItemPosition, visibleItem,
+                            searchView.getQuery().toString(), timeFilter, scoreFilter, getTab());
             }
         };
     }
@@ -355,16 +356,35 @@ public class InboxReputationFragment extends BaseDaggerFragment
                              String revieweeName, String revieweeImage,
                              ReputationDataViewModel reputationDataViewModel, String textDeadline,
                              int adapterPosition, int role) {
+        savePassModelToDB(getInboxReputationDetailPassModel(reputationId, invoice, createTime,
+                revieweeImage, revieweeName, textDeadline,
+                reputationDataViewModel, role));
+
         startActivityForResult(
                 InboxReputationDetailActivity.getCallingIntent(
                         getActivity(),
-                        getInboxReputationDetailPassModel(reputationId, invoice, createTime,
-                                revieweeImage, revieweeName, textDeadline,
-                                reputationDataViewModel, role),
                         adapterPosition,
                         getTab()),
                 REQUEST_OPEN_DETAIL);
     }
+
+    private void savePassModelToDB(InboxReputationDetailPassModel inboxReputationDetailPassModel) {
+        if (cacheManager != null) {
+            cacheManager.setKey(InboxReputationDetailActivity.CACHE_PASS_DATA);
+            cacheManager.setValue(CacheUtil.convertModelToString(inboxReputationDetailPassModel,
+                    new TypeToken<InboxReputationDetailPassModel>() {
+                    }.getType()));
+            cacheManager.store();
+        }
+    }
+
+    private void removeCachePassData() {
+        if (cacheManager != null) {
+            cacheManager.delete(InboxReputationDetailActivity.CACHE_PASS_DATA);
+            cacheManager.store();
+        }
+    }
+
 
     private InboxReputationDetailPassModel getInboxReputationDetailPassModel(
             String reputationId,
@@ -462,8 +482,9 @@ public class InboxReputationFragment extends BaseDaggerFragment
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_OPEN_DETAIL && resultCode == Activity.RESULT_OK) {
-            refreshPage();
+        if (requestCode == REQUEST_OPEN_DETAIL) {
+            removeCachePassData();
+            if (resultCode == Activity.RESULT_OK) refreshPage();
         } else if (requestCode == REQUEST_FILTER
                 && resultCode == Activity.RESULT_OK
                 && data != null) {

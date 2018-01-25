@@ -89,7 +89,7 @@ public class SolutionView extends BaseView<SolutionData, DetailResCenterFragment
     }
 
     private String generateInformationText(SolutionData data) {
-        return "<i>" + getContext().getString(R.string.template_last_solution_provider_v2, buildBoldName(data.getSolutionProviderName()), DateFormatUtils.formatDateForResoChatV2(data.getSolutionDate())) + "</i>";
+        return "<i>" + getContext().getString(R.string.template_last_solution_provider_v2, buildBoldName(data.getSolutionProviderName()), data.getSolutionDate()) + "</i>";
     }
 
     private String buildBoldName(String string){

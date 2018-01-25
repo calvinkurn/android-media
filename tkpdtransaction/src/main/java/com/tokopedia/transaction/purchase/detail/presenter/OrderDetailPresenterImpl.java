@@ -61,7 +61,7 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
 
     @Override
     public void processShowComplain(Context context, OrderDetailData data) {
-        mainView.onViewComplaint(data.getResoId());
+        mainView.onViewComplaint(data);
     }
 
     @Override
