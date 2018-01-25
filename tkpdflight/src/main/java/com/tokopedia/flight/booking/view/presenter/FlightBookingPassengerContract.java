@@ -98,6 +98,8 @@ public interface FlightBookingPassengerContract {
         boolean isAirAsiaAirline();
 
         String getDepartureDateString();
+
+        void showPassengerLastNameShouldSameWithFirstNameError(int resId);
     }
 
     interface Presenter extends CustomerPresenter<View> {

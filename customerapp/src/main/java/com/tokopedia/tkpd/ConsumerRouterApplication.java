@@ -1111,6 +1111,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public AnalyticTracker getAnalyticTracker() {
         return new AnalyticTracker() {
             @Override
+            public void sendEventTracking(Map<String, Object> events) {
+
+            }
+
+            @Override
             public void sendEventTracking(String event, String category, String action, String label) {
                 UnifyTracking.sendGTMEvent(new EventTracking(
                         event,
