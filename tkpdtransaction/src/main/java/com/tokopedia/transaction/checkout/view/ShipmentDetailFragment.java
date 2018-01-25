@@ -2,6 +2,7 @@ package com.tokopedia.transaction.checkout.view;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,13 +18,20 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.view.adapter.CourierChoiceAdapter;
-import com.tokopedia.transaction.checkout.view.adapter.ShipmentChoiceAdapter;
+import com.tokopedia.transaction.checkout.view.presenter.IShipmentDetailPresenter;
 import com.tokopedia.transaction.checkout.view.view.IShipmentDetailView;
 
 import butterknife.BindView;
@@ -35,7 +43,7 @@ import butterknife.OnClick;
  */
 
 public class ShipmentDetailFragment extends BasePresenterFragment implements IShipmentDetailView,
-        CourierChoiceAdapter.ViewListener {
+        CourierChoiceAdapter.ViewListener, OnMapReadyCallback {
 
     @BindView(R2.id.scroll_view_content)
     ScrollView scrollViewContent;
@@ -103,6 +111,15 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
     Button btSave;
 
     private CourierChoiceAdapter courierChoiceAdapter;
+    private IShipmentDetailPresenter presenter;
+
+    public static ShipmentDetailFragment newInstance() {
+        ShipmentDetailFragment fragment = new ShipmentDetailFragment();
+        Bundle bundle = new Bundle();
+        // Todo : Add bundle if any
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     @Override
     protected boolean isRetainInstance() {
@@ -182,6 +199,23 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
     }
 
     @Override
+    public void showNoConnection(@NonNull String message) {
+        scrollViewContent.setVisibility(View.GONE);
+        NetworkErrorHelper.showEmptyState(getActivity(), llNetworkErrorView, message,
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        presenter.getShipmentData();
+                    }
+                });
+    }
+
+    @Override
+    public void showData() {
+        scrollViewContent.setVisibility(View.VISIBLE);
+    }
+
+    @Override
     public void renderInstantShipment() {
 
     }
@@ -209,6 +243,36 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
         btChoosePinpoint.setVisibility(View.GONE);
         tvNoPonpointInformation.setVisibility(View.GONE);
         btChangePinpoint.setVisibility(View.VISIBLE);
+    }
+
+    private void setupMapView() {
+        if (mapViewPinpoint != null) {
+            mapViewPinpoint.onCreate(null);
+            mapViewPinpoint.onResume();
+            mapViewPinpoint.getMapAsync(this);
+        }
+    }
+
+    private void setGoogleMap(GoogleMap googleMap) {
+        if (googleMap != null) {
+            double latitude = 0;
+            double longitude = 0;
+            LatLng latLng = new LatLng(latitude, longitude);
+
+            googleMap.getUiSettings().setMapToolbarEnabled(false);
+            googleMap.addMarker(new MarkerOptions().position(latLng)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_icon_pointer_toped))
+            ).setDraggable(true);
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                @Override
+                public void onMapClick(LatLng latLng) {
+                    // need this even it's not used
+                    // it's used to override default function of OnMapClickListener
+                    // which is navigate to default Google Map Apps
+                }
+            });
+        }
     }
 
     @OnCheckedChanged(R2.id.switch_insurance)
@@ -259,5 +323,10 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
     @Override
     public void onCourierItemClick() {
 
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        setGoogleMap(googleMap);
     }
 }

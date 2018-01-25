@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
@@ -33,6 +34,14 @@ public class ShipmentChoiceFragment extends BasePresenterFragment implements ISh
 
     private ShipmentChoiceAdapter shipmentChoiceAdapter;
     private IShipmentChoicePresenter presenter;
+
+    public static ShipmentChoiceFragment newInstance() {
+        ShipmentChoiceFragment fragment = new ShipmentChoiceFragment();
+        Bundle bundle = new Bundle();
+        // Todo : Add bundle if any
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     @Override
     protected boolean isRetainInstance() {
@@ -116,6 +125,23 @@ public class ShipmentChoiceFragment extends BasePresenterFragment implements ISh
     @Override
     public void hideLoading() {
         pbLoading.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showNoConnection(String message) {
+        rvShipmentChoice.setVisibility(View.GONE);
+        NetworkErrorHelper.showEmptyState(getActivity(), llNetworkErrorView, message,
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        presenter.loadShipmentChoice();
+                    }
+                });
+    }
+
+    @Override
+    public void showData() {
+        rvShipmentChoice.setVisibility(View.VISIBLE);
     }
 
     @Override

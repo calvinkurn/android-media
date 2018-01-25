@@ -12,6 +12,10 @@ public interface IShipmentDetailView extends CustomerView {
 
     void hideLoading();
 
+    void showNoConnection(String message);
+
+    void showData();
+
     void renderInstantShipment();
 
     void renderRegularShipment();
