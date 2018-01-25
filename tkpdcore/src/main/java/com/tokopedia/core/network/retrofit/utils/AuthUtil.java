@@ -58,7 +58,7 @@ public class AuthUtil {
 
     public static final String WEBVIEW_FLAG_PARAM_FLAG_APP = "flag_app";
     public static final String WEBVIEW_FLAG_PARAM_DEVICE = "device";
-    public static final String WEBVIEW_FLAG_PARAM_UTM_SOURCE = "utm_source";
+    public static final String WEBVIEW_FLAG_PARAM_UTM_SOURCE = "u   `tm_source";
     public static final String WEBVIEW_FLAG_PARAM_APP_VERSION = "app_version";
     public static final String WEBVIEW_FLAG_PARAM_OS_VERSION = "os_version";
 
@@ -66,17 +66,22 @@ public class AuthUtil {
     public static final String DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE = "android";
     public static final String DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE = "android";
 
+    public static final String HEADER_HMAC_SIGNATURE_KEY = "TKP MobileApps: ";
+
 
     /**
      * default key is KEY_WSV$
      */
     public static class KEY {
-        public static final String KEY_WSV4 = "web_service_v4";
+        private static final int[] RAW_KEY_WSV4 = new int[]{65,107,102,105,101,119,56,51,52,50,57,56,80,79,105,110,118};
+        private static final int[] RAW_SCROOGE_KEY = new int[]{49,50,69,56,77,105,69,55,89,69,54,86,122,115,69,80,66,80,101,77 };
+        private static final int[] RAW_ZEUS_KEY = new int[]{102,100,100,98,100,56,49,101,101,52,49,49,54,98,56,99,98,55,97,52,48,56,100,55,102,98,102,98,57,99,49,55 };
+        public static final String KEY_WSV4 = convert(RAW_KEY_WSV4);
         public static final String KEY_MOJITO = "mojito_api_v1";
         public static final String KEY_KEROPPI = "Keroppi";
         public static final String TOKO_CASH_HMAC = "CPAnAGpC3NIg7ZSj";
-        public static String KEY_CREDIT_CARD_VAULT = "AdKc1ag2NmYgRUF97eQQ8J";
-        public static String ZEUS_WHITELIST = "abf49d067c9ca8585f3a1059464d22b9";
+        public static String KEY_CREDIT_CARD_VAULT = convert(RAW_SCROOGE_KEY);
+        public static String ZEUS_WHITELIST = convert(RAW_ZEUS_KEY);
     }
 
     public static Map<String, String> generateHeadersWithXUserId(
@@ -143,7 +148,6 @@ public class AuthUtil {
     }
 
 
-
     public static Map<String, String> generateHeaders(String path, String strParam, String method, String authKey) {
         Map<String, String> finalHeader = getDefaultHeaderMap(path, strParam, method, CONTENT_TYPE, authKey, DATE_FORMAT);
         finalHeader.put(HEADER_X_APP_VERSION, Integer.toString(GlobalConfig.VERSION_CODE));
@@ -195,7 +199,7 @@ public class AuthUtil {
         headerMap.put(HEADER_REQUEST_METHOD, method);
         headerMap.put(HEADER_CONTENT_MD5, contentMD5);
         headerMap.put(HEADER_DATE, date);
-        headerMap.put(HEADER_AUTHORIZATION, "TKPD Tokopedia:" + signature.trim());
+        headerMap.put(HEADER_AUTHORIZATION, HEADER_HMAC_SIGNATURE_KEY + signature.trim());
         headerMap.put(HEADER_X_APP_VERSION, String.valueOf(GlobalConfig.VERSION_CODE));
         headerMap.put(HEADER_X_TKPD_APP_NAME, GlobalConfig.getPackageApplicationName());
         headerMap.put(HEADER_X_TKPD_APP_VERSION, "android-" + GlobalConfig.VERSION_NAME);
@@ -420,9 +424,9 @@ public class AuthUtil {
     }
 
     public static TKPDMapParam<String, Object> generateParamsNetworkObject(Context context,
-                                                                     TKPDMapParam<String, Object>
-                                                                             params,
-                                                                     String userId) {
+                                                                           TKPDMapParam<String, Object>
+                                                                                   params,
+                                                                           String userId) {
 
         String deviceId = GCMHandler.getRegistrationId(context);
         String hash = md5(userId + "~" + deviceId);
@@ -473,5 +477,13 @@ public class AuthUtil {
             e.printStackTrace();
             return "";
         }
+    }
+
+    private static String convert(int[] key) {
+        String finalKey = "";
+        for (int i : key) {
+            finalKey = finalKey+Character.toString((char) i);
+        }
+        return finalKey;
     }
 }
