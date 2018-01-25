@@ -20,38 +20,77 @@ import java.util.List;
  */
 
 public class MultipleAddressAdapter extends RecyclerView.Adapter
-        <MultipleAddressAdapter.MultipleAddressViewHolder>{
+        <RecyclerView.ViewHolder> {
 
+
+    private static final int MULTIPLE_ADDRESS_HEADER_LAYOUT = R.layout.multiple_address_header;
+    private static final int MULTIPLE_ADDRESS_FOOTER_LAYOUT = R.layout.multiple_address_footer;
+    private static final int MULTIPLE_ADDRESS_ADAPTER_LAYOUT = R.layout.multiple_address_adapter;
+    private static final int HEADER_SIZE = 1;
+    private static final int FOOTER_SIZE = 1;
 
     private List<MultipleAddressAdapterData> addressData;
 
-    public MultipleAddressAdapter(List<MultipleAddressAdapterData> addressData) {
+    private MultipleAddressAdapterListener listener;
+
+
+    public MultipleAddressAdapter(List<MultipleAddressAdapterData> addressData,
+                                  MultipleAddressAdapterListener listener) {
         this.addressData = addressData;
+        this.listener = listener;
     }
 
     @Override
-    public MultipleAddressViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public int getItemViewType(int position) {
+        if (position == 0) return MULTIPLE_ADDRESS_HEADER_LAYOUT;
+        else if (position > addressData.size()) return MULTIPLE_ADDRESS_FOOTER_LAYOUT;
+        else return MULTIPLE_ADDRESS_ADAPTER_LAYOUT;
+    }
+
+
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.multiple_address_adapter, parent, false);
-        return new MultipleAddressViewHolder(parent.getContext(), itemView);
+                .inflate(viewType, parent, false);
+        if (viewType == MULTIPLE_ADDRESS_HEADER_LAYOUT)
+            return new MultipleAddressHeaderViewHolder(itemView);
+        else if (viewType == MULTIPLE_ADDRESS_FOOTER_LAYOUT)
+            return new MultipleAddressFooterViewHolder(itemView);
+        else return new MultipleAddressViewHolder(parent.getContext(), itemView);
     }
 
     @Override
-    public void onBindViewHolder(MultipleAddressViewHolder holder, int position) {
-        MultipleAddressAdapterData data = addressData.get(position);
-        holder.senderName.setText(data.getSenderName());
-        holder.productName.setText(data.getProductName());
-        holder.productPrice.setText(data.getProductPrice());
-        ImageHandler.LoadImage(holder.productImage, data.getProductImageUrl());
-        holder.shippingDestinationList.setLayoutManager(new LinearLayoutManager(holder.context));
-        holder.shippingDestinationList.setAdapter(
-                new MultipleAddressItemAdapter(data.getItemListData())
-        );
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+
+        if (holder instanceof MultipleAddressViewHolder) {
+            MultipleAddressViewHolder itemViewHolder = (MultipleAddressViewHolder) holder;
+            MultipleAddressAdapterData data = addressData.get(position - 1);
+            itemViewHolder.senderName.setText(data.getSenderName());
+            itemViewHolder.productName.setText(data.getProductName());
+            itemViewHolder.productPrice.setText(data.getProductPrice());
+            ImageHandler.LoadImage(itemViewHolder.productImage, data.getProductImageUrl());
+            itemViewHolder.shippingDestinationList
+                    .setLayoutManager(new LinearLayoutManager(itemViewHolder.context));
+            itemViewHolder.shippingDestinationList.setAdapter(
+                    new MultipleAddressItemAdapter(data.getItemListData())
+            );
+        } else if (holder instanceof MultipleAddressFooterViewHolder)
+            ((MultipleAddressFooterViewHolder) holder).goToCourierPageButton
+                    .setOnClickListener(onGoToCourierPageButtonClicked());
+
     }
 
     @Override
     public int getItemCount() {
-        return addressData.size();
+        return HEADER_SIZE + addressData.size() + FOOTER_SIZE;
+    }
+
+    class MultipleAddressHeaderViewHolder extends RecyclerView.ViewHolder {
+
+        MultipleAddressHeaderViewHolder(View itemView) {
+            super(itemView);
+
+        }
     }
 
     class MultipleAddressViewHolder extends RecyclerView.ViewHolder {
@@ -86,191 +125,32 @@ public class MultipleAddressAdapter extends RecyclerView.Adapter
         }
     }
 
-/*    private static final int MULTIPLE_ADDRESS_HEADER_ADAPTER_LAYOUT =
-            R.layout.multiple_address_adapter;
-    private static final int MULTIPLE_ADDRESS_ITEM_ADAPTER_LAYOUT =
-            R.layout.multiple_address_item_adapter;
-    private static final int MULTIPLE_ADDRESS_FOOTER_ADAPTER_LAYOUT =
-            R.layout.multiple_address_footer_adapter;
+    class MultipleAddressFooterViewHolder extends RecyclerView.ViewHolder {
 
-    private List<MultipleAddressAdapterData> addressOrderDataList;
+        private ViewGroup goToCourierPageButton;
 
-    public MultipleAddressAdapter(List<MultipleAddressAdapterData> addressOrderDataList) {
-        this.addressOrderDataList = addressOrderDataList;
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        if(position == 0) return MULTIPLE_ADDRESS_HEADER_ADAPTER_LAYOUT;
-        else if (position > 0 && position < addressOrderData.getItemListData().size())
-            return MULTIPLE_ADDRESS_ITEM_ADAPTER_LAYOUT;
-        else return MULTIPLE_ADDRESS_FOOTER_ADAPTER_LAYOUT;
-    }
-
-    @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = View.inflate(parent.getContext(), viewType, parent);
-        if(viewType == MULTIPLE_ADDRESS_HEADER_ADAPTER_LAYOUT)
-            return new HeaderViewHolder(view);
-        else if(viewType == MULTIPLE_ADDRESS_ITEM_ADAPTER_LAYOUT)
-            return new ItemViewHolder(view);
-        else return new FooterViewHolder(view);
-    }
-
-    @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if(holder instanceof HeaderViewHolder)
-            ((HeaderViewHolder) holder).senderName.setText(addressOrderData.getSenderName());
-        else if(holder instanceof ItemViewHolder) {
-            MultipleAddressItemData itemData = addressOrderData.getItemListData()
-                    .get(position - HEADER_SIZE);
-            ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
-            itemViewHolder.shippingIndex.append(String.valueOf(position)); //Index 0 has already been taken by header, so the first index for item will be 1
-            ImageHandler.LoadImage(itemViewHolder.productImage, itemData.getProductImageUrl());
-            itemViewHolder.productName.setText(itemData.getProductName());
-            itemViewHolder.productPrice.setText(itemData.getProductPrice());
-            itemViewHolder.productWeight.setText(itemData.getProductWeight());
-            itemViewHolder.productQty.setText(itemData.getProductQty());
-            itemViewHolder.notesField.setText(itemData.getProductNotes());
-            itemViewHolder.addressTitle.setText(itemData.getAddressReceiverName());
-            itemViewHolder.addressReceiverName.setText(itemData.getAddressReceiverName());
-            itemViewHolder.address.setText(itemData.getAddress());
-            itemViewHolder.editButton.setOnClickListener(onEditOrderClickedListener(itemData));
-            itemViewHolder.deleteButton.setOnClickListener(onDeleteOrderClickedListener(itemData));
-            itemViewHolder.addressLayout.setOnClickListener(
-                    onAddressLayoutClickedListener(itemData)
-            );
-        } else {
-            ((FooterViewHolder) holder).addNewShipmentButton
-                    .setOnClickListener(onAddNewShipmentButtonClickedListener(
-                            addressOrderData.getItemListData().get(0))
-                    );
-        }
-    }
-
-    @Override
-    public int getItemCount() {
-        return HEADER_SIZE + addressOrderData.getItemListData().size() + FOOTER_SIZE;
-    }
-
-    class HeaderViewHolder extends RecyclerView.ViewHolder {
-
-        private TextView senderName;
-
-        HeaderViewHolder(View itemView) {
+        MultipleAddressFooterViewHolder(View itemView) {
             super(itemView);
 
-            senderName = itemView.findViewById(R.id.sender_name);
+            goToCourierPageButton = itemView.findViewById(R.id.go_to_courier_page_button);
+
 
         }
     }
 
-    class ItemViewHolder extends RecyclerView.ViewHolder {
-
-        private TextView shippingIndex;
-
-        private ImageView productImage;
-
-        private TextView productName;
-
-        private TextView productPrice;
-
-        private TextView productWeight;
-
-        private TextView productQty;
-
-        private EditText notesField;
-
-        private ViewGroup addressLayout;
-
-        private TextView addressTitle;
-
-        private TextView addressReceiverName;
-
-        private TextView address;
-
-        private ImageView editButton;
-
-        private ImageView deleteButton;
-
-        ItemViewHolder(View itemView) {
-            super(itemView);
-
-            shippingIndex = itemView.findViewById(R.id.shipping_index);
-
-            productImage = itemView.findViewById(R.id.product_image);
-
-            productName = itemView.findViewById(R.id.product_name);
-
-            productPrice = itemView.findViewById(R.id.product_price);
-
-            productWeight = itemView.findViewById(R.id.product_weight);
-
-            productQty = itemView.findViewById(R.id.product_qty);
-
-            notesField = itemView.findViewById(R.id.notes_field);
-
-            addressLayout = itemView.findViewById(R.id.address_layout);
-
-            addressTitle = itemView.findViewById(R.id.address_title);
-
-            addressReceiverName = itemView.findViewById(R.id.address_receiver_name);
-
-            address = itemView.findViewById(R.id.address);
-
-            editButton = itemView.findViewById(R.id.edit_button);
-
-            deleteButton = itemView.findViewById(R.id.delete_button);
-
-        }
-    }
-
-    class FooterViewHolder extends RecyclerView.ViewHolder {
-
-        private ViewGroup addNewShipmentButton;
-
-        FooterViewHolder(View itemView) {
-            super(itemView);
-
-            addNewShipmentButton = itemView.findViewById(R.id.add_new_shipment_button);
-
-        }
-    }
-
-    private View.OnClickListener onEditOrderClickedListener(MultipleAddressItemData data) {
+    private View.OnClickListener onGoToCourierPageButtonClicked() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                listener.onGoToChooseCourier();
             }
         };
     }
 
-    private View.OnClickListener onDeleteOrderClickedListener(MultipleAddressItemData data) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+    public interface MultipleAddressAdapterListener {
 
-            }
-        };
+        void onGoToChooseCourier();
+
     }
-
-    private View.OnClickListener onAddressLayoutClickedListener(MultipleAddressItemData data) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        };
-    }
-
-    private View.OnClickListener onAddNewShipmentButtonClickedListener(MultipleAddressItemData data) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        };
-    }*/
 
 }
