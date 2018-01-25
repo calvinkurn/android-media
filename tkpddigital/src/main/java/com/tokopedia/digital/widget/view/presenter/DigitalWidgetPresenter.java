@@ -105,9 +105,4 @@ public class DigitalWidgetPresenter extends BaseDigitalPresenter implements IDig
                 categoryId.equals(ROAMING_CATEGORY_ID);
     }
 
-    public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
-            TKPDMapParam<String, String> originParams) {
-        return AuthUtil.generateParamsNetwork(context, originParams);
-    }
-
 }

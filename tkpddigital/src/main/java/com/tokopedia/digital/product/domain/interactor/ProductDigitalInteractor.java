@@ -31,77 +31,11 @@ import rx.subscriptions.CompositeSubscription;
  */
 
 public class ProductDigitalInteractor implements IProductDigitalInteractor {
-    private final CompositeSubscription compositeSubscription;
-    private final IDigitalCategoryRepository digitalCategoryRepository;
+
     private final IUssdCheckBalanceRepository ussdCheckBalanceRepository;
 
-    public ProductDigitalInteractor(CompositeSubscription compositeSubscription,
-                                    IDigitalCategoryRepository categoryRepository,
-                                    IUssdCheckBalanceRepository ussdCheckBalanceRepository) {
-        this.compositeSubscription = compositeSubscription;
-        this.digitalCategoryRepository = categoryRepository;
+    public ProductDigitalInteractor(IUssdCheckBalanceRepository ussdCheckBalanceRepository) {
         this.ussdCheckBalanceRepository = ussdCheckBalanceRepository;
-    }
-
-    @Override
-    public void getCategoryAndBanner(
-            final String pathCategoryId,
-            TKPDMapParam<String, String> paramQueryCategory,
-            TKPDMapParam<String, String> paramQueryFavoriteList,
-            Subscriber<ProductDigitalData> subscriber) {
-        compositeSubscription.add(
-                Observable.zip(
-                        digitalCategoryRepository.getCategoryFromCloud(pathCategoryId, paramQueryCategory),
-                        getObservableNumberList(paramQueryFavoriteList),
-                        getZipFunctionProductDigitalData())
-                        .subscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .subscribe(subscriber)
-        );
-    }
-
-    private Observable<DigitalNumberList> getObservableNumberList
-            (TKPDMapParam<String, String> paramQueryLastNumber) {
-        if (SessionHandler.isV4Login(MainApplication.getAppContext())) {
-            return digitalCategoryRepository.getFavoriteList(paramQueryLastNumber);
-        } else {
-            List<OrderClientNumber> orderClientNumbers = new ArrayList<>();
-            DigitalNumberList digitalNumberList = new DigitalNumberList(orderClientNumbers, null);
-            return Observable.just(digitalNumberList);
-        }
-    }
-
-    @NonNull
-    private Func2<CategoryData, DigitalNumberList, ProductDigitalData> getZipFunctionProductDigitalData() {
-        return new Func2<CategoryData, DigitalNumberList, ProductDigitalData>() {
-            @Override
-            public ProductDigitalData call(
-                    CategoryData categoryData,
-                    DigitalNumberList digitalNumberList
-            ) {
-                List<BannerData> bannerDataList = new ArrayList<>();
-                bannerDataList.addAll(categoryData.getBannerDataListIncluded());
-
-                List<BannerData> otherBannerDataList = new ArrayList<>();
-                otherBannerDataList.addAll(categoryData.getOtherBannerDataListIncluded());
-
-                OrderClientNumber lastOrder = null;
-                if (digitalNumberList.getLastOrder() != null) {
-                    lastOrder = digitalNumberList.getLastOrder();
-                }
-                List<OrderClientNumber> numberList = digitalNumberList.getOrderClientNumbers();
-                return new ProductDigitalData.Builder()
-                        .historyClientNumber(new HistoryClientNumber.Builder()
-                                .lastOrderClientNumber(lastOrder)
-                                .recentClientNumberList(numberList)
-                                .build())
-                        .categoryData(categoryData)
-                        .bannerDataList(bannerDataList)
-                        .otherBannerDataList(otherBannerDataList)
-                        .build();
-            }
-        };
     }
 
     @Override

@@ -286,10 +286,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                 digitalEndpointService, new USSDMapper());
 
         IProductDigitalInteractor productDigitalInteractor =
-                new ProductDigitalInteractor(
-                        compositeSubscription,
-                        digitalCategoryRepository,
-                        ussdCheckBalanceRepository
+                new ProductDigitalInteractor(ussdCheckBalanceRepository
                 );
 
         DigitalCategoryUseCase digitalCategoryUseCase = new DigitalCategoryUseCase(

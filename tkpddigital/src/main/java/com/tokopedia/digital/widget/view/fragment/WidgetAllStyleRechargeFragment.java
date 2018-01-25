@@ -175,54 +175,6 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
 
     }
 
-//    @Override
-//    public void renderCategoryProductDataStyle1(CategoryData categoryData, HistoryClientNumber historyClientNumber) {
-//        this.categoryDataState = categoryData;
-//        holderProductDetail.removeAllViews();
-//        if (digitalProductView == null)
-//            digitalProductView = new CategoryProductStyle1View(getActivity());
-//        digitalProductView.setSource(BaseDigitalProductView.WIDGET);
-//        digitalProductView.setActionListener(this);
-//        digitalProductView.renderData(categoryData, historyClientNumber);
-//        holderProductDetail.addView(digitalProductView);
-//    }
-//
-//    @Override
-//    public void renderCategoryProductDataStyle2(CategoryData categoryData, HistoryClientNumber historyClientNumber) {
-//        this.categoryDataState = categoryData;
-//        holderProductDetail.removeAllViews();
-//        if (digitalProductView == null)
-//            digitalProductView = new CategoryProductStyle2View(getActivity());
-//        digitalProductView.setSource(BaseDigitalProductView.WIDGET);
-//        digitalProductView.setActionListener(this);
-//        digitalProductView.renderData(categoryData, historyClientNumber);
-//        holderProductDetail.addView(digitalProductView);
-//    }
-//
-//    @Override
-//    public void renderCategoryProductDataStyle3(CategoryData categoryData, HistoryClientNumber historyClientNumber) {
-//        this.categoryDataState = categoryData;
-//        holderProductDetail.removeAllViews();
-//        if (digitalProductView == null)
-//            digitalProductView = new CategoryProductStyle3View(getActivity());
-//        digitalProductView.setSource(BaseDigitalProductView.WIDGET);
-//        digitalProductView.setActionListener(this);
-//        digitalProductView.renderData(categoryData, historyClientNumber);
-//        holderProductDetail.addView(digitalProductView);
-//    }
-//
-//    @Override
-//    public void renderCategoryProductDataStyle99(CategoryData categoryData, HistoryClientNumber historyClientNumber) {
-//        this.categoryDataState = categoryData;
-//        holderProductDetail.removeAllViews();
-//        if (digitalProductView == null)
-//            digitalProductView = new CategoryProductStyle99View(getActivity());
-//        digitalProductView.setSource(BaseDigitalProductView.WIDGET);
-//        digitalProductView.setActionListener(this);
-//        digitalProductView.renderData(categoryData, historyClientNumber);
-//        holderProductDetail.addView(digitalProductView);
-//    }
-
     @Override
     public void renderCategory(BaseDigitalProductView digitalProductView, CategoryData categoryData,
                                HistoryClientNumber historyClientNumber) {

@@ -13,12 +13,6 @@ import rx.Subscriber;
 
 public interface IProductDigitalInteractor {
 
-    void getCategoryAndBanner(
-            String pathCategoryId,
-            TKPDMapParam<String, String> paramQueryCategory,
-            TKPDMapParam<String, String> paramQueryFavoriteList,
-            Subscriber<ProductDigitalData> subscriber
-    );
-
     void porcessPulsaUssdResponse(RequestBodyPulsaBalance requestBodyPulsaBalance, Subscriber<PulsaBalance> subscriber);
+
 }
