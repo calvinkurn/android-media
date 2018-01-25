@@ -1,6 +1,7 @@
 package com.tokopedia.cacheapi.domain.interactor;
 
 import com.tokopedia.cacheapi.domain.CacheApiRepository;
+import com.tokopedia.cacheapi.util.Injection;
 import com.tokopedia.usecase.RequestParams;
 
 import rx.Observable;
@@ -11,6 +12,10 @@ import rx.functions.Func1;
  */
 
 public class CacheApiGetCacheDataUseCase extends BaseApiCacheInterceptorUseCase<String> {
+
+    public CacheApiGetCacheDataUseCase() {
+        this(Injection.provideCacheApiRepository());
+    }
 
     public CacheApiGetCacheDataUseCase(CacheApiRepository cacheApiRepository) {
         super(cacheApiRepository);

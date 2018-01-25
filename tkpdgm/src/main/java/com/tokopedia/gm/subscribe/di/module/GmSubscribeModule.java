@@ -15,6 +15,8 @@ import com.tokopedia.gm.subscribe.data.source.product.cloud.api.GoldMerchantApi;
 import com.tokopedia.gm.subscribe.di.scope.GmSubscribeScope;
 import com.tokopedia.gm.subscribe.domain.cart.GmSubscribeCartRepository;
 import com.tokopedia.gm.subscribe.domain.product.GmSubscribeProductRepository;
+import com.tokopedia.seller.shop.common.di.scope.DeleteCacheScope;
+import com.tokopedia.seller.shop.common.domain.interactor.DeleteShopInfoUseCase;
 import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepositoryImpl;
 import com.tokopedia.seller.shop.common.data.source.ShopInfoDataSource;
 import com.tokopedia.seller.shop.common.data.source.cloud.api.ShopApi;
@@ -73,6 +75,12 @@ public class GmSubscribeModule {
     @Provides
     ShopApi provideShopApi(@WsV4Qualifier Retrofit retrofit){
         return retrofit.create(ShopApi.class);
+    }
+
+    @GmSubscribeScope
+    @Provides
+    DeleteShopInfoUseCase provideDeleteShopInfoUseCase() {
+        return new DeleteShopInfoUseCase();
     }
 
 }

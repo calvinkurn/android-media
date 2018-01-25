@@ -2,7 +2,6 @@ package com.tokopedia.core.network.core;
 
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
 import com.tokopedia.core.network.retrofit.interceptors.AccountsInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.CreditCardInterceptor;
@@ -148,7 +147,7 @@ public class OkHttpFactory {
     public OkHttpClient buildClientDefaultCacheAuth() {
         return new TkpdOkHttpBuilder(builder)
                 .addInterceptor(new FingerprintInterceptor())
-                .addInterceptor(new CacheApiInterceptor(MainApplication.getAppContext()))
+                .addInterceptor(new CacheApiInterceptor())
                 .addInterceptor(new TkpdAuthInterceptor())
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
@@ -159,7 +158,7 @@ public class OkHttpFactory {
     public OkHttpClient buildClientDefaultAuth() {
         return new TkpdOkHttpBuilder(builder)
                 .addInterceptor(new FingerprintInterceptor())
-                .addInterceptor(new CacheApiInterceptor(MainApplication.getAppContext()))
+                .addInterceptor(new CacheApiInterceptor())
                 .addInterceptor(new TkpdAuthInterceptor())
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()
@@ -448,7 +447,7 @@ public class OkHttpFactory {
 
     public OkHttpClient buildClientTopAdsAuth(SessionHandler sessionHandler) {
         return new TkpdOkHttpBuilder(builder)
-                .addInterceptor(new CacheApiInterceptor(MainApplication.getAppContext()))
+                .addInterceptor(new CacheApiInterceptor())
                 .addInterceptor(new FingerprintInterceptor())
                 .addInterceptor(new TopAdsAuthInterceptor(sessionHandler))
                 .addInterceptor(new TkpdErrorResponseInterceptor(TopAdsResponseError.class))
@@ -460,7 +459,7 @@ public class OkHttpFactory {
     public OkHttpClient buildClientTopChatAuth(String authorizationString) {
         return new TkpdOkHttpBuilder(builder)
                 .addInterceptor(new FingerprintInterceptor())
-                .addInterceptor(new CacheApiInterceptor(MainApplication.getAppContext()))
+                .addInterceptor(new CacheApiInterceptor())
                 .addInterceptor(new DigitalHmacAuthInterceptor(authorizationString))
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()

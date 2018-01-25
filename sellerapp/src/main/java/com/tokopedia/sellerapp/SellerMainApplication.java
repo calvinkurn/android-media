@@ -18,7 +18,7 @@ import com.raizlabs.android.dbflow.config.TkpdCacheApiGeneratedDatabaseHolder;
 import com.raizlabs.android.dbflow.config.TkpdGMGeneratedDatabaseHolder;
 import com.raizlabs.android.dbflow.config.TkpdSellerGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -28,8 +28,11 @@ import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.utils.WhiteList;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
+
+import rx.Subscriber;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -112,7 +115,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         GlobalConfig.PACKAGE_APPLICATION = GlobalConfig.PACKAGE_SELLER_APP;
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
-        initializeDatabase();
         try {
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             com.tokopedia.core.util.GlobalConfig.VERSION_NAME = pInfo.versionName;
@@ -125,6 +127,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);
+        initCacheApiWhiteList();
     }
 
     private void generateSellerAppBaseUrl() {
@@ -163,7 +166,8 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         AuthUtil.KEY.ZEUS_WHITELIST = SellerAppNetworkKeys.ZEUS_WHITELIST;
     }
 
-    public void initializeDatabase() {
+    public void initDbFlow() {
+        super.initDbFlow();
         FlowManager.init(new FlowConfig.Builder(this)
                 .addDatabaseHolder(TkpdSellerGeneratedDatabaseHolder.class)
                 .build());
@@ -175,7 +179,29 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
                 .build());
     }
 
-    @Override
+    public void initCacheApiWhiteList() {
+        List<CacheApiWhiteListDomain> cacheApiWhiteListDomains = getWhiteList();
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject(CacheApiWhiteListUseCase.ADD_WHITELIST_COLLECTIONS, cacheApiWhiteListDomains);
+        requestParams.putObject(CacheApiWhiteListUseCase.APP_VERSION_NAME, getCurrentVersion(getApplicationContext()));
+        new CacheApiWhiteListUseCase().executeSync(requestParams, new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+
+            }
+        });
+    }
+
     protected List<CacheApiWhiteListDomain> getWhiteList() {
         return WhiteList.getWhiteList();
     }

@@ -207,15 +207,4 @@ public class CacheApiUtils {
             return input;
         }
     }
-
-    public static String getVersionCode(Context context) {
-        String versionName = "";
-        try {
-            PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-            versionName = pInfo.versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        return versionName;
-    }
 }

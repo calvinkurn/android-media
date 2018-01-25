@@ -20,7 +20,6 @@ import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.di.scope.ApplicationScope;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.common.cache.di.module.CacheModule;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.core.OkHttpRetryPolicy;
 import com.tokopedia.core.network.di.qualifier.AceQualifier;
@@ -53,8 +52,7 @@ import retrofit2.Retrofit;
 @ApplicationScope
 @Component(modules = {
         AppModule.class,
-        UtilModule.class,
-        CacheModule.class
+        UtilModule.class
 })
 public interface AppComponent {
 
@@ -134,18 +132,6 @@ public interface AppComponent {
     GCMHandler gcmHandler();
 
     ImageHandler imageHandler();
-
-    CacheApiDatabaseSource cacheApiDatabaseSource();
-
-    CacheApiRepository apiCacheRepository();
-
-    CacheApiDataSource apiCacheDataSource();
-
-    CacheApiWhiteListUseCase cacheApiWhiteListUseCase();
-
-    CacheApiClearAllUseCase cacheApiClearAllUseCase();
-
-    CacheApiDataDeleteUseCase cacheApiDataDeleteUseCase();
 
     BearerInterceptor bearerInterceptor();
 

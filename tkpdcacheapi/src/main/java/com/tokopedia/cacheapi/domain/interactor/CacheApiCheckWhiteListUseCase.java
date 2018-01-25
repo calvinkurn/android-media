@@ -1,6 +1,7 @@
 package com.tokopedia.cacheapi.domain.interactor;
 
 import com.tokopedia.cacheapi.domain.CacheApiRepository;
+import com.tokopedia.cacheapi.util.Injection;
 import com.tokopedia.usecase.RequestParams;
 
 import rx.Observable;
@@ -10,6 +11,10 @@ import rx.Observable;
  */
 
 public class CacheApiCheckWhiteListUseCase extends BaseApiCacheInterceptorUseCase<Boolean> {
+
+    public CacheApiCheckWhiteListUseCase() {
+        this(Injection.provideCacheApiRepository());
+    }
 
     public CacheApiCheckWhiteListUseCase(CacheApiRepository cacheApiRepository) {
         super(cacheApiRepository);

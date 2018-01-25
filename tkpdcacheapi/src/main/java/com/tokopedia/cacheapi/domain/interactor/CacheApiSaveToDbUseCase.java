@@ -2,6 +2,7 @@ package com.tokopedia.cacheapi.domain.interactor;
 
 import com.tokopedia.cacheapi.data.source.db.model.CacheApiWhitelist;
 import com.tokopedia.cacheapi.domain.CacheApiRepository;
+import com.tokopedia.cacheapi.util.Injection;
 import com.tokopedia.usecase.RequestParams;
 
 import okhttp3.Response;
@@ -15,6 +16,10 @@ import rx.functions.Func1;
 public class CacheApiSaveToDbUseCase extends BaseApiCacheInterceptorUseCase<Boolean> {
 
     public static final String RESPONSE = "RESPONSE";
+
+    public CacheApiSaveToDbUseCase() {
+        this(Injection.provideCacheApiRepository());
+    }
 
     public CacheApiSaveToDbUseCase(CacheApiRepository cacheApiRepository) {
         super(cacheApiRepository);

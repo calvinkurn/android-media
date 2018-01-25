@@ -12,7 +12,6 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.support.multidex.MultiDex;
 import android.support.v7.app.AppCompatDelegate;
-import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
@@ -22,9 +21,6 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.TkpdCoreGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
-import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
-import com.tokopedia.cacheapi.util.CacheApiUtils;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.fingerprint.LocationUtils;
@@ -37,15 +33,11 @@ import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.toolargetool.TooLargeTool;
-import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
 
-import javax.inject.Inject;
-
 import io.branch.referral.Branch;
 import io.fabric.sdk.android.Fabric;
-import rx.Subscriber;
 
 public abstract class MainApplication extends BaseMainApplication{
 
@@ -65,18 +57,9 @@ public abstract class MainApplication extends BaseMainApplication{
 	private static int currActivityState;
 	private static String currActivityName;
     private static IntentService RunningService;
-    @Inject
-    CacheApiWhiteListUseCase cacheApiWhiteListUseCase;
     private LocationUtils locationUtils;
     private DaggerAppComponent.Builder daggerBuilder;
     private AppComponent appComponent;
-
-    /**
-     * Get list of white list
-     *
-     * @return
-     */
-    protected abstract List<CacheApiWhiteListDomain> getWhiteList();
 
     public static MainApplication getInstance() {
         return instance;
@@ -275,7 +258,6 @@ public abstract class MainApplication extends BaseMainApplication{
         isResetTickerState = true;
 
         //[START] this is for dev process
-        initDB();
 
         initDbFlow();
 
@@ -287,35 +269,13 @@ public abstract class MainApplication extends BaseMainApplication{
         locationUtils.initLocationBackground();
         TooLargeTool.startLogging(this);
 
-        addToWhiteList();
         // initialize the Branch object
         initBranch();
         NotificationUtils.setNotificationChannel(this);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
-    public void addToWhiteList() {
-        List<CacheApiWhiteListDomain> cacheApiWhiteListDomains = getWhiteList();
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(CacheApiWhiteListUseCase.ADD_WHITELIST_COLLECTIONS, cacheApiWhiteListDomains);
-        requestParams.putObject(CacheApiWhiteListUseCase.APP_VERSION_NAME, CacheApiUtils.getVersionCode(context));
-        cacheApiWhiteListUseCase.executeSync(requestParams, new Subscriber<Boolean>() {
-            @Override
-            public void onCompleted() {
 
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Log.e(TAG, e.toString());
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                Log.i(TAG, aBoolean.toString());
-            }
-        });
-    }
 
     @Override
     public void onTerminate() {
@@ -350,17 +310,13 @@ public abstract class MainApplication extends BaseMainApplication{
         Crashlytics.setUserIdentifier("");
     }
 
-    public void initDB() {
-    }
-
-	private void initDbFlow() {
+	protected void initDbFlow() {
 		if(BuildConfig.DEBUG) {
 			FlowLog.setMinimumLoggingLevel(FlowLog.Level.V);
 		}
 		FlowManager.init(new FlowConfig.Builder(this)
                 .addDatabaseHolder(TkpdCoreGeneratedDatabaseHolder.class)
                 .build());
-        //FlowManager.initModule(TkpdCoreGeneratedDatabaseHolder.class);
 	}
 
     public AppComponent getApplicationComponent() {

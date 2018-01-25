@@ -440,8 +440,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void onLogout(AppComponent appComponent) {
-        CacheApiClearAllUseCase cacheApiClearAllUseCase = appComponent.cacheApiClearAllUseCase();
-        cacheApiClearAllUseCase.getExecuteObservable(com.tokopedia.usecase.RequestParams.EMPTY).toBlocking().first();
+        new CacheApiClearAllUseCase().executeSync();
 
         TkpdSellerLogout.onLogOut(appComponent);
         GMLogout.onLogOut(appComponent);

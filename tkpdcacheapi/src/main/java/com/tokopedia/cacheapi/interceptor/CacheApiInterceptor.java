@@ -63,13 +63,12 @@ public class CacheApiInterceptor implements Interceptor {
         Request request = chain.request();
 
 
-        CacheApiRepository cacheApiRepository = new CacheApiRepositoryImpl(new CacheApiDataSource(new CacheApiDatabaseSource()));
 
-        new CacheApiClearTimeOutCacheUseCase(cacheApiRepository).executeSync(RequestParams.EMPTY);
+        new CacheApiClearTimeOutCacheUseCase().executeSync(RequestParams.EMPTY);
 
-        CacheApiCheckWhiteListUseCase checkWhiteListUseCase = new CacheApiCheckWhiteListUseCase(cacheApiRepository);
-        CacheApiGetCacheDataUseCase getCacheDataUseCase = new CacheApiGetCacheDataUseCase(cacheApiRepository);
-        CacheApiSaveToDbUseCase saveToDbUseCase = new CacheApiSaveToDbUseCase(cacheApiRepository);
+        CacheApiCheckWhiteListUseCase checkWhiteListUseCase = new CacheApiCheckWhiteListUseCase();
+        CacheApiGetCacheDataUseCase getCacheDataUseCase = new CacheApiGetCacheDataUseCase();
+        CacheApiSaveToDbUseCase saveToDbUseCase = new CacheApiSaveToDbUseCase();
 
         RequestParams requestParams = RequestParams.create();
 
