@@ -31,6 +31,7 @@ import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 import retrofit2.http.Url;
 import rx.Observable;
@@ -80,4 +81,6 @@ public interface FlightApi {
     @GET
     Observable<Response<DataResponse<List<BannerDetail>>>> getBanners(@Url String url, @QueryMap Map<String, String> params);
 
+    @GET(FlightUrl.FLIGHT_AIRLINE_PATH)
+    Observable<Response<DataResponse<List<AirlineData>>>> getFlightAirline(@Query("id") String airlineId);
 }

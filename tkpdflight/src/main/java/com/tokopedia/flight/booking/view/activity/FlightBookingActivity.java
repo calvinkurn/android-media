@@ -5,11 +5,11 @@ import android.content.Intent;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.booking.di.DaggerFlightBookingComponent;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.fragment.FlightBookingFragment;
+import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.view.BaseFlightActivity;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 
@@ -38,6 +38,11 @@ public class FlightBookingActivity extends BaseFlightActivity implements HasComp
     }
 
     @Override
+    public String getScreenName() {
+        return FlightAnalytics.Screen.BOOKING;
+    }
+
+    @Override
     protected Fragment getNewFragment() {
         String departureId = getIntent().getStringExtra(EXTRA_FLIGHT_DEPARTURE_ID);
         String arrivalId = getIntent().getStringExtra(EXTRA_FLIGHT_ARRIVAL_ID);
@@ -49,7 +54,7 @@ public class FlightBookingActivity extends BaseFlightActivity implements HasComp
     public FlightBookingComponent getComponent() {
         if (getApplication() instanceof FlightModuleRouter) {
             return DaggerFlightBookingComponent.builder()
-                    .flightComponent(FlightComponentInstance.getFlightComponent(getApplication()))
+                    .flightComponent(getFlightComponent())
                     .build();
         }
         throw new RuntimeException("Application must implement FlightModuleRouter");
