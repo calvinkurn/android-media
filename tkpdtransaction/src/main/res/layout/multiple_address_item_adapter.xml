@@ -165,4 +165,25 @@
 
     </LinearLayout>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <View
+            android:id="@+id/border_line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey_400"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+
+        <View
+            android:id="@+id/dashed_border_line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@drawable/universal_dashed_line"
+            android:visibility="gone"/>
+
+    </RelativeLayout>
+
 </LinearLayout>

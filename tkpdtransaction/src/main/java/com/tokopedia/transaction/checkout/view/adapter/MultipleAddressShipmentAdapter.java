@@ -20,7 +20,16 @@ import java.util.List;
  */
 
 public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
-        <MultipleAddressShipmentAdapter.MultipleShippingAddressViewHolder>{
+        <RecyclerView.ViewHolder>{
+
+    private static final int MULTIPLE_ADDRESS_SHIPMENT_HEADER_LAYOUT =
+            R.layout.multiple_address_header;
+    private static final int MULTIPLE_ADDRESS_FOOTER_SHIPMENT_LAYOUT =
+            R.layout.multiple_address_shipment_footer;
+    private static final int MULTIPLE_ADDRESS_ADAPTER_SHIPMENT_LAYOUT =
+            R.layout.multiple_address_shipment_adapter;
+    private static final int HEADER_SIZE = 1;
+    private static final int FOOTER_SIZE = 1;
 
     private List<MultipleAddressShipmentAdapterData> addressDataList;
 
@@ -29,32 +38,49 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
     }
 
     @Override
-    public MultipleShippingAddressViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public int getItemViewType(int position) {
+        if (position == 0) return MULTIPLE_ADDRESS_SHIPMENT_HEADER_LAYOUT;
+        else if (position > addressDataList.size()) return MULTIPLE_ADDRESS_FOOTER_SHIPMENT_LAYOUT;
+        else return MULTIPLE_ADDRESS_ADAPTER_SHIPMENT_LAYOUT;
+    }
+
+
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.multiple_address_shipment_adapter, parent, false);
-        return new MultipleShippingAddressViewHolder(itemView);
+                .inflate(viewType, parent, false);
+        if (viewType == MULTIPLE_ADDRESS_SHIPMENT_HEADER_LAYOUT)
+            return new MultipleAddressHeaderViewHolder(itemView);
+        else if (viewType == MULTIPLE_ADDRESS_FOOTER_SHIPMENT_LAYOUT)
+            return new MultipleAddressShipmentFooterViewHolder(itemView);
+        else return new MultipleShippingAddressViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(MultipleShippingAddressViewHolder holder, int position) {
-        MultipleAddressShipmentAdapterData data = addressDataList.get(position);
-        MultipleAddressItemData itemData = data.getItemData();
-        holder.senderName.setText(data.getSenderName());
-        ImageHandler.LoadImage(holder.productImage, data.getProductImageUrl());
-        holder.productPrice.setText(data.getProductPrice());
-        holder.productWeight.setText(itemData.getProductWeight());
-        holder.productQty.setText(itemData.getProductQty());
-        holder.notesField.setText(itemData.getProductNotes());
-        holder.addressTitle.setText(itemData.getAddressTitle());
-        holder.addressReceiverName.setText(itemData.getAddressReceiverName());
-        holder.address.setText(itemData.getAddress());
-        holder.subTotalAmount.setText(data.getSubTotalAmount());
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        if (holder instanceof MultipleShippingAddressViewHolder) {
+            MultipleShippingAddressViewHolder itemViewHolder = (MultipleShippingAddressViewHolder) holder;
+            MultipleAddressShipmentAdapterData data = addressDataList.get(position - 1);
+            MultipleAddressItemData itemData = data.getItemData();
+            itemViewHolder.senderName.setText(data.getSenderName());
+            ImageHandler.LoadImage(itemViewHolder.productImage, data.getProductImageUrl());
+            itemViewHolder.productPrice.setText(data.getProductPrice());
+            itemViewHolder.productWeight.setText(itemData.getProductWeight());
+            itemViewHolder.productQty.setText(itemData.getProductQty());
+            itemViewHolder.notesField.setText(itemData.getProductNotes());
+            itemViewHolder.addressTitle.setText(itemData.getAddressTitle());
+            itemViewHolder.addressReceiverName.setText(itemData.getAddressReceiverName());
+            itemViewHolder.address.setText(itemData.getAddress());
+            itemViewHolder.subTotalAmount.setText(data.getSubTotalAmount());
+        } else if(holder instanceof MultipleAddressShipmentFooterViewHolder)
+            ((MultipleAddressShipmentFooterViewHolder) holder).chooseCourierButton
+                    .setOnClickListener(onChooseCourierClicked());
     }
 
 
     @Override
     public int getItemCount() {
-        return addressDataList.size();
+        return HEADER_SIZE + addressDataList.size() + FOOTER_SIZE;
     }
 
     class MultipleShippingAddressViewHolder extends RecyclerView.ViewHolder {
@@ -87,7 +113,7 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 
         private TextView subTotalAmount;
 
-        public MultipleShippingAddressViewHolder(View itemView) {
+        MultipleShippingAddressViewHolder(View itemView) {
             super(itemView);
 
             senderName = itemView.findViewById(R.id.sender_name);
@@ -116,6 +142,36 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 
             subTotalAmount = itemView.findViewById(R.id.sub_total_amount);
         }
+    }
+
+    class MultipleAddressHeaderViewHolder extends RecyclerView.ViewHolder {
+
+        MultipleAddressHeaderViewHolder(View itemView) {
+            super(itemView);
+
+        }
+    }
+
+    class MultipleAddressShipmentFooterViewHolder extends RecyclerView.ViewHolder {
+
+        private ViewGroup chooseCourierButton;
+
+        MultipleAddressShipmentFooterViewHolder(View itemView) {
+            super(itemView);
+
+            chooseCourierButton = itemView.findViewById(R.id.choose_courier_button);
+
+
+        }
+    }
+
+    private View.OnClickListener onChooseCourierClicked() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        };
     }
 
 }

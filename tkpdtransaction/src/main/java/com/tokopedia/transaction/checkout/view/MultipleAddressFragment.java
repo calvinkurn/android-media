@@ -7,7 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.transaction.R;
@@ -22,7 +21,8 @@ import java.util.List;
  * Created by kris on 1/24/18. Tokopedia
  */
 
-public class MultipleAddressFragment extends TkpdFragment {
+public class MultipleAddressFragment extends TkpdFragment
+        implements MultipleAddressAdapter.MultipleAddressAdapterListener {
 
     public static MultipleAddressFragment newInstance() {
         return new MultipleAddressFragment();
@@ -37,11 +37,9 @@ public class MultipleAddressFragment extends TkpdFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.multiple_address_fragment, container, false);
-        TextView goToChooseCourierButton = view.findViewById(R.id.go_to_courier_page_button);
-        goToChooseCourierButton.setOnClickListener(onChooseCourierButtonClickedListener());
         RecyclerView orderAddressList = view.findViewById(R.id.order_address_list);
         orderAddressList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        orderAddressList.setAdapter(new MultipleAddressAdapter(dummyDataList()));
+        orderAddressList.setAdapter(new MultipleAddressAdapter(dummyDataList(), this));
         return view;
     }
 
@@ -78,14 +76,11 @@ public class MultipleAddressFragment extends TkpdFragment {
         return list;
     }
 
-    private View.OnClickListener onChooseCourierButtonClickedListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getFragmentManager().beginTransaction().replace(R.id.container,
-                        MultipleAddressShipmentFragment.newInstance()).commit();
-            }
-        };
+    @Override
+    public void onGoToChooseCourier() {
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.animator.slide_in_left, R.animator.slide_in_left)
+                .add(R.id.container, MultipleAddressShipmentFragment.newInstance())
+                .commit();
     }
-
 }
