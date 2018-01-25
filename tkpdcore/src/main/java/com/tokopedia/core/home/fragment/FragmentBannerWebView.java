@@ -169,7 +169,6 @@ public class FragmentBannerWebView extends Fragment {
                     return true;
                 case DeepLinkChecker.PRODUCT:
                     DeepLinkChecker.openProduct(url, getActivity());
-                    getActivity().finish();
                     return true;
                 case DeepLinkChecker.SHOP:
                     ((BannerWebView) getActivity()).openShop(url);
