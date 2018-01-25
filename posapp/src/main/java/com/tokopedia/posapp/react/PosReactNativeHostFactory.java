@@ -25,7 +25,7 @@ public class PosReactNativeHostFactory {
     public static ReactNativeHost init(Application application) {
         if(instance == null) instance = new PosReactNativeHostFactory();
 
-        return instance.createReactNativeHost(application);
+        return instance.createReactNativeHostDev(application);
     }
 
     private ReactNativeHost createReactNativeHost(final Application application) {
@@ -66,7 +66,7 @@ public class PosReactNativeHostFactory {
 
             @Override
             protected String getJSMainModuleName() {
-                return "rnscript/index.android";
+                return "index.android";
             }
         };
     }
