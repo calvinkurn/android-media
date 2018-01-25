@@ -472,7 +472,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
         getView().updateSourceCoordinate(result.getPickup().getLatitude(), result.getPickup().getLongitude());
         getView().updateDestinationCoordinate(result.getDestination().getLatitude(), result.getDestination().getLongitude());
         boolean animation = true;
-        if (getView().isAlreadyRouteDrawed() && !isDriverAndPickupPathAlreadyDrawed) {
+        if (getView().isAlreadyRouteDrawed() && isDriverAndPickupPathAlreadyDrawed) {
             animation = false;
         }
 
@@ -959,8 +959,8 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
     private void createLocationRequest() {
         locationRequest = new LocationRequest();
-        locationRequest.setInterval(5000);
-        locationRequest.setFastestInterval(5000);
+        locationRequest.setInterval(3000);
+        locationRequest.setFastestInterval(2000);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
