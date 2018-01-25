@@ -431,11 +431,11 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     @Override
-    public RequestParams getPolyLineParamDriverBetweenDestination(double latitude, double longitude) {
+    public RequestParams getPolyLineParamBetweenTwoLocations(Location origin, Location destination) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(GetOverviewPolylineUseCase.PARAM_ORIGIN, String.format("%s,%s",
-                latitude,
-                longitude
+                origin.getLatitude(),
+                origin.getLongitude()
         ));
         requestParams.putString(GetOverviewPolylineUseCase.PARAM_DESTINATION, String.format("%s,%s",
                 destination.getLatitude(),
