@@ -483,6 +483,7 @@ public class TkpdBaseURL {
         public static final String URL_TX_PAYMENT_EMONEY = BASE_DOMAIN + "v4/";
         public static final String URL_TX_PAYMENT_SPRINT_ASIA = BASE_DOMAIN + "v4/";
         public static final String URL_TX_PAYMENT_VOUCHER = BASE_DOMAIN + "v4/tx-voucher/";
+        public static final String URL_PICKUP_POINT = BASE_API_DOMAIN + "v4/action/tx-cart/";
 
         public static final String PATH_DO_WITHDRAW = "do_withdraw.pl";
         public static final String PATH_SEND_OTP_VERIFY_BANK_ACCOUNT = "send_otp_verify_bank_account.pl";
@@ -550,11 +551,15 @@ public class TkpdBaseURL {
         public static final String PATH_TX_PAYMENT_EMONEY = "tx-payment-emoney.pl";
 
         public static final String GET_COUPON_LIST = "coupon/list/";
+
+        public static final String PATH_EDIT_PICKUP_POINT = "edit_pickupstore_point";
+        public static final String PATH_REMOVE_PICKUP_POINT = "remove_pickupstore_point";
     }
 
     public static class Shipment {
         public static final String PATH_RATES = "rates/v1";
         public static final String PATH_DISTRICT_RECOMMENDATION = "/v2/district-recommendation";
+        public static final String PATH_PICKUP_STORE = "/v2/store-location";
     }
 
     public static class Upload {
@@ -1004,5 +1009,23 @@ public class TkpdBaseURL {
     public class Promo {
         public static final String PATH_MENU_INDEX = "wp-json/wp/v2/hmenu";
         public static final String PATH_PROMO_LIST = "wp-json/wp/v2/posts";
+    }
+
+    public class Cart {
+        public static final String VERSION = "v1";
+        public static final String PATH_ADD_TO_CART = "api/" + VERSION + "/add_product_cart";
+        public static final String PATH_CART_LIST = "api/" + VERSION + "/cart_list";
+        public static final String PATH_REMOVE_FROM_CART = "api/" + VERSION + "/remove_product_cart";
+        public static final String PATH_UPDATE_CART = "api/" + VERSION + "/update_cart";
+        public static final String PATH_CHECK_PROMO_CODE_CART_LIST = "api/" + VERSION + "/check_promo_code";
+        public static final String PATH_SHIPPING_ADDRESS = "api/" + VERSION + "/shipping_address";
+        public static final String PATH_SHIPMENT_ADDRESS_FORM_DIRECT = "api/" + VERSION + "/shipment_address_form";
+        public static final String PATH_CHECK_PROMO_CODE_CART_COURIER = "api/" + VERSION + "/check_promo_code_final";
+        public static final String PATH_CHECKOUT = "api/" + VERSION + "/checkout";
+        public static final String PATH_RESET_CART = "api/" + VERSION + "/reset_cart_cache";
+        public static final String PATH_UPDATE_STATE_BY_PAYMENT = "api/" + VERSION + "/update_state_by_payment";
+        public static final String PATH_NOTIFICATION_COUNTER = "api/" + VERSION + "/counter";
+        public static final String PATH_COUPON_LIST = "api/" + VERSION + "/coupon_list";
+        public static final String PATH_SAVE_PICKUP_STORE_POINT = "api/" + VERSION + "/save_pickup_store_point";
     }
 }

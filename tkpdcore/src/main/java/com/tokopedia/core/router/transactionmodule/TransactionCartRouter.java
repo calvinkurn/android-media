@@ -13,8 +13,11 @@ public class TransactionCartRouter {
     private final static String CART_ACTIVITY
             = "com.tokopedia.transaction.cart.activity.CartActivity";
 
+    private final static String CART_ACTIVITY_NEW
+            = "com.tokopedia.transaction.checkout.view.CartActivity";
+
     public static Intent createInstanceCartActivity(Context context) {
-        return RouterUtils.getActivityIntent(context, CART_ACTIVITY);
+        return RouterUtils.getActivityIntent(context, CART_ACTIVITY_NEW);
     }
 
     public static Class<?> createInstanceCartClass() throws ClassNotFoundException {

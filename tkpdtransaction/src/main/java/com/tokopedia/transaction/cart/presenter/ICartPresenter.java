@@ -46,4 +46,8 @@ public interface ICartPresenter {
     void processPaymentAnalytics(LocalCacheHandler localCacheHandler, ThanksTopPayData data);
 
     void clearNotificationCart();
+
+    void processUpdatePickupPoint(String cartId, String oldStoreId, String newStoreId);
+
+    void processRemovePickupPoint(String cartId, String oldStoreId);
 }

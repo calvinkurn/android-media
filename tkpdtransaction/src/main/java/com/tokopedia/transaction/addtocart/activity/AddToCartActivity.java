@@ -3,6 +3,7 @@ package com.tokopedia.transaction.addtocart.activity;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.IntentService;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,10 +13,12 @@ import android.support.annotation.StringRes;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.util.Linkify;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -66,6 +69,10 @@ import com.tokopedia.transaction.addtocart.presenter.AddToCartPresenterImpl;
 import com.tokopedia.transaction.addtocart.receiver.ATCResultReceiver;
 import com.tokopedia.transaction.addtocart.services.ATCIntentService;
 import com.tokopedia.transaction.addtocart.utils.KeroppiConstants;
+import com.tokopedia.transaction.pickuppoint.domain.model.Store;
+import com.tokopedia.transaction.pickuppoint.domain.usecase.GetPickupPointsUseCase;
+import com.tokopedia.transaction.pickuppoint.view.activity.PickupPointActivity;
+import com.tokopedia.transaction.pickuppoint.view.customview.PickupPointLayout;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -81,15 +88,17 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity.RESULT_NOT_SELECTED_DESTINATION;
+import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_DATA_STORE;
 
 /**
  * @author Angga.Prasetiyo on 11/03/2016.
  */
 public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         implements AddToCartViewListener, AdapterView.OnItemSelectedListener,
-        TextWatcher, ATCResultReceiver.Receiver {
+        TextWatcher, ATCResultReceiver.Receiver, PickupPointLayout.ViewListener {
     public static final int REQUEST_CHOOSE_ADDRESS = 0;
     public static final int REQUEST_CHOOSE_LOCATION = 2;
+    private static final int REQUEST_CHOOSE_PICKUP_POINT = 3;
     private static final String EXTRA_STATE_ORDER_DATA = "orderData";
     private static final String EXTRA_STATE_DESTINATION_DATA = "destinationData";
     private static final String EXTRA_STATE_LOCATION_PASS_DATA = "locationPassData";
@@ -111,6 +120,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     private String insuranceInfo;
     private boolean mustReCalculateShippingRate;
     private boolean hasRecalculateShippingRate;
+    private Store pickupBooth;
 
     @BindView(R2.id.tv_ticker_gtm)
     TextView tvTickerGTM;
@@ -174,6 +184,10 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     TextView descMaxHour;
     @BindView(R2.id.img_insurance_info)
     ImageView imgInsuranceInfo;
+    @BindView(R2.id.pickup_point_layout)
+    PickupPointLayout pickupPointLayout;
+    @BindView(R2.id.layout_pickup_booth_info)
+    LinearLayout layoutPickupBoothInfo;
 
     private ATCResultReceiver atcReceiver;
     private Subscription subscription;
@@ -209,6 +223,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         progressInitDialog = new TkpdProgressDialog(this, TkpdProgressDialog.MAIN_PROGRESS);
         increaseButton.setOnTouchListener(onIncrementButtonTouchListener());
         decreaseButton.setOnTouchListener(onDecrementButtonTouchListener());
+        pickupPointLayout.setListener(this);
+        pickupPointLayout.enableChooserButton(this);
     }
 
     @Override
@@ -393,15 +409,29 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 android.R.layout.simple_spinner_item, datas);
         agencyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spShippingAgency.setAdapter(agencyAdapter);
-        spShippingAgency.setEnabled(true);
+        if (pickupBooth != null) {
+            for (int i = 0; i < datas.size(); i++) {
+                if (datas.get(i).getShipperId().equals(TkpdState.SHIPPING_ID.ALFAMART)) {
+                    spShippingAgency.setSelection(i);
+                    spShippingAgency.setEnabled(false);
+                }
+            }
+        } else {
+            spShippingAgency.setEnabled(true);
+            Log.e("pickupPointLayout", "SetVisibility");
+            pickupPointLayout.setVisibility(View.VISIBLE);
+            for (int i = 0; i < datas.size(); i++) {
+                if (datas.get(i).getShipperId().equals(orderData.getShipment())) {
+                    spShippingAgency.setSelection(i);
+                }
+                if (datas.get(i).getShipperId().equals(TkpdState.SHIPPING_ID.ALFAMART)) {
+                    pickupPointLayout.setVisibility(View.VISIBLE);
+                }
+            }
+        }
         spShippingAgency.setOnItemSelectedListener(this);
         spShippingService.setOnItemSelectedListener(this);
         spShippingService.setEnabled(true);
-        for (int i = 0; i < datas.size(); i++) {
-            if (datas.get(i).getShipperId().equals(orderData.getShipment())) {
-                spShippingAgency.setSelection(i);
-            }
-        }
         btnBuy.setEnabled(true);
 
         this.mShipmentRateAttrs = new ArrayList<>(datas);
@@ -641,6 +671,11 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             } else {
                 shipmentHourAtcLayout.setVisibility(View.GONE);
             }
+            if (pickupBooth != null) {
+                layoutPickupBoothInfo.setVisibility(View.VISIBLE);
+            } else {
+                layoutPickupBoothInfo.setVisibility(View.GONE);
+            }
         } else if (parent.getAdapter().getItem(position) instanceof Insurance) {
             orderData.setInsurance(((Insurance) parent.getAdapter().getItem(position)).isInsurance()
                     ? Insurance.INSURANCE : Insurance.NOT_INSURANCE);
@@ -729,6 +764,12 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                         presenter.updateAddressShipping(this, orderData, locationPass);
                         this.mLocationPass = locationPass;
                     }
+                    break;
+                case REQUEST_CHOOSE_PICKUP_POINT:
+                    pickupBooth = data.getParcelableExtra(INTENT_DATA_STORE);
+                    pickupPointLayout.setData(this, pickupBooth);
+                    // TODO : disable spinner alfamart
+                    // TODO : show view alfamart
                     break;
             }
         } else if (resultCode == RESULT_NOT_SELECTED_DESTINATION) {
@@ -830,6 +871,9 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
 
     private OrderData createFinalOrderData() {
         OrderData finalOrder = this.orderData;
+        if (pickupBooth != null) {
+            orderData.setPickupStoreId(pickupBooth.getId());
+        }
         finalOrder.setNotes(etRemark.getText().toString());
         return finalOrder;
     }
@@ -1075,5 +1119,40 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     @Override
     protected boolean isLightToolbarThemes() {
         return true;
+    }
+
+    private void showCancelPickupBoothDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.label_dialog_title_cancel_pickup);
+        builder.setMessage(R.string.label_dialog_message_cancel_pickup_booth);
+        builder.setPositiveButton(R.string.title_yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                pickupPointLayout.unSetData(AddToCartActivity.this);
+                spShippingAgency.setEnabled(true);
+                spShippingAgency.setSelection(0);
+                pickupBooth = null;
+            }
+        });
+        builder.setNegativeButton(R.string.title_no, null);
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    @Override
+    public void onChoosePickupPoint() {
+        startActivityForResult(PickupPointActivity.createInstance(this, mDestination.getDistrictName(),
+                GetPickupPointsUseCase.generateParams(orderData)), REQUEST_CHOOSE_PICKUP_POINT);
+    }
+
+    @Override
+    public void onClearPickupPoint(Store store) {
+        showCancelPickupBoothDialog();
+    }
+
+    @Override
+    public void onEditPickupPoint(Store store) {
+        startActivityForResult(PickupPointActivity.createInstance(this, mDestination.getDistrictName(),
+                GetPickupPointsUseCase.generateParams(orderData)), REQUEST_CHOOSE_PICKUP_POINT);
     }
 }

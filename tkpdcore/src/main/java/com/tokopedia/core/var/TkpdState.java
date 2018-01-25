@@ -462,6 +462,7 @@ public class TkpdState extends com.tokopedia.abstraction.constant.TkpdState {
     public class SHIPPING_ID {
         public static final String WAHANA = "6";
         public static final String GOJEK = "10";
+        public static final String ALFAMART = "22";
     }
 
     public class Gender {

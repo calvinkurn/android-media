@@ -32,6 +32,7 @@
             android:layout_toRightOf="@id/tv_label_shop_name"
             android:fontFamily="sans-serif-medium"
             android:lineSpacingExtra="5sp"
+            android:textColor="@color/black_70"
             android:textSize="12sp"
             android:textStyle="normal"
             tools:ignore="RelativeOverlap"
@@ -48,7 +49,7 @@
             tools:ignore="ContentDescription"/>
     </RelativeLayout>
 
-    <view
+    <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:background="#e0e0e0"/>
@@ -76,6 +77,7 @@
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@id/iv_image_product"
                 android:layout_toRightOf="@id/iv_image_product"
+                android:textColor="@color/black_70"
                 android:textSize="14sp"
                 tools:text="Tas organizer sepeda double container"/>
 
@@ -170,12 +172,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
+                android:textColor="@color/black_70"
                 android:textSize="12sp"
                 android:textStyle="normal"
                 tools:text="3kg"/>
         </LinearLayout>
 
-        <view
+        <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:background="#e0e0e0"/>
@@ -206,7 +209,7 @@
                 android:src="@drawable/bg_button_counter_plus"/>
 
             <EditText
-                android:id="@+id/et_form_qty"
+                android:id="@+id/et_qty"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toLeftOf="@id/btn_qty_plus"
@@ -224,8 +227,8 @@
                 android:id="@+id/btn_qty_min"
                 android:layout_width="28dp"
                 android:layout_height="28dp"
-                android:layout_toLeftOf="@id/et_form_qty"
-                android:layout_toStartOf="@id/et_form_qty"
+                android:layout_toLeftOf="@id/et_qty"
+                android:layout_toStartOf="@id/et_qty"
                 android:src="@drawable/bg_button_counter_minus"/>
         </RelativeLayout>
 
@@ -264,6 +267,8 @@
                 android:layout_below="@id/tv_label_form_remark"
                 android:background="@color/transparent"
                 android:fontFamily="sans-serif"
+                android:imeActionLabel="Simpan"
+                android:imeOptions="actionSend"
                 android:paddingBottom="8dp"
                 android:paddingTop="8dp"
                 android:textSize="12sp"
@@ -275,7 +280,7 @@ barangnya gan!"
                 tools:visibility="gone"/>
         </RelativeLayout>
 
-        <view
+        <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:background="#e0e0e0"/>
