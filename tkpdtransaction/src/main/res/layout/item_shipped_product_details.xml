@@ -303,6 +303,16 @@
             android:textColor="@color/black_54"
             tools:text="Pengiriman" />
 
+        <ImageView android:id="@+id/iv_chevron_shipment_option"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_chevron_right"
+            android:tint="@color/medium_green"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            tools:ignore="ContentDescription" />
+
         <TextView android:id="@+id/tv_shipment_option"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -316,16 +326,6 @@
             android:textColor="@color/medium_green"
             android:gravity="end"
             tools:text="Go-send Instan" />
-
-        <ImageView android:id="@+id/iv_chevron_shipment_option"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_centerVertical="true"
-            android:src="@drawable/ic_chevron_right"
-            android:tint="@color/medium_green"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            tools:ignore="ContentDescription" />
 
     </RelativeLayout>
 
