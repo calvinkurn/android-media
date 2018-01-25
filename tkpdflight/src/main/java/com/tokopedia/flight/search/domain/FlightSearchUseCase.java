@@ -25,7 +25,7 @@ import rx.functions.Func2;
 import rx.functions.Func3;
 
 /**
- * Created by zulfikarrahman on 10/25/17.
+ * @author by zulfikarrahman on 10/25/17.
  */
 
 public class FlightSearchUseCase extends UseCase<List<FlightSearchViewModel>> {
@@ -37,10 +37,17 @@ public class FlightSearchUseCase extends UseCase<List<FlightSearchViewModel>> {
     }
 
     public static RequestParams generateRequestParams(FlightSearchApiRequestModel flightSearchApiRequestModel,
-                                                      boolean isReturning, boolean fromCache, FlightFilterModel flightFilterModel,
+                                                      boolean isReturning,
+                                                      boolean fromCache,
+                                                      FlightFilterModel flightFilterModel,
                                                       @FlightSortOption int sortOption) {
-        return FlightSearchParamUtil.generateRequestParams(flightSearchApiRequestModel,
-                isReturning, fromCache, flightFilterModel, sortOption);
+        return FlightSearchParamUtil.generateRequestParams(
+                flightSearchApiRequestModel,
+                isReturning,
+                fromCache,
+                flightFilterModel,
+                sortOption
+        );
     }
 
     @Override

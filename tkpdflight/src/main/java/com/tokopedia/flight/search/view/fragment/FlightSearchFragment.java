@@ -559,9 +559,6 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
         // we retrieve from cache, because there is possibility the filter/sort will be different
         reloadDataFromCache();
-        if (filterAndSortBottomAction.getVisibility() == View.GONE && progress >= MAX_PROGRESS) {
-            filterAndSortBottomAction.setVisibility(View.VISIBLE);
-        }
     }
 
     @Override
