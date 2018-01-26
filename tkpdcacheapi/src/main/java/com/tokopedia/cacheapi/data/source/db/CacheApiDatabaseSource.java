@@ -91,7 +91,6 @@ public class CacheApiDatabaseSource {
         return getWhiteList(host, path).flatMap(new Func1<CacheApiWhitelist, Observable<Boolean>>() {
             @Override
             public Observable<Boolean> call(CacheApiWhitelist cacheApiWhitelist) {
-                int i = 0/0;
                 return Observable.just(cacheApiWhitelist != null);
             }
         });

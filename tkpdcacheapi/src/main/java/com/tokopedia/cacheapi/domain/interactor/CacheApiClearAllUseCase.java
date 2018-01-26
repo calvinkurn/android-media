@@ -13,19 +13,15 @@ import rx.Observable;
 
 public class CacheApiClearAllUseCase extends UseCase<Boolean> {
 
-    private CacheApiRepository apiCacheRepository;
+    private CacheApiRepository cacheApiRepository;
 
     public CacheApiClearAllUseCase() {
-        this(Injection.provideCacheApiRepository());
-    }
-
-    public CacheApiClearAllUseCase(CacheApiRepository cacheApiRepository) {
-        this.apiCacheRepository = cacheApiRepository;
+        cacheApiRepository = Injection.provideCacheApiRepository();
     }
 
     @Override
     public Observable<Boolean> createObservable(RequestParams requestParams) {
-        return apiCacheRepository.deleteAllCacheData();
+        return cacheApiRepository.deleteAllCacheData();
     }
 }
 

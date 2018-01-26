@@ -1,5 +1,6 @@
 package com.tokopedia.cacheapi.domain.interactor;
 
+import com.tokopedia.cacheapi.constant.CacheApiConstant;
 import com.tokopedia.cacheapi.domain.CacheApiRepository;
 import com.tokopedia.cacheapi.util.CacheApiUtils;
 import com.tokopedia.cacheapi.util.Injection;
@@ -14,37 +15,30 @@ import rx.Observable;
 
 public class CacheApiDataDeleteUseCase extends UseCase<Boolean> {
 
-    private static final String PARAM_DOMAIN = "PARAM_DOMAIN";
-    private static final String PARAM_PATH = "PARAM_PATH";
-
-    private CacheApiRepository apiCacheRepository;
+    private CacheApiRepository cacheApiRepository;
 
     public CacheApiDataDeleteUseCase() {
-        this(Injection.provideCacheApiRepository());
-    }
-
-    public CacheApiDataDeleteUseCase(CacheApiRepository cacheApiRepository) {
-        this.apiCacheRepository = cacheApiRepository;
+        cacheApiRepository = Injection.provideCacheApiRepository();
     }
 
     @Override
     public Observable<Boolean> createObservable(RequestParams requestParams) {
-        String domain = requestParams.getString(PARAM_DOMAIN, "");
-        String path = requestParams.getString(PARAM_PATH, "");
-        return apiCacheRepository.deleteCachedData(domain, path);
+        String host = requestParams.getString(CacheApiConstant.PARAM_HOST, "");
+        String path = requestParams.getString(CacheApiConstant.PARAM_PATH, "");
+        return cacheApiRepository.deleteCachedData(host, path);
     }
 
     public static RequestParams createParams(String url) {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(PARAM_DOMAIN, CacheApiUtils.getHost(url));
-        requestParams.putObject(PARAM_PATH, CacheApiUtils.getPath(url));
+        requestParams.putObject(CacheApiConstant.PARAM_HOST, CacheApiUtils.getHost(url));
+        requestParams.putObject(CacheApiConstant.PARAM_PATH, CacheApiUtils.getPath(url));
         return requestParams;
     }
 
     public static RequestParams createParams(String host, String path) {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(PARAM_DOMAIN, host);
-        requestParams.putObject(PARAM_PATH, path);
+        requestParams.putObject(CacheApiConstant.PARAM_HOST, host);
+        requestParams.putObject(CacheApiConstant.PARAM_PATH, path);
         return requestParams;
     }
 }

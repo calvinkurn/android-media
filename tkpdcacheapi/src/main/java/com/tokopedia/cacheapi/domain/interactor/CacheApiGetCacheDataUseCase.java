@@ -1,8 +1,10 @@
 package com.tokopedia.cacheapi.domain.interactor;
 
+import com.tokopedia.cacheapi.constant.CacheApiConstant;
 import com.tokopedia.cacheapi.domain.CacheApiRepository;
 import com.tokopedia.cacheapi.util.Injection;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -11,19 +13,20 @@ import rx.functions.Func1;
  * Created by normansyahputa on 8/30/17.
  */
 
-public class CacheApiGetCacheDataUseCase extends BaseApiCacheInterceptorUseCase<String> {
+public class CacheApiGetCacheDataUseCase extends UseCase<String> {
+
+    private CacheApiRepository cacheApiRepository;
 
     public CacheApiGetCacheDataUseCase() {
-        this(Injection.provideCacheApiRepository());
-    }
-
-    public CacheApiGetCacheDataUseCase(CacheApiRepository cacheApiRepository) {
-        super(cacheApiRepository);
+        cacheApiRepository = Injection.provideCacheApiRepository();
     }
 
     @Override
-    public Observable<String> createChildObservable(RequestParams requestParams) {
-        return cacheApiRepository.isInWhiteList(cacheApiData.getHost(), cacheApiData.getPath()).filter(new Func1<Boolean, Boolean>() {
+    public Observable<String> createObservable(RequestParams requestParams) {
+        final String host = requestParams.getString(CacheApiConstant.PARAM_HOST, "");
+        final String path = requestParams.getString(CacheApiConstant.PARAM_PATH, "");
+        final String requestParam = requestParams.getString(CacheApiConstant.PARAM_REQUEST_PARAM, "");
+        return cacheApiRepository.isInWhiteList(host, path).filter(new Func1<Boolean, Boolean>() {
             @Override
             public Boolean call(Boolean aBoolean) {
                 return aBoolean;
@@ -31,8 +34,15 @@ public class CacheApiGetCacheDataUseCase extends BaseApiCacheInterceptorUseCase<
         }).flatMap(new Func1<Boolean, Observable<String>>() {
             @Override
             public Observable<String> call(Boolean aBoolean) {
-                return cacheApiRepository.getCachedResponse(cacheApiData.getHost(), cacheApiData.getPath(), cacheApiData.getRequestParam());
+                return cacheApiRepository.getCachedResponse(host, path, requestParam);
             }
         });
+    }
+
+    public static RequestParams createParams(String host, String path) {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject(CacheApiConstant.PARAM_HOST, host);
+        requestParams.putObject(CacheApiConstant.PARAM_PATH, path);
+        return requestParams;
     }
 }

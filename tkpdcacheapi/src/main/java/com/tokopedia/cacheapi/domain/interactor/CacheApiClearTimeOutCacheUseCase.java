@@ -13,18 +13,14 @@ import rx.Observable;
 
 public class CacheApiClearTimeOutCacheUseCase extends UseCase<Boolean> {
 
-    private CacheApiRepository apiCacheRepository;
+    private CacheApiRepository cacheApiRepository;
 
     public CacheApiClearTimeOutCacheUseCase() {
-        this(Injection.provideCacheApiRepository());
-    }
-
-    public CacheApiClearTimeOutCacheUseCase(CacheApiRepository cacheApiRepository) {
-        this.apiCacheRepository = cacheApiRepository;
+        cacheApiRepository = Injection.provideCacheApiRepository();
     }
 
     @Override
     public Observable<Boolean> createObservable(RequestParams requestParams) {
-        return apiCacheRepository.deleteExpiredCachedData();
+        return cacheApiRepository.deleteExpiredCachedData();
     }
 }

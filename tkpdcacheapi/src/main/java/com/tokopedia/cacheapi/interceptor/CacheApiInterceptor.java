@@ -1,21 +1,15 @@
 package com.tokopedia.cacheapi.interceptor;
 
-import android.content.Context;
 import android.text.TextUtils;
 
 import com.tokopedia.cacheapi.constant.CacheApiConstant;
-import com.tokopedia.cacheapi.data.repository.CacheApiRepositoryImpl;
-import com.tokopedia.cacheapi.data.source.CacheApiDataSource;
-import com.tokopedia.cacheapi.data.source.db.CacheApiDatabaseSource;
-import com.tokopedia.cacheapi.domain.CacheApiRepository;
-import com.tokopedia.cacheapi.domain.interactor.BaseApiCacheInterceptorUseCase;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiCheckWhiteListUseCase;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearTimeOutCacheUseCase;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiGetCacheDataUseCase;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiSaveToDbUseCase;
+import com.tokopedia.cacheapi.util.CacheApiResponseValidator;
 import com.tokopedia.cacheapi.util.CacheApiUtils;
 import com.tokopedia.cacheapi.util.LoggingUtils;
-import com.tokopedia.cacheapi.util.CacheApiResponseValidator;
 import com.tokopedia.usecase.RequestParams;
 
 import java.io.IOException;
@@ -62,34 +56,27 @@ public class CacheApiInterceptor implements Interceptor {
     private Response getCacheResponse(Chain chain) throws Throwable {
         Request request = chain.request();
 
-
-
         new CacheApiClearTimeOutCacheUseCase().executeSync(RequestParams.EMPTY);
 
         CacheApiCheckWhiteListUseCase checkWhiteListUseCase = new CacheApiCheckWhiteListUseCase();
         CacheApiGetCacheDataUseCase getCacheDataUseCase = new CacheApiGetCacheDataUseCase();
         CacheApiSaveToDbUseCase saveToDbUseCase = new CacheApiSaveToDbUseCase();
 
-        RequestParams requestParams = RequestParams.create();
+        String host = request.url().host();
+        String path = CacheApiUtils.getPath(request.url().toString());
 
-        requestParams.putString(BaseApiCacheInterceptorUseCase.PARAM_METHOD, request.method());
-        requestParams.putString(BaseApiCacheInterceptorUseCase.PARAM_HOST, request.url().host());
-        requestParams.putString(BaseApiCacheInterceptorUseCase.PARAM_PATH, CacheApiUtils.getPath(request.url().toString()));
-
-        boolean inWhiteList = checkWhiteListUseCase.getData(requestParams);
+        boolean inWhiteList = checkWhiteListUseCase.getData(CacheApiCheckWhiteListUseCase.createParams(host, path));
 
         if (!inWhiteList) {
             LoggingUtils.dumper(String.format("Not registered in white list: %s", request.url().toString()));
             throw new Exception("Not registered in white list");
         }
-        requestParams.putString(BaseApiCacheInterceptorUseCase.PARAM_REQUEST_PARAM, CacheApiUtils.getRequestParam(request));
-        String cachedResponseData = getCacheDataUseCase.getData(requestParams);
+        String cachedResponseData = getCacheDataUseCase.getData(CacheApiGetCacheDataUseCase.createParams(host, path));
         Response originalResponse = getDefaultResponse(chain);
         if (TextUtils.isEmpty(cachedResponseData)) {
             LoggingUtils.dumper(String.format("Data is not here, fetch and save: %s", request.url().toString()));
             if (responseValidator == null || responseValidator.isResponseValidToBeCached(originalResponse)) {
-                requestParams.putObject(CacheApiSaveToDbUseCase.RESPONSE, originalResponse);
-                saveToDbUseCase.executeSync(requestParams);
+                saveToDbUseCase.executeSync(CacheApiSaveToDbUseCase.createParams(host, path, originalResponse));
             }
             return originalResponse;
         } else {
