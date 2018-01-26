@@ -8,6 +8,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.analytics.LoginAnalytics;
+import com.tokopedia.analytics.LoginPhoneNumberAnalytics;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -17,18 +19,13 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.session.R;
 import com.tokopedia.session.login.loginemail.view.fragment.LoginFragment;
+import com.tokopedia.session.login.loginphonenumber.view.viewlistener.LoginPhoneNumber;
 
 /**
  * @author by nisie on 12/18/17.
  */
 
 public class LoginActivity extends TActivity implements HasComponent {
-
-    private static final String PARAM_EMAIL = "email";
-    private static final String PARAM_PASSWORD = "pass";
-
-    private static final String PARAM_LOGIN_TYPE = "type";
-    private static final int TYPE_AUTO = 1;
 
     public static final int METHOD_FACEBOOK = 111;
     public static final int METHOD_GOOGLE = 222;
@@ -80,7 +77,7 @@ public class LoginActivity extends TActivity implements HasComponent {
 
     @Override
     public String getScreenName() {
-        return AppScreen.SCREEN_LOGIN_PHONE_NUMBER;
+        return LoginAnalytics.Screen.SCREEN_LOGIN;
     }
 
     @Override

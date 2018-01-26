@@ -9,6 +9,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.tokopedia.analytics.LoginAnalytics;
+import com.tokopedia.analytics.OTPAnalytics;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -109,7 +111,7 @@ public class VerificationActivity extends TActivity implements HasComponent {
 
     @Override
     public String getScreenName() {
-        return AppScreen.SCREEN_LOGIN_PHONE_NUMBER;
+        return OTPAnalytics.Screen.SCREEN_COTP_DEFAULT;
     }
 
     @Override
@@ -189,7 +191,7 @@ public class VerificationActivity extends TActivity implements HasComponent {
         bundle.putInt(PARAM_IMAGE, R.drawable.ic_verification_sms);
         bundle.putString(PARAM_PHONE_NUMBER, phoneNumber);
         bundle.putString(PARAM_MESSAGE, createSmsMessage(phoneNumber));
-        bundle.putString(PARAM_APP_SCREEN, AppScreen.SCREEN_COTP_SMS);
+        bundle.putString(PARAM_APP_SCREEN, OTPAnalytics.Screen.SCREEN_COTP_SMS);
         return bundle;
     }
 
@@ -199,7 +201,7 @@ public class VerificationActivity extends TActivity implements HasComponent {
         bundle.putInt(PARAM_IMAGE, R.drawable.ic_verification_call);
         bundle.putString(PARAM_PHONE_NUMBER, phoneNumber);
         bundle.putString(PARAM_MESSAGE, createCallMessage(phoneNumber));
-        bundle.putString(PARAM_APP_SCREEN, AppScreen.SCREEN_COTP_CALL);
+        bundle.putString(PARAM_APP_SCREEN, OTPAnalytics.Screen.SCREEN_COTP_CALL);
         return bundle;
     }
 

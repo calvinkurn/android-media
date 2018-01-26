@@ -18,6 +18,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.ui.widget.PinEntryEditText;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.analytics.OTPAnalytics;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -218,7 +219,7 @@ public class ChangePhoneNumberEmailVerificationFragment extends BaseDaggerFragme
 
     @Override
     protected String getScreenName() {
-        return AppScreen.SCREEN_COTP_EMAIL;
+        return OTPAnalytics.Screen.SCREEN_COTP_EMAIL;
     }
 
     @Override

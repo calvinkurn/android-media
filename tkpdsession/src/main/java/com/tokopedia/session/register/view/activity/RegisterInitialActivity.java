@@ -7,6 +7,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.analytics.LoginAnalytics;
+import com.tokopedia.analytics.RegisterAnalytics;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -57,7 +59,7 @@ public class RegisterInitialActivity extends TActivity implements HasComponent {
 
     @Override
     public String getScreenName() {
-        return AppScreen.SCREEN_INITIAL_REGISTER;
+        return RegisterAnalytics.Screen.SCREEN_INITIAL_REGISTER;
     }
 
     public static Intent getCallingIntent(Context context) {

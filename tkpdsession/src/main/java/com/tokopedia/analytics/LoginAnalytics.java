@@ -156,4 +156,8 @@ public class LoginAnalytics {
                 Label.EMAIL
         );
     }
+
+    public static class Screen {
+        public static final String SCREEN_LOGIN = "Login";
+    }
 }

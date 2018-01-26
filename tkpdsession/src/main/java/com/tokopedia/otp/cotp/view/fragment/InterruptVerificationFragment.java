@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.analytics.OTPAnalytics;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -59,7 +60,7 @@ public class InterruptVerificationFragment extends BaseDaggerFragment {
         if (viewModel != null && !TextUtils.isEmpty(viewModel.getAppScreenName())) {
             return viewModel.getAppScreenName();
         } else
-            return AppScreen.SCREEN_INTERRUPT_VERIFICATION_DEFAULT;
+            return OTPAnalytics.Screen.SCREEN_INTERRUPT_VERIFICATION_DEFAULT;
     }
 
     @Override

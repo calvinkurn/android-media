@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.analytics.LoginPhoneNumberAnalytics;
+import com.tokopedia.analytics.OTPAnalytics;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -36,7 +37,7 @@ public class ChooseTokocashVerificationMethodFragment extends BaseDaggerFragment
 
     @Override
     protected String getScreenName() {
-        return AppScreen.SCREEN_SELECT_VERIFICATION_METHOD;
+        return OTPAnalytics.Screen.SCREEN_SELECT_VERIFICATION_METHOD;
     }
 
     @Override

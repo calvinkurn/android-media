@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.tokopedia.analytics.OTPAnalytics;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -56,7 +57,7 @@ public class ChooseVerificationMethodFragment extends BaseDaggerFragment impleme
 
     @Override
     protected String getScreenName() {
-        return AppScreen.SCREEN_SELECT_VERIFICATION_METHOD;
+        return OTPAnalytics.Screen.SCREEN_SELECT_VERIFICATION_METHOD;
     }
 
     @Override

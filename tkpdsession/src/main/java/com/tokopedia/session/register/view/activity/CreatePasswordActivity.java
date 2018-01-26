@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
+import com.tokopedia.analytics.LoginAnalytics;
+import com.tokopedia.analytics.RegisterAnalytics;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -47,7 +49,7 @@ public class CreatePasswordActivity extends TActivity implements HasComponent {
 
     @Override
     public String getScreenName() {
-        return AppScreen.SCREEN_CREATE_PASSWORD;
+        return RegisterAnalytics.Screen.SCREEN_CREATE_PASSWORD;
     }
 
     public static Intent getCallingIntent(Context context, CreatePasswordViewModel createPasswordViewModel) {

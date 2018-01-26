@@ -1,5 +1,6 @@
 package com.tokopedia.otp.cotp.view.viewmodel;
 
+import com.tokopedia.analytics.OTPAnalytics;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
@@ -56,7 +57,7 @@ public class InterruptVerificationViewModel {
     public static InterruptVerificationViewModel createDefaultSmsInterruptPage(String phone) {
         return new InterruptVerificationViewModel(
                 RequestOtpUseCase.MODE_SMS,
-                AppScreen.SCREEN_INTERRUPT_VERIFICATION_SMS,
+                OTPAnalytics.Screen.SCREEN_INTERRUPT_VERIFICATION_SMS,
                 R.drawable.ic_verification_sms,
                 MainApplication.getAppContext().getString(R.string.to_verify_sms)
                         + "<br><font color='#b3000000'>" + MethodItem.getMaskedPhoneNumber(phone) +
@@ -68,7 +69,7 @@ public class InterruptVerificationViewModel {
     public static InterruptVerificationViewModel createDefaultEmailInterruptPage(String email) {
         return new InterruptVerificationViewModel(
                 RequestOtpUseCase.MODE_EMAIL,
-                AppScreen.SCREEN_INTERRUPT_VERIFICATION_EMAIL,
+                OTPAnalytics.Screen.SCREEN_INTERRUPT_VERIFICATION_EMAIL,
                 R.drawable.ic_verification_email,
                 MainApplication.getAppContext().getString(R.string.to_verify_email)
                         + "<br><font color='#b3000000'>" + email + "</font>.",

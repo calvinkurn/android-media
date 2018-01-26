@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.DatePickerUtil;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.analytics.RegisterAnalytics;
 import com.tokopedia.core.TermPrivacy;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
@@ -92,7 +93,7 @@ public class CreatePasswordFragment extends BaseDaggerFragment
 
     @Override
     protected String getScreenName() {
-        return AppScreen.SCREEN_CREATE_PASSWORD;
+        return RegisterAnalytics.Screen.SCREEN_CREATE_PASSWORD;
     }
 
     @Override

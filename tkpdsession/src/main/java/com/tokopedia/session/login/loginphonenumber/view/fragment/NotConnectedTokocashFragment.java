@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.analytics.LoginAnalytics;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -53,7 +54,7 @@ public class NotConnectedTokocashFragment extends BaseDaggerFragment {
 
     @Override
     protected String getScreenName() {
-        return AppScreen.SCREEN_NOT_CONNECTED_TO_TOKOCASH;
+        return LoginPhoneNumberAnalytics.Screen.SCREEN_NOT_CONNECTED_TO_TOKOCASH;
     }
 
     @Override

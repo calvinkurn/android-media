@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.analytics.LoginAnalytics;
 import com.tokopedia.analytics.LoginPhoneNumberAnalytics;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -86,7 +87,7 @@ public class ChooseTokocashAccountFragment extends BaseDaggerFragment implements
 
     @Override
     protected String getScreenName() {
-        return AppScreen.SCREEN_CHOOSE_TOKOCASH_ACCOUNT;
+        return LoginPhoneNumberAnalytics.Screen.SCREEN_CHOOSE_TOKOCASH_ACCOUNT;
     }
 
     @Override

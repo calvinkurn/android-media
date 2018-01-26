@@ -9,6 +9,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.tokopedia.analytics.LoginAnalytics;
+import com.tokopedia.analytics.OTPAnalytics;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -114,7 +116,7 @@ public class VerificationActivity extends TActivity implements HasComponent {
 
     @Override
     public String getScreenName() {
-        return AppScreen.SCREEN_COTP_DEFAULT;
+        return OTPAnalytics.Screen.SCREEN_COTP_DEFAULT;
     }
 
     @Override
@@ -143,8 +145,7 @@ public class VerificationActivity extends TActivity implements HasComponent {
 
     /**
      * @param mode should be from {@link com.tokopedia.otp.domain.interactor.RequestOtpUseCase}
-     * Do not use this for dynamic verification page. This should only be used for default page.
-     *
+     *             Do not use this for dynamic verification page. This should only be used for default page.
      */
     public void goToDefaultVerificationPage(String mode) {
         if (!(getSupportFragmentManager().findFragmentById(R.id.container) instanceof
@@ -164,7 +165,7 @@ public class VerificationActivity extends TActivity implements HasComponent {
 
     /**
      * @param methodItem should be from {@link com.tokopedia.otp.cotp.view.fragment.ChooseVerificationMethodFragment}
-     * Use this for dynamic otp.
+     *                   Use this for dynamic otp.
      */
     public void goToVerificationPage(MethodItem methodItem) {
         if (!(getSupportFragmentManager().findFragmentById(R.id.container) instanceof
@@ -188,7 +189,7 @@ public class VerificationActivity extends TActivity implements HasComponent {
         bundle.putInt(PARAM_IMAGE, R.drawable.ic_verification_sms);
         bundle.putString(PARAM_PHONE_NUMBER, phoneNumber);
         bundle.putString(PARAM_MESSAGE, createSmsMessage(phoneNumber, otpType));
-        bundle.putString(PARAM_APP_SCREEN, AppScreen.SCREEN_COTP_SMS);
+        bundle.putString(PARAM_APP_SCREEN, OTPAnalytics.Screen.SCREEN_COTP_SMS);
         return bundle;
     }
 
@@ -198,7 +199,7 @@ public class VerificationActivity extends TActivity implements HasComponent {
         bundle.putInt(PARAM_IMAGE, R.drawable.ic_verification_email);
         bundle.putString(PARAM_EMAIL, email);
         bundle.putString(PARAM_MESSAGE, createEmailMessage(email));
-        bundle.putString(PARAM_APP_SCREEN, AppScreen.SCREEN_COTP_EMAIL);
+        bundle.putString(PARAM_APP_SCREEN, OTPAnalytics.Screen.SCREEN_COTP_EMAIL);
         return bundle;
     }
 
@@ -215,7 +216,7 @@ public class VerificationActivity extends TActivity implements HasComponent {
     }
 
     private String getDynamicAppScreen(String mode) {
-        return "Input OTP " + mode;
+        return OTPAnalytics.Screen.SCREEN_COTP_DEFAULT + mode;
     }
 
     private String getMaskedPhone(String phoneNumber, int otpType) {
@@ -231,7 +232,7 @@ public class VerificationActivity extends TActivity implements HasComponent {
 
     private String createSmsMessage(String phoneNumber, int otpType) {
         if (!TextUtils.isEmpty(phoneNumber)) {
-            return getString(R.string.verification_code_sent_to) + " " + getMaskedPhone
+            return getString(R.string.verification_code_sent_to) + "<br/>" + getMaskedPhone
                     (phoneNumber, otpType);
         } else {
             return "";
@@ -241,7 +242,7 @@ public class VerificationActivity extends TActivity implements HasComponent {
     private String createEmailMessage(String email) {
         if (!TextUtils.isEmpty(email)) {
             return getString(R.string.verification_code_sent_to)
-                    + " <b>" + email + "</b>";
+                    + "<br/><b>" + email + "</b>";
         } else {
             return "";
         }

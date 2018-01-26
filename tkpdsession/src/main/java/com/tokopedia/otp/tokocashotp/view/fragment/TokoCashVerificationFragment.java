@@ -25,6 +25,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.analytics.LoginPhoneNumberAnalytics;
+import com.tokopedia.analytics.OTPAnalytics;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -145,7 +146,7 @@ public class TokoCashVerificationFragment extends BaseDaggerFragment implements 
         if (viewModel != null && !TextUtils.isEmpty(viewModel.getAppScreen())) {
             return viewModel.getAppScreen();
         } else
-            return AppScreen.SCREEN_COTP_DEFAULT;
+            return OTPAnalytics.Screen.SCREEN_COTP_DEFAULT;
     }
 
     @Nullable
