@@ -143,30 +143,6 @@ public class FlightBookingGetSingleResultUseCase extends UseCase<FlightSearchVie
                         );
                     }
                 });
-                        /*return Observable.zip(
-                                flightRepository.getAirlineList(),
-                                flightRepository.getAirportList(""),
-                                Observable.just(flightSearchViewModel),
-                                new Func3<List<FlightAirlineDB>, List<FlightAirportDB>,
-                                        FlightSearchViewModel, FlightSearchViewModel>() {
-                                    @Override
-                                    public FlightSearchViewModel call(List<FlightAirlineDB> airlineDBList,
-                                                                      List<FlightAirportDB> flightAirportDBs,
-                                                                      FlightSearchViewModel flightSearchViewModel) {
-                                        HashMap<String, FlightAirlineDB> dbAirlineMaps = new HashMap<>();
-                                        HashMap<String, FlightAirportDB> dbAirportMaps = new HashMap<>();
-                                        for (int i = 0, sizei = airlineDBList.size(); i < sizei; i++) {
-                                            dbAirlineMaps.put(airlineDBList.get(i).getId(), airlineDBList.get(i));
-                                        }
-                                        for (int i = 0, sizei = flightAirportDBs.size(); i < sizei; i++) {
-                                            dbAirportMaps.put(flightAirportDBs.get(i).getAirportId(), flightAirportDBs.get(i));
-                                        }
-                                        flightSearchViewModel.mergeWithAirportAndAirlines(dbAirlineMaps, dbAirportMaps);
-                                        return flightSearchViewModel;
-                                    }
-                                });
-                    }
-                });*/
     }
 
     public RequestParams createRequestParam(boolean isReturning, String id) {

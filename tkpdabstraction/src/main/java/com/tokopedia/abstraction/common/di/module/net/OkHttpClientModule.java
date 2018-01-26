@@ -1,11 +1,11 @@
 package com.tokopedia.abstraction.common.di.module.net;
 
-import com.tokopedia.abstraction.common.di.qualifier.OkHttpClientBuilderDefaultQualifier;
+import com.tokopedia.abstraction.common.di.qualifier.OkHttpClientBuilderNonBaseQualifier;
+import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.TkpdOkHttpBuilder;
 import com.tokopedia.abstraction.common.network.interceptor.DebugInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdBaseInterceptor;
-import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 
 import dagger.Module;
 import dagger.Provides;
@@ -45,7 +45,7 @@ public class OkHttpClientModule {
 
     @ApplicationScope
     @Provides
-    @OkHttpClientBuilderDefaultQualifier
+    @OkHttpClientBuilderNonBaseQualifier
     public OkHttpClient.Builder provideOkhttpBuilder(OkHttpRetryPolicy okHttpRetryPolicy,
                                                      DebugInterceptor debugInterceptor) {
 

@@ -418,6 +418,12 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         showMessageErrorInSnackBar(resId);
     }
 
+
+    @Override
+    public void showPassengerLastNameShouldSameWithFirstNameError(int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
     @Override
     public void hideKeyboard() {
         KeyboardHandler.hideSoftKeyboard(getActivity());

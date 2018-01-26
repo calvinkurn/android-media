@@ -8,6 +8,7 @@ import android.support.v7.widget.AppCompatTextView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
@@ -101,7 +102,7 @@ public class FlightSearchReturnFragment extends FlightSearchFragment implements 
 
     @Override
     public void onItemClicked(FlightSearchViewModel flightSearchViewModel) {
-        flightSearchReturnPresenter.onFlightSearchSelected(flightSearchPassDataViewModel.getDepartureDate(), flightSearchPassDataViewModel.getReturnDate(), selectedFlightDeparture, flightSearchViewModel);
+        flightSearchReturnPresenter.onFlightSearchSelected(selectedFlightDeparture, flightSearchViewModel);
     }
 
     @Override
@@ -149,7 +150,12 @@ public class FlightSearchReturnFragment extends FlightSearchFragment implements 
         }
     }
 
-    protected void onSelectedFromDetail(String selectedId){
+    @Override
+    public void showErrorPickJourney() {
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(R.string.flight_error_pick_journey));
+    }
+
+    protected void onSelectedFromDetail(String selectedId) {
         flightSearchReturnPresenter.onFlightSearchSelected(selectedFlightDeparture, selectedId);
     }
 

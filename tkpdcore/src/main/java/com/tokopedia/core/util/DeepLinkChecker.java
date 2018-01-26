@@ -50,6 +50,9 @@ public class DeepLinkChecker {
     public static final int FLIGHT = 18;
 
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
+    private static final String FLIGHT_SEGMENT = "pesawat";
+    private static final String KEY_PROMO = "promo";
+    private static final String KEY_SALE = "sale";
 
     public static int getDeepLinkType(String url) {
         Uri uriData = Uri.parse(url);
@@ -108,7 +111,7 @@ public class DeepLinkChecker {
     }
 
     private static boolean isFlight(List<String> linkSegment) {
-        return linkSegment.size() > 0 && linkSegment.get(0).equals("pesawat");
+        return linkSegment.size() > 0 && linkSegment.get(0).equalsIgnoreCase(FLIGHT_SEGMENT);
     }
 
     public static List<String> getLinkSegment(String url) {
@@ -134,7 +137,7 @@ public class DeepLinkChecker {
     }
 
     private static boolean isPromo(List<String> linkSegment) {
-        return linkSegment.size() > 0 && (linkSegment.get(0).equals("promo"));
+        return linkSegment.size() > 0 && (linkSegment.get(0).equals(KEY_PROMO) || linkSegment.get(0).equals(KEY_SALE));
     }
 
     private static boolean isHome(String url, List<String> linkSegment) {

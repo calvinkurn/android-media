@@ -1,18 +1,11 @@
 package com.tokopedia.tkpd.flight;
 
-import android.content.Context;
-import android.os.Bundle;
-
-import com.tokopedia.core.base.data.executor.JobExecutor;
-import com.tokopedia.core.base.presentation.UIThread;
-import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
-import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
-import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
-import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
+import com.tokopedia.tkpd.flight.di.FlightConsumerComponent;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -22,30 +15,27 @@ import rx.functions.Func1;
  */
 
 public class FlightGetProfileInfoData {
-    private GetUserInfoUseCase getUserInfoUseCase;
+    private static FlightGetProfileInfoData instance;
+    @Inject
+    GetUserInfoUseCase getUserInfoUseCase;
+    private FlightConsumerComponent flightConsumerComponent;
 
-    public FlightGetProfileInfoData(Context context) {
-        Bundle bundle = new Bundle();
-        SessionHandler sessionHandler = new SessionHandler(context);
-        String authKey = sessionHandler.getAccessToken(context);
-        authKey = sessionHandler.getTokenType(context) + " " + authKey;
-        bundle.putString(AccountsService.AUTH_KEY, authKey);
+    public FlightGetProfileInfoData(FlightConsumerComponent flightConsumerComponent) {
+        this.flightConsumerComponent = flightConsumerComponent;
+    }
 
-        AccountsService accountsService = new AccountsService(bundle);
+    public static FlightGetProfileInfoData newInstance(FlightConsumerComponent flightConsumerComponent) {
+        if (instance == null) {
+            instance = new FlightGetProfileInfoData(flightConsumerComponent);
+        }
+        return instance;
+    }
 
-        ProfileSourceFactory profileSourceFactory =
-                new ProfileSourceFactory(
-                        context,
-                        accountsService,
-                        new GetUserInfoMapper(),
-                        null,
-                        sessionHandler
-                );
-        getUserInfoUseCase = new GetUserInfoUseCase(
-                new JobExecutor(),
-                new UIThread(),
-                new ProfileRepositoryImpl(profileSourceFactory)
-        );
+    public FlightGetProfileInfoData inject() {
+        if (flightConsumerComponent != null) {
+            flightConsumerComponent.inject(this);
+        }
+        return this;
     }
 
     public Observable<ProfileInfo> getProfileInfoPrefillBooking() {

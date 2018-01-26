@@ -75,7 +75,6 @@ public abstract class FlightBaseBookingPresenter<T extends FlightBaseBookingCont
                             List<Fare> fares = new ArrayList<>();
                             List<String> journeyAffected = new ArrayList<>();
                             for (NewFarePrice newFare : flightBookingCartData.getNewFarePrices()) {
-//                                fares.add(newFare.getFare());
                                 if (newFare.getId().equalsIgnoreCase(getView().getDepartureFlightDetailViewModel().getId())){
                                     journeyAffected.add(newFare.getId());
                                     fares.add(newFare.getFare());

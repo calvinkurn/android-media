@@ -14,9 +14,8 @@ import rx.subscriptions.Subscriptions;
 
 public abstract class UseCase<T> implements Interactor<T> {
 
-    private CompositeSubscription compositeSubscription = new CompositeSubscription();
-
     protected Subscription subscription = Subscriptions.empty();
+    private CompositeSubscription compositeSubscription = new CompositeSubscription();
 
     public UseCase() {
     }
@@ -49,11 +48,11 @@ public abstract class UseCase<T> implements Interactor<T> {
             if (sync) {
                 observable = Observable.just(createObservable(requestParams)
                         .defaultIfEmpty(null).toBlocking().first())
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread());
             } else {
                 observable = createObservable(requestParams)
-                        .subscribeOn(Schedulers.newThread())
+                        .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread());
             }
             if (subscriber != null) {

@@ -66,19 +66,27 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
     public void searchAndSortFlight(FlightSearchApiRequestModel flightSearchApiRequestModel,
                                     boolean isReturning, boolean isFromCache, FlightFilterModel flightFilterModel,
                                     @FlightSortOption int sortOptionId) {
-        if (isViewAttached())
+        if (isViewAttached()) {
             getView().removeToolbarElevation();
+        }
+
         if (isFromCache) {
-            flightSearchWithSortUseCase.execute(FlightSearchUseCase.generateRequestParams(
-                    flightSearchApiRequestModel,
-                    isReturning, true, flightFilterModel,
-                    sortOptionId),
+            flightSearchWithSortUseCase.execute(
+                    FlightSearchUseCase.generateRequestParams(
+                            flightSearchApiRequestModel,
+                            isReturning,
+                            true,
+                            flightFilterModel,
+                            sortOptionId),
                     getSubscriberSearchFlightCache(sortOptionId));
         } else {
-            flightSearchMetaUseCase.execute(FlightSearchUseCase.generateRequestParams(
-                    flightSearchApiRequestModel,
-                    isReturning, false, null,
-                    FlightSortOption.NO_PREFERENCE),
+            flightSearchMetaUseCase.execute(
+                    FlightSearchUseCase.generateRequestParams(
+                            flightSearchApiRequestModel,
+                            isReturning,
+                            false,
+                            null,
+                            FlightSortOption.NO_PREFERENCE),
                     getSubscriberSearchFlightCloud());
         }
     }
@@ -87,8 +95,8 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
                                              final boolean isReturning, int delayInSecond) {
         getView().removeToolbarElevation();
         Subscription subscription = Observable.timer(delayInSecond, TimeUnit.SECONDS)
-                .subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new OnNextSubscriber<Long>() {
                     @Override
@@ -105,8 +113,8 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
 
     public void setDelayHorizontalProgress() {
         Subscription subscription = Observable.timer(DELAY_HORIZONTAL_PROGRESS, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new OnNextSubscriber<Long>() {
                     @Override

@@ -7,7 +7,7 @@ import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.common.di.qualifier.OkHttpClientBuilderDefaultQualifier;
+import com.tokopedia.abstraction.common.di.qualifier.OkHttpClientBuilderNonBaseQualifier;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.flight.airline.data.FlightAirlineDataListSource;
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListBackgroundSource;
@@ -66,7 +66,7 @@ public class FlightModule {
 
     @FlightScope
     @Provides
-    public OkHttpClient provideOkHttpClient(@OkHttpClientBuilderDefaultQualifier OkHttpClient.Builder okHttpClientBuilder,
+    public OkHttpClient provideOkHttpClient(@OkHttpClientBuilderNonBaseQualifier OkHttpClient.Builder okHttpClientBuilder,
                                             HttpLoggingInterceptor httpLoggingInterceptor,
                                             FlightAuthInterceptor flightAuthInterceptor) {
         return okHttpClientBuilder

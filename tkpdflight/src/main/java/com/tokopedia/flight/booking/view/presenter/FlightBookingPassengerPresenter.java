@@ -20,7 +20,6 @@ import javax.inject.Inject;
 
 /**
  * @author by alvarisi on 11/16/17.
- *         TODO :this class still
  */
 
 public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightBookingPassengerContract.View> implements FlightBookingPassengerContract.Presenter {
@@ -274,6 +273,9 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         } else if ((getView().getPassengerFirstName().length() + getView().getPassengerLastName().length()) > 48) {
             isValid = false;
             getView().showPassengerFirstNameShouldNoMoreThanMaxError(R.string.flight_booking_passenger_first_last_name_max_error);
+        } else if (getView().getPassengerLastName().length() == 0) {
+            isValid = false;
+            getView().showPassengerLastNameShouldSameWithFirstNameError(R.string.flight_booking_passenger_last_name_should_same_error);
         } else if (getView().getPassengerLastName().length() < 2) {
             isValid = false;
             getView().showPassengerLastNameEmptyError(R.string.flight_booking_passenger_last_name_empty_error);
