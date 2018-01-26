@@ -9,7 +9,7 @@ import com.tokopedia.cacheapi.domain.interactor.CacheApiGetCacheDataUseCase;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiSaveToDbUseCase;
 import com.tokopedia.cacheapi.util.CacheApiResponseValidator;
 import com.tokopedia.cacheapi.util.CacheApiUtils;
-import com.tokopedia.cacheapi.util.LoggingUtils;
+import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.usecase.RequestParams;
 
 import java.io.IOException;
@@ -68,20 +68,20 @@ public class CacheApiInterceptor implements Interceptor {
         boolean inWhiteList = checkWhiteListUseCase.getData(CacheApiCheckWhiteListUseCase.createParams(host, path));
 
         if (!inWhiteList) {
-            LoggingUtils.dumper(String.format("Not registered in white list: %s", request.url().toString()));
+            CacheApiLoggingUtils.dumper(String.format("Not registered in white list: %s", request.url().toString()));
             throw new Exception("Not registered in white list");
         }
         String requestParams = CacheApiUtils.getRequestParam(request);
         String cachedResponseData = getCacheDataUseCase.getData(CacheApiGetCacheDataUseCase.createParams(host, path, requestParams));
         Response originalResponse = getDefaultResponse(chain);
         if (TextUtils.isEmpty(cachedResponseData)) {
-            LoggingUtils.dumper(String.format("Data is not here, fetch and save: %s", request.url().toString()));
+            CacheApiLoggingUtils.dumper(String.format("Data is not here, fetch and save: %s", request.url().toString()));
             if (responseValidator == null || responseValidator.isResponseValidToBeCached(originalResponse)) {
                 saveToDbUseCase.executeSync(CacheApiSaveToDbUseCase.createParams(host, path, originalResponse));
             }
             return originalResponse;
         } else {
-            LoggingUtils.dumper(String.format("Data exist, return data from db: %s", request.url().toString()));
+            CacheApiLoggingUtils.dumper(String.format("Data exist, return data from db: %s", request.url().toString()));
             Response.Builder builder = new Response.Builder();
             builder.request(request);
             builder.protocol(originalResponse.protocol());

@@ -15,7 +15,7 @@ import com.tokopedia.cacheapi.domain.mapper.CacheApiWhiteListMapper;
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.cacheapi.util.CacheApiUtils;
 import com.tokopedia.cacheapi.util.EncryptionUtils;
-import com.tokopedia.cacheapi.util.LoggingUtils;
+import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 
 import java.util.Collection;
 
@@ -49,7 +49,7 @@ public class CacheApiDatabaseSource {
                 if (cacheApiVersion != null) {
                     storedVersionName = cacheApiVersion.getVersion();
                 }
-                LoggingUtils.dumper(String.format("Stored vs current version: %s - %s", storedVersionName, versionName));
+                CacheApiLoggingUtils.dumper(String.format("Stored vs current version: %s - %s", storedVersionName, versionName));
                 // Fresh install or different version
                 boolean whiteListVersionUpdated = !TextUtils.isEmpty(storedVersionName) || !storedVersionName.equalsIgnoreCase(versionName);
                 subscriber.onNext(whiteListVersionUpdated);
@@ -100,10 +100,10 @@ public class CacheApiDatabaseSource {
         return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
-                LoggingUtils.dumper(String.format("Inserting White List"));
+                CacheApiLoggingUtils.dumper(String.format("Inserting White List"));
                 for (CacheApiWhiteListDomain cacheApiWhiteListDomain : cacheApiDatas) {
                     CacheApiWhitelist whiteList = CacheApiWhiteListMapper.from(cacheApiWhiteListDomain);
-                    LoggingUtils.dumper(String.format("Insert white list: %s - %s", whiteList.getHost(), whiteList.getPath()));
+                    CacheApiLoggingUtils.dumper(String.format("Insert white list: %s - %s", whiteList.getHost(), whiteList.getPath()));
                     whiteList.save();
                 }
                 subscriber.onNext(true);
@@ -130,7 +130,7 @@ public class CacheApiDatabaseSource {
                         .where(CacheApiData_Table.host.eq(host))
                         .and(CacheApiData_Table.path.eq(path))
                         .and(CacheApiData_Table.request_param.eq(getEncrypted(param)));
-                LoggingUtils.dumper("CachedData : " + selection.toString());
+                CacheApiLoggingUtils.dumper("CachedData : " + selection.toString());
                 CacheApiData cacheApiData = selection.querySingle();
                 String cachedResponseBody = null;
                 if (cacheApiData != null) {

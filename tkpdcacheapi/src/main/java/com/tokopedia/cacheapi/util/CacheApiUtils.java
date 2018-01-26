@@ -1,8 +1,5 @@
 package com.tokopedia.cacheapi.util;
 
-import android.content.Context;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.text.TextUtils;
 
 import com.tokopedia.cacheapi.constant.HTTPMethodDef;
@@ -191,7 +188,7 @@ public class CacheApiUtils {
             if (source.buffer().size() < DEFAULT_MAX_CONTENT_LENGTH) {
                 return getNativeSource(source, true);
             } else {
-                LoggingUtils.dumper("gzip encoded response was too long");
+                CacheApiLoggingUtils.dumper("gzip encoded response was too long");
             }
         }
         return response.body().source();

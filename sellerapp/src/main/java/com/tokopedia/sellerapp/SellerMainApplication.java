@@ -20,6 +20,7 @@ import com.raizlabs.android.dbflow.config.TkpdSellerGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
+import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -180,11 +181,9 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     }
 
     public void initCacheApiWhiteList() {
+        CacheApiLoggingUtils.setLogEnabled(GlobalConfig.isAllowDebuggingTools());
         List<CacheApiWhiteListDomain> cacheApiWhiteListDomains = getWhiteList();
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(CacheApiWhiteListUseCase.ADD_WHITELIST_COLLECTIONS, cacheApiWhiteListDomains);
-        requestParams.putObject(CacheApiWhiteListUseCase.APP_VERSION_NAME, getCurrentVersion(getApplicationContext()));
-        new CacheApiWhiteListUseCase().executeSync(requestParams, new Subscriber<Boolean>() {
+        new CacheApiWhiteListUseCase().executeSync(CacheApiWhiteListUseCase.createParams(cacheApiWhiteListDomains, String.valueOf(getCurrentVersion(getApplicationContext()))), new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
 
