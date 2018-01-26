@@ -1,7 +1,5 @@
 package com.tokopedia.cacheapi.util;
 
-import com.tokopedia.cacheapi.constant.CacheApiConstant;
-
 import java.net.HttpURLConnection;
 
 import okhttp3.Response;
@@ -12,19 +10,16 @@ import okhttp3.Response;
 
 public class CacheApiResponseValidator {
 
-    private Response response;
-
     public boolean isResponseValidToBeCached(Response response) {
-        this.response = response;
-        return isResponseCodeValid();
+        return isResponseCodeValid(response.code());
     }
 
     /**
      * Only accept response code 2xx
      * @return
      */
-    private boolean isResponseCodeValid() {
-        switch (response.code()) {
+    private boolean isResponseCodeValid(int responseCode) {
+        switch (responseCode) {
             case HttpURLConnection.HTTP_OK:
             case HttpURLConnection.HTTP_CREATED:
             case HttpURLConnection.HTTP_ACCEPTED:

@@ -71,7 +71,8 @@ public class CacheApiInterceptor implements Interceptor {
             LoggingUtils.dumper(String.format("Not registered in white list: %s", request.url().toString()));
             throw new Exception("Not registered in white list");
         }
-        String cachedResponseData = getCacheDataUseCase.getData(CacheApiGetCacheDataUseCase.createParams(host, path));
+        String requestParams = CacheApiUtils.getRequestParam(request);
+        String cachedResponseData = getCacheDataUseCase.getData(CacheApiGetCacheDataUseCase.createParams(host, path, requestParams));
         Response originalResponse = getDefaultResponse(chain);
         if (TextUtils.isEmpty(cachedResponseData)) {
             LoggingUtils.dumper(String.format("Data is not here, fetch and save: %s", request.url().toString()));

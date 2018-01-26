@@ -27,7 +27,7 @@ public class CacheApiSaveToDbUseCase extends UseCase<Boolean> {
     public Observable<Boolean> createObservable(RequestParams requestParams) {
         String host = requestParams.getString(CacheApiConstant.PARAM_HOST, "");
         String path = requestParams.getString(CacheApiConstant.PARAM_PATH, "");
-        final Response response = (Response) requestParams.getObject(CacheApiConstant.RESPONSE);
+        final Response response = (Response) requestParams.getObject(CacheApiConstant.PARAM_RESPONSE);
         return cacheApiRepository.getWhiteList(host, path).flatMap(new Func1<CacheApiWhitelist, Observable<Boolean>>() {
             @Override
             public Observable<Boolean> call(CacheApiWhitelist cacheApiWhitelist) {
@@ -44,6 +44,7 @@ public class CacheApiSaveToDbUseCase extends UseCase<Boolean> {
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(CacheApiConstant.PARAM_HOST, host);
         requestParams.putObject(CacheApiConstant.PARAM_PATH, path);
+        requestParams.putObject(CacheApiConstant.PARAM_RESPONSE, response);
         return requestParams;
     }
 }

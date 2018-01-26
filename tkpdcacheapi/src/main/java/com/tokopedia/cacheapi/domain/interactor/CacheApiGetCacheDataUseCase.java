@@ -39,10 +39,11 @@ public class CacheApiGetCacheDataUseCase extends UseCase<String> {
         });
     }
 
-    public static RequestParams createParams(String host, String path) {
+    public static RequestParams createParams(String host, String path, String requestParam) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(CacheApiConstant.PARAM_HOST, host);
         requestParams.putObject(CacheApiConstant.PARAM_PATH, path);
+        requestParams.putObject(CacheApiConstant.PARAM_REQUEST_PARAM, requestParam);
         return requestParams;
     }
 }

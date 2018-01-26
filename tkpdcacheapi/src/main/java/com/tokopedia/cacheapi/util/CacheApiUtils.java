@@ -128,6 +128,9 @@ public class CacheApiUtils {
      */
     public static String getResponseBody(Response response) {
         try {
+            if (response == null) {
+                return null;
+            }
             ResponseBody responseBody = response.body();
             BufferedSource source = getNativeSource(response);
             source.request(Long.MAX_VALUE);
