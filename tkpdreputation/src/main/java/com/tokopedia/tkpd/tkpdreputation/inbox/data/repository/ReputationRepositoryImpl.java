@@ -3,26 +3,20 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.data.repository;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.GetLikeDislikeReviewDomain;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeDomain;
+import com.tokopedia.tkpd.tkpdreputation.domain.model.ReportReviewDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.factory.ReputationFactory;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationItemDomain;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.PagingDomain;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.SendReplyReviewDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.CheckShopFavoriteDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.DeleteReviewResponseDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.FavoriteShopDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ReviewDomain;
-import com.tokopedia.tkpd.tkpdreputation.domain.model.ReportReviewDomain;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.CheckShopFavoriteDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.SendReplyReviewDomain;
+import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.SendSmileyReputationDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewSubmitDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SendReviewValidateDomain;
-import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.SendSmileyReputationDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.sendreview.SkipReviewDomain;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import rx.Observable;
-import rx.functions.Func1;
 
 /**
  * @author by nisie on 8/14/17.
@@ -47,15 +41,7 @@ public class ReputationRepositoryImpl implements ReputationRepository {
     public Observable<InboxReputationDomain> getInboxReputationFromLocal(RequestParams requestParams) {
         return reputationFactory
                 .createLocalInboxReputationDataSource()
-                .getInboxReputationFromCache(requestParams)
-                .onErrorReturn(new Func1<Throwable, InboxReputationDomain>() {
-                    @Override
-                    public InboxReputationDomain call(Throwable throwable) {
-                        List<InboxReputationItemDomain> list = new ArrayList<>();
-                        return new InboxReputationDomain(list,
-                                new PagingDomain(false, false));
-                    }
-                });
+                .getInboxReputationFromCache(requestParams);
     }
 
     @Override
