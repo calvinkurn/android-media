@@ -32,11 +32,10 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.tokocash.model.CashBackData;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.beranda.data.mapper.HomeDataMapper;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetBrandsOfficialStoreUseCase;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetHomeBannerUseCase;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetHomeCategoryUseCase;
-import com.tokopedia.tkpd.beranda.domain.interactor.GetLocalHomeDataUseCase;
+import com.tokopedia.tkpd.beranda.domain.interactor.GetHomeDataUseCase;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetTickerUseCase;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetTopPicksUseCase;
 import com.tokopedia.tkpd.beranda.domain.model.category.CategoryLayoutRowModel;
@@ -47,9 +46,9 @@ import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.BrandsView
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategoryItemViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TopPicksViewModel;
+import com.tokopedia.tkpd.beranda.presentation.view.subscriber.GetHomeFeedsSubscriber;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetHomeFeedsUseCase;
-import com.tokopedia.tkpd.beranda.presentation.view.subscriber.GetHomeFeedsSubscriber;
 
 import java.util.List;
 
@@ -71,6 +70,8 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     private static final String TAG = HomePresenter.class.getSimpleName();
 
     @Inject
+    GetHomeDataUseCase getHomeDataUseCase;
+    @Inject
     GetHomeBannerUseCase getHomeBannerUseCase;
     @Inject
     GetTickerUseCase getTickerUseCase;
@@ -80,10 +81,6 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     GetTopPicksUseCase getTopPicksUseCase;
     @Inject
     GetHomeCategoryUseCase getHomeCategoryUseCase;
-    @Inject
-    GetLocalHomeDataUseCase localHomeDataUseCase;
-    @Inject
-    HomeDataMapper homeDataMapper;
     @Inject
     GetHomeFeedsUseCase getHomeFeedsUseCase;
     @Inject
@@ -117,21 +114,13 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     @NonNull
     private Observable<List<Visitable>> getDataFromNetwork() {
-        return Observable.zip(getHomeBannerUseCase.getExecuteObservableAsync(getHomeBannerUseCase.getRequestParam()),
-                getTickerUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
-                getBrandsOfficialStoreUseCase.getExecuteObservableAsync(RequestParams.EMPTY),
-                getTopPicksUseCase.getExecuteObservableAsync(getTopPicksUseCase.getRequestParam()),
-                getHomeCategoryUseCase.getExecuteObservableAsync(RequestParams.EMPTY), homeDataMapper);
+        return getHomeDataUseCase.getExecuteObservableAsync(RequestParams.EMPTY);
     }
 
     @Override
     public void getHomeData() {
         initHeaderViewModelData();
-        subscription = localHomeDataUseCase.getExecuteObservableAsync(RequestParams.EMPTY)
-                .doOnNext(refreshData())
-                .onErrorResumeNext(getDataFromNetwork())
-                .subscribe(new HomeDataSubscriber());
-        compositeSubscription.add(subscription);
+        compositeSubscription.add(getDataFromNetwork().subscribe(new HomeDataSubscriber()));
     }
 
     private void initHeaderViewModelData() {
@@ -400,10 +389,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         }
 
         private boolean isDataValid(List<Visitable> visitables) {
-            return containsInstance(visitables, BannerViewModel.class)
-                    && containsInstance(visitables, TopPicksViewModel.class)
-                    && containsInstance(visitables, BrandsViewModel.class)
-                    && containsInstance(visitables, CategoryItemViewModel.class);
+            return containsInstance(visitables, BannerViewModel.class);
         }
 
         public <E> boolean containsInstance(List<E> list, Class<? extends E> clazz) {

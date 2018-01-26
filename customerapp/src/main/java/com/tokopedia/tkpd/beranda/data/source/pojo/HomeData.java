@@ -1,6 +1,8 @@
 package com.tokopedia.tkpd.beranda.data.source.pojo;
 
 import com.google.gson.annotations.Expose;
+import com.tokopedia.core.network.entity.home.Ticker;
+import com.tokopedia.tkpd.beranda.domain.model.banner.BannerDataModel;
 
 /**
  * Created by henrypriyono on 26/01/18.
@@ -11,7 +13,7 @@ public class HomeData {
     private DynamicHomeChannel dynamicHomeChannel;
 
     @Expose
-    private Slides slides;
+    private BannerDataModel slides;
 
     @Expose
     private Ticker ticker;
@@ -24,11 +26,11 @@ public class HomeData {
         this.dynamicHomeChannel = dynamicHomeChannel;
     }
 
-    public Slides getSlides() {
+    public BannerDataModel getSlides() {
         return slides;
     }
 
-    public void setSlides(Slides slides) {
+    public void setSlides(BannerDataModel slides) {
         this.slides = slides;
     }
 
