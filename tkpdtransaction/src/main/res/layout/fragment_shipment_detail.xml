@@ -84,7 +84,7 @@
                             android:layout_weight="1"
                             android:textColor="@color/black_54"
                             android:textSize="16sp"
-                            tools:text="Same Day" />
+                            android:text="Same Day" />
 
                         <ImageView
                             android:layout_width="wrap_content"
@@ -132,6 +132,7 @@
                         android:id="@+id/ll_expanded_courier_list"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:foreground="?selectableItemBackground"
                         android:gravity="center"
                         android:orientation="horizontal"
                         android:padding="@dimen/padding_ms">
@@ -151,15 +152,6 @@
                             android:tint="@color/tkpd_main_green" />
 
                     </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/tv_shipment_information"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="#f9fef9"
-                        android:padding="16dp"
-                        android:textSize="12sp"
-                        tools:text="Perkiraan tiba : max 8 jam sejak pesanan terkirim" />
 
                     <View
                         android:layout_width="match_parent"
@@ -187,7 +179,7 @@
                         android:textColor="@color/black_54"
                         android:textSize="12sp"
                         android:textStyle="normal"
-                        tools:text="Pinpoint Lokasi (Opsional)" />
+                        android:text="Pinpoint Lokasi (Opsional)" />
 
                     <FrameLayout
                         android:id="@+id/fl_pinpoint_map"
@@ -257,7 +249,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="11sp"
-                            tools:text="RT 6 RW 3, Slipi, Kebon Jeruk, Jakarta Barat, DKI Jakarta, 11410, Indonesia" />
+                            android:text="RT 6 RW 3, Slipi, Kebon Jeruk, Jakarta Barat, DKI Jakarta, 11410, Indonesia" />
 
                     </LinearLayout>
 
@@ -493,7 +485,7 @@
                             android:layout_weight="1"
                             android:gravity="end"
                             android:textColor="@color/black_70"
-                            tools:text="Rp 125.500" />
+                            android:text="Rp 125.500" />
 
                     </LinearLayout>
 
@@ -516,7 +508,7 @@
                             android:layout_weight="1"
                             android:gravity="end"
                             android:textColor="@color/black_70"
-                            tools:text="Rp 125.500" />
+                            android:text="Rp 125.500" />
 
                     </LinearLayout>
 
@@ -540,7 +532,7 @@
                             android:layout_weight="1"
                             android:gravity="end"
                             android:textColor="@color/black_70"
-                            tools:text="Rp 125.500" />
+                            android:text="Rp 125.500" />
 
                     </LinearLayout>
 
@@ -578,7 +570,7 @@
                             android:fontFamily="sans-serif-medium"
                             android:gravity="end"
                             android:textColor="@color/colorRed"
-                            tools:text="Rp 125.500" />
+                            android:text="Rp 125.500" />
 
                     </LinearLayout>
 

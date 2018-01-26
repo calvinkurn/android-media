@@ -45,7 +45,13 @@
 
         <activity
             android:name=".checkout.view.ShipmentChoiceActivity"
-            android:label="Pilih Jenis Pengiriman"
+            android:label="@string/title_activity_shipment_choice"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".checkout.view.ShipmentDetailActivity"
+            android:label="@string/title_activity_shipment_detail"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
 
@@ -70,7 +76,8 @@
             android:name=".bcaoneklik.activity.ListPaymentTypeActivity"
             android:label="@string/label_payment_setting" />
 
-        <activity android:name=".bcaoneklik.activity.CreditCardDetailActivity"
+        <activity
+            android:name=".bcaoneklik.activity.CreditCardDetailActivity"
             android:label="@string/label_detail_credit_card" />
 
         <activity

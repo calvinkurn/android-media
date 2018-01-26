@@ -209,6 +209,8 @@
     <string name="label_arrival_probability">*Perkiraan tiba dihitung sejak pesanan dikirim</string>
     <string name="label_choose_other_courier">Pilih Kurir Lainnya</string>
     <string name="label_shipment_type_format">(%s)</string>
+    <string name="title_activity_shipment_choice">Pilih Jenis Pengiriman</string>
+    <string name="title_activity_shipment_detail">Kurir Pengiriman</string>
 
     <string-array name="pickup_point">
         <item>Alfamart</item>

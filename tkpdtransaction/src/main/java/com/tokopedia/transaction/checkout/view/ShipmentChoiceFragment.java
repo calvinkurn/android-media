@@ -167,10 +167,10 @@ public class ShipmentChoiceFragment extends BasePresenterFragment<IShipmentChoic
 
     @Override
     public void onShipmentItemClick(ShipmentItemData shipmentItemData) {
-//        Intent intent = new Intent();
-//        intent.putExtra(EXTRA_SHIPMENT_ITEM_DATA, shipmentItemData);
-//        getActivity().setResult(Activity.RESULT_OK, intent);
-//        getActivity().finish();
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_SHIPMENT_ITEM_DATA, shipmentItemData);
+        getActivity().setResult(Activity.RESULT_OK, intent);
+        getActivity().finish();
     }
 
     @OnClick(R2.id.img_bt_close_ticker)

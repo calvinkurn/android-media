@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -35,11 +36,13 @@ import com.tokopedia.transaction.checkout.view.adapter.CourierChoiceAdapter;
 import com.tokopedia.transaction.checkout.view.data.CourierItemData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.view.presenter.IShipmentDetailPresenter;
+import com.tokopedia.transaction.checkout.view.presenter.ShipmentDetailPresenter;
 import com.tokopedia.transaction.checkout.view.view.IShipmentDetailView;
 
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 
@@ -51,6 +54,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
         CourierChoiceAdapter.ViewListener, OnMapReadyCallback {
 
     public static final int REQUSET_CODE_OPEN_SHIPMENT_CHOICE = 1;
+    private static final int REQUEST_CODE_SHIPMENT_CHOICE = 11;
 
     @BindView(R2.id.scroll_view_content)
     ScrollView scrollViewContent;
@@ -72,8 +76,6 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
     RecyclerView rvCourierChoice;
     @BindView(R2.id.ll_expanded_courier_list)
     LinearLayout llExpandedCourierList;
-    @BindView(R2.id.tv_shipment_information)
-    TextView tvShipmentInformation;
     @BindView(R2.id.ll_pinpoint)
     LinearLayout llPinpoint;
     @BindView(R2.id.map_view_pinpoint)
@@ -167,7 +169,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
 
     @Override
     protected void initialPresenter() {
-
+        presenter = new ShipmentDetailPresenter();
     }
 
     @Override
@@ -187,6 +189,8 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
 
     @Override
     protected void initView(View view) {
+        ButterKnife.bind(view);
+        presenter.attachView(this);
         presenter.loadShipmentData();
     }
 
@@ -313,21 +317,6 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
         presenter.loadAllCourier();
     }
 
-    @OnCheckedChanged(R2.id.switch_insurance)
-    void onSwitchInsuranceChanged() {
-
-    }
-
-    @OnCheckedChanged(R2.id.switch_partly_accept)
-    void onSwitchPartlyAcceptChanged() {
-
-    }
-
-    @OnCheckedChanged(R2.id.switch_dropshipper)
-    void onSwitchDropshipperChanged() {
-        llDropshipperInfo.setVisibility(View.VISIBLE);
-    }
-
     @OnClick(R2.id.img_bt_insurance_info)
     void onInsuranceInfoClick() {
         showBottomSheet(getString(R.string.title_bottomsheet_insurance),
@@ -347,8 +336,33 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
     }
 
     @OnClick(R2.id.img_bt_close_ticker)
-    void onCloseTickerClick(){
+    void onCloseTickerClick() {
         llShipmentInfoTicker.setVisibility(View.GONE);
+    }
+
+    @OnClick(R2.id.ll_shipment_choice)
+    void onShipmentChoiceClick() {
+        startActivityForResult(ShipmentChoiceActivity.createInstance(getActivity()), REQUEST_CODE_SHIPMENT_CHOICE);
+        getActivity().overridePendingTransition(R.anim.anim_bottom_up, R.anim.anim_top_down);
+    }
+
+    @OnCheckedChanged(R2.id.switch_insurance)
+    void onSwitchInsuranceChanged(CompoundButton view, boolean checked) {
+
+    }
+
+    @OnCheckedChanged(R2.id.switch_partly_accept)
+    void onSwitchPartlyAcceptChanged(CompoundButton view, boolean checked) {
+
+    }
+
+    @OnCheckedChanged(R2.id.switch_dropshipper)
+    void onSwitchDropshipperChanged(CompoundButton view, boolean checked) {
+        if(checked) {
+            llDropshipperInfo.setVisibility(View.VISIBLE);
+        } else {
+            llDropshipperInfo.setVisibility(View.GONE);
+        }
     }
 
     private void showBottomSheet(String title, String message, int image) {

@@ -5,19 +5,23 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentManager;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.transaction.R;
 
 /**
- * Created by Irfan Khoirul on 25/01/18.
+ * Created by Irfan Khoirul on 26/01/18.
  */
 
-public class ShipmentChoiceActivity extends BasePresenterActivity {
+public class ShipmentDetailActivity extends BasePresenterActivity {
+
+    private static final int DELAY_IN_MILISECOND = 500;
+    private static final int REQUEST_CODE_SHIPMENT_CHOICE = 111;
 
     public static Intent createInstance(Activity activity) {
-        return new Intent(activity, ShipmentChoiceActivity.class);
+        return new Intent(activity, ShipmentDetailActivity.class);
     }
 
     @Override
@@ -26,6 +30,20 @@ public class ShipmentChoiceActivity extends BasePresenterActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setElevation(0);
         }
+
+        openShipmentChoiceActivity();
+    }
+
+    private void openShipmentChoiceActivity() {
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                startActivityForResult(ShipmentChoiceActivity.createInstance(
+                        ShipmentDetailActivity.this), REQUEST_CODE_SHIPMENT_CHOICE);
+                overridePendingTransition(R.anim.anim_bottom_up, R.anim.anim_top_down);
+            }
+        }, DELAY_IN_MILISECOND);
     }
 
     @Override
@@ -50,7 +68,7 @@ public class ShipmentChoiceActivity extends BasePresenterActivity {
 
     @Override
     protected void initView() {
-        ShipmentChoiceFragment fragment = ShipmentChoiceFragment.newInstance();
+        ShipmentDetailFragment fragment = ShipmentDetailFragment.newInstance();
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         fragmentTransaction.add(R.id.container, fragment, ShipmentChoiceFragment.class.getSimpleName());
@@ -70,12 +88,6 @@ public class ShipmentChoiceActivity extends BasePresenterActivity {
     @Override
     protected void setActionVar() {
 
-    }
-
-    @Override
-    protected void setupToolbar() {
-        super.setupToolbar();
-        toolbar.setNavigationIcon(com.tokopedia.core.R.drawable.ic_clear_24dp);
     }
 
     @Override
