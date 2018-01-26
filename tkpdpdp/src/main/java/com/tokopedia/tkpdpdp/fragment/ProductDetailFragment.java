@@ -676,6 +676,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_wishlist));
         }
         fabWishlist.setVisibility(View.VISIBLE);
+        updateWishlistStatusVariant(status);
 
         Intent resultIntent = new Intent();
         resultIntent.putExtra(WISHLIST_STATUS_UPDATED_POSITION,
@@ -684,6 +685,17 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         resultIntent.putExtra(EXTRA_PRODUCT_ID, String.valueOf(productData.getInfo().getProductId()));
         getActivity().setResult(Activity.RESULT_CANCELED, resultIntent);
 
+    }
+
+    public void updateWishlistStatusVariant(int status) {
+        if (productVariant!=null && productVariant.getChildren()!=null ) {
+            for (Child child: productVariant.getChildren()) {
+                if (child.getProductId()==productData.getInfo().getProductId()) {
+                    child.setWishlist(status==1?true:false);
+                    break;
+                }
+            }
+        }
     }
 
     @Override
@@ -981,6 +993,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                         headerInfoView.renderData(productData);
                         shopInfoView.renderData(productData);
                         presenter.updateRecentView(context,productData.getInfo().getProductId());
+                        updateWishListStatus(productData.getInfo().getProductAlreadyWishlist());
                     }
                     if (resultCode==VariantActivity.SELECTED_VARIANT_RESULT_TO_BUY) {
                         onBuyClick();

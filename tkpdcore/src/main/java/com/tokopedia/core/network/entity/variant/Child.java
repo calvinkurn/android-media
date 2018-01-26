@@ -44,6 +44,9 @@ public class Child implements Parcelable {
     @SerializedName("url")
     @Expose
     private String url;
+    @SerializedName("is_wishlist")
+    @Expose
+    private boolean isWishlist;
 
     public int getProductId() {
         return productId;
@@ -133,6 +136,14 @@ public class Child implements Parcelable {
         this.url = url;
     }
 
+    public boolean isWishlist() {
+        return isWishlist;
+    }
+
+    public void setWishlist(boolean wishlist) {
+        isWishlist = wishlist;
+    }
+
     protected Child(Parcel in) {
         productId = in.readInt();
         price = in.readInt();
@@ -150,6 +161,7 @@ public class Child implements Parcelable {
         picture = (PictureChild) in.readValue(PictureChild.class.getClassLoader());
         priceFmt = in.readString();
         url = in.readString();
+        isWishlist = in.readByte() != 0x00;
     }
 
     @Override
@@ -175,6 +187,7 @@ public class Child implements Parcelable {
         dest.writeValue(picture);
         dest.writeString(priceFmt);
         dest.writeString(url);
+        dest.writeByte((byte) (isWishlist ? 0x01 : 0x00));
     }
 
     @SuppressWarnings("unused")
