@@ -2,6 +2,8 @@ package com.tokopedia.core.analytics.model;
 
 import com.google.android.gms.tagmanager.DataLayer;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -194,6 +196,20 @@ public class Product extends BaseAnalyticsModel {
                 "variant", getVariant(),
                 "list", getList(),
                 "position", getPosition(),
+                "userId", getUserId()
+        );
+    }
+
+    public Map<String, Object> getProductAsDataLayerForSearchResultItemClick() {
+        return DataLayer.mapOf(
+                "name", getName(),
+                "id", getId(),
+                "price", getPrice(),
+                "brand", getBrand(),
+                "category", getCategoryName(),
+                "variant", getVariant(),
+                "list", getList(),
+                "position", Integer.toString(getPosition()),
                 "userId", getUserId()
         );
     }

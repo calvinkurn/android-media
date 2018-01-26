@@ -39,9 +39,9 @@ import com.tokopedia.core.drawer.listener.TokoCashUpdateListener;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
 import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
-import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.BrandsWebViewActivity;
+import com.tokopedia.core.home.SimpleWebViewActivity;
 import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -150,7 +150,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         getActivity().registerReceiver(
                 homeFragmentBroadcastReceiver,
                 new IntentFilter(
-                        HomeFragmentBroadcastReceiverConstant.INTENT_ACTION
+                        HomeFragmentBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP
                 )
         );
     }
@@ -489,7 +489,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onRequestPendingCashBack() {
-        getActivity().sendBroadcast(new Intent(TokocashPendingDataBroadcastReceiverConstant.INTENT_ACTION));
+        getActivity().sendBroadcast(new Intent(TokocashPendingDataBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP));
     }
 
     @Override
@@ -542,9 +542,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void actionTokoPointClicked(String tokoPointUrl, String pageTitle) {
         if (TextUtils.isEmpty(pageTitle))
-            startActivity(BannerWebView.getCallingIntent(getActivity(), tokoPointUrl));
+            startActivity(SimpleWebViewActivity.getIntent(getActivity(), tokoPointUrl));
         else
-            startActivity(BannerWebView.getCallingIntentWithTitle(getActivity(), tokoPointUrl, pageTitle));
+            startActivity(SimpleWebViewActivity.getIntentWithTitle(getActivity(), tokoPointUrl, pageTitle));
     }
 
 
@@ -755,13 +755,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void openWebViewGimicURL(String url, String label, String title) {
         if (!url.equals("")) {
-            Intent intent = new Intent(getActivity(), BannerWebView.class);
-            intent.putExtra("url", url);
-            intent.putExtra(BannerWebView.EXTRA_TITLE, title);
+            Intent intent = SimpleWebViewActivity.getIntentWithTitle(getActivity(), url, title);
             startActivity(intent);
             UnifyTracking.eventHomeGimmick(label);
         }
     }
+
 
     public void openWebViewURL(String url, Context context) {
         if (url != "" && context != null) {
@@ -785,7 +784,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (!HomeFragmentBroadcastReceiverConstant.INTENT_ACTION.equalsIgnoreCase(intent.getAction()))
+            if (!HomeFragmentBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP.equalsIgnoreCase(intent.getAction()))
                 return;
             switch (intent.getIntExtra(EXTRA_ACTION_RECEIVER, 0)) {
                 case HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOPOINT_DATA:
