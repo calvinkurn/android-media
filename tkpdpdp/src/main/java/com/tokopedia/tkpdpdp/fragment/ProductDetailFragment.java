@@ -27,11 +27,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.appsflyer.AFInAppEventType;
+import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -714,6 +716,27 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
         NetworkErrorHelper.createSnackbarWithAction(getActivity(),
                 initializationErrorListener()).showRetrySnackbar();
 
+    }
+
+    @Override
+    public void showErrorVariant() {
+        Snackbar snack = Snackbar.make(coordinatorLayout, getString(R.string.error_variant), Snackbar.LENGTH_INDEFINITE);
+        TextView tv = snack.getView().findViewById(com.tokopedia.core.R.id.snackbar_text);
+        tv.setTextColor(ContextCompat.getColor(context,R.color.black_54));
+        tv.setMaxLines(5);
+
+        Button snackBarAction = snack.getView().findViewById(android.support.design.R.id.snackbar_action);
+        snackBarAction.setTextColor(ContextCompat.getColor(coordinatorLayout.getContext(), R.color.black_70));
+        snackBarAction.setAllCaps(false);
+
+        snack.getView().setBackground(getResources().getDrawable(R.drawable.bg_snackbar_variant));
+        snack.setAction(getString(R.string.title_retry), new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.requestProductDetail(context, productPass, INIT_REQUEST, false);
+            }
+        });
+        snack.show();
     }
 
     @Override

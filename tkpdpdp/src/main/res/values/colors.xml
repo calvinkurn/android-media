@@ -93,4 +93,7 @@
     <color name="promo_widget_pdp">#f8f8f8</color>
     <color name="white_70">#bfffffff</color>
 
+    <color name="red_snackbar">#fffdebec</color>
+    <color name="red_snackbar_border">#f05f68</color>
+
 </resources>
