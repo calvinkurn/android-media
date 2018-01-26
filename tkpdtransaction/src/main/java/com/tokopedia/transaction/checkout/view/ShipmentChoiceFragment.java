@@ -1,12 +1,15 @@
 package com.tokopedia.transaction.checkout.view;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -20,6 +23,7 @@ import com.tokopedia.transaction.checkout.view.view.IShipmentChoiceView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by Irfan Khoirul on 24/01/18.
@@ -28,12 +32,20 @@ import butterknife.ButterKnife;
 public class ShipmentChoiceFragment extends BasePresenterFragment<IShipmentChoicePresenter>
         implements IShipmentChoiceView, ShipmentChoiceAdapter.ViewListener {
 
+    public static final String EXTRA_SHIPMENT_ITEM_DATA = "shipmentItemData";
+
     @BindView(R2.id.rv_shipment_choice)
     RecyclerView rvShipmentChoice;
     @BindView(R2.id.ll_network_error_view)
     LinearLayout llNetworkErrorView;
     @BindView(R2.id.pb_loading)
     ProgressBar pbLoading;
+    @BindView(R2.id.ll_shipment_info_ticker)
+    LinearLayout llShipmentInfoTicker;
+    @BindView(R2.id.img_bt_close_ticker)
+    ImageView imgBtCloseTicker;
+    @BindView(R2.id.tv_shipment_info_ticker)
+    TextView tvShipmentInfoTicker;
 
     private ShipmentChoiceAdapter shipmentChoiceAdapter;
     private IShipmentChoicePresenter presenter;
@@ -155,7 +167,14 @@ public class ShipmentChoiceFragment extends BasePresenterFragment<IShipmentChoic
 
     @Override
     public void onShipmentItemClick(ShipmentItemData shipmentItemData) {
-//        getActivity().setResult(Activity.RESULT_OK, );
+//        Intent intent = new Intent();
+//        intent.putExtra(EXTRA_SHIPMENT_ITEM_DATA, shipmentItemData);
+//        getActivity().setResult(Activity.RESULT_OK, intent);
 //        getActivity().finish();
+    }
+
+    @OnClick(R2.id.img_bt_close_ticker)
+    void onCloseTicker() {
+        llShipmentInfoTicker.setVisibility(View.GONE);
     }
 }

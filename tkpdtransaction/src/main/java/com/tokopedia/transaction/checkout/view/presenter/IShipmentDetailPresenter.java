@@ -11,4 +11,6 @@ public interface IShipmentDetailPresenter extends CustomerPresenter<IShipmentDet
 
     void loadShipmentData();
 
+    void loadAllCourier();
+
 }

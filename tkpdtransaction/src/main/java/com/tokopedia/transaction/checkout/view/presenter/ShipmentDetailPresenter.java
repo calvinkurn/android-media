@@ -27,4 +27,9 @@ public class ShipmentDetailPresenter extends BaseDaggerPresenter<IShipmentDetail
     public void loadShipmentData() {
 
     }
+
+    @Override
+    public void loadAllCourier() {
+
+    }
 }

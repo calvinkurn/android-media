@@ -1,10 +1,12 @@
 package com.tokopedia.transaction.checkout.view.adapter;
 
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.tokopedia.transaction.R;
@@ -45,13 +47,23 @@ public class CourierChoiceAdapter extends RecyclerView.Adapter<CourierChoiceAdap
         holder.tvPrice.setText(courierItemData.getPrice());
         holder.tvDeliveryTimeRange.setText(courierItemData.getDeliveryTimeRange());
 
-        if (courierItemData.isSelected()) {
-            holder.imgBtCheck.setImageResource(R.drawable.ic_check_circle_green);
-        } else {
-            holder.imgBtCheck.setImageResource(android.R.color.transparent);
-        }
+        renderTypeface(holder, courierItemData);
 
         holder.itemView.setOnClickListener(getItemClickListener(courierItemData, position));
+    }
+
+    private void renderTypeface(CourierViewHolder holder, CourierItemData courierItemData) {
+        if (courierItemData.isSelected()) {
+            holder.rbSelected.setChecked(true);
+            holder.tvCourierName.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+            holder.tvPrice.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+            holder.tvDeliveryTimeRange.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+        } else {
+            holder.rbSelected.setChecked(false);
+            holder.tvCourierName.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
+            holder.tvPrice.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
+            holder.tvDeliveryTimeRange.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
+        }
     }
 
     private View.OnClickListener getItemClickListener(final CourierItemData courierItemData, final int position) {
@@ -92,10 +104,10 @@ public class CourierChoiceAdapter extends RecyclerView.Adapter<CourierChoiceAdap
         TextView tvCourierName;
         @BindView(R2.id.tv_price)
         TextView tvPrice;
-        @BindView(R2.id.btn_check)
-        ImageButton imgBtCheck;
         @BindView(R2.id.tv_delivery_time_range)
         TextView tvDeliveryTimeRange;
+        @BindView(R2.id.rb_selected)
+        RadioButton rbSelected;
 
         CourierViewHolder(View itemView) {
             super(itemView);

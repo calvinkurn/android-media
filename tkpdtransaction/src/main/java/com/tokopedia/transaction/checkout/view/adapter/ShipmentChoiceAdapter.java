@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.checkout.view.adapter;
 
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,18 +42,27 @@ public class ShipmentChoiceAdapter extends RecyclerView.Adapter<ShipmentChoiceAd
     @Override
     public void onBindViewHolder(final ShipmentViewHolder holder, final int position) {
         ShipmentItemData shipmentItemData = shipments.get(position);
-        holder.tvShipmentType.setText(shipmentItemData.getType());
+        holder.tvShipmentType.setText(
+                holder.tvShipmentType.getContext().getResources().getString(
+                        R.string.label_shipment_type_format, shipmentItemData.getType()));
         holder.tvPriceRange.setText(shipmentItemData.getPriceRange());
         holder.tvDeliveryTimeRange.setText(shipmentItemData.getDeliveryTimeRange());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (holder.getAdapterPosition() >= 0 && shipments.size() > holder.getAdapterPosition()) {
+                    renderTypeface(holder);
                     holder.imgBtCheck.setVisibility(View.VISIBLE);
                     viewListener.onShipmentItemClick(shipments.get(holder.getAdapterPosition()));
                 }
             }
         });
+    }
+
+    private void renderTypeface(ShipmentViewHolder holder) {
+        holder.tvShipmentType.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+        holder.tvPriceRange.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+        holder.tvDeliveryTimeRange.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
     }
 
     @Override

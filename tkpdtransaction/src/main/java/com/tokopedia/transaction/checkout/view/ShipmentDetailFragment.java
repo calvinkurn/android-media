@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -57,14 +58,24 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
     LinearLayout llNetworkErrorView;
     @BindView(R2.id.pb_loading)
     ProgressBar pbLoading;
+    @BindView(R2.id.img_bt_close_ticker)
+    ImageButton imgBtCloseTicker;
+    @BindView(R2.id.ll_shipment_info_ticker)
+    LinearLayout llShipmentInfoTicker;
+    @BindView(R2.id.tv_shipment_info_ticker)
+    TextView tvShipmentInfoTicker;
     @BindView(R2.id.ll_shipment_choice)
     LinearLayout llShipmentChoice;
     @BindView(R2.id.tv_shipment_type)
     TextView tvShipmentType;
     @BindView(R2.id.rv_courier_choice)
     RecyclerView rvCourierChoice;
+    @BindView(R2.id.ll_expanded_courier_list)
+    LinearLayout llExpandedCourierList;
     @BindView(R2.id.tv_shipment_information)
     TextView tvShipmentInformation;
+    @BindView(R2.id.ll_pinpoint)
+    LinearLayout llPinpoint;
     @BindView(R2.id.map_view_pinpoint)
     MapView mapViewPinpoint;
     @BindView(R2.id.bt_change_pinpoint)
@@ -113,8 +124,8 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
     TextInputLayout textInputLayoutShipperPhone;
     @BindView(R2.id.ll_dropshipper_info)
     LinearLayout llDropshipperInfo;
-    @BindView(R2.id.tv_subtotal)
-    TextView tvSubtotal;
+    @BindView(R2.id.tv_delivery_fee)
+    TextView tvDeliveryFee;
     @BindView(R2.id.bt_save)
     Button btSave;
 
@@ -288,9 +299,18 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
         }
     }
 
+    private void showSnackBar(View view, String message) {
+        Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show();
+    }
+
     @OnClick(R2.id.ll_shipment_choice)
     void onShipmentChoiceClicked() {
 
+    }
+
+    @OnClick(R2.id.ll_expanded_courier_list)
+    void onExpandedCourierListClick() {
+        presenter.loadAllCourier();
     }
 
     @OnCheckedChanged(R2.id.switch_insurance)
@@ -324,6 +344,11 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
     void onDropshipperInfoClick() {
         showBottomSheet(getString(R.string.title_bottomsheet_insurance),
                 "", R.drawable.ic_insurance);
+    }
+
+    @OnClick(R2.id.img_bt_close_ticker)
+    void onCloseTickerClick(){
+        llShipmentInfoTicker.setVisibility(View.GONE);
     }
 
     private void showBottomSheet(String title, String message, int image) {
