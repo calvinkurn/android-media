@@ -1,4 +1,4 @@
-package com.tokopedia.core.welcome.view;
+package com.tokopedia.sellerapp.welcome.view;
 
 import android.app.DialogFragment;
 import android.content.Intent;
@@ -16,13 +16,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.TextView;
 
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.Unbinder;
+import com.tokopedia.sellerapp.R;
 
 /**
  * Created by stevenfredian on 11/11/16.
@@ -32,9 +26,8 @@ public class InfoWelcomeDialogFragment extends DialogFragment {
 
     public static final String TAG = "DialogWelcome";
 
-    @BindView(R2.id.buyer_button)
     TextView buyerButton;
-    private Unbinder unbinder;
+    View sellerButton;
 
     public static InfoWelcomeDialogFragment newInstance() {
         InfoWelcomeDialogFragment fragment = new InfoWelcomeDialogFragment();
@@ -51,14 +44,35 @@ public class InfoWelcomeDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         getDialog().setCanceledOnTouchOutside(false);
-        super.onCreateView(inflater, container, savedInstanceState);
         View rootView = inflater.inflate(R.layout.dialog_info_welcome, container, false);
-        unbinder = ButterKnife.bind(this, rootView);
+        buyerButton = rootView.findViewById(R.id.buyer_button);
+        sellerButton = rootView.findViewById(R.id.seller_button);
         initView(rootView);
         return rootView;
     }
 
     private void initView(View rootView) {
+        buyerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse("market://details?id=com.tokopedia.tkpd"));
+                    startActivity(intent);
+                } catch (Exception e) { //google play app is not installed
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.tokopedia.tkpd"));
+                    startActivity(intent);
+                }
+            }
+        });
+
+        sellerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InfoWelcomeDialogFragment.this.dismiss();
+            }
+        });
         String sourceString = "Belanja sebagai Pembeli";
 
         Spannable spannable = new SpannableString(sourceString);
@@ -77,7 +91,7 @@ public class InfoWelcomeDialogFragment extends DialogFragment {
                           }
                 , sourceString.indexOf("Pembeli")
                 , sourceString.length()
-                ,0);
+                , 0);
 
         buyerButton.setText(spannable, TextView.BufferType.SPANNABLE);
         buyerButton.setMovementMethod(LinkMovementMethod.getInstance());
@@ -93,24 +107,5 @@ public class InfoWelcomeDialogFragment extends DialogFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
-    }
-
-    @OnClick(R2.id.buyer_button)
-    public void moveToMainApp(){
-        try {
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse("market://details?id=com.tokopedia.tkpd"));
-            startActivity(intent);
-        } catch (Exception e) { //google play app is not installed
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse("https://play.google.com/store/apps/details?id=com.tokopedia.tkpd"));
-            startActivity(intent);
-        }
-    }
-
-    @OnClick(R2.id.seller_button)
-    public void dismissDialog(){
-        this.dismiss();
     }
 }

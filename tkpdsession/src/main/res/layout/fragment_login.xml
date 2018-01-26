@@ -63,7 +63,7 @@
                         android:id="@+id/password"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:imeActionId="@+id/register_button"
+                        android:imeActionId="@+id/ime_login"
                         android:imeActionLabel="Lanjut"
                         android:imeOptions="actionUnspecified"
                         android:inputType="textPassword"

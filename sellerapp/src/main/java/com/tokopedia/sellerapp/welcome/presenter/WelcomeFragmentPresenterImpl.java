@@ -1,4 +1,4 @@
-package com.tokopedia.core.welcome.presenter;
+package com.tokopedia.sellerapp.welcome.presenter;
 
 import android.content.Context;
 
@@ -7,9 +7,9 @@ import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.model.LoginProviderModel;
-import com.tokopedia.core.welcome.interactor.WelcomeInteractor;
-import com.tokopedia.core.welcome.interactor.WelcomeInteractorImpl;
-import com.tokopedia.core.welcome.view.WelcomeFragmentView;
+import com.tokopedia.sellerapp.welcome.interactor.WelcomeInteractor;
+import com.tokopedia.sellerapp.welcome.interactor.WelcomeInteractorImpl;
+import com.tokopedia.sellerapp.welcome.view.WelcomeFragmentView;
 
 import java.lang.reflect.Type;
 import java.util.List;

@@ -66,12 +66,12 @@ import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.session.WebViewLoginFragment;
 import com.tokopedia.session.activation.view.activity.ActivationActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.google.GoogleSignInActivity;
 import com.tokopedia.session.login.loginphonenumber.view.activity.LoginPhoneNumberActivity;
 import com.tokopedia.session.register.view.activity.SmartLockActivity;
-import com.tokopedia.session.WebViewLoginFragment;
 import com.tokopedia.session.session.model.LoginModel;
 import com.tokopedia.session.session.presenter.Login;
 import com.tokopedia.session.session.presenter.LoginImpl;
@@ -290,7 +290,7 @@ LoginFragment extends Fragment implements LoginView {
                     @Override
                     public boolean onEditorAction(TextView textView, int id,
                                                   KeyEvent keyEvent) {
-                        if (id == R.id.login || id == EditorInfo.IME_NULL) {
+                        if (id == R.id.ime_login || id == EditorInfo.IME_NULL) {
                             FocusPair focusPair = validateSignIn();
                             if (focusPair.isFocus()) {
                                 focusPair.getView().requestFocus();

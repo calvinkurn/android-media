@@ -8,12 +8,10 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.tokopedia.core.SplashScreen;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.welcome.WelcomeActivity;
+import com.tokopedia.sellerapp.welcome.WelcomeActivity;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;

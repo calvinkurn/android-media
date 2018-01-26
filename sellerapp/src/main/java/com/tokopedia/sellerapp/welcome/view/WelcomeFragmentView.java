@@ -1,4 +1,4 @@
-package com.tokopedia.core.welcome.view;
+package com.tokopedia.sellerapp.welcome.view;
 
 import android.app.Activity;
 

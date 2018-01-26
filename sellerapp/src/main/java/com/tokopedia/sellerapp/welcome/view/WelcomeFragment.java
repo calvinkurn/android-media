@@ -1,9 +1,10 @@
-package com.tokopedia.core.welcome.view;
+package com.tokopedia.sellerapp.welcome.view;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -11,7 +12,9 @@ import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -21,10 +24,8 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
-import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customView.LoginTextView;
@@ -34,41 +35,34 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.model.LoginProviderModel;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.welcome.presenter.WelcomeFragmentPresenter;
-import com.tokopedia.core.welcome.presenter.WelcomeFragmentPresenterImpl;
+import com.tokopedia.sellerapp.R;
+import com.tokopedia.sellerapp.welcome.presenter.WelcomeFragmentPresenter;
+import com.tokopedia.sellerapp.welcome.presenter.WelcomeFragmentPresenterImpl;
 
 import java.util.List;
-
-import butterknife.BindView;
 
 /**
  * Created by stevenfredian on 10/5/16.
  */
 
-public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresenter> implements WelcomeFragmentView {
+public class WelcomeFragment extends BaseDaggerFragment implements
+        WelcomeFragmentView {
 
     private static final int REQUEST_LOGIN = 101;
     private static final int REQUEST_REGISTER = 102;
 
-    @BindView(R2.id.background)
     ImageView background;
-    @BindView(R2.id.login)
     LoginTextView login;
-    @BindView(R2.id.register)
     TextView register;
-    @BindView(R2.id.linearLayout)
     LinearLayout linearLayout;
-    @BindView(R2.id.progress_login)
     ProgressBar progressBar;
-    @BindView(R2.id.title_view)
     View titleView;
-    @BindView(R2.id.container_provider)
     LinearLayout containerProvider;
-    @BindView(R2.id.splash)
     View splash;
 
     private View decorView;
     Snackbar snackbar;
+    WelcomeFragmentPresenter presenter;
 
     LocalCacheHandler isNotFirstRun;
     Spannable spannable;
@@ -84,16 +78,15 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
         return fragment;
     }
 
+
     @Override
-    protected boolean isRetainInstance() {
-        return false;
+    protected String getScreenName() {
+        return null;
     }
 
     @Override
-    protected void onFirstTimeLaunched() {
-        showProgress(false);
-        presenter.initialize(getActivity());
-        presenter.initData();
+    protected void initInjector() {
+
     }
 
     @Override
@@ -119,43 +112,27 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
 
     }
 
+    @Nullable
     @Override
-    public void onSaveState(Bundle state) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_welcome, container,false);
 
-    }
+        background = view.findViewById(R.id.background);
+        login = view.findViewById(R.id.login);
+        register = view.findViewById(R.id.register);
+        linearLayout = view.findViewById(R.id.linearLayout);
+        progressBar = view.findViewById(R.id.progress_login);
+        titleView = view.findViewById(R.id.title_view);
+        containerProvider = view.findViewById(R.id.container_provider);
+        splash = view.findViewById(R.id.splash);
 
-    @Override
-    public void onRestoreState(Bundle savedState) {
-
-    }
-
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
-    }
-
-    @Override
-    protected void initialPresenter() {
         presenter = new WelcomeFragmentPresenterImpl(this);
+        prepareView();
+        return view;
     }
 
-    @Override
-    protected void initialListener(Activity activity) {
+    private void prepareView() {
 
-    }
-
-    @Override
-    protected void setupArguments(Bundle arguments) {
-
-    }
-
-    @Override
-    protected int getFragmentLayout() {
-        return R.layout.fragment_welcome;
-    }
-
-    @Override
-    protected void initView(View view) {
 
         login.setImageNextToText();
 
@@ -195,24 +172,19 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
         };
     }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        UserAuthenticationAnalytics.setActiveLogin();
+        showProgress(false);
+        presenter.initialize(getActivity());
+        presenter.initData();
+    }
+
+
     private void showPopUp() {
         InfoWelcomeDialogFragment fragment = InfoWelcomeDialogFragment.newInstance();
         fragment.show(getActivity().getFragmentManager(), "INFO_WELCOME");
-    }
-
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initialVar() {
-        UserAuthenticationAnalytics.setActiveLogin();
-    }
-
-    @Override
-    protected void setActionVar() {
-
     }
 
     @Override
@@ -403,10 +375,8 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d("NISNISLogin", "WelcomeFragment onActivityResult requestcode" + " " + requestCode +
-                " resultCode "
-                + resultCode);
-        if ((requestCode == REQUEST_LOGIN || requestCode == REQUEST_REGISTER)
+        if ((requestCode == REQUEST_LOGIN
+                || requestCode == REQUEST_REGISTER)
                 && resultCode == Activity.RESULT_OK) {
             onSuccessLogin();
         }
@@ -420,7 +390,7 @@ public class WelcomeFragment extends BasePresenterFragment<WelcomeFragmentPresen
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent
                         .FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             } else {
-                intent = SellerRouter.getActivityShopCreateEdit(context);
+                intent = SellerRouter.getActivityShopCreateEdit(getActivity());
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             }
             intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,

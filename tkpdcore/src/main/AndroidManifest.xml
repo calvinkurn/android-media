@@ -317,7 +317,7 @@
             android:name=".topads.WebViewTopAdsActivity"
             android:theme="@style/Theme.BrowseProduct" />
 
-        <activity android:name=".welcome.WelcomeActivity"
+        <activity android:name="com.tokopedia.sellerapp.welcome.WelcomeActivity"
             android:screenOrientation="portrait"/>
 
         <activity

@@ -1,4 +1,4 @@
-package com.tokopedia.core.welcome.interactor;
+package com.tokopedia.sellerapp.welcome.interactor;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -13,7 +13,7 @@ import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.session.model.LoginProviderModel;
-import com.tokopedia.core.welcome.presenter.WelcomeFragmentPresenterImpl;
+import com.tokopedia.sellerapp.welcome.presenter.WelcomeFragmentPresenterImpl;
 
 import org.json.JSONObject;
 

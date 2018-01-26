@@ -1,4 +1,4 @@
-package com.tokopedia.core.welcome.interactor;
+package com.tokopedia.sellerapp.welcome.interactor;
 
 import android.content.Context;
 
