@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -36,6 +37,12 @@ public class CartFragment extends BasePresenterFragment implements
         CartListAdapter.ActionListener, ICartListView {
     @BindView(R2.id.rv_cart)
     RecyclerView cartRecyclerView;
+    @BindView(R2.id.go_to_courier_page_button)
+    TextView btnToShipment;
+    @BindView(R2.id.tv_item_count)
+    TextView tvItemCount;
+    @BindView(R2.id.tv_total_prices)
+    TextView tvTotalPrice;
 
     @Inject
     ICartListPresenter dPresenter;

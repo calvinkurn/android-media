@@ -5,21 +5,9 @@
     android:background="@color/grey_200"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/go_to_payment_button"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/btn_height"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="@dimen/margin_small"
-        android:background="@drawable/orange_button_rounded"
-        android:gravity="center"
-        android:text="Pilih Kurir Pengiriman"
-        android:textColor="@color/white" />
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/order_shipment_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/go_to_payment_button" />
+        android:layout_height="match_parent" />
 
 </RelativeLayout>
