@@ -84,7 +84,7 @@ public class SingleAddressFragmentRecyclerAdapter
             return ITEM_VIEW_SHIPMENT_RECIPIENT_ADDRESS;
         } else if (position == 2) {
             return ITEM_VIEW_DROPSHIPPER_OPTION;
-        } else if (position == 3) {
+        } else if (position == 5) {
             return ITEM_VIEW_SHIPMENT_COST_DETAIL;
         } else {
             return ITEM_SHIPPED_PRODUCT_DETAILS;

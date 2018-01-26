@@ -34,7 +34,7 @@
             android:layout_marginBottom="3dp"
             android:textSize="12sp"
             tools:ignore="SmallSp"
-            tools:text="Alamat Kantor"/>
+            android:text="Alamat Kantor"/>
 
         <TextView
             android:id="@+id/tv_recipient_name"
@@ -47,7 +47,7 @@
             android:textColor="@color/black_54"
             android:textSize="12sp"
             tools:ignore="SmallSp"
-            tools:text="Agus Maulana"/>
+            android:text="Agus Maulana"/>
 
         <TextView
             android:id="@+id/tv_recipient_address"
@@ -61,7 +61,7 @@
             android:textSize="12sp"
             android:lineSpacingExtra="3dp"
             tools:ignore="SmallSp"
-            tools:text="Jl. Letjen S. Parman Kav.77, Wisma 77 Tower 2,\nTokopedia Lt. 2, Jakarta, 0817 1234 5678"/>
+            android:text="Jl. Letjen S. Parman Kav.77, Wisma 77 Tower 2,\nTokopedia Lt. 2, Jakarta, 0817 1234 5678"/>
 
     </RelativeLayout>
 
@@ -85,7 +85,7 @@
             android:fontFamily="sans-serif-medium"
             android:textStyle="normal"
             android:textColor="@color/orange"
-            tools:text="Ganti alamat atau gunakan beberapa alamat" />
+            android:text="Ganti alamat atau gunakan beberapa alamat" />
 
     </LinearLayout>
 </LinearLayout>

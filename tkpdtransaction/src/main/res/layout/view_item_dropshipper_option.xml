@@ -20,7 +20,7 @@
         android:fontFamily="sans-serif"
         android:textStyle="normal"
         android:lineSpacingExtra="6sp"
-        tools:text="Dropshipper" />
+        android:text="Dropshipper" />
 
     <ImageView
         android:layout_width="14dp"
