@@ -15,16 +15,18 @@ import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.view.adapter.ShipmentChoiceAdapter;
 import com.tokopedia.transaction.checkout.view.data.ShipmentItemData;
 import com.tokopedia.transaction.checkout.view.presenter.IShipmentChoicePresenter;
+import com.tokopedia.transaction.checkout.view.presenter.ShipmentChoicePresenter;
 import com.tokopedia.transaction.checkout.view.view.IShipmentChoiceView;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by Irfan Khoirul on 24/01/18.
  */
 
-public class ShipmentChoiceFragment extends BasePresenterFragment implements IShipmentChoiceView,
-        ShipmentChoiceAdapter.ViewListener {
+public class ShipmentChoiceFragment extends BasePresenterFragment<IShipmentChoicePresenter>
+        implements IShipmentChoiceView, ShipmentChoiceAdapter.ViewListener {
 
     @BindView(R2.id.rv_shipment_choice)
     RecyclerView rvShipmentChoice;
@@ -71,7 +73,7 @@ public class ShipmentChoiceFragment extends BasePresenterFragment implements ISh
 
     @Override
     protected void initialPresenter() {
-
+        presenter = new ShipmentChoicePresenter();
     }
 
     @Override
@@ -92,12 +94,15 @@ public class ShipmentChoiceFragment extends BasePresenterFragment implements ISh
 
     @Override
     protected void initView(View view) {
+        ButterKnife.bind(view);
+        presenter.attachView(this);
         presenter.loadShipmentChoice();
+        setupRecyclerView();
     }
 
     @Override
     protected void setViewListener() {
-        setupRecyclerView();
+
     }
 
     @Override
@@ -142,12 +147,15 @@ public class ShipmentChoiceFragment extends BasePresenterFragment implements ISh
 
     @Override
     public void showData() {
-        shipmentChoiceAdapter.notifyDataSetChanged();
-        rvShipmentChoice.setVisibility(View.VISIBLE);
+        if (shipmentChoiceAdapter != null) {
+            shipmentChoiceAdapter.notifyDataSetChanged();
+            rvShipmentChoice.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
     public void onShipmentItemClick(ShipmentItemData shipmentItemData) {
-
+//        getActivity().setResult(Activity.RESULT_OK, );
+//        getActivity().finish();
     }
 }

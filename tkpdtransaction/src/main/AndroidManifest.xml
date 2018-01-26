@@ -44,6 +44,12 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".checkout.view.ShipmentChoiceActivity"
+            android:label="Pilih Jenis Pengiriman"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".cart.activity.ShipmentCartActivity"
             android:label="@string/title_activity_cart_shipment"
             android:screenOrientation="portrait" />

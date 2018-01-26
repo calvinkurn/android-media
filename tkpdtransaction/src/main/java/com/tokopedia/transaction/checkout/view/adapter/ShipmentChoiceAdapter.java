@@ -48,7 +48,7 @@ public class ShipmentChoiceAdapter extends RecyclerView.Adapter<ShipmentChoiceAd
             @Override
             public void onClick(View v) {
                 if (holder.getAdapterPosition() >= 0 && shipments.size() > holder.getAdapterPosition()) {
-                    holder.imgBtCheck.setImageResource(R.drawable.ic_check_circle_green);
+                    holder.imgBtCheck.setVisibility(View.VISIBLE);
                     viewListener.onShipmentItemClick(shipments.get(holder.getAdapterPosition()));
                 }
             }

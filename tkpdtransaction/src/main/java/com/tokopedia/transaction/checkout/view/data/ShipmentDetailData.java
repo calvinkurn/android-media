@@ -14,12 +14,13 @@ public class ShipmentDetailData implements Parcelable {
     private String id;
     private List<ShipmentItemData> shipmentItemData;
     private String address;
-    private double latitude;
-    private double longitude;
+    private Double latitude;
+    private Double longitude;
     private String shipmentInfo;
     private String insuranceInfo;
     private String partialOrderInfo;
     private String dropshipperInfo;
+    private String subtotal;
 
     public ShipmentDetailData() {
     }
@@ -34,6 +35,7 @@ public class ShipmentDetailData implements Parcelable {
         insuranceInfo = in.readString();
         partialOrderInfo = in.readString();
         dropshipperInfo = in.readString();
+        subtotal = in.readString();
     }
 
     public static final Creator<ShipmentDetailData> CREATOR = new Creator<ShipmentDetailData>() {
@@ -72,19 +74,19 @@ public class ShipmentDetailData implements Parcelable {
         this.address = address;
     }
 
-    public double getLatitude() {
+    public Double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(double latitude) {
+    public void setLatitude(Double latitude) {
         this.latitude = latitude;
     }
 
-    public double getLongitude() {
+    public Double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(double longitude) {
+    public void setLongitude(Double longitude) {
         this.longitude = longitude;
     }
 
@@ -136,5 +138,6 @@ public class ShipmentDetailData implements Parcelable {
         dest.writeString(insuranceInfo);
         dest.writeString(partialOrderInfo);
         dest.writeString(dropshipperInfo);
+        dest.writeString(subtotal);
     }
 }

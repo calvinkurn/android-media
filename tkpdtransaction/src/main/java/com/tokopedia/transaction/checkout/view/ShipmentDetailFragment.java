@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.checkout.view;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
@@ -14,7 +15,6 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
-import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -32,8 +32,11 @@ import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.view.adapter.CourierChoiceAdapter;
 import com.tokopedia.transaction.checkout.view.data.CourierItemData;
+import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.view.presenter.IShipmentDetailPresenter;
 import com.tokopedia.transaction.checkout.view.view.IShipmentDetailView;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnCheckedChanged;
@@ -46,14 +49,18 @@ import butterknife.OnClick;
 public class ShipmentDetailFragment extends BasePresenterFragment implements IShipmentDetailView,
         CourierChoiceAdapter.ViewListener, OnMapReadyCallback {
 
+    public static final int REQUSET_CODE_OPEN_SHIPMENT_CHOICE = 1;
+
     @BindView(R2.id.scroll_view_content)
     ScrollView scrollViewContent;
     @BindView(R2.id.ll_network_error_view)
     LinearLayout llNetworkErrorView;
     @BindView(R2.id.pb_loading)
     ProgressBar pbLoading;
-    @BindView(R2.id.sp_shipment_choice)
-    Spinner spShipmentChoice;
+    @BindView(R2.id.ll_shipment_choice)
+    LinearLayout llShipmentChoice;
+    @BindView(R2.id.tv_shipment_type)
+    TextView tvShipmentType;
     @BindView(R2.id.rv_courier_choice)
     RecyclerView rvCourierChoice;
     @BindView(R2.id.tv_shipment_information)
@@ -106,8 +113,8 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
     TextInputLayout textInputLayoutShipperPhone;
     @BindView(R2.id.ll_dropshipper_info)
     LinearLayout llDropshipperInfo;
-    @BindView(R2.id.tv_total_shipping_fee)
-    TextView tvTotalShippingFee;
+    @BindView(R2.id.tv_subtotal)
+    TextView tvSubtotal;
     @BindView(R2.id.bt_save)
     Button btSave;
 
@@ -169,7 +176,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
 
     @Override
     protected void initView(View view) {
-
+        presenter.loadShipmentData();
     }
 
     @Override
@@ -217,21 +224,22 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
     }
 
     @Override
-    public void renderInstantShipment() {
-
+    public void renderInstantShipment(ShipmentDetailData shipmentDetailData) {
+        setupMapView();
+        if (shipmentDetailData.getLatitude() == null || shipmentDetailData.getLongitude() == null) {
+            renderNoPinpoint();
+        } else {
+            renderPinpoint();
+        }
     }
 
     @Override
-    public void renderRegularShipment() {
+    public void renderRegularShipment(ShipmentDetailData shipmentDetailData) {
         flPinpointMap.setVisibility(View.GONE);
     }
 
-    private void setupShipmentSpinner() {
-
-    }
-
-    private void setupRecyclerView() {
-        courierChoiceAdapter = new CourierChoiceAdapter(this);
+    private void setupRecyclerView(List<CourierItemData> couriers) {
+        courierChoiceAdapter = new CourierChoiceAdapter(couriers, this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.VERTICAL, false);
         rvCourierChoice.setLayoutManager(linearLayoutManager);
@@ -260,8 +268,8 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
 
     private void setGoogleMap(GoogleMap googleMap) {
         if (googleMap != null) {
-            double latitude = 0;
-            double longitude = 0;
+            Double latitude = 0D;
+            Double longitude = 0D;
             LatLng latLng = new LatLng(latitude, longitude);
 
             googleMap.getUiSettings().setMapToolbarEnabled(false);
@@ -278,6 +286,11 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
                 }
             });
         }
+    }
+
+    @OnClick(R2.id.ll_shipment_choice)
+    void onShipmentChoiceClicked() {
+
     }
 
     @OnCheckedChanged(R2.id.switch_insurance)
@@ -333,5 +346,10 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
     @Override
     public void onMapReady(GoogleMap googleMap) {
         setGoogleMap(googleMap);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
     }
 }
