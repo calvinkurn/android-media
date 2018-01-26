@@ -632,9 +632,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void onLogout(AppComponent appComponent) {
-        CacheApiClearAllUseCase cacheApiClearAllUseCase = appComponent.cacheApiClearAllUseCase();
-        cacheApiClearAllUseCase.execute(com.tokopedia.usecase.RequestParams.EMPTY, new TkpdSellerLogout.EmptySubscriber());
-
+        new CacheApiClearAllUseCase().executeSync();
         TkpdSellerLogout.onLogOut(appComponent);
     }
 

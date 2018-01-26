@@ -51,8 +51,13 @@ public class CacheApiDatabaseSource {
                 }
                 CacheApiLoggingUtils.dumper(String.format("Stored vs current version: %s - %s", storedVersionName, versionName));
                 // Fresh install or different version
-                boolean whiteListVersionUpdated = !TextUtils.isEmpty(storedVersionName) || !storedVersionName.equalsIgnoreCase(versionName);
-                subscriber.onNext(whiteListVersionUpdated);
+                boolean needUpdate;
+                if (TextUtils.isEmpty(storedVersionName)) {
+                    needUpdate = true;
+                } else {
+                    needUpdate = !storedVersionName.equalsIgnoreCase(versionName);
+                }
+                subscriber.onNext(needUpdate);
             }
         });
     }

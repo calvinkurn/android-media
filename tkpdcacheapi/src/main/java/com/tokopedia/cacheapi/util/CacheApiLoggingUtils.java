@@ -12,7 +12,7 @@ public class CacheApiLoggingUtils {
 
     public static void dumper(String str) {
         if (logEnabled) {
-            Log.i("Dumper", str);
+            Log.i("CacheApi", str);
         }
     }
 }

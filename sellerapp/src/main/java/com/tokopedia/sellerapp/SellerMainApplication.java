@@ -29,7 +29,6 @@ import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.utils.WhiteList;
-import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
 
@@ -128,7 +127,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);
-        initCacheApiWhiteList();
+        initCacheApi();
     }
 
     private void generateSellerAppBaseUrl() {
@@ -180,28 +179,11 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
                 .build());
     }
 
-    public void initCacheApiWhiteList() {
+    public void initCacheApi() {
         CacheApiLoggingUtils.setLogEnabled(GlobalConfig.isAllowDebuggingTools());
-        List<CacheApiWhiteListDomain> cacheApiWhiteListDomains = getWhiteList();
-        new CacheApiWhiteListUseCase().executeSync(CacheApiWhiteListUseCase.createParams(cacheApiWhiteListDomains, String.valueOf(getCurrentVersion(getApplicationContext()))), new Subscriber<Boolean>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-
-            }
-        });
-    }
-
-    protected List<CacheApiWhiteListDomain> getWhiteList() {
-        return WhiteList.getWhiteList();
+        List<CacheApiWhiteListDomain> cacheApiWhiteListDomains = WhiteList.getWhiteList();
+        new CacheApiWhiteListUseCase().executeSync(CacheApiWhiteListUseCase.createParams(
+                cacheApiWhiteListDomains,
+                String.valueOf(getCurrentVersion(getApplicationContext()))));
     }
 }

@@ -83,7 +83,7 @@ public class SellerDashboardPresenter extends BaseDaggerPresenter<SellerDashboar
     }
 
     public void refreshShopInfo(){
-        cacheApiClearAllUseCase.execute(com.tokopedia.usecase.RequestParams.EMPTY, new Subscriber<Boolean>() {
+        cacheApiClearAllUseCase.execute(new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
 
