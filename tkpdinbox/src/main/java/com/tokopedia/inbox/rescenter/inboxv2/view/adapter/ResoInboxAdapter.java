@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.inbox.R;
@@ -47,32 +48,37 @@ public class ResoInboxAdapter extends RecyclerView.Adapter<ResoInboxAdapter.Hold
     }
 
     private void bindView(Holder holder, InboxItemViewModel item) {
-        if (TextUtils.isEmpty(item.getInboxMessage())) {
-            holder.ffTitleNotif.setVisibility(View.GONE);
+        if (item.isLoadingItem()) {
+            holder.loading.setVisibility(View.VISIBLE);
         } else {
-            holder.ffTitleNotif.setVisibility(View.VISIBLE);
-            holder.tvTitle.setText(item.getInboxMessage());
-            holder.tvTitle.setTextColor(Color.parseColor(item.getInboxMessageTextColor()));
-            holder.ffTitleNotif.setBackgroundColor(Color.parseColor(item.getInboxMessageBackgroundColor()));
-        }
+            holder.loading.setVisibility(View.GONE);
+            if (TextUtils.isEmpty(item.getInboxMessage())) {
+                holder.ffTitleNotif.setVisibility(View.GONE);
+            } else {
+                holder.ffTitleNotif.setVisibility(View.VISIBLE);
+                holder.tvTitle.setText(item.getInboxMessage());
+                holder.tvTitle.setTextColor(Color.parseColor(item.getInboxMessageTextColor()));
+                holder.ffTitleNotif.setBackgroundColor(Color.parseColor(item.getInboxMessageBackgroundColor()));
+            }
 
-        holder.tvInvoice.setText(item.getInvoiceNumber());
-        holder.ivNotification.setVisibility(item.isNotificationShow() ? View.VISIBLE : View.GONE);
+            holder.tvInvoice.setText(item.getInvoiceNumber());
+            holder.ivNotification.setVisibility(item.isNotificationShow() ? View.VISIBLE : View.GONE);
 
-        holder.tvUsernameTitle.setText(item.getNameTitle());
-        holder.tvUsername.setText(item.getUserName());
-        holder.tvAutoExecute.setText(item.getAutoDoneText());
-        holder.tvLastReply.setText(item.getLastReplyText());
-        holder.tvFreeReturn.setText(item.getFreeReturnText());
+            holder.tvUsernameTitle.setText(item.getNameTitle());
+            holder.tvUsername.setText(item.getUserName());
+            holder.tvAutoExecute.setText(item.getAutoDoneText());
+            holder.tvLastReply.setText(item.getLastReplyText());
+            holder.tvFreeReturn.setText(item.getFreeReturnText());
 
-        if (item.getImageList() != null) {
-            holder.ffProduct.setVisibility(View.VISIBLE);
-            holder.tvMoreImage.setText(item.getExtraImageCountText());
-            holder.rvProduct.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
-            ProductAdapter adapter = new ProductAdapter(context, item.getImageList());
-            holder.rvProduct.setAdapter(adapter);
-        } else {
-            holder.ffProduct.setVisibility(View.GONE);
+            if (item.getImageList() != null) {
+                holder.ffProduct.setVisibility(View.VISIBLE);
+                holder.tvMoreImage.setText(item.getExtraImageCountText());
+                holder.rvProduct.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+                ProductAdapter adapter = new ProductAdapter(context, item.getImageList());
+                holder.rvProduct.setAdapter(adapter);
+            } else {
+                holder.ffProduct.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -98,6 +104,7 @@ public class ResoInboxAdapter extends RecyclerView.Adapter<ResoInboxAdapter.Hold
         RecyclerView rvProduct;
         FrameLayout ffTitleNotif, ffProduct;
         LinearLayout llItem;
+        ProgressBar loading;
         public Holder(View itemView) {
             super(itemView);
             ffTitleNotif = (FrameLayout) itemView.findViewById(R.id.ff_title_notif);
@@ -114,6 +121,24 @@ public class ResoInboxAdapter extends RecyclerView.Adapter<ResoInboxAdapter.Hold
             rvProduct = (RecyclerView) itemView.findViewById(R.id.rv_product);
             ffProduct = (FrameLayout) itemView.findViewById(R.id.ff_product);
             llItem = (LinearLayout) itemView.findViewById(R.id.ll_item);
+            loading = (ProgressBar) itemView.findViewById(R.id.loading);
         }
+    }
+
+    public void addMoreItem(List<InboxItemViewModel> list) {
+        itemList.addAll(list);
+        notifyDataSetChanged();
+    }
+
+    public void addLoadingItem() {
+        itemList.add(new InboxItemViewModel(true));
+        notifyDataSetChanged();
+    }
+
+    public void removeLoadingItem() {
+        if (itemList.get(itemList.size() - 1).isLoadingItem()) {
+            itemList.remove(itemList.size() - 1);
+        }
+        notifyDataSetChanged();
     }
 }

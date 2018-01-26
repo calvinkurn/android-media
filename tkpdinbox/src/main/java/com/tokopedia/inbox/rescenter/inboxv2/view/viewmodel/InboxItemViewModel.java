@@ -28,6 +28,7 @@ public class InboxItemViewModel implements Parcelable {
     private String extraImageCountText;
     private String customerName;
     private String sellerName;
+    private boolean isLoadingItem;
 
     public InboxItemViewModel(int id,
                               int actionBy,
@@ -65,6 +66,18 @@ public class InboxItemViewModel implements Parcelable {
         this.extraImageCountText = extraImageCountText;
         this.customerName = customerName;
         this.sellerName = sellerName;
+    }
+
+    public InboxItemViewModel(boolean isLoadingItem) {
+        this.isLoadingItem = isLoadingItem;
+    }
+
+    public boolean isLoadingItem() {
+        return isLoadingItem;
+    }
+
+    public void setLoadingItem(boolean loadingItem) {
+        isLoadingItem = loadingItem;
     }
 
     public int getId() {
@@ -236,6 +249,7 @@ public class InboxItemViewModel implements Parcelable {
         dest.writeString(this.extraImageCountText);
         dest.writeString(this.customerName);
         dest.writeString(this.sellerName);
+        dest.writeByte(this.isLoadingItem ? (byte) 1 : (byte) 0);
     }
 
     protected InboxItemViewModel(Parcel in) {
@@ -257,6 +271,7 @@ public class InboxItemViewModel implements Parcelable {
         this.extraImageCountText = in.readString();
         this.customerName = in.readString();
         this.sellerName = in.readString();
+        this.isLoadingItem = in.readByte() != 0;
     }
 
     public static final Creator<InboxItemViewModel> CREATOR = new Creator<InboxItemViewModel>() {

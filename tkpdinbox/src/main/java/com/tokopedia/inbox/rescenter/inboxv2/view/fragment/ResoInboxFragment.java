@@ -34,18 +34,19 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
 
     public static final int REQUEST_DETAIL_RESO = 1234;
 
+    private ResoInboxAdapter inboxAdapter;
+    private LinearLayoutManager rvInboxLayoutManager;
 
     private RecyclerView rvInbox, rvQuickFilter;
     private ProgressBar progressBar;
 
-    private ResoInboxAdapter inboxAdapter;
-
-
+    private boolean isSeller;
+    private boolean isCanLoadMore;
+    private String lastCursor = "";
 
     @Inject
     ResoInboxFragmentPresenter presenter;
 
-    private boolean isSeller;
 
     public static Fragment getFragmentInstance(Bundle bundle) {
         Fragment fragment = new ResoInboxFragment();
@@ -55,8 +56,13 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_reso_inbox, container, false);
+    public View onCreateView(
+            LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
+        View view = LayoutInflater
+                .from(getActivity())
+                .inflate(R.layout.fragment_reso_inbox, container, false);
         rvInbox = (RecyclerView) view.findViewById(R.id.rv_inbox);
         rvQuickFilter = (RecyclerView) view.findViewById(R.id.rv_quick_filter);
         progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
@@ -67,8 +73,10 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.attachView(this);
-        rvInbox.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvInboxLayoutManager = new LinearLayoutManager(getActivity());
+        rvInbox.setLayoutManager(rvInboxLayoutManager);
         isSeller = getArguments().getBoolean(ResoInboxActivity.PARAM_IS_SELLER);
+        rvInbox.addOnScrollListener(rvInboxScrollListener);
         initView();
     }
 
@@ -93,13 +101,37 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
         daggerCreateResoComponent.inject(this);
     }
 
+    private RecyclerView.OnScrollListener rvInboxScrollListener
+            = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+        }
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            int visibleItemCount = rvInboxLayoutManager.getChildCount();
+            int totalItemCount = rvInboxLayoutManager.getItemCount();
+            int firstVisiblesItems = rvInboxLayoutManager.findFirstVisibleItemPosition();
+            if (isCanLoadMore && (visibleItemCount + firstVisiblesItems) >= totalItemCount) {
+                inboxAdapter.addLoadingItem();
+                isCanLoadMore = false;
+                presenter.loadMoreInbox(lastCursor);
+            }
+        }
+    };
+
     @Override
     public void onSuccessGetInbox(InboxItemResultViewModel result) {
         dismissProgressBar();
-        inboxAdapter = new ResoInboxAdapter(getActivity(), this, result.getInboxItemViewModels());
+        inboxAdapter = new ResoInboxAdapter(
+                getActivity(),
+                this,
+                result.getInboxItemViewModels());
         rvInbox.setAdapter(inboxAdapter);
         inboxAdapter.notifyDataSetChanged();
-
+        updateParams(true, result);
     }
 
     @Override
@@ -110,21 +142,31 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
 
     @Override
     public void onSuccessLoadMoreInbox(InboxItemResultViewModel result) {
-        dismissProgressBar();
+        inboxAdapter.removeLoadingItem();
+        inboxAdapter.addMoreItem(result.getInboxItemViewModels());
+        updateParams(true, result);
     }
 
     @Override
     public void onErrorLoadMoreInbox(String err) {
-        dismissProgressBar();
+        inboxAdapter.removeLoadingItem();
+        isCanLoadMore = false;
+        lastCursor = "";
     }
 
     @Override
     public void onItemClicked(int resolutionId, String sellerName, String customerName) {
         Intent intent;
         if (isSeller) {
-            intent = DetailResChatActivity.newSellerInstance(getActivity(), String.valueOf(resolutionId), customerName);
+            intent = DetailResChatActivity.newSellerInstance(
+                    getActivity(),
+                    String.valueOf(resolutionId),
+                    customerName);
         } else {
-            intent = DetailResChatActivity.newBuyerInstance(getActivity(), String.valueOf(resolutionId), sellerName);
+            intent = DetailResChatActivity.newBuyerInstance(
+                    getActivity(),
+                    String.valueOf(resolutionId),
+                    sellerName);
         }
         startActivityForResult(intent, REQUEST_DETAIL_RESO);
     }
@@ -167,4 +209,14 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
         presenter.detachView();
     }
 
+    private void updateParams(boolean isCanLoadMore, InboxItemResultViewModel resultViewModel) {
+        this.isCanLoadMore = isCanLoadMore;
+        this.lastCursor = String.valueOf(resultViewModel.getInboxItemViewModels()
+                .get(resultViewModel.getInboxItemViewModels().size() - 1).getId());
+    }
+
+    private void resetParams() {
+        this.isCanLoadMore = false;
+        this.lastCursor = "";
+    }
 }
