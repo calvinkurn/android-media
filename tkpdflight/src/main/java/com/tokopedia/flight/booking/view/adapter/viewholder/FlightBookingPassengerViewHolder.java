@@ -84,7 +84,7 @@ public class FlightBookingPassengerViewHolder extends AbstractViewHolder<FlightB
     private void initiatePassengerDetailView(FlightBookingPassengerViewModel viewModel) {
         List<SimpleViewModel> simpleViewModels = new ArrayList<>();
         if (viewModel.getPassengerBirthdate() != null && viewModel.getPassengerBirthdate().length() > 0) {
-            simpleViewModels.add(new SimpleViewModel(itemView.getContext().getString(R.string.flight_booking_list_passenger_birthdate_label), String.valueOf(FlightDateUtil.formatDate(
+            simpleViewModels.add(new SimpleViewModel(itemView.getContext().getString(R.string.flight_booking_list_passenger_birthdate_label) + " :", String.valueOf(FlightDateUtil.formatDate(
                     FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.DEFAULT_VIEW_FORMAT, viewModel.getPassengerBirthdate()
             ))));
         }
@@ -96,7 +96,7 @@ public class FlightBookingPassengerViewHolder extends AbstractViewHolder<FlightB
                     selectedLuggages.add(flightBookingLuggageViewModel.getTitle());
                 }
                 simpleViewModels.add(new SimpleViewModel(
-                        itemView.getContext().getString(R.string.flight_booking_list_passenger_luggage_label) + " " + flightBookingLuggageRouteViewModel.getDescription(),
+                        itemView.getContext().getString(R.string.flight_booking_list_passenger_luggage_label) + " " + flightBookingLuggageRouteViewModel.getDescription() + " :",
                         TextUtils.join(" + ", selectedLuggages)
                 ));
             }
@@ -105,7 +105,7 @@ public class FlightBookingPassengerViewHolder extends AbstractViewHolder<FlightB
         if (viewModel.getFlightBookingMealMetaViewModels() != null && viewModel.getFlightBookingMealMetaViewModels().size() > 0) {
             for (FlightBookingAmenityMetaViewModel flightBookingMealRouteViewModel : viewModel.getFlightBookingMealMetaViewModels()) {
                 simpleViewModels.add(new SimpleViewModel(
-                        itemView.getContext().getString(R.string.flight_booking_list_passenger_meals_label) + " " + flightBookingMealRouteViewModel.getDescription(),
+                        itemView.getContext().getString(R.string.flight_booking_list_passenger_meals_label) + " " + flightBookingMealRouteViewModel.getDescription() + " :",
                         TextUtils.join(" + ", flightBookingMealRouteViewModel.getAmenities())
                 ));
             }
@@ -113,7 +113,7 @@ public class FlightBookingPassengerViewHolder extends AbstractViewHolder<FlightB
 
         FlightSimpleAdapter adapter = new FlightSimpleAdapter();
         adapter.setTitleBold(true);
-        adapter.setContentAllignmentRight(true);
+        adapter.setContentAllignmentLeft(true);
         adapter.setDescriptionTextColor(itemView.getResources().getColor(R.color.font_black_secondary_54));
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.VERTICAL, false);

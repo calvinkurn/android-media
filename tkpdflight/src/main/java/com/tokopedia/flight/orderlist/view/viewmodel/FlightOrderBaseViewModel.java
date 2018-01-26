@@ -1,7 +1,5 @@
 package com.tokopedia.flight.orderlist.view.viewmodel;
 
-import android.support.annotation.StringRes;
-
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 
 import java.util.List;
@@ -11,8 +9,7 @@ import java.util.List;
  */
 
 public class FlightOrderBaseViewModel {
-    @StringRes
-    protected int title;
+    protected String title;
     protected String id;
     protected String createTime;
     protected int status;
@@ -50,11 +47,11 @@ public class FlightOrderBaseViewModel {
         this.orderJourney = orderJourney;
     }
 
-    protected int getTitle() {
+    protected String getTitle() {
         return title;
     }
 
-    protected void setTitle(@StringRes int title) {
+    protected void setTitle(String title) {
         this.title = title;
     }
 

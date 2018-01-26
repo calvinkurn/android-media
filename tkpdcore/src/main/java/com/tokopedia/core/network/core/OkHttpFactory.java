@@ -446,6 +446,7 @@ public class OkHttpFactory {
                 .build();
     }
 
+    @Deprecated
     public OkHttpClient buildClientTopAdsAuth(SessionHandler sessionHandler) {
         return new TkpdOkHttpBuilder(builder)
                 .addInterceptor(new CacheApiInterceptor())
