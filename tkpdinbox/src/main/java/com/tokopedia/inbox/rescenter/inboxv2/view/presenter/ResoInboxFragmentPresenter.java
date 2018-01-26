@@ -12,6 +12,7 @@ import com.tokopedia.inbox.rescenter.inboxv2.view.listener.ResoInboxFragmentList
 import com.tokopedia.inbox.rescenter.inboxv2.view.subscriber.GetInboxLoadMoreSubscriber;
 import com.tokopedia.inbox.rescenter.inboxv2.view.subscriber.GetInboxSubscriber;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.ResoInboxFilterModel;
+import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.SortModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +67,13 @@ public class ResoInboxFragmentPresenter
             getInboxBuyerUseCase.execute(
                     GetInboxParams.getParams(filterModel),
                     new GetInboxSubscriber(context, mainView));
+    }
+
+    @Override
+    public void getInboxWithSortParams(SortModel sortModel) {
+        filterModel.setSortBy(sortModel.getSortById());
+        filterModel.setAsc(sortModel.getAscId());
+        getInbox();
     }
 
     @Override

@@ -4,25 +4,31 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 import com.tokopedia.inbox.rescenter.inboxv2.view.adapter.ResoInboxAdapter;
+import com.tokopedia.inbox.rescenter.inboxv2.view.adapter.SortAdapter;
 import com.tokopedia.inbox.rescenter.inboxv2.view.di.DaggerResoInboxComponent;
 import com.tokopedia.inbox.rescenter.inboxv2.view.listener.ResoInboxFragmentListener;
 import com.tokopedia.inbox.rescenter.inboxv2.view.presenter.ResoInboxFragmentPresenter;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.InboxItemResultViewModel;
+import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.ResoInboxSortModel;
+import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.SortModel;
 
 import javax.inject.Inject;
 
@@ -33,16 +39,20 @@ import javax.inject.Inject;
 public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFragmentListener.View {
 
     public static final int REQUEST_DETAIL_RESO = 1234;
+    private static final int SORT_DEFAULT_ID = 2;
 
     private ResoInboxAdapter inboxAdapter;
     private LinearLayoutManager rvInboxLayoutManager;
 
     private RecyclerView rvInbox, rvQuickFilter;
     private ProgressBar progressBar;
+    private BottomActionView bottomActionView;
+    private BottomSheetDialog sortDialog;
 
     private boolean isSeller;
     private boolean isCanLoadMore;
     private String lastCursor = "";
+    private ResoInboxSortModel inboxSortModel;
 
     @Inject
     ResoInboxFragmentPresenter presenter;
@@ -66,6 +76,7 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
         rvInbox = (RecyclerView) view.findViewById(R.id.rv_inbox);
         rvQuickFilter = (RecyclerView) view.findViewById(R.id.rv_quick_filter);
         progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
+        bottomActionView = (BottomActionView) view.findViewById(R.id.bav);
         return view;
     }
 
@@ -77,11 +88,28 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
         rvInbox.setLayoutManager(rvInboxLayoutManager);
         isSeller = getArguments().getBoolean(ResoInboxActivity.PARAM_IS_SELLER);
         rvInbox.addOnScrollListener(rvInboxScrollListener);
+        inboxSortModel = new ResoInboxSortModel(SortModel.getSortList(), SORT_DEFAULT_ID);
         initView();
+        initViewListener();
     }
 
-    public void initView() {
+    private void initView() {
         presenter.initPresenterData(getActivity(), isSeller);
+    }
+
+    private void initViewListener() {
+        bottomActionView.setButton1OnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sortButtonClicked();
+            }
+        });
+        bottomActionView.setButton2OnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                filterButtonClicked();
+            }
+        });
     }
 
     @Override
@@ -122,6 +150,21 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
         }
     };
 
+    private void sortButtonClicked() {
+        sortDialog = new BottomSheetDialog(getActivity());
+        sortDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        sortDialog.setContentView(R.layout.layout_bottomsheet_sort);
+        RecyclerView rvSort = sortDialog.findViewById(R.id.rv_sort);
+        rvSort.setLayoutManager(new LinearLayoutManager(getActivity()));
+        SortAdapter adapter = new SortAdapter(getActivity(), this, inboxSortModel);
+        rvSort.setAdapter(adapter);
+        sortDialog.show();
+    }
+
+    private void filterButtonClicked() {
+
+    }
+
     @Override
     public void onSuccessGetInbox(InboxItemResultViewModel result) {
         dismissProgressBar();
@@ -150,8 +193,14 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
     @Override
     public void onErrorLoadMoreInbox(String err) {
         inboxAdapter.removeLoadingItem();
-        isCanLoadMore = false;
-        lastCursor = "";
+        resetParams();
+    }
+
+    @Override
+    public void onSortItemClicked(SortModel sortModel) {
+        this.inboxSortModel.setSelectedSortId(sortModel.sortId);
+        sortDialog.dismiss();
+        presenter.getInboxWithSortParams(sortModel);
     }
 
     @Override

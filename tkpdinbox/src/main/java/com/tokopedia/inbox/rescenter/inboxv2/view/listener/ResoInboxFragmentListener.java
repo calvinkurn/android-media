@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.InboxItemResultViewModel;
+import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.SortModel;
 
 
 /**
@@ -29,6 +30,8 @@ public interface ResoInboxFragmentListener {
 
         void onItemClicked(int resolutionId, String sellerName, String customerName);
 
+        void onSortItemClicked(SortModel sortModel);
+
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -36,6 +39,8 @@ public interface ResoInboxFragmentListener {
         void initPresenterData(Context context, boolean isSeller);
 
         void getInbox();
+
+        void getInboxWithSortParams(SortModel sortModel);
 
         void loadMoreInbox(String token);
 
