@@ -86,9 +86,10 @@
         android:background="@color/grey_400" />
 
     <LinearLayout
-        android:id="@+id/add_new_shipment_button"
+        android:id="@+id/add_new_shipment_address_button"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/btn_height"
+        android:gravity="center"
         android:padding="@dimen/padding_small">
 
         <TextView

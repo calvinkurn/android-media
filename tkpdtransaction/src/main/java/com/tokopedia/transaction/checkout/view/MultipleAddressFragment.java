@@ -17,6 +17,9 @@ import com.tokopedia.transaction.checkout.view.data.MultipleAddressItemData;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.tokopedia.transaction.checkout.view.AddShipmentAddressFragment.ADD_MODE;
+import static com.tokopedia.transaction.checkout.view.AddShipmentAddressFragment.EDIT_MODE;
+
 /**
  * Created by kris on 1/24/18. Tokopedia
  */
@@ -85,10 +88,27 @@ public class MultipleAddressFragment extends TkpdFragment
     }
 
     @Override
-    public void onItemChoosen(MultipleAddressAdapterData productData, MultipleAddressItemData addressData) {
+    public void onAddNewShipmentAddress(MultipleAddressAdapterData data,
+                                        MultipleAddressItemData addressData) {
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.animator.slide_in_left, R.animator.slide_in_left)
-                .add(R.id.container, AddShipmentAddressFragment.newInstance(productData, addressData))
+                .add(R.id.container, AddShipmentAddressFragment.newInstance(
+                        data,
+                        addressData,
+                        ADD_MODE))
                 .commit();
     }
+
+    @Override
+    public void onItemChoosen(MultipleAddressAdapterData productData,
+                              MultipleAddressItemData addressData) {
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.animator.slide_in_left, R.animator.slide_in_left)
+                .add(R.id.container, AddShipmentAddressFragment.newInstance(
+                        productData,
+                        addressData,
+                        EDIT_MODE))
+                .commit();
+    }
+
 }

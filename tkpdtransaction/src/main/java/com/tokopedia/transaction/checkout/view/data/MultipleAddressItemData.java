@@ -9,17 +9,17 @@ import android.os.Parcelable;
 
 public class MultipleAddressItemData implements Parcelable{
 
-    private String productWeight;
+    private String productWeight = "";
 
-    private String productQty;
+    private String productQty = "";
 
-    private String productNotes;
+    private String productNotes = "";
 
-    private String addressTitle;
+    private String addressTitle = "";
 
-    private String addressReceiverName;
+    private String addressReceiverName = "";
 
-    private String address;
+    private String address = "";
 
     public MultipleAddressItemData() {
     }

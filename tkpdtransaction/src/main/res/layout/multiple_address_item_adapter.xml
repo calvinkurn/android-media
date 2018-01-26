@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/text_size_large"
             android:textStyle="bold"
-            android:text="Pengiriman "/>
+            android:text="Pengiriman #"/>
 
         <LinearLayout
             android:layout_width="wrap_content"

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/grey_200"
     android:orientation="vertical">
 
     <LinearLayout
@@ -14,6 +14,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/white"
             android:orientation="vertical"
             android:padding="@dimen/padding_small">
 
@@ -62,6 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_small"
             android:orientation="vertical"
+            android:background="@color/white"
             android:padding="@dimen/padding_small">
 
             <LinearLayout
@@ -90,7 +92,9 @@
                     <EditText
                         android:id="@+id/quantity_field"
                         android:layout_width="100dp"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:inputType="number" />
 
                     <ImageView
                         android:id="@+id/increase_quantity"
@@ -162,6 +166,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_small"
+                android:layout_marginBottom="@dimen/margin_small"
                 android:gravity="center_vertical">
 
                 <LinearLayout
@@ -207,9 +212,38 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/choose_address_button"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/btn_height"
+                android:gravity="center_vertical"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Pilih Alamat"
+                    android:textColor="@color/tkpd_main_green"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
         </LinearLayout>
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/disabled_save_changes_button"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/btn_height"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/margin_small"
+        android:background="@color/grey_400"
+        android:gravity="center"
+        android:text="Simpan Perubahan"
+        android:textColor="@color/grey_600"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/save_changes_button"

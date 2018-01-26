@@ -76,6 +76,9 @@ public class MultipleAddressAdapter
             itemViewHolder.shippingDestinationList.setAdapter(
                     new MultipleAddressItemAdapter(data, data.getItemListData(), this)
             );
+            itemViewHolder.addNewShipmentAddressButton.setOnClickListener(
+                    onAddAddressClickedListener(data, data.getItemListData().get(0))
+            );
         } else if (holder instanceof MultipleAddressFooterViewHolder)
             ((MultipleAddressFooterViewHolder) holder).goToCourierPageButton
                     .setOnClickListener(onGoToCourierPageButtonClicked());
@@ -114,6 +117,8 @@ public class MultipleAddressAdapter
 
         private RecyclerView shippingDestinationList;
 
+        private ViewGroup addNewShipmentAddressButton;
+
         MultipleAddressViewHolder(Context context, View itemView) {
             super(itemView);
 
@@ -129,6 +134,8 @@ public class MultipleAddressAdapter
 
             shippingDestinationList = itemView.findViewById(R.id.shipping_destination_list);
 
+            addNewShipmentAddressButton = itemView
+                    .findViewById(R.id.add_new_shipment_address_button);
         }
     }
 
@@ -154,6 +161,17 @@ public class MultipleAddressAdapter
         };
     }
 
+    private View.OnClickListener onAddAddressClickedListener(
+            final MultipleAddressAdapterData data,
+            final MultipleAddressItemData firstItemData) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onAddNewShipmentAddress(data, firstItemData);
+            }
+        };
+    }
+
     public interface MultipleAddressAdapterListener {
 
         void onGoToChooseCourier();
@@ -161,6 +179,8 @@ public class MultipleAddressAdapter
         void onItemChoosen(MultipleAddressAdapterData productData,
                            MultipleAddressItemData addressData);
 
+        void onAddNewShipmentAddress(MultipleAddressAdapterData data,
+                                     MultipleAddressItemData addressData);
     }
 
 }
