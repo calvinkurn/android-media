@@ -1287,7 +1287,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
 ]]>
     </string>
     <string name="message_deposit_review">Saldo Tokopedia Anda sejumlah :</string>
-    <string name="message_time_deposit_return">"sedang kami review. Jika review melebihi 1x24 jam, silakan hubungi Customer Service kami untuk penjelasan lebih lanjut. Terima kasih."</string>
+    <string name="message_time_deposit_return">"sedang kami review. Jika review melebihi 3x24 jam, silakan hubungi Customer Service kami untuk penjelasan lebih lanjut. Terima kasih."</string>
     <string name="message_changer_courrier_warning">Biaya pergantian kurir sepenuhnya ditanggung oleh Penjual</string>
     <string name="title_shop_phone_verification">Anda dapat membuka toko setelah melakukan verifikasi nomor HP</string>
     <string name="title_activity_developer_options">DeveloperOptions</string>
