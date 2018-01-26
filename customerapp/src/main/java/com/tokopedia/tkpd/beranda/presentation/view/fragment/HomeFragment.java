@@ -419,9 +419,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 && getActivity().getApplicationContext() instanceof IDigitalModuleRouter
                 && ((IDigitalModuleRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(data.getApplinks())) {
             ((IDigitalModuleRouter) getActivity().getApplicationContext())
-                    .actionNavigateByApplinksUrl(getActivity(),data.getApplinks(), new Bundle());
+                    .actionNavigateByApplinksUrl(getActivity(), data.getApplinks(), new Bundle());
         } else {
-            openWebViewURL(data.getUrl(),getContext());
+            openWebViewURL(data.getUrl(), getContext());
         }
     }
 
@@ -548,7 +548,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
 
-
     @Override
     public void actionScannerQRTokoCash() {
         HomeFragmentPermissionsDispatcher.scanQRCodeWithCheck(this);
@@ -569,9 +568,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 && getActivity().getApplicationContext() instanceof TkpdCoreRouter
                 && ((TkpdCoreRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(slidesModel.getApplink())) {
             ((TkpdCoreRouter) getActivity().getApplicationContext())
-                    .actionAppLink(getActivity(),slidesModel.getApplink());
+                    .actionAppLink(getActivity(), slidesModel.getApplink());
         } else {
-            openWebViewURL(slidesModel.getRedirectUrl(),getContext());
+            openWebViewURL(slidesModel.getRedirectUrl(), getContext());
         }
     }
 
@@ -644,26 +643,28 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void showNetworkError(String message) {
-        if (adapter.getItemCount() > 0) {
-            if (messageSnackbar == null) {
-                messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        presenter.getHomeData();
-                        presenter.getHeaderData(false);
-                    }
-                });
-            }
-            messageSnackbar.showRetrySnackbar();
-        } else {
-            NetworkErrorHelper.showEmptyState(getActivity(), root, message,
-                    new NetworkErrorHelper.RetryClickedListener() {
+        if (isAdded() && getActivity() != null) {
+            if (adapter.getItemCount() > 0) {
+                if (messageSnackbar == null) {
+                    messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
                         @Override
                         public void onRetryClicked() {
                             presenter.getHomeData();
                             presenter.getHeaderData(false);
                         }
                     });
+                }
+                messageSnackbar.showRetrySnackbar();
+            } else {
+                NetworkErrorHelper.showEmptyState(getActivity(), root, message,
+                        new NetworkErrorHelper.RetryClickedListener() {
+                            @Override
+                            public void onRetryClicked() {
+                                presenter.getHomeData();
+                                presenter.getHeaderData(false);
+                            }
+                        });
+            }
         }
     }
 

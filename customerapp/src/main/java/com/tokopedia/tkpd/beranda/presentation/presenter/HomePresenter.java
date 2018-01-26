@@ -380,7 +380,6 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
             if (isViewAttached()) {
                 getView().showNetworkError(ErrorHandler.getErrorMessage(e));
                 onCompleted();
-                Log.e(TAG, e.getLocalizedMessage());
             }
         }
 
