@@ -158,6 +158,7 @@ public class LoginAnalytics {
     }
 
     public static class Screen {
-        public static final String SCREEN_LOGIN = "Login";
+        public static final String LOGIN = "Login";
+        public static final String FORGOT_PASSWORD = "Forgot Password";
     }
 }

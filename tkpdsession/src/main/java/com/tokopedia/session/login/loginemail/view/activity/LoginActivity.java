@@ -9,8 +9,6 @@ import android.support.v4.app.FragmentTransaction;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.analytics.LoginAnalytics;
-import com.tokopedia.analytics.LoginPhoneNumberAnalytics;
-import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -19,7 +17,6 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.session.R;
 import com.tokopedia.session.login.loginemail.view.fragment.LoginFragment;
-import com.tokopedia.session.login.loginphonenumber.view.viewlistener.LoginPhoneNumber;
 
 /**
  * @author by nisie on 12/18/17.
@@ -77,7 +74,7 @@ public class LoginActivity extends TActivity implements HasComponent {
 
     @Override
     public String getScreenName() {
-        return LoginAnalytics.Screen.SCREEN_LOGIN;
+        return LoginAnalytics.Screen.LOGIN;
     }
 
     @Override
