@@ -36,11 +36,6 @@ public class GetFirstTimeInboxReputationUseCase extends GetInboxReputationUseCas
 
     @Override
     public Observable<InboxReputationDomain> createObservable(final RequestParams requestParams) {
-//        return Observable.concat(
-//                getCacheInboxReputationUseCase.getExecuteObservable(requestParams),
-//                getInboxReputationUseCase.createObservable(requestParams))
-//                .onErrorResumeNext(getInboxReputationUseCase.createObservable(requestParams));
-
         return getInboxReputationUseCase.createObservable(requestParams);
     }
 
