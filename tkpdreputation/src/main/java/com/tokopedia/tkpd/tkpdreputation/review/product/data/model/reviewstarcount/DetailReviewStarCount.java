@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewstarcount;
+package com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewstarcount;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

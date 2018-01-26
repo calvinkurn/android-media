@@ -1,13 +1,13 @@
-package com.tokopedia.tkpd.tkpdreputation.shopreview.domain;
+package com.tokopedia.tkpd.tkpdreputation.review.shop.domain;
 
 import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.GetLikeDislikeReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.GetLikeDislikeReviewDomain;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeListDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository;
-import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewlist.DataResponseReviewProduct;
-import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewlist.DataResponseReviewShop;
-import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewlist.Review;
+import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewProduct;
+import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewShop;
+import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.Review;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

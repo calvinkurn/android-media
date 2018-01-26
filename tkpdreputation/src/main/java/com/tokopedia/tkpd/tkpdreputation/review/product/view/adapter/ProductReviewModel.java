@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdreputation.productreview.view.adapter;
+package com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 

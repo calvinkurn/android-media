@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdreputation.productreview.view.adapter;
+package com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter;
 
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;

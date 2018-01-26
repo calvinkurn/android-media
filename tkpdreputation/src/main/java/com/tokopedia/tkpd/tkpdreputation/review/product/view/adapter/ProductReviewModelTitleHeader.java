@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdreputation.productreview.view.adapter;
+package com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter;
 
 /**
  * Created by zulfikarrahman on 1/16/18.

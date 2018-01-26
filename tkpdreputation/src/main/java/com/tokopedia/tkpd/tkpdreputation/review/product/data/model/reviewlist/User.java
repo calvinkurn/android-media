@@ -1,5 +1,5 @@
 
-package com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewlist;
+package com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

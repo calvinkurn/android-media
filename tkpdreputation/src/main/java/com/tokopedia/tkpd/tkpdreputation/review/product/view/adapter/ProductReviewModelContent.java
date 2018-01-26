@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdreputation.productreview.view.adapter;
+package com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter;
 
 import android.os.Parcel;
 import android.os.Parcelable;

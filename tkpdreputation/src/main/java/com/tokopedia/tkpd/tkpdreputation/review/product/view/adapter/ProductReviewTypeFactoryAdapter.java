@@ -1,10 +1,10 @@
-package com.tokopedia.tkpd.tkpdreputation.productreview.view.adapter;
+package com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter;
 
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.tkpd.tkpdreputation.productreview.view.presenter.ProductReviewContract;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.presenter.ProductReviewContract;
 
 /**
  * Created by zulfikarrahman on 1/16/18.

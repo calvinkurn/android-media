@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdreputation.productreview.view.widget;
+package com.tokopedia.tkpd.tkpdreputation.review.product.view.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;

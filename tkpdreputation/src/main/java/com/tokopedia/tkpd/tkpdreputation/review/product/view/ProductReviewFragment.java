@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdreputation.productreview.view;
+package com.tokopedia.tkpd.tkpdreputation.review.product.view;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -31,18 +31,18 @@ import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.DeleteReviewResponseDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationReportActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
-import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewstarcount.DataResponseReviewStarCount;
-import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewstarcount.DetailReviewStarCount;
-import com.tokopedia.tkpd.tkpdreputation.productreview.view.adapter.ProductReviewAdapter;
-import com.tokopedia.tkpd.tkpdreputation.productreview.view.adapter.ProductReviewContentViewHolder;
-import com.tokopedia.tkpd.tkpdreputation.productreview.view.adapter.ProductReviewModel;
-import com.tokopedia.tkpd.tkpdreputation.productreview.view.adapter.ProductReviewModelContent;
-import com.tokopedia.tkpd.tkpdreputation.productreview.view.adapter.ProductReviewModelTitleHeader;
-import com.tokopedia.tkpd.tkpdreputation.productreview.view.adapter.ProductReviewTypeFactoryAdapter;
-import com.tokopedia.tkpd.tkpdreputation.productreview.view.presenter.ProductReviewContract;
-import com.tokopedia.tkpd.tkpdreputation.productreview.view.presenter.ProductReviewPresenter;
-import com.tokopedia.tkpd.tkpdreputation.productreview.view.widget.ProductReviewItemFilterView;
-import com.tokopedia.tkpd.tkpdreputation.productreview.view.widget.RatingBarReview;
+import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewstarcount.DataResponseReviewStarCount;
+import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewstarcount.DetailReviewStarCount;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ProductReviewAdapter;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ProductReviewContentViewHolder;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ProductReviewModel;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ProductReviewModelContent;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ProductReviewModelTitleHeader;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ProductReviewTypeFactoryAdapter;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.presenter.ProductReviewContract;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.presenter.ProductReviewPresenter;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.widget.ProductReviewItemFilterView;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.widget.RatingBarReview;
 
 import java.util.ArrayList;
 import java.util.List;

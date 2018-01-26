@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdreputation.shopreview.view.adapter;
+package com.tokopedia.tkpd.tkpdreputation.review.shop.view.adapter;
 
 import android.view.View;
 import android.widget.ImageView;
@@ -6,8 +6,8 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.tkpd.tkpdreputation.R;
-import com.tokopedia.tkpd.tkpdreputation.productreview.view.adapter.ProductReviewContentViewHolder;
-import com.tokopedia.tkpd.tkpdreputation.productreview.view.adapter.ProductReviewModelContent;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ProductReviewContentViewHolder;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ProductReviewModelContent;
 
 /**
  * Created by zulfikarrahman on 1/19/18.

@@ -1,10 +1,10 @@
-package com.tokopedia.tkpd.tkpdreputation.shopreview.view.adapter;
+package com.tokopedia.tkpd.tkpdreputation.review.shop.view.adapter;
 
 import android.os.Parcel;
 
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageAttachmentViewModel;
-import com.tokopedia.tkpd.tkpdreputation.productreview.view.adapter.ProductReviewModelContent;
-import com.tokopedia.tkpd.tkpdreputation.productreview.view.adapter.ProductReviewTypeFactoryAdapter;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ProductReviewModelContent;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ProductReviewTypeFactoryAdapter;
 
 /**
  * Created by zulfikarrahman on 1/19/18.

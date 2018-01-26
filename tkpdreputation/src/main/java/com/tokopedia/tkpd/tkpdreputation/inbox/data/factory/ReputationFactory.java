@@ -31,11 +31,11 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.CloudSendReviewSubmit
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.CloudSendSmileyReputationDataSource;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.CloudSkipReviewDataSource;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.source.LocalInboxReputationDataSource;
-import com.tokopedia.tkpd.tkpdreputation.productreview.data.source.ProductReviewGetHelpfulReviewCloud;
-import com.tokopedia.tkpd.tkpdreputation.productreview.data.source.ProductReviewGetListProductCloud;
-import com.tokopedia.tkpd.tkpdreputation.productreview.data.source.ProductReviewGetStarCountCloud;
-import com.tokopedia.tkpd.tkpdreputation.productreview.data.source.ReputationReviewApi;
-import com.tokopedia.tkpd.tkpdreputation.shopreview.data.source.ShopReviewGetListReviewCloud;
+import com.tokopedia.tkpd.tkpdreputation.review.product.data.source.ProductReviewGetHelpfulReviewCloud;
+import com.tokopedia.tkpd.tkpdreputation.review.product.data.source.ProductReviewGetListProductCloud;
+import com.tokopedia.tkpd.tkpdreputation.review.product.data.source.ProductReviewGetStarCountCloud;
+import com.tokopedia.tkpd.tkpdreputation.review.product.data.source.ReputationReviewApi;
+import com.tokopedia.tkpd.tkpdreputation.review.shop.data.source.ShopReviewGetListReviewCloud;
 
 /**
  * @author by nisie on 8/14/17.

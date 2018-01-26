@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdreputation.productreview.view.presenter;
+package com.tokopedia.tkpd.tkpdreputation.review.product.view.presenter;
 
 import android.text.TextUtils;
 
@@ -8,13 +8,13 @@ import com.tokopedia.tkpd.tkpdreputation.domain.interactor.DeleteReviewResponseU
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.LikeDislikeReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.DeleteReviewResponseDomain;
-import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewlist.DataResponseReviewHelpful;
-import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewlist.DataResponseReviewProduct;
-import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewstarcount.DataResponseReviewStarCount;
-import com.tokopedia.tkpd.tkpdreputation.productreview.domain.ProductReviewGetHelpfulUseCase;
-import com.tokopedia.tkpd.tkpdreputation.productreview.domain.ProductReviewGetListUseCase;
-import com.tokopedia.tkpd.tkpdreputation.productreview.domain.ProductReviewGetRatingUseCase;
-import com.tokopedia.tkpd.tkpdreputation.productreview.view.ProductReviewListMapper;
+import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewHelpful;
+import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewProduct;
+import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewstarcount.DataResponseReviewStarCount;
+import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ProductReviewGetHelpfulUseCase;
+import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ProductReviewGetListUseCase;
+import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ProductReviewGetRatingUseCase;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.ProductReviewListMapper;
 
 import rx.Subscriber;
 

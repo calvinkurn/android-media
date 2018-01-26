@@ -1,7 +1,7 @@
-package com.tokopedia.tkpd.tkpdreputation.productreview.domain;
+package com.tokopedia.tkpd.tkpdreputation.review.product.domain;
 
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository;
-import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewstarcount.DataResponseReviewStarCount;
+import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewstarcount.DataResponseReviewStarCount;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

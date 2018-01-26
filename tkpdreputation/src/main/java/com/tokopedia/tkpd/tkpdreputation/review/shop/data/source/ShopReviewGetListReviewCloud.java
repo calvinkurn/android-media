@@ -1,10 +1,10 @@
-package com.tokopedia.tkpd.tkpdreputation.shopreview.data.source;
+package com.tokopedia.tkpd.tkpdreputation.review.shop.data.source;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.core.base.common.util.GetData;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewlist.DataResponseReviewShop;
-import com.tokopedia.tkpd.tkpdreputation.productreview.data.source.ReputationReviewApi;
+import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewShop;
+import com.tokopedia.tkpd.tkpdreputation.review.product.data.source.ReputationReviewApi;
 
 import java.util.HashMap;
 

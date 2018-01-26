@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdreputation.productreview.view;
+package com.tokopedia.tkpd.tkpdreputation.review.product.view;
 
 import android.content.Context;
 import android.content.Intent;

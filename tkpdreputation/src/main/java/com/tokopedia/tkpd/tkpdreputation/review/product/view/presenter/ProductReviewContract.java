@@ -1,11 +1,11 @@
-package com.tokopedia.tkpd.tkpdreputation.productreview.view.presenter;
+package com.tokopedia.tkpd.tkpdreputation.review.product.view.presenter;
 
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.DeleteReviewResponseDomain;
-import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewstarcount.DataResponseReviewStarCount;
-import com.tokopedia.tkpd.tkpdreputation.productreview.view.adapter.ProductReviewModel;
+import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewstarcount.DataResponseReviewStarCount;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ProductReviewModel;
 
 import java.util.List;
 

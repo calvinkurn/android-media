@@ -1,18 +1,18 @@
-package com.tokopedia.tkpd.tkpdreputation.productreview.view;
+package com.tokopedia.tkpd.tkpdreputation.review.product.view;
 
 import android.text.TextUtils;
 
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageAttachmentViewModel;
-import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewlist.DataResponseReviewHelpful;
-import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewlist.DataResponseReviewProduct;
-import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewlist.DataResponseReviewShop;
-import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewlist.Owner;
-import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewlist.Review;
-import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewlist.ReviewImageAttachment;
-import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewlist.ReviewShop;
-import com.tokopedia.tkpd.tkpdreputation.productreview.view.adapter.ProductReviewModel;
-import com.tokopedia.tkpd.tkpdreputation.productreview.view.adapter.ProductReviewModelContent;
-import com.tokopedia.tkpd.tkpdreputation.shopreview.view.adapter.ShopReviewModelContent;
+import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewHelpful;
+import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewProduct;
+import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewShop;
+import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.Owner;
+import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.Review;
+import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.ReviewImageAttachment;
+import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.ReviewShop;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ProductReviewModel;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ProductReviewModelContent;
+import com.tokopedia.tkpd.tkpdreputation.review.shop.view.adapter.ShopReviewModelContent;
 
 import java.util.ArrayList;
 import java.util.List;

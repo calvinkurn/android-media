@@ -1,10 +1,10 @@
-package com.tokopedia.tkpd.tkpdreputation.shopreview.view.presenter;
+package com.tokopedia.tkpd.tkpdreputation.review.shop.view.presenter;
 
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.DeleteReviewResponseDomain;
-import com.tokopedia.tkpd.tkpdreputation.shopreview.view.adapter.ShopReviewModelContent;
+import com.tokopedia.tkpd.tkpdreputation.review.shop.view.adapter.ShopReviewModelContent;
 
 /**
  * Created by zulfikarrahman on 1/19/18.

@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.tkpdreputation.shopreview.view.presenter;
+package com.tokopedia.tkpd.tkpdreputation.review.shop.view.presenter;
 
 import android.text.TextUtils;
 
@@ -8,9 +8,9 @@ import com.tokopedia.tkpd.tkpdreputation.domain.interactor.DeleteReviewResponseU
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.LikeDislikeReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.DeleteReviewResponseDomain;
-import com.tokopedia.tkpd.tkpdreputation.productreview.data.model.reviewlist.DataResponseReviewShop;
-import com.tokopedia.tkpd.tkpdreputation.productreview.view.ProductReviewListMapper;
-import com.tokopedia.tkpd.tkpdreputation.shopreview.domain.ShopReviewUseCase;
+import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewShop;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.ProductReviewListMapper;
+import com.tokopedia.tkpd.tkpdreputation.review.shop.domain.ShopReviewUseCase;
 
 import javax.inject.Inject;
 
