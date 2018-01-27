@@ -21,7 +21,7 @@ import rx.Observable;
  * Created by zulfikarrahman on 1/15/18.
  */
 
-public interface ReputationReviewApi {
+public interface ReviewProductApi {
 
     @GET(TkpdBaseURL.Reputation.PATH_GET_REVIEW_PRODUCT_LIST)
     Observable<Response<DataResponse<DataResponseReviewProduct>>> getReviewProductList(@QueryMap Map<String, String> params);

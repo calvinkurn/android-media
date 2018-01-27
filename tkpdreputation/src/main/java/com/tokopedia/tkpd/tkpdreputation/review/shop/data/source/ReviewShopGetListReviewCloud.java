@@ -2,13 +2,11 @@ package com.tokopedia.tkpd.tkpdreputation.review.shop.data.source;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.core.base.common.util.GetData;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewShop;
-import com.tokopedia.tkpd.tkpdreputation.review.product.data.source.ReputationReviewApi;
+import com.tokopedia.tkpd.tkpdreputation.review.product.data.source.ReviewProductApi;
 
 import java.util.HashMap;
 
-import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -16,10 +14,10 @@ import rx.functions.Func1;
  * Created by zulfikarrahman on 1/15/18.
  */
 
-public class ShopReviewGetListReviewCloud {
-    private ReputationReviewApi reputationReviewApi;
+public class ReviewShopGetListReviewCloud {
+    private ReviewProductApi reputationReviewApi;
 
-    public ShopReviewGetListReviewCloud(ReputationReviewApi reputationReviewApi) {
+    public ReviewShopGetListReviewCloud(ReviewProductApi reputationReviewApi) {
         this.reputationReviewApi = reputationReviewApi;
     }
 

@@ -25,7 +25,7 @@ import rx.functions.Func2;
  * Created by zulfikarrahman on 1/17/18.
  */
 
-public class ProductReviewGetHelpfulUseCase extends UseCase<DataResponseReviewHelpful> {
+public class ReviewProductGetHelpfulUseCase extends UseCase<DataResponseReviewHelpful> {
     public static final String PRODUCT_ID = "product_id";
     public static final String USER_ID = "user_id";
     private ReputationRepository reputationRepository;
@@ -33,7 +33,7 @@ public class ProductReviewGetHelpfulUseCase extends UseCase<DataResponseReviewHe
     private SessionHandler sessionHandler;
 
     @Inject
-    public ProductReviewGetHelpfulUseCase(ReputationRepository reputationRepository,
+    public ReviewProductGetHelpfulUseCase(ReputationRepository reputationRepository,
                                           GetLikeDislikeReviewUseCase getLikeDislikeReviewUseCase,
                                           SessionHandler sessionHandler) {
         this.reputationRepository = reputationRepository;

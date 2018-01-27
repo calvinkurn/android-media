@@ -13,18 +13,18 @@ import com.tokopedia.core.base.di.component.AppComponent;
  * Created by zulfikarrahman on 1/15/18.
  */
 
-public class ProductReviewActivity extends BaseSimpleActivity implements HasComponent<AppComponent> {
+public class ReviewProductActivity extends BaseSimpleActivity implements HasComponent<AppComponent> {
 
     public static Intent createIntent(Context context, String productId) {
-        Intent intent = new Intent(context, ProductReviewActivity.class);
-        intent.putExtra(ProductReviewFragment.EXTRA_PRODUCT_ID, productId);
+        Intent intent = new Intent(context, ReviewProductActivity.class);
+        intent.putExtra(ReviewProductFragment.EXTRA_PRODUCT_ID, productId);
         return intent;
     }
 
 
     @Override
     protected Fragment getNewFragment() {
-        return ProductReviewFragment.getInstance(getIntent().getExtras().getString(ProductReviewFragment.EXTRA_PRODUCT_ID));
+        return ReviewProductFragment.getInstance(getIntent().getExtras().getString(ReviewProductFragment.EXTRA_PRODUCT_ID));
     }
 
     @Override

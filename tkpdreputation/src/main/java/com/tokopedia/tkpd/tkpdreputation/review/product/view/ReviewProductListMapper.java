@@ -10,9 +10,9 @@ import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.Ow
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.Review;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.ReviewImageAttachment;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.ReviewShop;
-import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ProductReviewModel;
-import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ProductReviewModelContent;
-import com.tokopedia.tkpd.tkpdreputation.review.shop.view.adapter.ShopReviewModelContent;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ReviewProductModel;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ReviewProductModelContent;
+import com.tokopedia.tkpd.tkpdreputation.review.shop.view.adapter.ReviewShopModelContent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,18 +23,18 @@ import javax.inject.Inject;
  * Created by zulfikarrahman on 1/17/18.
  */
 
-public class ProductReviewListMapper {
+public class ReviewProductListMapper {
 
     public static final int LIKE_STATUS_ACTIVE = 1;
 
     @Inject
-    public ProductReviewListMapper() {
+    public ReviewProductListMapper() {
     }
 
-    public List<ProductReviewModel> map(DataResponseReviewProduct dataResponseReviewProduct, String userId) {
-        List<ProductReviewModel> reviewModelContents = new ArrayList<>();
+    public List<ReviewProductModel> map(DataResponseReviewProduct dataResponseReviewProduct, String userId) {
+        List<ReviewProductModel> reviewModelContents = new ArrayList<>();
         for(Review review : dataResponseReviewProduct.getList()){
-            ProductReviewModelContent productReviewModelContent = new ProductReviewModelContent();
+            ReviewProductModelContent productReviewModelContent = new ReviewProductModelContent();
             productReviewModelContent.setResponseCreateTime(review.getReviewResponse().getResponseTime().getDateTimeFmt1());
             productReviewModelContent.setResponseMessage(review.getReviewResponse().getResponseMessage());
             productReviewModelContent.setReviewCanReported(isReviewCanReported(userId, review));
@@ -60,10 +60,10 @@ public class ProductReviewListMapper {
         return reviewModelContents;
     }
 
-    public List<ProductReviewModel> map(DataResponseReviewHelpful dataResponseReviewHelpful, String userId){
-        List<ProductReviewModel> reviewModelContents = new ArrayList<>();
+    public List<ReviewProductModel> map(DataResponseReviewHelpful dataResponseReviewHelpful, String userId){
+        List<ReviewProductModel> reviewModelContents = new ArrayList<>();
         for(Review review : dataResponseReviewHelpful.getList()){
-            ProductReviewModelContent productReviewModelContent = new ProductReviewModelContent();
+            ReviewProductModelContent productReviewModelContent = new ReviewProductModelContent();
             productReviewModelContent.setResponseCreateTime(review.getReviewResponse().getResponseTime().getDateTimeFmt1());
             productReviewModelContent.setResponseMessage(review.getReviewMessage());
             productReviewModelContent.setReviewCanReported(isReviewCanReported(userId, review));
@@ -116,10 +116,10 @@ public class ProductReviewListMapper {
         }
     }
 
-    public List<ShopReviewModelContent> map(DataResponseReviewShop dataResponseReviewShop, String userId) {
-        List<ShopReviewModelContent> shopReviewModelContents = new ArrayList<>();
+    public List<ReviewShopModelContent> map(DataResponseReviewShop dataResponseReviewShop, String userId) {
+        List<ReviewShopModelContent> shopReviewModelContents = new ArrayList<>();
         for(ReviewShop review : dataResponseReviewShop.getList()){
-            ShopReviewModelContent shopReviewModelContent = new ShopReviewModelContent();
+            ReviewShopModelContent shopReviewModelContent = new ReviewShopModelContent();
             shopReviewModelContent.setResponseCreateTime(review.getReviewResponse().getResponseTime().getDateTimeFmt1());
             shopReviewModelContent.setResponseMessage(review.getReviewResponse().getResponseMessage());
             shopReviewModelContent.setReviewCanReported(isReviewCanReported(userId, review));

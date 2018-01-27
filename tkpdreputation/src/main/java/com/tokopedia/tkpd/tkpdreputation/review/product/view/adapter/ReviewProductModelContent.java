@@ -11,7 +11,7 @@ import java.util.List;
  * Created by zulfikarrahman on 1/16/18.
  */
 
-public class ProductReviewModelContent implements ProductReviewModel, Parcelable {
+public class ReviewProductModelContent implements ReviewProductModel, Parcelable {
     protected boolean reviewIsAnonymous;
     protected String reviewerName;
     protected String reviewerId;
@@ -35,7 +35,7 @@ public class ProductReviewModelContent implements ProductReviewModel, Parcelable
     protected boolean isHelpful;
 
     @Override
-    public int type(ProductReviewTypeFactoryAdapter typeFactory) {
+    public int type(ReviewProductTypeFactoryAdapter typeFactory) {
         return typeFactory.type(this);
     }
 
@@ -167,7 +167,7 @@ public class ProductReviewModelContent implements ProductReviewModel, Parcelable
         return reviewCanReported;
     }
 
-    public ProductReviewModelContent() {
+    public ReviewProductModelContent() {
     }
 
     public String getReputationId() {
@@ -240,7 +240,7 @@ public class ProductReviewModelContent implements ProductReviewModel, Parcelable
         dest.writeByte(this.isHelpful ? (byte) 1 : (byte) 0);
     }
 
-    protected ProductReviewModelContent(Parcel in) {
+    protected ReviewProductModelContent(Parcel in) {
         this.reviewIsAnonymous = in.readByte() != 0;
         this.reviewerName = in.readString();
         this.reviewerId = in.readString();
@@ -264,15 +264,15 @@ public class ProductReviewModelContent implements ProductReviewModel, Parcelable
         this.isHelpful = in.readByte() != 0;
     }
 
-    public static final Creator<ProductReviewModelContent> CREATOR = new Creator<ProductReviewModelContent>() {
+    public static final Creator<ReviewProductModelContent> CREATOR = new Creator<ReviewProductModelContent>() {
         @Override
-        public ProductReviewModelContent createFromParcel(Parcel source) {
-            return new ProductReviewModelContent(source);
+        public ReviewProductModelContent createFromParcel(Parcel source) {
+            return new ReviewProductModelContent(source);
         }
 
         @Override
-        public ProductReviewModelContent[] newArray(int size) {
-            return new ProductReviewModelContent[size];
+        public ReviewProductModelContent[] newArray(int size) {
+            return new ReviewProductModelContent[size];
         }
     };
 }

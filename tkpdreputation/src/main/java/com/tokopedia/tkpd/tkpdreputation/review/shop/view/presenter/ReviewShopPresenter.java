@@ -9,8 +9,8 @@ import com.tokopedia.tkpd.tkpdreputation.domain.interactor.LikeDislikeReviewUseC
 import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.DeleteReviewResponseDomain;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewShop;
-import com.tokopedia.tkpd.tkpdreputation.review.product.view.ProductReviewListMapper;
-import com.tokopedia.tkpd.tkpdreputation.review.shop.domain.ShopReviewUseCase;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.ReviewProductListMapper;
+import com.tokopedia.tkpd.tkpdreputation.review.shop.domain.ReviewShopUseCase;
 
 import javax.inject.Inject;
 
@@ -20,19 +20,19 @@ import rx.Subscriber;
  * Created by zulfikarrahman on 1/19/18.
  */
 
-public class ShopReviewPresenter extends BaseDaggerPresenter<ShopReviewContract.View> implements ShopReviewContract.Presenter {
+public class ReviewShopPresenter extends BaseDaggerPresenter<ReviewShopContract.View> implements ReviewShopContract.Presenter {
 
-    private final ShopReviewUseCase shopReviewUseCase;
+    private final ReviewShopUseCase shopReviewUseCase;
     private final LikeDislikeReviewUseCase likeDislikeReviewUseCase;
     private final DeleteReviewResponseUseCase deleteReviewResponseUseCase;
-    private final ProductReviewListMapper productReviewListMapper;
+    private final ReviewProductListMapper productReviewListMapper;
     private final SessionHandler sessionHandler;
 
     @Inject
-    public ShopReviewPresenter(ShopReviewUseCase shopReviewUseCase,
+    public ReviewShopPresenter(ReviewShopUseCase shopReviewUseCase,
                                LikeDislikeReviewUseCase likeDislikeReviewUseCase,
                                DeleteReviewResponseUseCase deleteReviewResponseUseCase,
-                               ProductReviewListMapper productReviewListMapper,
+                               ReviewProductListMapper productReviewListMapper,
                                SessionHandler sessionHandler) {
         this.shopReviewUseCase = shopReviewUseCase;
         this.likeDislikeReviewUseCase = likeDislikeReviewUseCase;

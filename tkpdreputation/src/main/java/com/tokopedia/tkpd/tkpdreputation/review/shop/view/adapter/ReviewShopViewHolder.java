@@ -6,14 +6,14 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.tkpd.tkpdreputation.R;
-import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ProductReviewContentViewHolder;
-import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ProductReviewModelContent;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ReviewProductContentViewHolder;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ReviewProductModelContent;
 
 /**
  * Created by zulfikarrahman on 1/19/18.
  */
 
-public class ShopReviewViewHolder extends ProductReviewContentViewHolder {
+public class ReviewShopViewHolder extends ReviewProductContentViewHolder {
     public static final int LAYOUT = R.layout.item_shop_review;
 
     ShopReviewHolderListener shopReviewHolderListener;
@@ -21,7 +21,7 @@ public class ShopReviewViewHolder extends ProductReviewContentViewHolder {
     private TextView productName;
     private ImageView productImage;
 
-    public ShopReviewViewHolder(View itemView, ListenerReviewHolder viewListener, ShopReviewHolderListener shopReviewHolderListener) {
+    public ReviewShopViewHolder(View itemView, ListenerReviewHolder viewListener, ShopReviewHolderListener shopReviewHolderListener) {
         super(itemView, viewListener);
         productName = itemView.findViewById(R.id.product_name);
         productImage = itemView.findViewById(R.id.product_image);
@@ -29,10 +29,10 @@ public class ShopReviewViewHolder extends ProductReviewContentViewHolder {
     }
 
     @Override
-    public void bind(ProductReviewModelContent element) {
+    public void bind(ReviewProductModelContent element) {
         super.bind(element);
-        if(element instanceof ShopReviewModelContent){
-            final ShopReviewModelContent shopReviewModelContent = (ShopReviewModelContent) element;
+        if(element instanceof ReviewShopModelContent){
+            final ReviewShopModelContent shopReviewModelContent = (ReviewShopModelContent) element;
             productName.setText(shopReviewModelContent.getProductName());
             ImageHandler.loadImageRounded2(itemView.getContext(), productImage, shopReviewModelContent.getProductImageUrl());
             productName.setOnClickListener(new View.OnClickListener() {
@@ -50,7 +50,7 @@ public class ShopReviewViewHolder extends ProductReviewContentViewHolder {
         }
     }
 
-    private void goToProductDetail(ShopReviewModelContent shopReviewModelContent) {
+    private void goToProductDetail(ReviewShopModelContent shopReviewModelContent) {
         shopReviewHolderListener.onGoToDetailProduct(shopReviewModelContent.getProductId());
     }
 

@@ -10,18 +10,18 @@ import com.tokopedia.tkpd.tkpdreputation.R;
  * Created by zulfikarrahman on 1/16/18.
  */
 
-public class ProductReviewTitleHeaderViewHolder extends AbstractViewHolder<ProductReviewModelTitleHeader> {
+public class ReviewProductTitleHeaderViewHolder extends AbstractViewHolder<ReviewProductModelTitleHeader> {
     public static final int LAYOUT = R.layout.item_product_review_header;
 
     private TextView title;
 
-    public ProductReviewTitleHeaderViewHolder(View view) {
+    public ReviewProductTitleHeaderViewHolder(View view) {
         super(view);
         title = view.findViewById(R.id.title_text);
     }
 
     @Override
-    public void bind(ProductReviewModelTitleHeader element) {
+    public void bind(ReviewProductModelTitleHeader element) {
         title.setText(element.getTitle());
     }
 }

@@ -22,7 +22,7 @@ import rx.functions.Func1;
  * Created by zulfikarrahman on 1/15/18.
  */
 
-public class ProductReviewGetListUseCase extends UseCase<DataResponseReviewProduct> {
+public class ReviewProductGetListUseCase extends UseCase<DataResponseReviewProduct> {
 
     public static final String PRODUCT_ID = "product_id";
     public static final String PAGE = "page";
@@ -34,7 +34,7 @@ public class ProductReviewGetListUseCase extends UseCase<DataResponseReviewProdu
     private GetLikeDislikeReviewUseCase getLikeDislikeReviewUseCase;
 
     @Inject
-    public ProductReviewGetListUseCase(ReputationRepository reputationRepository,
+    public ReviewProductGetListUseCase(ReputationRepository reputationRepository,
                                        GetLikeDislikeReviewUseCase getLikeDislikeReviewUseCase) {
         this.reputationRepository = reputationRepository;
         this.getLikeDislikeReviewUseCase = getLikeDislikeReviewUseCase;

@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.DeleteReviewResponseDomain;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewstarcount.DataResponseReviewStarCount;
-import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ProductReviewModel;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ReviewProductModel;
 
 import java.util.List;
 
@@ -13,18 +13,18 @@ import java.util.List;
  * Created by zulfikarrahman on 1/16/18.
  */
 
-public interface ProductReviewContract {
+public interface ReviewProductContract {
     interface Presenter extends CustomerPresenter<View> {
 
     }
 
-    interface View extends BaseListViewListener<ProductReviewModel>{
+    interface View extends BaseListViewListener<ReviewProductModel>{
 
-        void onGetListReviewProduct(List<ProductReviewModel> map, boolean isHasNextPage);
+        void onGetListReviewProduct(List<ReviewProductModel> map, boolean isHasNextPage);
 
         void onErrorGetListReviewProduct(Throwable e);
 
-        void onGetListReviewHelpful(List<ProductReviewModel> map);
+        void onGetListReviewHelpful(List<ReviewProductModel> map);
 
         void onErrorGetListReviewHelpful(Throwable e);
 

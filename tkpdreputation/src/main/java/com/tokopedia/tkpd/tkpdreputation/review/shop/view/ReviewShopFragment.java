@@ -24,15 +24,15 @@ import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.DeleteReviewResponseDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationReportActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
-import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ProductReviewAdapter;
-import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ProductReviewContentViewHolder;
-import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ProductReviewModelContent;
-import com.tokopedia.tkpd.tkpdreputation.review.shop.view.adapter.ShopReviewModelContent;
-import com.tokopedia.tkpd.tkpdreputation.review.shop.view.adapter.ShopReviewTypeFactoryAdapter;
-import com.tokopedia.tkpd.tkpdreputation.review.shop.view.adapter.ShopReviewViewHolder;
-import com.tokopedia.tkpd.tkpdreputation.review.shop.view.presenter.ShopReviewContract;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ReviewProductAdapter;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ReviewProductContentViewHolder;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ReviewProductModelContent;
+import com.tokopedia.tkpd.tkpdreputation.review.shop.view.adapter.ReviewShopModelContent;
+import com.tokopedia.tkpd.tkpdreputation.review.shop.view.adapter.ReviewShopTypeFactoryAdapter;
+import com.tokopedia.tkpd.tkpdreputation.review.shop.view.adapter.ReviewShopViewHolder;
+import com.tokopedia.tkpd.tkpdreputation.review.shop.view.presenter.ReviewShopContract;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
-import com.tokopedia.tkpd.tkpdreputation.review.shop.view.presenter.ShopReviewPresenter;
+import com.tokopedia.tkpd.tkpdreputation.review.shop.view.presenter.ReviewShopPresenter;
 
 import java.util.ArrayList;
 
@@ -42,21 +42,21 @@ import javax.inject.Inject;
  * Created by zulfikarrahman on 1/19/18.
  */
 
-public class ShopReviewFragment extends BaseListFragment<ShopReviewModelContent, ShopReviewTypeFactoryAdapter>
-        implements ProductReviewContentViewHolder.ListenerReviewHolder, ShopReviewContract.View, ShopReviewViewHolder.ShopReviewHolderListener {
+public class ReviewShopFragment extends BaseListFragment<ReviewShopModelContent, ReviewShopTypeFactoryAdapter>
+        implements ReviewProductContentViewHolder.ListenerReviewHolder, ReviewShopContract.View, ReviewShopViewHolder.ShopReviewHolderListener {
 
     public static final String SHOP_ID = "shop_id";
     public static final String SHOP_DOMAIN = "shop_domain";
     @Inject
-    ShopReviewPresenter shopReviewPresenter;
+    ReviewShopPresenter shopReviewPresenter;
 
     private ProgressDialog progressDialog;
 
     private String shopId;
     private String shopDomain;
 
-    public static ShopReviewFragment createInstance(String shopId, String shopDomain) {
-        ShopReviewFragment shopReviewFragment = new ShopReviewFragment();
+    public static ReviewShopFragment createInstance(String shopId, String shopDomain) {
+        ReviewShopFragment shopReviewFragment = new ReviewShopFragment();
         Bundle bundle = new Bundle();
         bundle.putString(SHOP_ID, shopId);
         bundle.putString(SHOP_DOMAIN, shopDomain);
@@ -96,7 +96,7 @@ public class ShopReviewFragment extends BaseListFragment<ShopReviewModelContent,
     }
 
     @Override
-    public void onItemClicked(ShopReviewModelContent productReviewModelContent) {
+    public void onItemClicked(ReviewShopModelContent productReviewModelContent) {
 
     }
 
@@ -106,8 +106,8 @@ public class ShopReviewFragment extends BaseListFragment<ShopReviewModelContent,
     }
 
     @Override
-    protected ShopReviewTypeFactoryAdapter getAdapterTypeFactory() {
-        return new ShopReviewTypeFactoryAdapter(this, this);
+    protected ReviewShopTypeFactoryAdapter getAdapterTypeFactory() {
+        return new ReviewShopTypeFactoryAdapter(this, this);
     }
 
     @Override
@@ -145,7 +145,7 @@ public class ShopReviewFragment extends BaseListFragment<ShopReviewModelContent,
     }
 
     @Override
-    public void onDeleteReviewResponse(ProductReviewModelContent element) {
+    public void onDeleteReviewResponse(ReviewProductModelContent element) {
         shopReviewPresenter.deleteReview(element.getReviewId(), element.getReputationId(), element.getProductId());
     }
 
@@ -174,7 +174,7 @@ public class ShopReviewFragment extends BaseListFragment<ShopReviewModelContent,
 
     @Override
     public void onSuccessDeleteReview(DeleteReviewResponseDomain deleteReviewResponseDomain, String reviewId) {
-        ((ProductReviewAdapter) getAdapter()).updateDeleteReview(reviewId);
+        ((ReviewProductAdapter) getAdapter()).updateDeleteReview(reviewId);
     }
 
     @Override
@@ -184,7 +184,7 @@ public class ShopReviewFragment extends BaseListFragment<ShopReviewModelContent,
 
     @Override
     public void onSuccessPostLikeDislike(LikeDislikeDomain likeDislikeDomain, String reviewId) {
-        ((ProductReviewAdapter) getAdapter()).updateLikeStatus(likeDislikeDomain.getLikeStatus(),
+        ((ReviewProductAdapter) getAdapter()).updateLikeStatus(likeDislikeDomain.getLikeStatus(),
                 likeDislikeDomain.getTotalLike(), reviewId);
     }
 
@@ -208,7 +208,7 @@ public class ShopReviewFragment extends BaseListFragment<ShopReviewModelContent,
 
     @NonNull
     @Override
-    protected BaseListAdapter<ShopReviewModelContent, ShopReviewTypeFactoryAdapter> createAdapterInstance() {
-        return new ProductReviewAdapter(getAdapterTypeFactory());
+    protected BaseListAdapter<ReviewShopModelContent, ReviewShopTypeFactoryAdapter> createAdapterInstance() {
+        return new ReviewProductAdapter(getAdapterTypeFactory());
     }
 }

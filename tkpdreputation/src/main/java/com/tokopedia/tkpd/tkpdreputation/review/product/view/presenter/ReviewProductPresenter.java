@@ -11,10 +11,10 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.DeleteRe
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewHelpful;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewProduct;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewstarcount.DataResponseReviewStarCount;
-import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ProductReviewGetHelpfulUseCase;
-import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ProductReviewGetListUseCase;
-import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ProductReviewGetRatingUseCase;
-import com.tokopedia.tkpd.tkpdreputation.review.product.view.ProductReviewListMapper;
+import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetHelpfulUseCase;
+import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetListUseCase;
+import com.tokopedia.tkpd.tkpdreputation.review.product.domain.ReviewProductGetRatingUseCase;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.ReviewProductListMapper;
 
 import rx.Subscriber;
 
@@ -22,22 +22,22 @@ import rx.Subscriber;
  * Created by zulfikarrahman on 1/16/18.
  */
 
-public class ProductReviewPresenter extends BaseDaggerPresenter<ProductReviewContract.View> implements ProductReviewContract.Presenter {
+public class ReviewProductPresenter extends BaseDaggerPresenter<ReviewProductContract.View> implements ReviewProductContract.Presenter {
 
     private final SessionHandler sessionHandler;
-    private final ProductReviewGetListUseCase productReviewGetListUseCase;
-    private final ProductReviewGetHelpfulUseCase productReviewGetHelpfulUseCase;
-    private final ProductReviewGetRatingUseCase productReviewGetRatingUseCase;
+    private final ReviewProductGetListUseCase productReviewGetListUseCase;
+    private final ReviewProductGetHelpfulUseCase productReviewGetHelpfulUseCase;
+    private final ReviewProductGetRatingUseCase productReviewGetRatingUseCase;
     private final LikeDislikeReviewUseCase likeDislikeReviewUseCase;
     private final DeleteReviewResponseUseCase deleteReviewResponseUseCase;
-    private final ProductReviewListMapper productReviewListMapper;
+    private final ReviewProductListMapper productReviewListMapper;
 
-    public ProductReviewPresenter(ProductReviewGetListUseCase productReviewGetListUseCase,
-                                  ProductReviewGetHelpfulUseCase productReviewGetHelpfulUseCase,
-                                  ProductReviewGetRatingUseCase productReviewGetRatingUseCase,
+    public ReviewProductPresenter(ReviewProductGetListUseCase productReviewGetListUseCase,
+                                  ReviewProductGetHelpfulUseCase productReviewGetHelpfulUseCase,
+                                  ReviewProductGetRatingUseCase productReviewGetRatingUseCase,
                                   LikeDislikeReviewUseCase likeDislikeReviewUseCase,
                                   DeleteReviewResponseUseCase deleteReviewResponseUseCase,
-                                  ProductReviewListMapper productReviewListMapper,
+                                  ReviewProductListMapper productReviewListMapper,
                                   SessionHandler sessionHandler) {
         this.productReviewGetListUseCase = productReviewGetListUseCase;
         this.productReviewGetHelpfulUseCase = productReviewGetHelpfulUseCase;

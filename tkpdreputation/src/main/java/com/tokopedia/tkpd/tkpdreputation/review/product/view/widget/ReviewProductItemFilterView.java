@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.tokopedia.design.base.BaseCustomView;
@@ -18,7 +17,7 @@ import com.tokopedia.tkpd.tkpdreputation.R;
  * Created by zulfikarrahman on 1/23/18.
  */
 
-public class ProductReviewItemFilterView extends BaseCustomView {
+public class ReviewProductItemFilterView extends BaseCustomView {
 
     private static final int DEF_VALUE_EMPTY = 0;
     public static final int ACTIVE_STAR = 1;
@@ -28,27 +27,27 @@ public class ProductReviewItemFilterView extends BaseCustomView {
     private int rating;
     private boolean isActive;
 
-    public ProductReviewItemFilterView(@NonNull Context context) {
+    public ReviewProductItemFilterView(@NonNull Context context) {
         super(context);
         init();
     }
 
-    public ProductReviewItemFilterView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public ReviewProductItemFilterView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init(attrs);
     }
 
-    public ProductReviewItemFilterView(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
+    public ReviewProductItemFilterView(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(attrs);
     }
 
     private void init(AttributeSet attrs) {
         init();
-        TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.ProductReviewItemFilterView);
+        TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.ReviewProductItemFilterView);
         try {
-            rating = styledAttributes.getInt(R.styleable.ProductReviewItemFilterView_counter_rating, DEF_VALUE_EMPTY);
-            isActive = styledAttributes.getBoolean(R.styleable.ProductReviewItemFilterView_isActive, false);
+            rating = styledAttributes.getInt(R.styleable.ReviewProductItemFilterView_counter_rating, DEF_VALUE_EMPTY);
+            isActive = styledAttributes.getBoolean(R.styleable.ReviewProductItemFilterView_isActive, false);
         } finally {
             styledAttributes.recycle();
         }

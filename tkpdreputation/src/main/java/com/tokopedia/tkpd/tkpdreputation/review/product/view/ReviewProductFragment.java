@@ -33,15 +33,15 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationRepo
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewstarcount.DataResponseReviewStarCount;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewstarcount.DetailReviewStarCount;
-import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ProductReviewAdapter;
-import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ProductReviewContentViewHolder;
-import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ProductReviewModel;
-import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ProductReviewModelContent;
-import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ProductReviewModelTitleHeader;
-import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ProductReviewTypeFactoryAdapter;
-import com.tokopedia.tkpd.tkpdreputation.review.product.view.presenter.ProductReviewContract;
-import com.tokopedia.tkpd.tkpdreputation.review.product.view.presenter.ProductReviewPresenter;
-import com.tokopedia.tkpd.tkpdreputation.review.product.view.widget.ProductReviewItemFilterView;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ReviewProductAdapter;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ReviewProductContentViewHolder;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ReviewProductModel;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ReviewProductModelContent;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ReviewProductModelTitleHeader;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ReviewProductTypeFactoryAdapter;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.presenter.ReviewProductContract;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.presenter.ReviewProductPresenter;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.widget.ReviewProductItemFilterView;
 import com.tokopedia.tkpd.tkpdreputation.review.product.view.widget.RatingBarReview;
 
 import java.util.ArrayList;
@@ -53,13 +53,13 @@ import javax.inject.Inject;
  * Created by zulfikarrahman on 1/15/18.
  */
 
-public class ProductReviewFragment extends BaseListFragment<ProductReviewModel, ProductReviewTypeFactoryAdapter>
-        implements ProductReviewContract.View, ProductReviewContentViewHolder.ListenerReviewHolder {
+public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, ReviewProductTypeFactoryAdapter>
+        implements ReviewProductContract.View, ReviewProductContentViewHolder.ListenerReviewHolder {
 
     public static final String EXTRA_PRODUCT_ID = "product_id";
 
     @Inject
-    ProductReviewPresenter productReviewPresenter;
+    ReviewProductPresenter productReviewPresenter;
 
     private TextView ratingProduct;
     private RatingBar ratingProductStar;
@@ -72,12 +72,12 @@ public class ProductReviewFragment extends BaseListFragment<ProductReviewModel, 
     private CustomViewQuickFilterView customViewQuickFilterView;
     private ProgressDialog progressDialog;
 
-    List<ProductReviewModel> listReviewHelpful;
+    List<ReviewProductModel> listReviewHelpful;
 
     private String productId;
 
-    public static ProductReviewFragment getInstance(String productId) {
-        ProductReviewFragment productReviewFragment = new ProductReviewFragment();
+    public static ReviewProductFragment getInstance(String productId) {
+        ReviewProductFragment productReviewFragment = new ReviewProductFragment();
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_PRODUCT_ID, productId);
         productReviewFragment.setArguments(bundle);
@@ -130,12 +130,12 @@ public class ProductReviewFragment extends BaseListFragment<ProductReviewModel, 
         for (int i = 1; i <= 5; i++) {
             CustomViewQuickFilterItem quickFilterItem = new CustomViewQuickFilterItem();
             quickFilterItem.setType(String.valueOf(i));
-            ProductReviewItemFilterView productReviewItemFilterView = new ProductReviewItemFilterView(getActivity());
+            ReviewProductItemFilterView productReviewItemFilterView = new ReviewProductItemFilterView(getActivity());
             productReviewItemFilterView.setActive(true);
             productReviewItemFilterView.setRating(i);
             quickFilterItem.setDefaultView(productReviewItemFilterView);
 
-            ProductReviewItemFilterView productReviewItemFilterViewActive = new ProductReviewItemFilterView(getActivity());
+            ReviewProductItemFilterView productReviewItemFilterViewActive = new ReviewProductItemFilterView(getActivity());
             productReviewItemFilterView.setActive(false);
             productReviewItemFilterView.setRating(i);
             quickFilterItem.setSelectedView(productReviewItemFilterViewActive);
@@ -165,12 +165,12 @@ public class ProductReviewFragment extends BaseListFragment<ProductReviewModel, 
     }
 
     @Override
-    protected ProductReviewTypeFactoryAdapter getAdapterTypeFactory() {
-        return new ProductReviewTypeFactoryAdapter(this);
+    protected ReviewProductTypeFactoryAdapter getAdapterTypeFactory() {
+        return new ReviewProductTypeFactoryAdapter(this);
     }
 
     @Override
-    public void onItemClicked(ProductReviewModel productReviewModel) {
+    public void onItemClicked(ReviewProductModel productReviewModel) {
 
     }
 
@@ -215,7 +215,7 @@ public class ProductReviewFragment extends BaseListFragment<ProductReviewModel, 
     }
 
     @Override
-    public void onDeleteReviewResponse(ProductReviewModelContent element) {
+    public void onDeleteReviewResponse(ReviewProductModelContent element) {
         productReviewPresenter.deleteReview(element.getReviewId(), element.getReputationId(), productId);
     }
 
@@ -233,9 +233,9 @@ public class ProductReviewFragment extends BaseListFragment<ProductReviewModel, 
     }
 
     @Override
-    public void onGetListReviewProduct(List<ProductReviewModel> map, boolean isHasNextPage) {
+    public void onGetListReviewProduct(List<ReviewProductModel> map, boolean isHasNextPage) {
         if (isLoadingInitialData && !customViewQuickFilterView.isAnyItemSelected()) {
-            map.add(0, new ProductReviewModelTitleHeader(getString(R.string.product_review_label_all_review)));
+            map.add(0, new ReviewProductModelTitleHeader(getString(R.string.product_review_label_all_review)));
             if (listReviewHelpful != null) {
                 for (int i = 0; i < listReviewHelpful.size(); i++) {
                     map.add(i, listReviewHelpful.get(i));
@@ -251,14 +251,14 @@ public class ProductReviewFragment extends BaseListFragment<ProductReviewModel, 
     }
 
     @Override
-    public void onGetListReviewHelpful(List<ProductReviewModel> map) {
+    public void onGetListReviewHelpful(List<ReviewProductModel> map) {
         if (map.size() > 0) {
             setListReviewHelpful(map);
         }
     }
 
-    private void setListReviewHelpful(List<ProductReviewModel> map) {
-        map.add(0, new ProductReviewModelTitleHeader(getString(R.string.product_review_label_helpful_review)));
+    private void setListReviewHelpful(List<ReviewProductModel> map) {
+        map.add(0, new ReviewProductModelTitleHeader(getString(R.string.product_review_label_helpful_review)));
         for (int i = 0; i < map.size(); i++) {
             getAdapter().addElement(i, map.get(i));
         }
@@ -304,8 +304,8 @@ public class ProductReviewFragment extends BaseListFragment<ProductReviewModel, 
 
     @NonNull
     @Override
-    protected BaseListAdapter<ProductReviewModel, ProductReviewTypeFactoryAdapter> createAdapterInstance() {
-        return new ProductReviewAdapter(getAdapterTypeFactory());
+    protected BaseListAdapter<ReviewProductModel, ReviewProductTypeFactoryAdapter> createAdapterInstance() {
+        return new ReviewProductAdapter(getAdapterTypeFactory());
     }
 
     @Override
@@ -315,7 +315,7 @@ public class ProductReviewFragment extends BaseListFragment<ProductReviewModel, 
 
     @Override
     public void onSuccessPostLikeDislike(LikeDislikeDomain likeDislikeDomain, String reviewId) {
-        ((ProductReviewAdapter) getAdapter()).updateLikeStatus(likeDislikeDomain.getLikeStatus(),
+        ((ReviewProductAdapter) getAdapter()).updateLikeStatus(likeDislikeDomain.getLikeStatus(),
                 likeDislikeDomain.getTotalLike(), reviewId);
     }
 
@@ -326,7 +326,7 @@ public class ProductReviewFragment extends BaseListFragment<ProductReviewModel, 
 
     @Override
     public void onSuccessDeleteReview(DeleteReviewResponseDomain deleteReviewResponseDomain, String reviewId) {
-        ((ProductReviewAdapter) getAdapter()).updateDeleteReview(reviewId);
+        ((ReviewProductAdapter) getAdapter()).updateDeleteReview(reviewId);
     }
 
     @Override

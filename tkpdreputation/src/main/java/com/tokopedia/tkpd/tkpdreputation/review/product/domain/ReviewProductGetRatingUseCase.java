@@ -13,12 +13,12 @@ import rx.Observable;
  * Created by zulfikarrahman on 1/17/18.
  */
 
-public class ProductReviewGetRatingUseCase extends UseCase<DataResponseReviewStarCount> {
+public class ReviewProductGetRatingUseCase extends UseCase<DataResponseReviewStarCount> {
     public static final String PRODUCT_ID = "product_id";
     private ReputationRepository reputationRepository;
 
     @Inject
-    public ProductReviewGetRatingUseCase(ReputationRepository reputationRepository) {
+    public ReviewProductGetRatingUseCase(ReputationRepository reputationRepository) {
         this.reputationRepository = reputationRepository;
     }
 

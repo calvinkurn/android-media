@@ -1,15 +1,12 @@
 package com.tokopedia.tkpd.tkpdreputation.review.product.data.source;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.abstraction.common.utils.AuthUtil;
 import com.tokopedia.core.base.common.util.GetData;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.tkpd.tkpdreputation.review.product.data.model.reviewlist.DataResponseReviewProduct;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -17,15 +14,15 @@ import rx.functions.Func1;
  * Created by zulfikarrahman on 1/15/18.
  */
 
-public class ProductReviewGetListProductCloud {
+public class ReviewProductGetListProductCloud {
 
     public static final String PRODUCT_ID = "product_id";
     public static final String PAGE = "page";
     public static final String PER_PAGE = "per_page";
     public static final String RATING = "rating";
-    private ReputationReviewApi reputationReviewApi;
+    private ReviewProductApi reputationReviewApi;
 
-    public ProductReviewGetListProductCloud(ReputationReviewApi reputationReviewApi) {
+    public ReviewProductGetListProductCloud(ReviewProductApi reputationReviewApi) {
         this.reputationReviewApi = reputationReviewApi;
     }
 

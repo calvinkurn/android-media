@@ -27,7 +27,7 @@ import java.util.List;
  * Created by zulfikarrahman on 1/16/18.
  */
 
-public class ProductReviewContentViewHolder extends AbstractViewHolder<ProductReviewModelContent> {
+public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewProductModelContent> {
     public static final int LAYOUT = R.layout.item_product_review;
     private static final int MAX_CHAR = 50;
     private static final String MORE_DESCRIPTION = "<font color='#42b549'>Selengkapnya</font>";
@@ -57,7 +57,7 @@ public class ProductReviewContentViewHolder extends AbstractViewHolder<ProductRe
     private TextView counterLike;
     private View containerReplyView;
 
-    public ProductReviewContentViewHolder(View itemView, ListenerReviewHolder viewListener) {
+    public ReviewProductContentViewHolder(View itemView, ListenerReviewHolder viewListener) {
         super(itemView);
         this.viewListener = viewListener;
         reviewerName = (TextView) itemView.findViewById(R.id.reviewer_name);
@@ -86,7 +86,7 @@ public class ProductReviewContentViewHolder extends AbstractViewHolder<ProductRe
     }
 
     @Override
-    public void bind(final ProductReviewModelContent element) {
+    public void bind(final ReviewProductModelContent element) {
         reviewerName.setText(MethodChecker.fromHtml(getString(R.string.product_review_label_formatted_name, getReviewerNameText(element))));
         reviewerName.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,7 +141,7 @@ public class ProductReviewContentViewHolder extends AbstractViewHolder<ProductRe
         adapter.notifyDataSetChanged();
     }
 
-    void setLikeStatus(ProductReviewModelContent element) {
+    void setLikeStatus(ReviewProductModelContent element) {
         if(element.isLikeStatus()){
             iconLike.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_like_pressed));
         }else{
@@ -198,7 +198,7 @@ public class ProductReviewContentViewHolder extends AbstractViewHolder<ProductRe
         };
     }
 
-    private void setSellerReply(final ProductReviewModelContent element) {
+    private void setSellerReply(final ReviewProductModelContent element) {
         seeReplyText.setVisibility(View.VISIBLE);
         replyArrow.setVisibility(View.VISIBLE);
 
@@ -270,7 +270,7 @@ public class ProductReviewContentViewHolder extends AbstractViewHolder<ProductRe
         }
     }
 
-    private String getReviewerNameText(ProductReviewModelContent element) {
+    private String getReviewerNameText(ReviewProductModelContent element) {
         if (element.isReviewIsAnonymous()) {
             return getAnonymousName(element.getReviewerName());
         } else {
@@ -284,7 +284,7 @@ public class ProductReviewContentViewHolder extends AbstractViewHolder<ProductRe
         return first + "***" + last;
     }
 
-    private View.OnClickListener onReviewOverflowClicked(final ProductReviewModelContent element) {
+    private View.OnClickListener onReviewOverflowClicked(final ReviewProductModelContent element) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -322,7 +322,7 @@ public class ProductReviewContentViewHolder extends AbstractViewHolder<ProductRe
 
         void onGoToShopInfo(String shopId);
 
-        void onDeleteReviewResponse(ProductReviewModelContent element);
+        void onDeleteReviewResponse(ReviewProductModelContent element);
 
         void onSmoothScrollToReplyView(int adapterPosition);
 

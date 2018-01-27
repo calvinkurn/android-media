@@ -3,25 +3,25 @@ package com.tokopedia.tkpd.tkpdreputation.review.shop.view.adapter;
 import android.os.Parcel;
 
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageAttachmentViewModel;
-import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ProductReviewModelContent;
-import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ProductReviewTypeFactoryAdapter;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ReviewProductModelContent;
+import com.tokopedia.tkpd.tkpdreputation.review.product.view.adapter.ReviewProductTypeFactoryAdapter;
 
 /**
  * Created by zulfikarrahman on 1/19/18.
  */
 
-public class ShopReviewModelContent extends ProductReviewModelContent {
+public class ReviewShopModelContent extends ReviewProductModelContent {
     private String productName;
     private String productImageUrl;
     private String productPageUrl;
 
-    public ShopReviewModelContent() {
+    public ReviewShopModelContent() {
     }
 
     @Override
-    public int type(ProductReviewTypeFactoryAdapter typeFactory) {
-        if (typeFactory instanceof ShopReviewTypeFactoryAdapter) {
-            return ((ShopReviewTypeFactoryAdapter) typeFactory).type(this);
+    public int type(ReviewProductTypeFactoryAdapter typeFactory) {
+        if (typeFactory instanceof ReviewShopTypeFactoryAdapter) {
+            return ((ReviewShopTypeFactoryAdapter) typeFactory).type(this);
         }
         return 0;
     }
@@ -74,7 +74,7 @@ public class ShopReviewModelContent extends ProductReviewModelContent {
         dest.writeString(this.productPageUrl);
     }
 
-    protected ShopReviewModelContent(Parcel in) {
+    protected ReviewShopModelContent(Parcel in) {
         this.reviewIsAnonymous = in.readByte() != 0;
         this.reviewerName = in.readString();
         this.reviewerId = in.readString();
@@ -100,15 +100,15 @@ public class ShopReviewModelContent extends ProductReviewModelContent {
         this.productPageUrl = in.readString();
     }
 
-    public static final Creator<ShopReviewModelContent> CREATOR = new Creator<ShopReviewModelContent>() {
+    public static final Creator<ReviewShopModelContent> CREATOR = new Creator<ReviewShopModelContent>() {
         @Override
-        public ShopReviewModelContent createFromParcel(Parcel source) {
-            return new ShopReviewModelContent(source);
+        public ReviewShopModelContent createFromParcel(Parcel source) {
+            return new ReviewShopModelContent(source);
         }
 
         @Override
-        public ShopReviewModelContent[] newArray(int size) {
-            return new ShopReviewModelContent[size];
+        public ReviewShopModelContent[] newArray(int size) {
+            return new ReviewShopModelContent[size];
         }
     };
 
