@@ -35,6 +35,10 @@ public class SingleAddressFragmentRecyclerAdapter
 
     private Context mContext;
 
+    public SingleAddressFragmentRecyclerAdapter() {
+
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         mContext = viewGroup.getContext();
@@ -73,7 +77,7 @@ public class SingleAddressFragmentRecyclerAdapter
 
     @Override
     public int getItemCount() {
-        return 0;
+        return 5;
     }
 
     @Override
@@ -84,7 +88,7 @@ public class SingleAddressFragmentRecyclerAdapter
             return ITEM_VIEW_SHIPMENT_RECIPIENT_ADDRESS;
         } else if (position == 2) {
             return ITEM_VIEW_DROPSHIPPER_OPTION;
-        } else if (position == 5) {
+        } else if (position == 4) {
             return ITEM_VIEW_SHIPMENT_COST_DETAIL;
         } else {
             return ITEM_SHIPPED_PRODUCT_DETAILS;
@@ -120,14 +124,14 @@ public class SingleAddressFragmentRecyclerAdapter
 
     private class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder {
 
-        LinearLayout mLlRecipientAddressHeader;
+        RelativeLayout mRlRecipientAddressHeader;
         TextView mTvRecipientName;
         TextView mTvRecipientAddress;
         TextView mTvAddOrChangeAddress;
 
         ShipmentRecipientAddressViewHolder(View itemView) {
             super(itemView);
-            mLlRecipientAddressHeader = itemView.findViewById(R.id.ll_shipment_recipient_address_header);
+            mRlRecipientAddressHeader = itemView.findViewById(R.id.rl_shipment_recipient_address_header);
             mTvRecipientName = itemView.findViewById(R.id.tv_recipient_name);
             mTvRecipientAddress = itemView.findViewById(R.id.tv_recipient_address);
             mTvAddOrChangeAddress = itemView.findViewById(R.id.tv_add_or_change_address);

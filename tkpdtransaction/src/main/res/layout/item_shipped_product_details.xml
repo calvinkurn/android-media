@@ -23,7 +23,7 @@
             android:textStyle="normal"
             android:textColor="@color/black_54"
             android:lineSpacingExtra="5sp"
-            tools:text="Dikirim oleh : " />
+            android:text="Dikirim oleh : " />
 
         <TextView android:id="@+id/tv_sender_name"
             android:layout_width="wrap_content"
@@ -37,10 +37,10 @@
             android:textColor="@color/black_70"
             android:fontFamily="sans-serif-medium"
             android:lineSpacingExtra="5sp"
-            tools:text="Adidas" />
+            android:text="Adidas" />
     </RelativeLayout>
 
-    <view
+    <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp" />
 
@@ -78,7 +78,7 @@
                 android:textSize="14sp"
                 android:fontFamily="sans-serif-medium"
                 android:textStyle="normal"
-                tools:text="Kaos Adidas Camo Tongue Tee... White &amp; Red, XS" />
+                android:text="Kaos Adidas Camo Tongue Tee... White &amp; Red, XS" />
 
             <TextView android:id="@+id/tv_shipped_product_price"
                 android:layout_width="wrap_content"
@@ -89,7 +89,7 @@
                 android:textSize="14sp"
                 android:fontFamily="sans-serif-medium"
                 android:textStyle="normal"
-                tools:text="Rp200.000" />
+                android:text="Rp200.000" />
 
         </RelativeLayout>
 
@@ -117,7 +117,7 @@
                 android:textSize="12sp"
                 android:fontFamily="sans-serif"
                 android:textStyle="normal"
-                tools:text="Free Returns" />
+                android:text="Free Returns" />
 
             <TextView android:id="@+id/tv_po_sign"
                 android:layout_width="wrap_content"
@@ -132,7 +132,7 @@
                 android:textSize="10sp"
                 android:fontFamily="sans-serif"
                 android:textStyle="normal"
-                tools:text="PO"
+                android:text="PO"
                 tools:ignore="SmallSp" />
 
             <TextView android:id="@+id/tv_cashback_text"
@@ -149,7 +149,7 @@
                 android:textColor="@color/white"
                 android:fontFamily="sans-serif"
                 android:textStyle="normal"
-                tools:text="Cashback 5%"
+                android:text="Cashback 5%"
                 tools:ignore="SmallSp" />
 
         </RelativeLayout>
@@ -164,7 +164,7 @@
                 android:textSize="12sp"
                 android:fontFamily="sans-serif"
                 android:textStyle="normal"
-                tools:text="Berat :" />
+                android:text="Berat :" />
 
             <TextView android:id="@+id/tv_product_weight"
                 android:layout_width="wrap_content"
@@ -176,7 +176,7 @@
                 android:layout_toEndOf="@id/tv_text_product_weight"
                 android:fontFamily="sans-serif"
                 android:textStyle="normal"
-                tools:text="3kg" />
+                android:text="3kg" />
 
             <TextView android:id="@+id/tv_total_product_item"
                 android:layout_width="wrap_content"
@@ -201,7 +201,7 @@
                 android:fontFamily="sans-serif"
                 android:textSize="12sp"
                 android:textStyle="normal"
-                tools:text="Jumlah :" />
+                android:text="Jumlah :" />
 
 
         </RelativeLayout>
@@ -213,7 +213,7 @@
             android:textSize="12sp"
             android:fontFamily="sans-serif"
             android:textStyle="normal"
-            tools:text="Catatan untuk penjual (Opsional)" />
+            android:text="Catatan untuk penjual (Opsional)" />
 
         <TextView android:id="@+id/tv_optional_note_to_seller"
             android:layout_width="match_parent"
@@ -224,9 +224,9 @@
             android:fontFamily="sans-serif"
             android:textStyle="normal"
             android:textColor="@color/black_70"
-            tools:text="Saya pesan warna merah yah min.. jangan sampai salah kirim barangnya gan!" />
+            android:text="Saya pesan warna merah yah min.. jangan sampai salah kirim barangnya gan!" />
 
-        <view
+        <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:background="#e0e0e0"
@@ -275,13 +275,13 @@
                 android:textColor="@color/medium_green"
                 android:fontFamily="sans-serif-medium"
                 android:textStyle="normal"
-                tools:text="+3 Produk Lainnya" />
+                android:text="+3 Produk Lainnya" />
 
         </RelativeLayout>
 
     </LinearLayout>
 
-    <view
+    <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:background="#e0e0e0"/>
@@ -301,7 +301,7 @@
             android:layout_height="wrap_content"
             android:textSize="12sp"
             android:textColor="@color/black_54"
-            tools:text="Pengiriman" />
+            android:text="Pengiriman" />
 
         <ImageView android:id="@+id/iv_chevron_shipment_option"
             android:layout_width="20dp"
@@ -325,11 +325,11 @@
             android:layout_marginEnd="4dp"
             android:textColor="@color/medium_green"
             android:gravity="end"
-            tools:text="Go-send Instan" />
+            android:text="Go-send Instan" />
 
     </RelativeLayout>
 
-    <view
+    <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:background="#e0e0e0" />
@@ -388,7 +388,7 @@
             android:gravity="end"
             android:textSize="14sp"
             android:textColor="@color/orange_red"
-            tools:text="Rp200.000" />
+            android:text="Rp200.000" />
 
     </RelativeLayout>
 

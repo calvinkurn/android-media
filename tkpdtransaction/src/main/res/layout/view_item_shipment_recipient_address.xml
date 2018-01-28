@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/ll_shipment_recipient_address_header"
+    android:id="@+id/rl_shipment_recipient_address_header"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:orientation="vertical" >
+    android:background="@color/white">
 
-    <RelativeLayout
+    <RelativeLayout android:id="@+id/rl_image_address_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white" >
+        android:background="@color/white">
 
-        <ImageView
-            android:id="@+id/iv_image_address_house"
+        <ImageView android:id="@+id/iv_image_address_house"
             android:layout_width="36dp"
             android:layout_height="33dp"
             android:layout_marginLeft="16dp"
@@ -22,10 +20,9 @@
             android:layout_marginEnd="16dp"
             android:layout_marginTop="16dp"
             tools:ignore="ContentDescription"
-            tools:src="@drawable/ic_address_house" />
+            android:src="@drawable/ic_address_house" />
 
-        <TextView
-            android:id="@+id/tv_text_address_description"
+        <TextView android:id="@+id/tv_text_address_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/iv_image_address_house"
@@ -34,10 +31,9 @@
             android:layout_marginBottom="3dp"
             android:textSize="12sp"
             tools:ignore="SmallSp"
-            android:text="Alamat Kantor"/>
+            android:text="Alamat Kantor" />
 
-        <TextView
-            android:id="@+id/tv_recipient_name"
+        <TextView android:id="@+id/tv_recipient_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_text_address_description"
@@ -47,10 +43,9 @@
             android:textColor="@color/black_54"
             android:textSize="12sp"
             tools:ignore="SmallSp"
-            android:text="Agus Maulana"/>
+            android:text="Agus Maulana" />
 
-        <TextView
-            android:id="@+id/tv_recipient_address"
+        <TextView android:id="@+id/tv_recipient_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_recipient_name"
@@ -61,18 +56,14 @@
             android:textSize="12sp"
             android:lineSpacingExtra="3dp"
             tools:ignore="SmallSp"
-            android:text="Jl. Letjen S. Parman Kav.77, Wisma 77 Tower 2,\nTokopedia Lt. 2, Jakarta, 0817 1234 5678"/>
+            android:text="Jl. Letjen S. Parman Kav.77, Wisma 77 Tower 2,\nTokopedia Lt. 2, Jakarta, 0817 1234 5678" />
 
     </RelativeLayout>
-
-    <view
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="#e0e0e0"/>
 
     <LinearLayout android:id="@+id/ll_add_or_change_address_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/rl_image_address_container"
         android:background="@color/white">
 
         <TextView android:id="@+id/tv_add_or_change_address"
@@ -88,4 +79,10 @@
             android:text="Ganti alamat atau gunakan beberapa alamat" />
 
     </LinearLayout>
-</LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#e0e0e0"
+        android:layout_above="@id/ll_add_or_change_address_container" />
+</RelativeLayout>
