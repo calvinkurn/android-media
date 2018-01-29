@@ -71,6 +71,14 @@ public class ShipmentItemData implements Parcelable {
         this.deliveryTimeRange = deliveryTimeRange;
     }
 
+    public List<CourierItemData> getCourierItemData() {
+        return courierItemData;
+    }
+
+    public void setCourierItemData(List<CourierItemData> courierItemData) {
+        this.courierItemData = courierItemData;
+    }
+
     @Override
     public int describeContents() {
         return 0;

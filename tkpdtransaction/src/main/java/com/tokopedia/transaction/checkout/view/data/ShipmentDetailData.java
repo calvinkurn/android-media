@@ -20,7 +20,9 @@ public class ShipmentDetailData implements Parcelable {
     private String insuranceInfo;
     private String partialOrderInfo;
     private String dropshipperInfo;
-    private String subtotal;
+    private String deliveryPrice;
+    private String deliveryPriceTotal;
+    private String additionalPrice;
 
     public ShipmentDetailData() {
     }
@@ -35,7 +37,9 @@ public class ShipmentDetailData implements Parcelable {
         insuranceInfo = in.readString();
         partialOrderInfo = in.readString();
         dropshipperInfo = in.readString();
-        subtotal = in.readString();
+        deliveryPrice = in.readString();
+        deliveryPriceTotal = in.readString();
+        additionalPrice = in.readString();
     }
 
     public static final Creator<ShipmentDetailData> CREATOR = new Creator<ShipmentDetailData>() {
@@ -122,6 +126,30 @@ public class ShipmentDetailData implements Parcelable {
         this.dropshipperInfo = dropshipperInfo;
     }
 
+    public String getDeliveryPrice() {
+        return deliveryPrice;
+    }
+
+    public void setDeliveryPrice(String deliveryPrice) {
+        this.deliveryPrice = deliveryPrice;
+    }
+
+    public String getDeliveryPriceTotal() {
+        return deliveryPriceTotal;
+    }
+
+    public void setDeliveryPriceTotal(String deliveryPriceTotal) {
+        this.deliveryPriceTotal = deliveryPriceTotal;
+    }
+
+    public String getAdditionalPrice() {
+        return additionalPrice;
+    }
+
+    public void setAdditionalPrice(String additionalPrice) {
+        this.additionalPrice = additionalPrice;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -138,6 +166,8 @@ public class ShipmentDetailData implements Parcelable {
         dest.writeString(insuranceInfo);
         dest.writeString(partialOrderInfo);
         dest.writeString(dropshipperInfo);
-        dest.writeString(subtotal);
+        dest.writeString(deliveryPrice);
+        dest.writeString(deliveryPriceTotal);
+        dest.writeString(additionalPrice);
     }
 }

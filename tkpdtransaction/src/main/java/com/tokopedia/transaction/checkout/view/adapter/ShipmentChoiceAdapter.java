@@ -42,10 +42,10 @@ public class ShipmentChoiceAdapter extends RecyclerView.Adapter<ShipmentChoiceAd
     @Override
     public void onBindViewHolder(final ShipmentViewHolder holder, final int position) {
         ShipmentItemData shipmentItemData = shipments.get(position);
-        holder.tvShipmentType.setText(
+        holder.tvShipmentType.setText(shipmentItemData.getType());
+        holder.tvPriceRange.setText(
                 holder.tvShipmentType.getContext().getResources().getString(
-                        R.string.label_shipment_type_format, shipmentItemData.getType()));
-        holder.tvPriceRange.setText(shipmentItemData.getPriceRange());
+                        R.string.label_shipment_type_format, shipmentItemData.getPriceRange()));
         holder.tvDeliveryTimeRange.setText(shipmentItemData.getDeliveryTimeRange());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,6 +57,11 @@ public class ShipmentChoiceAdapter extends RecyclerView.Adapter<ShipmentChoiceAd
                 }
             }
         });
+        if (position == shipments.size() - 1) {
+            holder.vSeparator.setVisibility(View.GONE);
+        } else {
+            holder.vSeparator.setVisibility(View.VISIBLE);
+        }
     }
 
     private void renderTypeface(ShipmentViewHolder holder) {
@@ -84,6 +89,8 @@ public class ShipmentChoiceAdapter extends RecyclerView.Adapter<ShipmentChoiceAd
         ImageButton imgBtCheck;
         @BindView(R2.id.tv_delivery_time_range)
         TextView tvDeliveryTimeRange;
+        @BindView(R2.id.v_separator)
+        View vSeparator;
 
         ShipmentViewHolder(View itemView) {
             super(itemView);

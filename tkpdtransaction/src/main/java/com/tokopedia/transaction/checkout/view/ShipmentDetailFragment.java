@@ -1,11 +1,14 @@
 package com.tokopedia.transaction.checkout.view;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -14,12 +17,15 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -27,8 +33,11 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.geolocation.activity.GeolocationActivity;
+import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
@@ -53,8 +62,8 @@ import butterknife.OnClick;
 public class ShipmentDetailFragment extends BasePresenterFragment implements IShipmentDetailView,
         CourierChoiceAdapter.ViewListener, OnMapReadyCallback {
 
-    public static final int REQUSET_CODE_OPEN_SHIPMENT_CHOICE = 1;
     private static final int REQUEST_CODE_SHIPMENT_CHOICE = 11;
+    private static final int REQUEST_CODE_PINPOINT = 22;
 
     @BindView(R2.id.scroll_view_content)
     ScrollView scrollViewContent;
@@ -130,6 +139,20 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
     TextView tvDeliveryFee;
     @BindView(R2.id.bt_save)
     Button btSave;
+    @BindView(R2.id.tv_show_other_couriers)
+    TextView tvShowOtherCouriers;
+    @BindView(R2.id.iv_chevron)
+    ImageView ivChevron;
+    @BindView(R2.id.ll_fees_group)
+    LinearLayout llFeesGroup;
+    @BindView(R2.id.ll_insurance_fee)
+    LinearLayout llInsuranceFee;
+    @BindView(R2.id.ll_additional_fee)
+    LinearLayout llAdditionalFee;
+    @BindView(R2.id.tv_delivery_fee_total)
+    TextView tvDeliveryFeeTotal;
+    @BindView(R2.id.tv_additional_fee)
+    TextView tvAdditionalFee;
 
     private CourierChoiceAdapter courierChoiceAdapter;
     private IShipmentDetailPresenter presenter;
@@ -239,18 +262,76 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
     }
 
     @Override
-    public void renderInstantShipment(ShipmentDetailData shipmentDetailData) {
+    public void showPinPointMap(ShipmentDetailData shipmentDetailData) {
+        tvShipmentAddress.setText(shipmentDetailData.getAddress());
         setupMapView();
         if (shipmentDetailData.getLatitude() == null || shipmentDetailData.getLongitude() == null) {
             renderNoPinpoint();
         } else {
             renderPinpoint();
         }
+        flPinpointMap.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void renderInstantShipment(ShipmentDetailData shipmentDetailData) {
+        llDropshipper.setVisibility(View.GONE);
+        separatorPartialOrder.setVisibility(View.GONE);
+        if (shipmentDetailData.getShipmentInfo() != null) {
+            tvShipmentInfoTicker.setText(shipmentDetailData.getShipmentInfo());
+        } else {
+            llShipmentInfoTicker.setVisibility(View.GONE);
+        }
+        tvDeliveryFee.setText(shipmentDetailData.getDeliveryPrice());
+        tvDeliveryFeeTotal.setText(shipmentDetailData.getDeliveryPriceTotal());
+
+        showPinPointMap(shipmentDetailData);
+        presenter.setCourierList(shipmentDetailData.getShipmentItemData().get(0).getCourierItemData());
+    }
+
+    @Override
+    public void renderSameDayShipment(ShipmentDetailData shipmentDetailData) {
+        showPinPointMap(shipmentDetailData);
+    }
+
+    @Override
+    public void renderNextDayShipment(ShipmentDetailData shipmentDetailData) {
+        showPinPointMap(shipmentDetailData);
     }
 
     @Override
     public void renderRegularShipment(ShipmentDetailData shipmentDetailData) {
         flPinpointMap.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void renderKargoShipment(ShipmentDetailData shipmentDetailData) {
+        flPinpointMap.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showPinPointChooserMap(ShipmentDetailData shipmentDetailData) {
+//        LocationPass locationPass;
+//        locationPass = new LocationPass();
+//        locationPass.setLatitude(String.valueOf(shipmentDetailData.getLatitude()));
+//        locationPass.setLongitude(String.valueOf(shipmentDetailData.getLongitude()));
+//        locationPass.setGeneratedAddress(shipmentDetailData.getAddress());
+        Intent intent = GeolocationActivity.createInstance(context, null);
+        startActivityForResult(intent, REQUEST_CODE_PINPOINT);
+    }
+
+    @Override
+    public void showFirstThreeCouriers(List<CourierItemData> couriers) {
+        setupRecyclerView(couriers);
+        tvShowOtherCouriers.setText(getString(R.string.label_show_other_courier));
+        ivChevron.setImageResource(R.drawable.chevron_thin_down);
+    }
+
+    @Override
+    public void showAllCouriers(List<CourierItemData> couriers) {
+        setupRecyclerView(couriers);
+        tvShowOtherCouriers.setText(R.string.label_hide_other_couriers);
+        ivChevron.setImageResource(R.drawable.chevron_thin_up);
     }
 
     private void setupRecyclerView(List<CourierItemData> couriers) {
@@ -265,12 +346,14 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
         btChangePinpoint.setVisibility(View.GONE);
         btChoosePinpoint.setVisibility(View.VISIBLE);
         tvNoPonpointInformation.setVisibility(View.VISIBLE);
+        flPinpointMap.setBackgroundColor(Color.parseColor("#bbbdbdbd"));
     }
 
     private void renderPinpoint() {
         btChoosePinpoint.setVisibility(View.GONE);
         tvNoPonpointInformation.setVisibility(View.GONE);
         btChangePinpoint.setVisibility(View.VISIBLE);
+        flPinpointMap.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.transparent));
     }
 
     private void setupMapView() {
@@ -281,11 +364,9 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
         }
     }
 
-    private void setGoogleMap(GoogleMap googleMap) {
+    private void setGoogleMap(GoogleMap googleMap, ShipmentDetailData shipmentDetailData) {
         if (googleMap != null) {
-            Double latitude = 0D;
-            Double longitude = 0D;
-            LatLng latLng = new LatLng(latitude, longitude);
+            LatLng latLng = new LatLng(shipmentDetailData.getLatitude(), shipmentDetailData.getLongitude());
 
             googleMap.getUiSettings().setMapToolbarEnabled(false);
             googleMap.addMarker(new MarkerOptions().position(latLng)
@@ -303,8 +384,39 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
         }
     }
 
+    private void updateFeesGroupLayout() {
+        if (llInsuranceFee.getVisibility() == View.GONE &&
+                llAdditionalFee.getVisibility() == View.GONE) {
+            llFeesGroup.setVisibility(View.GONE);
+        } else {
+            llFeesGroup.setVisibility(View.VISIBLE);
+        }
+    }
+
     private void showSnackBar(View view, String message) {
         Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show();
+    }
+
+    private void setupPinPointMap() {
+        GoogleApiAvailability availability = GoogleApiAvailability.getInstance();
+        int resultCode = availability.isGooglePlayServicesAvailable(context);
+        if (ConnectionResult.SUCCESS == resultCode) {
+            presenter.getPinPointMapData();
+        } else {
+            CommonUtils.dumper("Google play services unavailable");
+            Dialog dialog = availability.getErrorDialog(getActivity(), resultCode, 0);
+            dialog.show();
+        }
+    }
+
+    @OnClick(R2.id.bt_choose_pinpoint)
+    void onChoosePinPoint() {
+        setupPinPointMap();
+    }
+
+    @OnClick(R2.id.bt_change_pinpoint)
+    void onChangePinPointClick() {
+        setupPinPointMap();
     }
 
     @OnClick(R2.id.ll_shipment_choice)
@@ -314,25 +426,29 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
 
     @OnClick(R2.id.ll_expanded_courier_list)
     void onExpandedCourierListClick() {
-        presenter.loadAllCourier();
+        if (courierChoiceAdapter.getItemCount() > 3) {
+            presenter.loadFirstThreeCourier();
+        } else {
+            presenter.loadAllCourier();
+        }
     }
 
     @OnClick(R2.id.img_bt_insurance_info)
     void onInsuranceInfoClick() {
         showBottomSheet(getString(R.string.title_bottomsheet_insurance),
-                "", R.drawable.ic_insurance);
+                presenter.getShipmentDetailData().getInsuranceInfo(), R.drawable.ic_insurance);
     }
 
     @OnClick(R2.id.img_bt_partly_accept_info)
     void onPartlyAcceptInfoClick() {
-        showBottomSheet(getString(R.string.title_bottomsheet_insurance),
-                "", R.drawable.ic_insurance);
+        showBottomSheet(getString(R.string.label_accept_partial_order_new),
+                presenter.getShipmentDetailData().getPartialOrderInfo(), R.drawable.ic_insurance);
     }
 
     @OnClick(R2.id.img_bt_dropshipper_info)
     void onDropshipperInfoClick() {
-        showBottomSheet(getString(R.string.title_bottomsheet_insurance),
-                "", R.drawable.ic_insurance);
+        showBottomSheet(getString(R.string.label_dropshipper_new),
+                presenter.getShipmentDetailData().getDropshipperInfo(), R.drawable.ic_insurance);
     }
 
     @OnClick(R2.id.img_bt_close_ticker)
@@ -343,12 +459,17 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
     @OnClick(R2.id.ll_shipment_choice)
     void onShipmentChoiceClick() {
         startActivityForResult(ShipmentChoiceActivity.createInstance(getActivity()), REQUEST_CODE_SHIPMENT_CHOICE);
-        getActivity().overridePendingTransition(R.anim.anim_bottom_up, R.anim.anim_top_down);
+        getActivity().overridePendingTransition(R.anim.anim_bottom_up, 0);
     }
 
     @OnCheckedChanged(R2.id.switch_insurance)
     void onSwitchInsuranceChanged(CompoundButton view, boolean checked) {
-
+        if (checked) {
+            llInsuranceFee.setVisibility(View.VISIBLE);
+        } else {
+            llInsuranceFee.setVisibility(View.GONE);
+        }
+        updateFeesGroupLayout();
     }
 
     @OnCheckedChanged(R2.id.switch_partly_accept)
@@ -358,11 +479,12 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
 
     @OnCheckedChanged(R2.id.switch_dropshipper)
     void onSwitchDropshipperChanged(CompoundButton view, boolean checked) {
-        if(checked) {
+        if (checked) {
             llDropshipperInfo.setVisibility(View.VISIBLE);
         } else {
             llDropshipperInfo.setVisibility(View.GONE);
         }
+        updateFeesGroupLayout();
     }
 
     private void showBottomSheet(String title, String message, int image) {
@@ -384,11 +506,25 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        setGoogleMap(googleMap);
+        setGoogleMap(googleMap, presenter.getShipmentDetailData());
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case REQUEST_CODE_PINPOINT:
+                    Bundle bundle = data.getExtras();
+                    if (bundle != null) {
+                        LocationPass locationPass =
+                                bundle.getParcelable(GeolocationActivity.EXTRA_EXISTING_LOCATION);
+                        presenter.updatePinPoint(locationPass);
+                    }
+                    break;
 
+                case REQUEST_CODE_SHIPMENT_CHOICE:
+                    break;
+            }
+        }
     }
 }

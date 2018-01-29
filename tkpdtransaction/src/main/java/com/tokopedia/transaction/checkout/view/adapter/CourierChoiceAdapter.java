@@ -46,7 +46,12 @@ public class CourierChoiceAdapter extends RecyclerView.Adapter<CourierChoiceAdap
         holder.tvCourierName.setText(courierItemData.getName());
         holder.tvPrice.setText(courierItemData.getPrice());
         holder.tvDeliveryTimeRange.setText(courierItemData.getDeliveryTimeRange());
-
+        if (courierItemData.getDeliverySchedule() != null) {
+            holder.tvDeliverySchedule.setText(courierItemData.getDeliverySchedule());
+            holder.tvDeliverySchedule.setVisibility(View.VISIBLE);
+        } else {
+            holder.tvDeliverySchedule.setVisibility(View.GONE);
+        }
         renderTypeface(holder, courierItemData);
 
         holder.itemView.setOnClickListener(getItemClickListener(courierItemData, position));
@@ -108,6 +113,8 @@ public class CourierChoiceAdapter extends RecyclerView.Adapter<CourierChoiceAdap
         TextView tvDeliveryTimeRange;
         @BindView(R2.id.rb_selected)
         RadioButton rbSelected;
+        @BindView(R2.id.tv_delivery_schedule)
+        TextView tvDeliverySchedule;
 
         CourierViewHolder(View itemView) {
             super(itemView);

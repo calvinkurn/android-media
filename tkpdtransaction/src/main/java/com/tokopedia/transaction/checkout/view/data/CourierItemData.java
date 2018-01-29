@@ -12,6 +12,7 @@ public class CourierItemData implements Parcelable {
     private String name;
     private String price;
     private String deliveryTimeRange;
+    private String deliverySchedule;
     private boolean selected;
 
     public CourierItemData() {
@@ -22,6 +23,7 @@ public class CourierItemData implements Parcelable {
         name = in.readString();
         price = in.readString();
         deliveryTimeRange = in.readString();
+        deliverySchedule = in.readString();
         selected = in.readByte() != 0;
     }
 
@@ -77,6 +79,14 @@ public class CourierItemData implements Parcelable {
         this.selected = selected;
     }
 
+    public String getDeliverySchedule() {
+        return deliverySchedule;
+    }
+
+    public void setDeliverySchedule(String deliverySchedule) {
+        this.deliverySchedule = deliverySchedule;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -88,6 +98,7 @@ public class CourierItemData implements Parcelable {
         dest.writeString(name);
         dest.writeString(price);
         dest.writeString(deliveryTimeRange);
+        dest.writeString(deliverySchedule);
         dest.writeByte((byte) (selected ? 1 : 0));
     }
 }

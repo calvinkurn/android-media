@@ -5,9 +5,9 @@
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:foreground="?selectableItemBackground"
-    android:paddingLeft="@dimen/padding_small_sm"
-    android:paddingRight="@dimen/padding_small_sm"
-    android:paddingTop="@dimen/padding_small_sm">
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="16dp">
 
     <TextView
         android:id="@+id/tv_courier_name"
@@ -64,6 +64,9 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:visibility="visible" />
 
 </RelativeLayout>

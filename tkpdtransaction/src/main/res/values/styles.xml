@@ -15,4 +15,9 @@
         <item name="android:textSize">24sp</item>
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>
+
+    <style name="TransactionSwitch" parent="Theme.AppCompat.Light">
+        <item name="colorControlActivated">#42b549</item>
+        <item name="colorSwitchThumbNormal">#f1f1f1</item>
+    </style>
 </resources>
