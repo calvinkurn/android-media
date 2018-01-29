@@ -10,7 +10,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 
-import static com.tokopedia.tkpd.tkpdreputation.R.string.title_activity_reputation;
+import com.tokopedia.tkpd.tkpdreputation.R;
 
 /**
  * Created by zulfikarrahman on 1/15/18.
@@ -32,14 +32,14 @@ public class ReviewProductActivity extends BaseSimpleActivity implements HasComp
         super.setupLayout(savedInstanceState);
         if (getSupportActionBar()!= null) {
             String productName = getIntent().getExtras().getString(EXTRA_PRODUCT_NAME);
-            getSupportActionBar().setTitle(getString(title_activity_reputation) + " " + productName);
+            getSupportActionBar().setTitle(getString(R.string.title_activity_reputation) + " " + productName);
         }
     }
 
     @Override
     protected Fragment getNewFragment() {
         String productId = getIntent().getExtras().getString(ReviewProductFragment.EXTRA_PRODUCT_ID);
-        return ProductReviewFragment.getInstance(productId);
+        return ReviewProductFragment.getInstance(productId);
     }
 
     @Override
