@@ -42,7 +42,7 @@
             app:tcv_error_layout="@layout/partial_gm_statistic_error_card"
             app:tcv_loading_layout="@layout/partial_gm_statistic_popular_product_loading"
             app:tcv_title="@string/gm_statistic_product_data"
-            app:tcv_title_text_size="@dimen/font_body1">
+            app:tcv_title_text_size="@dimen/font_small">
 
             <include layout="@layout/partial_gm_statistic_popular_product_content" />
 
@@ -54,7 +54,7 @@
             app:tcv_error_layout="@layout/partial_gm_statistic_error_card"
             app:tcv_loading_layout="@layout/partial_gm_statistic_transaction_data_loading"
             app:tcv_title="@string/gm_statistic_sales_data"
-            app:tcv_title_text_size="@dimen/font_body1"
+            app:tcv_title_text_size="@dimen/font_small"
             style="@style/CardViewLayoutMatchParent">
 
             <include layout="@layout/partial_gm_statistic_transaction_content" />
@@ -67,7 +67,7 @@
             app:tcv_error_layout="@layout/partial_gm_statistic_error_card"
             app:tcv_loading_layout="@layout/widget_buyer_data_loading"
             app:tcv_title="@string/gm_statistic_buyer_data"
-            app:tcv_title_text_size="@dimen/font_body1"
+            app:tcv_title_text_size="@dimen/font_small"
             style="@style/CardViewLayoutMatchParent">
 
             <include layout="@layout/widget_buyer_data_content" />
@@ -81,7 +81,7 @@
             app:tcv_error_layout="@layout/partial_gm_statistic_error_card"
             app:tcv_loading_layout="@layout/partial_gm_statistic_market_insight_loading"
             app:tcv_title="@string/gm_statistic_market_insight"
-            app:tcv_title_text_size="@dimen/font_body1"
+            app:tcv_title_text_size="@dimen/font_small"
             style="@style/CardViewLayoutMatchParent">
 
             <include layout="@layout/partial_gm_statistic_market_insight_content" />

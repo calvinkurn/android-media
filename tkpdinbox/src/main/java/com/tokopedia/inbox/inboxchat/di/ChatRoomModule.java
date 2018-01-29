@@ -6,25 +6,25 @@ import com.tokopedia.core.network.apiservices.chat.ChatService;
 import com.tokopedia.core.network.apiservices.kunyit.KunyitService;
 import com.tokopedia.inbox.inboxchat.data.factory.MessageFactory;
 import com.tokopedia.inbox.inboxchat.data.factory.ReplyFactory;
-import com.tokopedia.inbox.inboxchat.data.factory.TemplateChatFactory;
+import com.tokopedia.inbox.inboxchat.data.factory.template.TemplateChatFactory;
 import com.tokopedia.inbox.inboxchat.data.mapper.DeleteMessageMapper;
 import com.tokopedia.inbox.inboxchat.data.mapper.GetMessageMapper;
 import com.tokopedia.inbox.inboxchat.data.mapper.GetReplyMapper;
 import com.tokopedia.inbox.inboxchat.data.mapper.ReplyMessageMapper;
 import com.tokopedia.inbox.inboxchat.data.mapper.SendMessageMapper;
-import com.tokopedia.inbox.inboxchat.data.mapper.TemplateChatMapper;
+import com.tokopedia.inbox.inboxchat.data.mapper.template.TemplateChatMapper;
 import com.tokopedia.inbox.inboxchat.data.repository.MessageRepository;
 import com.tokopedia.inbox.inboxchat.data.repository.MessageRepositoryImpl;
 import com.tokopedia.inbox.inboxchat.data.repository.ReplyRepository;
 import com.tokopedia.inbox.inboxchat.data.repository.ReplyRepositoryImpl;
 import com.tokopedia.inbox.inboxchat.data.repository.SendMessageSource;
-import com.tokopedia.inbox.inboxchat.data.repository.TemplateRepository;
-import com.tokopedia.inbox.inboxchat.data.repository.TemplateRepositoryImpl;
+import com.tokopedia.inbox.inboxchat.data.repository.template.TemplateRepository;
+import com.tokopedia.inbox.inboxchat.data.repository.template.TemplateRepositoryImpl;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetMessageListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetReplyListUseCase;
-import com.tokopedia.inbox.inboxchat.domain.usecase.GetTemplateUseCase;
-import com.tokopedia.inbox.inboxchat.domain.usecase.ReplyMessageUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.SendMessageUseCase;
+import com.tokopedia.inbox.inboxchat.domain.usecase.template.GetTemplateUseCase;
+import com.tokopedia.inbox.inboxchat.domain.usecase.ReplyMessageUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -171,5 +171,19 @@ public class ChatRoomModule {
     SendMessageSource provideSendMessageSource(ChatService chatService,
                                                SendMessageMapper sendMessageMapper) {
         return new SendMessageSource(chatService, sendMessageMapper);
+    }
+
+
+
+    @InboxChatScope
+    @Provides
+    SendMessageUseCase provideSendMessageUseCase(ThreadExecutor threadExecutor,
+                                                 PostExecutionThread postExecutor,
+                                                 MessageRepository messageRepository) {
+        return new SendMessageUseCase(
+                threadExecutor,
+                postExecutor,
+                messageRepository
+        );
     }
 }

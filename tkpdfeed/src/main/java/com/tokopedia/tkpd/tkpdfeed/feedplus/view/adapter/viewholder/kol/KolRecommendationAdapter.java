@@ -8,15 +8,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.KolRecommendationItemDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.KolTracking;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolRecommendItemViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author by nisie on 10/30/17.
@@ -84,6 +89,22 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
                         notifyItemChanged(getAdapterPosition());
                     } else {
                         UnifyTracking.eventKolRecommendationFollowClick(kolItem.getLabel(), kolItem.getName());
+
+                        List<KolTracking.Promotion> list = new ArrayList<>();
+                        KolRecommendItemViewModel recItem = data.getListRecommend().get(getAdapterPosition());
+                        list.add(new KolTracking.Promotion(
+                                recItem.getId(),
+                                KolTracking.Promotion.createContentNameRecommendation(),
+                                recItem.getName().equals("") ? "-" : recItem.getName(),
+                                data.getRowNumber(),
+                                recItem.getLabel().equals("") ? "-" : recItem.getLabel(),
+                                recItem.getId(),
+                                recItem.getUrl().equals("") ? "-" : recItem.getUrl()));
+                        TrackingUtils.eventTrackingEnhancedEcommerce(KolTracking
+                                .getKolClickTracking(list,
+                                        Integer.parseInt(SessionHandler.getLoginID(MainApplication.getAppContext()))
+                                ));
+
                         kolViewListener.onFollowKolFromRecommendationClicked(data.getPage(),
                                 data.getRowNumber(),
                                 kolItem.getId(),
@@ -118,7 +139,7 @@ public class KolRecommendationAdapter extends RecyclerView.Adapter<KolRecommenda
         holder.name.setText(MethodChecker.fromHtml(data.getListRecommend().get(position).getName()));
         holder.label.setText(data.getListRecommend().get(position).getLabel());
 
-        setFollowing(holder,position);
+        setFollowing(holder, position);
 
     }
 

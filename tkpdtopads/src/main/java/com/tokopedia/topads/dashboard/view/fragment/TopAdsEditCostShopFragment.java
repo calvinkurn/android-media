@@ -3,9 +3,7 @@ package com.tokopedia.topads.dashboard.view.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.view.View;
 
-import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
@@ -42,8 +40,7 @@ public class TopAdsEditCostShopFragment extends TopAdsEditCostFragment<TopAdsDet
 
     @Override
     protected void onClickedNext() {
-        if (firstTimeCheck()) return;
-        if(!isError()) {
+        if (!isPriceError()) {
             super.onClickedNext();
             if (detailAd != null) {
                 daggerPresenter.saveAd(detailAd);
@@ -57,18 +54,19 @@ public class TopAdsEditCostShopFragment extends TopAdsEditCostFragment<TopAdsDet
     }
 
     @Override
+    protected void setSuggestionBidText(@Nullable GetSuggestionResponse data) {
+        // Do nothing
+    }
+
+    @Override
     protected void loadSuggestionBid() {
-        setSuggestionBidText((GetSuggestionResponse)null);
-        titleSuggestionBidUse.setVisibility(View.GONE);
+        // Do nothing
     }
 
     @Override
-    protected void onSuggestionTitleUseClick() {
-        titleSuggestionBid.setText(getString(R.string.static_suggestion_bid_recommendation));
+    public void onSuggestionSuccess(GetSuggestionResponse s) {
+        /* remain empty*/
     }
-
-    @Override
-    public void onSuggestionSuccess(GetSuggestionResponse s) { /* remain empty*/ }
 
     @Override
     public void onSuggestionError(@Nullable Throwable t) {

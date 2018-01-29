@@ -95,4 +95,20 @@
         <key>app_notp_enabled</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>mainapp_show_simple_app_rating</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>mainapp_show_advanced_app_rating</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>flight_airport</key>
+        <value>1</value>
+    </entry>
+    <entry>
+        <key>notification_logger</key>
+        <value>false</value>
+    </entry>
 </defaultsMap>

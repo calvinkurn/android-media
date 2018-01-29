@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/progress_bar_container"
+    android:layout_height="@dimen/progress_bar_height"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <android.support.v4.widget.ContentLoadingProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:theme="@style/FlightProgressBar"
+        android:progressDrawable="@drawable/progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/progress_bar_height"
+        android:layout_gravity="center" />
+</FrameLayout>
+<!--https://stackoverflow.com/questions/14171471/remove-vertical-padding-from-horizontal-progressbar/-->

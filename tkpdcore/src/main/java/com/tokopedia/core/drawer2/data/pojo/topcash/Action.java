@@ -4,7 +4,10 @@ package com.tokopedia.core.drawer2.data.pojo.topcash;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 /**
  * @author kulomady on 11/08/16
@@ -19,6 +22,25 @@ public class Action implements Parcelable {
     private String mAppLinks;
     @SerializedName("visibility")
     private String mVisibility;
+
+    protected Action(Parcel in) {
+        mRedirectUrl = in.readString();
+        mText = in.readString();
+        mAppLinks = in.readString();
+        mVisibility = in.readString();
+    }
+
+    public static final Creator<Action> CREATOR = new Creator<Action>() {
+        @Override
+        public Action createFromParcel(Parcel in) {
+            return new Action(in);
+        }
+
+        @Override
+        public Action[] newArray(int size) {
+            return new Action[size];
+        }
+    };
 
     public String getRedirectUrl() {
         if (mRedirectUrl == null) return "";
@@ -70,39 +92,16 @@ public class Action implements Parcelable {
         this.mVisibility = mVisibility;
     }
 
-
     @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.mRedirectUrl);
-        dest.writeString(this.mText);
-        dest.writeString(this.mAppLinks);
-        dest.writeString(this.mVisibility);
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(mRedirectUrl);
+        parcel.writeString(mText);
+        parcel.writeString(mAppLinks);
+        parcel.writeString(mVisibility);
     }
-
-    public Action() {
-    }
-
-    protected Action(Parcel in) {
-        this.mRedirectUrl = in.readString();
-        this.mText = in.readString();
-        this.mAppLinks = in.readString();
-        this.mVisibility = in.readString();
-    }
-
-    public static final Creator<Action> CREATOR = new Creator<Action>() {
-        @Override
-        public Action createFromParcel(Parcel source) {
-            return new Action(source);
-        }
-
-        @Override
-        public Action[] newArray(int size) {
-            return new Action[size];
-        }
-    };
 }

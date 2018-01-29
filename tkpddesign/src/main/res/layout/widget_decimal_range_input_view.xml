@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/min_label"
+            style="@style/TextView.Micro.BlackSecondary"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:gravity="start"
+            tools:text="pmin label" />
+
+        <TextView
+            android:id="@+id/max_label"
+            style="@style/TextView.Micro.BlackSecondary"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:gravity="end"
+            tools:text="pmax label" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/min_value"
+            style="@style/TextView.Title.BlackPrimary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/range_input_margin_input_text"
+            android:layout_marginRight="@dimen/range_input_margin_input_text"
+            android:layout_weight="1"
+            android:digits="0123456789"
+            android:gravity="start"
+            android:inputType="number"
+            android:maxLines="1"
+            android:nextFocusDown="@+id/max_value"
+            android:singleLine="true"
+            tools:text="pmin" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_sm"
+            android:layout_marginRight="@dimen/margin_sm"
+            android:text="@string/price_range_separator_symbol" />
+
+        <EditText
+            android:id="@+id/max_value"
+            style="@style/TextView.Title.BlackPrimary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/range_input_margin_input_text"
+            android:layout_marginRight="@dimen/range_input_margin_input_text"
+            android:layout_weight="1"
+            android:digits="0123456789"
+            android:gravity="end"
+            android:inputType="number"
+            android:maxLines="1"
+            android:singleLine="true"
+            tools:text="pmax" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_ms">
+
+        <com.tokopedia.design.price.DynamicBackgroundSeekBar
+            android:id="@+id/seekbar_background"
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:layout_centerVertical="true"
+            app:dbsb_background_color="@color/grey_300"
+            app:dbsb_foreground_color="@color/tkpd_main_green" />
+
+        <View
+            android:id="@+id/min_button"
+            android:layout_width="@dimen/price_seekbar_button_size"
+            android:layout_height="@dimen/price_seekbar_button_size"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="@dimen/margin_ms"
+            android:background="@drawable/price_input_seekbar_button_pressed" />
+
+        <View
+            android:id="@+id/max_button"
+            android:layout_width="@dimen/price_seekbar_button_size"
+            android:layout_height="@dimen/price_seekbar_button_size"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="@dimen/margin_ms"
+            android:background="@drawable/price_input_seekbar_button_pressed" />
+
+    </RelativeLayout>
+
+</LinearLayout>

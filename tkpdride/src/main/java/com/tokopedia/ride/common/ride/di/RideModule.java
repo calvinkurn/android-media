@@ -22,6 +22,7 @@ import com.tokopedia.core.network.retrofit.interceptors.RideInterceptor;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
+import com.tokopedia.ride.bookingride.domain.GetLocationAddressUseCase;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
 import com.tokopedia.ride.common.place.data.PlaceDataRepository;
 import com.tokopedia.ride.common.place.data.PlaceDataStoreFactory;
@@ -71,6 +72,15 @@ public class RideModule {
         return new BookingRideRepositoryData(bookingRideDataStoreFactory);
     }
 
+
+    @Provides
+    @RideQualifier
+    @RideScope
+    Retrofit provideRideRetrofit(@RideQualifier OkHttpClient okHttpClient,
+                                 Retrofit.Builder retrofitBuilder) {
+        return retrofitBuilder.baseUrl(TkpdBaseURL.RIDE_DOMAIN).client(okHttpClient).build();
+    }
+
     @Provides
     @RideScope
     HttpLoggingInterceptor provideHttpLoggingInterceptor() {
@@ -79,15 +89,6 @@ public class RideModule {
             loggingLevel = HttpLoggingInterceptor.Level.BODY;
         }
         return new HttpLoggingInterceptor().setLevel(loggingLevel);
-    }
-
-
-    @Provides
-    @RideQualifier
-    @RideScope
-    Retrofit provideRideRetrofit(@RideQualifier OkHttpClient okHttpClient,
-                                 Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(TkpdBaseURL.RIDE_DOMAIN).client(okHttpClient).build();
     }
 
     @RideQualifier
@@ -209,4 +210,13 @@ public class RideModule {
     TokoCashRepository provideTokoCashRepository(TokoCashSourceFactory tokoCashSourceFactory) {
         return new TokoCashRepositoryImpl(tokoCashSourceFactory);
     }
+
+    @Provides
+    @RideScope
+    GetLocationAddressUseCase provideGetLocationAddressUseCase(ThreadExecutor threadExecutor,
+                                                             PostExecutionThread postExecutionThread,
+                                                             PlaceRepository placeRepository) {
+        return new GetLocationAddressUseCase(threadExecutor, postExecutionThread, placeRepository);
+    }
+
 }
