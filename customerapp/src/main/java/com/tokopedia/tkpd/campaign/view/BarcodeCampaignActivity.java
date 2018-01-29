@@ -1,9 +1,11 @@
 package com.tokopedia.tkpd.campaign.view;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -30,7 +32,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.RuntimePermissions;
 
+@RuntimePermissions
 public class BarcodeCampaignActivity extends BasePresenterActivity<BarCodeScannerPresenter> implements BarCodeScannerContract.View {
     private DecoratedBarcodeView decoratedBarcodeView;
     private ToggleButton switchTorch;
@@ -55,6 +62,7 @@ public class BarcodeCampaignActivity extends BasePresenterActivity<BarCodeScanne
         getComponent();
         presenter = mPresenter;
         presenter.attachView(this);
+        BarcodeCampaignActivityPermissionsDispatcher.requestCameraPermissionWithCheck(this);
     }
     public static Intent getBarcodeCamapignIntent(Context context) {
         Intent i = new Intent(context,BarcodeCampaignActivity.class);
@@ -63,6 +71,22 @@ public class BarcodeCampaignActivity extends BasePresenterActivity<BarCodeScanne
     @Override
     protected int getLayoutId() {
         return R.layout.activity_compaign_qr_scan;
+    }
+    @NeedsPermission({Manifest.permission.CAMERA})
+    void requestCameraPermission() {
+
+    }
+
+    @OnPermissionDenied({Manifest.permission.CAMERA})
+    void requestCameraPermissionDenied() {
+        Toast.makeText(this,"Unable to open barcode scanner",Toast.LENGTH_LONG).show();
+        finish();
+    }
+
+    @OnNeverAskAgain({Manifest.permission.CAMERA})
+    void requestCameraPermissionNeverAsk() {
+        Toast.makeText(this,"Unable to open barcode scanner",Toast.LENGTH_LONG).show();
+        finish();
     }
 
     @Override
@@ -223,5 +247,11 @@ public class BarcodeCampaignActivity extends BasePresenterActivity<BarCodeScanne
     protected void onDestroy() {
         super.onDestroy();
         mPresenter.detachView();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        BarcodeCampaignActivityPermissionsDispatcher.onRequestPermissionsResult(this,requestCode,grantResults);
     }
 }
