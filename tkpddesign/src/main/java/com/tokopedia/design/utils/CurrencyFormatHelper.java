@@ -6,6 +6,7 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 /**
+ * use {@link CurrencyFormatUtil} for flexibility of currency (can use other than IDR, USD, etc)
  * modified by m.normansyah & steven.f
  * changed "," to "." for rupiah
  */

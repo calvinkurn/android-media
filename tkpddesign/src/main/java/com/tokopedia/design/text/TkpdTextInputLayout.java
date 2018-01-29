@@ -22,6 +22,8 @@ import com.tokopedia.design.R;
 
 /**
  * Created by Hendry on 3/16/2017.
+ * Deprecated, use TkpdHintTextInputLayoutInstead.
+ *
  * Custom widget extending from support.widget.TextInputLayout
  * Add function to setSuccess("Your success Text") to show different color with error text
  * <p>
@@ -36,6 +38,7 @@ import com.tokopedia.design.R;
  * use setErrorSuccessEnabled to set visibility to VISIBLE/GONE
  */
 
+@Deprecated
 public class TkpdTextInputLayout extends TextInputLayout implements TextWatcher {
     int mSuccessFocusColor;
     int mSuccessLeaveColor;
