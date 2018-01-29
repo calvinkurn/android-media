@@ -137,16 +137,9 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
         } else {
             trackImpression(model);
             layoutChildCategory.setVisibility(View.VISIBLE);
-            try {
-                layoutChildCategory.setBackgroundColor(
-                        TextUtils.isEmpty(model.getHeaderImageHexColor()) ?
-                                ContextCompat.getColor(context, R.color.white) :
-                                Color.parseColor(model.getHeaderImageHexColor())
-                );
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-                layoutChildCategory.setBackgroundColor(ContextCompat.getColor(context, R.color.white));
-            }
+            layoutChildCategory.setBackgroundColor(
+                    generateHexLifestyleBackgroundColor(model.getHeaderImageHexColor())
+            );
 
             ChildCategoryLifestyleAdapter adapter = new ChildCategoryLifestyleAdapter(categoryListener, model.getHeaderModel().getCategoryName());
             adapter.setListCategory(model.getChildCategoryModelList());
@@ -155,6 +148,18 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
             listChildCategory.setLayoutManager(generateLayoutManager(model.getChildCategoryModelList().size()));
             listChildCategory.setAdapter(adapter);
         }
+    }
+
+    private int generateHexLifestyleBackgroundColor(String hexColor) {
+        int color = ContextCompat.getColor(context, R.color.white);
+        if (!TextUtils.isEmpty(hexColor)) {
+            try {
+                color = Color.parseColor(hexColor);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return color;
     }
 
     private RecyclerView.LayoutManager generateLayoutManager(int size) {
