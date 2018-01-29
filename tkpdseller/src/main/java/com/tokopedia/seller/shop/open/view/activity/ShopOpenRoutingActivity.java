@@ -40,6 +40,14 @@ public class ShopOpenRoutingActivity extends BaseSimpleActivity implements HasCo
     }
 
     @Override
+    protected void setupLayout(Bundle savedInstanceState) {
+        super.setupLayout(savedInstanceState);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        }
+    }
+
+    @Override
     protected Fragment getNewFragment() {
         return ShopOpenRoutingFragment.newInstance();
     }
@@ -51,11 +59,5 @@ public class ShopOpenRoutingActivity extends BaseSimpleActivity implements HasCo
                 .shopOpenDomainModule(new ShopOpenDomainModule())
                 .shopComponent(((SellerModuleRouter) getApplication()).getShopComponent())
                 .build();
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-//        toolbar.setdisp
     }
 }

@@ -5,8 +5,8 @@ package com.tokopedia.core.constants;
  */
 
 public interface HomeFragmentBroadcastReceiverConstant {
-    String INTENT_ACTION =
-            "com.tokopedia.tkpd.beranda.presentation.view.fragment.HomeFragment.HomeFragmentBroadcastReceiver.ACTION";
+    String INTENT_ACTION_MAIN_APP =
+            "com.tokopedia.tkpd.beranda.presentation.view.fragment.HomeFragment.HomeFragmentBroadcastReceiver.ACTION_MAIN_APP";
     String EXTRA_TOKOPOINT_DRAWER_DATA = "EXTRA_TOKOPOINT_DRAWER_DATA";
     String EXTRA_TOKOCASH_DRAWER_DATA = "EXTRA_TOKOCASH_DRAWER_DATA";
     String EXTRA_TOKOCASH_PENDING_DATA = "EXTRA_TOKOCASH_PENDING_DATA";

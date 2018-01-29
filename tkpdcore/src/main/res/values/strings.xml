@@ -672,6 +672,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="item_all">Semua</string>
     <string name="item_unread">Belum Dibaca</string>
     <string name="chat_edit_text">Tulis pesan ...</string>
+    <string name="add_template_chat">Tambah Template</string>
 
     <!-- Strings related to inbox -->
 
@@ -1286,7 +1287,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
 ]]>
     </string>
     <string name="message_deposit_review">Saldo Tokopedia Anda sejumlah :</string>
-    <string name="message_time_deposit_return">"sedang kami review. Jika review melebihi 1x24 jam, silakan hubungi Customer Service kami untuk penjelasan lebih lanjut. Terima kasih."</string>
+    <string name="message_time_deposit_return">"sedang kami review. Jika review melebihi 3x24 jam, silakan hubungi Customer Service kami untuk penjelasan lebih lanjut. Terima kasih."</string>
     <string name="message_changer_courrier_warning">Biaya pergantian kurir sepenuhnya ditanggung oleh Penjual</string>
     <string name="title_shop_phone_verification">Anda dapat membuka toko setelah melakukan verifikasi nomor HP</string>
     <string name="title_activity_developer_options">DeveloperOptions</string>
@@ -2144,9 +2145,10 @@ di Tokopedia Sekarang!</string>
     <string name="app_rating_message_2">Geser kanan atau kiri untuk memberikan rating</string>
     <string name="app_rating_button_send">Kirim</string>
     <string name="app_rating_button_close">Tutup</string>
-    <string name="app_rating_desc_bad">Jelek</string>
+    <string name="app_rating_desc_worst">Sangat Buruk</string>
+    <string name="app_rating_desc_bad">Buruk</string>
     <string name="app_rating_desc_ordinary">Biasa</string>
-    <string name="app_rating_desc_good">Baik</string>
+    <string name="app_rating_desc_good">Bagus</string>
     <string name="app_rating_desc_super">Super</string>
     <string name="code_error">Kode error :</string>
 

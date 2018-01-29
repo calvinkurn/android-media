@@ -2,6 +2,7 @@ package com.tokopedia.abstraction.base.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,7 +56,10 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         progressBar.setIndeterminate(true);
-        loadWeb();
+
+        if(!TextUtils.isEmpty(getUrl())) {
+            loadWeb();
+        }
     }
 
     private void loadWeb() {

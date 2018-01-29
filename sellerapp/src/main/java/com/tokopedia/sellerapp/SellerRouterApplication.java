@@ -1,6 +1,8 @@
 package com.tokopedia.sellerapp;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -25,6 +27,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.cache.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.drawer.receiver.TokoCashBroadcastReceiver;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.ApplinkUnsupported;
@@ -54,10 +57,13 @@ import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.mitratoppers.MitraToppersRouter;
 import com.tokopedia.mitratoppers.MitraToppersRouterInternal;
+import com.tokopedia.digital.receiver.TokocashPendingDataBroadcastReceiver;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
+import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResCenterActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.sellerapp.onboarding.activity.OnboardingSellerActivity;
@@ -120,6 +126,8 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.session.activity.Login;
+import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
+import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.activity.ReputationProduct;
 import com.tokopedia.tkpd.tkpdreputation.shopreputation.ShopReputationList;
@@ -290,6 +298,11 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void actionApplink(Activity activity, String linkUrl) {
+
+    }
+
+    @Override
+    public void actionApplinkFromActivity(Activity activity, String linkUrl) {
 
     }
 
@@ -604,7 +617,7 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     private void goToDefaultRoute(Context context) {
-        Intent intent = DashboardActivity.createInstance((Activity) context);
+        Intent intent = DashboardActivity.createInstance(context);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
     }
@@ -709,10 +722,21 @@ public abstract class SellerRouterApplication extends MainApplication
                                     String customSubject, String customMessage, String source,
                                     String avatar) {
         if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
-            return SendMessageActivity.getAskBuyerIntent(context, toUserId, customerName,
+            return ChatRoomActivity.getAskBuyerIntent(context, toUserId, customerName,
                     customSubject, customMessage, source, avatar);
         else
             return SendMessageActivityOld.getAskBuyerIntent(context, toUserId, customerName,
+                    customSubject, customMessage, source);
+    }
+
+
+    @Override
+    public Intent getAskSellerIntent(Context context, String toShopId, String shopName, String customSubject, String customMessage, String source, String avatar) {
+        if(remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
+            return ChatRoomActivity.getAskSellerIntent(context, toShopId, shopName,
+                    customSubject, customMessage, source, avatar);
+        else
+            return SendMessageActivityOld.getAskSellerIntent(context, toShopId, shopName,
                     customSubject, customMessage, source);
     }
 
@@ -720,7 +744,7 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName, String
             source, String avatar) {
         if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
-            return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName, source, avatar);
+            return ChatRoomActivity.getAskSellerIntent(context, toShopId, shopName, source, avatar);
         else
             return SendMessageActivityOld.getAskSellerIntent(context, toShopId, shopName, source);
 
@@ -731,7 +755,7 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getAskUserIntent(Context context, String userId, String userName, String
             source, String avatar) {
         if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
-            return SendMessageActivity.getAskUserIntent(context, userId, userName, source, avatar);
+            return ChatRoomActivity.getAskUserIntent(context, userId, userName, source, avatar);
         else
             return SendMessageActivityOld.getAskUserIntent(context, userId, userName, source);
 
@@ -953,5 +977,10 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void sendEventTracking(String event, String category, String action, String label) {
         UnifyTracking.sendGTMEvent(new EventTracking(event, category, action, label).getEvent());
+    }
+
+    @Override
+    public BroadcastReceiver getBroadcastReceiverTokocashPending() {
+        return new TokocashPendingDataBroadcastReceiver();
     }
 }

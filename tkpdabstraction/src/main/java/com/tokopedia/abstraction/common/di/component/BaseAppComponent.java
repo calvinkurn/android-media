@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.module.AppModule;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.di.qualifier.OkHttpClientBuilderNonBaseQualifier;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
@@ -27,6 +28,9 @@ public interface BaseAppComponent {
 
     @ApplicationContext
     Context getContext();
+
+    @OkHttpClientBuilderNonBaseQualifier
+    OkHttpClient.Builder getDefaultOkHttpClientBuilderDefault();
 
     OkHttpClient.Builder getDefaultOkHttpClientBuilder();
 
