@@ -41,7 +41,8 @@ public class DigitalUssdActivity extends BasePresenterActivity implements Digita
     private List<Operator> selectedOperatorList;
 
     public static Intent newInstance(Context context, PulsaBalance passData, Operator passOperatorData ,
-                                     List<Validation> validationListData,String categoryId,String categoryName,int selectedSim, List<Operator> selectedOperatorList) {
+                                     List<Validation> validationListData, String categoryId,
+                                     String categoryName, int selectedSim, List<Operator> selectedOperatorList) {
 
         Intent intent = new Intent(context, DigitalUssdActivity.class);
         intent.putExtra(EXTRA_OPERATOR_PASS_DATA,  passOperatorData);

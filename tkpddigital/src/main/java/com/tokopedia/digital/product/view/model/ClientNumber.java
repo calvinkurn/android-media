@@ -5,7 +5,6 @@ import android.os.Parcelable;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.tokopedia.digital.common.data.entity.response.Validation;
 
 /**
  * @author anggaprasetiyo on 5/8/17.
@@ -23,7 +22,7 @@ public class ClientNumber implements Parcelable {
     private String help;
     private String placeholder;
     private String _default;
-    private List<com.tokopedia.digital.common.data.entity.response.Validation> validation = new ArrayList<>();
+    private List<Validation> validation = new ArrayList<>();
 
     public String getName() {
         return name;

@@ -1,8 +1,9 @@
 package com.tokopedia.digital.common.data.mapper;
 
+import com.tokopedia.digital.common.data.entity.response.Field;
 import com.tokopedia.digital.common.data.entity.response.ResponseCategoryDetailData;
 import com.tokopedia.digital.common.data.entity.response.ResponseCategoryDetailIncluded;
-import com.tokopedia.digital.common.data.entity.response.ResponsePulsaBalance;
+import com.tokopedia.digital.common.data.entity.response.Validation;
 import com.tokopedia.digital.exception.MapperDataException;
 import com.tokopedia.digital.product.view.model.BannerData;
 import com.tokopedia.digital.product.view.model.CategoryData;
@@ -10,7 +11,6 @@ import com.tokopedia.digital.product.view.model.ClientNumber;
 import com.tokopedia.digital.product.view.model.Operator;
 import com.tokopedia.digital.product.view.model.Product;
 import com.tokopedia.digital.product.view.model.Promo;
-import com.tokopedia.digital.product.view.model.PulsaBalance;
 import com.tokopedia.digital.product.view.model.Rule;
 import com.tokopedia.digital.product.view.model.Teaser;
 
@@ -50,7 +50,7 @@ public class ProductDigitalMapper {
         );
 
         List<ClientNumber> clientNumberCategoryList = new ArrayList<>();
-        for (com.tokopedia.digital.common.data.entity.response.Field field
+        for (Field field
                 : responseCategoryDetailData.getAttributes().getFields()) {
             if (field.getName().equalsIgnoreCase(ClientNumber.DEFAULT_TYPE_CONTRACT)) {
                 ClientNumber clientNumberCategory = new ClientNumber();
@@ -62,7 +62,7 @@ public class ProductDigitalMapper {
                 clientNumberCategory.setText(field.getText());
                 List<com.tokopedia.digital.product.view.model.Validation> validationCategoryList
                         = new ArrayList<>();
-                for (com.tokopedia.digital.common.data.entity.response.Validation validation
+                for (Validation validation
                         : field.getValidation()) {
                     com.tokopedia.digital.product.view.model.Validation validationCategory =
                             new com.tokopedia.digital.product.view.model.Validation();
@@ -127,7 +127,7 @@ public class ProductDigitalMapper {
                     }
                 }
                 List<ClientNumber> clientNumberOperatorList = new ArrayList<>();
-                for (com.tokopedia.digital.common.data.entity.response.Field field
+                for (Field field
                         : categoryDetailIncluded.getAttributes().getFields()) {
                     ClientNumber clientNumberOperator = new ClientNumber();
                     clientNumberOperator.setName(field.getName());

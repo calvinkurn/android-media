@@ -6,7 +6,6 @@ import android.os.Parcelable;
 /**
  * @author anggaprasetiyo on 5/3/17.
  */
-@Deprecated
 public class Validation implements Parcelable {
 
     private String regex;
