@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
-import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 
@@ -25,6 +24,8 @@ public interface FlightOrderListContract {
         String getSelectedFilter();
 
         Context getActivity();
+
+        void navigateToOpenBrowser(String urlPdf);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -32,5 +33,7 @@ public interface FlightOrderListContract {
         void loadData(String selectedFilter, int page, int perPage);
 
         void onDestroyView();
+
+        void onDownloadEticket(String invoiceId, String filename);
     }
 }

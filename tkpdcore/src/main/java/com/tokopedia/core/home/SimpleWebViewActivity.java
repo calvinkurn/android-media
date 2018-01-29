@@ -5,6 +5,7 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.TkpdCoreWebViewActivity;
@@ -20,9 +21,16 @@ public class SimpleWebViewActivity extends TkpdCoreWebViewActivity {
     public static final String EXTRA_URL = "url";
     private SimpleWebViewFragment fragment;
 
-    public static Intent getCallingIntent(Context context, String url) {
+    public static Intent getIntent(Context context, String url) {
         Intent intent = new Intent(context, SimpleWebViewActivity.class);
         intent.putExtra(EXTRA_URL, url);
+        return intent;
+    }
+
+    public static Intent getIntentWithTitle(Context context, String url, String title) {
+        Intent intent = new Intent(context, SimpleWebViewActivity.class);
+        intent.putExtra(EXTRA_URL, url);
+        intent.putExtra(EXTRA_TITLE, title);
         return intent;
     }
 

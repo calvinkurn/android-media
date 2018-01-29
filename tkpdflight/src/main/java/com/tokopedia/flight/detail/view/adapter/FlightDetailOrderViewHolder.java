@@ -29,6 +29,8 @@ public class FlightDetailOrderViewHolder extends AbstractViewHolder<FlightOrderJ
     private TextView titleJourney;
     private AppCompatImageView imageJourney;
     private RecyclerView recyclerViewFlightJourney;
+    private TextView cekSyaratText;
+    private View separatorLine;
     private FlightDetailAdapter flightDetailAdapter;
     private FlightOrderJourney flightOrderJourney;
 
@@ -45,6 +47,8 @@ public class FlightDetailOrderViewHolder extends AbstractViewHolder<FlightOrderJ
         titleJourney = layoutView.findViewById(R.id.title_expendable_passenger);
         imageJourney = layoutView.findViewById(R.id.image_expendable_passenger);
         recyclerViewFlightJourney = layoutView.findViewById(R.id.recycler_view_flight_detail_journey);
+        cekSyaratText = layoutView.findViewById(R.id.text_view_flight_cek_syarat);
+        separatorLine = layoutView.findViewById(R.id.flight_detail_order_separator_line);
         FlightDetailRouteTypeFactory detailRouteTypeFactory = new FlightDetailAdapterTypeFactory(
                 new FlightDetailAdapterTypeFactory.OnFlightDetailListener() {
                     @Override
@@ -91,14 +95,18 @@ public class FlightDetailOrderViewHolder extends AbstractViewHolder<FlightOrderJ
     private void hideFlightInfo() {
         isFlightInfoShowed = false;
         recyclerViewFlightJourney.setVisibility(View.GONE);
+        cekSyaratText.setVisibility(View.GONE);
+        separatorLine.setVisibility(View.GONE);
         imageJourney.setRotation(180);
     }
 
     private void showFlightInfo() {
         isFlightInfoShowed = true;
         recyclerViewFlightJourney.setVisibility(View.VISIBLE);
+        cekSyaratText.setVisibility(View.VISIBLE);
+        separatorLine.setVisibility(View.VISIBLE);
         imageJourney.setRotation(0);
-        expandableOnClickListener.onCloseExpand(getPosition());
+        expandableOnClickListener.onCloseExpand(getAdapterPosition());
     }
 
 

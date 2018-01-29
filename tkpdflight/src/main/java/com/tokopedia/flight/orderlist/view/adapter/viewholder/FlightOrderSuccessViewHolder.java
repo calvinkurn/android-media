@@ -66,7 +66,9 @@ public class FlightOrderSuccessViewHolder extends FlightOrderBaseViewHolder<Flig
         tvMainButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                if (adapterInteractionListener != null) {
+                    adapterInteractionListener.onDownloadETicket(item.getId(), item.getPdf());
+                }
             }
         });
         setSingleArrow();

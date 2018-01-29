@@ -291,7 +291,8 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
                             .getApplinkUnsupported(getActivity())
                             .showAndCheckApplinkUnsupported();
                 }
-            } else if (getActivity().getApplication() instanceof TkpdCoreRouter) {
+            } else if (getActivity() != null &&
+                    getActivity().getApplication() instanceof TkpdCoreRouter) {
                 String applink = ((TkpdCoreRouter) getActivity().getApplication())
                         .applink(getActivity(), url);
                 if (!TextUtils.isEmpty(applink)) {
