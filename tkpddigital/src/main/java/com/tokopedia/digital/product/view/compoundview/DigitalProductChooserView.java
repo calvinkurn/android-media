@@ -76,13 +76,11 @@ public class DigitalProductChooserView extends BaseDigitalChooserView<Product> {
     }
 
     public void renderInitDataList(List<Product> productList, int defaultProductId) {
-        this.dataList = productList;
+        dataList = productList;
         if (!productList.isEmpty()) {
-            for (int i = 0; i < productList.size(); i++) {
-                if (Integer.valueOf(productList.get(i).getProductId()) == defaultProductId) {
-                    this.dataSelected = productList.get(i);
-                    break;
-                }
+            dataSelected = findProductById(defaultProductId);
+            if (dataSelected == null) {
+                dataSelected = productList.get(0);
             }
         }
         invalidateContentView();
@@ -91,9 +89,18 @@ public class DigitalProductChooserView extends BaseDigitalChooserView<Product> {
         layoutProduct.setOnClickListener(getOnChooserClickedListener());
     }
 
+    private Product findProductById(int defaultProductId) {
+        for (int i = 0; i < dataList.size(); i++) {
+            if (Integer.valueOf(dataList.get(i).getProductId()) == defaultProductId) {
+                return dataList.get(i);
+            }
+        }
+        return null;
+    }
+
     private void invalidateContentView() {
         if (dataSelected != null) {
-            this.tvNameProduct.setText(dataSelected.getDesc());
+            tvNameProduct.setText(dataSelected.getDesc());
             switch (dataSelected.getStatus()) {
                 case Product.STATUS_OUT_OF_STOCK:
                     tvErrorProduct.setVisibility(VISIBLE);
@@ -110,7 +117,7 @@ public class DigitalProductChooserView extends BaseDigitalChooserView<Product> {
 
     @Override
     public void renderUpdateDataSelected(Product data) {
-        this.dataSelected = data;
+        dataSelected = data;
         invalidateContentView();
         if (actionListener != null)
             actionListener.onUpdateDataDigitalChooserSelectedRendered(dataSelected);

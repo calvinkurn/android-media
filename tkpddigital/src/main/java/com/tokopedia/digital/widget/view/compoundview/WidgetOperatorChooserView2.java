@@ -56,12 +56,12 @@ public class WidgetOperatorChooserView2 extends LinearLayout {
         ButterKnife.bind(this);
     }
 
-    public void renderDataView(final List<Operator> operators, String operatorId) {
+    public void renderDataView(final List<Operator> operators, String defaultOperatorId) {
         WidgetOperatorAdapter2 adapterOperator = new WidgetOperatorAdapter2(
                 getContext(), android.R.layout.simple_spinner_item, operators);
         spinnerOperator.setAdapter(adapterOperator);
         spinnerOperator.setOnItemSelectedListener(getItemSelectedListener(operators));
-        initSetLastOrderSelectedOperator(operators, operatorId);
+        initSetLastOrderSelectedOperator(operators, defaultOperatorId);
     }
 
     private AdapterView.OnItemSelectedListener getItemSelectedListener(final List<Operator> operators) {
@@ -81,11 +81,11 @@ public class WidgetOperatorChooserView2 extends LinearLayout {
         };
     }
 
-    private void initSetLastOrderSelectedOperator(List<Operator> operators, String operatorId) {
+    private void initSetLastOrderSelectedOperator(List<Operator> operators, String defaultOperatorId) {
         for (int i = 0, operatorsSize = operators.size(); i < operatorsSize; i++) {
             Operator operator = operators.get(i);
             if (String.valueOf(operator.getOperatorId())
-                    .equalsIgnoreCase(String.valueOf(operatorId))) {
+                    .equalsIgnoreCase(String.valueOf(defaultOperatorId))) {
                 spinnerOperator.setSelection(i);
                 listener.onCheckChangeOperator(operator);
             }

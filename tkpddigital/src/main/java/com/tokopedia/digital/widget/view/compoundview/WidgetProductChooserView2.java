@@ -121,9 +121,9 @@ public class WidgetProductChooserView2 extends LinearLayout {
         }
     }
 
-    private void setSpnNominalSelectionBasedLastOrder(List<Product> productList, String productId) {
+    private void setSpnNominalSelectionBasedLastOrder(List<Product> productList, String defaultProductId) {
         for (int i = 0; i < productList.size(); i++) {
-            if (productList.get(i).getProductId().equals(productId)) {
+            if (productList.get(i).getProductId().equals(defaultProductId)) {
                 spinnerNominal.setSelection(i);
                 break;
             }

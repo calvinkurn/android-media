@@ -75,21 +75,12 @@ public class DigitalOperatorChooserView extends BaseDigitalChooserView<Operator>
         tvErrorOperator.setVisibility(GONE);
     }
 
-    private void invalidateContentView() {
-        this.tvNameOperator.setText(dataSelected.getName());
-        //TODO bisa set error text disini berdasarkan status operatornya
-    }
-
     public void renderInitDataList(List<Operator> operatorList, String defaultOperatorId) {
-        this.dataList = operatorList;
-        if (!dataList.isEmpty()) {
-            this.dataSelected = dataList.get(0);
-            for (int i = 0, operatorsSize = dataList.size(); i < operatorsSize; i++) {
-                Operator operator = dataList.get(i);
-                if (String.valueOf(operator.getOperatorId())
-                        .equalsIgnoreCase(defaultOperatorId)) {
-                    this.dataSelected = dataList.get(i);
-                }
+        dataList = operatorList;
+        if (!operatorList.isEmpty()) {
+            dataSelected = findOperatorById(defaultOperatorId);
+            if (dataSelected == null) {
+                dataSelected = dataList.get(0);
             }
         }
         invalidateContentView();
@@ -98,9 +89,25 @@ public class DigitalOperatorChooserView extends BaseDigitalChooserView<Operator>
         layoutProduct.setOnClickListener(getOnChooserClickedListener());
     }
 
+    private Operator findOperatorById(String defaultOperatorId) {
+        for (int i = 0, operatorsSize = dataList.size(); i < operatorsSize; i++) {
+            Operator operator = dataList.get(i);
+            if (String.valueOf(operator.getOperatorId())
+                    .equalsIgnoreCase(defaultOperatorId)) {
+                return dataList.get(i);
+            }
+        }
+        return null;
+    }
+
+    private void invalidateContentView() {
+        tvNameOperator.setText(dataSelected.getName());
+        //TODO bisa set error text disini berdasarkan status operatornya
+    }
+
     @Override
-    public void renderUpdateDataSelected(Operator data) {
-        this.dataSelected = data;
+    public void renderUpdateDataSelected(Operator operator) {
+        dataSelected = operator;
         invalidateContentView();
         if (actionListener != null)
             actionListener.onUpdateDataDigitalChooserSelectedRendered(dataSelected);
