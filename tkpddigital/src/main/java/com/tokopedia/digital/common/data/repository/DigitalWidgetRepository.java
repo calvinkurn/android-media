@@ -10,7 +10,7 @@ import java.util.List;
 import rx.Observable;
 
 /**
- * Created by Rizky on 22/01/18.
+ * @author rizkyfadillah on 22/01/18.
  */
 
 public class DigitalWidgetRepository implements IDigitalWidgetRepository {

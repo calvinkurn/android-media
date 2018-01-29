@@ -20,7 +20,7 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
- * Created by Rizky on 19/01/18.
+ * @author rizkyfadillah on 19/01/18.
  */
 
 public class CategoryDetailDataSource {

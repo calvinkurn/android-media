@@ -17,7 +17,7 @@ import com.tokopedia.digital.widget.view.listener.IDigitalWidgetView;
 import rx.Subscriber;
 
 /**
- * Created by Rizky on 15/01/18.
+ * @author rizkyfadillah on 15/01/18.
  */
 
 public class DigitalWidgetPresenter extends BaseDigitalPresenter implements IDigitalWidgetPresenter {

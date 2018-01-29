@@ -9,7 +9,7 @@ import com.tokopedia.digital.widget.view.model.DigitalNumberList;
 import rx.Observable;
 
 /**
- * Created by Rizky on 19/01/18.
+ * @author rizkyfadillah on 19/01/18.
  */
 
 public class DigitalCategoryRepository implements IDigitalCategoryRepository {

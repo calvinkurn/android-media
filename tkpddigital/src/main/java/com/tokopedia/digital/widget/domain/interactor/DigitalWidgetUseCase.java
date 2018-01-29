@@ -18,7 +18,7 @@ import rx.Observable;
 import rx.functions.Func1;
 
 /**
- * Created by Rizky on 22/01/18.
+ * @author rizkyfadillah on 22/01/18.
  */
 
 public class DigitalWidgetUseCase extends UseCase<List<Category>> {

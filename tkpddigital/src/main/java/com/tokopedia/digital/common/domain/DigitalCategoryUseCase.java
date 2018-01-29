@@ -24,7 +24,7 @@ import rx.Observable;
 import rx.functions.Func2;
 
 /**
- * Created by Rizky on 19/01/18.
+ * @author rizkyfadillah on 19/01/18.
  */
 
 public class DigitalCategoryUseCase extends UseCase<ProductDigitalData> {
