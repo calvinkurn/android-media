@@ -16,7 +16,9 @@ import java.util.List;
 public interface IProductDigitalPresenter {
     String TAG = IProductDigitalPresenter.class.getSimpleName();
 
-    void processGetCategoryAndBannerData();
+    void processGetCategoryAndBannerData(
+            String categoryId, String operatorId, String productId, String clientNumber
+    );
 
     void processStoreLastInputClientNumberByCategory(
             String lastClientNumber, String categoryId, String operatorId, String productId
@@ -47,5 +49,9 @@ public interface IProductDigitalPresenter {
     void storeUssdPhoneNumber(int selectedSim,String number);
 
     Operator getSelectedUssdOperator(int selectedSim);
+
+    boolean isCarrierSignalsNotAvailable(String carrierName);
+
+    void renderCheckPulsa();
 
 }

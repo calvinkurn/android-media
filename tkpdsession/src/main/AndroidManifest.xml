@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.session">
+          package="com.tokopedia.session">
 
     <application
         android:allowBackup="true"
@@ -11,84 +11,137 @@
             android:label="@string/title_activity_login"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".forgotpassword.activity.ForgotPasswordActivity"
             android:label="@string/title_activity_forgot_password"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>
         <activity
             android:name=".register.view.activity.RegisterEmailActivity"
             android:label="@string/title_activity_register"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
         <activity
             android:name=".activation.view.activity.ActivationActivity"
             android:label="@string/title_activity_activation"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
         <activity
             android:name="com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity"
             android:label="@string/title_activity_phone_verification"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name="com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationProfileActivity"
             android:label="@string/title_activity_phone_verification"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name="com.tokopedia.otp.phoneverification.view.activity.ChangePhoneNumberActivity"
             android:label="@string/title_activity_change_phone_number"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize"/>
         <activity
-            android:name=".changephonenumber.activity.ChangePhoneNumberRequestActivity"
+            android:name=".changephonenumber.view.activity.ChangePhoneNumberRequestActivity"
             android:label="@string/title_change_phone_number_request"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activation.view.activity.ChangeEmailActivity"
             android:label="@string/button_change_email"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden"/>
         <activity
             android:name=".login.view.ReloginActivity"
-            android:theme="@style/Theme.AppCompat.Translucent" />
+            android:theme="@style/Theme.AppCompat.Translucent"/>
         <activity
             android:name="com.tokopedia.otp.phoneverification.view.activity.TokoCashWebViewActivity"
             android:label="@string/tokocash"
             android:screenOrientation="portrait" />
-
+<activity
+            android:name="com.tokopedia.otp.tokocashotp.view.activity.VerificationActivity"
+            android:label="@string/title_verify"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name="com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity"
-            android:windowSoftInputMode="adjustResize"
             android:label="@string/profile_completion_title"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name="com.tokopedia.otp.cotp.view.activity.VerificationActivity"
+            android:label="@string/title_verify"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".login.loginphonenumber.view.activity.LoginPhoneNumberActivity"
+            android:label="@string/login"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysVisible"/>
+
+        <activity
+            android:name=".login.loginphonenumber.view.activity.ChooseTokocashAccountActivity"
+            android:label=""
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
+
+        <activity
+            android:name=".login.loginphonenumber.view.activity.NotConnectedTokocashActivity"
+            android:label=""
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
+
+        <activity
+            android:name="com.tokopedia.otp.securityquestion.view.activity.SecurityQuestionActivity"
+            android:label="@string/bar_security_question"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
 
         <service
             android:name=".session.intentservice.LoginService"
-            android:exported="false" />
+            android:exported="false"/>
         <service
             android:name=".session.intentservice.ResetPasswordService"
-            android:exported="false" />
+            android:exported="false"/>
         <service
             android:name=".session.intentservice.RegisterService"
-            android:exported="false" />
+            android:exported="false"/>
         <service
             android:name=".session.intentservice.OTPService"
-            android:exported="false" />
+            android:exported="false"/>
 
         <activity
             android:name=".register.view.activity.SmartLockActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/DialogTheme" />
+            android:theme="@style/DialogTheme"/>
         <activity
             android:name=".google.GoogleSignInActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/DialogTheme" />
-
+            android:theme="@style/DialogTheme"/>
+        <activity
+            android:name=".changephonenumber.view.activity.ChangePhoneNumberWarningActivity"
+            android:label=""
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".changephonenumber.view.activity.ChangePhoneNumberInputActivity"
+            android:label="@string/change_phone_number"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".changephonenumber.view.activity.ChangePhoneNumberEmailVerificationActivity"
+            android:label="@string/title_verify"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"
+            />
+        <activity
+            android:name=".changephonenumber.view.activity.ChangePhoneNumberEmailActivity"
+            android:label="@string/title_verify"
+            android:screenOrientation="portrait"
+            />
     </application>
 
 </manifest>

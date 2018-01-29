@@ -71,17 +71,22 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
 
                                 return digitalWidgetRepository.getObservableProducts()
                                         .map(productMapper)
+                                        .doOnNext(
+                                                new Action1<List<Product>>() {
+                                                    @Override
+                                                    public void call(List<Product> products) {
+                                                        if (products.size() == 0)
+                                                            throw new RuntimeException("kosong");
+                                                    }
+                                                }
+                                        )
                                         .flatMapIterable(new Func1<List<Product>, Iterable<Product>>() {
                                             @Override
                                             public Iterable<Product> call(List<Product> products) {
                                                 return products;
                                             }
                                         })
-                                        .filter(new Func1<Product, Boolean>() {
-                                            @Override
-                                            public Boolean call(Product product) {
-                                                return isProductValidToOperator(product, categoryId, operatorId);                                            }
-                                        })
+                                        .filter(isProductValidToOperator(categoryId, operatorId))
                                         .toList()
                                         .map(new Func1<List<Product>, Pair<Operator, List<Product>>>() {
                                             @Override
@@ -100,31 +105,39 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
 
     @Override
     public void getOperatorAndProductsByOperatorId(Subscriber<Pair<Operator, List<Product>>> subscriber,
-                                                   final int categoryId, String operatorId) {
+                                                   final int categoryId, final String operatorId) {
         compositeSubscription.add(
-                Observable.zip(
-                        getOperatorById(operatorId),
-                        digitalWidgetRepository.getObservableProducts()
-                                .map(productMapper)
-                                .doOnNext(
-                                        new Action1<List<Product>>() {
-                                            @Override
-                                            public void call(List<Product> products) {
-                                                if (products.size() == 0)
-                                                    throw new RuntimeException("kosong");
-                                            }
-                                        }
-                                ),
-                        new Func2<List<Operator>, List<Product>, Pair<Operator, List<Product>>>() {
+                getOperatorById(operatorId)
+                        .flatMap(new Func1<List<Operator>, Observable<Pair<Operator, List<Product>>>>() {
                             @Override
-                            public Pair<Operator, List<Product>> call(List<Operator> operators, List<Product> products) {
-                                List<Product> filteredProducts = Observable.from(products)
-                                        .filter(isProductValidToOperator(categoryId, operators.get(0).getId()))
-                                        .toList()
-                                        .toBlocking()
-                                        .single();
+                            public Observable<Pair<Operator, List<Product>>> call(List<Operator> operators) {
+                                final Operator operator = operators.get(0);
 
-                                return Pair.create(operators.get(0), filteredProducts);
+                                return digitalWidgetRepository.getObservableProducts()
+                                        .map(productMapper)
+                                        .doOnNext(
+                                                new Action1<List<Product>>() {
+                                                    @Override
+                                                    public void call(List<Product> products) {
+                                                        if (products.size() == 0)
+                                                            throw new RuntimeException("kosong");
+                                                    }
+                                                }
+                                        )
+                                        .flatMapIterable(new Func1<List<Product>, Iterable<Product>>() {
+                                            @Override
+                                            public Iterable<Product> call(List<Product> products) {
+                                                return products;
+                                            }
+                                        })
+                                        .filter(isProductValidToOperator(categoryId, Integer.valueOf(operatorId)))
+                                        .toList()
+                                        .map(new Func1<List<Product>, Pair<Operator, List<Product>>>() {
+                                            @Override
+                                            public Pair<Operator, List<Product>> call(List<Product> products) {
+                                                return Pair.create(operator, products);
+                                            }
+                                        });
                             }
                         })
                         .unsubscribeOn(Schedulers.from(threadExecutor))
@@ -352,22 +365,6 @@ public class DigitalWidgetInteractor implements IDigitalWidgetInteractor {
                         product.getAttributes().getStatus() != STATE_CATEGORY_NON_ACTIVE;
             }
         };
-    }
-
-    private boolean isProductValidToOperator(final Product product, final int categoryId, final int operatorId) {
-        return product
-                .getRelationships()
-                .getCategory()
-                .getData()
-                .getId() == categoryId
-                &&
-                product
-                        .getRelationships()
-                        .getOperator()
-                        .getData()
-                        .getId() == operatorId
-                &&
-                product.getAttributes().getStatus() != STATE_CATEGORY_NON_ACTIVE;
     }
 
     private Func1<Product, Boolean> isProductExist(final int categoryId, final int operatorId, final int productId) {

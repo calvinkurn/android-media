@@ -25,7 +25,7 @@ import com.tokopedia.topads.dashboard.constant.TopAdsSuggestionBidInteractionTyp
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.utils.ViewUtils;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailAdViewModel;
-import com.tokopedia.topads.dashboard.view.widget.PrefixEditText;
+import com.tokopedia.seller.common.widget.PrefixEditText;
 
 /**
  * Created by zulfikarrahman on 8/7/17.
@@ -54,17 +54,10 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
     private PrefixEditText budgetPerDayEditText;
     protected long suggestionBidValue;
     protected String defaultSuggestionBidButtonStatus;
-    protected boolean isFirstTime; // when first time, all edit text should be empty without validation
-    private String IS_FIRST_TIME = "IS_FIRST_TIME";
 
     protected void onClickedNext() {
         showLoading();
         populateDataFromFields();
-    }
-
-    protected boolean isError() {
-        return (maxPriceInputLayout.isErrorEnabled() && maxPriceInputLayout.getError() != null) ||
-                (budgetPerDayInputLayout.isErrorEnabled() && budgetPerDayInputLayout.getError() != null);
     }
 
     protected abstract V initiateDetailAd();
@@ -105,23 +98,7 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
         defaultSuggestionBidButtonStatus = TopAdsSuggestionBidInteractionTypeDef.NO_SUGGESTION;
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putBoolean(IS_FIRST_TIME, isFirstTime);
-    }
-
     protected abstract void loadSuggestionBid();
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            isFirstTime = savedInstanceState.getBoolean(IS_FIRST_TIME, false);
-        } else {
-            isFirstTime = true;
-        }
-        super.onViewCreated(view, savedInstanceState);
-    }
 
     @Override
     protected void initialVar() {
@@ -137,10 +114,6 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
             @Override
             public void onNumberChanged(double number) {
                 super.onNumberChanged(number);
-                if (isFirstTime) {
-                    isFirstTime = false;
-                    return;
-                }
                 checkMaxPrice(number);
                 onPriceChanged(number);
             }
@@ -191,6 +164,18 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
         progressDialog.setMessage(getString(R.string.title_loading));
     }
 
+    protected boolean isPriceError() {
+        boolean maxPriceError = maxPriceInputLayout.isErrorEnabled() && maxPriceInputLayout.getError() != null;
+        if (maxPriceError) {
+            return true;
+        }
+        boolean budgetPerDayError = budgetPerDayInputLayout.isErrorEnabled() && budgetPerDayInputLayout.getError() != null;
+        if (budgetPerDayRadioButton.isChecked() && budgetPerDayError) {
+            return true;
+        }
+        return false;
+    }
+
     protected void onPriceChanged(double number) {
 
     }
@@ -204,6 +189,9 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
             return;
         }
         setSuggestionBidText(data.getData().get(0).getMedian(), data.getData().get(0).getMedianFmt());
+        if (TextUtils.isEmpty(maxPriceEditText.getTextWithoutPrefix())) {
+            maxPriceEditText.setText(String.valueOf(data.getData().get(0).getMedian()));
+        }
     }
 
     protected void setSuggestionBidText(long suggestionBidValue, @Nullable String suggestionBidText){
@@ -259,15 +247,6 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
             }
             detailAd.setBudget(true);
         }
-    }
-
-    protected boolean firstTimeCheck() {
-        if (isFirstTime) {
-            isFirstTime = false;
-            checkMaxPrice(0);
-            return true;
-        }
-        return false;
     }
 
     protected void loadAd(V detailAd) {

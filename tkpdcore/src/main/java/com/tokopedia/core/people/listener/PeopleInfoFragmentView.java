@@ -29,6 +29,8 @@ public interface PeopleInfoFragmentView {
 
     void openDetailFavoritedShop(PeopleInfoData.UserInfo userInfo);
 
+    void openFollowingPage(int userId);
+
     void openShopDetail(String shopId);
 
     void setShopnView(boolean isVisible);

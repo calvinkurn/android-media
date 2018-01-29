@@ -49,9 +49,9 @@ public class OperatorMapper implements Func1<List<OperatorEntity>, List<Operator
                 }
                 operator.setAttributes(attributes);
             }
-
             operatorList.add(operator);
         }
         return operatorList;
     }
+
 }

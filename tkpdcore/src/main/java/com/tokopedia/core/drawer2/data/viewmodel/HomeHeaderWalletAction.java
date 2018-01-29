@@ -3,6 +3,9 @@ package com.tokopedia.core.drawer2.data.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author anggaprasetiyo on 9/13/17.
  */
@@ -20,6 +23,7 @@ public class HomeHeaderWalletAction implements Parcelable {
     private String labelActionButton;
     private String appLinkActionButton;
     private String redirectUrlActionButton;
+    private List<String> abTags = new ArrayList<>();
 
     public String getLabelTitle() {
         return labelTitle;
@@ -93,6 +97,16 @@ public class HomeHeaderWalletAction implements Parcelable {
         this.redirectUrlActionButton = redirectUrlActionButton;
     }
 
+    public List<String> getAbTags() {
+        return abTags;
+    }
+
+    public void setAbTags(List<String> abTags) {
+        this.abTags = abTags;
+    }
+
+    public HomeHeaderWalletAction() {
+    }
 
     @Override
     public int describeContents() {
@@ -110,9 +124,7 @@ public class HomeHeaderWalletAction implements Parcelable {
         dest.writeString(this.labelActionButton);
         dest.writeString(this.appLinkActionButton);
         dest.writeString(this.redirectUrlActionButton);
-    }
-
-    public HomeHeaderWalletAction() {
+        dest.writeStringList(this.abTags);
     }
 
     protected HomeHeaderWalletAction(Parcel in) {
@@ -125,18 +137,18 @@ public class HomeHeaderWalletAction implements Parcelable {
         this.labelActionButton = in.readString();
         this.appLinkActionButton = in.readString();
         this.redirectUrlActionButton = in.readString();
+        this.abTags = in.createStringArrayList();
     }
 
-    public static final Parcelable.Creator<HomeHeaderWalletAction> CREATOR =
-            new Parcelable.Creator<HomeHeaderWalletAction>() {
-                @Override
-                public HomeHeaderWalletAction createFromParcel(Parcel source) {
-                    return new HomeHeaderWalletAction(source);
-                }
+    public static final Creator<HomeHeaderWalletAction> CREATOR = new Creator<HomeHeaderWalletAction>() {
+        @Override
+        public HomeHeaderWalletAction createFromParcel(Parcel source) {
+            return new HomeHeaderWalletAction(source);
+        }
 
-                @Override
-                public HomeHeaderWalletAction[] newArray(int size) {
-                    return new HomeHeaderWalletAction[size];
-                }
-            };
+        @Override
+        public HomeHeaderWalletAction[] newArray(int size) {
+            return new HomeHeaderWalletAction[size];
+        }
+    };
 }

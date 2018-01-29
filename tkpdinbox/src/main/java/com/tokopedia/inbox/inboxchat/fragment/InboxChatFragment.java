@@ -606,7 +606,7 @@ public class InboxChatFragment extends BaseDaggerFragment
             @Override
             public void run() {
                 TextView title = (TextView) notifier.findViewById(R.id.title);
-                title.setText(getActivity().getString(R.string.connected_websocket));
+                title.setText(R.string.connected_websocket);
                 View action = notifier.findViewById(R.id.action);
                 action.setVisibility(View.GONE);
             }

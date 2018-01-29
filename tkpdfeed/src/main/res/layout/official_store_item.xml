@@ -20,7 +20,7 @@
             android:layout_marginRight="@dimen/margin_vs"
             android:layout_marginTop="@dimen/margin_vs"
             android:adjustViewBounds="true"
-            android:background="@color/transparent"
+            android:background="@android:color/transparent"
             android:contentDescription="@string/image_product_desc"
             android:gravity="center"
             android:scaleType="fitCenter"
