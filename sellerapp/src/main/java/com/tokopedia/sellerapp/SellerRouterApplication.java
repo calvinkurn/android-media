@@ -385,6 +385,11 @@ public abstract class SellerRouterApplication extends MainApplication
     public AnalyticTracker getAnalyticTracker() {
         return new AnalyticTracker() {
             @Override
+            public void sendEventTracking(Map<String, Object> events) {
+
+            }
+
+            @Override
             public void sendEventTracking(String event, String category, String action, String label) {
 
             }

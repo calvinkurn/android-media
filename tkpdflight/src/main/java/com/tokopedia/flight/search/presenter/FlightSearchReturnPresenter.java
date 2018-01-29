@@ -1,7 +1,7 @@
 package com.tokopedia.flight.search.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.utils.CommonUtils;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.flight.booking.domain.FlightBookingGetSingleResultUseCase;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.search.data.cloud.model.response.Route;
