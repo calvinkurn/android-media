@@ -20,8 +20,6 @@ import com.tokopedia.tkpd.tkpdreputation.R;
 public class ReviewProductItemFilterView extends BaseCustomView {
 
     private static final int DEF_VALUE_EMPTY = 0;
-    public static final int ACTIVE_STAR = 1;
-    public static final int INACTIVE_STAR = 0;
     private ImageView ratingBar;
     private TextView counterRating;
     private int rating;
@@ -74,9 +72,9 @@ public class ReviewProductItemFilterView extends BaseCustomView {
 
     public void setActive(boolean active) {
         isActive = active;
-        if(active){
+        if (active) {
             ratingBar.setImageResource(R.drawable.ic_rating_gold);
-        }else{
+        } else {
             ratingBar.setImageResource(R.drawable.ic_rating);
         }
     }

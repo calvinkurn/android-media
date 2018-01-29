@@ -21,9 +21,8 @@ import java.util.List;
 public class QuickSingleFilterView extends BaseCustomView {
 
     private QuickFilterItem defaultItem = null;
-    private View rootView;
     private RecyclerView recyclerView;
-    protected BaseQuickSingleFilterAdapter adapterFilter;
+    protected BaseQuickSingleFilterAdapter<ItemFilterViewHolder> adapterFilter;
     private ActionListener listener;
     private String selectedType = "";
 
@@ -47,7 +46,7 @@ public class QuickSingleFilterView extends BaseCustomView {
     }
 
     private void init() {
-        rootView = inflate(getContext(), R.layout.widget_quick_filter, this);
+        View rootView = inflate(getContext(), R.layout.widget_quick_filter, this);
         recyclerView = (RecyclerView) rootView.findViewById(R.id.rv_filter);
 
         recyclerView.setHasFixedSize(true);
@@ -58,14 +57,14 @@ public class QuickSingleFilterView extends BaseCustomView {
     }
 
     protected void initialAdapter() {
-        this.adapterFilter = new QuickSingleFilterAdapter(getFilterTokoCashListener());
+        this.adapterFilter = new QuickSingleFilterAdapter(getQuickSingleFilterListener());
     }
 
     public void renderFilter(List<QuickFilterItem> quickFilterItems) {
-        adapterFilter.addFilterTokoCashList(quickFilterItems);
+        adapterFilter.addQuickFilterList(quickFilterItems);
     }
 
-    protected QuickSingleFilterListener getFilterTokoCashListener() {
+    protected QuickSingleFilterListener getQuickSingleFilterListener() {
         return new QuickSingleFilterListener() {
 
             @Override
@@ -137,7 +136,7 @@ public class QuickSingleFilterView extends BaseCustomView {
         }else {
             boolean isItemSelected = false;
             for (int i= 0; i<adapterFilter.getDataList().size(); i++) {
-                QuickFilterItem quickFilterItem = (QuickFilterItem) adapterFilter.getDataList().get(i);
+                QuickFilterItem quickFilterItem = adapterFilter.getDataList().get(i);
                 if (quickFilterItem.isSelected()) {
                     isItemSelected = true;
                     break;

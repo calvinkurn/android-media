@@ -1,70 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:padding="@dimen/padding_small"
-    android:id="@+id/review_layout"
-    android:layout_width="match_parent"
+<LinearLayout android:id="@+id/review_layout"
     android:layout_height="wrap_content"
-    android:background="@drawable/border_bottom_05dp"
-    android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/margin_small_sm"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/margin_small_sm"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <RelativeLayout
-        android:layout_marginBottom="@dimen/margin_small"
-        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        >
+        android:layout_marginBottom="@dimen/margin_small"
+        android:layout_width="match_parent">
 
         <RatingBar
-            android:id="@+id/product_rating"
             style="@style/Small.RatingBar"
-            android:layout_width="wrap_content"
-            android:layout_height="20dp"
-            android:layout_marginBottom="@dimen/margin_vs"
+            android:id="@+id/product_rating"
             android:isIndicator="true"
+            android:layout_height="@dimen/image_width_xxs"
+            android:layout_marginBottom="@dimen/margin_vs"
+            android:layout_width="wrap_content"
             android:numStars="5"
-            android:rating="4"/>
+            android:rating="4" />
 
         <TextView
-            android:id="@+id/reviewer_name"
             style="@style/TextView.Small.BlackSecondary"
-            android:layout_below="@id/product_rating"
             android:ellipsize="end"
+            android:id="@+id/reviewer_name"
+            android:layout_below="@id/product_rating"
             android:maxLines="1"
-            tools:text="Oleh Sarah Elizabeth"
-            />
+            tools:text="Oleh Sarah Elizabeth" />
 
         <TextView
-            android:id="@+id/review_time"
             style="@style/TextView.Micro.BlackDisabled"
+            android:id="@+id/review_time"
             android:layout_below="@id/reviewer_name"
-            tools:text="31 Jul 2016, pukul 11:48"
-            />
+            tools:text="31 Jul 2016, pukul 11:48" />
 
         <ImageView
             android:id="@+id/review_overflow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:src="@drawable/ic_more_vert_black_24dp"/>
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_more_vert_black_24dp" />
 
     </RelativeLayout>
 
     <TextView
-        android:id="@+id/review"
         style="@style/TextView.Small.BlackSecondary"
-        android:layout_marginBottom="@dimen/margin_small"
         android:enabled="true"
         android:focusable="true"
+        android:id="@+id/review"
+        android:layout_marginBottom="@dimen/margin_small"
         android:longClickable="true"
         android:textIsSelectable="true"
-        tools:text="One morning, when Gregor Samsa woke from troubled dreams, he found himself…Selengkapnya"
-        />
+        tools:text="One morning, when Gregor Samsa woke from troubled dreams, he found himself…Selengkapnya" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/product_review_image"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent" />
 
 </LinearLayout>

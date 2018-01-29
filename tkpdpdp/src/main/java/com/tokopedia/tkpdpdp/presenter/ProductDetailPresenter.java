@@ -36,7 +36,7 @@ public interface ProductDetailPresenter {
 
     void processToTalk(@NonNull Context context, @NonNull Bundle bundle);
 
-    void processToReputation(@NonNull Context context, @NonNull Bundle bundle);
+    void processToReputation(@NonNull Context context, String productId, String productName);
 
     void requestPromoteProduct(final @NonNull Context context, @NonNull ProductDetailData product);
 

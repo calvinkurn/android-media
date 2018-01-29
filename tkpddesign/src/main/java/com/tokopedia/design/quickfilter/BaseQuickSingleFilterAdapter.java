@@ -27,7 +27,7 @@ public abstract class BaseQuickSingleFilterAdapter<T extends BaseItemFilterViewH
         return filterList.size();
     }
 
-    public void addFilterTokoCashList(List<QuickFilterItem> filterList) {
+    public void addQuickFilterList(List<QuickFilterItem> filterList) {
         this.filterList.clear();
         this.filterList.addAll(filterList);
         notifyDataSetChanged();

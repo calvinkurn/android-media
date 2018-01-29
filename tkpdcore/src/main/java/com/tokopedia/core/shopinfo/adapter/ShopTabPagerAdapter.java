@@ -44,7 +44,9 @@ public class ShopTabPagerAdapter extends FragmentPagerAdapter {
         fragments.add(ProductList.newInstance(shopModel.useAce));
         fragments.add(ShopTalkFragment.createInstance());
         if(context.getApplicationContext() instanceof TkpdCoreRouter) {
-            fragments.add(((TkpdCoreRouter)context.getApplicationContext()).getShopReputationFragment(shopModel.getInfo().getShopId(), shopModel.getInfo().getShopDomain()));
+            fragments.add(((TkpdCoreRouter)context.getApplicationContext()).getShopReputationFragment(
+                    shopModel.getInfo().getShopId(),
+                    shopModel.getInfo().getShopDomain()));
         }
         fragments.add(new NotesList());
         notifyDataSetChanged();
@@ -56,7 +58,9 @@ public class ShopTabPagerAdapter extends FragmentPagerAdapter {
         fragments.add(ProductList.newInstance(shopModel.useAce));
         fragments.add(ShopTalkFragment.createInstance());
         if(context.getApplicationContext() instanceof TkpdCoreRouter) {
-            fragments.add(((TkpdCoreRouter)context.getApplicationContext()).getShopReputationFragment(shopModel.getInfo().getShopId(), shopModel.getInfo().getShopDomain()));
+            fragments.add(((TkpdCoreRouter)context.getApplicationContext()).getShopReputationFragment(
+                    shopModel.getInfo().getShopId(),
+                    shopModel.getInfo().getShopDomain()));
         }
         fragments.add(new NotesList());
         notifyDataSetChanged();
