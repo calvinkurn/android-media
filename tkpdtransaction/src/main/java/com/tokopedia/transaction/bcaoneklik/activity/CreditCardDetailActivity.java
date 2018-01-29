@@ -45,10 +45,10 @@ public class CreditCardDetailActivity extends TActivity
     private static final String JCB_LARGE = "bg_jcb_large";
     private static final String EXPIRED_LARGE = "bg_expired_large";
 
-    @BindView(R2.id.image_cc_big_size) ImageView mViewImageCc;
-    @BindView(R2.id.input_credit_card_number) TextView mCreditCardNumber;
-    @BindView(R2.id.card_expiry) TextView mCardExpiry;
-    @BindView(R2.id.credit_card_logo) ImageView mCreditCardLogo;
+    @BindView(R2.id.iv_credit_card_large) ImageView mViewImageCc;
+    @BindView(R2.id.tv_credit_card_number) TextView mCreditCardNumber;
+    @BindView(R2.id.tv_credit_card_expiry) TextView mCardExpiry;
+    @BindView(R2.id.iv_credit_card_logo) ImageView mCreditCardLogo;
 
     @Inject ListPaymentTypePresenterImpl mListPaymentTypePresenter;
 
@@ -120,7 +120,7 @@ public class CreditCardDetailActivity extends TActivity
         return getTitle() + " " + mCreditCardModelItem.getCardType();
     }
 
-    @OnClick(R2.id.button_delete_cc)
+    @OnClick(R2.id.btn_delete_cc)
     public void showDeleteCcDialog() {
         DeleteCreditCardDialog creditCardDialog = DeleteCreditCardDialog.newInstance(
                 mCreditCardModelItem.getTokenId(),
