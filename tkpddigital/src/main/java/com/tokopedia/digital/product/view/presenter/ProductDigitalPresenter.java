@@ -26,6 +26,7 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.data.entity.requestbody.pulsabalance.Attributes;
 import com.tokopedia.digital.common.data.entity.requestbody.pulsabalance.RequestBodyPulsaBalance;
+import com.tokopedia.digital.common.data.entity.response.Validation;
 import com.tokopedia.digital.common.domain.DigitalCategoryUseCase;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.domain.interactor.IProductDigitalInteractor;
@@ -257,7 +258,8 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
                 view.registerUssdReciever();
                 dailUssdToCheckBalance(simSlot, ussdCode);
             } else {
-                view.showMessageAlert(view.getActivity().getString(R.string.error_message_ussd_msg_not_parsed), view.getActivity().getString(R.string.message_ussd_title));
+                view.showMessageAlert(activity.getString(R.string.error_message_ussd_msg_not_parsed),
+                        activity.getString(R.string.message_ussd_title));
                 renderCheckPulsa();
                 view.showMessageAlert(activity.getString(R.string.error_message_ussd_msg_not_parsed),
                         activity.getString(R.string.message_ussd_title));
@@ -498,8 +500,8 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
 
     @Override
     public boolean isCarrierSignalsNotAvailable(String carrierName) {
-        final String noSignalStr = view.getActivity().getString(R.string.label_no_signal);
-        final String noServiceStr = view.getActivity().getString(R.string.label_no_service);
+        final String noSignalStr = activity.getString(R.string.label_no_signal);
+        final String noServiceStr = activity.getString(R.string.label_no_service);
         if (carrierName == null) {
             return false;
         }
@@ -519,12 +521,12 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
             CategoryData categoryDataState = view.getCategoryDataState();
 
             if (isOperatorListAvailable(categoryDataState)) {
-                if (RequestPermissionUtil.checkHasPermission(view.getActivity(), Manifest.permission.READ_PHONE_STATE)) {
+                if (RequestPermissionUtil.checkHasPermission(activity, Manifest.permission.READ_PHONE_STATE)) {
                     List<Validation> validationList = categoryDataState.getClientNumberList().get(0).getValidation();
                     boolean isCheckUssdButtonActive = true;
 
                     for (int i = 0; i < MAX_SIM_COUNT; i++) {
-                        String carrierName = DeviceUtil.getOperatorName(view.getActivity(), i);
+                        String carrierName = DeviceUtil.getOperatorName(activity, i);
                         Operator operator = getSelectedUssdOperator(i);
                         String ussdCode = operator.getUssdCode();
                         if (carrierName != null) {
@@ -533,14 +535,19 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
 
                                 //show the card if signal is not available with error message
                                 if (isCarrierSignalsNotAvailable(carrierName)) {
-                                    String operatorErrorMsg = view.getActivity().getString(R.string.label_no_signal);
+                                    String operatorErrorMsg = activity.getString(R.string.label_no_signal);
                                     carrierName = operatorErrorMsg;
-                                    view.renderCheckPulsaBalanceData(i, ussdCode, getPhoneNumberForSim(i, operator, validationList), operatorErrorMsg, true, carrierName);
+                                    view.renderCheckPulsaBalanceData(i, ussdCode,
+                                            getPhoneNumberForSim(i, operator, validationList),
+                                            operatorErrorMsg, true, carrierName);
                                     isCheckUssdButtonActive = true;
                                 } else {
                                     //if check button was not active for previous sim, then do not show another card for inactive case
                                     if (isCheckUssdButtonActive || i != (MAX_SIM_COUNT - 1)) {
-                                        view.renderCheckPulsaBalanceData(i, ussdCode, getPhoneNumberForSim(i, operator, validationList), view.getActivity().getString(R.string.label_operator_not_support), false, carrierName);
+                                        view.renderCheckPulsaBalanceData(i, ussdCode,
+                                                getPhoneNumberForSim(i, operator, validationList),
+                                                activity.getString(R.string.label_operator_not_support),
+                                                false, carrierName);
                                         isCheckUssdButtonActive = false;
                                     }
                                 }
