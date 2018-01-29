@@ -178,11 +178,6 @@
     <string name="tag_delete_credit_card_dialog">delete_credit_card_dialog</string>
     <string name="title_saved_credit_card">Kartu Kredit Tersimpan (%d/4)</string>
     <string name="apply">Terapkan</string>
-    <string name="density_mdpi">mdpi</string>
-    <string name="density_hdpi">hdpi</string>
-    <string name="density_xhdpi">xhdpi</string>
-    <string name="density_xxhdpi">xxhdpi</string>
-    <string name="density_xxxhdpi">xxxhdpi</string>
     <string name="bg_visa_small">bg_visa_small</string>
     <string name="bg_mastercard_small">bg_mastercard_small</string>
     <string name="bg_jcb_small">bg_jcb_small</string>
