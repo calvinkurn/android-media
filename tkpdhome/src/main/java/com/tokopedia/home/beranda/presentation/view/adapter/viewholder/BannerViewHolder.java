@@ -60,9 +60,9 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
         BannerSlidesModel model = slidesList.get(position);
         Promotion promotion = new Promotion();
         promotion.setPromotionID(String.valueOf(model.getId()));
-        promotion.setPromotionName(model.getTitle());
-        promotion.setPromotionAlias(model.getTitle());
-        promotion.setPromotionPosition(position);
+        promotion.setPromotionName("/ - p1 - promo");
+        promotion.setPromotionAlias(model.getTitle().trim().replaceAll(" ", "_"));
+        promotion.setPromotionPosition(position + 1);
         return promotion;
     }
 

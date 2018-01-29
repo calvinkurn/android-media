@@ -201,35 +201,6 @@ public class GTMContainer implements IGTMContainer {
     }
 
     @Override
-    public GTMContainer eventBannerImpression(Promotion promotion) {
-        Log.i("Tag Manager", "UA-98016xx-xx: Send Banner Impression");
-        Log.i("Tag Manager", "UA-98016xx-xx: " + promotion.getPromotionDataEvent());
-
-        GTMDataLayer.pushGeneral(context, new EventTracking("InternalPromotion", "Internal Promotion", "view", promotion.getPromotionName()).getEvent());
-
-        GTMDataLayer.pushEvent(context, AppEventTracking.Event.EVENT_INTERNAL_PROMO, DataLayer.mapOf("ecommerce", DataLayer.mapOf(
-                "promoView",
-                DataLayer.mapOf("promotions", DataLayer.listOf(promotion.getPromotionDataEvent()))))
-        );
-
-        return this;
-    }
-
-    @Override
-    public GTMContainer eventBannerClick(Promotion promotion) {
-        Log.i("Tag Manager", "UA-98016xx-yy: Send Banner Action");
-        Log.i("Tag Manager", "UA-98016xx-yy: " + promotion.getPromotionDataEvent());
-
-        GTMDataLayer.pushGeneral(context, new EventTracking("InternalPromotion", "Internal Promotion", "click", promotion.getPromotionName()).getEvent());
-
-        GTMDataLayer.pushEvent(context, AppEventTracking.Event.EVENT_INTERNAL_PROMO, DataLayer.mapOf("ecommerce", DataLayer.mapOf(
-                "promoClick",
-                DataLayer.mapOf("promotions", DataLayer.listOf(promotion.getPromotionDataEvent()))))
-        );
-        return this;
-    }
-
-    @Override
     public void clearCheckoutDataLayer() {
         GTMDataLayer.pushGeneral(context, DataLayer.mapOf("step", null, "products", null,
                 "currencyCode", null, "actionField", null, "ecommerce", null));
