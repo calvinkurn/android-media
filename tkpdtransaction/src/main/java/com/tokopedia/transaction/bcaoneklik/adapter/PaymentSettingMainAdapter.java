@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -233,18 +234,19 @@ public class PaymentSettingMainAdapter extends RecyclerView.Adapter<RecyclerView
 
         private TextView cardNumber;
         private ImageView cardImage;
+        private ImageView cardBackgroundImage;
         private LinearLayout cardBackground;
 
         CreditCardListViewHolder(View itemView) {
             super(itemView);
-
+            cardBackgroundImage = itemView.findViewById(R.id.iv_cc_background);
             cardBackground = itemView.findViewById(R.id.ll_cc_container);
             cardNumber = itemView.findViewById(R.id.card_number);
             cardImage = itemView.findViewById(R.id.card_image);
         }
 
         void bindCreditCardItem(final CreditCardModelItem item) {
-            cardBackground.setBackgroundResource(getBackgroundResource(item));
+            ImageHandler.LoadImage(cardBackgroundImage, getBackgroundAssets(item));
             cardBackground.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -259,16 +261,41 @@ public class PaymentSettingMainAdapter extends RecyclerView.Adapter<RecyclerView
             ImageHandler.LoadImage(cardImage, item.getCardTypeImage());
         }
 
-        private int getBackgroundResource(CreditCardModelItem item) {
+        private String getScreenDensity() {
+            switch (context.getResources().getDisplayMetrics().densityDpi) {
+                case DisplayMetrics.DENSITY_MEDIUM:
+                    return context.getString(R.string.density_mdpi);
+                case DisplayMetrics.DENSITY_HIGH:
+                    return context.getString(R.string.density_hdpi);
+                case DisplayMetrics.DENSITY_XHIGH:
+                    return context.getString(R.string.density_xhdpi);
+                case DisplayMetrics.DENSITY_XXHIGH:
+                    return context.getString(R.string.density_xxhdpi);
+                case DisplayMetrics.DENSITY_XXXHIGH:
+                    return context.getString(R.string.density_xxxhdpi);
+                default:
+                    return context.getString(R.string.density_mdpi);
+            }
+        }
+
+        private String getBackgroundAssets(CreditCardModelItem item) {
+            final String URL = "https://ecs7.tokopedia.net/img/android/%s/%s/%s.png";
+            String assetName = getBackgroundResource(item);
+            String density = getScreenDensity();
+
+            return String.format(URL, assetName, density, assetName);
+        }
+
+        private String getBackgroundResource(CreditCardModelItem item) {
             switch (item.getCardType().toLowerCase()) {
                 case VISA:
-                    return R.drawable.bg_visa_small;
+                    return context.getString(R.string.bg_visa_small);
                 case MASTERCARD:
-                    return R.drawable.bg_mastercard_small;
+                    return context.getString(R.string.bg_mastercard_small);
                 case JCB:
-                    return R.drawable.bg_jcb_small;
+                    return context.getString(R.string.bg_jcb_small);
                 default:
-                    return R.drawable.bg_expired_small;
+                    return context.getString(R.string.bg_expired_small);
             }
         }
 

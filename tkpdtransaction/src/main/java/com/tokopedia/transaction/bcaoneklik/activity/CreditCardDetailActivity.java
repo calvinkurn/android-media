@@ -5,6 +5,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.util.DisplayMetrics;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -56,7 +57,7 @@ public class CreditCardDetailActivity extends TActivity
 
         initInjector();
 
-        mViewImageCc.setBackgroundResource(getCcImageResource(mCreditCardModelItem));
+        ImageHandler.LoadImage(mViewImageCc, getBackgroundAssets(mCreditCardModelItem));
         mCreditCardNumber.setText(getSpacedText(mCreditCardModelItem.getMaskedNumber()));
         mCardExpiry.setText(getExpiredDate(mCreditCardModelItem));
         ImageHandler.LoadImage(mCreditCardLogo, mCreditCardModelItem.getCardTypeImage());
@@ -70,16 +71,42 @@ public class CreditCardDetailActivity extends TActivity
         component.inject(this);
     }
 
-    private int getCcImageResource(CreditCardModelItem item) {
+    public String getScreenDensity() {
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        switch (metrics.densityDpi) {
+            case DisplayMetrics.DENSITY_MEDIUM:
+                return getString(R.string.density_mdpi);
+            case DisplayMetrics.DENSITY_HIGH:
+                return getString(R.string.density_hdpi);
+            case DisplayMetrics.DENSITY_XHIGH:
+                return getString(R.string.density_xhdpi);
+            case DisplayMetrics.DENSITY_XXHIGH:
+                return getString(R.string.density_xxhdpi);
+            case DisplayMetrics.DENSITY_XXXHIGH:
+                return getString(R.string.density_xxxhdpi);
+            default:
+                return getString(R.string.density_mdpi);
+        }
+    }
+
+    private String getBackgroundAssets(CreditCardModelItem item) {
+        final String URL = "https://ecs7.tokopedia.net/img/android/%s/%s/%s.png";
+        String assetName = getBackgroundResource(item);
+        String density = getScreenDensity();
+
+        return String.format(URL, assetName, density, assetName);
+    }
+
+    private String getBackgroundResource(CreditCardModelItem item) {
         switch (item.getCardType().toLowerCase()) {
             case VISA:
-                return R.drawable.bg_visa_large;
+                return getString(R.string.bg_visa_large);
             case MASTERCARD:
-                return R.drawable.bg_mastercard_large;
+                return getString(R.string.bg_mastercard_large);
             case JCB:
-                return R.drawable.bg_jcb_large;
+                return getString(R.string.bg_jcb_large);
             default:
-                return R.drawable.bg_expired_large;
+                return getString(R.string.bg_expired_large);
         }
     }
 
