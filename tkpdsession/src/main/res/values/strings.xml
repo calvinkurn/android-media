@@ -172,5 +172,6 @@
     <string name="or_login_with">Atau masuk dengan:</string>
     <string name="limit_otp_reached_many_times">Anda telah melakukan permintaan kode berkali-kali.</string>
     <string name="my_phone_number_is_inactive">Nomor saya sudah tidak aktif</string>
+    <string name="verification_code_sent">Kode verifikasi telah dikirim</string>
 
 </resources>
