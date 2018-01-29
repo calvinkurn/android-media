@@ -42,6 +42,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     private static final String DEVICE_ID = "4";
     private static final String CATEGORY_ID = "27";
     private static final int MAX_PASSENGER_VALUE = 7;
+    private static final int MAX_TWO_YEARS = 2;
 
     private BannerGetDataUseCase bannerGetDataUseCase;
     private FlightDashboardValidator validator;
@@ -449,7 +450,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                 isDepartureDateValid = false;
                 getView().showDepartureDateShouldAtLeastToday(R.string.flight_dashboard_departure_should_atleast_today_error);
                 onDepartureDateChange(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE));
-            } else if ((Integer.parseInt(departureTripDate[0]) - today.get(Calendar.YEAR)) > 2) {
+            } else if ((Integer.parseInt(departureTripDate[0]) - today.get(Calendar.YEAR)) > MAX_TWO_YEARS) {
                 isDepartureDateValid = false;
                 getView().showApplinkErrorMessage(R.string.flight_dashboard_departure_max_two_years_from_today_error);
                 onDepartureDateChange(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE));
