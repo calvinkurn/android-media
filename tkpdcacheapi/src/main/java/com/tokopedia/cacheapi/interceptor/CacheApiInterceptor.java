@@ -73,14 +73,15 @@ public class CacheApiInterceptor implements Interceptor {
         }
         String requestParams = CacheApiUtils.getRequestParam(request);
         String cachedResponseData = getCacheDataUseCase.getData(CacheApiGetCacheDataUseCase.createParams(host, path, requestParams));
-        Response originalResponse = getDefaultResponse(chain);
         if (TextUtils.isEmpty(cachedResponseData)) {
             CacheApiLoggingUtils.dumper(String.format("Data is not here, fetch and save: %s", request.url().toString()));
+            Response originalResponse = getDefaultResponse(chain);
             if (responseValidator == null || responseValidator.isResponseValidToBeCached(originalResponse)) {
                 saveToDbUseCase.executeSync(CacheApiSaveToDbUseCase.createParams(host, path, originalResponse));
             }
             return originalResponse;
         } else {
+            Response originalResponse = getDefaultResponse(chain);
             CacheApiLoggingUtils.dumper(String.format("Data exist, return data from db: %s", request.url().toString()));
             Response.Builder builder = new Response.Builder();
             builder.request(request);
