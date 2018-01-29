@@ -7,63 +7,48 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by yfsx on 26/01/18.
+ * Created by yfsx on 29/01/18.
  */
 
 public class ResoInboxFilterModel implements Parcelable {
-    private String startID;
-    private int sortBy;
-    private int asc;
-    private List<Integer> filters;
-    private String startDate;
-    private String endDate;
+    private List<FilterViewModel> filterViewModelList;
+    private List<Integer> selectedFilterList;
+    private String dateFrom;
+    private String dateTo;
 
-    public String getStartID() {
-        return startID;
+    public ResoInboxFilterModel() {
     }
 
-    public void setStartID(String startID) {
-        this.startID = startID;
+    public List<FilterViewModel> getFilterViewModelList() {
+        return filterViewModelList;
     }
 
-    public int getSortBy() {
-        return sortBy;
+    public void setFilterViewModelList(List<FilterViewModel> filterViewModelList) {
+        this.filterViewModelList = filterViewModelList;
     }
 
-    public void setSortBy(int sortBy) {
-        this.sortBy = sortBy;
+    public List<Integer> getSelectedFilterList() {
+        return selectedFilterList;
     }
 
-    public int getAsc() {
-        return asc;
+    public void setSelectedFilterList(List<Integer> selectedFilterList) {
+        this.selectedFilterList = selectedFilterList;
     }
 
-    public void setAsc(int asc) {
-        this.asc = asc;
+    public String getDateFrom() {
+        return dateFrom;
     }
 
-    public List<Integer> getFilters() {
-        return filters;
+    public void setDateFrom(String dateFrom) {
+        this.dateFrom = dateFrom;
     }
 
-    public void setFilters(List<Integer> filters) {
-        this.filters = filters;
+    public String getDateTo() {
+        return dateTo;
     }
 
-    public String getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(String startDate) {
-        this.startDate = startDate;
-    }
-
-    public String getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(String endDate) {
-        this.endDate = endDate;
+    public void setDateTo(String dateTo) {
+        this.dateTo = dateTo;
     }
 
     @Override
@@ -73,34 +58,21 @@ public class ResoInboxFilterModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.startID);
-        dest.writeInt(this.sortBy);
-        dest.writeInt(this.asc);
-        dest.writeList(this.filters);
-        dest.writeString(this.startDate);
-        dest.writeString(this.endDate);
-    }
-
-    public ResoInboxFilterModel() {
-        setStartDate("");
-        setSortBy(0);
-        setAsc(0);
-        setEndDate("");
-        setStartID("");
-        setFilters(new ArrayList<Integer>());
+        dest.writeTypedList(this.filterViewModelList);
+        dest.writeList(this.selectedFilterList);
+        dest.writeString(this.dateFrom);
+        dest.writeString(this.dateTo);
     }
 
     protected ResoInboxFilterModel(Parcel in) {
-        this.startID = in.readString();
-        this.sortBy = in.readInt();
-        this.asc = in.readInt();
-        this.filters = new ArrayList<Integer>();
-        in.readList(this.filters, Integer.class.getClassLoader());
-        this.startDate = in.readString();
-        this.endDate = in.readString();
+        this.filterViewModelList = in.createTypedArrayList(FilterViewModel.CREATOR);
+        this.selectedFilterList = new ArrayList<Integer>();
+        in.readList(this.selectedFilterList, Integer.class.getClassLoader());
+        this.dateFrom = in.readString();
+        this.dateTo = in.readString();
     }
 
-    public static final Parcelable.Creator<ResoInboxFilterModel> CREATOR = new Parcelable.Creator<ResoInboxFilterModel>() {
+    public static final Creator<ResoInboxFilterModel> CREATOR = new Creator<ResoInboxFilterModel>() {
         @Override
         public ResoInboxFilterModel createFromParcel(Parcel source) {
             return new ResoInboxFilterModel(source);
@@ -112,4 +84,3 @@ public class ResoInboxFilterModel implements Parcelable {
         }
     };
 }
-

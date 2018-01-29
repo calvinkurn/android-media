@@ -11,7 +11,7 @@ import com.tokopedia.inbox.rescenter.inboxv2.domain.usecase.GetInboxSellerUseCas
 import com.tokopedia.inbox.rescenter.inboxv2.view.listener.ResoInboxFragmentListener;
 import com.tokopedia.inbox.rescenter.inboxv2.view.subscriber.GetInboxLoadMoreSubscriber;
 import com.tokopedia.inbox.rescenter.inboxv2.view.subscriber.GetInboxSubscriber;
-import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.ResoInboxFilterModel;
+import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.ResoInboxSortFilterModel;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.SortModel;
 
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ public class ResoInboxFragmentPresenter
 
     private Context context;
     private boolean isSeller;
-    private ResoInboxFilterModel filterModel;
+    private ResoInboxSortFilterModel filterModel;
 
     private GetInboxBuyerUseCase getInboxBuyerUseCase;
     private GetInboxSellerUseCase getInboxSellerUseCase;
@@ -52,7 +52,7 @@ public class ResoInboxFragmentPresenter
     @Override
     public void initPresenterData(Context context, boolean isSeller) {
         this.isSeller = isSeller;
-        filterModel = new ResoInboxFilterModel();
+        filterModel = new ResoInboxSortFilterModel();
         getInbox();
     }
 

@@ -24,6 +24,10 @@ public interface ResoInboxFragmentListener {
 
         void onErrorLoadMoreInbox(String err);
 
+        void onSuccessGetInboxWithFilter(InboxItemResultViewModel result);
+
+        void onErrorGetInboxWithFilter(String err);
+
         void showProgressBar();
 
         void dismissProgressBar();

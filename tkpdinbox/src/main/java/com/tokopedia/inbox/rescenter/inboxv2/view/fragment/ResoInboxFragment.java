@@ -12,6 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -20,6 +22,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
+import com.tokopedia.inbox.rescenter.inboxv2.view.activity.InboxFilterActivity;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 import com.tokopedia.inbox.rescenter.inboxv2.view.adapter.ResoInboxAdapter;
 import com.tokopedia.inbox.rescenter.inboxv2.view.adapter.SortAdapter;
@@ -27,6 +30,7 @@ import com.tokopedia.inbox.rescenter.inboxv2.view.di.DaggerResoInboxComponent;
 import com.tokopedia.inbox.rescenter.inboxv2.view.listener.ResoInboxFragmentListener;
 import com.tokopedia.inbox.rescenter.inboxv2.view.presenter.ResoInboxFragmentPresenter;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.InboxItemResultViewModel;
+import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.ResoInboxFilterModel;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.ResoInboxSortModel;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.SortModel;
 
@@ -39,6 +43,7 @@ import javax.inject.Inject;
 public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFragmentListener.View {
 
     public static final int REQUEST_DETAIL_RESO = 1234;
+    public static final int REQUEST_FILTER_RESO = 2345;
     private static final int SORT_DEFAULT_ID = 2;
 
     private ResoInboxAdapter inboxAdapter;
@@ -48,11 +53,14 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
     private ProgressBar progressBar;
     private BottomActionView bottomActionView;
     private BottomSheetDialog sortDialog;
+    private FrameLayout ffEmptyState, ffEmptyStateWithReset;
+    private Button btnResetFilter;
 
     private boolean isSeller;
     private boolean isCanLoadMore;
     private String lastCursor = "";
     private ResoInboxSortModel inboxSortModel;
+    private ResoInboxFilterModel inboxFilterModel;
 
     @Inject
     ResoInboxFragmentPresenter presenter;
@@ -77,6 +85,9 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
         rvQuickFilter = (RecyclerView) view.findViewById(R.id.rv_quick_filter);
         progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
         bottomActionView = (BottomActionView) view.findViewById(R.id.bav);
+        ffEmptyState = (FrameLayout) view.findViewById(R.id.view_empty_state);
+        ffEmptyStateWithReset = (FrameLayout) view.findViewById(R.id.view_empty_state_with_reset);
+        btnResetFilter = (Button) view.findViewById(R.id.btn_reset_filter);
         return view;
     }
 
@@ -94,6 +105,11 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
     }
 
     private void initView() {
+        bottomActionView.setVisibility(View.GONE);
+        rvInbox.setVisibility(View.GONE);
+        rvQuickFilter.setVisibility(View.GONE);
+        ffEmptyStateWithReset.setVisibility(View.GONE);
+        ffEmptyState.setVisibility(View.GONE);
         presenter.initPresenterData(getActivity(), isSeller);
     }
 
@@ -108,6 +124,13 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
             @Override
             public void onClick(View view) {
                 filterButtonClicked();
+            }
+        });
+        btnResetFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                inboxFilterModel = new ResoInboxFilterModel();
+                initView();
             }
         });
     }
@@ -162,12 +185,15 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
     }
 
     private void filterButtonClicked() {
-
+        startActivityForResult(
+                InboxFilterActivity.newInstance(getActivity(), inboxFilterModel), REQUEST_FILTER_RESO);
     }
 
-    @Override
-    public void onSuccessGetInbox(InboxItemResultViewModel result) {
+    private void getFirstInboxResult(InboxItemResultViewModel result) {
         dismissProgressBar();
+        rvInbox.setVisibility(View.VISIBLE);
+        rvQuickFilter.setVisibility(View.VISIBLE);
+        bottomActionView.setVisibility(View.VISIBLE);
         inboxAdapter = new ResoInboxAdapter(
                 getActivity(),
                 this,
@@ -177,10 +203,35 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
         updateParams(true, result);
     }
 
+    private void showEmptyState() {
+        ffEmptyState.setVisibility(View.VISIBLE);
+    }
+
+    private void showEmptyStateWithResetFilter() {
+        ffEmptyStateWithReset.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onSuccessGetInbox(InboxItemResultViewModel result) {
+        getFirstInboxResult(result);
+    }
+
     @Override
     public void onErrorGetInbox(String err) {
         dismissProgressBar();
+        showEmptyState();
         showErrorWithRetry(err);
+    }
+
+    @Override
+    public void onSuccessGetInboxWithFilter(InboxItemResultViewModel result) {
+        getFirstInboxResult(result);
+    }
+
+    @Override
+    public void onErrorGetInboxWithFilter(String err) {
+        dismissProgressBar();
+        showEmptyStateWithResetFilter();
     }
 
     @Override
@@ -224,6 +275,10 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_DETAIL_RESO) {
+            if (resultCode == Activity.RESULT_OK) {
+
+            }
+        } else if (requestCode == REQUEST_FILTER_RESO) {
             if (resultCode == Activity.RESULT_OK) {
 
             }

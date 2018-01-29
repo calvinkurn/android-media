@@ -61,7 +61,7 @@ public class GetInboxMapper implements Func1<Response<TkpdResponse>, InboxItemRe
         List<InboxItemViewModel> itemList = new ArrayList<>();
         for (InboxDataResponse response : responseList) {
             InboxItemViewModel item = new InboxItemViewModel(
-                    response.getId(),
+                    response.getResolution().getId(),
                     actionBy,
                     response.getResolution().getStatus().getString(),
                     "#ffffff",

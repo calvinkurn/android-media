@@ -1,6 +1,6 @@
 package com.tokopedia.inbox.rescenter.inboxv2.domain.params;
 
-import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.ResoInboxFilterModel;
+import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.ResoInboxSortFilterModel;
 import com.tokopedia.usecase.RequestParams;
 
 /**
@@ -39,7 +39,7 @@ public class GetInboxParams {
 //        return params;
 //    }
 
-    public static RequestParams getParams(ResoInboxFilterModel model) {
+    public static RequestParams getParams(ResoInboxSortFilterModel model) {
         RequestParams params = RequestParams.create();
         params.putInt(PARAM_LIMIT, PARAM_LIMIT_COUNT);
         params.putString(PARAM_START_ID, model.getStartID());

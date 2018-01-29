@@ -22,7 +22,6 @@
             android:layout_marginTop="@dimen/margin_vs"/>
     </LinearLayout>
 
-
     <ProgressBar
         android:id="@+id/progress_bar"
         android:layout_width="wrap_content"
@@ -32,12 +31,101 @@
 
     <com.tokopedia.design.button.BottomActionView
         android:id="@+id/bav"
-        android:layout_width="200dp"
-        android:layout_height="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center|bottom"
         android:layout_marginBottom="50dp"
         app:bav_1_display="true"
         app:bav_label_1="@string/string_title_sort"
         app:bav_2_display="true"
         app:bav_label_2="@string/string_title_filter"/>
+
+    <FrameLayout
+        android:id="@+id/view_empty_state"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/margin_small"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="top"
+            android:layout_marginTop="@dimen/margin_med">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="200dp" />
+            
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="@color/black_54"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:text="@string/string_empty_inbox_1_title"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="@color/black_54"
+                android:layout_marginTop="@dimen/margin_vs"
+                android:gravity="center"
+                android:text="@string/string_empty_inbox_1_desc"/>
+        </LinearLayout>
+    </FrameLayout>
+
+    <FrameLayout
+        android:visibility="visible"
+        android:id="@+id/view_empty_state_with_reset"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/margin_small">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="top"
+            android:layout_marginTop="@dimen/margin_med">
+
+            <ImageView
+                android:src="@drawable/empty_search"
+                android:layout_width="match_parent"
+                android:layout_height="200dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="@color/black_54"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:text="@string/string_empty_inbox_2_title"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textColor="@color/black_54"
+                android:layout_marginTop="@dimen/margin_vs"
+                android:gravity="center"
+                android:text="@string/string_empty_inbox_2_desc"/>
+            
+            <Button
+                android:id="@+id/btn_reset_filter"
+                android:layout_marginTop="@dimen/margin_med"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:text="@string/string_reset_filter"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:background="@drawable/bg_button_enable"
+                />
+        </LinearLayout>
+    </FrameLayout>
 </FrameLayout>
