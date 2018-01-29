@@ -490,7 +490,8 @@
                     android:layout_marginTop="@dimen/new_margin_med"
                     android:background="@color/white"
                     android:orientation="vertical"
-                    android:paddingTop="16dp">
+                    android:paddingTop="16dp"
+                    android:visibility="gone">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -522,7 +523,8 @@
                         android:layout_marginLeft="@dimen/new_margin_med"
                         android:layout_marginRight="@dimen/new_margin_med"
                         android:layout_marginTop="@dimen/new_margin_med"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:visibility="gone">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -539,7 +541,6 @@
 
                     </LinearLayout>
 
-
                     <LinearLayout
                         android:id="@+id/ll_additional_fee"
                         android:layout_width="match_parent"
@@ -547,7 +548,8 @@
                         android:layout_marginLeft="@dimen/new_margin_med"
                         android:layout_marginRight="@dimen/new_margin_med"
                         android:layout_marginTop="@dimen/new_margin_med"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:visibility="gone">
 
                         <TextView
                             android:layout_width="wrap_content"
