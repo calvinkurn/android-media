@@ -188,8 +188,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         initStateFragment = getDefaultTabPosition();
         Log.d(TAG, messageTAG + "onCreate");
         super.onCreate(arg0);
-        registerAllBroadcastReceiver();
-
         progressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
         if (arg0 != null) {
             //be16268	commit id untuk memperjelas yang bawah
@@ -397,7 +395,6 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterAllBroadcastReceiver();
     }
 
     public static Intent getHomeHotlistIntent(Context context) {
