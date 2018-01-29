@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -19,10 +20,13 @@ import com.tokopedia.digital.product.view.compoundview.ProductAdditionalInfoView
 import com.tokopedia.digital.product.view.model.CategoryData;
 import com.tokopedia.digital.product.view.model.HistoryClientNumber;
 import com.tokopedia.digital.product.view.model.Operator;
+import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.digital.product.view.model.Product;
+import com.tokopedia.digital.product.view.model.Validation;
 import com.tokopedia.digital.widget.view.compoundview.WidgetProductChooserView2;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 
@@ -101,6 +105,10 @@ public class CategoryProductStyle99View extends
         for (Operator operator : data.getOperatorList()) {
             if (operator.getOperatorId().equals(data.getDefaultOperatorId())) {
                 operatorSelected = operator;
+                setBtnBuyDigitalText(operatorSelected.getRule().getButtonText());
+                if (!operatorSelected.getClientNumberList().isEmpty()) {
+                    renderClientNumberInputForm(operatorSelected);
+                }
                 if (operatorSelected.getRule().getProductViewStyle() == 99) {
                     renderDefaultProductSelected();
                 } else {
@@ -108,6 +116,7 @@ public class CategoryProductStyle99View extends
                 }
             }
         }
+        btnBuyDigital.setOnClickListener(getButtonBuyClickedListener());
     }
 
     @Override
@@ -205,12 +214,170 @@ public class CategoryProductStyle99View extends
         };
     }
 
+    @NonNull
+    private ClientNumberInputView.ActionListener getActionListenerClientNumberInputView() {
+        return new ClientNumberInputView.ActionListener() {
+            @Override
+            public void onButtonContactPickerClicked() {
+
+            }
+
+            @Override
+            public void onClientNumberInputValid(String tempClientNumber) {
+
+            }
+
+            @Override
+            public void onClientNumberInputInvalid() {
+
+            }
+
+            @Override
+            public void onClientNumberHasFocus(String clientNumber) {
+                actionListener.onClientNumberClicked(clientNumber,
+                        operatorSelected.getClientNumberList().get(0),
+                        historyClientNumber.getRecentClientNumberList());
+            }
+
+            @Override
+            public void onClientNumberCleared() {
+                actionListener.onClientNumberCleared(operatorSelected.getClientNumberList().get(0),
+                        historyClientNumber.getRecentClientNumberList());
+            }
+
+            @Override
+            public void onItemAutocompletedSelected(OrderClientNumber orderClientNumber) {
+
+            }
+        };
+    }
+
+    @NonNull
+    private OnClickListener getButtonBuyClickedListener() {
+        return new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UnifyTracking.eventClickBeli(data.getName(), data.getName());
+                actionListener.onButtonBuyClicked(generatePreCheckoutData(), cbInstantCheckout.isChecked());
+            }
+        };
+    }
+
+    @NonNull
+    private PreCheckoutProduct generatePreCheckoutData() {
+        PreCheckoutProduct preCheckoutProduct = new PreCheckoutProduct();
+        boolean canBeCheckout = false;
+
+        if (operatorSelected == null) {
+            preCheckoutProduct.setErrorCheckout(
+                    context.getString(R.string.message_error_digital_operator_not_selected)
+            );
+        } else if (productSelected == null) {
+            if (operatorSelected.getRule().getProductViewStyle() == 99
+                    && !operatorSelected.getClientNumberList().isEmpty()
+                    && !clientNumberInputView.isValidInput(operatorSelected.getPrefixList())) {
+                preCheckoutProduct.setErrorCheckout(
+                        operatorSelected.getClientNumberList().get(0).getText()
+                                + " " + context.getString(
+                                R.string.message_error_digital_client_number_format_invalid
+                        )
+                );
+            } else {
+                preCheckoutProduct.setErrorCheckout(
+                        context.getString(R.string.message_error_digital_product_not_selected)
+                );
+            }
+        } else if (!operatorSelected.getClientNumberList().isEmpty()
+                && !isClientNumberValid()) {
+            if (clientNumberInputView.getText().isEmpty()) {
+                clientNumberInputView.setErrorText(
+                        context.getString(
+                                R.string.message_error_digital_client_number_not_filled
+                        ) + " " + operatorSelected.getClientNumberList().get(0).getText()
+                                .toLowerCase()
+                );
+            } else {
+                for (Validation validation : operatorSelected.getClientNumberList().get(0).getValidation()) {
+                    if (!Pattern.matches(validation.getRegex(), getClientNumber())) {
+                        clientNumberInputView.setErrorText(
+                                validation.getError() + " " +
+                                        operatorSelected.getClientNumberList().get(0).getText().toLowerCase()
+                        );
+                        break;
+                    }
+                }
+            }
+        } else {
+            preCheckoutProduct.setProductId(productSelected.getProductId());
+            preCheckoutProduct.setOperatorId(operatorSelected.getOperatorId());
+            canBeCheckout = true;
+            if (productSelected.getPromo() != null) {
+                preCheckoutProduct.setPromo(true);
+            }
+        }
+        if (canBeCheckout) {
+            actionListener.storeLastInstantCheckoutUsed(
+                    data.getCategoryId(), cbInstantCheckout.isChecked()
+            );
+        }
+        preCheckoutProduct.setCategoryId(data.getCategoryId());
+        preCheckoutProduct.setCategoryName(data.getName());
+        preCheckoutProduct.setClientNumber(clientNumberInputView.getText());
+        preCheckoutProduct.setInstantCheckout(cbInstantCheckout.isChecked());
+        preCheckoutProduct.setCanBeCheckout(canBeCheckout);
+        return preCheckoutProduct;
+    }
+
+    private boolean isClientNumberValid() {
+        if (clientNumberInputView.getText().isEmpty()) {
+            return false;
+        } else {
+            for (Validation validation : operatorSelected.getClientNumberList().get(0).getValidation()) {
+                if (!Pattern.matches(validation.getRegex(), getClientNumber())) {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+
     private void setBtnBuyDigitalText(String buttonText) {
         if (!TextUtils.isEmpty(buttonText)) {
             btnBuyDigital.setText(buttonText);
         } else {
             btnBuyDigital.setText(context.getString(R.string.label_btn_buy_digital));
         }
+    }
+
+    private void renderClientNumberInputForm(Operator operator) {
+        clearHolder(holderClientNumber);
+        clearHolder(holderChooserProduct);
+        clearHolder(holderAdditionalInfoProduct);
+        clearHolder(holderPriceInfoProduct);
+        clientNumberInputView.setActionListener(getActionListenerClientNumberInputView());
+        clientNumberInputView.renderData(operator.getClientNumberList().get(0));
+        clientNumberInputView.setFilterMaxLength(operator.getRule().getMaximumLength());
+        clientNumberInputView.resetInputTyped();
+        holderClientNumber.addView(clientNumberInputView);
+
+        if (hasLastOrderHistoryData()) {
+            if (operatorSelected != null && operator.getOperatorId().equalsIgnoreCase(
+                    historyClientNumber.getLastOrderClientNumber().getOperatorId())
+                    && !historyClientNumber.getLastOrderClientNumber().getClientNumber().isEmpty()
+                    ) {
+                clientNumberInputView.setText(
+                        historyClientNumber.getLastOrderClientNumber().getClientNumber()
+                );
+            }
+        }
+
+        if (hasLastOrderHistoryData()) {
+            if (!operator.getClientNumberList().isEmpty()) {
+                clientNumberInputView.setAdapterAutoCompleteClientNumber(historyClientNumber.getRecentClientNumberList());
+            }
+        }
+
+        clientNumberInputView.enableImageOperator(operatorSelected.getImage());
     }
 
     private void renderDefaultProductSelected() {

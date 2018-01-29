@@ -566,11 +566,6 @@ public class CategoryProductStyle3View extends
                     data.getCategoryId(), cbInstantCheckout.isChecked()
             );
         }
-        if (canBeCheckout) {
-            actionListener.storeLastInstantCheckoutUsed(
-                    data.getCategoryId(), cbInstantCheckout.isChecked()
-            );
-        }
         preCheckoutProduct.setCategoryId(data.getCategoryId());
         preCheckoutProduct.setCategoryName(data.getName());
         preCheckoutProduct.setClientNumber(clientNumberInputView.getText());
