@@ -46,7 +46,17 @@ public interface TkpdCoreRouter {
 
     void actionAppLink(Context context, String linkUrl);
 
+    /**
+     * deprecated
+     *
+     * @param activity activity context
+     * @param linkUrl  applinkScheme
+     * @see #actionApplinkFromActivity(Activity, String)
+     */
+    @Deprecated
     void actionApplink(Activity activity, String linkUrl);
+
+    void actionApplinkFromActivity(Activity activity, String linkUrl);
 
     void actionApplink(Activity activity, String linkUrl, String extra);
 

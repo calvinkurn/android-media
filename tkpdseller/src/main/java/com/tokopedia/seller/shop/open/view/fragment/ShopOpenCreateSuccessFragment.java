@@ -15,6 +15,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
@@ -113,7 +114,7 @@ public class ShopOpenCreateSuccessFragment extends BasePresenterFragment impleme
         } else {
             shopIconImageView.setImageResource(R.drawable.ic_placeholder_shop_with_padding);
         }
-        tvShopName.setText(shopModel.info.getShopName());
+        tvShopName.setText(MethodChecker.fromHtml(shopModel.info.getShopName()));
     }
 
     @Override

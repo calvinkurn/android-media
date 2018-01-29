@@ -2,6 +2,7 @@ package com.tokopedia.flight.booking.view.presenter;
 
 import android.support.annotation.StringRes;
 
+import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingParamViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
@@ -13,6 +14,8 @@ import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 
 import java.util.Date;
 import java.util.List;
+
+import rx.Observable;
 
 /**
  * Created by alvarisi on 11/8/17.
@@ -90,6 +93,16 @@ public interface FlightBookingContract {
         void showPassengerInfoNotFullfilled(@StringRes int resId);
 
         void navigateToPassengerInfoDetail(FlightBookingPassengerViewModel viewModel, boolean isAirAsiaAirline, String departureDate);
+
+        Observable<ProfileInfo> getProfileObservable();
+
+        void setContactName(String fullname);
+
+        void setContactEmail(String email);
+
+        void setContactPhoneNumber(String phone);
+
+        void showContactEmailInvalidSymbolError(@StringRes int resId);
     }
 
     interface Presenter extends FlightBaseBookingContact.Presenter<View> {
@@ -117,5 +130,7 @@ public interface FlightBookingContract {
         void onPause();
 
         void onChangePassengerButtonClicked(FlightBookingPassengerViewModel viewModel, FlightBookingCartData cartData, String departureDate);
+
+        void onGetProfileData();
     }
 }

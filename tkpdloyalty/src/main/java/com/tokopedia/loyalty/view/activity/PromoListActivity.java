@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.widget.TouchViewPager;
@@ -16,6 +17,7 @@ import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.R2;
@@ -44,6 +46,8 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
     TouchViewPager viewPager;
     @BindView(R2.id.tab_layout)
     TabLayout tabLayout;
+    @BindView(R2.id.container_error)
+    View containerError;
 
     private PromoPagerAdapter adapter;
 
@@ -168,22 +172,22 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
 
     @Override
     public void renderErrorGetPromoMenuDataList(String message) {
-
+        handlerError(message);
     }
 
     @Override
     public void renderErrorHttpGetPromoMenuDataList(String message) {
-
+        handlerError(message);
     }
 
     @Override
     public void renderErrorNoConnectionGetPromoMenuDataList(String message) {
-
+        handlerError(message);
     }
 
     @Override
     public void renderErrorTimeoutConnectionGetPromoMenuDataListt(String message) {
-
+        handlerError(message);
     }
 
     @Override
@@ -259,5 +263,22 @@ public class PromoListActivity extends BasePresenterActivity implements HasCompo
     @Override
     protected boolean isLightToolbarThemes() {
         return true;
+    }
+
+
+    private void handlerError(String message) {
+        viewPager.setVisibility(View.GONE);
+        tabLayout.setVisibility(View.GONE);
+        containerError.setVisibility(View.VISIBLE);
+        NetworkErrorHelper.showEmptyState(this, containerError,
+                message, new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        dPresenter.processGetPromoMenu();
+                        containerError.setVisibility(View.GONE);
+                        viewPager.setVisibility(View.VISIBLE);
+                        tabLayout.setVisibility(View.VISIBLE);
+                    }
+                });
     }
 }

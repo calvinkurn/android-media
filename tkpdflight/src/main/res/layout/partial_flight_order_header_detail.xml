@@ -10,7 +10,9 @@
         style="@style/TextView.Small.Bold.BlackSecondary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_small"
+        android:background="@color/card_title_green"
+        android:paddingTop="@dimen/padding_ms"
+        android:paddingBottom="@dimen/padding_ms"
         android:gravity="center"
         tools:text="Transaksi Berhasil" />
 
@@ -27,7 +29,7 @@
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/tv_order_id"
-            style="@style/TextView.Small"
+            style="@style/TextView.Micro"
             android:layout_below="@+id/tv_order_date"
             tools:text="Order ID: 323088926194" />
 

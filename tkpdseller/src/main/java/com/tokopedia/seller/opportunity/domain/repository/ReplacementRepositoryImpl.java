@@ -32,7 +32,7 @@ public class ReplacementRepositoryImpl implements ReplacementRepository {
 
     @Override
     public Observable<AcceptReplacementModel> acceptReplacement(TKPDMapParam<String, Object> parameters) {
-        RequestParams requestParams = RequestParams.EMPTY;
+        RequestParams requestParams = RequestParams.create();
         requestParams.putAll(parameters);
 
         return cloudActionReplacementSource
@@ -41,14 +41,14 @@ public class ReplacementRepositoryImpl implements ReplacementRepository {
 
     @Override
     public Observable<OpportunityModel> getOpportunityListFromNetwork(TKPDMapParam<String, Object> parameters) {
-        RequestParams requestParams = RequestParams.EMPTY;
+        RequestParams requestParams = RequestParams.create();
         requestParams.putAll(parameters);
         return cloudGetListOpportunitySource.getOpportunityList(requestParams);
     }
 
     @Override
     public Observable<OpportunityFilterModel> getOpportunityCategoryFromNetwork(TKPDMapParam<String, Object> parameters) {
-        RequestParams requestParams = RequestParams.EMPTY;
+        RequestParams requestParams = RequestParams.create();
         requestParams.putAll(parameters);
 
         return cloudGetFilterOpportunitySource.getFilter(requestParams);

@@ -73,12 +73,7 @@
 
         <receiver
             android:name=".receiver.TokocashPendingDataBroadcastReceiver"
-            android:enabled="true"
-            tools:ignore="ExportedReceiver">
-            <intent-filter>
-                <action android:name="com.tokopedia.digital.receiver.TokocashPendingDataBroadcastReceiver.ACTION_GET_TOKOCASH_PENDING_DATA"/>
-            </intent-filter>
-        </receiver>
+            android:enabled="true"/>
     </application>
 
 </manifest>
