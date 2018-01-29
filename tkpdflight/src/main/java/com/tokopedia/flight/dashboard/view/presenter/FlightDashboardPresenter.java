@@ -421,10 +421,12 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     private void transformExtras(String extrasTrip, String extrasPassenger, String extrasClass) {
         try {
+            boolean isDepartureDateValid = true;
+
             // transform trip extras
             String[] tempExtras = extrasTrip.split(",");
             String[] extrasTripDeparture = tempExtras[0].split("_");
-            String[] tripDate = extrasTripDeparture[2].split("-");
+            String[] departureTripDate = extrasTripDeparture[2].split("-");
 
             /**
              * Urutan trip setelah di split berdasarkan , dan _ :
@@ -439,14 +441,40 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
              */
             actionGetAirportById(extrasTripDeparture[0], true);
             actionGetAirportById(extrasTripDeparture[1], false);
-            onDepartureDateChange(Integer.parseInt(tripDate[0]), Integer.parseInt(tripDate[1]), Integer.parseInt(tripDate[2]));
+            onDepartureDateChange(Integer.parseInt(departureTripDate[0]), Integer.parseInt(departureTripDate[1]), Integer.parseInt(departureTripDate[2]));
             onSingleTripChecked();
+
+            Calendar today = FlightDateUtil.getCurrentCalendar();
+            if (!validator.validateDepartureDateAtLeastToday(getView().getCurrentDashboardViewModel())) {
+                isDepartureDateValid = false;
+                getView().showDepartureDateShouldAtLeastToday(R.string.flight_dashboard_departure_should_atleast_today_error);
+                onDepartureDateChange(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE));
+            } else if ((Integer.parseInt(departureTripDate[0]) - today.get(Calendar.YEAR)) > 2) {
+                isDepartureDateValid = false;
+                getView().showApplinkErrorMessage(R.string.flight_dashboard_departure_max_two_years_from_today_error);
+                onDepartureDateChange(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE));
+            }
 
             if (tempExtras.length > 1) {
                 String[] extrasTripReturn = tempExtras[1].split("_");
-                tripDate = extrasTripReturn[2].split("-");
-                onReturnDateChange(Integer.parseInt(tripDate[0]), Integer.parseInt(tripDate[1]), Integer.parseInt(tripDate[2]));
+                String[] returnTripDate = extrasTripReturn[2].split("-");
+                onReturnDateChange(Integer.parseInt(returnTripDate[0]), Integer.parseInt(returnTripDate[1]), Integer.parseInt(returnTripDate[2]));
                 onRoundTripChecked();
+
+                if (!validator.validateArrivalDateShouldGreaterOrEqualDeparture(getView().getCurrentDashboardViewModel())) {
+                    if (isDepartureDateValid) {
+                        getView().showArrivalDateShouldGreaterOrEqual(R.string.flight_dashboard_arrival_should_greater_equal_error);
+                        onReturnDateChange(Integer.parseInt(departureTripDate[0]), Integer.parseInt(departureTripDate[1]), Integer.parseInt(departureTripDate[2]) + 1);
+                    } else {
+                        onReturnDateChange(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE) + 1);
+                    }
+                } else if ((Integer.parseInt(returnTripDate[0]) - today.get(Calendar.YEAR)) > 2) {
+                    if (isDepartureDateValid) {
+                        getView().showApplinkErrorMessage(R.string.flight_dashboard_arrival_max_two_years_from_today_error);
+                        onReturnDateChange(Integer.parseInt(departureTripDate[0]), Integer.parseInt(departureTripDate[1]), Integer.parseInt(departureTripDate[2]) + 1);
+                    } else {
+                        onReturnDateChange(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE) + 1);
+                    }                }
             }
 
             // transform passenger count
@@ -483,14 +511,14 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
             @Override
             public void onError(Throwable throwable) {
-                if(isViewAttached()) {
+                if (isViewAttached()) {
                     getView().hideBannerView();
                 }
             }
 
             @Override
             public void onNext(List<BannerDetail> bannerDetailList) {
-                if(isViewAttached()) {
+                if (isViewAttached()) {
                     getView().renderBannerView(bannerDetailList);
                 }
             }
