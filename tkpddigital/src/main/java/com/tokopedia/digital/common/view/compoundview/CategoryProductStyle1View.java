@@ -378,6 +378,7 @@ public class CategoryProductStyle1View extends
             public void onClientNumberInputValid(String tempClientNumber) {
                 if (tempClientNumber.length() >= 4) {
                     String validClientNumber = DeviceUtil.validatePrefixClientNumber(tempClientNumber);
+                    boolean operatorFound = false;
                     outerLoop:
                     for (Operator operator : data.getOperatorList()) {
                         for (String prefix : operator.getPrefixList()) {
@@ -393,11 +394,12 @@ public class CategoryProductStyle1View extends
                                     showProducts();
                                 }
                                 setBtnBuyDigitalText(operatorSelected.getRule().getButtonText());
+                                operatorFound = true;
                                 break outerLoop;
                             }
                         }
                     }
-                    if (operatorSelected == null) {
+                    if (!operatorFound) {
                         operatorSelected = null;
                         productSelected = null;
                         clientNumberInputView.disableImageOperator();

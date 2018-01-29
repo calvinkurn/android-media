@@ -36,7 +36,7 @@ public abstract class BaseDigitalPresenter implements IBaseDigitalPresenter {
     public void storeLastInstantCheckoutUsed(String categoryId, boolean checked) {
         if (cacheHandlerRecentInstantCheckoutUsed == null)
             cacheHandlerRecentInstantCheckoutUsed = new LocalCacheHandler(
-                    this.context, TkpdCache.DIGITAL_INSTANT_CHECKOUT_HISTORY
+                    context, TkpdCache.DIGITAL_INSTANT_CHECKOUT_HISTORY
             );
         cacheHandlerRecentInstantCheckoutUsed.putBoolean(
                 TkpdCache.Key.DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY + categoryId, checked
@@ -48,7 +48,7 @@ public abstract class BaseDigitalPresenter implements IBaseDigitalPresenter {
     public boolean isRecentInstantCheckoutUsed(String categoryId) {
         if (cacheHandlerRecentInstantCheckoutUsed == null)
             cacheHandlerRecentInstantCheckoutUsed = new LocalCacheHandler(
-                    this.context, TkpdCache.DIGITAL_INSTANT_CHECKOUT_HISTORY
+                    context, TkpdCache.DIGITAL_INSTANT_CHECKOUT_HISTORY
             );
         return cacheHandlerRecentInstantCheckoutUsed.getBoolean(
                 TkpdCache.Key.DIGITAL_INSTANT_CHECKOUT_LAST_IS_CHECKED_CATEGORY + categoryId, false
