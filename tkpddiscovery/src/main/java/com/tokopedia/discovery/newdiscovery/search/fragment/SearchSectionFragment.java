@@ -281,7 +281,9 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         if (filters == null) {
             return;
         }
-        this.filters.addAll(filters);
+        for (Filter filter : filters) {
+            this.filters.add(filter);
+        }
     }
 
     protected ArrayList<Filter> getFilters() {
@@ -293,7 +295,9 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         if (sorts == null) {
             return;
         }
-        this.sort.addAll(sorts);
+        for (Sort pojo : sorts) {
+            this.sort.add(pojo);
+        }
     }
 
     private ArrayList<Sort> getSort() {
