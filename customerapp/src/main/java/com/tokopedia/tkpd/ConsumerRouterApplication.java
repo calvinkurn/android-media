@@ -581,7 +581,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Fragment getShopReputationFragment(String shopId, String shopDomain) {
-        return ReviewShopFragment.createInstance(shopId, shopDomain);
+        return TkpdReputationInternalRouter.getReviewShopFragment(shopId, shopDomain);
     }
 
     @Override

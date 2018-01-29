@@ -131,13 +131,13 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
             CustomViewQuickFilterItem quickFilterItem = new CustomViewQuickFilterItem();
             quickFilterItem.setType(String.valueOf(i));
             ReviewProductItemFilterView productReviewItemFilterView = new ReviewProductItemFilterView(getActivity());
-            productReviewItemFilterView.setActive(true);
+            productReviewItemFilterView.setActive(false);
             productReviewItemFilterView.setRating(i);
             quickFilterItem.setDefaultView(productReviewItemFilterView);
 
             ReviewProductItemFilterView productReviewItemFilterViewActive = new ReviewProductItemFilterView(getActivity());
-            productReviewItemFilterView.setActive(false);
-            productReviewItemFilterView.setRating(i);
+            productReviewItemFilterViewActive.setActive(true);
+            productReviewItemFilterViewActive.setRating(i);
             quickFilterItem.setSelectedView(productReviewItemFilterViewActive);
 
             quickFilterItemList.add(quickFilterItem);

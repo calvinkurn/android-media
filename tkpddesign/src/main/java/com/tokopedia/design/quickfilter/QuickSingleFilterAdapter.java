@@ -27,6 +27,6 @@ public class QuickSingleFilterAdapter extends BaseQuickSingleFilterAdapter<ItemF
 
     @Override
     public void onBindViewHolder(ItemFilterViewHolder holder, int position) {
-        ((ItemFilterViewHolder) holder).renderItemViewHolder(filterList.get(position));
+        holder.renderItemViewHolder(filterList.get(position));
     }
 }

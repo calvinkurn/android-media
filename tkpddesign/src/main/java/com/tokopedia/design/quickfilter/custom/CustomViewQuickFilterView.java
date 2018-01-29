@@ -26,6 +26,6 @@ public class CustomViewQuickFilterView extends QuickSingleFilterView {
     }
 
     protected void initialAdapter() {
-        this.adapterFilter = new CustomViewQuickSingleFilterAdapter(getFilterTokoCashListener());
+        this.adapterFilter = new CustomViewQuickSingleFilterAdapter(getQuickSingleFilterListener());
     }
 }
