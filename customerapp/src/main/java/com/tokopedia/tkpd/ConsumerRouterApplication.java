@@ -2,6 +2,7 @@ package com.tokopedia.tkpd;
 
 import android.app.Activity;
 import android.app.DialogFragment;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -85,6 +86,7 @@ import com.tokopedia.di.SessionModule;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.activity.DigitalWebActivity;
+import com.tokopedia.digital.receiver.TokocashPendingDataBroadcastReceiver;
 import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.TkpdFlight;
@@ -98,6 +100,8 @@ import com.tokopedia.inbox.inboxchat.activity.InboxChatActivity;
 import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
 import com.tokopedia.inbox.inboxmessageold.activity.InboxMessageActivity;
 import com.tokopedia.inbox.inboxmessageold.activity.SendMessageActivityOld;
+import com.tokopedia.loyalty.broadcastreceiver.TokoPointDrawerBroadcastReceiver;
+import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
@@ -1250,5 +1254,15 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getTrueCallerIntent(Context context) {
         return TruecallerActivity.getCallingIntent(context);
+    }
+
+    @Override
+    public BroadcastReceiver getTokoPointBroadcastReceiver() {
+        return new TokoPointDrawerBroadcastReceiver();
+    }
+
+    @Override
+    public BroadcastReceiver getBroadcastReceiverTokocashPending() {
+        return new TokocashPendingDataBroadcastReceiver();
     }
 }
