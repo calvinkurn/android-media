@@ -3,7 +3,7 @@ package com.tokopedia.posapp;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.facebook.soloader.SoLoader;
 
 /**

@@ -1,9 +1,7 @@
 package com.tokopedia.posapp.view.subscriber;
 
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
-import com.tokopedia.posapp.domain.model.product.ProductDomain;
 import com.tokopedia.posapp.view.Product;
-import com.tokopedia.posapp.view.viewmodel.product.ProductViewModel;
 
 import rx.Subscriber;
 

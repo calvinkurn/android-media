@@ -2,7 +2,6 @@ package com.tokopedia.posapp;
 
 import android.content.Context;
 
-import com.google.android.gms.common.data.DataBufferObserver;
 import com.tokopedia.posapp.database.manager.CartDbManager;
 import com.tokopedia.posapp.database.manager.EtalaseDbManager;
 import com.tokopedia.posapp.database.manager.ProductDbManager;

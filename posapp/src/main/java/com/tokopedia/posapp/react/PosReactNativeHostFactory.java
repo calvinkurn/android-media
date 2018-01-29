@@ -6,7 +6,7 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.microsoft.codepush.react.CodePush;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.tkpdreactnative.react.CoreReactPackage;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 
