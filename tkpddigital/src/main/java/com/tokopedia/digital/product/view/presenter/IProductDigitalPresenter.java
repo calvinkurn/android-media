@@ -34,4 +34,8 @@ public interface IProductDigitalPresenter {
 
     Operator getSelectedUssdOperator(int selectedSim);
 
+    boolean isCarrierSignalsNotAvailable(String carrierName);
+
+    void renderCheckPulsa();
+
 }

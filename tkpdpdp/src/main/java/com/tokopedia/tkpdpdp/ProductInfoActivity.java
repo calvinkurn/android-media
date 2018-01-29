@@ -18,7 +18,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterNoLayoutActivity;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.home.BannerWebView;
+import com.tokopedia.core.home.SimpleWebViewActivity;
 import com.tokopedia.core.product.intentservice.ProductInfoIntentService;
 import com.tokopedia.core.product.intentservice.ProductInfoResultReceiver;
 import com.tokopedia.core.product.listener.DetailFragmentInteractionListener;
@@ -298,7 +298,7 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
 
     @Override
     public void catchToWebView(String url) {
-        Intent intent = BannerWebView.getCallingIntent(this, url);
+        Intent intent = SimpleWebViewActivity.getIntent(this, url);
         startActivity(intent);
         finish();
     }

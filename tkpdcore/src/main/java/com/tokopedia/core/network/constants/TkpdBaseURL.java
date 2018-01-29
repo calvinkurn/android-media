@@ -60,7 +60,7 @@ public class TkpdBaseURL {
     public static String BASE_API_DOMAIN = "https://api.tokopedia.com/";
 
     public static String WALLET_DOMAIN = "https://www.tokocash.com/";
-    public static String TOKOPOINT_API_DOMAIN = "https://api.tokopedia.com/tokoplus/";
+    public static String TOKOPOINT_API_DOMAIN = "https://gw.tokopedia.com/tokopoints/api/";
     public static String PROMO_API_DOMAIN = "https://www.tokopedia.com/promo/";
 
     public static class Product {
@@ -629,7 +629,7 @@ public class TkpdBaseURL {
         public static final String PATH_WISHLIST = "wishlist/";
         public static final String PATH_WISH_LIST_V_1_1 = "v1.1";
         public static final String API_HOME_CATEGORY_MENU = "/api/v1.3/layout/category";
-        public static final String API_HOME_CATEGORY_MENU_V2 = "/api/v2/layout/category";
+        public static final String API_HOME_CATEGORY_MENU_V2 = "/api/v2.1/layout/category";
         public static final String PATH_USER_RECENT_VIEW = "users/";
         public static final String PATH_RECENT_VIEW = "/recentview/products/v1";
         public static final String API_V1_BRANDS = "/os/api/v1/brands/list";

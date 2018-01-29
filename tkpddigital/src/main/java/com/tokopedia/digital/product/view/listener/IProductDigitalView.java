@@ -65,4 +65,6 @@ public interface IProductDigitalView extends IBaseView {
 
     void renderCategory(BaseDigitalProductView digitalProductView, CategoryData categoryData, HistoryClientNumber historyClientNumber);
 
+    void removeCheckPulsaCards();
+
 }
