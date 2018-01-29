@@ -79,7 +79,7 @@ public class CapturedAudioCampaignActivity extends BasePresenterActivity impleme
     AudioRecorder recorder;
 
     private void startRecording() throws IOException {
-        recorder = new AudioRecorder("/sdcard/8k16bitMono.mp3");
+        recorder = new AudioRecorder("/sdcard/campaign.wav");
         recorder.start(this);
     }
 
