@@ -2,6 +2,7 @@ package com.tokopedia.tokocash.network.api;
 
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.tokocash.network.model.RefreshTokenEntity;
 
 import java.util.Map;
 
@@ -34,5 +35,5 @@ public interface TokoCashApi {
     Observable<Response<TkpdResponse>> getTokenWallet();
 
     @GET(WalletUrl.Account.GET_TOKEN_WALLET)
-    Call<String> getTokenWalletSynchronous();
+    Call<RefreshTokenEntity> getTokenWalletSynchronous();
 }

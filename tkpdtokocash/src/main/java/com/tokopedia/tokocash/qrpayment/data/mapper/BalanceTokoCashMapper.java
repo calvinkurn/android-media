@@ -41,6 +41,6 @@ public class BalanceTokoCashMapper implements Func1<BalanceTokoCashEntity, Balan
 
             return balanceTokoCash;
         }
-        return null;
+        throw  new RuntimeException("Error coy!");
     }
 }

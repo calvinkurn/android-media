@@ -5,8 +5,6 @@ import com.tokopedia.tokocash.historytokocash.presentation.model.TokoCashHistory
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
-import javax.inject.Inject;
-
 import rx.Observable;
 
 /**

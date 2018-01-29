@@ -22,7 +22,7 @@ public interface QrPaymentContract {
 
         void renderBalanceTokoCash(BalanceTokoCash balanceTokoCash);
 
-        void showErrorBalanceTokoCash(String message);
+        void showErrorBalanceTokoCash(Throwable throwable);
     }
 
     interface Presenter extends CustomerPresenter<View> {

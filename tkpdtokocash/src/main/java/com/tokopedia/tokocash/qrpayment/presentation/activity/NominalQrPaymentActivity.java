@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.abstraction.common.utils.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.text.watcher.NumberTextWatcher;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
@@ -72,7 +73,8 @@ public class NominalQrPaymentActivity extends BaseSimpleActivity implements QrPa
         presenter.attachView(this);
 
         updateTitle(getString(R.string.title_input_nominal));
-        infoQrTokoCash = getIntent().getParcelableExtra(INFO_QR);
+        Bundle bundle = getIntent().getExtras();
+        infoQrTokoCash = bundle.getParcelable(INFO_QR);
 
         initView();
         setVar();
@@ -209,7 +211,8 @@ public class NominalQrPaymentActivity extends BaseSimpleActivity implements QrPa
     }
 
     @Override
-    public void showErrorBalanceTokoCash(String message) {
+    public void showErrorBalanceTokoCash(Throwable throwable) {
+        String message = ErrorHandler.getErrorMessage(getApplicationContext(), throwable);
         progressBar.setVisibility(View.GONE);
         tokocashValue.setVisibility(View.VISIBLE);
         tokocashValue.setText(getString(R.string.error_message_tokocash));

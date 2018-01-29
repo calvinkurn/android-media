@@ -1,18 +1,17 @@
 package com.tokopedia.tokocash.network.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by nabillasabbaha on 10/9/17.
  */
 
 public class WalletTokenEntity {
 
+    @SerializedName("token")
+    @Expose
     private String token;
-
-    private String errorMessage;
-
-    private String statusMessage;
-
-    private int responseCode;
 
     public String getToken() {
         return token;
@@ -20,29 +19,5 @@ public class WalletTokenEntity {
 
     public void setToken(String token) {
         this.token = token;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
-    }
-
-    public String getStatusMessage() {
-        return statusMessage;
-    }
-
-    public void setStatusMessage(String statusMessage) {
-        this.statusMessage = statusMessage;
-    }
-
-    public int getResponseCode() {
-        return responseCode;
-    }
-
-    public void setResponseCode(int responseCode) {
-        this.responseCode = responseCode;
     }
 }

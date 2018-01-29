@@ -1,13 +1,12 @@
 package com.tokopedia.tokocash.qrpayment.domain;
 
-import com.tokopedia.tokocash.qrpayment.data.repository.QrPaymentRepository;
+import com.tokopedia.tokocash.qrpayment.data.repository.TokoCashBalanceRepository;
 import com.tokopedia.tokocash.qrpayment.presentation.model.BalanceTokoCash;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
-import javax.inject.Inject;
-
 import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * Created by nabillasabbaha on 1/4/18.
@@ -15,14 +14,22 @@ import rx.Observable;
 
 public class GetBalanceTokoCashUseCase extends UseCase<BalanceTokoCash> {
 
-    private QrPaymentRepository repository;
+    private static final String TAG = GetBalanceTokoCashUseCase.class.getName();
+    private TokoCashBalanceRepository repository;
 
-    public GetBalanceTokoCashUseCase(QrPaymentRepository repository) {
+    public GetBalanceTokoCashUseCase(TokoCashBalanceRepository repository) {
         this.repository = repository;
     }
 
     @Override
     public Observable<BalanceTokoCash> createObservable(RequestParams requestParams) {
-        return repository.getBalanceTokoCash(requestParams.getParameters());
+        return Observable.concat(repository.getLocalBalanceTokoCash(), repository.getBalanceTokoCash())
+                .first(new Func1<BalanceTokoCash, Boolean>() {
+                    @Override
+                    public Boolean call(BalanceTokoCash balanceTokoCash) {
+                        return balanceTokoCash != null && balanceTokoCash.getBalance() != null &&
+                                balanceTokoCash.getRaw_balance() != null;
+                    }
+                });
     }
 }

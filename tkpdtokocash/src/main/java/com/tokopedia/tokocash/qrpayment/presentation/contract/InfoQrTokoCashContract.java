@@ -17,7 +17,7 @@ public interface InfoQrTokoCashContract {
 
         void showErrorGetInfo(String message);
 
-        void showErrorNetwork(String message);
+        void showErrorNetwork(Throwable e);
 
         void directPageToPayment(InfoQrTokoCash infoQrTokoCash);
 

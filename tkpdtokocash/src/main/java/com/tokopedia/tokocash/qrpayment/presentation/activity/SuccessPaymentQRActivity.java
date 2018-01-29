@@ -21,11 +21,11 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.tokocash.R;
+import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
 import com.tokopedia.tokocash.di.TokoCashComponent;
+import com.tokopedia.tokocash.qrpayment.presentation.contract.SuccessQrPaymentContract;
 import com.tokopedia.tokocash.qrpayment.presentation.model.QrPaymentTokoCash;
 import com.tokopedia.tokocash.qrpayment.presentation.presenter.SuccessQrPaymentPresenter;
-
-import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
 
 import javax.inject.Inject;
 
@@ -33,7 +33,8 @@ import javax.inject.Inject;
  * Created by nabillasabbaha on 12/18/17.
  */
 
-public class SuccessPaymentQRActivity extends BaseSimpleActivity implements HasComponent<TokoCashComponent> {
+public class SuccessPaymentQRActivity extends BaseSimpleActivity implements SuccessQrPaymentContract.View,
+        HasComponent<TokoCashComponent> {
 
     private static final String MERCHANT_NAME = "merchant_name";
     private static final String AMOUNT = "amount";
@@ -70,7 +71,8 @@ public class SuccessPaymentQRActivity extends BaseSimpleActivity implements HasC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        initInjector();
+        presenter.attachView(this);
         initView();
         initVar();
         setActionVar();

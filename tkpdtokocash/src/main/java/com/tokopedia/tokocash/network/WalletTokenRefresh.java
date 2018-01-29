@@ -1,9 +1,8 @@
 package com.tokopedia.tokocash.network;
 
-import com.google.gson.GsonBuilder;
 import com.tokopedia.tokocash.network.api.TokoCashApi;
 import com.tokopedia.tokocash.network.model.RefreshTokenEntity;
-import com.tokopedia.tokocash.di.OkHttpTokoCashQualifier;
+import com.tokopedia.tokocash.network.model.WalletTokenEntity;
 
 import java.io.IOException;
 
@@ -26,20 +25,18 @@ public class WalletTokenRefresh {
 
     public String refreshToken() throws IOException {
 
-        Call<String> responseCall = retrofit.create(TokoCashApi.class).getTokenWalletSynchronous();
+        Call<RefreshTokenEntity> responseCall = retrofit.create(TokoCashApi.class).getTokenWalletSynchronous();
 
-        String tokenResponse = null;
+        WalletTokenEntity walletTokenEntity = null;
         try {
-            tokenResponse = responseCall.clone().execute().body();
+            walletTokenEntity = responseCall.clone().execute().body().getData();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-        RefreshTokenEntity tokenEntity = null;
-        if (tokenResponse != null) {
-            tokenEntity = new GsonBuilder().create().fromJson(tokenResponse, RefreshTokenEntity.class);
-            tokoCashSession.setTokenWallet(tokenEntity.getData().getToken());
+        if (walletTokenEntity != null) {
+            tokoCashSession.setTokenWallet(walletTokenEntity.getToken());
         }
-        return tokenEntity.getData().getToken();
+        return walletTokenEntity.getToken();
     }
 }

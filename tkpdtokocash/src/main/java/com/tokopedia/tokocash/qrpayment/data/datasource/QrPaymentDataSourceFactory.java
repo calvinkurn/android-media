@@ -18,7 +18,7 @@ public class QrPaymentDataSourceFactory {
     }
 
     private QrPaymentDataSource createQrPaymentDataSource() {
-        return new CloudQrPaymentDataSource(walletApi);
+        return new QrPaymentCloudDataSource(walletApi);
     }
 
     public QrPaymentDataSource create() {

@@ -31,7 +31,7 @@ public class TokoCashAuthInterceptor extends TkpdAuthInterceptor {
     @Override
     protected Map<String, String> getHeaderMap(String path, String strParam, String method, String authKey, String contentTypeHeader) {
         Map<String, String> headerMap = new HashMap<>();
-        headerMap.put("Authorization", userSession.getAccessToken());
+        headerMap.put("Authorization", "Bearer " + userSession.getAccessToken());
         headerMap.put("X-Device", "android-" + GlobalConfig.VERSION_NAME);
         headerMap.put("Content-Type", "application/x-www-form-urlencoded");
         return headerMap;

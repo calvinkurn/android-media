@@ -2,7 +2,6 @@ package com.tokopedia.tokocash.historytokocash.data.datasource;
 
 import com.google.gson.Gson;
 import com.tokopedia.tokocash.network.api.WalletApi;
-import com.tokopedia.tokocash.di.RetrofitWalletQualifier;
 
 import javax.inject.Inject;
 
