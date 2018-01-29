@@ -110,13 +110,8 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.session.activity.Login;
-import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ShopReviewFragment;
 import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
-import com.okopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
-import com.tokopedia.tkpd.tkpdreputation.review.product.view.ProductReviewActivity;
-import com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.activity.ReputationProduct;
-import com.tokopedia.tkpd.tkpdreputation.shopreputation.ShopReputationList;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.topads.TopAdsModuleRouter;
@@ -328,15 +323,12 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getInboxReputationIntent(Context context) {
-        return InboxReputationActivity.getCallingIntent(context);
+        return TkpdReputationInternalRouter.getInboxReputationActivityIntent(context);
     }
 
     @Override
     public NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass, Bundle data, String notifTitle) {
-        mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(
-                ((ReputationRouter) MainApplication.getAppContext())
-                        .getInboxReputationIntent(MainApplication.getAppContext())
-        );
+        mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(getInboxReputationIntent(this));
         mNotificationPass.classParentStack = InboxReputationActivity.class;
         mNotificationPass.title = notifTitle;
         mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
@@ -351,7 +343,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Fragment getShopReputationFragment(String shopId, String shopDomain) {
-        return ShopReviewFragment.createInstance(shopId, shopDomain);
+        return TkpdReputationInternalRouter.getReviewShopFragment(shopId, shopDomain);
     }
 
     @Override
