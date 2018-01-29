@@ -363,13 +363,6 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         }
     }
 
-    public void displayNearByCabs(Double lat, Double lng) {
-        if (getVisibleCabsMarkerCount() < MAX_CABS_COUNT) {
-            ArrayList<Location> locationArrayList = getRandomLocations(lat, lng);
-            presenter.getNearbyRoadsData(locationArrayList);
-        }
-    }
-
     public void displayNearByCabs() {
 
         if (googleMap != null && getVisibleCabsMarkerCount() < MAX_CABS_COUNT) {
@@ -452,8 +445,6 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
             presenter.actionMapDragStopped(latitude, longitude);
         }
 
-//        removeOutOfViewCabs();
-//        displayNearByCabs(latitude, longitude);
         //animate marker to lift down
         /*
         AccelerateDecelerateInterpolator interpolator = new AccelerateDecelerateInterpolator();
@@ -751,12 +742,10 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
 
     @Override
     public void onErrorRenderNearbyCabs() {
-        removeOutOfViewCabs();
     }
 
     @Override
     public void renderNearbyCabs(NearbyRoads nearbyRoads) {
-//        removeOutOfViewCabs();
         int cabsToShow = MAX_CABS_COUNT - getVisibleCabsMarkerCount();
         int motoToShow = MAX_MOTO_COUNT - getVisibleMOTOMarkerCount();
         int markersToShow = cabsToShow + motoToShow;
@@ -792,6 +781,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
                 LatLng newLocation = new LatLng(random.nextDouble(), random.nextDouble());
 
                 float bearing = (float) bearingBetweenLocations(oldLocation, newLocation);
+                marker.setRotation(bearing);
                 rotateMarker(marker, bearing);
                 nearbyMOTOMarkerList.add(marker);
                 motoToShow--;
@@ -809,10 +799,8 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         double long2 = latLng2.longitude * PI / 180;
 
         double dLon = (long2 - long1);
-
         double y = Math.sin(dLon) * Math.cos(lat2);
-        double x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1)
-                * Math.cos(lat2) * Math.cos(dLon);
+        double x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
 
         double brng = Math.atan2(y, x);
 
@@ -827,8 +815,6 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
             final Handler handler = new Handler();
             final long start = SystemClock.uptimeMillis();
             final float startRotation = marker.getRotation();
-            final long duration = 1000;
-
             final Interpolator interpolator = new LinearInterpolator();
 
             handler.post(new Runnable() {
@@ -855,20 +841,6 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
                 }
             });
         }
-    }
-
-
-    private void removeOutOfViewCabs() {
-        /*if (!nearbyMarkerList.isEmpty()) {
-            Iterator<Marker> iterator = nearbyMarkerList.iterator();
-            while (iterator.hasNext()) {
-                Marker marker = iterator.next();
-                if (googleMap != null && !googleMap.getProjection().getVisibleRegion().latLngBounds.contains(marker.getPosition())) {
-                    marker.remove();
-                    iterator.remove();
-                }
-            }
-        }*/
     }
 
     private BitmapDescriptor getMarkerIconForCab(int car_map_icon) {

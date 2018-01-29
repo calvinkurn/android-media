@@ -18,8 +18,6 @@ import rx.Observable;
 
 public class GetNearbyRoadsUseCase extends UseCase<NearbyRoads> {
     private final PlaceRepository placeRepository;
-    public static String PARAM_LATITUDE = "latitude";
-    public static String PARAM_LONGITUDE = "longitude";
     public static final String PARAM_KEY = "key";
 
     public GetNearbyRoadsUseCase(ThreadExecutor threadExecutor,
@@ -34,21 +32,14 @@ public class GetNearbyRoadsUseCase extends UseCase<NearbyRoads> {
     public Observable<NearbyRoads> createObservable(RequestParams requestParams) {
 
         ArrayList<Location> locationArrayList = (ArrayList<Location>) requestParams.getObject("Coordinates");
-
-
         StringBuilder address = new StringBuilder();
-
         int size = locationArrayList.size();
         for (int i = 0; i < size; i++) {
-
             address.append(String.valueOf(locationArrayList.get(i).getLatitude())).append(",").append(String.valueOf(locationArrayList.get(i).getLongitude()));
-
             if (i != size - 1)
                 address.append("|");
         }
-
         String key = requestParams.getString(PARAM_KEY, "");
-
         return placeRepository.getNearByRoadsFromGoogleAPI(address.toString(), key);
     }
 }
