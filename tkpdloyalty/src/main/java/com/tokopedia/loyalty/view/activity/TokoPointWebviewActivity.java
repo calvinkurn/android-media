@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.tokopedia.core.app.TkpdCoreWebViewActivity;
+import com.tokopedia.loyalty.view.fragment.TokoPointWebViewFragment;
 
 /**
  * @author okasurya on 1/29/18.

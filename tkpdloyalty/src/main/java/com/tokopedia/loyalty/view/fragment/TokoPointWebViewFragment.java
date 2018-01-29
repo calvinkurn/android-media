@@ -1,4 +1,4 @@
-package com.tokopedia.loyalty.view.activity;
+package com.tokopedia.loyalty.view.fragment;
 
 import android.app.Fragment;
 import android.graphics.Bitmap;
