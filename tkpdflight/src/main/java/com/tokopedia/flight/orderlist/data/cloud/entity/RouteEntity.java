@@ -29,6 +29,12 @@ public class RouteEntity {
     @SerializedName("flight_number")
     @Expose
     private String flightNumber;
+    @SerializedName("duration")
+    @Expose
+    private String duration;
+    @SerializedName("layover")
+    @Expose
+    private String layover;
     @SerializedName("layover_minute")
     @Expose
     private int layoverMinute;
@@ -98,5 +104,13 @@ public class RouteEntity {
 
     public String getPnr() {
         return pnr;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+
+    public String getLayover() {
+        return layover;
     }
 }

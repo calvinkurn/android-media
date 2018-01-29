@@ -1,15 +1,13 @@
-package com.tokopedia.tkpd.thankyou.data.pojo.marketplace.tracker;
+package com.tokopedia.tkpd.thankyou.data.pojo.digital.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
 /**
- * Created by okasurya on 12/8/17.
+ * Created by okasurya on 1/22/18.
  */
 
-public class MarketplaceTrackerData {
+public class PurchaseData {
     @SerializedName("event")
     @Expose
     private String event;
@@ -25,12 +23,9 @@ public class MarketplaceTrackerData {
     @SerializedName("shop_id")
     @Expose
     private String shopId;
-    @SerializedName("shop_type")
+    @SerializedName("discount")
     @Expose
-    private String shopType;
-    @SerializedName("logistic_type")
-    @Expose
-    private String logisticType;
+    private String discount;
     @SerializedName("ecommerce")
     @Expose
     private Ecommerce ecommerce;
@@ -75,20 +70,12 @@ public class MarketplaceTrackerData {
         this.shopId = shopId;
     }
 
-    public String getShopType() {
-        return shopType;
+    public String getDiscount() {
+        return discount;
     }
 
-    public void setShopType(String shopType) {
-        this.shopType = shopType;
-    }
-
-    public String getLogisticType() {
-        return logisticType;
-    }
-
-    public void setLogisticType(String logisticType) {
-        this.logisticType = logisticType;
+    public void setDiscount(String discount) {
+        this.discount = discount;
     }
 
     public Ecommerce getEcommerce() {

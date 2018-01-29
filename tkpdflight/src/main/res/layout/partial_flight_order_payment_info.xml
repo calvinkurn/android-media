@@ -1,0 +1,78 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/payment_info_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:visibility="gone"
+    tools:visibility="visible">
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/tv_payment_label"
+        style="@style/TextView.Micro.BlackSecondary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_med"
+        tools:text="Rekening Tujuan" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/tv_payment"
+        style="@style/TextView.Title.BlackSecondary.Bold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="MANDIRI" />
+
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/tv_payment_description"
+        style="@style/TextView.Micro.BlackSecondary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="a.n. Tokopedia\nCabang Permata Hijau\n102 000 526 8673" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/tv_payment_due_date_label"
+        style="@style/TextView.Micro.BlackSecondary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_ms"
+        android:text="@string/flight_order_payment_due_date_label" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/tv_payment_due_date"
+        style="@style/TextView.Micro.BlackSecondary.Bold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="2 September 2017, 20:30 WIB" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/tv_payment_unique_code_label"
+        style="@style/TextView.Micro.BlackSecondary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_ms"
+        android:text="@string/flight_order_unique_code_label" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/tv_payment_unique_code"
+        style="@style/TextView.Micro.BlackSecondary.Bold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="12312312" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/tv_payment_cost_label"
+        style="@style/TextView.Micro.BlackSecondary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_ms"
+        android:text="@string/flight_order_total_label" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/tv_payment_cost"
+        style="@style/TextView.Micro.Bold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/flightPriceColor"
+        tools:text="Rp500.000" />
+</LinearLayout>

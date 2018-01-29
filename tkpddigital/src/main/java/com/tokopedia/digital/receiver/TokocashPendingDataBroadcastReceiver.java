@@ -54,7 +54,7 @@ public class TokocashPendingDataBroadcastReceiver extends BroadcastReceiver {
                     @Override
                     public void onNext(CashBackData cashBackData) {
                         Intent intentHomeFragment = new Intent(
-                                HomeFragmentBroadcastReceiverConstant.INTENT_ACTION
+                                HomeFragmentBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP
                         );
                         intentHomeFragment.putExtra(
                                 HomeFragmentBroadcastReceiverConstant.EXTRA_ACTION_RECEIVER,
@@ -68,7 +68,7 @@ public class TokocashPendingDataBroadcastReceiver extends BroadcastReceiver {
 
 
                         Intent intentDrawerActivity = new Intent(
-                                DrawerActivityBroadcastReceiverConstant.INTENT_ACTION
+                                DrawerActivityBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP
                         );
                         intentDrawerActivity.putExtra(
                                 DrawerActivityBroadcastReceiverConstant.EXTRA_ACTION_RECEIVER,

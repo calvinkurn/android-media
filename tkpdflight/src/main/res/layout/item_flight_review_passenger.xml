@@ -3,13 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/padding_small">
+    android:paddingTop="@dimen/padding_ms"
+    android:paddingBottom="@dimen/padding_ms">
 
     <TextView
         android:id="@+id/passenger_number"
         style="@style/TextView.Small.Bold"
         android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+        android:layout_marginEnd="@dimen/margin_vs"
         android:layout_marginRight="@dimen/margin_vs"
         tools:text="1. " />
 
@@ -17,14 +20,17 @@
         android:id="@+id/passenger_name"
         style="@style/TextView.Small.Bold"
         android:layout_alignBottom="@+id/passenger_number"
+        android:layout_marginEnd="@dimen/margin_vvs"
         android:layout_marginRight="@dimen/margin_vvs"
+        android:layout_toEndOf="@id/passenger_number"
         android:layout_toRightOf="@id/passenger_number"
         tools:text="Nyonya Hetty Koes Endang" />
 
     <TextView
         android:id="@+id/passenger_category"
         style="@style/TextView.Micro.BlackSecondary"
-        android:layout_alignBottom="@+id/passenger_name"
+        android:layout_alignBaseline="@+id/passenger_name"
+        android:layout_toEndOf="@id/passenger_name"
         android:layout_toRightOf="@id/passenger_name"
         tools:text="(Dewasa)" />
 
@@ -33,6 +39,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/passenger_name"
+        android:layout_alignStart="@id/passenger_name"
         android:layout_below="@+id/passenger_name"
-        android:layout_marginTop="@dimen/margin_small" />
+        android:layout_marginTop="@dimen/margin_small"/>
 </RelativeLayout>

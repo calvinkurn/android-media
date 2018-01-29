@@ -23,19 +23,28 @@ import java.util.List;
  * Created by zulfikarrahman on 11/23/17.
  */
 
-public class FlightBookingReviewModel implements Parcelable{
+public class FlightBookingReviewModel implements Parcelable {
 
+    public static final Creator<FlightBookingReviewModel> CREATOR = new Creator<FlightBookingReviewModel>() {
+        @Override
+        public FlightBookingReviewModel createFromParcel(Parcel in) {
+            return new FlightBookingReviewModel(in);
+        }
+
+        @Override
+        public FlightBookingReviewModel[] newArray(int size) {
+            return new FlightBookingReviewModel[size];
+        }
+    };
+    List<FlightBookingPassengerViewModel> detailPassengersData;
     private String id;
     private FlightDetailViewModel detailViewModelListDeparture;
     private FlightDetailViewModel detailViewModelListReturn;
-
     private List<FlightDetailPassenger> detailPassengers;
     private List<SimpleViewModel> flightReviewFares;
     private String dateFinishTime;
-
     private String totalPrice;
     private int totalPriceNumeric;
-    List<FlightBookingPassengerViewModel> detailPassengersData;
     private FlightBookingPhoneCodeViewModel phoneCodeViewModel;
     private String contactName;
     private String contactEmail;
@@ -50,13 +59,24 @@ public class FlightBookingReviewModel implements Parcelable{
     private String returnDate;
     private String departureTripId;
 
-
-    public FlightBookingReviewModel(FlightBookingParamViewModel flightBookingParamViewModel, FlightBookingCartData flightBookingCartData,
-                                    String departureTripId, String returnTripId) {
+    public FlightBookingReviewModel(FlightBookingParamViewModel flightBookingParamViewModel,
+                                    FlightBookingCartData flightBookingCartData,
+                                    String departureTripId,
+                                    String returnTripId,
+                                    String luggagePrefix,
+                                    String mealPrefix,
+                                    String birthdatePrefix) {
         setId(flightBookingParamViewModel.getId());
         setDetailViewModelListDeparture(flightBookingCartData.getDepartureTrip());
         setDetailViewModelListReturn(flightBookingCartData.getReturnTrip());
-        setDetailPassengers(generateFlightDetailPassenger(flightBookingParamViewModel.getPassengerViewModels()));
+        setDetailPassengers(
+                generateFlightDetailPassenger(
+                        flightBookingParamViewModel.getPassengerViewModels(),
+                        luggagePrefix,
+                        mealPrefix,
+                        birthdatePrefix
+                )
+        );
         setFlightReviewFares(flightBookingParamViewModel.getPriceListDetails());
         setTotalPrice(flightBookingParamViewModel.getTotalPriceFmt());
         setTotalPriceNumeric(flightBookingParamViewModel.getTotalPriceNumeric());
@@ -101,18 +121,6 @@ public class FlightBookingReviewModel implements Parcelable{
         returnDate = in.readString();
         departureTripId = in.readString();
     }
-
-    public static final Creator<FlightBookingReviewModel> CREATOR = new Creator<FlightBookingReviewModel>() {
-        @Override
-        public FlightBookingReviewModel createFromParcel(Parcel in) {
-            return new FlightBookingReviewModel(in);
-        }
-
-        @Override
-        public FlightBookingReviewModel[] newArray(int size) {
-            return new FlightBookingReviewModel[size];
-        }
-    };
 
     public FlightBookingPhoneCodeViewModel getPhoneCodeViewModel() {
         return phoneCodeViewModel;
@@ -230,92 +238,112 @@ public class FlightBookingReviewModel implements Parcelable{
         return adult;
     }
 
-    public int getChildren() {
-        return children;
-    }
-
-    public int getInfant() {
-        return infant;
-    }
-
-    public String getReturnTripId() {
-        return returnTripId;
-    }
-
-    public FlightClassViewModel getFlightClass() {
-        return flightClass;
-    }
-
-    public String getDepartureDate() {
-        return departureDate;
-    }
-
-    public String getReturnDate() {
-        return returnDate;
-    }
-
-    public String getDepartureTripId() {
-        return departureTripId;
-    }
-
     public void setAdult(int adult) {
         this.adult = adult;
+    }
+
+    public int getChildren() {
+        return children;
     }
 
     public void setChildren(int children) {
         this.children = children;
     }
 
+    public int getInfant() {
+        return infant;
+    }
+
     public void setInfant(int infant) {
         this.infant = infant;
+    }
+
+    public String getReturnTripId() {
+        return returnTripId;
     }
 
     public void setReturnTripId(String returnTripId) {
         this.returnTripId = returnTripId;
     }
 
+    public FlightClassViewModel getFlightClass() {
+        return flightClass;
+    }
+
     public void setFlightClass(FlightClassViewModel flightClass) {
         this.flightClass = flightClass;
+    }
+
+    public String getDepartureDate() {
+        return departureDate;
     }
 
     public void setDepartureDate(String departureDate) {
         this.departureDate = departureDate;
     }
 
+    public String getReturnDate() {
+        return returnDate;
+    }
+
     public void setReturnDate(String returnDate) {
         this.returnDate = returnDate;
+    }
+
+    public String getDepartureTripId() {
+        return departureTripId;
     }
 
     public void setDepartureTripId(String departureTripId) {
         this.departureTripId = departureTripId;
     }
 
-    private List<FlightDetailPassenger> generateFlightDetailPassenger(List<FlightBookingPassengerViewModel> passengerViewModels) {
+    private List<FlightDetailPassenger> generateFlightDetailPassenger(List<FlightBookingPassengerViewModel> passengerViewModels,
+                                                                      String luggagePrefix,
+                                                                      String mealPrefix,
+                                                                      String birthdatePrefix) {
         List<FlightDetailPassenger> flightDetailPassengers = new ArrayList<>();
         for (FlightBookingPassengerViewModel flightBookingPassengerViewModel : passengerViewModels) {
             FlightDetailPassenger flightDetailPassenger = new FlightDetailPassenger();
-            flightDetailPassenger.setPassengerName(flightBookingPassengerViewModel.getPassengerFirstName() + " " + flightBookingPassengerViewModel.getPassengerLastName());
+            flightDetailPassenger.setPassengerName(flightBookingPassengerViewModel.getPassengerTitle() + " " + flightBookingPassengerViewModel.getPassengerFirstName() + " " + flightBookingPassengerViewModel.getPassengerLastName());
             flightDetailPassenger.setPassengerType(flightBookingPassengerViewModel.getType());
-            flightDetailPassenger.setInfoPassengerList(generateDetailViewModelPassenger(flightBookingPassengerViewModel.getFlightBookingLuggageMetaViewModels(),
-                    flightBookingPassengerViewModel.getFlightBookingMealMetaViewModels()));
+            flightDetailPassenger.setInfoPassengerList(
+                    generateDetailViewModelPassenger(flightBookingPassengerViewModel.getPassengerBirthdate(),
+                            flightBookingPassengerViewModel.getFlightBookingLuggageMetaViewModels(),
+                            flightBookingPassengerViewModel.getFlightBookingMealMetaViewModels(),
+                            luggagePrefix,
+                            mealPrefix,
+                            birthdatePrefix
+                    )
+            );
             flightDetailPassengers.add(flightDetailPassenger);
         }
         return flightDetailPassengers;
     }
 
-    private List<SimpleViewModel> generateDetailViewModelPassenger(List<FlightBookingAmenityMetaViewModel> flightBookingLuggageMetaViewModels,
-                                                                   List<FlightBookingAmenityMetaViewModel> flightBookingAmenityMetaViewModels) {
+    private List<SimpleViewModel> generateDetailViewModelPassenger(String passengerBirthdate,
+                                                                   List<FlightBookingAmenityMetaViewModel> flightBookingLuggageMetaViewModels,
+                                                                   List<FlightBookingAmenityMetaViewModel> flightBookingAmenityMetaViewModels,
+                                                                   String luggagePrefix,
+                                                                   String mealPrefix,
+                                                                   String birthdatePrefix) {
         List<SimpleViewModel> simpleViewModels = new ArrayList<>();
+
+        // add tanggal lahir
+        if (passengerBirthdate != null && !passengerBirthdate.equals(""))
+            simpleViewModels.add(new SimpleViewModel(String.valueOf(FlightDateUtil.formatDate(
+                    FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.DEFAULT_VIEW_FORMAT, passengerBirthdate)), birthdatePrefix));
+
         for (FlightBookingAmenityMetaViewModel flightBookingLuggageMetaViewModel : flightBookingLuggageMetaViewModels) {
             SimpleViewModel simpleViewModel = new SimpleViewModel();
-            simpleViewModel.setDescription(flightBookingLuggageMetaViewModel.getDescription());
+            simpleViewModel.setDescription(luggagePrefix + " " + flightBookingLuggageMetaViewModel.getDescription());
             simpleViewModel.setLabel(generateLabelLuggage(flightBookingLuggageMetaViewModel.getAmenities()));
             simpleViewModels.add(simpleViewModel);
         }
 
         for (FlightBookingAmenityMetaViewModel flightBookingAmenityMetaViewModel : flightBookingAmenityMetaViewModels) {
             SimpleViewModel simpleViewModel = new SimpleViewModel();
-            simpleViewModel.setDescription(flightBookingAmenityMetaViewModel.getDescription());
+            simpleViewModel.setDescription(mealPrefix + " " + flightBookingAmenityMetaViewModel.getDescription());
             simpleViewModel.setLabel(generateLabelMeal(flightBookingAmenityMetaViewModel.getAmenities()));
             simpleViewModels.add(simpleViewModel);
         }

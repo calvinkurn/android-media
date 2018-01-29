@@ -38,7 +38,7 @@ public class ReactNativeHostFactory {
 
             @Override
             public boolean getUseDeveloperSupport() {
-                return GlobalConfig.isAllowDebuggingTools();
+                return GlobalConfig.DEBUG;
             }
 
             @Override
