@@ -48,9 +48,9 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.OtpRouter;
 import com.tokopedia.core.router.SellerAppRouter;
-import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.GlobalConfig;
@@ -63,6 +63,7 @@ import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.bookingride.di.BookingRideComponent;
 import com.tokopedia.ride.bookingride.di.DaggerBookingRideComponent;
 import com.tokopedia.ride.bookingride.domain.model.NearbyRides;
+import com.tokopedia.ride.bookingride.domain.model.ProductEstimate;
 import com.tokopedia.ride.bookingride.view.RideHomeContract;
 import com.tokopedia.ride.bookingride.view.RideHomePresenter;
 import com.tokopedia.ride.bookingride.view.adapter.SeatAdapter;
@@ -641,10 +642,10 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     }
 
     @Override
-    public void renderNearbyCabs() {
-        RideHomeMapFragment fragment = (RideHomeMapFragment) getFragmentManager().findFragmentById(R.id.top_container);
-        if (fragment != null) {
-            fragment.displayNearByCabs();;
+    public void renderNearbyCabs(List<ProductEstimate> productEstimates) {
+        RideHomeMapFragment rideHomeMapFragment = (RideHomeMapFragment) getFragmentManager().findFragmentById(R.id.top_container);
+        if (rideHomeMapFragment != null) {
+            rideHomeMapFragment.displayNearByCabs(productEstimates);
         }
     }
 

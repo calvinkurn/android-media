@@ -55,6 +55,7 @@ import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.bookingride.di.BookingRideComponent;
 import com.tokopedia.ride.bookingride.di.DaggerBookingRideComponent;
 import com.tokopedia.ride.bookingride.domain.model.NearbyRides;
+import com.tokopedia.ride.bookingride.domain.model.ProductEstimate;
 import com.tokopedia.ride.bookingride.view.RideHomeMapContract;
 import com.tokopedia.ride.bookingride.view.RideHomeMapPresenter;
 import com.tokopedia.ride.bookingride.view.TouchableWrapperLayout;
@@ -66,6 +67,7 @@ import com.tokopedia.ride.common.place.data.entity.NearbyRoads;
 import com.tokopedia.ride.common.place.domain.model.OverviewPolyline;
 import com.tokopedia.ride.common.ride.di.RideComponent;
 import com.tokopedia.ride.common.ride.domain.model.Location;
+import com.tokopedia.ride.common.ride.utils.RideUtils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -139,6 +141,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     private boolean isMarkerRotating;
     private int MAX_CABS_COUNT = 5;
     private int MAX_MOTO_COUNT = 2;
+    private boolean showUberMoto = false;
 
     public interface OnFragmentInteractionListener {
         void onSourceAndDestinationChanged(PlacePassViewModel source, PlacePassViewModel destination);
@@ -363,14 +366,19 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         }
     }
 
-    public void displayNearByCabs() {
-
-        if (googleMap != null && getVisibleCabsMarkerCount() < MAX_CABS_COUNT) {
-            double latitude = googleMap.getCameraPosition().target.latitude;
-            double longitude = googleMap.getCameraPosition().target.longitude;
-
-            ArrayList<Location> locationArrayList = getRandomLocations(latitude, longitude);
-            presenter.getNearbyRoadsData(locationArrayList);
+    public void displayNearByCabs(List<ProductEstimate> productEstimates) {
+        if (!productEstimates.isEmpty()) {
+            for (ProductEstimate productEstimate : productEstimates) {
+                if (RideUtils.isUberMoto(productEstimate.getProduct().getDisplayName())) {
+                    showUberMoto = true;
+                }
+            }
+            if (googleMap != null && getVisibleCabsMarkerCount() < MAX_CABS_COUNT) {
+                double latitude = googleMap.getCameraPosition().target.latitude;
+                double longitude = googleMap.getCameraPosition().target.longitude;
+                ArrayList<Location> locationArrayList = getRandomLocations(latitude, longitude);
+                presenter.getNearbyRoadsData(locationArrayList);
+            }
         }
     }
 
@@ -690,7 +698,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
             routes.add(PolyUtil.decode(route.getOverviewPolyline()));
         }
 
-        googleMap.clear();
+//        googleMap.clear();
 
         for (List<LatLng> route : routes) {
             if (route.size() > 1) {
@@ -769,7 +777,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
                 nearbyCabsMarkerList.add(marker);
                 cabsToShow--;
 
-            } else if (motoToShow > 0) {
+            } else if (showUberMoto && (motoToShow > 0)) {
 
                 Marker marker = googleMap.addMarker(new MarkerOptions()
                         .position(new LatLng(nearbyRoads.getSnappedPointsArrayList().get(i).getLocation().getLatitude(),

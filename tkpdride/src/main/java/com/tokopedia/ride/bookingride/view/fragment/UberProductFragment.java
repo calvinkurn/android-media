@@ -22,6 +22,7 @@ import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.bookingride.di.BookingRideComponent;
 import com.tokopedia.ride.bookingride.di.DaggerBookingRideComponent;
 import com.tokopedia.ride.bookingride.domain.model.NearbyRides;
+import com.tokopedia.ride.bookingride.domain.model.ProductEstimate;
 import com.tokopedia.ride.bookingride.view.UberProductContract;
 import com.tokopedia.ride.bookingride.view.UberProductPresenter;
 import com.tokopedia.ride.bookingride.view.adapter.RideProductAdapter;
@@ -97,7 +98,7 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
 
         void renderNearbyRides(NearbyRides nearbyRides);
 
-        void renderNearbyCabs();
+        void renderNearbyCabs(List<ProductEstimate> productEstimates);
     }
 
     public static UberProductFragment newInstance() {
@@ -359,9 +360,9 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     }
 
     @Override
-    public void displayNearbyCabs() {
+    public void displayNearbyCabs(List<ProductEstimate> productEstimates) {
         if (interactionListener != null)
-            interactionListener.renderNearbyCabs();
+            interactionListener.renderNearbyCabs(productEstimates);
     }
 
     @Override

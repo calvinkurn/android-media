@@ -114,7 +114,7 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                         getView().hideErrorMessage();
                         getView().showProductList();
                         getView().renderProductList(productsList);
-                        getView().displayNearbyCabs();
+                        getView().displayNearbyCabs(productEstimates);
                         getMinimalProductEstimateAndRender(productEstimates);
                         //renderNearbyCarsAroundSource(productEstimates);
                     }
@@ -171,6 +171,7 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                     } else {
                         if (destination != null) {
                             actionGetPricesEstimate(source, destination, productEstimates);
+                            getView().displayNearbyCabs(productEstimates);
                         } else {
                             getView().hideProgress();
                             getView().hideErrorMessage();
