@@ -29,6 +29,7 @@ import com.tokopedia.core.drawer2.view.databinder.DrawerItemDataBinder;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerGroup;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
 import com.tokopedia.core.home.BannerWebView;
+import com.tokopedia.core.home.SimpleWebViewActivity;
 import com.tokopedia.core.loyaltysystem.LoyaltyDetail;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
@@ -593,9 +594,9 @@ public class DrawerBuyerHelper extends DrawerHelper
     @Override
     public void onTokoPointActionClicked(String mainPageUrl, String title) {
         if (TextUtils.isEmpty(title))
-            context.startActivity(BannerWebView.getCallingIntent(context, mainPageUrl));
+            context.startActivity(SimpleWebViewActivity.getIntent(context, mainPageUrl));
         else
-            context.startActivity(BannerWebView.getCallingIntentWithTitle(context, mainPageUrl, title));
+            context.startActivity(SimpleWebViewActivity.getIntentWithTitle(context, mainPageUrl, title));
     }
 
     private void onGoToCreateShop() {

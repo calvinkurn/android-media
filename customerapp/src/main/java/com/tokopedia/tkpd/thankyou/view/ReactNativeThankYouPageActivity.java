@@ -25,6 +25,8 @@ import com.tokopedia.tkpdreactnative.react.ReactConst;
 
 public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
+    private static final String PLATFORM = "platform";
+    private static final String DIGITAL = "digital";
 
     private ReactInstanceManager reactInstanceManager;
 
@@ -135,12 +137,27 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
 
     @Override
     public void onBackPressed() {
-        AdvancedAppRatingDialog.show(this, new AppRatingDialog.AppRatingListener() {
-            @Override
-            public void onDismiss() {
-                closeThankyouPage();
+        if(isDigital()) {
+            AdvancedAppRatingDialog.show(this, new AppRatingDialog.AppRatingListener() {
+                @Override
+                public void onDismiss() {
+                    closeThankyouPage();
+                }
+            });
+        } else {
+            closeThankyouPage();
+        }
+    }
+
+    private boolean isDigital() {
+        Bundle extra = getIntent().getExtras();
+        if(extra != null) {
+            String platform = extra.getString(PLATFORM);
+            if (platform != null && platform.equals(DIGITAL)) {
+                return  true;
             }
-        });
+        }
+        return false;
     }
 
     private void closeThankyouPage() {

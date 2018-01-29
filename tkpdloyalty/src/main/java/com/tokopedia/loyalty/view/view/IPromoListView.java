@@ -18,6 +18,8 @@ public interface IPromoListView extends IBaseView {
 
     void renderErrorGetPromoDataList(String message);
 
+    void renderEmptyResultGetPromoDataList();
+
     void renderErrorHttpGetPromoDataList(String message);
 
     void renderErrorNoConnectionGetPromoDataList(String message);
@@ -29,4 +31,6 @@ public interface IPromoListView extends IBaseView {
     void enableSwipeRefresh();
 
     Context getActivityContext();
+
+    void renderErrorLoadNextPage(String message, int actualPage);
 }
