@@ -75,17 +75,16 @@ public class DigitalProductChooserView extends BaseDigitalChooserView<Product> {
         tvErrorProduct.setVisibility(GONE);
     }
 
-    @Override
-    public void renderInitDataList(List<Product> dataList) {
-        this.dataList = dataList;
-        Product productInitSelected = null;
-        if (!dataList.isEmpty()) {
-            productInitSelected = dataList.get(0);
+    public void renderInitDataList(List<Product> productList, int defaultProductId) {
+        this.dataList = productList;
+        if (!productList.isEmpty()) {
+            for (int i = 0; i < productList.size(); i++) {
+                if (Integer.valueOf(productList.get(i).getProductId()) == defaultProductId) {
+                    this.dataSelected = productList.get(i);
+                    break;
+                }
+            }
         }
-        if (productInitSelected != null && (this.dataSelected == null
-                || !this.dataSelected.getProductId()
-                .equalsIgnoreCase(productInitSelected.getProductId())))
-            this.dataSelected = productInitSelected;
         invalidateContentView();
         if (actionListener != null)
             actionListener.onUpdateDataDigitalChooserSelectedRendered(dataSelected);

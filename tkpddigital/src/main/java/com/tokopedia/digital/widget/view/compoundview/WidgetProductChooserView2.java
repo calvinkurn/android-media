@@ -76,14 +76,13 @@ public class WidgetProductChooserView2 extends LinearLayout {
         }
     }
 
-    public void renderDataView(List<Product> products, boolean showPrice, String productId) {
+    public void renderDataView(List<Product> products, boolean showPrice, String defaultProductId) {
         WidgetNominalAdapter2 adapter = new WidgetNominalAdapter2(getContext(),
                 android.R.layout.simple_spinner_item, products, showPrice);
         spinnerNominal.setAdapter(adapter);
         spinnerNominal.setOnItemSelectedListener(getItemSelected(products));
-        setSpnNominalSelectionBasedStatus(products);
-        setSpnNominalSelectionBasedLastOrder(products, productId);
-        checkStockProduct(products.get(spinnerNominal.getSelectedItemPosition()));
+        setSpnNominalSelectionBasedLastOrder(products, defaultProductId);
+        showProductStatus(products.get(spinnerNominal.getSelectedItemPosition()));
     }
 
     private AdapterView.OnItemSelectedListener getItemSelected(final List<Product> products) {
@@ -92,7 +91,7 @@ public class WidgetProductChooserView2 extends LinearLayout {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 listener.initDataView(products.get(i));
                 listener.trackingProduct();
-                checkStockProduct(products.get(i));
+                showProductStatus(products.get(i));
             }
 
             @Override
@@ -102,7 +101,7 @@ public class WidgetProductChooserView2 extends LinearLayout {
         };
     }
 
-    public boolean checkStockProduct(Product product) {
+    public boolean showProductStatus(Product product) {
         boolean isAvailable = product.getStatus() != OUT_OF_STOCK;
         if (isAvailable) {
             errorNominal.setVisibility(View.GONE);

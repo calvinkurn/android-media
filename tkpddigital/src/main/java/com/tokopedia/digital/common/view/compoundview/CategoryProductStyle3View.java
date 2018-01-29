@@ -193,7 +193,7 @@ public class CategoryProductStyle3View extends
         clearHolder(holderChooserOperator);
         digitalOperatorChooserView.setLabelText(data.getOperatorLabel());
         digitalOperatorChooserView.setActionListener(getActionListenerOperatorChooser());
-        digitalOperatorChooserView.renderInitDataList(data.getOperatorList());
+        digitalOperatorChooserView.renderInitDataList(data.getOperatorList(), data.getDefaultOperatorId());
         holderChooserOperator.addView(digitalOperatorChooserView);
 
         if (hasLastOrderHistoryData()) {
@@ -276,7 +276,8 @@ public class CategoryProductStyle3View extends
         clearHolder(holderChooserProduct);
         digitalProductChooserView.setLabelText(operatorSelected.getRule().getProductText());
         digitalProductChooserView.setActionListener(getActionListenerProductChooser());
-        digitalProductChooserView.renderInitDataList(operatorSelected.getProductList());
+        digitalProductChooserView.renderInitDataList(operatorSelected.getProductList(),
+                operatorSelected.getDefaultProductId());
         holderChooserProduct.addView(digitalProductChooserView);
 
         if (hasLastOrderHistoryData() && operatorSelected != null) {

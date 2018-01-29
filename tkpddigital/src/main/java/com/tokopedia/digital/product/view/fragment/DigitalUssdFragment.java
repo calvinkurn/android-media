@@ -221,7 +221,8 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
     private void renderOperatorData() {
         clearHolder(holderChooserProduct);
         digitalProductChooserView.setActionListener(getActionListenerProductChooser());
-        digitalProductChooserView.renderInitDataList(selectedOperator.getProductList());
+        digitalProductChooserView.renderInitDataList(selectedOperator.getProductList(),
+                selectedOperator.getDefaultProductId());
         digitalProductChooserView.setLabelText(selectedOperator.getRule().getProductText());
         holderChooserProduct.addView(digitalProductChooserView);
         handleCallBackProductChooser(getDefaultProduct());

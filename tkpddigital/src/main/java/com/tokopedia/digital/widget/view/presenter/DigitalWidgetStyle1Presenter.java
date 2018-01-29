@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v4.util.Pair;
 import android.text.TextUtils;
 
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
@@ -44,9 +45,10 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalPresenter
     private Context context;
 
     public DigitalWidgetStyle1Presenter(Context context,
+                                        LocalCacheHandler localCacheHandler,
                                         IDigitalWidgetInteractor widgetInteractor,
                                         IDigitalWidgetStyle1View view) {
-        super(context);
+        super(context, localCacheHandler);
         this.context = context;
         this.widgetInteractor = widgetInteractor;
         this.view = view;
@@ -203,5 +205,10 @@ public class DigitalWidgetStyle1Presenter extends BaseDigitalPresenter
                 view.renderProduct(product);
             }
         };
+    }
+
+    @Override
+    public void detachView() {
+
     }
 }

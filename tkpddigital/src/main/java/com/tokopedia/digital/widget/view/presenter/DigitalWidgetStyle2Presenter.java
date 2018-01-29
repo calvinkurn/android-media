@@ -3,6 +3,7 @@ package com.tokopedia.digital.widget.view.presenter;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.R;
@@ -33,9 +34,10 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalPresenter
     private Context context;
 
     public DigitalWidgetStyle2Presenter(Context context,
+                                        LocalCacheHandler localCacheHandler,
                                         IDigitalWidgetInteractor widgetInteractor,
                                         IDigitalWidgetStyle2View view) {
-        super(context);
+        super(context, localCacheHandler);
         this.context = context;
         this.widgetInteractor = widgetInteractor;
         this.view = view;
@@ -194,5 +196,10 @@ public class DigitalWidgetStyle2Presenter extends BaseDigitalPresenter
                 }
             }
         };
+    }
+
+    @Override
+    public void detachView() {
+
     }
 }

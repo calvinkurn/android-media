@@ -3,6 +3,7 @@ package com.tokopedia.digital.widget.view.presenter;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.common.domain.DigitalCategoryUseCase;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
@@ -33,9 +34,10 @@ public class DigitalWidgetPresenter extends BaseDigitalPresenter implements IDig
     private DigitalCategoryUseCase digitalCategoryUseCase;
 
     public DigitalWidgetPresenter(Context context,
+                                  LocalCacheHandler localCacheHandler,
                                   IDigitalWidgetView digitalWidgetView,
                                   DigitalCategoryUseCase digitalCategoryUseCase) {
-        super(context);
+        super(context, localCacheHandler);
         this.context = context;
         this.digitalWidgetView = digitalWidgetView;
         this.digitalCategoryUseCase = digitalCategoryUseCase;
@@ -102,6 +104,11 @@ public class DigitalWidgetPresenter extends BaseDigitalPresenter implements IDig
     private boolean isPulsaOrPaketDataOrRoaming(String categoryId) {
         return categoryId.equals(PULSA_CATEGORY_ID) || categoryId.equals(PAKET_DATA_CATEGORY_ID) ||
                 categoryId.equals(ROAMING_CATEGORY_ID);
+    }
+
+    @Override
+    public void detachView() {
+        digitalCategoryUseCase.unsubscribe();
     }
 
 }

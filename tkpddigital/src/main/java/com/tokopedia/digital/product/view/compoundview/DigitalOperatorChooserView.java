@@ -80,13 +80,18 @@ public class DigitalOperatorChooserView extends BaseDigitalChooserView<Operator>
         //TODO bisa set error text disini berdasarkan status operatornya
     }
 
-
-    @Override
-    public void renderInitDataList(List<Operator> dataList) {
-        this.dataList = dataList;
-        if (!dataList.isEmpty() && (this.dataSelected == null
-                || !this.dataSelected.getOperatorId().equalsIgnoreCase(dataList.get(0).getOperatorId())))
+    public void renderInitDataList(List<Operator> operatorList, String defaultOperatorId) {
+        this.dataList = operatorList;
+        if (!dataList.isEmpty()) {
             this.dataSelected = dataList.get(0);
+            for (int i = 0, operatorsSize = dataList.size(); i < operatorsSize; i++) {
+                Operator operator = dataList.get(i);
+                if (String.valueOf(operator.getOperatorId())
+                        .equalsIgnoreCase(defaultOperatorId)) {
+                    this.dataSelected = dataList.get(i);
+                }
+            }
+        }
         invalidateContentView();
         if (actionListener != null)
             actionListener.onUpdateDataDigitalChooserSelectedRendered(dataSelected);

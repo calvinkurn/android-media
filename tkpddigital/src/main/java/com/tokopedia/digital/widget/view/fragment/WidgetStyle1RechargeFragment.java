@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
@@ -14,6 +15,7 @@ import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
@@ -110,7 +112,9 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
                 new JobExecutor(),
                 new UIThread());
 
-        presenter = new DigitalWidgetStyle1Presenter(getActivity(), interactor, this);
+        presenter = new DigitalWidgetStyle1Presenter(getActivity(),
+                new LocalCacheHandler(getActivity(), TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER),
+                interactor, this);
     }
 
     @Override

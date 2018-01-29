@@ -38,4 +38,6 @@ public interface IBaseDigitalPresenter {
             String userLoginId
     );
 
+    void detachView();
+
 }

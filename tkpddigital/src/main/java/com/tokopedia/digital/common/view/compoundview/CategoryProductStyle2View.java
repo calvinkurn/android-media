@@ -295,7 +295,8 @@ public class CategoryProductStyle2View extends
     private void renderProductChooserOptions() {
         clearHolder(holderChooserProduct);
         digitalProductChooserView.setActionListener(getActionListenerProductChooser());
-        digitalProductChooserView.renderInitDataList(operatorSelected.getProductList());
+        digitalProductChooserView.renderInitDataList(operatorSelected.getProductList(),
+                operatorSelected.getDefaultProductId());
         digitalProductChooserView.setLabelText(operatorSelected.getRule().getProductText());
         holderChooserProduct.addView(digitalProductChooserView);
 

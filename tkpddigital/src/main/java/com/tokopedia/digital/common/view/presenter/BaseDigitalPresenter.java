@@ -27,8 +27,9 @@ public abstract class BaseDigitalPresenter implements IBaseDigitalPresenter {
     private LocalCacheHandler localCacheHandlerLastClientNumber;
     private LocalCacheHandler cacheHandlerRecentInstantCheckoutUsed;
 
-    public BaseDigitalPresenter(Context context) {
+    public BaseDigitalPresenter(Context context, LocalCacheHandler localCacheHandlerLastClientNumber) {
         this.context = context;
+        this.localCacheHandlerLastClientNumber = localCacheHandlerLastClientNumber;
     }
 
     @Override
@@ -57,10 +58,6 @@ public abstract class BaseDigitalPresenter implements IBaseDigitalPresenter {
     @Deprecated
     @Override
     public void storeLastClientNumberTyped(String categoryId, String clientNumber, Product selectedProduct) {
-        if (localCacheHandlerLastClientNumber == null)
-            localCacheHandlerLastClientNumber = new LocalCacheHandler(
-                    context, TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER
-            );
         localCacheHandlerLastClientNumber.putString(
                 TkpdCache.Key.DIGITAL_CLIENT_NUMBER_CATEGORY + categoryId, clientNumber
         );
@@ -81,10 +78,6 @@ public abstract class BaseDigitalPresenter implements IBaseDigitalPresenter {
     @Override
     public void storeLastClientNumberTyped(String categoryId, String operatorId, String clientNumber,
                                            String productId) {
-        if (localCacheHandlerLastClientNumber == null)
-            localCacheHandlerLastClientNumber = new LocalCacheHandler(
-                    context, TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER
-            );
         localCacheHandlerLastClientNumber.putString(
                 TkpdCache.Key.DIGITAL_CLIENT_NUMBER_CATEGORY + categoryId, clientNumber
         );
@@ -101,27 +94,18 @@ public abstract class BaseDigitalPresenter implements IBaseDigitalPresenter {
 
     @Override
     public String getLastOperatorSelected(String categoryId) {
-        if (localCacheHandlerLastClientNumber == null)
-            localCacheHandlerLastClientNumber = new LocalCacheHandler(
-                    context, TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER);
         return localCacheHandlerLastClientNumber.getString(
                 TkpdCache.Key.DIGITAL_OPERATOR_ID_CATEGORY + categoryId, "");
     }
 
     @Override
     public String getLastClientNumberTyped(String categoryId) {
-        if (localCacheHandlerLastClientNumber == null)
-            localCacheHandlerLastClientNumber = new LocalCacheHandler(
-                    context, TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER);
         return localCacheHandlerLastClientNumber.getString(
                 TkpdCache.Key.DIGITAL_CLIENT_NUMBER_CATEGORY + categoryId, "");
     }
 
     @Override
     public String getLastProductSelected(String categoryId) {
-        if (localCacheHandlerLastClientNumber == null)
-            localCacheHandlerLastClientNumber = new LocalCacheHandler(
-                    context, TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER);
         return localCacheHandlerLastClientNumber.getString(
                 TkpdCache.Key.DIGITAL_PRODUCT_ID_CATEGORY + categoryId, "");
     }

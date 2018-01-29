@@ -135,7 +135,9 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
                 getContext(), digitalRepository
         );
 
-        presenter = new DigitalWidgetPresenter(getActivity(), this,
+        presenter = new DigitalWidgetPresenter(getActivity(),
+                new LocalCacheHandler(getActivity(), TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER),
+                this,
                 digitalCategoryUseCase);
     }
 

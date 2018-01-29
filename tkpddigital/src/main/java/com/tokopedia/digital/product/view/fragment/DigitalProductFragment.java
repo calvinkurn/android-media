@@ -110,7 +110,6 @@ import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
-import rx.subscriptions.CompositeSubscription;
 
 import static com.tokopedia.digital.product.view.activity.DigitalSearchNumberActivity.EXTRA_CALLBACK_CLIENT_NUMBER;
 
@@ -178,7 +177,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     private CheckPulsaBalanceView selectedCheckPulsaBalanceView;
 
-    private CompositeSubscription compositeSubscription;
     private BaseDigitalProductView<CategoryData, Operator, Product, HistoryClientNumber> digitalProductView;
 
     private LocalCacheHandler cacheHandlerRecentInstantCheckoutUsed;
@@ -268,8 +266,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     protected void initialPresenter() {
         bannerAdapter = new BannerAdapter(this);
 
-        if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
-
         DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
         CategoryDetailDataSource categoryDetailDataSource = new CategoryDetailDataSource(
                 digitalEndpointService, new GlobalCacheManager(), new ProductDigitalMapper()
@@ -292,7 +288,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                 getActivity(), digitalCategoryRepository
         );
 
-        presenter = new ProductDigitalPresenter(getActivity(), this, productDigitalInteractor, digitalCategoryUseCase);
+        presenter = new ProductDigitalPresenter(getActivity(),
+                new LocalCacheHandler(getActivity(), TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER),
+                this, productDigitalInteractor, digitalCategoryUseCase);
     }
 
     @Override
@@ -1145,12 +1143,11 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onDestroy() {
-        if (compositeSubscription != null && compositeSubscription.hasSubscriptions())
-            compositeSubscription.unsubscribe();
-
         if (ussdBroadcastReceiver != null)
             getActivity().unregisterReceiver(ussdBroadcastReceiver);
         presenter.removeUssdTimerCallback();
+
+        presenter.detachView();
 
         super.onDestroy();
     }
@@ -1168,6 +1165,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                     digitalProductView.getClientNumber(),
                     selectedProduct != null ? selectedProduct.getProductId() : "");
         }
+
+
     }
 
 }

@@ -100,10 +100,12 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
 
     private CategoryData categoryData;
 
-    public ProductDigitalPresenter(Activity activity, IProductDigitalView view,
+    public ProductDigitalPresenter(Activity activity,
+                                   LocalCacheHandler localCacheHandler,
+                                   IProductDigitalView view,
                                    IProductDigitalInteractor productDigitalInteractor,
                                    DigitalCategoryUseCase digitalCategoryUseCase) {
-        super(activity);
+        super(activity, localCacheHandler);
         this.activity = activity;
         this.view = view;
         this.productDigitalInteractor = productDigitalInteractor;
@@ -580,5 +582,11 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
                 categoryDataState.getOperatorList() != null &&
                 categoryDataState.getOperatorList().size() != 0);
     }
+
+    @Override
+    public void detachView() {
+        digitalCategoryUseCase.unsubscribe();
+    }
+
 }
 

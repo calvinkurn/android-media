@@ -55,8 +55,6 @@ public abstract class BaseDigitalChooserView<T> extends RelativeLayout {
 
     public abstract void disableError();
 
-    public abstract void renderInitDataList(List<T> data);
-
     public abstract void renderUpdateDataSelected(T data);
 
     protected OnClickListener getOnChooserClickedListener() {

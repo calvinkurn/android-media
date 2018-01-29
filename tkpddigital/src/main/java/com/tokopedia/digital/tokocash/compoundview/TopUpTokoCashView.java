@@ -71,7 +71,8 @@ public class TopUpTokoCashView extends LinearLayout {
         this.categoryData = categoryData;
         this.operatorSelected = operatorSelected;
         digitalProductChooserView.setActionListener(getActionListener(operatorSelected.getRule().getProductText()));
-        digitalProductChooserView.renderInitDataList(operatorSelected.getProductList());
+        digitalProductChooserView.renderInitDataList(operatorSelected.getProductList(),
+                operatorSelected.getDefaultProductId());
         digitalProductChooserView.setLabelText(operatorSelected.getRule().getProductText());
         instantCheckoutCheckbox.setVisibility(categoryData.isInstantCheckout() ? VISIBLE : GONE);
     }

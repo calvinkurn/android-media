@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.presentation.UIThread;
@@ -14,17 +15,18 @@ import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
-import com.tokopedia.digital.widget.view.compoundview.WidgetClientNumberView;
-import com.tokopedia.digital.widget.view.compoundview.WidgetProductChooserView;
-import com.tokopedia.digital.widget.view.compoundview.WidgetWrapperBuyView;
 import com.tokopedia.digital.widget.data.mapper.FavoriteNumberListDataMapper;
 import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
 import com.tokopedia.digital.widget.domain.interactor.DigitalWidgetInteractor;
+import com.tokopedia.digital.widget.view.compoundview.WidgetClientNumberView;
+import com.tokopedia.digital.widget.view.compoundview.WidgetProductChooserView;
+import com.tokopedia.digital.widget.view.compoundview.WidgetWrapperBuyView;
 import com.tokopedia.digital.widget.view.listener.IDigitalWidgetStyle1View;
 import com.tokopedia.digital.widget.view.model.PreCheckoutDigitalWidget;
 import com.tokopedia.digital.widget.view.model.category.Category;
@@ -99,7 +101,9 @@ public class WidgetStyle99RechargeFragment extends BaseWidgetRechargeFragment<ID
                 new JobExecutor(),
                 new UIThread());
 
-        presenter = new DigitalWidgetStyle1Presenter(getActivity(), interactor, this);
+        presenter = new DigitalWidgetStyle1Presenter(getActivity(),
+                new LocalCacheHandler(getActivity(), TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER),
+                interactor, this);
     }
 
     @Override
