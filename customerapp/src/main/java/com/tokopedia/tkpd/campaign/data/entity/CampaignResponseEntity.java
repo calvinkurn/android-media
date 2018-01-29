@@ -22,7 +22,7 @@ public class CampaignResponseEntity{
 	@SerializedName("title")
 	private String title;
 
-	@SerializedName("url")
+	@SerializedName("tkp_url")
 	private String url;
 
 	@SerializedName("status")
