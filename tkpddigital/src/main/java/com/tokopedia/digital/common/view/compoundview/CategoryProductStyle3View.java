@@ -107,12 +107,12 @@ public class CategoryProductStyle3View extends
         } else {
             tvTitle.setVisibility(GONE);
         }
-        renderInstantCheckoutOptions();
         if (source == WIDGET) {
             renderOperatorChooserOptionsWidget();
         } else {
             renderOperatorChooserOptions();
         }
+        renderInstantCheckoutOptions();
         btnBuyDigital.setOnClickListener(getButtonBuyClickedListener());
     }
 
@@ -171,11 +171,6 @@ public class CategoryProductStyle3View extends
 
     private void renderOperatorChooserOptionsWidget() {
         clearHolder(holderChooserOperator);
-        clearHolder(holderClientNumber);
-        clearHolder(holderChooserProduct);
-        clearHolder(holderAdditionalInfoProduct);
-        clearHolder(holderPriceInfoProduct);
-
         widgetOperatorChooserView2.setListener(getListenerOperatorChooser());
         widgetOperatorChooserView2.renderDataView(data.getOperatorList(), data.getDefaultOperatorId());
         holderChooserOperator.addView(widgetOperatorChooserView2);
@@ -196,10 +191,6 @@ public class CategoryProductStyle3View extends
 
     private void renderOperatorChooserOptions() {
         clearHolder(holderChooserOperator);
-        clearHolder(holderClientNumber);
-        clearHolder(holderChooserProduct);
-        clearHolder(holderAdditionalInfoProduct);
-        clearHolder(holderPriceInfoProduct);
         digitalOperatorChooserView.setLabelText(data.getOperatorLabel());
         digitalOperatorChooserView.setActionListener(getActionListenerOperatorChooser());
         digitalOperatorChooserView.renderInitDataList(data.getOperatorList());
@@ -219,9 +210,6 @@ public class CategoryProductStyle3View extends
 
     private void renderClientNumberInputForm(Operator operator) {
         clearHolder(holderClientNumber);
-        clearHolder(holderChooserProduct);
-        clearHolder(holderAdditionalInfoProduct);
-        clearHolder(holderPriceInfoProduct);
         clientNumberInputView.setActionListener(getActionListenerClientNumberInputView());
         clientNumberInputView.renderData(operator.getClientNumberList().get(0));
         clientNumberInputView.setFilterMaxLength(operator.getRule().getMaximumLength());
@@ -258,8 +246,6 @@ public class CategoryProductStyle3View extends
 
     private void renderProductChooserOptionsWidget() {
         clearHolder(holderChooserProduct);
-        clearHolder(holderAdditionalInfoProduct);
-        clearHolder(holderPriceInfoProduct);
         widgetProductChooserView2.setTitleProduct(operatorSelected.getRule().getProductText());
         widgetProductChooserView2.setListener(getProductChooserListener());
         widgetProductChooserView2.renderDataView(
@@ -288,8 +274,6 @@ public class CategoryProductStyle3View extends
 
     private void renderProductChooserOptions() {
         clearHolder(holderChooserProduct);
-        clearHolder(holderAdditionalInfoProduct);
-        clearHolder(holderPriceInfoProduct);
         digitalProductChooserView.setLabelText(operatorSelected.getRule().getProductText());
         digitalProductChooserView.setActionListener(getActionListenerProductChooser());
         digitalProductChooserView.renderInitDataList(operatorSelected.getProductList());

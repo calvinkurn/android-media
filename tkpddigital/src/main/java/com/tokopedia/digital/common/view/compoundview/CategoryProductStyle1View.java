@@ -376,25 +376,23 @@ public class CategoryProductStyle1View extends
             @Override
             public void onClientNumberInputValid(String tempClientNumber) {
                 if (tempClientNumber.length() >= 4) {
-                    if (operatorSelected == null) {
-                        String validClientNumber = DeviceUtil.validatePrefixClientNumber(tempClientNumber);
-                        outerLoop:
-                        for (Operator operator : data.getOperatorList()) {
-                            for (String prefix : operator.getPrefixList()) {
-                                if (validClientNumber.startsWith(prefix)) {
-                                    operatorSelected = operator;
-                                    clientNumberInputView.tvErrorClientNumber.setText("");
-                                    clientNumberInputView.tvErrorClientNumber.setVisibility(GONE);
-                                    clientNumberInputView.enableImageOperator(operator.getImage());
-                                    clientNumberInputView.setFilterMaxLength(operator.getRule().getMaximumLength());
-                                    if (operatorSelected.getRule().getProductViewStyle() == 99) {
-                                        renderDefaultProductSelected();
-                                    } else {
-                                        showProducts();
-                                    }
-                                    setBtnBuyDigitalText(operatorSelected.getRule().getButtonText());
-                                    break outerLoop;
+                    String validClientNumber = DeviceUtil.validatePrefixClientNumber(tempClientNumber);
+                    outerLoop:
+                    for (Operator operator : data.getOperatorList()) {
+                        for (String prefix : operator.getPrefixList()) {
+                            if (validClientNumber.startsWith(prefix)) {
+                                operatorSelected = operator;
+                                clientNumberInputView.tvErrorClientNumber.setText("");
+                                clientNumberInputView.tvErrorClientNumber.setVisibility(GONE);
+                                clientNumberInputView.enableImageOperator(operator.getImage());
+                                clientNumberInputView.setFilterMaxLength(operator.getRule().getMaximumLength());
+                                if (operatorSelected.getRule().getProductViewStyle() == 99) {
+                                    renderDefaultProductSelected();
+                                } else {
+                                    showProducts();
                                 }
+                                setBtnBuyDigitalText(operatorSelected.getRule().getButtonText());
+                                break outerLoop;
                             }
                         }
                     }

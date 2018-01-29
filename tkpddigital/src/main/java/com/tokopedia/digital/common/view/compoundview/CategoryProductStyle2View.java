@@ -26,7 +26,9 @@ import com.tokopedia.digital.product.view.model.Operator;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.digital.product.view.model.Product;
 import com.tokopedia.digital.product.view.model.Validation;
+import com.tokopedia.digital.widget.view.compoundview.WidgetOperatorChooserView2;
 import com.tokopedia.digital.widget.view.compoundview.WidgetProductChooserView2;
+import com.tokopedia.digital.widget.view.compoundview.WidgetRadioChooserView2;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -61,6 +63,7 @@ public class CategoryProductStyle2View extends
     @BindView(R2.id.tooltip_instant_checkout)
     ImageView tooltipInstantCheckout;
 
+    private WidgetRadioChooserView2 widgetRadioChooserView2;
     private DigitalOperatorRadioChooserView digitalOperatorRadioChooserView;
     private ClientNumberInputView clientNumberInputView;
     private WidgetProductChooserView2 widgetProductChooserView;
@@ -85,6 +88,7 @@ public class CategoryProductStyle2View extends
 
     @Override
     protected void onCreateView() {
+        widgetRadioChooserView2 = new WidgetRadioChooserView2(context);
         digitalOperatorRadioChooserView = new DigitalOperatorRadioChooserView(context);
         clientNumberInputView = new ClientNumberInputView(context);
         widgetProductChooserView = new WidgetProductChooserView2(context);
@@ -107,7 +111,11 @@ public class CategoryProductStyle2View extends
             tvTitle.setVisibility(GONE);
         }
         clearHolder(holderRadioChooserOperator);
-        renderOperatorChooserOptions();
+        if (source == WIDGET) {
+            renderOperatorChooserOptionsWidget();
+        } else {
+            renderOperatorChooserOptions();
+        }
         renderInstantCheckoutOptions();
         btnBuyDigital.setOnClickListener(getButtonBuyListener());
     }
@@ -184,6 +192,26 @@ public class CategoryProductStyle2View extends
         });
     }
 
+    private void renderOperatorChooserOptionsWidget() {
+        clearHolder(holderRadioChooserOperator);
+        widgetRadioChooserView2.setListener(getListenerOperatorChooser());
+        widgetRadioChooserView2.renderDataView(data.getOperatorList(), data.getDefaultOperatorId());
+        holderRadioChooserOperator.addView(widgetRadioChooserView2);
+
+        if (hasLastOrderHistoryData()) {
+            for (Operator operator : data.getOperatorList()) {
+                if (operator.getOperatorId().equalsIgnoreCase(
+                        historyClientNumber.getLastOrderClientNumber().getOperatorId()
+                )) {
+                    widgetRadioChooserView2.updateOperator(
+                            data.getOperatorList(),
+                            operator.getOperatorId());
+                    break;
+                }
+            }
+        }
+    }
+
     private void renderOperatorChooserOptions() {
         clearHolder(holderRadioChooserOperator);
         digitalOperatorRadioChooserView.setActionListener(getActionListenerRadioChooserOperator());
@@ -238,8 +266,6 @@ public class CategoryProductStyle2View extends
 
     private void renderProductChooserOptionsWidget() {
         clearHolder(holderChooserProduct);
-        clearHolder(holderAdditionalInfoProduct);
-        clearHolder(holderPriceInfoProduct);
         widgetProductChooserView.setListener(getProductChooserListener());
         widgetProductChooserView.setTitleProduct(operatorSelected.getRule().getProductText());
         widgetProductChooserView.renderDataView(
@@ -268,8 +294,6 @@ public class CategoryProductStyle2View extends
 
     private void renderProductChooserOptions() {
         clearHolder(holderChooserProduct);
-        clearHolder(holderAdditionalInfoProduct);
-        clearHolder(holderPriceInfoProduct);
         digitalProductChooserView.setActionListener(getActionListenerProductChooser());
         digitalProductChooserView.renderInitDataList(operatorSelected.getProductList());
         digitalProductChooserView.setLabelText(operatorSelected.getRule().getProductText());
@@ -322,6 +346,34 @@ public class CategoryProductStyle2View extends
         clearHolder(holderAdditionalInfoProduct);
         productAdditionalInfoView.renderData(productSelected);
         holderAdditionalInfoProduct.addView(productAdditionalInfoView);
+    }
+
+    private WidgetRadioChooserView2.RadioChoserListener getListenerOperatorChooser() {
+        return new WidgetRadioChooserView2.RadioChoserListener() {
+            @Override
+            public void onCheckChange(Operator operator) {
+                operatorSelected = operator;
+                if (!operatorSelected.getClientNumberList().isEmpty()) {
+                    renderClientNumberInputForm(operatorSelected);
+                }
+                if (operatorSelected.getRule().getProductViewStyle() == 99) {
+                    renderDefaultProductSelected();
+                } else {
+                    showProducts();
+                }
+                setBtnBuyDigitalText(operatorSelected.getRule().getButtonText());
+            }
+
+            @Override
+            public void onResetClientNumber() {
+
+            }
+
+            @Override
+            public void onTrackingOperator() {
+
+            }
+        };
     }
 
     @NonNull

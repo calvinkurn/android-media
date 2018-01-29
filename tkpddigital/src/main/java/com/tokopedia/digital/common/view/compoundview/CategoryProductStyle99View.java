@@ -178,9 +178,6 @@ public class CategoryProductStyle99View extends
 
     private void renderClientNumberInputForm(Operator operator) {
         clearHolder(holderClientNumber);
-        clearHolder(holderChooserProduct);
-        clearHolder(holderAdditionalInfoProduct);
-        clearHolder(holderPriceInfoProduct);
         clientNumberInputView.setActionListener(getActionListenerClientNumberInputView());
         clientNumberInputView.renderData(operator.getClientNumberList().get(0));
         clientNumberInputView.setFilterMaxLength(operator.getRule().getMaximumLength());
