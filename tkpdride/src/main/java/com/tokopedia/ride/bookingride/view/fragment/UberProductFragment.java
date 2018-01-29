@@ -18,7 +18,6 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
-import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.bookingride.di.BookingRideComponent;
 import com.tokopedia.ride.bookingride.di.DaggerBookingRideComponent;
@@ -97,6 +96,8 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
         void actionAdsHidden();
 
         void renderNearbyRides(NearbyRides nearbyRides);
+
+        void renderNearbyCabs();
     }
 
     public static UberProductFragment newInstance() {
@@ -234,6 +235,7 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     public void renderProductList(List<Visitable> datas) {
         adapter.clearData();
         adapter.setElement(datas);
+
     }
 
     @Override
@@ -354,6 +356,12 @@ public class UberProductFragment extends BaseFragment implements UberProductCont
     @Override
     public void hideFareListHeader() {
         fareHeaderView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void displayNearbyCabs() {
+        if (interactionListener != null)
+            interactionListener.renderNearbyCabs();
     }
 
     @Override

@@ -52,6 +52,8 @@ public interface UberProductContract {
 
         void hideFareListHeader();
 
+        void displayNearbyCabs();
+
         PlacePassViewModel getSource();
 
         void renderNearbyRides(NearbyRides nearbyRides);

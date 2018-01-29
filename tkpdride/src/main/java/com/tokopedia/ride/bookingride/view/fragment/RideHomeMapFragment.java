@@ -134,9 +134,11 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     private OnFragmentInteractionListener interactionListener;
     private int toolBarHeightinPx;
     private ArrayList<Marker> rideMarkerList = new ArrayList<>();
-    private ArrayList<Marker> nearbyMarkerList = new ArrayList<>();
+    private ArrayList<Marker> nearbyCabsMarkerList = new ArrayList<>();
+    private ArrayList<Marker> nearbyMOTOMarkerList = new ArrayList<>();
     private boolean isMarkerRotating;
     private int MAX_CABS_COUNT = 5;
+    private int MAX_MOTO_COUNT = 2;
 
     public interface OnFragmentInteractionListener {
         void onSourceAndDestinationChanged(PlacePassViewModel source, PlacePassViewModel destination);
@@ -361,17 +363,28 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         }
     }
 
-    private void displayNearByCabs(Double lat, Double lng) {
-        if (getVisibleMarkerCount() < MAX_CABS_COUNT) {
+    public void displayNearByCabs(Double lat, Double lng) {
+        if (getVisibleCabsMarkerCount() < MAX_CABS_COUNT) {
             ArrayList<Location> locationArrayList = getRandomLocations(lat, lng);
             presenter.getNearbyRoadsData(locationArrayList);
         }
     }
 
-    private int getVisibleMarkerCount() {
+    public void displayNearByCabs() {
+
+        if (googleMap != null && getVisibleCabsMarkerCount() < MAX_CABS_COUNT) {
+            double latitude = googleMap.getCameraPosition().target.latitude;
+            double longitude = googleMap.getCameraPosition().target.longitude;
+
+            ArrayList<Location> locationArrayList = getRandomLocations(latitude, longitude);
+            presenter.getNearbyRoadsData(locationArrayList);
+        }
+    }
+
+    private int getVisibleCabsMarkerCount() {
         int count = 0;
-        if (!nearbyMarkerList.isEmpty()) {
-            Iterator<Marker> iterator = nearbyMarkerList.iterator();
+        if (!nearbyCabsMarkerList.isEmpty()) {
+            Iterator<Marker> iterator = nearbyCabsMarkerList.iterator();
             while (iterator.hasNext()) {
                 Marker marker = iterator.next();
                 if (googleMap != null && googleMap.getProjection().getVisibleRegion().latLngBounds.contains(marker.getPosition())) {
@@ -382,12 +395,23 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
                 }
             }
         }
-        /*for (Marker marker : nearbyMarkerList) {
-            if (googleMap != null &&
-                    googleMap.getProjection().getVisibleRegion().latLngBounds.contains(marker.getPosition())) {
-                count++;
+        return count;
+    }
+
+    private int getVisibleMOTOMarkerCount() {
+        int count = 0;
+        if (!nearbyMOTOMarkerList.isEmpty()) {
+            Iterator<Marker> iterator = nearbyMOTOMarkerList.iterator();
+            while (iterator.hasNext()) {
+                Marker marker = iterator.next();
+                if (googleMap != null && googleMap.getProjection().getVisibleRegion().latLngBounds.contains(marker.getPosition())) {
+                    count++;
+                } else {
+                    marker.remove();
+                    iterator.remove();
+                }
             }
-        }*/
+        }
         return count;
     }
 
@@ -429,7 +453,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
         }
 
 //        removeOutOfViewCabs();
-        displayNearByCabs(latitude, longitude);
+//        displayNearByCabs(latitude, longitude);
         //animate marker to lift down
         /*
         AccelerateDecelerateInterpolator interpolator = new AccelerateDecelerateInterpolator();
@@ -473,10 +497,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     }
 
     private void setInitialVariable() {
-
-
         toolBarHeightinPx = (int) getResources().getDimension(R.dimen.tooler_height);
-
         if (isLaunchedWithLocation()) {
             source = getArguments().getParcelable(EXTRA_SOURCE);
             destination = getArguments().getParcelable(EXTRA_DESTINATION);
@@ -545,7 +566,6 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     public void moveMapToLocation(double latitude, double longitude) {
         if (googleMap != null) {
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), SELECT_SOURCE_MAP_ZOOM));
-            displayNearByCabs(latitude, longitude);
         }
     }
 
@@ -662,7 +682,6 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
 
     private void startMarkerAnimation() {
         markerTimeTextView.setText(DEFAULT_EMPTY_MARKER);
-
         if (markerTimeBackgroundImageView.getDrawable() instanceof Animatable) {
             ((Animatable) markerTimeBackgroundImageView.getDrawable()).start();
         }
@@ -738,23 +757,46 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     @Override
     public void renderNearbyCabs(NearbyRoads nearbyRoads) {
 //        removeOutOfViewCabs();
-        int markersToShow = MAX_CABS_COUNT - getVisibleMarkerCount();
+        int cabsToShow = MAX_CABS_COUNT - getVisibleCabsMarkerCount();
+        int motoToShow = MAX_MOTO_COUNT - getVisibleMOTOMarkerCount();
+        int markersToShow = cabsToShow + motoToShow;
+
         for (int i = 0; i < markersToShow; i++) {
+
             Random random = new Random();
-            Marker marker = googleMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(nearbyRoads.getSnappedPointsArrayList().get(i).getLocation().getLatitude(),
-                            nearbyRoads.getSnappedPointsArrayList().get(i).getLocation().getLongitude()))
-                    .icon(getMarkerIconForCab(R.drawable.car_map_icon)));
+            if (cabsToShow > 0) {
 
-            LatLng oldLocation = new LatLng(nearbyRoads.getSnappedPointsArrayList().get(i).getLocation().getLatitude(),
-                    nearbyRoads.getSnappedPointsArrayList().get(i).getLocation().getLongitude());
-            LatLng newLocation = new LatLng(random.nextDouble(), random.nextDouble());
+                Marker marker = googleMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(nearbyRoads.getSnappedPointsArrayList().get(i).getLocation().getLatitude(),
+                                nearbyRoads.getSnappedPointsArrayList().get(i).getLocation().getLongitude()))
+                        .icon(getMarkerIconForCab(R.drawable.car_map_icon)));
 
-            float bearing = (float) bearingBetweenLocations(oldLocation, newLocation);
-            rotateMarker(marker, bearing);
+                LatLng oldLocation = new LatLng(nearbyRoads.getSnappedPointsArrayList().get(i).getLocation().getLatitude(),
+                        nearbyRoads.getSnappedPointsArrayList().get(i).getLocation().getLongitude());
+                LatLng newLocation = new LatLng(random.nextDouble(), random.nextDouble());
 
-            nearbyMarkerList.add(marker);
+                float bearing = (float) bearingBetweenLocations(oldLocation, newLocation);
+                rotateMarker(marker, bearing);
+                nearbyCabsMarkerList.add(marker);
+                cabsToShow--;
 
+            } else if (motoToShow > 0) {
+
+                Marker marker = googleMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(nearbyRoads.getSnappedPointsArrayList().get(i).getLocation().getLatitude(),
+                                nearbyRoads.getSnappedPointsArrayList().get(i).getLocation().getLongitude()))
+                        .icon(getMarkerIconForCab(R.drawable.moto_map_icon)));
+
+                LatLng oldLocation = new LatLng(nearbyRoads.getSnappedPointsArrayList().get(i).getLocation().getLatitude(),
+                        nearbyRoads.getSnappedPointsArrayList().get(i).getLocation().getLongitude());
+                LatLng newLocation = new LatLng(random.nextDouble(), random.nextDouble());
+
+                float bearing = (float) bearingBetweenLocations(oldLocation, newLocation);
+                rotateMarker(marker, bearing);
+                nearbyMOTOMarkerList.add(marker);
+                motoToShow--;
+
+            }
         }
     }
 

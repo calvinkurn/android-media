@@ -114,6 +114,7 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                         getView().hideErrorMessage();
                         getView().showProductList();
                         getView().renderProductList(productsList);
+                        getView().displayNearbyCabs();
                         getMinimalProductEstimateAndRender(productEstimates);
                         //renderNearbyCarsAroundSource(productEstimates);
                     }

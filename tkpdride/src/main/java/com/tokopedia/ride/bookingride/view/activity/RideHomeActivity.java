@@ -641,6 +641,14 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
     }
 
     @Override
+    public void renderNearbyCabs() {
+        RideHomeMapFragment fragment = (RideHomeMapFragment) getFragmentManager().findFragmentById(R.id.top_container);
+        if (fragment != null) {
+            fragment.displayNearByCabs();;
+        }
+    }
+
+    @Override
     public void onProductClicked(ConfirmBookingPassData confirmBookingPassData) {
         onBottomContainerChangeToBookingScreen();
 
