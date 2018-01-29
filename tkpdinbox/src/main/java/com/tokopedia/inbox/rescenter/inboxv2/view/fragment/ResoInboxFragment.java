@@ -44,6 +44,12 @@ import javax.inject.Inject;
 
 public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFragmentListener.View {
 
+    public static final String STATE_IS_SELLER = "is_seller";
+    public static final String STATE_IS_CAN_LOAD_MORE = "can_load_more";
+    public static final String STATE_LAST_CURSOR = "last_cursor";
+    public static final String STATE_RESO_INBOX_SORT_FILTER = "inboxSortModel";
+    public static final String STATE_RESO_INBOX_FILTER_MODEL = "inboxFilterModel";
+
     public static final int REQUEST_DETAIL_RESO = 1234;
     public static final int REQUEST_FILTER_RESO = 2345;
     private static final int SORT_DEFAULT_ID = 2;
@@ -74,6 +80,26 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
         return fragment;
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(STATE_IS_SELLER, isSeller);
+        outState.putBoolean(STATE_IS_CAN_LOAD_MORE, isCanLoadMore);
+        outState.putString(STATE_LAST_CURSOR, lastCursor);
+        outState.putParcelable(STATE_RESO_INBOX_FILTER_MODEL, inboxFilterModel);
+        outState.putParcelable(STATE_RESO_INBOX_SORT_FILTER, inboxSortModel);
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+//        isSeller = savedInstanceState.get(STATE_IS_SELLER) != null &&  savedInstanceState.getBoolean(STATE_IS_SELLER);
+//        isCanLoadMore = savedInstanceState.get(STATE_IS_CAN_LOAD_MORE) != null &&  savedInstanceState.getBoolean(STATE_IS_CAN_LOAD_MORE);
+//        lastCursor = savedInstanceState.getString(STATE_LAST_CURSOR);
+//        inboxFilterModel = savedInstanceState.getParcelable(STATE_RESO_INBOX_FILTER_MODEL);
+//        inboxSortModel = savedInstanceState.getParcelable(STATE_RESO_INBOX_SORT_FILTER);
+    }
+
     @Nullable
     @Override
     public View onCreateView(
@@ -101,7 +127,6 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
         rvInbox.setLayoutManager(rvInboxLayoutManager);
         isSeller = getArguments().getBoolean(ResoInboxActivity.PARAM_IS_SELLER);
         rvInbox.addOnScrollListener(rvInboxScrollListener);
-        inboxSortModel = new ResoInboxSortModel(SortModel.getSortList(), SORT_DEFAULT_ID, new SortModel());
         initView();
         initViewListener();
     }
@@ -113,7 +138,7 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
         ffEmptyStateWithReset.setVisibility(View.GONE);
         ffEmptyState.setVisibility(View.GONE);
         inboxFilterModel = new ResoInboxFilterModel();
-        inboxSortModel = new ResoInboxSortModel();
+        inboxSortModel = new ResoInboxSortModel(SortModel.getSortList(), SORT_DEFAULT_ID, new SortModel());
         presenter.initPresenterData(getActivity(), isSeller);
     }
 
@@ -209,17 +234,27 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
     }
 
     private void initFilterValue(InboxItemResultViewModel result) {
-        inboxFilterModel.setFilterViewModelList(result.getFilterViewModels());
-        inboxFilterModel.setSelectedFilterList(new ArrayList<Integer>());
-        inboxFilterModel.setDateFrom("");
-        inboxFilterModel.setDateTo("");
+        if (inboxFilterModel.getFilterViewModelList().size() != 0) {
+            inboxFilterModel.setFilterViewModelList(result.getFilterViewModels());
+            inboxFilterModel.setSelectedFilterList(new ArrayList<Integer>());
+            inboxFilterModel.setDateFrom("");
+            inboxFilterModel.setDateTo("");
+        }
+    }
+
+    private void hideLayout() {
+        bottomActionView.setVisibility(View.GONE);
+        rvQuickFilter.setVisibility(View.GONE);
+        rvInbox.setVisibility(View.GONE);
     }
 
     private void showEmptyState() {
+        hideLayout();
         ffEmptyState.setVisibility(View.VISIBLE);
     }
 
     private void showEmptyStateWithResetFilter() {
+        hideLayout();
         ffEmptyStateWithReset.setVisibility(View.VISIBLE);
     }
 

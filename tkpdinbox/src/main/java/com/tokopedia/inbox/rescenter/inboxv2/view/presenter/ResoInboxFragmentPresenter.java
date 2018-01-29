@@ -86,6 +86,7 @@ public class ResoInboxFragmentPresenter
         filterModel.setEndDate(inboxFilterModel.getDateTo());
         filterModel.setStartDate(inboxFilterModel.getDateFrom());
         filterModel.setFilters(inboxFilterModel.getSelectedFilterList());
+        filterModel.setStartID("");
         getInbox();
     }
 

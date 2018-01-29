@@ -50,7 +50,7 @@ public class GetInboxParams {
             int pos = 0;
             for (int filter : model.getFilters()) {
                 filterString += String.valueOf(filter);
-                if (pos == model.getFilters().size() - 1) filterString += ",";
+                if (pos != model.getFilters().size() - 1) filterString += ",";
                 pos++;
             }
         }

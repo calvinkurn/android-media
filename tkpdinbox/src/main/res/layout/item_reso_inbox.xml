@@ -204,7 +204,7 @@
                 android:textSize="@dimen/text_size_small"
                 android:layout_marginLeft="@dimen/margin_sm"
                 android:layout_marginRight="@dimen/margin_sm"
-                context:text="Lihat Percakapan"/>
+                android:text="@string/string_see_conv"/>
         </LinearLayout>
     </android.support.v7.widget.CardView>
 

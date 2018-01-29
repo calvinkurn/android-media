@@ -61,9 +61,16 @@ public class InboxFilterActivity extends BasePresenterActivity implements HasCom
     @Override
     protected void initView() {
         Fragment fragment = InboxFilterFragment.getFragmentInstance(getIntent().getExtras());
-        getSupportFragmentManager().beginTransaction()
-                .add(com.tokopedia.core.R.id.container, fragment, TAG)
-                .commit();
+        if (getSupportFragmentManager().findFragmentByTag(TAG) != null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(com.tokopedia.core.R.id.container,
+                            getSupportFragmentManager().findFragmentByTag(TAG))
+                    .commit();
+        } else {
+            getSupportFragmentManager().beginTransaction()
+                    .add(com.tokopedia.core.R.id.container, fragment, TAG)
+                    .commit();
+        }
     }
 
     @Override

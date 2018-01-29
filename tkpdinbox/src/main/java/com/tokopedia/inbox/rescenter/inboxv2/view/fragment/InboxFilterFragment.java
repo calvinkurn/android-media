@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import android.widget.EditText;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.InboxFilterActivity;
+import com.tokopedia.inbox.rescenter.inboxv2.view.adapter.InboxFilterAdapter;
 import com.tokopedia.inbox.rescenter.inboxv2.view.listener.InboxFilterFragmentListener;
 import com.tokopedia.inbox.rescenter.inboxv2.view.presenter.InboxFilterFragmentPresenter;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.ResoInboxFilterModel;
@@ -34,17 +36,18 @@ public class InboxFilterFragment
     private RecyclerView rvFilter;
 
     private ResoInboxFilterModel inboxFilterModel;
+    private InboxFilterAdapter adapter;
 
     @Inject
     InboxFilterFragmentPresenter presenter;
 
     public static Fragment getFragmentInstance(Bundle bundle) {
-        Fragment fragment = new ResoInboxFragment();
+        Fragment fragment = new InboxFilterFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
     public static Fragment getResetFragmentInstance() {
-        Fragment fragment = new ResoInboxFragment();
+        Fragment fragment = new InboxFilterFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(InboxFilterActivity.PARAM_FILTER_MODEL, new ResoInboxFilterModel());
         return fragment;
@@ -82,7 +85,10 @@ public class InboxFilterFragment
     }
 
     private void bindView() {
-
+        adapter = new InboxFilterAdapter(this, inboxFilterModel);
+        rvFilter.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvFilter.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
 
     private void bindViewListener() {
@@ -98,8 +104,7 @@ public class InboxFilterFragment
     }
 
     private ResoInboxFilterModel generateResult() {
-        ResoInboxFilterModel inboxFilterModel = new ResoInboxFilterModel();
-
+        ResoInboxFilterModel inboxFilterModel = adapter.getInboxFilterModel();
         return inboxFilterModel;
     }
 }
