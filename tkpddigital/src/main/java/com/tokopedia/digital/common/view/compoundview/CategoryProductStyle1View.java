@@ -397,6 +397,14 @@ public class CategoryProductStyle1View extends
                             }
                         }
                     }
+                    if (operatorSelected == null) {
+                        operatorSelected = null;
+                        productSelected = null;
+                        clientNumberInputView.disableImageOperator();
+                        clearHolder(holderChooserProduct);
+                        clearHolder(holderAdditionalInfoProduct);
+                        clearHolder(holderPriceInfoProduct);
+                    }
                 } else {
                     operatorSelected = null;
                     productSelected = null;
