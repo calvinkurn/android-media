@@ -9,14 +9,16 @@ import android.os.Parcelable;
 
 public class FilterViewModel implements Parcelable {
     private String type;
-    private String typeName;
+    private String typeNameDetail;
+    private String typeNameQuickFilter;
     private int count;
     private int orderValue;
     private boolean isActive;
 
-    public FilterViewModel(String type, String typeName, int count, int orderValue, boolean isActive) {
+    public FilterViewModel(String type, String typeNameDetail, String typeNameQuickFilter, int count, int orderValue, boolean isActive) {
         this.type = type;
-        this.typeName = typeName;
+        this.typeNameDetail = typeNameDetail;
+        this.typeNameQuickFilter = typeNameQuickFilter;
         this.count = count;
         this.orderValue = orderValue;
         this.isActive = isActive;
@@ -30,12 +32,20 @@ public class FilterViewModel implements Parcelable {
         this.type = type;
     }
 
-    public String getTypeName() {
-        return typeName;
+    public String getTypeNameDetail() {
+        return typeNameDetail;
     }
 
-    public void setTypeName(String typeName) {
-        this.typeName = typeName;
+    public void setTypeNameDetail(String typeNameDetail) {
+        this.typeNameDetail = typeNameDetail;
+    }
+
+    public String getTypeNameQuickFilter() {
+        return typeNameQuickFilter;
+    }
+
+    public void setTypeNameQuickFilter(String typeNameQuickFilter) {
+        this.typeNameQuickFilter = typeNameQuickFilter;
     }
 
     public int getCount() {
@@ -70,7 +80,8 @@ public class FilterViewModel implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.type);
-        dest.writeString(this.typeName);
+        dest.writeString(this.typeNameDetail);
+        dest.writeString(this.typeNameQuickFilter);
         dest.writeInt(this.count);
         dest.writeInt(this.orderValue);
         dest.writeByte(this.isActive ? (byte) 1 : (byte) 0);
@@ -78,7 +89,8 @@ public class FilterViewModel implements Parcelable {
 
     protected FilterViewModel(Parcel in) {
         this.type = in.readString();
-        this.typeName = in.readString();
+        this.typeNameDetail = in.readString();
+        this.typeNameQuickFilter = in.readString();
         this.count = in.readInt();
         this.orderValue = in.readInt();
         this.isActive = in.readByte() != 0;

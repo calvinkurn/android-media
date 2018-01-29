@@ -3,9 +3,12 @@ package com.tokopedia.inbox.rescenter.inboxv2.data.mapper;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.inbox.rescenter.inboxv2.data.pojo.FilterResponse;
 import com.tokopedia.inbox.rescenter.inboxv2.data.pojo.InboxDataResponse;
 import com.tokopedia.inbox.rescenter.inboxv2.data.pojo.InboxResponse;
 import com.tokopedia.inbox.rescenter.inboxv2.data.pojo.ProductResponse;
+import com.tokopedia.inbox.rescenter.inboxv2.data.pojo.QuickFilterResponse;
+import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.FilterViewModel;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.InboxItemResultViewModel;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.InboxItemViewModel;
 
@@ -37,9 +40,12 @@ public class GetInboxMapper implements Func1<Response<TkpdResponse>, InboxItemRe
         InboxResponse dataResponse = response.body().convertDataObj(
                 InboxResponse.class);
         InboxItemResultViewModel model = new InboxItemResultViewModel(
-              dataResponse.getInboxes() != null ?
+                dataResponse.getInboxes() != null ?
                       mappingInboxItem(dataResponse.getInboxes(), dataResponse.getActionBy()) :
-                      null
+                      null,
+                dataResponse.getQuickFilter() != null ?
+                        mappingFilterItem(dataResponse.getQuickFilter()) :
+                        null
         );
         if (response.isSuccessful()) {
             if (response.raw().code() == ResponseStatus.SC_OK) {
@@ -55,6 +61,61 @@ public class GetInboxMapper implements Func1<Response<TkpdResponse>, InboxItemRe
             throw new RuntimeException(String.valueOf(response.code()));
         }
         return model;
+    }
+
+    private List<FilterViewModel> mappingFilterItem(QuickFilterResponse response) {
+        List<FilterViewModel> modelList = new ArrayList<>();
+
+        FilterResponse unreadResponse = response.getUnread();
+        FilterViewModel unreadModel = new FilterViewModel(
+                unreadResponse.getTitle(),
+                unreadResponse.getFilterWithDateString(),
+                unreadResponse.getTitleCountFullString(),
+                unreadResponse.getCount(),
+                unreadResponse.getOrderValue(),
+                false);
+        modelList.add(unreadModel);
+
+        FilterResponse unansweredResponse = response.getUnanswered();
+        FilterViewModel unansweredModel = new FilterViewModel(
+                unansweredResponse.getTitle(),
+                unansweredResponse.getFilterWithDateString(),
+                unansweredResponse.getTitleCountFullString(),
+                unansweredResponse.getCount(),
+                unansweredResponse.getOrderValue(),
+                false);
+        modelList.add(unansweredModel);
+
+        FilterResponse finishedResponse = response.getFinished();
+        FilterViewModel finishedModel = new FilterViewModel(
+                finishedResponse.getTitle(),
+                finishedResponse.getFilterWithDateString(),
+                finishedResponse.getTitleCountFullString(),
+                finishedResponse.getCount(),
+                finishedResponse.getOrderValue(),
+                false);
+        modelList.add(finishedModel);
+
+        FilterResponse autoExcecuteResponse = response.getAutoExecution();
+        FilterViewModel autoExecuteModel = new FilterViewModel(
+                autoExcecuteResponse.getTitle(),
+                autoExcecuteResponse.getFilterWithDateString(),
+                autoExcecuteResponse.getTitleCountFullString(),
+                autoExcecuteResponse.getCount(),
+                autoExcecuteResponse.getOrderValue(),
+                false);
+        modelList.add(autoExecuteModel);
+
+        FilterResponse unfinishedResponse = response.getUnfinished();
+        FilterViewModel unfinishedModel = new FilterViewModel(
+                unfinishedResponse.getTitle(),
+                unfinishedResponse.getFilterWithDateString(),
+                unfinishedResponse.getTitleCountFullString(),
+                unfinishedResponse.getCount(),
+                unfinishedResponse.getOrderValue(),
+                false);
+        modelList.add(unfinishedModel);
+        return modelList;
     }
 
     private List<InboxItemViewModel> mappingInboxItem(List<InboxDataResponse> responseList, int actionBy) {

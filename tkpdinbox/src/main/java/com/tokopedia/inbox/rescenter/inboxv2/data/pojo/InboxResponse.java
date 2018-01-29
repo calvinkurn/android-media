@@ -9,24 +9,34 @@ import java.util.List;
  */
 
 public class InboxResponse {
-        @SerializedName("actionBy")
-        private int actionBy;
-        @SerializedName("inboxes")
-        private List<InboxDataResponse> inboxes;
+    @SerializedName("actionBy")
+    private int actionBy;
+    @SerializedName("inboxes")
+    private List<InboxDataResponse> inboxes;
+    @SerializedName("quickFilter")
+    private QuickFilterResponse quickFilter;
 
-        public int getActionBy() {
+    public QuickFilterResponse getQuickFilter() {
+        return quickFilter;
+    }
+
+    public void setQuickFilter(QuickFilterResponse quickFilter) {
+        this.quickFilter = quickFilter;
+    }
+
+    public int getActionBy() {
             return actionBy;
         }
 
-        public void setActionBy(int actionBy) {
+    public void setActionBy(int actionBy) {
             this.actionBy = actionBy;
         }
 
-        public List<InboxDataResponse> getInboxes() {
-            return inboxes;
-        }
+    public List<InboxDataResponse> getInboxes() {
+        return inboxes;
+    }
 
-        public void setInboxes(List<InboxDataResponse> inboxes) {
+    public void setInboxes(List<InboxDataResponse> inboxes) {
             this.inboxes = inboxes;
         }
 

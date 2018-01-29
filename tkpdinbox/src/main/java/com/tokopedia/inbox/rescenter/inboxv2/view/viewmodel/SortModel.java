@@ -16,6 +16,9 @@ public class SortModel implements Parcelable {
     public int sortById;
     public int ascId;
 
+    public SortModel() {
+    }
+
     public SortModel(String sortName, int sortId, int sortById, int ascId) {
         this.sortName = sortName;
         this.sortId = sortId;

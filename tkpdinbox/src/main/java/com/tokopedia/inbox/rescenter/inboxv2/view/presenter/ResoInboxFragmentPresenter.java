@@ -11,8 +11,9 @@ import com.tokopedia.inbox.rescenter.inboxv2.domain.usecase.GetInboxSellerUseCas
 import com.tokopedia.inbox.rescenter.inboxv2.view.listener.ResoInboxFragmentListener;
 import com.tokopedia.inbox.rescenter.inboxv2.view.subscriber.GetInboxLoadMoreSubscriber;
 import com.tokopedia.inbox.rescenter.inboxv2.view.subscriber.GetInboxSubscriber;
+import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.ResoInboxFilterModel;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.ResoInboxSortFilterModel;
-import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.SortModel;
+import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.ResoInboxSortModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +53,15 @@ public class ResoInboxFragmentPresenter
     @Override
     public void initPresenterData(Context context, boolean isSeller) {
         this.isSeller = isSeller;
+        resetPresenterDataAndCallInbox();
+    }
+
+    @Override
+    public void resetFilterClicked() {
+        resetPresenterDataAndCallInbox();
+    }
+
+    private void resetPresenterDataAndCallInbox() {
         filterModel = new ResoInboxSortFilterModel();
         getInbox();
     }
@@ -70,9 +80,12 @@ public class ResoInboxFragmentPresenter
     }
 
     @Override
-    public void getInboxWithSortParams(SortModel sortModel) {
-        filterModel.setSortBy(sortModel.getSortById());
-        filterModel.setAsc(sortModel.getAscId());
+    public void getInboxWithParams(ResoInboxSortModel inboxSortModel, ResoInboxFilterModel inboxFilterModel) {
+        filterModel.setSortBy(inboxSortModel.getSelectedSortModel().getSortById());
+        filterModel.setAsc(inboxSortModel.getSelectedSortModel().getAscId());
+        filterModel.setEndDate(inboxFilterModel.getDateTo());
+        filterModel.setStartDate(inboxFilterModel.getDateFrom());
+        filterModel.setFilters(inboxFilterModel.getSelectedFilterList());
         getInbox();
     }
 

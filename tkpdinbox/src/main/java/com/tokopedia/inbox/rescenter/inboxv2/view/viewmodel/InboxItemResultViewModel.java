@@ -11,9 +11,19 @@ import java.util.List;
 
 public class InboxItemResultViewModel implements Parcelable {
     private List<InboxItemViewModel> inboxItemViewModels;
+    private List<FilterViewModel> filterViewModels;
 
-    public InboxItemResultViewModel(List<InboxItemViewModel> inboxItemViewModels) {
+    public InboxItemResultViewModel(List<InboxItemViewModel> inboxItemViewModels, List<FilterViewModel> filterViewModels) {
         this.inboxItemViewModels = inboxItemViewModels;
+        this.filterViewModels = filterViewModels;
+    }
+
+    public List<FilterViewModel> getFilterViewModels() {
+        return filterViewModels;
+    }
+
+    public void setFilterViewModels(List<FilterViewModel> filterViewModels) {
+        this.filterViewModels = filterViewModels;
     }
 
     public List<InboxItemViewModel> getInboxItemViewModels() {
@@ -32,13 +42,15 @@ public class InboxItemResultViewModel implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeTypedList(this.inboxItemViewModels);
+        dest.writeTypedList(this.filterViewModels);
     }
 
     protected InboxItemResultViewModel(Parcel in) {
         this.inboxItemViewModels = in.createTypedArrayList(InboxItemViewModel.CREATOR);
+        this.filterViewModels = in.createTypedArrayList(FilterViewModel.CREATOR);
     }
 
-    public static final Parcelable.Creator<InboxItemResultViewModel> CREATOR = new Parcelable.Creator<InboxItemResultViewModel>() {
+    public static final Creator<InboxItemResultViewModel> CREATOR = new Creator<InboxItemResultViewModel>() {
         @Override
         public InboxItemResultViewModel createFromParcel(Parcel source) {
             return new InboxItemResultViewModel(source);

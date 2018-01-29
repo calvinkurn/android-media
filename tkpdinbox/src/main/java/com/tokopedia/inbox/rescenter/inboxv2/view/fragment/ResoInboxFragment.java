@@ -34,6 +34,8 @@ import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.ResoInboxFilterModel
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.ResoInboxSortModel;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.SortModel;
 
+import java.util.ArrayList;
+
 import javax.inject.Inject;
 
 /**
@@ -99,7 +101,7 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
         rvInbox.setLayoutManager(rvInboxLayoutManager);
         isSeller = getArguments().getBoolean(ResoInboxActivity.PARAM_IS_SELLER);
         rvInbox.addOnScrollListener(rvInboxScrollListener);
-        inboxSortModel = new ResoInboxSortModel(SortModel.getSortList(), SORT_DEFAULT_ID);
+        inboxSortModel = new ResoInboxSortModel(SortModel.getSortList(), SORT_DEFAULT_ID, new SortModel());
         initView();
         initViewListener();
     }
@@ -110,6 +112,8 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
         rvQuickFilter.setVisibility(View.GONE);
         ffEmptyStateWithReset.setVisibility(View.GONE);
         ffEmptyState.setVisibility(View.GONE);
+        inboxFilterModel = new ResoInboxFilterModel();
+        inboxSortModel = new ResoInboxSortModel();
         presenter.initPresenterData(getActivity(), isSeller);
     }
 
@@ -201,6 +205,14 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
         rvInbox.setAdapter(inboxAdapter);
         inboxAdapter.notifyDataSetChanged();
         updateParams(true, result);
+        initFilterValue(result);
+    }
+
+    private void initFilterValue(InboxItemResultViewModel result) {
+        inboxFilterModel.setFilterViewModelList(result.getFilterViewModels());
+        inboxFilterModel.setSelectedFilterList(new ArrayList<Integer>());
+        inboxFilterModel.setDateFrom("");
+        inboxFilterModel.setDateTo("");
     }
 
     private void showEmptyState() {
@@ -250,8 +262,13 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
     @Override
     public void onSortItemClicked(SortModel sortModel) {
         this.inboxSortModel.setSelectedSortId(sortModel.sortId);
+        this.inboxSortModel.setSelectedSortModel(sortModel);
         sortDialog.dismiss();
-        presenter.getInboxWithSortParams(sortModel);
+        getInboxWithParams();
+    }
+
+    private void getInboxWithParams() {
+        presenter.getInboxWithParams(inboxSortModel, inboxFilterModel);
     }
 
     @Override
@@ -280,7 +297,8 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
             }
         } else if (requestCode == REQUEST_FILTER_RESO) {
             if (resultCode == Activity.RESULT_OK) {
-
+                inboxFilterModel = data.getParcelableExtra(InboxFilterActivity.PARAM_FILTER_MODEL);
+                getInboxWithParams();
             }
         }
     }

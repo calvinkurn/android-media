@@ -17,6 +17,10 @@ public class ResoInboxFilterModel implements Parcelable {
     private String dateTo;
 
     public ResoInboxFilterModel() {
+        this.filterViewModelList = new ArrayList<>();
+        this.selectedFilterList = new ArrayList<>();
+        this.dateFrom = "";
+        this.dateTo = "";
     }
 
     public List<FilterViewModel> getFilterViewModelList() {

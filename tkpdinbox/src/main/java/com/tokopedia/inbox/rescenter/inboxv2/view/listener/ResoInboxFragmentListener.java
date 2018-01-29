@@ -5,6 +5,8 @@ import android.content.Context;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.InboxItemResultViewModel;
+import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.ResoInboxFilterModel;
+import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.ResoInboxSortModel;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.SortModel;
 
 
@@ -44,9 +46,11 @@ public interface ResoInboxFragmentListener {
 
         void getInbox();
 
-        void getInboxWithSortParams(SortModel sortModel);
+        void getInboxWithParams(ResoInboxSortModel inboxSortModel, ResoInboxFilterModel inboxFilterModel);
 
         void loadMoreInbox(String token);
+
+        void resetFilterClicked();
 
         void quickFilterClicked(int orderValue);
     }

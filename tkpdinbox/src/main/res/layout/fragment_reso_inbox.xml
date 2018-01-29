@@ -37,8 +37,10 @@
         android:layout_marginBottom="50dp"
         app:bav_1_display="true"
         app:bav_label_1="@string/string_title_sort"
+        app:bav_icon_1="@drawable/ic_sort_reso"
         app:bav_2_display="true"
-        app:bav_label_2="@string/string_title_filter"/>
+        app:bav_label_2="@string/string_title_filter"
+        app:bav_icon_2="@drawable/ic_filter_list"/>
 
     <FrameLayout
         android:id="@+id/view_empty_state"
@@ -55,8 +57,9 @@
             android:layout_marginTop="@dimen/margin_med">
 
             <ImageView
+                android:src="@drawable/ic_empty_inbox"
                 android:layout_width="match_parent"
-                android:layout_height="200dp" />
+                android:layout_height="150dp" />
             
             <TextView
                 android:layout_width="match_parent"
@@ -79,7 +82,7 @@
     </FrameLayout>
 
     <FrameLayout
-        android:visibility="visible"
+        android:visibility="gone"
         android:id="@+id/view_empty_state_with_reset"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -93,9 +96,9 @@
             android:layout_marginTop="@dimen/margin_med">
 
             <ImageView
-                android:src="@drawable/empty_search"
+                android:src="@drawable/ic_empty_search"
                 android:layout_width="match_parent"
-                android:layout_height="200dp" />
+                android:layout_height="150dp" />
 
             <TextView
                 android:layout_width="match_parent"
