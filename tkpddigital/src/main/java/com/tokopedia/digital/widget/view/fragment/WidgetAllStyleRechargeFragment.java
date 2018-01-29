@@ -201,6 +201,17 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
             return;
         }
 
+        if (digitalProductView != null && categoryDataState != null) {
+            Operator selectedOperator = digitalProductView.getSelectedOperator();
+            Product selectedProduct = digitalProductView.getSelectedProduct();
+
+            presenter.storeLastClientNumberTyped(
+                    categoryId,
+                    selectedOperator != null ? selectedOperator.getOperatorId() : "",
+                    digitalProductView.getClientNumber(),
+                    selectedProduct != null ? selectedProduct.getProductId() : "");
+        }
+
         DigitalCheckoutPassData digitalCheckoutPassData = presenter.generateCheckoutPassData(preCheckoutProduct,
                 VersionInfo.getVersionInfo(getActivity()),
                 SessionHandler.getLoginID(getActivity()));
@@ -365,16 +376,5 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-
-        if (digitalProductView != null && categoryDataState != null) {
-            Operator selectedOperator = digitalProductView.getSelectedOperator();
-            Product selectedProduct = digitalProductView.getSelectedProduct();
-
-            presenter.storeLastClientNumberTyped(
-                    categoryId,
-                    selectedOperator != null ? selectedOperator.getOperatorId() : "",
-                    digitalProductView.getClientNumber(),
-                    selectedProduct != null ? selectedProduct.getProductId() : "");
-        }
     }
 }
