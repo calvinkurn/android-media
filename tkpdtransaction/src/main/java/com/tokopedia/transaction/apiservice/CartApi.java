@@ -26,6 +26,9 @@ public interface CartApi {
     @GET(TkpdBaseURL.Cart.PATH_CART_LIST)
     Observable<Response<CartResponse>> getCartList(@QueryMap Map<String, String> params);
 
+    @GET(TkpdBaseURL.Cart.PATH_CART_LIST)
+    Observable<Response<String>> getCartListString(@QueryMap Map<String, String> params);
+
     @POST(TkpdBaseURL.Cart.PATH_REMOVE_FROM_CART)
     @Headers({"Content-Type: application/json"})
     Observable<Response<CartResponse>> postDeleteCart(@Body JsonObject requestBody);

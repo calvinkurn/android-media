@@ -3,6 +3,7 @@ package com.tokopedia.transaction.checkout.view;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.utils.AuthUtil;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.R;
@@ -112,6 +114,12 @@ public class CartFragment extends BasePresenterFragment implements
     @Override
     protected void setViewListener() {
         dPresenter.processGetCartData();
+        btnToShipment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dPresenter.processToShipmentStep();
+            }
+        });
     }
 
     @Override
@@ -161,12 +169,12 @@ public class CartFragment extends BasePresenterFragment implements
 
     @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
-
+        startActivityForResult(intent, requestCode);
     }
 
     @Override
     public void navigateToActivity(Intent intent) {
-
+        startActivity(intent);
     }
 
     @Override
@@ -206,7 +214,8 @@ public class CartFragment extends BasePresenterFragment implements
 
     @Override
     public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(TKPDMapParam<String, String> originParams) {
-        return null;
+        return originParams == null ? com.tokopedia.core.network.retrofit.utils.AuthUtil.generateParamsNetwork(getActivity())
+                : com.tokopedia.core.network.retrofit.utils.AuthUtil.generateParamsNetwork(getActivity(), originParams);
     }
 
     @Override
@@ -252,6 +261,16 @@ public class CartFragment extends BasePresenterFragment implements
     @Override
     public void enableSwipeRefresh() {
 
+    }
+
+    @Override
+    public List<CartItemHolderData> getFinalCartList() {
+        return cartListAdapter.getDataList();
+    }
+
+    @Override
+    public Context getActivityContext() {
+        return getActivity();
     }
 
     public static CartFragment newInstance() {

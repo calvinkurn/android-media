@@ -147,6 +147,10 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (!onBind) notifyItemChanged(position);
     }
 
+    public List<CartItemHolderData> getDataList() {
+        return cartItemHolderDataList;
+    }
+
 
     public interface ActionListener {
 
