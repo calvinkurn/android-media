@@ -40,6 +40,11 @@ public class CreditCardDetailActivity extends TActivity
     private static final String MASTERCARD = "mastercard";
     private static final String JCB = "jcb";
 
+    private static final String VISA_LARGE = "bg_visa_large";
+    private static final String MASTERCARD_LARGE = "bg_mastercard_large";
+    private static final String JCB_LARGE = "bg_jcb_large";
+    private static final String EXPIRED_LARGE = "bg_expired_large";
+
     @BindView(R2.id.image_cc_big_size) ImageView mViewImageCc;
     @BindView(R2.id.input_credit_card_number) TextView mCreditCardNumber;
     @BindView(R2.id.card_expiry) TextView mCardExpiry;
@@ -84,13 +89,13 @@ public class CreditCardDetailActivity extends TActivity
     private String getBackgroundResource(CreditCardModelItem item) {
         switch (item.getCardType().toLowerCase()) {
             case VISA:
-                return getString(R.string.bg_visa_large);
+                return VISA_LARGE;
             case MASTERCARD:
-                return getString(R.string.bg_mastercard_large);
+                return MASTERCARD_LARGE;
             case JCB:
-                return getString(R.string.bg_jcb_large);
+                return JCB_LARGE;
             default:
-                return getString(R.string.bg_expired_large);
+                return EXPIRED_LARGE;
         }
     }
 

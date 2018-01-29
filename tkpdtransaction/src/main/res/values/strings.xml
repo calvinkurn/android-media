@@ -178,12 +178,4 @@
     <string name="tag_delete_credit_card_dialog">delete_credit_card_dialog</string>
     <string name="title_saved_credit_card">Kartu Kredit Tersimpan (%d/4)</string>
     <string name="apply">Terapkan</string>
-    <string name="bg_visa_small">bg_visa_small</string>
-    <string name="bg_mastercard_small">bg_mastercard_small</string>
-    <string name="bg_jcb_small">bg_jcb_small</string>
-    <string name="bg_expired_small">bg_expired_small</string>
-    <string name="bg_visa_large">bg_visa_large</string>
-    <string name="bg_mastercard_large">bg_mastercard_large</string>
-    <string name="bg_jcb_large">bg_jcb_large</string>
-    <string name="bg_expired_large">bg_expired_large</string>
 </resources>

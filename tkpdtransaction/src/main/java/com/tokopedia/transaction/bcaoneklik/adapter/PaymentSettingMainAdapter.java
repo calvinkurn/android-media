@@ -234,6 +234,11 @@ public class PaymentSettingMainAdapter extends RecyclerView.Adapter<RecyclerView
 
     private class CreditCardListViewHolder extends RecyclerView.ViewHolder {
 
+        private static final String VISA_SMALL = "bg_visa_small";
+        private static final String MASTERCARD_SMALL = "bg_mastercard_small";
+        private static final String JCB_SMALL = "bg_jcb_small";
+        private static final String EXPIRED_SMALL = "bg_expired_small";
+
         private TextView cardNumber;
         private ImageView cardImage;
         private ImageView cardBackgroundImage;
@@ -274,13 +279,13 @@ public class PaymentSettingMainAdapter extends RecyclerView.Adapter<RecyclerView
         private String getBackgroundResource(CreditCardModelItem item) {
             switch (item.getCardType().toLowerCase()) {
                 case VISA:
-                    return context.getString(R.string.bg_visa_small);
+                    return VISA_SMALL;
                 case MASTERCARD:
-                    return context.getString(R.string.bg_mastercard_small);
+                    return MASTERCARD_SMALL;
                 case JCB:
-                    return context.getString(R.string.bg_jcb_small);
+                    return JCB_SMALL;
                 default:
-                    return context.getString(R.string.bg_expired_small);
+                    return EXPIRED_SMALL;
             }
         }
 

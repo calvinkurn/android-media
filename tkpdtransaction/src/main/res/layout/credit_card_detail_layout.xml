@@ -20,8 +20,7 @@
         <ImageView
             android:id="@+id/image_cc_big_size"
             android:layout_width="match_parent"
-            android:layout_height="160dp"
-            tools:src="@drawable/image_cc_visa_plain_fullsize" />
+            android:layout_height="160dp" />
 
         <LinearLayout
             android:layout_height="match_parent"
@@ -85,9 +84,8 @@
                     android:id="@+id/credit_card_logo"
                     android:layout_width="60dp"
                     android:layout_height="30dp"
-                    tools:src="@drawable/ic_creditcard_visa"
                     android:layout_gravity="center_vertical"
-                    android:layout_weight="1"/>
+                    android:layout_weight="1" />
 
             </LinearLayout>
 
