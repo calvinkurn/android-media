@@ -3,6 +3,8 @@ package com.tokopedia.tkpdpdp.customview;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -10,6 +12,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -32,7 +35,9 @@ import static com.tokopedia.core.product.model.productdetail.ProductInfo.PRD_STA
 public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView> {
     private TextView tvBuy;
     private TextView tvPromoTopAds;
-    private LinearLayout container;
+    private TextView tvpPromoHour;
+    private LinearLayout containerButtonBuy;
+    private ProgressBar variantProgressBar;
 
     public ButtonBuyView(Context context) {
         super(context);
@@ -65,20 +70,21 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
     @Override
     protected void initView(Context context) {
         super.initView(context);
-        tvBuy = (TextView) findViewById(R.id.tv_buy);
-        tvPromoTopAds = (TextView) findViewById(R.id.tv_promote_topads);
-        container = (LinearLayout) findViewById(R.id.container);
+        tvBuy = findViewById(R.id.tv_buy);
+        tvPromoTopAds = findViewById(R.id.tv_promote_topads);
+        tvpPromoHour = findViewById(R.id.tv_promo_hour);
+        containerButtonBuy =  findViewById(R.id.container_btn_buy);
+        variantProgressBar = findViewById(R.id.variant_progress_bar);
     }
 
     @Override
     public void renderData(@NonNull ProductDetailData data) {
         if (data.getShopInfo().getShopIsOwner() == 1
                 || (data.getShopInfo().getShopIsAllowManage() == 1 || GlobalConfig.isSellerApp())) {
-            tvBuy.setText(getContext().getString(R.string.title_promo_per_hour));
-            tvBuy.setTextColor(ContextCompat.getColor(getContext(), R.color.grey_500));
-            tvPromoTopAds.setVisibility(VISIBLE);
-            tvBuy.setBackgroundResource(R.drawable.btn_promo_ads);
-            tvBuy.setOnClickListener(new PromoteClick(data));
+            tvpPromoHour.setText(getContext().getString(R.string.title_promo_per_hour));
+            tvpPromoHour.setTextColor(ContextCompat.getColor(getContext(), R.color.grey_500));
+            tvpPromoHour.setBackgroundResource(R.drawable.btn_promo_ads);
+            tvpPromoHour.setOnClickListener(new PromoteClick(data));
             tvPromoTopAds.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -87,7 +93,10 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
                     }
                 }
             });
+            tvpPromoHour.setVisibility(VISIBLE);
+            tvPromoTopAds.setVisibility(VISIBLE);
         } else {
+            containerButtonBuy.setVisibility(VISIBLE);
             if (data.getPreOrder() != null && data.getPreOrder().getPreorderStatus().equals("1")
                     && !data.getPreOrder().getPreorderStatus().equals("0")
                     && !data.getPreOrder().getPreorderProcessTime().equals("0")
@@ -98,8 +107,13 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
                 tvBuy.setText(getContext().getString(R.string.title_buy));
             }
             tvBuy.setBackgroundResource(R.drawable.btn_buy);
-            tvPromoTopAds.setVisibility(GONE);
             tvBuy.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onBuyClick();
+                }
+            });
+            containerButtonBuy.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     listener.onBuyClick();
@@ -113,6 +127,17 @@ public class ButtonBuyView extends BaseView<ProductDetailData, ProductDetailView
         } else {
             setVisibility(VISIBLE);
         }
+    }
+
+    public void changeToLoading() {
+        variantProgressBar.getIndeterminateDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
+        variantProgressBar.setVisibility(VISIBLE);
+        tvBuy.setEnabled(false);
+    }
+
+    public void removeLoading() {
+        variantProgressBar.setVisibility(GONE);
+        tvBuy.setEnabled(true);
     }
 
     private class PromoteClick implements OnClickListener {

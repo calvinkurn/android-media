@@ -401,11 +401,10 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     @Override
     public void onBuyClick() {
         if (SessionHandler.isV4Login(getActivity())) {
-
-            if (productData.getInfo().getHasVariant() && variantLevel1 == null) {
+            if (onClickBuyWhileRequestingVariant == false && productData.getInfo().getHasVariant() && productVariant == null) {
                 onClickBuyWhileRequestingVariant = true;
-                //do loading
-            } else if (variantLevel1!=null) {
+                buttonBuyView.changeToLoading();
+            } else if ( productVariant==null || productVariant!=null && variantLevel1!=null) {
                 String weightProduct = "";
                 switch (productData.getInfo().getProductWeightUnit()) {
                     case "gr":
@@ -444,7 +443,14 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void updateButtonBuyListener() {
-        if (onClickBuyWhileRequestingVariant) onBuyClick();
+        buttonBuyView.removeLoading();
+        if (onClickBuyWhileRequestingVariant) {
+            onBuyClick();
+            return;
+        } else {
+            //TODO change this one line after hasVariant valid
+            onClickBuyWhileRequestingVariant = true;
+        }
     }
 
     public ArrayList<String> getImageURIPaths() {

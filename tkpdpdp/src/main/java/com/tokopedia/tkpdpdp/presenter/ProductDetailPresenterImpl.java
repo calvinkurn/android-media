@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -1089,11 +1090,11 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         retrofitInteractor.getProductVariant(context, id,
                 new RetrofitInteractor.ProductVariantListener() {
                     @Override
-                    public void onSucccess(ProductVariant productVariant) {
-                        viewListener.updateButtonBuyListener();
+                    public void onSucccess(final ProductVariant productVariant) {
                         if (productVariant.getVariant()!=null && productVariant.getVariant().size()>0) {
                             viewListener.addProductVariant(productVariant);
                         }
+                        viewListener.updateButtonBuyListener();
                     }
 
                     @Override
