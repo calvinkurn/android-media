@@ -137,11 +137,16 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
         } else {
             trackImpression(model);
             layoutChildCategory.setVisibility(View.VISIBLE);
-            layoutChildCategory.setBackgroundColor(
-                    TextUtils.isEmpty(model.getHeaderImageHexColor()) ?
-                            ContextCompat.getColor(context, R.color.white) :
-                            Color.parseColor(model.getHeaderImageHexColor())
-            );
+            try {
+                layoutChildCategory.setBackgroundColor(
+                        TextUtils.isEmpty(model.getHeaderImageHexColor()) ?
+                                ContextCompat.getColor(context, R.color.white) :
+                                Color.parseColor(model.getHeaderImageHexColor())
+                );
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+                layoutChildCategory.setBackgroundColor(ContextCompat.getColor(context, R.color.white));
+            }
 
             ChildCategoryLifestyleAdapter adapter = new ChildCategoryLifestyleAdapter(categoryListener, model.getHeaderModel().getCategoryName());
             adapter.setListCategory(model.getChildCategoryModelList());
