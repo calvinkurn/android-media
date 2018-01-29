@@ -361,6 +361,14 @@ public class CategoryProductStyle3View extends
         });
     }
 
+    private void setBtnBuyDigitalText(String buttonText) {
+        if (!TextUtils.isEmpty(buttonText)) {
+            btnBuyDigital.setText(buttonText);
+        } else {
+            btnBuyDigital.setText(context.getString(R.string.label_btn_buy_digital));
+        }
+    }
+
     private WidgetOperatorChooserView2.OperatorChoserListener getListenerOperatorChooser() {
         return new WidgetOperatorChooserView2.OperatorChoserListener() {
             @Override
@@ -411,14 +419,6 @@ public class CategoryProductStyle3View extends
                 actionListener.onOperatorChooserStyle3Clicked(operators, "");
             }
         };
-    }
-
-    private void setBtnBuyDigitalText(String buttonText) {
-        if (!TextUtils.isEmpty(buttonText)) {
-            btnBuyDigital.setText(buttonText);
-        } else {
-            btnBuyDigital.setText(context.getString(R.string.label_btn_buy_digital));
-        }
     }
 
     @NonNull

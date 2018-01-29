@@ -176,6 +176,136 @@ public class CategoryProductStyle99View extends
         clientNumberInputView.clearFocus();
     }
 
+    private void renderClientNumberInputForm(Operator operator) {
+        clearHolder(holderClientNumber);
+        clearHolder(holderChooserProduct);
+        clearHolder(holderAdditionalInfoProduct);
+        clearHolder(holderPriceInfoProduct);
+        clientNumberInputView.setActionListener(getActionListenerClientNumberInputView());
+        clientNumberInputView.renderData(operator.getClientNumberList().get(0));
+        clientNumberInputView.setFilterMaxLength(operator.getRule().getMaximumLength());
+        clientNumberInputView.resetInputTyped();
+        holderClientNumber.addView(clientNumberInputView);
+
+        if (hasLastOrderHistoryData()) {
+            if (operatorSelected != null && operator.getOperatorId().equalsIgnoreCase(
+                    historyClientNumber.getLastOrderClientNumber().getOperatorId())
+                    && !historyClientNumber.getLastOrderClientNumber().getClientNumber().isEmpty()
+                    ) {
+                clientNumberInputView.setText(
+                        historyClientNumber.getLastOrderClientNumber().getClientNumber()
+                );
+            }
+        }
+
+        if (hasLastOrderHistoryData()) {
+            if (!operator.getClientNumberList().isEmpty()) {
+                clientNumberInputView.setAdapterAutoCompleteClientNumber(historyClientNumber.getRecentClientNumberList());
+            }
+        }
+
+        clientNumberInputView.enableImageOperator(operatorSelected.getImage());
+    }
+
+    private void renderDefaultProductSelected() {
+        clearHolder(holderChooserProduct);
+        clearHolder(holderAdditionalInfoProduct);
+        clearHolder(holderPriceInfoProduct);
+        if (operatorSelected.getProductList().get(0) != null) {
+            productSelected = operatorSelected.getProductList().get(0);
+        } else {
+            productSelected = new Product.Builder()
+                    .productId(String.valueOf(operatorSelected.getDefaultProductId()))
+                    .info("")
+                    .price("")
+                    .desc("")
+                    .detail("")
+                    .build();
+        }
+        renderAdditionalInfoProduct();
+        renderPriceProductInfo();
+    }
+
+    private void showProducts() {
+        if (source == NATIVE) {
+            renderProductChooserOptions();
+        } else {
+            renderProductChooserOptionsWidget();
+        }
+    }
+
+    private void renderProductChooserOptionsWidget() {
+        clearHolder(holderChooserProduct);
+        widgetProductChooserView.setListener(getProductChooserListener());
+        widgetProductChooserView.setTitleProduct(operatorSelected.getRule().getProductText());
+        widgetProductChooserView.renderDataView(operatorSelected.getProductList(),
+                operatorSelected.getRule().isShowPrice(),
+                String.valueOf(operatorSelected.getDefaultProductId())
+        );
+        holderChooserProduct.addView(widgetProductChooserView);
+
+        if (hasLastOrderHistoryData() && operatorSelected != null
+                && operatorSelected.getOperatorId().equalsIgnoreCase(
+                historyClientNumber.getLastOrderClientNumber().getOperatorId()
+        )) {
+            for (Product product : operatorSelected.getProductList()) {
+                if (product.getProductId().equalsIgnoreCase(
+                        historyClientNumber.getLastOrderClientNumber().getProductId()
+                )) {
+                    widgetProductChooserView.updateProduct(
+                            operatorSelected.getProductList(),
+                            product.getProductId()
+                    );
+                    break;
+                }
+            }
+        }
+    }
+
+    private void renderProductChooserOptions() {
+        clearHolder(holderChooserProduct);
+        digitalProductChooserView.setActionListener(getActionListenerProductChooser());
+        digitalProductChooserView.renderInitDataList(operatorSelected.getProductList());
+        digitalProductChooserView.setLabelText(operatorSelected.getRule().getProductText());
+        holderChooserProduct.addView(digitalProductChooserView);
+
+        if (hasLastOrderHistoryData() && operatorSelected != null
+                && operatorSelected.getOperatorId().equalsIgnoreCase(
+                historyClientNumber.getLastOrderClientNumber().getOperatorId()
+        )) {
+            for (Product product : operatorSelected.getProductList()) {
+                if (product.getProductId().equalsIgnoreCase(
+                        historyClientNumber.getLastOrderClientNumber().getProductId()
+                )) {
+                    digitalProductChooserView.renderUpdateDataSelected(product);
+                    break;
+                }
+            }
+        }
+    }
+
+    private void renderPriceProductInfo() {
+        clearHolder(holderPriceInfoProduct);
+        if (operatorSelected != null && operatorSelected.getRule().isShowPrice()) {
+            productPriceInfoView.renderData(productSelected);
+            holderPriceInfoProduct.addView(productPriceInfoView);
+        }
+    }
+
+    private void renderAdditionalInfoProduct() {
+        clearHolder(holderAdditionalInfoProduct);
+        productAdditionalInfoView.renderData(productSelected);
+        holderAdditionalInfoProduct.addView(productAdditionalInfoView);
+    }
+
+    private void setBtnBuyDigitalText(String buttonText) {
+        if (!TextUtils.isEmpty(buttonText)) {
+            btnBuyDigital.setText(buttonText);
+        } else {
+            btnBuyDigital.setText(context.getString(R.string.label_btn_buy_digital));
+        }
+    }
+
     private WidgetProductChooserView2.ProductChoserListener getProductChooserListener() {
         return new WidgetProductChooserView2.ProductChoserListener() {
             @Override
@@ -339,136 +469,6 @@ public class CategoryProductStyle99View extends
             }
             return true;
         }
-    }
-
-    private void setBtnBuyDigitalText(String buttonText) {
-        if (!TextUtils.isEmpty(buttonText)) {
-            btnBuyDigital.setText(buttonText);
-        } else {
-            btnBuyDigital.setText(context.getString(R.string.label_btn_buy_digital));
-        }
-    }
-
-    private void renderClientNumberInputForm(Operator operator) {
-        clearHolder(holderClientNumber);
-        clearHolder(holderChooserProduct);
-        clearHolder(holderAdditionalInfoProduct);
-        clearHolder(holderPriceInfoProduct);
-        clientNumberInputView.setActionListener(getActionListenerClientNumberInputView());
-        clientNumberInputView.renderData(operator.getClientNumberList().get(0));
-        clientNumberInputView.setFilterMaxLength(operator.getRule().getMaximumLength());
-        clientNumberInputView.resetInputTyped();
-        holderClientNumber.addView(clientNumberInputView);
-
-        if (hasLastOrderHistoryData()) {
-            if (operatorSelected != null && operator.getOperatorId().equalsIgnoreCase(
-                    historyClientNumber.getLastOrderClientNumber().getOperatorId())
-                    && !historyClientNumber.getLastOrderClientNumber().getClientNumber().isEmpty()
-                    ) {
-                clientNumberInputView.setText(
-                        historyClientNumber.getLastOrderClientNumber().getClientNumber()
-                );
-            }
-        }
-
-        if (hasLastOrderHistoryData()) {
-            if (!operator.getClientNumberList().isEmpty()) {
-                clientNumberInputView.setAdapterAutoCompleteClientNumber(historyClientNumber.getRecentClientNumberList());
-            }
-        }
-
-        clientNumberInputView.enableImageOperator(operatorSelected.getImage());
-    }
-
-    private void renderDefaultProductSelected() {
-        clearHolder(holderChooserProduct);
-        clearHolder(holderAdditionalInfoProduct);
-        clearHolder(holderPriceInfoProduct);
-        if (operatorSelected.getProductList().get(0) != null) {
-            productSelected = operatorSelected.getProductList().get(0);
-        } else {
-            productSelected = new Product.Builder()
-                    .productId(String.valueOf(operatorSelected.getDefaultProductId()))
-                    .info("")
-                    .price("")
-                    .desc("")
-                    .detail("")
-                    .build();
-        }
-        renderAdditionalInfoProduct();
-        renderPriceProductInfo();
-    }
-
-    private void showProducts() {
-        if (source == NATIVE) {
-            renderProductChooserOptions();
-        } else {
-            renderProductChooserOptionsWidget();
-        }
-    }
-
-    private void renderProductChooserOptionsWidget() {
-        clearHolder(holderChooserProduct);
-        widgetProductChooserView.setListener(getProductChooserListener());
-        widgetProductChooserView.setTitleProduct(operatorSelected.getRule().getProductText());
-        widgetProductChooserView.renderDataView(operatorSelected.getProductList(),
-                operatorSelected.getRule().isShowPrice(),
-                String.valueOf(operatorSelected.getDefaultProductId())
-        );
-        holderChooserProduct.addView(widgetProductChooserView);
-
-        if (hasLastOrderHistoryData() && operatorSelected != null
-                && operatorSelected.getOperatorId().equalsIgnoreCase(
-                historyClientNumber.getLastOrderClientNumber().getOperatorId()
-        )) {
-            for (Product product : operatorSelected.getProductList()) {
-                if (product.getProductId().equalsIgnoreCase(
-                        historyClientNumber.getLastOrderClientNumber().getProductId()
-                )) {
-                    widgetProductChooserView.updateProduct(
-                            operatorSelected.getProductList(),
-                            product.getProductId()
-                    );
-                    break;
-                }
-            }
-        }
-    }
-
-    private void renderProductChooserOptions() {
-        clearHolder(holderChooserProduct);
-        digitalProductChooserView.setActionListener(getActionListenerProductChooser());
-        digitalProductChooserView.renderInitDataList(operatorSelected.getProductList());
-        digitalProductChooserView.setLabelText(operatorSelected.getRule().getProductText());
-        holderChooserProduct.addView(digitalProductChooserView);
-
-        if (hasLastOrderHistoryData() && operatorSelected != null
-                && operatorSelected.getOperatorId().equalsIgnoreCase(
-                historyClientNumber.getLastOrderClientNumber().getOperatorId()
-        )) {
-            for (Product product : operatorSelected.getProductList()) {
-                if (product.getProductId().equalsIgnoreCase(
-                        historyClientNumber.getLastOrderClientNumber().getProductId()
-                )) {
-                    digitalProductChooserView.renderUpdateDataSelected(product);
-                    break;
-                }
-            }
-        }
-    }
-
-    private void renderPriceProductInfo() {
-        clearHolder(holderPriceInfoProduct);
-        if (operatorSelected != null && operatorSelected.getRule().isShowPrice()) {
-            productPriceInfoView.renderData(productSelected);
-            holderPriceInfoProduct.addView(productPriceInfoView);
-        }
-    }
-
-    private void renderAdditionalInfoProduct() {
-        clearHolder(holderAdditionalInfoProduct);
-        productAdditionalInfoView.renderData(productSelected);
-        holderAdditionalInfoProduct.addView(productAdditionalInfoView);
     }
 
     private boolean hasLastOrderHistoryData() {
