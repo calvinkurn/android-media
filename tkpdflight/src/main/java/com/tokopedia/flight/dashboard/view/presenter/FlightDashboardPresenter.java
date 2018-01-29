@@ -436,12 +436,12 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
              *
              * Tanggal setelah di split :
              * [0] = tahun
-             * [1] = bulan
+             * [1] = bulan (-1 karena bulan di kalender android mulai dari 0)
              * [2] = hari
              */
             actionGetAirportById(extrasTripDeparture[0], true);
             actionGetAirportById(extrasTripDeparture[1], false);
-            onDepartureDateChange(Integer.parseInt(departureTripDate[0]), Integer.parseInt(departureTripDate[1]), Integer.parseInt(departureTripDate[2]));
+            onDepartureDateChange(Integer.parseInt(departureTripDate[0]), Integer.parseInt(departureTripDate[1]) - 1, Integer.parseInt(departureTripDate[2]));
             onSingleTripChecked();
 
             Calendar today = FlightDateUtil.getCurrentCalendar();
@@ -458,7 +458,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
             if (tempExtras.length > 1) {
                 String[] extrasTripReturn = tempExtras[1].split("_");
                 String[] returnTripDate = extrasTripReturn[2].split("-");
-                onReturnDateChange(Integer.parseInt(returnTripDate[0]), Integer.parseInt(returnTripDate[1]), Integer.parseInt(returnTripDate[2]));
+                onReturnDateChange(Integer.parseInt(returnTripDate[0]), Integer.parseInt(returnTripDate[1]) - 1, Integer.parseInt(returnTripDate[2]));
                 onRoundTripChecked();
 
                 if (!validator.validateArrivalDateShouldGreaterOrEqualDeparture(getView().getCurrentDashboardViewModel())) {
