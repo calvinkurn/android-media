@@ -66,7 +66,7 @@ public class AuthUtil {
     public static final String DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE = "android";
     public static final String DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE = "android";
 
-    public static final String HEADER_HMAC_SIGNATURE_KEY = "TKP MobileApps: ";
+    public static final String HEADER_HMAC_SIGNATURE_KEY = "TKPDROID AndroidApps: ";
 
 
     /**
