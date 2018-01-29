@@ -1,6 +1,9 @@
 package com.tokopedia.transaction.checkout.di.module;
 
 import com.tokopedia.transaction.checkout.di.scope.CartListScope;
+import com.tokopedia.transaction.checkout.domain.CartListInteractor;
+import com.tokopedia.transaction.checkout.domain.ICartListInteractor;
+import com.tokopedia.transaction.checkout.domain.ICartRepository;
 import com.tokopedia.transaction.checkout.view.CartFragment;
 import com.tokopedia.transaction.checkout.view.adapter.CartListAdapter;
 import com.tokopedia.transaction.checkout.view.presenter.CartListPresenter;
@@ -9,12 +12,13 @@ import com.tokopedia.transaction.checkout.view.view.ICartListView;
 
 import dagger.Module;
 import dagger.Provides;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * @author anggaprasetiyo on 18/01/18.
  */
 
-@Module
+@Module(includes = {DataModule.class})
 public class CartListModule {
 
     private final ICartListView cartListView;
@@ -27,8 +31,22 @@ public class CartListModule {
 
     @Provides
     @CartListScope
-    ICartListPresenter provideICartListPresenter() {
-        return new CartListPresenter(cartListView);
+    CompositeSubscription provideCompositeSubscription() {
+        return new CompositeSubscription();
+    }
+
+    @Provides
+    @CartListScope
+    ICartListInteractor provideICartListInteractor(CompositeSubscription compositeSubscription,
+                                                   ICartRepository cartRepository){
+        return new CartListInteractor(compositeSubscription, cartRepository);
+    }
+
+    @Provides
+    @CartListScope
+    ICartListPresenter provideICartListPresenter(ICartRepository cartRepository,
+                                                 ICartListInteractor cartListInteractor) {
+        return new CartListPresenter(cartListView, cartListInteractor);
     }
 
     @Provides

@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.checkout.view;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.checkout.view.activity.ICartShipmentActivity;
 import com.tokopedia.transaction.checkout.view.adapter.MultipleAddressAdapter;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressAdapterData;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressItemData;
@@ -23,6 +25,8 @@ import java.util.List;
 
 public class MultipleAddressFragment extends TkpdFragment
         implements MultipleAddressAdapter.MultipleAddressAdapterListener {
+
+    private ICartShipmentActivity cartShipmentActivity;
 
     public static MultipleAddressFragment newInstance() {
         return new MultipleAddressFragment();
@@ -82,5 +86,11 @@ public class MultipleAddressFragment extends TkpdFragment
                 .setCustomAnimations(R.animator.slide_in_left, R.animator.slide_in_left)
                 .add(R.id.container, MultipleAddressShipmentFragment.newInstance())
                 .commit();
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        cartShipmentActivity = (ICartShipmentActivity) activity;
     }
 }
