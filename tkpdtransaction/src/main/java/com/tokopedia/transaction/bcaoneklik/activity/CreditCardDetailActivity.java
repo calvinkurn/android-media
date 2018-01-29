@@ -10,7 +10,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.core.app.TActivity;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.bcaoneklik.di.DaggerPaymentOptionComponent;
@@ -71,30 +73,12 @@ public class CreditCardDetailActivity extends TActivity
         component.inject(this);
     }
 
-    public String getScreenDensity() {
-        DisplayMetrics metrics = getResources().getDisplayMetrics();
-        switch (metrics.densityDpi) {
-            case DisplayMetrics.DENSITY_MEDIUM:
-                return getString(R.string.density_mdpi);
-            case DisplayMetrics.DENSITY_HIGH:
-                return getString(R.string.density_hdpi);
-            case DisplayMetrics.DENSITY_XHIGH:
-                return getString(R.string.density_xhdpi);
-            case DisplayMetrics.DENSITY_XXHIGH:
-                return getString(R.string.density_xxhdpi);
-            case DisplayMetrics.DENSITY_XXXHIGH:
-                return getString(R.string.density_xxxhdpi);
-            default:
-                return getString(R.string.density_mdpi);
-        }
-    }
-
     private String getBackgroundAssets(CreditCardModelItem item) {
-        final String URL = "https://ecs7.tokopedia.net/img/android/%s/%s/%s.png";
+        final String resourceUrl = TkpdBaseURL.CDN_IMG_ANDROID_DOMAIN + "%s/%s/%s.png";
         String assetName = getBackgroundResource(item);
-        String density = getScreenDensity();
+        String density = DisplayMetricUtils.getScreenDensity(this);
 
-        return String.format(URL, assetName, density, assetName);
+        return String.format(resourceUrl, assetName, density, assetName);
     }
 
     private String getBackgroundResource(CreditCardModelItem item) {

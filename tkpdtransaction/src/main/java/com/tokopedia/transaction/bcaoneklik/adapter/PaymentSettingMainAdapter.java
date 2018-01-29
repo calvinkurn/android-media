@@ -13,6 +13,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.bcaoneklik.activity.CreditCardDetailActivity;
 import com.tokopedia.transaction.bcaoneklik.listener.ListPaymentTypeView;
@@ -261,29 +263,12 @@ public class PaymentSettingMainAdapter extends RecyclerView.Adapter<RecyclerView
             ImageHandler.LoadImage(cardImage, item.getCardTypeImage());
         }
 
-        private String getScreenDensity() {
-            switch (context.getResources().getDisplayMetrics().densityDpi) {
-                case DisplayMetrics.DENSITY_MEDIUM:
-                    return context.getString(R.string.density_mdpi);
-                case DisplayMetrics.DENSITY_HIGH:
-                    return context.getString(R.string.density_hdpi);
-                case DisplayMetrics.DENSITY_XHIGH:
-                    return context.getString(R.string.density_xhdpi);
-                case DisplayMetrics.DENSITY_XXHIGH:
-                    return context.getString(R.string.density_xxhdpi);
-                case DisplayMetrics.DENSITY_XXXHIGH:
-                    return context.getString(R.string.density_xxxhdpi);
-                default:
-                    return context.getString(R.string.density_mdpi);
-            }
-        }
-
         private String getBackgroundAssets(CreditCardModelItem item) {
-            final String URL = "https://ecs7.tokopedia.net/img/android/%s/%s/%s.png";
+            final String resourceUrl = TkpdBaseURL.CDN_IMG_ANDROID_DOMAIN + "%s/%s/%s.png";
             String assetName = getBackgroundResource(item);
-            String density = getScreenDensity();
+            String density = DisplayMetricUtils.getScreenDensity(context);
 
-            return String.format(URL, assetName, density, assetName);
+            return String.format(resourceUrl, assetName, density, assetName);
         }
 
         private String getBackgroundResource(CreditCardModelItem item) {
