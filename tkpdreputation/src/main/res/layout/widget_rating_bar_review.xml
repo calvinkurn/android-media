@@ -13,6 +13,7 @@
         android:layout_gravity="center_vertical"
         android:layout_width="wrap_content"
         android:layout_marginRight="@dimen/margin_vs"
+        android:layout_marginEnd="@dimen/margin_vs"
         android:layout_height="17dp"
         android:isIndicator="true"/>
 
@@ -20,14 +21,14 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:gravity="center"
-        android:weightSum="1"
         android:layout_height="wrap_content">
         <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
             android:id="@+id/progress_value_review"
             android:layout_width="0dp"
             android:layout_height="5dp"
-            android:layout_weight="0.9"
+            android:layout_weight="5"
             android:layout_marginRight="@dimen/margin_vs"
+            android:layout_marginEnd="@dimen/margin_vs"
             app:rcBackgroundColor="@color/grey_200"
             app:rcMax="100"
             app:rcProgress="0"
@@ -36,7 +37,8 @@
 
         <TextView
             android:layout_width="0dp"
-            android:layout_weight="0.1"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:id="@+id/counter_review"
             style="@style/TextView.Micro.BlackSecondary"
             tools:text="49"/>

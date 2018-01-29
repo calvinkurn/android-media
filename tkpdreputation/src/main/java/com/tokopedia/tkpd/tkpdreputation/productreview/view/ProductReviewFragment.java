@@ -305,7 +305,7 @@ public class ProductReviewFragment extends BaseListFragment<ProductReviewModel, 
     @NonNull
     @Override
     protected BaseListAdapter<ProductReviewModel, ProductReviewTypeFactoryAdapter> createAdapterInstance() {
-        return new ProductReviewAdapter(getAdapterTypeFactory());
+        return new ProductReviewAdapter<>(getAdapterTypeFactory());
     }
 
     @Override

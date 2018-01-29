@@ -10,7 +10,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/border_bottom_05dp"
-        android:padding="@dimen/padding_small">
+        android:paddingTop="@dimen/padding_small"
+        android:paddingBottom="@dimen/padding_small"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin">
 
         <ImageView
             android:id="@+id/icon_like"
@@ -63,10 +66,12 @@
         android:id="@+id/reply_review_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin_med"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:visibility="gone"
         tools:visibility="visible"
-        android:padding="@dimen/padding_small">
+        android:layout_marginTop="@dimen/padding_small"
+        android:paddingLeft="@dimen/image_width_xxs">
 
         <LinearLayout
             android:layout_width="match_parent"
