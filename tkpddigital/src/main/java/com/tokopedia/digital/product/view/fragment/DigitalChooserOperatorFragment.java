@@ -143,7 +143,7 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment<IOpera
         );
 
         GetOperatorsByCategoryIdUseCase getOperatorsByCategoryIdUseCase = new GetOperatorsByCategoryIdUseCase(
-                getActivity(),  digitalCategoryRepository
+                digitalCategoryRepository
         );
 
         presenter = new OperatorChooserPresenter(this, getOperatorsByCategoryIdUseCase);

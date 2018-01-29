@@ -49,7 +49,7 @@ public class CategoryDetailDataSource {
                 });
     }
 
-    private Observable<CategoryData> getDataFromLocal(String categoryId) {
+    public Observable<CategoryData> getDataFromLocal(String categoryId) {
         CategoryData categoryData = CacheUtil.convertStringToModel(
                 globalCacheManager.getValueString(TkpdCache.Key.DIGITAL_CATEGORY_DETAIL + "/" + categoryId),
                 new TypeToken<CategoryData>() {

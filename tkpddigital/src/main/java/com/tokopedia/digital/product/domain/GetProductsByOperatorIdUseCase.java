@@ -25,11 +25,9 @@ public class GetProductsByOperatorIdUseCase extends UseCase<List<Product>> {
     private final String PARAM_CATEGORY_ID = "category_id";
     private final String PARAM_OPERATOR_ID = "operator_id";
 
-    private Context context;
     private DigitalCategoryRepository digitalCategoryRepository;
 
-    public GetProductsByOperatorIdUseCase(Context context,
-                                          DigitalCategoryRepository digitalCategoryRepository) {
+    public GetProductsByOperatorIdUseCase(DigitalCategoryRepository digitalCategoryRepository) {
         this.digitalCategoryRepository = digitalCategoryRepository;
     }
 
@@ -38,9 +36,7 @@ public class GetProductsByOperatorIdUseCase extends UseCase<List<Product>> {
         String categoryId = requestParams.getString(PARAM_CATEGORY_ID, "");
         final String operatorId = requestParams.getString(PARAM_OPERATOR_ID, "");
 
-        TKPDMapParam<String, String> paramQueryCategory = new TKPDMapParam<>();
-
-        return digitalCategoryRepository.getCategory(categoryId, paramQueryCategory)
+        return digitalCategoryRepository.getCategoryFromLocal(categoryId)
                 .flatMapIterable(new Func1<CategoryData, Iterable<Operator>>() {
                     @Override
                     public Iterable<Operator> call(CategoryData categoryData) {
@@ -66,11 +62,6 @@ public class GetProductsByOperatorIdUseCase extends UseCase<List<Product>> {
         requestParams.putString(PARAM_CATEGORY_ID, categoryId);
         requestParams.putString(PARAM_OPERATOR_ID, operatorId);
         return requestParams;
-    }
-
-    public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
-            TKPDMapParam<String, String> originParams) {
-        return AuthUtil.generateParamsNetwork(context, originParams);
     }
 
 }

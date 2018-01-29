@@ -113,7 +113,7 @@ public class DigitalChooserProductFragment extends BasePresenterFragment<IProduc
         );
 
         GetProductsByOperatorIdUseCase getProductsByOperatorIdUseCase = new GetProductsByOperatorIdUseCase(
-                context, digitalCategoryRepository
+                digitalCategoryRepository
         );
 
         presenter = new ProductChooserPresenter(this, getProductsByOperatorIdUseCase);

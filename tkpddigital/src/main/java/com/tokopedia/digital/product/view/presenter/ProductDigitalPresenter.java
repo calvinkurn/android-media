@@ -28,6 +28,8 @@ import com.tokopedia.digital.common.data.entity.requestbody.pulsabalance.Attribu
 import com.tokopedia.digital.common.data.entity.requestbody.pulsabalance.RequestBodyPulsaBalance;
 import com.tokopedia.digital.common.domain.DigitalCategoryUseCase;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
+import com.tokopedia.digital.common.view.compoundview.ViewFactory;
+import com.tokopedia.digital.common.view.presenter.BaseDigitalPresenter;
 import com.tokopedia.digital.product.domain.interactor.IProductDigitalInteractor;
 import com.tokopedia.digital.product.service.USSDAccessibilityService;
 import com.tokopedia.digital.product.view.listener.IProductDigitalView;
@@ -41,8 +43,6 @@ import com.tokopedia.digital.product.view.model.PulsaBalance;
 import com.tokopedia.digital.product.view.model.Validation;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.digital.utils.ServerErrorHandlerUtil;
-import com.tokopedia.digital.common.view.compoundview.ViewFactory;
-import com.tokopedia.digital.common.view.presenter.BaseDigitalPresenter;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
