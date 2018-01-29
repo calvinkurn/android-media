@@ -61,35 +61,35 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.tokopedia.tkpd.tkpdreputation.productreview.view.widget.RatingBarReview
+        <com.tokopedia.tkpd.tkpdreputation.review.product.view.widget.RatingBarReview
             android:id="@+id/five_star"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:rating="5"
             app:numstars="5" />
 
-        <com.tokopedia.tkpd.tkpdreputation.productreview.view.widget.RatingBarReview
+        <com.tokopedia.tkpd.tkpdreputation.review.product.view.widget.RatingBarReview
             android:id="@+id/four_star"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:rating="4"
             app:numstars="5" />
 
-        <com.tokopedia.tkpd.tkpdreputation.productreview.view.widget.RatingBarReview
+        <com.tokopedia.tkpd.tkpdreputation.review.product.view.widget.RatingBarReview
             android:id="@+id/three_star"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:rating="3"
             app:numstars="5" />
 
-        <com.tokopedia.tkpd.tkpdreputation.productreview.view.widget.RatingBarReview
+        <com.tokopedia.tkpd.tkpdreputation.review.product.view.widget.RatingBarReview
             android:id="@+id/two_star"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:rating="2"
             app:numstars="5" />
 
-        <com.tokopedia.tkpd.tkpdreputation.productreview.view.widget.RatingBarReview
+        <com.tokopedia.tkpd.tkpdreputation.review.product.view.widget.RatingBarReview
             android:id="@+id/one_star"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
