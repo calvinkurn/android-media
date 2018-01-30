@@ -24,7 +24,6 @@ public class QuickSingleFilterView extends BaseCustomView {
     private RecyclerView recyclerView;
     protected BaseQuickSingleFilterAdapter<ItemFilterViewHolder> adapterFilter;
     private ActionListener listener;
-    private String selectedType = "";
 
     public QuickSingleFilterView(@NonNull Context context) {
         super(context);
@@ -100,7 +99,6 @@ public class QuickSingleFilterView extends BaseCustomView {
     }
 
     private void setSelectedFilter(String type) {
-        selectedType = type;
         if (listener != null) {
             listener.selectFilter(type);
         }
@@ -127,7 +125,19 @@ public class QuickSingleFilterView extends BaseCustomView {
     }
 
     public String getSelectedFilter(){
-        return selectedType;
+        if(defaultItem != null && defaultItem.isSelected()){
+            return defaultItem.getType();
+        }else {
+            String itemSelected = "";
+            for (int i= 0; i<adapterFilter.getDataList().size(); i++) {
+                QuickFilterItem quickFilterItem = adapterFilter.getDataList().get(i);
+                if (quickFilterItem.isSelected()) {
+                    itemSelected = quickFilterItem.getType();
+                    break;
+                }
+            }
+            return itemSelected;
+        }
     }
 
     public boolean isAnyItemSelected(){

@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ImageView
+
+    <com.tokopedia.core.customView.RoundedCornerImageView
         android:id="@+id/image_upload"
         android:layout_width="@dimen/img_thumb_m"
         android:layout_height="@dimen/img_thumb_m"

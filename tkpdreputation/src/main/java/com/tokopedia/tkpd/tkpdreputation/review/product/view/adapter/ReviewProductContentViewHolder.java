@@ -33,6 +33,7 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
     private static final String MORE_DESCRIPTION = "<font color='#42b549'>Selengkapnya</font>";
     public static final int UNLIKE_STATUS = 3;
     public static final int LIKE_STATUS_ACTIVE = 1;
+    public static final String WIB = "WIB";
 
     boolean isReplyOpened = false;
     private ListenerReviewHolder viewListener;
@@ -100,7 +101,7 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
                 toggleReply();
             }
         });
-        reviewTime.setText(element.getReviewTime());
+        reviewTime.setText(TimeConverter.generateTimeYearly(element.getReviewTime().replace(WIB, "")));
 
         reviewStar.setRating(element.getReviewStar());
         review.setText(getReview(element.getReviewMessage()));
@@ -209,7 +210,7 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
                 viewListener.onGoToShopInfo(element.getShopId());
             }
         });
-        sellerReplyTime.setText(element.getResponseCreateTime());
+        sellerReplyTime.setText(TimeConverter.generateTimeYearly(element.getResponseCreateTime().replace(WIB, "")));
         sellerReply.setText(MethodChecker.fromHtml(element.getResponseMessage()));
         replyOverflow.setVisibility(View.VISIBLE);
         replyOverflow.setOnClickListener(new View.OnClickListener() {

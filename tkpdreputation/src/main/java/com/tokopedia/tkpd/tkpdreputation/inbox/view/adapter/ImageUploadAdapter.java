@@ -1,13 +1,18 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.tkpd.library.utils.ImageHandler;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
 
@@ -79,9 +84,13 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
 
         try {
             if (data.get(position).getFileLoc() == null) {
-                ImageHandler.LoadImage(holder.image, data.get(position).getPicSrc());
+                ImageHandler.loadImageRounded2(holder.image.getContext(),holder.image, data.get(position).getPicSrc());
             } else {
-                ImageHandler.loadImageFromFile(context, holder.image, new File(data.get(position).getFileLoc()));
+                Glide.with(holder.image.getContext())
+                        .load(new File(data.get(position).getFileLoc()))
+                        .asBitmap()
+                        .centerCrop()
+                        .into(getRoundedImageViewTarget(holder.image, 5.0f));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -91,6 +100,18 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
 
         setBorder(holder, position);
 
+    }
+
+    private static BitmapImageViewTarget getRoundedImageViewTarget(final ImageView imageView, final float radius) {
+        return new BitmapImageViewTarget(imageView) {
+            @Override
+            protected void setResource(Bitmap resource) {
+                RoundedBitmapDrawable circularBitmapDrawable =
+                        RoundedBitmapDrawableFactory.create(imageView.getContext().getResources(), resource);
+                circularBitmapDrawable.setCornerRadius(radius);
+                imageView.setImageDrawable(circularBitmapDrawable);
+            }
+        };
     }
 
     private void setBorder(ViewHolder holder, int position) {

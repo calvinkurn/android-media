@@ -19,7 +19,7 @@
             style="@style/Small.RatingBar"
             android:id="@+id/product_rating"
             android:isIndicator="true"
-            android:layout_height="@dimen/image_width_xxs"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_vs"
             android:layout_width="wrap_content"
             android:numStars="5"
@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_more_vert_black_24dp" />
+            android:src="@drawable/ic_more_vert_grey" />
 
     </RelativeLayout>
 
