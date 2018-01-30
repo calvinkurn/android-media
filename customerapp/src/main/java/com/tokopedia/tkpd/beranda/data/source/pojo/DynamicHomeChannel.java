@@ -29,7 +29,7 @@ public class DynamicHomeChannel {
         private String name;
 
         @Expose
-        private Grid[] grid;
+        private Grid[] grids;
 
         @Expose
         private String type;
@@ -61,12 +61,12 @@ public class DynamicHomeChannel {
             this.name = name;
         }
 
-        public Grid[] getGrid() {
-            return grid;
+        public Grid[] getGrids() {
+            return grids;
         }
 
-        public void setGrid(Grid[] grid) {
-            this.grid = grid;
+        public void setGrids(Grid[] grids) {
+            this.grids = grids;
         }
 
         public String getType() {
