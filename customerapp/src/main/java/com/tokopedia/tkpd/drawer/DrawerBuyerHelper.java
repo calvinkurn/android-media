@@ -268,7 +268,7 @@ public class DrawerBuyerHelper extends DrawerHelper
     }
 
     private DrawerGroup getResoMenu() {
-        DrawerGroup resoMenu = new DrawerGroup("Komplain Saya",
+        DrawerGroup resoMenu = new DrawerGroup(context.getString(R.string.drawer_title_new_reso),
                 R.drawable.ic_reso,
                 TkpdState.DrawerPosition.RESOLUTION_CENTER,
                 drawerCache.getBoolean(IS_RESO_OPENED, false),
