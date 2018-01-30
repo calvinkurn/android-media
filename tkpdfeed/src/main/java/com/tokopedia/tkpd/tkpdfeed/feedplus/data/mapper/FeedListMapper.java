@@ -129,7 +129,8 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
                             KolPostDomain kolPostDomain,
                             KolRecommendationDomain kolRecommendations,
                             FavoriteCtaDomain favoriteCtaDomain,
-                            KolCtaDomain kolCtaDomain) {
+                            KolCtaDomain kolCtaDomain,
+                            List<Data> topadsData) {
         if (content == null) return null;
         return new ContentFeedDomain(content.type(),
                 content.total_product() != null ? content.total_product() : 0,
@@ -142,7 +143,8 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
                 kolRecommendations,
                 favoriteCtaDomain,
                 kolCtaDomain,
-                content.status_activity());
+                content.status_activity(),
+                topadsData);
     }
 
     private SourceFeedDomain createSourceFeedDomain(
@@ -275,6 +277,7 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
                 KolCtaDomain kolCtaDomain = datum.content().kol_cta() != null ?
                         convertToKolCtaDomain(datum.content().kol_cta()) :
                         null;
+                List<Data> topadsData = convertToTopadsDomain(datum.content().topads());
                 ContentFeedDomain contentFeedDomain = createContentFeedDomain(
                         datum.content(),
                         productFeedDomains,
@@ -285,7 +288,8 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
                         kolPostDomain,
                         kolRecommendations,
                         favoriteCta,
-                        kolCtaDomain
+                        kolCtaDomain,
+                        topadsData
                 );
                 SourceFeedDomain sourceFeedDomain =
                         createSourceFeedDomain(datum.source(), shopFeedDomain);
@@ -464,17 +468,28 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
                 kol_cta.subtitle());
     }
 
-    private Data convertToTopadsDomain(FeedQuery.Data.Topad topad) {
-        return new Data(topad.id(),
-                topad.ad_ref_key(),
-                topad.redirect() == null ? "" : topad.redirect().toString(),
-                topad.sticker_id(),
-                topad.sticker_image() == null ? "" : topad.sticker_image().toString(),
-                topad.product_click_url() == null ? "" : topad.product_click_url().toString(),
-                topad.shop_click_url() == null ? "" : topad.shop_click_url().toString(),
-                topad.shop() == null ? null : convertToTopadsShop(topad.shop()),
-                topad.product() == null ? null : convertToTopadsProduct(topad.product()),
-                false);
+    private List<Data> convertToTopadsDomain(List<FeedQuery.Data.Topad> topadList) {
+        ArrayList<Data> topadDataDomainList = new ArrayList<>();
+        for (FeedQuery.Data.Topad topad : topadList) {
+            topadDataDomainList.add(
+                    new Data(topad.id(),
+                            topad.ad_ref_key(),
+                            topad.redirect() == null ? "" :
+                                    topad.redirect().toString(),
+                            topad.sticker_id(),
+                            topad.sticker_image() == null ? "" :
+                                    topad.sticker_image().toString(),
+                            topad.product_click_url() == null ? "" :
+                                    topad.product_click_url().toString(),
+                            topad.shop_click_url() == null ? "" :
+                                    topad.shop_click_url().toString(),
+                            topad.shop() == null ? null : convertToTopadsShop(topad.shop()),
+                            topad.product() == null ? null : convertToTopadsProduct(topad.product
+                                    ()),
+                            false)
+            );
+        }
+        return topadDataDomainList;
     }
 
     private Shop convertToTopadsShop(FeedQuery.Data.Shop2 topadShop) {

@@ -121,7 +121,8 @@ public class HomeFeedMapper implements Func1<HomeFeedQuery.Data, FeedDomain> {
                 null,
                 null,
                 null,
-                "");
+                "",
+                null);
     }
 
     private SourceFeedDomain createSourceFeedDomain(
