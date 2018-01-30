@@ -63,23 +63,14 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         sessionHandler = new SessionHandler(this);
         drawerCache = new LocalCacheHandler(this, DrawerHelper.DRAWER_CACHE);
         setupDrawer();
+        if (!GlobalConfig.isSellerApp()) {
+            registerBroadcastReceiverHeaderTokoCash();
+            registerBroadcastReceiverHeaderTokoCashPending();
+            registerBroadcastReceiverHeaderTokoPoint();
+        }
     }
 
-    protected void registerAllBroadcastReceiver() {
-        if (getApplication() instanceof ILoyaltyRouter) {
-            broadcastReceiverTokoPoint = ((ILoyaltyRouter) getApplication()).getTokoPointBroadcastReceiver();
-            registerReceiver(
-                    broadcastReceiverTokoPoint,
-                    new IntentFilter(TokoPointDrawerBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP)
-            );
-        }
-        if (getApplication() instanceof IDigitalModuleRouter) {
-            broadcastReceiverPendingTokocash = ((IDigitalModuleRouter) getApplication()).getBroadcastReceiverTokocashPending();
-            registerReceiver(
-                    broadcastReceiverPendingTokocash,
-                    new IntentFilter(TokocashPendingDataBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP)
-            );
-        }
+    protected void registerBroadcastReceiverHeaderTokoCash() {
         drawerActivityBroadcastReceiver = new DrawerActivityBroadcastReceiver();
         registerReceiver(
                 drawerActivityBroadcastReceiver,
@@ -87,9 +78,35 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
         );
     }
 
-    protected void unregisterAllBroadcastReceiver() {
-        unregisterReceiver(broadcastReceiverPendingTokocash);
+    protected void registerBroadcastReceiverHeaderTokoCashPending() {
+        if (getApplication() instanceof IDigitalModuleRouter) {
+            broadcastReceiverPendingTokocash = ((IDigitalModuleRouter) getApplication()).getBroadcastReceiverTokocashPending();
+            registerReceiver(
+                    broadcastReceiverPendingTokocash,
+                    new IntentFilter(TokocashPendingDataBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP)
+            );
+        }
+    }
+
+    protected void registerBroadcastReceiverHeaderTokoPoint() {
+        if (getApplication() instanceof ILoyaltyRouter) {
+            broadcastReceiverTokoPoint = ((ILoyaltyRouter) getApplication()).getTokoPointBroadcastReceiver();
+            registerReceiver(
+                    broadcastReceiverTokoPoint,
+                    new IntentFilter(TokoPointDrawerBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP)
+            );
+        }
+    }
+
+    protected void unregisterBroadcastReceiverHeaderTokoPoint() {
         unregisterReceiver(broadcastReceiverTokoPoint);
+    }
+
+    protected void unregisterBroadcastReceiverHeaderTokoCashPending() {
+        unregisterReceiver(broadcastReceiverPendingTokocash);
+    }
+
+    protected void unregisterBroadcastReceiverHeaderTokoCash() {
         unregisterReceiver(drawerActivityBroadcastReceiver);
     }
 
@@ -409,6 +426,11 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
     protected void onDestroy() {
         super.onDestroy();
         drawerDataManager.unsubscribe();
+        if (!GlobalConfig.isSellerApp()) {
+            unregisterBroadcastReceiverHeaderTokoCash();
+            unregisterBroadcastReceiverHeaderTokoCashPending();
+            unregisterBroadcastReceiverHeaderTokoPoint();
+        }
     }
 
     @Override
@@ -422,7 +444,6 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
     }
 
     public class DrawerActivityBroadcastReceiver extends BroadcastReceiver {
-
 
         @Override
         public void onReceive(Context context, Intent intent) {

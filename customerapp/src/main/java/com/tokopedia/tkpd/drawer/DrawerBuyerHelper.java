@@ -47,6 +47,7 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
@@ -594,9 +595,9 @@ public class DrawerBuyerHelper extends DrawerHelper
     @Override
     public void onTokoPointActionClicked(String mainPageUrl, String title) {
         if (TextUtils.isEmpty(title))
-            context.startActivity(SimpleWebViewActivity.getIntent(context, mainPageUrl));
+            context.startActivity(TokoPointWebviewActivity.getIntent(context, mainPageUrl));
         else
-            context.startActivity(SimpleWebViewActivity.getIntentWithTitle(context, mainPageUrl, title));
+            context.startActivity(TokoPointWebviewActivity.getIntentWithTitle(context, mainPageUrl, title));
     }
 
     private void onGoToCreateShop() {
