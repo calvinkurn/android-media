@@ -119,7 +119,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
         view.showInitialProgressLoading();
 
         getCategoryByIdUseCase.execute(getCategoryByIdUseCase.createRequestParam(
-                categoryId, PARAM_VALUE_SORT
+                categoryId, operatorId, productId, clientNumber, PARAM_VALUE_SORT
         ), getSubscriberProductDigitalData());
     }
 

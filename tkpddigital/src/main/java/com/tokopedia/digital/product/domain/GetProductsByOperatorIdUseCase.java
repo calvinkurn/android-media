@@ -34,7 +34,7 @@ public class GetProductsByOperatorIdUseCase extends UseCase<List<Product>> {
         String categoryId = requestParams.getString(PARAM_CATEGORY_ID, "");
         final String operatorId = requestParams.getString(PARAM_OPERATOR_ID, "");
 
-        return getCategoryByIdUseCase.createObservable(getCategoryByIdUseCase.createRequestParam(categoryId, null))
+        return getCategoryByIdUseCase.createObservable(getCategoryByIdUseCase.createRequestParam(categoryId))
                 .flatMapIterable(new Func1<ProductDigitalData, Iterable<Operator>>() {
                     @Override
                     public Iterable<Operator> call(ProductDigitalData productDigitalData) {

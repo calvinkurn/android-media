@@ -59,7 +59,7 @@ public class TopUpTokocashPresenter implements ITopUpTokocashPresenter {
     @Override
     public void processGetCategoryTopUp() {
         getCategoryByIdUseCase.execute(
-                getCategoryByIdUseCase.createRequestParam(TOPUP_CATEGORY_ID, null),
+                getCategoryByIdUseCase.createRequestParam(TOPUP_CATEGORY_ID),
                 getSubscriberProductDigitalData()
         );
     }

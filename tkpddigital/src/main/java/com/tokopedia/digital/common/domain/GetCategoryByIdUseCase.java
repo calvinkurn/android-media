@@ -2,10 +2,12 @@ package com.tokopedia.digital.common.domain;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.common.data.repository.IDigitalCategoryRepository;
 import com.tokopedia.digital.product.view.model.BannerData;
@@ -30,7 +32,13 @@ import rx.functions.Func2;
 public class GetCategoryByIdUseCase extends UseCase<ProductDigitalData> {
 
     private final String PARAM_CATEGORY_ID = "category_id";
+    private final String PARAM_OPERATOR_ID = "operator_id";
+    private final String PARAM_PRODUCT_ID = "product_id";
+    private final String PARAM_CLIENT_NUMBER = "client_number";
     private final String PARAM_SORT = "sort";
+
+    private final String PARAM_IS_RESELLER = "is_reseller";
+    private final String PARAM_VALUE_IS_RESELLER = "1";
 
     private Context context;
     private IDigitalCategoryRepository digitalCategoryRepository;
@@ -43,12 +51,27 @@ public class GetCategoryByIdUseCase extends UseCase<ProductDigitalData> {
     @Override
     public Observable<ProductDigitalData> createObservable(RequestParams requestParams) {
         String categoryId = requestParams.getString(PARAM_CATEGORY_ID, "");
+        String operatorId = requestParams.getString(PARAM_OPERATOR_ID, "");
+        String productId = requestParams.getString(PARAM_PRODUCT_ID, "");
+        String clientNumber = requestParams.getString(PARAM_CLIENT_NUMBER, "");
         String sort = requestParams.getString(PARAM_SORT, "");
 
         TKPDMapParam<String, String> paramQueryCategory = new TKPDMapParam<>();
+        if (GlobalConfig.isSellerApp()) {
+            paramQueryCategory.put(PARAM_IS_RESELLER, PARAM_VALUE_IS_RESELLER);
+        }
 
         TKPDMapParam<String, String> paramQueryFavoriteList = new TKPDMapParam<>();
         paramQueryFavoriteList.put(PARAM_CATEGORY_ID, categoryId);
+        if (!TextUtils.isEmpty(operatorId)) {
+            paramQueryFavoriteList.put(PARAM_OPERATOR_ID, operatorId);
+        }
+        if (!TextUtils.isEmpty(productId)) {
+            paramQueryFavoriteList.put(PARAM_PRODUCT_ID, productId);
+        }
+        if (!TextUtils.isEmpty(clientNumber)) {
+            paramQueryFavoriteList.put(PARAM_CLIENT_NUMBER, clientNumber);
+        }
         paramQueryFavoriteList.put(PARAM_SORT, sort);
 
         return Observable.zip(
@@ -100,10 +123,27 @@ public class GetCategoryByIdUseCase extends UseCase<ProductDigitalData> {
         };
     }
 
+    public RequestParams createRequestParam(String categoryId) {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(PARAM_CATEGORY_ID, categoryId);
+        return requestParams;
+    }
+
     public RequestParams createRequestParam(String categoryId, String sort) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(PARAM_CATEGORY_ID, categoryId);
         requestParams.putString(PARAM_SORT, sort);
+        return requestParams;
+    }
+
+    public RequestParams createRequestParam(String categoryId, String operatorId, String productId,
+                                            String clientNumber, String sort) {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(PARAM_CATEGORY_ID, categoryId);
+        requestParams.putString(PARAM_SORT, sort);
+        requestParams.putString(PARAM_OPERATOR_ID, operatorId);
+        requestParams.putString(PARAM_PRODUCT_ID, productId);
+        requestParams.putString(PARAM_CLIENT_NUMBER, clientNumber);
         return requestParams;
     }
 
