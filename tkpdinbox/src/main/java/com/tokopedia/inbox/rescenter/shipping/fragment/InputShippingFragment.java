@@ -77,7 +77,6 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
     View mainView;
     @BindView(R2.id.confirm_button)
     TextView confirmButton;
-    @BindView(R2.id.img_awb)
     ImageView imgAwb;
 
     private AttachmentAdapter attachmentAdapter;
@@ -202,6 +201,7 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
 
     @Override
     protected void initView(View view) {
+        imgAwb = (ImageView) view.findViewById(R.id.img_awb);
         ImageHandler.LoadImage(imgAwb, URL_IMG);
         renderAttachmentAdapter();
     }
