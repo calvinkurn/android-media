@@ -15,8 +15,6 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.anals.UserAttribute;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
-import com.tokopedia.core.analytics.container.AppsflyerContainer;
-import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
 import com.tokopedia.core.analytics.model.Hotlist;
 import com.tokopedia.core.analytics.model.Product;
@@ -663,24 +661,6 @@ public class TrackingUtils extends TrackingConfig {
         getGTMEngine().eventImpressionHotlistProductFeatured(hotlist);
     }
 
-
-    public static void setAdsId() {
-        getAFEngine().getAdsID(new AppsflyerContainer.AFAdsIDCallback() {
-            @Override
-            public void onGetAFAdsID(String adsID) {
-                AnalyticsCacheHandler analHandler = new AnalyticsCacheHandler();
-                if (!analHandler.isAdsIdAvailable()) {
-                    analHandler.setAdsId(adsID);
-                }
-            }
-
-            @Override
-            public void onErrorAFAdsID() {
-
-            }
-        });
-
-    }
     public static void impressionHotlistPromo(String hotlistName, String promoName, String promoCode) {
         getGTMEngine().impressionHotlistTracking(hotlistName, promoName, promoCode);
     }

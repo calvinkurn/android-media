@@ -175,8 +175,11 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
             @Override
             public void onClick(View v) {
                 presenter.shareApp();
-                UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_SHARE_CODE, getReferralCodeFromTextView());
-
+                if (presenter.isAppShowReferralButtonActivated()) {
+                    UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_SHARE_CODE, getReferralCodeFromTextView());
+                } else {
+                    UnifyTracking.eventAppShare();
+                }
             }
         };
 
