@@ -48,9 +48,9 @@
                     android:textColor="@color/black_54"/>
 
                 <ImageView
+                    android:id="@+id/img_awb"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:src="@drawable/img_awb_example"/>
+                    android:layout_height="200dp"/>
             </LinearLayout>
 
             <LinearLayout
