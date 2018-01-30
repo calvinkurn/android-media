@@ -262,9 +262,9 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
                     }
                 }
             } else {
-                for (int i=0; i<variantOptionAdapterLevel1.getVariantOptions().size(); i++) {
-                    if (level2Selected.getId() == variantOptionAdapterLevel1.getVariantOptions().get(i).getId()) {
-                        variantOptionAdapterLevel1.setSelectedPosition(i);
+                for (int i=0; i<variantOptionAdapterLevel2.getVariantOptions().size(); i++) {
+                    if (level2Selected.getId() == variantOptionAdapterLevel2.getVariantOptions().get(i).getId()) {
+                        variantOptionAdapterLevel2.setSelectedPosition(i);
                         break;
                     }
                 }
