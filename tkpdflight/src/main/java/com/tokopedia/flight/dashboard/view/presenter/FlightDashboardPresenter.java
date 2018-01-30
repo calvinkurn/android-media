@@ -51,9 +51,6 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     private static final int INDEX_DATE_YEAR = 0;
     private static final int INDEX_DATE_MONTH = 1;
     private static final int INDEX_DATE_DATE = 2;
-    private static final int INDEX_PASSENGER_ADULT = 0;
-    private static final int INDEX_PASSENGER_CHILD = 1;
-    private static final int INDEX_PASSENGER_INFANT = 2;
 
     private BannerGetDataUseCase bannerGetDataUseCase;
     private FlightDashboardValidator validator;
@@ -120,9 +117,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
             actionLoadFromCache();
             actionGetClassesAndSetDefaultClass();
         } else {
-            transformExtras(getView().getTripArguments(),
-                    getView().getPassengerArguments(),
-                    getView().getClassArguments());
+            transformExtras();
         }
     }
 
@@ -431,25 +426,17 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         }
     }
 
-    private void transformExtras(String extrasTrip, String extrasPassenger, String extrasClass) {
+    private void transformExtras() {
         try {
             boolean isDepartureDateValid = true;
 
             // transform trip extras
-            String[] tempExtras = extrasTrip.split(",");
+            String[] tempExtras = getView().getTripArguments().split(",");
             String[] extrasTripDeparture = tempExtras[INDEX_DEPARTURE_TRIP].split("_");
             String[] departureTripDate = extrasTripDeparture[INDEX_DATE_TRIP].split("-");
 
             /**
-             * Urutan trip setelah di split berdasarkan , dan _ :
-             * [0] = ID Airport Departure
-             * [1] = ID Airport Arrival
-             * [2] = Tanggal
-             *
-             * Tanggal setelah di split :
-             * [0] = tahun
-             * [1] = bulan (-1 karena bulan di kalender android mulai dari 0)
-             * [2] = hari
+             * tokopedia://flight/search?dest=CGK_DPS_2018-04-01,CGK_DPS_2018-05-01&a=1&c=1&i=1&s=1
              */
             actionGetAirportById(extrasTripDeparture[INDEX_ID_AIRPORT_DEPARTURE_TRIP], true);
             actionGetAirportById(extrasTripDeparture[INDEX_ID_AIRPORT_ARRIVAL_TRIP], false);
@@ -490,18 +477,17 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
             }
 
             // transform passenger count
-            tempExtras = extrasPassenger.split("-");
-            if (Integer.parseInt(tempExtras[INDEX_PASSENGER_CHILD]) > Integer.parseInt(tempExtras[INDEX_PASSENGER_ADULT]) || Integer.parseInt(tempExtras[INDEX_PASSENGER_INFANT]) > Integer.parseInt(tempExtras[INDEX_PASSENGER_ADULT])) {
+            if (Integer.parseInt(getView().getChildPassengerArguments()) > Integer.parseInt(getView().getAdultPassengerArguments()) || Integer.parseInt(getView().getInfantPassengerArguments()) > Integer.parseInt(getView().getAdultPassengerArguments())) {
                 getView().showApplinkErrorMessage(R.string.select_passenger_infant_greater_than_adult_error_message);
-            } else if (Integer.parseInt(tempExtras[INDEX_PASSENGER_CHILD]) + Integer.parseInt(tempExtras[INDEX_PASSENGER_ADULT]) > MAX_PASSENGER_VALUE) {
+            } else if (Integer.parseInt(getView().getChildPassengerArguments()) + Integer.parseInt(getView().getAdultPassengerArguments()) > MAX_PASSENGER_VALUE) {
                 getView().showApplinkErrorMessage(R.string.select_passenger_total_passenger_error_message);
             } else {
-                FlightPassengerViewModel flightPassengerViewModel = new FlightPassengerViewModel(Integer.parseInt(tempExtras[INDEX_PASSENGER_ADULT]), Integer.parseInt(tempExtras[INDEX_PASSENGER_CHILD]), Integer.parseInt(tempExtras[INDEX_PASSENGER_INFANT]));
+                FlightPassengerViewModel flightPassengerViewModel = new FlightPassengerViewModel(Integer.parseInt(getView().getAdultPassengerArguments()), Integer.parseInt(getView().getChildPassengerArguments()), Integer.parseInt(getView().getInfantPassengerArguments()));
                 onFlightPassengerChange(flightPassengerViewModel);
             }
 
             // transform class
-            int classId = Integer.parseInt(extrasClass);
+            int classId = Integer.parseInt(getView().getClassArguments());
             actionGetClassById(classId);
 
         } catch (Exception e) {

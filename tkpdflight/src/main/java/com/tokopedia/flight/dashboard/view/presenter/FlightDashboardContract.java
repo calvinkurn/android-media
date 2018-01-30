@@ -68,7 +68,11 @@ public interface FlightDashboardContract {
 
         String getTripArguments();
 
-        String getPassengerArguments();
+        String getAdultPassengerArguments();
+
+        String getChildPassengerArguments();
+
+        String getInfantPassengerArguments();
 
         String getClassArguments();
     }
