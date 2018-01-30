@@ -61,7 +61,7 @@ import com.tokopedia.digital.common.data.repository.DigitalCategoryRepository;
 import com.tokopedia.digital.common.data.repository.IDigitalCategoryRepository;
 import com.tokopedia.digital.common.data.source.CategoryDetailDataSource;
 import com.tokopedia.digital.common.data.source.FavoriteListDataSource;
-import com.tokopedia.digital.common.domain.DigitalCategoryUseCase;
+import com.tokopedia.digital.common.domain.GetCategoryByIdUseCase;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.common.view.compoundview.ClientNumberInputView;
 import com.tokopedia.digital.product.data.mapper.USSDMapper;
@@ -284,13 +284,13 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                 new ProductDigitalInteractor(ussdCheckBalanceRepository
                 );
 
-        DigitalCategoryUseCase digitalCategoryUseCase = new DigitalCategoryUseCase(
+        GetCategoryByIdUseCase getCategoryByIdUseCase = new GetCategoryByIdUseCase(
                 getActivity(), digitalCategoryRepository
         );
 
         presenter = new ProductDigitalPresenter(getActivity(),
                 new LocalCacheHandler(getActivity(), TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER),
-                this, productDigitalInteractor, digitalCategoryUseCase);
+                this, productDigitalInteractor, getCategoryByIdUseCase);
     }
 
     @Override

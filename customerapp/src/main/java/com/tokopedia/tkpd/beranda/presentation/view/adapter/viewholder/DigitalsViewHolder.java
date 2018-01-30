@@ -13,6 +13,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.customView.WrapContentViewPager;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.common.data.repository.DigitalWidgetRepository;
@@ -76,9 +77,11 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
         DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
 
         StatusDataSource statusDataSource = new StatusDataSource(digitalEndpointService,
+                new GlobalCacheManager(),
                 new StatusMapper());
 
         CategoryListDataSource categoryListDataSource = new CategoryListDataSource(digitalEndpointService,
+                new GlobalCacheManager(),
                 new CategoryMapper());
 
         DigitalWidgetRepository digitalWidgetRepository = new DigitalWidgetRepository(

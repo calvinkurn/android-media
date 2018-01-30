@@ -16,6 +16,7 @@ import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
 import com.tokopedia.digital.common.data.repository.DigitalCategoryRepository;
 import com.tokopedia.digital.common.data.source.CategoryDetailDataSource;
+import com.tokopedia.digital.common.domain.GetCategoryByIdUseCase;
 import com.tokopedia.digital.product.domain.GetProductsByOperatorIdUseCase;
 import com.tokopedia.digital.product.view.adapter.ProductChooserAdapter;
 import com.tokopedia.digital.product.view.listener.IProductChooserView;
@@ -112,8 +113,12 @@ public class DigitalChooserProductFragment extends BasePresenterFragment<IProduc
                 categoryDetailDataSource, null
         );
 
+        GetCategoryByIdUseCase getCategoryByIdUseCase = new GetCategoryByIdUseCase(
+                getActivity(), digitalCategoryRepository
+        );
+
         GetProductsByOperatorIdUseCase getProductsByOperatorIdUseCase = new GetProductsByOperatorIdUseCase(
-                digitalCategoryRepository
+                getCategoryByIdUseCase
         );
 
         presenter = new ProductChooserPresenter(this, getProductsByOperatorIdUseCase);

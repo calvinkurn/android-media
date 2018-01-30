@@ -38,10 +38,8 @@ import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
 import com.tokopedia.digital.common.data.repository.DigitalCategoryRepository;
 import com.tokopedia.digital.common.data.repository.IDigitalCategoryRepository;
 import com.tokopedia.digital.common.data.source.CategoryDetailDataSource;
-import com.tokopedia.digital.common.data.source.FavoriteListDataSource;
-import com.tokopedia.digital.common.domain.DigitalCategoryUseCase;
+import com.tokopedia.digital.common.domain.GetCategoryByIdUseCase;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
-import com.tokopedia.digital.product.data.mapper.USSDMapper;
 import com.tokopedia.digital.product.view.activity.DigitalChooserActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.digital.product.view.model.CategoryData;
@@ -57,7 +55,6 @@ import com.tokopedia.digital.tokocash.interactor.TokoCashBalanceInteractor;
 import com.tokopedia.digital.tokocash.listener.TopUpTokoCashListener;
 import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashBalanceData;
 import com.tokopedia.digital.tokocash.presenter.TopUpTokocashPresenter;
-import com.tokopedia.digital.widget.data.mapper.FavoriteNumberListDataMapper;
 
 import java.util.List;
 
@@ -153,10 +150,10 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
                 categoryDetailDataSource, null
         );
 
-        DigitalCategoryUseCase digitalCategoryUseCase = new DigitalCategoryUseCase(this,
+        GetCategoryByIdUseCase getCategoryByIdUseCase = new GetCategoryByIdUseCase(this,
                 digitalCategoryRepository);
 
-        presenter = new TopUpTokocashPresenter(getApplicationContext(), digitalCategoryUseCase,
+        presenter = new TopUpTokocashPresenter(getApplicationContext(), getCategoryByIdUseCase,
                 balanceInteractor, this);
     }
 

@@ -27,7 +27,7 @@ import rx.functions.Func2;
  * @author rizkyfadillah on 19/01/18.
  */
 
-public class DigitalCategoryUseCase extends UseCase<ProductDigitalData> {
+public class GetCategoryByIdUseCase extends UseCase<ProductDigitalData> {
 
     private final String PARAM_CATEGORY_ID = "category_id";
     private final String PARAM_SORT = "sort";
@@ -35,7 +35,7 @@ public class DigitalCategoryUseCase extends UseCase<ProductDigitalData> {
     private Context context;
     private IDigitalCategoryRepository digitalCategoryRepository;
 
-    public DigitalCategoryUseCase(Context context, IDigitalCategoryRepository digitalCategoryRepository) {
+    public GetCategoryByIdUseCase(Context context, IDigitalCategoryRepository digitalCategoryRepository) {
         this.context = context;
         this.digitalCategoryRepository = digitalCategoryRepository;
     }
@@ -52,7 +52,7 @@ public class DigitalCategoryUseCase extends UseCase<ProductDigitalData> {
         paramQueryFavoriteList.put(PARAM_SORT, sort);
 
         return Observable.zip(
-                digitalCategoryRepository.getCategoryFromCloud(categoryId, getGeneratedAuthParamNetwork(paramQueryCategory)),
+                digitalCategoryRepository.getCategory(categoryId, getGeneratedAuthParamNetwork(paramQueryCategory)),
                 getFavoriteList(getGeneratedAuthParamNetwork(paramQueryFavoriteList)),
                 getZipFunctionProductDigitalData());
     }

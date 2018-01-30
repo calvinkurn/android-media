@@ -12,7 +12,7 @@ import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.digital.common.domain.DigitalCategoryUseCase;
+import com.tokopedia.digital.common.domain.GetCategoryByIdUseCase;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.view.model.ProductDigitalData;
 import com.tokopedia.digital.tokocash.errorhandle.ResponseTokoCashRuntimeException;
@@ -41,15 +41,15 @@ public class TopUpTokocashPresenter implements ITopUpTokocashPresenter {
     private SessionHandler sessionHandler;
     private Context context;
 
-    private DigitalCategoryUseCase digitalCategoryUseCase;
+    private GetCategoryByIdUseCase getCategoryByIdUseCase;
     private final ITokoCashBalanceInteractor balanceInteractor;
     private final TopUpTokoCashListener view;
 
     public TopUpTokocashPresenter(Context context,
-                                  DigitalCategoryUseCase digitalCategoryUseCase,
+                                  GetCategoryByIdUseCase getCategoryByIdUseCase,
                                   ITokoCashBalanceInteractor balanceInteractor,
                                   TopUpTokoCashListener view) {
-        this.digitalCategoryUseCase = digitalCategoryUseCase;
+        this.getCategoryByIdUseCase = getCategoryByIdUseCase;
         this.balanceInteractor = balanceInteractor;
         this.view = view;
         this.context = context;
@@ -58,8 +58,8 @@ public class TopUpTokocashPresenter implements ITopUpTokocashPresenter {
 
     @Override
     public void processGetCategoryTopUp() {
-        digitalCategoryUseCase.execute(
-                digitalCategoryUseCase.createRequestParam(TOPUP_CATEGORY_ID, null),
+        getCategoryByIdUseCase.execute(
+                getCategoryByIdUseCase.createRequestParam(TOPUP_CATEGORY_ID, null),
                 getSubscriberProductDigitalData()
         );
     }

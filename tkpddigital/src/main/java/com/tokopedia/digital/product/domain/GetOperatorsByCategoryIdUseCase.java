@@ -1,12 +1,10 @@
 package com.tokopedia.digital.product.domain;
 
-import android.content.Context;
-
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.common.data.repository.DigitalCategoryRepository;
+import com.tokopedia.digital.common.domain.GetCategoryByIdUseCase;
 import com.tokopedia.digital.product.view.model.CategoryData;
 import com.tokopedia.digital.product.view.model.Operator;
+import com.tokopedia.digital.product.view.model.ProductDigitalData;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -23,21 +21,21 @@ public class GetOperatorsByCategoryIdUseCase extends UseCase<List<Operator>> {
 
     private final String PARAM_CATEGORY_ID = "category_id";
 
-    private DigitalCategoryRepository digitalCategoryRepository;
+    private GetCategoryByIdUseCase getCategoryByIdUseCase;
 
-    public GetOperatorsByCategoryIdUseCase(DigitalCategoryRepository digitalCategoryRepository) {
-        this.digitalCategoryRepository = digitalCategoryRepository;
+    public GetOperatorsByCategoryIdUseCase(GetCategoryByIdUseCase getCategoryByIdUseCase) {
+        this.getCategoryByIdUseCase = getCategoryByIdUseCase;
     }
 
     @Override
     public Observable<List<Operator>> createObservable(RequestParams requestParams) {
         String categoryId = requestParams.getString(PARAM_CATEGORY_ID, "");
 
-        return digitalCategoryRepository.getCategoryFromLocal(categoryId)
-                .map(new Func1<CategoryData, List<Operator>>() {
+        return getCategoryByIdUseCase.createObservable(getCategoryByIdUseCase.createRequestParam(categoryId, null))
+                .map(new Func1<ProductDigitalData, List<Operator>>() {
                     @Override
-                    public List<Operator> call(CategoryData categoryData) {
-                        return categoryData.getOperatorList();
+                    public List<Operator> call(ProductDigitalData productDigitalData) {
+                        return productDigitalData.getCategoryData().getOperatorList();
                     }
                 });
     }

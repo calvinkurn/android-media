@@ -33,7 +33,7 @@ import com.tokopedia.digital.common.data.repository.DigitalCategoryRepository;
 import com.tokopedia.digital.common.data.repository.IDigitalCategoryRepository;
 import com.tokopedia.digital.common.data.source.CategoryDetailDataSource;
 import com.tokopedia.digital.common.data.source.FavoriteListDataSource;
-import com.tokopedia.digital.common.domain.DigitalCategoryUseCase;
+import com.tokopedia.digital.common.domain.GetCategoryByIdUseCase;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.view.model.CategoryData;
 import com.tokopedia.digital.product.view.model.ClientNumber;
@@ -131,14 +131,14 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
         IDigitalCategoryRepository digitalRepository = new DigitalCategoryRepository(
                 categoryDetailDataSource, favoriteListDataSource
         );
-        DigitalCategoryUseCase digitalCategoryUseCase = new DigitalCategoryUseCase(
+        GetCategoryByIdUseCase getCategoryByIdUseCase = new GetCategoryByIdUseCase(
                 getContext(), digitalRepository
         );
 
         presenter = new DigitalWidgetPresenter(getActivity(),
                 new LocalCacheHandler(getActivity(), TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER),
                 this,
-                digitalCategoryUseCase);
+                getCategoryByIdUseCase);
     }
 
     @Override
@@ -246,6 +246,72 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
     public void onOperatorChooserStyle3Clicked(List<Operator> operatorListData, String titleChooser) {
 
     }
+
+    private void handleCallbackSearchNumber(OrderClientNumber orderClientNumber) {
+        if (orderClientNumber != null) {
+            UnifyTracking.eventSelectNumberOnUserProfileNative(categoryDataState.getName());
+        }
+
+        if (categoryDataState.isSupportedStyle()) {
+            switch (categoryDataState.getOperatorStyle()) {
+                case CategoryData.STYLE_PRODUCT_CATEGORY_1 :
+                case CategoryData.STYLE_PRODUCT_CATEGORY_99 :
+                    handleStyle1(orderClientNumber);
+                    break;
+                case CategoryData.STYLE_PRODUCT_CATEGORY_2 :
+                case CategoryData.STYLE_PRODUCT_CATEGORY_3 :
+                case CategoryData.STYLE_PRODUCT_CATEGORY_4 :
+                case CategoryData.STYLE_PRODUCT_CATEGORY_5 :
+                    handleStyleOther(orderClientNumber);
+                    break;
+            }
+        }
+    }
+
+    private void handleStyleOther(OrderClientNumber orderClientNumber) {
+        Operator selectedOperator = null;
+        if (orderClientNumber.getOperatorId() != null) {
+            for (Operator operator : categoryDataState.getOperatorList()) {
+                if (orderClientNumber.getOperatorId().equals(operator.getOperatorId())) {
+                    selectedOperator = operator;
+                    digitalProductView.renderUpdateOperatorSelected(operator);
+                }
+            }
+        }
+
+        digitalProductView.renderClientNumber(orderClientNumber.getClientNumber());
+        digitalProductView.clearFocusOnClientNumber();
+
+        if (selectedOperator != null) {
+            for (Product product : selectedOperator.getProductList()) {
+                if (orderClientNumber.getProductId() != null) {
+                    if (orderClientNumber.getProductId().equals(product.getProductId())) {
+                        digitalProductView.renderUpdateProductSelected(product);
+                    }
+                }
+            }
+        }
+    }
+
+    private void handleStyle1(OrderClientNumber orderClientNumber) {
+        digitalProductView.renderClientNumber(orderClientNumber.getClientNumber());
+        digitalProductView.clearFocusOnClientNumber();
+
+        if (orderClientNumber.getOperatorId() != null) {
+            for (Operator operator : categoryDataState.getOperatorList()) {
+                if (orderClientNumber.getOperatorId().equals(operator.getOperatorId())) {
+                    for (Product product : operator.getProductList()) {
+                        if (orderClientNumber.getProductId() != null) {
+                            if (orderClientNumber.getProductId().equals(product.getProductId())) {
+                                digitalProductView.renderUpdateProductSelected(product);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 
     @Override
     public void onButtonContactPickerClicked() {

@@ -38,8 +38,6 @@ public class CategoryDetailDataSource {
     }
 
     public Observable<CategoryData> getCategory(String categoryId, TKPDMapParam<String, String> param) {
-        // TODO: compare category version from api and db
-        // if different then fetch category data from api
         return Observable.concat(getDataFromLocal(categoryId), getDataFromCloud(categoryId, param))
                 .first(new Func1<CategoryData, Boolean>() {
                     @Override
@@ -49,7 +47,7 @@ public class CategoryDetailDataSource {
                 });
     }
 
-    public Observable<CategoryData> getDataFromLocal(String categoryId) {
+    private Observable<CategoryData> getDataFromLocal(String categoryId) {
         CategoryData categoryData = CacheUtil.convertStringToModel(
                 globalCacheManager.getValueString(TkpdCache.Key.DIGITAL_CATEGORY_DETAIL + "/" + categoryId),
                 new TypeToken<CategoryData>() {
@@ -64,9 +62,8 @@ public class CategoryDetailDataSource {
                 });
     }
 
-    public Observable<CategoryData> getDataFromCloud(String categoryId, TKPDMapParam<String, String> param) {
-        return digitalEndpointService.getApi()
-                .getCategory(categoryId, param)
+    private Observable<CategoryData> getDataFromCloud(String categoryId, TKPDMapParam<String, String> param) {
+        return digitalEndpointService.getApi().getCategory(categoryId, param)
                 .map(getFuncTransformCategoryData())
                 .doOnNext(saveToCache(categoryId));
     }

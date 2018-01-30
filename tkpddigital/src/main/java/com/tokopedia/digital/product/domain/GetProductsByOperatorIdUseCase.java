@@ -1,13 +1,11 @@
 package com.tokopedia.digital.product.domain;
 
-import android.content.Context;
-
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.common.data.repository.DigitalCategoryRepository;
+import com.tokopedia.digital.common.domain.GetCategoryByIdUseCase;
 import com.tokopedia.digital.product.view.model.CategoryData;
 import com.tokopedia.digital.product.view.model.Operator;
 import com.tokopedia.digital.product.view.model.Product;
+import com.tokopedia.digital.product.view.model.ProductDigitalData;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -25,10 +23,10 @@ public class GetProductsByOperatorIdUseCase extends UseCase<List<Product>> {
     private final String PARAM_CATEGORY_ID = "category_id";
     private final String PARAM_OPERATOR_ID = "operator_id";
 
-    private DigitalCategoryRepository digitalCategoryRepository;
+    private GetCategoryByIdUseCase getCategoryByIdUseCase;
 
-    public GetProductsByOperatorIdUseCase(DigitalCategoryRepository digitalCategoryRepository) {
-        this.digitalCategoryRepository = digitalCategoryRepository;
+    public GetProductsByOperatorIdUseCase(GetCategoryByIdUseCase getCategoryByIdUseCase) {
+        this.getCategoryByIdUseCase = getCategoryByIdUseCase;
     }
 
     @Override
@@ -36,11 +34,11 @@ public class GetProductsByOperatorIdUseCase extends UseCase<List<Product>> {
         String categoryId = requestParams.getString(PARAM_CATEGORY_ID, "");
         final String operatorId = requestParams.getString(PARAM_OPERATOR_ID, "");
 
-        return digitalCategoryRepository.getCategoryFromLocal(categoryId)
-                .flatMapIterable(new Func1<CategoryData, Iterable<Operator>>() {
+        return getCategoryByIdUseCase.createObservable(getCategoryByIdUseCase.createRequestParam(categoryId, null))
+                .flatMapIterable(new Func1<ProductDigitalData, Iterable<Operator>>() {
                     @Override
-                    public Iterable<Operator> call(CategoryData categoryData) {
-                        return categoryData.getOperatorList();
+                    public Iterable<Operator> call(ProductDigitalData productDigitalData) {
+                        return productDigitalData.getCategoryData().getOperatorList();
                     }
                 })
                 .filter(new Func1<Operator, Boolean>() {

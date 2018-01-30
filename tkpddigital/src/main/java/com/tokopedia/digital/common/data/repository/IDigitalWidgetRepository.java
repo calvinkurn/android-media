@@ -15,6 +15,6 @@ public interface IDigitalWidgetRepository {
 
     Observable<Status> getObservableStatus();
 
-    Observable<List<Category>> getObservableCategoryData();
+    Observable<List<Category>> getObservableCategoryList();
 
 }

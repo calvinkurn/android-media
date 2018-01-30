@@ -45,7 +45,7 @@ public class DigitalWidgetUseCase extends UseCase<List<Category>> {
                             List<Category> categories = new ArrayList<>();
                             return Observable.just(categories);
                         } else {
-                            return digitalWidgetRepository.getObservableCategoryData();
+                            return digitalWidgetRepository.getObservableCategoryList();
                         }
                     }
                 });

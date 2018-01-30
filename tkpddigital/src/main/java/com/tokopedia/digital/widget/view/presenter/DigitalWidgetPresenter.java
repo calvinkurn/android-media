@@ -5,7 +5,7 @@ import android.text.TextUtils;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.digital.common.domain.DigitalCategoryUseCase;
+import com.tokopedia.digital.common.domain.GetCategoryByIdUseCase;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.common.view.presenter.BaseDigitalPresenter;
 import com.tokopedia.digital.product.view.model.CategoryData;
@@ -31,21 +31,21 @@ public class DigitalWidgetPresenter extends BaseDigitalPresenter implements IDig
 
     private Context context;
     private IDigitalWidgetView digitalWidgetView;
-    private DigitalCategoryUseCase digitalCategoryUseCase;
+    private GetCategoryByIdUseCase getCategoryByIdUseCase;
 
     public DigitalWidgetPresenter(Context context,
                                   LocalCacheHandler localCacheHandler,
                                   IDigitalWidgetView digitalWidgetView,
-                                  DigitalCategoryUseCase digitalCategoryUseCase) {
+                                  GetCategoryByIdUseCase getCategoryByIdUseCase) {
         super(context, localCacheHandler);
         this.context = context;
         this.digitalWidgetView = digitalWidgetView;
-        this.digitalCategoryUseCase = digitalCategoryUseCase;
+        this.getCategoryByIdUseCase = getCategoryByIdUseCase;
     }
 
     @Override
     public void fetchCategory(String categoryId) {
-        digitalCategoryUseCase.execute(digitalCategoryUseCase.createRequestParam(
+        getCategoryByIdUseCase.execute(getCategoryByIdUseCase.createRequestParam(
                 categoryId, PARAM_VALUE_SORT
         ), new Subscriber<ProductDigitalData>() {
             @Override
@@ -108,7 +108,7 @@ public class DigitalWidgetPresenter extends BaseDigitalPresenter implements IDig
 
     @Override
     public void detachView() {
-        digitalCategoryUseCase.unsubscribe();
+        getCategoryByIdUseCase.unsubscribe();
     }
 
 }

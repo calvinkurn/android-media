@@ -25,6 +25,7 @@ import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
 import com.tokopedia.digital.common.data.repository.DigitalCategoryRepository;
 import com.tokopedia.digital.common.data.source.CategoryDetailDataSource;
+import com.tokopedia.digital.common.domain.GetCategoryByIdUseCase;
 import com.tokopedia.digital.product.domain.GetOperatorsByCategoryIdUseCase;
 import com.tokopedia.digital.product.view.adapter.OperatorChooserAdapter;
 import com.tokopedia.digital.product.view.listener.IOperatorChooserView;
@@ -84,7 +85,7 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment<IOpera
     }
 
     public static Fragment newInstance(String categoryId, String operatorStyleView,
-                                        String operatorLabel, String categoryName) {
+                                       String operatorLabel, String categoryName) {
         Bundle bundle = new Bundle();
         bundle.putString(ARG_PARAM_CATEGORY_ID, categoryId);
         bundle.putString(ARG_PARAM_OPERATOR_STYLE_VIEW, operatorStyleView);
@@ -142,8 +143,12 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment<IOpera
                 categoryDetailDataSource, null
         );
 
+        GetCategoryByIdUseCase getCategoryByIdUseCase = new GetCategoryByIdUseCase(
+                getActivity(), digitalCategoryRepository
+        );
+
         GetOperatorsByCategoryIdUseCase getOperatorsByCategoryIdUseCase = new GetOperatorsByCategoryIdUseCase(
-                digitalCategoryRepository
+                getCategoryByIdUseCase
         );
 
         presenter = new OperatorChooserPresenter(this, getOperatorsByCategoryIdUseCase);

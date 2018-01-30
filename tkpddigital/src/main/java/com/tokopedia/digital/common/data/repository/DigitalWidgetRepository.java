@@ -30,7 +30,7 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
     }
 
     @Override
-    public Observable<List<Category>> getObservableCategoryData() {
+    public Observable<List<Category>> getObservableCategoryList() {
         return categoryListDataSource.getCategoryList();
     }
 

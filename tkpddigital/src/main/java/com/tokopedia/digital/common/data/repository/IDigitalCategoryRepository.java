@@ -14,10 +14,6 @@ public interface IDigitalCategoryRepository {
 
     Observable<CategoryData> getCategory(String categoryId, TKPDMapParam<String, String> param);
 
-    Observable<CategoryData> getCategoryFromCloud(String categoryId, TKPDMapParam<String, String> param);
-
-    Observable<CategoryData> getCategoryFromLocal(String categoryId);
-
     Observable<DigitalNumberList> getFavoriteList(TKPDMapParam<String, String> param);
 
 }
