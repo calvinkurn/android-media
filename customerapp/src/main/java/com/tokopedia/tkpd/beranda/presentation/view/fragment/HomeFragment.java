@@ -61,6 +61,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.digital.tokocash.model.CashBackData;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
+import com.tokopedia.home.explore.view.activity.ExploreActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.beranda.di.DaggerHomeComponent;
 import com.tokopedia.tkpd.beranda.di.HomeComponent;
@@ -472,7 +473,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void openShop() {
-        onGoToSell();
+//        onGoToSell();
+        startActivity(new Intent(getActivity(), ExploreActivity.class));
     }
 
     @Override

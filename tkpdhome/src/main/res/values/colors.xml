@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black_70">#b3000000</color>
+    <color name="tab_indicator_beli">#42b549</color>
+    <color name="tab_indicator_bayar">#f7bf40</color>
+    <color name="tab_indicator_pesan">#ff5722</color>
+    <color name="tab_indicator_ajukan">#70c7d3</color>
+    <color name="tab_indicator_jual">#42b549</color>
+    <color name="tab_text_unselected">#60000000</color>
+</resources>
