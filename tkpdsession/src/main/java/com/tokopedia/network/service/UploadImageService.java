@@ -1,7 +1,7 @@
-package com.tokopedia.core.network.apiservices.accounts;
+package com.tokopedia.network.service;
 
-import com.tokopedia.core.network.apiservices.accounts.apis.UploadImageApi;
 import com.tokopedia.core.network.retrofit.services.AuthService;
+import com.tokopedia.network.SessionUrl;
 
 import retrofit2.Retrofit;
 
@@ -17,7 +17,7 @@ public class UploadImageService extends AuthService<UploadImageApi> {
 
     @Override
     protected String getBaseUrl() {
-        return "https://accounts.tokopedia.com/";
+        return SessionUrl.ACCOUNTS_DOMAIN;
     }
 
     @Override
