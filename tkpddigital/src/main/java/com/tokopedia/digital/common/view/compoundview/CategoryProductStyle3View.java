@@ -19,6 +19,7 @@ import com.tokopedia.digital.product.view.compoundview.DigitalOperatorChooserVie
 import com.tokopedia.digital.product.view.compoundview.DigitalProductChooserView;
 import com.tokopedia.digital.product.view.compoundview.ProductAdditionalInfoView;
 import com.tokopedia.digital.product.view.model.CategoryData;
+import com.tokopedia.digital.product.view.model.ClientNumber;
 import com.tokopedia.digital.product.view.model.HistoryClientNumber;
 import com.tokopedia.digital.product.view.model.Operator;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
@@ -427,17 +428,24 @@ public class CategoryProductStyle3View extends
             }
 
             @Override
-            public void onClientNumberHasFocus(String clientNumber) {
-                actionListener.onClientNumberClicked(clientNumber,
-                        operatorSelected.getClientNumberList().get(0),
+            public void onClientNumberHasFocus(String number) {
+                ClientNumber clientNumber = null;
+                if (!operatorSelected.getClientNumberList().isEmpty()) {
+                    clientNumber = operatorSelected.getClientNumberList().get(0);
+                }
+                actionListener.onClientNumberClicked(number,
+                        clientNumber,
                         historyClientNumber.getRecentClientNumberList());
             }
 
             @Override
             public void onClientNumberCleared() {
-                actionListener.onClientNumberCleared(operatorSelected.getClientNumberList().get(0),
-                        historyClientNumber.getRecentClientNumberList());
-            }
+                ClientNumber clientNumber = null;
+                if (!operatorSelected.getClientNumberList().isEmpty()) {
+                    clientNumber = operatorSelected.getClientNumberList().get(0);
+                }
+                actionListener.onClientNumberCleared(clientNumber,
+                        historyClientNumber.getRecentClientNumberList());            }
 
             @Override
             public void onItemAutocompletedSelected(OrderClientNumber orderClientNumber) {
