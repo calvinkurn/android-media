@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.home.R;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.explore.domain.model.CategoryLayoutRowModel;
+import com.tokopedia.home.explore.listener.CategoryListener;
 import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryGridListViewModel;
 
 import java.util.ArrayList;
@@ -38,12 +40,14 @@ public class CategoryGridListViewHolder extends AbstractViewHolder<CategoryGridL
     private ItemAdapter adapter;
     private int spanCount = 2;
     private int limitItem = 6;
+    private CategoryListener listener;
     private List<CategoryLayoutRowModel> rowModelList = new ArrayList<>();
 
-    public CategoryGridListViewHolder(View itemView) {
+    public CategoryGridListViewHolder(View itemView, CategoryListener listener) {
         super(itemView);
         titleTxt = itemView.findViewById(R.id.title);
         recyclerView = itemView.findViewById(R.id.list);
+        this.listener = listener;
         this.context = itemView.getContext();
         adapter = new ItemAdapter(context);
         recyclerView.setLayoutManager(new GridLayoutManager(context, spanCount,
@@ -86,14 +90,11 @@ public class CategoryGridListViewHolder extends AbstractViewHolder<CategoryGridL
             holder.container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-//                    ((AbstractionRouter) getActivity().getApplication()).actionApplinkFromActivity(getActivity()
-//                            , url);
-//                    DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
                     if (rowModel.getType().equalsIgnoreCase(MARKETPLACE)) {
                         listener.onMarketPlaceItemClicked(rowModel, getAdapterPosition(), position);
                     } else if (rowModel.getType().equalsIgnoreCase(DIGITAL)) {
                         listener.onDigitalItemClicked(rowModel, getAdapterPosition(), position);
-                    } else if (!TextUtils.isEmpty(rowModel.getApplinks()) && deepLinkDelegate.supportsUri(rowModel.getApplinks())) {
+                    } else if (!TextUtils.isEmpty(rowModel.getApplinks())) {
                         listener.onApplinkClicked(rowModel, getAdapterPosition(), position);
                     } else {
                         listener.onGimickItemClicked(rowModel, getAdapterPosition(), position);

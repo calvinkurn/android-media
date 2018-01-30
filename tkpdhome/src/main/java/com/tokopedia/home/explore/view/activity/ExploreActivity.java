@@ -1,5 +1,9 @@
 package com.tokopedia.home.explore.view.activity;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -12,9 +16,26 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.core.home.BannerWebView;
+import com.tokopedia.core.home.SimpleWebViewActivity;
+import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
+import com.tokopedia.home.explore.domain.model.CategoryLayoutRowModel;
+import com.tokopedia.home.explore.listener.CategoryListener;
 import com.tokopedia.home.explore.view.fragment.ExploreFragment;
+import com.tokopedia.home.explore.view.presentation.ExploreContract;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ExploreActivity extends BaseTabActivity {
 
@@ -105,4 +126,6 @@ public class ExploreActivity extends BaseTabActivity {
     protected int getPageLimit() {
         return 3;
     }
+
+
 }

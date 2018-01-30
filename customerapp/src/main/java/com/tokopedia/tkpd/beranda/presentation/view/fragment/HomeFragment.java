@@ -393,7 +393,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onDigitalItemClicked(CategoryLayoutRowModel data, int parentPosition, int childPosition) {
         presenter.onDigitalItemClicked(data, parentPosition, childPosition);
-
     }
 
     @Override
