@@ -67,26 +67,42 @@ public class ShipmentDetailPresenter extends BaseDaggerPresenter<IShipmentDetail
     public void loadShipmentData() {
         shipmentDetailData = DummyCreator.createDummyInstantShipmentDetailData();
         getView().renderInstantShipment(shipmentDetailData);
-//        getView().renderSameDayShipment(DummyCreator.createDummySameDayShipmentDetailData());
-//        getView().renderNextDayShipment(DummyCreator.createDummyNextDayShipmentDetailData());
-//        getView().renderRegularShipment(DummyCreator.createDummyRegularShipmentDetailData());
-//        getView().renderKargoShipment(DummyCreator.createDummyKargoShipmentDetailData());
+
+//        shipmentDetailData = DummyCreator.createDummySameDayShipmentDetailData();
+//        getView().renderSameDayShipment(shipmentDetailData);
+
+//        shipmentDetailData = DummyCreator.createDummyNextDayShipmentDetailData();
+//        getView().renderNextDayShipment(shipmentDetailData);
+
+//        shipmentDetailData = DummyCreator.createDummyRegularShipmentDetailData();
+//        getView().renderRegularShipment(shipmentDetailData);
+
+//        shipmentDetailData = DummyCreator.createDummyKargoShipmentDetailData();
+//        getView().renderKargoShipment(shipmentDetailData);
     }
 
     @Override
     public void loadFirstThreeCourier() {
+        chooseSelectedCourier(selectedCourier);
         getView().showFirstThreeCouriers(couriers.subList(0, 3));
     }
 
     @Override
     public void loadAllCourier() {
-        for (int i = 3; i < couriers.size(); i++) {
-            couriers.get(i).setSelected(false);
-            if (i == 3) {
-                getView().disableInsuranceView();
+        chooseSelectedCourier(selectedCourier);
+        getView().showAllCouriers(couriers);
+    }
+
+    private void chooseSelectedCourier(CourierItemData currentCourier) {
+        if (currentCourier != null) {
+            for (int i = 0; i < couriers.size(); i++) {
+                if (couriers.get(i).getId().equals(currentCourier.getId())) {
+                    couriers.get(i).setSelected(true);
+                } else {
+                    couriers.get(i).setSelected(false);
+                }
             }
         }
-        getView().showAllCouriers(couriers);
     }
 
     @Override
@@ -107,14 +123,14 @@ public class ShipmentDetailPresenter extends BaseDaggerPresenter<IShipmentDetail
         private static ShipmentDetailData createDummyInstantShipmentDetailData() {
             ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
             shipmentDetailData.setId(ID);
-            shipmentDetailData.setAddress(ADDRESS);
-            shipmentDetailData.setLatitude(LATITUDE);
-            shipmentDetailData.setLongitude(LONGITUDE);
+//            shipmentDetailData.setAddress(ADDRESS);
+//            shipmentDetailData.setLatitude(LATITUDE);
+//            shipmentDetailData.setLongitude(LONGITUDE);
             shipmentDetailData.setDropshipperInfo("Dropshipper Bottomsheet Info");
             shipmentDetailData.setPartialOrderInfo("Partial Order Bottomsheet Info");
             shipmentDetailData.setShipmentInfo("Kurir toko adalah layanan pengiriman dengan menggunakan kurir dari toko terkait");
             shipmentDetailData.setShipmentItemData(ShipmentChoicePresenter.DummyCreator.createDummyShipmentChoices());
-            shipmentDetailData.setDeliveryPriceTotal("Rp 299.000");
+//            shipmentDetailData.setDeliveryPriceTotal("Rp 299.000");
 
             return shipmentDetailData;
         }
@@ -125,7 +141,11 @@ public class ShipmentDetailPresenter extends BaseDaggerPresenter<IShipmentDetail
             shipmentDetailData.setAddress(ADDRESS);
             shipmentDetailData.setLatitude(LATITUDE);
             shipmentDetailData.setLongitude(LONGITUDE);
+            shipmentDetailData.setDropshipperInfo("Dropshipper Bottomsheet Info");
+            shipmentDetailData.setPartialOrderInfo("Partial Order Bottomsheet Info");
+            shipmentDetailData.setShipmentInfo("Kurir toko adalah layanan pengiriman dengan menggunakan kurir dari toko terkait");
             shipmentDetailData.setShipmentItemData(ShipmentChoicePresenter.DummyCreator.createDummyShipmentChoices());
+            shipmentDetailData.setDeliveryPriceTotal("Rp 299.000");
 
             return shipmentDetailData;
         }

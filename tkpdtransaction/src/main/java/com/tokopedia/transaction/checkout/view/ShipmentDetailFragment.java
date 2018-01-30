@@ -154,6 +154,10 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
     TextView tvDeliveryFeeTotal;
     @BindView(R2.id.tv_additional_fee)
     TextView tvAdditionalFee;
+    @BindView(R2.id.v_no_pinpoint_layer)
+    View vNoPinpointLayer;
+    @BindView(R2.id.ll_shipment_address)
+    LinearLayout llShipmentAddress;
 
     private CourierChoiceAdapter courierChoiceAdapter;
     private IShipmentDetailPresenter presenter;
@@ -332,7 +336,6 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
         setupRecyclerView(couriers);
         tvShowOtherCouriers.setText(R.string.label_hide_other_couriers);
         ivChevron.setImageResource(R.drawable.chevron_thin_up);
-        disableInsuranceView();
     }
 
     private void setupRecyclerView(List<CourierItemData> couriers) {
@@ -344,16 +347,20 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
     }
 
     private void renderNoPinpoint() {
+        llShipmentAddress.setVisibility(View.GONE);
         btChangePinpoint.setVisibility(View.GONE);
         btChoosePinpoint.setVisibility(View.VISIBLE);
         tvNoPonpointInformation.setVisibility(View.VISIBLE);
-        flPinpointMap.setBackgroundColor(Color.parseColor("#bbbdbdbd"));
+        vNoPinpointLayer.setVisibility(View.VISIBLE);
+        flPinpointMap.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.background_no_pinpoint));
     }
 
     private void renderPinpoint() {
+        llShipmentAddress.setVisibility(View.VISIBLE);
         btChoosePinpoint.setVisibility(View.GONE);
         tvNoPonpointInformation.setVisibility(View.GONE);
         btChangePinpoint.setVisibility(View.VISIBLE);
+        vNoPinpointLayer.setVisibility(View.GONE);
         flPinpointMap.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.transparent));
     }
 
@@ -367,7 +374,12 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
 
     private void setGoogleMap(GoogleMap googleMap, ShipmentDetailData shipmentDetailData) {
         if (googleMap != null) {
-            LatLng latLng = new LatLng(shipmentDetailData.getLatitude(), shipmentDetailData.getLongitude());
+            LatLng latLng;
+            if (shipmentDetailData.getLatitude() == null || shipmentDetailData.getLongitude() == null) {
+                latLng = new LatLng(-6.1754, 106.8272);
+            } else {
+                latLng = new LatLng(shipmentDetailData.getLatitude(), shipmentDetailData.getLongitude());
+            }
 
             googleMap.getUiSettings().setMapToolbarEnabled(false);
             googleMap.addMarker(new MarkerOptions().position(latLng)
@@ -532,12 +544,6 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
                 switchInsurance.setChecked(true);
             }
         }
-    }
-
-    @Override
-    public void disableInsuranceView() {
-        switchInsurance.setVisibility(View.GONE);
-        tvSpecialInsuranceCondition.setVisibility(View.VISIBLE);
     }
 
     @Override
