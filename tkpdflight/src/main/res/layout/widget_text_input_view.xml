@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center_vertical"
+    android:descendantFocusability="blocksDescendants"
     android:orientation="horizontal">
 
     <android.support.v7.widget.AppCompatImageView
@@ -22,7 +23,7 @@
 
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/edit_text"
-            android:layout_width="match_parent"
-            style="@style/TextView.Small"/>
+            style="@style/TextView.Small"
+            android:layout_width="match_parent" />
     </com.tokopedia.design.text.TkpdHintTextInputLayout>
 </LinearLayout>

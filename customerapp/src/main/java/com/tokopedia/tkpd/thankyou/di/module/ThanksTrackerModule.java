@@ -51,8 +51,8 @@ public class ThanksTrackerModule {
 
     @Provides
     @ThanksTrackerScope
-    DigitalTrackerMapper digitalTrackerMapper(Gson gson) {
-        return new DigitalTrackerMapper(gson);
+    DigitalTrackerMapper digitalTrackerMapper(SessionHandler sessionHandler) {
+        return new DigitalTrackerMapper(sessionHandler);
     }
 
     @Provides
@@ -69,8 +69,8 @@ public class ThanksTrackerModule {
 
     @Provides
     @ThanksTrackerScope
-    MarketplaceTrackerMapper provideMarketplaceTrackerMapper(Gson gson) {
-        return new MarketplaceTrackerMapper(gson);
+    MarketplaceTrackerMapper provideMarketplaceTrackerMapper(SessionHandler sessionHandler) {
+        return new MarketplaceTrackerMapper(sessionHandler);
     }
 
     @Provides

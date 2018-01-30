@@ -1,7 +1,6 @@
 package com.tokopedia.seller.shopsettings.edit.utils;
 
 import android.os.AsyncTask;
-import android.os.Environment;
 
 import com.tokopedia.core.database.model.PictureDB;
 import com.tokopedia.core.myproduct.model.GenerateHostModel;
@@ -54,7 +53,7 @@ public class UploadPhotoShopTask extends AsyncTask<byte[], String, String> {
     @Override
     protected String doInBackground(byte[]... jpeg) {
 //        File photo=new File(Environment.getExternalStorageDirectory(), "image.jpg");// old
-        File photo = writeImageToTkpdPath(jpeg[0]);
+        File photo = FileUtils.writeImageToTkpdPath(jpeg[0]);
 
         //[START] save to db for images
         Pair<Integer, Integer> resolution = null;
@@ -70,33 +69,6 @@ public class UploadPhotoShopTask extends AsyncTask<byte[], String, String> {
         //[END] save to db for images
 
         return photo.getAbsolutePath();
-    }
-
-    /**
-     * Folder Path for upload is random, and generated everytime the function called
-     * use FileUtils.writeImageToTkpdPath instead
-     */
-    @Deprecated
-    public static File writeImageToTkpdPath(byte[] buffer) {
-        File directory = new File(FileUtils.getFolderPathForUpload(Environment.getExternalStorageDirectory().getAbsolutePath()));
-        if (!directory.exists()) {
-            directory.mkdirs();
-        }
-        File photo = new File(directory.getAbsolutePath() + "/image.jpg");
-
-        if (photo.exists()) {
-            photo.delete();
-        }
-
-        try {
-            FileOutputStream fos = new FileOutputStream(photo.getPath());
-
-            fos.write(buffer);
-            fos.close();
-        } catch (java.io.IOException e) {
-            return null;
-        }
-        return photo;
     }
 
     @Override

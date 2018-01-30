@@ -72,11 +72,10 @@ public class ReviewPagerAdapter extends PagerAdapter{
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Bundle bundle = new Bundle();
-                bundle.putString("product_id", String.valueOf(data.getInfo().getProductId()));
-                bundle.putString("shop_id", String.valueOf(data.getShopInfo().getShopId()));
-                bundle.putString("prod_name", data.getInfo().getProductName());
-                listener.onProductReviewClicked(bundle);
+                String productId = String.valueOf(data.getInfo().getProductId());
+                String shopId = String.valueOf(data.getShopInfo().getShopId());
+                String productName = data.getInfo().getProductName();
+                listener.onProductReviewClicked(productId, shopId, productName);
             }
         });
 

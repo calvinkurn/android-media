@@ -47,7 +47,7 @@
             android:screenOrientation="portrait"/>
         <activity
             android:label="@string/title_activity_reputation"
-            android:name=".productreview.view.ProductReviewActivity"
+            android:name=".review.product.view.ReviewProductActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             />
