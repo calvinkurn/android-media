@@ -7,7 +7,6 @@ import android.util.Log;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.exception.ResponseV4ErrorException;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.ResponseStatus;
