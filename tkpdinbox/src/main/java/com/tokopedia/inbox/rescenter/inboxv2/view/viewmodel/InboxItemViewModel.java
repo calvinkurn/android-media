@@ -11,6 +11,7 @@ import java.util.List;
 
 public class InboxItemViewModel implements Parcelable {
     private int id;
+    private int resId;
     private int actionBy;
     private String inboxMessage;
     private String inboxMessageBackgroundColor;
@@ -31,6 +32,7 @@ public class InboxItemViewModel implements Parcelable {
     private boolean isLoadingItem;
 
     public InboxItemViewModel(int id,
+                              int resId,
                               int actionBy,
                               String inboxMessage,
                               String inboxMessageBackgroundColor,
@@ -49,6 +51,7 @@ public class InboxItemViewModel implements Parcelable {
                               String customerName,
                               String sellerName) {
         this.id = id;
+        this.resId = resId;
         this.actionBy = actionBy;
         this.inboxMessage = inboxMessage;
         this.inboxMessageBackgroundColor = inboxMessageBackgroundColor;
@@ -66,6 +69,14 @@ public class InboxItemViewModel implements Parcelable {
         this.extraImageCountText = extraImageCountText;
         this.customerName = customerName;
         this.sellerName = sellerName;
+    }
+
+    public int getResId() {
+        return resId;
+    }
+
+    public void setResId(int resId) {
+        this.resId = resId;
     }
 
     public InboxItemViewModel(boolean isLoadingItem) {
@@ -232,6 +243,7 @@ public class InboxItemViewModel implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.id);
+        dest.writeInt(this.resId);
         dest.writeInt(this.actionBy);
         dest.writeString(this.inboxMessage);
         dest.writeString(this.inboxMessageBackgroundColor);
@@ -254,6 +266,7 @@ public class InboxItemViewModel implements Parcelable {
 
     protected InboxItemViewModel(Parcel in) {
         this.id = in.readInt();
+        this.resId = in.readInt();
         this.actionBy = in.readInt();
         this.inboxMessage = in.readString();
         this.inboxMessageBackgroundColor = in.readString();

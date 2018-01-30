@@ -146,6 +146,9 @@ public class DrawerAdapter extends DataBindAdapter implements DrawerGroupDataBin
             case TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE:
                 drawerCache.putBoolean(IS_GM_OPENED, isExpand);
                 break;
+            case TkpdState.DrawerPosition.RESOLUTION_CENTER:
+                drawerCache.putBoolean(IS_RESO_OPENED, isExpand);
+                break;
             default:
                 break;
         }

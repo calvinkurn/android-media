@@ -11,6 +11,7 @@ import com.tokopedia.inbox.rescenter.inboxv2.domain.usecase.GetInboxSellerUseCas
 import com.tokopedia.inbox.rescenter.inboxv2.view.listener.ResoInboxFragmentListener;
 import com.tokopedia.inbox.rescenter.inboxv2.view.subscriber.GetInboxLoadMoreSubscriber;
 import com.tokopedia.inbox.rescenter.inboxv2.view.subscriber.GetInboxSubscriber;
+import com.tokopedia.inbox.rescenter.inboxv2.view.subscriber.GetInboxWithFilterSubscriber;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.ResoInboxFilterModel;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.ResoInboxSortFilterModel;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.ResoInboxSortModel;
@@ -19,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import rx.Subscriber;
 
 /**
  * Created by yfsx on 24/01/18.
@@ -69,14 +72,18 @@ public class ResoInboxFragmentPresenter
     @Override
     public void getInbox() {
         mainView.showProgressBar();
+        getInbox(new GetInboxSubscriber(context, mainView));
+    }
+
+    private void getInbox(Subscriber subscriber) {
         if (isSeller)
             getInboxSellerUseCase.execute(
                     GetInboxParams.getParams(filterModel),
-                    new GetInboxSubscriber(context, mainView));
+                    subscriber);
         else
             getInboxBuyerUseCase.execute(
                     GetInboxParams.getParams(filterModel),
-                    new GetInboxSubscriber(context, mainView));
+                    subscriber);
     }
 
     @Override
@@ -87,7 +94,12 @@ public class ResoInboxFragmentPresenter
         filterModel.setStartDate(inboxFilterModel.getDateFrom());
         filterModel.setFilters(inboxFilterModel.getSelectedFilterList());
         filterModel.setStartID("");
-        getInbox();
+        getInbox(new GetInboxWithFilterSubscriber(context, mainView));
+    }
+
+    @Override
+    public void getSingleItemInbox(int inboxId) {
+
     }
 
     @Override

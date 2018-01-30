@@ -30,6 +30,7 @@ import com.tokopedia.inbox.rescenter.inboxv2.view.di.DaggerResoInboxComponent;
 import com.tokopedia.inbox.rescenter.inboxv2.view.listener.ResoInboxFragmentListener;
 import com.tokopedia.inbox.rescenter.inboxv2.view.presenter.ResoInboxFragmentPresenter;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.InboxItemResultViewModel;
+import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.InboxItemViewModel;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.ResoInboxFilterModel;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.ResoInboxSortModel;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.SortModel;
@@ -285,6 +286,17 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
     public void onErrorLoadMoreInbox(String err) {
         inboxAdapter.removeLoadingItem();
         resetParams();
+    }
+
+    @Override
+    public void onSuccessGetSingleInboxItem(InboxItemViewModel model) {
+        dismissProgressBar();
+    }
+
+    @Override
+    public void onErrorGetSingleInboxItem(String err) {
+        dismissProgressBar();
+        NetworkErrorHelper.showSnackbar(getActivity(), err);
     }
 
     @Override

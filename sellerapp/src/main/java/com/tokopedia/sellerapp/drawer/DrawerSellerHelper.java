@@ -25,7 +25,6 @@ import com.tokopedia.core.drawer2.view.databinder.DrawerItemDataBinder;
 import com.tokopedia.core.drawer2.view.databinder.DrawerSellerHeaderDataBinder;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerGroup;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
-import com.tokopedia.core.drawer2.view.viewmodel.DrawerSeparator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.router.SellerRouter;
@@ -111,7 +110,11 @@ public class DrawerSellerHelper extends DrawerHelper
                 R.drawable.ic_top_ads,
                 TkpdState.DrawerPosition.SELLER_TOP_ADS,
                 true));
-
+        data.add(new DrawerItem(context.getString(R.string.drawer_title_new_reso_seller),
+                R.drawable.ic_reso,
+                TkpdState.DrawerPosition.RESOLUTION_CENTER,
+                true,
+                getTotalResoNotif()));
         data.add(new DrawerItem(context.getString(R.string.drawer_title_setting),
                 R.drawable.icon_setting,
                 TkpdState.DrawerPosition.SETTINGS,
@@ -246,6 +249,10 @@ public class DrawerSellerHelper extends DrawerHelper
         return drawerCache.getInt(DrawerNotification.CACHE_SELLING_SHIPPING_STATUS, 0) +
                 drawerCache.getInt(DrawerNotification.CACHE_SELLING_SHIPPING_CONFIRMATION, 0) +
                 drawerCache.getInt(DrawerNotification.CACHE_SELLING_NEW_ORDER, 0);
+    }
+
+    private int getTotalResoNotif() {
+        return drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER, 0);
     }
 
     private DrawerItem getGoldMerchantMenu() {
@@ -414,6 +421,13 @@ public class DrawerSellerHelper extends DrawerHelper
                     UnifyTracking.eventClickMenuSellerInfo();
                     intent = new Intent(context, SellerInfoActivity.class);
                     context.startActivity(intent);
+                    break;
+                case TkpdState.DrawerPosition.RESOLUTION_CENTER:
+                    if (context.getApplication() instanceof TkpdCoreRouter) {
+                        context.startActivity(((TkpdCoreRouter) context.getApplication())
+                                .getResolutionCenterIntentSeller(context));
+                        sendGTMNavigationEvent(AppEventTracking.EventLabel.RESOLUTION_CENTER);
+                    }
                     break;
                 default:
                     super.onItemClicked(item);

@@ -271,15 +271,16 @@ public class DrawerBuyerHelper extends DrawerHelper
         DrawerGroup resoMenu = new DrawerGroup("Komplain Saya",
                 R.drawable.ic_reso,
                 TkpdState.DrawerPosition.RESOLUTION_CENTER,
-                drawerCache.getBoolean(IS_RESO_OPENED, false), 0);
+                drawerCache.getBoolean(IS_RESO_OPENED, false),
+                getTotalResoNotif());
         resoMenu.add(new DrawerItem(context.getString(R.string.drawer_title_new_reso_as_buyer),
                 TkpdState.DrawerPosition.RESOLUTION_CENTER_BUYER,
                 drawerCache.getBoolean(IS_RESO_OPENED, false),
-                0));
+                drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER_BUYER, 0)));
         resoMenu.add(new DrawerItem(context.getString(R.string.drawer_title_new_reso_as_seller),
                 TkpdState.DrawerPosition.RESOLUTION_CENTER_SELLER,
                 drawerCache.getBoolean(IS_RESO_OPENED, false),
-                0));
+                drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER_SELLER, 0)));
         return resoMenu;
     }
 
@@ -346,7 +347,6 @@ public class DrawerBuyerHelper extends DrawerHelper
     private int getTotalInboxNotif() {
         return drawerCache.getInt(DrawerNotification.CACHE_INBOX_MESSAGE, 0) +
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_TALK, 0) +
-                drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER, 0) +
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_REVIEW, 0) +
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_TICKET, 0);
     }
@@ -362,6 +362,10 @@ public class DrawerBuyerHelper extends DrawerHelper
         return drawerCache.getInt(DrawerNotification.CACHE_SELLING_SHIPPING_STATUS, 0) +
                 drawerCache.getInt(DrawerNotification.CACHE_SELLING_SHIPPING_CONFIRMATION, 0) +
                 drawerCache.getInt(DrawerNotification.CACHE_SELLING_NEW_ORDER, 0);
+    }
+
+    private int getTotalResoNotif() {
+        return drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER, 0);
     }
 
     @Override
@@ -423,6 +427,7 @@ public class DrawerBuyerHelper extends DrawerHelper
         checkExpand(DrawerAdapter.IS_PEOPLE_OPENED, TkpdState.DrawerPosition.PEOPLE);
         checkExpand(DrawerAdapter.IS_SHOP_OPENED, TkpdState.DrawerPosition.SHOP);
         checkExpand(DrawerAdapter.IS_PRODUCT_OPENED, TkpdState.DrawerPosition.SELLER_PRODUCT_EXTEND);
+        checkExpand(DrawerAdapter.IS_RESO_OPENED, TkpdState.DrawerPosition.RESOLUTION_CENTER);
         adapter.notifyDataSetChanged();
     }
 

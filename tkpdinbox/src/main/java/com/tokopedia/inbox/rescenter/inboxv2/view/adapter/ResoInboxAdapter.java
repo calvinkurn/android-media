@@ -86,7 +86,7 @@ public class ResoInboxAdapter extends RecyclerView.Adapter<ResoInboxAdapter.Hold
         holder.llItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mainView.onItemClicked(item.getId(), item.getSellerName(), item.getCustomerName());
+                mainView.onItemClicked(item.getResId(), item.getSellerName(), item.getCustomerName());
             }
         });
     }
