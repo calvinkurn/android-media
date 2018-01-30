@@ -1,4 +1,4 @@
-{
+{\"query\":\"{
    ticker {
      meta {
        total_data
@@ -51,7 +51,7 @@
             applink
             expiredTime
         }
-        grid {
+        grids {
             id
             name
             url
@@ -63,4 +63,4 @@
         }
       }
   }
-}
+}\"}
