@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.home.R;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.explore.domain.model.CategoryLayoutRowModel;
@@ -32,22 +33,17 @@ public class CategoryGridListViewHolder extends AbstractViewHolder<CategoryGridL
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_category_grid;
-    private static final String MARKETPLACE = "Marketplace";
-    private static final String DIGITAL = "Digital";
     private TextView titleTxt;
     private RecyclerView recyclerView;
     private Context context;
     private ItemAdapter adapter;
     private int spanCount = 2;
-    private int limitItem = 6;
-    private CategoryListener listener;
     private List<CategoryLayoutRowModel> rowModelList = new ArrayList<>();
 
-    public CategoryGridListViewHolder(View itemView, CategoryListener listener) {
+    public CategoryGridListViewHolder(View itemView) {
         super(itemView);
         titleTxt = itemView.findViewById(R.id.title);
         recyclerView = itemView.findViewById(R.id.list);
-        this.listener = listener;
         this.context = itemView.getContext();
         adapter = new ItemAdapter(context);
         recyclerView.setLayoutManager(new GridLayoutManager(context, spanCount,
@@ -86,21 +82,7 @@ public class CategoryGridListViewHolder extends AbstractViewHolder<CategoryGridL
         public void onBindViewHolder(ItemViewHolder holder, final int position) {
             final CategoryLayoutRowModel rowModel = data.get(position);
             holder.title.setText(rowModel.getName());
-            Glide.with(context).load(rowModel.getImageUrl()).into(holder.icon);
-            holder.container.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (rowModel.getType().equalsIgnoreCase(MARKETPLACE)) {
-                        listener.onMarketPlaceItemClicked(rowModel, getAdapterPosition(), position);
-                    } else if (rowModel.getType().equalsIgnoreCase(DIGITAL)) {
-                        listener.onDigitalItemClicked(rowModel, getAdapterPosition(), position);
-                    } else if (!TextUtils.isEmpty(rowModel.getApplinks())) {
-                        listener.onApplinkClicked(rowModel, getAdapterPosition(), position);
-                    } else {
-                        listener.onGimickItemClicked(rowModel, getAdapterPosition(), position);
-                    }
-                }
-            });
+            ImageHandler.loadImageAndCache(holder.icon, rowModel.getImageUrl());
         }
 
         @Override

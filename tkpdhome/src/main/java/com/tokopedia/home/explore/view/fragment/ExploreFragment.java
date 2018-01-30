@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,8 +29,10 @@ import com.tokopedia.home.explore.listener.CategoryListener;
 import com.tokopedia.home.explore.view.activity.ExploreActivity;
 import com.tokopedia.home.explore.view.adapter.ExploreAdapter;
 import com.tokopedia.home.explore.view.adapter.TypeFactory;
+import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryGridListViewModel;
 import com.tokopedia.home.explore.view.presentation.ExploreContract;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +41,11 @@ import java.util.Map;
  * Created by errysuprayogi on 1/26/18.
  */
 
-public class ExploreFragment extends BaseListFragment<Visitable<TypeFactory>, TypeFactory> implements ExploreContract.View, CategoryListener {
+public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> implements ExploreContract.View {
+
+
+    private static final String MARKETPLACE = "Marketplace";
+    private static final String DIGITAL = "Digital";
 
     public static ExploreFragment newInstance() {
 
@@ -60,8 +67,43 @@ public class ExploreFragment extends BaseListFragment<Visitable<TypeFactory>, Ty
     }
 
     @Override
-    public void onItemClicked(Visitable<TypeFactory> visitable) {
+    public void onItemClicked(Visitable visitable) {
+        if(visitable instanceof CategoryLayoutRowModel){
+            CategoryLayoutRowModel rowModel = (CategoryLayoutRowModel) visitable;
+            if (rowModel.getType().equalsIgnoreCase(MARKETPLACE)) {
+                onMarketPlaceItemClicked(rowModel);
+            } else if (rowModel.getType().equalsIgnoreCase(DIGITAL)) {
+                onDigitalItemClicked(rowModel);
+            } else if (!TextUtils.isEmpty(rowModel.getApplinks())) {
+                onApplinkClicked(rowModel);
+            } else {
+                onGimickItemClicked(rowModel);
+            }
+        }
+    }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        List<Visitable> list = new ArrayList<>();
+        CategoryGridListViewModel gridListViewModel = new CategoryGridListViewModel();
+        gridListViewModel.setTitle("Beli ini itu di Tokopedia");
+        ArrayList<CategoryLayoutRowModel> rowModels = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            rowModels.add(createDummyRowModel());
+        }
+        gridListViewModel.setItemList(rowModels);
+        list.add(gridListViewModel);
+        renderList(list);
+    }
+
+    private CategoryLayoutRowModel createDummyRowModel() {
+        CategoryLayoutRowModel rowModel = new CategoryLayoutRowModel();
+        rowModel.setType("Marketplace");
+        rowModel.setApplinks("tokopedia://category/54");
+        rowModel.setName("Souvenir, Kado & Hadiah");
+        rowModel.setImageUrl("https://ecs7.tokopedia.net/img/category/new/v1/icon_kado.png");
+        return rowModel;
     }
 
     @Override
@@ -71,7 +113,7 @@ public class ExploreFragment extends BaseListFragment<Visitable<TypeFactory>, Ty
 
     @Override
     protected TypeFactory getAdapterTypeFactory() {
-        return new ExploreAdapter(this);
+        return new ExploreAdapter();
     }
 
     @Nullable
@@ -91,11 +133,6 @@ public class ExploreFragment extends BaseListFragment<Visitable<TypeFactory>, Ty
     }
 
     @Override
-    public void setItems(List<com.tokopedia.core.base.adapter.Visitable> items) {
-
-    }
-
-    @Override
     public void showNetworkError(String message) {
 
     }
@@ -105,8 +142,7 @@ public class ExploreFragment extends BaseListFragment<Visitable<TypeFactory>, Ty
 
     }
 
-    @Override
-    public void onMarketPlaceItemClicked(CategoryLayoutRowModel data, int parentPosition, int childPosition) {
+    private void onMarketPlaceItemClicked(CategoryLayoutRowModel data) {
         TrackingUtils.sendMoEngageClickMainCategoryIcon(data.getName());
         ((IHomeRouter) getActivity().getApplication()).openIntermediaryActivity(getActivity(), String.valueOf(data.getCategoryId()), data.getName());
         Map<String, String> values = new HashMap<>();
@@ -114,8 +150,7 @@ public class ExploreFragment extends BaseListFragment<Visitable<TypeFactory>, Ty
         UnifyTracking.eventHomeCategory(data.getName());
     }
 
-    @Override
-    public void onDigitalItemClicked(CategoryLayoutRowModel data, int parentPosition, int childPosition) {
+    private void onDigitalItemClicked(CategoryLayoutRowModel data) {
         if (((TkpdCoreRouter) getActivity().getApplication())
                 .isSupportedDelegateDeepLink(data.getApplinks())) {
             DigitalCategoryDetailPassData passData = new DigitalCategoryDetailPassData.Builder()
@@ -126,13 +161,12 @@ public class ExploreFragment extends BaseListFragment<Visitable<TypeFactory>, Ty
                     .build();
             ((IHomeRouter) getActivity().getApplication()).onDigitalItemClick(getActivity(), passData, data.getApplinks());
         } else {
-            onGimickItemClicked(data, parentPosition, childPosition);
+            onGimickItemClicked(data);
         }
         TrackingUtils.sendMoEngageClickMainCategoryIcon(data.getName());
     }
 
-    @Override
-    public void onGimickItemClicked(CategoryLayoutRowModel data, int parentPosition, int childPosition) {
+    private void onGimickItemClicked(CategoryLayoutRowModel data) {
         String redirectUrl = data.getUrl();
         if (redirectUrl != null && redirectUrl.length() > 0) {
             String resultGenerateUrl = URLGenerator.generateURLSessionLogin(
@@ -141,8 +175,7 @@ public class ExploreFragment extends BaseListFragment<Visitable<TypeFactory>, Ty
         }
     }
 
-    @Override
-    public void onApplinkClicked(CategoryLayoutRowModel data, int parentPosition, int childPosition) {
+    private void onApplinkClicked(CategoryLayoutRowModel data) {
         ((TkpdCoreRouter) getActivity().getApplication()).actionApplinkFromActivity(getActivity() , data.getUrl());
     }
 

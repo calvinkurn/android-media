@@ -34,10 +34,7 @@
                 app:contentInsetStartWithNavigation="0dp"
                 app:layout_collapseMode="pin"
                 app:navigationIcon="@drawable/ic_close"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                app:subtitleTextAppearance="@style/TitleTextAppearance.White"
-                app:title="@string/explore"
-                app:titleTextAppearance="@style/SubTitleTextAppearance" />
+                app:title="@string/explore" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
 
@@ -59,8 +56,8 @@
                 app:tabGravity="fill"
                 app:tabMode="fixed"
                 app:tabSelectedTextColor="@color/black_70"
-                app:tabTextColor="@color/tab_text_unselected"
-                app:tabTextAppearance="@style/TitlePageWhiteIndicator" />
+                app:tabTextAppearance="@style/TitlePageWhiteIndicator"
+                app:tabTextColor="@color/tab_text_unselected" />
 
             <View
                 android:layout_width="match_parent"

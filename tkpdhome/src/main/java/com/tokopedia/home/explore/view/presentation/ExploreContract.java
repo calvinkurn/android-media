@@ -5,9 +5,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.StringRes;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.home.explore.domain.model.CategoryLayoutRowModel;
 
 import java.util.List;
@@ -24,8 +24,6 @@ public interface ExploreContract {
 
         void hideLoading();
 
-        void setItems(List<Visitable> items);
-
         void showNetworkError(String message);
 
         void removeNetworkError();
@@ -38,7 +36,6 @@ public interface ExploreContract {
 
         Activity getActivity();
 
-        void onGimickItemClicked(CategoryLayoutRowModel data, int parentPosition, int childPosition);
     }
 
     interface Presenter extends CustomerPresenter<View> {

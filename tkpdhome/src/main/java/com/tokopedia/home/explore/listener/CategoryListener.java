@@ -7,11 +7,11 @@ import com.tokopedia.home.explore.domain.model.CategoryLayoutRowModel;
  */
 
 public interface CategoryListener {
-    void onMarketPlaceItemClicked(CategoryLayoutRowModel data, int parentPosition, int childPosition);
+    void onMarketPlaceItemClicked(CategoryLayoutRowModel data);
 
-    void onDigitalItemClicked(CategoryLayoutRowModel data, int parentPosition, int childPosition);
+    void onDigitalItemClicked(CategoryLayoutRowModel data);
 
-    void onGimickItemClicked(CategoryLayoutRowModel data, int parentPosition, int childPosition);
+    void onGimickItemClicked(CategoryLayoutRowModel data);
 
-    void onApplinkClicked(CategoryLayoutRowModel data, int parentPosition, int childPosition);
+    void onApplinkClicked(CategoryLayoutRowModel data);
 }

@@ -14,11 +14,6 @@ import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryGridListViewMod
 
 public class ExploreAdapter extends BaseAdapterTypeFactory implements TypeFactory {
 
-    private final CategoryListener listener;
-
-    public ExploreAdapter(CategoryListener listener) {
-        this.listener = listener;
-    }
 
     @Override
     public int type(CategoryGridListViewModel viewModel) {
@@ -28,7 +23,7 @@ public class ExploreAdapter extends BaseAdapterTypeFactory implements TypeFactor
     @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
         if (type == CategoryGridListViewHolder.LAYOUT) {
-            return new CategoryGridListViewHolder(parent, listener);
+            return new CategoryGridListViewHolder(parent);
         } else {
             return super.createViewHolder(parent, type);
         }
