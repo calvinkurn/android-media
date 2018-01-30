@@ -80,12 +80,18 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
 
     private void createViewCpmShop(Context context, CpmData.Cpm cpm) {
         inflate(getContext(), R.layout.layout_ads_banner_shop, this);
-        ImageView iconImg = (ImageView) findViewById(R.id.icon);
+        final ImageView iconImg = (ImageView) findViewById(R.id.icon);
         TextView promotedTxt = (TextView) findViewById(R.id.title_promote);
         TextView nameTxt = (TextView) findViewById(R.id.shop_name);
         TextView descriptionTxt = (TextView) findViewById(R.id.description);
         LinearLayout badgeContainer = (LinearLayout) findViewById(R.id.badges_container);
-        Glide.with(context).load(cpm.getCpmImage().getFullEcs()).into(iconImg);
+        Glide.with(context).load(cpm.getCpmImage().getFullEcs()).asBitmap().into(new SimpleTarget<Bitmap>() {
+            @Override
+            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                iconImg.setImageBitmap(resource);
+                new ImpresionTask().execute(cpm.getCpmImage().getFullUrl());
+            }
+        });
         promotedTxt.setText(cpm.getPromotedText());
         nameTxt.setText(escapeHTML(cpm.getName()));
 
