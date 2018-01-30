@@ -1,4 +1,4 @@
-package com.tokopedia.core.network.apiservices.accounts.apis;
+package com.tokopedia.network.service;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 
@@ -16,6 +16,10 @@ import rx.Observable;
  */
 
 public interface AccountsBasicApi {
+
+    @FormUrlEncoded
+    @POST(TkpdBaseURL.Accounts.PATH_GET_TOKEN)
+    Observable<Response<String>> getToken(@FieldMap Map<String, Object> params);
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.Accounts.PATH_GET_TOKEN)

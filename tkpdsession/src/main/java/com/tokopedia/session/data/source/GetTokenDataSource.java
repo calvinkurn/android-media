@@ -2,11 +2,10 @@ package com.tokopedia.session.data.source;
 
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.network.apiservices.accounts.AccountsBasicService;
-import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.EncoderDecoder;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.network.service.AccountsBasicService;
 import com.tokopedia.session.domain.mapper.TokenMapper;
 import com.tokopedia.session.domain.pojo.token.TokenViewModel;
 

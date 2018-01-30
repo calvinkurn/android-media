@@ -1,6 +1,5 @@
-package com.tokopedia.core.network.apiservices.accounts;
+package com.tokopedia.network.service;
 
-import com.tokopedia.core.network.apiservices.accounts.apis.AccountsBasicApi;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.core.OkHttpRetryPolicy;
