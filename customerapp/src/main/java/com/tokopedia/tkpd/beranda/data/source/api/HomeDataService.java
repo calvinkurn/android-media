@@ -18,7 +18,7 @@ public class HomeDataService extends AuthService<HomeDataApi> {
 
     @Override
     protected String getBaseUrl() {
-        return TkpdBaseURL.GRAPHQL_DOMAIN;
+        return TkpdBaseURL.HOME_DATA_BASE_URL;
     }
 
     @Override
