@@ -58,7 +58,7 @@ public class AuthUtil {
 
     public static final String WEBVIEW_FLAG_PARAM_FLAG_APP = "flag_app";
     public static final String WEBVIEW_FLAG_PARAM_DEVICE = "device";
-    public static final String WEBVIEW_FLAG_PARAM_UTM_SOURCE = "u   `tm_source";
+    public static final String WEBVIEW_FLAG_PARAM_UTM_SOURCE = "utm_source";
     public static final String WEBVIEW_FLAG_PARAM_APP_VERSION = "app_version";
     public static final String WEBVIEW_FLAG_PARAM_OS_VERSION = "os_version";
 
