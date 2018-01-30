@@ -6,7 +6,7 @@ import android.os.Bundle;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.network.apiservices.accounts.AccountsService;
+import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.EditUserInfoMapper;

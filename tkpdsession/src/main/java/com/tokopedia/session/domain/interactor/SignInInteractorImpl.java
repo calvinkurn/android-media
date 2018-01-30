@@ -7,7 +7,7 @@ import android.util.Log;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.gson.GsonBuilder;
-import com.tokopedia.core.network.apiservices.accounts.AccountsService;
+import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.MapNulRemover;

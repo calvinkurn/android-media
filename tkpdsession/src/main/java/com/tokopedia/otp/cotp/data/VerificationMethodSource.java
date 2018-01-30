@@ -1,7 +1,7 @@
 package com.tokopedia.otp.cotp.data;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.network.apiservices.accounts.AccountsService;
+import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.di.SessionModule;
 import com.tokopedia.otp.cotp.domain.mapper.VerificationMethodMapper;
 import com.tokopedia.otp.cotp.view.viewmodel.ListVerificationMethod;

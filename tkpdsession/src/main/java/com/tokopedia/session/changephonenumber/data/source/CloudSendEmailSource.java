@@ -1,6 +1,6 @@
 package com.tokopedia.session.changephonenumber.data.source;
 
-import com.tokopedia.core.network.apiservices.accounts.AccountsService;
+import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.session.changephonenumber.data.mapper.GetWarningMapper;
 import com.tokopedia.session.changephonenumber.data.mapper.SendEmailMapper;

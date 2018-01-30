@@ -2,7 +2,7 @@ package com.tokopedia.session.activation.data.factory;
 
 import android.content.Context;
 
-import com.tokopedia.core.network.apiservices.accounts.AccountsService;
+import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.session.activation.data.mapper.ActivateUnicodeMapper;
 import com.tokopedia.session.activation.data.mapper.ChangeEmailMapper;
 import com.tokopedia.session.activation.data.mapper.ResendActivationMapper;

@@ -2,7 +2,7 @@ package com.tokopedia.session.register.data.factory;
 
 import android.content.Context;
 
-import com.tokopedia.core.network.apiservices.accounts.AccountsService;
+import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.session.register.data.mapper.RegisterEmailMapper;
 import com.tokopedia.session.register.data.source.CloudRegisterEmailSource;
 

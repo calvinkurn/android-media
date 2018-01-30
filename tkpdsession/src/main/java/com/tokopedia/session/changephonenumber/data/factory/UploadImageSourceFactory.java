@@ -2,7 +2,7 @@ package com.tokopedia.session.changephonenumber.data.factory;
 
 import android.content.Context;
 
-import com.tokopedia.core.network.apiservices.accounts.AccountsService;
+import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.network.service.UploadImageService;
 import com.tokopedia.session.changephonenumber.data.mapper.changephonenumberrequest.SubmitImageMapper;
 import com.tokopedia.session.changephonenumber.data.mapper.changephonenumberrequest.ValidateImageMapper;
