@@ -15,6 +15,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.deeplink.CoreDeeplinkModule;
 import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.gcm.utils.ApplinkUtils;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
@@ -81,7 +82,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(Branch.getInstance() != null) {
+        if (Branch.getInstance() != null) {
             Branch.getInstance().setRequestMetadata("$google_analytics_client_id", TrackingUtils.getClientID());
             Branch.getInstance().initSession(this);
         }
@@ -125,6 +126,20 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
             );
         }
         return launchIntent;
+    }
+
+    @DeepLink({Constants.Applinks.SellerApp.TOPADS_DASHBOARD,
+            Constants.Applinks.SellerApp.PRODUCT_ADD,
+            Constants.Applinks.SellerApp.SALES,
+            Constants.Applinks.SellerApp.TOPADS_CREDIT,
+            Constants.Applinks.SellerApp.TOPADS_PRODUCT_CREATE,
+            Constants.Applinks.SellerApp.GOLD_MERCHANT,
+            Constants.Applinks.SellerApp.TOPADS_DASHBOARD,
+            Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL,
+            Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL_CONSTS,
+            Constants.Applinks.SellerApp.BROWSER})
+    public static Intent getIntentSellerApp(Context context, Bundle extras) {
+        return ApplinkUtils.getSellerAppApplinkIntent(context, extras);
     }
 
     @DeepLink(Constants.Applinks.BROWSER)

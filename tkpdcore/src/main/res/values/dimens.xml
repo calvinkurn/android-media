@@ -25,6 +25,7 @@
     <dimen name="margin_sm">15dp</dimen>
     <dimen name="margin_med">20dp</dimen>
     <dimen name="margin_large">30dp</dimen>
+    <dimen name="margin_xlarge">35dp</dimen>
     <dimen name="margin_vl">40dp</dimen>
     <dimen name="margin_xl">45dp</dimen>
     <dimen name="padding_vs">5dp</dimen>
@@ -247,4 +248,5 @@
     <dimen name="toolbar_shadow_height">5dp</dimen>
     <dimen name="keyboard_min_height">200dp</dimen>
     <dimen name="share_header_height">52dp</dimen>
+
 </resources>

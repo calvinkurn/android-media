@@ -193,4 +193,10 @@ public class PromoCouponPresenter implements IPromoCouponPresenter {
             }
         };
     }
+
+    @Override
+    public void detachView() {
+        promoCouponInteractor.unsubscribe();
+    }
+
 }

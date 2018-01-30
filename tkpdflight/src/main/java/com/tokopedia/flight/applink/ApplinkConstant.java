@@ -6,8 +6,8 @@ package com.tokopedia.flight.applink;
 
 public class ApplinkConstant {
 
-    public static final String FLIGHT = "tokopedia://flight";
-    public static final String FLIGHT_SEARCH = "tokopedia://flight/{trip}/{passenger}/{class}";
-    public static final String FLIGHT_ORDER = "tokopedia://flight/order";
-    public static final String FLIGHT_ORDER_DETAIL = "tokopedia://flight/order/{id}";
+    public static final String FLIGHT = "tokopedia://pesawat";
+    public static final String FLIGHT_SEARCH = "tokopedia://pesawat/search";
+    public static final String FLIGHT_ORDER = "tokopedia://pesawat/order";
+    public static final String FLIGHT_ORDER_DETAIL = "tokopedia://pesawat/order/{id}";
 }
