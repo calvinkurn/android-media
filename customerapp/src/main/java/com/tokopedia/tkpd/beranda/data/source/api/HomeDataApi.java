@@ -1,6 +1,6 @@
 package com.tokopedia.tkpd.beranda.data.source.api;
 
-import com.tokopedia.tkpd.beranda.data.source.pojo.HomeGraphql;
+import com.tokopedia.tkpd.beranda.data.source.pojo.HomeData;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.GraphqlResponse;
 
 import retrofit2.Response;
@@ -16,5 +16,5 @@ import rx.Observable;
 public interface HomeDataApi {
     @POST("graphql")
     @Headers({"Content-Type: application/json"})
-    Observable<Response<GraphqlResponse<HomeGraphql>>> getHomeData(@Body String requestBody);
+    Observable<Response<GraphqlResponse<HomeData>>> getHomeData(@Body String requestBody);
 }

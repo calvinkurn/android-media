@@ -4,13 +4,10 @@ import android.text.TextUtils;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.entity.home.Slide;
 import com.tokopedia.core.network.entity.home.Ticker;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.tkpd.beranda.data.source.pojo.HomeData;
-import com.tokopedia.tkpd.beranda.data.source.pojo.HomeGraphql;
 import com.tokopedia.tkpd.beranda.domain.model.banner.BannerSlidesModel;
-import com.tokopedia.tkpd.beranda.domain.model.banner.HomeBannerResponseModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
 import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.GraphqlResponse;
@@ -25,13 +22,13 @@ import rx.functions.Func1;
  * Created by henrypriyono on 26/01/18.
  */
 
-public class HomeMapper implements Func1<Response<GraphqlResponse<HomeGraphql>>, List<Visitable>> {
+public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, List<Visitable>> {
     @Override
-    public List<Visitable> call(Response<GraphqlResponse<HomeGraphql>> response) {
+    public List<Visitable> call(Response<GraphqlResponse<HomeData>> response) {
         if (response.isSuccessful()) {
             List<Visitable> list = new ArrayList<>();
 
-            HomeData homeData = response.body().getData().getData();
+            HomeData homeData = response.body().getData();
 
             if (homeData.getTicker() != null && !homeData.getTicker().getTickers().isEmpty()) {
                 list.add(mappingTicker(homeData.getTicker().getTickers()));
