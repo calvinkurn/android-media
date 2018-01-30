@@ -470,24 +470,26 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
 
     private List<Data> convertToTopadsDomain(List<FeedQuery.Data.Topad> topadList) {
         ArrayList<Data> topadDataDomainList = new ArrayList<>();
-        for (FeedQuery.Data.Topad topad : topadList) {
-            topadDataDomainList.add(
-                    new Data(topad.id(),
-                            topad.ad_ref_key(),
-                            topad.redirect() == null ? "" :
-                                    topad.redirect().toString(),
-                            topad.sticker_id(),
-                            topad.sticker_image() == null ? "" :
-                                    topad.sticker_image().toString(),
-                            topad.product_click_url() == null ? "" :
-                                    topad.product_click_url().toString(),
-                            topad.shop_click_url() == null ? "" :
-                                    topad.shop_click_url().toString(),
-                            topad.shop() == null ? null : convertToTopadsShop(topad.shop()),
-                            topad.product() == null ? null : convertToTopadsProduct(topad.product
-                                    ()),
-                            false)
-            );
+        if (topadList != null) {
+            for (FeedQuery.Data.Topad topad : topadList) {
+                topadDataDomainList.add(
+                        new Data(topad.id(),
+                                topad.ad_ref_key(),
+                                topad.redirect() == null ? "" :
+                                        topad.redirect().toString(),
+                                topad.sticker_id(),
+                                topad.sticker_image() == null ? "" :
+                                        topad.sticker_image().toString(),
+                                topad.product_click_url() == null ? "" :
+                                        topad.product_click_url().toString(),
+                                topad.shop_click_url() == null ? "" :
+                                        topad.shop_click_url().toString(),
+                                topad.shop() == null ? null : convertToTopadsShop(topad.shop()),
+                                topad.product() == null ? null : convertToTopadsProduct(topad.product
+                                        ()),
+                                false)
+                );
+            }
         }
         return topadDataDomainList;
     }
@@ -523,23 +525,27 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
     private List<ImageProduct> convertToTopadsImageProduct(List<FeedQuery.Data.Image_product>
                                                                    imageProductList) {
         ArrayList<ImageProduct> imageProductDomainList = new ArrayList<>();
-        for (FeedQuery.Data.Image_product imageProduct : imageProductList) {
-            imageProductDomainList.add(
-                    new ImageProduct(imageProduct.product_id(),
-                            imageProduct.product_name(),
-                            imageProduct.image_url().toString())
-            );
+        if (imageProductList != null) {
+            for (FeedQuery.Data.Image_product imageProduct : imageProductList) {
+                imageProductDomainList.add(
+                        new ImageProduct(imageProduct.product_id(),
+                                imageProduct.product_name(),
+                                imageProduct.image_url().toString())
+                );
+            }
         }
         return imageProductDomainList;
     }
 
     private List<Badge> convertToTopadsBadge(List<FeedQuery.Data.Badge1> badgeList) {
         ArrayList<Badge> badgeDomainList = new ArrayList<>();
-        for (FeedQuery.Data.Badge1 badge : badgeList) {
-            badgeDomainList.add(
-                    new Badge(String.valueOf(badge.title()),
-                            badge.image_url() == null ? "" : badge.image_url().toString())
-            );
+        if (badgeList != null) {
+            for (FeedQuery.Data.Badge1 badge : badgeList) {
+                badgeDomainList.add(
+                        new Badge(String.valueOf(badge.title()),
+                                badge.image_url() == null ? "" : badge.image_url().toString())
+                );
+            }
         }
         return badgeDomainList;
     }
