@@ -33,7 +33,6 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.msisdn.IncomingSmsReceiver;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.util.CustomPhoneNumberUtil;
 import com.tokopedia.core.util.MethodChecker;
@@ -46,6 +45,7 @@ import com.tokopedia.otp.phoneverification.view.activity.TokoCashWebViewActivity
 import com.tokopedia.otp.phoneverification.view.listener.PhoneVerification;
 import com.tokopedia.otp.phoneverification.view.presenter.PhoneVerificationPresenter;
 import com.tokopedia.session.R;
+import com.tokopedia.util.IncomingSmsReceiver;
 
 import java.util.concurrent.TimeUnit;
 

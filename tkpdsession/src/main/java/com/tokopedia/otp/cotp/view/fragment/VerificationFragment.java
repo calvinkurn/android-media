@@ -36,7 +36,6 @@ import com.tokopedia.analytics.OTPAnalytics;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.msisdn.IncomingSmsReceiver;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
@@ -49,6 +48,7 @@ import com.tokopedia.otp.cotp.view.viewmodel.VerificationViewModel;
 import com.tokopedia.otp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.session.R;
+import com.tokopedia.util.IncomingSmsReceiver;
 
 import java.util.concurrent.TimeUnit;
 

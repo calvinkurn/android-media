@@ -34,7 +34,6 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.core.msisdn.IncomingSmsReceiver;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.util.CustomPhoneNumberUtil;
 import com.tokopedia.core.util.MethodChecker;
@@ -51,6 +50,7 @@ import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionPhoneVeri
 import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionPhoneVerificationPresenter;
 import com.tokopedia.profilecompletion.view.viewmodel.ProfileCompletionViewModel;
 import com.tokopedia.session.R;
+import com.tokopedia.util.IncomingSmsReceiver;
 
 import java.util.concurrent.TimeUnit;
 
