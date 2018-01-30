@@ -11,29 +11,42 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@color/white"
-        android:orientation="vertical"
-        android:padding="@dimen/padding_small">
+        android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/total_payment_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="@dimen/btn_height"
+            android:gravity="center_vertical"
+            android:padding="@dimen/padding_small">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Total P"/>
+                android:layout_weight="1"
+                android:text="Total Pembayaran" />
+
+            <TextView
+                android:id="@+id/total_payment_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:text="-" />
 
         </LinearLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey_400" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/btn_height"
             android:background="@drawable/orange_button_rounded"
-            android:gravity="center">
+            android:gravity="center"
+            android:layout_margin="@dimen/margin_small">
 
             <TextView
                 android:layout_width="wrap_content"

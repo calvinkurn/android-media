@@ -149,6 +149,6 @@ public class MultipleAddressFragment extends TkpdFragment
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        cartShipmentActivity = (ICartShipmentActivity) activity;
+        //cartShipmentActivity = (ICartShipmentActivity) activity;
     }
 }

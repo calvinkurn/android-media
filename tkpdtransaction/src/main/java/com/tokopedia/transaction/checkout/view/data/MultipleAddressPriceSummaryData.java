@@ -22,8 +22,6 @@ public class MultipleAddressPriceSummaryData {
 
     private long totalPayment;
 
-    private String quantityText;
-
     private String totalProductPriceText;
 
     private String totalShippingPriceText;
@@ -98,11 +96,7 @@ public class MultipleAddressPriceSummaryData {
     }
 
     public String getQuantityText() {
-        return quantityText;
-    }
-
-    public void setQuantityText(String quantityText) {
-        this.quantityText = quantityText;
+        return String.valueOf(quantity);
     }
 
     public String getTotalProductPriceText() {
@@ -146,7 +140,7 @@ public class MultipleAddressPriceSummaryData {
     }
 
     public String getTotalPaymentText() {
-        return totalPaymentText;
+        return formatPrice(getTotalPayment());
     }
 
     public void setTotalPaymentText(String totalPaymentText) {

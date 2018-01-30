@@ -4,7 +4,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -86,13 +85,11 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
         } else if(holder instanceof MultipleAddressShipmentFooterViewHolder) {
             MultipleAddressShipmentFooterViewHolder footerHolder =
                     (MultipleAddressShipmentFooterViewHolder) holder;
-            footerHolder.quantityTotal.setText(priceChecker(
-                    priceSummaryData.getQuantity(),
-                    priceSummaryData.getTotalShippingPrice())
-            );
-            footerHolder.totalProductPrice.setText(priceChecker(
-                    priceSummaryData.getTotalProductPrice(),
-                    priceSummaryData.getTotalShippingPrice())
+            footerHolder.quantityTotal.setText(footerHolder.quantityTotal.getText()
+                    .toString()
+                    .replace("#", priceSummaryData.getQuantityText()));
+            footerHolder.totalProductPrice.setText(
+                    formatPrice(priceSummaryData.getTotalProductPrice())
             );
             footerHolder.totalShippingPrice.setText(priceChecker(
                     priceSummaryData.getTotalShippingPrice(),
@@ -111,14 +108,20 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
                     priceSummaryData.getTotalShippingPrice())
             );
             footerHolder.totalPayment.setText(
-                    totalPriceChecker(
-                            formatPrice(priceSummaryData.getTotalPayment()),
+                    totalPriceChecker(formatPrice(priceSummaryData.getTotalPayment()),
                             priceSummaryData.getTotalShippingPrice()
                     )
             );
         }
     }
 
+    public List<MultipleAddressShipmentAdapterData> getAddressDataList() {
+        return addressDataList;
+    }
+
+    public MultipleAddressPriceSummaryData getPriceSummaryData() {
+        return priceSummaryData;
+    }
 
     @Override
     public int getItemCount() {
@@ -139,7 +142,7 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 
         private TextView productQty;
 
-        private EditText notesField;
+        private TextView notesField;
 
         private ViewGroup addressLayout;
 
@@ -161,6 +164,8 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
             senderName = itemView.findViewById(R.id.sender_name);
 
             productImage = itemView.findViewById(R.id.product_image);
+
+            productName = itemView.findViewById(R.id.product_name);
 
             productPrice = itemView.findViewById(R.id.product_price);
 

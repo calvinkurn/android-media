@@ -7,7 +7,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.view.adapter.MultipleAddressShipmentAdapter;
@@ -25,6 +27,10 @@ import java.util.List;
 public class MultipleAddressShipmentFragment extends TkpdFragment
         implements MultipleAddressShipmentAdapter.MultipleAddressShipmentAdapterListener{
 
+    private TextView totalPayment;
+
+    private MultipleAddressShipmentAdapter shipmentAdapter;
+
     public static MultipleAddressShipmentFragment newInstance() {
         return new MultipleAddressShipmentFragment();
     }
@@ -38,15 +44,17 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.multiple_address_shipment_fragment, container, false);
+        totalPayment = view.findViewById(R.id.total_payment_text_view);
+        ViewGroup totalPaymentLayout = view.findViewById(R.id.total_payment_layout);
         RecyclerView orderAddressList = view.findViewById(R.id.order_shipment_list);
         orderAddressList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        orderAddressList.setAdapter(new MultipleAddressShipmentAdapter(
+        shipmentAdapter = new MultipleAddressShipmentAdapter(
                 dataList(),
                 dummyPriceSummaryData(),
-                this));
-        /*RecyclerView orderAddressList = view.findViewById(R.id.order_address_list);
-        orderAddressList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        orderAddressList.setAdapter(new MultipleAddressShipmentAdapter());*/
+                this);
+        orderAddressList.setAdapter(shipmentAdapter);
+        orderAddressList.addOnScrollListener(onRecyclerViewScrolledListener(totalPaymentLayout));
+        totalPayment.setText(dummyPriceSummaryData().getTotalPaymentText());
         return view;
     }
 
@@ -88,6 +96,28 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
     @Override
     public void onChooseShipment(MultipleAddressShipmentAdapterData addressAdapterData) {
 
+    }
+
+    private RecyclerView.OnScrollListener onRecyclerViewScrolledListener(
+            final ViewGroup totalPaymentLayout
+    ) {
+        return new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int totalItemCount = recyclerView.getLayoutManager().getItemCount();
+                int lastVisibleItem = ((LinearLayoutManager)recyclerView.getLayoutManager())
+                        .findLastVisibleItemPosition();
+                CommonUtils.dumper("totalItemCount " + totalItemCount);
+                CommonUtils.dumper("lastVisibleItem " + lastVisibleItem);
+                if(lastVisibleItem == totalItemCount - 1) {
+                    totalPaymentLayout.setVisibility(View.GONE);
+                } else {
+                    totalPaymentLayout.setVisibility(View.VISIBLE);
+                }
+
+            }
+        };
     }
 
     private MultipleAddressPriceSummaryData dummyPriceSummaryData() {
