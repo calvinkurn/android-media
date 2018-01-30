@@ -74,7 +74,6 @@ public class BranchSdkUtils {
         } else if (isappShowReferralButtonActivated(activity) && ShareData.APP_SHARE_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(Constants.Applinks.REFERRAL_WELCOME, data.getId());
             deeplinkPath = deeplinkPath.replaceFirst("\\{.*?\\} ?", SessionHandler.getLoginName(activity) == null ? "" : SessionHandler.getLoginName(activity));
-
         } else if (ShareData.SHOP_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(Constants.Applinks.SHOP, data.getId());//"shop/" + data.getId();
         } else if (ShareData.HOTLIST_TYPE.equalsIgnoreCase(data.getType())) {

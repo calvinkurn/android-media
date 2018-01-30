@@ -3,6 +3,7 @@ package com.tokopedia.core.referral.presenter;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -65,7 +66,6 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
     public void initialize() {
         remoteConfig = new FirebaseRemoteConfigImpl(getView().getActivity());
         activity = getView().getActivity();
-        getView().setShareButtonEnable(false);
         if (getView().isUserLoggedIn()) {
             if (isAppShowReferralButtonActivated()) {
                 if (getView().isUserPhoneNumberVerified()) {
@@ -84,9 +84,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
     @Override
     public void shareApp() {
-        if (!isAppShowReferralButtonActivated()) {
-            contents = getAppShareDescription();
-        }
+        formatSharingContents();
         ShareData shareData = ShareData.Builder.aShareData()
                 .setType(ShareData.APP_SHARE_TYPE)
                 .setId(getView().getReferralCodeFromTextView())
@@ -100,9 +98,18 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
     }
 
+    private void formatSharingContents() {
+        if (!isAppShowReferralButtonActivated()) {
+            contents = getAppShareDescription();
+        } else if (TextUtils.isEmpty(contents)) {
+            contents = getAppShareDefaultMessage();
+        }
+        contents = contents + " Cek - ";
+    }
+
     @Override
     public void getReferralVoucherCode() {
-        if (getVoucherCodeFromCache() == null || "".equalsIgnoreCase(getVoucherCodeFromCache())) {
+        if (TextUtils.isEmpty(getVoucherCodeFromCache())) {
             getView().showProcessDialog();
         }
 
@@ -156,7 +163,6 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
                     }).showRetrySnackbar();
                 }
                 getView().hideProcessDialog();
-                getView().setShareButtonEnable(true);
 
             }
         });
@@ -200,6 +206,15 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
     private String getAppShareDescription() {
         return remoteConfig.getString(TkpdCache.RemoteConfigKey.APP_SHARE_DESCRIPTION, getView().getActivity().getString(R.string.app_share_label_desc));
+    }
+
+    private String getAppShareDefaultMessage() {
+        String message = remoteConfig.getString(TkpdCache.RemoteConfigKey.APP_SHARE_DEFAULT_MESSAGE, getView().getActivity().getString(R.string.app_share_default_msg));
+        if (TextUtils.isEmpty(message)) {
+            message = getView().getActivity().getString(R.string.app_share_default_msg);
+        }
+        message = message.replace("%s", getVoucherCodeFromCache());
+        return message;
     }
 
     /**

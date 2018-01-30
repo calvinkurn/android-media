@@ -54,13 +54,9 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
     TextView TextViewHelpLink;
     @BindView(R2.id.rl_referral_code)
     RelativeLayout referralCodeLayout;
-    @BindView(R2.id.progress)
-    ProgressBar progress;
 
     private ProgressDialog progressBar;
     public static final int REFERRAL_PHONE_VERIFY_REQUEST_CODE = 1011;
-    private boolean enableShareButton = true;
-
 
     public static FragmentReferral newInstance() {
         FragmentReferral fragmentReferral = new FragmentReferral();
@@ -178,10 +174,9 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (enableShareButton) {
-                    presenter.shareApp();
-                    UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_SHARE_CODE, getReferralCodeFromTextView());
-                }
+                presenter.shareApp();
+                UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_SHARE_CODE, getReferralCodeFromTextView());
+
             }
         };
 
@@ -269,15 +264,5 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
     public void onDestroy() {
         super.onDestroy();
         presenter.detachView();
-    }
-
-    @Override
-    public void setShareButtonEnable(Boolean enable) {
-        this.enableShareButton = enable;
-        if (enable) {
-            progress.setVisibility(View.GONE);
-        } else {
-            progress.setVisibility(View.VISIBLE);
-        }
     }
 }

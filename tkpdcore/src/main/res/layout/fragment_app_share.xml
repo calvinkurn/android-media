@@ -87,16 +87,6 @@
             android:textColor="@color/white"
             android:textSize="@dimen/fonts" />
 
-        <ProgressBar
-            android:id="@+id/progress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/font_medium"
-            style="@android:style/Widget.ProgressBar.Inverse"
-            android:layout_alignTop="@+id/btn_app_share" />
-
         <TextView
             android:id="@+id/tv_referral_help_link"
             android:layout_width="wrap_content"

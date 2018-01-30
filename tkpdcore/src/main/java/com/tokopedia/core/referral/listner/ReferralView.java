@@ -31,7 +31,4 @@ public interface ReferralView extends CustomerView {
     void showProcessDialog();
 
     void hideProcessDialog();
-
-    void setShareButtonEnable(Boolean enable);
-
 }
