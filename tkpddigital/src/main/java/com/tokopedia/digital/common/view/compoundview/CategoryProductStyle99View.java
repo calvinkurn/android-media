@@ -211,9 +211,7 @@ public class CategoryProductStyle99View extends
 
     private void renderDefaultProductSelected() {
         clearHolder(holderChooserProduct);
-        clearHolder(holderAdditionalInfoProduct);
-        clearHolder(holderPriceInfoProduct);
-        if (operatorSelected.getProductList().get(0) != null) {
+        if (!operatorSelected.getProductList().isEmpty() && operatorSelected.getProductList().get(0) != null) {
             productSelected = operatorSelected.getProductList().get(0);
         } else {
             productSelected = new Product.Builder()

@@ -393,12 +393,12 @@ public class CategoryProductStyle1View extends
                                 clientNumberInputView.tvErrorClientNumber.setVisibility(GONE);
                                 clientNumberInputView.enableImageOperator(operator.getImage());
                                 clientNumberInputView.setFilterMaxLength(operator.getRule().getMaximumLength());
-                                if (operatorSelected.getRule().getProductViewStyle() == 99) {
+                                if (operator.getRule().getProductViewStyle() == 99) {
                                     renderDefaultProductSelected();
                                 } else {
                                     showProducts();
                                 }
-                                setBtnBuyDigitalText(operatorSelected.getRule().getButtonText());
+                                setBtnBuyDigitalText(operator.getRule().getButtonText());
                                 operatorFound = true;
                                 break outerLoop;
                             }
@@ -500,9 +500,7 @@ public class CategoryProductStyle1View extends
 
     private void renderDefaultProductSelected() {
         clearHolder(holderChooserProduct);
-        clearHolder(holderAdditionalInfoProduct);
-        clearHolder(holderPriceInfoProduct);
-        if (operatorSelected.getProductList().get(0) != null) {
+        if (!operatorSelected.getProductList().isEmpty() && operatorSelected.getProductList().get(0) != null) {
             productSelected = operatorSelected.getProductList().get(0);
         } else {
             productSelected = new Product.Builder()

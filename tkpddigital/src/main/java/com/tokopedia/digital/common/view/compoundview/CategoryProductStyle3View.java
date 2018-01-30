@@ -304,9 +304,7 @@ public class CategoryProductStyle3View extends
 
     private void renderDefaultProductSelected() {
         clearHolder(holderChooserProduct);
-        clearHolder(holderAdditionalInfoProduct);
-        clearHolder(holderPriceInfoProduct);
-        if (operatorSelected.getProductList().get(0) != null) {
+        if (!operatorSelected.getProductList().isEmpty() && operatorSelected.getProductList().get(0) != null) {
             productSelected = operatorSelected.getProductList().get(0);
         } else {
             productSelected = new Product.Builder()
@@ -367,11 +365,11 @@ public class CategoryProductStyle3View extends
             @Override
             public void onCheckChangeOperator(Operator operator) {
                 operatorSelected = operator;
-                setBtnBuyDigitalText(operatorSelected.getRule().getButtonText());
-                if (!operatorSelected.getClientNumberList().isEmpty()) {
-                    renderClientNumberInputForm(operatorSelected);
+                setBtnBuyDigitalText(operator.getRule().getButtonText());
+                if (!operator.getClientNumberList().isEmpty()) {
+                    renderClientNumberInputForm(operator);
                 }
-                if (operatorSelected.getRule().getProductViewStyle() == 99) {
+                if (operator.getRule().getProductViewStyle() == 99) {
                     renderDefaultProductSelected();
                 } else {
                     showProducts();
@@ -396,11 +394,11 @@ public class CategoryProductStyle3View extends
             @Override
             public void onUpdateDataDigitalChooserSelectedRendered(Operator operator) {
                 operatorSelected = operator;
-                setBtnBuyDigitalText(operatorSelected.getRule().getButtonText());
-                if (!operatorSelected.getClientNumberList().isEmpty()) {
-                    renderClientNumberInputForm(operatorSelected);
+                setBtnBuyDigitalText(operator.getRule().getButtonText());
+                if (!operator.getClientNumberList().isEmpty()) {
+                    renderClientNumberInputForm(operator);
                 }
-                if (operatorSelected.getRule().getProductViewStyle() == 99) {
+                if (operator.getRule().getProductViewStyle() == 99) {
                     renderDefaultProductSelected();
                 } else {
                     showProducts();

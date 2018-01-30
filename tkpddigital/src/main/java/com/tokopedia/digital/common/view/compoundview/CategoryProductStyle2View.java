@@ -26,7 +26,6 @@ import com.tokopedia.digital.product.view.model.Operator;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.digital.product.view.model.Product;
 import com.tokopedia.digital.product.view.model.Validation;
-import com.tokopedia.digital.widget.view.compoundview.WidgetOperatorChooserView2;
 import com.tokopedia.digital.widget.view.compoundview.WidgetProductChooserView2;
 import com.tokopedia.digital.widget.view.compoundview.WidgetRadioChooserView2;
 
@@ -323,9 +322,7 @@ public class CategoryProductStyle2View extends
 
     private void renderDefaultProductSelected() {
         clearHolder(holderChooserProduct);
-        clearHolder(holderAdditionalInfoProduct);
-        clearHolder(holderPriceInfoProduct);
-        if (operatorSelected.getProductList().get(0) != null) {
+        if (!operatorSelected.getProductList().isEmpty() && operatorSelected.getProductList().get(0) != null) {
             productSelected = operatorSelected.getProductList().get(0);
         } else {
             productSelected = new Product.Builder()
