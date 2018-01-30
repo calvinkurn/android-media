@@ -134,7 +134,7 @@ public class FeedPlusPresenter
                     stringBuilder.append(
                             MethodChecker.fromHtml(promotedShopViewModel.getShop()
                                     .getName()));
-                    if (promotedShopViewModel.isFavorit()) {
+                    if (promotedShopViewModel.isFavorite()) {
                         stringBuilder.append(" dihapus dari toko favorit");
                     } else {
                         stringBuilder.append(" berhasil difavoritkan");

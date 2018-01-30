@@ -9,7 +9,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,8 +51,6 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.topads.Data;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.topads.Product;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.topads.Shop;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.FollowKolPostUseCase;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.BlogWebViewActivity;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.activity.FeedPlusDetailActivity;
@@ -511,8 +508,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
         if (item instanceof ShopFeedViewModel) {
             ShopFeedViewModel castedItem = ((ShopFeedViewModel) item);
             Data currentData = castedItem.getData();
-            boolean currentStatus = currentData.isFavorit();
-            currentData.setFavorit(!currentStatus);
+            boolean currentStatus = currentData.isFavorite();
+            currentData.setFavorite(!currentStatus);
             adapter.notifyItemChanged(adapterPosition);
         }
     }

@@ -17,7 +17,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
-import com.android.volley.toolbox.ImageLoader;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.tkpdfeed.R;
@@ -153,7 +152,7 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
             } else {
                 shopTitle.setText(title);
             }
-            setFavorite(data.isFavorit());
+            setFavorite(data.isFavorite());
         }
 
 
