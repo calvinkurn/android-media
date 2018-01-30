@@ -32,7 +32,6 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
 
     public static final String KEY_VARIANT_DATA = "VARIANT_DATA";
     public static final String KEY_PRODUCT_DETAIL_DATA = "PRODUCT_DETAIL_DATA";
-    public static final String KEY_BUY_MODE = "ON_BUY_MODE";
     public static final String KEY_SELLER_MODE = "ON_SELLER_MODE";
     public static final String KEY_LEVEL1_SELECTED= "LEVEL1_OPTION";
     public static final String KEY_LEVEL2_SELECTED= "LEVEL2_OPTION";
