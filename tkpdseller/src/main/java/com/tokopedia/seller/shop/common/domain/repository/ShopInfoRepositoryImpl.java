@@ -11,7 +11,6 @@ import com.tokopedia.seller.product.edit.domain.model.AddProductShopInfoDomainMo
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.functions.Func1;
 
 /**
  * @author hendry on 4/20/17.
@@ -34,13 +33,7 @@ public class ShopInfoRepositoryImpl implements ShopInfoRepository {
 
     @Override
     public Observable<ShopModel> getShopInfo() {
-        return shopInfoDataSource.getShopInfo().map(new Func1<ShopModel, ShopModel>() {
-            @Override
-            public ShopModel call(ShopModel shopModel) {
-                SessionHandler.setGoldMerchant(context, shopModel.info.shopIsGold);
-                return shopModel;
-            }
-        });
+        return shopInfoDataSource.getShopInfo();
     }
 
     @Override

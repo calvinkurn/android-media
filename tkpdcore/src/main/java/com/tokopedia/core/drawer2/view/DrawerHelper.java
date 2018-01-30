@@ -168,8 +168,6 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
         context.startActivity(new Intent(context, cls));
     }
 
-    public abstract void onResume();
-
     public abstract boolean isOpened();
 
     public DrawerAdapter getAdapter() {

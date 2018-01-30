@@ -215,7 +215,6 @@ public abstract class DrawerPresenterActivity<T> extends BasePresenterActivity
 
     protected void updateDrawerData() {
         if (sessionHandler.isV4Login()) {
-            drawerHelper.onResume();
             getDrawerProfile();
             getDrawerDeposit();
             getDrawerNotification();

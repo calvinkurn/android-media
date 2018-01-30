@@ -87,6 +87,7 @@ public class DrawerSellerHelper extends DrawerHelper
         implements DrawerItemDataBinder.DrawerItemListener,
         DrawerSellerHeaderDataBinder.DrawerHeaderListener {
 
+    public static final int GOLD_MERCHANT_INDEX = 4;
     private TextView shopName;
     private TextView shopLabel;
     private ImageView shopIcon;
@@ -96,6 +97,8 @@ public class DrawerSellerHelper extends DrawerHelper
     private SessionHandler sessionHandler;
 
     private GetShopInfoUseCase getShopInfoUseCase;
+
+    private boolean isGoldMerchant;
 
     public DrawerSellerHelper(Activity activity,
                               SessionHandler sessionHandler,
@@ -109,7 +112,11 @@ public class DrawerSellerHelper extends DrawerHelper
         shopLayout = activity.findViewById(R.id.drawer_shop);
         footerShadow = activity.findViewById(R.id.drawer_footer_shadow);
 
-        getShopInfoUseCase = getGetShopInfoUseCase();
+        if(activity.getApplicationContext() instanceof SellerModuleRouter){
+            SellerModuleRouter sellerModuleRouter = (SellerModuleRouter) activity.getApplicationContext();
+            getShopInfoUseCase = sellerModuleRouter.getShopInfo();
+        }
+
     }
 
     public static DrawerSellerHelper createInstance(Activity activity,
@@ -131,7 +138,7 @@ public class DrawerSellerHelper extends DrawerHelper
         data.add(getInboxMenu());
         data.add(getProductMenu());
 
-        data.add(getGoldMerchantMenu());
+        data.add(getGoldMerchantMenu(false));
         data.add(getPaymentAndTopupMenu());
         data.add(new DrawerItem(context.getString(R.string.drawer_title_mitra_toppers),
                 R.drawable.ic_mitra_toppers,
@@ -166,6 +173,9 @@ public class DrawerSellerHelper extends DrawerHelper
                 true));
         shopLayout.setVisibility(View.VISIBLE);
         footerShadow.setVisibility(View.VISIBLE);
+
+        isGoldMerchantAsync();
+
         return data;
     }
 
@@ -282,10 +292,6 @@ public class DrawerSellerHelper extends DrawerHelper
                 drawerCache.getInt(DrawerNotification.CACHE_SELLING_NEW_ORDER, 0);
     }
 
-    private DrawerGroup getGoldMerchantMenu() {
-        return getGoldMerchantMenu(isGoldMerchantSync());
-    }
-
     private DrawerGroup getGoldMerchantMenu(boolean isGoldMerchant) {
         DrawerGroup gmMenu = new DrawerGroup(context.getString(R.string.drawer_title_gold_merchant),
                 R.drawable.ic_goldmerchant_drawer,
@@ -308,10 +314,6 @@ public class DrawerSellerHelper extends DrawerHelper
         return gmMenu;
     }
 
-    private boolean isGoldMerchantSync() {
-         return SessionHandler.isGoldMerchant(context);
-    }
-
     private void isGoldMerchantAsync(){
         getShopInfoUseCase.execute(RequestParams.EMPTY, new Subscriber<ShopModel>() {
             @Override
@@ -328,44 +330,14 @@ public class DrawerSellerHelper extends DrawerHelper
             public void onNext(ShopModel shopModel) {
                 DrawerGroup goldMerchantMenu = getGoldMerchantMenu(shopModel.info.isGoldMerchant());
 
+                // update gold merchant
+                isGoldMerchant = shopModel.info.isGoldMerchant();
+
                 ArrayList<DrawerItem> data = adapter.getData();
-                adapter.getData().set(4, goldMerchantMenu);
+                adapter.getData().set(GOLD_MERCHANT_INDEX, goldMerchantMenu);
                 adapter.notifyItemChanged(4);
             }
         });
-    }
-
-    /**
-     * // manually create DI for this
-     * @return
-     */
-    @NonNull
-    private GetShopInfoUseCase getGetShopInfoUseCase() {
-        OkHttpClient okHttpClient = OkHttpFactory.create().buildDaggerClientDefaultAuth(new FingerprintInterceptor(),
-                new TkpdAuthInterceptor(),
-                OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy(),
-                new ChuckInterceptor(context),
-                new DebugInterceptor(),
-                new ApiCacheInterceptor());
-
-        Retrofit.Builder builder = new Retrofit.Builder()
-                .addConverterFactory(new GeneratedHostConverter())
-                .addConverterFactory(new TkpdResponseConverter())
-                .addConverterFactory(new StringResponseConverter())
-                .addConverterFactory(GsonConverterFactory.create(new Gson()))
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
-
-        ShopApi shopApi = builder.baseUrl(TkpdBaseURL.BASE_DOMAIN).client(okHttpClient).build().create(ShopApi.class);
-
-        ShopInfoRepository shopInfoRepository
-                = new ShopInfoRepositoryImpl(context, new ShopInfoDataSource(new ShopInfoCloud(context, shopApi), new SimpleDataResponseMapper<ShopModel>()));
-        return new GetShopInfoUseCase(
-                new JobExecutor(), new UIThread(), shopInfoRepository
-        );
-    }
-
-    public void onResume(){
-        isGoldMerchantAsync();
     }
 
     @Override
@@ -499,7 +471,7 @@ public class DrawerSellerHelper extends DrawerHelper
                     context.startActivity(intent);
                     break;
                 case TkpdState.DrawerPosition.FEATURED_PRODUCT:
-                    if(isGoldMerchantSync()) {
+                    if(isGoldMerchant) {
                         UnifyTracking.eventClickMenuFeaturedProduct();
                         intent = new Intent(context, GMFeaturedProductActivity.class);
                         context.startActivity(intent);

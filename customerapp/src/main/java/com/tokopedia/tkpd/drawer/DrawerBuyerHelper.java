@@ -188,57 +188,24 @@ public class DrawerBuyerHelper extends DrawerHelper
                 true));
     }
 
-    private DrawerGroup getGoldMerchantMenu() {
-        return getGoldMerchantMenu(isGoldMerchantSync());
-    }
-
-    private DrawerGroup getGoldMerchantMenu(boolean isGoldMerchant) {
-        DrawerGroup gmMenu = new DrawerGroup(context.getString(R.string.drawer_title_gold_merchant),
-                R.drawable.ic_goldmerchant_drawer,
-                TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE,
-                drawerCache.getBoolean(DrawerAdapter.IS_GM_OPENED, false),
-                0);
-
-        String gmString = isGoldMerchant ?
-                context.getString(R.string.extend_gold_merchant) :
-                context.getString(R.string.upgrade_gold_merchant);
-
-        gmMenu.add(new DrawerItem(gmString,
-                TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND,
-                drawerCache.getBoolean(DrawerAdapter.IS_GM_OPENED, false),
-                0));
-        gmMenu.add(new DrawerItem(context.getString(com.tokopedia.seller.R.string.featured_product_title),
-                TkpdState.DrawerPosition.FEATURED_PRODUCT,
-                true
-        ));
-        return gmMenu;
-    }
-
-    private boolean isGoldMerchantSync() {
-        return SessionHandler.isGoldMerchant(context);
-    }
-
-    private void isGoldMerchantAsync(){
-        getShopInfoUseCase.execute(RequestParams.EMPTY, new Subscriber<ShopModel>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(ShopModel shopModel) {
-                DrawerGroup goldMerchantMenu = getGoldMerchantMenu(shopModel.info.isGoldMerchant());
-
-                ArrayList<DrawerItem> data = adapter.getData();
-                adapter.getData().set(4, goldMerchantMenu);
-                adapter.notifyItemChanged(4);
-            }
-        });
+    private DrawerItem getGoldMerchantMenu() {
+        DrawerItem menu;
+        boolean isGoldMerchant = SessionHandler.isGoldMerchant(context);
+        if (isGoldMerchant) {
+            menu = new DrawerGroup(context.getString(R.string.drawer_title_gold_merchant),
+                    R.drawable.ic_goldmerchant_drawer,
+                    TkpdState.DrawerPosition.GOLD_MERCHANT,
+                    drawerCache.getBoolean(DrawerAdapter.IS_GM_OPENED, false),
+                    0);
+            ((DrawerGroup) menu).add(new DrawerItem(context.getString(R.string.drawer_title_featured_product),
+                    TkpdState.DrawerPosition.FEATURED_PRODUCT, false, true));
+        } else {
+            menu = (new DrawerItem(context.getString(R.string.drawer_title_gold_merchant),
+                    R.drawable.ic_goldmerchant_drawer,
+                    TkpdState.DrawerPosition.GOLD_MERCHANT,
+                    false));
+        }
+        return menu;
     }
 
     private DrawerItem getProductMenu() {
@@ -652,9 +619,5 @@ public class DrawerBuyerHelper extends DrawerHelper
                     TkpdState.DrawerPosition.APPSHARE,
                     true, true));
         }
-    }
-
-    public void onResume(){
-        isGoldMerchantAsync();
     }
 }
