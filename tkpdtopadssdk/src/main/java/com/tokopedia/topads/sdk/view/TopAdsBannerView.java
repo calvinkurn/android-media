@@ -78,7 +78,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         }
     }
 
-    private void createViewCpmShop(Context context, CpmData.Cpm cpm) {
+    private void createViewCpmShop(Context context, final CpmData.Cpm cpm) {
         inflate(getContext(), R.layout.layout_ads_banner_shop, this);
         final ImageView iconImg = (ImageView) findViewById(R.id.icon);
         TextView promotedTxt = (TextView) findViewById(R.id.title_promote);
