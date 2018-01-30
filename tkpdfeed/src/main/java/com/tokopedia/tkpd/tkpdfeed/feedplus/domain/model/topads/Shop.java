@@ -12,24 +12,6 @@ import java.util.List;
  * Copied to feed by milhamj 1/18/17.
  */
 public class Shop {
-
-    private static final String KEY_ID = "id";
-    private static final String KEY_NAME = "name";
-    private static final String KEY_DOMAIN = "domain";
-    private static final String KEY_TAGLINE = "tagline";
-    private static final String KEY_LOCATION = "location";
-    private static final String KEY_CITY = "city";
-    private static final String KEY_IMAGE_SHOP = "image_shop";
-    private static final String KEY_GOLD_SHOP = "gold_shop";
-    private static final String KEY_GOLD_SHOP_BADGE = "gold_shop_badge";
-    private static final String KEY_LUCKY_SHOP = "lucky_shop";
-    private static final String KEY_SHOP_IS_OFFICIAL = "shop_is_official";
-    private static final String KEY_URI = "uri";
-    private static final String KEY_IMAGE_PRODUCT = "image_product";
-    private static final String KEY_OWNER_ID = "owner_id";
-    private static final String KEY_IS_OWNER = "is_owner";
-    private static final String KEY_BADGES = "badges";
-
     private String id;
     private String name;
     private String domain;
@@ -47,61 +29,27 @@ public class Shop {
     private boolean isOwner;
     private List<Badge> badges = new ArrayList<>();
 
-    public Shop(JSONObject object) throws JSONException {
-        if(!object.isNull(KEY_ID)) {
-            setId(object.getString(KEY_ID));
-        }
-        if(!object.isNull(KEY_NAME)) {
-            setName(object.getString(KEY_NAME));
-        }
-        if(!object.isNull(KEY_DOMAIN)) {
-            setDomain(object.getString(KEY_DOMAIN));
-        }
-        if(!object.isNull(KEY_TAGLINE)) {
-            setTagline(object.getString(KEY_TAGLINE));
-        }
-        if(!object.isNull(KEY_LOCATION)) {
-            setLocation(object.getString(KEY_LOCATION));
-        }
-        if(!object.isNull(KEY_CITY)) {
-            setCity(object.getString(KEY_CITY));
-        }
-        if(!object.isNull(KEY_IMAGE_SHOP)) {
-            setImageShop(new ImageShop(object.getJSONObject(KEY_IMAGE_SHOP)));
-        }
-        if(!object.isNull(KEY_GOLD_SHOP)) {
-            setGoldShop(object.getBoolean(KEY_GOLD_SHOP));
-        }
-        if(!object.isNull(KEY_GOLD_SHOP_BADGE)) {
-            setGoldShopBadge(object.getBoolean(KEY_GOLD_SHOP_BADGE));
-        }
-        if(!object.isNull(KEY_LUCKY_SHOP)) {
-            setLuckyShop(object.getString(KEY_LUCKY_SHOP));
-        }
-        if(!object.isNull(KEY_SHOP_IS_OFFICIAL)) {
-            setShop_is_official(object.getBoolean(KEY_SHOP_IS_OFFICIAL));
-        }
-        if(!object.isNull(KEY_URI)) {
-            setUri(object.getString(KEY_URI));
-        }
-        if(!object.isNull(KEY_OWNER_ID)) {
-            setOwnerId(object.getString(KEY_OWNER_ID));
-        }
-        if(!object.isNull(KEY_IS_OWNER)) {
-            setOwner(object.getBoolean(KEY_IS_OWNER));
-        }
-        if(!object.isNull(KEY_IMAGE_PRODUCT)) {
-            JSONArray imageProductArray = object.getJSONArray(KEY_IMAGE_PRODUCT);
-            for (int i = 0; i < imageProductArray.length(); i++) {
-                imageProduct.add(new ImageProduct(imageProductArray.getJSONObject(i)));
-            }
-        }
-        if(!object.isNull(KEY_BADGES)) {
-            JSONArray badgeArray = object.getJSONArray(KEY_BADGES);
-            for (int i = 0; i < badgeArray.length(); i++) {
-                badges.add(new Badge(badgeArray.getJSONObject(i)));
-            }
-        }
+    public Shop(String id, String name, String domain, String tagline, String location,
+                String city, ImageShop imageShop, boolean goldShop, boolean goldShopBadge,
+                String luckyShop, boolean shopIsOfficial, String uri,
+                List<ImageProduct> imageProduct, String ownerId, boolean isOwner,
+                List<Badge> badges) {
+        this.id = id;
+        this.name = name;
+        this.domain = domain;
+        this.tagline = tagline;
+        this.location = location;
+        this.city = city;
+        this.imageShop = imageShop;
+        this.goldShop = goldShop;
+        this.goldShopBadge = goldShopBadge;
+        this.luckyShop = luckyShop;
+        this.shopIsOfficial = shopIsOfficial;
+        this.uri = uri;
+        this.imageProduct = imageProduct;
+        this.ownerId = ownerId;
+        this.isOwner = isOwner;
+        this.badges = badges;
     }
 
     public String getId() {

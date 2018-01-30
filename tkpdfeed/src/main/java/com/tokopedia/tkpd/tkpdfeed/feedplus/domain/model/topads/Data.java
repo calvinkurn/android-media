@@ -1,24 +1,10 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.topads;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 /**
  * Created by errysuprayogi on 3/27/17.
  * Copied to feed by milhamj 1/18/17.
  */
 public class Data {
-
-    private static final String KEY_ID = "id";
-    private static final String KEY_AD_REF = "id";
-    private static final String KEY_REDIRECT = "redirect";
-    private static final String KEY_STICKER_ID = "sticker_id";
-    private static final String KEY_STICKER_IMAGE = "sticker_image";
-    private static final String KEY_PRODUCT_CLICK_URL = "product_click_url";
-    private static final String KEY_SHOP_CLICK_URL = "shop_click_url";
-    private static final String KEY_SHOP = "shop";
-    private static final String KEY_PRODUCT = "product";
-
     private String id;
     private String adRefKey;
     private String redirect;
@@ -28,36 +14,21 @@ public class Data {
     private String shopClickUrl;
     private Shop shop;
     private Product product;
-    private boolean favorit;
+    private boolean favorite;
 
-    public Data(JSONObject object) throws JSONException {
-        if(!object.isNull(KEY_ID)) {
-            setId(object.getString(KEY_ID));
-        }
-        if(!object.isNull(KEY_AD_REF)) {
-            setAdRefKey(object.getString(KEY_AD_REF));
-        }
-        if(!object.isNull(KEY_REDIRECT)) {
-            setRedirect(object.getString(KEY_REDIRECT));
-        }
-        if(!object.isNull(KEY_STICKER_ID)) {
-            setStickerId(object.getString(KEY_STICKER_ID));
-        }
-        if(!object.isNull(KEY_STICKER_IMAGE)) {
-            setStickerImage(object.getString(KEY_STICKER_IMAGE));
-        }
-        if(!object.isNull(KEY_PRODUCT_CLICK_URL)) {
-            setProductClickUrl(object.getString(KEY_PRODUCT_CLICK_URL));
-        }
-        if(!object.isNull(KEY_SHOP_CLICK_URL)) {
-            setShopClickUrl(object.getString(KEY_SHOP_CLICK_URL));
-        }
-        if(!object.isNull(KEY_PRODUCT)) {
-            setProduct(new Product(object.getJSONObject(KEY_PRODUCT)));
-        }
-        if(!object.isNull(KEY_SHOP)) {
-            setShop(new Shop(object.getJSONObject(KEY_SHOP)));
-        }
+    public Data(String id, String adRefKey, String redirect, String stickerId,
+                String stickerImage, String productClickUrl, String shopClickUrl, Shop shop,
+                Product product, boolean favorite) {
+        this.id = id;
+        this.adRefKey = adRefKey;
+        this.redirect = redirect;
+        this.stickerId = stickerId;
+        this.stickerImage = stickerImage;
+        this.productClickUrl = productClickUrl;
+        this.shopClickUrl = shopClickUrl;
+        this.shop = shop;
+        this.product = product;
+        this.favorite = favorite;
     }
 
     public String getId() {
@@ -132,11 +103,11 @@ public class Data {
         this.product = product;
     }
 
-    public boolean isFavorit() {
-        return favorit;
+    public boolean isFavorite() {
+        return favorite;
     }
 
-    public void setFavorit(boolean favorit) {
-        this.favorit = favorit;
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
     }
 }

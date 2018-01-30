@@ -8,15 +8,10 @@ import org.json.JSONObject;
  * Copied to feed by milhamj 1/18/17.
  */
 public class Category {
-
-    private static final String KEY_ID = "id";
-
     private String id;
 
-    public Category(JSONObject object) throws JSONException {
-        if(!object.isNull(KEY_ID)){
-            setId(object.getString(KEY_ID));
-        }
+    public Category(String id) {
+        this.id = id;
     }
 
     public String getId() {

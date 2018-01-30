@@ -8,14 +8,6 @@ import org.json.JSONObject;
  * Copied to feed by milhamj 1/18/17.
  */
 public class ProductImage {
-
-    private static final String KEY_M_URL = "m_url";
-    private static final String KEY_S_URL = "s_url";
-    private static final String KEY_XS_URL = "xs_url";
-    private static final String KEY_M_ECS = "m_ecs";
-    private static final String KEY_S_ECS = "s_ecs";
-    private static final String KEY_XS_ECS = "xs_ecs";
-
     private String m_url;
     private String s_url;
     private String xs_url;
@@ -23,25 +15,14 @@ public class ProductImage {
     private String s_ecs;
     private String xs_ecs;
 
-    public ProductImage(JSONObject object) throws JSONException {
-        if(!object.isNull(KEY_M_URL)){
-            setM_url(object.getString(KEY_M_URL));
-        }
-        if(!object.isNull(KEY_S_URL)){
-            setS_url(object.getString(KEY_S_URL));
-        }
-        if(!object.isNull(KEY_XS_URL)){
-            setXs_url(object.getString(KEY_XS_URL));
-        }
-        if(!object.isNull(KEY_M_ECS)){
-            setM_ecs(object.getString(KEY_M_ECS));
-        }
-        if(!object.isNull(KEY_S_ECS)){
-            setS_ecs(object.getString(KEY_S_ECS));
-        }
-        if(!object.isNull(KEY_XS_ECS)){
-            setXs_ecs(object.getString(KEY_XS_ECS));
-        }
+    public ProductImage(String m_url, String s_url, String xs_url, String m_ecs, String s_ecs,
+                        String xs_ecs) {
+        this.m_url = m_url;
+        this.s_url = s_url;
+        this.xs_url = xs_url;
+        this.m_ecs = m_ecs;
+        this.s_ecs = s_ecs;
+        this.xs_ecs = xs_ecs;
     }
 
     public String getM_url() {

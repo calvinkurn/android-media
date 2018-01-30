@@ -13,25 +13,6 @@ import java.util.List;
  */
 
 public class Product {
-
-    private static final String KEY_ID = "id";
-    private static final String KEY_NAME = "name";
-    private static final String KEY_IMAGE = "image";
-    private static final String KEY_URI = "uri";
-    private static final String KEY_RELATIVE_URI = "relative_uri";
-    private static final String KEY_PRICE_FORMAT = "price_format";
-    private static final String KEY_COUNT_TALK_FORMAT = "count_talk_format";
-    private static final String KEY_COUNT_REVIEW_FORMAT = "count_review_format";
-    private static final String KEY_CATEGORY = "category";
-    private static final String KEY_PRODUCT_PREORDER = "product_preorder";
-    private static final String KEY_PRODUCT_WHOLESALE = "product_wholesale";
-    private static final String KEY_FREERETURN = "free_feturn";
-    private static final String KEY_PRODUCT_CASHBACK = "product_cashback";
-    private static final String KEY_PRODUCT_CASHBACK_RATE = "product_cashback_rate";
-    private static final String KEY_PRODUCT_RATE = "product_rating";
-    private static final String KEY_WHOLESALE_PRICE = "wholesale_price";
-    private static final String KEY_LABELS = "labels";
-
     private String id;
     private String name;
     private ProductImage image;
@@ -50,64 +31,28 @@ public class Product {
     private List<WholesalePrice> wholesalePrice = new ArrayList<>();
     private List<Label> labels = new ArrayList<>();
 
-    public Product(JSONObject object) throws JSONException {
-        if(!object.isNull(KEY_ID)){
-            setId(object.getString(KEY_ID));
-        }
-        if(!object.isNull(KEY_NAME)){
-            setName(object.getString(KEY_NAME));
-        }
-        if(!object.isNull(KEY_IMAGE)){
-            setImage(new ProductImage(object.getJSONObject(KEY_IMAGE)));
-        }
-        if(!object.isNull(KEY_URI)){
-            setUri(object.getString(KEY_URI));
-        }
-        if(!object.isNull(KEY_RELATIVE_URI)){
-            setRelativeUri(object.getString(KEY_RELATIVE_URI));
-        }
-        if(!object.isNull(KEY_PRICE_FORMAT)){
-            setPriceFormat(object.getString(KEY_PRICE_FORMAT));
-        }
-        if(!object.isNull(KEY_COUNT_TALK_FORMAT)){
-            setCountTalkFormat(object.getString(KEY_COUNT_TALK_FORMAT));
-        }
-        if(!object.isNull(KEY_COUNT_REVIEW_FORMAT)){
-            setCountReviewFormat(object.getString(KEY_COUNT_REVIEW_FORMAT));
-        }
-        if(!object.isNull(KEY_CATEGORY)){
-            setCategory(new Category(object.getJSONObject(KEY_CATEGORY)));
-        }
-        if(!object.isNull(KEY_PRODUCT_PREORDER)){
-            setProductPreorder(object.getBoolean(KEY_PRODUCT_PREORDER));
-        }
-        if(!object.isNull(KEY_PRODUCT_WHOLESALE)){
-            setProductWholesale(object.getBoolean(KEY_PRODUCT_WHOLESALE));
-        }
-        if(!object.isNull(KEY_FREERETURN)){
-            setFreeReturn(object.getString(KEY_FREERETURN));
-        }
-        if(!object.isNull(KEY_PRODUCT_CASHBACK)){
-            setProductCashback(object.getBoolean(KEY_PRODUCT_CASHBACK));
-        }
-        if(!object.isNull(KEY_PRODUCT_CASHBACK_RATE)){
-            setProductCashbackRate(object.getString(KEY_PRODUCT_CASHBACK_RATE));
-        }
-        if(!object.isNull(KEY_PRODUCT_RATE)){
-            setProductRating(object.getInt(KEY_PRODUCT_RATE));
-        }
-        if(!object.isNull(KEY_WHOLESALE_PRICE)){
-            JSONArray wholesalePriceArray = object.getJSONArray(KEY_WHOLESALE_PRICE);
-            for (int i = 0; i < wholesalePriceArray.length(); i++) {
-                wholesalePrice.add(new WholesalePrice(wholesalePriceArray.getJSONObject(i)));
-            }
-        }
-        if(!object.isNull(KEY_LABELS)) {
-            JSONArray labelArray = object.getJSONArray(KEY_LABELS);
-            for (int i = 0; i < labelArray.length(); i++) {
-                labels.add(new Label(labelArray.getJSONObject(i)));
-            }
-        }
+    public Product(String id, String name, ProductImage image, String uri, String relativeUri,
+                   String priceFormat, String countTalkFormat, String countReviewFormat,
+                   Category category, boolean productPreorder, boolean productWholesale,
+                   String freeReturn, boolean productCashback, String productCashbackRate,
+                   int productRating, List<WholesalePrice> wholesalePrice, List<Label> labels) {
+        this.id = id;
+        this.name = name;
+        this.image = image;
+        this.uri = uri;
+        this.relativeUri = relativeUri;
+        this.priceFormat = priceFormat;
+        this.countTalkFormat = countTalkFormat;
+        this.countReviewFormat = countReviewFormat;
+        this.category = category;
+        this.productPreorder = productPreorder;
+        this.productWholesale = productWholesale;
+        this.freeReturn = freeReturn;
+        this.productCashback = productCashback;
+        this.productCashbackRate = productCashbackRate;
+        this.productRating = productRating;
+        this.wholesalePrice = wholesalePrice;
+        this.labels = labels;
     }
 
     public String getId() {

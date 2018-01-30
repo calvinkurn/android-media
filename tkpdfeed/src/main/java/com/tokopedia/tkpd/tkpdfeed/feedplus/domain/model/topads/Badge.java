@@ -9,10 +9,6 @@ import org.json.JSONObject;
  */
 
 public class Badge {
-
-    private static final String KEY_TITLE = "title";
-    private static final String KEY_IMAGE_URL = "image_url";
-
     private String title;
     private String imageUrl;
 
@@ -20,9 +16,9 @@ public class Badge {
         this.imageUrl = imageUrl;
     }
 
-    public Badge(JSONObject object) throws JSONException {
-        setTitle(object.getString(KEY_TITLE));
-        setImageUrl(object.getString(KEY_IMAGE_URL));
+    public Badge(String title, String imageUrl) {
+        this.title = title;
+        this.imageUrl = imageUrl;
     }
 
     public String getTitle() {

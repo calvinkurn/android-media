@@ -8,14 +8,6 @@ import org.json.JSONObject;
  * Copied to feed by milhamj 1/18/17.
  */
 public class ImageShop {
-
-    private static final String KEY_COVER = "cover";
-    private static final String KEY_S_URL = "s_url";
-    private static final String KEY_XS_URL = "xs_url";
-    private static final String KEY_COVER_ECS = "cover_ecs";
-    private static final String KEY_S_ECS = "s_ecs";
-    private static final String KEY_XS_ECS = "xs_ecs";
-
     private String cover;
     private String sUrl;
     private String xsUrl;
@@ -23,25 +15,14 @@ public class ImageShop {
     private String sEcs;
     private String xsEcs;
 
-    public ImageShop(JSONObject object) throws JSONException {
-        if(!object.isNull(KEY_COVER)) {
-            setCover(object.getString(KEY_COVER));
-        }
-        if(!object.isNull(KEY_S_URL)) {
-            setsUrl(object.getString(KEY_S_URL));
-        }
-        if(!object.isNull(KEY_XS_URL)) {
-            setXsUrl(object.getString(KEY_XS_URL));
-        }
-        if(!object.isNull(KEY_COVER_ECS)) {
-            setCoverEcs(object.getString(KEY_COVER_ECS));
-        }
-        if(!object.isNull(KEY_S_ECS)) {
-            setsEcs(object.getString(KEY_S_ECS));
-        }
-        if(!object.isNull(KEY_XS_ECS)) {
-            setXsEcs(object.getString(KEY_XS_ECS));
-        }
+    public ImageShop(String cover, String sUrl, String xsUrl, String coverEcs, String sEcs,
+                     String xsEcs) {
+        this.cover = cover;
+        this.sUrl = sUrl;
+        this.xsUrl = xsUrl;
+        this.coverEcs = coverEcs;
+        this.sEcs = sEcs;
+        this.xsEcs = xsEcs;
     }
 
     public String getCover() {
