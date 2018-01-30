@@ -207,9 +207,11 @@ public class CategoryProductStyle1View extends
             clientNumberInputView.setText(lastClientNumberHistory);
         }
 
-        if (hasLastOrderHistoryData()) {
-            if (!data.getClientNumberList().isEmpty()) {
-                clientNumberInputView.setAdapterAutoCompleteClientNumber(historyClientNumber.getRecentClientNumberList());
+        if (source == WIDGET) {
+            if (hasLastOrderHistoryData()) {
+                if (!data.getClientNumberList().isEmpty()) {
+                    clientNumberInputView.setAdapterAutoCompleteClientNumber(historyClientNumber.getRecentClientNumberList());
+                }
             }
         }
     }

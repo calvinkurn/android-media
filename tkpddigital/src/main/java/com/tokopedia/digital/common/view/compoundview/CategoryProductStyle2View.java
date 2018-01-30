@@ -240,6 +240,7 @@ public class CategoryProductStyle2View extends
         clientNumberInputView.renderData(operator.getClientNumberList().get(0));
         clientNumberInputView.setFilterMaxLength(operator.getRule().getMaximumLength());
         clientNumberInputView.resetInputTyped();
+        clientNumberInputView.enableImageOperator(operatorSelected.getImage());
         holderClientNumber.addView(clientNumberInputView);
 
         if (hasLastOrderHistoryData()) {
@@ -254,13 +255,13 @@ public class CategoryProductStyle2View extends
             }
         }
 
-        if (hasLastOrderHistoryData()) {
-            if (!operator.getClientNumberList().isEmpty()) {
-                clientNumberInputView.setAdapterAutoCompleteClientNumber(historyClientNumber.getRecentClientNumberList());
+        if (source == WIDGET) {
+            if (hasLastOrderHistoryData()) {
+                if (!operator.getClientNumberList().isEmpty()) {
+                    clientNumberInputView.setAdapterAutoCompleteClientNumber(historyClientNumber.getRecentClientNumberList());
+                }
             }
         }
-
-        clientNumberInputView.enableImageOperator(operatorSelected.getImage());
     }
 
     private void showProducts() {
