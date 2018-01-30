@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.checkout.view.activity.ICartShipmentActivity;
 import com.tokopedia.transaction.checkout.view.adapter.MultipleAddressAdapter;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressAdapterData;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressItemData;
@@ -28,6 +29,8 @@ import static com.tokopedia.transaction.checkout.view.AddShipmentAddressFragment
 
 public class MultipleAddressFragment extends TkpdFragment
         implements MultipleAddressAdapter.MultipleAddressAdapterListener {
+
+    private ICartShipmentActivity cartShipmentActivity;
 
     public static final int ADD_SHIPMENT_ADDRESS_REQUEST_CODE = 21;
     public static final int EDIT_SHIPMENT_ADDRESS_REQUEST_CODE = 22;
@@ -141,5 +144,11 @@ public class MultipleAddressFragment extends TkpdFragment
                 .beginTransaction()
                 .remove(getFragmentManager().findFragmentByTag(ADD_SHIPMENT_FRAGMENT_TAG))
                 .commit();
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        cartShipmentActivity = (ICartShipmentActivity) activity;
     }
 }

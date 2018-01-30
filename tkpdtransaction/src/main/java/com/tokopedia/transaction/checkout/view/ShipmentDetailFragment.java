@@ -1,32 +1,48 @@
 package com.tokopedia.transaction.checkout.view;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
-import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.view.adapter.CourierChoiceAdapter;
-import com.tokopedia.transaction.checkout.view.adapter.ShipmentChoiceAdapter;
+import com.tokopedia.transaction.checkout.view.data.CourierItemData;
+import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
+import com.tokopedia.transaction.checkout.view.presenter.IShipmentDetailPresenter;
+import com.tokopedia.transaction.checkout.view.presenter.ShipmentDetailPresenter;
 import com.tokopedia.transaction.checkout.view.view.IShipmentDetailView;
 
+import java.util.List;
+
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 
@@ -35,7 +51,10 @@ import butterknife.OnClick;
  */
 
 public class ShipmentDetailFragment extends BasePresenterFragment implements IShipmentDetailView,
-        CourierChoiceAdapter.ViewListener {
+        CourierChoiceAdapter.ViewListener, OnMapReadyCallback {
+
+    public static final int REQUSET_CODE_OPEN_SHIPMENT_CHOICE = 1;
+    private static final int REQUEST_CODE_SHIPMENT_CHOICE = 11;
 
     @BindView(R2.id.scroll_view_content)
     ScrollView scrollViewContent;
@@ -43,12 +62,22 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
     LinearLayout llNetworkErrorView;
     @BindView(R2.id.pb_loading)
     ProgressBar pbLoading;
-    @BindView(R2.id.sp_shipment_choice)
-    Spinner spShipmentChoice;
+    @BindView(R2.id.img_bt_close_ticker)
+    ImageButton imgBtCloseTicker;
+    @BindView(R2.id.ll_shipment_info_ticker)
+    LinearLayout llShipmentInfoTicker;
+    @BindView(R2.id.tv_shipment_info_ticker)
+    TextView tvShipmentInfoTicker;
+    @BindView(R2.id.ll_shipment_choice)
+    LinearLayout llShipmentChoice;
+    @BindView(R2.id.tv_shipment_type)
+    TextView tvShipmentType;
     @BindView(R2.id.rv_courier_choice)
     RecyclerView rvCourierChoice;
-    @BindView(R2.id.tv_shipment_information)
-    TextView tvShipmentInformation;
+    @BindView(R2.id.ll_expanded_courier_list)
+    LinearLayout llExpandedCourierList;
+    @BindView(R2.id.ll_pinpoint)
+    LinearLayout llPinpoint;
     @BindView(R2.id.map_view_pinpoint)
     MapView mapViewPinpoint;
     @BindView(R2.id.bt_change_pinpoint)
@@ -97,12 +126,21 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
     TextInputLayout textInputLayoutShipperPhone;
     @BindView(R2.id.ll_dropshipper_info)
     LinearLayout llDropshipperInfo;
-    @BindView(R2.id.tv_total_shipping_fee)
-    TextView tvTotalShippingFee;
+    @BindView(R2.id.tv_delivery_fee)
+    TextView tvDeliveryFee;
     @BindView(R2.id.bt_save)
     Button btSave;
 
     private CourierChoiceAdapter courierChoiceAdapter;
+    private IShipmentDetailPresenter presenter;
+
+    public static ShipmentDetailFragment newInstance() {
+        ShipmentDetailFragment fragment = new ShipmentDetailFragment();
+        Bundle bundle = new Bundle();
+        // Todo : Add bundle if any
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     @Override
     protected boolean isRetainInstance() {
@@ -131,7 +169,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
 
     @Override
     protected void initialPresenter() {
-
+        presenter = new ShipmentDetailPresenter();
     }
 
     @Override
@@ -151,7 +189,9 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
 
     @Override
     protected void initView(View view) {
-
+        ButterKnife.bind(view);
+        presenter.attachView(this);
+        presenter.loadShipmentData();
     }
 
     @Override
@@ -182,17 +222,39 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
     }
 
     @Override
-    public void renderInstantShipment() {
-
+    public void showNoConnection(@NonNull String message) {
+        scrollViewContent.setVisibility(View.GONE);
+        NetworkErrorHelper.showEmptyState(getActivity(), llNetworkErrorView, message,
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        presenter.loadShipmentData();
+                    }
+                });
     }
 
     @Override
-    public void renderRegularShipment() {
+    public void showData() {
+        scrollViewContent.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void renderInstantShipment(ShipmentDetailData shipmentDetailData) {
+        setupMapView();
+        if (shipmentDetailData.getLatitude() == null || shipmentDetailData.getLongitude() == null) {
+            renderNoPinpoint();
+        } else {
+            renderPinpoint();
+        }
+    }
+
+    @Override
+    public void renderRegularShipment(ShipmentDetailData shipmentDetailData) {
         flPinpointMap.setVisibility(View.GONE);
     }
 
-    private void setupRecyclerView() {
-        courierChoiceAdapter = new CourierChoiceAdapter(this);
+    private void setupRecyclerView(List<CourierItemData> couriers) {
+        courierChoiceAdapter = new CourierChoiceAdapter(couriers, this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.VERTICAL, false);
         rvCourierChoice.setLayoutManager(linearLayoutManager);
@@ -211,19 +273,48 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
         btChangePinpoint.setVisibility(View.VISIBLE);
     }
 
-    @OnCheckedChanged(R2.id.switch_insurance)
-    void onSwitchInsuranceChanged() {
+    private void setupMapView() {
+        if (mapViewPinpoint != null) {
+            mapViewPinpoint.onCreate(null);
+            mapViewPinpoint.onResume();
+            mapViewPinpoint.getMapAsync(this);
+        }
+    }
+
+    private void setGoogleMap(GoogleMap googleMap) {
+        if (googleMap != null) {
+            Double latitude = 0D;
+            Double longitude = 0D;
+            LatLng latLng = new LatLng(latitude, longitude);
+
+            googleMap.getUiSettings().setMapToolbarEnabled(false);
+            googleMap.addMarker(new MarkerOptions().position(latLng)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_icon_pointer_toped))
+            ).setDraggable(true);
+            googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                @Override
+                public void onMapClick(LatLng latLng) {
+                    // need this even it's not used
+                    // it's used to override default function of OnMapClickListener
+                    // which is navigate to default Google Map Apps
+                }
+            });
+        }
+    }
+
+    private void showSnackBar(View view, String message) {
+        Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show();
+    }
+
+    @OnClick(R2.id.ll_shipment_choice)
+    void onShipmentChoiceClicked() {
 
     }
 
-    @OnCheckedChanged(R2.id.switch_partly_accept)
-    void onSwitchPartlyAcceptChanged() {
-
-    }
-
-    @OnCheckedChanged(R2.id.switch_dropshipper)
-    void onSwitchDropshipperChanged() {
-        llDropshipperInfo.setVisibility(View.VISIBLE);
+    @OnClick(R2.id.ll_expanded_courier_list)
+    void onExpandedCourierListClick() {
+        presenter.loadAllCourier();
     }
 
     @OnClick(R2.id.img_bt_insurance_info)
@@ -244,6 +335,36 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
                 "", R.drawable.ic_insurance);
     }
 
+    @OnClick(R2.id.img_bt_close_ticker)
+    void onCloseTickerClick() {
+        llShipmentInfoTicker.setVisibility(View.GONE);
+    }
+
+    @OnClick(R2.id.ll_shipment_choice)
+    void onShipmentChoiceClick() {
+        startActivityForResult(ShipmentChoiceActivity.createInstance(getActivity()), REQUEST_CODE_SHIPMENT_CHOICE);
+        getActivity().overridePendingTransition(R.anim.anim_bottom_up, R.anim.anim_top_down);
+    }
+
+    @OnCheckedChanged(R2.id.switch_insurance)
+    void onSwitchInsuranceChanged(CompoundButton view, boolean checked) {
+
+    }
+
+    @OnCheckedChanged(R2.id.switch_partly_accept)
+    void onSwitchPartlyAcceptChanged(CompoundButton view, boolean checked) {
+
+    }
+
+    @OnCheckedChanged(R2.id.switch_dropshipper)
+    void onSwitchDropshipperChanged(CompoundButton view, boolean checked) {
+        if(checked) {
+            llDropshipperInfo.setVisibility(View.VISIBLE);
+        } else {
+            llDropshipperInfo.setVisibility(View.GONE);
+        }
+    }
+
     private void showBottomSheet(String title, String message, int image) {
         BottomSheetView bottomSheetView = new BottomSheetView(getActivity());
         bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
@@ -257,7 +378,17 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
     }
 
     @Override
-    public void onCourierItemClick() {
+    public void onCourierItemClick(CourierItemData courierItemData) {
+
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        setGoogleMap(googleMap);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
     }
 }

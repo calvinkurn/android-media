@@ -12,4 +12,7 @@ public interface IShipmentChoiceView extends CustomerView {
 
     void hideLoading();
 
+    void showNoConnection(String message);
+
+    void showData();
 }

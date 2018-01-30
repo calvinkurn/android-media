@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.checkout.view.adapter;
 
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,9 @@ import android.widget.TextView;
 
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
+import com.tokopedia.transaction.checkout.view.data.ShipmentItemData;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -20,8 +24,10 @@ import butterknife.ButterKnife;
 public class ShipmentChoiceAdapter extends RecyclerView.Adapter<ShipmentChoiceAdapter.ShipmentViewHolder> {
 
     private ViewListener viewListener;
+    private List<ShipmentItemData> shipments;
 
-    public ShipmentChoiceAdapter(ViewListener viewListener) {
+    public ShipmentChoiceAdapter(List<ShipmentItemData> shipments, ViewListener viewListener) {
+        this.shipments = shipments;
         this.viewListener = viewListener;
     }
 
@@ -34,27 +40,48 @@ public class ShipmentChoiceAdapter extends RecyclerView.Adapter<ShipmentChoiceAd
     }
 
     @Override
-    public void onBindViewHolder(ShipmentViewHolder holder, int position) {
+    public void onBindViewHolder(final ShipmentViewHolder holder, final int position) {
+        ShipmentItemData shipmentItemData = shipments.get(position);
+        holder.tvShipmentType.setText(
+                holder.tvShipmentType.getContext().getResources().getString(
+                        R.string.label_shipment_type_format, shipmentItemData.getType()));
+        holder.tvPriceRange.setText(shipmentItemData.getPriceRange());
+        holder.tvDeliveryTimeRange.setText(shipmentItemData.getDeliveryTimeRange());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (holder.getAdapterPosition() >= 0 && shipments.size() > holder.getAdapterPosition()) {
+                    renderTypeface(holder);
+                    holder.imgBtCheck.setVisibility(View.VISIBLE);
+                    viewListener.onShipmentItemClick(shipments.get(holder.getAdapterPosition()));
+                }
+            }
+        });
+    }
 
+    private void renderTypeface(ShipmentViewHolder holder) {
+        holder.tvShipmentType.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+        holder.tvPriceRange.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+        holder.tvDeliveryTimeRange.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return shipments.size();
     }
 
     public interface ViewListener {
-        void onShipmentItemClick();
+        void onShipmentItemClick(ShipmentItemData shipmentItemData);
     }
 
-    protected class ShipmentViewHolder extends RecyclerView.ViewHolder {
+    static class ShipmentViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R2.id.tv_shipment_type)
         TextView tvShipmentType;
         @BindView(R2.id.tv_price_range)
         TextView tvPriceRange;
-        @BindView(R2.id.btn_check)
-        ImageButton btnCheck;
+        @BindView(R2.id.img_bt_check)
+        ImageButton imgBtCheck;
         @BindView(R2.id.tv_delivery_time_range)
         TextView tvDeliveryTimeRange;
 
@@ -62,7 +89,6 @@ public class ShipmentChoiceAdapter extends RecyclerView.Adapter<ShipmentChoiceAd
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
-
     }
 
 }

@@ -1012,6 +1012,7 @@ public class TkpdBaseURL {
     }
 
     public class Cart {
+        public static final String HMAC_KEY = "web_service_v4";
         public static final String VERSION = "v1";
         public static final String PATH_ADD_TO_CART = "api/" + VERSION + "/add_product_cart";
         public static final String PATH_CART_LIST = "api/" + VERSION + "/cart_list";

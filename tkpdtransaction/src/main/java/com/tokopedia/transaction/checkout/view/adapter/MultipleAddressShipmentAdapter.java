@@ -8,6 +8,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressItemData;
@@ -85,15 +86,33 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
         } else if(holder instanceof MultipleAddressShipmentFooterViewHolder) {
             MultipleAddressShipmentFooterViewHolder footerHolder =
                     (MultipleAddressShipmentFooterViewHolder) holder;
-            footerHolder.quantityTotal.setText(priceSummaryData.getQuantityText());
-            footerHolder.totalProductPrice.setText(priceSummaryData.getTotalProductPriceText());
-            footerHolder.totalShippingPrice.setText(priceSummaryData.getTotalShippingPriceText());
-            footerHolder.insurancePrice.setText(priceSummaryData.getInsurancePriceText());
-            footerHolder.additionalFee.setText(priceSummaryData.getAdditionalFeeText());
-            footerHolder.promoDiscount.setText(priceSummaryData.getPromoDiscountText());
+            footerHolder.quantityTotal.setText(priceChecker(
+                    priceSummaryData.getQuantity(),
+                    priceSummaryData.getTotalShippingPrice())
+            );
+            footerHolder.totalProductPrice.setText(priceChecker(
+                    priceSummaryData.getTotalProductPrice(),
+                    priceSummaryData.getTotalShippingPrice())
+            );
+            footerHolder.totalShippingPrice.setText(priceChecker(
+                    priceSummaryData.getTotalShippingPrice(),
+                    priceSummaryData.getTotalShippingPrice())
+            );
+            footerHolder.insurancePrice.setText(priceChecker(
+                    priceSummaryData.getInsurancePrice(),
+                    priceSummaryData.getTotalShippingPrice())
+            );
+            footerHolder.additionalFee.setText(priceChecker(
+                    priceSummaryData.getAdditionalFee(),
+                    priceSummaryData.getTotalShippingPrice())
+            );
+            footerHolder.promoDiscount.setText(priceChecker(
+                    priceSummaryData.getPromoDiscount(),
+                    priceSummaryData.getTotalShippingPrice())
+            );
             footerHolder.totalPayment.setText(
                     totalPriceChecker(
-                            priceSummaryData.getTotalPaymentText(),
+                            formatPrice(priceSummaryData.getTotalPayment()),
                             priceSummaryData.getTotalShippingPrice()
                     )
             );
@@ -229,6 +248,18 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
     private String totalPriceChecker(String totalPriceText, long shipmentPrice) {
         if(shipmentPrice > 0) return totalPriceText;
         else return "-";
+    }
+
+    private String priceChecker(long price, long shipmentPrice) {
+        if(shipmentPrice > 0) return formatPrice(price);
+        else return "-";
+    }
+
+    private String formatPrice(long unformattedPrice) {
+        String formattedPrice = CurrencyFormatHelper
+                .ConvertToRupiah(String.valueOf(unformattedPrice));
+        formattedPrice = formattedPrice.replace(",", ".");
+        return formattedPrice;
     }
 
 }

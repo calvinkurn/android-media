@@ -12,6 +12,7 @@ import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.view.adapter.MultipleAddressShipmentAdapter;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressItemData;
+import com.tokopedia.transaction.checkout.view.data.MultipleAddressPriceSummaryData;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressShipmentAdapterData;
 
 import java.util.ArrayList;
@@ -39,7 +40,10 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
         View view = inflater.inflate(R.layout.multiple_address_shipment_fragment, container, false);
         RecyclerView orderAddressList = view.findViewById(R.id.order_shipment_list);
         orderAddressList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        orderAddressList.setAdapter(new MultipleAddressShipmentAdapter(dataList(), this));
+        orderAddressList.setAdapter(new MultipleAddressShipmentAdapter(
+                dataList(),
+                dummyPriceSummaryData(),
+                this));
         /*RecyclerView orderAddressList = view.findViewById(R.id.order_address_list);
         orderAddressList.setLayoutManager(new LinearLayoutManager(getActivity()));
         orderAddressList.setAdapter(new MultipleAddressShipmentAdapter());*/
@@ -84,5 +88,15 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
     @Override
     public void onChooseShipment(MultipleAddressShipmentAdapterData addressAdapterData) {
 
+    }
+
+    private MultipleAddressPriceSummaryData dummyPriceSummaryData() {
+        MultipleAddressPriceSummaryData data = new MultipleAddressPriceSummaryData();
+        data.setAdditionalFee(10000);
+        data.setInsurancePrice(1000);
+        data.setPromoDiscount(4000);
+        data.setQuantity(3);
+        data.setTotalProductPrice(10000);
+        return new MultipleAddressPriceSummaryData();
     }
 }

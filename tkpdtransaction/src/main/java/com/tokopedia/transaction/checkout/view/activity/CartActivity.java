@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.checkout.view;
+package com.tokopedia.transaction.checkout.view.activity;
 
 import android.app.Fragment;
 import android.net.Uri;
@@ -6,6 +6,8 @@ import android.os.Bundle;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.checkout.view.CartFragment;
+import com.tokopedia.transaction.checkout.view.ShipmentDetailActivity;
 
 /**
  * @author anggaprasetiyo on 18/01/18.
@@ -34,10 +36,11 @@ public class CartActivity extends BasePresenterActivity {
 
     @Override
     protected void initView() {
+        //startActivityForResult(ShipmentDetailActivity.createInstance(this), 1);
         Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
         if (fragment == null || !(fragment instanceof CartFragment))
             getFragmentManager().beginTransaction().replace(R.id.container,
-                    MultipleAddressFragment.newInstance()).commit();
+                    CartFragment.newInstance()).commit();
     }
 
     @Override

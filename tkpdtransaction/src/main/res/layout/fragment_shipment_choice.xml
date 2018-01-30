@@ -4,10 +4,44 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <LinearLayout
+        android:id="@+id/ll_shipment_info_ticker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_ms"
+        android:layout_marginRight="@dimen/margin_ms"
+        android:layout_marginTop="@dimen/new_margin_med"
+        android:background="@drawable/border_rectangle_yellow"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_shipment_info_ticker"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:lineSpacingExtra="7sp"
+            android:padding="@dimen/padding_ms"
+            android:text="Pengiriman instan dan same day yang dipesan diatas pk 15:00 WIB, akan dikirim hari kerja berikutnya"
+            android:textSize="11sp" />
+
+        <ImageButton
+            android:id="@+id/img_bt_close_ticker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:background="@color/transparent"
+            android:padding="@dimen/padding_vs"
+            android:src="@drawable/ic_close_ticker_24dp"
+            android:tint="@color/yellow_ticker" />
+
+    </LinearLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_shipment_choice"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ll_shipment_info_ticker"
+        android:layout_marginTop="@dimen/new_margin_med">
 
     </android.support.v7.widget.RecyclerView>
 
