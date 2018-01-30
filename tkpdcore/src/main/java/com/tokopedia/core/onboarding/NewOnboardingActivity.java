@@ -155,9 +155,10 @@ public class NewOnboardingActivity extends OnboardingActivity {
     private void setNext() {
         nextView.setImageResource(R.drawable.next_ic);
         nextView.setMinimumWidth(0);
-        FrameLayout.LayoutParams params1 = (FrameLayout.LayoutParams) nextView.getLayoutParams();
+        FrameLayout.LayoutParams nextViewLayoutParams =
+                (FrameLayout.LayoutParams) nextView.getLayoutParams();
         float density = getResources().getDisplayMetrics().density;
-        params1.rightMargin = (int) (20 * density);
+        nextViewLayoutParams.rightMargin = (int) (20 * density);
     }
 
     public void setNextResource() {
