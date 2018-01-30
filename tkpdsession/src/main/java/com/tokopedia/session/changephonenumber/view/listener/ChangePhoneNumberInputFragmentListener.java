@@ -2,8 +2,8 @@ package com.tokopedia.session.changephonenumber.view.listener;
 
 import android.text.Editable;
 
-import com.tokopedia.core.base.presentation.CustomerPresenter;
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
 
 /**
  * Created by milhamj on 20/12/17.

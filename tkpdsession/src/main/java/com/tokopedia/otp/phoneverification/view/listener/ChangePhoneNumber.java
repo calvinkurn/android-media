@@ -3,8 +3,8 @@ package com.tokopedia.otp.phoneverification.view.listener;
 import android.app.Activity;
 import android.widget.EditText;
 
-import com.tokopedia.core.base.presentation.CustomerPresenter;
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
 
 /**
  * Created by nisie on 2/24/17.

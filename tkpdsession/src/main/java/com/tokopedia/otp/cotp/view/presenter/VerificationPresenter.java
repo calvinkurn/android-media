@@ -137,7 +137,7 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
                 break;
             default:
                 validateOtpUseCase.execute(ValidateOtpUseCase.getParam(
-                        sessionHandler.getTempLoginSession(MainApplication.getAppContext()),
+                        sessionHandler.getLoginID(),
                         passModel.getOtpType(),
                         otpCode
                 ), new VerifyOtpSubscriber(getView()));

@@ -2,8 +2,8 @@ package com.tokopedia.otp.phoneverification.view.listener;
 
 import android.app.Activity;
 
-import com.tokopedia.core.base.presentation.CustomerPresenter;
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 
 /**
  * Created by nisie on 2/23/17.
