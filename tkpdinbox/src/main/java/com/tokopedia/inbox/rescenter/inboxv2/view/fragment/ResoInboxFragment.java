@@ -34,8 +34,6 @@ import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.ResoInboxFilterModel
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.ResoInboxSortModel;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.SortModel;
 
-import java.util.ArrayList;
-
 import javax.inject.Inject;
 
 /**
@@ -230,16 +228,10 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
         rvInbox.setAdapter(inboxAdapter);
         inboxAdapter.notifyDataSetChanged();
         updateParams(true, result);
-        initFilterValue(result);
     }
 
-    private void initFilterValue(InboxItemResultViewModel result) {
-        if (inboxFilterModel.getFilterViewModelList().size() != 0) {
-            inboxFilterModel.setFilterViewModelList(result.getFilterViewModels());
-            inboxFilterModel.setSelectedFilterList(new ArrayList<Integer>());
-            inboxFilterModel.setDateFrom("");
-            inboxFilterModel.setDateTo("");
-        }
+    private void updateFilterValue(InboxItemResultViewModel result) {
+        inboxFilterModel.setFilterViewModelList(result.getFilterViewModels());
     }
 
     private void hideLayout() {
@@ -260,6 +252,7 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
 
     @Override
     public void onSuccessGetInbox(InboxItemResultViewModel result) {
+        updateFilterValue(result);
         getFirstInboxResult(result);
     }
 
