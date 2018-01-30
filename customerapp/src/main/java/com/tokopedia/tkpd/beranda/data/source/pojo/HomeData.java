@@ -18,6 +18,9 @@ public class HomeData {
     @Expose
     private Ticker ticker;
 
+    @Expose
+    private DynamicHomeIcon dynamicHomeIcon;
+
     public DynamicHomeChannel getDynamicHomeChannel() {
         return dynamicHomeChannel;
     }
@@ -40,5 +43,13 @@ public class HomeData {
 
     public void setTicker(Ticker ticker) {
         this.ticker = ticker;
+    }
+
+    public DynamicHomeIcon getDynamicHomeIcon() {
+        return dynamicHomeIcon;
+    }
+
+    public void setDynamicHomeIcon(DynamicHomeIcon dynamicHomeIcon) {
+        this.dynamicHomeIcon = dynamicHomeIcon;
     }
 }
