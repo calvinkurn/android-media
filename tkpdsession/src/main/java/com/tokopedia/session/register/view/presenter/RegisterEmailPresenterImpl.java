@@ -3,12 +3,10 @@ package com.tokopedia.session.register.view.presenter;
 import android.text.TextUtils;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.abstraction.common.utils.ErrorHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.network.retrofit.response.ErrorCode;
-import com.tokopedia.session.R;
+import com.tokopedia.network.ErrorCode;
 import com.tokopedia.session.register.RegisterConstant;
 import com.tokopedia.session.register.data.model.RegisterViewModel;
 import com.tokopedia.session.register.domain.interactor.registeremail.RegisterEmailUseCase;

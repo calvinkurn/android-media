@@ -1,6 +1,6 @@
 package com.tokopedia.session.login.loginphonenumber.view.subscriber;
 
-import com.tokopedia.core.network.retrofit.response.ErrorCode;
+import com.tokopedia.network.ErrorCode;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.otp.tokocashotp.view.viewmodel.LoginTokoCashViewModel;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;

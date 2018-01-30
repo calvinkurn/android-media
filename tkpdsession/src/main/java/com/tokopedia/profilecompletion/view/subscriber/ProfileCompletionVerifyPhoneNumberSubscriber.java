@@ -1,6 +1,6 @@
 package com.tokopedia.profilecompletion.view.subscriber;
 
-import com.tokopedia.core.network.retrofit.response.ErrorCode;
+import com.tokopedia.network.ErrorCode;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.otp.phoneverification.data.model.ValidateVerifyPhoneNumberDomain;
 import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionPhoneVerificationContract;

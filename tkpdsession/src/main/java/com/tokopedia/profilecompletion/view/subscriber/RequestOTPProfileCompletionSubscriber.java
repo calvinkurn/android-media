@@ -3,7 +3,7 @@ package com.tokopedia.profilecompletion.view.subscriber;
 import android.text.TextUtils;
 
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.retrofit.response.ErrorCode;
+import com.tokopedia.network.ErrorCode;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.otp.data.model.RequestOtpViewModel;
 import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionPhoneVerificationContract;

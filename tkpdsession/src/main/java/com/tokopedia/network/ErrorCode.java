@@ -1,4 +1,4 @@
-package com.tokopedia.core.network.retrofit.response;
+package com.tokopedia.network;
 
 /**
  * @author by nisie on 10/10/17.

@@ -1,6 +1,6 @@
 package com.tokopedia.session.changephonenumber.view.subscriber;
 
-import com.tokopedia.core.network.retrofit.response.ErrorCode;
+import com.tokopedia.network.ErrorCode;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberInputFragmentListener;
 

@@ -1,6 +1,6 @@
 package com.tokopedia.session.register.view.subscriber;
 
-import com.tokopedia.core.network.retrofit.response.ErrorCode;
+import com.tokopedia.network.ErrorCode;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.session.register.domain.model.CreatePasswordLoginDomain;
 import com.tokopedia.session.register.view.viewlistener.CreatePassword;

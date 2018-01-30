@@ -1,6 +1,6 @@
 package com.tokopedia.otp.phoneverification.view.subscriber;
 
-import com.tokopedia.core.network.retrofit.response.ErrorCode;
+import com.tokopedia.network.ErrorCode;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.otp.phoneverification.data.model.ChangePhoneNumberViewModel;
 import com.tokopedia.otp.phoneverification.view.listener.ChangePhoneNumber;

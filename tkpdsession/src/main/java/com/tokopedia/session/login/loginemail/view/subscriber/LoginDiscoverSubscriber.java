@@ -1,9 +1,7 @@
 package com.tokopedia.session.login.loginemail.view.subscriber;
 
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.retrofit.response.ErrorCode;
+import com.tokopedia.network.ErrorCode;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.session.R;
 import com.tokopedia.session.data.viewmodel.DiscoverViewModel;
 import com.tokopedia.session.login.loginemail.view.viewlistener.Login;
 
