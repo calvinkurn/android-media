@@ -3,7 +3,6 @@ package com.tokopedia.transaction.checkout.view;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -275,51 +274,54 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
         } else {
             renderPinpoint();
         }
-        flPinpointMap.setVisibility(View.VISIBLE);
+        llPinpoint.setVisibility(View.VISIBLE);
     }
 
-    @Override
-    public void renderInstantShipment(ShipmentDetailData shipmentDetailData) {
+    private void renderShipment(ShipmentDetailData shipmentDetailData) {
         llDropshipper.setVisibility(View.GONE);
         separatorPartialOrder.setVisibility(View.GONE);
-        if (shipmentDetailData.getShipmentInfo() != null) {
-            tvShipmentInfoTicker.setText(shipmentDetailData.getShipmentInfo());
-        } else {
-            llShipmentInfoTicker.setVisibility(View.GONE);
-        }
         setText(tvDeliveryFeeTotal, shipmentDetailData.getDeliveryPriceTotal());
+    }
 
+    private void renderShipmentWithMap(ShipmentDetailData shipmentDetailData) {
         showPinPointMap(shipmentDetailData);
+        renderShipment(shipmentDetailData);
+        presenter.setCourierList(shipmentDetailData.getShipmentItemData().get(0).getCourierItemData());
+    }
+
+    private void renderShipmentWithoutMap(ShipmentDetailData shipmentDetailData) {
+        llPinpoint.setVisibility(View.GONE);
+        renderShipment(shipmentDetailData);
         presenter.setCourierList(shipmentDetailData.getShipmentItemData().get(0).getCourierItemData());
     }
 
     @Override
+    public void renderInstantShipment(ShipmentDetailData shipmentDetailData) {
+        renderShipmentWithMap(shipmentDetailData);
+    }
+
+    @Override
     public void renderSameDayShipment(ShipmentDetailData shipmentDetailData) {
-        showPinPointMap(shipmentDetailData);
+        renderShipmentWithMap(shipmentDetailData);
     }
 
     @Override
     public void renderNextDayShipment(ShipmentDetailData shipmentDetailData) {
-        showPinPointMap(shipmentDetailData);
+        renderShipmentWithMap(shipmentDetailData);
     }
 
     @Override
     public void renderRegularShipment(ShipmentDetailData shipmentDetailData) {
-        flPinpointMap.setVisibility(View.GONE);
+        renderShipmentWithoutMap(shipmentDetailData);
     }
 
     @Override
     public void renderKargoShipment(ShipmentDetailData shipmentDetailData) {
-        flPinpointMap.setVisibility(View.GONE);
+        renderShipmentWithoutMap(shipmentDetailData);
     }
 
     @Override
     public void showPinPointChooserMap(ShipmentDetailData shipmentDetailData) {
-//        LocationPass locationPass;
-//        locationPass = new LocationPass();
-//        locationPass.setLatitude(String.valueOf(shipmentDetailData.getLatitude()));
-//        locationPass.setLongitude(String.valueOf(shipmentDetailData.getLongitude()));
-//        locationPass.setGeneratedAddress(shipmentDetailData.getAddress());
         Intent intent = GeolocationActivity.createInstance(context, null);
         startActivityForResult(intent, REQUEST_CODE_PINPOINT);
     }
@@ -398,16 +400,29 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
     }
 
     private void updateFeesGroupLayout() {
-        if (llInsuranceFee.getVisibility() == View.GONE &&
-                llAdditionalFee.getVisibility() == View.GONE) {
+        if (llInsuranceFee.getVisibility() == View.GONE && llAdditionalFee.getVisibility() == View.GONE) {
             llFeesGroup.setVisibility(View.GONE);
         } else {
             llFeesGroup.setVisibility(View.VISIBLE);
         }
     }
 
-    private void showSnackBar(View view, String message) {
-        Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show();
+    private void showSnackbarError(View view, String message) {
+        Snackbar snackbar = Snackbar
+                .make(view, message, Snackbar.LENGTH_INDEFINITE)
+                .setActionTextColor(ContextCompat.getColor(view.getContext(), R.color.black_70))
+                .setAction(R.string.label_action_snackbar_close, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                });
+
+        View snackbarView = snackbar.getView();
+        snackbarView.setBackgroundColor(ContextCompat.getColor(view.getContext(), R.color.red_50));
+        TextView textView = snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextColor(ContextCompat.getColor(view.getContext(), R.color.black_54));
+        snackbar.show();
     }
 
     private void setupPinPointMap() {
@@ -430,6 +445,59 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
         }
     }
 
+    private void showBottomSheet(String title, String message, int image) {
+        BottomSheetView bottomSheetView = new BottomSheetView(getActivity());
+        bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
+                .BottomSheetFieldBuilder()
+                .setTitle(title)
+                .setBody(message)
+                .setImg(image)
+                .build());
+
+        bottomSheetView.show();
+    }
+
+    private void renderTickerView(CourierItemData courierItemData) {
+        if (!TextUtils.isEmpty(courierItemData.getCourierInfo())) {
+            tvShipmentInfoTicker.setText(courierItemData.getCourierInfo());
+            llShipmentInfoTicker.setVisibility(View.VISIBLE);
+        } else {
+            llShipmentInfoTicker.setVisibility(View.GONE);
+        }
+    }
+
+    private void renderAdditionalPriceView(CourierItemData courierItemData) {
+        if (courierItemData.getAdditionalPrice() != null) {
+            llAdditionalFee.setVisibility(View.VISIBLE);
+            setText(tvAdditionalFee, courierItemData.getAdditionalPrice());
+        } else {
+            llAdditionalFee.setVisibility(View.GONE);
+        }
+    }
+
+    private void renderInsuranceView(CourierItemData courierItemData) {
+        if (courierItemData.getInsuranceType() == InsuranceConstant.InsuranceType.NO) {
+            imgBtInsuranceInfo.setVisibility(View.GONE);
+            tvSpecialInsuranceCondition.setText(R.string.label_insurance_not_available);
+            switchInsurance.setVisibility(View.GONE);
+            switchInsurance.setChecked(false);
+            tvSpecialInsuranceCondition.setVisibility(View.VISIBLE);
+        } else if (courierItemData.getInsuranceType() == InsuranceConstant.InsuranceType.MUST) {
+            imgBtInsuranceInfo.setVisibility(View.VISIBLE);
+            tvSpecialInsuranceCondition.setText(R.string.label_must_insurance);
+            switchInsurance.setVisibility(View.GONE);
+            switchInsurance.setChecked(true);
+            tvSpecialInsuranceCondition.setVisibility(View.VISIBLE);
+        } else {
+            imgBtInsuranceInfo.setVisibility(View.VISIBLE);
+            tvSpecialInsuranceCondition.setVisibility(View.GONE);
+            switchInsurance.setVisibility(View.VISIBLE);
+            if (courierItemData.getInsuranceUsedDefault() == InsuranceConstant.InsuranceUsedDefault.YES) {
+                switchInsurance.setChecked(true);
+            }
+        }
+    }
+
     @OnClick(R2.id.bt_choose_pinpoint)
     void onChoosePinPoint() {
         setupPinPointMap();
@@ -438,11 +506,6 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
     @OnClick(R2.id.bt_change_pinpoint)
     void onChangePinPointClick() {
         setupPinPointMap();
-    }
-
-    @OnClick(R2.id.ll_shipment_choice)
-    void onShipmentChoiceClicked() {
-
     }
 
     @OnClick(R2.id.ll_expanded_courier_list)
@@ -483,6 +546,11 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
         getActivity().overridePendingTransition(R.anim.anim_bottom_up, 0);
     }
 
+    @OnClick(R2.id.bt_save)
+    void onSaveClick() {
+        showSnackbarError(this.getView(), "Anda belum menandai lokasi tujuan dalam peta");
+    }
+
     @OnCheckedChanged(R2.id.switch_insurance)
     void onSwitchInsuranceChanged(CompoundButton view, boolean checked) {
         if (checked) {
@@ -508,42 +576,14 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
         updateFeesGroupLayout();
     }
 
-    private void showBottomSheet(String title, String message, int image) {
-        BottomSheetView bottomSheetView = new BottomSheetView(getActivity());
-        bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
-                .BottomSheetFieldBuilder()
-                .setTitle(title)
-                .setBody(message)
-                .setImg(image)
-                .build());
-
-        bottomSheetView.show();
-    }
-
     @Override
     public void onCourierItemClick(CourierItemData courierItemData) {
         presenter.setSelectedCourier(courierItemData);
         setText(tvDeliveryFee, courierItemData.getDeliveryPrice());
-        if (courierItemData.getInsuranceType() == InsuranceConstant.InsuranceType.NO) {
-            imgBtInsuranceInfo.setVisibility(View.GONE);
-            tvSpecialInsuranceCondition.setText(R.string.label_insurance_not_available);
-            switchInsurance.setVisibility(View.GONE);
-            switchInsurance.setChecked(false);
-            tvSpecialInsuranceCondition.setVisibility(View.VISIBLE);
-        } else if (courierItemData.getInsuranceType() == InsuranceConstant.InsuranceType.MUST) {
-            imgBtInsuranceInfo.setVisibility(View.VISIBLE);
-            tvSpecialInsuranceCondition.setText(R.string.label_must_insurance);
-            switchInsurance.setVisibility(View.GONE);
-            switchInsurance.setChecked(true);
-            tvSpecialInsuranceCondition.setVisibility(View.VISIBLE);
-        } else {
-            imgBtInsuranceInfo.setVisibility(View.VISIBLE);
-            tvSpecialInsuranceCondition.setVisibility(View.GONE);
-            switchInsurance.setVisibility(View.VISIBLE);
-            if (courierItemData.getInsuranceUsedDefault() == InsuranceConstant.InsuranceUsedDefault.YES) {
-                switchInsurance.setChecked(true);
-            }
-        }
+        renderTickerView(courierItemData);
+        renderInsuranceView(courierItemData);
+        renderAdditionalPriceView(courierItemData);
+        updateFeesGroupLayout();
     }
 
     @Override

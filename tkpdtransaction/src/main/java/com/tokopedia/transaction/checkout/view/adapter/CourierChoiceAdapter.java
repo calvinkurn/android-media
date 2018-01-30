@@ -43,7 +43,6 @@ public class CourierChoiceAdapter extends RecyclerView.Adapter<CourierChoiceAdap
     public void onBindViewHolder(final CourierViewHolder holder, int position) {
         CourierItemData courierItemData = couriers.get(position);
         holder.tvCourierName.setText(courierItemData.getName());
-        holder.tvDeliveryTimeRange.setText(courierItemData.getEstimatedTimeDelivery());
         holder.tvPrice.setText(
                 holder.tvPrice.getContext().getResources().getString(
                         R.string.label_shipment_type_format, courierItemData.getDeliveryPrice()));
@@ -52,6 +51,13 @@ public class CourierChoiceAdapter extends RecyclerView.Adapter<CourierChoiceAdap
             holder.tvDeliverySchedule.setVisibility(View.VISIBLE);
         } else {
             holder.tvDeliverySchedule.setVisibility(View.GONE);
+        }
+
+        if (courierItemData.getEstimatedTimeDelivery() != null) {
+            holder.tvDeliveryTimeRange.setText(courierItemData.getEstimatedTimeDelivery());
+            holder.tvDeliveryTimeRange.setVisibility(View.VISIBLE);
+        } else {
+            holder.tvDeliveryTimeRange.setVisibility(View.GONE);
         }
         renderTypeface(holder, courierItemData);
 

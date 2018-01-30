@@ -5,9 +5,7 @@
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:foreground="?selectableItemBackground"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:paddingTop="16dp">
+    android:padding="16dp">
 
     <TextView
         android:id="@+id/tv_courier_name"
@@ -50,13 +48,6 @@
         android:textSize="12sp"
         tools:text="Jadwal pengiriman 09:00-16:00 WIB" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@+id/tv_delivery_schedule"
-        android:layout_marginTop="@dimen/padding_small_sm"
-        android:background="@drawable/bg_line_separator" />
-
     <RadioButton
         android:id="@+id/rb_selected"
         android:layout_width="wrap_content"
@@ -67,6 +58,7 @@
         android:clickable="false"
         android:focusable="false"
         android:focusableInTouchMode="false"
+        android:theme="@style/TransactionToogleButton"
         android:visibility="visible" />
 
 </RelativeLayout>

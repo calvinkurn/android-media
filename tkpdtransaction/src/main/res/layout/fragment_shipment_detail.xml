@@ -29,7 +29,8 @@
                     android:layout_marginRight="@dimen/margin_ms"
                     android:layout_marginTop="@dimen/new_margin_med"
                     android:background="@drawable/border_rectangle_yellow"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/tv_shipment_info_ticker"
@@ -331,7 +332,7 @@
                             android:id="@+id/switch_insurance"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:theme="@style/TransactionSwitch"
+                            android:theme="@style/TransactionToogleButton"
                             android:visibility="gone" />
 
                         <TextView
@@ -389,7 +390,7 @@
                             android:id="@+id/switch_partly_accept"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:theme="@style/TransactionSwitch" />
+                            android:theme="@style/TransactionToogleButton" />
 
                     </LinearLayout>
 
@@ -437,7 +438,7 @@
                             android:id="@+id/switch_dropshipper"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:theme="@style/TransactionSwitch" />
+                            android:theme="@style/TransactionToogleButton" />
 
                     </LinearLayout>
 

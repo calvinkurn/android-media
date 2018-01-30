@@ -214,6 +214,7 @@
     <string name="label_hide_other_couriers">Sembunyikan</string>
     <string name="label_insurance_not_available">Tidak Didukung</string>
     <string name="label_must_insurance">Wajib Asuransi</string>
+    <string name="label_action_snackbar_close">Tutup</string>
 
     <string-array name="pickup_point">
         <item>Alfamart</item>

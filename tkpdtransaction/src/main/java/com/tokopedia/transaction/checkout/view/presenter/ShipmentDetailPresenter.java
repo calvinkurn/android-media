@@ -65,8 +65,8 @@ public class ShipmentDetailPresenter extends BaseDaggerPresenter<IShipmentDetail
 
     @Override
     public void loadShipmentData() {
-        shipmentDetailData = DummyCreator.createDummyInstantShipmentDetailData();
-        getView().renderInstantShipment(shipmentDetailData);
+//        shipmentDetailData = DummyCreator.createDummyInstantShipmentDetailData();
+//        getView().renderInstantShipment(shipmentDetailData);
 
 //        shipmentDetailData = DummyCreator.createDummySameDayShipmentDetailData();
 //        getView().renderSameDayShipment(shipmentDetailData);
@@ -74,8 +74,8 @@ public class ShipmentDetailPresenter extends BaseDaggerPresenter<IShipmentDetail
 //        shipmentDetailData = DummyCreator.createDummyNextDayShipmentDetailData();
 //        getView().renderNextDayShipment(shipmentDetailData);
 
-//        shipmentDetailData = DummyCreator.createDummyRegularShipmentDetailData();
-//        getView().renderRegularShipment(shipmentDetailData);
+        shipmentDetailData = DummyCreator.createDummyRegularShipmentDetailData();
+        getView().renderRegularShipment(shipmentDetailData);
 
 //        shipmentDetailData = DummyCreator.createDummyKargoShipmentDetailData();
 //        getView().renderKargoShipment(shipmentDetailData);
@@ -123,14 +123,13 @@ public class ShipmentDetailPresenter extends BaseDaggerPresenter<IShipmentDetail
         private static ShipmentDetailData createDummyInstantShipmentDetailData() {
             ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
             shipmentDetailData.setId(ID);
-//            shipmentDetailData.setAddress(ADDRESS);
-//            shipmentDetailData.setLatitude(LATITUDE);
-//            shipmentDetailData.setLongitude(LONGITUDE);
+            shipmentDetailData.setAddress(ADDRESS);
+            shipmentDetailData.setLatitude(LATITUDE);
+            shipmentDetailData.setLongitude(LONGITUDE);
             shipmentDetailData.setDropshipperInfo("Dropshipper Bottomsheet Info");
             shipmentDetailData.setPartialOrderInfo("Partial Order Bottomsheet Info");
-            shipmentDetailData.setShipmentInfo("Kurir toko adalah layanan pengiriman dengan menggunakan kurir dari toko terkait");
             shipmentDetailData.setShipmentItemData(ShipmentChoicePresenter.DummyCreator.createDummyShipmentChoices());
-//            shipmentDetailData.setDeliveryPriceTotal("Rp 299.000");
+            shipmentDetailData.setDeliveryPriceTotal("Rp 299.000");
 
             return shipmentDetailData;
         }
@@ -143,7 +142,6 @@ public class ShipmentDetailPresenter extends BaseDaggerPresenter<IShipmentDetail
             shipmentDetailData.setLongitude(LONGITUDE);
             shipmentDetailData.setDropshipperInfo("Dropshipper Bottomsheet Info");
             shipmentDetailData.setPartialOrderInfo("Partial Order Bottomsheet Info");
-            shipmentDetailData.setShipmentInfo("Kurir toko adalah layanan pengiriman dengan menggunakan kurir dari toko terkait");
             shipmentDetailData.setShipmentItemData(ShipmentChoicePresenter.DummyCreator.createDummyShipmentChoices());
             shipmentDetailData.setDeliveryPriceTotal("Rp 299.000");
 
@@ -165,7 +163,10 @@ public class ShipmentDetailPresenter extends BaseDaggerPresenter<IShipmentDetail
             ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
             shipmentDetailData.setId(ID);
             shipmentDetailData.setAddress(ADDRESS);
+            shipmentDetailData.setDropshipperInfo("Dropshipper Bottomsheet Info");
+            shipmentDetailData.setPartialOrderInfo("Partial Order Bottomsheet Info");
             shipmentDetailData.setShipmentItemData(ShipmentChoicePresenter.DummyCreator.createDummyShipmentChoices());
+            shipmentDetailData.setDeliveryPriceTotal("Rp 299.000");
 
             return shipmentDetailData;
         }

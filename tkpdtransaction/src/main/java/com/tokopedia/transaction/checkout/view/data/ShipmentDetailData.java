@@ -16,7 +16,6 @@ public class ShipmentDetailData implements Parcelable {
     private String address;
     private Double latitude;
     private Double longitude;
-    private String shipmentInfo;
     private String partialOrderInfo;
     private String dropshipperInfo;
     private String deliveryPriceTotal;
@@ -31,7 +30,6 @@ public class ShipmentDetailData implements Parcelable {
         address = in.readString();
         latitude = in.readDouble();
         longitude = in.readDouble();
-        shipmentInfo = in.readString();
         partialOrderInfo = in.readString();
         dropshipperInfo = in.readString();
         deliveryPriceTotal = in.readString();
@@ -90,14 +88,6 @@ public class ShipmentDetailData implements Parcelable {
         this.longitude = longitude;
     }
 
-    public String getShipmentInfo() {
-        return shipmentInfo;
-    }
-
-    public void setShipmentInfo(String shipmentInfo) {
-        this.shipmentInfo = shipmentInfo;
-    }
-
     public String getPartialOrderInfo() {
         return partialOrderInfo;
     }
@@ -142,7 +132,6 @@ public class ShipmentDetailData implements Parcelable {
         dest.writeString(address);
         dest.writeDouble(latitude);
         dest.writeDouble(longitude);
-        dest.writeString(shipmentInfo);
         dest.writeString(partialOrderInfo);
         dest.writeString(dropshipperInfo);
         dest.writeString(deliveryPriceTotal);

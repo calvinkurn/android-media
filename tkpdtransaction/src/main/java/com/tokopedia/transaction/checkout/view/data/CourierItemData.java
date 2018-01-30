@@ -14,6 +14,8 @@ public class CourierItemData implements Parcelable {
     private String deliverySchedule;
     private String deliveryPrice;
     private String insurancePrice;
+    private String additionalPrice;
+    private String courierInfo;
     private int insuranceType;
     private int insuranceUsedType;
     private String insuranceUsedInfo;
@@ -30,6 +32,8 @@ public class CourierItemData implements Parcelable {
         deliverySchedule = in.readString();
         deliveryPrice = in.readString();
         insurancePrice = in.readString();
+        additionalPrice = in.readString();
+        courierInfo = in.readString();
         insuranceType = in.readInt();
         insuranceUsedType = in.readInt();
         insuranceUsedInfo = in.readString();
@@ -137,6 +141,22 @@ public class CourierItemData implements Parcelable {
         this.insuranceUsedDefault = insuranceUsedDefault;
     }
 
+    public String getAdditionalPrice() {
+        return additionalPrice;
+    }
+
+    public void setAdditionalPrice(String additionalPrice) {
+        this.additionalPrice = additionalPrice;
+    }
+
+    public String getCourierInfo() {
+        return courierInfo;
+    }
+
+    public void setCourierInfo(String courierInfo) {
+        this.courierInfo = courierInfo;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -150,6 +170,8 @@ public class CourierItemData implements Parcelable {
         dest.writeString(deliverySchedule);
         dest.writeString(deliveryPrice);
         dest.writeString(insurancePrice);
+        dest.writeString(additionalPrice);
+        dest.writeString(courierInfo);
         dest.writeInt(insuranceType);
         dest.writeInt(insuranceUsedType);
         dest.writeString(insuranceUsedInfo);
