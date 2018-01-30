@@ -21,12 +21,12 @@
                 android:id="@+id/text_input_layout_word"
                 style="@style/TextInputLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:hint="@string/top_ads_keyword_add_keyword">
                 <EditText
                     android:id="@+id/edit_text_word"
                     style="@style/EditText"
                     android:layout_width="match_parent"
-                    android:hint="@string/top_ads_keyword_add_keyword"
                     android:inputType="text"
                     android:maxLength="@integer/top_ads_keyword_max_length"
                     android:paddingRight="50dp"
