@@ -27,6 +27,8 @@ public interface AbstractionRouter {
 
     void refreshToken();
 
+    void actionApplinkFromActivity(Activity activity, String linkUrl);
+
     UserSession getSession();
 
     AnalyticTracker getAnalyticTracker();
