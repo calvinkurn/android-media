@@ -141,7 +141,8 @@ public class FragmentBannerWebView extends Fragment {
 
         if (((Uri.parse(url).getHost().contains(Uri.parse(TkpdBaseURL.WEB_DOMAIN).getHost()))
                 || Uri.parse(url).getHost().contains(Uri.parse(TkpdBaseURL.MOBILE_DOMAIN).getHost()))
-                && !url.endsWith(".pl")) {
+                && !(Uri.parse(url).getLastPathSegment() != null && Uri.parse(url).getLastPathSegment().endsWith(".pl"))
+                && !url.contains("login")) {
 
             String query = Uri.parse(url).getQueryParameter(LOGIN_TYPE);
             if (query != null && query.equals(QUERY_PARAM_PLUS)) {

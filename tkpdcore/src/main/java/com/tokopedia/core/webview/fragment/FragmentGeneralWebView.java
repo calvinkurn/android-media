@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -286,6 +287,14 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
                     ((TkpdCoreRouter) getActivity().getApplication())
                             .getApplinkUnsupported(getActivity())
                             .showAndCheckApplinkUnsupported();
+                }
+            } else if (getActivity() != null &&
+                    getActivity().getApplication() instanceof TkpdCoreRouter) {
+                String applink = ((TkpdCoreRouter) getActivity().getApplication())
+                        .applink(getActivity(), url);
+                if (!TextUtils.isEmpty(applink)) {
+                    openDigitalPage(applink);
+                    return true;
                 }
             }
             return overrideUrl(url);

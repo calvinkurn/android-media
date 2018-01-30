@@ -3,6 +3,7 @@ package com.tokopedia.design.text;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Rect;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.TextViewCompat;
 import android.text.Editable;
@@ -28,22 +29,21 @@ public class RangeInputView extends BaseCustomView {
 
     private static final int VALUE_STOP_COUNT = 100;
     private static final double DEFAULT_POWER = 2;
-
-    private TextView minLabelTextView;
-    private TextView maxLabelTextView;
+    private static final float DEFAULT_ELEVATION = 8f;
+    private static final float DEFAULT_EMPTY_ELEVATION = 0f;
     protected EditText minValueEditText;
     protected EditText maxValueEditText;
+    protected int minValue = 0;
+    protected int maxValue = 0;
+    private TextView minLabelTextView;
+    private TextView maxLabelTextView;
     private DynamicBackgroundSeekBar dynamicBackgroundSeekBar;
     private View minButton;
     private View maxButton;
-
     private OnValueChangedListener onValueChangedListener;
-
     private int seekBarButtonSize;
     private int minBound = 0;
     private int maxBound = 0;
-    protected int minValue = 0;
-    protected int maxValue = 0;
     private float valueRange = 0;
     private float seekBarWidth = 0;
     private float seekBarRange = 0;
@@ -92,6 +92,15 @@ public class RangeInputView extends BaseCustomView {
             styledAttributes.recycle();
         }
         init();
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            maxButton.setElevation(DEFAULT_ELEVATION);
+            minButton.setElevation(DEFAULT_ELEVATION);
+        }
     }
 
     private void init() {
@@ -294,18 +303,25 @@ public class RangeInputView extends BaseCustomView {
                 if (isPointInsideView(event.getRawX(), event.getRawY(), minButton)) {
                     isMinButtonDragging = true;
                     isMaxButtonDragging = false;
-                    minButton.setBackgroundResource(R.drawable.price_input_seekbar_button_pressed);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        minButton.setElevation(DEFAULT_EMPTY_ELEVATION);
+                    }
                 } else if (isPointInsideView(event.getRawX(), event.getRawY(), maxButton)) {
                     isMaxButtonDragging = true;
                     isMinButtonDragging = false;
-                    maxButton.setBackgroundResource(R.drawable.price_input_seekbar_button_pressed);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        maxButton.setElevation(DEFAULT_EMPTY_ELEVATION);
+                    }
                 }
                 break;
             case MotionEvent.ACTION_UP:
                 isMinButtonDragging = false;
                 isMaxButtonDragging = false;
-                minButton.setBackgroundResource(R.drawable.price_input_seekbar_button_neutral);
-                maxButton.setBackgroundResource(R.drawable.price_input_seekbar_button_neutral);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    maxButton.setElevation(DEFAULT_ELEVATION);
+                    minButton.setElevation(DEFAULT_ELEVATION);
+                }
                 break;
             case MotionEvent.ACTION_MOVE:
                 float targetX = event.getRawX() - seekBarButtonSize;
@@ -361,6 +377,10 @@ public class RangeInputView extends BaseCustomView {
         this.onValueChangedListener = onValueChangedListener;
     }
 
+    public interface OnValueChangedListener {
+        void onValueChanged(int minValue, int maxValue, int minBound, int maxBound);
+    }
+
     private class MinInputListener extends InputTextFocusChangeListener {
         @Override
         void updateValue(int newValue) {
@@ -414,9 +434,5 @@ public class RangeInputView extends BaseCustomView {
         }
 
         abstract void updateValue(int newValue);
-    }
-
-    public interface OnValueChangedListener {
-        void onValueChanged(int minValue, int maxValue, int minBound, int maxBound);
     }
 }

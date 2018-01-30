@@ -18,10 +18,12 @@ public class FlightOrderAdapter extends BaseListAdapter<Visitable, FlightOrderTy
     public interface OnAdapterInteractionListener {
         void onDetailOrderClicked(FlightOrderDetailPassData viewModel);
 
-        void onDetailOrderClicked(String orderId);
+        void onDetailOrderClicked(String invoiceId);
 
-        void onHelpOptionClicked(String orderId, int status);
+        void onHelpOptionClicked(String invoiceId, int status);
 
         void onReBookingClicked(FlightOrderBaseViewModel item);
+
+        void onDownloadETicket(String invoiceId, String filename);
     }
 }

@@ -97,6 +97,16 @@ public class FlightAirlineDB extends BaseModel implements Parcelable {
     }
 
     @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof FlightAirlineDB && ((FlightAirlineDB) obj).getId().equalsIgnoreCase(id);
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }

@@ -19,6 +19,7 @@ import com.tokopedia.core.app.TkpdCoreWebViewActivity;
 import com.tokopedia.core.fragment.FragmentShopPreview;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.home.fragment.FragmentBannerWebView;
+import com.tokopedia.core.home.fragment.SimpleWebViewFragment;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
@@ -85,7 +86,7 @@ public class BannerWebView extends TkpdCoreWebViewActivity implements
 
 
     public void openShop(String url) {
-        Fragment fragment = FragmentShopPreview.createInstances(DeepLinkChecker.getLinkSegment(url).get(0), url);
+        Fragment fragment = FragmentShopPreview.createInstanceForDeeplink(DeepLinkChecker.getLinkSegment(url).get(0), url);
         getFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
     }
 
@@ -103,7 +104,7 @@ public class BannerWebView extends TkpdCoreWebViewActivity implements
 
     @Override
     public void catchToWebView(String url) {
-        FragmentBannerWebView fragment = FragmentBannerWebView.createInstance(url);
+        SimpleWebViewFragment fragment = SimpleWebViewFragment.createInstance(url);
         getFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
     }
 
