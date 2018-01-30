@@ -1,21 +1,5 @@
 package com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.emptytopads;
 
-import android.support.annotation.LayoutRes;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.tkpd.tkpdfeed.R;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsProductModel;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
 /**
  * @author by nisie on 7/11/17.
  */

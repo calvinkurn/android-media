@@ -155,9 +155,9 @@ public interface FeedPlus {
 
         void onSeeAllRecentView();
 
-        void onShowEmptyWithRecentView(ArrayList<Visitable> recentProduct, boolean canShowTopads);
+        void onShowEmptyWithRecentView(ArrayList<Visitable> recentProduct);
 
-        void onShowEmpty(boolean canShowTopads);
+        void onShowEmpty();
 
         void clearData();
 
@@ -172,8 +172,6 @@ public interface FeedPlus {
         boolean hasFeed();
 
         void updateFavoriteFromEmpty(String shopId);
-
-        void showTopAds(boolean isTopAdsShown);
 
         void onEmptyOfficialStoreClicked();
 

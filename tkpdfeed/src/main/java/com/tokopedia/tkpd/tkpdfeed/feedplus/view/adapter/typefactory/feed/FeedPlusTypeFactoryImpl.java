@@ -28,8 +28,6 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.viewholder.toppicks.Top
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.LocalAdsClickListener;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsProductModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FavoriteCtaViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.blog.BlogViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
@@ -125,20 +123,6 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
     }
 
     @Override
-    public int type(EmptyTopAdsModel emptyModel) {
-        return 0;
-        //TODO milhamj
-//        return EmptyTopAdsViewHolder.LAYOUT;
-    }
-
-    @Override
-    public int type(EmptyTopAdsProductModel emptyModel) {
-        return 0;
-        //TODO milhamj
-//        return EmptyTopAdsProductViewHolder.LAYOUT;
-    }
-
-    @Override
     public int type(ToppicksViewModel toppicksViewModel) {
         return ToppicksViewHolder.LAYOUT;
     }
@@ -204,11 +188,6 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory implements F
             viewHolder = new PromotedProductViewHolder(view, viewListener);
         else if (type == RecentViewViewHolder.LAYOUT)
             viewHolder = new RecentViewViewHolder(view, viewListener);
-        //TODO milhamj
-//        else if (type == EmptyTopAdsViewHolder.LAYOUT)
-//            viewHolder = new EmptyTopAdsViewHolder(view, topAdsItemClickListener);
-//        else if (type == EmptyTopAdsProductViewHolder.LAYOUT)
-//            viewHolder = new EmptyTopAdsProductViewHolder(view, topAdsItemClickListener);
         else if (type == ToppicksViewHolder.LAYOUT)
             viewHolder = new ToppicksViewHolder(view, toppicksListener);
         else if (type == KolViewHolder.LAYOUT)

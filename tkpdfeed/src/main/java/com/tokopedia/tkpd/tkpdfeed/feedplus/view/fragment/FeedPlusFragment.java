@@ -68,8 +68,6 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.LocalAdsClickListener;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.TopAdsInfoClickListener;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.util.ShareBottomDialog;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsModel;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.EmptyTopAdsProductModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.inspiration.InspirationViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentHeaderViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolCommentProductViewModel;
@@ -547,23 +545,17 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onShowEmptyWithRecentView(ArrayList<Visitable> listFeed, boolean canShowTopads) {
+    public void onShowEmptyWithRecentView(ArrayList<Visitable> listFeed) {
         adapter.unsetEndlessScrollListener();
         adapter.showEmpty();
         adapter.addList(listFeed);
-        if (canShowTopads)
-            adapter.addItem(new EmptyTopAdsProductModel(presenter.getUserId()));
-        adapter.addItem(new EmptyTopAdsModel(presenter.getUserId()));
         adapter.notifyDataSetChanged();
     }
 
     @Override
-    public void onShowEmpty(boolean canShowTopads) {
+    public void onShowEmpty() {
         adapter.unsetEndlessScrollListener();
         adapter.showEmpty();
-        if (canShowTopads)
-            adapter.addItem(new EmptyTopAdsProductModel(presenter.getUserId()));
-        adapter.addItem(new EmptyTopAdsModel(presenter.getUserId()));
         adapter.notifyDataSetChanged();
 
     }
@@ -781,11 +773,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         onRefresh();
         UnifyTracking.eventFeedClickShop(shopId, FeedTrackingEventLabel.Click.
                 TOP_ADS_FAVORITE);
-
-    }
-
-    @Override
-    public void showTopAds(boolean isTopAdsShown) {
 
     }
 

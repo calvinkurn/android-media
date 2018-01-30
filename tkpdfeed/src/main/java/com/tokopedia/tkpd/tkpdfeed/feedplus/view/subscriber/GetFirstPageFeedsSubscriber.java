@@ -127,10 +127,9 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
             addMainData(listFeedView, feedDomain, feedResult);
         } else if (hasRecentView(feedDomain) && !hasFeed(feedDomain)) {
             addRecentViewData(listFeedView, feedDomain.getRecentProduct());
-            viewListener.onShowEmptyWithRecentView(listFeedView,
-                    checkCanShowTopads(feedResult.getDataSource()));
+            viewListener.onShowEmptyWithRecentView(listFeedView);
         } else
-            viewListener.onShowEmpty(checkCanShowTopads(feedResult.getDataSource()));
+            viewListener.onShowEmpty();
 
 
         if (hasFeed(feedDomain)) {
@@ -149,10 +148,6 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         checkCanLoadNext(feedResult, listFeedView);
     }
 
-    private boolean checkCanShowTopads(int dataSource) {
-        return dataSource == FeedResult.SOURCE_CLOUD;
-    }
-
     private void checkCanLoadNext(FeedResult feedResult, ArrayList<Visitable> listFeedView) {
 
         if (hasFeed(feedResult.getFeedDomain())
@@ -160,7 +155,6 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 && feedResult.getDataSource() == FeedResult.SOURCE_CLOUD) {
             viewListener.onSuccessGetFeedFirstPageWithAddFeed(listFeedView);
         } else {
-            viewListener.showTopAds(checkCanShowTopads(feedResult.getDataSource()));
             viewListener.onSuccessGetFeedFirstPage(listFeedView);
         }
     }
