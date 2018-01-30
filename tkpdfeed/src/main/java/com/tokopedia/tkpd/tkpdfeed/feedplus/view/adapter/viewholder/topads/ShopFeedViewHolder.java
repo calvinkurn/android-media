@@ -35,6 +35,7 @@ import java.util.List;
 
 /**
  * @author by errysuprayogi on 3/30/17.
+ * Copied to feed by milhamj 1/18/17.
  */
 
 public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> implements View.OnClickListener {

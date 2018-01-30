@@ -19,6 +19,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.topads.ProductFeedVie
 
 /**
  * Created by errysuprayogi on 3/27/17.
+ * Copied to feed by milhamj 1/18/17.
  */
 
 public class ProductFeedViewHolder extends AbstractViewHolder<ProductFeedViewModel> implements
