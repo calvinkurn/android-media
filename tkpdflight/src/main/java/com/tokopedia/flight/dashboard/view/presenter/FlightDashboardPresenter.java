@@ -42,6 +42,18 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     private static final String DEVICE_ID = "4";
     private static final String CATEGORY_ID = "27";
     private static final int MAX_PASSENGER_VALUE = 7;
+    private static final int MAX_TWO_YEARS = 2;
+    private static final int INDEX_DEPARTURE_TRIP = 0;
+    private static final int INDEX_RETURN_TRIP = 1;
+    private static final int INDEX_ID_AIRPORT_DEPARTURE_TRIP = 0;
+    private static final int INDEX_ID_AIRPORT_ARRIVAL_TRIP = 1;
+    private static final int INDEX_DATE_TRIP = 2;
+    private static final int INDEX_DATE_YEAR = 0;
+    private static final int INDEX_DATE_MONTH = 1;
+    private static final int INDEX_DATE_DATE = 2;
+    private static final int INDEX_PASSENGER_ADULT = 0;
+    private static final int INDEX_PASSENGER_CHILD = 1;
+    private static final int INDEX_PASSENGER_INFANT = 2;
 
     private BannerGetDataUseCase bannerGetDataUseCase;
     private FlightDashboardValidator validator;
@@ -421,10 +433,12 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     private void transformExtras(String extrasTrip, String extrasPassenger, String extrasClass) {
         try {
+            boolean isDepartureDateValid = true;
+
             // transform trip extras
             String[] tempExtras = extrasTrip.split(",");
-            String[] extrasTripDeparture = tempExtras[0].split("_");
-            String[] tripDate = extrasTripDeparture[2].split("-");
+            String[] extrasTripDeparture = tempExtras[INDEX_DEPARTURE_TRIP].split("_");
+            String[] departureTripDate = extrasTripDeparture[INDEX_DATE_TRIP].split("-");
 
             /**
              * Urutan trip setelah di split berdasarkan , dan _ :
@@ -434,29 +448,55 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
              *
              * Tanggal setelah di split :
              * [0] = tahun
-             * [1] = bulan
+             * [1] = bulan (-1 karena bulan di kalender android mulai dari 0)
              * [2] = hari
              */
-            actionGetAirportById(extrasTripDeparture[0], true);
-            actionGetAirportById(extrasTripDeparture[1], false);
-            onDepartureDateChange(Integer.parseInt(tripDate[0]), Integer.parseInt(tripDate[1]), Integer.parseInt(tripDate[2]));
+            actionGetAirportById(extrasTripDeparture[INDEX_ID_AIRPORT_DEPARTURE_TRIP], true);
+            actionGetAirportById(extrasTripDeparture[INDEX_ID_AIRPORT_ARRIVAL_TRIP], false);
+            onDepartureDateChange(Integer.parseInt(departureTripDate[INDEX_DATE_YEAR]), Integer.parseInt(departureTripDate[INDEX_DATE_MONTH]) - 1, Integer.parseInt(departureTripDate[INDEX_DATE_DATE]));
             onSingleTripChecked();
 
+            Calendar today = FlightDateUtil.getCurrentCalendar();
+            if (!validator.validateDepartureDateAtLeastToday(getView().getCurrentDashboardViewModel())) {
+                isDepartureDateValid = false;
+                getView().showDepartureDateShouldAtLeastToday(R.string.flight_dashboard_departure_should_atleast_today_error);
+                onDepartureDateChange(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE));
+            } else if ((Integer.parseInt(departureTripDate[INDEX_DATE_YEAR]) - today.get(Calendar.YEAR)) > MAX_TWO_YEARS) {
+                isDepartureDateValid = false;
+                getView().showApplinkErrorMessage(R.string.flight_dashboard_departure_max_two_years_from_today_error);
+                onDepartureDateChange(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE));
+            }
+
             if (tempExtras.length > 1) {
-                String[] extrasTripReturn = tempExtras[1].split("_");
-                tripDate = extrasTripReturn[2].split("-");
-                onReturnDateChange(Integer.parseInt(tripDate[0]), Integer.parseInt(tripDate[1]), Integer.parseInt(tripDate[2]));
+                String[] extrasTripReturn = tempExtras[INDEX_RETURN_TRIP].split("_");
+                String[] returnTripDate = extrasTripReturn[INDEX_DATE_TRIP].split("-");
+                onReturnDateChange(Integer.parseInt(returnTripDate[INDEX_DATE_YEAR]), Integer.parseInt(returnTripDate[INDEX_DATE_MONTH]) - 1, Integer.parseInt(returnTripDate[INDEX_DATE_DATE]));
                 onRoundTripChecked();
+
+                if (!validator.validateArrivalDateShouldGreaterOrEqualDeparture(getView().getCurrentDashboardViewModel())) {
+                    if (isDepartureDateValid) {
+                        getView().showArrivalDateShouldGreaterOrEqual(R.string.flight_dashboard_arrival_should_greater_equal_error);
+                        onReturnDateChange(Integer.parseInt(departureTripDate[INDEX_DATE_YEAR]), Integer.parseInt(departureTripDate[INDEX_DATE_MONTH]), Integer.parseInt(departureTripDate[INDEX_DATE_DATE]) + 1);
+                    } else {
+                        onReturnDateChange(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE) + 1);
+                    }
+                } else if ((Integer.parseInt(returnTripDate[INDEX_DATE_YEAR]) - today.get(Calendar.YEAR)) > MAX_TWO_YEARS) {
+                    if (isDepartureDateValid) {
+                        getView().showApplinkErrorMessage(R.string.flight_dashboard_arrival_max_two_years_from_today_error);
+                        onReturnDateChange(Integer.parseInt(departureTripDate[INDEX_DATE_YEAR]), Integer.parseInt(departureTripDate[INDEX_DATE_MONTH]), Integer.parseInt(departureTripDate[INDEX_DATE_DATE]) + 1);
+                    } else {
+                        onReturnDateChange(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DATE) + 1);
+                    }                }
             }
 
             // transform passenger count
             tempExtras = extrasPassenger.split("-");
-            if (Integer.parseInt(tempExtras[1]) > Integer.parseInt(tempExtras[0]) || Integer.parseInt(tempExtras[2]) > Integer.parseInt(tempExtras[0])) {
+            if (Integer.parseInt(tempExtras[INDEX_PASSENGER_CHILD]) > Integer.parseInt(tempExtras[INDEX_PASSENGER_ADULT]) || Integer.parseInt(tempExtras[INDEX_PASSENGER_INFANT]) > Integer.parseInt(tempExtras[INDEX_PASSENGER_ADULT])) {
                 getView().showApplinkErrorMessage(R.string.select_passenger_infant_greater_than_adult_error_message);
-            } else if (Integer.parseInt(tempExtras[1]) + Integer.parseInt(tempExtras[0]) > MAX_PASSENGER_VALUE) {
+            } else if (Integer.parseInt(tempExtras[INDEX_PASSENGER_CHILD]) + Integer.parseInt(tempExtras[INDEX_PASSENGER_ADULT]) > MAX_PASSENGER_VALUE) {
                 getView().showApplinkErrorMessage(R.string.select_passenger_total_passenger_error_message);
             } else {
-                FlightPassengerViewModel flightPassengerViewModel = new FlightPassengerViewModel(Integer.parseInt(tempExtras[0]), Integer.parseInt(tempExtras[1]), Integer.parseInt(tempExtras[2]));
+                FlightPassengerViewModel flightPassengerViewModel = new FlightPassengerViewModel(Integer.parseInt(tempExtras[INDEX_PASSENGER_ADULT]), Integer.parseInt(tempExtras[INDEX_PASSENGER_CHILD]), Integer.parseInt(tempExtras[INDEX_PASSENGER_INFANT]));
                 onFlightPassengerChange(flightPassengerViewModel);
             }
 
@@ -483,14 +523,14 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
             @Override
             public void onError(Throwable throwable) {
-                if(isViewAttached()) {
+                if (isViewAttached()) {
                     getView().hideBannerView();
                 }
             }
 
             @Override
             public void onNext(List<BannerDetail> bannerDetailList) {
-                if(isViewAttached()) {
+                if (isViewAttached()) {
                     getView().renderBannerView(bannerDetailList);
                 }
             }
