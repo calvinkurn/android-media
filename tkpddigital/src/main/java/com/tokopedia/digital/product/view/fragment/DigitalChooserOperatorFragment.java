@@ -16,8 +16,6 @@ import android.widget.ProgressBar;
 
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.base.data.executor.JobExecutor;
-import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
@@ -32,11 +30,6 @@ import com.tokopedia.digital.product.view.listener.IOperatorChooserView;
 import com.tokopedia.digital.product.view.model.Operator;
 import com.tokopedia.digital.product.view.presenter.IOperatorChooserPresenter;
 import com.tokopedia.digital.product.view.presenter.OperatorChooserPresenter;
-import com.tokopedia.digital.widget.data.mapper.FavoriteNumberListDataMapper;
-import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
-import com.tokopedia.digital.widget.domain.interactor.DigitalWidgetInteractor;
-import com.tokopedia.digital.widget.view.model.mapper.OperatorMapper;
-import com.tokopedia.digital.widget.view.model.mapper.ProductMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -126,14 +119,6 @@ public class DigitalChooserOperatorFragment extends BasePresenterFragment<IOpera
         if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
 
         DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
-
-        DigitalWidgetInteractor digitalWidgetInteractor = new DigitalWidgetInteractor(
-                compositeSubscription,
-                new DigitalWidgetRepository(new DigitalEndpointService(), new FavoriteNumberListDataMapper()),
-                new ProductMapper(),
-                new OperatorMapper(),
-                new JobExecutor(),
-                new UIThread());
 
         CategoryDetailDataSource categoryDetailDataSource = new CategoryDetailDataSource(
                 digitalEndpointService, new GlobalCacheManager(), new ProductDigitalMapper()
