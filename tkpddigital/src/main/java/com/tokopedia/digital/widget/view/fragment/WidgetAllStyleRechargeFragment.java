@@ -2,14 +2,18 @@ package com.tokopedia.digital.widget.view.fragment;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.IntentService;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.v4.widget.NestedScrollView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -17,6 +21,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragmentV4;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
@@ -42,6 +47,7 @@ import com.tokopedia.digital.product.view.model.HistoryClientNumber;
 import com.tokopedia.digital.product.view.model.Operator;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.digital.product.view.model.Product;
+import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 import com.tokopedia.digital.widget.data.mapper.FavoriteNumberListDataMapper;
 import com.tokopedia.digital.widget.view.listener.IDigitalWidgetView;
 import com.tokopedia.digital.widget.view.model.category.Category;
@@ -62,6 +68,11 @@ import rx.subscriptions.CompositeSubscription;
 public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDigitalWidgetPresenter>
         implements IDigitalWidgetView, BaseDigitalProductView.ActionListener {
 
+    @BindView(R2.id.holder_product_detail)
+    LinearLayout holderProductDetail;
+    @BindView(R2.id.pb_main_loading)
+    ProgressBar pbMainLoading;
+
     protected static final String ARG_PARAM_CATEGORY = "ARG_PARAM_CATEGORY";
     protected static final String ARG_TAB_INDEX_POSITION = "ARG_TAB_INDEX_POSITION";
 
@@ -77,9 +88,6 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
     private CompositeSubscription compositeSubscription;
 
     private LocalCacheHandler cacheHandlerRecentInstantCheckoutUsed;
-
-    @BindView(R2.id.holder_product_detail)
-    LinearLayout holderProductDetail;
 
     private BaseDigitalProductView<CategoryData, Operator, Product, HistoryClientNumber> digitalProductView;
 
@@ -378,8 +386,41 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
         digitalProductView.renderClientNumber(contactData.getContactNumber());
     }
 
-    private void navigateToActivityRequest(Intent intent, int requestCode) {
+    @Override
+    public void navigateToActivityRequest(Intent intent, int requestCode) {
         startActivityForResult(intent, requestCode);
+    }
+
+    @Override
+    public void navigateToActivity(Intent intent) {
+
+    }
+
+    @Override
+    public void showInitialProgressLoading() {
+        pbMainLoading.setVisibility(View.VISIBLE);
+        holderProductDetail.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void hideInitialProgressLoading() {
+        pbMainLoading.setVisibility(View.GONE);
+        holderProductDetail.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void clearContentRendered() {
+
+    }
+
+    @Override
+    public void showProgressLoading() {
+
+    }
+
+    @Override
+    public void hideProgressLoading() {
+
     }
 
     @Override
@@ -425,10 +466,46 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
         UnifyTracking.eventSelectNumberOnUserProfileWidget(categoryDataState.getName());
     }
 
-    private void showToastMessage(String message) {
+    @Override
+    public void showToastMessage(String message) {
         View view = getView();
         if (view != null) NetworkErrorHelper.showSnackbar(getActivity(), message);
         else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showDialog(Dialog dialog) {
+
+    }
+
+    @Override
+    public void dismissDialog(Dialog dialog) {
+
+    }
+
+    @Override
+    public void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz) {
+
+    }
+
+    @Override
+    public String getStringFromResource(int resId) {
+        return null;
+    }
+
+    @Override
+    public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(TKPDMapParam<String, String> originParams) {
+        return null;
+    }
+
+    @Override
+    public RequestBodyIdentifier getDigitalIdentifierParam() {
+        return null;
+    }
+
+    @Override
+    public void closeView() {
+
     }
 
     @Override

@@ -45,6 +45,8 @@ public class DigitalWidgetPresenter extends BaseDigitalPresenter implements IDig
 
     @Override
     public void fetchCategory(String categoryId) {
+        digitalWidgetView.showInitialProgressLoading();
+
         getCategoryByIdUseCase.execute(getCategoryByIdUseCase.createRequestParam(
                 categoryId, PARAM_VALUE_SORT
         ), new Subscriber<ProductDigitalData>() {
@@ -55,11 +57,13 @@ public class DigitalWidgetPresenter extends BaseDigitalPresenter implements IDig
 
             @Override
             public void onError(Throwable e) {
-
+                digitalWidgetView.showInitialProgressLoading();
             }
 
             @Override
             public void onNext(ProductDigitalData productDigitalData) {
+                digitalWidgetView.hideInitialProgressLoading();
+
                 CategoryData categoryData = productDigitalData.getCategoryData();
                 HistoryClientNumber historyClientNumber =
                         productDigitalData.getHistoryClientNumber();
