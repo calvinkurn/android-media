@@ -139,7 +139,7 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
     private ArrayList<Marker> nearbyCabsMarkerList = new ArrayList<>();
     private ArrayList<Marker> nearbyMOTOMarkerList = new ArrayList<>();
     private boolean isMarkerRotating;
-    private int MAX_CABS_COUNT = 5;
+    private int MAX_CABS_COUNT = 3;
     private int MAX_MOTO_COUNT = 2;
     private boolean showUberMoto = false;
 
@@ -868,23 +868,9 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
 
         ArrayList<Location> randomLocations = new ArrayList<>();
 
-        Log.e("Random Points: ", String.valueOf(x0) + ", " + String.valueOf(y0));
-
-        VisibleRegion vr = googleMap.getProjection().getVisibleRegion();
-        double left = vr.latLngBounds.southwest.longitude;
-
-
-//        double radiusInDegrees = Math.abs(y0 - left);
-
         double radiusInDegrees = 350 / 111000f;
-
-
         for (int i = 0; i < 5; i++) {
-
             Random random = new Random();
-
-            // Convert radius from meters to degrees
-
             double u = random.nextDouble();
             double v = random.nextDouble();
             double w = radiusInDegrees * Math.sqrt(u);
@@ -902,11 +888,6 @@ public class RideHomeMapFragment extends BaseFragment implements RideHomeMapCont
             location.setLongitude(foundLongitude);
             randomLocations.add(location);
 
-            /*if (googleMap != null) {
-                googleMap.addMarker(new MarkerOptions()
-                        .position(new LatLng(foundLatitude, foundLongitude))
-                        .icon(getCarMapIcon(R.drawable.car_map_icon)));
-            }*/
             Log.e("Random Points: ", String.valueOf(foundLatitude) + ", " + String.valueOf(foundLongitude));
         }
         return randomLocations;
