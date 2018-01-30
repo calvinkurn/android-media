@@ -182,7 +182,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
                 if (originRequest.url().host().equals("ws.tokopedia.com")) {
                     authHeaders = getHeaderMapNew(
                             originRequest.url().uri().getPath(),
-                            generateParamBodyString(originRequest),
+                            generateQueryString(originRequest),
                             originRequest.method(),
                             AuthUtil.KEY.KEY_WSV4_NEW,
                             contentTypeHeader
