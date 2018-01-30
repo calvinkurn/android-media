@@ -17,6 +17,7 @@ public class ShipmentDetailPresenter extends BaseDaggerPresenter<IShipmentDetail
         implements IShipmentDetailPresenter {
 
     private ShipmentDetailData shipmentDetailData;
+    private CourierItemData selectedCourier;
     private List<CourierItemData> couriers = new ArrayList<>();
 
     @Override
@@ -32,6 +33,16 @@ public class ShipmentDetailPresenter extends BaseDaggerPresenter<IShipmentDetail
     @Override
     public ShipmentDetailData getShipmentDetailData() {
         return shipmentDetailData;
+    }
+
+    @Override
+    public CourierItemData getSelectedCourier() {
+        return selectedCourier;
+    }
+
+    @Override
+    public void setSelectedCourier(CourierItemData selectedCourier) {
+        this.selectedCourier = selectedCourier;
     }
 
     @Override
@@ -71,6 +82,9 @@ public class ShipmentDetailPresenter extends BaseDaggerPresenter<IShipmentDetail
     public void loadAllCourier() {
         for (int i = 3; i < couriers.size(); i++) {
             couriers.get(i).setSelected(false);
+            if (i == 3) {
+                getView().disableInsuranceView();
+            }
         }
         getView().showAllCouriers(couriers);
     }
@@ -97,11 +111,9 @@ public class ShipmentDetailPresenter extends BaseDaggerPresenter<IShipmentDetail
             shipmentDetailData.setLatitude(LATITUDE);
             shipmentDetailData.setLongitude(LONGITUDE);
             shipmentDetailData.setDropshipperInfo("Dropshipper Bottomsheet Info");
-            shipmentDetailData.setInsuranceInfo("Insurance Bottomsheet Info");
             shipmentDetailData.setPartialOrderInfo("Partial Order Bottomsheet Info");
             shipmentDetailData.setShipmentInfo("Kurir toko adalah layanan pengiriman dengan menggunakan kurir dari toko terkait");
             shipmentDetailData.setShipmentItemData(ShipmentChoicePresenter.DummyCreator.createDummyShipmentChoices());
-            shipmentDetailData.setDeliveryPrice("Rp 249.000");
             shipmentDetailData.setDeliveryPriceTotal("Rp 299.000");
 
             return shipmentDetailData;

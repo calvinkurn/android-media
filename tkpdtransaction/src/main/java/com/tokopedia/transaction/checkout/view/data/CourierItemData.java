@@ -10,9 +10,14 @@ import android.os.Parcelable;
 public class CourierItemData implements Parcelable {
     private String id;
     private String name;
-    private String price;
-    private String deliveryTimeRange;
+    private String estimatedTimeDelivery;
     private String deliverySchedule;
+    private String deliveryPrice;
+    private String insurancePrice;
+    private int insuranceType;
+    private int insuranceUsedType;
+    private String insuranceUsedInfo;
+    private int insuranceUsedDefault;
     private boolean selected;
 
     public CourierItemData() {
@@ -21,9 +26,14 @@ public class CourierItemData implements Parcelable {
     protected CourierItemData(Parcel in) {
         id = in.readString();
         name = in.readString();
-        price = in.readString();
-        deliveryTimeRange = in.readString();
+        estimatedTimeDelivery = in.readString();
         deliverySchedule = in.readString();
+        deliveryPrice = in.readString();
+        insurancePrice = in.readString();
+        insuranceType = in.readInt();
+        insuranceUsedType = in.readInt();
+        insuranceUsedInfo = in.readString();
+        insuranceUsedDefault = in.readInt();
         selected = in.readByte() != 0;
     }
 
@@ -55,20 +65,12 @@ public class CourierItemData implements Parcelable {
         this.name = name;
     }
 
-    public String getPrice() {
-        return price;
+    public String getEstimatedTimeDelivery() {
+        return estimatedTimeDelivery;
     }
 
-    public void setPrice(String price) {
-        this.price = price;
-    }
-
-    public String getDeliveryTimeRange() {
-        return deliveryTimeRange;
-    }
-
-    public void setDeliveryTimeRange(String deliveryTimeRange) {
-        this.deliveryTimeRange = deliveryTimeRange;
+    public void setEstimatedTimeDelivery(String estimatedTimeDelivery) {
+        this.estimatedTimeDelivery = estimatedTimeDelivery;
     }
 
     public boolean isSelected() {
@@ -87,6 +89,54 @@ public class CourierItemData implements Parcelable {
         this.deliverySchedule = deliverySchedule;
     }
 
+    public String getDeliveryPrice() {
+        return deliveryPrice;
+    }
+
+    public void setDeliveryPrice(String deliveryPrice) {
+        this.deliveryPrice = deliveryPrice;
+    }
+
+    public String getInsurancePrice() {
+        return insurancePrice;
+    }
+
+    public void setInsurancePrice(String insurancePrice) {
+        this.insurancePrice = insurancePrice;
+    }
+
+    public int getInsuranceType() {
+        return insuranceType;
+    }
+
+    public void setInsuranceType(int insuranceType) {
+        this.insuranceType = insuranceType;
+    }
+
+    public int getInsuranceUsedType() {
+        return insuranceUsedType;
+    }
+
+    public void setInsuranceUsedType(int insuranceUsedType) {
+        this.insuranceUsedType = insuranceUsedType;
+    }
+
+    public String getInsuranceUsedInfo() {
+        return insuranceUsedInfo;
+    }
+
+    public void setInsuranceUsedInfo(String insuranceUsedInfo) {
+        this.insuranceUsedInfo = insuranceUsedInfo;
+    }
+
+    public int getInsuranceUsedDefault() {
+        return insuranceUsedDefault;
+    }
+
+    public void setInsuranceUsedDefault(int insuranceUsedDefault) {
+        this.insuranceUsedDefault = insuranceUsedDefault;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -96,9 +146,14 @@ public class CourierItemData implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id);
         dest.writeString(name);
-        dest.writeString(price);
-        dest.writeString(deliveryTimeRange);
+        dest.writeString(estimatedTimeDelivery);
         dest.writeString(deliverySchedule);
+        dest.writeString(deliveryPrice);
+        dest.writeString(insurancePrice);
+        dest.writeInt(insuranceType);
+        dest.writeInt(insuranceUsedType);
+        dest.writeString(insuranceUsedInfo);
+        dest.writeInt(insuranceUsedDefault);
         dest.writeByte((byte) (selected ? 1 : 0));
     }
 }

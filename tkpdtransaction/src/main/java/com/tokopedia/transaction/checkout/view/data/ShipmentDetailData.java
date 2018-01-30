@@ -17,10 +17,8 @@ public class ShipmentDetailData implements Parcelable {
     private Double latitude;
     private Double longitude;
     private String shipmentInfo;
-    private String insuranceInfo;
     private String partialOrderInfo;
     private String dropshipperInfo;
-    private String deliveryPrice;
     private String deliveryPriceTotal;
     private String additionalPrice;
 
@@ -34,10 +32,8 @@ public class ShipmentDetailData implements Parcelable {
         latitude = in.readDouble();
         longitude = in.readDouble();
         shipmentInfo = in.readString();
-        insuranceInfo = in.readString();
         partialOrderInfo = in.readString();
         dropshipperInfo = in.readString();
-        deliveryPrice = in.readString();
         deliveryPriceTotal = in.readString();
         additionalPrice = in.readString();
     }
@@ -102,14 +98,6 @@ public class ShipmentDetailData implements Parcelable {
         this.shipmentInfo = shipmentInfo;
     }
 
-    public String getInsuranceInfo() {
-        return insuranceInfo;
-    }
-
-    public void setInsuranceInfo(String insuranceInfo) {
-        this.insuranceInfo = insuranceInfo;
-    }
-
     public String getPartialOrderInfo() {
         return partialOrderInfo;
     }
@@ -124,14 +112,6 @@ public class ShipmentDetailData implements Parcelable {
 
     public void setDropshipperInfo(String dropshipperInfo) {
         this.dropshipperInfo = dropshipperInfo;
-    }
-
-    public String getDeliveryPrice() {
-        return deliveryPrice;
-    }
-
-    public void setDeliveryPrice(String deliveryPrice) {
-        this.deliveryPrice = deliveryPrice;
     }
 
     public String getDeliveryPriceTotal() {
@@ -163,10 +143,8 @@ public class ShipmentDetailData implements Parcelable {
         dest.writeDouble(latitude);
         dest.writeDouble(longitude);
         dest.writeString(shipmentInfo);
-        dest.writeString(insuranceInfo);
         dest.writeString(partialOrderInfo);
         dest.writeString(dropshipperInfo);
-        dest.writeString(deliveryPrice);
         dest.writeString(deliveryPriceTotal);
         dest.writeString(additionalPrice);
     }

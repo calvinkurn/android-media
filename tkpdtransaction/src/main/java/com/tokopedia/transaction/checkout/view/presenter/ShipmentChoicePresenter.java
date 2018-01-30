@@ -1,8 +1,6 @@
 package com.tokopedia.transaction.checkout.view.presenter;
 
-import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.core.product.model.CourierItem;
 import com.tokopedia.transaction.checkout.view.data.CourierItemData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentItemData;
 import com.tokopedia.transaction.checkout.view.view.IShipmentChoiceView;
@@ -55,12 +53,23 @@ public class ShipmentChoicePresenter extends BaseDaggerPresenter<IShipmentChoice
         private static String[] courierItemDataIds = {"0", "1", "2", "3", "4"};
         private static String[] courierItemDataNames = {"Go-Send", "JNE Reguler", "J&T Reguler",
                 "Pos Indonesia Kilat Khusus", "Wahana"};
-        private static String[] courierItemDataPrices = {"Rp 10.000", "Rp 9.000", "Rp 8000",
+        private static String[] courierItemDataPrices = {"Rp 10.000", "Rp 9.000", "Rp 8.000",
                 "Rp 7.000", "Rp 6.000"};
         private static String[] courierItemDataDeliveryTimeRanges = {"4-6 jam", "Max 8 jam",
                 "1-2 hari kerja", "2-3 hari kerja", "3-7 hari kerja"};
         private static String[] courierItemDataDeliverySchedules = {"Jadwal pengiriman 09:00-16:00 WIB",
                 null, null, null, null};
+        private static String[] courierItemDataInsurancePrices = {"Rp 2.000", "Rp 1.000", "Rp 2.000",
+                "Rp 1.000", "Rp 1.000"};
+        private static int[] courierItemDataInsuranceTypes = {1, 2, 3, 1, 2};
+        private static int[] courierItemDataInsuranceUsedDefaults = {1, 2, 2, 1, 2};
+        private static String[] courierItemDataInsuranceUsedInfos = {
+                "Biaya ganti rugi senilai harga barang hingga Rp50.000.000, dengan biaya sebesar 0.2% dari harga barang",
+                "Biaya ganti rugi senilai harga barang hingga Rp50.000.000, dengan biaya sebesar 0.2% dari harga barang",
+                "Biaya ganti rugi senilai harga barang hingga Rp50.000.000, dengan biaya sebesar 0.2% dari harga barang",
+                "Biaya ganti rugi senilai harga barang hingga Rp50.000.000, dengan biaya sebesar 0.2% dari harga barang",
+                "Wahana menerapkan asuransi otomatis apabila harga barang lebih besar atau sama dengan Rp300.000 dengan biaya 0.5% dari total harga barang"};
+        private static int[] courierItemDataInsuranceUsedTypes = {2, 2, 2, 2, 1};
 
         static List<ShipmentItemData> createDummyShipmentChoices() {
             List<ShipmentItemData> shipments = new ArrayList<>();
@@ -87,9 +96,14 @@ public class ShipmentChoicePresenter extends BaseDaggerPresenter<IShipmentChoice
                 courierItemData.setId(courierItemDataIds[i]);
                 courierItemData.setSelected(false);
                 courierItemData.setName(courierItemDataNames[i]);
-                courierItemData.setPrice(courierItemDataPrices[i]);
-                courierItemData.setDeliveryTimeRange(courierItemDataDeliveryTimeRanges[i]);
+                courierItemData.setDeliveryPrice(courierItemDataPrices[i]);
+                courierItemData.setEstimatedTimeDelivery(courierItemDataDeliveryTimeRanges[i]);
                 courierItemData.setDeliverySchedule(courierItemDataDeliverySchedules[i]);
+                courierItemData.setInsurancePrice(courierItemDataInsurancePrices[i]);
+                courierItemData.setInsuranceType(courierItemDataInsuranceTypes[i]);
+                courierItemData.setInsuranceUsedDefault(courierItemDataInsuranceUsedDefaults[i]);
+                courierItemData.setInsuranceUsedInfo(courierItemDataInsuranceUsedInfos[i]);
+                courierItemData.setInsuranceUsedType(courierItemDataInsuranceUsedTypes[i]);
 
                 couriers.add(courierItemData);
             }

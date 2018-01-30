@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -44,8 +43,10 @@ public class CourierChoiceAdapter extends RecyclerView.Adapter<CourierChoiceAdap
     public void onBindViewHolder(final CourierViewHolder holder, int position) {
         CourierItemData courierItemData = couriers.get(position);
         holder.tvCourierName.setText(courierItemData.getName());
-        holder.tvPrice.setText(courierItemData.getPrice());
-        holder.tvDeliveryTimeRange.setText(courierItemData.getDeliveryTimeRange());
+        holder.tvDeliveryTimeRange.setText(courierItemData.getEstimatedTimeDelivery());
+        holder.tvPrice.setText(
+                holder.tvPrice.getContext().getResources().getString(
+                        R.string.label_shipment_type_format, courierItemData.getDeliveryPrice()));
         if (courierItemData.getDeliverySchedule() != null) {
             holder.tvDeliverySchedule.setText(courierItemData.getDeliverySchedule());
             holder.tvDeliverySchedule.setVisibility(View.VISIBLE);
@@ -63,11 +64,13 @@ public class CourierChoiceAdapter extends RecyclerView.Adapter<CourierChoiceAdap
             holder.tvCourierName.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
             holder.tvPrice.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
             holder.tvDeliveryTimeRange.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+            holder.tvDeliverySchedule.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
         } else {
             holder.rbSelected.setChecked(false);
             holder.tvCourierName.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
             holder.tvPrice.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
             holder.tvDeliveryTimeRange.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
+            holder.tvDeliverySchedule.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
         }
     }
 
@@ -78,9 +81,7 @@ public class CourierChoiceAdapter extends RecyclerView.Adapter<CourierChoiceAdap
                 for (CourierItemData viewModel : couriers) {
                     if (viewModel.getId().equals(courierItemData.getId())) {
                         if (couriers.size() > position && position >= 0) {
-                            if (viewModel.isSelected()) {
-                                viewModel.setSelected(false);
-                            } else {
+                            if (!viewModel.isSelected()) {
                                 viewModel.setSelected(true);
                             }
                             viewListener.onCourierItemClick(couriers.get(position));

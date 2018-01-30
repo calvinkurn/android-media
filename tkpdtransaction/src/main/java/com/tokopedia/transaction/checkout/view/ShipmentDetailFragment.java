@@ -11,6 +11,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -263,7 +264,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
 
     @Override
     public void showPinPointMap(ShipmentDetailData shipmentDetailData) {
-        tvShipmentAddress.setText(shipmentDetailData.getAddress());
+        setText(tvShipmentAddress, shipmentDetailData.getAddress());
         setupMapView();
         if (shipmentDetailData.getLatitude() == null || shipmentDetailData.getLongitude() == null) {
             renderNoPinpoint();
@@ -282,8 +283,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
         } else {
             llShipmentInfoTicker.setVisibility(View.GONE);
         }
-        tvDeliveryFee.setText(shipmentDetailData.getDeliveryPrice());
-        tvDeliveryFeeTotal.setText(shipmentDetailData.getDeliveryPriceTotal());
+        setText(tvDeliveryFeeTotal, shipmentDetailData.getDeliveryPriceTotal());
 
         showPinPointMap(shipmentDetailData);
         presenter.setCourierList(shipmentDetailData.getShipmentItemData().get(0).getCourierItemData());
@@ -332,6 +332,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
         setupRecyclerView(couriers);
         tvShowOtherCouriers.setText(R.string.label_hide_other_couriers);
         ivChevron.setImageResource(R.drawable.chevron_thin_up);
+        disableInsuranceView();
     }
 
     private void setupRecyclerView(List<CourierItemData> couriers) {
@@ -409,6 +410,14 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
         }
     }
 
+    private void setText(TextView textView, String text) {
+        if (!TextUtils.isEmpty(text)) {
+            textView.setText(text);
+        } else {
+            textView.setText("-");
+        }
+    }
+
     @OnClick(R2.id.bt_choose_pinpoint)
     void onChoosePinPoint() {
         setupPinPointMap();
@@ -436,7 +445,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
     @OnClick(R2.id.img_bt_insurance_info)
     void onInsuranceInfoClick() {
         showBottomSheet(getString(R.string.title_bottomsheet_insurance),
-                presenter.getShipmentDetailData().getInsuranceInfo(), R.drawable.ic_insurance);
+                presenter.getSelectedCourier().getInsuranceUsedInfo(), R.drawable.ic_insurance);
     }
 
     @OnClick(R2.id.img_bt_partly_accept_info)
@@ -501,7 +510,34 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
 
     @Override
     public void onCourierItemClick(CourierItemData courierItemData) {
+        presenter.setSelectedCourier(courierItemData);
+        setText(tvDeliveryFee, courierItemData.getDeliveryPrice());
+        if (courierItemData.getInsuranceType() == InsuranceConstant.InsuranceType.NO) {
+            imgBtInsuranceInfo.setVisibility(View.GONE);
+            tvSpecialInsuranceCondition.setText(R.string.label_insurance_not_available);
+            switchInsurance.setVisibility(View.GONE);
+            switchInsurance.setChecked(false);
+            tvSpecialInsuranceCondition.setVisibility(View.VISIBLE);
+        } else if (courierItemData.getInsuranceType() == InsuranceConstant.InsuranceType.MUST) {
+            imgBtInsuranceInfo.setVisibility(View.VISIBLE);
+            tvSpecialInsuranceCondition.setText(R.string.label_must_insurance);
+            switchInsurance.setVisibility(View.GONE);
+            switchInsurance.setChecked(true);
+            tvSpecialInsuranceCondition.setVisibility(View.VISIBLE);
+        } else {
+            imgBtInsuranceInfo.setVisibility(View.VISIBLE);
+            tvSpecialInsuranceCondition.setVisibility(View.GONE);
+            switchInsurance.setVisibility(View.VISIBLE);
+            if (courierItemData.getInsuranceUsedDefault() == InsuranceConstant.InsuranceUsedDefault.YES) {
+                switchInsurance.setChecked(true);
+            }
+        }
+    }
 
+    @Override
+    public void disableInsuranceView() {
+        switchInsurance.setVisibility(View.GONE);
+        tvSpecialInsuranceCondition.setVisibility(View.VISIBLE);
     }
 
     @Override

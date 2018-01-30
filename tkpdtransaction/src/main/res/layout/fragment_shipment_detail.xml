@@ -47,6 +47,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"
                         android:background="@color/transparent"
+                        android:foreground="?selectableItemBackground"
                         android:padding="@dimen/padding_vs"
                         android:src="@drawable/ic_close_ticker_24dp"
                         android:tint="@color/yellow_ticker" />
@@ -126,8 +127,7 @@
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/rv_courier_choice"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/new_margin_med" />
+                        android:layout_height="wrap_content" />
 
                     <LinearLayout
                         android:id="@+id/ll_expanded_courier_list"
@@ -226,6 +226,7 @@
                                 android:layout_marginLeft="14dp"
                                 android:layout_marginRight="14dp"
                                 android:background="@color/white"
+                                android:foreground="?selectableItemBackground"
                                 android:text="@string/label_change_pinpoint"
                                 android:textAllCaps="false"
                                 android:textColor="@color/black_54"
@@ -241,6 +242,7 @@
                                 android:layout_marginLeft="14dp"
                                 android:layout_marginRight="14dp"
                                 android:background="@color/white"
+                                android:foreground="?selectableItemBackground"
                                 android:text="@string/label_choose_pinpoint"
                                 android:textAllCaps="false"
                                 android:textColor="@color/black_54"
@@ -310,9 +312,9 @@
                             android:layout_height="wrap_content"
                             android:background="@color/transparent"
                             android:contentDescription="@string/image_desc_button_insurance_info"
-                            android:paddingLeft="@dimen/padding_ms"
-                            android:paddingRight="@dimen/padding_ms"
-                            android:src="@drawable/info_icon" />
+                            android:padding="@dimen/padding_ms"
+                            android:src="@drawable/info_icon"
+                            android:visibility="gone" />
 
                         <View
                             android:layout_width="0dp"
@@ -323,14 +325,17 @@
                             android:id="@+id/switch_insurance"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:theme="@style/TransactionSwitch" />
+                            android:theme="@style/TransactionSwitch"
+                            android:visibility="gone" />
 
                         <TextView
                             android:id="@+id/tv_special_insurance_condition"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:visibility="gone"
-                            tools:text="Tidak Tersedia" />
+                            android:layout_marginBottom="@dimen/margin_ms"
+                            android:layout_marginTop="@dimen/margin_ms"
+                            android:text="@string/label_insurance_not_available"
+                            android:visibility="visible" />
 
                     </LinearLayout>
 
@@ -366,8 +371,7 @@
                             android:layout_height="wrap_content"
                             android:background="@color/transparent"
                             android:contentDescription="@string/image_desc_button_partial_order_info"
-                            android:paddingLeft="@dimen/padding_ms"
-                            android:paddingRight="@dimen/padding_ms"
+                            android:padding="@dimen/padding_ms"
                             android:src="@drawable/info_icon" />
 
                         <View
@@ -415,8 +419,7 @@
                             android:layout_height="wrap_content"
                             android:background="@color/transparent"
                             android:contentDescription="@string/image_desc_button_dropshipper_info"
-                            android:paddingLeft="@dimen/padding_ms"
-                            android:paddingRight="@dimen/padding_ms"
+                            android:padding="@dimen/padding_ms"
                             android:src="@drawable/info_icon" />
 
                         <View

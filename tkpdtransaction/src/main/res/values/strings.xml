@@ -212,6 +212,8 @@
     <string name="title_activity_shipment_choice">Pilih Jenis Pengiriman</string>
     <string name="title_activity_shipment_detail">Kurir Pengiriman</string>
     <string name="label_hide_other_couriers">Sembunyikan</string>
+    <string name="label_insurance_not_available">Tidak Didukung</string>
+    <string name="label_must_insurance">Wajib Asuransi</string>
 
     <string-array name="pickup_point">
         <item>Alfamart</item>

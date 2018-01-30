@@ -37,4 +37,6 @@ public interface IShipmentDetailView extends CustomerView {
     void showPinPointChooserMap(ShipmentDetailData shipmentDetailData);
 
     void showPinPointMap(ShipmentDetailData shipmentDetailData);
+
+    void disableInsuranceView();
 }
