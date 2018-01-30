@@ -7,11 +7,8 @@ import android.util.Log;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.DefaultSubscriber;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.session.presenter.Session;
-import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
@@ -90,7 +87,6 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
 
     private void launchLoginActivity(String productId) {
         Bundle extras = new Bundle();
-        extras.putInt(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
         extras.putString("product_id", productId);
         getView().launchLoginActivity(extras);
     }

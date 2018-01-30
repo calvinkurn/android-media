@@ -5,11 +5,8 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.session.presenter.Session;
-import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterUseCase;
@@ -17,8 +14,6 @@ import com.tokopedia.discovery.newdiscovery.domain.usecase.GetShopUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.ToggleFavoriteActionUseCase;
 import com.tokopedia.discovery.newdiscovery.search.fragment.GetDynamicFilterSubscriber;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenterImpl;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListFragmentView;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.listener.WishlistActionListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.listener.FavoriteActionListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.subscriber.ToggleFavoriteActionSubscriber;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.viewmodel.ShopViewModel;
@@ -82,7 +77,6 @@ public class ShopListPresenterImpl extends SearchSectionFragmentPresenterImpl<Sh
 
     private void launchLoginActivity(String shopId) {
         Bundle extras = new Bundle();
-        extras.putInt(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
         extras.putString("shop_id", shopId);
         viewListener.launchLoginActivity(extras);
     }

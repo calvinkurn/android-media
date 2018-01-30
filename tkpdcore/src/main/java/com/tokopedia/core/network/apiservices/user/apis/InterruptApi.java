@@ -20,9 +20,4 @@ public interface InterruptApi {
     @FormUrlEncoded
     @POST(TkpdBaseURL.User.PATH_GET_QUESTION_FORM)
     Observable<Response<TkpdResponse>> oldGetQuestionForm(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.User.PATH_GET_QUESTION_FORM)
-    Observable<Response<TkpdResponse>> getQuestionForm(@FieldMap TKPDMapParam<String, Object>
-                                                               parameters);
 }

@@ -59,8 +59,6 @@ import com.tokopedia.core.onboarding.NewOnboardingActivity;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.rxjava.RxUtils;
-import com.tokopedia.core.session.presenter.Session;
-import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.core.util.SessionHandler;

@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 
 import com.tokopedia.core.R;
-import com.tokopedia.core.session.presenter.SessionView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +18,10 @@ import java.util.List;
  */
 
 public class NotificationUtils {
+    private static final String MOVE_TO_CART_KEY = "MOVE_TO_CART_KEY";
+    private static final String WHICH_FRAGMENT_KEY = "which_fragment_key";
+
+
     public static Intent configureGeneralIntent(Intent intent) {
         intent.putExtra("from_notif", true);
         intent.putExtra("unread", false);
@@ -28,11 +31,11 @@ public class NotificationUtils {
     public static Intent configurePromoIntent(Intent intent, Bundle data) {
         if (data.getInt("keylogin1", -99) != -99) {
             intent.putExtra(
-                    com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY,
+                    WHICH_FRAGMENT_KEY,
                     data.getInt("keylogin1")
             );
             intent.putExtra(
-                    SessionView.MOVE_TO_CART_KEY,
+                    MOVE_TO_CART_KEY,
                     data.getInt("keylogin2")
             );
         }

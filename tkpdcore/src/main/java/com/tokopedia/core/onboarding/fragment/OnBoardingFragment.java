@@ -4,19 +4,15 @@ package com.tokopedia.core.onboarding.fragment;
  * Created by hafizh HERDI on 3/21/2016.
  */
 
-import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,10 +20,8 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.onboarding.ISlideBackgroundColorHolder;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdState;
 
 public class OnBoardingFragment extends TkpdBaseV4Fragment implements ISlideBackgroundColorHolder{
 
@@ -140,35 +134,6 @@ public class OnBoardingFragment extends TkpdBaseV4Fragment implements ISlideBack
 
         image.setImageDrawable(ContextCompat.getDrawable(getActivity(), drawable));
         main.setBackgroundColor(bgColor);
-
-        Button login = (Button) endingView.findViewById(R.id.button_start_now);
-        login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SessionHandler.setFirstTimeUser(getActivity(), false);
-                Intent intent = new Intent();
-                intent.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
-                intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
-                getActivity().setResult(Activity.RESULT_OK, intent);
-                getActivity().finish();
-
-            }
-        });
-
-        Button register = (Button) endingView.findViewById(R.id.button_register);
-        register.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SessionHandler.setFirstTimeUser(getActivity(), false);
-                Intent intent = new Intent();
-                intent.putExtra(com.tokopedia.core.session.presenter.Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.REGISTER);
-                intent.putExtra(SessionView.MOVE_TO_CART_KEY, SessionView.HOME);
-                getActivity().setResult(Activity.RESULT_OK, intent);
-                getActivity().finish();
-
-
-            }
-        });
 
         TextView search = (TextView) endingView.findViewById(R.id.button_search);
         search.setOnClickListener(new View.OnClickListener() {
