@@ -121,7 +121,11 @@ public class CategoryProductStyle99View extends
 
     @Override
     protected void onUpdateSelectedProductData() {
-        this.digitalProductChooserView.renderUpdateDataSelected(productSelected);
+        if (source != WIDGET) {
+            this.digitalProductChooserView.renderUpdateDataSelected(productSelected);
+        } else {
+            this.widgetProductChooserView.updateProduct(productSelected.getProductId());
+        }
     }
 
     @Override
@@ -250,7 +254,6 @@ public class CategoryProductStyle99View extends
                         historyClientNumber.getLastOrderClientNumber().getProductId()
                 )) {
                     widgetProductChooserView.updateProduct(
-                            operatorSelected.getProductList(),
                             product.getProductId()
                     );
                     break;
@@ -375,7 +378,7 @@ public class CategoryProductStyle99View extends
 
             @Override
             public void onItemAutocompletedSelected(OrderClientNumber orderClientNumber) {
-
+                actionListener.onItemAutocompletedSelected(orderClientNumber);
             }
         };
     }

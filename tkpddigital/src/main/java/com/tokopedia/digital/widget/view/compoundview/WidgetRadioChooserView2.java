@@ -27,6 +27,8 @@ public class WidgetRadioChooserView2 extends LinearLayout {
     @BindView(R2.id.radio_group_container)
     LinearLayout radioGroupContainer;
 
+    private List<Operator> operators;
+
     private RadioGroup radioGroup;
     private WidgetRadioChooserView2.RadioChoserListener listener;
 
@@ -59,6 +61,8 @@ public class WidgetRadioChooserView2 extends LinearLayout {
         radioGroupContainer.addView(radioGroup);
         radioGroup.setOrientation(LinearLayout.HORIZONTAL);
 
+        this.operators = operators;
+
         for (int i = 0; i < operators.size(); i++) {
             RadioButton radioButton = new RadioButton(getContext());
             radioButton.setId(i);
@@ -71,7 +75,7 @@ public class WidgetRadioChooserView2 extends LinearLayout {
         radioGroup.check(radioGroup.getChildAt(0).getId());
         Operator operatorModel = operators.get(radioGroup.getChildAt(0).getId());
         listener.onCheckChange(operatorModel);
-        initCheckRadioButtonBasedOnLastOrder(operators, radioGroup, defaultOperatorId);
+        initCheckRadioButtonBasedOnLastOrder(radioGroup, defaultOperatorId);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
@@ -82,8 +86,7 @@ public class WidgetRadioChooserView2 extends LinearLayout {
         });
     }
 
-    private void initCheckRadioButtonBasedOnLastOrder(List<Operator> operators,
-                                                      RadioGroup radioGroup,
+    private void initCheckRadioButtonBasedOnLastOrder(RadioGroup radioGroup,
                                                       String defaultOperatorId) {
         for (int i = 0; i < operators.size(); i++) {
             if (operators.get(i).getOperatorId().equals(defaultOperatorId)) {
@@ -93,7 +96,7 @@ public class WidgetRadioChooserView2 extends LinearLayout {
         }
     }
 
-    public void updateOperator(List<Operator> operators, String operatorId) {
+    public void updateOperator(String operatorId) {
         for (int i = 0; i < operators.size(); i++) {
             if (operators.get(i).getOperatorId().equals(operatorId)) {
                 radioGroup.check(radioGroup.getChildAt(i).getId());

@@ -122,12 +122,20 @@ public class CategoryProductStyle2View extends
 
     @Override
     protected void onUpdateSelectedProductData() {
-        digitalProductChooserView.renderUpdateDataSelected(productSelected);
+        if (source != WIDGET) {
+            this.digitalProductChooserView.renderUpdateDataSelected(productSelected);
+        } else {
+            this.widgetProductChooserView.updateProduct(productSelected.getProductId());
+        }
     }
 
     @Override
     protected void onUpdateSelectedOperatorData() {
-        digitalOperatorRadioChooserView.renderUpdateDataSelected(operatorSelected);
+        if (source != WIDGET) {
+            digitalOperatorRadioChooserView.renderUpdateDataSelected(operatorSelected);
+        } else {
+            widgetRadioChooserView2.updateOperator(operatorSelected.getOperatorId());
+        }
     }
 
     @Override
@@ -204,7 +212,6 @@ public class CategoryProductStyle2View extends
                         historyClientNumber.getLastOrderClientNumber().getOperatorId()
                 )) {
                     widgetRadioChooserView2.updateOperator(
-                            data.getOperatorList(),
                             operator.getOperatorId());
                     break;
                 }
@@ -282,7 +289,6 @@ public class CategoryProductStyle2View extends
                             historyClientNumber.getLastOrderClientNumber().getProductId())
                             ) {
                         widgetProductChooserView.updateProduct(
-                                operatorSelected.getProductList(),
                                 product.getProductId()
                         );
                         break;
@@ -439,7 +445,7 @@ public class CategoryProductStyle2View extends
 
             @Override
             public void onItemAutocompletedSelected(OrderClientNumber orderClientNumber) {
-
+                actionListener.onItemAutocompletedSelected(orderClientNumber);
             }
         };
     }

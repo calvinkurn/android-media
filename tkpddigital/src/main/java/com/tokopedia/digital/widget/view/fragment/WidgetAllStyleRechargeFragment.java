@@ -463,6 +463,8 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
     @Override
     public void onItemAutocompletedSelected(OrderClientNumber orderClientNumber) {
         UnifyTracking.eventSelectNumberOnUserProfileWidget(categoryDataState.getName());
+
+        handleCallbackSearchNumber(orderClientNumber);
     }
 
     @Override

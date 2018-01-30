@@ -35,6 +35,8 @@ public class WidgetProductChooserView2 extends LinearLayout {
     @BindView(R2.id.error_nominal)
     TextView errorNominal;
 
+    private List<Product> products;
+
     private WidgetProductChooserView2.ProductChoserListener listener;
 
     public WidgetProductChooserView2(Context context) {
@@ -79,13 +81,14 @@ public class WidgetProductChooserView2 extends LinearLayout {
     public void renderDataView(List<Product> products, boolean showPrice, String defaultProductId) {
         WidgetNominalAdapter2 adapter = new WidgetNominalAdapter2(getContext(),
                 android.R.layout.simple_spinner_item, products, showPrice);
+        this.products = products;
         spinnerNominal.setAdapter(adapter);
-        spinnerNominal.setOnItemSelectedListener(getItemSelected(products));
-        setSpnNominalSelectionBasedLastOrder(products, defaultProductId);
+        spinnerNominal.setOnItemSelectedListener(getItemSelected());
+        setSpnNominalSelectionBasedLastOrder(defaultProductId);
         showProductStatus(products.get(spinnerNominal.getSelectedItemPosition()));
     }
 
-    private AdapterView.OnItemSelectedListener getItemSelected(final List<Product> products) {
+    private AdapterView.OnItemSelectedListener getItemSelected() {
         return new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -121,18 +124,18 @@ public class WidgetProductChooserView2 extends LinearLayout {
         }
     }
 
-    private void setSpnNominalSelectionBasedLastOrder(List<Product> productList, String defaultProductId) {
-        for (int i = 0; i < productList.size(); i++) {
-            if (productList.get(i).getProductId().equals(defaultProductId)) {
+    private void setSpnNominalSelectionBasedLastOrder(String defaultProductId) {
+        for (int i = 0; i < products.size(); i++) {
+            if (products.get(i).getProductId().equals(defaultProductId)) {
                 spinnerNominal.setSelection(i);
                 break;
             }
         }
     }
 
-    public void updateProduct(List<Product> productList, String productId) {
-        for (int i = 0; i < productList.size(); i++) {
-            if (productList.get(i).getProductId().equals(productId)) {
+    public void updateProduct(String productId) {
+        for (int i = 0; i < products.size(); i++) {
+            if (products.get(i).getProductId().equals(productId)) {
                 spinnerNominal.setSelection(i);
                 break;
             }

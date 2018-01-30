@@ -108,7 +108,11 @@ public class CategoryProductStyle1View extends
 
     @Override
     protected void onUpdateSelectedProductData() {
-        this.digitalProductChooserView.renderUpdateDataSelected(productSelected);
+        if (source != WIDGET) {
+            this.digitalProductChooserView.renderUpdateDataSelected(productSelected);
+        } else {
+            this.widgetProductChooserView.updateProduct(productSelected.getProductId());
+        }
     }
 
     @Override
@@ -237,7 +241,6 @@ public class CategoryProductStyle1View extends
                         historyClientNumber.getLastOrderClientNumber().getProductId()
                 )) {
                     widgetProductChooserView.updateProduct(
-                            operatorSelected.getProductList(),
                             product.getProductId()
                     );
                     break;

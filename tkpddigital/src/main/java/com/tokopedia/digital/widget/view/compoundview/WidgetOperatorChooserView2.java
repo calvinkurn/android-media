@@ -28,6 +28,8 @@ public class WidgetOperatorChooserView2 extends LinearLayout {
     @BindView(R2.id.spinner_operator)
     Spinner spinnerOperator;
 
+    private List<Operator> operators;
+
     private WidgetOperatorChooserView2.OperatorChoserListener listener;
 
     private boolean resetClientNumber;
@@ -57,14 +59,15 @@ public class WidgetOperatorChooserView2 extends LinearLayout {
     }
 
     public void renderDataView(final List<Operator> operators, String defaultOperatorId) {
+        this.operators = operators;
         WidgetOperatorAdapter2 adapterOperator = new WidgetOperatorAdapter2(
                 getContext(), android.R.layout.simple_spinner_item, operators);
         spinnerOperator.setAdapter(adapterOperator);
-        spinnerOperator.setOnItemSelectedListener(getItemSelectedListener(operators));
-        initSetLastOrderSelectedOperator(operators, defaultOperatorId);
+        spinnerOperator.setOnItemSelectedListener(getItemSelectedListener());
+        initSetLastOrderSelectedOperator(defaultOperatorId);
     }
 
-    private AdapterView.OnItemSelectedListener getItemSelectedListener(final List<Operator> operators) {
+    private AdapterView.OnItemSelectedListener getItemSelectedListener() {
         return new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -81,7 +84,7 @@ public class WidgetOperatorChooserView2 extends LinearLayout {
         };
     }
 
-    private void initSetLastOrderSelectedOperator(List<Operator> operators, String defaultOperatorId) {
+    private void initSetLastOrderSelectedOperator(String defaultOperatorId) {
         for (int i = 0, operatorsSize = operators.size(); i < operatorsSize; i++) {
             Operator operator = operators.get(i);
             if (String.valueOf(operator.getOperatorId())
@@ -92,7 +95,7 @@ public class WidgetOperatorChooserView2 extends LinearLayout {
         }
     }
 
-    public void updateOperator(List<Operator> operators, String operatorId) {
+    public void updateOperator(String operatorId) {
         for (int i = 0, operatorsSize = operators.size(); i < operatorsSize; i++) {
             Operator operator = operators.get(i);
             if (String.valueOf(operator.getOperatorId())
