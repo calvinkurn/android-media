@@ -5,7 +5,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.util.DisplayMetrics;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -104,8 +103,11 @@ public class CreditCardDetailActivity extends TActivity
 
         builder.append(inputText.charAt(0));
         for (int i = 1; i < inputText.length(); i++) {
-            if (i % 4 == 0) builder.append("\u00A0\u00A0\u00A0");
-            else builder.append("\u00A0");
+            if (i % 4 == 0) {
+                builder.append("\u00A0\u00A0\u00A0");
+            } else {
+                builder.append("\u00A0");
+            }
             builder.append(inputText.charAt(i));
         }
 
@@ -165,8 +167,9 @@ public class CreditCardDetailActivity extends TActivity
         drawable.setBounds(5, 5, 5, 5);
         toolbar.setOverflowIcon(drawable);
 
-        if (getSupportActionBar() != null)
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_black_24dp);
+        }
 
         toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.WebViewToolbarText);
         toolbar.setSubtitleTextAppearance(this, com.tokopedia.core.R.style
