@@ -3,8 +3,8 @@ package com.tokopedia.profilecompletion.data.mapper;
 import android.text.TextUtils;
 
 import com.google.gson.GsonBuilder;
-import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.network.ErrorMessageException;
+import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.core.profile.model.GetUserInfoDomainData;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
 import com.tokopedia.profilecompletion.data.pojo.GetUserInfoData;

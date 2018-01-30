@@ -2,8 +2,8 @@ package com.tokopedia.otp.phoneverification.domain.mapper;
 
 import android.text.TextUtils;
 
-import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.network.ErrorMessageException;
+import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.otp.phoneverification.data.model.ChangePhoneNumberViewModel;
 import com.tokopedia.otp.phoneverification.domain.pojo.ChangePhoneNumberPojo;

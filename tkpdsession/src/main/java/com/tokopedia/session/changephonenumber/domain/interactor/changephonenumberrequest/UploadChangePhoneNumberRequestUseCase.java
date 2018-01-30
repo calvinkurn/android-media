@@ -6,7 +6,7 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.network.ErrorMessageException;
+import com.tokopedia.network.ErrorMessageException;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.session.R;
 import com.tokopedia.session.changephonenumber.domain.model.changephonenumberrequest.ChangePhoneNumberRequestModel;

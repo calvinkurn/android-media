@@ -1,7 +1,7 @@
 package com.tokopedia.session.register.view.subscriber.registerinitial;
 
 import com.tokopedia.network.ErrorCode;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
 import com.tokopedia.session.register.domain.model.LoginSosmedDomain;

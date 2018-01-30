@@ -1,7 +1,7 @@
 package com.tokopedia.session.login.loginemail.view.subscriber;
 
 import com.tokopedia.network.ErrorCode;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.session.data.viewmodel.DiscoverViewModel;
 import com.tokopedia.session.login.loginemail.view.viewlistener.Login;
 
@@ -26,7 +26,7 @@ public class LoginDiscoverSubscriber extends Subscriber<DiscoverViewModel> {
     @Override
     public void onError(Throwable e) {
         view.dismissLoadingDiscover();
-        view.onErrorDiscoverLogin(ErrorHandler.getErrorMessageWithErrorCode(e));
+        view.onErrorDiscoverLogin(ErrorHandler.getErrorMessageWithErrorCode(view.getContext(), e));
     }
 
     @Override

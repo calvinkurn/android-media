@@ -1,7 +1,7 @@
 package com.tokopedia.session.register.view.subscriber.registerinitial;
 
 import com.facebook.AccessToken;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.network.ErrorHandler;
 
 /**
  * @author by nisie on 10/11/17.

@@ -1,7 +1,7 @@
 package com.tokopedia.otp.phoneverification.view.subscriber;
 
 import com.tokopedia.network.ErrorCode;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.otp.phoneverification.data.model.ChangePhoneNumberViewModel;
 import com.tokopedia.otp.phoneverification.view.listener.ChangePhoneNumber;
 
@@ -26,7 +26,7 @@ public class ChangePhoneNumberSubscriber extends Subscriber<ChangePhoneNumberVie
 
     @Override
     public void onError(Throwable e) {
-        viewListener.onErrorChangePhoneNumber(ErrorHandler.getErrorMessageWithErrorCode(e));
+        viewListener.onErrorChangePhoneNumber(ErrorHandler.getErrorMessageWithErrorCode(viewListener.getActivity(), e));
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.tokopedia.session.changephonenumber.data.mapper;
 
-import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.network.ErrorMessageException;
 import com.tokopedia.session.changephonenumber.data.model.ValidateNumberData;
 
 import javax.inject.Inject;
@@ -35,8 +35,7 @@ public class ValidateNumberMapper implements Func1<Response<TkpdResponse>, Boole
                     throw new ErrorMessageException(
                             tkpdResponseResponse.body().getErrorMessageJoined());
                 } else {
-                    throw new ErrorMessageException(
-                            ErrorMessageException.DEFAULT_ERROR);
+                    throw new ErrorMessageException("");
                 }
             }
         } else {

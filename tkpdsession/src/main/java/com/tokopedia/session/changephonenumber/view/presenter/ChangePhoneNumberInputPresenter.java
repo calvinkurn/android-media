@@ -3,7 +3,7 @@ package com.tokopedia.session.changephonenumber.view.presenter;
 import android.text.Editable;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.core.util.CustomPhoneNumberUtil;
+import com.tokopedia.util.CustomPhoneNumberUtil;
 import com.tokopedia.session.changephonenumber.domain.interactor.ValidateNumberUseCase;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberInputFragmentListener;
 import com.tokopedia.session.changephonenumber.view.subscriber.SubmitNumberSubscriber;

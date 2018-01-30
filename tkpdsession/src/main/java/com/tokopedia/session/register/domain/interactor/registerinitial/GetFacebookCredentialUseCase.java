@@ -15,7 +15,7 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.network.ErrorMessageException;
+import com.tokopedia.network.ErrorMessageException;
 import com.tokopedia.network.ErrorCode;
 import com.tokopedia.core.var.FacebookContainer;
 import com.tokopedia.session.R;

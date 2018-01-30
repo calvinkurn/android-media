@@ -12,7 +12,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.network.ErrorCode;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.di.SessionModule;
 import com.tokopedia.session.R;

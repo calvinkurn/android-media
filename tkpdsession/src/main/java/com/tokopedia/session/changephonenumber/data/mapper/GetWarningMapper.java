@@ -1,6 +1,6 @@
 package com.tokopedia.session.changephonenumber.data.mapper;
 
-import com.tokopedia.core.network.ErrorMessageException;
+import com.tokopedia.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.session.changephonenumber.data.model.GetWarningData;
 import com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel;
@@ -42,8 +42,7 @@ public class GetWarningMapper implements Func1<Response<TkpdResponse>, WarningVi
                     throw new ErrorMessageException(
                             tkpdResponseResponse.body().getErrorMessageJoined());
                 } else {
-                    throw new ErrorMessageException(
-                            ErrorMessageException.DEFAULT_ERROR);
+                    throw new ErrorMessageException("");
                 }
             }
         } else {

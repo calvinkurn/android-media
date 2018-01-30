@@ -30,7 +30,7 @@ import android.widget.ProgressBar;
 import com.tokopedia.core.R;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.network.ErrorCode;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.core.util.TkpdWebView;
 
 import java.util.Set;

@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.network.ErrorCode;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.otp.data.model.RequestOtpViewModel;
 import com.tokopedia.otp.phoneverification.view.listener.PhoneVerification;
 import com.tokopedia.session.R;

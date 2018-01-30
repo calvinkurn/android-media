@@ -1,5 +1,6 @@
 package com.tokopedia.session.login.loginemail.view.viewlistener;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
@@ -65,6 +66,8 @@ public interface Login {
         void onSuccessLoginEmail();
 
         void onSuccessLoginSosmed(String loginMethod);
+
+        Context getContext();
     }
 
     interface Presenter extends CustomerPresenter<View> {

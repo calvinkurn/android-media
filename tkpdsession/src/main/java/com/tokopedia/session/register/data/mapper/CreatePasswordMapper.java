@@ -3,8 +3,8 @@ package com.tokopedia.session.register.data.mapper;
 import android.text.TextUtils;
 
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.network.ErrorMessageException;
+import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.session.R;
 import com.tokopedia.session.register.data.pojo.CreatePasswordPojo;

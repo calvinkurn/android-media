@@ -2,8 +2,8 @@ package com.tokopedia.session.login.loginphonenumber.data.mapper;
 
 import android.text.TextUtils;
 
-import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.network.ErrorMessageException;
+import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.session.login.loginphonenumber.domain.model.CodeTokoCashDomain;
 import com.tokopedia.session.login.loginphonenumber.domain.pojo.accesstoken.GetCodeTokoCashPojo;

@@ -1,6 +1,6 @@
 package com.tokopedia.session.changephonenumber.data.mapper.changephonenumberrequest;
 
-import com.tokopedia.core.network.ErrorMessageException;
+import com.tokopedia.network.ErrorMessageException;
 import com.tokopedia.session.changephonenumber.data.model.changephonenumberrequest.CheckStatusData;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.session.changephonenumber.domain.model.changephonenumberrequest.CheckStatusModel;

@@ -1,16 +1,17 @@
-package com.tokopedia.core.network.retrofit.response;
+package com.tokopedia.network;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.tkpd.library.utils.network.MessageErrorException;
-import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.exception.ResponseV4ErrorException;
+import com.tokopedia.core.network.retrofit.response.ErrorListener;
+import com.tokopedia.core.network.retrofit.response.ResponseStatus;
+import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,7 +24,8 @@ import java.net.UnknownHostException;
 import retrofit2.Response;
 
 /**
- * Created by Angga.Prasetiyo on 01/12/2015.
+ * @author by Angga.Prasetiyo on 01/12/2015.
+ * Edited by Nisie on
  */
 public class ErrorHandler {
     private static final String TAG = ErrorHandler.class.getSimpleName();
@@ -134,6 +136,11 @@ public class ErrorHandler {
         } else {
             return context.getString(R.string.default_request_error_unknown);
         }
+    }
+
+
+    public static String getErrorMessageWithErrorCode(Context context, Throwable e) {
+        return getErrorMessage(e, context);
     }
 
     public static String getErrorMessage(Response response) {

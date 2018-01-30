@@ -1,5 +1,6 @@
 package com.tokopedia.session.changephonenumber.view.listener;
 
+import android.content.Context;
 import android.text.Editable;
 
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
@@ -28,6 +29,8 @@ public interface ChangePhoneNumberInputFragmentListener {
         void onSubmitNumberSuccess();
 
         void onSubmitNumberError(String message);
+
+        Context getContext();
     }
 
     public interface Presenter extends CustomerPresenter<View> {

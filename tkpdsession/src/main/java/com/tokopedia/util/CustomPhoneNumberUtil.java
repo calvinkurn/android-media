@@ -1,9 +1,7 @@
-package com.tokopedia.core.util;
-
-import com.tokopedia.core.base.utils.StringUtils;
+package com.tokopedia.util;
 
 /**
- * Created by stevenfredian on 10/27/16.
+ * @author  by stevenfredian on 10/27/16.
  */
 
 public class CustomPhoneNumberUtil {

@@ -3,7 +3,7 @@ package com.tokopedia.session.login.loginemail.view.subscriber;
 import android.text.TextUtils;
 
 import com.tokopedia.network.ErrorCode;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
@@ -41,7 +41,7 @@ public class LoginSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
             view.onGoToActivationPage(email);
         } else {
             view.dismissLoadingLogin();
-            view.onErrorLogin(ErrorHandler.getErrorMessageWithErrorCode(e));
+            view.onErrorLogin(ErrorHandler.getErrorMessageWithErrorCode(view.getContext(), e));
         }
     }
 

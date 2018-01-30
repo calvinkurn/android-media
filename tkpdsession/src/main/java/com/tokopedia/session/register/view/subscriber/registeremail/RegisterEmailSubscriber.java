@@ -1,7 +1,7 @@
 package com.tokopedia.session.register.view.subscriber.registeremail;
 
-import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.network.ErrorMessageException;
+import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.session.R;
 import com.tokopedia.session.register.data.model.RegisterEmailModel;
 import com.tokopedia.session.register.data.pojo.RegisterEmailData;
@@ -36,7 +36,7 @@ public class RegisterEmailSubscriber extends Subscriber<RegisterEmailModel> {
             viewListener.showInfo();
         } else {
             viewListener.onErrorRegister(
-                    ErrorHandler.getErrorMessageWithErrorCode(e));
+                    ErrorHandler.getErrorMessageWithErrorCode(viewListener.getActivity(), e));
         }
     }
 

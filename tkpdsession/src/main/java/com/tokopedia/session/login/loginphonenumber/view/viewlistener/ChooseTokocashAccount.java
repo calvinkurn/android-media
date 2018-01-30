@@ -1,5 +1,7 @@
 package com.tokopedia.session.login.loginphonenumber.view.viewlistener;
 
+import android.content.Context;
+
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.otp.tokocashotp.view.viewmodel.LoginTokoCashViewModel;
@@ -24,6 +26,8 @@ public interface ChooseTokocashAccount {
         void onErrorLoginTokoCash(String errorMessage);
 
         void goToSecurityQuestion(AccountTokocash email, LoginTokoCashViewModel loginTokoCashViewModel);
+
+        Context getContext();
     }
 
     interface Presenter extends CustomerPresenter<ChooseTokocashAccount.View> {

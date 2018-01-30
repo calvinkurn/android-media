@@ -3,7 +3,7 @@ package com.tokopedia.otp.cotp.domain.mapper;
 import android.text.TextUtils;
 
 import com.google.gson.GsonBuilder;
-import com.tokopedia.core.network.ErrorMessageException;
+import com.tokopedia.network.ErrorMessageException;
 import com.tokopedia.otp.cotp.domain.pojo.ListMethodItemPojo;
 import com.tokopedia.otp.cotp.domain.pojo.ModeList;
 import com.tokopedia.otp.cotp.view.viewmodel.ListVerificationMethod;

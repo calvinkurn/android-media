@@ -8,7 +8,7 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.network.ErrorCode;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.session.domain.interactor.DiscoverUseCase;
 import com.tokopedia.analytics.LoginAnalytics;
