@@ -10,8 +10,8 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_quick_filter"
+        <com.tokopedia.design.quickfilter.custom.multiple.view.QuickMultipleFilterView
+            android:id="@+id/view_quick_filter"
             android:layout_width="match_parent"
             android:layout_height="70dp"/>
 

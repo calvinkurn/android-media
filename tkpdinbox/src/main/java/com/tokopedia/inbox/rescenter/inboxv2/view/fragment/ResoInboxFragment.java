@@ -15,11 +15,14 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.design.button.BottomActionView;
+import com.tokopedia.design.quickfilter.custom.multiple.item.QuickMultipleFilterItem;
+import com.tokopedia.design.quickfilter.custom.multiple.view.QuickMultipleFilterView;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.InboxFilterActivity;
@@ -29,11 +32,15 @@ import com.tokopedia.inbox.rescenter.inboxv2.view.adapter.SortAdapter;
 import com.tokopedia.inbox.rescenter.inboxv2.view.di.DaggerResoInboxComponent;
 import com.tokopedia.inbox.rescenter.inboxv2.view.listener.ResoInboxFragmentListener;
 import com.tokopedia.inbox.rescenter.inboxv2.view.presenter.ResoInboxFragmentPresenter;
+import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.FilterViewModel;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.InboxItemResultViewModel;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.InboxItemViewModel;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.ResoInboxFilterModel;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.ResoInboxSortModel;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.SortModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -56,7 +63,8 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
     private ResoInboxAdapter inboxAdapter;
     private LinearLayoutManager rvInboxLayoutManager;
 
-    private RecyclerView rvInbox, rvQuickFilter;
+    private RecyclerView rvInbox;
+    private QuickMultipleFilterView quickFilterView;
     private ProgressBar progressBar;
     private BottomActionView bottomActionView;
     private BottomSheetDialog sortDialog;
@@ -109,7 +117,7 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
                 .from(getActivity())
                 .inflate(R.layout.fragment_reso_inbox, container, false);
         rvInbox = (RecyclerView) view.findViewById(R.id.rv_inbox);
-        rvQuickFilter = (RecyclerView) view.findViewById(R.id.rv_quick_filter);
+        quickFilterView = (QuickMultipleFilterView) view.findViewById(R.id.view_quick_filter);
         progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
         bottomActionView = (BottomActionView) view.findViewById(R.id.bav);
         ffEmptyState = (FrameLayout) view.findViewById(R.id.view_empty_state);
@@ -133,11 +141,12 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
     private void initView() {
         bottomActionView.setVisibility(View.GONE);
         rvInbox.setVisibility(View.GONE);
-        rvQuickFilter.setVisibility(View.GONE);
+        quickFilterView.setVisibility(View.GONE);
         ffEmptyStateWithReset.setVisibility(View.GONE);
         ffEmptyState.setVisibility(View.GONE);
         inboxFilterModel = new ResoInboxFilterModel();
         inboxSortModel = new ResoInboxSortModel(SortModel.getSortList(), SORT_DEFAULT_ID, new SortModel());
+        quickFilterView.setListener(quickFilterListener);
         presenter.initPresenterData(getActivity(), isSeller);
     }
 
@@ -162,6 +171,18 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
             }
         });
     }
+
+    private QuickMultipleFilterView.ActionListener quickFilterListener
+            = new QuickMultipleFilterView.ActionListener() {
+        @Override
+        public void filterClicked(List<Integer> selectedIdList) {
+            String id = "";
+            for (Integer i : selectedIdList) {
+                id += i+"";
+            }
+            Toast.makeText(getActivity(), id, Toast.LENGTH_SHORT).show();
+        }
+    };
 
     @Override
     protected String getScreenName() {
@@ -220,7 +241,7 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
     private void getFirstInboxResult(InboxItemResultViewModel result) {
         dismissProgressBar();
         rvInbox.setVisibility(View.VISIBLE);
-        rvQuickFilter.setVisibility(View.VISIBLE);
+        quickFilterView.setVisibility(View.VISIBLE);
         bottomActionView.setVisibility(View.VISIBLE);
         inboxAdapter = new ResoInboxAdapter(
                 getActivity(),
@@ -228,7 +249,22 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
                 result.getInboxItemViewModels());
         rvInbox.setAdapter(inboxAdapter);
         inboxAdapter.notifyDataSetChanged();
+
+        quickFilterView.renderFilter(convertQuickFilterModel(result.getFilterViewModels()));
         updateParams(true, result);
+    }
+
+    private List<QuickMultipleFilterItem> convertQuickFilterModel(List<FilterViewModel> filterList) {
+        List<QuickMultipleFilterItem> itemList = new ArrayList<>();
+        for (FilterViewModel filter : filterList) {
+            QuickMultipleFilterItem item = new QuickMultipleFilterItem();
+            item.setItemId(filter.getOrderValue());
+            item.setName(filter.getTypeNameQuickFilter());
+            item.setColorBorder(R.color.tkpd_main_green);
+            item.setType(filter.getType());
+            itemList.add(item);
+        }
+        return itemList;
     }
 
     private void updateFilterValue(InboxItemResultViewModel result) {
@@ -237,7 +273,7 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
 
     private void hideLayout() {
         bottomActionView.setVisibility(View.GONE);
-        rvQuickFilter.setVisibility(View.GONE);
+        quickFilterView.setVisibility(View.GONE);
         rvInbox.setVisibility(View.GONE);
     }
 
