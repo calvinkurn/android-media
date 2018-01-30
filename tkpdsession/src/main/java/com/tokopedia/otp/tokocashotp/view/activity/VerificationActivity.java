@@ -9,12 +9,10 @@ import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.tokopedia.analytics.LoginAnalytics;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.analytics.OTPAnalytics;
-import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.otp.tokocashotp.view.fragment.ChooseTokocashVerificationMethodFragment;
 import com.tokopedia.otp.tokocashotp.view.fragment.TokoCashVerificationFragment;
 import com.tokopedia.otp.tokocashotp.view.viewmodel.MethodItem;

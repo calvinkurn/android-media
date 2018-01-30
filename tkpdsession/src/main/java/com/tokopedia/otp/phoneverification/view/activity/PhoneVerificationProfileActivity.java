@@ -7,9 +7,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
 import com.tokopedia.otp.phoneverification.view.fragment.PhoneVerificationFragment;
 import com.tokopedia.otp.phoneverification.view.fragment.PhoneVerificationProfileFragment;
@@ -19,7 +19,7 @@ import com.tokopedia.session.R;
  * Created by nisie on 2/23/17.
  */
 
-public class PhoneVerificationProfileActivity extends TActivity implements HasComponent{
+public class PhoneVerificationProfileActivity extends TActivity implements HasComponent {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

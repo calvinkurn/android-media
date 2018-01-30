@@ -9,7 +9,7 @@ import com.tokopedia.analytics.LoginAnalytics;
 import com.tokopedia.analytics.OTPAnalytics;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.session.R;
 import com.tokopedia.session.changephonenumber.view.fragment
         .ChangePhoneNumberEmailVerificationFragment;

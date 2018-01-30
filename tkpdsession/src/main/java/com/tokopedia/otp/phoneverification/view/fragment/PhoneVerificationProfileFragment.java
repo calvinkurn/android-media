@@ -11,8 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.session.R;
 
 

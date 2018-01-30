@@ -9,12 +9,12 @@ import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.analytics.LoginAnalytics;
 import com.tokopedia.analytics.OTPAnalytics;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.otp.cotp.view.fragment.ChooseVerificationMethodFragment;
 import com.tokopedia.otp.cotp.view.fragment.InterruptVerificationFragment;
 import com.tokopedia.otp.cotp.view.fragment.VerificationFragment;
