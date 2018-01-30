@@ -37,7 +37,7 @@ public class CartActivity extends BasePresenterActivity {
         Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
         if (fragment == null || !(fragment instanceof CartFragment))
             getFragmentManager().beginTransaction().replace(R.id.container,
-                    CartFragment.newInstance()).commit();
+                    MultipleAddressFragment.newInstance()).commit();
     }
 
     @Override

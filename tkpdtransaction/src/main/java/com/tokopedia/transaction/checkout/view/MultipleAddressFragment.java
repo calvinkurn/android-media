@@ -1,5 +1,7 @@
 package com.tokopedia.transaction.checkout.view;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -27,6 +29,12 @@ import static com.tokopedia.transaction.checkout.view.AddShipmentAddressFragment
 public class MultipleAddressFragment extends TkpdFragment
         implements MultipleAddressAdapter.MultipleAddressAdapterListener {
 
+    public static final int ADD_SHIPMENT_ADDRESS_REQUEST_CODE = 21;
+    public static final int EDIT_SHIPMENT_ADDRESS_REQUEST_CODE = 22;
+    private static final String ADD_SHIPMENT_FRAGMENT_TAG = "ADD_SHIPMENT_FRAGMENT_TAG";
+
+    private MultipleAddressAdapter multipleAddressAdapter;
+
     public static MultipleAddressFragment newInstance() {
         return new MultipleAddressFragment();
     }
@@ -42,7 +50,8 @@ public class MultipleAddressFragment extends TkpdFragment
         View view = inflater.inflate(R.layout.multiple_address_fragment, container, false);
         RecyclerView orderAddressList = view.findViewById(R.id.order_address_list);
         orderAddressList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        orderAddressList.setAdapter(new MultipleAddressAdapter(dummyDataList(), this));
+        multipleAddressAdapter = new MultipleAddressAdapter(dummyDataList(), this);
+        orderAddressList.setAdapter(multipleAddressAdapter);
         return view;
     }
 
@@ -90,25 +99,47 @@ public class MultipleAddressFragment extends TkpdFragment
     @Override
     public void onAddNewShipmentAddress(MultipleAddressAdapterData data,
                                         MultipleAddressItemData addressData) {
+        AddShipmentAddressFragment fragment = AddShipmentAddressFragment.newInstance(
+                data,
+                addressData,
+                ADD_MODE);
+        fragment.setTargetFragment(this, ADD_SHIPMENT_ADDRESS_REQUEST_CODE);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.animator.slide_in_left, R.animator.slide_in_left)
-                .add(R.id.container, AddShipmentAddressFragment.newInstance(
-                        data,
-                        addressData,
-                        ADD_MODE))
+                .add(R.id.container, fragment, ADD_SHIPMENT_FRAGMENT_TAG)
                 .commit();
     }
 
     @Override
     public void onItemChoosen(MultipleAddressAdapterData productData,
                               MultipleAddressItemData addressData) {
+        AddShipmentAddressFragment fragment = AddShipmentAddressFragment.newInstance(
+                productData,
+                addressData,
+                EDIT_MODE);
+        fragment.setTargetFragment(this, EDIT_SHIPMENT_ADDRESS_REQUEST_CODE);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.animator.slide_in_left, R.animator.slide_in_left)
-                .add(R.id.container, AddShipmentAddressFragment.newInstance(
-                        productData,
-                        addressData,
-                        EDIT_MODE))
+                .add(R.id.container, fragment, ADD_SHIPMENT_FRAGMENT_TAG)
                 .commit();
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == EDIT_SHIPMENT_ADDRESS_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            multipleAddressAdapter.notifyDataSetChanged();
+            removeAddAddressFragment();
+        } else if (requestCode == ADD_SHIPMENT_ADDRESS_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            multipleAddressAdapter.notifyDataSetChanged();
+            removeAddAddressFragment();
+        }
+    }
+
+    private void removeAddAddressFragment() {
+        getFragmentManager()
+                .beginTransaction()
+                .remove(getFragmentManager().findFragmentByTag(ADD_SHIPMENT_FRAGMENT_TAG))
+                .commit();
+    }
 }

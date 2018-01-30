@@ -1,5 +1,7 @@
 package com.tokopedia.transaction.checkout.view;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Editable;
@@ -16,6 +18,9 @@ import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressAdapterData;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressItemData;
+
+import static com.tokopedia.transaction.checkout.view.MultipleAddressFragment.ADD_SHIPMENT_ADDRESS_REQUEST_CODE;
+import static com.tokopedia.transaction.checkout.view.MultipleAddressFragment.EDIT_SHIPMENT_ADDRESS_REQUEST_CODE;
 
 /**
  * Created by kris on 1/25/18. Tokopedia
@@ -216,16 +221,43 @@ public class AddShipmentAddressFragment extends TkpdFragment {
             public void onClick(View view) {
                 //TODO ALTER DATA HERE, ALSO MAKE SOME VIEWS GLOBAL VARIABLE
                 if (addressLayout.isShown()) {
-                    itemData.setProductQty(quantityField.getText().toString());
-                    itemData.setAddressTitle(addressTitle.getText().toString());
-                    itemData.setAddressReceiverName(addressReceiverName.getText().toString());
-                    itemData.setAddress(address.getText().toString());
-                    if (notesLayout.isShown())
-                        itemData.setProductNotes(notesEditText.getText().toString());
+                    if(getArguments().getInt(MODE_EXTRA) == ADD_MODE) {
+                        addNewAddressItem(itemData);
+                    } else {
+                        insertDataToModel(itemData);
+                        getTargetFragment().onActivityResult(
+                                EDIT_SHIPMENT_ADDRESS_REQUEST_CODE,
+                                Activity.RESULT_OK,
+                                new Intent()
+                        );
+                    }
                 } else {
                     //TODO Show error here
                 }
             }
         };
+    }
+
+    private void addNewAddressItem(MultipleAddressItemData itemData) {
+        MultipleAddressItemData newAddressData = new MultipleAddressItemData();
+        newAddressData.setProductWeight(itemData.getProductWeight());
+        insertDataToModel(newAddressData);
+        MultipleAddressAdapterData productData = getArguments()
+                .getParcelable(PRODUCT_DATA_EXTRAS);
+        productData.getItemListData().add(newAddressData);
+        getTargetFragment().onActivityResult(
+                ADD_SHIPMENT_ADDRESS_REQUEST_CODE,
+                Activity.RESULT_OK,
+                new Intent()
+        );
+    }
+
+    private void insertDataToModel(MultipleAddressItemData itemData) {
+        itemData.setProductQty(quantityField.getText().toString());
+        itemData.setAddressTitle(addressTitle.getText().toString());
+        itemData.setAddressReceiverName(addressReceiverName.getText().toString());
+        itemData.setAddress(address.getText().toString());
+        if (notesLayout.isShown())
+            itemData.setProductNotes(notesEditText.getText().toString());
     }
 }
