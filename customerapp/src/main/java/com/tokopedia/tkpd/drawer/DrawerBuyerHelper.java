@@ -56,6 +56,7 @@ import java.util.ArrayList;
 
 import static com.tokopedia.core.drawer2.view.DrawerAdapter.IS_INBOX_OPENED;
 import static com.tokopedia.core.drawer2.view.DrawerAdapter.IS_PEOPLE_OPENED;
+import static com.tokopedia.core.drawer2.view.DrawerAdapter.IS_RESO_OPENED;
 import static com.tokopedia.core.drawer2.view.DrawerAdapter.IS_SHOP_OPENED;
 
 /**
@@ -156,6 +157,14 @@ public class DrawerBuyerHelper extends DrawerHelper
         data.add(getInboxMenu());
         data.add(getBuyerMenu());
         if (SessionHandler.isUserHasShop(context)) {
+            data.add(getResoMenu());
+        } else {
+            data.add(new DrawerItem(context.getString(R.string.drawer_title_new_reso),
+                    R.drawable.ic_reso,
+                    TkpdState.DrawerPosition.RESOLUTION_CENTER,
+                    true));
+        }
+        if (SessionHandler.isUserHasShop(context)) {
             data.add(getSellerMenu());
             data.add(getProductMenu());
             data.add(getGoldMerchantMenu());
@@ -164,7 +173,7 @@ public class DrawerBuyerHelper extends DrawerHelper
                     TkpdState.DrawerPosition.SELLER_TOP_ADS,
                     true));
         }
-        data.add(getResoMenu());
+
         data.add(new DrawerItem(context.getString(R.string.drawer_title_setting),
                 R.drawable.icon_setting,
                 TkpdState.DrawerPosition.SETTINGS,
@@ -260,8 +269,17 @@ public class DrawerBuyerHelper extends DrawerHelper
 
     private DrawerGroup getResoMenu() {
         DrawerGroup resoMenu = new DrawerGroup("Komplain Saya",
-                R.drawable.icon_pembelian,
-                TkpdState.DrawerPosition.RESO_MENU);
+                R.drawable.ic_reso,
+                TkpdState.DrawerPosition.RESOLUTION_CENTER,
+                drawerCache.getBoolean(IS_RESO_OPENED, false), 0);
+        resoMenu.add(new DrawerItem(context.getString(R.string.drawer_title_new_reso_as_buyer),
+                TkpdState.DrawerPosition.RESOLUTION_CENTER_BUYER,
+                drawerCache.getBoolean(IS_RESO_OPENED, false),
+                0));
+        resoMenu.add(new DrawerItem(context.getString(R.string.drawer_title_new_reso_as_seller),
+                TkpdState.DrawerPosition.RESOLUTION_CENTER_SELLER,
+                drawerCache.getBoolean(IS_RESO_OPENED, false),
+                0));
         return resoMenu;
     }
 
@@ -315,10 +333,6 @@ public class DrawerBuyerHelper extends DrawerHelper
                 TkpdState.DrawerPosition.INBOX_TICKET,
                 drawerCache.getBoolean(IS_INBOX_OPENED, false),
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_TICKET)));
-        inboxMenu.add(new DrawerItem(context.getString(R.string.drawer_title_resolution_center),
-                TkpdState.DrawerPosition.RESOLUTION_CENTER,
-                drawerCache.getBoolean(IS_INBOX_OPENED, false),
-                drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER)));
 
         if(SessionHandler.isUserHasShop(context)){
             inboxMenu.add(new DrawerItem(context.getString(R.string.drawer_title_seller_info),
@@ -526,6 +540,30 @@ public class DrawerBuyerHelper extends DrawerHelper
                     UnifyTracking.eventClickMenuSellerInfo();
                     intent = new Intent(context, SellerInfoActivity.class);
                     context.startActivity(intent);
+                    break;
+                case TkpdState.DrawerPosition.RESOLUTION_CENTER:
+                    if (context.getApplication() instanceof TkpdCoreRouter) {
+                        context.startActivity(((TkpdCoreRouter) context.getApplication())
+                                .getResolutionCenterIntentBuyer(context));
+                        sendGTMNavigationEvent(AppEventTracking.EventLabel.RESOLUTION_CENTER);
+
+                    }
+                    break;
+                case TkpdState.DrawerPosition.RESOLUTION_CENTER_BUYER:
+                    if (context.getApplication() instanceof TkpdCoreRouter) {
+                        context.startActivity(((TkpdCoreRouter) context.getApplication())
+                                .getResolutionCenterIntentBuyer(context));
+                        sendGTMNavigationEvent(AppEventTracking.EventLabel.RESOLUTION_CENTER);
+
+                    }
+                    break;
+                case TkpdState.DrawerPosition.RESOLUTION_CENTER_SELLER:
+                    if (context.getApplication() instanceof TkpdCoreRouter) {
+                        context.startActivity(((TkpdCoreRouter) context.getApplication())
+                                .getResolutionCenterIntentSeller(context));
+                        sendGTMNavigationEvent(AppEventTracking.EventLabel.RESOLUTION_CENTER);
+
+                    }
                     break;
                 default:
                     super.onItemClicked(item);

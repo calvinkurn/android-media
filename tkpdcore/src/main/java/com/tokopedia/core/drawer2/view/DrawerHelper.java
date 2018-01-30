@@ -121,14 +121,6 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
                 context.startActivity(intent);
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.HELP);
                 break;
-            case TkpdState.DrawerPosition.RESOLUTION_CENTER:
-                if (context.getApplication() instanceof TkpdCoreRouter) {
-                    context.startActivity(((TkpdCoreRouter) context.getApplication())
-                            .getResolutionCenterIntentBuyer(context));
-                    sendGTMNavigationEvent(AppEventTracking.EventLabel.RESOLUTION_CENTER);
-
-                }
-                break;
             case TkpdState.DrawerPosition.DEVELOPER_OPTIONS:
                 startIntent(context, DeveloperOptions.class);
                 break;
@@ -154,13 +146,6 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
                 SessionHandler session = new SessionHandler(context);
                 session.Logout(context);
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.SIGN_OUT);
-                break;
-            case TkpdState.DrawerPosition.RESO_MENU:
-                if (context.getApplication() instanceof TkpdCoreRouter) {
-                    context.startActivity(((TkpdCoreRouter) context.getApplication())
-                            .getResolutionCenterIntentBuyer(context));
-                    sendGTMNavigationEvent(AppEventTracking.EventLabel.RESOLUTION_CENTER);
-                }
                 break;
             default:
                 Log.d(DrawerHelper.class.getSimpleName(), item.getLabel());
