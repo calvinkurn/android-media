@@ -78,7 +78,7 @@ public class CreditCardDetailActivity extends TActivity
     }
 
     private String getBackgroundAssets(CreditCardModelItem item) {
-        final String resourceUrl = TkpdBaseURL.CDN_IMG_ANDROID_DOMAIN + "%s/%s/%s.png";
+        final String resourceUrl = TkpdBaseURL.Payment.CDN_IMG_ANDROID_DOMAIN + "%s/%s/%s.png";
         String assetName = getBackgroundResource(item);
         String density = DisplayMetricUtils.getScreenDensity(this);
 
@@ -99,14 +99,19 @@ public class CreditCardDetailActivity extends TActivity
     }
 
     private String getSpacedText(String inputText) {
+        final int DIGITS = 4;
+        final int THREE_SPACE = 3;
+
         StringBuilder builder = new StringBuilder();
 
         builder.append(inputText.charAt(0));
         for (int i = 1; i < inputText.length(); i++) {
-            if (i % 4 == 0) {
-                builder.append("\u00A0\u00A0\u00A0");
+            if (i % DIGITS == 0) {
+                for (int j = 0; j < THREE_SPACE; j++) {
+                    builder.append(getString(R.string.single_spacing));
+                }
             } else {
-                builder.append("\u00A0");
+                builder.append(getString(R.string.single_spacing));
             }
             builder.append(inputText.charAt(i));
         }

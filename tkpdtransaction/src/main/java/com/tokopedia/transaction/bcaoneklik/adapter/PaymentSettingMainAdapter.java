@@ -269,7 +269,7 @@ public class PaymentSettingMainAdapter extends RecyclerView.Adapter<RecyclerView
         }
 
         private String getBackgroundAssets(CreditCardModelItem item) {
-            final String resourceUrl = TkpdBaseURL.CDN_IMG_ANDROID_DOMAIN + "%s/%s/%s.png";
+            final String resourceUrl = TkpdBaseURL.Payment.CDN_IMG_ANDROID_DOMAIN + "%s/%s/%s.png";
             String assetName = getBackgroundResource(item);
             String density = DisplayMetricUtils.getScreenDensity(context);
 

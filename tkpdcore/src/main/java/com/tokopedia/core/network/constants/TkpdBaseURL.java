@@ -62,7 +62,6 @@ public class TkpdBaseURL {
     public static String WALLET_DOMAIN = "https://www.tokocash.com/";
     public static String TOKOPOINT_API_DOMAIN = "https://gw.tokopedia.com/tokopoints/api/";
     public static String PROMO_API_DOMAIN = "https://www.tokopedia.com/promo/";
-    public static String CDN_IMG_ANDROID_DOMAIN = "https://ecs7.tokopedia.net/img/android/";
 
     public static class Product {
         public static final String V4_PRODUCT = "v4/product/";
@@ -913,6 +912,9 @@ public class TkpdBaseURL {
         public static final String PATH_CANCEL_TRANSACTION = "cancel";
         public static final String PATH_ZEUS_CHECK_WHITELIST = "zeus/whitelist/status";
         public static final String PATH_ZEUS_UPDATE_WHITELIST = "zeus/whitelist";
+
+        public static final String CDN_IMG_ANDROID_DOMAIN = "https://ecs7.tokopedia.net/img/android/";
+
     }
 
     public static class FinTech {
