@@ -30,7 +30,7 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.customView.PasswordView;
-import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.session.R;

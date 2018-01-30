@@ -18,7 +18,7 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;

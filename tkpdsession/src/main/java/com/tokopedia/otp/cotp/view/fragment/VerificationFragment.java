@@ -37,7 +37,7 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.msisdn.IncomingSmsReceiver;
-import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.di.DaggerSessionComponent;

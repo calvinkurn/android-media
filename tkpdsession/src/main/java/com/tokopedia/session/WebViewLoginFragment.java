@@ -28,7 +28,7 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.tokopedia.core.R;
-import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.network.ErrorCode;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.util.TkpdWebView;

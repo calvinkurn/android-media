@@ -39,7 +39,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.util.CustomPhoneNumberUtil;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;

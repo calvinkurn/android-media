@@ -17,7 +17,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.deposit.activity.WithdrawActivity;
 import com.tokopedia.core.deposit.presenter.DepositFragmentPresenterImpl;
-import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.di.SessionComponent;
 import com.tokopedia.di.SessionModule;

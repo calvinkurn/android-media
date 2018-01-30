@@ -22,7 +22,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.session.R;
 import com.tokopedia.session.activation.view.activity.ActivationActivity;

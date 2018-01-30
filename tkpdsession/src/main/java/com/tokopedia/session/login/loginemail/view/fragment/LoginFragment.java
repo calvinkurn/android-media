@@ -56,7 +56,7 @@ import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.customView.TextDrawable;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.profile.model.GetUserInfoDomainData;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;

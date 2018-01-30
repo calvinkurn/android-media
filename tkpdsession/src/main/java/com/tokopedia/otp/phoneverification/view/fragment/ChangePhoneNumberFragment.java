@@ -16,7 +16,7 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.util.CustomPhoneNumberUtil;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.phoneverification.view.listener.ChangePhoneNumber;
