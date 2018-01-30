@@ -196,6 +196,7 @@ public class AuthUtil {
         return finalHeader;
     }
 
+    //depecrated, use getDefaultHeaderMapNew() instead
     @Deprecated
     public static Map<String, String> getDefaultHeaderMap(String path, String strParam, String method,
                                                           String contentType, String authKey, String dateFormat) {
