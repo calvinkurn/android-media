@@ -3,7 +3,7 @@ package com.tokopedia.otp.cotp.view.presenter;
 import android.text.TextUtils;
 
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.cotp.view.subscriber.RequestOtpSubscriber;

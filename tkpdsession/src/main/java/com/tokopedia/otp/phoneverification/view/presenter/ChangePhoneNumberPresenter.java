@@ -1,6 +1,6 @@
 package com.tokopedia.otp.phoneverification.view.presenter;
 
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.otp.phoneverification.domain.interactor.ChangePhoneNumberUseCase;
 import com.tokopedia.otp.phoneverification.view.listener.ChangePhoneNumber;
 import com.tokopedia.otp.phoneverification.view.subscriber.ChangePhoneNumberSubscriber;

@@ -1,6 +1,6 @@
 package com.tokopedia.otp.cotp.view.presenter;
 
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.otp.cotp.domain.GetVerificationMethodListUseCase;

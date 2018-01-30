@@ -6,7 +6,7 @@ import android.support.v4.app.Fragment;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.core.network.retrofit.response.ErrorCode;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.util.SessionHandler;

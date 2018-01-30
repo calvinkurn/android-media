@@ -3,7 +3,7 @@ package com.tokopedia.session.register.view.presenter;
 import android.text.TextUtils;
 
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.session.R;
 import com.tokopedia.session.register.domain.interactor.registerthird.CreatePasswordLoginUseCase;

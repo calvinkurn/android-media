@@ -2,7 +2,7 @@ package com.tokopedia.profilecompletion.view.presenter;
 
 import android.os.Bundle;
 
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.profilecompletion.domain.EditUserProfileUseCase;
