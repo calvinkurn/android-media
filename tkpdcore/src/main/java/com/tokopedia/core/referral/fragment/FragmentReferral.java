@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,7 +15,6 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.manage.general.ManageWebViewActivity;
@@ -54,9 +54,13 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
     TextView TextViewHelpLink;
     @BindView(R2.id.rl_referral_code)
     RelativeLayout referralCodeLayout;
+    @BindView(R2.id.progress)
+    ProgressBar progress;
 
     private ProgressDialog progressBar;
     public static final int REFERRAL_PHONE_VERIFY_REQUEST_CODE = 1011;
+    private boolean enableShareButton = true;
+
 
     public static FragmentReferral newInstance() {
         FragmentReferral fragmentReferral = new FragmentReferral();
@@ -99,7 +103,6 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
     }
 
 
-
     @Override
     protected void initialListener(Activity activity) {
 
@@ -134,7 +137,7 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
 
                 }
             });
-        }else{
+        } else {
             referralCodeLayout.setVisibility(View.INVISIBLE);
             TextViewHelpLink.setVisibility(View.INVISIBLE);
         }
@@ -144,7 +147,7 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
     protected void initInjector() {
         ReferralComponent referralComponent = DaggerReferralComponent.builder()
                 .referralModule(new ReferralModule())
-                .appComponent(((BasePresenterActivity)context).getApplicationComponent())
+                .appComponent(((BasePresenterActivity) context).getApplicationComponent())
                 .build();
         referralComponent.inject(this);
 
@@ -175,9 +178,10 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.shareApp();
-                UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_SHARE_CODE, getReferralCodeFromTextView());
-
+                if (enableShareButton) {
+                    presenter.shareApp();
+                    UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_SHARE_CODE, getReferralCodeFromTextView());
+                }
             }
         };
 
@@ -265,5 +269,15 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
     public void onDestroy() {
         super.onDestroy();
         presenter.detachView();
+    }
+
+    @Override
+    public void setShareButtonEnable(Boolean enable) {
+        this.enableShareButton = enable;
+        if (enable) {
+            progress.setVisibility(View.GONE);
+        } else {
+            progress.setVisibility(View.VISIBLE);
+        }
     }
 }

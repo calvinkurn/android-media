@@ -65,6 +65,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
     public void initialize() {
         remoteConfig = new FirebaseRemoteConfigImpl(getView().getActivity());
         activity = getView().getActivity();
+        getView().setShareButtonEnable(false);
         if (getView().isUserLoggedIn()) {
             if (isAppShowReferralButtonActivated()) {
                 if (getView().isUserPhoneNumberVerified()) {
@@ -155,6 +156,8 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
                     }).showRetrySnackbar();
                 }
                 getView().hideProcessDialog();
+                getView().setShareButtonEnable(true);
+
             }
         });
 
