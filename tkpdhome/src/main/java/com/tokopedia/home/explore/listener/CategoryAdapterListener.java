@@ -14,4 +14,10 @@ public interface CategoryAdapterListener {
     void onGimickItemClicked(CategoryLayoutRowModel data);
 
     void onApplinkClicked(CategoryLayoutRowModel data);
+
+    void openShop();
+
+    void onDigitalMoreClicked();
+
+    void showNetworkError(String string);
 }

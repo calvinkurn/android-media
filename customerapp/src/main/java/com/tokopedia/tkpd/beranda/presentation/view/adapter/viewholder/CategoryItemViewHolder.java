@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.core.network.entity.homeMenu.CategoryItemModel;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.beranda.domain.model.category.CategoryLayoutRowModel;
 import com.tokopedia.tkpd.beranda.listener.HomeCategoryListener;
@@ -108,7 +107,7 @@ public class CategoryItemViewHolder extends AbstractViewHolder<CategoryItemViewM
 
         @Override
         public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new ItemViewHolder(LayoutInflater.from(context).inflate(R.layout.layout_category_item, parent, false));
+            return new ItemViewHolder(LayoutInflater.from(context).inflate(R.layout.layout_category_grid_item, parent, false));
         }
 
         @Override

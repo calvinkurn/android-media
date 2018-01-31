@@ -327,6 +327,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onSectionItemClicked(LayoutSections sections) {
         //TODO HOME_REVAMP : Handle Applink here
+        startActivity(new Intent(getActivity(), ExploreActivity.class));
     }
 
     private void onGoToSell() {
@@ -471,8 +472,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void openShop() {
-//        onGoToSell();
-        startActivity(new Intent(getActivity(), ExploreActivity.class));
+        onGoToSell();
     }
 
     @Override

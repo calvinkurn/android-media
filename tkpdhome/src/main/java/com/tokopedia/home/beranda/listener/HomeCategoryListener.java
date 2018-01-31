@@ -1,0 +1,57 @@
+package com.tokopedia.home.beranda.listener;
+
+import com.tokopedia.digital.tokocash.model.CashBackData;
+import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
+import com.tokopedia.home.beranda.domain.model.brands.BrandDataModel;
+import com.tokopedia.home.beranda.domain.model.toppicks.TopPicksItemModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.LayoutSections;
+import com.tokopedia.home.explore.domain.model.CategoryLayoutRowModel;
+
+/**
+ * @author by errysuprayogi on 11/29/17.
+ */
+
+public interface HomeCategoryListener {
+
+    void onSectionItemClicked(LayoutSections sections);
+
+    void onMarketPlaceItemClicked(CategoryLayoutRowModel data, int parentPosition, int childPosition);
+
+    void onDigitalItemClicked(CategoryLayoutRowModel data, int parentPosition, int childPosition);
+
+    void onGimickItemClicked(CategoryLayoutRowModel data, int parentPosition, int childPosition);
+
+    void onApplinkClicked(CategoryLayoutRowModel data, int parentPosition, int childPosition);
+
+    void onTopPicksItemClicked(TopPicksItemModel data, int parentPosition, int childPosition);
+
+    void onTopPicksMoreClicked(String url, int pos);
+
+    void onBrandsItemClicked(BrandDataModel data, int parentPosition, int childPosition);
+
+    void onBrandsMoreClicked(int pos);
+
+    void onDigitalMoreClicked(int pos);
+
+    void onCloseTicker(int pos);
+
+    void onPromoClick(BannerSlidesModel slidesModel);
+
+    void openShop();
+
+    void actionAppLinkWalletHeader(String redirectUrlBalance, String appLinkBalance);
+
+    void onRequestPendingCashBack();
+
+    void actionInfoPendingCashBackTokocash(CashBackData cashBackData, String redirectUrlActionButton, String appLinkActionButton);
+
+    void actionTokoPointClicked(String tokoPointUrl, String pageTitle);
+
+    void actionScannerQRTokoCash();
+
+    boolean isMainViewVisible();
+
+    void showNetworkError(String message);
+
+    void onDynamicChannelClicked(String applink);
+}

@@ -61,7 +61,7 @@ public class CategoryGridListViewHolder extends AbstractViewHolder<CategoryGridL
         adapter.setData(rowModelList);
     }
 
-    public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> {
+    private class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> {
 
         private final Context context;
         private List<CategoryLayoutRowModel> data;
@@ -78,7 +78,7 @@ public class CategoryGridListViewHolder extends AbstractViewHolder<CategoryGridL
 
         @Override
         public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new ItemViewHolder(LayoutInflater.from(context).inflate(R.layout.layout_category_item, parent, false));
+            return new ItemViewHolder(LayoutInflater.from(context).inflate(R.layout.layout_category_grid_item, parent, false));
         }
 
         @Override

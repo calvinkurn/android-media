@@ -9,6 +9,10 @@ def getTkpdCore() {
     return project.hasProperty('isArtifact') ?
             rootProject.ext.tkpdDependencies.core : project(':tkpdcore');
 }
+def getTkpdUseCase() {
+    return project.hasProperty('isArtifact') ?
+            rootProject.ext.tkpdDependencies.usecase : project(':tkpdusecase');
+}
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -39,6 +43,7 @@ android {
 
 dependencies {
     compile getTkpdCore()
+    compile getTkpdUseCase()
     compile getTkpdAbstraction()
     compile(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"
@@ -48,4 +53,6 @@ dependencies {
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     compile rootProject.ext.supportLibDependencies.supportV4
     compile rootProject.ext.debugToolsDependencies.stetho
+    compile project(':tkpddigital')
+    compile project(':tkpdfeed')
 }

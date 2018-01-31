@@ -25,7 +25,11 @@ import com.tokopedia.home.explore.domain.model.CategoryLayoutRowModel;
 import com.tokopedia.home.explore.listener.CategoryAdapterListener;
 import com.tokopedia.home.explore.view.adapter.ExploreAdapter;
 import com.tokopedia.home.explore.view.adapter.TypeFactory;
+import com.tokopedia.home.explore.view.adapter.viewholder.CategoryFavoriteViewHolder;
+import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryFavoriteViewModel;
 import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryGridListViewModel;
+import com.tokopedia.home.explore.view.adapter.viewmodel.DigitalsViewModel;
+import com.tokopedia.home.explore.view.adapter.viewmodel.SellViewModel;
 import com.tokopedia.home.explore.view.presentation.ExploreContract;
 
 import java.util.ArrayList;
@@ -68,14 +72,34 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
         super.onActivityCreated(savedInstanceState);
         List<Visitable> list = new ArrayList<>();
         CategoryGridListViewModel gridListViewModel = new CategoryGridListViewModel();
+        CategoryFavoriteViewModel favoriteViewModel = new CategoryFavoriteViewModel();
         gridListViewModel.setTitle("Beli ini itu di Tokopedia");
-        ArrayList<CategoryLayoutRowModel> rowModels = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            rowModels.add(createDummyRowModel());
+        favoriteViewModel.setTitle("Kategory Favorite Anda");
+        ArrayList<CategoryLayoutRowModel> rowModels1 = new ArrayList<>();
+        ArrayList<CategoryLayoutRowModel> rowModels2 = new ArrayList<>();
+        for (int i = 0; i < 4; i++) {
+            rowModels1.add(createDummyFavoriteModel());
         }
-        gridListViewModel.setItemList(rowModels);
+        favoriteViewModel.setItemList(rowModels1);
+        for (int i = 0; i < 10; i++) {
+            rowModels2.add(createDummyRowModel());
+        }
+        gridListViewModel.setItemList(rowModels2);
+        list.add(favoriteViewModel);
         list.add(gridListViewModel);
+        list.add(new SellViewModel(getString(R.string.empty_shop_wording_title), getString(R.string.empty_shop_wording_subtitle), getString(R.string.buka_toko)));
+        list.add(new DigitalsViewModel("Bayar ini itu di Tokopedia", 0));
         renderList(list);
+    }
+
+    private CategoryLayoutRowModel createDummyFavoriteModel() {
+        CategoryLayoutRowModel rowModel = new CategoryLayoutRowModel();
+        rowModel.setType("Marketplace");
+        rowModel.setName("Fashion Pria");
+        rowModel.setCategoryId(54);
+        rowModel.setApplinks("tokopedia://category/54");
+        rowModel.setImageUrl("https://ecs7.tokopedia.net/img/cache/300-square/attachment/2017/8/30/7492183/7492183_05b0a852-cec1-4efb-928d-4d457d357b0b.jpg.webp");
+        return rowModel;
     }
 
     private CategoryLayoutRowModel createDummyRowModel() {
@@ -95,7 +119,7 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
 
     @Override
     protected TypeFactory getAdapterTypeFactory() {
-        return new ExploreAdapter(this);
+        return new ExploreAdapter(getFragmentManager(),this);
     }
 
     @Nullable
@@ -165,7 +189,7 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     @Override
     public void onApplinkClicked(CategoryLayoutRowModel data) {
         ((TkpdCoreRouter) getActivity().getApplication()).actionApplinkFromActivity(getActivity() ,
-                data.getUrl());
+                data.getApplinks());
     }
 
     private void openWebViewGimicURL(String url, String label, String title) {
@@ -184,5 +208,15 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
             intent.putExtra("url", url);
             context.startActivity(intent);
         }
+    }
+
+    @Override
+    public void openShop() {
+
+    }
+
+    @Override
+    public void onDigitalMoreClicked() {
+
     }
 }
