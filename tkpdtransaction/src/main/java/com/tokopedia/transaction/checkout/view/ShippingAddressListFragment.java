@@ -3,6 +3,7 @@ package com.tokopedia.transaction.checkout.view;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,9 @@ import android.view.ViewGroup;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
+import com.tokopedia.transaction.checkout.view.adapter.CartAddressListAdapter;
+import com.tokopedia.transaction.checkout.view.data.factory.ShippingRecipientModelFactory;
+import com.tokopedia.transaction.checkout.view.presenter.CartAddressListPresenter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,6 +28,9 @@ public class ShippingAddressListFragment extends BasePresenterFragment {
 
     @BindView(R2.id.rv_address_list)
     RecyclerView mRvRecipientAddressList;
+
+    CartAddressListAdapter mCartAddressListAdapter;
+    CartAddressListPresenter mCartAddressListPresenter;
 
     public static ShippingAddressListFragment newInstance() {
         return new ShippingAddressListFragment();
@@ -105,6 +112,14 @@ public class ShippingAddressListFragment extends BasePresenterFragment {
     @Override
     protected void initView(View view) {
         ButterKnife.bind(this, view);
+
+        mCartAddressListAdapter = new CartAddressListAdapter();
+
+        mRvRecipientAddressList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRvRecipientAddressList.setAdapter(mCartAddressListAdapter);
+
+        mCartAddressListAdapter.setAddressList(ShippingRecipientModelFactory.getDummyShippingRecipientModelList());
+        mCartAddressListAdapter.notifyDataSetChanged();
     }
 
     /**

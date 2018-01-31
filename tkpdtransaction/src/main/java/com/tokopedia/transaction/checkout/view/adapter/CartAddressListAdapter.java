@@ -22,12 +22,11 @@ public class CartAddressListAdapter
     private List<ShippingRecipientModel> mAddressModelList;
     private Context mContext;
 
-    @Inject
-    CartAddressListAdapter() {
+    public CartAddressListAdapter() {
         mAddressModelList = new ArrayList<>();
     }
 
-    public void setProducts(List<ShippingRecipientModel> addressModelList) {
+    public void setAddressList(List<ShippingRecipientModel> addressModelList) {
         mAddressModelList.addAll(addressModelList);
     }
 

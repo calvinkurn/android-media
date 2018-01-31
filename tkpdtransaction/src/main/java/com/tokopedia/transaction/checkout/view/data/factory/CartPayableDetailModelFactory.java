@@ -11,7 +11,7 @@ public class CartPayableDetailModelFactory {
     public static CartPayableDetailModel getCartPayableDetailModel() {
         return createCartPayableDetailModel("1",
                 "Rp200.000",
-                "3kg",
+                "3",
                 "Rp16.000",
                 "Rp0",
                 "Rp100.000",
