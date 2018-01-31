@@ -1,52 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:divider="@drawable/line_divider"
+        android:orientation="vertical"
         android:showDividers="beginning|middle|end">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="horizontal"
             android:paddingBottom="@dimen/padding_small"
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingRight="@dimen/activity_horizontal_margin"
-            android:orientation="horizontal"
-            android:paddingTop="@dimen/padding_small"
-            android:background="@color/white">
+            android:paddingTop="@dimen/padding_small">
 
-            <ImageView
-                android:id="@+id/icon_like"
-                android:layout_width="@dimen/image_width_xxs"
-                android:layout_height="@dimen/image_width_xxs"
-                android:layout_gravity="center_vertical"
-                android:layout_marginRight="@dimen/margin_vs"
-                android:layout_marginEnd="@dimen/margin_vs"
-                android:src="@drawable/ic_like_normal" />
+            <LinearLayout
+                android:id="@+id/container_like"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/text_counter_like"
-                style="@style/TextView.Micro.BlackDisabled"
-                android:layout_gravity="center_vertical"
-                tools:text="Anda dan 2 orang terbantu" />
+                <ImageView
+                    android:id="@+id/icon_like"
+                    android:layout_width="@dimen/image_width_xxs"
+                    android:layout_height="@dimen/image_width_xxs"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="@dimen/margin_vs"
+                    android:layout_marginRight="@dimen/margin_vs"
+                    android:src="@drawable/ic_like_normal" />
+
+                <TextView
+                    android:id="@+id/text_counter_like"
+                    style="@style/TextView.Micro.BlackDisabled"
+                    android:layout_gravity="center_vertical"
+                    tools:text="Anda dan 2 orang terbantu" />
+            </LinearLayout>
+
             <View
                 android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="0dp" />
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
             <LinearLayout
                 android:id="@+id/container_reply_view"
                 android:layout_width="wrap_content"
-                android:orientation="horizontal"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/see_reply_button"
-                    style="@style/TextView.Micro.BlackSecondary"
+                    style="@style/TextView.Micro.BlackDisabled.Bold"
                     android:layout_gravity="center"
                     android:text="@string/see_reply" />
 
@@ -66,24 +74,40 @@
             android:id="@+id/reply_review_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/padding_small"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:layout_marginRight="@dimen/activity_horizontal_margin"
             android:layout_marginTop="@dimen/padding_small"
-            android:layout_marginBottom="@dimen/padding_small"
+            android:background="@color/white"
             android:paddingLeft="@dimen/margin_med"
             android:visibility="gone"
-            tools:visibility="visible"
-            android:background="@color/white">
+            tools:visibility="visible">
 
             <LinearLayout
+                android:layout_toLeftOf="@+id/reply_overflow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/seller_reply_name"
-                    style="@style/TextView.Small.BlackSecondary"
-                    tools:text="Oleh Pretty Sugar Shop" />
+                <LinearLayout
+                    android:id="@+id/container_reply"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/TextView.Small.BlackSecondary"
+                        android:layout_marginRight="@dimen/margin_vs"
+                        android:text="@string/product_review_label_by" />
+
+                    <TextView
+                        android:id="@+id/seller_reply_name"
+                        style="@style/TextView.Small.Bold.BlackSecondary"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        tools:text="Pretty Sugar Shop" />
+                </LinearLayout>
+
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -95,8 +119,8 @@
                     <TextView
                         android:id="@+id/seller_label"
                         style="@style/TextView.Micro.WhitePrimary"
-                        android:layout_marginRight="@dimen/margin_vs"
                         android:layout_marginEnd="@dimen/margin_vs"
+                        android:layout_marginRight="@dimen/margin_vs"
                         android:background="@drawable/label_seller"
                         android:gravity="center_horizontal"
                         android:paddingBottom="@dimen/padding_vvvs"
@@ -131,11 +155,11 @@
                 android:id="@+id/reply_overflow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
-                android:src="@drawable/ic_more_vert_grey"
-                android:background="?attr/selectableItemBackgroundBorderless"/>
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_more_vert_grey" />
         </RelativeLayout>
     </LinearLayout>
 </merge>

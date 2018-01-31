@@ -138,10 +138,10 @@ public class ReviewProductPresenter extends BaseDaggerPresenter<ReviewProductCon
 
     public void getHelpfulReview(String productId) {
         productReviewGetHelpfulUseCase.execute(productReviewGetHelpfulUseCase.createRequestParams(productId, sessionHandler.getLoginID()),
-                getSubscriberGetHelpfulReview());
+                getSubscriberGetHelpfulReview(productId));
     }
 
-    private Subscriber<DataResponseReviewHelpful> getSubscriberGetHelpfulReview() {
+    private Subscriber<DataResponseReviewHelpful> getSubscriberGetHelpfulReview(final String productId) {
         return new Subscriber<DataResponseReviewHelpful>() {
             @Override
             public void onCompleted() {
@@ -157,7 +157,7 @@ public class ReviewProductPresenter extends BaseDaggerPresenter<ReviewProductCon
 
             @Override
             public void onNext(DataResponseReviewHelpful dataResponseReviewHelpful) {
-                getView().onGetListReviewHelpful(productReviewListMapper.map(dataResponseReviewHelpful, sessionHandler.getLoginID()));
+                getView().onGetListReviewHelpful(productReviewListMapper.map(dataResponseReviewHelpful, sessionHandler.getLoginID(), productId));
             }
         };
     }
