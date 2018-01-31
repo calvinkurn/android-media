@@ -102,15 +102,15 @@ public class CategoryProductStyle3View extends
 
     @Override
     protected void onInitialDataRendered() {
-        if (source != WIDGET) {
+        if (source == NATIVE) {
             tvTitle.setText(TextUtils.isEmpty(data.getTitleText()) ? "" : data.getTitleText());
         } else {
             tvTitle.setVisibility(GONE);
         }
-        if (source == WIDGET) {
-            renderOperatorChooserOptionsWidget();
-        } else {
+        if (source == NATIVE) {
             renderOperatorChooserOptions();
+        } else {
+            renderOperatorChooserOptionsWidget();
         }
         renderInstantCheckoutOptions();
         btnBuyDigital.setOnClickListener(getButtonBuyClickedListener());
@@ -118,7 +118,7 @@ public class CategoryProductStyle3View extends
 
     @Override
     protected void onUpdateSelectedProductData() {
-        if (source != WIDGET) {
+        if (source == NATIVE) {
             this.digitalProductChooserView.renderUpdateDataSelected(productSelected);
         } else {
             this.widgetProductChooserView.renderUpdateDataSelected(productSelected);
@@ -127,7 +127,7 @@ public class CategoryProductStyle3View extends
 
     @Override
     protected void onUpdateSelectedOperatorData() {
-        if (source != WIDGET) {
+        if (source == NATIVE) {
             digitalOperatorChooserView.renderUpdateDataSelected(operatorSelected);
         } else {
             widgetOperatorChooserView.renderUpdateDataSelected(operatorSelected);
@@ -316,17 +316,21 @@ public class CategoryProductStyle3View extends
     }
 
     private void renderPriceProductInfo() {
-        clearHolder(holderPriceInfoProduct);
-        if (operatorSelected.getRule().isShowPrice()) {
-            productPriceInfoView.renderData(productSelected);
-            holderPriceInfoProduct.addView(productPriceInfoView);
+        if (source == NATIVE) {
+            clearHolder(holderPriceInfoProduct);
+            if (operatorSelected.getRule().isShowPrice()) {
+                productPriceInfoView.renderData(productSelected);
+                holderPriceInfoProduct.addView(productPriceInfoView);
+            }
         }
     }
 
     private void renderAdditionalProductInfo() {
-        clearHolder(holderAdditionalInfoProduct);
-        productAdditionalInfoView.renderData(productSelected);
-        holderAdditionalInfoProduct.addView(productAdditionalInfoView);
+        if (source == NATIVE) {
+            clearHolder(holderAdditionalInfoProduct);
+            productAdditionalInfoView.renderData(productSelected);
+            holderAdditionalInfoProduct.addView(productAdditionalInfoView);
+        }
     }
 
     private void renderInstantCheckoutOptions() {

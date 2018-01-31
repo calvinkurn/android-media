@@ -96,7 +96,7 @@ public class CategoryProductStyle99View extends
 
     @Override
     protected void onInitialDataRendered() {
-        if (source != WIDGET) {
+        if (source == NATIVE) {
             tvTitle.setText(TextUtils.isEmpty(data.getTitleText()) ? "" : data.getTitleText());
         } else {
             tvTitle.setVisibility(GONE);
@@ -120,7 +120,7 @@ public class CategoryProductStyle99View extends
 
     @Override
     protected void onUpdateSelectedProductData() {
-        if (source != WIDGET) {
+        if (source == NATIVE) {
             this.digitalProductChooserView.renderUpdateDataSelected(productSelected);
         } else {
             this.widgetProductChooserView3.renderUpdateDataSelected(productSelected);
@@ -282,17 +282,21 @@ public class CategoryProductStyle99View extends
     }
 
     private void renderPriceProductInfo() {
-        clearHolder(holderPriceInfoProduct);
-        if (operatorSelected != null && operatorSelected.getRule().isShowPrice()) {
-            productPriceInfoView.renderData(productSelected);
-            holderPriceInfoProduct.addView(productPriceInfoView);
+        if (source == NATIVE) {
+            clearHolder(holderPriceInfoProduct);
+            if (operatorSelected != null && operatorSelected.getRule().isShowPrice()) {
+                productPriceInfoView.renderData(productSelected);
+                holderPriceInfoProduct.addView(productPriceInfoView);
+            }
         }
     }
 
     private void renderAdditionalInfoProduct() {
-        clearHolder(holderAdditionalInfoProduct);
-        productAdditionalInfoView.renderData(productSelected);
-        holderAdditionalInfoProduct.addView(productAdditionalInfoView);
+        if (source == NATIVE) {
+            clearHolder(holderAdditionalInfoProduct);
+            productAdditionalInfoView.renderData(productSelected);
+            holderAdditionalInfoProduct.addView(productAdditionalInfoView);
+        }
     }
 
     private void setBtnBuyDigitalText(String buttonText) {
