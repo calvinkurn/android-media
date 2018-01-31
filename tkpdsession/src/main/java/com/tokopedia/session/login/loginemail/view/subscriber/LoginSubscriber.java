@@ -33,6 +33,7 @@ public class LoginSubscriber extends Subscriber<LoginEmailDomain> {
 
     @Override
     public void onError(Throwable e) {
+        view.enableArrow();
         if (e.getLocalizedMessage() != null
                 && e.getLocalizedMessage().toLowerCase().contains(NOT_ACTIVATED)
                 && !TextUtils.isEmpty(email)) {

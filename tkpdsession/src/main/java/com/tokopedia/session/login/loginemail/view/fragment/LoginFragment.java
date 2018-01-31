@@ -269,16 +269,7 @@ public class LoginFragment extends BaseDaggerFragment
             }
         });
 
-        Display display = getActivity().getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int height = size.y;
-
-        if (height < MINIMAL_HEIGHT) {
-            loadMoreFab.show();
-        } else {
-            loadMoreFab.hide();
-        }
+        enableArrow();
 
         loginView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             @Override
@@ -639,6 +630,25 @@ public class LoginFragment extends BaseDaggerFragment
         );
 
         onSuccessLogin();
+    }
+
+    @Override
+    public void disableArrow() {
+        loadMoreFab.hide();
+    }
+
+    @Override
+    public void enableArrow() {
+        Display display = getActivity().getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int height = size.y;
+
+        if (height < MINIMAL_HEIGHT) {
+            loadMoreFab.show();
+        } else {
+            loadMoreFab.hide();
+        }
     }
 
     private void setDiscoverListener(final DiscoverItemViewModel discoverItemViewModel,

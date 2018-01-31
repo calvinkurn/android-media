@@ -96,6 +96,7 @@ public class LoginPresenter extends BaseDaggerPresenter<Login.View>
         getView().resetError();
         if (isValid(email, password)) {
             getView().showLoadingLogin();
+            getView().disableArrow();
             loginEmailUseCase.execute(LoginEmailUseCase.getParam(email, password),
                     new LoginSubscriber(getView(), email));
         }

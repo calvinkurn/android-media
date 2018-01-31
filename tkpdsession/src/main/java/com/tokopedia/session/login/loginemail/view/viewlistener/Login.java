@@ -68,6 +68,10 @@ public interface Login {
         void onSuccessLoginSosmed(String loginMethod);
 
         Context getContext();
+
+        void disableArrow();
+
+        void enableArrow();
     }
 
     interface Presenter extends CustomerPresenter<View> {
