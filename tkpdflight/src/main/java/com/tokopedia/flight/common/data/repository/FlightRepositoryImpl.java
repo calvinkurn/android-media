@@ -323,13 +323,13 @@ public class FlightRepositoryImpl implements FlightRepository {
         return bannerDataSource.getBannerData(params).doOnNext(new Action1<List<BannerDetail>>() {
             @Override
             public void call(List<BannerDetail> bannerDetailList) {
-                Log.v("DAPAT DATA REPOSITORY", bannerDetailList.get(0).getAttributes().getImgUrl());
+                Log.d("DAPAT DATA REPOSITORY", bannerDetailList.get(0).getAttributes().getImgUrl());
             }
         }).doOnError(new Action1<Throwable>() {
             @Override
             public void call(Throwable throwable) {
-                Log.v("DAPAT DATA CLOUD", throwable.getLocalizedMessage());
-                Log.v("DAPAT DATA CLOUD", throwable.getMessage());
+                Log.d("DAPAT DATA CLOUD", throwable.getLocalizedMessage());
+                Log.d("DAPAT DATA CLOUD", throwable.getMessage());
             }
         });
     }
