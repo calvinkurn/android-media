@@ -9,12 +9,17 @@ import android.view.View;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
+import com.tokopedia.transaction.checkout.di.component.CartAddressListComponent;
+import com.tokopedia.transaction.checkout.di.component.DaggerCartAddressListComponent;
+import com.tokopedia.transaction.checkout.di.module.CartAddressListModule;
 import com.tokopedia.transaction.checkout.view.adapter.CartAddressListAdapter;
 import com.tokopedia.transaction.checkout.view.data.ShippingRecipientModel;
 import com.tokopedia.transaction.checkout.view.presenter.CartAddressListPresenter;
 import com.tokopedia.transaction.checkout.view.view.ISearchAddressListView;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,11 +34,22 @@ public class ShippingAddressListFragment extends BasePresenterFragment implement
     @BindView(R2.id.rv_address_list)
     RecyclerView mRvRecipientAddressList;
 
+    @Inject
     CartAddressListAdapter mCartAddressListAdapter;
+    @Inject
     CartAddressListPresenter mCartAddressListPresenter;
 
     public static ShippingAddressListFragment newInstance() {
         return new ShippingAddressListFragment();
+    }
+
+    @Override
+    protected void initInjector() {
+        super.initInjector();
+        CartAddressListComponent component = DaggerCartAddressListComponent.builder()
+                .cartAddressListModule(new CartAddressListModule())
+                .build();
+        component.inject(this);
     }
 
     @Override
@@ -112,9 +128,6 @@ public class ShippingAddressListFragment extends BasePresenterFragment implement
     @Override
     protected void initView(View view) {
         ButterKnife.bind(this, view);
-
-        mCartAddressListAdapter = new CartAddressListAdapter();
-        mCartAddressListPresenter = new CartAddressListPresenter();
 
         mRvRecipientAddressList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRvRecipientAddressList.setAdapter(mCartAddressListAdapter);
