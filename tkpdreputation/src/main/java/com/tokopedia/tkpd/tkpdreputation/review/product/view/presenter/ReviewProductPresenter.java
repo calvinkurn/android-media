@@ -3,7 +3,7 @@ package com.tokopedia.tkpd.tkpdreputation.review.product.view.presenter;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.DeleteReviewResponseUseCase;
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.LikeDislikeReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.LikeDislikeDomain;
@@ -24,7 +24,7 @@ import rx.Subscriber;
 
 public class ReviewProductPresenter extends BaseDaggerPresenter<ReviewProductContract.View> implements ReviewProductContract.Presenter {
 
-    private final SessionHandler sessionHandler;
+    private final UserSession userSession;
     private final ReviewProductGetListUseCase productReviewGetListUseCase;
     private final ReviewProductGetHelpfulUseCase productReviewGetHelpfulUseCase;
     private final ReviewProductGetRatingUseCase productReviewGetRatingUseCase;
@@ -38,19 +38,19 @@ public class ReviewProductPresenter extends BaseDaggerPresenter<ReviewProductCon
                                   LikeDislikeReviewUseCase likeDislikeReviewUseCase,
                                   DeleteReviewResponseUseCase deleteReviewResponseUseCase,
                                   ReviewProductListMapper productReviewListMapper,
-                                  SessionHandler sessionHandler) {
+                                  UserSession userSession) {
         this.productReviewGetListUseCase = productReviewGetListUseCase;
         this.productReviewGetHelpfulUseCase = productReviewGetHelpfulUseCase;
         this.productReviewGetRatingUseCase = productReviewGetRatingUseCase;
         this.likeDislikeReviewUseCase = likeDislikeReviewUseCase;
         this.deleteReviewResponseUseCase = deleteReviewResponseUseCase;
         this.productReviewListMapper = productReviewListMapper;
-        this.sessionHandler = sessionHandler;
+        this.userSession = userSession;
     }
 
     public void deleteReview(String reviewId, String reputationId, String productId){
         getView().showProgressLoading();
-        deleteReviewResponseUseCase.execute(DeleteReviewResponseUseCase.getParam(reviewId, productId, sessionHandler.getShopID(), reputationId),
+        deleteReviewResponseUseCase.execute(DeleteReviewResponseUseCase.getParam(reviewId, productId, userSession.getShopID(), reputationId),
                 getSubscriberDeleteReview(reviewId));
     }
 
@@ -83,7 +83,7 @@ public class ReviewProductPresenter extends BaseDaggerPresenter<ReviewProductCon
 
     public void postLikeDislikeReview(String reviewId, int likeStatus, String productId){
         getView().showProgressLoading();
-        likeDislikeReviewUseCase.execute(LikeDislikeReviewUseCase.getParam(reviewId, likeStatus, productId, sessionHandler.getShopID()),
+        likeDislikeReviewUseCase.execute(LikeDislikeReviewUseCase.getParam(reviewId, likeStatus, productId, userSession.getShopID()),
                 getSubscriberPostLikeDislike(reviewId));
     }
 
@@ -137,7 +137,7 @@ public class ReviewProductPresenter extends BaseDaggerPresenter<ReviewProductCon
     }
 
     public void getHelpfulReview(String productId) {
-        productReviewGetHelpfulUseCase.execute(productReviewGetHelpfulUseCase.createRequestParams(productId, sessionHandler.getLoginID()),
+        productReviewGetHelpfulUseCase.execute(productReviewGetHelpfulUseCase.createRequestParams(productId, userSession.getUserId()),
                 getSubscriberGetHelpfulReview(productId));
     }
 
@@ -157,14 +157,14 @@ public class ReviewProductPresenter extends BaseDaggerPresenter<ReviewProductCon
 
             @Override
             public void onNext(DataResponseReviewHelpful dataResponseReviewHelpful) {
-                getView().onGetListReviewHelpful(productReviewListMapper.map(dataResponseReviewHelpful, sessionHandler.getLoginID(), productId));
+                getView().onGetListReviewHelpful(productReviewListMapper.map(dataResponseReviewHelpful, userSession.getUserId(), productId));
             }
         };
     }
 
     public void getProductReview(String productId, int page, String rating) {
         productReviewGetListUseCase.execute(productReviewGetListUseCase.createRequestParams(productId,
-                String.valueOf(page), rating, sessionHandler.getLoginID()), getSubscriberGetProductReview());
+                String.valueOf(page), rating, userSession.getUserId()), getSubscriberGetProductReview());
     }
 
     private Subscriber<DataResponseReviewProduct> getSubscriberGetProductReview() {
@@ -183,7 +183,7 @@ public class ReviewProductPresenter extends BaseDaggerPresenter<ReviewProductCon
 
             @Override
             public void onNext(DataResponseReviewProduct dataResponseReviewProduct) {
-                getView().onGetListReviewProduct(productReviewListMapper.map(dataResponseReviewProduct, sessionHandler.getLoginID()),
+                getView().onGetListReviewProduct(productReviewListMapper.map(dataResponseReviewProduct, userSession.getUserId()),
                         !TextUtils.isEmpty(dataResponseReviewProduct.getPaging().getUriNext()));
             }
         };

@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.tkpdreputation.review.product.domain;
 
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.tkpd.tkpdreputation.domain.interactor.GetLikeDislikeReviewUseCase;
@@ -17,7 +18,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
 
@@ -30,20 +30,20 @@ public class ReviewProductGetHelpfulUseCase extends UseCase<DataResponseReviewHe
     public static final String USER_ID = "user_id";
     private ReputationRepository reputationRepository;
     private GetLikeDislikeReviewUseCase getLikeDislikeReviewUseCase;
-    private SessionHandler sessionHandler;
+    private UserSession userSession;
 
     @Inject
     public ReviewProductGetHelpfulUseCase(ReputationRepository reputationRepository,
                                           GetLikeDislikeReviewUseCase getLikeDislikeReviewUseCase,
-                                          SessionHandler sessionHandler) {
+                                          UserSession userSession) {
         this.reputationRepository = reputationRepository;
         this.getLikeDislikeReviewUseCase = getLikeDislikeReviewUseCase;
-        this.sessionHandler = sessionHandler;
+        this.userSession = userSession;
     }
 
     @Override
     public Observable<DataResponseReviewHelpful> createObservable(final RequestParams requestParams) {
-        return reputationRepository.getReviewHelpful(sessionHandler.getShopID(), requestParams.getString(PRODUCT_ID, ""))
+        return reputationRepository.getReviewHelpful(userSession.getShopID(), requestParams.getString(PRODUCT_ID, ""))
                 .flatMap(new Func1<DataResponseReviewHelpful, Observable<DataResponseReviewHelpful>>() {
                     @Override
                     public Observable<DataResponseReviewHelpful> call(DataResponseReviewHelpful dataResponseReviewHelpful) {

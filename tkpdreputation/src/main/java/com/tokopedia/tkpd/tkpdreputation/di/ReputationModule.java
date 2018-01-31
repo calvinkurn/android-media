@@ -1,5 +1,10 @@
 package com.tokopedia.tkpd.tkpdreputation.di;
 
+import android.content.Context;
+
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
@@ -560,8 +565,18 @@ public class ReputationModule {
                                                          LikeDislikeReviewUseCase likeDislikeReviewUseCase,
                                                          DeleteReviewResponseUseCase deleteReviewResponseUseCase,
                                                          ReviewProductListMapper productReviewListMapper,
-                                                         SessionHandler sessionHandler){
+                                                         UserSession userSession){
         return new ReviewProductPresenter(productReviewGetListUseCase, productReviewGetHelpfulUseCase, productReviewGetRatingUseCase,
-                likeDislikeReviewUseCase, deleteReviewResponseUseCase, productReviewListMapper, sessionHandler);
+                likeDislikeReviewUseCase, deleteReviewResponseUseCase, productReviewListMapper, userSession);
+    }
+
+    @ReputationScope
+    @Provides
+    UserSession userSession(@ApplicationContext Context context){
+        if(context instanceof AbstractionRouter){
+            return ((AbstractionRouter)context).getSession();
+        }else{
+            return null;
+        }
     }
 }
