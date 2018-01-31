@@ -27,6 +27,7 @@
             android:layout_marginLeft="@dimen/margin_ms"/>
 
         <TextView
+            android:id="@+id/see_all_button"
             style="@style/TextView.Small.Green"
             android:text="@string/see_all"
             android:layout_centerVertical="true"
@@ -44,6 +45,7 @@
         android:orientation="horizontal">
 
         <RelativeLayout
+            android:id="@+id/channel_item_container_1"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content">
@@ -69,6 +71,7 @@
                 tools:text="Rp 2.799.000"/>
 
             <TextView
+                android:id="@+id/channel_discount_1"
                 style="@style/TextView.Nano.Red.Bold"
                 android:background="@drawable/home_channel_discount_text_background"
                 android:paddingTop="@dimen/label_padding_top_bottom"
@@ -84,6 +87,7 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/channel_item_container_2"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content">
@@ -109,6 +113,7 @@
                 tools:text="Rp 2.799.000"/>
 
             <TextView
+                android:id="@+id/channel_discount_2"
                 style="@style/TextView.Nano.Red.Bold"
                 android:background="@drawable/home_channel_discount_text_background"
                 android:paddingTop="@dimen/label_padding_top_bottom"
@@ -124,6 +129,7 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/channel_item_container_3"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="wrap_content">
@@ -149,6 +155,7 @@
                 tools:text="Rp 2.799.000"/>
 
             <TextView
+                android:id="@+id/channel_discount_3"
                 style="@style/TextView.Nano.Red.Bold"
                 android:background="@drawable/home_channel_discount_text_background"
                 android:paddingTop="@dimen/label_padding_top_bottom"

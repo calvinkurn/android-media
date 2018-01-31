@@ -2,23 +2,29 @@ package com.tokopedia.tkpd.beranda.data.source.pojo;
 
 import com.google.gson.annotations.Expose;
 
+import java.util.List;
+
 /**
  * Created by henrypriyono on 26/01/18.
  */
 
 public class DynamicHomeChannel {
     @Expose
-    private Channels[] channels;
+    private List<Channels> channels;
 
-    public Channels[] getChannels() {
+    public List<Channels> getChannels() {
         return channels;
     }
 
-    public void setChannels(Channels[] channels) {
+    public void setChannels(List<Channels> channels) {
         this.channels = channels;
     }
 
     public class Channels {
+        public static final String LAYOUT_HERO = "hero_4_image";
+        public static final String LAYOUT_3_IMAGE = "3_image";
+        public static final String LAYOUT_SPRINT = "sprint_3_image";
+
         @Expose
         private String id;
 
@@ -30,6 +36,9 @@ public class DynamicHomeChannel {
 
         @Expose
         private Grid[] grids;
+
+        @Expose
+        private Hero hero;
 
         @Expose
         private String type;
@@ -83,6 +92,71 @@ public class DynamicHomeChannel {
 
         public void setHeader(Header header) {
             this.header = header;
+        }
+
+        public Hero getHero() {
+            return hero;
+        }
+
+        public void setHero(Hero hero) {
+            this.hero = hero;
+        }
+    }
+
+    public class Hero {
+        @Expose
+        private String id;
+
+        @Expose
+        private String imageUrl;
+
+        @Expose
+        private String name;
+
+        @Expose
+        private String applink;
+
+        @Expose
+        private String url;
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getImageUrl() {
+            return imageUrl;
+        }
+
+        public void setImageUrl(String imageUrl) {
+            this.imageUrl = imageUrl;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getApplink() {
+            return applink;
+        }
+
+        public void setApplink(String applink) {
+            this.applink = applink;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
         }
     }
 

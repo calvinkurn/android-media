@@ -7,12 +7,13 @@ import android.support.annotation.IntegerRes;
  */
 public class LayoutSections {
     String title;
-    @IntegerRes
-    int icon;
+    String icon;
+    String applink;
 
-    public LayoutSections(String title, int icon) {
+    public LayoutSections(String title, String icon, String applink) {
         this.title = title;
         this.icon = icon;
+        this.applink = applink;
     }
 
     public String getTitle() {
@@ -23,11 +24,19 @@ public class LayoutSections {
         this.title = title;
     }
 
-    public int getIcon() {
+    public String getIcon() {
         return icon;
     }
 
-    public void setIcon(int icon) {
+    public void setIcon(String icon) {
         this.icon = icon;
+    }
+
+    public String getApplink() {
+        return applink;
+    }
+
+    public void setApplink(String applink) {
+        this.applink = applink;
     }
 }

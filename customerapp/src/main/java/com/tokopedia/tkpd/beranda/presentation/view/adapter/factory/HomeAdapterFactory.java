@@ -6,6 +6,7 @@ import android.view.View;
 import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
 import com.tokopedia.core.base.adapter.model.RetryModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.tkpd.beranda.data.source.pojo.DynamicHomeChannel;
 import com.tokopedia.tkpd.beranda.listener.HomeCategoryListener;
 import com.tokopedia.tkpd.beranda.listener.HomeFeedListener;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewholder.BannerViewHolder;
@@ -13,6 +14,8 @@ import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewholder.BrandsVie
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewholder.CategoryItemViewHolder;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewholder.CategorySectionViewHolder;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewholder.DigitalsViewHolder;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewholder.DynamicChannelHeroViewHolder;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewholder.DynamicChannelSprintViewHolder;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewholder.HeaderViewHolder;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewholder.RetryViewHolder;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewholder.SaldoViewHolder;
@@ -25,6 +28,7 @@ import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.BrandsView
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategoryItemViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategorySectionViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.SaldoViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.SellViewModel;
@@ -105,6 +109,18 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
     }
 
     @Override
+    public int type(DynamicChannelViewModel dynamicChannelViewModel) {
+        if (DynamicHomeChannel.Channels.LAYOUT_3_IMAGE.equals(dynamicChannelViewModel.getChannel().getLayout())
+                || DynamicHomeChannel.Channels.LAYOUT_SPRINT.equals(dynamicChannelViewModel.getChannel().getLayout())) {
+            return DynamicChannelSprintViewHolder.LAYOUT;
+        } else if (DynamicHomeChannel.Channels.LAYOUT_HERO.equals(dynamicChannelViewModel.getChannel().getLayout())) {
+            return DynamicChannelHeroViewHolder.LAYOUT;
+        } else {
+            return 0;
+        }
+    }
+
+    @Override
     public int type(RetryModel retryModel) {
         return RetryViewHolder.LAYOUT;
     }
@@ -136,6 +152,10 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
             viewHolder = new RetryViewHolder(view, feedListener);
         else if (type == InspirationViewHolder.LAYOUT)
             viewHolder = new InspirationViewHolder(view, feedListener);
+        else if (type == DynamicChannelHeroViewHolder.LAYOUT)
+            viewHolder = new DynamicChannelHeroViewHolder(view, listener);
+        else if (type == DynamicChannelSprintViewHolder.LAYOUT)
+            viewHolder = new DynamicChannelSprintViewHolder(view, listener);
         else viewHolder = super.createViewHolder(view, type);
 
         return viewHolder;
