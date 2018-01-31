@@ -20,7 +20,7 @@ import butterknife.BindView;
  * Created by Rizky on 31/01/18.
  */
 
-public class WidgetRadioChooserView3 extends BaseDigitalRadioChooserView<Operator> {
+public class RadioChooserView extends BaseDigitalRadioChooserView<Operator> {
 
     @BindView(R2.id.radio_group_container)
     LinearLayout radioGroupContainer;
@@ -29,15 +29,15 @@ public class WidgetRadioChooserView3 extends BaseDigitalRadioChooserView<Operato
 
     private RadioGroup radioGroup;
 
-    public WidgetRadioChooserView3(Context context) {
+    public RadioChooserView(Context context) {
         super(context);
     }
 
-    public WidgetRadioChooserView3(Context context, AttributeSet attrs) {
+    public RadioChooserView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public WidgetRadioChooserView3(Context context, AttributeSet attrs, int defStyleAttr) {
+    public RadioChooserView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
