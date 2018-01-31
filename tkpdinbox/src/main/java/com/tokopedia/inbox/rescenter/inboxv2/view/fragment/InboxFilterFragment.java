@@ -60,6 +60,7 @@ public class InboxFilterFragment
         Fragment fragment = new InboxFilterFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(InboxFilterActivity.PARAM_FILTER_MODEL, new ResoInboxFilterModel());
+        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -89,7 +90,7 @@ public class InboxFilterFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (getArguments().get(InboxFilterActivity.PARAM_FILTER_MODEL) != null) {
+        if (getArguments() != null) {
             inboxFilterModel = getArguments().getParcelable(InboxFilterActivity.PARAM_FILTER_MODEL);
         } else {
             inboxFilterModel = new ResoInboxFilterModel();
