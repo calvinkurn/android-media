@@ -365,7 +365,7 @@ public class DrawerBuyerHelper extends DrawerHelper
     }
 
     private int getTotalResoNotif() {
-        return drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER, 0);
+        return drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER_BUYER, 0);
     }
 
     @Override

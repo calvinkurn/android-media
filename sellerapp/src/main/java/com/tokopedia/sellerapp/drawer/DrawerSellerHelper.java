@@ -190,7 +190,7 @@ public class DrawerSellerHelper extends DrawerHelper
         inboxMenu.add(new DrawerItem(context.getString(R.string.drawer_title_resolution_center),
                 TkpdState.DrawerPosition.RESOLUTION_CENTER,
                 drawerCache.getBoolean(DrawerAdapter.IS_INBOX_OPENED, false),
-                drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER)));
+                drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER_SELLER)));
         inboxMenu.add(new DrawerItem(context.getString(R.string.drawer_title_seller_info),
                 TkpdState.DrawerPosition.SELLER_INFO,
                 drawerCache.getBoolean(DrawerAdapter.IS_INBOX_OPENED, false),
@@ -240,7 +240,6 @@ public class DrawerSellerHelper extends DrawerHelper
     private int getTotalInboxNotif() {
         return drawerCache.getInt(DrawerNotification.CACHE_INBOX_MESSAGE, 0) +
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_TALK, 0) +
-                drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER, 0) +
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_REVIEW, 0) +
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_TICKET, 0);
     }
@@ -252,7 +251,7 @@ public class DrawerSellerHelper extends DrawerHelper
     }
 
     private int getTotalResoNotif() {
-        return drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER, 0);
+        return drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER_SELLER, 0);
     }
 
     private DrawerItem getGoldMerchantMenu() {

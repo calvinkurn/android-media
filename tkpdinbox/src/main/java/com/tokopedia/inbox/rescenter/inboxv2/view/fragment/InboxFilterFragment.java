@@ -89,9 +89,11 @@ public class InboxFilterFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        inboxFilterModel = getArguments().getParcelable(InboxFilterActivity.PARAM_FILTER_MODEL);
-
+        if (getArguments().get(InboxFilterActivity.PARAM_FILTER_MODEL) != null) {
+            inboxFilterModel = getArguments().getParcelable(InboxFilterActivity.PARAM_FILTER_MODEL);
+        } else {
+            inboxFilterModel = new ResoInboxFilterModel();
+        }
         bindView();
         bindViewListener();
     }
