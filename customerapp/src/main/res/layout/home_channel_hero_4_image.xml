@@ -6,6 +6,7 @@
     android:layout_height="wrap_content">
 
     <TextView
+        android:id="@+id/channel_title"
         android:layout_width="match_parent"
         android:layout_marginTop="@dimen/margin_ms"
         android:padding="@dimen/padding_16"
@@ -51,36 +52,11 @@
                 tools:text="Snapback Kekinian"/>
 
             <ImageView
-                android:id="@+id/channel_image_2"
+                android:id="@+id/channel_image_3"
                 android:layout_width="@dimen/home_channel_4_image_size"
                 android:layout_height="@dimen/home_channel_4_image_size"
                 android:layout_below="@id/channel_image_1"
                 android:layout_marginTop="@dimen/margin_xl"
-                android:layout_centerHorizontal="true"
-                tools:src="@color/green_80"/>
-
-            <TextView
-                android:id="@+id/channel_caption_2"
-                style="@style/TextView.Micro"
-                android:gravity="center"
-                android:textAlignment="center"
-                android:layout_below="@id/channel_image_2"
-                android:layout_marginTop="@dimen/margin_sm"
-                android:layout_centerHorizontal="true"
-                tools:text="Snapback Kekinian"/>
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/home_channel_hero_height">
-
-            <ImageView
-                android:id="@+id/channel_image_3"
-                android:layout_width="@dimen/home_channel_4_image_size"
-                android:layout_height="@dimen/home_channel_4_image_size"
-                android:layout_marginTop="@dimen/margin_vs"
                 android:layout_centerHorizontal="true"
                 tools:src="@color/green_80"/>
 
@@ -94,11 +70,36 @@
                 android:layout_centerHorizontal="true"
                 tools:text="Snapback Kekinian"/>
 
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/home_channel_hero_height">
+
+            <ImageView
+                android:id="@+id/channel_image_2"
+                android:layout_width="@dimen/home_channel_4_image_size"
+                android:layout_height="@dimen/home_channel_4_image_size"
+                android:layout_marginTop="@dimen/margin_vs"
+                android:layout_centerHorizontal="true"
+                tools:src="@color/green_80"/>
+
+            <TextView
+                android:id="@+id/channel_caption_2"
+                style="@style/TextView.Micro"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:layout_below="@id/channel_image_2"
+                android:layout_marginTop="@dimen/margin_sm"
+                android:layout_centerHorizontal="true"
+                tools:text="Snapback Kekinian"/>
+
             <ImageView
                 android:id="@+id/channel_image_4"
                 android:layout_width="@dimen/home_channel_4_image_size"
                 android:layout_height="@dimen/home_channel_4_image_size"
-                android:layout_below="@id/channel_image_3"
+                android:layout_below="@id/channel_image_2"
                 android:layout_marginTop="@dimen/margin_xl"
                 android:layout_centerHorizontal="true"
                 tools:src="@color/green_80"/>

@@ -13,7 +13,7 @@ import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.LayoutSect
 
 public interface HomeCategoryListener {
 
-    void onSectionItemClicked(LayoutSections sections, int parentPosition, int childPosition);
+    void onSectionItemClicked(LayoutSections sections);
 
     void onMarketPlaceItemClicked(CategoryLayoutRowModel data, int parentPosition, int childPosition);
 
@@ -52,4 +52,6 @@ public interface HomeCategoryListener {
     boolean isMainViewVisible();
 
     void showNetworkError(String message);
+
+    void onDynamicChannelClicked(String applink);
 }

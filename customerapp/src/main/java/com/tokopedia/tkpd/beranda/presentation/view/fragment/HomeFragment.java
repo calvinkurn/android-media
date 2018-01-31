@@ -325,9 +325,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void onSectionItemClicked(LayoutSections sections, int parentPosition, int childPosition) {
-        focusView(sections.getTitle());
-        tabLayout.getTabAt(childPosition).select();
+    public void onSectionItemClicked(LayoutSections sections) {
+        //TODO HOME_REVAMP : Handle Applink here
     }
 
     private void onGoToSell() {
@@ -667,6 +666,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                         });
             }
         }
+    }
+
+    @Override
+    public void onDynamicChannelClicked(String applink) {
+        //TODO HOME_REVAMP : Handle Applink here
     }
 
     @Override

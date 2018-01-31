@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.beranda.listener.HomeCategoryListener;
@@ -73,12 +74,11 @@ public class CategorySectionViewHolder extends AbstractViewHolder<CategorySectio
         @Override
         public void onBindViewHolder(SectionItemViewHolder holder, final int position) {
             holder.title.setText(sectionViewModel.getSectionList().get(position).getTitle());
-            holder.icon.setImageResource(sectionViewModel.getSectionList().get(position).getIcon());
+            ImageHandler.loadImageThumbs(context, holder.icon, sectionViewModel.getSectionList().get(position).getIcon());
             holder.container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    listener.onSectionItemClicked(sectionViewModel.getSectionList().get(position),
-                            getAdapterPosition(), position);
+                    listener.onSectionItemClicked(sectionViewModel.getSectionList().get(position));
                 }
             });
         }
