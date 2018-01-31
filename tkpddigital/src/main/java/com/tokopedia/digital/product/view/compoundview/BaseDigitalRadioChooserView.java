@@ -59,7 +59,7 @@ public abstract class BaseDigitalRadioChooserView<T> extends RelativeLayout {
 
     public abstract void disableError();
 
-    public abstract void renderInitDataList(List<T> data);
+    public abstract void renderInitDataList(List<T> data, String defaultOperatorId);
 
     public abstract void renderUpdateDataSelected(T data);
 

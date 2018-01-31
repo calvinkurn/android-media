@@ -22,7 +22,7 @@ import com.tokopedia.digital.product.view.model.Operator;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.digital.product.view.model.Product;
 import com.tokopedia.digital.product.view.model.Validation;
-import com.tokopedia.digital.widget.view.compoundview.WidgetProductChooserView2;
+import com.tokopedia.digital.widget.view.compoundview.WidgetProductChooserView3;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -57,7 +57,7 @@ public class CategoryProductStyle99View extends
     ImageView tooltipInstantCheckout;
 
     private ClientNumberInputView clientNumberInputView;
-    private WidgetProductChooserView2 widgetProductChooserView;
+    private WidgetProductChooserView3 widgetProductChooserView3;
     private DigitalProductChooserView digitalProductChooserView;
     private ProductAdditionalInfoView productAdditionalInfoView;
     private ProductPriceInfoView productPriceInfoView;
@@ -83,7 +83,7 @@ public class CategoryProductStyle99View extends
     protected void onCreateView() {
         clientNumberInputView = new ClientNumberInputView(context);
         digitalProductChooserView = new DigitalProductChooserView(context);
-        widgetProductChooserView = new WidgetProductChooserView2(context);
+        widgetProductChooserView3 = new WidgetProductChooserView3(context);
         productAdditionalInfoView = new ProductAdditionalInfoView(context);
         productPriceInfoView = new ProductPriceInfoView(context);
         productAdditionalInfoView.setActionListener(this);
@@ -123,7 +123,7 @@ public class CategoryProductStyle99View extends
         if (source != WIDGET) {
             this.digitalProductChooserView.renderUpdateDataSelected(productSelected);
         } else {
-            this.widgetProductChooserView.updateProduct(productSelected.getProductId());
+            this.widgetProductChooserView3.renderUpdateDataSelected(productSelected);
         }
     }
 
@@ -235,13 +235,13 @@ public class CategoryProductStyle99View extends
 
     private void renderProductChooserOptionsWidget() {
         clearHolder(holderChooserProduct);
-        widgetProductChooserView.setListener(getProductChooserListener());
-        widgetProductChooserView.setTitleProduct(operatorSelected.getRule().getProductText());
-        widgetProductChooserView.renderDataView(operatorSelected.getProductList(),
+        widgetProductChooserView3.setActionListener(getActionListenerProductChooser());
+        widgetProductChooserView3.setLabelText(operatorSelected.getRule().getProductText());
+        widgetProductChooserView3.renderInitDataList(operatorSelected.getProductList(),
                 operatorSelected.getRule().isShowPrice(),
                 String.valueOf(operatorSelected.getDefaultProductId())
         );
-        holderChooserProduct.addView(widgetProductChooserView);
+        holderChooserProduct.addView(widgetProductChooserView3);
 
         if (hasLastOrderHistoryData() && operatorSelected != null
                 && operatorSelected.getOperatorId().equalsIgnoreCase(
@@ -251,9 +251,7 @@ public class CategoryProductStyle99View extends
                 if (product.getProductId().equalsIgnoreCase(
                         historyClientNumber.getLastOrderClientNumber().getProductId()
                 )) {
-                    widgetProductChooserView.updateProduct(
-                            product.getProductId()
-                    );
+                    widgetProductChooserView3.renderUpdateDataSelected(product);
                     break;
                 }
             }
@@ -303,21 +301,6 @@ public class CategoryProductStyle99View extends
         } else {
             btnBuyDigital.setText(context.getString(R.string.label_btn_buy_digital));
         }
-    }
-
-    private WidgetProductChooserView2.ProductChoserListener getProductChooserListener() {
-        return new WidgetProductChooserView2.ProductChoserListener() {
-            @Override
-            public void initDataView(Product product) {
-                productSelected = product;
-                renderPriceProductInfo();
-            }
-
-            @Override
-            public void trackingProduct() {
-                actionListener.onProductSelected(data.getName(), productSelected.getDesc());
-            }
-        };
     }
 
     @NonNull

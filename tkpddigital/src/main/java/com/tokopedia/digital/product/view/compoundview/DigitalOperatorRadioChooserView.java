@@ -21,6 +21,7 @@ import butterknife.BindView;
  * @author anggaprasetiyo on 5/8/17.
  */
 public class DigitalOperatorRadioChooserView extends BaseDigitalRadioChooserView<Operator> {
+
     @BindView(R2.id.tv_label_chooser)
     TextView tvLabel;
     @BindView(R2.id.rg_chooser_operator)
@@ -78,7 +79,7 @@ public class DigitalOperatorRadioChooserView extends BaseDigitalRadioChooserView
     }
 
     @Override
-    public void renderInitDataList(List<Operator> data) {
+    public void renderInitDataList(List<Operator> data, String defaultOperatorId) {
         this.dataList = data;
         radioGroupOparator.setOrientation(LinearLayout.VERTICAL);
         for (int i = 0, dataListSize = dataList.size(); i < dataListSize; i++) {
@@ -91,6 +92,7 @@ public class DigitalOperatorRadioChooserView extends BaseDigitalRadioChooserView
             radioButton.setTextColor(ContextCompat.getColor(context, R.color.grey_600));
             radioGroupOparator.addView(radioButton);
         }
+        initCheckRadioButtonBasedOnLastOrder(radioGroupOparator, defaultOperatorId);
         radioGroupOparator.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
@@ -101,6 +103,17 @@ public class DigitalOperatorRadioChooserView extends BaseDigitalRadioChooserView
             }
         });
         radioGroupOparator.check(0);
+    }
+
+    private void initCheckRadioButtonBasedOnLastOrder(RadioGroup radioGroup,
+                                                      String defaultOperatorId) {
+        for (int i = 0; i < dataList.size(); i++) {
+            if (dataList.get(i).getOperatorId().equals(defaultOperatorId)) {
+                radioGroup.check(radioGroup.getChildAt(i).getId());
+                actionListener.onUpdateDataDigitalRadioChooserSelectedRendered(dataList.get(radioGroup.getChildAt(i).getId()));
+                actionListener.tracking();
+            }
+        }
     }
 
     @Override
@@ -125,4 +138,5 @@ public class DigitalOperatorRadioChooserView extends BaseDigitalRadioChooserView
             }
         }
     }
+
 }

@@ -61,7 +61,7 @@ import permissions.dispatcher.RuntimePermissions;
 import rx.subscriptions.CompositeSubscription;
 
 /**
- * Created by Rizky on 15/01/18.
+ * @author Rizky on 15/01/18.
  */
 @RuntimePermissions
 public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDigitalWidgetPresenter>

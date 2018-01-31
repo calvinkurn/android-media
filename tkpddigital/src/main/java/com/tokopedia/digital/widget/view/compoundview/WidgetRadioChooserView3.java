@@ -1,28 +1,26 @@
 package com.tokopedia.digital.widget.view.compoundview;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
+import com.tokopedia.digital.product.view.compoundview.BaseDigitalRadioChooserView;
 import com.tokopedia.digital.product.view.model.Operator;
 
 import java.util.List;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
- * Created by Rizky on 29/01/18.
+ * Created by Rizky on 31/01/18.
  */
 
-public class WidgetRadioChooserView2 extends LinearLayout {
+public class WidgetRadioChooserView3 extends BaseDigitalRadioChooserView<Operator> {
 
     @BindView(R2.id.radio_group_container)
     LinearLayout radioGroupContainer;
@@ -30,58 +28,75 @@ public class WidgetRadioChooserView2 extends LinearLayout {
     private List<Operator> operators;
 
     private RadioGroup radioGroup;
-    private WidgetRadioChooserView2.RadioChoserListener listener;
 
-    public WidgetRadioChooserView2(Context context) {
+    public WidgetRadioChooserView3(Context context) {
         super(context);
-        init();
     }
 
-    public WidgetRadioChooserView2(Context context, @Nullable AttributeSet attrs) {
+    public WidgetRadioChooserView3(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
     }
 
-    public WidgetRadioChooserView2(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public WidgetRadioChooserView3(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
     }
 
-    public void setListener(WidgetRadioChooserView2.RadioChoserListener listener) {
-        this.listener = listener;
+    @Override
+    protected void initialViewListener() {
+
     }
 
-    private void init() {
-        LayoutInflater.from(getContext()).inflate(R.layout.view_widget_radio_choser, this);
-        ButterKnife.bind(this);
+    @Override
+    protected int getHolderLayoutId() {
+        return R.layout.view_widget_radio_choser;
     }
 
-    public void renderDataView(final List<Operator> operators, String defaultOperatorId) {
+    @Override
+    public void enableLabelText(String labelText) {
+
+    }
+
+    @Override
+    public void disableLabelText() {
+
+    }
+
+    @Override
+    public void enableError(String errorMessage) {
+
+    }
+
+    @Override
+    public void disableError() {
+
+    }
+
+    @Override
+    public void renderInitDataList(final List<Operator> data, String defaultOperatorId) {
         radioGroup = new RadioGroup(getContext());
         radioGroupContainer.addView(radioGroup);
         radioGroup.setOrientation(LinearLayout.HORIZONTAL);
 
-        this.operators = operators;
+        this.operators = data;
 
-        for (int i = 0; i < operators.size(); i++) {
+        for (int i = 0; i < data.size(); i++) {
             RadioButton radioButton = new RadioButton(getContext());
             radioButton.setId(i);
-            radioButton.setText(operators.get(i).getName());
+            radioButton.setText(data.get(i).getName());
             radioButton.setTextSize(getResources().getDimension(R.dimen.text_size_small) /
                     getResources().getDisplayMetrics().density);
             radioButton.setTextColor(ContextCompat.getColor(getContext(), R.color.grey_600));
             radioGroup.addView(radioButton);
         }
         radioGroup.check(radioGroup.getChildAt(0).getId());
-        Operator operatorModel = operators.get(radioGroup.getChildAt(0).getId());
-        listener.onCheckChange(operatorModel);
+        Operator operatorModel = data.get(radioGroup.getChildAt(0).getId());
+        actionListener.onUpdateDataDigitalRadioChooserSelectedRendered(operatorModel);
         initCheckRadioButtonBasedOnLastOrder(radioGroup, defaultOperatorId);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                listener.onResetClientNumber();
-                listener.onCheckChange(operators.get(i));
-                listener.onTrackingOperator();
+                actionListener.onUpdateDataDigitalRadioChooserSelectedRendered(data.get(i));
+                actionListener.tracking();
             }
         });
     }
@@ -91,25 +106,21 @@ public class WidgetRadioChooserView2 extends LinearLayout {
         for (int i = 0; i < operators.size(); i++) {
             if (operators.get(i).getOperatorId().equals(defaultOperatorId)) {
                 radioGroup.check(radioGroup.getChildAt(i).getId());
-                listener.onCheckChange(operators.get(radioGroup.getChildAt(i).getId()));
+                actionListener.onUpdateDataDigitalRadioChooserSelectedRendered(operators.get(radioGroup.getChildAt(i).getId()));
+                actionListener.tracking();
             }
         }
     }
 
-    public void updateOperator(String operatorId) {
+    @Override
+    public void renderUpdateDataSelected(Operator data) {
         for (int i = 0; i < operators.size(); i++) {
-            if (operators.get(i).getOperatorId().equals(operatorId)) {
+            if (operators.get(i).getOperatorId().equals(data.getOperatorId())) {
                 radioGroup.check(radioGroup.getChildAt(i).getId());
-                listener.onCheckChange(operators.get(radioGroup.getChildAt(i).getId()));
+                actionListener.onUpdateDataDigitalRadioChooserSelectedRendered(operators.get(radioGroup.getChildAt(i).getId()));
+                actionListener.tracking();
             }
         }
     }
 
-    public interface RadioChoserListener {
-        void onCheckChange(Operator selectedOperator);
-
-        void onResetClientNumber();
-
-        void onTrackingOperator();
-    }
 }

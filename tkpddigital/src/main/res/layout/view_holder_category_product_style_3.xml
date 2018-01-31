@@ -23,13 +23,14 @@
         android:id="@+id/holder_chooser_operator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/digital_padding_16"
+        android:layout_marginBottom="@dimen/margin_vs"
         android:orientation="vertical"/>
 
     <LinearLayout
         android:id="@+id/holder_client_number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_vs"
         android:orientation="vertical"/>
 
     <LinearLayout
