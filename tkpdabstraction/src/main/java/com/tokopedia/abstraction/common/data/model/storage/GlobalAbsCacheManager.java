@@ -4,7 +4,7 @@ package com.tokopedia.abstraction.common.data.model.storage;
  * Created by nathan on 11/28/17.
  */
 
-public interface GlobalCacheManager {
+public interface GlobalAbsCacheManager {
 
     void save(String key, String value, long durationInSeconds);
 

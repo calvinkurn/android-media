@@ -20,6 +20,7 @@ import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.data.model.storage.GlobalAbsCacheManager;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
@@ -104,7 +105,6 @@ import com.tokopedia.loyalty.broadcastreceiver.TokoPointDrawerBroadcastReceiver;
 import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
-import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
 import com.tokopedia.otp.phoneverification.activity.RidePhoneNumberVerificationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
@@ -211,6 +211,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private ShopComponent shopComponent;
     private ReactNativeComponent reactNativeComponent;
     private RemoteConfig remoteConfig;
+
+    private GlobalAbsCacheManager globalAbsCacheManager;
+    private UserSession userSession;
 
     public static List<PeriodRangeModel> convert(List<PeriodRangeModelCore> periodRangeModelCores) {
         List<PeriodRangeModel> periodRangeModels = new ArrayList<>();
@@ -1143,12 +1146,18 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public UserSession getSession() {
-        return new UserSessionImpl(this);
+        if (userSession == null) {
+            userSession = new UserSessionImpl(this);
+        }
+        return userSession;
     }
 
     @Override
-    public com.tokopedia.abstraction.common.data.model.storage.GlobalCacheManager getGlobalCacheManager() {
-        return new GlobalCacheManager();
+    public GlobalAbsCacheManager getGlobalCacheManager() {
+        if (globalAbsCacheManager == null) {
+            globalAbsCacheManager = new GlobalCacheManager();
+        }
+        return globalAbsCacheManager;
     }
 
     @Override
