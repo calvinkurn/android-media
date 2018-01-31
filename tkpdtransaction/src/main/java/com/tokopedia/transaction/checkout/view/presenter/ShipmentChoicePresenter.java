@@ -2,6 +2,7 @@ package com.tokopedia.transaction.checkout.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.transaction.checkout.view.data.CourierItemData;
+import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentItemData;
 import com.tokopedia.transaction.checkout.view.view.IShipmentChoiceView;
 
@@ -17,6 +18,7 @@ public class ShipmentChoicePresenter extends BaseDaggerPresenter<IShipmentChoice
 
     private List<ShipmentItemData> shipments = new ArrayList<>();
     private ShipmentItemData selectedShipment;
+    private ShipmentDetailData shipmentDetailData;
 
     @Override
     public void attachView(IShipmentChoiceView view) {
@@ -29,10 +31,14 @@ public class ShipmentChoicePresenter extends BaseDaggerPresenter<IShipmentChoice
     }
 
     @Override
-    public void loadShipmentChoice(ShipmentItemData selectedShipment) {
+    public void loadShipmentChoice(ShipmentDetailData shipmentDetailData, ShipmentItemData selectedShipment) {
         getView().showLoading();
+        if (shipmentDetailData != null) {
+            this.shipmentDetailData = shipmentDetailData;
+        }
         shipments = DummyCreator.createDummyShipmentChoices();
         if (selectedShipment != null) {
+            this.selectedShipment = selectedShipment;
             for (int i = 0; i < shipments.size(); i++) {
                 if (shipments.get(i).getId().equals(selectedShipment.getId())) {
                     shipments.get(i).setSelected(true);
@@ -46,6 +52,11 @@ public class ShipmentChoicePresenter extends BaseDaggerPresenter<IShipmentChoice
     @Override
     public List<ShipmentItemData> getShipmentChoices() {
         return shipments;
+    }
+
+    @Override
+    public ShipmentDetailData getShipmentDetailData() {
+        return shipmentDetailData;
     }
 
 
@@ -83,6 +94,7 @@ public class ShipmentChoicePresenter extends BaseDaggerPresenter<IShipmentChoice
                 null,
                 "Wahana menerapkan asuransi otomatis apabila harga barang lebih besar atau sama dengan Rp300.000 dengan biaya 0.5% dari total harga barang"};
         private static Integer[] courierItemDataInsuranceUsedTypes = {1, 2, 2, 2, 2, 1};
+        private static boolean[] courierItemDataAllowDropshippers = {false, false, true, true, true, true};
 
         static List<ShipmentItemData> createDummyShipmentChoices() {
             List<ShipmentItemData> shipments = new ArrayList<>();
@@ -119,6 +131,7 @@ public class ShipmentChoicePresenter extends BaseDaggerPresenter<IShipmentChoice
                 courierItemData.setInsuranceUsedDefault(courierItemDataInsuranceUsedDefaults[i]);
                 courierItemData.setInsuranceUsedInfo(courierItemDataInsuranceUsedInfos[i]);
                 courierItemData.setInsuranceUsedType(courierItemDataInsuranceUsedTypes[i]);
+                courierItemData.setAllowDropshiper(courierItemDataAllowDropshippers[i]);
 
                 couriers.add(courierItemData);
             }

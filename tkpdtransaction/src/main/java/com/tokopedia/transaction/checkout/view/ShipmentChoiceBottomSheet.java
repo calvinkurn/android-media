@@ -2,6 +2,7 @@ package com.tokopedia.transaction.checkout.view;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.view.adapter.ShipmentChoiceAdapter;
+import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentItemData;
 import com.tokopedia.transaction.checkout.view.presenter.IShipmentChoicePresenter;
 import com.tokopedia.transaction.checkout.view.presenter.ShipmentChoicePresenter;
@@ -43,16 +45,18 @@ public class ShipmentChoiceBottomSheet extends BottomSheetDialog
     private IShipmentChoicePresenter presenter;
     private ActionListener listener;
 
-    public ShipmentChoiceBottomSheet(@NonNull Context context, ShipmentItemData selectedShipment) {
+    public ShipmentChoiceBottomSheet(@NonNull Context context,
+                                     @NonNull ShipmentDetailData shipmentDetailData,
+                                     @Nullable ShipmentItemData selectedShipment) {
         super(context);
         initializeView(context);
-        initializeData(selectedShipment);
+        initializeData(shipmentDetailData, selectedShipment);
     }
 
-    private void initializeData(ShipmentItemData selectedShipment) {
+    private void initializeData(ShipmentDetailData shipmentDetailData, ShipmentItemData selectedShipment) {
         presenter = new ShipmentChoicePresenter();
         presenter.attachView(this);
-        presenter.loadShipmentChoice(selectedShipment);
+        presenter.loadShipmentChoice(shipmentDetailData, selectedShipment);
         setupRecyclerView();
     }
 
@@ -60,11 +64,6 @@ public class ShipmentChoiceBottomSheet extends BottomSheetDialog
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         View bottomSheetView = layoutInflater.inflate(R.layout.fragment_shipment_choice, null);
         setContentView(bottomSheetView);
-
-        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        int height = displayMetrics.heightPixels;
-        BottomSheetBehavior behavior = BottomSheetBehavior.from((View) bottomSheetView.getParent());
-//        behavior.setPeekHeight(height / 3);
 
         rvShipmentChoice = bottomSheetView.findViewById(R.id.rv_shipment_choice);
         llNetworkErrorView = bottomSheetView.findViewById(R.id.ll_network_error_view);
@@ -119,13 +118,20 @@ public class ShipmentChoiceBottomSheet extends BottomSheetDialog
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
-                        presenter.loadShipmentChoice(null);
+                        presenter.loadShipmentChoice(null, null);
                     }
                 });
     }
 
     @Override
     public void showData() {
+        if (!TextUtils.isEmpty(presenter.getShipmentDetailData().getShipmentInfo())) {
+            tvShipmentInfoTicker.setText(presenter.getShipmentDetailData().getShipmentInfo());
+            llShipmentInfoTicker.setVisibility(View.VISIBLE);
+        } else {
+            llShipmentInfoTicker.setVisibility(View.GONE);
+        }
+
         if (shipmentChoiceAdapter != null) {
             shipmentChoiceAdapter.notifyDataSetChanged();
             rvShipmentChoice.setVisibility(View.VISIBLE);
@@ -134,12 +140,6 @@ public class ShipmentChoiceBottomSheet extends BottomSheetDialog
 
     @Override
     public void onShipmentItemClick(ShipmentItemData shipmentItemData) {
-        if (!TextUtils.isEmpty(shipmentItemData.getShipmentInfo())) {
-            tvShipmentInfoTicker.setText(shipmentItemData.getShipmentInfo());
-            llShipmentInfoTicker.setVisibility(View.VISIBLE);
-        } else {
-            llShipmentInfoTicker.setVisibility(View.GONE);
-        }
         listener.onShipmentItemClick(shipmentItemData);
         this.dismiss();
     }

@@ -20,6 +20,7 @@ public class CourierItemData implements Parcelable {
     private int insuranceUsedType;
     private String insuranceUsedInfo;
     private int insuranceUsedDefault;
+    private boolean allowDropshiper;
     private boolean selected;
 
     public CourierItemData() {
@@ -39,6 +40,7 @@ public class CourierItemData implements Parcelable {
         insuranceUsedInfo = in.readString();
         insuranceUsedDefault = in.readInt();
         selected = in.readByte() != 0;
+        allowDropshiper = in.readByte() != 0;
     }
 
     public static final Creator<CourierItemData> CREATOR = new Creator<CourierItemData>() {
@@ -157,6 +159,14 @@ public class CourierItemData implements Parcelable {
         this.courierInfo = courierInfo;
     }
 
+    public boolean isAllowDropshiper() {
+        return allowDropshiper;
+    }
+
+    public void setAllowDropshiper(boolean allowDropshiper) {
+        this.allowDropshiper = allowDropshiper;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -177,5 +187,6 @@ public class CourierItemData implements Parcelable {
         dest.writeString(insuranceUsedInfo);
         dest.writeInt(insuranceUsedDefault);
         dest.writeByte((byte) (selected ? 1 : 0));
+        dest.writeByte((byte) (allowDropshiper ? 1 : 0));
     }
 }

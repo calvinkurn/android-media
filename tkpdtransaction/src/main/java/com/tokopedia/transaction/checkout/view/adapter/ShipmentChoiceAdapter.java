@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
+import com.tokopedia.transaction.checkout.view.data.CourierItemData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentItemData;
 
 import java.util.List;
@@ -47,16 +48,7 @@ public class ShipmentChoiceAdapter extends RecyclerView.Adapter<ShipmentChoiceAd
                 holder.tvShipmentType.getContext().getResources().getString(
                         R.string.label_shipment_type_format, shipmentItemData.getPriceRange()));
         holder.tvDeliveryTimeRange.setText(shipmentItemData.getDeliveryTimeRange());
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (holder.getAdapterPosition() >= 0 && shipments.size() > holder.getAdapterPosition()) {
-                    renderTypeface(holder);
-                    holder.imgBtCheck.setVisibility(View.VISIBLE);
-                    viewListener.onShipmentItemClick(shipments.get(holder.getAdapterPosition()));
-                }
-            }
-        });
+        holder.itemView.setOnClickListener(getItemClickListener(shipmentItemData, position));
 
         if (shipmentItemData.isSelected()) {
             holder.imgBtCheck.setVisibility(View.VISIBLE);
@@ -69,12 +61,42 @@ public class ShipmentChoiceAdapter extends RecyclerView.Adapter<ShipmentChoiceAd
         } else {
             holder.vSeparator.setVisibility(View.VISIBLE);
         }
+
+        renderTypeface(holder, shipmentItemData);
     }
 
-    private void renderTypeface(ShipmentViewHolder holder) {
-        holder.tvShipmentType.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
-        holder.tvPriceRange.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
-        holder.tvDeliveryTimeRange.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+    private View.OnClickListener getItemClickListener(final ShipmentItemData courierItemData,
+                                                      final int position) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for (ShipmentItemData viewModel : shipments) {
+                    if (viewModel.getId().equals(courierItemData.getId())) {
+                        if (shipments.size() > position && position >= 0) {
+                            if (!viewModel.isSelected()) {
+                                viewModel.setSelected(true);
+                            }
+                            viewListener.onShipmentItemClick(shipments.get(position));
+                        }
+                    } else {
+                        viewModel.setSelected(false);
+                    }
+                }
+                notifyDataSetChanged();
+            }
+        };
+    }
+
+    private void renderTypeface(ShipmentViewHolder holder, ShipmentItemData shipmentItemData) {
+        if (shipmentItemData.isSelected()) {
+            holder.tvShipmentType.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+            holder.tvPriceRange.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+            holder.tvDeliveryTimeRange.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
+        } else {
+            holder.tvShipmentType.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
+            holder.tvPriceRange.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
+            holder.tvDeliveryTimeRange.setTypeface(Typeface.create("sans-serif", Typeface.NORMAL));
+        }
     }
 
     @Override

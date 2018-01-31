@@ -180,7 +180,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
 
     @Override
     protected void onFirstTimeLaunched() {
-
+        initializeShipmentChoiceHandler();
     }
 
     @Override
@@ -293,7 +293,9 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
 
     private void showShipmentChoiceBottomSheet() {
         if (shipmentChoiceBottomSheet == null) {
-            shipmentChoiceBottomSheet = new ShipmentChoiceBottomSheet(getActivity(),
+            shipmentChoiceBottomSheet = new ShipmentChoiceBottomSheet(
+                    getActivity(),
+                    presenter.getShipmentDetailData(),
                     presenter.getSelectedShipment());
         }
         shipmentChoiceBottomSheet.setListener(this);
@@ -356,7 +358,6 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
         tvShowOtherCouriers.setText(getString(R.string.label_show_other_courier));
         ivChevron.setImageResource(R.drawable.chevron_thin_down);
         setupRecyclerView(couriers);
-        initializeShipmentChoiceHandler(); // it should be called afterall view rendered
     }
 
     @Override
@@ -364,7 +365,6 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
         tvShowOtherCouriers.setText(R.string.label_hide_other_couriers);
         ivChevron.setImageResource(R.drawable.chevron_thin_up);
         setupRecyclerView(couriers);
-        initializeShipmentChoiceHandler(); // it should be called afterall view rendered
     }
 
     private void setupRecyclerView(List<CourierItemData> couriers) {
@@ -436,7 +436,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
 
     private void showSnackbarError(View view, String message) {
         Snackbar snackbar = Snackbar
-                .make(view, message, Snackbar.LENGTH_INDEFINITE)
+                .make(view, message, Snackbar.LENGTH_LONG)
                 .setActionTextColor(ContextCompat.getColor(view.getContext(), R.color.black_70))
                 .setAction(R.string.label_action_snackbar_close, new View.OnClickListener() {
                     @Override
@@ -499,6 +499,17 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
             setText(tvAdditionalFee, courierItemData.getAdditionalPrice());
         } else {
             llAdditionalFee.setVisibility(View.GONE);
+        }
+    }
+
+    private void renderDropshipperView(CourierItemData courierItemData) {
+        if (courierItemData.isAllowDropshiper()) {
+            llDropshipper.setVisibility(View.VISIBLE);
+            separatorPartialOrder.setVisibility(View.VISIBLE);
+        } else {
+            llDropshipper.setVisibility(View.GONE);
+            separatorPartialOrder.setVisibility(View.GONE);
+            llDropshipperInfo.setVisibility(View.GONE);
         }
     }
 
@@ -609,6 +620,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
         renderTickerView(courierItemData);
         renderInsuranceView(courierItemData);
         renderAdditionalPriceView(courierItemData);
+        renderDropshipperView(courierItemData);
         updateFeesGroupLayout();
     }
 

@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.checkout.view.presenter;
 
 import com.tokopedia.core.base.presentation.CustomerPresenter;
+import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentItemData;
 import com.tokopedia.transaction.checkout.view.view.IShipmentChoiceView;
 
@@ -12,8 +13,9 @@ import java.util.List;
 
 public interface IShipmentChoicePresenter extends CustomerPresenter<IShipmentChoiceView> {
 
-    void loadShipmentChoice(ShipmentItemData selectedShipment);
+    void loadShipmentChoice(ShipmentDetailData shipmentDetailData, ShipmentItemData selectedShipment);
 
     List<ShipmentItemData> getShipmentChoices();
 
+    ShipmentDetailData getShipmentDetailData();
 }
