@@ -523,6 +523,8 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
             public void onError(Throwable throwable) {
                 if (isViewAttached()) {
                     Log.d("Dapat Data", "GAGAL GAGAL GAGAL");
+                    Log.d("Dapat Data", throwable.getMessage());
+                    Log.d("Dapat Data", throwable.getLocalizedMessage());
                     getView().hideBannerView();
                 }
             }
