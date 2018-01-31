@@ -17,10 +17,11 @@
         android:layout_centerInParent="true"
         android:background="@drawable/digital_area_scan_qr" >
 
-        <com.tokopedia.tkpd.campaign.view.ScannerLaserView
-            android:id="@+id/scanner_laser_view"
+        <View
+            android:id="@+id/scanner_laser"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="80dp"/>
+
 
     </RelativeLayout>
 
@@ -39,10 +40,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|center_horizontal"
-        android:layout_margin="@dimen/margin_med"
-        android:background="@color/zxing_transparent"
+        android:layout_marginLeft="@dimen/margin_med"
+        android:layout_marginRight="@dimen/margin_med"
+        android:layout_marginBottom="@dimen/margin_med"
+        android:layout_marginTop="@dimen/margin_large"
+        android:paddingLeft="@dimen/padding_detail"
+        android:paddingRight="@dimen/padding_detail"
+        android:background="@drawable/tokocash_bg_white_oval_rounded"
         android:gravity="center_horizontal"
-        android:text="@string/zxing_msg_default_status"
-        android:textColor="@color/zxing_status_text" />
+        android:layout_centerHorizontal="true"
+        android:text="@string/scanner_info"
+        android:textColor="@color/black_54"
+        android:textSize="@dimen/fontvs"/>
 
 </RelativeLayout>
