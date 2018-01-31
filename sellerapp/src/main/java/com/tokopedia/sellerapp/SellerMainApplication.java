@@ -37,7 +37,8 @@ import java.util.List;
  * Created by ricoharisin on 11/11/16.
  */
 
-public class SellerMainApplication extends SellerRouterApplication implements MoEPushCallBacks.OnMoEPushNavigationAction, InAppManager.InAppMessageListener {
+public class SellerMainApplication extends SellerRouterApplication implements MoEPushCallBacks.OnMoEPushNavigationAction,
+        InAppManager.InAppMessageListener {
 
     public static final int SELLER_APPLICATION = 2;
 

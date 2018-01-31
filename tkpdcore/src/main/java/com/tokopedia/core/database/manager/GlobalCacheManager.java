@@ -17,7 +17,8 @@ import java.util.List;
 /**
  * Created by ricoharisin on 11/23/15.
  */
-public class GlobalCacheManager implements DbFlowOperation<SimpleDatabaseModel> {
+public class GlobalCacheManager implements DbFlowOperation<SimpleDatabaseModel>,
+        com.tokopedia.abstraction.common.data.model.storage.GlobalCacheManager {
 
     private String Key;
     private String Value;
@@ -61,8 +62,37 @@ public class GlobalCacheManager implements DbFlowOperation<SimpleDatabaseModel> 
 
     }
 
+    @Override
+    public void save(String key, String value, long durationInSeconds) {
+        SimpleDatabaseModel simpleDB = new SimpleDatabaseModel();
+        simpleDB.key = key;
+        simpleDB.value = value;
+        simpleDB.expiredTime = System.currentTimeMillis() + durationInSeconds * 1000L;
+        simpleDB.save();
+    }
+
     public void delete(String key) {
         new Delete().from(SimpleDatabaseModel.class).where(SimpleDatabaseModel_Table.key.is(key)).execute();
+    }
+
+    @Override
+    public String get(String key) {
+        SimpleDatabaseModel cache = new Select().from(SimpleDatabaseModel.class)
+                .where(SimpleDatabaseModel_Table.key.is(key)).querySingle();
+        if (cache == null)
+            return null;
+        if (isExpired(cache.expiredTime)) {
+            return null;
+        } else {
+            return cache.value;
+        }
+    }
+
+    @Override
+    public boolean isExpired(String key) {
+        SimpleDatabaseModel cache = new Select().from(SimpleDatabaseModel.class)
+                .where(SimpleDatabaseModel_Table.key.is(key)).querySingle();
+        return cache == null || isExpired(cache.expiredTime);
     }
 
     public void bulkInsert(List<String> key, List<String> value) {

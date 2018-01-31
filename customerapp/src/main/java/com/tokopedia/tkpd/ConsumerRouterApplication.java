@@ -1147,6 +1147,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public com.tokopedia.abstraction.common.data.model.storage.GlobalCacheManager getGlobalCacheManager() {
+        return new GlobalCacheManager();
+    }
+
+    @Override
     public long getLongConfig(String flightAirport) {
         return remoteConfig.getLong(flightAirport);
     }

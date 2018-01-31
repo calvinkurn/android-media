@@ -407,6 +407,11 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public com.tokopedia.abstraction.common.data.model.storage.GlobalCacheManager getGlobalCacheManager() {
+        return new GlobalCacheManager();
+    }
+
+    @Override
     public void getUserInfo(RequestParams empty, ProfileCompletionSubscriber profileSubscriber) {
         Bundle bundle = new Bundle();
         SessionHandler sessionHandler = new SessionHandler(this);
