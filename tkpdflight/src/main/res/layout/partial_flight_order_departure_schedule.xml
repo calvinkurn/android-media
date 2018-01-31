@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.AppCompatTextView
+        style="@style/TextView.Micro.BlackSecondary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_sm"
+        android:text="@string/flight_order_departure_schedule" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_departure_schedule"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>

@@ -10,6 +10,7 @@
     <color name="white_three">#fafafa</color>
     <color name="white_four">#e0e0e0</color>
     <color name="holder_error">#FFADAD</color>
+    <color name="transparent">@android:color/transparent</color>
 
     <color name="colorGreen">#42B459</color>
     <color name="colorBlack">#494949</color>
@@ -117,4 +118,17 @@
     <color name="light_green">#f3fef3</color>
 
     <color name="black_tooltip">#96000000</color>
+    <color name="red_1">#ea1706</color>
+    <color name="yellow_1">#ffb03b</color>
+
+    <color name="yellow_background">#fffcd3</color>
+    <color name="yellow_border">#efe9a1</color>
+
+
+    <color name="red_template">#fdebec</color>
+    <color name="green_template">#f3fef3</color>
+    <color name="clicked_green">#8ad4efd5</color>
+    <color name="add_template_disabled">#26000000</color>
+
+
 </resources>

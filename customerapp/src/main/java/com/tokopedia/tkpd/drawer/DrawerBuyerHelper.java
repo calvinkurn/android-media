@@ -29,6 +29,7 @@ import com.tokopedia.core.drawer2.view.databinder.DrawerItemDataBinder;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerGroup;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
 import com.tokopedia.core.home.BannerWebView;
+import com.tokopedia.core.home.SimpleWebViewActivity;
 import com.tokopedia.core.loyaltysystem.LoyaltyDetail;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
@@ -46,6 +47,7 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
@@ -155,8 +157,7 @@ public class DrawerBuyerHelper extends DrawerHelper
                 true));
         data.add(getInboxMenu());
         data.add(getBuyerMenu());
-        if (!SessionHandler.getShopID(context).equals("0")
-                && !SessionHandler.getShopID(context).equals("")) {
+        if (SessionHandler.isUserHasShop(context)) {
             data.add(getSellerMenu());
             data.add(getProductMenu());
             data.add(getGoldMerchantMenu());
@@ -313,7 +314,7 @@ public class DrawerBuyerHelper extends DrawerHelper
                 drawerCache.getBoolean(IS_INBOX_OPENED, false),
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER)));
 
-        if(SessionHandler.isUserSeller(context)){
+        if(SessionHandler.isUserHasShop(context)){
             inboxMenu.add(new DrawerItem(context.getString(R.string.drawer_title_seller_info),
                     TkpdState.DrawerPosition.SELLER_INFO,
                     drawerCache.getBoolean(DrawerAdapter.IS_INBOX_OPENED, false),
@@ -594,15 +595,13 @@ public class DrawerBuyerHelper extends DrawerHelper
     @Override
     public void onTokoPointActionClicked(String mainPageUrl, String title) {
         if (TextUtils.isEmpty(title))
-            context.startActivity(BannerWebView.getCallingIntent(context, mainPageUrl));
+            context.startActivity(TokoPointWebviewActivity.getIntent(context, mainPageUrl));
         else
-            context.startActivity(BannerWebView.getCallingIntentWithTitle(context, mainPageUrl, title));
+            context.startActivity(TokoPointWebviewActivity.getIntentWithTitle(context, mainPageUrl, title));
     }
 
     private void onGoToCreateShop() {
-        Intent intent = SellerRouter.getAcitivityShopCreateEdit(context);
-        intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
-                SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
+        Intent intent = SellerRouter.getActivityShopCreateEdit(context);
         context.startActivity(intent);
         sendGTMNavigationEvent(AppEventTracking.EventLabel.SHOP_EN);
     }

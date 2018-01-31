@@ -96,6 +96,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
     @CurrencyTypeDef
     private int currencyType = CurrencyTypeDef.TYPE_IDR;
     private NumberFormat formatter;
+    private boolean officialStore;
 
     public ProductDetailViewHolder(View view) {
         etalaseId = DEFAULT_ETALASE_ID;
@@ -243,7 +244,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
             @Override
             public void onClick(View v) {
                 if (listener != null) {
-                    listener.startAddWholeSaleDialog(getBaseValue(), currencyType, getPreviousValue());
+                    listener.startAddWholeSaleDialog(getBaseValue(), currencyType, getPreviousValue(), officialStore);
                 }
             }
         });
@@ -497,7 +498,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
     private boolean isPriceValid() {
         Pair<Double, Double> minMaxPrice = ViewUtils.minMaxPrice(
                 priceSpinnerCounterInputView.getContext(),
-                Integer.parseInt(priceSpinnerCounterInputView.getSpinnerValue()));
+                Integer.parseInt(priceSpinnerCounterInputView.getSpinnerValue()), officialStore);
 
         if (minMaxPrice.first > getPriceValue() || getPriceValue() > minMaxPrice.second) {
             priceSpinnerCounterInputView.setCounterError(priceSpinnerCounterInputView.getContext().getString(R.string.product_error_product_price_not_valid,
@@ -649,16 +650,24 @@ public class ProductDetailViewHolder extends ProductViewHolder
         return true;
     }
 
+    public void setOfficialStore(boolean officialStore) {
+        this.officialStore = officialStore;
+        if(getPriceValue() > 0){
+            setPriceValue(priceSpinnerCounterInputView.getCounterValue());
+        }
+    }
+
     public interface Listener {
 
         /**
          * @param fixedPrice             means for fixed price.
          * @param currencyType           {@link CurrencyTypeDef}
          * @param previousWholesalePrice previousWholesalePrice
+         * @param officialStore
          */
         void startAddWholeSaleDialog(WholesaleModel fixedPrice,
                                      @CurrencyTypeDef int currencyType,
-                                     WholesaleModel previousWholesalePrice);
+                                     WholesaleModel previousWholesalePrice, boolean officialStore);
 
         void onTotalStockUpdated(int total);
 

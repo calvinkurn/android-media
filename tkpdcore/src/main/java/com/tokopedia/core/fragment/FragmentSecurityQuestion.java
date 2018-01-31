@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.ScaleDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -34,10 +33,9 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.msisdn.IncomingSmsReceiver;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.model.OTPModel;
 import com.tokopedia.core.session.model.QuestionFormModel;
@@ -46,7 +44,6 @@ import com.tokopedia.core.session.presenter.SecurityQuestionPresenter;
 import com.tokopedia.core.session.presenter.SecurityQuestionPresenterImpl;
 import com.tokopedia.core.session.presenter.SecurityQuestionView;
 import com.tokopedia.core.session.presenter.SessionView;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
@@ -63,9 +60,6 @@ import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
-
-import static android.R.attr.scaleHeight;
-import static android.R.attr.scaleWidth;
 
 /**
  * modify by m.normansyah 9-11-2015,
@@ -213,7 +207,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
             new android.support.v7.app.AlertDialog.Builder(getActivity())
                     .setMessage(RequestPermissionUtil.getNeedPermissionMessage(Manifest.permission.READ_SMS)
                     )
-                    .setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
+                    .setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             FragmentSecurityQuestionPermissionsDispatcher.checkSmsPermissionWithCheck(FragmentSecurityQuestion.this);
@@ -360,7 +354,7 @@ public class FragmentSecurityQuestion extends Fragment implements SecurityQuesti
         changeNumber.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = SessionRouter.getChangePhoneNumberRequestActivity(getActivity());
+                Intent intent = OldSessionRouter.getChangePhoneNumberRequestActivity(getActivity());
                 startActivity(intent);
             }
         });

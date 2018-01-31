@@ -1,0 +1,46 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/tv_title"
+        style="@style/TextView.Small.Bold.BlackSecondary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/card_title_green"
+        android:paddingTop="@dimen/padding_ms"
+        android:paddingBottom="@dimen/padding_ms"
+        android:gravity="center"
+        tools:text="Transaksi Berhasil" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_small"
+        android:padding="@dimen/padding_small">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tv_order_date"
+            style="@style/TextView.Micro"
+            tools:text="9 Jan 2017" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tv_order_id"
+            style="@style/TextView.Micro"
+            android:layout_below="@+id/tv_order_date"
+            tools:text="Order ID: 323088926194" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/iv_overflow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/selectable_background_tokopedia"
+            app:srcCompat="@drawable/ic_toolbar_overflow_level_two_black" />
+    </RelativeLayout>
+</LinearLayout>

@@ -25,8 +25,10 @@ public class GooglePlacePickerActivity extends BaseActivity implements PlaceAuto
     public static String EXTRA_REQUEST_CODE = "EXTRA_REQUEST_CODE";
     public static String EXTRA_SELECTED_PLACE = "EXTRA_SELECTED_PLACE";
     public static String EXTRA_SOURCE = "EXTRA_SOURCE";
+    public static String EXTRA_DESTINATION = "EXTRA_DESTINATION";
     public static String EXTRA_MARKER_ID = "EXTRA_MARKER_ID";
     private RideComponent rideComponent;
+    private PlacePassViewModel  destination;
 
     public static Intent getCallingIntent(Activity activity, int markerId) {
         Intent intent = new Intent(activity, GooglePlacePickerActivity.class);
@@ -44,6 +46,7 @@ public class GooglePlacePickerActivity extends BaseActivity implements PlaceAuto
         if (getIntent().getIntExtra(EXTRA_REQUEST_CODE, -1) == RideHomeMapFragment.PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE) {
             showAutoDetectLocation = false;
             selectLocationOnMap = true;
+            destination= getIntent().getParcelableExtra(EXTRA_DESTINATION);
         }
 
         addFragment(R.id.container, PlaceAutocompleteFragment.newInstance(showAutoDetectLocation, selectLocationOnMap));
@@ -85,7 +88,7 @@ public class GooglePlacePickerActivity extends BaseActivity implements PlaceAuto
     @Override
     public void onSelectLocationOnMapSelected() {
         CommonUtils.hideKeyboard(this, getCurrentFocus());
-        replaceFragment(R.id.container, SelectLocationOnMapFragment.newInstance(getIntent().getIntExtra(EXTRA_MARKER_ID, 0)));
+        replaceFragment(R.id.container, SelectLocationOnMapFragment.newInstance(destination,getIntent().getIntExtra(EXTRA_MARKER_ID, 0)));
     }
 
     @Override

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginTop="@dimen/margin_sm"
+    android:layout_marginBottom="@dimen/margin_vs"
+    tools:showIn="@layout/fragment_shop_open_location">
+
+    <TextView
+        android:id="@+id/map_info_title"
+        style="@style/TextView.Micro.BlackDisabled"
+        android:lineSpacingExtra="10sp"
+        android:text="@string/shop_open_optional_pinpoint_location_text"
+        android:layout_marginBottom="@dimen/margin_small"/>
+
+    <FrameLayout
+        android:id="@+id/empty_map_view"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/image_width_xxxl"
+        android:visibility="visible">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_empty_map"
+            android:scaleType="fitXY"
+            />
+
+        <TextView
+            android:layout_margin="@dimen/margin_sm"
+            style="@style/TextView.Micro.BlackSecondary"
+            android:gravity="center_horizontal"
+            android:text="@string/shop_open_pin_pickup_location_text" />
+
+        <FrameLayout
+            android:id="@+id/pin_pickup_location_container"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin_vl"
+            android:background="@drawable/rect_white_rounded_stroke_gray"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="@dimen/margin_sm"
+            android:layout_marginRight="@dimen/margin_vl"
+            android:layout_marginLeft="@dimen/margin_vl">
+            <TextView
+                style="@style/TextView.Micro.BlackSecondary"
+                android:textStyle="bold"
+                android:lineSpacingExtra="8sp"
+                android:gravity="center_horizontal"
+                android:text="@string/shop_open_pin_location_pickup"
+                android:layout_gravity="center"
+                />
+        </FrameLayout>
+
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/mapview_container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/image_width_xxxl"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/delete_pinpoint"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/image_width_s"
+            android:text="@string/action_delete"
+            android:background="@drawable/white_button_rounded"
+            style="@style/TextView.Micro"
+            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginRight="@dimen/margin_small"
+            android:layout_marginEnd="@dimen/margin_small"
+            android:layout_gravity="top|right"/>
+
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/mapview"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:clickable="false"
+            app:liteMode="true"
+            app:mapType="normal"
+            app:cameraZoom="15" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/generated_location_open_shop"
+        style="@style/TextView.Micro"
+        android:lineSpacingExtra="6sp"
+        tools:text="@string/shop_open_default_address_text"
+        android:visibility="gone"/>
+    <TextView
+        android:id="@+id/generated_location_open_shop_copy"
+        style="@style/TextView.Micro.Green"
+        android:text="@string/shop_open_default_address_text_use_this"
+        android:visibility="gone"
+        />
+
+</LinearLayout>

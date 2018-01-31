@@ -5,10 +5,10 @@ import android.text.TextUtils;
 import com.tkpdfeed.feeds.CreateKolComment;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.ErrorMessageException;
+import com.tokopedia.core.util.TimeConverter;
 import com.tokopedia.tkpd.tkpdfeed.R;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.SendKolCommentDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.KolCommentUserDomain;
-import com.tokopedia.core.util.TimeConverter;
 
 import rx.functions.Func1;
 
@@ -37,7 +37,7 @@ public class KolSendCommentMapper implements Func1<CreateKolComment.Data, SendKo
     }
 
     private SendKolCommentDomain convertToDomain(CreateKolComment.Data.Data1 data) {
-        return new SendKolCommentDomain(data.id() == null ? 0 : data.id(),
+        return new SendKolCommentDomain(data.id() == null ? "0" : data.id().toString(),
                 data.comment() == null ? "" : data.comment(),
                 TimeConverter.generateTime(data.create_time() == null ? "" : data
                         .create_time()),

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="com.tokopedia.inbox">
 
     <application
@@ -145,24 +144,31 @@
             android:label="@string/title_track_shipping"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"/>
-
+<activity
+            android:name=".inboxchat.activity.ChatMarketingThumbnailActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".inboxmessageold.activity.InboxMessageActivity"
             android:label="@string/title_inbox"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"/>
-
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".inboxmessageold.activity.InboxMessageDetailActivity"
             android:label="@string/title_inbox"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"/>
-
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".inboxmessageold.activity.SendMessageActivityOld"
             android:label="@string/title_activity_send_message"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"/>
+            android:windowSoftInputMode="stateAlwaysHidden" />
+
+        <activity android:name=".inboxchat.activity.TemplateChatActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".inboxchat.activity.EditTemplateChatActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"/>
 
         <!-- ======================================================= -->
         <!-- SERVICES REGISTRY -->
@@ -176,10 +182,12 @@
             android:exported="false" />
         <service
             android:name="com.tokopedia.core.talk.receiver.intentservice.InboxTalkIntentService"
-            android:exported="false"/>
-        <service
-            android:name="com.tokopedia.inbox.inboxmessageold.intentservice.InboxMessageIntentService"
             android:exported="false" />
+        <service
+            android:name=".inboxmessageold.intentservice.InboxMessageIntentService"
+            android:exported="false" />
+
+        <activity android:name=".contactus.activity.ContactUsCreateTicketActivity"></activity>
     </application>
 
 </manifest>

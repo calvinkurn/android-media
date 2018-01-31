@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.URLParser;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -48,8 +47,12 @@ public class DeepLinkChecker {
     public static final int BLOG = 15;
     public static final int PELUANG = 16;
     public static final int DISCOVERY_PAGE = 17;
+    public static final int FLIGHT = 18;
 
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
+    private static final String FLIGHT_SEGMENT = "pesawat";
+    private static final String KEY_PROMO = "promo";
+    private static final String KEY_SALE = "sale";
 
     public static int getDeepLinkType(String url) {
         Uri uriData = Uri.parse(url);
@@ -66,6 +69,8 @@ public class DeepLinkChecker {
                 return OTHER;
             else if (isExcludedUrl(uriData))
                 return OTHER;
+            else if (isFlight(linkSegment))
+                return FLIGHT;
             else if (isPromo(linkSegment))
                 return PROMO;
             else if (isInvoice(linkSegment))
@@ -105,6 +110,10 @@ public class DeepLinkChecker {
         }
     }
 
+    private static boolean isFlight(List<String> linkSegment) {
+        return linkSegment.size() > 0 && linkSegment.get(0).equalsIgnoreCase(FLIGHT_SEGMENT);
+    }
+
     public static List<String> getLinkSegment(String url) {
         return Uri.parse(url).getPathSegments();
     }
@@ -123,8 +132,12 @@ public class DeepLinkChecker {
         return (linkSegment.get(0).equals("catalog"));
     }
 
+    private static boolean isContent(List<String> linkSegment) {
+        return (linkSegment.get(0).equals("content"));
+    }
+
     private static boolean isPromo(List<String> linkSegment) {
-        return linkSegment.size() > 0 && (linkSegment.get(0).equals("promo"));
+        return linkSegment.size() > 0 && (linkSegment.get(0).equals(KEY_PROMO) || linkSegment.get(0).equals(KEY_SALE));
     }
 
     private static boolean isHome(String url, List<String> linkSegment) {
@@ -150,7 +163,7 @@ public class DeepLinkChecker {
     }
 
     public static String getDiscoveryPageId(String url) {
-        if (getDeepLinkType(url)!=DISCOVERY_PAGE) return "";
+        if (getDeepLinkType(url) != DISCOVERY_PAGE) return "";
         Uri uriData = Uri.parse(url);
         List<String> linkSegment = uriData.getPathSegments();
         return linkSegment.get(1);
@@ -170,6 +183,7 @@ public class DeepLinkChecker {
                 && !isHelp(linkSegment)
                 && !isBrowse(linkSegment)
                 && !isHot(linkSegment)
+                && !isContent(linkSegment)
                 && !isCatalog(linkSegment)
                 && !isTopPicks(linkSegment));
     }
@@ -182,7 +196,6 @@ public class DeepLinkChecker {
                 && !linkSegment.get(0).equals("reset.pl")
                 && !linkSegment.get(0).equals("activation.pl"));
     }
-
 
     private static boolean isSearch(String url) {
         return (getLinkSegment(url).get(0).equals("search"));
@@ -232,7 +245,7 @@ public class DeepLinkChecker {
         if (TextUtils.isEmpty(departmentId)) {
             intent = BrowseProductRouter.getSearchProductIntent(context);
         } else {
-            intent = BrowseProductRouter.getIntermediaryIntent(context,departmentId);
+            intent = BrowseProductRouter.getIntermediaryIntent(context, departmentId);
         }
 
         intent.putExtras(bundle);
@@ -256,7 +269,6 @@ public class DeepLinkChecker {
                 BrowseProductRouter.getHotlistIntent(context, url)
         );
     }
-
 
     public static void openCatalog(String url, Context context) {
         context.startActivity(DetailProductRouter.getCatalogDetailActivity(context, getLinkSegment(url).get(1)));
@@ -295,7 +307,7 @@ public class DeepLinkChecker {
     public static void openHomepage(Context context, int tab) {
         if (context != null &&
                 context.getApplicationContext() != null &&
-                context.getApplicationContext() instanceof TkpdCoreRouter){
+                context.getApplicationContext() instanceof TkpdCoreRouter) {
             Intent intent = ((TkpdCoreRouter) context.getApplicationContext()).getHomeIntent(context);
             intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, tab);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);

@@ -12,6 +12,10 @@ import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 /**
  * Created by Nisie on 31/08/15.
  */
+
+/**
+ * Extends one of BaseActivity from tkpd abstraction eg:BaseSimpleActivity, BaseStepperActivity, BaseTabActivity, etc
+ */
 @Deprecated
 public abstract class TkpdActivity extends DrawerPresenterActivity implements
         CartBadgeNotificationReceiver.ActionListener {

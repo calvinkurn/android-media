@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.app.DrawerPresenterActivity;
@@ -17,6 +18,7 @@ import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
@@ -111,8 +113,7 @@ public class InboxReputationActivity extends DrawerPresenterActivity implements 
                     .title_tab_my_review)));
         }
 
-        if (!sessionHandler.getShopID(this).equals("0")
-                && !sessionHandler.getShopID(this).equals("")) {
+        if (sessionHandler.isUserHasShop(this)) {
             indicator.addTab(indicator.newTab().setText(getString(R.string
                     .title_tab_buyer_review)));
         }
@@ -125,7 +126,6 @@ public class InboxReputationActivity extends DrawerPresenterActivity implements 
                 viewPager.setCurrentItem(TAB_SELLER_REPUTATION_HISTORY);
             }
         }
-
     }
 
     protected SectionsPagerAdapter getViewPagerAdapter() {
@@ -135,16 +135,12 @@ public class InboxReputationActivity extends DrawerPresenterActivity implements 
     protected List<Fragment> getFragmentList() {
         List<Fragment> fragmentList = new ArrayList<>();
         if (GlobalConfig.isSellerApp()) {
-            if (!sessionHandler.getShopID(this).equals("0")
-                    && !sessionHandler.getShopID(this).equals("")) {
-                fragmentList.add(InboxReputationFragment.createInstance(TAB_BUYER_REVIEW));
-            }
+            fragmentList.add(InboxReputationFragment.createInstance(TAB_BUYER_REVIEW));
             fragmentList.add(sellerReputationFragment);
         } else {
             fragmentList.add(InboxReputationFragment.createInstance(TAB_WAITING_REVIEW));
             fragmentList.add(InboxReputationFragment.createInstance(TAB_MY_REVIEW));
-            if (!sessionHandler.getShopID(this).equals("0")
-                    && !sessionHandler.getShopID(this).equals("")) {
+            if (sessionHandler.isUserHasShop(this)) {
                 fragmentList.add(InboxReputationFragment.createInstance(TAB_BUYER_REVIEW));
             }
         }

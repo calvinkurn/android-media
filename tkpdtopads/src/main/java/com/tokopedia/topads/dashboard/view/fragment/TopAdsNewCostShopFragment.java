@@ -22,18 +22,12 @@ public class TopAdsNewCostShopFragment extends TopAdsNewCostFragment<TopAdsCreat
 
     @Override
     protected void loadSuggestionBid() {
-
-    }
-
-    @Override
-    protected void onSuggestionTitleUseClick() {
-        // TODO what to do with this
+        // Do nothing
     }
 
     @Override
     protected void onClickedNext() {
-        if (firstTimeCheck()) return;
-        if(!isError()) {
+        if(!isPriceError()) {
             super.onClickedNext();
             trackerBudgetShop();
             if (stepperListener != null) {

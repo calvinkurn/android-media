@@ -25,10 +25,6 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.places.AutocompleteFilter;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.PlaceFilter;
-import com.google.android.gms.location.places.PlaceLikelihood;
-import com.google.android.gms.location.places.PlaceLikelihoodBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.tkpd.library.utils.CommonUtils;
@@ -45,6 +41,7 @@ import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.bookingride.domain.AutoCompletePredictionUseCase;
 import com.tokopedia.ride.bookingride.domain.GetDistanceMatrixUseCase;
+import com.tokopedia.ride.bookingride.domain.GetLocationAddressUseCase;
 import com.tokopedia.ride.bookingride.domain.GetPlaceDetailUseCase;
 import com.tokopedia.ride.bookingride.domain.GetUserAddressCacheUseCase;
 import com.tokopedia.ride.bookingride.domain.GetUserAddressUseCase;
@@ -54,6 +51,7 @@ import com.tokopedia.ride.bookingride.view.fragment.PlaceAutocompleteFragment;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
 import com.tokopedia.ride.common.place.data.entity.DistanceMatrixEntity;
 import com.tokopedia.ride.common.place.data.entity.Element;
+import com.tokopedia.ride.common.place.data.entity.ReverseGeoCodeAddress;
 import com.tokopedia.ride.common.ride.domain.model.RideAddress;
 import com.tokopedia.ride.common.ride.utils.GoogleAPIClientObservable;
 import com.tokopedia.ride.common.ride.utils.PendingResultObservable;
@@ -68,8 +66,6 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -81,6 +77,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCompleteContract.View> implements PlaceAutoCompleteContract.Presenter {
     private static final String TAG = "addressautocomplete";
+
     private GoogleApiClient mGoogleApiClient;
     private CompositeSubscription mCompositeSubscription;
     private AutocompleteFilter mAutocompleteFilter;
@@ -93,6 +90,7 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
     private GetDistanceMatrixUseCase getDistanceMatrixUseCase;
     private AutoCompletePredictionUseCase autoCompletePredictionUseCase;
     private GetPlaceDetailUseCase placeDetailUseCase;
+    private final GetLocationAddressUseCase getLocationAddressUseCase;
     private boolean mAutoDetectLocation;
 
     private interface OnQueryListener {
@@ -104,13 +102,15 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                                       GetUserAddressCacheUseCase getUserAddressCacheUseCase,
                                       GetDistanceMatrixUseCase getDistanceMatrixUseCase,
                                       AutoCompletePredictionUseCase autoCompletePredictionUseCase,
-                                      GetPlaceDetailUseCase placeDetailUseCase) {
+                                      GetPlaceDetailUseCase placeDetailUseCase,
+                                      GetLocationAddressUseCase getLocationAddressUseCase) {
         compositeSubscription = new CompositeSubscription();
         this.getUserAddressUseCase = getUserAddressUseCase;
         this.getUserAddressCacheUseCase = getUserAddressCacheUseCase;
         this.getDistanceMatrixUseCase = getDistanceMatrixUseCase;
         this.autoCompletePredictionUseCase = autoCompletePredictionUseCase;
         this.placeDetailUseCase = placeDetailUseCase;
+        this.getLocationAddressUseCase = getLocationAddressUseCase;
     }
 
     @Override
@@ -652,76 +652,53 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
     }
 
     private void getCurrentPlace() {
-        getCurrentPlace(new PlaceFilter())
-                .map(new Func1<PlaceLikelihoodBuffer, Place>() {
-                    @Override
-                    public Place call(PlaceLikelihoodBuffer buffer) {
-                        if (buffer != null) {
-                            PlaceLikelihood likelihood = buffer.get(0);
-                            if (likelihood != null) {
-                                return likelihood.getPlace();
-                            }
-                            buffer.release();
-                            return null;
-                        } else {
-                            return null;
-                        }
-                    }
-                }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Place>() {
-                    @Override
-                    public void onCompleted() {
 
-                    }
+        if (mCurrentLocation == null) {
+            return;
+        }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        if (mCurrentLocation != null && isViewAttached() && !isUnsubscribed()) {
-                            PlacePassViewModel placeVm = new PlacePassViewModel();
-                            String address = String.format("%s,%s", mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-                            placeVm.setAddress(address);
-                            placeVm.setAndFormatLatitude(mCurrentLocation.getLatitude());
-                            placeVm.setAndFormatLongitude(mCurrentLocation.getLongitude());
-                            placeVm.setTitle(address);
-                            if (mAutoDetectLocation) {
-                                mAutoDetectLocation = false;
-                                getView().sendAutoDetectGAEvent(placeVm);
-                            }
-                            getView().onPlaceSelectedFound(placeVm);
-                        }
-                    }
+        final double latitude = mCurrentLocation.getLatitude();
+        final double longitude = mCurrentLocation.getLongitude();
 
-                    @Override
-                    public void onNext(Place place) {
-                        if (isViewAttached() && !isUnsubscribed() && place != null) {
-                            PlacePassViewModel placeVm = new PlacePassViewModel();
-                            placeVm.setAddress(String.valueOf(place.getName()));
-                            placeVm.setAndFormatLatitude(place.getLatLng().latitude);
-                            placeVm.setAndFormatLongitude(place.getLatLng().longitude);
-                            placeVm.setPlaceId(place.getId());
-                            placeVm.setTitle(String.valueOf(place.getName()));
-                            if (mAutoDetectLocation) {
-                                mAutoDetectLocation = false;
-                                getView().sendAutoDetectGAEvent(placeVm);
-                            }
-                            getView().onPlaceSelectedFound(placeVm);
-                        }
-                    }
-                });
-    }
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(GetLocationAddressUseCase.PARAM_LATITUDE, String.valueOf(latitude));
+        requestParams.putString(GetLocationAddressUseCase.PARAM_LONGITUDE, String.valueOf(longitude));
+        requestParams.putString(GetLocationAddressUseCase.PARAM_KEY, getView().getActivity().getString(R.string.GOOGLE_API_KEY));
 
-    private Observable<PlaceLikelihoodBuffer> getCurrentPlace(@javax.annotation.Nullable final PlaceFilter placeFilter) {
-        return getGoogleApiClientObservable(Places.PLACE_DETECTION_API, Places.GEO_DATA_API)
-                .flatMap(new Func1<GoogleApiClient, Observable<PlaceLikelihoodBuffer>>() {
-                    @Override
-                    public Observable<PlaceLikelihoodBuffer> call(GoogleApiClient api) {
-                        if (ActivityCompat.checkSelfPermission(getView().getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                            return Observable.empty();
-                        }
-                        return fromPendingResult(Places.PlaceDetectionApi.getCurrentPlace(api, placeFilter));
+        //find address using latitude and longitude
+        getLocationAddressUseCase.execute(requestParams, new Subscriber<ReverseGeoCodeAddress>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                String sourceAddress = String.valueOf(latitude) + "," + String.valueOf(longitude);
+                handleAddressResult(sourceAddress, sourceAddress);
+            }
+
+            @Override
+            public void onNext(ReverseGeoCodeAddress reverseGeoCodeAddres) {
+                String title = RideUtils.getShortAddress(reverseGeoCodeAddres);
+                String address = reverseGeoCodeAddres.getFormattedAddress();
+                handleAddressResult(title, address);
+            }
+
+            private void handleAddressResult(String title, String address) {
+                if (isViewAttached() && !isUnsubscribed()) {
+                    PlacePassViewModel placeVm = new PlacePassViewModel();
+                    placeVm.setAddress(String.valueOf(address));
+                    placeVm.setAndFormatLatitude(latitude);
+                    placeVm.setAndFormatLongitude(longitude);
+                    placeVm.setTitle(title);
+                    if (mAutoDetectLocation) {
+                        mAutoDetectLocation = false;
+                        getView().sendAutoDetectGAEvent(placeVm);
                     }
-                });
+                    getView().onPlaceSelectedFound(placeVm);
+                }
+            }
+        });
     }
 }
