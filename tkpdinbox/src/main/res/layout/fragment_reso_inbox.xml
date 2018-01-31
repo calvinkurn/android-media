@@ -13,7 +13,8 @@
         <com.tokopedia.design.quickfilter.custom.multiple.view.QuickMultipleFilterView
             android:id="@+id/view_quick_filter"
             android:layout_width="match_parent"
-            android:layout_height="70dp"/>
+            android:layout_height="wrap_content"
+            android:minHeight="40dp"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_inbox"

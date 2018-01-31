@@ -14,6 +14,8 @@ public class QuickFilterItem {
 
     private int colorFilter;
 
+    private int id;
+
     public String getName() {
         return name;
     }
@@ -44,6 +46,14 @@ public class QuickFilterItem {
 
     public void setColorBorder(int colorFilter) {
         this.colorFilter = colorFilter;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override

@@ -15,13 +15,12 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.design.button.BottomActionView;
-import com.tokopedia.design.quickfilter.custom.multiple.item.QuickMultipleFilterItem;
+import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.custom.multiple.view.QuickMultipleFilterView;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
@@ -176,11 +175,9 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
             = new QuickMultipleFilterView.ActionListener() {
         @Override
         public void filterClicked(List<Integer> selectedIdList) {
-            String id = "";
-            for (Integer i : selectedIdList) {
-                id += i+"";
-            }
-            Toast.makeText(getActivity(), id, Toast.LENGTH_SHORT).show();
+            inboxFilterModel.setSelectedFilterList(selectedIdList);
+            showProgressBar();
+            getInboxWithParams();
         }
     };
 
@@ -250,18 +247,19 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
         rvInbox.setAdapter(inboxAdapter);
         inboxAdapter.notifyDataSetChanged();
 
-        quickFilterView.renderFilter(convertQuickFilterModel(result.getFilterViewModels()));
+        quickFilterView.renderFilter(convertQuickFilterModel(inboxFilterModel.getFilterViewModelList()));
         updateParams(true, result);
     }
 
-    private List<QuickMultipleFilterItem> convertQuickFilterModel(List<FilterViewModel> filterList) {
-        List<QuickMultipleFilterItem> itemList = new ArrayList<>();
+    private List<QuickFilterItem> convertQuickFilterModel(List<FilterViewModel> filterList) {
+        List<QuickFilterItem> itemList = new ArrayList<>();
         for (FilterViewModel filter : filterList) {
-            QuickMultipleFilterItem item = new QuickMultipleFilterItem();
-            item.setItemId(filter.getOrderValue());
+            QuickFilterItem item = new QuickFilterItem();
+            item.setId(filter.getOrderValue());
             item.setName(filter.getTypeNameQuickFilter());
             item.setColorBorder(R.color.tkpd_main_green);
             item.setType(filter.getType());
+            item.setSelected(inboxFilterModel.getSelectedFilterList().contains(filter.getOrderValue()));
             itemList.add(item);
         }
         return itemList;
@@ -364,21 +362,6 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
         startActivityForResult(intent, REQUEST_DETAIL_RESO);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_DETAIL_RESO) {
-            if (resultCode == Activity.RESULT_OK) {
-
-            }
-        } else if (requestCode == REQUEST_FILTER_RESO) {
-            if (resultCode == Activity.RESULT_OK) {
-                inboxFilterModel = data.getParcelableExtra(InboxFilterActivity.PARAM_FILTER_MODEL);
-                getInboxWithParams();
-            }
-        }
-    }
-
     private void showErrorWithRetry(String message) {
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), message, new NetworkErrorHelper.RetryClickedListener() {
             @Override
@@ -401,11 +384,7 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
             progressBar.setVisibility(View.GONE);
         }
     }
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        presenter.detachView();
-    }
+
 
     private void updateParams(boolean isCanLoadMore, InboxItemResultViewModel resultViewModel) {
         this.isCanLoadMore = isCanLoadMore;
@@ -416,5 +395,26 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
     private void resetParams() {
         this.isCanLoadMore = false;
         this.lastCursor = "";
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_DETAIL_RESO) {
+            if (resultCode == Activity.RESULT_OK) {
+
+            }
+        } else if (requestCode == REQUEST_FILTER_RESO) {
+            if (resultCode == Activity.RESULT_OK) {
+                inboxFilterModel = data.getParcelableExtra(InboxFilterActivity.PARAM_FILTER_MODEL);
+                getInboxWithParams();
+            }
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
     }
 }

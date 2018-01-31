@@ -10,10 +10,9 @@ import android.view.View;
 
 import com.tokopedia.design.R;
 import com.tokopedia.design.base.BaseCustomView;
-import com.tokopedia.design.quickfilter.custom.multiple.adapter.BaseQuickMultipleFilterAdapter;
+import com.tokopedia.design.quickfilter.QuickFilterItem;
+import com.tokopedia.design.quickfilter.QuickSingleFilterListener;
 import com.tokopedia.design.quickfilter.custom.multiple.adapter.QuickMultipleFilterAdapter;
-import com.tokopedia.design.quickfilter.custom.multiple.item.QuickMultipleFilterItem;
-import com.tokopedia.design.quickfilter.custom.multiple.listener.QuickMultipleItemListener;
 
 import java.util.List;
 
@@ -25,7 +24,7 @@ public class QuickMultipleFilterView extends BaseCustomView {
 
     private View rootView;
     private RecyclerView recyclerView;
-    private BaseQuickMultipleFilterAdapter adapterFilter;
+    private QuickMultipleFilterAdapter adapterFilter;
     private ActionListener listener;
 
     public QuickMultipleFilterView(@NonNull Context context) {
@@ -48,8 +47,8 @@ public class QuickMultipleFilterView extends BaseCustomView {
         this.listener = listener;
     }
 
-    public void renderFilter(List<QuickMultipleFilterItem> quickFilterItems) {
-        adapterFilter.addQuickMultipleFilterItems(quickFilterItems);
+    public void renderFilter(List<QuickFilterItem> quickFilterItems) {
+        adapterFilter.addFilterTokoCashList(quickFilterItems);
     }
 
 
@@ -61,15 +60,15 @@ public class QuickMultipleFilterView extends BaseCustomView {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(),
                 LinearLayoutManager.HORIZONTAL, false));
 
-        adapterFilter = new QuickMultipleFilterAdapter(getQuickMultipleItemListener());
+        adapterFilter = new QuickMultipleFilterAdapter(getListener());
         recyclerView.setAdapter(adapterFilter);
     }
 
-    private QuickMultipleItemListener getQuickMultipleItemListener() {
-        return new QuickMultipleItemListener() {
+    private QuickSingleFilterListener getListener() {
+        return new QuickSingleFilterListener() {
             @Override
-            public void selectFilter(QuickMultipleFilterItem filterItem) {
-                adapterFilter.itemClicked(filterItem.getItemId());
+            public void selectFilter(QuickFilterItem filterItem) {
+                adapterFilter.itemClicked(filterItem.getId());
                 listener.filterClicked(adapterFilter.getSelectedIdList());
             }
         };
