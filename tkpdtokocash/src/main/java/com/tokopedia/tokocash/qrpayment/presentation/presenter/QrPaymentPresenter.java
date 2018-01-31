@@ -1,6 +1,5 @@
 package com.tokopedia.tokocash.qrpayment.presentation.presenter;
 
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
@@ -10,6 +9,7 @@ import com.tokopedia.tokocash.qrpayment.domain.PostQrPaymentUseCase;
 import com.tokopedia.tokocash.qrpayment.presentation.contract.QrPaymentContract;
 import com.tokopedia.tokocash.qrpayment.presentation.model.BalanceTokoCash;
 import com.tokopedia.tokocash.qrpayment.presentation.model.QrPaymentTokoCash;
+import com.tokopedia.usecase.RequestParams;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;

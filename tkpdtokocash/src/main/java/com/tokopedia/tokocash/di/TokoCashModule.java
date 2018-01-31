@@ -26,48 +26,34 @@ public class TokoCashModule {
     }
 
     @Provides
-    @TokoCashScope
     WalletService provideWalletService() {
         return new WalletService(SessionHandler.getAccessTokenTokoCash());
     }
 
     @Provides
-    @TokoCashScope
-    GetHistoryDataUseCase provideGetHistoryDataUseCase(ThreadExecutor threadExecutor,
-                                                       PostExecutionThread postExecutionThread,
-                                                       WalletRepository walletRepository) {
-        return new GetHistoryDataUseCase(threadExecutor, postExecutionThread, walletRepository);
+    GetHistoryDataUseCase provideGetHistoryDataUseCase(WalletRepository walletRepository) {
+        return new GetHistoryDataUseCase(walletRepository);
+    }
+
+    @Provides
+    GetReasonHelpDataUseCase provideGetReasonHelpDataUseCase(WalletRepository walletRepository) {
+        return new GetReasonHelpDataUseCase(walletRepository);
+    }
+
+    @Provides
+    GetInfoQrTokoCashUseCase provideGetInfoQrTokoCashUseCase(QrPaymentRepository qrPaymentRepository) {
+        return new GetInfoQrTokoCashUseCase(qrPaymentRepository);
     }
 
     @Provides
     @TokoCashScope
-    GetReasonHelpDataUseCase provideGetReasonHelpDataUseCase(ThreadExecutor threadExecutor,
-                                                             PostExecutionThread postExecutionThread,
-                                                             WalletRepository walletRepository) {
-        return new GetReasonHelpDataUseCase(threadExecutor, postExecutionThread, walletRepository);
+    PostQrPaymentUseCase providePostQrPaymentUseCase(QrPaymentRepository qrPaymentRepository) {
+        return new PostQrPaymentUseCase(qrPaymentRepository);
     }
 
     @Provides
     @TokoCashScope
-    GetInfoQrTokoCashUseCase provideGetInfoQrTokoCashUseCase(ThreadExecutor threadExecutor,
-                                                             PostExecutionThread postExecutionThread,
-                                                             QrPaymentRepository qrPaymentRepository) {
-        return new GetInfoQrTokoCashUseCase(threadExecutor, postExecutionThread, qrPaymentRepository);
-    }
-
-    @Provides
-    @TokoCashScope
-    PostQrPaymentUseCase providePostQrPaymentUseCase(ThreadExecutor threadExecutor,
-                                                     PostExecutionThread postExecutionThread,
-                                                     QrPaymentRepository qrPaymentRepository) {
-        return new PostQrPaymentUseCase(threadExecutor, postExecutionThread, qrPaymentRepository);
-    }
-
-    @Provides
-    @TokoCashScope
-    GetBalanceTokoCashUseCase provideGetBalanceTokoCashUseCase(ThreadExecutor threadExecutor,
-                                                          PostExecutionThread postExecutionThread,
-                                                          QrPaymentRepository qrPaymentRepository) {
-        return new GetBalanceTokoCashUseCase(threadExecutor, postExecutionThread, qrPaymentRepository);
+    GetBalanceTokoCashUseCase provideGetBalanceTokoCashUseCase(QrPaymentRepository qrPaymentRepository) {
+        return new GetBalanceTokoCashUseCase(qrPaymentRepository);
     }
 }

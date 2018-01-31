@@ -12,8 +12,8 @@ import android.widget.ImageView;
 import com.journeyapps.barcodescanner.BarcodeResult;
 import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
@@ -22,6 +22,7 @@ import com.tokopedia.tokocash.qrpayment.domain.GetInfoQrTokoCashUseCase;
 import com.tokopedia.tokocash.qrpayment.presentation.contract.InfoQrTokoCashContract;
 import com.tokopedia.tokocash.qrpayment.presentation.model.InfoQrTokoCash;
 import com.tokopedia.tokocash.qrpayment.presentation.presenter.InfoQrTokoCashPresenter;
+import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
 
@@ -158,7 +159,7 @@ public class CustomScannerTokoCashActivity extends BaseScannerQRActivity impleme
 
     private void initInjector() {
         tokoCashComponent = DaggerTokoCashComponent.builder()
-                .appComponent(getApplicationComponent())
+                .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
                 .build();
         tokoCashComponent.inject(this);
     }

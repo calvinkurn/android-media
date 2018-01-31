@@ -11,9 +11,9 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.design.text.watcher.NumberTextWatcher;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
@@ -26,6 +26,7 @@ import com.tokopedia.tokocash.qrpayment.presentation.model.BalanceTokoCash;
 import com.tokopedia.tokocash.qrpayment.presentation.model.InfoQrTokoCash;
 import com.tokopedia.tokocash.qrpayment.presentation.model.QrPaymentTokoCash;
 import com.tokopedia.tokocash.qrpayment.presentation.presenter.QrPaymentPresenter;
+import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
 
@@ -120,7 +121,7 @@ public class NominalQrPaymentActivity extends TActivity implements QrPaymentCont
 
     private void initInjector() {
         tokoCashComponent = DaggerTokoCashComponent.builder()
-                .appComponent(getApplicationComponent())
+                .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
                 .build();
         tokoCashComponent.inject(this);
     }

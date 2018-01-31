@@ -1,10 +1,10 @@
 package com.tokopedia.tokocash.qrpayment.presentation.contract;
 
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.tokocash.qrpayment.presentation.model.BalanceTokoCash;
 import com.tokopedia.tokocash.qrpayment.presentation.model.QrPaymentTokoCash;
+import com.tokopedia.usecase.RequestParams;
 
 /**
  * Created by nabillasabbaha on 1/3/18.

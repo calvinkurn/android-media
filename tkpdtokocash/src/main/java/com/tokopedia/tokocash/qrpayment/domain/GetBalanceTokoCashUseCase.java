@@ -1,11 +1,9 @@
 package com.tokopedia.tokocash.qrpayment.domain;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.tokocash.qrpayment.data.repository.QrPaymentRepository;
 import com.tokopedia.tokocash.qrpayment.presentation.model.BalanceTokoCash;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import rx.Observable;
 
@@ -17,10 +15,7 @@ public class GetBalanceTokoCashUseCase extends UseCase<BalanceTokoCash> {
 
     private QrPaymentRepository repository;
 
-    public GetBalanceTokoCashUseCase(ThreadExecutor threadExecutor,
-                                     PostExecutionThread postExecutionThread,
-                                     QrPaymentRepository repository) {
-        super(threadExecutor, postExecutionThread);
+    public GetBalanceTokoCashUseCase(QrPaymentRepository repository) {
         this.repository = repository;
     }
 
