@@ -1,10 +1,10 @@
 package com.tokopedia.network.service;
 
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.core.OkHttpRetryPolicy;
 import com.tokopedia.core.network.core.RetrofitFactory;
 import com.tokopedia.core.network.retrofit.services.AuthService;
+import com.tokopedia.network.SessionUrl;
 
 import javax.inject.Inject;
 
@@ -33,7 +33,7 @@ public class AccountsBasicService extends AuthService<AccountsBasicApi> {
 
     @Override
     protected String getBaseUrl() {
-        return TkpdBaseURL.ACCOUNTS_DOMAIN;
+        return SessionUrl.ACCOUNTS_DOMAIN;
     }
 
     @Override

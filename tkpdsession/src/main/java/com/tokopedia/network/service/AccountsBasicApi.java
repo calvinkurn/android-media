@@ -1,10 +1,9 @@
 package com.tokopedia.network.service;
 
-import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.network.SessionUrl;
 
 import java.util.Map;
 
-import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
@@ -18,10 +17,6 @@ import rx.Observable;
 public interface AccountsBasicApi {
 
     @FormUrlEncoded
-    @POST(TkpdBaseURL.Accounts.PATH_GET_TOKEN)
+    @POST(SessionUrl.PATH_GET_TOKEN)
     Observable<Response<String>> getToken(@FieldMap Map<String, Object> params);
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.Accounts.PATH_GET_TOKEN)
-    Call<String> getTokenSynchronous(@FieldMap Map<String, String> params);
 }

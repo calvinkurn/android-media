@@ -155,6 +155,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         TkpdBaseURL.CHAT_WEBSOCKET_DOMAIN = SellerAppBaseUrl.CHAT_WEBSOCKET_DOMAIN;
         TkpdBaseURL.WALLET_DOMAIN = SellerAppBaseUrl.BASE_WALLET;
         SessionUrl.ACCOUNTS_DOMAIN = SellerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
+        SessionUrl.BASE_DOMAIN = SellerAppBaseUrl.BASE_DOMAIN;
 
     }
 

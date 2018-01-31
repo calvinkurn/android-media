@@ -104,6 +104,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         FlightUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
         FlightUrl.PULSA_BASE_URL = ConsumerAppBaseUrl.BASE_DIGITAL_API_DOMAIN;
         SessionUrl.ACCOUNTS_DOMAIN = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
+        SessionUrl.BASE_DOMAIN = ConsumerAppBaseUrl.BASE_DOMAIN;
     }
 
     private void generateConsumerAppNetworkKeys() {

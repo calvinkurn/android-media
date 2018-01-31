@@ -2,10 +2,10 @@ package com.tokopedia.network.service;
 
 import android.os.Bundle;
 
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.core.OkHttpRetryPolicy;
 import com.tokopedia.core.network.core.RetrofitFactory;
+import com.tokopedia.network.SessionUrl;
 
 import retrofit2.Retrofit;
 
@@ -51,9 +51,9 @@ public class AccountsService {
     protected String getBaseUrl(String webService) {
         switch (webService) {
             case WS:
-                return TkpdBaseURL.BASE_DOMAIN;
+                return SessionUrl.BASE_DOMAIN;
             case ACCOUNTS:
-                return TkpdBaseURL.ACCOUNTS_DOMAIN;
+                return SessionUrl.ACCOUNTS_DOMAIN;
             default:
                 throw new RuntimeException("unknown Base URL");
         }

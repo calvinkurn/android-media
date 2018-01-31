@@ -21,16 +21,15 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.DatePickerUtil;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.RegisterAnalytics;
 import com.tokopedia.core.TermPrivacy;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.customView.PasswordView;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.session.R;
@@ -112,7 +111,8 @@ public class CreatePasswordFragment extends BaseDaggerFragment
     public void onStart() {
         super.onStart();
         ScreenTracking.screen(getScreenName());
-        TrackingUtils.fragmentBasedAFEvent(AppScreen.IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT);
+        TrackingUtils.fragmentBasedAFEvent
+                (RegisterAnalytics.Screen.IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT);
     }
 
     @Override
