@@ -44,4 +44,5 @@
 
     <color name="grey_transparent_background">#28000000</color>
 
+    <color name="light_red">#fdebec</color>
 </resources>
