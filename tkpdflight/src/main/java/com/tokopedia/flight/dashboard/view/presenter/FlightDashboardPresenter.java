@@ -3,6 +3,7 @@ package com.tokopedia.flight.dashboard.view.presenter;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
@@ -511,6 +512,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     }
 
     private void getBannerData() {
+        Log.d("Panggil Data", "Masuk Masuk Masuk");
         bannerGetDataUseCase.execute(bannerGetDataUseCase.createRequestParams(DEVICE_ID, CATEGORY_ID), new Subscriber<List<BannerDetail>>() {
             @Override
             public void onCompleted() {
@@ -527,6 +529,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
             @Override
             public void onNext(List<BannerDetail> bannerDetailList) {
                 if (isViewAttached()) {
+                    Log.d("Dapat Data", bannerDetailList.get(0).getAttributes().getImgUrl());
                     getView().renderBannerView(bannerDetailList);
                 }
             }
