@@ -34,10 +34,8 @@ public class CartSingleAddressFragment extends BasePresenterFragment
 
     @BindView(R2.id.rv_cart_order_details) RecyclerView mRvCartOrderDetails;
 
-    @Inject
-    CartSingleAddressAdapter mCartSingleAddressAdapter;
-    @Inject
-    CartSingleAddressPresenter mCartSingleAddressPresenter;
+    @Inject CartSingleAddressAdapter mCartSingleAddressAdapter;
+    @Inject CartSingleAddressPresenter mCartSingleAddressPresenter;
 
     public static CartSingleAddressFragment newInstance() {
         return new CartSingleAddressFragment();
@@ -116,14 +114,15 @@ public class CartSingleAddressFragment extends BasePresenterFragment
         mRvCartOrderDetails.setAdapter(mCartSingleAddressAdapter);
 
         mCartSingleAddressPresenter.attachView(this);
-        mCartSingleAddressPresenter.getCartSingleAddressItemView();
     }
 
     /**
      * set listener atau attribute si view. misalkan texView.setText("blablalba");
      */
     @Override
-    protected void setViewListener() {}
+    protected void setViewListener() {
+        mCartSingleAddressPresenter.getCartSingleAddressItemView();
+    }
 
     /**
      * initial Variabel di fragment, selain yg sifatnya widget. Misal: variable state, handler dll

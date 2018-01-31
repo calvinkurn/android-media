@@ -9,10 +9,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.view.data.ShippingRecipientModel;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * @author Aghny A. Putra on 26/01/18
@@ -55,15 +59,13 @@ public class CartAddressListAdapter
 
     class RecipientAddressViewHolder extends RecyclerView.ViewHolder {
 
-        TextView mTvRecipientName;
-        TextView mTvRecipientAddress;
-        LinearLayout mLlRadioButtonAddressSelect;
+        @BindView(R2.id.tv_recipient_name) TextView mTvRecipientName;
+        @BindView(R2.id.tv_recipient_address) TextView mTvRecipientAddress;
+        @BindView(R2.id.ll_address_radio_button_container) LinearLayout mLlRadioButtonAddressSelect;
 
         RecipientAddressViewHolder(View view) {
             super(view);
-            mTvRecipientName = view.findViewById(R.id.tv_recipient_name);
-            mTvRecipientAddress = view.findViewById(R.id.tv_recipient_address);
-            mLlRadioButtonAddressSelect = view.findViewById(R.id.ll_address_radio_button_container);
+            ButterKnife.bind(this, view);
         }
 
     }

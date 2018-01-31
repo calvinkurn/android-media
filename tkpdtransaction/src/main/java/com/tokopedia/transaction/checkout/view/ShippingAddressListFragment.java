@@ -27,17 +27,15 @@ import butterknife.ButterKnife;
 /**
  * @author Aghny A. Putra on 25/01/18
  */
-public class ShippingAddressListFragment extends BasePresenterFragment implements ISearchAddressListView<List<ShippingRecipientModel>> {
+public class ShippingAddressListFragment extends BasePresenterFragment
+        implements ISearchAddressListView<List<ShippingRecipientModel>> {
 
     private static final String SCREEN_NAME = ShippingAddressListFragment.class.getSimpleName();
 
-    @BindView(R2.id.rv_address_list)
-    RecyclerView mRvRecipientAddressList;
+    @BindView(R2.id.rv_address_list) RecyclerView mRvRecipientAddressList;
 
-    @Inject
-    CartAddressListAdapter mCartAddressListAdapter;
-    @Inject
-    CartAddressListPresenter mCartAddressListPresenter;
+    @Inject CartAddressListAdapter mCartAddressListAdapter;
+    @Inject CartAddressListPresenter mCartAddressListPresenter;
 
     public static ShippingAddressListFragment newInstance() {
         return new ShippingAddressListFragment();
@@ -133,7 +131,6 @@ public class ShippingAddressListFragment extends BasePresenterFragment implement
         mRvRecipientAddressList.setAdapter(mCartAddressListAdapter);
 
         mCartAddressListPresenter.attachView(this);
-        mCartAddressListPresenter.getAddressList();
     }
 
     /**
@@ -141,7 +138,7 @@ public class ShippingAddressListFragment extends BasePresenterFragment implement
      */
     @Override
     protected void setViewListener() {
-
+        mCartAddressListPresenter.getAddressList();
     }
 
     /**

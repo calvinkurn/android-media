@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.view.ShippingAddressListFragment;
 import com.tokopedia.transaction.checkout.view.data.CartItemModel;
 import com.tokopedia.transaction.checkout.view.data.CartPayableDetailModel;
@@ -22,6 +23,9 @@ import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
 import com.tokopedia.transaction.checkout.view.data.DropshipperShippingOptionModel;
 import com.tokopedia.transaction.checkout.view.data.ShippingFeeBannerModel;
 import com.tokopedia.transaction.checkout.view.data.ShippingRecipientModel;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * @author Aghny A. Putra on 25/01/18
@@ -112,17 +116,16 @@ public class CartSingleAddressAdapter
         return mCartSingleAddressData.getCartItemModelList().size();
     }
 
-    private class FreeShippingFeeViewHolder extends RecyclerView.ViewHolder {
+    class FreeShippingFeeViewHolder extends RecyclerView.ViewHolder {
 
-        private RelativeLayout mRlFreeShipmentFeeHeader;
-        private TextView mTvShippingFee;
+        @BindView(R2.id.rl_free_shipment_fee_header) RelativeLayout mRlFreeShipmentFeeHeader;
+        @BindView(R2.id.tv_shpping_fee) TextView mTvShippingFee;
 
         private ShippingFeeBannerModel mShippingFeeBannerModel;
 
         FreeShippingFeeViewHolder(View itemView) {
             super(itemView);
-            mRlFreeShipmentFeeHeader = itemView.findViewById(R.id.rl_free_shipment_fee_header);
-            mTvShippingFee = itemView.findViewById(R.id.tv_shpping_fee);
+            ButterKnife.bind(this, itemView);
         }
 
         void bindViewHolder() {
@@ -142,21 +145,17 @@ public class CartSingleAddressAdapter
 
     }
 
-    private class ShippingRecipientViewHolder extends RecyclerView.ViewHolder {
+    class ShippingRecipientViewHolder extends RecyclerView.ViewHolder {
 
-        RelativeLayout mRlRecipientAddressHeader;
-        TextView mTvRecipientName;
-        TextView mTvRecipientAddress;
-        TextView mTvAddOrChangeAddress;
+        @BindView(R2.id.tv_recipient_name) TextView mTvRecipientName;
+        @BindView(R2.id.tv_recipient_address) TextView mTvRecipientAddress;
+        @BindView(R2.id.tv_add_or_change_address) TextView mTvAddOrChangeAddress;
 
         private ShippingRecipientModel mShippingRecipientModel;
 
         ShippingRecipientViewHolder(View itemView) {
             super(itemView);
-            mRlRecipientAddressHeader = itemView.findViewById(R.id.rl_shipment_recipient_address_header);
-            mTvRecipientName = itemView.findViewById(R.id.tv_recipient_name);
-            mTvRecipientAddress = itemView.findViewById(R.id.tv_recipient_address);
-            mTvAddOrChangeAddress = itemView.findViewById(R.id.tv_add_or_change_address);
+            ButterKnife.bind(this, itemView);
         }
 
         void bindViewHolder() {
@@ -193,17 +192,16 @@ public class CartSingleAddressAdapter
 
     }
 
-    private class DropShipperOptionViewHolder extends RecyclerView.ViewHolder {
+    class DropShipperOptionViewHolder extends RecyclerView.ViewHolder {
 
-        private RelativeLayout mRlDropshipperOptionLayout;
-        private Switch mSwDropshipper;
+        @BindView(R2.id.rl_dropshipper_option_header) RelativeLayout mRlDropshipperOptionLayout;
+        @BindView(R2.id.sw_dropshipper) Switch mSwDropshipper;
 
         private DropshipperShippingOptionModel mDropshipperOptionModel;
 
         DropShipperOptionViewHolder(View itemView) {
             super(itemView);
-            mRlDropshipperOptionLayout = itemView.findViewById(R.id.rl_dropshipper_option_header);
-            mSwDropshipper = itemView.findViewById(R.id.sw_dropshipper);
+            ButterKnife.bind(this, itemView);
         }
 
         void bindViewHolder() {
@@ -233,34 +231,25 @@ public class CartSingleAddressAdapter
         }
     }
 
-    private class ShipmentCostDetailViewHolder extends RecyclerView.ViewHolder {
+    class ShipmentCostDetailViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView mTvTotalItem;
-        private TextView mTvTotalItemPrice;
-        private TextView mTvShippingFee;
-        private TextView mTvShippingFeePrice;
-        private TextView mTvInsuranceFeePrice;
-        private TextView mTvPromoPrice;
-        private TextView mTvDrawerDetailPayable;
-        private ImageView mIvDrawerChevron;
-        private TextView mTvPayablePrice;
-        private TextView mTvPromoFreeShipping;
+        @BindView(R2.id.tv_total_item) TextView mTvTotalItem;
+        @BindView(R2.id.tv_total_item_price) TextView mTvTotalItemPrice;
+        @BindView(R2.id.tv_shipping_fee) TextView mTvShippingFee;
+        @BindView(R2.id.tv_shipping_fee_price) TextView mTvShippingFeePrice;
+        @BindView(R2.id.tv_insurance_fee_price) TextView mTvInsuranceFeePrice;
+        @BindView(R2.id.tv_promo_price) TextView mTvPromoPrice;
+        @BindView(R2.id.tv_drawer_detail_payable) TextView mTvDrawerDetailPayable;
+        @BindView(R2.id.iv_drawer_chevron) ImageView mIvDrawerChevron;
+        @BindView(R2.id.tv_payable_price) TextView mTvPayablePrice;
+        @BindView(R2.id.tv_promo_free_shipping) TextView mTvPromoFreeShipping;
 
         private boolean isExpanded;
         private CartPayableDetailModel mCartPayableDetailModel;
 
         ShipmentCostDetailViewHolder(View itemView) {
             super(itemView);
-            mTvTotalItem = itemView.findViewById(R.id.tv_total_item);
-            mTvTotalItemPrice = itemView.findViewById(R.id.tv_total_item_price);
-            mTvShippingFee = itemView.findViewById(R.id.tv_shipping_fee);
-            mTvShippingFeePrice = itemView.findViewById(R.id.tv_shipping_fee_price);
-            mTvInsuranceFeePrice = itemView.findViewById(R.id.tv_insurance_fee_price);
-            mTvPromoPrice = itemView.findViewById(R.id.tv_promo_price);
-            mTvDrawerDetailPayable = itemView.findViewById(R.id.tv_drawer_detail_payable);
-            mIvDrawerChevron = itemView.findViewById(R.id.iv_drawer_chevron);
-            mTvPayablePrice = itemView.findViewById(R.id.tv_payable_price);
-            mTvPromoFreeShipping = itemView.findViewById(R.id.tv_promo_free_shipping);
+            ButterKnife.bind(this, itemView);
         }
 
         void bindViewHolder() {
@@ -330,47 +319,31 @@ public class CartSingleAddressAdapter
 
     }
 
-    private class ShippedProductDetailsViewHolder extends RecyclerView.ViewHolder {
+    class ShippedProductDetailsViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView mTvSenderName;
-        private ImageView mIvProductImage;
-        private TextView mTvProductName;
-        private TextView mTvProductPrice;
-        private RelativeLayout mRlProductPoliciesLayout;
-        private ImageView mIvFreeReturnIcon;
-        private TextView mTvPoSign;
-        private TextView mTvCashback;
-        private TextView mTvProductWeight;
-        private TextView mTvTotalProductItem;
-        private TextView mTvNoteToSeller;
-        private RelativeLayout mRlProductGalleriesLayout;
-        private TextView mTvShipmentOption;
-        private ImageView mIvChevronShipmentOption;
-        private TextView mTvCartDetailOption;
-        private ImageView mIvDetailDrawerChevron;
-        private TextView mTvSubTotalItemPrice;
+        @BindView(R2.id.tv_sender_name) TextView mTvSenderName;
+        @BindView(R2.id.iv_product_image_container) ImageView mIvProductImage;
+        @BindView(R2.id.tv_shipping_product_name) TextView mTvProductName;
+        @BindView(R2.id.tv_shipped_product_price) TextView mTvProductPrice;
+        @BindView(R2.id.rl_product_policies_layout) RelativeLayout mRlProductPoliciesLayout;
+        @BindView(R2.id.iv_free_return_icon) ImageView mIvFreeReturnIcon;
+        @BindView(R2.id.tv_po_sign) TextView mTvPoSign;
+        @BindView(R2.id.tv_cashback_text) TextView mTvCashback;
+        @BindView(R2.id.tv_product_weight) TextView mTvProductWeight;
+        @BindView(R2.id.tv_total_product_item) TextView mTvTotalProductItem;
+        @BindView(R2.id.tv_optional_note_to_seller) TextView mTvNoteToSeller;
+        @BindView(R2.id.rl_product_image_galleries) RelativeLayout mRlProductGalleriesLayout;
+        @BindView(R2.id.tv_shipment_option) TextView mTvShipmentOption;
+        @BindView(R2.id.iv_chevron_shipment_option) ImageView mIvChevronShipmentOption;
+        @BindView(R2.id.tv_cart_detail_option) TextView mTvCartDetailOption;
+        @BindView(R2.id.iv_drawer_chevron) ImageView mIvDetailDrawerChevron;
+        @BindView(R2.id.tv_sub_total_item_price) TextView mTvSubTotalItemPrice;
 
         private CartItemModel mCartItemModel;
 
         ShippedProductDetailsViewHolder(View itemView) {
             super(itemView);
-            mTvSenderName = itemView.findViewById(R.id.tv_sender_name);
-            mIvProductImage = itemView.findViewById(R.id.iv_product_image_container);
-            mTvProductName = itemView.findViewById(R.id.tv_shipping_product_name);
-            mTvProductPrice = itemView.findViewById(R.id.tv_shipped_product_price);
-            mRlProductPoliciesLayout = itemView.findViewById(R.id.rl_product_policies_layout);
-            mIvFreeReturnIcon = itemView.findViewById(R.id.iv_free_return_icon);
-            mTvPoSign = itemView.findViewById(R.id.tv_po_sign);
-            mTvCashback = itemView.findViewById(R.id.tv_cashback_text);
-            mTvProductWeight = itemView.findViewById(R.id.tv_product_weight);
-            mTvTotalProductItem = itemView.findViewById(R.id.tv_total_product_item);
-            mTvNoteToSeller = itemView.findViewById(R.id.tv_optional_note_to_seller);
-            mRlProductGalleriesLayout = itemView.findViewById(R.id.rl_product_image_galleries);
-            mTvShipmentOption = itemView.findViewById(R.id.tv_shipment_option);
-            mIvChevronShipmentOption = itemView.findViewById(R.id.iv_chevron_shipment_option);
-            mTvCartDetailOption = itemView.findViewById(R.id.tv_cart_detail_option);
-            mIvDetailDrawerChevron = itemView.findViewById(R.id.iv_drawer_chevron);
-            mTvSubTotalItemPrice = itemView.findViewById(R.id.tv_sub_total_item_price);
+            ButterKnife.bind(this, itemView);
         }
 
         void bindViewHolder() {
