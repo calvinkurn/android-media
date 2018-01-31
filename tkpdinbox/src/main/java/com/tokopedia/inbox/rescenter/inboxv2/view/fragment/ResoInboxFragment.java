@@ -285,6 +285,8 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
 
     private void showEmptyStateWithResetFilter() {
         hideLayout();
+        quickFilterView.setVisibility(View.VISIBLE);
+        quickFilterView.setVisibility(View.VISIBLE);
         ffEmptyStateWithReset.setVisibility(View.VISIBLE);
     }
 
