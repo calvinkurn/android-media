@@ -1014,19 +1014,20 @@ public class TkpdBaseURL {
     public class Cart {
         public static final String HMAC_KEY = "web_service_v4";
         public static final String VERSION = "v1";
-        public static final String PATH_ADD_TO_CART = "api/" + VERSION + "/add_product_cart";
-        public static final String PATH_CART_LIST = "api/" + VERSION + "/cart_list";
-        public static final String PATH_REMOVE_FROM_CART = "api/" + VERSION + "/remove_product_cart";
-        public static final String PATH_UPDATE_CART = "api/" + VERSION + "/update_cart";
-        public static final String PATH_CHECK_PROMO_CODE_CART_LIST = "api/" + VERSION + "/check_promo_code";
-        public static final String PATH_SHIPPING_ADDRESS = "api/" + VERSION + "/shipping_address";
-        public static final String PATH_SHIPMENT_ADDRESS_FORM_DIRECT = "api/" + VERSION + "/shipment_address_form";
-        public static final String PATH_CHECK_PROMO_CODE_CART_COURIER = "api/" + VERSION + "/check_promo_code_final";
-        public static final String PATH_CHECKOUT = "api/" + VERSION + "/checkout";
-        public static final String PATH_RESET_CART = "api/" + VERSION + "/reset_cart_cache";
-        public static final String PATH_UPDATE_STATE_BY_PAYMENT = "api/" + VERSION + "/update_state_by_payment";
-        public static final String PATH_NOTIFICATION_COUNTER = "api/" + VERSION + "/counter";
-        public static final String PATH_COUPON_LIST = "api/" + VERSION + "/coupon_list";
-        public static final String PATH_SAVE_PICKUP_STORE_POINT = "api/" + VERSION + "/save_pickup_store_point";
+        public static final String BASE_PATH = "cart/";
+        public static final String PATH_ADD_TO_CART = BASE_PATH + VERSION + "/add_product_cart";
+        public static final String PATH_CART_LIST = BASE_PATH + VERSION + "/cart_list";
+        public static final String PATH_REMOVE_FROM_CART = BASE_PATH + VERSION + "/remove_product_cart";
+        public static final String PATH_UPDATE_CART = BASE_PATH + VERSION + "/update_cart";
+        public static final String PATH_CHECK_PROMO_CODE_CART_LIST = BASE_PATH + VERSION + "/check_promo_code";
+        public static final String PATH_SHIPPING_ADDRESS = BASE_PATH + VERSION + "/shipping_address";
+        public static final String PATH_SHIPMENT_ADDRESS_FORM_DIRECT = BASE_PATH + VERSION + "/shipment_address_form";
+        public static final String PATH_CHECK_PROMO_CODE_CART_COURIER = BASE_PATH + VERSION + "/check_promo_code_final";
+        public static final String PATH_CHECKOUT = BASE_PATH + VERSION + "/checkout";
+        public static final String PATH_RESET_CART = BASE_PATH + VERSION + "/reset_cart_cache";
+        public static final String PATH_UPDATE_STATE_BY_PAYMENT = BASE_PATH + VERSION + "/update_state_by_payment";
+        public static final String PATH_NOTIFICATION_COUNTER = BASE_PATH + VERSION + "/counter";
+        public static final String PATH_COUPON_LIST = BASE_PATH + VERSION + "/coupon_list";
+        public static final String PATH_SAVE_PICKUP_STORE_POINT = BASE_PATH + VERSION + "/save_pickup_store_point";
     }
 }

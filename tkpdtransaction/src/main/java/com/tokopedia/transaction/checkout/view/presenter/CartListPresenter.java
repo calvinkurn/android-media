@@ -1,7 +1,6 @@
 package com.tokopedia.transaction.checkout.view.presenter;
 
 import android.content.Intent;
-import android.util.Log;
 
 import com.tokopedia.transaction.checkout.domain.ICartListInteractor;
 import com.tokopedia.transaction.checkout.view.activity.CartShipmentActivity;
@@ -33,7 +32,7 @@ public class CartListPresenter implements ICartListPresenter {
 
     @Override
     public void processGetCartData() {
-        cartListInteractor.getCartList(new Subscriber<String>() {
+        cartListInteractor.getCartList(new Subscriber<List<CartItemData>>() {
             @Override
             public void onCompleted() {
 
@@ -45,8 +44,8 @@ public class CartListPresenter implements ICartListPresenter {
             }
 
             @Override
-            public void onNext(String s) {
-                Log.d("CartListPresenter", s);
+            public void onNext(List<CartItemData> cartItemDataList) {
+                view.renderCartListData(cartItemDataList);
             }
         }, view.getGeneratedAuthParamNetwork(null));
 
