@@ -8,15 +8,11 @@ import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
 
 public class CartSingleAddressDataFactory {
 
-    public CartSingleAddressDataFactory() {
-
-    }
-
-    public CartSingleAddressData getDummyCartSingleAddressData() {
+    public static CartSingleAddressData getDummyCartSingleAddressData() {
         return createDummyCartSingleAddressData();
     }
 
-    private CartSingleAddressData createDummyCartSingleAddressData() {
+    private static CartSingleAddressData createDummyCartSingleAddressData() {
         CartSingleAddressData cartSingleAddressData = new CartSingleAddressData();
 
         cartSingleAddressData.setCartItemModelList(CartItemModelFactory.getDummyCartItemModelList());

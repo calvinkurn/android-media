@@ -10,7 +10,9 @@ import android.widget.Toast;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
+import com.tokopedia.transaction.checkout.view.adapter.CartAddressListAdapter;
 import com.tokopedia.transaction.checkout.view.adapter.CartSingleAddressAdapter;
+import com.tokopedia.transaction.checkout.view.data.factory.CartSingleAddressDataFactory;
 import com.tokopedia.transaction.checkout.view.presenter.CartSingleAddressPresenter;
 
 import butterknife.BindView;
@@ -92,8 +94,14 @@ public class CartSingleAddressFragment extends BasePresenterFragment {
     @Override
     protected void initView(View view) {
         ButterKnife.bind(this, view);
+
+        mCartSingleAddressAdapter = new CartSingleAddressAdapter();
+
         mRvCartOrderDetails.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRvCartOrderDetails.setAdapter(new CartSingleAddressAdapter());
+        mRvCartOrderDetails.setAdapter(mCartSingleAddressAdapter);
+
+        mCartSingleAddressAdapter.updateData(CartSingleAddressDataFactory.getDummyCartSingleAddressData());
+        mCartSingleAddressAdapter.notifyDataSetChanged();
     }
 
     /**
