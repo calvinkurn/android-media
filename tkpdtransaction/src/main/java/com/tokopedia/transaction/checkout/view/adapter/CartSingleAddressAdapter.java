@@ -177,6 +177,7 @@ public class CartSingleAddressAdapter
                         fragmentManager.beginTransaction()
                                 .replace(R.id.container, ShippingAddressListFragment.newInstance())
                                 .commit();
+                        // TODO: add to back stack
                     }
                 }
             };

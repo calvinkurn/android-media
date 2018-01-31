@@ -14,8 +14,9 @@ import com.tokopedia.transaction.checkout.view.data.ShippingRecipientModel;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
-
+/**
+ * @author Aghny A. Putra on 26/01/18
+ */
 public class CartAddressListAdapter
         extends RecyclerView.Adapter<CartAddressListAdapter.RecipientAddressViewHolder> {
 

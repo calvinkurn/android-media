@@ -2,19 +2,19 @@ package com.tokopedia.transaction.checkout.view;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.view.adapter.CartAddressListAdapter;
-import com.tokopedia.transaction.checkout.view.data.factory.ShippingRecipientModelFactory;
+import com.tokopedia.transaction.checkout.view.data.ShippingRecipientModel;
 import com.tokopedia.transaction.checkout.view.presenter.CartAddressListPresenter;
+import com.tokopedia.transaction.checkout.view.view.ISearchAddressListView;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,7 +22,7 @@ import butterknife.ButterKnife;
 /**
  * @author Aghny A. Putra on 25/01/18
  */
-public class ShippingAddressListFragment extends BasePresenterFragment {
+public class ShippingAddressListFragment extends BasePresenterFragment implements ISearchAddressListView<List<ShippingRecipientModel>> {
 
     private static final String SCREEN_NAME = ShippingAddressListFragment.class.getSimpleName();
 
@@ -114,12 +114,13 @@ public class ShippingAddressListFragment extends BasePresenterFragment {
         ButterKnife.bind(this, view);
 
         mCartAddressListAdapter = new CartAddressListAdapter();
+        mCartAddressListPresenter = new CartAddressListPresenter();
 
         mRvRecipientAddressList.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRvRecipientAddressList.setAdapter(mCartAddressListAdapter);
 
-        mCartAddressListAdapter.setAddressList(ShippingRecipientModelFactory.getDummyShippingRecipientModelList());
-        mCartAddressListAdapter.notifyDataSetChanged();
+        mCartAddressListPresenter.attachView(this);
+        mCartAddressListPresenter.getAddressList();
     }
 
     /**
@@ -143,6 +144,22 @@ public class ShippingAddressListFragment extends BasePresenterFragment {
      */
     @Override
     protected void setActionVar() {
+
+    }
+
+    @Override
+    public void showList(List<ShippingRecipientModel> shippingRecipientModels) {
+        mCartAddressListAdapter.setAddressList(shippingRecipientModels);
+        mCartAddressListAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void showListEmpty() {
+
+    }
+
+    @Override
+    public void showError() {
 
     }
 

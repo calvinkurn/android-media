@@ -1,20 +1,20 @@
 package com.tokopedia.transaction.checkout.view.presenter;
 
 import com.tokopedia.transaction.checkout.view.data.ShippingRecipientModel;
+import com.tokopedia.transaction.checkout.view.data.factory.ShippingRecipientModelFactory;
 import com.tokopedia.transaction.checkout.view.view.ISearchAddressListView;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import rx.Observer;
 
+/**
+ * @author Aghny A. Putra on 26/01/18
+ */
 public class CartAddressListPresenter
         extends BaseListPresenter<ISearchAddressListView<List<ShippingRecipientModel>>> {
 
-    @Inject
-    CartAddressListPresenter() {
+    public CartAddressListPresenter() {
 
     }
 
@@ -28,9 +28,8 @@ public class CartAddressListPresenter
         super.checkViewAttached();
     }
 
-    public List<ShippingRecipientModel> getAddressList() {
-        List<ShippingRecipientModel> list = new ArrayList<>();
-        return list;
+    public void getAddressList() {
+        getMvpView().showList(ShippingRecipientModelFactory.getDummyShippingRecipientModelList());
     }
 
     private final class AddressListObserver implements Observer<List<ShippingRecipientModel>> {
