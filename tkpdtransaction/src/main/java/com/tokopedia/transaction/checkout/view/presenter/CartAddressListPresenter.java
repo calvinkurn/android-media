@@ -12,7 +12,7 @@ import rx.Observer;
  * @author Aghny A. Putra on 26/01/18
  */
 public class CartAddressListPresenter
-        extends BaseListPresenter<ISearchAddressListView<List<ShippingRecipientModel>>> {
+        extends CartMvpPresenter<ISearchAddressListView<List<ShippingRecipientModel>>> {
 
     public CartAddressListPresenter() {
 
@@ -29,6 +29,7 @@ public class CartAddressListPresenter
     }
 
     public void getAddressList() {
+        // TODO remove this, and invoke use case
         getMvpView().showList(ShippingRecipientModelFactory.getDummyShippingRecipientModelList());
     }
 

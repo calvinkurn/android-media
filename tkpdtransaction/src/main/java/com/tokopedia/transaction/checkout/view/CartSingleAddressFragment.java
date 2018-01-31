@@ -11,8 +11,9 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.view.adapter.CartSingleAddressAdapter;
-import com.tokopedia.transaction.checkout.view.data.factory.CartSingleAddressDataFactory;
+import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
 import com.tokopedia.transaction.checkout.view.presenter.CartSingleAddressPresenter;
+import com.tokopedia.transaction.checkout.view.view.ICartSingleAddressView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -21,7 +22,8 @@ import butterknife.OnClick;
 /**
  * @author Aghny A. Putra on 24/1/18
  */
-public class CartSingleAddressFragment extends BasePresenterFragment {
+public class CartSingleAddressFragment extends BasePresenterFragment
+        implements ICartSingleAddressView<CartSingleAddressData>{
 
     private static final String SCREEN_NAME = CartSingleAddressFragment.class.getSimpleName();
 
@@ -95,12 +97,13 @@ public class CartSingleAddressFragment extends BasePresenterFragment {
         ButterKnife.bind(this, view);
 
         mCartSingleAddressAdapter = new CartSingleAddressAdapter();
+        mCartSingleAddressPresenter = new CartSingleAddressPresenter();
 
         mRvCartOrderDetails.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRvCartOrderDetails.setAdapter(mCartSingleAddressAdapter);
 
-        mCartSingleAddressAdapter.updateData(CartSingleAddressDataFactory.getDummyCartSingleAddressData());
-        mCartSingleAddressAdapter.notifyDataSetChanged();
+        mCartSingleAddressPresenter.attachView(this);
+        mCartSingleAddressPresenter.getCartSingleAddressItemView();
     }
 
     /**
@@ -127,4 +130,14 @@ public class CartSingleAddressFragment extends BasePresenterFragment {
                 .show();
     }
 
+    @Override
+    public void show(CartSingleAddressData cartSingleAddressData) {
+        mCartSingleAddressAdapter.updateData(cartSingleAddressData);
+        mCartSingleAddressAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void showError() {
+
+    }
 }

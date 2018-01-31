@@ -3,7 +3,7 @@ package com.tokopedia.transaction.checkout.view.presenter;
 /**
  * @author Aghny A. Putra on 26/01/18
  */
-public class BaseListPresenter<T> {
+public class CartMvpPresenter<T> {
 
     private T mMvpView;
 
