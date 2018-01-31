@@ -2161,6 +2161,7 @@ di Tokopedia Sekarang!</string>
     <string name="app_share_label_desc"><![CDATA[Sudah merasakan berbagai kemudahan dengan aplikasi Tokopedia? Ayo ajak orang-orang terdekatmu untuk ikut menikmati mudahnya beli, bayar ini itu lewat aplikasi Tokopedia]]></string>
     <string name="drawer_title_referral_appshare">Dapatkan TokoCash</string>
     <string name="app_share_default_msg"><![CDATA[Ada bonus cashback hingga Rp30.000 khusus buat kamu! Yuk mulai beli & bayar ini itu di Aplikasi Tokopedia, gunakan kode %s.]]></string>
+    <string name="no_coupon_to_copy_text">No coupon to copy</string>
 
 
 </resources>

@@ -70,7 +70,6 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
             if (isAppShowReferralButtonActivated()) {
                 if (getView().isUserPhoneNumberVerified()) {
                     fetchTokoCashBalance();
-
                 } else {
                     getView().showVerificationPhoneNumberPage();
                     TrackingUtils.sendMoEngageReferralScreenOpen(phoneVerificationScreenName);
@@ -123,7 +122,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
             public void onError(Throwable e) {
                 getView().hideProcessDialog();
                 e.printStackTrace();
-                if (getVoucherCodeFromCache() == null || "".equalsIgnoreCase(getVoucherCodeFromCache())) {
+                if (!TextUtils.isEmpty(getVoucherCodeFromCache())) {
                     return;
                 }
                 String message = ErrorNetMessage.MESSAGE_ERROR_DEFAULT;
@@ -174,7 +173,11 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
         android.content.ClipboardManager clipboard = (android.content.ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
         android.content.ClipData clip = android.content.ClipData.newPlainText(getView().getActivity().getString(R.string.copied_to_clipboard), voucherCode);
         clipboard.setPrimaryClip(clip);
-        getView().showToastMessage(getView().getActivity().getString(R.string.copied_to_clipboard) + " " + voucherCode);
+        if(TextUtils.isEmpty(voucherCode)){
+            getView().showToastMessage(getView().getActivity().getString(R.string.no_coupon_to_copy_text));
+        }else{
+            getView().showToastMessage(getView().getActivity().getString(R.string.copied_to_clipboard) + " " + voucherCode);
+        }
         UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_COPY_REFERRAL_CODE, voucherCode);
 
     }
@@ -236,18 +239,18 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
             public void onNext(TokoCashModel tokoCashModel) {
                 if (tokoCashModel != null
                         && tokoCashModel.isSuccess()
-                        && tokoCashModel.getTokoCashData() != null) {
+                        && tokoCashModel.getTokoCashData() != null
+                        && tokoCashModel.getTokoCashData().getAction() != null) {
                     if (tokoCashModel.getTokoCashData().getLink() == TokoCashTypeDef.TOKOCASH_ACTIVE) {
                         getReferralVoucherCode();
-
                     } else {
 
                         WalletRouterUtil.navigateWallet(
                                 getView().getActivity().getApplication(),
                                 getView().getActivity(),
                                 IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
-                                tokoCashModel.getTokoCashData().getmAppLinks(),
-                                tokoCashModel.getTokoCashData().getRedirectUrl(),
+                                tokoCashModel.getTokoCashData().getAction().getmAppLinks() == null ? "" : tokoCashModel.getTokoCashData().getAction().getmAppLinks(),
+                                tokoCashModel.getTokoCashData().getAction().getRedirectUrl() == null ? "" : tokoCashModel.getTokoCashData().getAction().getRedirectUrl(),
                                 new Bundle()
                         );
                     }

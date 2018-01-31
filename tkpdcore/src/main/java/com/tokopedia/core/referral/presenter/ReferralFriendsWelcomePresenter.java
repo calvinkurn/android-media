@@ -3,6 +3,7 @@ package com.tokopedia.core.referral.presenter;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
@@ -14,7 +15,6 @@ import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
 /**
@@ -50,13 +50,17 @@ public class ReferralFriendsWelcomePresenter implements IReferralFriendsWelcomeP
 
     @Override
     public void copyVoucherCode(String voucherCode) {
-       ClipboardManager clipboard = (ClipboardManager)
+        ClipboardManager clipboard = (ClipboardManager)
                 view.getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText(
                 view.getActivity().getString(R.string.copied_to_clipboard), voucherCode
         );
         clipboard.setPrimaryClip(clip);
-        view.showToastMessage(view.getActivity().getString(R.string.copied_to_clipboard) +" " +voucherCode);
+        if(TextUtils.isEmpty(voucherCode)){
+            view.showToastMessage(view.getActivity().getString(R.string.no_coupon_to_copy_text));
+        }else{
+            view.showToastMessage(view.getActivity().getString(R.string.copied_to_clipboard) + " " + voucherCode);
+        }
 
         UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_COPY_REFERRAL_CODE, voucherCode);
 
@@ -66,21 +70,18 @@ public class ReferralFriendsWelcomePresenter implements IReferralFriendsWelcomeP
     public String getReferralWelcomeMsg() {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(view.getActivity());
         String welcomeMessage = remoteConfig.getString(TkpdCache.RemoteConfigKey.APP_SHARE_WELCOME_MESSAGE);
-        String username= SessionHandler.getLoginName(view.getActivity());
-        username = username == null?"":username;
-        try{
+        String username = SessionHandler.getLoginName(view.getActivity());
+        username = username == null ? "" : " " + username;
+        try {
             owner = URLDecoder.decode(owner, "UTF-8");// here is double encoding characters that's why i am decoding it twice.
             owner = URLDecoder.decode(owner, "UTF-8");
 
             //  welcomeMessage = String.format("%s , %s",username,owner); it throws Exception
-            welcomeMessage = welcomeMessage.replaceFirst("%s",username);
-            welcomeMessage = welcomeMessage.replaceFirst("%s",owner);
+            welcomeMessage = welcomeMessage.replaceFirst("%s", username);
+            welcomeMessage = welcomeMessage.replaceFirst("%s", owner);
 
-
-        }catch (UnsupportedEncodingException e){
-
-        }catch (Exception e){
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return welcomeMessage;
