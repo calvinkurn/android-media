@@ -120,7 +120,7 @@ public class TopPayPresenter implements ITopPayPresenter {
                 new TypeToken<Checkout>() {
                 }.getType());
 
-        checkoutData.setStep(2);
+        checkoutData.setStep("2");
         checkoutData.setCheckoutOption("click payment option button");
 
         PaymentTracking.eventCartCheckout(checkoutData);

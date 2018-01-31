@@ -515,7 +515,7 @@ public class CartPresenter implements ICartPresenter {
                 localCacheHandler.getString(Jordan.CACHE_KEY_DATA_CHECKOUT),
                 new TypeToken<Checkout>() {
                 }.getType());
-        checkoutData.setStep(1);
+        checkoutData.setStep("1");
         checkoutData.setCheckoutOption("cart page loaded");
         PaymentTracking.eventCartCheckout(checkoutData);
     }
