@@ -8,6 +8,7 @@ import com.tokopedia.tokocash.historytokocash.presentation.model.HelpHistoryToko
 import com.tokopedia.tokocash.historytokocash.presentation.model.ParamsActionHistory;
 import com.tokopedia.tokocash.historytokocash.presentation.model.TokoCashHistoryData;
 
+import java.util.HashMap;
 import java.util.List;
 
 import rx.Observable;
@@ -18,7 +19,7 @@ import rx.Observable;
 
 public interface IWalletRepository {
 
-    Observable<TokoCashHistoryData> getTokoCashHistoryData(TKPDMapParam<String, Object> mapParams);
+    Observable<TokoCashHistoryData> getTokoCashHistoryData(HashMap<String, Object> mapParams);
 
     Observable<List<HelpHistoryTokoCash>> getHelpHistoryData();
 
