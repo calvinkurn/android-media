@@ -24,6 +24,8 @@ public class InboxFilterActivity extends BasePresenterActivity implements HasCom
     public static final String TAG = InboxFilterFragment.class.getSimpleName();
     public static final String PARAM_FILTER_MODEL = "view_model";
 
+    private ResoInboxFilterModel inboxFilterModel;
+
     public static Intent newInstance(Context context, ResoInboxFilterModel filterModel) {
         Intent intent = new Intent(context, InboxFilterActivity.class);
         Bundle bundle = new Bundle();
@@ -61,6 +63,7 @@ public class InboxFilterActivity extends BasePresenterActivity implements HasCom
     @Override
     protected void initView() {
         Fragment fragment = InboxFilterFragment.getFragmentInstance(getIntent().getExtras());
+        inboxFilterModel = getIntent().getParcelableExtra(PARAM_FILTER_MODEL);
         if (getSupportFragmentManager().findFragmentByTag(TAG) != null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(com.tokopedia.core.R.id.container,
@@ -117,7 +120,7 @@ public class InboxFilterActivity extends BasePresenterActivity implements HasCom
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_reset) {
-            Fragment fragment = InboxFilterFragment.getResetFragmentInstance();
+            Fragment fragment = InboxFilterFragment.getResetFragmentInstance(inboxFilterModel);
             getSupportFragmentManager().beginTransaction()
                     .add(com.tokopedia.core.R.id.container, fragment, TAG)
                     .commit();

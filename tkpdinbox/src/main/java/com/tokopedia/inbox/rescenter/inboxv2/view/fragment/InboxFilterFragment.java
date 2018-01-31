@@ -56,10 +56,12 @@ public class InboxFilterFragment
         fragment.setArguments(bundle);
         return fragment;
     }
-    public static Fragment getResetFragmentInstance() {
+    public static Fragment getResetFragmentInstance(ResoInboxFilterModel filterModel) {
         Fragment fragment = new InboxFilterFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable(InboxFilterActivity.PARAM_FILTER_MODEL, new ResoInboxFilterModel());
+        ResoInboxFilterModel inboxFilterModel = new ResoInboxFilterModel();
+        inboxFilterModel.setFilterViewModelList(filterModel.getFilterViewModelList());
+        bundle.putParcelable(InboxFilterActivity.PARAM_FILTER_MODEL, inboxFilterModel);
         fragment.setArguments(bundle);
         return fragment;
     }
