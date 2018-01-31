@@ -174,9 +174,7 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
                 List<Product> productListData, String operatorId, String titleChooser
         );
 
-        void onOperatorChooserStyle3Clicked(
-                List<Operator> operatorListData, String titleChooser
-        );
+        void onOperatorChooserStyle3Clicked(List<Operator> operatorListData, String titleChooser)
 
         void onButtonContactPickerClicked();
 

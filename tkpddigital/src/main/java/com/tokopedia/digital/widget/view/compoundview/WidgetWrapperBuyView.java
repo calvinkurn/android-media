@@ -15,7 +15,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.util.SessionHandler;
@@ -147,8 +146,6 @@ public class WidgetWrapperBuyView extends LinearLayout {
     private void sendGTMClickBeli() {
         CommonUtils.dumper("GAv4 category clicked " + category.getId());
         CommonUtils.dumper("GAv4 clicked beli Pulsa");
-
-        UnifyTracking.eventRechargeBuy(category.getAttributes().getName(), isInsant ? "instant" : "no instant");
     }
 
     private String generateATokenRechargeCheckout() {

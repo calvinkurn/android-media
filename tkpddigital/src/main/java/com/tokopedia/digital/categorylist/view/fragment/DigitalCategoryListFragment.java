@@ -34,22 +34,22 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TokoCashTypeDef;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
-import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
-import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
-import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashBalanceData;
-import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
-import com.tokopedia.digital.categorylist.view.adapter.DigitalCategoryListAdapter;
-import com.tokopedia.digital.categorylist.view.compoundview.DigitalItemHeaderHolder;
 import com.tokopedia.digital.categorylist.data.mapper.CategoryDigitalListDataMapper;
 import com.tokopedia.digital.categorylist.data.mapper.ICategoryDigitalListDataMapper;
 import com.tokopedia.digital.categorylist.data.repository.DigitalCategoryListRepository;
 import com.tokopedia.digital.categorylist.domain.interactor.DigitalCategoryListInteractor;
+import com.tokopedia.digital.categorylist.view.adapter.DigitalCategoryListAdapter;
+import com.tokopedia.digital.categorylist.view.compoundview.DigitalItemHeaderHolder;
 import com.tokopedia.digital.categorylist.view.listener.IDigitalCategoryListView;
 import com.tokopedia.digital.categorylist.view.model.DigitalCategoryItemData;
 import com.tokopedia.digital.categorylist.view.model.DigitalCategoryItemDataError;
 import com.tokopedia.digital.categorylist.view.model.DigitalCategoryItemHeader;
 import com.tokopedia.digital.categorylist.view.presenter.DigitalCategoryListPresenter;
 import com.tokopedia.digital.categorylist.view.presenter.IDigitalCategoryListPresenter;
+import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
+import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
+import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashBalanceData;
+import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -128,7 +128,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
         if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
 
         SessionHandler sessionHandler = new SessionHandler(MainApplication.getAppContext());
-        TokoCashService tokoCashService = new TokoCashService(sessionHandler.getAccessToken(
+        TokoCashService tokoCashService = new TokoCashService(SessionHandler.getAccessToken(
                 MainApplication.getAppContext()
         ));
         presenter = new DigitalCategoryListPresenter(
@@ -357,7 +357,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
 
     @Override
     public void onDigitalCategoryItemClicked(DigitalCategoryItemData itemData) {
-        UnifyTracking.eventClickDigitalCategory(itemData.getName());
+        UnifyTracking.eventClickProductOnDigitalHomepage(itemData.getName());
         if (itemData.getCategoryId().equalsIgnoreCase(
                 String.valueOf(DigitalCategoryItemData.DEFAULT_TOKOCASH_CATEGORY_ID
                 )) && tokoCashBalanceData != null && tokoCashBalanceData.getLink() != TokoCashTypeDef.TOKOCASH_ACTIVE) {

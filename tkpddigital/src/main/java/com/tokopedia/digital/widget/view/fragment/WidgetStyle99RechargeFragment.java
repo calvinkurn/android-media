@@ -250,8 +250,7 @@ public class WidgetStyle99RechargeFragment extends BaseWidgetRechargeFragment<ID
 
             @Override
             public void trackingCheckInstantSaldo(boolean isChecked) {
-                UnifyTracking.eventCheckInstantSaldoWidget(category.getAttributes().getName(),
-                        selectedOperator == null ? "" : selectedOperator.getAttributes().getName(), isChecked);
+
             }
         };
     }
@@ -267,7 +266,7 @@ public class WidgetStyle99RechargeFragment extends BaseWidgetRechargeFragment<ID
             @Override
             public void trackingProduct() {
                 if (selectedProduct != null)
-                    UnifyTracking.eventSelectProductWidget(category.getAttributes().getName(),
+                    UnifyTracking.eventSelectProductOnWidget(category.getAttributes().getName(),
                             selectedProduct.getAttributes().getDesc());
             }
         };
@@ -310,7 +309,7 @@ public class WidgetStyle99RechargeFragment extends BaseWidgetRechargeFragment<ID
     public void renderDataOperator(Operator operatorModel) {
         selectedOperator = operatorModel;
         if (category.getAttributes().getClientNumber().isShown()) {
-            UnifyTracking.eventSelectOperatorWidget(category.getAttributes().getName(),
+            UnifyTracking.eventSelectOperatorOnWidget(category.getAttributes().getName(),
                     selectedOperator.getAttributes().getName());
             renderClientNumberView();
             widgetClientNumberView.setFilterMaxLength(operatorModel.getAttributes().getMaximumLength());

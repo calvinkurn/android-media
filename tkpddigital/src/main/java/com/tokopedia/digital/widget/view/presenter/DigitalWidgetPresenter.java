@@ -7,12 +7,12 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.common.domain.GetCategoryByIdUseCase;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
+import com.tokopedia.digital.common.view.compoundview.ViewFactory;
 import com.tokopedia.digital.common.view.presenter.BaseDigitalPresenter;
 import com.tokopedia.digital.product.view.model.CategoryData;
 import com.tokopedia.digital.product.view.model.HistoryClientNumber;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.digital.product.view.model.ProductDigitalData;
-import com.tokopedia.digital.common.view.compoundview.ViewFactory;
 import com.tokopedia.digital.widget.view.listener.IDigitalWidgetView;
 
 import rx.Subscriber;
@@ -48,7 +48,7 @@ public class DigitalWidgetPresenter extends BaseDigitalPresenter implements IDig
         digitalWidgetView.showInitialProgressLoading();
 
         getCategoryByIdUseCase.execute(getCategoryByIdUseCase.createRequestParam(
-                categoryId, PARAM_VALUE_SORT
+                categoryId, PARAM_VALUE_SORT, true
         ), new Subscriber<ProductDigitalData>() {
             @Override
             public void onCompleted() {

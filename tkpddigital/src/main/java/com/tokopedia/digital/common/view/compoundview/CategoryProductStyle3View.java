@@ -383,7 +383,9 @@ public class CategoryProductStyle3View extends
 
             @Override
             public void onTrackingOperator() {
-
+                if (operatorSelected != null)
+                    UnifyTracking.eventSelectOperatorOnWidget(data.getName(),
+                            operatorSelected.getName());
             }
         };
     }
@@ -470,7 +472,7 @@ public class CategoryProductStyle3View extends
             @Override
             public void trackingProduct() {
                 if (productSelected != null)
-                    UnifyTracking.eventSelectProductWidget(data.getName(),
+                    UnifyTracking.eventSelectProductOnWidget(data.getName(),
                             productSelected.getDesc());
             }
         };
@@ -501,7 +503,6 @@ public class CategoryProductStyle3View extends
         return new OnClickListener() {
             @Override
             public void onClick(View v) {
-                UnifyTracking.eventClickBeli(data.getName(), data.getName());
                 actionListener.onButtonBuyClicked(generatePreCheckoutData(), cbInstantCheckout.isChecked());
             }
         };

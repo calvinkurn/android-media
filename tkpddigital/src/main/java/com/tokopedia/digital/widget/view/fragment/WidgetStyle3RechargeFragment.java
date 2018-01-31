@@ -21,13 +21,13 @@ import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
+import com.tokopedia.digital.widget.data.mapper.FavoriteNumberListDataMapper;
+import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
+import com.tokopedia.digital.widget.domain.interactor.DigitalWidgetInteractor;
 import com.tokopedia.digital.widget.view.compoundview.WidgetClientNumberView;
 import com.tokopedia.digital.widget.view.compoundview.WidgetOperatorChooserView;
 import com.tokopedia.digital.widget.view.compoundview.WidgetProductChooserView;
 import com.tokopedia.digital.widget.view.compoundview.WidgetWrapperBuyView;
-import com.tokopedia.digital.widget.data.mapper.FavoriteNumberListDataMapper;
-import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
-import com.tokopedia.digital.widget.domain.interactor.DigitalWidgetInteractor;
 import com.tokopedia.digital.widget.view.listener.IDigitalWidgetStyle2View;
 import com.tokopedia.digital.widget.view.model.PreCheckoutDigitalWidget;
 import com.tokopedia.digital.widget.view.model.category.Category;
@@ -339,8 +339,7 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
 
             @Override
             public void trackingCheckInstantSaldo(boolean isChecked) {
-                UnifyTracking.eventCheckInstantSaldoWidget(category.getAttributes().getName(),
-                        selectedOperator == null ? "" : selectedOperator.getAttributes().getName(), isChecked);
+
             }
         };
     }
@@ -356,7 +355,7 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
             @Override
             public void trackingProduct() {
                 if (selectedProduct != null)
-                    UnifyTracking.eventSelectProductWidget(category.getAttributes().getName(),
+                    UnifyTracking.eventSelectProductOnWidget(category.getAttributes().getName(),
                             selectedProduct.getAttributes().getDesc());
             }
         };
@@ -396,7 +395,7 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
 
             @Override
             public void onTrackingOperator() {
-                UnifyTracking.eventSelectOperator(category.getAttributes().getName(),
+                UnifyTracking.eventSelectOperatorOnWidget(category.getAttributes().getName(),
                         selectedOperator == null ? "" : selectedOperator.getAttributes().getName());
             }
         };
@@ -480,7 +479,7 @@ public class WidgetStyle3RechargeFragment extends BaseWidgetRechargeFragment<IDi
         selectedOperator = rechargeOperatorModel;
         widgetWrapperBuyView.resetInstantCheckout();
         widgetWrapperBuyView.setBuyButtonText(selectedOperator.getAttributes().getRule().getButtonLabel());
-        UnifyTracking.eventSelectOperatorWidget(category.getAttributes().getName(),
+        UnifyTracking.eventSelectOperatorOnWidget(category.getAttributes().getName(),
                 selectedOperator.getAttributes().getName());
         selectedOperatorId = String.valueOf(selectedOperator.getId());
     }

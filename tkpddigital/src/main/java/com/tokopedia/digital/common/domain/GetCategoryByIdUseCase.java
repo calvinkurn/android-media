@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
+import rx.functions.Func1;
 import rx.functions.Func2;
 
 /**
@@ -40,6 +41,8 @@ public class GetCategoryByIdUseCase extends UseCase<ProductDigitalData> {
     private final String PARAM_IS_RESELLER = "is_reseller";
     private final String PARAM_VALUE_IS_RESELLER = "1";
 
+    private final String PARAM_NEED_FAVORITE_LIST = "need_favorite_list";
+
     private Context context;
     private IDigitalCategoryRepository digitalCategoryRepository;
 
@@ -55,29 +58,42 @@ public class GetCategoryByIdUseCase extends UseCase<ProductDigitalData> {
         String productId = requestParams.getString(PARAM_PRODUCT_ID, "");
         String clientNumber = requestParams.getString(PARAM_CLIENT_NUMBER, "");
         String sort = requestParams.getString(PARAM_SORT, "");
+        boolean needFavoriteList = requestParams.getBoolean(PARAM_NEED_FAVORITE_LIST, false);
 
         TKPDMapParam<String, String> paramQueryCategory = new TKPDMapParam<>();
         if (GlobalConfig.isSellerApp()) {
             paramQueryCategory.put(PARAM_IS_RESELLER, PARAM_VALUE_IS_RESELLER);
         }
 
-        TKPDMapParam<String, String> paramQueryFavoriteList = new TKPDMapParam<>();
-        paramQueryFavoriteList.put(PARAM_CATEGORY_ID, categoryId);
-        if (!TextUtils.isEmpty(operatorId)) {
-            paramQueryFavoriteList.put(PARAM_OPERATOR_ID, operatorId);
-        }
-        if (!TextUtils.isEmpty(productId)) {
-            paramQueryFavoriteList.put(PARAM_PRODUCT_ID, productId);
-        }
-        if (!TextUtils.isEmpty(clientNumber)) {
-            paramQueryFavoriteList.put(PARAM_CLIENT_NUMBER, clientNumber);
-        }
-        paramQueryFavoriteList.put(PARAM_SORT, sort);
+        if (needFavoriteList) {
+            TKPDMapParam<String, String> paramQueryFavoriteList = new TKPDMapParam<>();
+            paramQueryFavoriteList.put(PARAM_CATEGORY_ID, categoryId);
+            if (!TextUtils.isEmpty(operatorId)) {
+                paramQueryFavoriteList.put(PARAM_OPERATOR_ID, operatorId);
+            }
+            if (!TextUtils.isEmpty(productId)) {
+                paramQueryFavoriteList.put(PARAM_PRODUCT_ID, productId);
+            }
+            if (!TextUtils.isEmpty(clientNumber)) {
+                paramQueryFavoriteList.put(PARAM_CLIENT_NUMBER, clientNumber);
+            }
+            paramQueryFavoriteList.put(PARAM_SORT, sort);
 
-        return Observable.zip(
-                digitalCategoryRepository.getCategory(categoryId, getGeneratedAuthParamNetwork(paramQueryCategory)),
-                getFavoriteList(getGeneratedAuthParamNetwork(paramQueryFavoriteList)),
-                getZipFunctionProductDigitalData());
+            return Observable.zip(
+                    digitalCategoryRepository.getCategory(categoryId, getGeneratedAuthParamNetwork(paramQueryCategory)),
+                    getFavoriteList(getGeneratedAuthParamNetwork(paramQueryFavoriteList)),
+                    getZipFunctionProductDigitalData());
+        } else {
+            return digitalCategoryRepository.getCategory(categoryId, getGeneratedAuthParamNetwork(paramQueryCategory))
+                    .map(new Func1<CategoryData, ProductDigitalData>() {
+                        @Override
+                        public ProductDigitalData call(CategoryData categoryData) {
+                            return new ProductDigitalData.Builder()
+                                    .categoryData(categoryData)
+                                    .build();
+                        }
+                    });
+        }
     }
 
     private Observable<DigitalNumberList> getFavoriteList
@@ -123,27 +139,30 @@ public class GetCategoryByIdUseCase extends UseCase<ProductDigitalData> {
         };
     }
 
-    public RequestParams createRequestParam(String categoryId) {
+    public RequestParams createRequestParam(String categoryId, boolean needFavoriteList) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(PARAM_CATEGORY_ID, categoryId);
+        requestParams.putBoolean(PARAM_NEED_FAVORITE_LIST, needFavoriteList);
         return requestParams;
     }
 
-    public RequestParams createRequestParam(String categoryId, String sort) {
+    public RequestParams createRequestParam(String categoryId, String sort, boolean needFavoriteList) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(PARAM_CATEGORY_ID, categoryId);
         requestParams.putString(PARAM_SORT, sort);
+        requestParams.putBoolean(PARAM_NEED_FAVORITE_LIST, needFavoriteList);
         return requestParams;
     }
 
     public RequestParams createRequestParam(String categoryId, String operatorId, String productId,
-                                            String clientNumber, String sort) {
+                                            String clientNumber, String sort, boolean needFavoriteList) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(PARAM_CATEGORY_ID, categoryId);
         requestParams.putString(PARAM_SORT, sort);
         requestParams.putString(PARAM_OPERATOR_ID, operatorId);
         requestParams.putString(PARAM_PRODUCT_ID, productId);
         requestParams.putString(PARAM_CLIENT_NUMBER, clientNumber);
+        requestParams.putBoolean(PARAM_NEED_FAVORITE_LIST, needFavoriteList);
         return requestParams;
     }
 

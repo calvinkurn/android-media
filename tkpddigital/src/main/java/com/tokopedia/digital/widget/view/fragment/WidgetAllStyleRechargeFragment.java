@@ -201,6 +201,8 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
     @Override
     public void onButtonBuyClicked(BaseDigitalProductView.PreCheckoutProduct preCheckoutProduct,
                                    boolean isInstantCheckoutChecked) {
+        UnifyTracking.eventClickBuyOnWidget(categoryDataState.getName(), isInstantCheckoutChecked ? "instant" : "no instant");
+
         if (!preCheckoutProduct.isCanBeCheckout()) {
             if (!TextUtils.isEmpty(preCheckoutProduct.getErrorCheckout())) {
                 showToastMessage(preCheckoutProduct.getErrorCheckout());
@@ -250,14 +252,12 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
     }
 
     @Override
-    public void onOperatorChooserStyle3Clicked(List<Operator> operatorListData, String titleChooser) {
+    public void onOperatorSelected(List<Operator> operatorListData, String titleChooser) {
 
     }
 
     private void handleCallbackSearchNumber(OrderClientNumber orderClientNumber) {
-        if (orderClientNumber != null) {
-            UnifyTracking.eventSelectNumberOnUserProfileNative(categoryDataState.getName());
-        }
+        UnifyTracking.eventSelectNumberOnUserProfileWidget(categoryDataState.getName());
 
         if (categoryDataState.isSupportedStyle()) {
             switch (categoryDataState.getOperatorStyle()) {

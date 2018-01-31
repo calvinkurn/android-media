@@ -199,7 +199,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         bundle.putString(ARG_PARAM_EXTRA_CATEGORY_ID, categoryId);
         bundle.putString(ARG_PARAM_EXTRA_OPERATOR_ID, operatorId);
         bundle.putString(ARG_PARAM_EXTRA_PRODUCT_ID, productId);
-        bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER, clientNumber);;
+        bundle.putString(ARG_PARAM_EXTRA_CLIENT_NUMBER, clientNumber);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -577,11 +577,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     public void onButtonBuyClicked(BaseDigitalProductView.PreCheckoutProduct preCheckoutProduct,
                                    boolean isInstantCheckoutChecked) {
-        if (isInstantCheckoutChecked) {
-            UnifyTracking.eventClickBeliInstantSaldo(categoryDataState.getName(), categoryDataState.getName());
-        } else {
-            UnifyTracking.eventClickBeli(categoryDataState.getName(), categoryDataState.getName());
-        }
+        String isInstant = isInstantCheckoutChecked ? "instant" : "no instant";
+        UnifyTracking.eventClickBuyOnNative(categoryDataState.getName(), isInstant);
 
         if (!preCheckoutProduct.isCanBeCheckout()) {
             if (!TextUtils.isEmpty(preCheckoutProduct.getErrorCheckout())) {
@@ -634,7 +631,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onProductChooserClicked(List<Product> productListData, String operatorId, String titleChooser) {
-        UnifyTracking.eventSelectProduct(categoryDataState.getName(), categoryDataState.getName());
+        UnifyTracking.eventSelectProductOnNativePage(categoryDataState.getName(), categoryDataState.getName());
 
         startActivityForResult(
                 DigitalChooserActivity.newInstanceProductChooser(

@@ -21,12 +21,12 @@ import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
-import com.tokopedia.digital.widget.view.compoundview.WidgetClientNumberView;
-import com.tokopedia.digital.widget.view.compoundview.WidgetProductChooserView;
-import com.tokopedia.digital.widget.view.compoundview.WidgetWrapperBuyView;
 import com.tokopedia.digital.widget.data.mapper.FavoriteNumberListDataMapper;
 import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
 import com.tokopedia.digital.widget.domain.interactor.DigitalWidgetInteractor;
+import com.tokopedia.digital.widget.view.compoundview.WidgetClientNumberView;
+import com.tokopedia.digital.widget.view.compoundview.WidgetProductChooserView;
+import com.tokopedia.digital.widget.view.compoundview.WidgetWrapperBuyView;
 import com.tokopedia.digital.widget.view.listener.IDigitalWidgetStyle1View;
 import com.tokopedia.digital.widget.view.model.PreCheckoutDigitalWidget;
 import com.tokopedia.digital.widget.view.model.category.Category;
@@ -172,11 +172,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
                         .filter(new Func1<String, Boolean>() {
                             @Override
                             public Boolean call(String text) {
-                                if (text.isEmpty()) {
-                                    return false;
-                                } else {
-                                    return true;
-                                }
+                                return !text.isEmpty();
                             }
                         })
                         .debounce(300, TimeUnit.MILLISECONDS)
@@ -279,7 +275,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
             @Override
             public void trackingProduct() {
                 if (selectedProduct != null)
-                    UnifyTracking.eventSelectProductWidget(category.getAttributes().getName(),
+                    UnifyTracking.eventSelectProductOnWidget(category.getAttributes().getName(),
                             selectedProduct.getAttributes().getDesc());
             }
         };
@@ -330,8 +326,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
 
             @Override
             public void trackingCheckInstantSaldo(boolean isChecked) {
-                UnifyTracking.eventCheckInstantSaldoWidget(category.getAttributes().getName(),
-                        selectedOperator == null ? "" : selectedOperator.getAttributes().getName(), isChecked);
+
             }
         };
     }
@@ -359,7 +354,7 @@ public class WidgetStyle1RechargeFragment extends BaseWidgetRechargeFragment<IDi
     @Override
     public void renderDataOperator(Operator operatorModel) {
         selectedOperator = operatorModel;
-        UnifyTracking.eventSelectOperatorWidget(category.getAttributes().getName(),
+        UnifyTracking.eventSelectOperatorOnWidget(category.getAttributes().getName(),
                 selectedOperator.getAttributes().getName());
         widgetClientNumberView.setFilterMaxLength(operatorModel.getAttributes().getMaximumLength());
         widgetClientNumberView.setImgOperator(operatorModel.getAttributes().getImage());

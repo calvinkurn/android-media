@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
-import android.os.Parcelable;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -119,7 +118,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
         view.showInitialProgressLoading();
 
         getCategoryByIdUseCase.execute(getCategoryByIdUseCase.createRequestParam(
-                categoryId, operatorId, productId, clientNumber, PARAM_VALUE_SORT
+                categoryId, operatorId, productId, clientNumber, PARAM_VALUE_SORT, true
         ), getSubscriberProductDigitalData());
     }
 
@@ -284,7 +283,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
         //works only for API >= 23
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (DeviceUtil.getPhoneHandle(activity, simPosition) != null) {
-                intent.putExtra(accoutHandleKey, (Parcelable) DeviceUtil.getPhoneHandle(activity, simPosition));
+                intent.putExtra(accoutHandleKey, DeviceUtil.getPhoneHandle(activity, simPosition));
             }
         }
         if (RequestPermissionUtil.checkHasPermission(activity, Manifest.permission.CALL_PHONE)) {

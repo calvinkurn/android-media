@@ -335,8 +335,7 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
 
             @Override
             public void trackingCheckInstantSaldo(boolean isChecked) {
-                UnifyTracking.eventCheckInstantSaldoWidget(category.getAttributes().getName(),
-                        selectedOperator == null ? "" : selectedOperator.getAttributes().getName(), isChecked);
+
             }
         };
     }
@@ -352,7 +351,7 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
             @Override
             public void trackingProduct() {
                 if (selectedProduct != null)
-                    UnifyTracking.eventSelectProductWidget(category.getAttributes().getName(),
+                    UnifyTracking.eventSelectProductOnWidget(category.getAttributes().getName(),
                             selectedProduct.getAttributes().getDesc());
             }
         };
@@ -386,7 +385,7 @@ public class WidgetStyle2RechargeFragment extends BaseWidgetRechargeFragment<IDi
 
             @Override
             public void onTrackingOperator() {
-                UnifyTracking.eventSelectOperatorWidget(category.getAttributes().getName(),
+                UnifyTracking.eventSelectOperatorOnWidget(category.getAttributes().getName(),
                         selectedOperator == null ? "" : selectedOperator.getAttributes().getName());
             }
         };

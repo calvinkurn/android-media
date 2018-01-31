@@ -463,7 +463,7 @@ public class CategoryProductStyle1View extends
             @Override
             public void trackingProduct() {
                 if (productSelected != null) {
-                    UnifyTracking.eventSelectProductWidget(data.getName(),
+                    UnifyTracking.eventSelectProductOnWidget(data.getName(),
                             productSelected.getDesc());
                 }
             }

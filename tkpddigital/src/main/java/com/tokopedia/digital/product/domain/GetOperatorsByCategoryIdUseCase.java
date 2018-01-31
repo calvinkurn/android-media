@@ -1,8 +1,6 @@
 package com.tokopedia.digital.product.domain;
 
-import com.tokopedia.digital.common.data.repository.DigitalCategoryRepository;
 import com.tokopedia.digital.common.domain.GetCategoryByIdUseCase;
-import com.tokopedia.digital.product.view.model.CategoryData;
 import com.tokopedia.digital.product.view.model.Operator;
 import com.tokopedia.digital.product.view.model.ProductDigitalData;
 import com.tokopedia.usecase.RequestParams;
@@ -31,7 +29,7 @@ public class GetOperatorsByCategoryIdUseCase extends UseCase<List<Operator>> {
     public Observable<List<Operator>> createObservable(RequestParams requestParams) {
         String categoryId = requestParams.getString(PARAM_CATEGORY_ID, "");
 
-        return getCategoryByIdUseCase.createObservable(getCategoryByIdUseCase.createRequestParam(categoryId))
+        return getCategoryByIdUseCase.createObservable(getCategoryByIdUseCase.createRequestParam(categoryId, false))
                 .map(new Func1<ProductDigitalData, List<Operator>>() {
                     @Override
                     public List<Operator> call(ProductDigitalData productDigitalData) {
