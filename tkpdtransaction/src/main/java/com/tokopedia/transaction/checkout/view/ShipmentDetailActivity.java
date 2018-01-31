@@ -17,9 +17,6 @@ import com.tokopedia.transaction.R;
 
 public class ShipmentDetailActivity extends BasePresenterActivity {
 
-    private static final int DELAY_IN_MILISECOND = 500;
-    private static final int REQUEST_CODE_SHIPMENT_CHOICE = 111;
-
     public static Intent createInstance(Activity activity) {
         return new Intent(activity, ShipmentDetailActivity.class);
     }
@@ -30,20 +27,6 @@ public class ShipmentDetailActivity extends BasePresenterActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setElevation(0);
         }
-
-        openShipmentChoiceActivity();
-    }
-
-    private void openShipmentChoiceActivity() {
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                startActivityForResult(ShipmentChoiceActivity.createInstance(
-                        ShipmentDetailActivity.this), REQUEST_CODE_SHIPMENT_CHOICE);
-                overridePendingTransition(R.anim.anim_bottom_up, 0);
-            }
-        }, DELAY_IN_MILISECOND);
     }
 
     @Override

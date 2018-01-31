@@ -57,6 +57,13 @@ public class ShipmentChoiceAdapter extends RecyclerView.Adapter<ShipmentChoiceAd
                 }
             }
         });
+
+        if (shipmentItemData.isSelected()) {
+            holder.imgBtCheck.setVisibility(View.VISIBLE);
+        } else {
+            holder.imgBtCheck.setVisibility(View.GONE);
+        }
+
         if (position == shipments.size() - 1) {
             holder.vSeparator.setVisibility(View.GONE);
         } else {

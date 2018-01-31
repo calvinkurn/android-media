@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.transaction.checkout.view.data.CourierItemData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
+import com.tokopedia.transaction.checkout.view.data.ShipmentItemData;
 import com.tokopedia.transaction.checkout.view.view.IShipmentDetailView;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ public class ShipmentDetailPresenter extends BaseDaggerPresenter<IShipmentDetail
 
     private ShipmentDetailData shipmentDetailData;
     private CourierItemData selectedCourier;
+    private ShipmentItemData selectedShipment;
     private List<CourierItemData> couriers = new ArrayList<>();
 
     @Override
@@ -38,6 +40,16 @@ public class ShipmentDetailPresenter extends BaseDaggerPresenter<IShipmentDetail
     @Override
     public CourierItemData getSelectedCourier() {
         return selectedCourier;
+    }
+
+    @Override
+    public ShipmentItemData getSelectedShipment() {
+        return selectedShipment;
+    }
+
+    @Override
+    public void setSelectedShipment(ShipmentItemData selectedShipment) {
+        this.selectedShipment = selectedShipment;
     }
 
     @Override

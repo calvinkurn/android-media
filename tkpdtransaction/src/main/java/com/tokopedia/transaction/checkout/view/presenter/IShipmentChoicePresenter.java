@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface IShipmentChoicePresenter extends CustomerPresenter<IShipmentChoiceView> {
 
-    void loadShipmentChoice();
+    void loadShipmentChoice(ShipmentItemData selectedShipment);
 
     List<ShipmentItemData> getShipmentChoices();
 

@@ -16,6 +16,7 @@ public class ShipmentChoicePresenter extends BaseDaggerPresenter<IShipmentChoice
         implements IShipmentChoicePresenter {
 
     private List<ShipmentItemData> shipments = new ArrayList<>();
+    private ShipmentItemData selectedShipment;
 
     @Override
     public void attachView(IShipmentChoiceView view) {
@@ -28,9 +29,16 @@ public class ShipmentChoicePresenter extends BaseDaggerPresenter<IShipmentChoice
     }
 
     @Override
-    public void loadShipmentChoice() {
+    public void loadShipmentChoice(ShipmentItemData selectedShipment) {
         getView().showLoading();
         shipments = DummyCreator.createDummyShipmentChoices();
+        if (selectedShipment != null) {
+            for (int i = 0; i < shipments.size(); i++) {
+                if (shipments.get(i).getId().equals(selectedShipment.getId())) {
+                    shipments.get(i).setSelected(true);
+                }
+            }
+        }
         getView().showData();
         getView().hideLoading();
     }

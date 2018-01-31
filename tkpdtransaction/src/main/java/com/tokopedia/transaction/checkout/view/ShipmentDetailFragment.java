@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
@@ -44,6 +45,7 @@ import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.view.adapter.CourierChoiceAdapter;
 import com.tokopedia.transaction.checkout.view.data.CourierItemData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
+import com.tokopedia.transaction.checkout.view.data.ShipmentItemData;
 import com.tokopedia.transaction.checkout.view.presenter.IShipmentDetailPresenter;
 import com.tokopedia.transaction.checkout.view.presenter.ShipmentDetailPresenter;
 import com.tokopedia.transaction.checkout.view.view.IShipmentDetailView;
@@ -60,10 +62,11 @@ import butterknife.OnClick;
  */
 
 public class ShipmentDetailFragment extends BasePresenterFragment implements IShipmentDetailView,
-        CourierChoiceAdapter.ViewListener, OnMapReadyCallback {
+        CourierChoiceAdapter.ViewListener, OnMapReadyCallback, ShipmentChoiceBottomSheet.ActionListener {
 
     private static final int REQUEST_CODE_SHIPMENT_CHOICE = 11;
     private static final int REQUEST_CODE_PINPOINT = 22;
+    private static final int DELAY_IN_MILISECOND = 500;
 
     @BindView(R2.id.scroll_view_content)
     ScrollView scrollViewContent;
@@ -158,6 +161,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
     @BindView(R2.id.ll_shipment_address)
     LinearLayout llShipmentAddress;
 
+    private ShipmentChoiceBottomSheet shipmentChoiceBottomSheet;
     private CourierChoiceAdapter courierChoiceAdapter;
     private IShipmentDetailPresenter presenter;
 
@@ -277,7 +281,28 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
         llPinpoint.setVisibility(View.VISIBLE);
     }
 
+    private void initializeShipmentChoiceHandler() {
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                showShipmentChoiceBottomSheet();
+            }
+        }, DELAY_IN_MILISECOND);
+    }
+
+    private void showShipmentChoiceBottomSheet() {
+        if (shipmentChoiceBottomSheet == null) {
+            shipmentChoiceBottomSheet = new ShipmentChoiceBottomSheet(getActivity(),
+                    presenter.getSelectedShipment());
+        }
+        shipmentChoiceBottomSheet.setListener(this);
+        shipmentChoiceBottomSheet.show();
+    }
+
     private void renderShipment(ShipmentDetailData shipmentDetailData) {
+        presenter.setSelectedShipment(shipmentDetailData.getShipmentItemData().get(0));
+        tvShipmentType.setText(presenter.getSelectedShipment().getType());
         llDropshipper.setVisibility(View.GONE);
         separatorPartialOrder.setVisibility(View.GONE);
         setText(tvDeliveryFeeTotal, shipmentDetailData.getDeliveryPriceTotal());
@@ -328,16 +353,18 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
 
     @Override
     public void showFirstThreeCouriers(List<CourierItemData> couriers) {
-        setupRecyclerView(couriers);
         tvShowOtherCouriers.setText(getString(R.string.label_show_other_courier));
         ivChevron.setImageResource(R.drawable.chevron_thin_down);
+        setupRecyclerView(couriers);
+        initializeShipmentChoiceHandler(); // it should be called afterall view rendered
     }
 
     @Override
     public void showAllCouriers(List<CourierItemData> couriers) {
-        setupRecyclerView(couriers);
         tvShowOtherCouriers.setText(R.string.label_hide_other_couriers);
         ivChevron.setImageResource(R.drawable.chevron_thin_up);
+        setupRecyclerView(couriers);
+        initializeShipmentChoiceHandler(); // it should be called afterall view rendered
     }
 
     private void setupRecyclerView(List<CourierItemData> couriers) {
@@ -542,8 +569,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
 
     @OnClick(R2.id.ll_shipment_choice)
     void onShipmentChoiceClick() {
-        startActivityForResult(ShipmentChoiceActivity.createInstance(getActivity()), REQUEST_CODE_SHIPMENT_CHOICE);
-        getActivity().overridePendingTransition(R.anim.anim_bottom_up, 0);
+        showShipmentChoiceBottomSheet();
     }
 
     @OnClick(R2.id.bt_save)
@@ -587,6 +613,12 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
     }
 
     @Override
+    public void onShipmentItemClick(ShipmentItemData shipmentItemData) {
+        presenter.setSelectedShipment(shipmentItemData);
+        tvShipmentType.setText(shipmentItemData.getType());
+    }
+
+    @Override
     public void onMapReady(GoogleMap googleMap) {
         setGoogleMap(googleMap, presenter.getShipmentDetailData());
     }
@@ -609,4 +641,5 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
             }
         }
     }
+
 }
