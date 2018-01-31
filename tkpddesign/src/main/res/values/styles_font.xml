@@ -124,4 +124,16 @@
     <style name="TextView.Micro.WhitePrimary">
         <item name="android:textColor">@color/font_white_primary_70</item>
     </style>
+    <style name="TextView.Nano">
+        <item name="android:textSize">@dimen/font_nano</item>
+    </style>
+    <style name="TextView.Nano.BlackDisabled">
+        <item name="android:textColor">@color/font_black_disabled_38</item>
+    </style>
+    <style name="TextView.Nano.Red">
+        <item name="android:textColor">@color/colorRed</item>
+    </style>
+    <style name="TextView.Nano.Red.Bold">
+        <item name="android:textStyle">bold</item>
+    </style>
 </resources>
