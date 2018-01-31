@@ -236,7 +236,7 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="Small.RatingBar" parent="@android:style/Widget.Holo.RatingBar">
+    <style name="Small.RatingBar" parent="style/Base.Widget.AppCompat.RatingBar.Small">
         <item name="android:progressDrawable">@drawable/tkpd_rating_bar</item>
     </style>
 

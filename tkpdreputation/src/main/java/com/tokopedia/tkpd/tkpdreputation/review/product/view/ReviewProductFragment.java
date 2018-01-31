@@ -153,15 +153,11 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
 
     @Override
     public void loadData(int page) {
-        String itemSelected;
         if (page <= 1 && !customViewQuickFilterView.isAnyItemSelected()) {
-            itemSelected = "";
             productReviewPresenter.getRatingReview(productId);
             productReviewPresenter.getHelpfulReview(productId);
-        } else {
-            itemSelected = customViewQuickFilterView.getSelectedFilter();
         }
-        productReviewPresenter.getProductReview(productId, page, itemSelected);
+        productReviewPresenter.getProductReview(productId, page, customViewQuickFilterView.getSelectedFilter());
     }
 
     @Override
