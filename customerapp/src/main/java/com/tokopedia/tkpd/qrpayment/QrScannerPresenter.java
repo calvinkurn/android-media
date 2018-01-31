@@ -62,6 +62,8 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
             getInfoQrWallet(uri.getPathSegments().get(0));
         } else if (uri.getHost().equals(QrScannerTypeDef.CAMPAIGN_QR_CODE)) {
             getInfoQrCampaign(uri.getPathSegments().get(0));
+        } else {
+            getView().showErrorGetInfo(context.getString(com.tokopedia.tokocash.R.string.msg_dialog_wrong_scan));
         }
     }
 
