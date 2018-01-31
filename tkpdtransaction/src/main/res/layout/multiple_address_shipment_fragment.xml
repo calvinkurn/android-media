@@ -13,6 +13,11 @@
         android:background="@color/white"
         android:orientation="vertical">
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey_400" />
+
         <LinearLayout
             android:id="@+id/total_payment_layout"
             android:layout_width="match_parent"
@@ -29,7 +34,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Total Pembayaran" />
+                android:text="Total Pembayaran"
+                android:textColor="@color/black_70" />
 
             <TextView
                 android:id="@+id/total_payment_text_view"
