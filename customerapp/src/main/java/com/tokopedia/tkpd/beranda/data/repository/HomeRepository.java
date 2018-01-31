@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.beranda.data.repository;
 
+import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.entity.home.Ticker;
 import com.tokopedia.tkpd.beranda.domain.model.banner.HomeBannerResponseModel;
@@ -7,6 +8,8 @@ import com.tokopedia.tkpd.beranda.domain.model.brands.BrandsOfficialStoreRespons
 import com.tokopedia.tkpd.beranda.domain.model.category.HomeCategoryResponseModel;
 import com.tokopedia.tkpd.beranda.domain.model.toppicks.TopPicksResponseModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.SaldoViewModel;
+
+import java.util.List;
 
 import rx.Observable;
 
@@ -35,5 +38,7 @@ public interface HomeRepository {
     Observable<Ticker> getTickers();
 
     Observable<Ticker> getTickersCache();
+
+    Observable<List<Visitable>> getAllHomeData();
 
 }

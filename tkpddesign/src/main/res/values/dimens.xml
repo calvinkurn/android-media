@@ -9,6 +9,7 @@
     <dimen name="font_title">17sp</dimen>
     <dimen name="font_small">14sp</dimen>
     <dimen name="font_micro">12sp</dimen>
+    <dimen name="font_nano">8sp</dimen>
 
     <dimen name="font_loading_height_display4">112dp</dimen>
     <dimen name="font_loading_height_display3">56dp</dimen>
