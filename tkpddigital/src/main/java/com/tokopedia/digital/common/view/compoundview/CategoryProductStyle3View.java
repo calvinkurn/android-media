@@ -11,7 +11,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.view.compoundview.BaseDigitalChooserView;
@@ -383,9 +382,7 @@ public class CategoryProductStyle3View extends
 
             @Override
             public void onTrackingOperator() {
-                if (operatorSelected != null)
-                    UnifyTracking.eventSelectOperatorOnWidget(data.getName(),
-                            operatorSelected.getName());
+                actionListener.onOperatorSelected(data.getName(), operatorSelected.getName());
             }
         };
     }
@@ -410,6 +407,11 @@ public class CategoryProductStyle3View extends
             @Override
             public void onDigitalChooserClicked(List<Operator> operators) {
                 actionListener.onOperatorChooserStyle3Clicked(operators, "");
+            }
+
+            @Override
+            public void tracking() {
+                actionListener.onOperatorSelected(data.getName(), operatorSelected.getName());
             }
         };
     }
@@ -471,9 +473,7 @@ public class CategoryProductStyle3View extends
 
             @Override
             public void trackingProduct() {
-                if (productSelected != null)
-                    UnifyTracking.eventSelectProductOnWidget(data.getName(),
-                            productSelected.getDesc());
+                actionListener.onProductSelected(data.getName(), productSelected.getDesc());
             }
         };
     }
@@ -486,6 +486,7 @@ public class CategoryProductStyle3View extends
                 productSelected = product;
                 renderAdditionalProductInfo();
                 renderPriceProductInfo();
+
             }
 
             @Override
@@ -494,6 +495,11 @@ public class CategoryProductStyle3View extends
                         products, operatorSelected.getOperatorId(), operatorSelected != null
                                 ? operatorSelected.getRule().getProductText() : ""
                 );
+            }
+
+            @Override
+            public void tracking() {
+                actionListener.onProductSelected(data.getName(), productSelected.getDesc());
             }
         };
     }

@@ -11,7 +11,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.view.compoundview.BaseDigitalChooserView;
@@ -400,6 +399,7 @@ public class CategoryProductStyle1View extends
                                 }
                                 setBtnBuyDigitalText(operator.getRule().getButtonText());
                                 operatorFound = true;
+                                actionListener.onOperatorSelected(data.getName(), operator.getName());
                                 break outerLoop;
                             }
                         }
@@ -462,10 +462,7 @@ public class CategoryProductStyle1View extends
 
             @Override
             public void trackingProduct() {
-                if (productSelected != null) {
-                    UnifyTracking.eventSelectProductOnWidget(data.getName(),
-                            productSelected.getDesc());
-                }
+                actionListener.onProductSelected(data.getName(), productSelected.getDesc());
             }
         };
     }
@@ -486,6 +483,11 @@ public class CategoryProductStyle1View extends
                         products, operatorSelected.getOperatorId(),
                         operatorSelected != null ? operatorSelected.getRule().getProductText() : ""
                 );
+            }
+
+            @Override
+            public void tracking() {
+                actionListener.onProductSelected(data.getName(), productSelected.getDesc());
             }
         };
     }

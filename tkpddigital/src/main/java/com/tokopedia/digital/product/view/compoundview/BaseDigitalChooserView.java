@@ -72,5 +72,6 @@ public abstract class BaseDigitalChooserView<T> extends RelativeLayout {
 
         void onDigitalChooserClicked(List<Z> data);
 
+        void tracking();
     }
 }

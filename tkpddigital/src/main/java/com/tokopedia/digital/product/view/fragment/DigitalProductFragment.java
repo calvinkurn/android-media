@@ -588,10 +588,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         }
         preCheckoutProduct.setVoucherCodeCopied(voucherCodeCopiedState);
 
-//        presenter.processAddToCartProduct(presenter.generateCheckoutPassData(preCheckoutProduct,
-//                VersionInfo.getVersionInfo(getActivity()),
-//                SessionHandler.getLoginID(getActivity())));
-
         DigitalCheckoutPassData digitalCheckoutPassData = presenter.generateCheckoutPassData(preCheckoutProduct,
                 VersionInfo.getVersionInfo(getActivity()),
                 SessionHandler.getLoginID(getActivity()));
@@ -643,8 +639,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onOperatorChooserStyle3Clicked(List<Operator> operatorListData, String titleChooser) {
-        UnifyTracking.eventSelectOperator(categoryDataState.getName(), categoryDataState.getName());
-
         startActivityForResult(
                 DigitalChooserActivity.newInstanceOperatorChooser(
                         getActivity(), categoryId, titleChooser,
@@ -715,6 +709,18 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     public void onItemAutocompletedSelected(OrderClientNumber orderClientNumber) {
 
+    }
+
+    @Override
+    public void onOperatorSelected(String categoryName, String operatorName) {
+        UnifyTracking.eventSelectOperatorOnNativePage(categoryName,
+                operatorName);
+    }
+
+    @Override
+    public void onProductSelected(String categoryName, String productDesc) {
+        UnifyTracking.eventSelectProductOnNativePage(categoryName,
+                productDesc);
     }
 
     @Override

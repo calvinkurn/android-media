@@ -97,6 +97,7 @@ public class DigitalOperatorRadioChooserView extends BaseDigitalRadioChooserView
                 actionListener.onUpdateDataDigitalRadioChooserSelectedRendered(
                         dataList.get(checkedId)
                 );
+                actionListener.tracking();
             }
         });
         radioGroupOparator.check(0);
@@ -113,6 +114,7 @@ public class DigitalOperatorRadioChooserView extends BaseDigitalRadioChooserView
             }
         }
         actionListener.onUpdateDataDigitalRadioChooserSelectedRendered(data);
+        actionListener.tracking();
     }
 
     public void renderUpdateDataSelectedByOperatorId(String operatorId) {

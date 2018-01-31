@@ -93,6 +93,11 @@ public class TopUpTokoCashView extends LinearLayout {
                 UnifyTracking.eventSelectProductOnNativePage(categoryData.getName(), categoryData.getName());
                 listener.onDigitalChooserClicked(data, productText);
             }
+
+            @Override
+            public void tracking() {
+
+            }
         };
     }
 
@@ -100,7 +105,8 @@ public class TopUpTokoCashView extends LinearLayout {
         return new OnClickListener() {
             @Override
             public void onClick(View view) {
-                UnifyTracking.eventClickBeli(categoryData.getName(), categoryData.getName());
+                String isInstant = instantCheckoutCheckbox.isChecked() ? "instant" : "no instant";
+                UnifyTracking.eventClickBuyOnNative(categoryData.getName(), isInstant);
                 listener.onProcessAddToCart(generatePreCheckoutData());
             }
         };

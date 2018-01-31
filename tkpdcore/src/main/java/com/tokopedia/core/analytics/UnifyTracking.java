@@ -2677,12 +2677,12 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventSelectProductOnNativePage(String ec, String el) {
+    public static void eventSelectProductOnNativePage(String categoryName, String productName) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
-                AppEventTracking.Category.DIGITAL + ec,
+                AppEventTracking.Category.DIGITAL + categoryName,
                 AppEventTracking.Action.SELECT_PRODUCT,
-                AppEventTracking.EventLabel.PRODUCT + el
+                AppEventTracking.EventLabel.PRODUCT + productName
         ).getEvent());
     }
 

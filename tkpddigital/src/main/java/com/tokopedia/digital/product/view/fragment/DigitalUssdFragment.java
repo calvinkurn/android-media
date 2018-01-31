@@ -297,7 +297,6 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
             @Override
             public void onUpdateDataDigitalChooserSelectedRendered(Product data) {
                 productSelected = data;
-
             }
 
             @Override
@@ -308,6 +307,11 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
                         ),
                         IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER
                 );
+            }
+
+            @Override
+            public void tracking() {
+
             }
         };
     }
@@ -320,7 +324,6 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
                 if (isChecked)
                     btnBuyDigital.setText(getActivity().getString(R.string.label_btn_pay_digital));
                 else btnBuyDigital.setText(getActivity().getString(R.string.label_btn_buy_digital));
-                ;
 
             }
         };

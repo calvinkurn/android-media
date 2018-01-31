@@ -252,7 +252,7 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
     }
 
     @Override
-    public void onOperatorSelected(List<Operator> operatorListData, String titleChooser) {
+    public void onOperatorChooserStyle3Clicked(List<Operator> operatorListData, String titleChooser) {
 
     }
 
@@ -465,6 +465,18 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
         UnifyTracking.eventSelectNumberOnUserProfileWidget(categoryDataState.getName());
 
         handleCallbackSearchNumber(orderClientNumber);
+    }
+
+    @Override
+    public void onOperatorSelected(String categoryName, String operatorName) {
+            UnifyTracking.eventSelectOperatorOnWidget(categoryName,
+                    operatorName);
+    }
+
+    @Override
+    public void onProductSelected(String categoryName, String productDesc) {
+        UnifyTracking.eventSelectProductOnWidget(categoryName,
+                productDesc);
     }
 
     @Override

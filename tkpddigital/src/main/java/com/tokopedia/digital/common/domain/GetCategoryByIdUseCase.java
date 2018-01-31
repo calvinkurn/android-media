@@ -139,10 +139,9 @@ public class GetCategoryByIdUseCase extends UseCase<ProductDigitalData> {
         };
     }
 
-    public RequestParams createRequestParam(String categoryId, boolean needFavoriteList) {
+    public RequestParams createRequestParam(String categoryId) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(PARAM_CATEGORY_ID, categoryId);
-        requestParams.putBoolean(PARAM_NEED_FAVORITE_LIST, needFavoriteList);
         return requestParams;
     }
 

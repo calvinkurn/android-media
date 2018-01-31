@@ -29,7 +29,7 @@ public class GetOperatorsByCategoryIdUseCase extends UseCase<List<Operator>> {
     public Observable<List<Operator>> createObservable(RequestParams requestParams) {
         String categoryId = requestParams.getString(PARAM_CATEGORY_ID, "");
 
-        return getCategoryByIdUseCase.createObservable(getCategoryByIdUseCase.createRequestParam(categoryId, false))
+        return getCategoryByIdUseCase.createObservable(getCategoryByIdUseCase.createRequestParam(categoryId))
                 .map(new Func1<ProductDigitalData, List<Operator>>() {
                     @Override
                     public List<Operator> call(ProductDigitalData productDigitalData) {

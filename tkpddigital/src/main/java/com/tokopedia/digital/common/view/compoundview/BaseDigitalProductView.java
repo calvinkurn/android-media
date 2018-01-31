@@ -174,7 +174,7 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
                 List<Product> productListData, String operatorId, String titleChooser
         );
 
-        void onOperatorChooserStyle3Clicked(List<Operator> operatorListData, String titleChooser)
+        void onOperatorChooserStyle3Clicked(List<Operator> operatorListData, String titleChooser);
 
         void onButtonContactPickerClicked();
 
@@ -189,6 +189,10 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
         void onClientNumberCleared(ClientNumber clientNumber, List<OrderClientNumber> recentClientNumberList);
 
         void onItemAutocompletedSelected(OrderClientNumber orderClientNumber);
+
+        void onOperatorSelected(String categoryName, String operatorName);
+
+        void onProductSelected(String categoryName, String productDesc);
     }
 
     public static class PreCheckoutProduct {
