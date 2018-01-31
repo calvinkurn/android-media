@@ -312,6 +312,8 @@
 
 -dontwarn com.google.i18n.phonenumbers.**
 
+-dontwarn sun.net.spi.nameservice.**
+
 -dontwarn com.nimbusds.jwt.SignedJWT
 -dontwarn com.nimbusds.jwt.JWTClaimsSet
 
