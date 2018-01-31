@@ -329,16 +329,31 @@ public class DrawerSellerHelper extends DrawerHelper
             @Override
             public void onNext(ShopModel shopModel) {
                 DrawerGroup goldMerchantMenu = getGoldMerchantMenu(shopModel.info.isGoldMerchant());
+                goldMerchantMenu.setExpanded(false);
 
                 // update gold merchant
                 isGoldMerchant = shopModel.info.isGoldMerchant();
-                adapter.getData().set(GOLD_MERCHANT_INDEX, goldMerchantMenu);
-                adapter.notifyItemChanged(GOLD_MERCHANT_INDEX);
-//                adapter.notifyDataSetChanged();
 
-//                ArrayList<DrawerItem> drawerItems = new ArrayList<>(adapter.getData());
-//                drawerItems.set(GOLD_MERCHANT_INDEX, goldMerchantMenu);
-//                adapter.setData(drawerItems);
+                // find gold merchant index based on drawerposition
+                int goldMerchantIndex = -1;
+                for (int i = 0; i < adapter.getData().size(); i++) {
+                    if(adapter.getData().get(i).getId() == TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE){
+                        goldMerchantIndex = i;
+                    }
+                }
+
+                DrawerGroup drawerGroup = (DrawerGroup) adapter.getData().get(goldMerchantIndex);
+                adapter.getData().removeAll(drawerGroup.getList());
+                adapter.getData().remove(goldMerchantIndex);
+
+                adapter.getData().add(goldMerchantIndex, goldMerchantMenu);
+
+                if(drawerGroup.isExpanded()){
+                    adapter.getData().addAll(goldMerchantIndex+1, goldMerchantMenu.getList());
+                    goldMerchantMenu.setExpanded(true);
+                }
+
+                adapter.notifyDataSetChanged();
             }
         });
     }
