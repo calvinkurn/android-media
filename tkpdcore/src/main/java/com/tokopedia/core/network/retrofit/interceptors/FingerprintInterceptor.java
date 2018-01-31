@@ -1,6 +1,7 @@
 package com.tokopedia.core.network.retrofit.interceptors;
 
 import android.content.Context;
+import android.os.Build;
 import android.util.Base64;
 
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
@@ -16,6 +17,7 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 
