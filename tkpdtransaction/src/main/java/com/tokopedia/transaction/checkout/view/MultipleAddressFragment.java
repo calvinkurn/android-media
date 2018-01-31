@@ -1,5 +1,7 @@
 package com.tokopedia.transaction.checkout.view;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -7,10 +9,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.checkout.view.activity.ICartShipmentActivity;
 import com.tokopedia.transaction.checkout.view.adapter.MultipleAddressAdapter;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressAdapterData;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressItemData;
@@ -18,11 +20,23 @@ import com.tokopedia.transaction.checkout.view.data.MultipleAddressItemData;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.tokopedia.transaction.checkout.view.AddShipmentAddressFragment.ADD_MODE;
+import static com.tokopedia.transaction.checkout.view.AddShipmentAddressFragment.EDIT_MODE;
+
 /**
  * Created by kris on 1/24/18. Tokopedia
  */
 
-public class MultipleAddressFragment extends TkpdFragment {
+public class MultipleAddressFragment extends TkpdFragment
+        implements MultipleAddressAdapter.MultipleAddressAdapterListener {
+
+    private ICartShipmentActivity cartShipmentActivity;
+
+    public static final int ADD_SHIPMENT_ADDRESS_REQUEST_CODE = 21;
+    public static final int EDIT_SHIPMENT_ADDRESS_REQUEST_CODE = 22;
+    private static final String ADD_SHIPMENT_FRAGMENT_TAG = "ADD_SHIPMENT_FRAGMENT_TAG";
+
+    private MultipleAddressAdapter multipleAddressAdapter;
 
     public static MultipleAddressFragment newInstance() {
         return new MultipleAddressFragment();
@@ -37,11 +51,10 @@ public class MultipleAddressFragment extends TkpdFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.multiple_address_fragment, container, false);
-        TextView goToChooseCourierButton = view.findViewById(R.id.go_to_courier_page_button);
-        goToChooseCourierButton.setOnClickListener(onChooseCourierButtonClickedListener());
         RecyclerView orderAddressList = view.findViewById(R.id.order_address_list);
         orderAddressList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        orderAddressList.setAdapter(new MultipleAddressAdapter(dummyDataList()));
+        multipleAddressAdapter = new MultipleAddressAdapter(dummyDataList(), this);
+        orderAddressList.setAdapter(multipleAddressAdapter);
         return view;
     }
 
@@ -78,14 +91,64 @@ public class MultipleAddressFragment extends TkpdFragment {
         return list;
     }
 
-    private View.OnClickListener onChooseCourierButtonClickedListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getFragmentManager().beginTransaction().replace(R.id.container,
-                        MultipleAddressShipmentFragment.newInstance()).commit();
-            }
-        };
+    @Override
+    public void onGoToChooseCourier() {
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.animator.slide_in_left, R.animator.slide_in_left)
+                .add(R.id.container, MultipleAddressShipmentFragment.newInstance())
+                .commit();
     }
 
+    @Override
+    public void onAddNewShipmentAddress(MultipleAddressAdapterData data,
+                                        MultipleAddressItemData addressData) {
+        AddShipmentAddressFragment fragment = AddShipmentAddressFragment.newInstance(
+                data,
+                addressData,
+                ADD_MODE);
+        fragment.setTargetFragment(this, ADD_SHIPMENT_ADDRESS_REQUEST_CODE);
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.animator.slide_in_left, R.animator.slide_in_left)
+                .add(R.id.container, fragment, ADD_SHIPMENT_FRAGMENT_TAG)
+                .commit();
+    }
+
+    @Override
+    public void onItemChoosen(MultipleAddressAdapterData productData,
+                              MultipleAddressItemData addressData) {
+        AddShipmentAddressFragment fragment = AddShipmentAddressFragment.newInstance(
+                productData,
+                addressData,
+                EDIT_MODE);
+        fragment.setTargetFragment(this, EDIT_SHIPMENT_ADDRESS_REQUEST_CODE);
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.animator.slide_in_left, R.animator.slide_in_left)
+                .add(R.id.container, fragment, ADD_SHIPMENT_FRAGMENT_TAG)
+                .commit();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == EDIT_SHIPMENT_ADDRESS_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            multipleAddressAdapter.notifyDataSetChanged();
+            removeAddAddressFragment();
+        } else if (requestCode == ADD_SHIPMENT_ADDRESS_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            multipleAddressAdapter.notifyDataSetChanged();
+            removeAddAddressFragment();
+        }
+    }
+
+    private void removeAddAddressFragment() {
+        getFragmentManager()
+                .beginTransaction()
+                .remove(getFragmentManager().findFragmentByTag(ADD_SHIPMENT_FRAGMENT_TAG))
+                .commit();
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        //cartShipmentActivity = (ICartShipmentActivity) activity;
+    }
 }

@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.checkout.view;
+package com.tokopedia.transaction.checkout.view.activity;
 
 import android.app.Fragment;
 import android.net.Uri;
@@ -6,6 +6,9 @@ import android.os.Bundle;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.checkout.view.CartFragment;
+import com.tokopedia.transaction.checkout.view.MultipleAddressFragment;
+import com.tokopedia.transaction.checkout.view.ShipmentDetailActivity;
 
 /**
  * @author anggaprasetiyo on 18/01/18.
