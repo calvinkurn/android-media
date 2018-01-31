@@ -182,7 +182,6 @@ public abstract class SellerRouterApplication extends MainApplication
         daggerProductBuilder = DaggerProductComponent.builder().productModule(new ProductModule());
         daggerTopAdsBuilder = DaggerTopAdsComponent.builder().topAdsModule(new TopAdsModule());
         daggerShopBuilder = DaggerShopComponent.builder().shopModule(new ShopModule());
-        daggerProductManageBuilder = DaggerProductManageComponent.builder();
     }
 
     @Override
