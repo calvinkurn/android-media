@@ -8,13 +8,11 @@ import android.support.v4.app.FragmentTransaction;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.analytics.LoginAnalytics;
 import com.tokopedia.analytics.RegisterAnalytics;
-import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.applink.SessionApplinkUrl;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.session.R;
 import com.tokopedia.session.register.view.fragment.RegisterInitialFragment;
@@ -25,7 +23,7 @@ import com.tokopedia.session.register.view.fragment.RegisterInitialFragment;
 
 public class RegisterInitialActivity extends TActivity implements HasComponent {
 
-    @DeepLink({Constants.Applinks.REGISTER})
+    @DeepLink({SessionApplinkUrl.REGISTER})
     public static Intent getCallingApplinkRegisterIntent(Context context, Bundle bundle) {
         if (SessionHandler.isV4Login(context)) {
             if (context.getApplicationContext() instanceof TkpdCoreRouter)

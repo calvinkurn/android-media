@@ -10,10 +10,10 @@ import android.support.v4.app.FragmentTransaction;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.analytics.LoginAnalytics;
+import com.tokopedia.applink.SessionApplinkUrl;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.session.R;
 import com.tokopedia.session.login.loginemail.view.fragment.LoginFragment;
@@ -32,7 +32,7 @@ public class LoginActivity extends TActivity implements HasComponent {
     public static final String AUTO_WEBVIEW_NAME = "webview_name";
     public static final String AUTO_WEBVIEW_URL = "webview_url";
 
-    @DeepLink({Constants.Applinks.LOGIN})
+    @DeepLink({SessionApplinkUrl.LOGIN})
     public static Intent getCallingApplinkIntent(Context context, Bundle bundle) {
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
         if (SessionHandler.isV4Login(context)) {

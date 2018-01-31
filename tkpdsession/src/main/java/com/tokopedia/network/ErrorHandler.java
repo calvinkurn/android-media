@@ -5,12 +5,12 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.tokopedia.core.R;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.exception.ResponseV4ErrorException;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
+import com.tokopedia.session.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,31 +42,6 @@ public class ErrorHandler {
                 Log.d(TAG, getErrorInfo(code, TIMEOUT_INFO));
                 listener.onTimeout();
                 break;
-            /*case ResponseStatus.SC_GATEWAY_TIMEOUT:
-                Log.d(TAG, getErrorInfo(code, TIMEOUT_INFO);
-                listener.onTimeout(;
-                break;
-            case ResponseStatus.SC_INTERNAL_SERVER_ERROR:
-                Log.d(TAG, getErrorInfo(code, SERVER_INFO);
-                listener.onServerError(;
-
-                break;
-            case ResponseStatus.SC_FORBIDDEN:
-                Log.d(TAG, getErrorInfo(code, FORBIDDEN_INFO);
-                listener.onForbidden(;
-                break;
-            case ResponseStatus.SC_BAD_GATEWAY:
-                Log.d(TAG, getErrorInfo(code, BAD_REQUEST_INFO);
-                listener.onBadRequest(;
-                break;
-            case ResponseStatus.SC_BAD_REQUEST:
-                Log.d(TAG, getErrorInfo(code, BAD_REQUEST_INFO);
-                listener.onBadRequest(;
-                break;
-            default:
-                Log.d(TAG, getErrorInfo(code, UNKNOWN_INFO);
-                listener.onUnknown(;
-                break;*/
             case ResponseStatus.SC_FORBIDDEN:
                 Log.d(TAG, getErrorInfo(code, FORBIDDEN_INFO));
                 listener.onForbidden();
