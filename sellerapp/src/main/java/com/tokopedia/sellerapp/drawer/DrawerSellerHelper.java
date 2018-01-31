@@ -332,10 +332,13 @@ public class DrawerSellerHelper extends DrawerHelper
 
                 // update gold merchant
                 isGoldMerchant = shopModel.info.isGoldMerchant();
-
-                ArrayList<DrawerItem> data = adapter.getData();
                 adapter.getData().set(GOLD_MERCHANT_INDEX, goldMerchantMenu);
-                adapter.notifyItemChanged(4);
+                adapter.notifyItemChanged(GOLD_MERCHANT_INDEX);
+//                adapter.notifyDataSetChanged();
+
+//                ArrayList<DrawerItem> drawerItems = new ArrayList<>(adapter.getData());
+//                drawerItems.set(GOLD_MERCHANT_INDEX, goldMerchantMenu);
+//                adapter.setData(drawerItems);
             }
         });
     }
