@@ -44,22 +44,6 @@ public class InterceptorModule {
 
     @ApplicationScope
     @Provides
-    UserSession provideUserSession(AbstractionRouter abstractionRouter){
-        return abstractionRouter.getSession();
-    }
-
-    @ApplicationScope
-    @Provides
-    AbstractionRouter provideAbstractionRouter(@ApplicationContext Context context){
-        if(context instanceof AbstractionRouter){
-            return ((AbstractionRouter)context);
-        }else{
-            return null;
-        }
-    }
-
-    @ApplicationScope
-    @Provides
     HeaderErrorResponseInterceptor provideHeaderErrorResponseInterceptor(){
         return new HeaderErrorResponseInterceptor(HeaderErrorResponse.class);
     }

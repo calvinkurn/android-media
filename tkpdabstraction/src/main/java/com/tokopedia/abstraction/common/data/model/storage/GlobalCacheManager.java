@@ -6,9 +6,9 @@ package com.tokopedia.abstraction.common.data.model.storage;
 
 public interface GlobalCacheManager {
 
-    String save(String key, String value, long duration);
+    void save(String key, String value, long durationInSeconds);
 
-    String delete(String key);
+    void delete(String key);
 
     String get(String key);
 

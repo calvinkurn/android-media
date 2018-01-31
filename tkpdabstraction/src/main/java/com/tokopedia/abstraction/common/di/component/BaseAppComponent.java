@@ -5,6 +5,7 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.data.model.storage.GlobalCacheManager;
 import com.tokopedia.abstraction.common.di.module.AppModule;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
@@ -43,5 +44,7 @@ public interface BaseAppComponent {
     HeaderErrorResponseInterceptor headerErrorResponseInterceptor();
 
     HttpLoggingInterceptor httpLoggingInterceptor();
+
+    GlobalCacheManager globalCacheManager();
 
 }
