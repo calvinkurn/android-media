@@ -164,9 +164,6 @@ public abstract class SellerRouterApplication extends MainApplication
     private DaggerShopComponent.Builder daggerShopBuilder;
     private ShopComponent shopComponent;
 
-    private DaggerProductManageComponent.Builder daggerProductManageBuilder;
-    private ProductManageComponent productManageComponent;
-
     protected RemoteConfig remoteConfig;
 
     @Override
@@ -217,13 +214,6 @@ public abstract class SellerRouterApplication extends MainApplication
             shopComponent = daggerShopBuilder.appComponent(getApplicationComponent()).build();
         }
         return shopComponent;
-    }
-
-    public ProductManageComponent getProductManageComponent(){
-        if(productManageComponent == null){
-            productManageComponent = daggerProductManageBuilder.productComponent(getProductComponent()).build();
-        }
-        return productManageComponent;
     }
 
     @Override
@@ -789,7 +779,7 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     public GetShopInfoUseCase getShopInfo(){
-        return getProductManageComponent().getShopInfoUseCase();
+        return getShopComponent().getShopInfoUseCase();
     }
 
     public void goToAddProduct(Activity activity) {
