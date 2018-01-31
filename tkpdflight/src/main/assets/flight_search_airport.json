@@ -783,136 +783,6 @@
         "phone_code": 62,
         "cities": [
           {
-            "id": "6",
-            "name": "Apalapsili",
-            "code": "",
-            "latitude": "-3.8832",
-            "longitude": "139.3108",
-            "airports": []
-          },
-          {
-            "id": "177",
-            "name": "Kerinci",
-            "code": "",
-            "latitude": "-2.093",
-            "longitude": "101.4683",
-            "airports": [
-              {
-                "id": "KRC",
-                "name": "Depati Parbo",
-                "aliases": [
-                  "Kerinci",
-                  "Sungai Penuh"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "10",
-            "name": "Atambua",
-            "code": "",
-            "latitude": "-9.073049545",
-            "longitude": "124.9049988",
-            "airports": [
-              {
-                "id": "ABU",
-                "name": "AA Bere Tallo",
-                "aliases": [
-                  "Haliwen"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "106",
-            "name": "Masamba",
-            "code": "",
-            "latitude": "-2.558039904",
-            "longitude": "120.3239975",
-            "airports": [
-              {
-                "id": "MXB",
-                "name": "Andi Jemma",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "196",
-            "name": "Tiom",
-            "code": "",
-            "latitude": "-3.9256",
-            "longitude": "138.4555",
-            "airports": []
-          },
-          {
-            "id": "190",
-            "name": "Tapak Tuan",
-            "code": "",
-            "latitude": "3.1707",
-            "longitude": "97.2869",
-            "airports": [
-              {
-                "id": "TPK",
-                "name": "Teuku Cut Ali",
-                "aliases": [
-                  "Tapak Tuan",
-                  "Tapaktuan"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "20",
-            "name": "Bandung",
-            "code": "",
-            "latitude": "-6.900629997",
-            "longitude": "107.5759964",
-            "airports": [
-              {
-                "id": "BDO",
-                "name": "Husein Sastranegara",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "129",
-            "name": "Palangkaraya",
-            "code": "",
-            "latitude": "-2.225130081",
-            "longitude": "113.9430008",
-            "airports": [
-              {
-                "id": "PKY",
-                "name": "Tjilik Riwut",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "167",
-            "name": "Siborong-borong",
-            "code": "",
-            "latitude": "2.25973",
-            "longitude": "98.991898",
-            "airports": [
-              {
-                "id": "DTB",
-                "name": "Silangit",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
             "id": "62",
             "name": "Kambuaya",
             "code": "",
@@ -929,63 +799,39 @@
             ]
           },
           {
-            "id": "110",
-            "name": "Maumere",
+            "id": "92",
+            "name": "Long Apung",
             "code": "",
-            "latitude": "-8.640649796",
-            "longitude": "122.2369995",
-            "airports": [
-              {
-                "id": "MOF",
-                "name": "Frans Seda",
-                "aliases": [
-                  "Wai Oti"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "73",
-            "name": "Kepi",
-            "code": "",
-            "latitude": "-6.5418",
-            "longitude": "139.3318",
+            "latitude": "1.704486",
+            "longitude": "114.970297",
             "airports": []
           },
           {
-            "id": "22",
-            "name": "Banyuwangi",
+            "id": "194",
+            "name": "Tikong",
             "code": "",
-            "latitude": "-8.31015",
-            "longitude": "114.3401",
-            "airports": [
-              {
-                "id": "BWX",
-                "name": "Blimbingsari",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "136",
-            "name": "Pasirkuning",
-            "code": "",
-            "latitude": "-0.4791890085",
-            "longitude": "104.5790024",
+            "latitude": "-1.642629981",
+            "longitude": "124.5589981",
             "airports": []
           },
           {
-            "id": "3",
-            "name": "Ambon",
+            "id": "80",
+            "name": "Kotabangun",
             "code": "",
-            "latitude": "-3.710259914",
-            "longitude": "128.0890045",
+            "latitude": "-0.2666699886",
+            "longitude": "116.5833359",
+            "airports": []
+          },
+          {
+            "id": "94",
+            "name": "Lunyuk",
+            "code": "",
+            "latitude": "-8.9889",
+            "longitude": "117.2158",
             "airports": [
               {
-                "id": "AMQ",
-                "name": "Pattimura",
+                "id": "LYK",
+                "name": "Lunyuk",
                 "aliases": [
                   ""
                 ]
@@ -993,95 +839,47 @@
             ]
           },
           {
-            "id": "14",
-            "name": "Bade",
+            "id": "27",
+            "name": "Bengkalis",
             "code": "",
-            "latitude": "-7.714630127",
-            "longitude": "139.5749969",
+            "latitude": "1.370000005",
+            "longitude": "102.1399994",
             "airports": []
           },
           {
-            "id": "105",
-            "name": "Masalembo",
+            "id": "93",
+            "name": "Long Bawan",
             "code": "",
-            "latitude": "-5.583330154",
-            "longitude": "114.4329987",
+            "latitude": "3.9028",
+            "longitude": "115.6921",
             "airports": []
           },
           {
-            "id": "134",
-            "name": "Parapat",
+            "id": "143",
+            "name": "Raha",
             "code": "",
-            "latitude": "2.666666985",
-            "longitude": "98.93333435",
-            "airports": []
-          },
-          {
-            "id": "37",
-            "name": "Cilacap",
-            "code": "",
-            "latitude": "-7.645060062",
-            "longitude": "109.0339966",
-            "airports": []
-          },
-          {
-            "id": "87",
-            "name": "Laut",
-            "code": "",
-            "latitude": "-3.294719934",
-            "longitude": "116.1650009",
+            "latitude": "-4.860070229",
+            "longitude": "122.7200012",
             "airports": [
               {
-                "id": "KBU",
-                "name": "Gusti Syamsir Alam",
+                "id": "RAQ",
+                "name": "Sugimanuru",
                 "aliases": [
-                  ""
+                  "Muna"
                 ]
               }
             ]
           },
           {
-            "id": "8381",
-            "name": "Pagar Alam",
+            "id": "8386",
+            "name": "Palopo",
             "code": "",
             "latitude": "",
             "longitude": "",
             "airports": [
               {
-                "id": "PXA",
-                "name": "Atung Bungsu",
-                "aliases": [
-                  "Pagar Alam"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "31",
-            "name": "Bintuni",
-            "code": "",
-            "latitude": "-2.1033",
-            "longitude": "133.5164",
-            "airports": []
-          },
-          {
-            "id": "171",
-            "name": "Soroako",
-            "code": "",
-            "latitude": "-2.531199932",
-            "longitude": "121.3580017",
-            "airports": []
-          },
-          {
-            "id": "75",
-            "name": "Padang",
-            "code": "",
-            "latitude": "-0.7869169712",
-            "longitude": "100.2809982",
-            "airports": [
-              {
-                "id": "PDG",
-                "name": "Minangkabau",
+                "id": "LLO",
+                "name": "Lagaligo",
                 "aliases": [
                   ""
                 ]
@@ -1089,15 +887,39 @@
             ]
           },
           {
-            "id": "72",
-            "name": "Kendari",
+            "id": "150",
+            "name": "Sabu",
             "code": "",
-            "latitude": "-4.081610203",
-            "longitude": "122.4179993",
+            "latitude": "-10.4924",
+            "longitude": "121.8482",
+            "airports": []
+          },
+          {
+            "id": "195",
+            "name": "Timika",
+            "code": "",
+            "latitude": "-4.528279781",
+            "longitude": "136.8869934",
             "airports": [
               {
-                "id": "KDI",
-                "name": "Haluoleo",
+                "id": "TIM",
+                "name": "Mozes Kilangin",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "11",
+            "name": "Teminabuan",
+            "code": "",
+            "latitude": "-1.44472003",
+            "longitude": "132.0209961",
+            "airports": [
+              {
+                "id": "TXM",
+                "name": "Teminabuan",
                 "aliases": [
                   ""
                 ]
@@ -1121,35 +943,99 @@
             ]
           },
           {
-            "id": "184",
-            "name": "Tanjung Balai",
+            "id": "1",
+            "name": "Alor",
             "code": "",
-            "latitude": "1.0527",
-            "longitude": "103.3931",
+            "latitude": "-8.132340431",
+            "longitude": "124.5970001",
             "airports": [
               {
-                "id": "TJB",
-                "name": "Raja Haji Abdullah",
+                "id": "ARD",
+                "name": "Mali",
                 "aliases": [
-                  "Sei Bati"
+                  "Alor"
                 ]
               }
             ]
           },
           {
-            "id": "116",
-            "name": "Moanamani",
+            "id": "96",
+            "name": "Maikoor",
             "code": "",
-            "latitude": "-3.983402014",
-            "longitude": "136.0832977",
+            "latitude": "-6.06619978",
+            "longitude": "134.2740021",
             "airports": []
           },
           {
-            "id": "170",
-            "name": "Sipora",
+            "id": "34",
+            "name": "Bontang",
             "code": "",
-            "latitude": "-2.099119902",
-            "longitude": "99.70069885",
+            "latitude": "0.1196909994",
+            "longitude": "117.4749985",
+            "airports": []
+          },
+          {
+            "id": "9",
+            "name": "Astraksetra",
+            "code": "",
+            "latitude": "-4.611139774",
+            "longitude": "105.2320023",
+            "airports": []
+          },
+          {
+            "id": "32",
+            "name": "Boalang",
+            "code": "",
+            "latitude": "-0.9728959799",
+            "longitude": "122.1449966",
+            "airports": [
+              {
+                "id": "BJG",
+                "name": "Bolaang",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "91",
+            "name": "Lhok Sukon",
+            "code": "",
+            "latitude": "5.069509983",
+            "longitude": "97.25920105",
+            "airports": []
+          },
+          {
+            "id": "8382",
+            "name": "Senipah",
+            "code": "",
+            "latitude": "",
+            "longitude": "",
+            "airports": []
+          },
+          {
+            "id": "8390",
+            "name": "Selayar",
+            "code": "",
+            "latitude": "",
+            "longitude": "",
+            "airports": [
+              {
+                "id": "YKR",
+                "name": "H. Aroeppala",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "147",
+            "name": "Rokot",
+            "code": "",
+            "latitude": "-0.9499999881",
+            "longitude": "100.75",
             "airports": []
           },
           {
@@ -1169,49 +1055,129 @@
             ]
           },
           {
-            "id": "63",
-            "name": "Kamur",
+            "id": "197",
+            "name": "Tjepu",
             "code": "",
-            "latitude": "-6.1851",
-            "longitude": "138.6372",
+            "latitude": "-7.194841667",
+            "longitude": "111.5481667",
             "airports": []
           },
           {
-            "id": "29",
-            "name": "Biak",
+            "id": "39",
+            "name": "Dabra",
             "code": "",
-            "latitude": "-1.190019965",
-            "longitude": "136.1080017",
+            "latitude": "-3.2705",
+            "longitude": "138.6132",
+            "airports": []
+          },
+          {
+            "id": "8",
+            "name": "Asmat",
+            "code": "",
+            "latitude": "-5.494",
+            "longitude": "138.083",
+            "airports": []
+          },
+          {
+            "id": "174",
+            "name": "Solo",
+            "code": "",
+            "latitude": "-7.516089916",
+            "longitude": "110.7570038",
             "airports": [
               {
-                "id": "BIK",
-                "name": "Frans Kaisiepo",
+                "id": "SOC",
+                "name": "Adi Sumarmo",
                 "aliases": [
-                  "Biak"
+                  "surakarta"
                 ]
               }
             ]
           },
           {
-            "id": "146",
-            "name": "Rengat",
+            "id": "2",
+            "name": "Amahai",
             "code": "",
-            "latitude": "-0.3528079987",
-            "longitude": "102.3349991",
+            "latitude": "-3.34800005",
+            "longitude": "128.9259949",
             "airports": []
           },
           {
-            "id": "201",
-            "name": "Ujung Pandang",
+            "id": "179",
+            "name": "Swach",
             "code": "",
-            "latitude": "-5.061629772",
-            "longitude": "119.5540009",
+            "latitude": "-3.235",
+            "longitude": "140.994",
+            "airports": []
+          },
+          {
+            "id": "61",
+            "name": "Kaimana",
+            "code": "",
+            "latitude": "-3.644520044",
+            "longitude": "133.6959991",
+            "airports": []
+          },
+          {
+            "id": "172",
+            "name": "Sorong",
+            "code": "",
+            "latitude": "-0.894",
+            "longitude": "131.287",
             "airports": [
               {
-                "id": "UPG",
-                "name": "Sultan Hasanuddin",
+                "id": "SOQ",
+                "name": "Dominique Edward Osok",
                 "aliases": [
-                  "Makasar"
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "18",
+            "name": "Banda",
+            "code": "",
+            "latitude": "-4.5214",
+            "longitude": "129.9054",
+            "airports": [
+              {
+                "id": "NDA",
+                "name": "Bandanaira",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "19",
+            "name": "Bandar Lampung",
+            "code": "",
+            "latitude": "-5.240556",
+            "longitude": "105.175556",
+            "airports": [
+              {
+                "id": "TKG",
+                "name": "Radin Inten II",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "184",
+            "name": "Tanjung Balai",
+            "code": "",
+            "latitude": "1.0527",
+            "longitude": "103.3931",
+            "airports": [
+              {
+                "id": "TJB",
+                "name": "Raja Haji Abdullah",
+                "aliases": [
+                  "Sei Bati"
                 ]
               }
             ]
@@ -1233,60 +1199,36 @@
             ]
           },
           {
-            "id": "141",
-            "name": "Purwokerto",
+            "id": "7",
+            "name": "Arso",
             "code": "",
-            "latitude": "-7.461669922",
-            "longitude": "109.4169998",
+            "latitude": "-2.93333292",
+            "longitude": "140.7833405",
             "airports": []
           },
           {
-            "id": "66",
-            "name": "Karimunjawa",
+            "id": "117",
+            "name": "Muko Muko",
             "code": "",
-            "latitude": "-5.80091",
-            "longitude": "110.47838",
+            "latitude": "-2.541860104",
+            "longitude": "101.0879974",
             "airports": []
           },
           {
-            "id": "125",
-            "name": "Obano",
+            "id": "180",
+            "name": "Tahuna",
             "code": "",
-            "latitude": "-3.9106",
-            "longitude": "136.2306",
-            "airports": []
-          },
-          {
-            "id": "103",
-            "name": "Mangungaya",
-            "code": "",
-            "latitude": "-2.733330011",
-            "longitude": "103.5670013",
-            "airports": []
-          },
-          {
-            "id": "152",
-            "name": "Sampit",
-            "code": "",
-            "latitude": "-2.499190092",
-            "longitude": "112.9749985",
+            "latitude": "3.683209896",
+            "longitude": "125.5279999",
             "airports": [
               {
-                "id": "SMQ",
-                "name": "H. Asan",
+                "id": "NAH",
+                "name": "Naha",
                 "aliases": [
-                  ""
+                  "Judha Tindas"
                 ]
               }
             ]
-          },
-          {
-            "id": "164",
-            "name": "Senggo",
-            "code": "",
-            "latitude": "-5.6908",
-            "longitude": "139.3502",
-            "airports": []
           },
           {
             "id": "90",
@@ -1301,6 +1243,1194 @@
                 "aliases": [
                   "Lhokseumawe",
                   "Malikussaleh"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "48",
+            "name": "Gag",
+            "code": "",
+            "latitude": "-0.4005559981",
+            "longitude": "129.8950043",
+            "airports": []
+          },
+          {
+            "id": "76",
+            "name": "Kiman",
+            "code": "",
+            "latitude": "-3.666670084",
+            "longitude": "136.1666718",
+            "airports": []
+          },
+          {
+            "id": "176",
+            "name": "Sumenep",
+            "code": "",
+            "latitude": "-7.0242",
+            "longitude": "113.89023",
+            "airports": [
+              {
+                "id": "SUP",
+                "name": "Trunojoyo",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "190",
+            "name": "Tapak Tuan",
+            "code": "",
+            "latitude": "3.1707",
+            "longitude": "97.2869",
+            "airports": [
+              {
+                "id": "TPK",
+                "name": "Teuku Cut Ali",
+                "aliases": [
+                  "Tapak Tuan",
+                  "Tapaktuan"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "146",
+            "name": "Rengat",
+            "code": "",
+            "latitude": "-0.3528079987",
+            "longitude": "102.3349991",
+            "airports": []
+          },
+          {
+            "id": "162",
+            "name": "Semarang",
+            "code": "",
+            "latitude": "-6.97273",
+            "longitude": "110.375",
+            "airports": [
+              {
+                "id": "SRG",
+                "name": "Achmad Yani",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "3",
+            "name": "Ambon",
+            "code": "",
+            "latitude": "-3.710259914",
+            "longitude": "128.0890045",
+            "airports": [
+              {
+                "id": "AMQ",
+                "name": "Pattimura",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "63",
+            "name": "Kamur",
+            "code": "",
+            "latitude": "-6.1851",
+            "longitude": "138.6372",
+            "airports": []
+          },
+          {
+            "id": "200",
+            "name": "Ubrub",
+            "code": "",
+            "latitude": "-3.67565",
+            "longitude": "140.8838",
+            "airports": []
+          },
+          {
+            "id": "21",
+            "name": "Banjarmasin",
+            "code": "",
+            "latitude": "-3.442359924",
+            "longitude": "114.7630005",
+            "airports": [
+              {
+                "id": "BDJ",
+                "name": "Syamsudin Noor",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "69",
+            "name": "Keisah",
+            "code": "",
+            "latitude": "-7.666669846",
+            "longitude": "140.5",
+            "airports": []
+          },
+          {
+            "id": "209",
+            "name": "Yogyakarta",
+            "code": "",
+            "latitude": "-7.788179874",
+            "longitude": "",
+            "airports": [
+              {
+                "id": "JOG",
+                "name": "Adisutjipto",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "36",
+            "name": "Buol",
+            "code": "",
+            "latitude": "1.1027",
+            "longitude": "121.4141",
+            "airports": [
+              {
+                "id": "UOL",
+                "name": "Pogogul",
+                "aliases": [
+                  "Buol"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "78",
+            "name": "Kolaka",
+            "code": "",
+            "latitude": "-4.181089878",
+            "longitude": "121.6179962",
+            "airports": [
+              {
+                "id": "PUM",
+                "name": "Sangia Nibandera",
+                "aliases": [
+                  "Pomala"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "8389",
+            "name": "Wakatobi",
+            "code": "",
+            "latitude": "",
+            "longitude": "",
+            "airports": [
+              {
+                "id": "WNI",
+                "name": "Matahora",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "4",
+            "name": "Amgotro",
+            "code": "",
+            "latitude": "-3.6333",
+            "longitude": "140.958",
+            "airports": []
+          },
+          {
+            "id": "151",
+            "name": "Samarinda",
+            "code": "",
+            "latitude": "-0.4845309854",
+            "longitude": "117.1569977",
+            "airports": [
+              {
+                "id": "SRI",
+                "name": "Temindung",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "24",
+            "name": "Batom",
+            "code": "",
+            "latitude": "-4.166669846",
+            "longitude": "140.8500061",
+            "airports": []
+          },
+          {
+            "id": "13",
+            "name": "Babo",
+            "code": "",
+            "latitude": "-2.532239914",
+            "longitude": "133.4389954",
+            "airports": []
+          },
+          {
+            "id": "149",
+            "name": "Sabang",
+            "code": "",
+            "latitude": "5.874129772",
+            "longitude": "95.33969879",
+            "airports": [
+              {
+                "id": "SBG",
+                "name": "Maimun Saleh",
+                "aliases": [
+                  "Sabang"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "124",
+            "name": "Nunukan",
+            "code": "",
+            "latitude": "4.133333333",
+            "longitude": "117.6666667",
+            "airports": []
+          },
+          {
+            "id": "208",
+            "name": "Yahukimo",
+            "code": "",
+            "latitude": "-4.8557",
+            "longitude": "139.482",
+            "airports": [
+              {
+                "id": "DEX",
+                "name": "Bandara Udara Nop Goliat Dekai",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "87",
+            "name": "Laut",
+            "code": "",
+            "latitude": "-3.294719934",
+            "longitude": "116.1650009",
+            "airports": [
+              {
+                "id": "KBU",
+                "name": "Gusti Syamsir Alam",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "108",
+            "name": "Lombok",
+            "code": "",
+            "latitude": "-8.757322",
+            "longitude": "116.276675",
+            "airports": [
+              {
+                "id": "LOP",
+                "name": "Lombok",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "84",
+            "name": "Labuha",
+            "code": "",
+            "latitude": "-0.6352589726",
+            "longitude": "127.5019989",
+            "airports": [
+              {
+                "id": "LAH",
+                "name": "Oesman Sadik",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "119",
+            "name": "Muting",
+            "code": "",
+            "latitude": "-7.3147",
+            "longitude": "140.5668",
+            "airports": []
+          },
+          {
+            "id": "115",
+            "name": "Mindiptana",
+            "code": "",
+            "latitude": "-5.75",
+            "longitude": "140.3670044",
+            "airports": []
+          },
+          {
+            "id": "127",
+            "name": "Oksibil",
+            "code": "",
+            "latitude": "-4.9071",
+            "longitude": "140.6277",
+            "airports": [
+              {
+                "id": "OKL",
+                "name": "Oksibil",
+                "aliases": [
+                  "Gunung Bintang"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "177",
+            "name": "Kerinci",
+            "code": "",
+            "latitude": "-2.093",
+            "longitude": "101.4683",
+            "airports": [
+              {
+                "id": "KRC",
+                "name": "Depati Parbo",
+                "aliases": [
+                  "Kerinci",
+                  "Sungai Penuh"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "183",
+            "name": "Tanah Merah",
+            "code": "",
+            "latitude": "-6.099219799",
+            "longitude": "140.2980042",
+            "airports": []
+          },
+          {
+            "id": "114",
+            "name": "Merdei",
+            "code": "",
+            "latitude": "-1.583330035",
+            "longitude": "133.3329926",
+            "airports": []
+          },
+          {
+            "id": "167",
+            "name": "Siborong-borong",
+            "code": "",
+            "latitude": "2.25973",
+            "longitude": "98.991898",
+            "airports": [
+              {
+                "id": "DTB",
+                "name": "Silangit",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "71",
+            "name": "Keluang",
+            "code": "",
+            "latitude": "-2.623529911",
+            "longitude": "103.9550018",
+            "airports": []
+          },
+          {
+            "id": "75",
+            "name": "Padang",
+            "code": "",
+            "latitude": "-0.7869169712",
+            "longitude": "100.2809982",
+            "airports": [
+              {
+                "id": "PDG",
+                "name": "Minangkabau",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "171",
+            "name": "Soroako",
+            "code": "",
+            "latitude": "-2.531199932",
+            "longitude": "121.3580017",
+            "airports": []
+          },
+          {
+            "id": "67",
+            "name": "Karubaga",
+            "code": "",
+            "latitude": "-3.684",
+            "longitude": "138.479",
+            "airports": []
+          },
+          {
+            "id": "191",
+            "name": "Tarakan Island",
+            "code": "",
+            "latitude": "3.326667",
+            "longitude": "117.569444",
+            "airports": [
+              {
+                "id": "TRK",
+                "name": "Juwata",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "175",
+            "name": "Sumbawa",
+            "code": "",
+            "latitude": "-8.489040375",
+            "longitude": "117.4120026",
+            "airports": [
+              {
+                "id": "SWQ",
+                "name": "Sultan Muhammad Kaharuddin III",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "55",
+            "name": "Ilu",
+            "code": "",
+            "latitude": "-3.7051",
+            "longitude": "138.2002",
+            "airports": []
+          },
+          {
+            "id": "110",
+            "name": "Maumere",
+            "code": "",
+            "latitude": "-8.640649796",
+            "longitude": "122.2369995",
+            "airports": [
+              {
+                "id": "MOF",
+                "name": "Frans Seda",
+                "aliases": [
+                  "Wai Oti"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "23",
+            "name": "Batam",
+            "code": "",
+            "latitude": "1.121029973",
+            "longitude": "104.1190033",
+            "airports": [
+              {
+                "id": "BTH",
+                "name": "Hang Nadim",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "17",
+            "name": "Banda Aceh",
+            "code": "",
+            "latitude": "5.522872024",
+            "longitude": "95.42063713",
+            "airports": [
+              {
+                "id": "BTJ",
+                "name": "Sultan Iskandar Muda",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "57",
+            "name": "Jakarta",
+            "code": "JKTA",
+            "latitude": "-5.644444",
+            "longitude": "106.5625",
+            "airports": [
+              {
+                "id": "HLP",
+                "name": "Halim Perdanakusuma",
+                "aliases": [
+                  ""
+                ]
+              },
+              {
+                "id": "CGK",
+                "name": "Soekarno-Hatta",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "185",
+            "name": "Tanjung Pandan",
+            "code": "",
+            "latitude": "-2.74571991",
+            "longitude": "107.7549973",
+            "airports": [
+              {
+                "id": "TJQ",
+                "name": "H.A.S. Hanandjoeddin",
+                "aliases": [
+                  "Buluh Tumbang"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "8381",
+            "name": "Pagar Alam",
+            "code": "",
+            "latitude": "",
+            "longitude": "",
+            "airports": [
+              {
+                "id": "PXA",
+                "name": "Atung Bungsu",
+                "aliases": [
+                  "Pagar Alam"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "164",
+            "name": "Senggo",
+            "code": "",
+            "latitude": "-5.6908",
+            "longitude": "139.3502",
+            "airports": []
+          },
+          {
+            "id": "14",
+            "name": "Bade",
+            "code": "",
+            "latitude": "-7.714630127",
+            "longitude": "139.5749969",
+            "airports": []
+          },
+          {
+            "id": "12",
+            "name": "Ayawasi",
+            "code": "",
+            "latitude": "-1.1593",
+            "longitude": "132.4633",
+            "airports": []
+          },
+          {
+            "id": "161",
+            "name": "Sawan",
+            "code": "",
+            "latitude": "-8.132780075",
+            "longitude": "115.1729965",
+            "airports": []
+          },
+          {
+            "id": "60",
+            "name": "Jember",
+            "code": "",
+            "latitude": "-8.238056",
+            "longitude": "113.694439",
+            "airports": [
+              {
+                "id": "JBB",
+                "name": "Notohadinegoro",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "29",
+            "name": "Biak",
+            "code": "",
+            "latitude": "-1.190019965",
+            "longitude": "136.1080017",
+            "airports": [
+              {
+                "id": "BIK",
+                "name": "Frans Kaisiepo",
+                "aliases": [
+                  "Biak"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "38",
+            "name": "Cirebon",
+            "code": "",
+            "latitude": "-6.756140232",
+            "longitude": "108.5400009",
+            "airports": []
+          },
+          {
+            "id": "33",
+            "name": "Bokondini",
+            "code": "",
+            "latitude": "-3.6822",
+            "longitude": "138.6755",
+            "airports": []
+          },
+          {
+            "id": "43",
+            "name": "Dumai",
+            "code": "",
+            "latitude": "1.60919",
+            "longitude": "101.433998",
+            "airports": [
+              {
+                "id": "DUM",
+                "name": "Pinang Kampai",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "111",
+            "name": "Medan",
+            "code": "",
+            "latitude": "3.642222",
+            "longitude": "98.885278",
+            "airports": [
+              {
+                "id": "KNO",
+                "name": "Kualanamu",
+                "aliases": [
+                  "Deli Serdang"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "22",
+            "name": "Banyuwangi",
+            "code": "",
+            "latitude": "-8.31015",
+            "longitude": "114.3401",
+            "airports": [
+              {
+                "id": "BWX",
+                "name": "Blimbingsari",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "139",
+            "name": "Pontianak",
+            "code": "",
+            "latitude": "-0.150711",
+            "longitude": "109.4039993",
+            "airports": [
+              {
+                "id": "PNK",
+                "name": "Supadio",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "155",
+            "name": "Sangir",
+            "code": "",
+            "latitude": "-8.366669655",
+            "longitude": "118.3333588",
+            "airports": []
+          },
+          {
+            "id": "77",
+            "name": "Kokonau",
+            "code": "",
+            "latitude": "-4.71075",
+            "longitude": "136.43515",
+            "airports": [
+              {
+                "id": "KOX",
+                "name": "Kokonao",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "59",
+            "name": "Jayapura",
+            "code": "",
+            "latitude": "-2.576950073",
+            "longitude": "140.5160065",
+            "airports": [
+              {
+                "id": "DJJ",
+                "name": "Sentani",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "181",
+            "name": "Talang Gudang",
+            "code": "",
+            "latitude": "-3.286070108",
+            "longitude": "103.8799973",
+            "airports": []
+          },
+          {
+            "id": "53",
+            "name": "Gunung Sitoli",
+            "code": "",
+            "latitude": "1.166380048",
+            "longitude": "97.70469666",
+            "airports": [
+              {
+                "id": "GNS",
+                "name": "Binaka",
+                "aliases": [
+                  "Gunung Sitoli"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "113",
+            "name": "Merauke",
+            "code": "",
+            "latitude": "-8.520290375",
+            "longitude": "140.4179993",
+            "airports": [
+              {
+                "id": "MKQ",
+                "name": "Mopah",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "189",
+            "name": "Tanta",
+            "code": "",
+            "latitude": "-2.216559887",
+            "longitude": "115.435997",
+            "airports": [
+              {
+                "id": "TJG",
+                "name": "Warukin",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "187",
+            "name": "Tanjung Redep",
+            "code": "",
+            "latitude": "2.155499935",
+            "longitude": "117.4319992",
+            "airports": [
+              {
+                "id": "BEJ",
+                "name": "Kalimarau",
+                "aliases": [
+                  "Berau"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "85",
+            "name": "Langgur",
+            "code": "",
+            "latitude": "-5.66162014",
+            "longitude": "132.7310028",
+            "airports": []
+          },
+          {
+            "id": "8385",
+            "name": "Ampana",
+            "code": "",
+            "latitude": "",
+            "longitude": "",
+            "airports": [
+              {
+                "id": "VPM",
+                "name": "Tanjung Api",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "136",
+            "name": "Pasirkuning",
+            "code": "",
+            "latitude": "-0.4791890085",
+            "longitude": "104.5790024",
+            "airports": []
+          },
+          {
+            "id": "165",
+            "name": "Seram",
+            "code": "",
+            "latitude": "-2.8114",
+            "longitude": "129.484",
+            "airports": []
+          },
+          {
+            "id": "134",
+            "name": "Parapat",
+            "code": "",
+            "latitude": "2.666666985",
+            "longitude": "98.93333435",
+            "airports": []
+          },
+          {
+            "id": "44",
+            "name": "Elelim",
+            "code": "",
+            "latitude": "-3.7826",
+            "longitude": "139.3861",
+            "airports": []
+          },
+          {
+            "id": "8387",
+            "name": "Raja Ampat",
+            "code": "",
+            "latitude": "",
+            "longitude": "",
+            "airports": [
+              {
+                "id": "RJM",
+                "name": "Marinda Raja Ampat",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "137",
+            "name": "Pekanbaru",
+            "code": "",
+            "latitude": "0.4607860148",
+            "longitude": "101.4449997",
+            "airports": [
+              {
+                "id": "PKU",
+                "name": "Sultan Syarif Kasim II",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "42",
+            "name": "Dobo",
+            "code": "",
+            "latitude": "-5.772220135",
+            "longitude": "134.2120056",
+            "airports": []
+          },
+          {
+            "id": "201",
+            "name": "Ujung Pandang",
+            "code": "",
+            "latitude": "-5.061629772",
+            "longitude": "119.5540009",
+            "airports": [
+              {
+                "id": "UPG",
+                "name": "Sultan Hasanuddin",
+                "aliases": [
+                  "Makasar"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "95",
+            "name": "Luwuk",
+            "code": "",
+            "latitude": "-1.038920045",
+            "longitude": "122.7720032",
+            "airports": [
+              {
+                "id": "LUW",
+                "name": "Syukuran Aminuddin Amir",
+                "aliases": [
+                  "Bubung"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "28",
+            "name": "Bengkulu",
+            "code": "",
+            "latitude": "-3.8637",
+            "longitude": "102.338997",
+            "airports": [
+              {
+                "id": "BKS",
+                "name": "Fatmawati Soekarno",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "170",
+            "name": "Sipora",
+            "code": "",
+            "latitude": "-2.099119902",
+            "longitude": "99.70069885",
+            "airports": []
+          },
+          {
+            "id": "192",
+            "name": "Tasikmalaya",
+            "code": "",
+            "latitude": "-7.346600056",
+            "longitude": "108.2460022",
+            "airports": [
+              {
+                "id": "TSY",
+                "name": "Wiriadinata Airport",
+                "aliases": [
+                  "Tasikmalaya"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "154",
+            "name": "Sanggata",
+            "code": "",
+            "latitude": "0.3847",
+            "longitude": "117.543",
+            "airports": [
+              {
+                "id": "SGQ",
+                "name": "Sangkimah",
+                "aliases": [
+                  "Tanjung Bara"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "105",
+            "name": "Masalembo",
+            "code": "",
+            "latitude": "-5.583330154",
+            "longitude": "114.4329987",
+            "airports": []
+          },
+          {
+            "id": "153",
+            "name": "Sanana",
+            "code": "",
+            "latitude": "-2.080509901",
+            "longitude": "125.9670029",
+            "airports": []
+          },
+          {
+            "id": "123",
+            "name": "Nanga Pinoh",
+            "code": "",
+            "latitude": "-0.3488689959",
+            "longitude": "111.7480011",
+            "airports": []
+          },
+          {
+            "id": "182",
+            "name": "Tanah Grogot",
+            "code": "",
+            "latitude": "-1.910130024",
+            "longitude": "116.2020035",
+            "airports": []
+          },
+          {
+            "id": "106",
+            "name": "Masamba",
+            "code": "",
+            "latitude": "-2.558039904",
+            "longitude": "120.3239975",
+            "airports": [
+              {
+                "id": "MXB",
+                "name": "Andi Jemma",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "58",
+            "name": "Jambi",
+            "code": "",
+            "latitude": "-1.638020039",
+            "longitude": "103.6439972",
+            "airports": [
+              {
+                "id": "DJB",
+                "name": "Sultan Thaha Syaifuddin",
+                "aliases": [
+                  "Sultan Thaha",
+                  "Thaha"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "120",
+            "name": "Nabire",
+            "code": "",
+            "latitude": "-3.368180037",
+            "longitude": "135.4960022",
+            "airports": [
+              {
+                "id": "NBX",
+                "name": "Nabire",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "129",
+            "name": "Palangkaraya",
+            "code": "",
+            "latitude": "-2.225130081",
+            "longitude": "113.9430008",
+            "airports": [
+              {
+                "id": "PKY",
+                "name": "Tjilik Riwut",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "49",
+            "name": "Galela",
+            "code": "",
+            "latitude": "1.83833003",
+            "longitude": "127.7860031",
+            "airports": [
+              {
+                "id": "GLX",
+                "name": "Gamarmalamo",
+                "aliases": [
+                  "Gamar Malamo"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "6",
+            "name": "Apalapsili",
+            "code": "",
+            "latitude": "-3.8832",
+            "longitude": "139.3108",
+            "airports": []
+          },
+          {
+            "id": "54",
+            "name": "Illaga",
+            "code": "",
+            "latitude": "-3.97648",
+            "longitude": "137.6225",
+            "airports": []
+          },
+          {
+            "id": "65",
+            "name": "Karakelong Island",
+            "code": "",
+            "latitude": "4.006939888",
+            "longitude": "126.6729965",
+            "airports": [
+              {
+                "id": "MNA",
+                "name": "Melonguane",
+                "aliases": [
+                  "Melangguane",
+                  "Talaud"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "51",
+            "name": "Gorontalo",
+            "code": "",
+            "latitude": "0.6371189952",
+            "longitude": "122.8499985",
+            "airports": [
+              {
+                "id": "GTO",
+                "name": "Jalaluddin",
+                "aliases": [
+                  "Gorontalo",
+                  "Tolotio"
                 ]
               }
             ]
@@ -1330,307 +2460,11 @@
             ]
           },
           {
-            "id": "42",
-            "name": "Dobo",
-            "code": "",
-            "latitude": "-5.772220135",
-            "longitude": "134.2120056",
-            "airports": []
-          },
-          {
-            "id": "189",
-            "name": "Tanta",
-            "code": "",
-            "latitude": "-2.216559887",
-            "longitude": "115.435997",
-            "airports": [
-              {
-                "id": "TJG",
-                "name": "Warukin",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "8",
-            "name": "Asmat",
-            "code": "",
-            "latitude": "-5.494",
-            "longitude": "138.083",
-            "airports": []
-          },
-          {
-            "id": "126",
-            "name": "Okaba",
-            "code": "",
-            "latitude": "-8.0946",
-            "longitude": "139.7233",
-            "airports": []
-          },
-          {
-            "id": "18",
-            "name": "Banda",
-            "code": "",
-            "latitude": "-4.5214",
-            "longitude": "129.9054",
-            "airports": [
-              {
-                "id": "NDA",
-                "name": "Bandanaira",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "30",
-            "name": "Bima",
-            "code": "",
-            "latitude": "-8.539649963",
-            "longitude": "118.6869965",
-            "airports": [
-              {
-                "id": "BMU",
-                "name": "Sultan Muhammad Salahuddin",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "34",
-            "name": "Bontang",
-            "code": "",
-            "latitude": "0.1196909994",
-            "longitude": "117.4749985",
-            "airports": []
-          },
-          {
-            "id": "91",
-            "name": "Lhok Sukon",
-            "code": "",
-            "latitude": "5.069509983",
-            "longitude": "97.25920105",
-            "airports": []
-          },
-          {
-            "id": "26",
-            "name": "Bau Bau",
-            "code": "",
-            "latitude": "-5.486879826",
-            "longitude": "122.5690002",
-            "airports": [
-              {
-                "id": "BUW",
-                "name": "Baubau",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "165",
-            "name": "Seram",
-            "code": "",
-            "latitude": "-2.8114",
-            "longitude": "129.484",
-            "airports": []
-          },
-          {
-            "id": "175",
-            "name": "Sumbawa",
-            "code": "",
-            "latitude": "-8.489040375",
-            "longitude": "117.4120026",
-            "airports": [
-              {
-                "id": "SWQ",
-                "name": "Sultan Muhammad Kaharuddin III",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "71",
-            "name": "Keluang",
-            "code": "",
-            "latitude": "-2.623529911",
-            "longitude": "103.9550018",
-            "airports": []
-          },
-          {
-            "id": "199",
-            "name": "Tumbang Samba",
-            "code": "",
-            "latitude": "-1.4694",
-            "longitude": "113.0833",
-            "airports": [
-              {
-                "id": "TBM",
-                "name": "Tumbang Samba",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "109",
-            "name": "Mataram",
-            "code": "",
-            "latitude": "-8.560709953",
-            "longitude": "116.0950012",
-            "airports": []
-          },
-          {
-            "id": "39",
-            "name": "Dabra",
-            "code": "",
-            "latitude": "-3.2705",
-            "longitude": "138.6132",
-            "airports": []
-          },
-          {
-            "id": "159",
-            "name": "Satar Tacik",
-            "code": "",
-            "latitude": "-8.597009659",
-            "longitude": "120.4769974",
-            "airports": [
-              {
-                "id": "RTG",
-                "name": "Frans Sales Lega",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "12",
-            "name": "Ayawasi",
-            "code": "",
-            "latitude": "-1.1593",
-            "longitude": "132.4633",
-            "airports": []
-          },
-          {
-            "id": "70",
-            "name": "Kelila",
-            "code": "",
-            "latitude": "-3.75",
-            "longitude": "138.6666718",
-            "airports": []
-          },
-          {
-            "id": "149",
-            "name": "Sabang",
-            "code": "",
-            "latitude": "5.874129772",
-            "longitude": "95.33969879",
-            "airports": [
-              {
-                "id": "SBG",
-                "name": "Maimun Saleh",
-                "aliases": [
-                  "Sabang"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "59",
-            "name": "Jayapura",
-            "code": "",
-            "latitude": "-2.576950073",
-            "longitude": "140.5160065",
-            "airports": [
-              {
-                "id": "DJJ",
-                "name": "Sentani",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "15",
-            "name": "Bajawa",
-            "code": "",
-            "latitude": "-8.70743498",
-            "longitude": "121.0574269",
-            "airports": [
-              {
-                "id": "BJW",
-                "name": "Soa",
-                "aliases": [
-                  "Bajawa"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "61",
-            "name": "Kaimana",
-            "code": "",
-            "latitude": "-3.644520044",
-            "longitude": "133.6959991",
-            "airports": []
-          },
-          {
-            "id": "35",
-            "name": "Bunju Island",
-            "code": "",
-            "latitude": "3.455719948",
-            "longitude": "117.8669968",
-            "airports": []
-          },
-          {
-            "id": "8387",
-            "name": "Raja Ampat",
+            "id": "8392",
+            "name": "Muara Teweh",
             "code": "",
             "latitude": "",
             "longitude": "",
-            "airports": [
-              {
-                "id": "RJM",
-                "name": "Marinda Raja Ampat",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "96",
-            "name": "Maikoor",
-            "code": "",
-            "latitude": "-6.06619978",
-            "longitude": "134.2740021",
-            "airports": []
-          },
-          {
-            "id": "203",
-            "name": "Waha",
-            "code": "",
-            "latitude": "-5.764570236",
-            "longitude": "123.9169998",
-            "airports": []
-          },
-          {
-            "id": "139",
-            "name": "Pontianak",
-            "code": "",
-            "latitude": "-0.150711",
-            "longitude": "109.4039993",
             "airports": []
           },
           {
@@ -1642,59 +2476,11 @@
             "airports": []
           },
           {
-            "id": "21",
-            "name": "Banjarmasin",
+            "id": "157",
+            "name": "Santan",
             "code": "",
-            "latitude": "-3.442359924",
-            "longitude": "114.7630005",
-            "airports": [
-              {
-                "id": "BDJ",
-                "name": "Syamsudin Noor",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "207",
-            "name": "Wasior",
-            "code": "",
-            "latitude": "-2.721",
-            "longitude": "134.5061",
-            "airports": []
-          },
-          {
-            "id": "206",
-            "name": "Wamena",
-            "code": "",
-            "latitude": "-4.102509975",
-            "longitude": "138.9570007",
-            "airports": [
-              {
-                "id": "WMX",
-                "name": "Wamena",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "27",
-            "name": "Bengkalis",
-            "code": "",
-            "latitude": "1.370000005",
-            "longitude": "102.1399994",
-            "airports": []
-          },
-          {
-            "id": "163",
-            "name": "Senggeh",
-            "code": "",
-            "latitude": "-3.45",
-            "longitude": "140.779",
+            "latitude": "-0.0929730013",
+            "longitude": "117.4530029",
             "airports": []
           },
           {
@@ -1714,850 +2500,6 @@
             ]
           },
           {
-            "id": "67",
-            "name": "Karubaga",
-            "code": "",
-            "latitude": "-3.684",
-            "longitude": "138.479",
-            "airports": []
-          },
-          {
-            "id": "85",
-            "name": "Langgur",
-            "code": "",
-            "latitude": "-5.66162014",
-            "longitude": "132.7310028",
-            "airports": []
-          },
-          {
-            "id": "74",
-            "name": "Ketapang",
-            "code": "",
-            "latitude": "-1.816640019",
-            "longitude": "109.9629974",
-            "airports": [
-              {
-                "id": "KTG",
-                "name": "Rahadi Osman",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "137",
-            "name": "Pekanbaru",
-            "code": "",
-            "latitude": "0.4607860148",
-            "longitude": "101.4449997",
-            "airports": [
-              {
-                "id": "PKU",
-                "name": "Sultan Syarif Kasim II",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "115",
-            "name": "Mindiptana",
-            "code": "",
-            "latitude": "-5.75",
-            "longitude": "140.3670044",
-            "airports": []
-          },
-          {
-            "id": "25",
-            "name": "Batu Licin",
-            "code": "",
-            "latitude": "-3.412410021",
-            "longitude": "115.9950027",
-            "airports": [
-              {
-                "id": "BTW",
-                "name": "Batulicin",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "157",
-            "name": "Santan",
-            "code": "",
-            "latitude": "-0.0929730013",
-            "longitude": "117.4530029",
-            "airports": []
-          },
-          {
-            "id": "178",
-            "name": "Surabaya",
-            "code": "",
-            "latitude": "-7.379829884",
-            "longitude": "112.7870026",
-            "airports": [
-              {
-                "id": "SUB",
-                "name": "Juanda",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "54",
-            "name": "Illaga",
-            "code": "",
-            "latitude": "-3.97648",
-            "longitude": "137.6225",
-            "airports": []
-          },
-          {
-            "id": "122",
-            "name": "Namrole",
-            "code": "",
-            "latitude": "-3.8548",
-            "longitude": "126.7012",
-            "airports": []
-          },
-          {
-            "id": "55",
-            "name": "Ilu",
-            "code": "",
-            "latitude": "-3.7051",
-            "longitude": "138.2002",
-            "airports": []
-          },
-          {
-            "id": "113",
-            "name": "Merauke",
-            "code": "",
-            "latitude": "-8.520290375",
-            "longitude": "140.4179993",
-            "airports": [
-              {
-                "id": "MKQ",
-                "name": "Mopah",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "205",
-            "name": "Waingapu",
-            "code": "",
-            "latitude": "-9.669219971",
-            "longitude": "120.302002",
-            "airports": [
-              {
-                "id": "WGP",
-                "name": "Waingapu",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "52",
-            "name": "Gotalalamo",
-            "code": "",
-            "latitude": "2.04598999",
-            "longitude": "128.3249969",
-            "airports": [
-              {
-                "id": "OTI",
-                "name": "Pitu",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "86",
-            "name": "Larantuka",
-            "code": "",
-            "latitude": "-8.274424",
-            "longitude": "123.002",
-            "airports": [
-              {
-                "id": "LKA",
-                "name": "Gewayenta",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "179",
-            "name": "Swach",
-            "code": "",
-            "latitude": "-3.235",
-            "longitude": "140.994",
-            "airports": []
-          },
-          {
-            "id": "89",
-            "name": "Lewoleba",
-            "code": "",
-            "latitude": "-8.3629",
-            "longitude": "123.438",
-            "airports": [
-              {
-                "id": "LWE",
-                "name": "Wonopito",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "8392",
-            "name": "Muara Teweh",
-            "code": "",
-            "latitude": "",
-            "longitude": "",
-            "airports": []
-          },
-          {
-            "id": "1",
-            "name": "Alor",
-            "code": "",
-            "latitude": "-8.132340431",
-            "longitude": "124.5970001",
-            "airports": [
-              {
-                "id": "ARD",
-                "name": "Mali",
-                "aliases": [
-                  "Alor"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "204",
-            "name": "Wangiapu",
-            "code": "",
-            "latitude": "-9.409720421",
-            "longitude": "119.2440033",
-            "airports": [
-              {
-                "id": "TMC",
-                "name": "Umbu Mehang Kunda",
-                "aliases": [
-                  "Mau Hau",
-                  "Tambolaka",
-                  "Waikabubak"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "8395",
-            "name": "Milanau",
-            "code": "",
-            "latitude": "",
-            "longitude": "",
-            "airports": []
-          },
-          {
-            "id": "162",
-            "name": "Semarang",
-            "code": "",
-            "latitude": "-6.97273",
-            "longitude": "110.375",
-            "airports": [
-              {
-                "id": "SRG",
-                "name": "Achmad Yani",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "92",
-            "name": "Long Apung",
-            "code": "",
-            "latitude": "1.704486",
-            "longitude": "114.970297",
-            "airports": []
-          },
-          {
-            "id": "13",
-            "name": "Babo",
-            "code": "",
-            "latitude": "-2.532239914",
-            "longitude": "133.4389954",
-            "airports": []
-          },
-          {
-            "id": "182",
-            "name": "Tanah Grogot",
-            "code": "",
-            "latitude": "-1.910130024",
-            "longitude": "116.2020035",
-            "airports": []
-          },
-          {
-            "id": "69",
-            "name": "Keisah",
-            "code": "",
-            "latitude": "-7.666669846",
-            "longitude": "140.5",
-            "airports": []
-          },
-          {
-            "id": "83",
-            "name": "Labuan Bajo",
-            "code": "",
-            "latitude": "-8.486660004",
-            "longitude": "119.8889999",
-            "airports": [
-              {
-                "id": "LBJ",
-                "name": "Komodo",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "65",
-            "name": "Karakelong Island",
-            "code": "",
-            "latitude": "4.006939888",
-            "longitude": "126.6729965",
-            "airports": [
-              {
-                "id": "MNA",
-                "name": "Melonguane",
-                "aliases": [
-                  "Melangguane",
-                  "Talaud"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "143",
-            "name": "Raha",
-            "code": "",
-            "latitude": "-4.860070229",
-            "longitude": "122.7200012",
-            "airports": [
-              {
-                "id": "RAQ",
-                "name": "Sugimanuru",
-                "aliases": [
-                  "Muna"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "208",
-            "name": "Yahukimo",
-            "code": "",
-            "latitude": "-4.8557",
-            "longitude": "139.482",
-            "airports": [
-              {
-                "id": "DEX",
-                "name": "Bandara Udara Nop Goliat Dekai",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "166",
-            "name": "Serui",
-            "code": "",
-            "latitude": "-1.875579953",
-            "longitude": "136.2409973",
-            "airports": []
-          },
-          {
-            "id": "47",
-            "name": "Fakfak",
-            "code": "",
-            "latitude": "-2.920190096",
-            "longitude": "132.2669983",
-            "airports": [
-              {
-                "id": "FKQ",
-                "name": "Fak Fak",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "51",
-            "name": "Gorontalo",
-            "code": "",
-            "latitude": "0.6371189952",
-            "longitude": "122.8499985",
-            "airports": [
-              {
-                "id": "GTO",
-                "name": "Jalaluddin",
-                "aliases": [
-                  "Gorontalo",
-                  "Tolotio"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "123",
-            "name": "Nanga Pinoh",
-            "code": "",
-            "latitude": "-0.3488689959",
-            "longitude": "111.7480011",
-            "airports": []
-          },
-          {
-            "id": "8386",
-            "name": "Palopo",
-            "code": "",
-            "latitude": "",
-            "longitude": "",
-            "airports": [
-              {
-                "id": "LLO",
-                "name": "Lagaligo",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "193",
-            "name": "Tiakur",
-            "code": "",
-            "latitude": "-8.13911",
-            "longitude": "127.9075",
-            "airports": []
-          },
-          {
-            "id": "49",
-            "name": "Galela",
-            "code": "",
-            "latitude": "1.83833003",
-            "longitude": "127.7860031",
-            "airports": [
-              {
-                "id": "GLX",
-                "name": "Gamarmalamo",
-                "aliases": [
-                  "Gamar Malamo"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "135",
-            "name": "Pasir Pengarayan",
-            "code": "",
-            "latitude": "0.8454310298",
-            "longitude": "100.3700027",
-            "airports": []
-          },
-          {
-            "id": "127",
-            "name": "Oksibil",
-            "code": "",
-            "latitude": "-4.9071",
-            "longitude": "140.6277",
-            "airports": [
-              {
-                "id": "OKL",
-                "name": "Oksibil",
-                "aliases": [
-                  "Gunung Bintang"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "151",
-            "name": "Samarinda",
-            "code": "",
-            "latitude": "-0.4845309854",
-            "longitude": "117.1569977",
-            "airports": [
-              {
-                "id": "SRI",
-                "name": "Temindung",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "124",
-            "name": "Nunukan",
-            "code": "",
-            "latitude": "4.133333333",
-            "longitude": "117.6666667",
-            "airports": []
-          },
-          {
-            "id": "140",
-            "name": "Poso",
-            "code": "",
-            "latitude": "-1.416749954",
-            "longitude": "120.6579971",
-            "airports": [
-              {
-                "id": "PSJ",
-                "name": "Kasiguncu",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "36",
-            "name": "Buol",
-            "code": "",
-            "latitude": "1.1027",
-            "longitude": "121.4141",
-            "airports": [
-              {
-                "id": "UOL",
-                "name": "Pogogul",
-                "aliases": [
-                  "Buol"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "81",
-            "name": "Balikpapan",
-            "code": "",
-            "latitude": "-1.268270016",
-            "longitude": "116.8939972",
-            "airports": [
-              {
-                "id": "BPN",
-                "name": "Sultan Aji Muhamad Sulaiman",
-                "aliases": [
-                  "Sepinggan"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "107",
-            "name": "Matak",
-            "code": "",
-            "latitude": "3.348119974",
-            "longitude": "106.2580032",
-            "airports": [
-              {
-                "id": "MWK",
-                "name": "Matak",
-                "aliases": [
-                  "Anambas"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "198",
-            "name": "Toli Toli",
-            "code": "",
-            "latitude": "1.123428",
-            "longitude": "120.793658",
-            "airports": [
-              {
-                "id": "TLI",
-                "name": "Sultan Bantilan",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "172",
-            "name": "Sorong",
-            "code": "",
-            "latitude": "-0.894",
-            "longitude": "131.287",
-            "airports": [
-              {
-                "id": "SOQ",
-                "name": "Dominique Edward Osok",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "45",
-            "name": "Enarotali",
-            "code": "",
-            "latitude": "-3.925899982",
-            "longitude": "136.3769989",
-            "airports": []
-          },
-          {
-            "id": "9",
-            "name": "Astraksetra",
-            "code": "",
-            "latitude": "-4.611139774",
-            "longitude": "105.2320023",
-            "airports": []
-          },
-          {
-            "id": "40",
-            "name": "Datadawai",
-            "code": "",
-            "latitude": "0.8106",
-            "longitude": "114.5306",
-            "airports": []
-          },
-          {
-            "id": "173",
-            "name": "Sugapa",
-            "code": "",
-            "latitude": "-3.739559889",
-            "longitude": "137.0319977",
-            "airports": []
-          },
-          {
-            "id": "53",
-            "name": "Gunung Sitoli",
-            "code": "",
-            "latitude": "1.166380048",
-            "longitude": "97.70469666",
-            "airports": [
-              {
-                "id": "GNS",
-                "name": "Binaka",
-                "aliases": [
-                  "Gunung Sitoli"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "169",
-            "name": "Sintang",
-            "code": "",
-            "latitude": "0.0636190027",
-            "longitude": "111.4729996",
-            "airports": [
-              {
-                "id": "SQG",
-                "name": "Susilo",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "17",
-            "name": "Banda Aceh",
-            "code": "",
-            "latitude": "5.522872024",
-            "longitude": "95.42063713",
-            "airports": [
-              {
-                "id": "BTJ",
-                "name": "Sultan Iskandar Muda",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "117",
-            "name": "Muko Muko",
-            "code": "",
-            "latitude": "-2.541860104",
-            "longitude": "101.0879974",
-            "airports": []
-          },
-          {
-            "id": "8389",
-            "name": "Wakatobi",
-            "code": "",
-            "latitude": "",
-            "longitude": "",
-            "airports": [
-              {
-                "id": "WNI",
-                "name": "Matahora",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "114",
-            "name": "Merdei",
-            "code": "",
-            "latitude": "-1.583330035",
-            "longitude": "133.3329926",
-            "airports": []
-          },
-          {
-            "id": "56",
-            "name": "Inanwatan",
-            "code": "",
-            "latitude": "-2.128099918",
-            "longitude": "132.1609955",
-            "airports": []
-          },
-          {
-            "id": "94",
-            "name": "Lunyuk",
-            "code": "",
-            "latitude": "-8.9889",
-            "longitude": "117.2158",
-            "airports": [
-              {
-                "id": "LYK",
-                "name": "Lunyuk",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "8390",
-            "name": "Selayar",
-            "code": "",
-            "latitude": "",
-            "longitude": "",
-            "airports": [
-              {
-                "id": "YKR",
-                "name": "H. Aroeppala",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "4",
-            "name": "Amgotro",
-            "code": "",
-            "latitude": "-3.6333",
-            "longitude": "140.958",
-            "airports": []
-          },
-          {
-            "id": "33",
-            "name": "Bokondini",
-            "code": "",
-            "latitude": "-3.6822",
-            "longitude": "138.6755",
-            "airports": []
-          },
-          {
-            "id": "28",
-            "name": "Bengkulu",
-            "code": "",
-            "latitude": "-3.8637",
-            "longitude": "102.338997",
-            "airports": [
-              {
-                "id": "BKS",
-                "name": "Fatmawati Soekarno",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "93",
-            "name": "Long Bawan",
-            "code": "",
-            "latitude": "3.9028",
-            "longitude": "115.6921",
-            "airports": []
-          },
-          {
-            "id": "187",
-            "name": "Tanjung Redep",
-            "code": "",
-            "latitude": "2.155499935",
-            "longitude": "117.4319992",
-            "airports": [
-              {
-                "id": "BEJ",
-                "name": "Kalimarau",
-                "aliases": [
-                  "Berau"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "8391",
-            "name": "Buli",
-            "code": "",
-            "latitude": "",
-            "longitude": "",
-            "airports": [
-              {
-                "id": "WUB",
-                "name": "Buli",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "200",
-            "name": "Ubrub",
-            "code": "",
-            "latitude": "-3.67565",
-            "longitude": "140.8838",
-            "airports": []
-          },
-          {
-            "id": "197",
-            "name": "Tjepu",
-            "code": "",
-            "latitude": "-7.194841667",
-            "longitude": "111.5481667",
-            "airports": []
-          },
-          {
             "id": "142",
             "name": "Putussibau",
             "code": "",
@@ -2574,15 +2516,15 @@
             ]
           },
           {
-            "id": "101",
-            "name": "Manado",
+            "id": "104",
+            "name": "Manokwari",
             "code": "",
-            "latitude": "1.54926002",
-            "longitude": "124.9260025",
+            "latitude": "-0.8918330073",
+            "longitude": "134.048996",
             "airports": [
               {
-                "id": "MDC",
-                "name": "Sam Ratulangi",
+                "id": "MKW",
+                "name": "Rendani",
                 "aliases": [
                   ""
                 ]
@@ -2590,47 +2532,23 @@
             ]
           },
           {
-            "id": "192",
-            "name": "Tasikmalaya",
+            "id": "193",
+            "name": "Tiakur",
             "code": "",
-            "latitude": "-7.346600056",
-            "longitude": "108.2460022",
-            "airports": [
-              {
-                "id": "TSY",
-                "name": "Wiriadinata Airport",
-                "aliases": [
-                  "Tasikmalaya"
-                ]
-              }
-            ]
+            "latitude": "-8.13911",
+            "longitude": "127.9075",
+            "airports": []
           },
           {
-            "id": "64",
-            "name": "Kao",
+            "id": "20",
+            "name": "Bandung",
             "code": "",
-            "latitude": "1.185279965",
-            "longitude": "127.8960037",
+            "latitude": "-6.900629997",
+            "longitude": "107.5759964",
             "airports": [
               {
-                "id": "KAZ",
-                "name": "Kuabang Kao",
-                "aliases": [
-                  "Tobelo"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "8385",
-            "name": "Ampana",
-            "code": "",
-            "latitude": "",
-            "longitude": "",
-            "airports": [
-              {
-                "id": "VPM",
-                "name": "Tanjung Api",
+                "id": "BDO",
+                "name": "Husein Sastranegara",
                 "aliases": [
                   ""
                 ]
@@ -2638,17 +2556,81 @@
             ]
           },
           {
-            "id": "174",
-            "name": "Solo",
+            "id": "98",
+            "name": "Malang",
             "code": "",
-            "latitude": "-7.516089916",
-            "longitude": "110.7570038",
+            "latitude": "-7.926559925",
+            "longitude": "112.7149963",
             "airports": [
               {
-                "id": "SOC",
-                "name": "Adi Sumarmo",
+                "id": "MLG",
+                "name": "Abdul Rachman Saleh",
                 "aliases": [
-                  "surakarta"
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "79",
+            "name": "Kornasoren-Noemfoor",
+            "code": "",
+            "latitude": "-0.9363250136",
+            "longitude": "134.871994",
+            "airports": []
+          },
+          {
+            "id": "30",
+            "name": "Bima",
+            "code": "",
+            "latitude": "-8.539649963",
+            "longitude": "118.6869965",
+            "airports": [
+              {
+                "id": "BMU",
+                "name": "Sultan Muhammad Salahuddin",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "199",
+            "name": "Tumbang Samba",
+            "code": "",
+            "latitude": "-1.4694",
+            "longitude": "113.0833",
+            "airports": [
+              {
+                "id": "TBM",
+                "name": "Tumbang Samba",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "118",
+            "name": "Mulia",
+            "code": "",
+            "latitude": "-3.7018",
+            "longitude": "137.957",
+            "airports": []
+          },
+          {
+            "id": "89",
+            "name": "Lewoleba",
+            "code": "",
+            "latitude": "-8.3629",
+            "longitude": "123.438",
+            "airports": [
+              {
+                "id": "LWE",
+                "name": "Wonopito",
+                "aliases": [
+                  ""
                 ]
               }
             ]
@@ -2673,235 +2655,11 @@
             ]
           },
           {
-            "id": "44",
-            "name": "Elelim",
+            "id": "173",
+            "name": "Sugapa",
             "code": "",
-            "latitude": "-3.7826",
-            "longitude": "139.3861",
-            "airports": []
-          },
-          {
-            "id": "97",
-            "name": "Makale",
-            "code": "",
-            "latitude": "-3.044739962",
-            "longitude": "119.8219986",
-            "airports": [
-              {
-                "id": "TTR",
-                "name": "Pongtiku",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "5",
-            "name": "Anggi",
-            "code": "",
-            "latitude": "-1.3858",
-            "longitude": "133.8737",
-            "airports": []
-          },
-          {
-            "id": "82",
-            "name": "Kupang",
-            "code": "",
-            "latitude": "-10.17160034",
-            "longitude": "123.6709976",
-            "airports": [
-              {
-                "id": "KOE",
-                "name": "El Tari",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "155",
-            "name": "Sangir",
-            "code": "",
-            "latitude": "-8.366669655",
-            "longitude": "118.3333588",
-            "airports": []
-          },
-          {
-            "id": "95",
-            "name": "Luwuk",
-            "code": "",
-            "latitude": "-1.038920045",
-            "longitude": "122.7720032",
-            "airports": [
-              {
-                "id": "LUW",
-                "name": "Syukuran Aminuddin Amir",
-                "aliases": [
-                  "Bubung"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "132",
-            "name": "Pangkal Pinang",
-            "code": "",
-            "latitude": "-2.162199974",
-            "longitude": "106.1389999",
-            "airports": [
-              {
-                "id": "PGK",
-                "name": "Depati Amir",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "43",
-            "name": "Dumai",
-            "code": "",
-            "latitude": "1.60919",
-            "longitude": "101.433998",
-            "airports": [
-              {
-                "id": "DUM",
-                "name": "Pinang Kampai",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "11",
-            "name": "Teminabuan",
-            "code": "",
-            "latitude": "-1.44472003",
-            "longitude": "132.0209961",
-            "airports": [
-              {
-                "id": "TXM",
-                "name": "Teminabuan",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "120",
-            "name": "Nabire",
-            "code": "",
-            "latitude": "-3.368180037",
-            "longitude": "135.4960022",
-            "airports": [
-              {
-                "id": "NBX",
-                "name": "Nabire",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "32",
-            "name": "Boalang",
-            "code": "",
-            "latitude": "-0.9728959799",
-            "longitude": "122.1449966",
-            "airports": [
-              {
-                "id": "BJG",
-                "name": "Bolaang",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "48",
-            "name": "Gag",
-            "code": "",
-            "latitude": "-0.4005559981",
-            "longitude": "129.8950043",
-            "airports": []
-          },
-          {
-            "id": "121",
-            "name": "Namlea",
-            "code": "",
-            "latitude": "-3.235569954",
-            "longitude": "127.0999985",
-            "airports": []
-          },
-          {
-            "id": "160",
-            "name": "Saumlaki",
-            "code": "",
-            "latitude": "-7.988609791",
-            "longitude": "131.3059998",
-            "airports": [
-              {
-                "id": "SXK",
-                "name": "Mathilda Batlayeri",
-                "aliases": [
-                  "Saumlaki"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "180",
-            "name": "Tahuna",
-            "code": "",
-            "latitude": "3.683209896",
-            "longitude": "125.5279999",
-            "airports": [
-              {
-                "id": "NAH",
-                "name": "Naha",
-                "aliases": [
-                  "Judha Tindas"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "104",
-            "name": "Manokwari",
-            "code": "",
-            "latitude": "-0.8918330073",
-            "longitude": "134.048996",
-            "airports": [
-              {
-                "id": "MKW",
-                "name": "Rendani",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "8382",
-            "name": "Senipah",
-            "code": "",
-            "latitude": "",
-            "longitude": "",
-            "airports": []
-          },
-          {
-            "id": "79",
-            "name": "Kornasoren-Noemfoor",
-            "code": "",
-            "latitude": "-0.9363250136",
-            "longitude": "134.871994",
+            "latitude": "-3.739559889",
+            "longitude": "137.0319977",
             "airports": []
           },
           {
@@ -2923,55 +2681,39 @@
             ]
           },
           {
-            "id": "68",
-            "name": "Kebar",
+            "id": "45",
+            "name": "Enarotali",
             "code": "",
-            "latitude": "-0.6371009946",
-            "longitude": "133.128006",
+            "latitude": "-3.925899982",
+            "longitude": "136.3769989",
             "airports": []
           },
           {
-            "id": "76",
-            "name": "Kiman",
+            "id": "116",
+            "name": "Moanamani",
             "code": "",
-            "latitude": "-3.666670084",
-            "longitude": "136.1666718",
+            "latitude": "-3.983402014",
+            "longitude": "136.0832977",
             "airports": []
           },
           {
-            "id": "111",
-            "name": "Medan",
+            "id": "126",
+            "name": "Okaba",
             "code": "",
-            "latitude": "3.642222",
-            "longitude": "98.885278",
+            "latitude": "-8.0946",
+            "longitude": "139.7233",
+            "airports": []
+          },
+          {
+            "id": "52",
+            "name": "Gotalalamo",
+            "code": "",
+            "latitude": "2.04598999",
+            "longitude": "128.3249969",
             "airports": [
               {
-                "id": "KNO",
-                "name": "Kualanamu",
-                "aliases": [
-                  "Deli Serdang"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "194",
-            "name": "Tikong",
-            "code": "",
-            "latitude": "-1.642629981",
-            "longitude": "124.5589981",
-            "airports": []
-          },
-          {
-            "id": "188",
-            "name": "Tanjung Selor",
-            "code": "",
-            "latitude": "2.835833333",
-            "longitude": "117.3736111",
-            "airports": [
-              {
-                "id": "TJS",
-                "name": "Tanjung Harapan",
+                "id": "OTI",
+                "name": "Pitu",
                 "aliases": [
                   ""
                 ]
@@ -2979,15 +2721,15 @@
             ]
           },
           {
-            "id": "176",
-            "name": "Sumenep",
+            "id": "72",
+            "name": "Kendari",
             "code": "",
-            "latitude": "-7.0242",
-            "longitude": "113.89023",
+            "latitude": "-4.081610203",
+            "longitude": "122.4179993",
             "airports": [
               {
-                "id": "SUP",
-                "name": "Trunojoyo",
+                "id": "KDI",
+                "name": "Haluoleo",
                 "aliases": [
                   ""
                 ]
@@ -2995,30 +2737,151 @@
             ]
           },
           {
-            "id": "80",
-            "name": "Kotabangun",
+            "id": "107",
+            "name": "Matak",
             "code": "",
-            "latitude": "-0.2666699886",
-            "longitude": "116.5833359",
+            "latitude": "3.348119974",
+            "longitude": "106.2580032",
+            "airports": [
+              {
+                "id": "MWK",
+                "name": "Matak",
+                "aliases": [
+                  "Anambas"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "168",
+            "name": "Sinak",
+            "code": "",
+            "latitude": "-3.822",
+            "longitude": "137.8406",
             "airports": []
           },
           {
-            "id": "57",
-            "name": "Jakarta",
-            "code": "JKTA",
-            "latitude": "-5.644444",
-            "longitude": "106.5625",
+            "id": "205",
+            "name": "Waingapu",
+            "code": "",
+            "latitude": "-9.669219971",
+            "longitude": "120.302002",
             "airports": [
               {
-                "id": "HLP",
-                "name": "Halim Perdanakusuma",
+                "id": "WGP",
+                "name": "Waingapu",
                 "aliases": [
                   ""
                 ]
-              },
+              }
+            ]
+          },
+          {
+            "id": "135",
+            "name": "Pasir Pengarayan",
+            "code": "",
+            "latitude": "0.8454310298",
+            "longitude": "100.3700027",
+            "airports": []
+          },
+          {
+            "id": "109",
+            "name": "Mataram",
+            "code": "",
+            "latitude": "-8.560709953",
+            "longitude": "116.0950012",
+            "airports": []
+          },
+          {
+            "id": "74",
+            "name": "Ketapang",
+            "code": "",
+            "latitude": "-1.816640019",
+            "longitude": "109.9629974",
+            "airports": [
               {
-                "id": "CGK",
-                "name": "Soekarno-Hatta",
+                "id": "KTG",
+                "name": "Rahadi Osman",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "81",
+            "name": "Balikpapan",
+            "code": "",
+            "latitude": "-1.268270016",
+            "longitude": "116.8939972",
+            "airports": [
+              {
+                "id": "BPN",
+                "name": "Sultan Aji Muhamad Sulaiman",
+                "aliases": [
+                  "Sepinggan"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "8395",
+            "name": "Milanau",
+            "code": "",
+            "latitude": "",
+            "longitude": "",
+            "airports": []
+          },
+          {
+            "id": "141",
+            "name": "Purwokerto",
+            "code": "",
+            "latitude": "-7.461669922",
+            "longitude": "109.4169998",
+            "airports": []
+          },
+          {
+            "id": "70",
+            "name": "Kelila",
+            "code": "",
+            "latitude": "-3.75",
+            "longitude": "138.6666718",
+            "airports": []
+          },
+          {
+            "id": "133",
+            "name": "Pangkalanbun",
+            "code": "",
+            "latitude": "-2.705199957",
+            "longitude": "111.6729965",
+            "airports": [
+              {
+                "id": "PKN",
+                "name": "Iskandar",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "50",
+            "name": "Gebe",
+            "code": "",
+            "latitude": "-0.07888899744",
+            "longitude": "129.4579926",
+            "airports": []
+          },
+          {
+            "id": "97",
+            "name": "Makale",
+            "code": "",
+            "latitude": "-3.044739962",
+            "longitude": "119.8219986",
+            "airports": [
+              {
+                "id": "TTR",
+                "name": "Pongtiku",
                 "aliases": [
                   ""
                 ]
@@ -3043,15 +2906,15 @@
             ]
           },
           {
-            "id": "23",
-            "name": "Batam",
+            "id": "8391",
+            "name": "Buli",
             "code": "",
-            "latitude": "1.121029973",
-            "longitude": "104.1190033",
+            "latitude": "",
+            "longitude": "",
             "airports": [
               {
-                "id": "BTH",
-                "name": "Hang Nadim",
+                "id": "WUB",
+                "name": "Buli",
                 "aliases": [
                   ""
                 ]
@@ -3059,15 +2922,143 @@
             ]
           },
           {
-            "id": "108",
-            "name": "Lombok",
+            "id": "166",
+            "name": "Serui",
             "code": "",
-            "latitude": "-8.757322",
-            "longitude": "116.276675",
+            "latitude": "-1.875579953",
+            "longitude": "136.2409973",
+            "airports": []
+          },
+          {
+            "id": "188",
+            "name": "Tanjung Selor",
+            "code": "",
+            "latitude": "2.835833333",
+            "longitude": "117.3736111",
             "airports": [
               {
-                "id": "LOP",
-                "name": "Lombok",
+                "id": "TJS",
+                "name": "Tanjung Harapan",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "101",
+            "name": "Manado",
+            "code": "",
+            "latitude": "1.54926002",
+            "longitude": "124.9260025",
+            "airports": [
+              {
+                "id": "MDC",
+                "name": "Sam Ratulangi",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "5",
+            "name": "Anggi",
+            "code": "",
+            "latitude": "-1.3858",
+            "longitude": "133.8737",
+            "airports": []
+          },
+          {
+            "id": "196",
+            "name": "Tiom",
+            "code": "",
+            "latitude": "-3.9256",
+            "longitude": "138.4555",
+            "airports": []
+          },
+          {
+            "id": "125",
+            "name": "Obano",
+            "code": "",
+            "latitude": "-3.9106",
+            "longitude": "136.2306",
+            "airports": []
+          },
+          {
+            "id": "88",
+            "name": "Lereh",
+            "code": "",
+            "latitude": "-3.0795",
+            "longitude": "139.952",
+            "airports": []
+          },
+          {
+            "id": "122",
+            "name": "Namrole",
+            "code": "",
+            "latitude": "-3.8548",
+            "longitude": "126.7012",
+            "airports": []
+          },
+          {
+            "id": "198",
+            "name": "Toli Toli",
+            "code": "",
+            "latitude": "1.123428",
+            "longitude": "120.793658",
+            "airports": [
+              {
+                "id": "TLI",
+                "name": "Sultan Bantilan",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "121",
+            "name": "Namlea",
+            "code": "",
+            "latitude": "-3.235569954",
+            "longitude": "127.0999985",
+            "airports": []
+          },
+          {
+            "id": "86",
+            "name": "Larantuka",
+            "code": "",
+            "latitude": "-8.274424",
+            "longitude": "123.002",
+            "airports": [
+              {
+                "id": "LKA",
+                "name": "Gewayenta",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "31",
+            "name": "Bintuni",
+            "code": "",
+            "latitude": "-2.1033",
+            "longitude": "133.5164",
+            "airports": []
+          },
+          {
+            "id": "47",
+            "name": "Fakfak",
+            "code": "",
+            "latitude": "-2.920190096",
+            "longitude": "132.2669983",
+            "airports": [
+              {
+                "id": "FKQ",
+                "name": "Fak Fak",
                 "aliases": [
                   ""
                 ]
@@ -3091,15 +3082,15 @@
             ]
           },
           {
-            "id": "195",
-            "name": "Timika",
+            "id": "82",
+            "name": "Kupang",
             "code": "",
-            "latitude": "-4.528279781",
-            "longitude": "136.8869934",
+            "latitude": "-10.17160034",
+            "longitude": "123.6709976",
             "airports": [
               {
-                "id": "TIM",
-                "name": "Mozes Kilangin",
+                "id": "KOE",
+                "name": "El Tari",
                 "aliases": [
                   ""
                 ]
@@ -3107,31 +3098,71 @@
             ]
           },
           {
-            "id": "118",
-            "name": "Mulia",
+            "id": "160",
+            "name": "Saumlaki",
             "code": "",
-            "latitude": "-3.7018",
-            "longitude": "137.957",
-            "airports": []
-          },
-          {
-            "id": "202",
-            "name": "Wagethe",
-            "code": "",
-            "latitude": "-4.044229984",
-            "longitude": "136.2779999",
-            "airports": []
-          },
-          {
-            "id": "133",
-            "name": "Pangkalanbun",
-            "code": "",
-            "latitude": "-2.705199957",
-            "longitude": "111.6729965",
+            "latitude": "-7.988609791",
+            "longitude": "131.3059998",
             "airports": [
               {
-                "id": "PKN",
-                "name": "Iskandar",
+                "id": "SXK",
+                "name": "Mathilda Batlayeri",
+                "aliases": [
+                  "Saumlaki"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "73",
+            "name": "Kepi",
+            "code": "",
+            "latitude": "-6.5418",
+            "longitude": "139.3318",
+            "airports": []
+          },
+          {
+            "id": "203",
+            "name": "Waha",
+            "code": "",
+            "latitude": "-5.764570236",
+            "longitude": "123.9169998",
+            "airports": []
+          },
+          {
+            "id": "15",
+            "name": "Bajawa",
+            "code": "",
+            "latitude": "-8.70743498",
+            "longitude": "121.0574269",
+            "airports": [
+              {
+                "id": "BJW",
+                "name": "Soa",
+                "aliases": [
+                  "Bajawa"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "35",
+            "name": "Bunju Island",
+            "code": "",
+            "latitude": "3.455719948",
+            "longitude": "117.8669968",
+            "airports": []
+          },
+          {
+            "id": "159",
+            "name": "Satar Tacik",
+            "code": "",
+            "latitude": "-8.597009659",
+            "longitude": "120.4769974",
+            "airports": [
+              {
+                "id": "RTG",
+                "name": "Frans Sales Lega",
                 "aliases": [
                   ""
                 ]
@@ -3139,55 +3170,15 @@
             ]
           },
           {
-            "id": "78",
-            "name": "Kolaka",
+            "id": "25",
+            "name": "Batu Licin",
             "code": "",
-            "latitude": "-4.181089878",
-            "longitude": "121.6179962",
+            "latitude": "-3.412410021",
+            "longitude": "115.9950027",
             "airports": [
               {
-                "id": "PUM",
-                "name": "Sangia Nibandera",
-                "aliases": [
-                  "Pomala"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "150",
-            "name": "Sabu",
-            "code": "",
-            "latitude": "-10.4924",
-            "longitude": "121.8482",
-            "airports": []
-          },
-          {
-            "id": "41",
-            "name": "Denpasar",
-            "code": "",
-            "latitude": "-8.748169899",
-            "longitude": "115.1669998",
-            "airports": [
-              {
-                "id": "DPS",
-                "name": "Ngurah Rai",
-                "aliases": [
-                  "bali"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "77",
-            "name": "Kokonau",
-            "code": "",
-            "latitude": "-4.71075",
-            "longitude": "136.43515",
-            "airports": [
-              {
-                "id": "KOX",
-                "name": "Kokonao",
+                "id": "BTW",
+                "name": "Batulicin",
                 "aliases": [
                   ""
                 ]
@@ -3195,15 +3186,23 @@
             ]
           },
           {
-            "id": "60",
-            "name": "Jember",
+            "id": "40",
+            "name": "Datadawai",
             "code": "",
-            "latitude": "-8.238056",
-            "longitude": "113.694439",
+            "latitude": "0.8106",
+            "longitude": "114.5306",
+            "airports": []
+          },
+          {
+            "id": "152",
+            "name": "Sampit",
+            "code": "",
+            "latitude": "-2.499190092",
+            "longitude": "112.9749985",
             "airports": [
               {
-                "id": "JBB",
-                "name": "Notohadinegoro",
+                "id": "SMQ",
+                "name": "H. Asan",
                 "aliases": [
                   ""
                 ]
@@ -3211,67 +3210,27 @@
             ]
           },
           {
-            "id": "24",
-            "name": "Batom",
+            "id": "64",
+            "name": "Kao",
             "code": "",
-            "latitude": "-4.166669846",
-            "longitude": "140.8500061",
-            "airports": []
-          },
-          {
-            "id": "119",
-            "name": "Muting",
-            "code": "",
-            "latitude": "-7.3147",
-            "longitude": "140.5668",
-            "airports": []
-          },
-          {
-            "id": "185",
-            "name": "Tanjung Pandan",
-            "code": "",
-            "latitude": "-2.74571991",
-            "longitude": "107.7549973",
+            "latitude": "1.185279965",
+            "longitude": "127.8960037",
             "airports": [
               {
-                "id": "TJQ",
-                "name": "H.A.S. Hanandjoeddin",
+                "id": "KAZ",
+                "name": "Kuabang Kao",
                 "aliases": [
-                  "Buluh Tumbang"
+                  "Tobelo"
                 ]
               }
             ]
           },
           {
-            "id": "38",
-            "name": "Cirebon",
+            "id": "163",
+            "name": "Senggeh",
             "code": "",
-            "latitude": "-6.756140232",
-            "longitude": "108.5400009",
-            "airports": []
-          },
-          {
-            "id": "153",
-            "name": "Sanana",
-            "code": "",
-            "latitude": "-2.080509901",
-            "longitude": "125.9670029",
-            "airports": []
-          },
-          {
-            "id": "145",
-            "name": "Ransiki",
-            "code": "",
-            "latitude": "-1.496771",
-            "longitude": "134.175",
-            "airports": []
-          },
-          {
-            "id": "7",
-            "name": "Arso",
-            "code": "",
-            "latitude": "-2.93333292",
-            "longitude": "140.7833405",
+            "latitude": "-3.45",
+            "longitude": "140.779",
             "airports": []
           },
           {
@@ -3291,31 +3250,41 @@
             ]
           },
           {
-            "id": "88",
-            "name": "Lereh",
+            "id": "37",
+            "name": "Cilacap",
             "code": "",
-            "latitude": "-3.0795",
-            "longitude": "139.952",
+            "latitude": "-7.645060062",
+            "longitude": "109.0339966",
             "airports": []
           },
           {
-            "id": "161",
-            "name": "Sawan",
+            "id": "204",
+            "name": "Wangiapu",
             "code": "",
-            "latitude": "-8.132780075",
-            "longitude": "115.1729965",
-            "airports": []
-          },
-          {
-            "id": "84",
-            "name": "Labuha",
-            "code": "",
-            "latitude": "-0.6352589726",
-            "longitude": "127.5019989",
+            "latitude": "-9.409720421",
+            "longitude": "119.2440033",
             "airports": [
               {
-                "id": "LAH",
-                "name": "Oesman Sadik",
+                "id": "TMC",
+                "name": "Umbu Mehang Kunda",
+                "aliases": [
+                  "Mau Hau",
+                  "Tambolaka",
+                  "Waikabubak"
+                ]
+              }
+            ]
+          },
+          {
+            "id": "26",
+            "name": "Bau Bau",
+            "code": "",
+            "latitude": "-5.486879826",
+            "longitude": "122.5690002",
+            "airports": [
+              {
+                "id": "BUW",
+                "name": "Baubau",
                 "aliases": [
                   ""
                 ]
@@ -3323,79 +3292,31 @@
             ]
           },
           {
-            "id": "154",
-            "name": "Sanggata",
+            "id": "10",
+            "name": "Atambua",
             "code": "",
-            "latitude": "0.3847",
-            "longitude": "117.543",
+            "latitude": "-9.073049545",
+            "longitude": "124.9049988",
             "airports": [
               {
-                "id": "SGQ",
-                "name": "Sangkimah",
+                "id": "ABU",
+                "name": "AA Bere Tallo",
                 "aliases": [
-                  "Tanjung Bara"
+                  "Haliwen"
                 ]
               }
             ]
           },
           {
-            "id": "98",
-            "name": "Malang",
+            "id": "140",
+            "name": "Poso",
             "code": "",
-            "latitude": "-7.926559925",
-            "longitude": "112.7149963",
+            "latitude": "-1.416749954",
+            "longitude": "120.6579971",
             "airports": [
               {
-                "id": "MLG",
-                "name": "Abdul Rachman Saleh",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "147",
-            "name": "Rokot",
-            "code": "",
-            "latitude": "-0.9499999881",
-            "longitude": "100.75",
-            "airports": []
-          },
-          {
-            "id": "183",
-            "name": "Tanah Merah",
-            "code": "",
-            "latitude": "-6.099219799",
-            "longitude": "140.2980042",
-            "airports": []
-          },
-          {
-            "id": "8383",
-            "name": "Sibolga",
-            "code": "",
-            "latitude": "",
-            "longitude": "",
-            "airports": [
-              {
-                "id": "FLZ",
-                "name": "Dr. Ferdinand Lumban Tobing",
-                "aliases": [
-                  ""
-                ]
-              }
-            ]
-          },
-          {
-            "id": "19",
-            "name": "Bandar Lampung",
-            "code": "",
-            "latitude": "-5.240556",
-            "longitude": "105.175556",
-            "airports": [
-              {
-                "id": "TKG",
-                "name": "Radin Inten II",
+                "id": "PSJ",
+                "name": "Kasiguncu",
                 "aliases": [
                   ""
                 ]
@@ -3419,12 +3340,92 @@
             ]
           },
           {
-            "id": "50",
-            "name": "Gebe",
+            "id": "145",
+            "name": "Ransiki",
             "code": "",
-            "latitude": "-0.07888899744",
-            "longitude": "129.4579926",
+            "latitude": "-1.496771",
+            "longitude": "134.175",
             "airports": []
+          },
+          {
+            "id": "206",
+            "name": "Wamena",
+            "code": "",
+            "latitude": "-4.102509975",
+            "longitude": "138.9570007",
+            "airports": [
+              {
+                "id": "WMX",
+                "name": "Wamena",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "178",
+            "name": "Surabaya",
+            "code": "",
+            "latitude": "-7.379829884",
+            "longitude": "112.7870026",
+            "airports": [
+              {
+                "id": "SUB",
+                "name": "Juanda",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
+          },
+          {
+            "id": "202",
+            "name": "Wagethe",
+            "code": "",
+            "latitude": "-4.044229984",
+            "longitude": "136.2779999",
+            "airports": []
+          },
+          {
+            "id": "144",
+            "name": "Ranai",
+            "code": "",
+            "latitude": "3.908710003",
+            "longitude": "108.3880005",
+            "airports": []
+          },
+          {
+            "id": "103",
+            "name": "Mangungaya",
+            "code": "",
+            "latitude": "-2.733330011",
+            "longitude": "103.5670013",
+            "airports": []
+          },
+          {
+            "id": "68",
+            "name": "Kebar",
+            "code": "",
+            "latitude": "-0.6371009946",
+            "longitude": "133.128006",
+            "airports": []
+          },
+          {
+            "id": "8383",
+            "name": "Sibolga",
+            "code": "",
+            "latitude": "",
+            "longitude": "",
+            "airports": [
+              {
+                "id": "FLZ",
+                "name": "Dr. Ferdinand Lumban Tobing",
+                "aliases": [
+                  ""
+                ]
+              }
+            ]
           },
           {
             "id": "128",
@@ -3443,31 +3444,31 @@
             ]
           },
           {
-            "id": "2",
-            "name": "Amahai",
+            "id": "66",
+            "name": "Karimunjawa",
             "code": "",
-            "latitude": "-3.34800005",
-            "longitude": "128.9259949",
+            "latitude": "-5.80091",
+            "longitude": "110.47838",
             "airports": []
           },
           {
-            "id": "168",
-            "name": "Sinak",
+            "id": "207",
+            "name": "Wasior",
             "code": "",
-            "latitude": "-3.822",
-            "longitude": "137.8406",
+            "latitude": "-2.721",
+            "longitude": "134.5061",
             "airports": []
           },
           {
-            "id": "209",
-            "name": "Yogyakarta",
+            "id": "132",
+            "name": "Pangkal Pinang",
             "code": "",
-            "latitude": "-7.788179874",
-            "longitude": "",
+            "latitude": "-2.162199974",
+            "longitude": "106.1389999",
             "airports": [
               {
-                "id": "JOG",
-                "name": "Adisutjipto",
+                "id": "PGK",
+                "name": "Depati Amir",
                 "aliases": [
                   ""
                 ]
@@ -3475,15 +3476,15 @@
             ]
           },
           {
-            "id": "191",
-            "name": "Tarakan Island",
+            "id": "169",
+            "name": "Sintang",
             "code": "",
-            "latitude": "3.326667",
-            "longitude": "117.569444",
+            "latitude": "0.0636190027",
+            "longitude": "111.4729996",
             "airports": [
               {
-                "id": "TRK",
-                "name": "Juwata",
+                "id": "SQG",
+                "name": "Susilo",
                 "aliases": [
                   ""
                 ]
@@ -3491,37 +3492,44 @@
             ]
           },
           {
-            "id": "58",
-            "name": "Jambi",
+            "id": "83",
+            "name": "Labuan Bajo",
             "code": "",
-            "latitude": "-1.638020039",
-            "longitude": "103.6439972",
+            "latitude": "-8.486660004",
+            "longitude": "119.8889999",
             "airports": [
               {
-                "id": "DJB",
-                "name": "Sultan Thaha Syaifuddin",
+                "id": "LBJ",
+                "name": "Komodo",
                 "aliases": [
-                  "Sultan Thaha",
-                  "Thaha"
+                  ""
                 ]
               }
             ]
           },
           {
-            "id": "181",
-            "name": "Talang Gudang",
+            "id": "56",
+            "name": "Inanwatan",
             "code": "",
-            "latitude": "-3.286070108",
-            "longitude": "103.8799973",
+            "latitude": "-2.128099918",
+            "longitude": "132.1609955",
             "airports": []
           },
           {
-            "id": "144",
-            "name": "Ranai",
+            "id": "41",
+            "name": "Denpasar",
             "code": "",
-            "latitude": "3.908710003",
-            "longitude": "108.3880005",
-            "airports": []
+            "latitude": "-8.748169899",
+            "longitude": "115.1669998",
+            "airports": [
+              {
+                "id": "DPS",
+                "name": "Ngurah Rai",
+                "aliases": [
+                  "bali"
+                ]
+              }
+            ]
           }
         ]
       }
