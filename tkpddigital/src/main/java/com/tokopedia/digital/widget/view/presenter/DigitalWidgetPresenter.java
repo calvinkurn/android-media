@@ -57,7 +57,7 @@ public class DigitalWidgetPresenter extends BaseDigitalPresenter implements IDig
 
             @Override
             public void onError(Throwable e) {
-                digitalWidgetView.showInitialProgressLoading();
+                digitalWidgetView.hideInitialProgressLoading();
             }
 
             @Override

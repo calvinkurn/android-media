@@ -319,7 +319,6 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
         }
     }
 
-
     @Override
     public void onButtonContactPickerClicked() {
         WidgetAllStyleRechargeFragmentPermissionsDispatcher.openContactPickerWithCheck(this);
@@ -469,8 +468,8 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
 
     @Override
     public void onOperatorSelected(String categoryName, String operatorName) {
-            UnifyTracking.eventSelectOperatorOnWidget(categoryName,
-                    operatorName);
+        UnifyTracking.eventSelectOperatorOnWidget(categoryName,
+                operatorName);
     }
 
     @Override
