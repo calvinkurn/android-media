@@ -9,4 +9,6 @@
     <dimen name="home_card_category_item_margin">8dp</dimen>
     <dimen name="category_section_item_width">76dp</dimen>
     <dimen name="margin_card_home">10dp</dimen>
+    <dimen name="home_channel_hero_height">240dp</dimen>
+    <dimen name="home_channel_4_image_size">68dp</dimen>
 </resources>
