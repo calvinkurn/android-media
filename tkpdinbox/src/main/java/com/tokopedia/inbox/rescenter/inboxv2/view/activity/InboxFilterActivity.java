@@ -116,7 +116,7 @@ public class InboxFilterActivity extends BasePresenterActivity implements HasCom
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_detail) {
+        if (item.getItemId() == R.id.action_reset) {
             Fragment fragment = InboxFilterFragment.getResetFragmentInstance();
             getSupportFragmentManager().beginTransaction()
                     .add(com.tokopedia.core.R.id.container, fragment, TAG)
@@ -124,5 +124,15 @@ public class InboxFilterActivity extends BasePresenterActivity implements HasCom
             return true;
         } else
             return super.onOptionsItemSelected(item);
+    }
+
+    public void getBottomBackSheetActivityTransition() {
+        overridePendingTransition(R.anim.push_down, R.anim.pull_up);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        getBottomBackSheetActivityTransition();
     }
 }

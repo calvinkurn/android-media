@@ -55,8 +55,8 @@ public class GetInboxParams {
             }
         }
         params.putString(PARAM_FILTER, filterString);
-        params.putString(PARAM_START_DATE, model.getStartDate());
-        params.putString(PARAM_END_DATE, model.getEndDate());
+        params.putString(PARAM_START_DATE, model.getStartDateString());
+        params.putString(PARAM_END_DATE, model.getEndDateString());
         return params;
     }
 

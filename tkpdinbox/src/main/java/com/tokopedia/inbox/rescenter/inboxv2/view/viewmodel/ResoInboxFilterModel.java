@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -13,14 +14,18 @@ import java.util.List;
 public class ResoInboxFilterModel implements Parcelable {
     private List<FilterViewModel> filterViewModelList;
     private List<Integer> selectedFilterList;
-    private String dateFrom;
-    private String dateTo;
+    private String dateFromString;
+    private String dateToString;
+    private Date dateFrom;
+    private Date dateTo;
 
     public ResoInboxFilterModel() {
         this.filterViewModelList = new ArrayList<>();
         this.selectedFilterList = new ArrayList<>();
-        this.dateFrom = "";
-        this.dateTo = "";
+        this.dateFromString = "";
+        this.dateToString = "";
+        this.dateTo = null;
+        this.dateFrom = null;
     }
 
     public List<FilterViewModel> getFilterViewModelList() {
@@ -39,19 +44,35 @@ public class ResoInboxFilterModel implements Parcelable {
         this.selectedFilterList = selectedFilterList;
     }
 
-    public String getDateFrom() {
+    public String getDateFromString() {
+        return dateFromString;
+    }
+
+    public void setDateFromString(String dateFromString) {
+        this.dateFromString = dateFromString;
+    }
+
+    public String getDateToString() {
+        return dateToString;
+    }
+
+    public void setDateToString(String dateToString) {
+        this.dateToString = dateToString;
+    }
+
+    public Date getDateFrom() {
         return dateFrom;
     }
 
-    public void setDateFrom(String dateFrom) {
+    public void setDateFrom(Date dateFrom) {
         this.dateFrom = dateFrom;
     }
 
-    public String getDateTo() {
+    public Date getDateTo() {
         return dateTo;
     }
 
-    public void setDateTo(String dateTo) {
+    public void setDateTo(Date dateTo) {
         this.dateTo = dateTo;
     }
 
@@ -64,16 +85,22 @@ public class ResoInboxFilterModel implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeTypedList(this.filterViewModelList);
         dest.writeList(this.selectedFilterList);
-        dest.writeString(this.dateFrom);
-        dest.writeString(this.dateTo);
+        dest.writeString(this.dateFromString);
+        dest.writeString(this.dateToString);
+        dest.writeLong(this.dateFrom != null ? this.dateFrom.getTime() : -1);
+        dest.writeLong(this.dateTo != null ? this.dateTo.getTime() : -1);
     }
 
     protected ResoInboxFilterModel(Parcel in) {
         this.filterViewModelList = in.createTypedArrayList(FilterViewModel.CREATOR);
         this.selectedFilterList = new ArrayList<Integer>();
         in.readList(this.selectedFilterList, Integer.class.getClassLoader());
-        this.dateFrom = in.readString();
-        this.dateTo = in.readString();
+        this.dateFromString = in.readString();
+        this.dateToString = in.readString();
+        long tmpDateFrom = in.readLong();
+        this.dateFrom = tmpDateFrom == -1 ? null : new Date(tmpDateFrom);
+        long tmpDateTo = in.readLong();
+        this.dateTo = tmpDateTo == -1 ? null : new Date(tmpDateTo);
     }
 
     public static final Creator<ResoInboxFilterModel> CREATOR = new Creator<ResoInboxFilterModel>() {

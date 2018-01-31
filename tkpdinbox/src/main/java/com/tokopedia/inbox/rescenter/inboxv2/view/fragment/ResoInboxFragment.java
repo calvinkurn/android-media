@@ -233,6 +233,7 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
     private void filterButtonClicked() {
         startActivityForResult(
                 InboxFilterActivity.newInstance(getActivity(), inboxFilterModel), REQUEST_FILTER_RESO);
+        getBottomSheetActivityTransition();
     }
 
     private void getFirstInboxResult(InboxItemResultViewModel result) {
@@ -395,6 +396,10 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
     private void resetParams() {
         this.isCanLoadMore = false;
         this.lastCursor = "";
+    }
+
+    public void getBottomSheetActivityTransition() {
+        getActivity().overridePendingTransition(R.anim.pull_up, R.anim.push_down);
     }
 
     @Override

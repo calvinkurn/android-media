@@ -19,6 +19,8 @@ import java.util.List;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.Holder> {
 
+    private static final int COUNT_MAX = 3;
+
     private Context context;
     private List<String> attachmentList = new ArrayList<>();
 
@@ -40,7 +42,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.Holder> 
 
     @Override
     public int getItemCount() {
-        return attachmentList.size();
+        return attachmentList.size() > COUNT_MAX ? COUNT_MAX : attachmentList.size();
     }
 
     public class Holder extends RecyclerView.ViewHolder {

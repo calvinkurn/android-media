@@ -90,8 +90,8 @@ public class ResoInboxFragmentPresenter
     public void getInboxWithParams(ResoInboxSortModel inboxSortModel, ResoInboxFilterModel inboxFilterModel) {
         filterModel.setSortBy(inboxSortModel.getSelectedSortModel().getSortById());
         filterModel.setAsc(inboxSortModel.getSelectedSortModel().getAscId());
-        filterModel.setEndDate(inboxFilterModel.getDateTo());
-        filterModel.setStartDate(inboxFilterModel.getDateFrom());
+        filterModel.setEndDateString(inboxFilterModel.getDateToString());
+        filterModel.setStartDateString(inboxFilterModel.getDateFromString());
         filterModel.setFilters(inboxFilterModel.getSelectedFilterList());
         filterModel.setStartID("");
         getInbox(new GetInboxWithFilterSubscriber(context, mainView));

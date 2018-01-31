@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.inbox.R;
@@ -19,7 +20,12 @@ import com.tokopedia.inbox.rescenter.inboxv2.view.activity.InboxFilterActivity;
 import com.tokopedia.inbox.rescenter.inboxv2.view.adapter.InboxFilterAdapter;
 import com.tokopedia.inbox.rescenter.inboxv2.view.listener.InboxFilterFragmentListener;
 import com.tokopedia.inbox.rescenter.inboxv2.view.presenter.InboxFilterFragmentPresenter;
+import com.tokopedia.inbox.rescenter.inboxv2.view.utils.DatePickerDialog;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.ResoInboxFilterModel;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.inject.Inject;
 
@@ -31,9 +37,13 @@ public class InboxFilterFragment
         extends BaseDaggerFragment
         implements InboxFilterFragmentListener.View {
 
+    public static final String FORMAT_DATE = "dd/MM/YYYY";
+    public static final String FORMAT_DATE_API = "dd/MM/YYYY hh:mm:ss";
+
     private Button btnFinish;
     private EditText etDateFrom, etDateTo;
     private RecyclerView rvFilter;
+    private ImageView icCloseFrom, icCloseTo;
 
     private ResoInboxFilterModel inboxFilterModel;
     private InboxFilterAdapter adapter;
@@ -71,6 +81,8 @@ public class InboxFilterFragment
         etDateFrom = (EditText) view.findViewById(R.id.et_date_from);
         etDateTo = (EditText) view.findViewById(R.id.et_date_to);
         rvFilter = (RecyclerView) view.findViewById(R.id.rv_filter);
+        icCloseFrom = (ImageView) view.findViewById(R.id.ic_close_from);
+        icCloseTo = (ImageView) view.findViewById(R.id.ic_close_to);
         return view;
     }
 
@@ -89,6 +101,10 @@ public class InboxFilterFragment
         rvFilter.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvFilter.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+
+        etDateTo.setFocusable(false);
+        etDateFrom.setFocusable(false);
+        updateView();
     }
 
     private void bindViewListener() {
@@ -101,10 +117,94 @@ public class InboxFilterFragment
                 getActivity().finish();
             }
         });
+
+        icCloseFrom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                inboxFilterModel.setDateFrom(null);
+                updateView();
+            }
+        });
+
+        icCloseTo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                inboxFilterModel.setDateTo(null);
+                updateView();
+            }
+        });
+
+        etDateFrom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(new Date());
+                DatePickerDialog dialog = new DatePickerDialog(getActivity(), calendar,
+                        new DatePickerDialog.OnDateSetListener(inboxFilterModel.getDateFrom(), FORMAT_DATE) {
+                            @Override
+                            public void onDateUpdated(Date date) {
+                                super.onDateUpdated(date);
+                                inboxFilterModel.setDateFrom(date);
+                                updateView();
+                            }
+                });
+                dialog.show();
+            }
+        });
+
+        etDateTo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(new Date());
+                DatePickerDialog dialog = new DatePickerDialog(getActivity(), calendar,
+                        new DatePickerDialog.OnDateSetListener(inboxFilterModel.getDateTo(), FORMAT_DATE) {
+                            @Override
+                            public void onDateUpdated(Date date) {
+                                super.onDateUpdated(date);
+                                inboxFilterModel.setDateTo(date);
+                                updateView();
+                            }
+                        });
+                dialog.show();
+            }
+        });
+    }
+
+    public void updateView() {
+        if (inboxFilterModel.getDateFrom() != null) {
+            icCloseFrom.setVisibility(View.VISIBLE);
+            etDateFrom.setText(convertDateToString(inboxFilterModel.getDateFrom()));
+        } else {
+            icCloseFrom.setVisibility(View.GONE);
+            etDateFrom.setText("");
+        }
+
+        if (inboxFilterModel.getDateTo() != null) {
+            icCloseTo.setVisibility(View.VISIBLE);
+            etDateTo.setText(convertDateToString(inboxFilterModel.getDateTo()));
+        } else {
+            icCloseTo.setVisibility(View.GONE);
+            etDateTo.setText("");
+        }
     }
 
     private ResoInboxFilterModel generateResult() {
         ResoInboxFilterModel inboxFilterModel = adapter.getInboxFilterModel();
+        inboxFilterModel.setDateTo(this.inboxFilterModel.getDateTo());
+        inboxFilterModel.setDateFrom(this.inboxFilterModel.getDateFrom());
+        inboxFilterModel.setDateFromString(convertDateToString(this.inboxFilterModel.getDateFrom(), FORMAT_DATE_API));
+        inboxFilterModel.setDateToString(convertDateToString(this.inboxFilterModel.getDateTo(), FORMAT_DATE_API));
         return inboxFilterModel;
+    }
+
+    private String convertDateToString(Date date) {
+        return convertDateToString(date, FORMAT_DATE);
+    }
+
+    private String convertDateToString(Date date, String formatString) {
+        SimpleDateFormat format = new SimpleDateFormat(formatString);
+        String dateString = format.format(date);
+        return dateString;
     }
 }

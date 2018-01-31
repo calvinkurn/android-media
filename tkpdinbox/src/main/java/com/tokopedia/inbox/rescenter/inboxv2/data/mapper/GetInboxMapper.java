@@ -31,6 +31,9 @@ public class GetInboxMapper implements Func1<Response<TkpdResponse>, InboxItemRe
     public static final int ACTION_BY_ADMIN = 3;
     public static final int ACTION_BY_SYSTEM = 4;
 
+    public static final int STATUS_UNREAD = 1;
+    public static final int STATUS_READ = 2;
+
     @Override
     public InboxItemResultViewModel call(Response<TkpdResponse> response) {
         return mappingResponse(response);
@@ -129,7 +132,7 @@ public class GetInboxMapper implements Func1<Response<TkpdResponse>, InboxItemRe
                     "#ffffff",
                     "#000000",
                     response.getOrder().getRefNum(),
-                    true,
+                    response.getResolution().getRead() == STATUS_UNREAD,
                     actionBy == ACTION_BY_USER ? "Penjual:" : "Pembeli:",
                     actionBy == ACTION_BY_USER ? response.getShop().getName() : response.getCustomer().getName(),
                     response.getResolution().getAutoExecuteTime().getString(),
@@ -158,7 +161,7 @@ public class GetInboxMapper implements Func1<Response<TkpdResponse>, InboxItemRe
 
     private String buildStringForExtraImage(List<ProductResponse> responseList) {
         return responseList.size() > 3 ?
-                "+" + String.valueOf(responseList.size() - 3).concat(" Produk Lainnya") :
+                "+ " + String.valueOf(responseList.size() - 3).concat("Produk Lainnya") :
                 "";
     }
 }
