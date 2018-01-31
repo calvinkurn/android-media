@@ -66,6 +66,26 @@ public class AuthUtil {
     public static final String DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE = "android";
     public static final String DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE = "android";
 
+    public static Map<String, String> generateHeaderCartCheckout(String path,
+                                                                 String strParam,
+                                                                 String method,
+                                                                 String authKey,
+                                                                 String contentTypeHeader) {
+        Map<String, String> finalHeader = getDefaultHeaderMap(
+                path, strParam, method, contentTypeHeader != null ? contentTypeHeader : CONTENT_TYPE,
+                authKey, DATE_FORMAT
+        );
+
+        finalHeader.put(HEADER_X_APP_VERSION, Integer.toString(GlobalConfig.VERSION_CODE));
+        finalHeader.put(HEADER_X_TKPD_PATH, path);
+//        finalHeader.put(HEADER_X_APP_VERSION, Integer.toString(GlobalConfig.VERSION_CODE));
+//        finalHeader.put(HEADER_X_TKPD_PATH, path);
+        finalHeader.put("Tkpd-UserId", SessionHandler.getLoginID(MainApplication.getAppContext()));
+        finalHeader.put(HEADER_DEVICE, "android");
+        finalHeader.put("Tkpd-SessionId", GCMHandler.getRegistrationId(MainApplication.getAppContext()));
+        return finalHeader;
+    }
+
 
     /**
      * default key is KEY_WSV$
@@ -141,7 +161,6 @@ public class AuthUtil {
         headerMap.put(HEADER_DEVICE, "android-" + GlobalConfig.VERSION_NAME);
         return headerMap;
     }
-
 
 
     public static Map<String, String> generateHeaders(String path, String strParam, String method, String authKey) {
@@ -420,9 +439,9 @@ public class AuthUtil {
     }
 
     public static TKPDMapParam<String, Object> generateParamsNetworkObject(Context context,
-                                                                     TKPDMapParam<String, Object>
-                                                                             params,
-                                                                     String userId) {
+                                                                           TKPDMapParam<String, Object>
+                                                                                   params,
+                                                                           String userId) {
 
         String deviceId = GCMHandler.getRegistrationId(context);
         String hash = md5(userId + "~" + deviceId);

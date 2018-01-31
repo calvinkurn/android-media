@@ -2,4 +2,6 @@
 <resources>
     <color name="light_blue">#3494F9</color>
     <color name="white_shadow">#E0E0E0</color>
+    <color name="yellow_ticker">#ecdb77</color>
+    <color name="background_no_pinpoint">#ccfffffe</color>
 </resources>

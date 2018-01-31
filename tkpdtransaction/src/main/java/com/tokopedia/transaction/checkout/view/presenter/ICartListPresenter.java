@@ -7,4 +7,6 @@ package com.tokopedia.transaction.checkout.view.presenter;
 public interface ICartListPresenter {
 
     void processGetCartData();
+
+    void processToShipmentStep();
 }

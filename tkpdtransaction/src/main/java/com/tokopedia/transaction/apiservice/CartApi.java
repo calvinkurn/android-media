@@ -26,6 +26,21 @@ public interface CartApi {
     @GET(TkpdBaseURL.Cart.PATH_CART_LIST)
     Observable<Response<CartResponse>> getCartList(@QueryMap Map<String, String> params);
 
+    @GET(TkpdBaseURL.Cart.PATH_CART_LIST)
+    Observable<Response<String>> getCartListString(@QueryMap Map<String, String> params);
+
+    @POST(TkpdBaseURL.Cart.PATH_REMOVE_FROM_CART)
+    @Headers({"Content-Type: application/json"})
+    Observable<Response<CartResponse>> postDeleteCart(@Body JsonObject requestBody);
+
+    @POST(TkpdBaseURL.Cart.PATH_UPDATE_CART)
+    @Headers({"Content-Type: application/json"})
+    Observable<Response<CartResponse>> postUpdateCart(@Body JsonObject requestBody);
+
+
+
+
+
 //    public static final String PATH_REMOVE_FROM_CART = "api/" + VERSION + "/remove_product_cart";
 //    public static final String PATH_UPDATE_CART = "api/" + VERSION + "/update_cart";
 //    public static final String PATH_CHECK_PROMO_CODE_CART_LIST = "api/" + VERSION + "/check_promo_code";

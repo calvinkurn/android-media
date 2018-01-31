@@ -295,11 +295,11 @@ public class PickupPointActivity extends BaseActivity
         if (selected) {
             selectedPickupBooth = store;
             btnChoosePickupBooth.setEnabled(true);
-            btnChoosePickupBooth.setBackgroundColor(ContextCompat.getColor(this, R.color.tkpd_main_green));
+            btnChoosePickupBooth.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_button_green_enabled));
         } else {
             selectedPickupBooth = null;
             btnChoosePickupBooth.setEnabled(false);
-            btnChoosePickupBooth.setBackgroundColor(ContextCompat.getColor(this, R.color.xco_button_color_disable));
+            btnChoosePickupBooth.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_button_disabled));
         }
     }
 
