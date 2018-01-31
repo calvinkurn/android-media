@@ -2,7 +2,7 @@ package com.tokopedia.tkpd.campaign.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.tkpd.campaign.di.scope.CampaignModuleScope;
-import com.tokopedia.tkpd.qrpayment.QrScannerActivity;
+import com.tokopedia.tkpd.qrscanner.QrScannerActivity;
 
 import dagger.Component;
 

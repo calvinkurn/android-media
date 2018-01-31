@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.qrpayment;
+package com.tokopedia.tkpd.qrscanner;
 
 import android.content.pm.PackageManager;
 import android.os.Bundle;

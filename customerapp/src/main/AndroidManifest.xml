@@ -246,7 +246,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3" />
 
-        <activity android:name=".qrpayment.QrScannerActivity"
+        <activity android:name=".qrscanner.QrScannerActivity"
             android:label="@string/title_scan_qr"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />

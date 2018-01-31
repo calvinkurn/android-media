@@ -71,7 +71,7 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.beranda.presentation.view.fragment.HomeFragment;
-import com.tokopedia.tkpd.qrpayment.QrScannerActivity;
+import com.tokopedia.tkpd.qrscanner.QrScannerActivity;
 
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
