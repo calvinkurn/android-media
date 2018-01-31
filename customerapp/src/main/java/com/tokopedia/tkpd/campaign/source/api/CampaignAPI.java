@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd.campaign.source.api;
 
-import com.tokopedia.tkpd.campaign.data.entity.CampaignRequestEntity;
 import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
 
 import java.util.Map;
