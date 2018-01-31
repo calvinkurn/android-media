@@ -54,7 +54,7 @@ public class ShipmentDetailActivity extends BasePresenterActivity {
         ShipmentDetailFragment fragment = ShipmentDetailFragment.newInstance();
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        fragmentTransaction.add(R.id.container, fragment, ShipmentChoiceFragment.class.getSimpleName());
+        fragmentTransaction.add(R.id.container, fragment, ShipmentDetailFragment.class.getSimpleName());
         fragmentTransaction.commit();
     }
 
