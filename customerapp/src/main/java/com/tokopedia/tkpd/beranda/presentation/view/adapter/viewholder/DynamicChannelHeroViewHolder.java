@@ -62,7 +62,7 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
         channelCaption2.setText(element.getChannel().getGrids()[1].getName());
         channelCaption3.setText(element.getChannel().getGrids()[2].getName());
         channelCaption4.setText(element.getChannel().getGrids()[3].getName());
-        ImageHandler.loadImageThumbs(context, channelHeroImage, channel.getHero().getImageUrl());
+        ImageHandler.loadImageThumbs(context, channelHeroImage, channel.getHero()[0].getImageUrl());
         ImageHandler.loadImageThumbs(context, channelImage1, channel.getGrids()[0].getImageUrl());
         ImageHandler.loadImageThumbs(context, channelImage2, channel.getGrids()[1].getImageUrl());
         ImageHandler.loadImageThumbs(context, channelImage3, channel.getGrids()[2].getImageUrl());
@@ -76,7 +76,7 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
         channelHeroImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.onDynamicChannelClicked(element.getChannel().getHero().getApplink());
+                listener.onDynamicChannelClicked(element.getChannel().getHero()[0].getApplink());
             }
         });
         channelImage1.setOnClickListener(new View.OnClickListener() {

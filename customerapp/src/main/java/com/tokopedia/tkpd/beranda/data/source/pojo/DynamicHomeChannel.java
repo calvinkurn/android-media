@@ -38,7 +38,7 @@ public class DynamicHomeChannel {
         private Grid[] grids;
 
         @Expose
-        private Hero hero;
+        private Hero[] hero;
 
         @Expose
         private String type;
@@ -94,11 +94,11 @@ public class DynamicHomeChannel {
             this.header = header;
         }
 
-        public Hero getHero() {
+        public Hero[] getHero() {
             return hero;
         }
 
-        public void setHero(Hero hero) {
+        public void setHero(Hero[] hero) {
             this.hero = hero;
         }
     }
