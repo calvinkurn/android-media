@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.checkout.view.data.MultipleAddressAdapterData;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressItemData;
 
 import java.util.List;
@@ -21,9 +22,16 @@ public class MultipleAddressItemAdapter extends RecyclerView.Adapter
 
     private List<MultipleAddressItemData> itemDataList;
 
+    private MultipleAddressItemAdapterListener listener;
 
-    MultipleAddressItemAdapter(List<MultipleAddressItemData> itemDataList) {
+    private MultipleAddressAdapterData productData;
+
+    MultipleAddressItemAdapter(MultipleAddressAdapterData productData,
+                               List<MultipleAddressItemData> itemDataList,
+                               MultipleAddressItemAdapterListener listener) {
         this.itemDataList = itemDataList;
+        this.listener = listener;
+        this.productData = productData;
     }
 
     @Override
@@ -36,7 +44,11 @@ public class MultipleAddressItemAdapter extends RecyclerView.Adapter
     @Override
     public void onBindViewHolder(MultipleAddressItemViewHolder holder, int position) {
         MultipleAddressItemData itemData = itemDataList.get(position);
-        holder.shippingIndex.append(String.valueOf(position + 1));
+        holder.shippingIndex.setText(
+                holder.shippingIndex.getText().toString().replace(
+                        "#", String.valueOf(position + 1)
+                )
+        );
         holder.productWeight.setText(itemData.getProductWeight());
         holder.productQty.setText(itemData.getProductQty());
         holder.notesForSeller.setText(itemData.getProductNotes());
@@ -44,17 +56,15 @@ public class MultipleAddressItemAdapter extends RecyclerView.Adapter
         holder.addressReceiverName.setText(itemData.getAddressReceiverName());
         holder.address.setText(itemData.getAddress());
         holder.editButton.setOnClickListener(onEditOrderClickedListener(itemData));
-        holder.deleteButton.setOnClickListener(onDeleteOrderClickedListener(itemData));
+        holder.deleteButton.setOnClickListener(onDeleteOrderClickedListener(position));
         holder.addressLayout.setOnClickListener(
                 onAddressLayoutClickedListener(itemData)
         );
-        if(position == itemDataList.size() - 1) {
-            holder.borderLine.setVisibility(View.GONE);
-            holder.dashedBorderLine.setVisibility(View.VISIBLE);
-        } else  {
-            holder.borderLine.setVisibility(View.VISIBLE);
-            holder.dashedBorderLine.setVisibility(View.GONE);
-        }
+        if(itemDataList.size() == 1) holder.deleteButton.setVisibility(View.GONE);
+        else holder.deleteButton.setVisibility(View.VISIBLE);
+        if(position == itemDataList.size() - 1) holder.borderLine.setVisibility(View.GONE);
+        else holder.borderLine.setVisibility(View.VISIBLE);
+
     }
 
     @Override
@@ -121,20 +131,21 @@ public class MultipleAddressItemAdapter extends RecyclerView.Adapter
 
     }
 
-    private View.OnClickListener onEditOrderClickedListener(MultipleAddressItemData data) {
+    private View.OnClickListener onEditOrderClickedListener(final MultipleAddressItemData data) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                listener.onEditItemChoosen(productData, data);
             }
         };
     }
 
-    private View.OnClickListener onDeleteOrderClickedListener(MultipleAddressItemData data) {
+    private View.OnClickListener onDeleteOrderClickedListener(final int position) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                itemDataList.remove(position);
+                notifyDataSetChanged();
             }
         };
     }
@@ -146,6 +157,13 @@ public class MultipleAddressItemAdapter extends RecyclerView.Adapter
 
             }
         };
+    }
+
+    public interface MultipleAddressItemAdapterListener {
+
+        void onEditItemChoosen(MultipleAddressAdapterData productData,
+                               MultipleAddressItemData addressData);
+
     }
 
 }

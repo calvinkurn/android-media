@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressAdapterData;
+import com.tokopedia.transaction.checkout.view.data.MultipleAddressItemData;
 
 import java.util.List;
 
@@ -19,8 +20,9 @@ import java.util.List;
  * Created by kris on 1/23/18. Tokopedia
  */
 
-public class MultipleAddressAdapter extends RecyclerView.Adapter
-        <RecyclerView.ViewHolder> {
+public class MultipleAddressAdapter
+        extends RecyclerView.Adapter<RecyclerView.ViewHolder>
+        implements MultipleAddressItemAdapter.MultipleAddressItemAdapterListener {
 
 
     private static final int MULTIPLE_ADDRESS_HEADER_LAYOUT = R.layout.multiple_address_header;
@@ -72,7 +74,10 @@ public class MultipleAddressAdapter extends RecyclerView.Adapter
             itemViewHolder.shippingDestinationList
                     .setLayoutManager(new LinearLayoutManager(itemViewHolder.context));
             itemViewHolder.shippingDestinationList.setAdapter(
-                    new MultipleAddressItemAdapter(data.getItemListData())
+                    new MultipleAddressItemAdapter(data, data.getItemListData(), this)
+            );
+            itemViewHolder.addNewShipmentAddressButton.setOnClickListener(
+                    onAddAddressClickedListener(data, data.getItemListData().get(0))
             );
         } else if (holder instanceof MultipleAddressFooterViewHolder)
             ((MultipleAddressFooterViewHolder) holder).goToCourierPageButton
@@ -83,6 +88,11 @@ public class MultipleAddressAdapter extends RecyclerView.Adapter
     @Override
     public int getItemCount() {
         return HEADER_SIZE + addressData.size() + FOOTER_SIZE;
+    }
+
+    @Override
+    public void onEditItemChoosen(MultipleAddressAdapterData productData, MultipleAddressItemData addressData) {
+        listener.onItemChoosen(productData, addressData);
     }
 
     class MultipleAddressHeaderViewHolder extends RecyclerView.ViewHolder {
@@ -107,6 +117,8 @@ public class MultipleAddressAdapter extends RecyclerView.Adapter
 
         private RecyclerView shippingDestinationList;
 
+        private ViewGroup addNewShipmentAddressButton;
+
         MultipleAddressViewHolder(Context context, View itemView) {
             super(itemView);
 
@@ -122,6 +134,8 @@ public class MultipleAddressAdapter extends RecyclerView.Adapter
 
             shippingDestinationList = itemView.findViewById(R.id.shipping_destination_list);
 
+            addNewShipmentAddressButton = itemView
+                    .findViewById(R.id.add_new_shipment_address_button);
         }
     }
 
@@ -147,10 +161,26 @@ public class MultipleAddressAdapter extends RecyclerView.Adapter
         };
     }
 
+    private View.OnClickListener onAddAddressClickedListener(
+            final MultipleAddressAdapterData data,
+            final MultipleAddressItemData firstItemData) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onAddNewShipmentAddress(data, firstItemData);
+            }
+        };
+    }
+
     public interface MultipleAddressAdapterListener {
 
         void onGoToChooseCourier();
 
+        void onItemChoosen(MultipleAddressAdapterData productData,
+                           MultipleAddressItemData addressData);
+
+        void onAddNewShipmentAddress(MultipleAddressAdapterData data,
+                                     MultipleAddressItemData addressData);
     }
 
 }

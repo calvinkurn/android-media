@@ -4,13 +4,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressItemData;
+import com.tokopedia.transaction.checkout.view.data.MultipleAddressPriceSummaryData;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressShipmentAdapterData;
 
 import java.util.List;
@@ -33,11 +34,15 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 
     private List<MultipleAddressShipmentAdapterData> addressDataList;
 
+    private MultipleAddressPriceSummaryData priceSummaryData;
+
     private MultipleAddressShipmentAdapterListener listener;
 
     public MultipleAddressShipmentAdapter(List<MultipleAddressShipmentAdapterData> addressDataList,
+                                          MultipleAddressPriceSummaryData priceSummaryData,
                                           MultipleAddressShipmentAdapterListener listener) {
         this.addressDataList = addressDataList;
+        this.priceSummaryData = priceSummaryData;
         this.listener = listener;
     }
 
@@ -68,6 +73,7 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
             MultipleAddressItemData itemData = data.getItemData();
             itemViewHolder.senderName.setText(data.getSenderName());
             ImageHandler.LoadImage(itemViewHolder.productImage, data.getProductImageUrl());
+            itemViewHolder.productName.setText(data.getProductName());
             itemViewHolder.productPrice.setText(data.getProductPrice());
             itemViewHolder.productWeight.setText(itemData.getProductWeight());
             itemViewHolder.productQty.setText(itemData.getProductQty());
@@ -76,11 +82,46 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
             itemViewHolder.addressReceiverName.setText(itemData.getAddressReceiverName());
             itemViewHolder.address.setText(itemData.getAddress());
             itemViewHolder.subTotalAmount.setText(data.getSubTotalAmount());
-        } else if(holder instanceof MultipleAddressShipmentFooterViewHolder)
-            ((MultipleAddressShipmentFooterViewHolder) holder).chooseCourierButton
-                    .setOnClickListener(onChooseCourierClicked());
+        } else if(holder instanceof MultipleAddressShipmentFooterViewHolder) {
+            MultipleAddressShipmentFooterViewHolder footerHolder =
+                    (MultipleAddressShipmentFooterViewHolder) holder;
+            footerHolder.quantityTotal.setText(footerHolder.quantityTotal.getText()
+                    .toString()
+                    .replace("#", priceSummaryData.getQuantityText()));
+            footerHolder.totalProductPrice.setText(
+                    formatPrice(priceSummaryData.getTotalProductPrice())
+            );
+            footerHolder.totalShippingPrice.setText(priceChecker(
+                    priceSummaryData.getTotalShippingPrice(),
+                    priceSummaryData.getTotalShippingPrice())
+            );
+            footerHolder.insurancePrice.setText(priceChecker(
+                    priceSummaryData.getInsurancePrice(),
+                    priceSummaryData.getTotalShippingPrice())
+            );
+            footerHolder.additionalFee.setText(priceChecker(
+                    priceSummaryData.getAdditionalFee(),
+                    priceSummaryData.getTotalShippingPrice())
+            );
+            footerHolder.promoDiscount.setText(priceChecker(
+                    priceSummaryData.getPromoDiscount(),
+                    priceSummaryData.getTotalShippingPrice())
+            );
+            footerHolder.totalPayment.setText(
+                    totalPriceChecker(formatPrice(priceSummaryData.getTotalPayment()),
+                            priceSummaryData.getTotalShippingPrice()
+                    )
+            );
+        }
     }
 
+    public List<MultipleAddressShipmentAdapterData> getAddressDataList() {
+        return addressDataList;
+    }
+
+    public MultipleAddressPriceSummaryData getPriceSummaryData() {
+        return priceSummaryData;
+    }
 
     @Override
     public int getItemCount() {
@@ -101,7 +142,7 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 
         private TextView productQty;
 
-        private EditText notesField;
+        private TextView notesField;
 
         private ViewGroup addressLayout;
 
@@ -123,6 +164,8 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
             senderName = itemView.findViewById(R.id.sender_name);
 
             productImage = itemView.findViewById(R.id.product_image);
+
+            productName = itemView.findViewById(R.id.product_name);
 
             productPrice = itemView.findViewById(R.id.product_price);
 
@@ -158,14 +201,35 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 
     class MultipleAddressShipmentFooterViewHolder extends RecyclerView.ViewHolder {
 
-        private ViewGroup chooseCourierButton;
+        private TextView quantityTotal;
+
+        private TextView totalProductPrice;
+
+        private TextView totalShippingPrice;
+
+        private TextView insurancePrice;
+
+        private TextView additionalFee;
+
+        private TextView promoDiscount;
+
+        private TextView totalPayment;
 
         MultipleAddressShipmentFooterViewHolder(View itemView) {
             super(itemView);
+            quantityTotal = itemView.findViewById(R.id.qty_total);
 
-            chooseCourierButton = itemView.findViewById(R.id.choose_courier_button);
+            totalProductPrice = itemView.findViewById(R.id.total_product_price);
 
+            totalShippingPrice = itemView.findViewById(R.id.total_shipping_price);
 
+            insurancePrice = itemView.findViewById(R.id.insurance_price);
+
+            additionalFee = itemView.findViewById(R.id.additional_fee);
+
+            promoDiscount = itemView.findViewById(R.id.promo_discount);
+
+            totalPayment = itemView.findViewById(R.id.total_payment);
         }
     }
 
@@ -184,6 +248,23 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 
         void onChooseShipment(MultipleAddressShipmentAdapterData addressAdapterData);
 
+    }
+
+    private String totalPriceChecker(String totalPriceText, long shipmentPrice) {
+        if(shipmentPrice > 0) return totalPriceText;
+        else return "-";
+    }
+
+    private String priceChecker(long price, long shipmentPrice) {
+        if(shipmentPrice > 0) return formatPrice(price);
+        else return "-";
+    }
+
+    private String formatPrice(long unformattedPrice) {
+        String formattedPrice = CurrencyFormatHelper
+                .ConvertToRupiah(String.valueOf(unformattedPrice));
+        formattedPrice = formattedPrice.replace(",", ".");
+        return formattedPrice;
     }
 
 }

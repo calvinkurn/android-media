@@ -1,12 +1,15 @@
 package com.tokopedia.transaction.checkout.view.data;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 
 /**
  * Created by kris on 1/23/18. Tokopedia
  */
 
-public class MultipleAddressAdapterData {
+public class MultipleAddressAdapterData implements Parcelable{
 
     private String senderName;
 
@@ -17,6 +20,28 @@ public class MultipleAddressAdapterData {
     private String productPrice;
 
     private List<MultipleAddressItemData> itemListData;
+
+    public MultipleAddressAdapterData() {
+    }
+
+    protected MultipleAddressAdapterData(Parcel in) {
+        senderName = in.readString();
+        productImageUrl = in.readString();
+        productName = in.readString();
+        productPrice = in.readString();
+    }
+
+    public static final Creator<MultipleAddressAdapterData> CREATOR = new Creator<MultipleAddressAdapterData>() {
+        @Override
+        public MultipleAddressAdapterData createFromParcel(Parcel in) {
+            return new MultipleAddressAdapterData(in);
+        }
+
+        @Override
+        public MultipleAddressAdapterData[] newArray(int size) {
+            return new MultipleAddressAdapterData[size];
+        }
+    };
 
     public String getSenderName() {
         return senderName;
@@ -56,5 +81,18 @@ public class MultipleAddressAdapterData {
 
     public void setItemListData(List<MultipleAddressItemData> itemListData) {
         this.itemListData = itemListData;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(senderName);
+        parcel.writeString(productImageUrl);
+        parcel.writeString(productName);
+        parcel.writeString(productPrice);
     }
 }
