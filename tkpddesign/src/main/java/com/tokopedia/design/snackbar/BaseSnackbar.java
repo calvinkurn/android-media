@@ -1,5 +1,6 @@
 package com.tokopedia.design.snackbar;
 
+import android.support.annotation.ColorRes;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
@@ -11,14 +12,14 @@ import android.widget.TextView;
  */
 
 class BaseSnackbar {
-    static Snackbar makeBase(View view,
-                             String snackbarText,
-                             String actionText,
-                             @Snackbar.Duration int duration,
-                             int backgroundColor,
-                             int textColor,
-                             int actionColor,
-                             View.OnClickListener actionListener) {
+    static Snackbar make(View view,
+                         String snackbarText,
+                         String actionText,
+                         @Snackbar.Duration int duration,
+                         @ColorRes int backgroundColor,
+                         @ColorRes int textColor,
+                         @ColorRes int actionColor,
+                         View.OnClickListener actionListener) {
         Snackbar snackbar = Snackbar.make(view, snackbarText, duration);
         snackbar.getView().setBackgroundColor(ContextCompat.getColor(view.getContext(), backgroundColor));
 

@@ -15,7 +15,7 @@ public class SnackbarNormal extends BaseSnackbar {
                                 String actionText,
                                 @Snackbar.Duration int duration,
                                 View.OnClickListener actionListener) {
-        return makeBase(
+        return make(
                 view, snackbarText, actionText, duration,
                 R.color.light_green, R.color.font_black_secondary_54, R.color.font_black_primary_70,
                 actionListener

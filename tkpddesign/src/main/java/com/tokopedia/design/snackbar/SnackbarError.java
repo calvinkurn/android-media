@@ -1,9 +1,7 @@
 package com.tokopedia.design.snackbar;
 
 import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
-import android.widget.TextView;
 
 import com.tokopedia.design.R;
 
@@ -17,7 +15,7 @@ public class SnackbarError extends BaseSnackbar {
                                 String actionText,
                                 @Snackbar.Duration int duration,
                                 View.OnClickListener actionListener) {
-        return makeBase(
+        return make(
                 view, snackbarText, actionText, duration,
                 R.color.light_red, R.color.font_black_secondary_54, R.color.font_black_primary_70,
                 actionListener
