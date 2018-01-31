@@ -9,7 +9,12 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/padding_small">
+        android:paddingBottom="@dimen/padding_small"
+        android:paddingEnd="@dimen/padding_med"
+        android:paddingLeft="@dimen/padding_med"
+        android:paddingRight="@dimen/padding_med"
+        android:paddingStart="@dimen/padding_med"
+        android:paddingTop="@dimen/padding_small">
 
         <TextView
             android:layout_width="wrap_content"
@@ -34,7 +39,12 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/padding_small">
+        android:paddingBottom="@dimen/padding_small"
+        android:paddingEnd="@dimen/padding_med"
+        android:paddingLeft="@dimen/padding_med"
+        android:paddingRight="@dimen/padding_med"
+        android:paddingStart="@dimen/padding_med"
+        android:paddingTop="@dimen/padding_small">
 
         <ImageView
             android:id="@+id/product_image"
@@ -72,7 +82,12 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/padding_small">
+        android:paddingBottom="@dimen/padding_small"
+        android:paddingEnd="@dimen/padding_med"
+        android:paddingLeft="@dimen/padding_med"
+        android:paddingRight="@dimen/padding_med"
+        android:paddingStart="@dimen/padding_med"
+        android:paddingTop="@dimen/padding_small">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -116,21 +131,30 @@
 
     </RelativeLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="@dimen/margin_small"
+        android:layout_marginTop="@dimen/margin_small"
+        android:background="@color/grey_400" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin_small"
-        android:layout_marginStart="@dimen/margin_small"
+        android:layout_marginEnd="@dimen/margin_med"
+        android:layout_marginLeft="@dimen/margin_med"
+        android:layout_marginRight="@dimen/margin_med"
+        android:layout_marginStart="@dimen/margin_med"
         android:text="Catatan untuk penjual (optional)" />
 
     <TextView
         android:id="@+id/notes_field"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/margin_small"
-        android:layout_marginLeft="@dimen/margin_small"
-        android:layout_marginRight="@dimen/margin_small"
-        android:layout_marginStart="@dimen/margin_small"
+        android:layout_marginEnd="@dimen/margin_med"
+        android:layout_marginLeft="@dimen/margin_med"
+        android:layout_marginRight="@dimen/margin_med"
+        android:layout_marginStart="@dimen/margin_med"
         android:hint="Tidak ada catatan"
         android:textSize="14sp"
         tools:text="Saya kirim warna merah ya min! jangan sampai salah kirim barangnya" />
@@ -140,7 +164,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="@dimen/padding_small">
+        android:paddingBottom="@dimen/padding_small"
+        android:paddingEnd="@dimen/padding_med"
+        android:paddingLeft="@dimen/padding_med"
+        android:paddingRight="@dimen/padding_med"
+        android:paddingStart="@dimen/padding_med"
+        android:paddingTop="@dimen/padding_small">
 
         <TextView
             android:id="@+id/address_title"
@@ -193,7 +222,12 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/padding_small">
+        android:paddingBottom="@dimen/padding_small"
+        android:paddingEnd="@dimen/padding_med"
+        android:paddingLeft="@dimen/padding_med"
+        android:paddingRight="@dimen/padding_med"
+        android:paddingStart="@dimen/padding_med"
+        android:paddingTop="@dimen/padding_small">
 
         <TextView
             android:layout_width="wrap_content"
@@ -223,7 +257,12 @@
         android:id="@+id/sub_total_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/padding_small">
+        android:paddingBottom="@dimen/padding_small"
+        android:paddingEnd="@dimen/padding_med"
+        android:paddingLeft="@dimen/padding_med"
+        android:paddingRight="@dimen/padding_med"
+        android:paddingStart="@dimen/padding_med"
+        android:paddingTop="@dimen/padding_small">
 
         <TextView
             android:id="@+id/sub_total_label"
@@ -233,32 +272,23 @@
             android:layout_alignParentStart="true"
             android:text="Sub total " />
 
-        <TextView
-            android:id="@+id/sub_total_detail_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/sub_total_label"
-            android:layout_toRightOf="@id/sub_total_label"
-            android:text="Detil"
-            android:textColor="@color/tkpd_main_green"
-            android:textStyle="bold" />
-
         <ImageView
+            android:id="@+id/sub_total_detail_button"
             android:layout_width="10dp"
             android:layout_height="10dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/margin_vs"
             android:layout_marginStart="@dimen/margin_vs"
-            android:layout_toEndOf="@id/sub_total_detail_button"
-            android:layout_toRightOf="@id/sub_total_detail_button"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:src="@drawable/chevron_down" />
 
         <TextView
             android:id="@+id/sub_total_amount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
+            android:layout_toLeftOf="@id/sub_total_detail_button"
+            android:layout_toStartOf="@id/sub_total_detail_button"
             android:textColor="@color/orange_900"
             android:textStyle="bold"
             tools:text="-" />

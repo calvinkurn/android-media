@@ -35,7 +35,12 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/padding_small">
+        android:paddingLeft="@dimen/padding_med"
+        android:paddingStart="@dimen/padding_med"
+        android:paddingRight="@dimen/padding_med"
+        android:paddingEnd="@dimen/padding_med"
+        android:paddingTop="@dimen/padding_small"
+        android:paddingBottom="@dimen/padding_small">
 
         <ImageView
             android:id="@+id/product_image"

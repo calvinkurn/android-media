@@ -96,8 +96,6 @@ public class MultipleAddressItemAdapter extends RecyclerView.Adapter
 
         private View borderLine;
 
-        private View dashedBorderLine;
-
         MultipleAddressItemViewHolder(View itemView) {
             super(itemView);
 
@@ -124,8 +122,6 @@ public class MultipleAddressItemAdapter extends RecyclerView.Adapter
             address = itemView.findViewById(R.id.address);
 
             borderLine = itemView.findViewById(R.id.border_line);
-
-            dashedBorderLine = itemView.findViewById(R.id.dashed_border_line);
 
         }
 
