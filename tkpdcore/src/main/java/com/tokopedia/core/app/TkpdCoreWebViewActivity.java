@@ -13,6 +13,10 @@ import com.tokopedia.core.router.InboxRouter;
  * Created by henrypriyono on 7/21/17.
  */
 
+/**
+ * Extends fragment webview from tkpd abstraction
+ */
+@Deprecated
 public class TkpdCoreWebViewActivity extends TActivity {
 
     public static final String EXTRA_TITLE = "core_web_view_extra_title";
