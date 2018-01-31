@@ -1,5 +1,7 @@
 package com.tokopedia.flight.banner.data.source;
 
+import android.util.Log;
+
 import com.tokopedia.flight.banner.data.source.cloud.BannerDataCloudSource;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 
@@ -9,6 +11,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.functions.Action1;
 
 /**
  * Created by furqan on 28/12/17.
@@ -24,6 +27,17 @@ public class BannerDataSource {
     }
 
     public Observable<List<BannerDetail>> getBannerData(Map<String, String> params) {
-        return bannerDataCloudSource.getBannerData(params);
+        return bannerDataCloudSource.getBannerData(params).doOnNext(new Action1<List<BannerDetail>>() {
+            @Override
+            public void call(List<BannerDetail> bannerDetailList) {
+                Log.v("DAPAT DATA SOURCE", bannerDetailList.get(0).getAttributes().getImgUrl());
+            }
+        }).doOnError(new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+                Log.v("DAPAT DATA SOURCE", throwable.getMessage());
+                Log.v("DAPAT DATA SOURCE", throwable.getLocalizedMessage());
+            }
+        });
     }
 }

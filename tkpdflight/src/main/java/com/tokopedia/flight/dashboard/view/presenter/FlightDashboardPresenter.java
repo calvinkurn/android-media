@@ -532,7 +532,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
             @Override
             public void onNext(List<BannerDetail> bannerDetailList) {
                 if (isViewAttached()) {
-                    Log.d("Dapat Data", bannerDetailList.get(0).getAttributes().getImgUrl());
+                    Log.d("Dapat Data Success", bannerDetailList.get(0).getAttributes().getImgUrl());
                     getView().renderBannerView(bannerDetailList);
                 }
             }
