@@ -10,15 +10,14 @@ import com.tokopedia.design.R;
  */
 
 public class SnackbarNormal extends BaseSnackbar {
+
     public static Snackbar make(View view,
                                 String snackbarText,
-                                String actionText,
-                                @Snackbar.Duration int duration,
-                                View.OnClickListener actionListener) {
-        return make(
-                view, snackbarText, actionText, duration,
-                R.color.light_green, R.color.font_black_secondary_54, R.color.font_black_primary_70,
-                actionListener
-        );
+                                @Snackbar.Duration int duration) {
+        return new Builder(view, snackbarText, duration)
+                .setBackgroundDrawable(R.drawable.bg_snackbar_normal)
+                .setTextColor(R.color.font_black_secondary_54)
+                .setActionTextColor(R.color.font_black_primary_70)
+                .build();
     }
 }
