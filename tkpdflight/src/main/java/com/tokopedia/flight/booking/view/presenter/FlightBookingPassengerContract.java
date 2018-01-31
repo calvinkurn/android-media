@@ -98,6 +98,8 @@ public interface FlightBookingPassengerContract {
         boolean isAirAsiaAirline();
 
         String getDepartureDateString();
+
+        void showPassengerLastNameShouldSameWithFirstNameError(int resId);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -108,7 +110,9 @@ public interface FlightBookingPassengerContract {
 
         void onBirthdateClicked();
 
-        void onBirthdateChange(int year, int month, int date);
+        void onBirthdateChange(int year, int month, int date, Date minDate, Date maxDate);
+
+        void onBirthdateChange(int year, int month, int date, Date maxDate);
 
         void onPassengerLuggageClick(FlightBookingAmenityMetaViewModel flightBookingLuggageMetaViewModel);
 

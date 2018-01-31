@@ -8,16 +8,21 @@
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/tv_departure_city"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="0.8"
+        android:ellipsize="end"
+        android:lines="1"
+        android:maxEms="10"
         android:textSize="@dimen/font_title"
-        tools:text="Jakarta" />
+        tools:text="Denpasar - Bali" />
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/iv_arrow"
         android:layout_width="24dp"
         android:layout_height="24dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/margin_ms"
+        android:layout_marginRight="@dimen/margin_ms"
         app:srcCompat="@drawable/ic_arrow_right_flight" />
 
     <android.support.v7.widget.AppCompatTextView
@@ -25,7 +30,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:paddingLeft="@dimen/padding_med"
+        android:ellipsize="end"
+        android:lines="1"
+        android:maxEms="10"
         android:textSize="@dimen/font_title"
         tools:text="London" />
 </LinearLayout>

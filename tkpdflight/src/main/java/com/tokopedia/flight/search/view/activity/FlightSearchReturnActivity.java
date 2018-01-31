@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.booking.view.activity.FlightBookingActivity;
 import com.tokopedia.flight.common.constant.FlightFlowExtraConstant;
+import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightFlowUtil;
 import com.tokopedia.flight.search.view.fragment.FlightSearchFragment;
@@ -80,5 +81,10 @@ public class FlightSearchReturnActivity extends FlightSearchActivity implements 
                 }
                 break;
         }
+    }
+
+    @Override
+    public String getScreenName() {
+        return FlightAnalytics.Screen.SEARCH_RETURN;
     }
 }
