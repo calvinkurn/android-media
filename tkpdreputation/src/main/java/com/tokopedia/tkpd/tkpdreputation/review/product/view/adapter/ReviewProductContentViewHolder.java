@@ -57,6 +57,7 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
     private ImageView iconLike;
     private TextView counterLike;
     private View containerReplyView;
+    private View containerLike;
 
     public ReviewProductContentViewHolder(View itemView, ListenerReviewHolder viewListener) {
         super(itemView);
@@ -84,15 +85,18 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
         iconLike = itemView.findViewById(R.id.icon_like);
         counterLike = itemView.findViewById(R.id.text_counter_like);
         containerReplyView = itemView.findViewById(R.id.container_reply_view);
+        containerLike = itemView.findViewById(R.id.container_like);
     }
 
     @Override
     public void bind(final ReviewProductModelContent element) {
-        reviewerName.setText(MethodChecker.fromHtml(getString(R.string.product_review_label_formatted_name, getReviewerNameText(element))));
+        reviewerName.setText(getReviewerNameText(element));
         reviewerName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewListener.onGoToProfile(element.getReviewerId());
+                if (!element.isReviewIsAnonymous() || element.isSellerRepliedOwner()) {
+                    viewListener.onGoToProfile(element.getReviewerId());
+                }
             }
         });
         containerReplyView.setOnClickListener(new View.OnClickListener() {
@@ -125,15 +129,13 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
             replyArrow.setVisibility(View.GONE);
         }
 
-        iconLike.setOnClickListener(new View.OnClickListener() {
+        containerLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!element.isHelpful()) {
-                    viewListener.onLikeDislikePressed(element.getReviewId(), element.isLikeStatus() ? UNLIKE_STATUS : LIKE_STATUS_ACTIVE, element.getProductId());
-                    element.setLikeStatus(!element.isLikeStatus());
-                    element.setTotalLike(element.isLikeStatus() ? element.getTotalLike() + 1 : element.getTotalLike() - 1);
-                    setLikeStatus(element);
-                }
+                viewListener.onLikeDislikePressed(element.getReviewId(), element.isLikeStatus() ? UNLIKE_STATUS : LIKE_STATUS_ACTIVE, element.getProductId());
+                element.setLikeStatus(!element.isLikeStatus());
+                element.setTotalLike(element.isLikeStatus() ? element.getTotalLike() + 1 : element.getTotalLike() - 1);
+                setLikeStatus(element);
             }
         });
         setLikeStatus(element);
@@ -143,22 +145,22 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
     }
 
     void setLikeStatus(ReviewProductModelContent element) {
-        if(element.isLikeStatus()){
+        if (element.isLikeStatus()) {
             iconLike.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_like_pressed));
-        }else{
+        } else {
             iconLike.setImageDrawable(ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_like_normal));
         }
-        if(element.isLogin()) {
+        if (element.isLogin()) {
             if (element.isLikeStatus() && element.getTotalLike() > 1) {
                 counterLike.setText(itemView.getContext().getString(R.string.product_review_label_counter_like_1_formatted, element.getTotalLike() - 1));
-            } else if(element.isLikeStatus() && element.getTotalLike() == 1) {
+            } else if (element.isLikeStatus() && element.getTotalLike() == 1) {
                 counterLike.setText(R.string.product_review_label_counter_like_2_formatted);
-            }else if(!element.isLikeStatus() && element.getTotalLike() <1 && !element.isHelpful()){
+            } else if (!element.isLikeStatus() && element.getTotalLike() < 1 && !element.isHelpful()) {
                 counterLike.setText(R.string.product_review_label_counter_like_3_formatted);
-            }else{
+            } else {
                 counterLike.setText(itemView.getContext().getString(R.string.product_review_label_counter_like_4_formatted, element.getTotalLike()));
             }
-        }else{
+        } else {
             counterLike.setText(itemView.getContext().getString(R.string.product_review_label_counter_like_4_formatted, element.getTotalLike()));
         }
     }
@@ -203,7 +205,7 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
         seeReplyText.setVisibility(View.VISIBLE);
         replyArrow.setVisibility(View.VISIBLE);
 
-        sellerName.setText(MethodChecker.fromHtml(getString(R.string.product_review_label_formatted_name, element.getSellerName())));
+        sellerName.setText(element.getSellerName());
         sellerName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -212,11 +214,12 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
         });
         sellerReplyTime.setText(TimeConverter.generateTimeYearly(element.getResponseCreateTime().replace(WIB, "")));
         sellerReply.setText(MethodChecker.fromHtml(element.getResponseMessage()));
-        replyOverflow.setVisibility(View.VISIBLE);
-        replyOverflow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (element.isSellerRepliedOwner()) {
+        if (element.isSellerRepliedOwner()) {
+            replyOverflow.setVisibility(View.VISIBLE);
+            replyOverflow.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
                     final PopupMenu popup = new PopupMenu(itemView.getContext(), v);
                     popup.getMenu().add(1, R.id.menu_delete, 1,
                             MainApplication.getAppContext()
@@ -235,10 +238,12 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
                     });
 
                     popup.show();
-                }
 
-            }
-        });
+                }
+            });
+        } else {
+            replyOverflow.setVisibility(View.GONE);
+        }
     }
 
     private void toggleReply() {
@@ -272,7 +277,7 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
     }
 
     private String getReviewerNameText(ReviewProductModelContent element) {
-        if (element.isReviewIsAnonymous()) {
+        if (element.isReviewIsAnonymous() && !element.isSellerRepliedOwner()) {
             return getAnonymousName(element.getReviewerName());
         } else {
             return element.getReviewerName();
@@ -316,7 +321,7 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
         };
     }
 
-    public interface ListenerReviewHolder{
+    public interface ListenerReviewHolder {
         void onGoToProfile(String reviewerId);
 
         void goToPreviewImage(int position, ArrayList<ImageUpload> list);

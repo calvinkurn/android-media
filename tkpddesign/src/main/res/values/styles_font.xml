@@ -17,6 +17,7 @@
     </style>
 
     <style name="TextView.Headline">
+        <item name="android:fontFamily">sans-serif</item>
         <item name="android:textSize">@dimen/font_headline</item>
     </style>
     <style name="TextView.Headline.Bold">
@@ -27,6 +28,7 @@
     </style>
 
     <style name="TextView.SubHeadline">
+        <item name="android:fontFamily">sans-serif</item>
         <item name="android:textSize">@dimen/font_sub_headline</item>
     </style>
     <style name="TextView.SubHeadline.Bold">
@@ -40,6 +42,7 @@
     </style>
 
     <style name="TextView.TitleBig">
+        <item name="android:fontFamily">sans-serif</item>
         <item name="android:textSize">@dimen/font_title_big</item>
     </style>
     <style name="TextView.TitleBig.Bold">
@@ -53,6 +56,7 @@
     </style>
 
     <style name="TextView.Title">
+        <item name="android:fontFamily">sans-serif</item>
         <item name="android:textSize">@dimen/font_title</item>
     </style>
     <style name="TextView.Title.Bold">
@@ -79,6 +83,7 @@
     </style>
 
     <style name="TextView.Small">
+        <item name="android:fontFamily">sans-serif</item>
         <item name="android:textSize">@dimen/font_small</item>
     </style>
     <style name="TextView.Small.Bold">
@@ -116,6 +121,7 @@
     </style>
 
     <style name="TextView.Micro">
+        <item name="android:fontFamily">sans-serif</item>
         <item name="android:textSize">@dimen/font_micro</item>
     </style>
     <style name="TextView.Micro.Bold">
@@ -133,7 +139,11 @@
     <style name="TextView.Micro.BlackDisabled">
         <item name="android:textColor">@color/font_black_disabled_38</item>
     </style>
+    <style name="TextView.Micro.BlackDisabled.Bold">
+        <item name="android:textStyle">bold</item>
+    </style>
     <style name="TextView.Micro.WhitePrimary">
         <item name="android:textColor">@color/font_white_primary_70</item>
     </style>
+
 </resources>

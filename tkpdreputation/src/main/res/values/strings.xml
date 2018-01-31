@@ -120,4 +120,5 @@
     <string name="product_review_label_counter_like_2_formatted">Anda terbantu</string>
     <string name="product_review_label_counter_like_3_formatted">Terbantu?</string>
     <string name="product_review_label_counter_like_4_formatted">%1$d orang terbantu</string>
+    <string name="product_review_label_by">Oleh</string>
 </resources>

@@ -60,7 +60,7 @@ public class ReviewProductListMapper {
         return reviewModelContents;
     }
 
-    public List<ReviewProductModel> map(DataResponseReviewHelpful dataResponseReviewHelpful, String userId){
+    public List<ReviewProductModel> map(DataResponseReviewHelpful dataResponseReviewHelpful, String userId, String productId){
         List<ReviewProductModel> reviewModelContents = new ArrayList<>();
         for(Review review : dataResponseReviewHelpful.getList()){
             ReviewProductModelContent productReviewModelContent = new ReviewProductModelContent();
@@ -83,7 +83,7 @@ public class ReviewProductListMapper {
             productReviewModelContent.setTotalLike(review.getTotalLike());
             productReviewModelContent.setReviewId(String.valueOf(review.getReviewId()));
             productReviewModelContent.setLogin(!TextUtils.isEmpty(userId));
-            productReviewModelContent.setProductId("");
+            productReviewModelContent.setProductId(productId);
             productReviewModelContent.setHelpful(true);
             reviewModelContents.add(productReviewModelContent);
         }
