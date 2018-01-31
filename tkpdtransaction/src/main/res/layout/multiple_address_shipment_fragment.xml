@@ -13,18 +13,29 @@
         android:background="@color/white"
         android:orientation="vertical">
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey_400" />
+
         <LinearLayout
             android:id="@+id/total_payment_layout"
             android:layout_width="match_parent"
             android:layout_height="@dimen/btn_height"
             android:gravity="center_vertical"
-            android:padding="@dimen/padding_small">
+            android:paddingBottom="@dimen/padding_small"
+            android:paddingEnd="@dimen/padding_med"
+            android:paddingLeft="@dimen/padding_med"
+            android:paddingRight="@dimen/padding_med"
+            android:paddingStart="@dimen/padding_med"
+            android:paddingTop="@dimen/padding_small">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Total Pembayaran" />
+                android:text="Total Pembayaran"
+                android:textColor="@color/black_70" />
 
             <TextView
                 android:id="@+id/total_payment_text_view"
@@ -44,9 +55,14 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/btn_height"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_marginEnd="@dimen/margin_med"
+            android:layout_marginLeft="@dimen/margin_med"
+            android:layout_marginRight="@dimen/margin_med"
+            android:layout_marginStart="@dimen/margin_med"
+            android:layout_marginTop="@dimen/margin_small"
             android:background="@drawable/orange_button_rounded"
-            android:gravity="center"
-            android:layout_margin="@dimen/margin_small">
+            android:gravity="center">
 
             <TextView
                 android:layout_width="wrap_content"

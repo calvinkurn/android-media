@@ -1,5 +1,7 @@
 package com.tokopedia.transaction.apiservice;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
@@ -23,6 +25,7 @@ public class CartAuthInterceptor extends TkpdAuthInterceptor {
     @Override
     public void throwChainProcessCauseHttpError(Response response) throws IOException {
         String responseError = response.body().string();
+        Log.d("CARTAPI ERROR = ", responseError);
         if (responseError != null && !responseError.isEmpty() && responseError.contains("header")) {
             CartErrorResponse cartErrorResponse = new Gson().fromJson(
                     responseError, CartErrorResponse.class
@@ -38,6 +41,20 @@ public class CartAuthInterceptor extends TkpdAuthInterceptor {
 
     @Override
     protected Map<String, String> getHeaderMap(String path, String strParam, String method, String authKey, String contentTypeHeader) {
-        return AuthUtil.generateHeaderCartCheckout(path, strParam, method, authKey, contentTypeHeader);
+        Log.d("CARTAPI PATH = ", path);
+        Log.d("CARTAPI PARAM QUERY = ", strParam);
+        Log.d("CARTAPI METHOD = ", method);
+        Log.d("CARTAPI AUTH KEY = ", authKey);
+        Log.d("CARTAPI CONTENT TYPE = ", contentTypeHeader);
+        Map<String, String> mapHeader = AuthUtil.generateHeaderCartCheckout(
+                path, strParam, method, authKey, contentTypeHeader
+        );
+        for (Map.Entry<String, String> entry : mapHeader.entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+            Log.d("CARTAPI HEADER = ", "KEY = " + key + "| VALUE = " + value);
+        }
+
+        return mapHeader;
     }
 }

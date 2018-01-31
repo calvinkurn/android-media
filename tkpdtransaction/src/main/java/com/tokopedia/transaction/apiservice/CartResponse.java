@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.apiservice;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -31,6 +32,7 @@ public class CartResponse {
     private Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     public static CartResponse factory(String strResponse) throws IOException {
+        Log.d("CARTAPI SUCCESS = ", strResponse);
         CartResponse cartResponse = new CartResponse();
         JsonElement jsonElement = new JsonParser().parse(strResponse);
         JsonObject jsonResponse = jsonElement.getAsJsonObject();
