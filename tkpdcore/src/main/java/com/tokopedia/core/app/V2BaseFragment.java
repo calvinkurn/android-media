@@ -10,6 +10,10 @@ import android.view.ViewGroup;
 /**
  * Created by Tkpd_Eka on 3/19/2015.
  */
+
+/**
+ * Extends from TkpdBaseV4Fragment on tkpd abstraction
+ */
 @Deprecated
 public abstract class V2BaseFragment extends Fragment{
 
