@@ -12,14 +12,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.home.R;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.explore.domain.model.CategoryLayoutRowModel;
-import com.tokopedia.home.explore.listener.CategoryListener;
+import com.tokopedia.home.explore.listener.CategoryAdapterListener;
 import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryGridListViewModel;
 
 import java.util.ArrayList;
@@ -31,6 +28,10 @@ import java.util.List;
 
 public class CategoryGridListViewHolder extends AbstractViewHolder<CategoryGridListViewModel> {
 
+
+    private static final String MARKETPLACE = "Marketplace";
+    private static final String DIGITAL = "Digital";
+
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_category_grid;
     private TextView titleTxt;
@@ -38,12 +39,14 @@ public class CategoryGridListViewHolder extends AbstractViewHolder<CategoryGridL
     private Context context;
     private ItemAdapter adapter;
     private int spanCount = 2;
+    private CategoryAdapterListener listener;
     private List<CategoryLayoutRowModel> rowModelList = new ArrayList<>();
 
-    public CategoryGridListViewHolder(View itemView) {
+    public CategoryGridListViewHolder(View itemView, CategoryAdapterListener listener) {
         super(itemView);
         titleTxt = itemView.findViewById(R.id.title);
         recyclerView = itemView.findViewById(R.id.list);
+        this.listener = listener;
         this.context = itemView.getContext();
         adapter = new ItemAdapter(context);
         recyclerView.setLayoutManager(new GridLayoutManager(context, spanCount,
@@ -83,6 +86,16 @@ public class CategoryGridListViewHolder extends AbstractViewHolder<CategoryGridL
             final CategoryLayoutRowModel rowModel = data.get(position);
             holder.title.setText(rowModel.getName());
             ImageHandler.loadImageAndCache(holder.icon, rowModel.getImageUrl());
+            holder.container.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (!TextUtils.isEmpty(rowModel.getApplinks())) {
+                        listener.onApplinkClicked(rowModel);
+                    } else {
+                        listener.onGimickItemClicked(rowModel);
+                    }
+                }
+            });
         }
 
         @Override

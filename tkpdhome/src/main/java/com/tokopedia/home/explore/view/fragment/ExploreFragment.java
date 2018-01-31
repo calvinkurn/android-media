@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,15 +16,13 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.SimpleWebViewActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
-import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.home.explore.domain.model.CategoryLayoutRowModel;
-import com.tokopedia.home.explore.listener.CategoryListener;
-import com.tokopedia.home.explore.view.activity.ExploreActivity;
+import com.tokopedia.home.explore.listener.CategoryAdapterListener;
 import com.tokopedia.home.explore.view.adapter.ExploreAdapter;
 import com.tokopedia.home.explore.view.adapter.TypeFactory;
 import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryGridListViewModel;
@@ -41,11 +37,7 @@ import java.util.Map;
  * Created by errysuprayogi on 1/26/18.
  */
 
-public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> implements ExploreContract.View {
-
-
-    private static final String MARKETPLACE = "Marketplace";
-    private static final String DIGITAL = "Digital";
+public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> implements ExploreContract.View, CategoryAdapterListener {
 
     public static ExploreFragment newInstance() {
 
@@ -68,18 +60,7 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
 
     @Override
     public void onItemClicked(Visitable visitable) {
-        if(visitable instanceof CategoryLayoutRowModel){
-            CategoryLayoutRowModel rowModel = (CategoryLayoutRowModel) visitable;
-            if (rowModel.getType().equalsIgnoreCase(MARKETPLACE)) {
-                onMarketPlaceItemClicked(rowModel);
-            } else if (rowModel.getType().equalsIgnoreCase(DIGITAL)) {
-                onDigitalItemClicked(rowModel);
-            } else if (!TextUtils.isEmpty(rowModel.getApplinks())) {
-                onApplinkClicked(rowModel);
-            } else {
-                onGimickItemClicked(rowModel);
-            }
-        }
+
     }
 
     @Override
@@ -100,6 +81,7 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     private CategoryLayoutRowModel createDummyRowModel() {
         CategoryLayoutRowModel rowModel = new CategoryLayoutRowModel();
         rowModel.setType("Marketplace");
+        rowModel.setCategoryId(54);
         rowModel.setApplinks("tokopedia://category/54");
         rowModel.setName("Souvenir, Kado & Hadiah");
         rowModel.setImageUrl("https://ecs7.tokopedia.net/img/category/new/v1/icon_kado.png");
@@ -113,7 +95,7 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
 
     @Override
     protected TypeFactory getAdapterTypeFactory() {
-        return new ExploreAdapter();
+        return new ExploreAdapter(this);
     }
 
     @Nullable
@@ -142,15 +124,18 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
 
     }
 
-    private void onMarketPlaceItemClicked(CategoryLayoutRowModel data) {
+    @Override
+    public void onMarketPlaceItemClicked(CategoryLayoutRowModel data) {
         TrackingUtils.sendMoEngageClickMainCategoryIcon(data.getName());
-        ((IHomeRouter) getActivity().getApplication()).openIntermediaryActivity(getActivity(), String.valueOf(data.getCategoryId()), data.getName());
+        ((IHomeRouter) getActivity().getApplication()).openIntermediaryActivity(getActivity(),
+                String.valueOf(data.getCategoryId()), data.getName());
         Map<String, String> values = new HashMap<>();
         values.put(getString(R.string.value_category_name), data.getName());
         UnifyTracking.eventHomeCategory(data.getName());
     }
 
-    private void onDigitalItemClicked(CategoryLayoutRowModel data) {
+    @Override
+    public void onDigitalItemClicked(CategoryLayoutRowModel data) {
         if (((TkpdCoreRouter) getActivity().getApplication())
                 .isSupportedDelegateDeepLink(data.getApplinks())) {
             DigitalCategoryDetailPassData passData = new DigitalCategoryDetailPassData.Builder()
@@ -159,14 +144,16 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
                     .categoryName(data.getName())
                     .url(data.getUrl())
                     .build();
-            ((IHomeRouter) getActivity().getApplication()).onDigitalItemClick(getActivity(), passData, data.getApplinks());
+            ((IHomeRouter) getActivity().getApplication()).onDigitalItemClick(getActivity(),
+                    passData, data.getApplinks());
         } else {
             onGimickItemClicked(data);
         }
         TrackingUtils.sendMoEngageClickMainCategoryIcon(data.getName());
     }
 
-    private void onGimickItemClicked(CategoryLayoutRowModel data) {
+    @Override
+    public void onGimickItemClicked(CategoryLayoutRowModel data) {
         String redirectUrl = data.getUrl();
         if (redirectUrl != null && redirectUrl.length() > 0) {
             String resultGenerateUrl = URLGenerator.generateURLSessionLogin(
@@ -175,8 +162,10 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
         }
     }
 
-    private void onApplinkClicked(CategoryLayoutRowModel data) {
-        ((TkpdCoreRouter) getActivity().getApplication()).actionApplinkFromActivity(getActivity() , data.getUrl());
+    @Override
+    public void onApplinkClicked(CategoryLayoutRowModel data) {
+        ((TkpdCoreRouter) getActivity().getApplication()).actionApplinkFromActivity(getActivity() ,
+                data.getUrl());
     }
 
     private void openWebViewGimicURL(String url, String label, String title) {
