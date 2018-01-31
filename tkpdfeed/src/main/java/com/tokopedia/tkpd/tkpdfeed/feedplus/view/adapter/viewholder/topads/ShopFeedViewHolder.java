@@ -130,9 +130,7 @@ public class ShopFeedViewHolder extends AbstractViewHolder<ShopFeedViewModel> im
         header.setPadding(0, PADDING_12DP_PIXEL, 0, 0);
 
         if (shop != null) {
-            //TODO milhamj load this image with proper URL
-            ImageHandler.LoadImage(shopImage,
-                    shop.getImageShop().getXsEcs() + shop.getImageShop().getsUrl());
+            ImageHandler.LoadImage(shopImage, shop.getImageShop().getXsEcs());
             if (shop.getImageProduct() != null) {
                 generateThumbnailImages(shop.getImageProduct());
             }

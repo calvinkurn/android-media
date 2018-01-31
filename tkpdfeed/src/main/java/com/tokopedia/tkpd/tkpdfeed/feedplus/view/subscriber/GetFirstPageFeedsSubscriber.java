@@ -28,6 +28,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.OfficialS
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.officialstore.OfficialStoreProductDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewBadgeDomain;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.recentview.RecentViewProductDomain;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.topads.Data;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.analytics.KolTracking;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.listener.FeedPlus;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.FavoriteCtaViewModel;
@@ -292,6 +293,10 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                         }
                         break;
                     case TYPE_TOPADS:
+                        if (domain.getContent() != null
+                                && domain.getContent().getTopadsDomains() != null) {
+                            //TODO milhamj
+                        }
                         break;
                     case TYPE_KOL_FOLLOWED:
                     case TYPE_KOL:
@@ -366,12 +371,11 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                         break;
                 }
             }
-
     }
 
     //TODO milhamj
-//    private FeedTopAdsViewModel convertToTopadsViewModel(int page) {
-//        return new FeedTopAdsViewModel(page);
+//    private FeedTopAdsViewModel convertToTopadsViewModel(List<Data> topadsDataList) {
+//        return new FeedTopAdsViewModel(topadsDataList);
 //    }
 
     private KolRecommendationViewModel convertToKolRecommendationViewModel(KolRecommendationDomain domain) {

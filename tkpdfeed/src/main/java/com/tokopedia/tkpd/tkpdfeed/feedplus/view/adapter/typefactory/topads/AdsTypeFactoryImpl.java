@@ -39,12 +39,12 @@ public class AdsTypeFactoryImpl implements AdsTypeFactory {
 
     @Override
     public int type(ShopFeedViewModel viewModel) {
-        return 0;
+        return ShopFeedViewHolder.LAYOUT;
     }
 
     @Override
     public int type(ProductFeedViewModel viewModel) {
-        return 0;
+        return ProductFeedViewHolder.LAYOUT;
     }
 
     @Override
