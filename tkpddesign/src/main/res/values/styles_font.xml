@@ -105,6 +105,18 @@
     <style name="TextView.Small.WhitePrimary.Bold">
         <item name="android:textStyle">bold</item>
     </style>
+    <style name="TextView.Small.White">
+        <item name="android:textColor">@color/white</item>
+    </style>
+    <style name="TextView.Small.White.Bold">
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="TextView.Small.OrangeRed">
+        <item name="android:textColor">@color/tkpd_main_orange</item>
+    </style>
+    <style name="TextView.Small.OrangeRed.Bold">
+        <item name="android:textStyle">bold</item>
+    </style>
     <style name="TextView.Small.WhiteDisabled">
         <item name="android:textColor">@color/font_white_disabled_38</item>
     </style>

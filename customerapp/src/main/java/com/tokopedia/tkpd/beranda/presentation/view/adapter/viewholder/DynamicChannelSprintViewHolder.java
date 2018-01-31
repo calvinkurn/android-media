@@ -13,6 +13,7 @@ import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.beranda.data.source.pojo.DynamicHomeChannel;
 import com.tokopedia.tkpd.beranda.listener.HomeCategoryListener;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
+import com.tokopedia.tkpd.beranda.presentation.view.compoundview.CountDownView;
 
 /**
  * Created by henrypriyono on 31/01/18.
@@ -41,6 +42,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
     private View itemContainer1;
     private View itemContainer2;
     private View itemContainer3;
+    private CountDownView countDownView;
 
     public DynamicChannelSprintViewHolder(View itemView, HomeCategoryListener listener) {
         super(itemView);
@@ -67,6 +69,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
         itemContainer1 = itemView.findViewById(R.id.channel_item_container_1);
         itemContainer2 = itemView.findViewById(R.id.channel_item_container_2);
         itemContainer3 = itemView.findViewById(R.id.channel_item_container_3);
+        countDownView = itemView.findViewById(R.id.count_down);
     }
 
     @Override

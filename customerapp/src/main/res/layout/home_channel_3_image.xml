@@ -18,12 +18,12 @@
             android:layout_centerVertical="true"
             tools:text="Sprint Sale"/>
         
-        <ImageView
-            android:layout_width="@dimen/home_channel_sprint_sale_countdown_width"
-            android:layout_height="@dimen/home_channel_sprint_sale_countdown_height"
+        <com.tokopedia.tkpd.beranda.presentation.view.compoundview.CountDownView
+            android:id="@+id/count_down"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_toRightOf="@id/home_channel_title"
             android:layout_centerVertical="true"
-            tools:src="@color/green_80"
             android:layout_marginLeft="@dimen/margin_ms"/>
 
         <TextView
