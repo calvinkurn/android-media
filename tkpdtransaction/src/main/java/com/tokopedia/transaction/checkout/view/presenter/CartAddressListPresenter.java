@@ -1,6 +1,6 @@
 package com.tokopedia.transaction.checkout.view.presenter;
 
-import com.tokopedia.transaction.checkout.view.data.SingleAddressRecipientAddressModel;
+import com.tokopedia.transaction.checkout.view.data.ShippingRecipientModel;
 import com.tokopedia.transaction.checkout.view.view.ISearchAddressListView;
 
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ import javax.inject.Inject;
 import rx.Observer;
 
 public class CartAddressListPresenter
-        extends BaseListPresenter<ISearchAddressListView<List<SingleAddressRecipientAddressModel>>> {
+        extends BaseListPresenter<ISearchAddressListView<List<ShippingRecipientModel>>> {
 
     @Inject
     CartAddressListPresenter() {
@@ -19,7 +19,7 @@ public class CartAddressListPresenter
     }
 
     @Override
-    public void attachView(ISearchAddressListView<List<SingleAddressRecipientAddressModel>> mvpView) {
+    public void attachView(ISearchAddressListView<List<ShippingRecipientModel>> mvpView) {
         super.attachView(mvpView);
     }
 
@@ -28,15 +28,15 @@ public class CartAddressListPresenter
         super.checkViewAttached();
     }
 
-    public List<SingleAddressRecipientAddressModel> getAddressList() {
-        List<SingleAddressRecipientAddressModel> list = new ArrayList<>();
+    public List<ShippingRecipientModel> getAddressList() {
+        List<ShippingRecipientModel> list = new ArrayList<>();
         return list;
     }
 
-    private final class AddressListObserver implements Observer<List<SingleAddressRecipientAddressModel>> {
+    private final class AddressListObserver implements Observer<List<ShippingRecipientModel>> {
 
         @Override
-        public void onNext(List<SingleAddressRecipientAddressModel> addressList) {
+        public void onNext(List<ShippingRecipientModel> addressList) {
             if (addressList.isEmpty()) {
                 getMvpView().showListEmpty();
             } else {

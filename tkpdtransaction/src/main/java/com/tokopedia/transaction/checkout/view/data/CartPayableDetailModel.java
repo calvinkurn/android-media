@@ -4,10 +4,11 @@ package com.tokopedia.transaction.checkout.view.data;
  * @author Aghny A. Putra on 25/01/18
  */
 
-public class SingleAddressCartPayableDetailModel {
+public class CartPayableDetailModel {
 
     private String totalItem;
     private String totalItemPrice;
+    private String shippingWeight;
     private String shippingFee;
     private String insuranceFee;
     private String promoPrice;
@@ -28,6 +29,14 @@ public class SingleAddressCartPayableDetailModel {
 
     public void setTotalItemPrice(String totalItemPrice) {
         this.totalItemPrice = totalItemPrice;
+    }
+
+    public String getShippingWeight() {
+        return shippingWeight;
+    }
+
+    public void setShippingWeight(String shippingWeight) {
+        this.shippingWeight = shippingWeight;
     }
 
     public String getShippingFee() {

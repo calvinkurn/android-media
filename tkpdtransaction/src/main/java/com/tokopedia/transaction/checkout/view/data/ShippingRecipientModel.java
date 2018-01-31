@@ -4,7 +4,7 @@ package com.tokopedia.transaction.checkout.view.data;
  * @author Aghny A. Putra on 25/01/18
  */
 
-public class SingleAddressRecipientAddressModel {
+public class ShippingRecipientModel {
 
     private String recipientName;
     private String recipientAddress;

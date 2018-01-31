@@ -4,7 +4,7 @@ package com.tokopedia.transaction.checkout.view.data;
  * @author Aghny A. Putra on 25/01/18
  */
 
-public class SingleAddressShippedItemModel {
+public class CartItemModel {
 
     private String senderName;
     private String productName;
@@ -14,6 +14,11 @@ public class SingleAddressShippedItemModel {
     private String totalProductItem;
     private String noteToSeller;
     private String shipmentOption;
+    private String totalPrice;
+
+    private String productImageUrl;
+    private boolean poAvailable;
+    private boolean freeReturn;
 
     public String getSenderName() {
         return senderName;
@@ -77,5 +82,37 @@ public class SingleAddressShippedItemModel {
 
     public void setShipmentOption(String shipmentOption) {
         this.shipmentOption = shipmentOption;
+    }
+
+    public String getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(String totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public String getProductImageUrl() {
+        return productImageUrl;
+    }
+
+    public void setProductImageUrl(String productImageUrl) {
+        this.productImageUrl = productImageUrl;
+    }
+
+    public boolean isPoAvailable() {
+        return poAvailable;
+    }
+
+    public void setPoAvailable(boolean poAvailable) {
+        this.poAvailable = poAvailable;
+    }
+
+    public boolean isFreeReturn() {
+        return freeReturn;
+    }
+
+    public void setFreeReturn(boolean freeReturn) {
+        this.freeReturn = freeReturn;
     }
 }

@@ -9,7 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.checkout.view.data.SingleAddressRecipientAddressModel;
+import com.tokopedia.transaction.checkout.view.data.ShippingRecipientModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,7 @@ import javax.inject.Inject;
 public class CartAddressListAdapter
         extends RecyclerView.Adapter<CartAddressListAdapter.RecipientAddressViewHolder> {
 
-    private List<SingleAddressRecipientAddressModel> mAddressModelList;
+    private List<ShippingRecipientModel> mAddressModelList;
     private Context mContext;
 
     @Inject
@@ -27,7 +27,7 @@ public class CartAddressListAdapter
         mAddressModelList = new ArrayList<>();
     }
 
-    public void setProducts(List<SingleAddressRecipientAddressModel> addressModelList) {
+    public void setProducts(List<ShippingRecipientModel> addressModelList) {
         mAddressModelList.addAll(addressModelList);
     }
 
@@ -40,7 +40,7 @@ public class CartAddressListAdapter
 
     @Override
     public void onBindViewHolder(final RecipientAddressViewHolder holder, int position) {
-        SingleAddressRecipientAddressModel address = mAddressModelList.get(position);
+        ShippingRecipientModel address = mAddressModelList.get(position);
 
         holder.mTvRecipientName.setText(address.getRecipientName());
         holder.mTvRecipientAddress.setText(address.getRecipientAddress());
