@@ -99,11 +99,13 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-//        isSeller = savedInstanceState.get(STATE_IS_SELLER) != null &&  savedInstanceState.getBoolean(STATE_IS_SELLER);
-//        isCanLoadMore = savedInstanceState.get(STATE_IS_CAN_LOAD_MORE) != null &&  savedInstanceState.getBoolean(STATE_IS_CAN_LOAD_MORE);
-//        lastCursor = savedInstanceState.getString(STATE_LAST_CURSOR);
-//        inboxFilterModel = savedInstanceState.getParcelable(STATE_RESO_INBOX_FILTER_MODEL);
-//        inboxSortModel = savedInstanceState.getParcelable(STATE_RESO_INBOX_SORT_FILTER);
+        if (savedInstanceState != null) {
+            isSeller = savedInstanceState.get(STATE_IS_SELLER) != null &&  savedInstanceState.getBoolean(STATE_IS_SELLER);
+            isCanLoadMore = savedInstanceState.get(STATE_IS_CAN_LOAD_MORE) != null &&  savedInstanceState.getBoolean(STATE_IS_CAN_LOAD_MORE);
+            lastCursor = savedInstanceState.getString(STATE_LAST_CURSOR);
+            inboxFilterModel = savedInstanceState.getParcelable(STATE_RESO_INBOX_FILTER_MODEL);
+            inboxSortModel = savedInstanceState.getParcelable(STATE_RESO_INBOX_SORT_FILTER);
+        }
     }
 
     @Nullable
