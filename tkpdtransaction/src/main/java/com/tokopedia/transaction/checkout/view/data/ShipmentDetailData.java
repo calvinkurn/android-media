@@ -16,11 +16,10 @@ public class ShipmentDetailData implements Parcelable {
     private String address;
     private Double latitude;
     private Double longitude;
-    private String shipmentInfo;
-    private String insuranceInfo;
     private String partialOrderInfo;
     private String dropshipperInfo;
-    private String subtotal;
+    private String deliveryPriceTotal;
+    private String additionalPrice;
 
     public ShipmentDetailData() {
     }
@@ -31,11 +30,10 @@ public class ShipmentDetailData implements Parcelable {
         address = in.readString();
         latitude = in.readDouble();
         longitude = in.readDouble();
-        shipmentInfo = in.readString();
-        insuranceInfo = in.readString();
         partialOrderInfo = in.readString();
         dropshipperInfo = in.readString();
-        subtotal = in.readString();
+        deliveryPriceTotal = in.readString();
+        additionalPrice = in.readString();
     }
 
     public static final Creator<ShipmentDetailData> CREATOR = new Creator<ShipmentDetailData>() {
@@ -90,22 +88,6 @@ public class ShipmentDetailData implements Parcelable {
         this.longitude = longitude;
     }
 
-    public String getShipmentInfo() {
-        return shipmentInfo;
-    }
-
-    public void setShipmentInfo(String shipmentInfo) {
-        this.shipmentInfo = shipmentInfo;
-    }
-
-    public String getInsuranceInfo() {
-        return insuranceInfo;
-    }
-
-    public void setInsuranceInfo(String insuranceInfo) {
-        this.insuranceInfo = insuranceInfo;
-    }
-
     public String getPartialOrderInfo() {
         return partialOrderInfo;
     }
@@ -122,6 +104,22 @@ public class ShipmentDetailData implements Parcelable {
         this.dropshipperInfo = dropshipperInfo;
     }
 
+    public String getDeliveryPriceTotal() {
+        return deliveryPriceTotal;
+    }
+
+    public void setDeliveryPriceTotal(String deliveryPriceTotal) {
+        this.deliveryPriceTotal = deliveryPriceTotal;
+    }
+
+    public String getAdditionalPrice() {
+        return additionalPrice;
+    }
+
+    public void setAdditionalPrice(String additionalPrice) {
+        this.additionalPrice = additionalPrice;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -134,10 +132,9 @@ public class ShipmentDetailData implements Parcelable {
         dest.writeString(address);
         dest.writeDouble(latitude);
         dest.writeDouble(longitude);
-        dest.writeString(shipmentInfo);
-        dest.writeString(insuranceInfo);
         dest.writeString(partialOrderInfo);
         dest.writeString(dropshipperInfo);
-        dest.writeString(subtotal);
+        dest.writeString(deliveryPriceTotal);
+        dest.writeString(additionalPrice);
     }
 }

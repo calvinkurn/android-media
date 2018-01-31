@@ -1,8 +1,9 @@
 package com.tokopedia.transaction.checkout.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
+import com.tokopedia.transaction.checkout.view.data.CourierItemData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
-import com.tokopedia.transaction.checkout.view.data.ShipmentItemData;
 import com.tokopedia.transaction.checkout.view.view.IShipmentDetailView;
 
 import java.util.ArrayList;
@@ -16,6 +17,8 @@ public class ShipmentDetailPresenter extends BaseDaggerPresenter<IShipmentDetail
         implements IShipmentDetailPresenter {
 
     private ShipmentDetailData shipmentDetailData;
+    private CourierItemData selectedCourier;
+    private List<CourierItemData> couriers = new ArrayList<>();
 
     @Override
     public void attachView(IShipmentDetailView view) {
@@ -28,22 +31,151 @@ public class ShipmentDetailPresenter extends BaseDaggerPresenter<IShipmentDetail
     }
 
     @Override
+    public ShipmentDetailData getShipmentDetailData() {
+        return shipmentDetailData;
+    }
+
+    @Override
+    public CourierItemData getSelectedCourier() {
+        return selectedCourier;
+    }
+
+    @Override
+    public void setSelectedCourier(CourierItemData selectedCourier) {
+        this.selectedCourier = selectedCourier;
+    }
+
+    @Override
+    public void setCourierList(List<CourierItemData> couriers) {
+        this.couriers = couriers;
+        if (couriers.size() > 3) {
+            loadFirstThreeCourier();
+        } else {
+            loadAllCourier();
+        }
+    }
+
+    @Override
+    public void updatePinPoint(LocationPass locationPass) {
+        shipmentDetailData.setLatitude(Double.parseDouble(locationPass.getLatitude()));
+        shipmentDetailData.setLongitude(Double.parseDouble(locationPass.getLongitude()));
+        shipmentDetailData.setAddress(locationPass.getGeneratedAddress());
+        getView().showPinPointMap(shipmentDetailData);
+    }
+
+    @Override
     public void loadShipmentData() {
-        getView().renderInstantShipment(DummyCreator.createDummyShipmentDetailData());
+//        shipmentDetailData = DummyCreator.createDummyInstantShipmentDetailData();
+//        getView().renderInstantShipment(shipmentDetailData);
+
+//        shipmentDetailData = DummyCreator.createDummySameDayShipmentDetailData();
+//        getView().renderSameDayShipment(shipmentDetailData);
+
+//        shipmentDetailData = DummyCreator.createDummyNextDayShipmentDetailData();
+//        getView().renderNextDayShipment(shipmentDetailData);
+
+        shipmentDetailData = DummyCreator.createDummyRegularShipmentDetailData();
+        getView().renderRegularShipment(shipmentDetailData);
+
+//        shipmentDetailData = DummyCreator.createDummyKargoShipmentDetailData();
+//        getView().renderKargoShipment(shipmentDetailData);
+    }
+
+    @Override
+    public void loadFirstThreeCourier() {
+        chooseSelectedCourier(selectedCourier);
+        getView().showFirstThreeCouriers(couriers.subList(0, 3));
     }
 
     @Override
     public void loadAllCourier() {
+        chooseSelectedCourier(selectedCourier);
+        getView().showAllCouriers(couriers);
+    }
 
+    private void chooseSelectedCourier(CourierItemData currentCourier) {
+        if (currentCourier != null) {
+            for (int i = 0; i < couriers.size(); i++) {
+                if (couriers.get(i).getId().equals(currentCourier.getId())) {
+                    couriers.get(i).setSelected(true);
+                } else {
+                    couriers.get(i).setSelected(false);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void getPinPointMapData() {
+        if (shipmentDetailData != null) {
+            getView().showPinPointChooserMap(shipmentDetailData);
+        }
     }
 
 
     private static class DummyCreator {
 
-        private static ShipmentDetailData createDummyShipmentDetailData() {
+        private static final String ID = "0";
+        private static final String ADDRESS = "Wisma 77 - Jalan Letjen S. Parman, Palmerah,11410";
+        private static final Double LATITUDE = -6.190251;
+        private static final Double LONGITUDE = 106.798920;
+
+        private static ShipmentDetailData createDummyInstantShipmentDetailData() {
             ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
-//            shipmentDetailData.setLatitude(-6.219532);
-//            shipmentDetailData.setLongitude(106.824961);
+            shipmentDetailData.setId(ID);
+            shipmentDetailData.setAddress(ADDRESS);
+            shipmentDetailData.setLatitude(LATITUDE);
+            shipmentDetailData.setLongitude(LONGITUDE);
+            shipmentDetailData.setDropshipperInfo("Dropshipper Bottomsheet Info");
+            shipmentDetailData.setPartialOrderInfo("Partial Order Bottomsheet Info");
+            shipmentDetailData.setShipmentItemData(ShipmentChoicePresenter.DummyCreator.createDummyShipmentChoices());
+            shipmentDetailData.setDeliveryPriceTotal("Rp 299.000");
+
+            return shipmentDetailData;
+        }
+
+        private static ShipmentDetailData createDummySameDayShipmentDetailData() {
+            ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
+            shipmentDetailData.setId(ID);
+            shipmentDetailData.setAddress(ADDRESS);
+            shipmentDetailData.setLatitude(LATITUDE);
+            shipmentDetailData.setLongitude(LONGITUDE);
+            shipmentDetailData.setDropshipperInfo("Dropshipper Bottomsheet Info");
+            shipmentDetailData.setPartialOrderInfo("Partial Order Bottomsheet Info");
+            shipmentDetailData.setShipmentItemData(ShipmentChoicePresenter.DummyCreator.createDummyShipmentChoices());
+            shipmentDetailData.setDeliveryPriceTotal("Rp 299.000");
+
+            return shipmentDetailData;
+        }
+
+        private static ShipmentDetailData createDummyNextDayShipmentDetailData() {
+            ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
+            shipmentDetailData.setId(ID);
+            shipmentDetailData.setAddress(ADDRESS);
+            shipmentDetailData.setLatitude(LATITUDE);
+            shipmentDetailData.setLongitude(LONGITUDE);
+            shipmentDetailData.setShipmentItemData(ShipmentChoicePresenter.DummyCreator.createDummyShipmentChoices());
+
+            return shipmentDetailData;
+        }
+
+        private static ShipmentDetailData createDummyRegularShipmentDetailData() {
+            ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
+            shipmentDetailData.setId(ID);
+            shipmentDetailData.setAddress(ADDRESS);
+            shipmentDetailData.setDropshipperInfo("Dropshipper Bottomsheet Info");
+            shipmentDetailData.setPartialOrderInfo("Partial Order Bottomsheet Info");
+            shipmentDetailData.setShipmentItemData(ShipmentChoicePresenter.DummyCreator.createDummyShipmentChoices());
+            shipmentDetailData.setDeliveryPriceTotal("Rp 299.000");
+
+            return shipmentDetailData;
+        }
+
+        private static ShipmentDetailData createDummyKargoShipmentDetailData() {
+            ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
+            shipmentDetailData.setId(ID);
+            shipmentDetailData.setAddress(ADDRESS);
+            shipmentDetailData.setShipmentItemData(ShipmentChoicePresenter.DummyCreator.createDummyShipmentChoices());
 
             return shipmentDetailData;
         }

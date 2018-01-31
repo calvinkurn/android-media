@@ -37,7 +37,6 @@ public class CartActivity extends BasePresenterActivity {
 
     @Override
     protected void initView() {
-        //startActivityForResult(ShipmentDetailActivity.createInstance(this), 1);
         Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
         if (fragment == null || !(fragment instanceof CartFragment))
             getFragmentManager().beginTransaction().replace(R.id.container,

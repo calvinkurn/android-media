@@ -41,7 +41,7 @@ public class ShipmentDetailActivity extends BasePresenterActivity {
             public void run() {
                 startActivityForResult(ShipmentChoiceActivity.createInstance(
                         ShipmentDetailActivity.this), REQUEST_CODE_SHIPMENT_CHOICE);
-                overridePendingTransition(R.anim.anim_bottom_up, R.anim.anim_top_down);
+                overridePendingTransition(R.anim.anim_bottom_up, 0);
             }
         }, DELAY_IN_MILISECOND);
     }
