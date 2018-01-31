@@ -1,11 +1,13 @@
 package com.tokopedia.tkpd.beranda.presentation.view.adapter.viewholder;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.res.ResourcesCompat;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -181,12 +183,18 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-
+                View focus = ((Activity) context).getCurrentFocus();
+                if (focus != null) {
+                    hideKeyboard(focus);
+                }
             }
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-
+                View focus = ((Activity) context).getCurrentFocus();
+                if (focus != null) {
+                    hideKeyboard(focus);
+                }
             }
         });
     }
@@ -232,6 +240,13 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
     @OnClick(R.id.see_more)
     void onSeeMore() {
         listener.onDigitalMoreClicked(getAdapterPosition());
+    }
+
+    private void hideKeyboard(View v) {
+        InputMethodManager keyboard = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (keyboard != null) {
+            keyboard.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        }
     }
 
 }
