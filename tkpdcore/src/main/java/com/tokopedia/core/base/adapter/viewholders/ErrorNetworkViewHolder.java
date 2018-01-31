@@ -11,6 +11,10 @@ import com.tokopedia.core.base.adapter.model.ErrorNetworkModel;
  * @author by erry on 02/02/17.
  */
 
+/**
+ * Use abstract view holder from tkpd abstraction
+ */
+@Deprecated
 public class ErrorNetworkViewHolder extends AbstractViewHolder<ErrorNetworkModel> {
 
     @LayoutRes

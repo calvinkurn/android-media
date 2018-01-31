@@ -117,4 +117,11 @@ public class PromoCouponInteractor implements IPromoCouponInteractor {
     public void getCatalogFilterCategory(TKPDMapParam<String, String> param, Subscriber<String> subscriber) {
 
     }
+
+    @Override
+    public void unsubscribe() {
+        if (compositeSubscription != null && compositeSubscription.hasSubscriptions())
+            compositeSubscription.unsubscribe();
+    }
+
 }
