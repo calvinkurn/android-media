@@ -35,9 +35,6 @@ import rx.Subscriber;
 public class TopUpTokocashPresenter implements ITopUpTokocashPresenter {
 
     private final static String TOPUP_CATEGORY_ID = "103";
-    private final static String PARAM_IS_RESELLER = "is_reseller";
-    private final static String VALUE_RESSELER = "1";
-    private final static String CATEGORY_ID = "category_id";
     private SessionHandler sessionHandler;
     private Context context;
 
@@ -186,7 +183,7 @@ public class TopUpTokocashPresenter implements ITopUpTokocashPresenter {
             @Override
             public void onNext(WalletToken walletToken) {
                 sessionHandler.setTokenTokoCash(walletToken.getToken());
-                Log.d("TOKEN TOKOCASH", "onNext: " + sessionHandler.getAccessTokenTokoCash());
+                Log.d("TOKEN TOKOCASH", "onNext: " + SessionHandler.getAccessTokenTokoCash());
             }
         };
     }
