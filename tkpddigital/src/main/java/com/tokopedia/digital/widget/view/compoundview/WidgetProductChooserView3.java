@@ -45,9 +45,9 @@ public class WidgetProductChooserView3 extends BaseDigitalChooserView<Product> {
     }
 
     public void renderInitDataList(List<Product> products, boolean showPrice, String defaultProductId) {
+        this.dataList = products;
         WidgetNominalAdapter2 adapter = new WidgetNominalAdapter2(getContext(),
                 android.R.layout.simple_spinner_item, products, showPrice);
-        this.dataList = products;
         spinnerNominal.setAdapter(adapter);
         spinnerNominal.setOnItemSelectedListener(getItemSelected());
         setSpnNominalSelectionBasedLastOrder(defaultProductId);

@@ -117,20 +117,20 @@ public class CategoryProductStyle3View extends
     }
 
     @Override
-    protected void onUpdateSelectedProductData() {
-        if (source == NATIVE) {
-            this.digitalProductChooserView.renderUpdateDataSelected(productSelected);
-        } else {
-            this.widgetProductChooserView.renderUpdateDataSelected(productSelected);
-        }
-    }
-
-    @Override
     protected void onUpdateSelectedOperatorData() {
         if (source == NATIVE) {
             digitalOperatorChooserView.renderUpdateDataSelected(operatorSelected);
         } else {
             widgetOperatorChooserView.renderUpdateDataSelected(operatorSelected);
+        }
+    }
+
+    @Override
+    protected void onUpdateSelectedProductData() {
+        if (source == NATIVE) {
+            this.digitalProductChooserView.renderUpdateDataSelected(productSelected);
+        } else {
+            this.widgetProductChooserView.renderUpdateDataSelected(productSelected);
         }
     }
 
@@ -247,11 +247,11 @@ public class CategoryProductStyle3View extends
         if (source == NATIVE) {
             renderProductChooserOptions();
         } else {
-            renderProductChooserOptionsWidget3();
+            renderProductChooserOptionsWidget();
         }
     }
 
-    private void renderProductChooserOptionsWidget3() {
+    private void renderProductChooserOptionsWidget() {
         clearHolder(holderChooserProduct);
         widgetProductChooserView.setLabelText(operatorSelected.getRule().getProductText());
         widgetProductChooserView.setActionListener(getActionListenerProductChooser());

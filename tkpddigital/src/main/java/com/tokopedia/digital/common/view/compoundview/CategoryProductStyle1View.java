@@ -95,10 +95,10 @@ public class CategoryProductStyle1View extends
 
     @Override
     protected void onInitialDataRendered() {
-        if (source == WIDGET) {
-            tvTitle.setText(TextUtils.isEmpty(data.getTitleText()) ? "" : data.getTitleText());
-        } else {
+        if (source == NATIVE) {
             tvTitle.setVisibility(GONE);
+        } else {
+            tvTitle.setText(TextUtils.isEmpty(data.getTitleText()) ? "" : data.getTitleText());
         }
         renderClientNumberInputForm();
         renderInstantCheckoutOption();
@@ -107,7 +107,7 @@ public class CategoryProductStyle1View extends
 
     @Override
     protected void onUpdateSelectedProductData() {
-        if (source == WIDGET) {
+        if (source == NATIVE) {
             this.digitalProductChooserView.renderUpdateDataSelected(productSelected);
         } else {
             this.widgetProductChooserView.renderUpdateDataSelected(productSelected);

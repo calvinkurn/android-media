@@ -142,9 +142,9 @@ public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout 
 
     protected abstract void onInitialDataRendered();
 
-    protected abstract void onUpdateSelectedProductData();
-
     protected abstract void onUpdateSelectedOperatorData();
+
+    protected abstract void onUpdateSelectedProductData();
 
     protected abstract void onInstantCheckoutUnChecked();
 
