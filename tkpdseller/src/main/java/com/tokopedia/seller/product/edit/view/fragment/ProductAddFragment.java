@@ -60,6 +60,7 @@ import com.tokopedia.seller.product.edit.view.listener.YoutubeAddVideoView;
 import com.tokopedia.seller.product.edit.view.mapper.AnalyticsMapper;
 import com.tokopedia.seller.product.edit.view.model.ImageSelectModel;
 import com.tokopedia.seller.product.edit.view.model.categoryrecomm.ProductCategoryPredictionViewModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.ValueIndicatorScoreModel;
 import com.tokopedia.seller.product.edit.view.model.upload.UploadProductInputViewModel;
@@ -814,37 +815,37 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
 
     @CallSuper
     protected UploadProductInputViewModel collectDataFromView() {
-        UploadProductInputViewModel viewModel = new UploadProductInputViewModel();
+        ProductViewModel viewModel = new ProductViewModel();
         viewModel.setProductName(productInfoViewHolder.getName());
-        viewModel.setProductDepartmentId(productInfoViewHolder.getCategoryId());
-        viewModel.setProductCatalogId(productInfoViewHolder.getCatalogId());
-        viewModel.setProductCatalogName(productInfoViewHolder.getCatalogName());
-        viewModel.setProductPhotos(productImageViewHolder.getProductPhotos());
+        viewModel.setProductCategory(productInfoViewHolder.getProductCategory());
+        viewModel.setProductCatalog(productInfoViewHolder.getProductCatalog());
+//        viewModel.setProductPhotos(productImageViewHolder.getProductPhotos());
+
         viewModel.setProductPriceCurrency(productDetailViewHolder.getPriceUnit());
         viewModel.setProductPrice(productDetailViewHolder.getPriceValue());
-        viewModel.setProductWholesaleList(productDetailViewHolder.getProductWholesaleViewModels());
         viewModel.setProductWeightUnit(productDetailViewHolder.getWeightUnit());
         viewModel.setProductWeight(productDetailViewHolder.getWeightValue());
         viewModel.setProductMinOrder(productDetailViewHolder.getMinimumOrder());
-        viewModel.setProductUploadTo(productDetailViewHolder.getStatusStock());
-        viewModel.setProductInvenageSwitch(productDetailViewHolder.isStockManaged() ? InvenageSwitchTypeDef.TYPE_ACTIVE : InvenageSwitchTypeDef.TYPE_NOT_ACTIVE);
-        viewModel.setProductInvenageValue(productDetailViewHolder.getTotalStock());
-        viewModel.setProductEtalaseId(productDetailViewHolder.getEtalaseId());
-        viewModel.setProductEtalaseName(productDetailViewHolder.getEtalaseName());
+
+        viewModel.setProductWholesale(productDetailViewHolder.getProductWholesaleViewModels());
+
+        viewModel.setProductStock(productDetailViewHolder.getStatusStock());
+        viewModel.setProductStatus(productDetailViewHolder.isStockManaged() ? InvenageSwitchTypeDef.TYPE_ACTIVE : InvenageSwitchTypeDef.TYPE_NOT_ACTIVE);
+        viewModel.setProductStock(productDetailViewHolder.getTotalStock());
+        viewModel.setProductEtalase(productDetailViewHolder.getProductEtalase());
         viewModel.setProductCondition(productDetailViewHolder.getCondition());
-        viewModel.setProductMustInsurance(productDetailViewHolder.getInsurance());
-        viewModel.setProductReturnable(productDetailViewHolder.getFreeReturns());
+        viewModel.setProductMustInsurance(productDetailViewHolder.isMustInsurance());
         viewModel.setProductDescription(productAdditionalInfoViewHolder.getDescription());
-        viewModel.setProductVideos(productAdditionalInfoViewHolder.getVideoIdList());
-        if (productAdditionalInfoViewHolder.getPreOrderValue() > 0) {
-            viewModel.setPoProcessType(productAdditionalInfoViewHolder.getPreOrderUnit());
-            viewModel.setPoProcessValue(productAdditionalInfoViewHolder.getPreOrderValue());
-        }
+
+        viewModel.setProductFreeReturn(productDetailViewHolder.isFreeReturns());
+        viewModel.setProductVideo(productAdditionalInfoViewHolder.getVideoList());
+        viewModel.setProductPreorder(productAdditionalInfoViewHolder.getPreOrder());
         viewModel.setProductStatus(getStatusUpload());
-        viewModel.setProductNameEditable(productInfoViewHolder.isNameEditable()?1:0);
-        viewModel.setProductVariantData(productAdditionalInfoViewHolder.getProductVariantDataSubmit());
-        viewModel.setVariantStringSelection(productAdditionalInfoViewHolder.getVariantStringSelection());
-        return viewModel;
+        viewModel.setProductVariant(productAdditionalInfoViewHolder.getProductVariant());
+//        viewModel.setProductNameEditable(productInfoViewHolder.isNameEditable()?1:0);
+
+//        viewModel.setVariantStringSelection(productAdditionalInfoViewHolder.getVariantStringSelection());
+        return null;
     }
 
     @Override

@@ -12,7 +12,7 @@ import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
-import com.tokopedia.seller.product.edit.view.model.upload.ProductWholesaleViewModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductWholesaleViewModel;
 import com.tokopedia.seller.product.edit.view.model.wholesale.WholesaleModel;
 
 import java.text.DecimalFormat;
@@ -130,9 +130,8 @@ public class WholesaleAdapter extends BaseLinearRecyclerViewAdapter {
         for (int i = 0; i < wholesalePrice.size(); i++) {
 
             WholesaleModel wholesaleModel = new WholesaleModel(
-                    wholesalePrice.get(i).getQtyMin(),
-                    wholesalePrice.get(i).getQtyMax(),
-                    wholesalePrice.get(i).getPrice()
+                    wholesalePrice.get(i).getMinQty(),
+                    wholesalePrice.get(i).getPriceValue()
             );
 
             wholesaleModels.add(wholesaleModel);
@@ -151,9 +150,8 @@ public class WholesaleAdapter extends BaseLinearRecyclerViewAdapter {
             ProductWholesaleViewModel productWholesaleViewModel
                     = new ProductWholesaleViewModel();
             WholesaleModel wholesaleModel = wholesaleModels.get(i);
-            productWholesaleViewModel.setQtyMin(wholesaleModel.getQtyOne());
-            productWholesaleViewModel.setQtyMax(wholesaleModel.getQtyTwo());
-            productWholesaleViewModel.setPrice(wholesaleModel.getQtyPrice());
+            productWholesaleViewModel.setMinQty(wholesaleModel.getQtyMin());
+            productWholesaleViewModel.setPriceValue(wholesaleModel.getQtyPrice());
 
             productWholesaleViewModels.add(productWholesaleViewModel);
         }
@@ -226,10 +224,8 @@ public class WholesaleAdapter extends BaseLinearRecyclerViewAdapter {
 
             NumberFormat quantityNumberFormat = new DecimalFormat();
             quantityNumberFormat.setMinimumIntegerDigits(0);
-            String qtyOne = quantityNumberFormat.format(wholesaleModel.getQtyOne());
-            String qtyTwo = quantityNumberFormat.format(wholesaleModel.getQtyTwo());
-            textRangeWholesale.setText(itemView.getContext().getString(R.string.product_wholesale_range_format,
-                    qtyOne, qtyTwo));
+            String qtyMin = quantityNumberFormat.format(wholesaleModel.getQtyMin());
+            textRangeWholesale.setText(itemView.getContext().getString(R.string.product_wholesale_range_format, qtyMin));
             String qtyPrice = wholesaleModel.getQtyPrice() + "";
             textWholeSalePrice.setText(formatValue(qtyPrice));
         }

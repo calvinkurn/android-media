@@ -37,10 +37,13 @@ import com.tokopedia.expandable.ExpandableOptionSwitch;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.widget.LabelView;
 import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
+import com.tokopedia.seller.product.edit.constant.FreeReturnTypeDef;
+import com.tokopedia.seller.product.edit.constant.ProductInsuranceValueTypeDef;
 import com.tokopedia.seller.product.edit.utils.ViewUtils;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductEtalaseViewModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductWholesaleViewModel;
 import com.tokopedia.seller.product.etalase.view.activity.EtalasePickerActivity;
 import com.tokopedia.seller.product.edit.view.adapter.WholesaleAdapter;
-import com.tokopedia.seller.product.edit.view.model.upload.ProductWholesaleViewModel;
 import com.tokopedia.seller.product.edit.view.model.wholesale.WholesaleModel;
 import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
 import com.tokopedia.seller.util.CurrencyUsdTextWatcher;
@@ -58,6 +61,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
         implements WholesaleAdapter.Listener {
 
     public static final int REQUEST_CODE_ETALASE = 301;
+
     public static final String IS_ENABLE_WHOLESALE = "IS_ENABLE_WHOLESALE";
     public static final String IS_ON_WHOLESALE = "IS_ON_WHOLESALE";
     public static final String IS_ACTIVE_STOCK = "IS_ACTIVE_STOCK";
@@ -419,8 +423,8 @@ public class ProductDetailViewHolder extends ProductViewHolder
         conditionSpinnerTextView.setSpinnerValue(String.valueOf(unit));
     }
 
-    public int getInsurance() {
-        return Integer.parseInt(insuranceSpinnerTextView.getSpinnerValue());
+    public boolean isMustInsurance() {
+        return Integer.valueOf(insuranceSpinnerTextView.getSpinnerValue()) == ProductInsuranceValueTypeDef.TYPE_YES;
     }
 
     public void setInsurance(int unit) {
@@ -433,6 +437,10 @@ public class ProductDetailViewHolder extends ProductViewHolder
         } else {
             return Integer.parseInt(freeReturnsSpinnerTextView.getSpinnerValue());
         }
+    }
+
+    public boolean isFreeReturns() {
+        return getFreeReturns() == FreeReturnTypeDef.TYPE_ACTIVE;
     }
 
     public void setFreeReturn(int unit) {
@@ -451,6 +459,13 @@ public class ProductDetailViewHolder extends ProductViewHolder
         return etalaseLabelView.getContent();
     }
 
+    public ProductEtalaseViewModel getProductEtalase() {
+        ProductEtalaseViewModel productEtalaseViewModel = new ProductEtalaseViewModel();
+        productEtalaseViewModel.setEtalaseId(getEtalaseId());
+        productEtalaseViewModel.setEtalaseName(getEtalaseName());
+        return productEtalaseViewModel;
+    }
+
     public void setEtalaseName(String name) {
         this.etalaseLabelView.setContent(MethodChecker.fromHtml(name));
     }
@@ -462,7 +477,7 @@ public class ProductDetailViewHolder extends ProductViewHolder
     }
 
     private WholesaleModel getBaseValue() {
-        return new WholesaleModel(1, 1, getPriceValue());
+        return new WholesaleModel(1, getPriceValue());
     }
 
     private WholesaleModel getPreviousValue() {

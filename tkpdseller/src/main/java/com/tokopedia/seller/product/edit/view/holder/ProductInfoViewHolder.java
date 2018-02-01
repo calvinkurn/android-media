@@ -26,6 +26,8 @@ import com.tokopedia.seller.product.edit.data.source.cloud.model.catalogdata.Cat
 import com.tokopedia.seller.product.edit.view.activity.CatalogPickerActivity;
 import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivity;
 import com.tokopedia.seller.product.edit.view.model.categoryrecomm.ProductCategoryPredictionViewModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductCatalogViewModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductCategoryViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -186,12 +188,25 @@ public class ProductInfoViewHolder extends ProductViewHolder implements RadioGro
         return categoryId;
     }
 
+    public ProductCategoryViewModel getProductCategory() {
+        ProductCategoryViewModel productCategory = new ProductCategoryViewModel();
+        productCategory.setCategoryId(categoryId);
+        return productCategory;
+    }
+
     public void setCategoryId(long categoryId) {
         this.categoryId = categoryId;
     }
 
     public long getCatalogId() {
         return catalogId;
+    }
+
+    public ProductCatalogViewModel getProductCatalog() {
+        ProductCatalogViewModel productCatalog = new ProductCatalogViewModel();
+        productCatalog.setCatalogId(catalogId);
+        productCatalog.setCatalogName(getCatalogName());
+        return productCatalog;
     }
 
     public void setNameEnabled(boolean enabled) {

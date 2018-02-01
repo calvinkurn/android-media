@@ -31,6 +31,9 @@ import com.tokopedia.seller.product.edit.view.fragment.ProductAddFragment;
 import com.tokopedia.seller.product.edit.view.listener.YoutubeAddVideoView;
 import com.tokopedia.design.text.SpinnerCounterInputView;
 import com.tokopedia.design.text.watcher.NumberTextWatcher;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductPreorderViewModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductVariantViewModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductVideoViewModel;
 import com.tokopedia.seller.product.variant.constant.ProductVariantConstant;
 import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.seller.product.variant.data.model.variantsubmit.ProductVariantCombinationSubmit;
@@ -219,8 +222,21 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
         return videoIdList;
     }
 
+    public List<ProductVideoViewModel> getVideoList() {
+        List<ProductVideoViewModel> productVideoViewModelList = new ArrayList<>();
+        ProductVideoViewModel productVideoViewModel = new ProductVideoViewModel();
+        productVideoViewModel.setUrl("");
+        productVideoViewModelList.add(productVideoViewModel);
+        return productVideoViewModelList;
+    }
+
+    @Deprecated
     public ProductVariantDataSubmit getProductVariantDataSubmit() {
         return productVariantDataSubmit;
+    }
+
+    public ProductVariantViewModel getProductVariant() {
+        return new ProductVariantViewModel();
     }
 
     public String getVariantStringSelection(){
@@ -242,6 +258,13 @@ public class ProductAdditionalInfoViewHolder extends ProductViewHolder {
         } else {
             return INACTIVE_PREORDER;
         }
+    }
+
+    public ProductPreorderViewModel getPreOrder() {
+        ProductPreorderViewModel productPreorderViewModel = new ProductPreorderViewModel();
+        productPreorderViewModel.setPreorderProcessTime(getPreOrderValue());
+        productPreorderViewModel.setPreorderTimeUnit(getPreOrderUnit());
+        return productPreorderViewModel;
     }
 
     public void setPreOrderUnit(int unit) {

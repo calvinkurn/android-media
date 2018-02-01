@@ -114,7 +114,7 @@ public class ProductDraftAddFragment extends ProductAddFragment implements Produ
         }
         if (model.getProductWholesaleList().size() > 0) {
             productDetailViewHolder.expandWholesale(true);
-            productDetailViewHolder.setWholesalePrice(model.getProductWholesaleList());
+//            productDetailViewHolder.setWholesalePrice(model.getProductWholesaleList());
         }
         productDetailViewHolder.setWeightUnit(model.getProductWeightUnit());
         if (model.getProductWeight() > 0) {

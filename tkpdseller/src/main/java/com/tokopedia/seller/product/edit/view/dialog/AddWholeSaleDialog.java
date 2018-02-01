@@ -56,7 +56,7 @@ public class AddWholeSaleDialog extends DialogFragment {
     private int currencyType;
     private WholesaleModel previousValue;
     private boolean isErrorReturn;
-    private int minQuantityRaw = 0;
+    private long minQuantityRaw = 0;
     private CurrencyIdrTextWatcher idrTextWatcher;
     private CurrencyUsdTextWatcher usdTextWatcher;
     private NumberFormat formatter;
@@ -139,20 +139,20 @@ public class AddWholeSaleDialog extends DialogFragment {
 
         // set min based on previous data
         String minQuantity = null;
-        boolean isFirsttime = false;
+        boolean firstTime = false;
         if (previousValue == null) {
-            isFirsttime = true;
-            minQuantityRaw = baseValue.getQtyTwo() + 1;
-            minQuantity = Integer.toString(minQuantityRaw);
+            firstTime = true;
+            minQuantityRaw = baseValue.getQtyMin() + 1;
+            minQuantity = Long.toString(minQuantityRaw);
         } else {
-            minQuantityRaw = previousValue.getQtyTwo() + 1;
-            minQuantity = Integer.toString(minQuantityRaw);
+            minQuantityRaw = previousValue.getQtyMin() + 1;
+            minQuantity = Long.toString(minQuantityRaw);
         }
         minWholeSale.setText(minQuantity);
         /**
          * first time means whole sale price at index 1.
          */
-        if (isFirsttime) {
+        if (firstTime) {
             minWholeSale.setEnabled(true);
             minWholeSale.addTextChangedListener(new NumberTextWatcher(minWholeSale.getEditText()) {
                 @Override
@@ -166,7 +166,7 @@ public class AddWholeSaleDialog extends DialogFragment {
             minWholeSale.setEnabled(false);
         }
 
-        final boolean finalIsFirsttime = isFirsttime;
+        final boolean finalIsFirsttime = firstTime;
         maxWholeSale.addTextChangedListener(new NumberTextWatcher(maxWholeSale.getEditText()) {
             @Override
             public void onNumberChanged(double maxQuantity) {
@@ -174,7 +174,7 @@ public class AddWholeSaleDialog extends DialogFragment {
                 validateMaxQuantity(maxQuantity, finalIsFirsttime);
             }
         });
-        maxWholeSale.setText(Integer.toString(minQuantityRaw + 1));
+        maxWholeSale.setText(Long.toString(minQuantityRaw + 1));
         maxWholeSale.invalidate();
         maxWholeSale.requestLayout();
 
@@ -337,7 +337,6 @@ public class AddWholeSaleDialog extends DialogFragment {
     protected WholesaleModel getItem() {
         return new WholesaleModel(
                 Integer.parseInt(removeComma(minWholeSale.getEditText().getText().toString())),
-                Integer.parseInt(removeComma(maxWholeSale.getEditText().getText().toString())),
                 Double.parseDouble(removeComma(wholesalePrice.getEditText().getText().toString()))
         );
     }

@@ -16,6 +16,7 @@ import java.util.List;
  * @author sebastianuskh on 4/13/17.
  */
 
+@Deprecated
 public class UploadProductInputViewModel {
     private ProductPhotoListViewModel productPhotos;
     private List<ProductWholesaleViewModel> productWholesaleList;
