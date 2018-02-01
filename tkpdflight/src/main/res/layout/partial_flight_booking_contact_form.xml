@@ -93,15 +93,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:background="@drawable/selectable_background_tokopedia"
-                android:gravity="center_vertical"
-                android:orientation="vertical">
+                android:gravity="bottom"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/padding_ms">
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/et_phone_country_code"
                     style="@style/TextView.Title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_vs"
                     android:drawableEnd="@drawable/ic_arrow_down_grey"
                     android:drawablePadding="@dimen/padding_small"
                     android:drawableRight="@drawable/ic_arrow_down_grey"
