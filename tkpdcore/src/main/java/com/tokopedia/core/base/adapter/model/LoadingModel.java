@@ -7,6 +7,10 @@ import com.tokopedia.core.base.adapter.Visitable;
  * @author Kulomady on 1/25/17.
  */
 
+/**
+ * Use visitable model from tkpd abstraction
+ */
+@Deprecated
 public class LoadingModel implements Visitable<AdapterTypeFactory> {
 
     @Override

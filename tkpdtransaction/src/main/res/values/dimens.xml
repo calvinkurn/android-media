@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Payment Credit Cards -->
+    <dimen name="credit_card_list_bg_height">50dp</dimen>
+    <dimen name="credit_card_logo_width">50dp</dimen>
+    <dimen name="credit_card_logo_height">22dp</dimen>
+    <dimen name="credit_card_detail_bg_width">160dp</dimen>
+    <dimen name="credit_card_detail_bg_height">40dp</dimen>
+    <dimen name="credit_card_detail_content_height">120dp</dimen>
+    <dimen name="chip_thumb_size">45dp</dimen>
+</resources>
