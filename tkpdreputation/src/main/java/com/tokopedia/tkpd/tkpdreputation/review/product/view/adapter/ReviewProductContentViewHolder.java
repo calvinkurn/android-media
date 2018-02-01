@@ -126,6 +126,8 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
             reviewOverflow.setVisibility(View.GONE);
         }
 
+        initReplyViewState();
+
         if (element.isReviewHasReplied()) {
             setSellerReply(element);
         } else {
@@ -253,6 +255,10 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
 
     private void toggleReply() {
         isReplyOpened = !isReplyOpened;
+        initReplyViewState();
+    }
+
+    private void initReplyViewState() {
         if (isReplyOpened) {
             seeReplyText.setText(MainApplication.getAppContext().getText(R.string.close_reply));
             replyArrow.setRotation(180);
@@ -263,7 +269,6 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
             replyArrow.setRotation(0);
             replyReviewLayout.setVisibility(View.GONE);
         }
-
     }
 
     private String getFormattedTime(String reviewTime) {
