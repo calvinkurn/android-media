@@ -1,6 +1,7 @@
 package com.tokopedia.posapp;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -240,6 +241,11 @@ public class PosRouterApplication extends MainApplication implements
     @Override
     public String getFlavor() {
         return BuildConfig.FLAVOR;
+    }
+
+    @Override
+    public BroadcastReceiver getBroadcastReceiverTokocashPending() {
+        return null;
     }
 
     @Override
