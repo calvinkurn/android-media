@@ -3,7 +3,6 @@ package com.tokopedia.tkpd.beranda.presentation.view.adapter.viewholder;
 import android.content.Context;
 import android.graphics.Paint;
 import android.support.annotation.LayoutRes;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,6 +15,10 @@ import com.tokopedia.tkpd.beranda.helper.TextViewHelper;
 import com.tokopedia.tkpd.beranda.listener.HomeCategoryListener;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.compoundview.CountDownView;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by henrypriyono on 31/01/18.
@@ -79,6 +82,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
         final DynamicHomeChannel.Channels channel = element.getChannel();
         if (DynamicHomeChannel.Channels.LAYOUT_SPRINT.equals(channel.getLayout())) {
             countDownView.setVisibility(View.VISIBLE);
+            countDownView.setup(getExpiredTime(element));
         } else {
             countDownView.setVisibility(View.GONE);
         }
@@ -128,5 +132,16 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                 listener.onDynamicChannelClicked(channel.getGrids()[2].getApplink());
             }
         });
+    }
+
+    private Date getExpiredTime(DynamicChannelViewModel model) {
+        String expiredTimeString = model.getChannel().getHeader().getExpiredTime();
+        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+        try {
+            return format.parse(expiredTimeString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return new Date();
+        }
     }
 }
