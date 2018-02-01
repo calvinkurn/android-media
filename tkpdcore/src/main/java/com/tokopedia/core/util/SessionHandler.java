@@ -286,6 +286,12 @@ public class SessionHandler {
         return u_name;
     }
 
+    /**
+     * Use shop info use case to get gold merchant status
+     * @param context
+     * @return
+     */
+    @Deprecated
     public static boolean isGoldMerchant(Context context) {
         Boolean isGoldMerchant = false;
         SharedPreferences sharedPrefs = context.getSharedPreferences(SHOP_DOMAIN, Context.MODE_PRIVATE);
@@ -294,6 +300,11 @@ public class SessionHandler {
         return isGoldMerchant;
     }
 
+    /**
+     * Use shop info use case to get gold merchant status
+     * @param context
+     * @param goldMerchant
+     */
     public static void setGoldMerchant(Context context, int goldMerchant) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(SHOP_DOMAIN, Context.MODE_PRIVATE);
         Editor edit = sharedPrefs.edit();

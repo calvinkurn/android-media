@@ -1,6 +1,7 @@
 package com.tokopedia.topads.sdk.view;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.support.annotation.Nullable;
@@ -20,6 +21,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.Target;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.domain.model.Badge;
@@ -73,14 +78,20 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         }
     }
 
-    private void createViewCpmShop(Context context, CpmData.Cpm cpm) {
+    private void createViewCpmShop(Context context, final CpmData.Cpm cpm) {
         inflate(getContext(), R.layout.layout_ads_banner_shop, this);
-        ImageView iconImg = (ImageView) findViewById(R.id.icon);
+        final ImageView iconImg = (ImageView) findViewById(R.id.icon);
         TextView promotedTxt = (TextView) findViewById(R.id.title_promote);
         TextView nameTxt = (TextView) findViewById(R.id.shop_name);
         TextView descriptionTxt = (TextView) findViewById(R.id.description);
         LinearLayout badgeContainer = (LinearLayout) findViewById(R.id.badges_container);
-        Glide.with(context).load(cpm.getCpmImage().getFullEcs()).into(iconImg);
+        Glide.with(context).load(cpm.getCpmImage().getFullEcs()).asBitmap().into(new SimpleTarget<Bitmap>() {
+            @Override
+            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                iconImg.setImageBitmap(resource);
+                new ImpresionTask().execute(cpm.getCpmImage().getFullUrl());
+            }
+        });
         promotedTxt.setText(cpm.getPromotedText());
         nameTxt.setText(escapeHTML(cpm.getName()));
 
@@ -112,10 +123,16 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
 
     private void createViewCpmDigital(Context context, final CpmData.Cpm cpm) {
         inflate(getContext(), R.layout.layout_ads_banner_digital, this);
-        ImageView iconImg = (ImageView) findViewById(R.id.icon);
+        final ImageView iconImg = (ImageView) findViewById(R.id.icon);
         TextView nameTxt = (TextView) findViewById(R.id.name);
         TextView descriptionTxt = (TextView) findViewById(R.id.description);
-        Glide.with(context).load(cpm.getCpmImage().getFullEcs()).into(iconImg);
+        Glide.with(context).load(cpm.getCpmImage().getFullEcs()).asBitmap().into(new SimpleTarget<Bitmap>() {
+            @Override
+            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                iconImg.setImageBitmap(resource);
+                new ImpresionTask().execute(cpm.getCpmImage().getFullUrl());
+            }
+        });
         nameTxt.setText(escapeHTML(cpm.getName()));
         String desc = String.format("%s %s", escapeHTML(cpm.getDecription()), cpm.getCta());
         setTextColor(descriptionTxt, desc, cpm.getCta(), ContextCompat.getColor(context, R.color.tkpd_main_green));
