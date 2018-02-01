@@ -137,7 +137,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
 
     private Date getExpiredTime(DynamicChannelViewModel model) {
         String expiredTimeString = model.getChannel().getHeader().getExpiredTime();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-ddThh:mm:ss.nnnnnn+|-hh:mm");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZZZZ");
         try {
             return format.parse(expiredTimeString);
         } catch (ParseException e) {
