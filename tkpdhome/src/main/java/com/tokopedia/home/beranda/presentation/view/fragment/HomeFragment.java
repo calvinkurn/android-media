@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 
 import com.google.firebase.perf.metrics.Trace;
 import com.tkpd.library.ui.view.LinearLayoutManager;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -30,8 +31,6 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.constants.HomeFragmentBroadcastReceiverConstant;
 import com.tokopedia.core.constants.TokocashPendingDataBroadcastReceiverConstant;
@@ -60,10 +59,11 @@ import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.digital.tokocash.model.CashBackData;
-import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
+import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.domain.model.brands.BrandDataModel;
+import com.tokopedia.home.beranda.domain.model.category.CategoryLayoutRowModel;
 import com.tokopedia.home.beranda.domain.model.toppicks.TopPicksItemModel;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.listener.HomeFeedListener;
@@ -82,7 +82,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsVi
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.LayoutSections;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SellViewModel;
-import com.tokopedia.home.explore.domain.model.CategoryLayoutRowModel;
 import com.tokopedia.home.explore.view.activity.ExploreActivity;
 
 import java.util.ArrayList;
@@ -157,9 +156,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     protected void initInjector() {
-        HomeComponent component = DaggerHomeComponent.builder().appComponent(getComponent(AppComponent.class)).build();
-        component.inject(this);
-        component.inject(presenter);
+//        BerandaComponent component = DaggerHomeComponent.builder().appComponent(getComponent(AppComponent.class)).build();
+//        component.inject(this);
+//        component.inject(presenter);
     }
 
     private void fetchRemoteConfig() {
@@ -381,7 +380,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onMarketPlaceItemClicked(CategoryLayoutRowModel data, int parentPosition, int childPosition) {
         TrackingUtils.sendMoEngageClickMainCategoryIcon(data.getName());
-        openActivity(String.valueOf(data.getCategoryId()), data.getName());
+        ((IHomeRouter) getActivity().getApplication()).openIntermediaryActivity(getActivity(),
+                String.valueOf(data.getCategoryId()), data.getName());
+        Map<String, String> values = new HashMap<>();
+        values.put(getString(R.string.value_category_name), data.getName());
+        UnifyTracking.eventHomeCategory(data.getName());
     }
 
     @Override
@@ -401,10 +404,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onApplinkClicked(CategoryLayoutRowModel data, int parentPosition, int childPosition) {
-        Intent intent = new Intent();
-        intent.setData(Uri.parse(data.getApplinks()));
-        DeepLinkDelegate delegate = DeeplinkHandlerActivity.getDelegateInstance();
-        delegate.dispatchFrom(getActivity(), intent);
+        ((TkpdCoreRouter) getActivity().getApplication()).actionApplinkFromActivity(getActivity() ,
+                data.getApplinks());
     }
 
     @Override
@@ -440,13 +441,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         } else {
             UnifyTracking.eventViewAllOSNonLogin();
         }
-
         if (firebaseRemoteConfig.getBoolean(MAINAPP_SHOW_REACT_OFFICIAL_STORE)) {
-            getActivity().startActivity(
-                    ReactNativeOfficialStoreActivity.createCallingIntent(
-                            getActivity(), ReactConst.Screen.OFFICIAL_STORE,
-                            getString(R.string.react_native_banner_official_title))
-            );
+            ((IHomeRouter) getActivity().getApplication()).openReactNativeOfficialStore(getActivity());
         } else {
             openWebViewBrandsURL(TkpdBaseURL.OfficialStore.URL_WEBVIEW);
         }
@@ -525,7 +521,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 .setTitle(getString(R.string.toko_cash_pending_title))
                 .setBody(String.format(getString(R.string.toko_cash_pending_body),
                         cashBackData.getAmountText()))
-                .setImg(R.drawable.group_2)
+                .setImg(R.drawable.ic_box)
                 .setUrlButton(redirectUrlActionButton,
                         appLinkActionButton,
                         getString(R.string.toko_cash_pending_proceed_button))
@@ -544,7 +540,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void actionScannerQRTokoCash() {
-        HomeFragmentPermissionsDispatcher.scanQRCodeWithCheck(this);
+//        HomeFragmentPermissionsDispatcher.scanQRCodeWithCheck(this);
     }
 
     @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
@@ -728,17 +724,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void unsetEndlessScroll() {
         recyclerView.removeOnScrollListener(feedLoadMoreTriggerListener);
-    }
-
-    private void openActivity(String depID, String title) {
-        IntermediaryActivity.moveTo(
-                getActivity(),
-                depID,
-                title
-        );
-        Map<String, String> values = new HashMap<>();
-        values.put(getString(R.string.value_category_name), title);
-        UnifyTracking.eventHomeCategory(title);
     }
 
     private void openWebViewBrandsURL(String url) {

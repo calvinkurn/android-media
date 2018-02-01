@@ -30,8 +30,7 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
 
     @LayoutRes
     public static final int LAYOUT = R.layout.home_banner;
-    @BindView(R.id.banner)
-    BannerView bannerView;
+    private BannerView bannerView;
     private final HomeCategoryListener listener;
     private final Context context;
     private List<BannerSlidesModel> slidesList;
@@ -40,7 +39,7 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
         super(itemView);
         this.listener = listener;
         this.context = itemView.getContext();
-        ButterKnife.bind(this, itemView);
+        bannerView = itemView.findViewById(R.id.banner);
         bannerView.setOnPromoAllClickListener(this);
         bannerView.setOnPromoClickListener(this);
         bannerView.setOnPromoScrolledListener(this);

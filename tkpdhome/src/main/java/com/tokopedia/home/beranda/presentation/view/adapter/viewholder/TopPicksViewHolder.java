@@ -32,12 +32,9 @@ public class TopPicksViewHolder extends AbstractViewHolder<TopPicksViewModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_toppicks;
-    @BindView(R.id.title)
-    TextView titleTxt;
-    @BindView(R.id.list)
-    RecyclerView recyclerView;
-    @BindView(R.id.see_more)
-    TextView seeMoreTxt;
+    private TextView titleTxt;
+    private RecyclerView recyclerView;
+    private TextView seeMoreTxt;
 
     private ItemAdapter adapter;
     private int spanCount = 3;
@@ -45,9 +42,11 @@ public class TopPicksViewHolder extends AbstractViewHolder<TopPicksViewModel> {
 
     public TopPicksViewHolder(View itemView, HomeCategoryListener listener) {
         super(itemView);
-        ButterKnife.bind(itemView);
         this.listener = listener;
         adapter = new ItemAdapter(itemView.getContext());
+        titleTxt = itemView.findViewById(R.id.title);
+        recyclerView = itemView.findViewById(R.id.list);
+        seeMoreTxt = itemView.findViewById(R.id.see_more);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new GridLayoutManager(itemView.getContext(), spanCount,
                 GridLayoutManager.VERTICAL, false));
@@ -105,12 +104,11 @@ public class TopPicksViewHolder extends AbstractViewHolder<TopPicksViewModel> {
 
         class ItemViewHolder extends RecyclerView.ViewHolder {
 
-            @BindView(R.id.image)
-            ImageView image;
+            private ImageView image;
 
             public ItemViewHolder(View itemView) {
                 super(itemView);
-                ButterKnife.bind(this, itemView);
+                image = itemView.findViewById(R.id.image);
             }
         }
     }

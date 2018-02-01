@@ -14,7 +14,7 @@ import dagger.Component;
 
 @HomeScope
 @Component(modules = {ApiModule.class, HomeModule.class}, dependencies = AppComponent.class)
-public interface HomeComponent {
+public interface BerandaComponent {
 
     void inject(HomeFragment homeFragment);
 

@@ -3,9 +3,9 @@ package com.tokopedia.home.beranda.listener;
 import com.tokopedia.digital.tokocash.model.CashBackData;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.domain.model.brands.BrandDataModel;
+import com.tokopedia.home.beranda.domain.model.category.CategoryLayoutRowModel;
 import com.tokopedia.home.beranda.domain.model.toppicks.TopPicksItemModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.LayoutSections;
-import com.tokopedia.home.explore.domain.model.CategoryLayoutRowModel;
 
 /**
  * @author by errysuprayogi on 11/29/17.

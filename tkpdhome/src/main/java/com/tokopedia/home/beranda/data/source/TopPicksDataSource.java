@@ -3,13 +3,13 @@ package com.tokopedia.home.beranda.data.source;
 import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.apiservices.ace.apis.SearchApi;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.home.beranda.data.mapper.TopPicksMapper;
 import com.tokopedia.home.beranda.domain.model.toppicks.TopPicksResponseModel;
+import com.tokopedia.usecase.RequestParams;
 
 import rx.Observable;
 import rx.functions.Action1;

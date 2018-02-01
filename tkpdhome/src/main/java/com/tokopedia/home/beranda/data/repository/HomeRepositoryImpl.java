@@ -1,7 +1,6 @@
 package com.tokopedia.home.beranda.data.repository;
 
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.entity.home.Ticker;
 import com.tokopedia.home.beranda.data.source.BrandsOfficialStoreDataSource;
 import com.tokopedia.home.beranda.data.source.HomeBannerDataSource;
@@ -13,6 +12,7 @@ import com.tokopedia.home.beranda.domain.model.banner.HomeBannerResponseModel;
 import com.tokopedia.home.beranda.domain.model.brands.BrandsOfficialStoreResponseModel;
 import com.tokopedia.home.beranda.domain.model.category.HomeCategoryResponseModel;
 import com.tokopedia.home.beranda.domain.model.toppicks.TopPicksResponseModel;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
 
@@ -99,4 +99,6 @@ public class HomeRepositoryImpl implements HomeRepository {
     public Observable<List<Visitable>> getAllHomeData() {
         return homeDataSource.getHomeData();
     }
+
+
 }

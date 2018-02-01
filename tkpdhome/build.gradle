@@ -49,6 +49,8 @@ dependencies {
         exclude group: "com.android.support"
     }
 
+    compile rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
+    apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     compile rootProject.ext.supportLibDependencies.supportV4

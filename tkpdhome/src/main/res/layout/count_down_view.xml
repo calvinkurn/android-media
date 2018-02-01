@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center">
+
+    <TextView
+        android:id="@+id/hourView"
+        android:layout_width="@dimen/count_down_item_size"
+        android:layout_height="@dimen/count_down_item_size"
+        style="@style/TextView.Small.White.Bold"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:background="@drawable/background_countdown"
+        tools:text="00"/>
+
+    <TextView
+        style="@style/TextView.Small.OrangeRed.Bold"
+        android:text=":"
+        android:padding="@dimen/padding_2"/>
+
+    <TextView
+        android:id="@+id/minuteView"
+        android:layout_width="@dimen/count_down_item_size"
+        android:layout_height="@dimen/count_down_item_size"
+        style="@style/TextView.Small.White.Bold"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:background="@drawable/background_countdown"
+        tools:text="00"/>
+
+    <TextView
+        style="@style/TextView.Small.OrangeRed.Bold"
+        android:text=":"
+        android:padding="@dimen/padding_2"/>
+
+    <TextView
+        android:id="@+id/secondView"
+        android:layout_width="@dimen/count_down_item_size"
+        android:layout_height="@dimen/count_down_item_size"
+        style="@style/TextView.Small.White.Bold"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:background="@drawable/background_countdown"
+        tools:text="00"/>
+
+</LinearLayout>

@@ -15,15 +15,13 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.R;
+import com.tokopedia.home.beranda.domain.model.category.CategoryLayoutRowModel;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CategoryItemViewModel;
-import com.tokopedia.home.explore.domain.model.CategoryLayoutRowModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * @author by errysuprayogi on 11/28/17.
@@ -31,17 +29,11 @@ import butterknife.ButterKnife;
 
 public class CategoryItemViewHolder extends AbstractViewHolder<CategoryItemViewModel> {
 
-    private static final String MARKETPLACE = "Marketplace";
-    private static final String DIGITAL = "Digital";
-
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_category;
-    @BindView(R.id.title)
-    TextView titleTxt;
-    @BindView(R.id.list)
-    RecyclerView recyclerView;
-    @BindView(R.id.see_more)
-    TextView seeMoreBtn;
+    private TextView titleTxt;
+    private RecyclerView recyclerView;
+    private TextView seeMoreBtn;
 
     private Context context;
     private ItemAdapter adapter;
@@ -52,9 +44,11 @@ public class CategoryItemViewHolder extends AbstractViewHolder<CategoryItemViewM
 
     public CategoryItemViewHolder(View itemView, HomeCategoryListener listener) {
         super(itemView);
-        ButterKnife.bind(this, itemView);
         this.listener = listener;
         this.context = itemView.getContext();
+        titleTxt = itemView.findViewById(R.id.title);
+        recyclerView = itemView.findViewById(R.id.list);
+        seeMoreBtn = itemView.findViewById(R.id.see_more);
         adapter = new ItemAdapter(context);
         recyclerView.setLayoutManager(new GridLayoutManager(context, spanCount,
                 GridLayoutManager.VERTICAL, false));
@@ -116,12 +110,7 @@ public class CategoryItemViewHolder extends AbstractViewHolder<CategoryItemViewM
             holder.conteiner.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
-                    if (rowModel.getType().equalsIgnoreCase(MARKETPLACE)) {
-                        listener.onMarketPlaceItemClicked(rowModel, getAdapterPosition(), position);
-                    } else if (rowModel.getType().equalsIgnoreCase(DIGITAL)) {
-                        listener.onDigitalItemClicked(rowModel, getAdapterPosition(), position);
-                    } else if (!TextUtils.isEmpty(rowModel.getApplinks()) && deepLinkDelegate.supportsUri(rowModel.getApplinks())) {
+                    if (!TextUtils.isEmpty(rowModel.getApplinks())) {
                         listener.onApplinkClicked(rowModel, getAdapterPosition(), position);
                     } else {
                         listener.onGimickItemClicked(rowModel, getAdapterPosition(), position);
@@ -137,16 +126,15 @@ public class CategoryItemViewHolder extends AbstractViewHolder<CategoryItemViewM
 
         class ItemViewHolder extends RecyclerView.ViewHolder {
 
-            @BindView(R.id.icon)
-            ImageView icon;
-            @BindView(R.id.title)
-            TextView title;
-            @BindView(R.id.container)
-            LinearLayout conteiner;
+            private ImageView icon;
+            private TextView title;
+            private LinearLayout conteiner;
 
             public ItemViewHolder(View itemView) {
                 super(itemView);
-                ButterKnife.bind(this, itemView);
+                icon = itemView.findViewById(R.id.icon);
+                title = itemView.findViewById(R.id.title);
+                conteiner = itemView.findViewById(R.id.container);
             }
         }
     }

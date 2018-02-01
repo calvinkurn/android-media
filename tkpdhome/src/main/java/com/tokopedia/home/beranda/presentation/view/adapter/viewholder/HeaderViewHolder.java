@@ -23,14 +23,12 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_item_header_home;
     private final HomeCategoryListener listener;
-    @BindView(R.id.container)
-    LinearLayout mainContainer;
+    private LinearLayout mainContainer;
 
     public HeaderViewHolder(View itemView, HomeCategoryListener listener) {
         super(itemView);
         this.listener = listener;
-        ButterKnife.bind(this, itemView);
-
+        mainContainer = itemView.findViewById(R.id.container);
     }
 
     @Override

@@ -10,32 +10,33 @@ import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.explore.view.adapter.viewmodel.SellViewModel;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 /**
  * Created by errysuprayogi on 12/5/17.
  */
 
-public class SellViewHolder extends AbstractViewHolder<SellViewModel>  {
+public class SellViewHolder extends AbstractViewHolder<SellViewModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_sell;
 
-    @BindView(R.id.title)
-    TextView titleTxt;
-    @BindView(R.id.subtitle)
-    TextView subtitleTxt;
-    @BindView(R.id.open_shop_btn)
-    Button button;
+    private TextView titleTxt;
+    private TextView subtitleTxt;
+    private Button button;
 
     private HomeCategoryListener listener;
 
-    public SellViewHolder(View itemView, HomeCategoryListener listener) {
+    public SellViewHolder(View itemView, final HomeCategoryListener listener) {
         super(itemView);
         this.listener = listener;
-        ButterKnife.bind(this, itemView);
+        titleTxt = itemView.findViewById(R.id.title);
+        subtitleTxt = itemView.findViewById(R.id.subtitle);
+        button = itemView.findViewById(R.id.open_shop_btn);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.openShop();
+            }
+        });
     }
 
     @Override
@@ -45,8 +46,4 @@ public class SellViewHolder extends AbstractViewHolder<SellViewModel>  {
         button.setText(element.getBtn_title());
     }
 
-    @OnClick(R.id.open_shop_btn)
-    void openShop(){
-        listener.openShop();
-    }
 }

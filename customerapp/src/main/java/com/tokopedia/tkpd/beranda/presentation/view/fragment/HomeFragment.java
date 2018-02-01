@@ -531,7 +531,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 .setTitle(getString(R.string.toko_cash_pending_title))
                 .setBody(String.format(getString(R.string.toko_cash_pending_body),
                         cashBackData.getAmountText()))
-                .setImg(R.drawable.group_2)
+                .setImg(R.drawable.ic_box)
                 .setUrlButton(redirectUrlActionButton,
                         appLinkActionButton,
                         getString(R.string.toko_cash_pending_proceed_button))

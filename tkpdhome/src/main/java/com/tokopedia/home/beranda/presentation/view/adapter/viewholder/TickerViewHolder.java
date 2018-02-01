@@ -29,15 +29,13 @@ import butterknife.OnClick;
  * @author by errysuprayogi on 11/28/17.
  */
 
-public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> {
+public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> implements View.OnClickListener {
 
     private static final String TAG = TickerViewHolder.class.getSimpleName();
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_ticker;
-    @BindView(R.id.ticker_message)
-    TextView textMessage;
-    @BindView(R.id.btn_close)
-    RelativeLayout btnClose;
+    private TextView textMessage;
+    private RelativeLayout btnClose;
 
     private HomeCategoryListener listener;
     private Timer timer;
@@ -47,10 +45,12 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> {
 
     public TickerViewHolder(View itemView, HomeCategoryListener listener) {
         super(itemView);
-        ButterKnife.bind(this, itemView);
         this.listener = listener;
         this.timer = new Timer();
         this.context = itemView.getContext();
+        textMessage = itemView.findViewById(R.id.ticker_message);
+        btnClose = itemView.findViewById(R.id.btn_close);
+        itemView.findViewById(R.id.btn_close).setOnClickListener(this);
     }
 
     @Override
@@ -89,8 +89,13 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> {
         }
     }
 
-    @OnClick(R.id.btn_close)
-    void closeTicker() {
-        listener.onCloseTicker(getAdapterPosition());
+    @Override
+    public void onClick(View view) {
+        int i = view.getId();
+        if (i == R.id.btn_close) {
+            listener.onCloseTicker(getAdapterPosition());
+
+        }
     }
+
 }

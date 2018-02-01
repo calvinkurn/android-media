@@ -17,31 +17,20 @@ import com.tokopedia.home.beranda.domain.model.brands.BrandDataModel;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BrandsViewModel;
-import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.beranda.domain.model.brands.BrandDataModel;
-import com.tokopedia.tkpd.beranda.listener.HomeCategoryListener;
-import com.tokopedia.tkpd.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration;
-import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.BrandsViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * @author by errysuprayogi on 11/28/17.
  */
 
-public class BrandsViewHolder extends AbstractViewHolder<BrandsViewModel> {
+public class BrandsViewHolder extends AbstractViewHolder<BrandsViewModel> implements View.OnClickListener {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_brands;
-    @BindView(R.id.title)
-    TextView titleTxt;
-    @BindView(R.id.list)
-    RecyclerView recyclerView;
+    private TextView titleTxt;
+    private RecyclerView recyclerView;
 
     private ItemAdapter adapter;
     private int spanCount = 3;
@@ -49,8 +38,10 @@ public class BrandsViewHolder extends AbstractViewHolder<BrandsViewModel> {
 
     public BrandsViewHolder(View itemView, HomeCategoryListener listener) {
         super(itemView);
-        ButterKnife.bind(this, itemView);
         this.listener = listener;
+        titleTxt = itemView.findViewById(R.id.title);
+        recyclerView = itemView.findViewById(R.id.list);
+        itemView.findViewById(R.id.see_more).setOnClickListener(this);
         adapter = new ItemAdapter(itemView.getContext());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new GridLayoutManager(itemView.getContext(), spanCount,
@@ -65,9 +56,12 @@ public class BrandsViewHolder extends AbstractViewHolder<BrandsViewModel> {
         adapter.setData(element.getData());
     }
 
-    @OnClick(R.id.see_more)
-    void onSeeMore() {
-        listener.onBrandsMoreClicked(getAdapterPosition());
+    @Override
+    public void onClick(View view) {
+        int id = view.getId();
+        if (id == R.id.see_more) {
+            listener.onBrandsMoreClicked(getAdapterPosition());
+        }
     }
 
     public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> {
@@ -113,14 +107,13 @@ public class BrandsViewHolder extends AbstractViewHolder<BrandsViewModel> {
 
         class ItemViewHolder extends RecyclerView.ViewHolder {
 
-            @BindView(R.id.image)
-            ImageView image;
-            @BindView(R.id.new_indicator)
-            TextView newIndicator;
+            private ImageView image;
+            private TextView newIndicator;
 
             public ItemViewHolder(View itemView) {
                 super(itemView);
-                ButterKnife.bind(this, itemView);
+                image = itemView.findViewById(R.id.image);
+                newIndicator = itemView.findViewById(R.id.new_indicator);
             }
         }
     }

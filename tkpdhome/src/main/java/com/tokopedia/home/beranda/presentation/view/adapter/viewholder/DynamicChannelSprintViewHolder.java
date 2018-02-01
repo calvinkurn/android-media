@@ -14,11 +14,6 @@ import com.tokopedia.home.beranda.data.source.pojo.DynamicHomeChannel;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
 import com.tokopedia.home.beranda.presentation.view.compoundview.CountDownView;
-import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.beranda.data.source.pojo.DynamicHomeChannel;
-import com.tokopedia.tkpd.beranda.listener.HomeCategoryListener;
-import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
-import com.tokopedia.tkpd.beranda.presentation.view.compoundview.CountDownView;
 
 /**
  * Created by henrypriyono on 31/01/18.

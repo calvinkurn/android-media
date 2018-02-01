@@ -17,12 +17,7 @@ import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CategorySectionViewModel;
-import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.beranda.listener.HomeCategoryListener;
-import com.tokopedia.tkpd.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration;
-import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategorySectionViewModel;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -33,8 +28,7 @@ public class CategorySectionViewHolder extends AbstractViewHolder<CategorySectio
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_category_section;
-    @BindView(R.id.list)
-    RecyclerView recyclerView;
+    private RecyclerView recyclerView;
     private SectionItemAdapter adapter;
     private Context context;
     private static final int spanCount = 5;
@@ -46,6 +40,7 @@ public class CategorySectionViewHolder extends AbstractViewHolder<CategorySectio
         this.context = itemView.getContext();
         this.listener = listener;
         adapter = new SectionItemAdapter();
+        recyclerView = itemView.findViewById(R.id.list);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new GridLayoutManager(context, spanCount,
                 GridLayoutManager.VERTICAL, false));
@@ -95,16 +90,15 @@ public class CategorySectionViewHolder extends AbstractViewHolder<CategorySectio
 
     public class SectionItemViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.icon)
-        AppCompatImageView icon;
-        @BindView(R.id.title)
-        TextView title;
-        @BindView(R.id.container)
-        LinearLayout container;
+        private AppCompatImageView icon;
+        private TextView title;
+        private LinearLayout container;
 
         public SectionItemViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            icon = itemView.findViewById(R.id.icon);
+            title = itemView.findViewById(R.id.title);
+            container = itemView.findViewById(R.id.container);
         }
     }
 }

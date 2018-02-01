@@ -1,15 +1,13 @@
 package com.tokopedia.home.beranda.di.module;
 
 import com.google.gson.Gson;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.apiservices.mojito.apis.MojitoApi;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.tkpd.beranda.data.mapper.HomeCategoryMapper;
-import com.tokopedia.tkpd.beranda.data.repository.HomeRepository;
-import com.tokopedia.tkpd.beranda.data.source.HomeCategoryDataSource;
-import com.tokopedia.tkpd.beranda.domain.interactor.GetHomeCategoryUseCase;
+import com.tokopedia.home.beranda.data.mapper.HomeCategoryMapper;
+import com.tokopedia.home.beranda.data.repository.HomeRepository;
+import com.tokopedia.home.beranda.data.source.HomeCategoryDataSource;
+import com.tokopedia.home.beranda.domain.interactor.GetHomeCategoryUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -22,10 +20,8 @@ import dagger.Provides;
 public class CategoryModule {
 
     @Provides
-    GetHomeCategoryUseCase getHomeCategoryUseCase(ThreadExecutor threadExecutor,
-                                                  PostExecutionThread postExecutionThread,
-                                                  HomeRepository homeRepository){
-        return new GetHomeCategoryUseCase(threadExecutor, postExecutionThread, homeRepository);
+    GetHomeCategoryUseCase getHomeCategoryUseCase(HomeRepository homeRepository){
+        return new GetHomeCategoryUseCase(homeRepository);
     }
 
     @Provides

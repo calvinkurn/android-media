@@ -40,20 +40,15 @@ import butterknife.OnClick;
  * @author by errysuprayogi on 11/28/17.
  */
 
-public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> implements RechargeCategoryView {
+public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> implements RechargeCategoryView , View.OnClickListener {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_digitals;
-    @BindView(R.id.title)
-    TextView titleTxt;
-    @BindView(R.id.tab_layout_widget)
-    TabLayout tabLayout;
-    @BindView(R.id.view_pager_widget)
-    WrapContentViewPager viewPager;
-    @BindView(R.id.pulsa_place_holders)
-    View pulsaPlaceHolder;
-    @BindView(R.id.container)
-    LinearLayout container;
+    private TextView titleTxt;
+    private TabLayout tabLayout;
+    private WrapContentViewPager viewPager;
+    private View pulsaPlaceHolder;
+    private LinearLayout container;
 
     private LocalCacheHandler cacheHandler;
     private RechargeViewPagerAdapter rechargeViewPagerAdapter;
@@ -65,11 +60,16 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
 
     public DigitalsViewHolder(FragmentManager fragmentManager, View itemView, HomeCategoryListener listener) {
         super(itemView);
-        ButterKnife.bind(this, itemView);
         this.listener = listener;
         this.context = itemView.getContext();
         this.fragmentManager = fragmentManager;
         this.mRechargeCategory = new ArrayList<>();
+        titleTxt = itemView.findViewById(R.id.title);
+        tabLayout = itemView.findViewById(R.id.tab_layout_widget);
+        viewPager = itemView.findViewById(R.id.view_pager_widget);
+        pulsaPlaceHolder = itemView.findViewById(R.id.pulsa_place_holders);
+        container = itemView.findViewById(R.id.container);
+        itemView.findViewById(R.id.see_more).setOnClickListener(this);
         cacheHandler = new LocalCacheHandler(context, TkpdCache.CACHE_RECHARGE_WIDGET_TAB_SELECTION);
 
         rechargeCategoryPresenter = new RechargeCategoryPresenterImpl(context, this,
@@ -215,9 +215,13 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
         }
     }
 
-    @OnClick(R.id.see_more)
-    void onSeeMore() {
-        listener.onDigitalMoreClicked(getAdapterPosition());
+    @Override
+    public void onClick(View view) {
+        int i = view.getId();
+        if (i == R.id.see_more) {
+            listener.onDigitalMoreClicked(getAdapterPosition());
+
+        }
     }
 
 }

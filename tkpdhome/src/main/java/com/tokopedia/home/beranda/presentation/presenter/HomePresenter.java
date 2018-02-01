@@ -3,7 +3,6 @@ package com.tokopedia.home.beranda.presentation.presenter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
@@ -12,7 +11,6 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.constants.DrawerActivityBroadcastReceiverConstant;
 import com.tokopedia.core.constants.TokoPointDrawerBroadcastReceiverConstant;
@@ -28,19 +26,18 @@ import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.tokocash.model.CashBackData;
-import com.tokopedia.home.beranda.domain.interactor.GetBrandsOfficialStoreUseCase;
-import com.tokopedia.home.beranda.domain.interactor.GetHomeBannerUseCase;
-import com.tokopedia.home.beranda.domain.interactor.GetHomeCategoryUseCase;
+import com.tokopedia.home.IHomeRouter;
+import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.domain.interactor.GetHomeDataUseCase;
-import com.tokopedia.home.beranda.domain.interactor.GetTickerUseCase;
-import com.tokopedia.home.beranda.domain.interactor.GetTopPicksUseCase;
+import com.tokopedia.home.beranda.domain.model.category.CategoryLayoutRowModel;
 import com.tokopedia.home.beranda.listener.HomeFeedListener;
 import com.tokopedia.home.beranda.presentation.view.HomeContract;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
-import com.tokopedia.home.explore.domain.model.CategoryLayoutRowModel;
+import com.tokopedia.home.beranda.presentation.view.subscriber.GetHomeFeedsSubscriber;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetHomeFeedsUseCase;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
 
@@ -63,16 +60,6 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     @Inject
     GetHomeDataUseCase getHomeDataUseCase;
-    @Inject
-    GetHomeBannerUseCase getHomeBannerUseCase;
-    @Inject
-    GetTickerUseCase getTickerUseCase;
-    @Inject
-    GetBrandsOfficialStoreUseCase getBrandsOfficialStoreUseCase;
-    @Inject
-    GetTopPicksUseCase getTopPicksUseCase;
-    @Inject
-    GetHomeCategoryUseCase getHomeCategoryUseCase;
     @Inject
     GetHomeFeedsUseCase getHomeFeedsUseCase;
     @Inject
@@ -106,7 +93,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     @NonNull
     private Observable<List<Visitable>> getDataFromNetwork() {
-        return getHomeDataUseCase.getExecuteObservableAsync(RequestParams.EMPTY);
+        return getHomeDataUseCase.getExecuteObservable(RequestParams.EMPTY);
     }
 
     @Override
@@ -234,12 +221,9 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                             .categoryName(data.getName())
                             .url(data.getUrl())
                             .build();
-                    Bundle bundle = new Bundle();
-                    bundle.putParcelable(DigitalProductActivity.EXTRA_CATEGORY_PASS_DATA, passData);
-                    Intent intent = new Intent(activity, DeeplinkHandlerActivity.class);
-                    intent.putExtras(bundle);
-                    intent.setData(Uri.parse(data.getApplinks()));
-                    activity.startActivity(intent);
+
+                    ((IHomeRouter) activity.getApplication()).onDigitalItemClick(activity,
+                            passData, data.getApplinks());
                 } else {
                     getView().onGimickItemClicked(data, parentPosition, childPosition);
                 }

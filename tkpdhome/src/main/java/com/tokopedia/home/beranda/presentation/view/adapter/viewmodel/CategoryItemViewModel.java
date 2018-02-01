@@ -1,8 +1,8 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewmodel;
 
 import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.home.beranda.domain.model.category.CategoryLayoutRowModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory;
-import com.tokopedia.home.explore.domain.model.CategoryLayoutRowModel;
 
 import java.util.List;
 

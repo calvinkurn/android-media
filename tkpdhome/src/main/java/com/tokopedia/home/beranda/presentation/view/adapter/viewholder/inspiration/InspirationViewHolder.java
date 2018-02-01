@@ -12,9 +12,6 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.listener.HomeFeedListener;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
-import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.beranda.listener.HomeFeedListener;
-import com.tokopedia.tkpd.beranda.presentation.view.viewmodel.InspirationViewModel;
 
 /**
  * Created by henrypriyono on 1/12/18.

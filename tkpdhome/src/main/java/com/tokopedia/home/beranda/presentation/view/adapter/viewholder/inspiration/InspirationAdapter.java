@@ -14,9 +14,6 @@ import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.listener.HomeFeedListener;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationProductViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
-import com.tokopedia.tkpd.beranda.listener.HomeFeedListener;
-import com.tokopedia.tkpd.beranda.presentation.view.viewmodel.InspirationProductViewModel;
-import com.tokopedia.tkpd.beranda.presentation.view.viewmodel.InspirationViewModel;
 
 import java.util.ArrayList;
 
