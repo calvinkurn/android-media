@@ -94,7 +94,7 @@
         android:layout_marginTop="@dimen/margin_small"
         android:layout_marginBottom="@dimen/margin_small"
         android:background="@drawable/green_button_rounded_unify"
-        android:text="@string/button_order_detail_confirm_shipping_alternative"
+        android:text="@string/button_order_detail_change_courier"
         android:textAllCaps="false"
         android:textColor="@color/white" />
 

@@ -332,7 +332,8 @@ public class OrderDetailButtonLayout extends LinearLayout{
     private void switchConfirmButtonMode(Button button,
                                          int confirmButtonVisibility,
                                          int changeCourierButtonVisibility) {
-        if(confirmButtonVisibility == 0) button.setVisibility(GONE);
+        if(confirmButtonVisibility == 0 && changeCourierButtonVisibility == 0)
+            button.setVisibility(GONE);
         else if(confirmButtonVisibility == 1 && changeCourierButtonVisibility == 0) {
             button.setVisibility(VISIBLE);
             button.setText(R.string.button_order_detail_confirm_shipping_alternative);
