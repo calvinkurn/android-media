@@ -261,6 +261,9 @@ dependencies {
 //    compile(rootProject.ext.tkpdDependencies.reactNative) {
 //        exclude group: 'com.tokopedia.core'
 //    }
+    //    compile(rootProject.ext.tkpdDependencies.chat) {
+//        exclude group: 'com.tokopedia.core'
+//    }
 //    compile (rootProject.ext.tkpdDependencies.core)
     //compile project(':tkpdcore')
     compile project(':tkpddiscovery')
@@ -277,6 +280,7 @@ dependencies {
     compile project(':tkpdreputation')
     compile project(':tkpdtokocash')
     compile project(':tkpdflight')
+    compile project(':tkpdchat')
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
