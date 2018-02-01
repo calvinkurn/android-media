@@ -46,6 +46,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_CART_ITEM;
+import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_DATA_POSITION;
 import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_DATA_STORE;
 import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_DISTRICT_NAME;
 import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_REQ_PARAMS;
@@ -88,6 +89,15 @@ public class PickupPointActivity extends BaseActivity
 
     private Store selectedPickupBooth;
     private PickupPointAdapter pickupPointAdapter;
+
+    public static Intent createInstance(Activity activity, int cartPosition,
+                                        String districtName, HashMap<String, String> params) {
+        Intent intent = new Intent(activity, PickupPointActivity.class);
+        intent.putExtra(INTENT_REQ_PARAMS, params);
+        intent.putExtra(INTENT_DISTRICT_NAME, districtName);
+        intent.putExtra(INTENT_DATA_POSITION, cartPosition);
+        return intent;
+    }
 
     public static Intent createInstance(Activity activity, String districtName, HashMap<String, String> params) {
         Intent intent = new Intent(activity, PickupPointActivity.class);
@@ -313,6 +323,9 @@ public class PickupPointActivity extends BaseActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_MAP && resultCode == Activity.RESULT_OK) {
+            if (getIntent().getIntExtra(INTENT_DATA_POSITION, 0) != 0) {
+                data.putExtra(INTENT_DATA_POSITION, getIntent().getIntExtra(INTENT_DATA_POSITION, 0));
+            }
             setResult(resultCode, data);
             finish();
         }
@@ -322,6 +335,7 @@ public class PickupPointActivity extends BaseActivity
     public void onChoosePickupBooth() {
         if (selectedPickupBooth != null) {
             Intent intent = new Intent();
+            intent.putExtra(INTENT_DATA_POSITION, getIntent().getIntExtra(INTENT_DATA_POSITION, 0));
             intent.putExtra(INTENT_DATA_STORE, selectedPickupBooth);
             setResult(Activity.RESULT_OK, intent);
             finish();

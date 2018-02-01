@@ -1,5 +1,7 @@
 package com.tokopedia.transaction.checkout.view.data;
 
+import com.tokopedia.transaction.pickuppoint.domain.model.Store;
+
 /**
  * Created by kris on 1/23/18. Tokopedia
  */
@@ -19,6 +21,17 @@ public class MultipleAddressShipmentAdapterData {
     private String courier;
 
     private String subTotalAmount;
+
+    private String destinationDistrictId;
+
+    private String destinationDistrictName;
+
+    private String tokenPickup;
+
+    private String unixTime;
+
+    private Store store;
+
 
     public String getSenderName() {
         return senderName;
@@ -74,5 +87,45 @@ public class MultipleAddressShipmentAdapterData {
 
     public void setSubTotalAmount(String subTotalAmount) {
         this.subTotalAmount = subTotalAmount;
+    }
+
+    public String getDestinationDistrictId() {
+        return destinationDistrictId;
+    }
+
+    public void setDestinationDistrictId(String destinationDistrictId) {
+        this.destinationDistrictId = destinationDistrictId;
+    }
+
+    public String getDestinationDistrictName() {
+        return destinationDistrictName;
+    }
+
+    public void setDestinationDistrictName(String destinationDistrictName) {
+        this.destinationDistrictName = destinationDistrictName;
+    }
+
+    public String getTokenPickup() {
+        return tokenPickup;
+    }
+
+    public void setTokenPickup(String tokenPickup) {
+        this.tokenPickup = tokenPickup;
+    }
+
+    public String getUnixTime() {
+        return unixTime;
+    }
+
+    public void setUnixTime(String unixTime) {
+        this.unixTime = unixTime;
+    }
+
+    public Store getStore() {
+        return store;
+    }
+
+    public void setStore(Store store) {
+        this.store = store;
     }
 }
