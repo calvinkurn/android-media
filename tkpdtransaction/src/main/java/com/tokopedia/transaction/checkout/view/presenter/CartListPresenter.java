@@ -2,6 +2,7 @@ package com.tokopedia.transaction.checkout.view.presenter;
 
 import android.content.Intent;
 
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.checkout.domain.ICartListInteractor;
 import com.tokopedia.transaction.checkout.view.activity.CartShipmentActivity;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
@@ -32,6 +33,8 @@ public class CartListPresenter implements ICartListPresenter {
 
     @Override
     public void processGetCartData() {
+        TKPDMapParam<String, String> param = new TKPDMapParam<>();
+        param.put("lang", "id");
         cartListInteractor.getCartList(new Subscriber<List<CartItemData>>() {
             @Override
             public void onCompleted() {
@@ -47,7 +50,7 @@ public class CartListPresenter implements ICartListPresenter {
             public void onNext(List<CartItemData> cartItemDataList) {
                 view.renderCartListData(cartItemDataList);
             }
-        }, view.getGeneratedAuthParamNetwork(null));
+        }, view.getGeneratedAuthParamNetwork(param));
 
 //        List<CartItemData> cartItemDataList = new ArrayList<>();
 //        for (int i = 0; i < 20; i++) {
@@ -80,7 +83,7 @@ public class CartListPresenter implements ICartListPresenter {
 //            cartItemData.setUpdatedData(updatedData);
 //            cartItemDataList.add(cartItemData);
 //        }
-
+//
 //        view.renderCartListData(cartItemDataList);
     }
 

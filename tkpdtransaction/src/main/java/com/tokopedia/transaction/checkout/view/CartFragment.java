@@ -19,12 +19,14 @@ import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.di.component.CartListComponent;
 import com.tokopedia.transaction.checkout.di.component.DaggerCartListComponent;
 import com.tokopedia.transaction.checkout.di.module.CartListModule;
+import com.tokopedia.transaction.checkout.view.activity.CartShipmentActivity;
 import com.tokopedia.transaction.checkout.view.adapter.CartListAdapter;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemHolderData;
 import com.tokopedia.transaction.checkout.view.presenter.ICartListPresenter;
 import com.tokopedia.transaction.checkout.view.view.ICartListView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -41,6 +43,9 @@ public class CartFragment extends BasePresenterFragment implements
     RecyclerView cartRecyclerView;
     @BindView(R2.id.go_to_courier_page_button)
     TextView btnToShipment;
+
+    @BindView(R2.id.go_to_courier_page_button_2)
+    TextView btnToShipment2;
     @BindView(R2.id.tv_item_count)
     TextView tvItemCount;
     @BindView(R2.id.tv_total_prices)
@@ -118,6 +123,16 @@ public class CartFragment extends BasePresenterFragment implements
             @Override
             public void onClick(View view) {
                 dPresenter.processToShipmentStep();
+            }
+        });
+
+        btnToShipment2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = CartShipmentActivity.createInstanceSingleAddress(
+                        getActivity(), new ArrayList<CartItemData>()
+                );
+                startActivity(intent);
             }
         });
     }
