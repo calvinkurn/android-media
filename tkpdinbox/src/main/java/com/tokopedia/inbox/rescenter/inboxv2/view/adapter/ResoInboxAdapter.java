@@ -141,4 +141,15 @@ public class ResoInboxAdapter extends RecyclerView.Adapter<ResoInboxAdapter.Hold
         }
         notifyDataSetChanged();
     }
+
+    public void updateSingleItem(InboxItemViewModel updateItem) {
+        int posUpdated = 0;
+        for (int i = 0 ; i < itemList.size() ; i++) {
+            if (itemList.get(i).getId() == updateItem.getId()) {
+                itemList.get(i).updateItem(updateItem);
+                posUpdated = i;
+            }
+        }
+        notifyItemChanged(posUpdated);
+    }
 }

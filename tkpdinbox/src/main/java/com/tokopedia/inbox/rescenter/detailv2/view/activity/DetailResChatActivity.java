@@ -32,7 +32,6 @@ public class DetailResChatActivity
         implements DetailResChatActivityListener.View, HasComponent {
 
     public static final String PARAM_RESOLUTION_ID = "resolution_id";
-    public static final String PARAM_INBOX_ID = "inbox_id";
     public static final String PARAM_SHOP_NAME = "shopName";
     public static final String PARAM_USER_NAME = "buyerName";
     public static final String PARAM_IS_SELLER = "is_seller";
@@ -43,7 +42,6 @@ public class DetailResChatActivity
     public static final int REQUEST_GO_DETAIL = 8888;
     public static final int ACTION_GO_TO_LIST = 6123;
     private String resolutionId;
-    private String inboxId;
     private String shopName;
     private String userName;
     private boolean isSeller;
@@ -60,24 +58,6 @@ public class DetailResChatActivity
     public static Intent newSellerInstance(Context context, String resolutionId, String username) {
         Intent intent = new Intent(context, DetailResChatActivity.class);
         intent.putExtra(PARAM_RESOLUTION_ID, resolutionId);
-        intent.putExtra(PARAM_USER_NAME, username);
-        intent.putExtra(PARAM_IS_SELLER, true);
-        return intent;
-    }
-
-    public static Intent newBuyerInstance(Context context, String resolutionId, String inboxId, String shopName) {
-        Intent intent = new Intent(context, DetailResChatActivity.class);
-        intent.putExtra(PARAM_RESOLUTION_ID, resolutionId);
-        intent.putExtra(PARAM_INBOX_ID, inboxId);
-        intent.putExtra(PARAM_SHOP_NAME, shopName);
-        intent.putExtra(PARAM_IS_SELLER, false);
-        return intent;
-    }
-
-    public static Intent newSellerInstance(Context context, String resolutionId, String inboxId, String username) {
-        Intent intent = new Intent(context, DetailResChatActivity.class);
-        intent.putExtra(PARAM_RESOLUTION_ID, resolutionId);
-        intent.putExtra(PARAM_INBOX_ID, inboxId);
         intent.putExtra(PARAM_USER_NAME, username);
         intent.putExtra(PARAM_IS_SELLER, true);
         return intent;
@@ -138,9 +118,6 @@ public class DetailResChatActivity
     @Override
     protected void setupBundlePass(Bundle extras) {
         resolutionId = extras.getString(PARAM_RESOLUTION_ID);
-        if (extras.get(PARAM_INBOX_ID) != null) {
-            inboxId = extras.getString(PARAM_INBOX_ID);
-        }
         isSeller = extras.getBoolean(PARAM_IS_SELLER);
         if (isSeller) {
             userName = MethodChecker.fromHtml(extras.getString(PARAM_USER_NAME)).toString();
@@ -262,10 +239,10 @@ public class DetailResChatActivity
     }
 
     @Override
-    protected void onDestroy() {
+    public void onBackPressed() {
         Intent data = new Intent();
-        data.putExtra(PARAM_INBOX_ID, inboxId);
+        data.putExtra(PARAM_RESOLUTION_ID, resolutionId);
         setResult(Activity.RESULT_OK, data);
-        super.onDestroy();
+        finish();
     }
 }

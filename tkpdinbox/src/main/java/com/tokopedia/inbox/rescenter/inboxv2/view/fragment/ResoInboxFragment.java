@@ -346,6 +346,7 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
     @Override
     public void onSuccessGetSingleInboxItem(InboxItemViewModel model) {
         dismissProgressBar();
+        inboxAdapter.updateSingleItem(model);
     }
 
     @Override
@@ -427,9 +428,9 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_DETAIL_RESO) {
             if (data != null) {
-                String inboxId = data.getStringExtra(DetailResChatActivity.PARAM_INBOX_ID);
-                if (!TextUtils.isEmpty(inboxId)) {
-                    presenter.getSingleItemInbox(Integer.valueOf(inboxId));
+                String resoId = data.getStringExtra(DetailResChatActivity.PARAM_RESOLUTION_ID);
+                if (!TextUtils.isEmpty(resoId)) {
+                    presenter.getSingleItemInbox(Integer.valueOf(resoId));
                 }
             }
         } else if (requestCode == REQUEST_FILTER_RESO) {

@@ -12,27 +12,27 @@ import rx.Observable;
  * Created by yfsx on 24/01/18.
  */
 
-public class GetInboxSellerSingleItemUseCase extends UseCase<InboxItemViewModel> {
+public class GetInboxSingleItemUseCase extends UseCase<InboxItemViewModel> {
 
-    private static final String PARAM_INBOX_ID = "inbox_id";
+    private static final String PARAM_RESO_ID = "resolutionId";
 
     private ResolutionApi resolutionApi;
     private GetInboxSingleItemMapper getInboxMapper;
 
-    public GetInboxSellerSingleItemUseCase(ResolutionApi resolutionApi, GetInboxSingleItemMapper getInboxMapper) {
+    public GetInboxSingleItemUseCase(ResolutionApi resolutionApi, GetInboxSingleItemMapper getInboxMapper) {
         this.resolutionApi = resolutionApi;
         this.getInboxMapper = getInboxMapper;
     }
 
     @Override
     public Observable<InboxItemViewModel> createObservable(RequestParams requestParams) {
-        return resolutionApi.getInboxSellerSingleItem(requestParams.getInt(PARAM_INBOX_ID, 0),
+        return resolutionApi.getInboxSingleItem(requestParams.getInt(PARAM_RESO_ID, 0),
                 requestParams.getParameters()).map(getInboxMapper);
     }
 
-    public static RequestParams getParams(int inboxId) {
+    public static RequestParams getParams(int resolutionId) {
         RequestParams params = RequestParams.create();
-        params.putInt(PARAM_INBOX_ID, inboxId);
+        params.putInt(PARAM_RESO_ID, resolutionId);
         return params;
     }
 }

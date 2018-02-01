@@ -71,6 +71,28 @@ public class InboxItemViewModel implements Parcelable {
         this.sellerName = sellerName;
     }
 
+    public void updateItem(InboxItemViewModel updateItem) {
+        this.id = updateItem.id;
+        this.resId = updateItem.resId;
+        this.actionBy = updateItem.actionBy;
+        this.inboxMessage = updateItem.inboxMessage;
+        this.inboxMessageBackgroundColor = updateItem.inboxMessageBackgroundColor;
+        this.inboxMessageTextColor = updateItem.inboxMessageTextColor;
+        this.invoiceNumber = updateItem.invoiceNumber;
+        this.isNotificationShow = updateItem.isNotificationShow;
+        this.nameTitle = updateItem.nameTitle;
+        this.userName = updateItem.userName;
+        this.autoDoneText = updateItem.autoDoneText;
+        this.autoDoneBackgroundColor = updateItem.autoDoneBackgroundColor;
+        this.autoDoneTextColor = updateItem.autoDoneTextColor;
+        this.lastReplyText = updateItem.lastReplyText;
+        this.freeReturnText = updateItem.freeReturnText;
+        this.imageList = updateItem.imageList;
+        this.extraImageCountText = updateItem.extraImageCountText;
+        this.customerName = updateItem.customerName;
+        this.sellerName = updateItem.sellerName;
+    }
+
     public int getResId() {
         return resId;
     }

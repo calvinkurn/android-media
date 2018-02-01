@@ -5,11 +5,10 @@ import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
 import com.tokopedia.inbox.rescenter.inboxv2.data.mapper.GetInboxMapper;
 import com.tokopedia.inbox.rescenter.inboxv2.data.mapper.GetInboxSingleItemMapper;
 import com.tokopedia.inbox.rescenter.inboxv2.domain.usecase.GetInboxBuyerLoadMoreUseCase;
-import com.tokopedia.inbox.rescenter.inboxv2.domain.usecase.GetInboxBuyerSingleItemUseCase;
 import com.tokopedia.inbox.rescenter.inboxv2.domain.usecase.GetInboxBuyerUseCase;
 import com.tokopedia.inbox.rescenter.inboxv2.domain.usecase.GetInboxSellerLoadMoreUseCase;
-import com.tokopedia.inbox.rescenter.inboxv2.domain.usecase.GetInboxSellerSingleItemUseCase;
 import com.tokopedia.inbox.rescenter.inboxv2.domain.usecase.GetInboxSellerUseCase;
+import com.tokopedia.inbox.rescenter.inboxv2.domain.usecase.GetInboxSingleItemUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -69,15 +68,8 @@ public class ResoInboxModule {
 
     @ResoInboxScope
     @Provides
-    GetInboxBuyerSingleItemUseCase provideGetInboxBuyerSingleItemUseCase(
+    GetInboxSingleItemUseCase provideGetInboxSingleItemUseCase(
             ResolutionApi resolutionApi, GetInboxSingleItemMapper getInboxMapper) {
-        return new GetInboxBuyerSingleItemUseCase(resolutionApi, getInboxMapper);
-    }
-
-    @ResoInboxScope
-    @Provides
-    GetInboxSellerSingleItemUseCase provideGetInboxSellerSingleItemUseCase(
-            ResolutionApi resolutionApi, GetInboxSingleItemMapper getInboxMapper) {
-        return new GetInboxSellerSingleItemUseCase(resolutionApi, getInboxMapper);
+        return new GetInboxSingleItemUseCase(resolutionApi, getInboxMapper);
     }
 }

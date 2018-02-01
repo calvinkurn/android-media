@@ -33,7 +33,6 @@ public interface ResolutionApi {
     String PATH_ORDER_ID = "order_id";
     String PATH_TROUBLE_ID = "trouble_id";
     String PATH_CONVERSATION_ID = "conversation_id";
-    String PATH_INBOX_ID = "inbox_id";
     //Version 2
 
 
@@ -43,13 +42,10 @@ public interface ResolutionApi {
     @GET(TkpdBaseURL.ResCenterV2.GET_INBOX_RESOLUTION_V2_SELLER)
     Observable<Response<TkpdResponse>> getInboxSeller(@QueryMap HashMap<String, Object> params);
 
-    @GET(TkpdBaseURL.ResCenterV2.GET_INBOX_RESOLUTION_V2_BUYER_SINGLE_ITEM)
-    Observable<Response<TkpdResponse>> getInboxBuyerSingleItem(@Path(PATH_INBOX_ID) int inboxId,
+    @GET(TkpdBaseURL.ResCenterV2.GET_INBOX_RESOLUTION_V2_SINGLE_ITEM)
+    Observable<Response<TkpdResponse>> getInboxSingleItem(@Path(PATH_RESOLUTION_ID) int resolutionId,
                                                                @QueryMap HashMap<String, Object> params);
 
-    @GET(TkpdBaseURL.ResCenterV2.GET_INBOX_RESOLUTION_V2_SELLER_SINGLE_ITEM)
-    Observable<Response<TkpdResponse>> getInboxSellerSingleItem(@Path(PATH_INBOX_ID) int inboxId,
-                                                                @QueryMap HashMap<String, Object> params);
 
 
     @GET(TkpdBaseURL.ResCenterV2.GET_RESOLUTION_STEP_1)

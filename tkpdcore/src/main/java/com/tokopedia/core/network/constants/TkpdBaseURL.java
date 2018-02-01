@@ -898,9 +898,7 @@ public class TkpdBaseURL {
 
         public static final String GET_INBOX_RESOLUTION_V2_BUYER = BASE_INBOX_RESOLUTION_V2 + "/buyer";
         public static final String GET_INBOX_RESOLUTION_V2_SELLER = BASE_INBOX_RESOLUTION_V2 + "/seller";
-        public static final String GET_INBOX_RESOLUTION_V2_BUYER_SINGLE_ITEM = GET_INBOX_RESOLUTION_V2_BUYER + "/{inbox_id}";
-        public static final String GET_INBOX_RESOLUTION_V2_SELLER_SINGLE_ITEM = GET_INBOX_RESOLUTION_V2_SELLER + "/{inbox_id}";
-
+        public static final String GET_INBOX_RESOLUTION_V2_SINGLE_ITEM = BASE_INBOX_RESOLUTION_V2 + "/{resolution_id}";
 
     }
 
