@@ -99,4 +99,9 @@ public class HomeRepositoryImpl implements HomeRepository {
     public Observable<List<Visitable>> getAllHomeData() {
         return homeDataSource.getHomeData();
     }
+
+    @Override
+    public Observable<List<Visitable>> getHomeDataCache() {
+        return homeDataSource.getCache();
+    }
 }

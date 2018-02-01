@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.beranda.di.module;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
@@ -19,6 +20,7 @@ import com.tokopedia.tkpd.beranda.data.source.api.HomeDataApi;
 import com.tokopedia.tkpd.beranda.data.source.api.HomeDataService;
 import com.tokopedia.tkpd.beranda.di.HomeScope;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetHomeDataUseCase;
+import com.tokopedia.tkpd.beranda.domain.interactor.GetLocalHomeDataUseCase;
 import com.tokopedia.tkpd.beranda.presentation.presenter.HomePresenter;
 
 import dagger.Module;
@@ -76,12 +78,22 @@ public class HomeModule {
     @Provides
     HomeDataSource provideHomeDataSource(HomeDataApi homeDataApi,
                                          HomeMapper homeMapper,
-                                         @ApplicationContext Context context){
-        return new HomeDataSource(homeDataApi, homeMapper, context);
+                                         @ApplicationContext Context context,
+                                         GlobalCacheManager cacheManager,
+                                         Gson gson){
+        return new HomeDataSource(homeDataApi, homeMapper, context, cacheManager, gson);
     }
 
     @Provides
     GetHomeDataUseCase provideGetHomeDataUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, HomeRepository homeRepository){
         return new GetHomeDataUseCase(threadExecutor, postExecutionThread, homeRepository);
+    }
+
+    @HomeScope
+    @Provides
+    GetLocalHomeDataUseCase getLocalHomeDataUseCase(ThreadExecutor threadExecutor,
+                                                    PostExecutionThread postExecutionThread,
+                                                    HomeRepository repository){
+        return new GetLocalHomeDataUseCase(threadExecutor, postExecutionThread, repository);
     }
 }

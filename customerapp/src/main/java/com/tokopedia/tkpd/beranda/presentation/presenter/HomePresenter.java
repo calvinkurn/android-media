@@ -36,6 +36,7 @@ import com.tokopedia.tkpd.beranda.domain.interactor.GetBrandsOfficialStoreUseCas
 import com.tokopedia.tkpd.beranda.domain.interactor.GetHomeBannerUseCase;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetHomeCategoryUseCase;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetHomeDataUseCase;
+import com.tokopedia.tkpd.beranda.domain.interactor.GetLocalHomeDataUseCase;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetTickerUseCase;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetTopPicksUseCase;
 import com.tokopedia.tkpd.beranda.domain.model.category.CategoryLayoutRowModel;
@@ -69,6 +70,8 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     private static final String TAG = HomePresenter.class.getSimpleName();
 
+    @Inject
+    GetLocalHomeDataUseCase localHomeDataUseCase;
     @Inject
     GetHomeDataUseCase getHomeDataUseCase;
     @Inject
@@ -120,7 +123,11 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     @Override
     public void getHomeData() {
         initHeaderViewModelData();
-        compositeSubscription.add(getDataFromNetwork().subscribe(new HomeDataSubscriber()));
+        subscription = localHomeDataUseCase.getExecuteObservableAsync(RequestParams.EMPTY)
+                .doOnNext(refreshData())
+                .onErrorResumeNext(getDataFromNetwork())
+                .subscribe(new HomeDataSubscriber());
+        compositeSubscription.add(subscription);
     }
 
     private void initHeaderViewModelData() {
