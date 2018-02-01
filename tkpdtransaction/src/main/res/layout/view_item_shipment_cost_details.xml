@@ -11,158 +11,151 @@
     android:paddingEnd="16dp"
     android:background="@color/white">
 
-    <TextView
-        android:id="@+id/tv_total_item"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="18dp"
-        android:textSize="12sp"
-        android:fontFamily="sans-serif"
-        android:textStyle="normal"
-        android:text="Jumlah Barang (1 Item)" />
+    <RelativeLayout android:id="@+id/rl_detail_shipment_fee_view_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/tv_total_item_price"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/tv_total_item"
-        android:layout_toEndOf="@id/tv_total_item"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:textSize="14sp"
-        android:fontFamily="sans-serif"
-        android:textStyle="normal"
-        android:gravity="end"
-        android:text="Rp1.400.000" />
+        <TextView android:id="@+id/tv_total_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="18dp"
+            android:textSize="12sp"
+            android:fontFamily="sans-serif"
+            android:textStyle="normal"
+            tools:text="Jumlah Barang (1 Item)" />
 
-    <TextView
-        android:id="@+id/tv_shipping_fee"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="18dp"
-        android:layout_below="@id/tv_total_item"
-        android:textSize="12sp"
-        android:fontFamily="sans-serif"
-        android:textStyle="normal"
-        android:text="Ongkos Kirim (1kg)" />
+        <TextView android:id="@+id/tv_total_item_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/tv_total_item"
+            android:layout_toEndOf="@id/tv_total_item"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:textSize="14sp"
+            android:fontFamily="sans-serif"
+            android:textStyle="normal"
+            android:gravity="end"
+            tools:text="Rp1.400.000" />
 
-    <TextView
-        android:id="@+id/tv_shipping_fee_price"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_total_item"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:textSize="14sp"
-        android:fontFamily="sans-serif"
-        android:textStyle="normal"
-        android:gravity="end"
-        android:text="Rp0" />
+        <TextView android:id="@+id/tv_shipping_fee"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="18dp"
+            android:layout_below="@id/tv_total_item"
+            android:textSize="12sp"
+            android:fontFamily="sans-serif"
+            android:textStyle="normal"
+            tools:text="Ongkos Kirim (1kg)" />
 
-    <TextView
-        android:id="@+id/tv_insurance_fee"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="18dp"
-        android:layout_below="@id/tv_shipping_fee"
-        android:textSize="12sp"
-        android:fontFamily="sans-serif"
-        android:textStyle="normal"
-        android:text="Biaya Asuransi" />
+        <TextView android:id="@+id/tv_shipping_fee_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_total_item"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:textSize="14sp"
+            android:fontFamily="sans-serif"
+            android:textStyle="normal"
+            android:gravity="end"
+            tools:text="Rp0" />
 
-    <TextView
-        android:id="@+id/tv_insurance_fee_price"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_shipping_fee"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:textSize="14sp"
-        android:fontFamily="sans-serif"
-        android:textStyle="normal"
-        android:gravity="end"
-        android:text="Rp0" />
+        <TextView android:id="@+id/tv_insurance_fee"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="18dp"
+            android:layout_below="@id/tv_shipping_fee"
+            android:textSize="12sp"
+            android:fontFamily="sans-serif"
+            android:textStyle="normal"
+            android:text="Biaya Asuransi" />
 
-    <TextView
-        android:id="@+id/tv_promo_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_insurance_fee"
-        android:layout_marginBottom="26dp"
-        android:textSize="12sp"
-        android:fontFamily="sans-serif"
-        android:textStyle="normal"
-        android:text="Promo" />
+        <TextView android:id="@+id/tv_insurance_fee_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_shipping_fee"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:textSize="14sp"
+            android:fontFamily="sans-serif"
+            android:textStyle="normal"
+            android:gravity="end"
+            tools:text="Rp0" />
 
-    <TextView
-        android:id="@+id/tv_promo_price"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_insurance_fee"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:textSize="14sp"
-        android:fontFamily="sans-serif"
-        android:textStyle="normal"
-        android:gravity="end"
-        android:text="Rp100.000" />
+        <TextView android:id="@+id/tv_promo_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_insurance_fee"
+            android:layout_marginBottom="26dp"
+            android:textSize="12sp"
+            android:fontFamily="sans-serif"
+            android:textStyle="normal"
+            android:text="Promo" />
 
-    <TextView
-        android:id="@+id/tv_payable_text"
+        <TextView android:id="@+id/tv_promo_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_insurance_fee"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:textSize="14sp"
+            android:fontFamily="sans-serif"
+            android:textStyle="normal"
+            android:gravity="end"
+            tools:text="Rp100.000" />
+
+    </RelativeLayout>
+
+    <TextView android:id="@+id/tv_payable_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_promo_text"
+        android:layout_below="@id/rl_detail_shipment_fee_view_layout"
         android:layout_marginBottom="9dp"
         android:textSize="12sp"
         android:fontFamily="sans-serif"
         android:textStyle="normal"
         android:text="Tagihan" />
 
-    <TextView
-        android:id="@+id/tv_drawer_detail_payable"
+    <TextView android:id="@+id/tv_drawer_detail_payable"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginStart="10dp"
-        android:layout_below="@id/tv_promo_text"
-        android:layout_toRightOf="@+id/tv_payable_text"
+        android:layout_below="@id/rl_detail_shipment_fee_view_layout"
+        android:layout_toRightOf="@id/tv_payable_text"
         android:layout_toEndOf="@id/tv_payable_text"
         android:textSize="12sp"
         android:textColor="@color/medium_green"
         android:fontFamily="sans-serif-medium"
         android:textStyle="normal"
         android:gravity="end"
-        android:text="Tutup" />
+        tools:text="Tutup" />
 
-    <ImageView
-        android:id="@+id/iv_drawer_chevron"
+    <ImageView android:id="@+id/iv_drawer_chevron"
         android:layout_width="10dp"
         android:layout_height="10dp"
-        android:layout_below="@id/tv_promo_text"
-        android:layout_toEndOf="@+id/tv_drawer_detail_payable"
+        android:layout_below="@id/rl_detail_shipment_fee_view_layout"
+        android:layout_toEndOf="@id/tv_drawer_detail_payable"
         android:layout_toRightOf="@id/tv_drawer_detail_payable"
         android:layout_marginTop="4dp"
         android:layout_marginLeft="10dp"
         android:layout_marginStart="10dp"
         android:tint="@color/medium_green"
-        android:src="@drawable/chevron_thin_down"
+        tools:src="@drawable/chevron_thin_down"
         tools:ignore="ContentDescription" />
 
-    <TextView
-        android:id="@+id/tv_payable_price"
+    <TextView android:id="@+id/tv_payable_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_promo_text"
+        android:layout_below="@id/rl_detail_shipment_fee_view_layout"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:textSize="14sp"
         android:fontFamily="sans-serif-medium"
         android:textStyle="normal"
         android:gravity="end"
-        android:text="Rp1.300.000" />
+        tools:text="Rp1.300.000" />
 
-    <TextView
-        android:id="@+id/tv_promo_free_shipping"
+    <TextView android:id="@+id/tv_promo_free_shipping"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_payable_text"
@@ -170,5 +163,6 @@
         android:textSize="12sp"
         android:fontFamily="sans-serif"
         android:textStyle="normal"
-        android:text="Anda mendapat gratis ongkir Rp20.000" />
+        tools:text="Anda mendapat gratis ongkir Rp20.000" />
+
 </RelativeLayout>
