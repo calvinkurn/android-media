@@ -3,9 +3,12 @@ package com.tokopedia.inbox.rescenter.inboxv2.view.di;
 import com.tokopedia.core.network.apiservices.rescenter.apis.ResolutionApi;
 import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
 import com.tokopedia.inbox.rescenter.inboxv2.data.mapper.GetInboxMapper;
+import com.tokopedia.inbox.rescenter.inboxv2.data.mapper.GetInboxSingleItemMapper;
 import com.tokopedia.inbox.rescenter.inboxv2.domain.usecase.GetInboxBuyerLoadMoreUseCase;
+import com.tokopedia.inbox.rescenter.inboxv2.domain.usecase.GetInboxBuyerSingleItemUseCase;
 import com.tokopedia.inbox.rescenter.inboxv2.domain.usecase.GetInboxBuyerUseCase;
 import com.tokopedia.inbox.rescenter.inboxv2.domain.usecase.GetInboxSellerLoadMoreUseCase;
+import com.tokopedia.inbox.rescenter.inboxv2.domain.usecase.GetInboxSellerSingleItemUseCase;
 import com.tokopedia.inbox.rescenter.inboxv2.domain.usecase.GetInboxSellerUseCase;
 
 import dagger.Module;
@@ -27,6 +30,12 @@ public class ResoInboxModule {
     @Provides
     GetInboxMapper provideGetInboxMapper() {
         return new GetInboxMapper();
+    }
+
+    @ResoInboxScope
+    @Provides
+    GetInboxSingleItemMapper provideGetInboxSingleItemMapper() {
+        return new GetInboxSingleItemMapper();
     }
 
 
@@ -56,5 +65,19 @@ public class ResoInboxModule {
     GetInboxSellerLoadMoreUseCase provideGetInboxSellerLoadMoreUseCase(
             ResolutionApi resolutionApi, GetInboxMapper getInboxMapper) {
         return new GetInboxSellerLoadMoreUseCase(resolutionApi, getInboxMapper);
+    }
+
+    @ResoInboxScope
+    @Provides
+    GetInboxBuyerSingleItemUseCase provideGetInboxBuyerSingleItemUseCase(
+            ResolutionApi resolutionApi, GetInboxSingleItemMapper getInboxMapper) {
+        return new GetInboxBuyerSingleItemUseCase(resolutionApi, getInboxMapper);
+    }
+
+    @ResoInboxScope
+    @Provides
+    GetInboxSellerSingleItemUseCase provideGetInboxSellerSingleItemUseCase(
+            ResolutionApi resolutionApi, GetInboxSingleItemMapper getInboxMapper) {
+        return new GetInboxSellerSingleItemUseCase(resolutionApi, getInboxMapper);
     }
 }

@@ -8,6 +8,7 @@ import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -272,6 +273,20 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
         inboxFilterModel.setFilterViewModelList(result.getFilterViewModels());
     }
 
+    private void updateStringFilterValue(InboxItemResultViewModel result) {
+        for (FilterViewModel oldModel : inboxFilterModel.getFilterViewModelList()) {
+            for (FilterViewModel newModel : result.getFilterViewModels()) {
+                if (oldModel.getOrderValue() == newModel.getOrderValue()) {
+                    oldModel.setType(newModel.getType());
+                    oldModel.setTypeNameDetail(newModel.getTypeNameDetail());
+                    oldModel.setTypeNameQuickFilter(newModel.getTypeNameQuickFilter());
+                    oldModel.setCount(newModel.getCount());
+                }
+            }
+        }
+        quickFilterView.renderFilter(convertQuickFilterModel(inboxFilterModel.getFilterViewModelList()));
+    }
+
     private void hideLayout() {
         bottomActionView.setVisibility(View.GONE);
         quickFilterView.setVisibility(View.GONE);
@@ -319,6 +334,7 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
         inboxAdapter.removeLoadingItem();
         inboxAdapter.addMoreItem(result.getInboxItemViewModels());
         updateParams(true, result);
+        updateStringFilterValue(result);
     }
 
     @Override
@@ -410,8 +426,11 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_DETAIL_RESO) {
-            if (resultCode == Activity.RESULT_OK) {
-
+            if (data != null) {
+                String inboxId = data.getStringExtra(DetailResChatActivity.PARAM_INBOX_ID);
+                if (!TextUtils.isEmpty(inboxId)) {
+                    presenter.getSingleItemInbox(Integer.valueOf(inboxId));
+                }
             }
         } else if (requestCode == REQUEST_FILTER_RESO) {
             if (resultCode == Activity.RESULT_OK) {

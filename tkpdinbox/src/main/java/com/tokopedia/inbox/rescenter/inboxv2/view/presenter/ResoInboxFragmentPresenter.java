@@ -5,13 +5,16 @@ import android.content.Context;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.inbox.rescenter.inboxv2.domain.params.GetInboxParams;
 import com.tokopedia.inbox.rescenter.inboxv2.domain.usecase.GetInboxBuyerLoadMoreUseCase;
+import com.tokopedia.inbox.rescenter.inboxv2.domain.usecase.GetInboxBuyerSingleItemUseCase;
 import com.tokopedia.inbox.rescenter.inboxv2.domain.usecase.GetInboxBuyerUseCase;
 import com.tokopedia.inbox.rescenter.inboxv2.domain.usecase.GetInboxSellerLoadMoreUseCase;
+import com.tokopedia.inbox.rescenter.inboxv2.domain.usecase.GetInboxSellerSingleItemUseCase;
 import com.tokopedia.inbox.rescenter.inboxv2.domain.usecase.GetInboxSellerUseCase;
 import com.tokopedia.inbox.rescenter.inboxv2.view.listener.ResoInboxFragmentListener;
 import com.tokopedia.inbox.rescenter.inboxv2.view.subscriber.GetInboxLoadMoreSubscriber;
 import com.tokopedia.inbox.rescenter.inboxv2.view.subscriber.GetInboxSubscriber;
 import com.tokopedia.inbox.rescenter.inboxv2.view.subscriber.GetInboxWithFilterSubscriber;
+import com.tokopedia.inbox.rescenter.inboxv2.view.subscriber.GetSingleItemSubscriber;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.ResoInboxFilterModel;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.ResoInboxSortFilterModel;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.ResoInboxSortModel;
@@ -39,6 +42,8 @@ public class ResoInboxFragmentPresenter
     private GetInboxSellerUseCase getInboxSellerUseCase;
     private GetInboxBuyerLoadMoreUseCase getInboxBuyerLoadMoreUseCase;
     private GetInboxSellerLoadMoreUseCase getInboxSellerLoadMoreUseCase;
+    private GetInboxBuyerSingleItemUseCase getInboxBuyerSingleItemUseCase;
+    private GetInboxSellerSingleItemUseCase getInboxSellerSingleItemUseCase;
 
     private ResoInboxFragmentListener.View mainView;
 
@@ -46,11 +51,15 @@ public class ResoInboxFragmentPresenter
     public ResoInboxFragmentPresenter(GetInboxBuyerUseCase getInboxBuyerUseCase,
                                       GetInboxSellerUseCase getInboxSellerUseCase,
                                       GetInboxBuyerLoadMoreUseCase getInboxBuyerLoadMoreUseCase,
-                                      GetInboxSellerLoadMoreUseCase getInboxSellerLoadMoreUseCase) {
+                                      GetInboxSellerLoadMoreUseCase getInboxSellerLoadMoreUseCase,
+                                      GetInboxBuyerSingleItemUseCase getInboxBuyerSingleItemUseCase,
+                                      GetInboxSellerSingleItemUseCase getInboxSellerSingleItemUseCase) {
         this.getInboxBuyerUseCase = getInboxBuyerUseCase;
         this.getInboxSellerUseCase = getInboxSellerUseCase;
         this.getInboxSellerLoadMoreUseCase = getInboxSellerLoadMoreUseCase;
         this.getInboxBuyerLoadMoreUseCase = getInboxBuyerLoadMoreUseCase;
+        this.getInboxBuyerSingleItemUseCase = getInboxBuyerSingleItemUseCase;
+        this.getInboxSellerSingleItemUseCase = getInboxSellerSingleItemUseCase;
     }
 
     @Override
@@ -99,7 +108,14 @@ public class ResoInboxFragmentPresenter
 
     @Override
     public void getSingleItemInbox(int inboxId) {
-
+        if (isSeller)
+            getInboxSellerSingleItemUseCase.execute(
+                    GetInboxSellerSingleItemUseCase.getParams(inboxId),
+                    new GetSingleItemSubscriber(context, mainView));
+        else
+            getInboxBuyerSingleItemUseCase.execute(
+                    GetInboxBuyerSingleItemUseCase.getParams(inboxId),
+                    new GetSingleItemSubscriber(context, mainView));
     }
 
     @Override
@@ -144,6 +160,8 @@ public class ResoInboxFragmentPresenter
         getInboxSellerUseCase.unsubscribe();
         getInboxBuyerLoadMoreUseCase.unsubscribe();
         getInboxSellerLoadMoreUseCase.unsubscribe();
+        getInboxBuyerSingleItemUseCase.unsubscribe();
+        getInboxSellerSingleItemUseCase.unsubscribe();
     }
 
 }

@@ -120,6 +120,7 @@ public class InboxFilterFragment
                 output.putExtra(InboxFilterActivity.PARAM_FILTER_MODEL, generateResult());
                 getActivity().setResult(Activity.RESULT_OK, output);
                 getActivity().finish();
+                getBottomBackSheetActivityTransition();
             }
         });
 
@@ -196,10 +197,14 @@ public class InboxFilterFragment
 
     private ResoInboxFilterModel generateResult() {
         ResoInboxFilterModel inboxFilterModel = adapter.getInboxFilterModel();
-        inboxFilterModel.setDateTo(this.inboxFilterModel.getDateTo());
-        inboxFilterModel.setDateFrom(this.inboxFilterModel.getDateFrom());
-        inboxFilterModel.setDateFromString(convertDateToString(this.inboxFilterModel.getDateFrom(), FORMAT_DATE_API));
-        inboxFilterModel.setDateToString(convertDateToString(this.inboxFilterModel.getDateTo(), FORMAT_DATE_API));
+        if (this.inboxFilterModel.getDateTo() != null) {
+            inboxFilterModel.setDateTo(this.inboxFilterModel.getDateTo());
+            inboxFilterModel.setDateToString(convertDateToString(this.inboxFilterModel.getDateTo(), FORMAT_DATE_API));
+        }
+        if (this.inboxFilterModel.getDateFrom() != null) {
+            inboxFilterModel.setDateFrom(this.inboxFilterModel.getDateFrom());
+            inboxFilterModel.setDateFromString(convertDateToString(this.inboxFilterModel.getDateFrom(), FORMAT_DATE_API));
+        }
         return inboxFilterModel;
     }
 
@@ -211,5 +216,9 @@ public class InboxFilterFragment
         SimpleDateFormat format = new SimpleDateFormat(formatString);
         String dateString = format.format(date);
         return dateString;
+    }
+
+    public void getBottomBackSheetActivityTransition() {
+        getActivity().overridePendingTransition(R.anim.push_down, R.anim.pull_up);
     }
 }

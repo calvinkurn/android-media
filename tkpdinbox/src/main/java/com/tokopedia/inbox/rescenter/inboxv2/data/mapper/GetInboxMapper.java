@@ -124,33 +124,36 @@ public class GetInboxMapper implements Func1<Response<TkpdResponse>, InboxItemRe
     private List<InboxItemViewModel> mappingInboxItem(List<InboxDataResponse> responseList, int actionBy) {
         List<InboxItemViewModel> itemList = new ArrayList<>();
         for (InboxDataResponse response : responseList) {
-            InboxItemViewModel item = new InboxItemViewModel(
-                    response.getId(),
-                    response.getResolution().getId(),
-                    actionBy,
-                    response.getResolution().getStatus().getString(),
-                    "#ffffff",
-                    "#000000",
-                    response.getOrder().getRefNum(),
-                    response.getResolution().getRead() == STATUS_UNREAD,
-                    actionBy == ACTION_BY_USER ? "Penjual:" : "Pembeli:",
-                    actionBy == ACTION_BY_USER ? response.getShop().getName() : response.getCustomer().getName(),
-                    response.getResolution().getAutoExecuteTime().getString(),
-                    "#ffffff",
-                    "#000000",
-                    response.getResolution().getLastReplyTime().getString(),
-                    response.getResolution().getFreeReturn() == 1 ? "Ya" : "-",
-                    response.getResolution().getProduct() != null ? mappingProductImage(response.getResolution().getProduct()) : null,
-                    response.getResolution().getProduct() != null ? buildStringForExtraImage(response.getResolution().getProduct()) : "",
-                    response.getCustomer() != null ? response.getCustomer().getName() : "",
-                    response.getShop() != null ? response.getShop().getName() : ""
-            );
-            itemList.add(item);
+            itemList.add(mappingItem(response, actionBy));
         }
         return itemList;
     }
 
-    private List<String> mappingProductImage(List<ProductResponse> responseList) {
+    public static InboxItemViewModel mappingItem(InboxDataResponse response, int actionBy) {
+        return new InboxItemViewModel(
+                response.getId(),
+                response.getResolution().getId(),
+                actionBy,
+                response.getResolution().getStatus().getString(),
+                "#ffffff",
+                "#000000",
+                response.getOrder().getRefNum(),
+                response.getResolution().getRead() == STATUS_UNREAD,
+                actionBy == ACTION_BY_USER ? "Penjual:" : "Pembeli:",
+                actionBy == ACTION_BY_USER ? response.getShop().getName() : response.getCustomer().getName(),
+                response.getResolution().getAutoExecuteTime().getString(),
+                "#ffffff",
+                "#000000",
+                response.getResolution().getLastReplyTime().getString(),
+                response.getResolution().getFreeReturn() == 1 ? "Ya" : "-",
+                response.getResolution().getProduct() != null ? mappingProductImage(response.getResolution().getProduct()) : null,
+                response.getResolution().getProduct() != null ? buildStringForExtraImage(response.getResolution().getProduct()) : "",
+                response.getCustomer() != null ? response.getCustomer().getName() : "",
+                response.getShop() != null ? response.getShop().getName() : ""
+        );
+    }
+
+    private static List<String> mappingProductImage(List<ProductResponse> responseList) {
         List<String> dataList = new ArrayList<>();
         for (ProductResponse response : responseList) {
             String data = response.getImages().get(0).getThumb();
@@ -159,7 +162,7 @@ public class GetInboxMapper implements Func1<Response<TkpdResponse>, InboxItemRe
         return dataList;
     }
 
-    private String buildStringForExtraImage(List<ProductResponse> responseList) {
+    private static String buildStringForExtraImage(List<ProductResponse> responseList) {
         return responseList.size() > 3 ?
                 "+ " + String.valueOf(responseList.size() - 3).concat("Produk Lainnya") :
                 "";
