@@ -31,6 +31,7 @@ public class ReferralPhoneNumberVerificationFragment extends BasePresenterFragme
     EditText tvPhoneNumber;
     TextView btnActivation;
     private ReferralPhoneNumberVerificationFragmentListener listener;
+    private SessionHandler sessionHandler;
 
     public static ReferralPhoneNumberVerificationFragment newInstance() {
         ReferralPhoneNumberVerificationFragment fragment = new ReferralPhoneNumberVerificationFragment();
@@ -64,8 +65,11 @@ public class ReferralPhoneNumberVerificationFragment extends BasePresenterFragme
 
     @Override
     protected void onFirstTimeLaunched() {
+        if(sessionHandler == null){
+            sessionHandler = new SessionHandler(getActivity());
+        }
         tvPhoneNumber.setText(CustomPhoneNumberUtil.transform(
-                SessionHandler.getPhoneNumber()));
+                sessionHandler.getPhoneNumber()));
     }
 
     @Override
@@ -96,9 +100,12 @@ public class ReferralPhoneNumberVerificationFragment extends BasePresenterFragme
 
     @Override
     protected void initView(View view) {
+        if(sessionHandler == null){
+            sessionHandler = new SessionHandler(getActivity());
+        }
         tvPhoneNumber = (EditText) view.findViewById(R.id.tv_phone_number);
         tvPhoneNumber.setText(CustomPhoneNumberUtil.transform(
-                SessionHandler.getPhoneNumber()));
+                sessionHandler.getPhoneNumber()));
         btnActivation = (TextView) view.findViewById(R.id.btn_activation);
         setViewListener();
         tvPhoneNumber.setOnClickListener(new View.OnClickListener() {
