@@ -38,9 +38,8 @@ import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.Sh
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.StatusInfoViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.StatusTroubleViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.StatusViewModel;
-import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResCenterActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
-import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
+import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -179,7 +178,7 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
     @Override
     public TaskStackBuilder getInboxAndDetailResoStackBuilder(Context context, String resolutionId, String shopName) {
 
-        Intent resInboxIntent = InboxResCenterActivity.createIntent(context);
+        Intent resInboxIntent = ResoInboxActivity.newBuyerInstance(context);
         resInboxIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         Intent detailResIntent = DetailResChatActivity.newBuyerInstance(context, resolutionId, shopName);
