@@ -4,7 +4,7 @@ import android.app.Activity;
 
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.abstraction.common.data.model.storage.GlobalCacheManager;
+import com.tokopedia.abstraction.common.data.model.storage.GlobalAbsCacheManager;
 
 import okhttp3.Response;
 
@@ -30,7 +30,7 @@ public interface AbstractionRouter {
 
     UserSession getSession();
 
-    GlobalCacheManager getGlobalCacheManager();
+    GlobalAbsCacheManager getGlobalCacheManager();
 
     AnalyticTracker getAnalyticTracker();
 }

@@ -7,6 +7,7 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
+import com.tokopedia.abstraction.common.data.model.storage.GlobalAbsCacheManager;
 import com.tokopedia.core.database.DbFlowDatabase;
 import com.tokopedia.core.database.DbFlowOperation;
 import com.tokopedia.core.database.model.SimpleDatabaseModel;
@@ -18,12 +19,12 @@ import java.util.List;
  * Created by ricoharisin on 11/23/15.
  */
 public class GlobalCacheManager implements DbFlowOperation<SimpleDatabaseModel>,
-        com.tokopedia.abstraction.common.data.model.storage.GlobalCacheManager {
+        GlobalAbsCacheManager {
 
     private String Key;
     private String Value;
     private long expiredTime = 0;
-    private static String TAG = "GlobalCacheManager";
+    private static String TAG = "GlobalAbsCacheManager";
 
     public GlobalCacheManager() {
 
