@@ -176,7 +176,7 @@
             <enum name="primary" value="1"/>
             <enum name="secondary" value="2"/>
         </attr>
-        <attr name="buttonSize" format="enum">
+        <attr name="buttonSizeType" format="enum">
             <enum name="big" value="3"/>
             <enum name="medium" value="4"/>
             <enum name="small" value="5"/>

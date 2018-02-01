@@ -19,7 +19,7 @@ import com.tokopedia.design.base.BaseCustomView;
  *
  * How to use?
  * xml :
- * app:buttonSize, app:buttonType, app:buttonTextAllCaps, app:text
+ * app:buttonSizeType, app:buttonType, app:buttonTextAllCaps, app:text
  * app:shadow, app:shadowLeft, app:shadowTop, app:shadowRight, app:shadowBottom
  *
  * java :
@@ -61,7 +61,7 @@ public class FloatingButton extends BaseCustomView {
         try {
             mText = a.getString(R.styleable.FloatingButton_text);
             mType = a.getInteger(R.styleable.FloatingButton_buttonType, 0);
-            mSize = a.getInteger(R.styleable.FloatingButton_buttonSize, 0);
+            mSize = a.getInteger(R.styleable.FloatingButton_buttonSizeType, 0);
             mTextAllCaps = a.getBoolean(R.styleable.FloatingButton_buttonTextAllCaps, false);
             isShadow = a.getBoolean(R.styleable.FloatingButton_shadow, false);
             isShadowLeft = a.getBoolean(R.styleable.FloatingButton_shadowLeft, false);
