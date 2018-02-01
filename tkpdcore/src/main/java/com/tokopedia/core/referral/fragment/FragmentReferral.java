@@ -220,7 +220,7 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
         if (requestCode == REFERRAL_PHONE_VERIFY_REQUEST_CODE) {
             switch (resultCode) {
                 case Activity.RESULT_CANCELED:
-                    Toast.makeText(getActivity(), "Cant cont., must verify your phone number.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(),getActivity().getString(R.string.phone_not_verified_error_message), Toast.LENGTH_SHORT).show();
                     getActivity().finish();
                     break;
                 default:

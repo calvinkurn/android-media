@@ -2166,7 +2166,6 @@ di Tokopedia Sekarang!</string>
     <string name="referral_screen_name">Referral Home</string>
     <string name="referral_share_screen_name">Share Channel</string>
     <string name="referral_phone_number_verify_screen_name">Phone Number Verification</string>
-
-
+    <string name="phone_not_verified_error_message">Silakan verifikasi nomor handphone Anda untuk masuk ke halaman berikutnya.</string>
 </resources>
 
