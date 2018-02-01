@@ -60,4 +60,9 @@
 
     <string name="promo_title_terms">Syarat &amp; Ketentuan</string>
 
+    <string name="beli">Beli</string>
+    <string name="bayar">Bayar</string>
+    <string name="jual">Jual</string>
+    <string name="referral">Referral</string>
+
 </resources>

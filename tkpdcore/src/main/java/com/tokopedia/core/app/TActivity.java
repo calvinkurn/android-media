@@ -13,6 +13,7 @@ import android.widget.FrameLayout;
 
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.R;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
@@ -107,7 +108,16 @@ public abstract class TActivity extends BaseActivity {
     }
 
     public boolean onHomeOptionSelected() {
-        if (parentView != null) KeyboardHandler.DropKeyboard(this, parentView);
+        if (parentView != null) {
+            KeyboardHandler.DropKeyboard(this, parentView);
+        }
+        if (isTaskRoot() ||
+                (getIntent().getExtras() != null &&
+                        getIntent().getExtras().getBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, false))) {
+            Intent homeIntent = ((TkpdCoreRouter) getApplication()).getHomeIntent(this);
+            startActivity(homeIntent);
+            finish();
+        }
         onBackPressed();
         return true;
     }

@@ -33,11 +33,10 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.discovery.R;
-
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
 import com.tokopedia.discovery.util.AnimationUtil;
 
@@ -306,6 +305,10 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             if (v == mBackBtn) {
                 if (finishOnClose && activity != null) {
                     KeyboardHandler.DropKeyboard(activity, mSearchSrcTextView);
+                    if (activity.isTaskRoot()) {
+                        Intent homeIntent = ((TkpdCoreRouter) activity.getApplication()).getHomeIntent(mContext);
+                        mContext.startActivity(homeIntent);
+                    }
                     activity.finish();
                 } else {
                     closeSearch();

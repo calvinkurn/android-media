@@ -45,7 +45,7 @@ import com.tokopedia.core.var.TkpdState;
 import java.util.Arrays;
 
 public class SessionHandler {
-    private static final String DEFAULT_EMPTY_SHOP_ID = "0";
+    public static final String DEFAULT_EMPTY_SHOP_ID = "0";
     private static final String DEFAULT_EMPTY_SHOP_ID_ON_PREF = "-1";
 
     private static final String SAVE_REAL = "SAVE_REAL";

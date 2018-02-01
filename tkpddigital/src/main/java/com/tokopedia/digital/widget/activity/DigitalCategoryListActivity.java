@@ -5,14 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.TaskStackBuilder;
+import android.view.MenuItem;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.router.SellerAppRouter;
-import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.widget.fragment.DigitalCategoryListFragment;
 
