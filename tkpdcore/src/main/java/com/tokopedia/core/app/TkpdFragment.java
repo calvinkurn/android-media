@@ -14,6 +14,10 @@ import android.widget.TextView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 
+/**
+ * Extends TkpdBaseV4Fragment from tkpd abstraction
+ */
+@Deprecated
 public abstract class TkpdFragment extends Fragment {
 	
 	public Context context;

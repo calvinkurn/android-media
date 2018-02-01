@@ -9,13 +9,13 @@
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_small">
+        android:layout_marginBottom="@dimen/margin_small"
+        android:hint="@string/title_old_email">
 
         <EditText
             android:id="@+id/old_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/title_old_email"
             android:paddingBottom="25dp"
             android:enabled="false"
             android:inputType="textEmailAddress" />
@@ -25,13 +25,13 @@
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_small">
+        android:layout_marginBottom="@dimen/margin_small"
+        android:hint="@string/title_new_email">
 
         <EditText
             android:id="@+id/new_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/title_new_email"
             android:paddingBottom="25dp"
             android:inputType="textEmailAddress" />
 
@@ -41,13 +41,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_small"
+        android:hint="@string/title_password"
         >
 
         <EditText
             android:id="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/title_password"
             android:paddingBottom="25dp"
             android:inputType="textPassword" />
 
