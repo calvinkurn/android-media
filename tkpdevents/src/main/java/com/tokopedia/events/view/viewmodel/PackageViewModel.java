@@ -36,6 +36,7 @@ public class PackageViewModel implements Parcelable {
     private String timeRange;
     private String address;
     private Form form;
+    private String fetchSectionUrl;
     private List<Form> forms;
 
     public String getTitle() {
@@ -258,6 +259,14 @@ public class PackageViewModel implements Parcelable {
         this.address = address;
     }
 
+    public String getFetchSectionUrl() {
+        return fetchSectionUrl;
+    }
+
+    public void setFetchSectionUrl(String fetchSectionUrl) {
+        this.fetchSectionUrl = fetchSectionUrl;
+    }
+
     public List<Form> getForms() {
         return forms;
     }
@@ -302,6 +311,7 @@ public class PackageViewModel implements Parcelable {
         dest.writeInt(this.selectedQuantity);
         dest.writeString(this.timeRange);
         dest.writeString(this.address);
+        dest.writeString(this.fetchSectionUrl);
         dest.writeParcelable(this.form, flags);
         dest.writeTypedList(this.forms);
         dest.writeValue(this.categoryId);
@@ -333,6 +343,7 @@ public class PackageViewModel implements Parcelable {
         this.selectedQuantity = in.readInt();
         this.timeRange = in.readString();
         this.address = in.readString();
+        this.fetchSectionUrl = in.readString();
         this.form = in.readParcelable(Form.class.getClassLoader());
         this.forms = in.createTypedArrayList(Form.CREATOR);
         this.categoryId = (Integer) in.readValue(Integer.class.getClassLoader());

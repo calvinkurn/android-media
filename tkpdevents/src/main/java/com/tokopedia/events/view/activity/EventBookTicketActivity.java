@@ -85,6 +85,7 @@ public class EventBookTicketActivity extends TActivity implements EventBookTicke
     EventComponent eventComponent;
     @Inject
     EventBookTicketPresenter mPresenter;
+    String title;
 
 
     @Override
@@ -138,6 +139,7 @@ public class EventBookTicketActivity extends TActivity implements EventBookTicke
     public void renderFromDetails(EventsDetailsViewModel detailsViewModel) {
         appBar.setTitle(detailsViewModel.getTitle());
         appBar.setNavigationIcon(R.drawable.ic_arrow_back_black);
+        title = detailsViewModel.getTitle();
 //        ImageHandler.loadImageCover2(bannerImage, detailsViewModel.getImageApp());
 //        setHolder(R.drawable.ic_time, detailsViewModel.getTimeRange(), timeHolder);
 //        setHolder(R.drawable.ic_skyline, detailsViewModel.getSchedulesViewModels().get(0).getaDdress(), addressHolder);
@@ -334,7 +336,7 @@ public class EventBookTicketActivity extends TActivity implements EventBookTicke
 
     @OnClick(R2.id.pay_tickets)
     void payTickets() {
-        mPresenter.payTicketsClick();
+        mPresenter.payTicketsClick(title);
     }
 
     @Override

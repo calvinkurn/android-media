@@ -5,12 +5,15 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.events.data.entity.response.EventLocationEntity;
 import com.tokopedia.events.data.entity.response.EventResponseEntity;
 import com.tokopedia.events.data.entity.response.EventsDetailsEntity;
+import com.tokopedia.events.data.entity.response.SeatLayoutItem;
 import com.tokopedia.events.data.entity.response.ValidateResponse;
 import com.tokopedia.events.data.entity.response.checkoutreponse.CheckoutResponse;
 import com.tokopedia.events.data.entity.response.searchresponse.SearchResponse;
 import com.tokopedia.events.data.entity.response.seatlayoutresponse.SeatLayoutResponse;
 import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
 import com.tokopedia.events.data.source.EventsApi;
+
+import java.util.List;
 
 import rx.Observable;
 
@@ -58,8 +61,8 @@ public class CloudEventsDataStore implements EventDataStore {
     }
 
     @Override
-    public Observable<VerifyCartResponse> verifyCart(JsonObject requestBody) {
-        return eventsApi.postCartVerify(requestBody,"true");
+    public Observable<VerifyCartResponse> verifyCart(JsonObject requestBody, boolean flag) {
+        return eventsApi.postCartVerify(requestBody,flag);
     }
 
     @Override
@@ -74,6 +77,11 @@ public class CloudEventsDataStore implements EventDataStore {
                                                         int group_id,
                                                         int package_id) {
         return eventsApi.getSeatLayout(category_id,product_id,schedule_id,group_id,package_id);
+    }
+
+    @Override
+    public Observable<List<SeatLayoutItem>> getEventSeatLayout(String url) {
+        return eventsApi.getEventSeatLayout(url);
     }
 
 

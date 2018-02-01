@@ -172,8 +172,6 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
     private void addSeatingPlan(SeatLayoutViewModel seatLayoutViewModel) {
         int numOfRows = seatLayoutViewModel.getLayoutDetail().size();
         char prevChr = '\0';
-        Log.d("Naveen", "Number of Rows" + numOfRows);
-        // = seatLayoutViewModel.getLayoutDetail().get(0).getPhysicalRowId().charAt(0);
         for (int i = 0; i < numOfRows;) {
             CustomSeatAreaLayout customSeatAreaLayout = new CustomSeatAreaLayout(this, mPresenter);
             char currentChar = seatLayoutViewModel.getLayoutDetail().get(i).getPhysicalRowId().charAt(0);
@@ -187,7 +185,6 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
                 prevChr = currentChar;
             }
             int numOfColumns = seatLayoutViewModel.getLayoutDetail().get(i).getSeat().size();
-            Log.d("Naveen", "Number of Columns" + numOfColumns);
             for (int j = 0; j < numOfColumns; j++) {
                 if (seatLayoutViewModel.getLayoutDetail().get(i).getSeat().get(j).getNo() != 0) {
                     customSeatAreaLayout.addColumn("" + seatLayoutViewModel.getLayoutDetail().get(i).getSeat().get(j).getNo(), seatLayoutViewModel.getLayoutDetail().get(i).getSeat().get(j).getStatus());

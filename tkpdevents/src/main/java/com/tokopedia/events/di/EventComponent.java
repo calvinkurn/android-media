@@ -14,6 +14,7 @@ import com.tokopedia.events.view.activity.EventLocationActivity;
 import com.tokopedia.events.view.activity.EventSearchActivity;
 import com.tokopedia.events.view.activity.EventsHomeActivity;
 import com.tokopedia.events.view.activity.ReviewTicketActivity;
+import com.tokopedia.events.view.activity.SeatSelectionActivity;
 import com.tokopedia.events.view.fragment.FragmentAddTickets;
 
 import javax.inject.Singleton;
@@ -41,6 +42,8 @@ public interface EventComponent {
     void inject(FragmentAddTickets fragment);
 
     void inject(EventSearchActivity activity);
+
+    void inject(SeatSelectionActivity activity);
 
     //ThreadExecutor threadExecutor();
 

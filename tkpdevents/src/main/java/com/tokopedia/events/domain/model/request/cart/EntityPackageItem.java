@@ -11,7 +11,7 @@ public class EntityPackageItem {
 	private int pricePerSeat;
 
 	@SerializedName("seat_row_id")
-	private List<Object> seatRowId;
+	private List<String> seatRowId;
 
 	@SerializedName("quantity")
 	private int quantity;
@@ -20,10 +20,19 @@ public class EntityPackageItem {
 	private int groupId;
 
 	@SerializedName("seat_id")
-	private List<Object> seatId;
+	private List<String> seatId;
+
+	@SerializedName("seat_physical_row_id")
+	private List<String> seatPhysicalRowId;
+
+	@SerializedName("area_id")
+	private String areaId;
+
+	@SerializedName("provider_group_id")
+	private String providerGroupId;
 
 	@SerializedName("area_code")
-	private List<Object> areaCode;
+	private List<String> areaCode;
 
 	@SerializedName("product_id")
 	private int productId;
@@ -48,14 +57,6 @@ public class EntityPackageItem {
 		return pricePerSeat;
 	}
 
-	public void setSeatRowId(List<Object> seatRowId){
-		this.seatRowId = seatRowId;
-	}
-
-	public List<Object> getSeatRowId(){
-		return seatRowId;
-	}
-
 	public void setQuantity(int quantity){
 		this.quantity = quantity;
 	}
@@ -72,20 +73,12 @@ public class EntityPackageItem {
 		return groupId;
 	}
 
-	public void setSeatId(List<Object> seatId){
+	public void setSeatId(List<String> seatId){
 		this.seatId = seatId;
 	}
 
-	public List<Object> getSeatId(){
+	public List<String> getSeatId(){
 		return seatId;
-	}
-
-	public void setAreaCode(List<Object> areaCode){
-		this.areaCode = areaCode;
-	}
-
-	public List<Object> getAreaCode(){
-		return areaCode;
 	}
 
 	public void setProductId(int productId){
@@ -126,6 +119,38 @@ public class EntityPackageItem {
 
 	public int getScheduleId(){
 		return scheduleId;
+	}
+
+	public void setSeatRowId(List<String> seatRowId) {
+		this.seatRowId = seatRowId;
+	}
+
+	public List<String> getSeatPhysicalRowId() {
+		return seatPhysicalRowId;
+	}
+
+	public void setSeatPhysicalRowId(List<String> seatPhysicalRowId) {
+		this.seatPhysicalRowId = seatPhysicalRowId;
+	}
+
+	public String getAreaId() {
+		return areaId;
+	}
+
+	public void setAreaId(String areaId) {
+		this.areaId = areaId;
+	}
+
+	public String getProviderGroupId() {
+		return providerGroupId;
+	}
+
+	public void setProviderGroupId(String providerGroupId) {
+		this.providerGroupId = providerGroupId;
+	}
+
+	public void setAreaCode(List<String> areaCode) {
+		this.areaCode = areaCode;
 	}
 
 	@Override

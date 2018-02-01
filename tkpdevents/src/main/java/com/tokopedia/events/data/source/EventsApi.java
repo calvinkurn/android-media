@@ -4,12 +4,14 @@ import com.google.gson.JsonObject;
 import com.tokopedia.events.data.entity.response.EventLocationEntity;
 import com.tokopedia.events.data.entity.response.EventResponseEntity;
 import com.tokopedia.events.data.entity.response.EventsDetailsEntity;
+import com.tokopedia.events.data.entity.response.SeatLayoutItem;
 import com.tokopedia.events.data.entity.response.ValidateResponse;
 import com.tokopedia.events.data.entity.response.checkoutreponse.CheckoutResponse;
 import com.tokopedia.events.data.entity.response.searchresponse.SearchResponse;
 import com.tokopedia.events.data.entity.response.seatlayoutresponse.SeatLayoutResponse;
 import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
 
+import java.util.List;
 import java.util.Map;
 
 import retrofit2.http.Body;
@@ -47,7 +49,7 @@ public interface EventsApi {
 
     @POST(EventsUrl.EVENTS_VERIFY)
     @Headers({"Content-Type: application/json"})
-    Observable<VerifyCartResponse> postCartVerify(@Body JsonObject requestBody, @Query("book") String value);
+    Observable<VerifyCartResponse> postCartVerify(@Body JsonObject requestBody, @Query("book") boolean value);
 
     @POST(EventsUrl.EVENT_VALIDATE)
     @Headers({"Content-Type: application/json"})
@@ -63,6 +65,9 @@ public interface EventsApi {
                                                  @Path("schedule_id") int schedule_id,
                                                  @Path("group_id") int group_id,
                                                  @Path("package_id") int package_id);
+
+    @GET()
+    Observable<List<SeatLayoutItem>> getEventSeatLayout(@Url String url);
 
 
 }

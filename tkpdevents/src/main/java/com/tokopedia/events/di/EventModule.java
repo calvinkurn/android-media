@@ -18,6 +18,7 @@ import com.tokopedia.events.data.source.EventsApi;
 import com.tokopedia.events.di.scope.EventScope;
 import com.tokopedia.events.domain.EventRepository;
 import com.tokopedia.events.domain.GetEventDetailsRequestUseCase;
+import com.tokopedia.events.domain.GetEventSeatLayoutUseCase;
 import com.tokopedia.events.domain.GetEventsListByLocationRequestUseCase;
 import com.tokopedia.events.domain.GetEventsListRequestUseCase;
 import com.tokopedia.events.domain.GetEventsLocationListRequestUseCase;
@@ -170,6 +171,14 @@ public class EventModule {
                                                       PostExecutionThread postExecutionThread,
                                                       EventRepository eventRepository) {
         return new GetSeatLayoutUseCase(threadExecutor, postExecutionThread, eventRepository);
+    }
+
+    @Provides
+    @EventScope
+    GetEventSeatLayoutUseCase providesGetEventSeatLayoutUseCase(ThreadExecutor threadExecutor,
+                                                      PostExecutionThread postExecutionThread,
+                                                      EventRepository eventRepository) {
+        return new GetEventSeatLayoutUseCase(threadExecutor, postExecutionThread, eventRepository);
     }
 
     @Provides

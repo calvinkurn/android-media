@@ -84,6 +84,7 @@ public class EventDetailsViewModelMapper {
                 pVM.setTimeRange(target.getTimeRange());
                 pVM.setThumbnailApp(target.getThumbnailApp());
                 pVM.setAddress(s.getaDdress());
+                pVM.setFetchSectionUrl(p.getFetchSectionUrl());
                 try {
                     pVM.setForms(target.getForms());
                 } catch (Exception e) {

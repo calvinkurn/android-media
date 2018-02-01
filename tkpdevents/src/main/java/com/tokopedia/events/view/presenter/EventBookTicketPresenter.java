@@ -11,6 +11,7 @@ import com.tokopedia.events.data.entity.response.ValidateResponse;
 import com.tokopedia.events.domain.model.request.verify.ValidateShow;
 import com.tokopedia.events.domain.postusecase.PostValidateShowUseCase;
 import com.tokopedia.events.view.activity.ReviewTicketActivity;
+import com.tokopedia.events.view.activity.SeatSelectionActivity;
 import com.tokopedia.events.view.adapter.AddTicketAdapter;
 import com.tokopedia.events.view.contractor.EventBookTicketContract;
 import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
@@ -38,6 +39,8 @@ public class EventBookTicketPresenter
     PostValidateShowUseCase postValidateShowUseCase;
     String dateRange;
     String seatingURL;
+    String eventTitle;
+    int hasSeatLayout;
 
     public static String EXTRA_PACKAGEVIEWMODEL = "packageviewmodel";
 
@@ -67,6 +70,7 @@ public class EventBookTicketPresenter
                 getActivity().
                 getIntent().
                 getStringExtra(EventsDetailsPresenter.EXTRA_SEATING_URL);
+        hasSeatLayout = getView().getActivity().getIntent().getIntExtra(EventsDetailsPresenter.EXTRA_SEATING_PARAMETER, 0);
         this.dateRange = dataModel.getTimeRange();
         getView().renderFromDetails(dataModel);
         if (dataModel.getSeatMapImage() != null && !dataModel.getSeatMapImage().isEmpty())
@@ -95,7 +99,7 @@ public class EventBookTicketPresenter
                         getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
                             @Override
                             public void onRetryClicked() {
-                                payTicketsClick();
+                                payTicketsClick(eventTitle+"");
                             }
                         });
             }
@@ -103,9 +107,16 @@ public class EventBookTicketPresenter
             @Override
             public void onNext(ValidateResponse objectResponse) {
                 if (objectResponse.getStatus() != 400) {
-                    Intent reviewTicketIntent = new Intent(getView().getActivity(), ReviewTicketActivity.class);
-                    reviewTicketIntent.putExtra(EXTRA_PACKAGEVIEWMODEL, selectedPackageViewModel);
-                    getView().navigateToActivityRequest(reviewTicketIntent, 100);
+//                    if (hasSeatLayout == 1) {
+                        Intent reviewTicketIntent = new Intent(getView().getActivity(), SeatSelectionActivity.class);
+                        reviewTicketIntent.putExtra(EXTRA_PACKAGEVIEWMODEL, selectedPackageViewModel);
+                        reviewTicketIntent.putExtra("EventTitle", eventTitle);
+                        getView().navigateToActivityRequest(reviewTicketIntent, 100);
+//                    } else {
+//                        Intent reviewTicketIntent = new Intent(getView().getActivity(), ReviewTicketActivity.class);
+//                        reviewTicketIntent.putExtra(EXTRA_PACKAGEVIEWMODEL, selectedPackageViewModel);
+//                        getView().navigateToActivityRequest(reviewTicketIntent, 100);
+//                    }
                 } else {
                     getView().showMessage(objectResponse.getMessageError());
                 }
@@ -120,7 +131,8 @@ public class EventBookTicketPresenter
         super.attachView(view);
     }
 
-    public void payTicketsClick() {
+    public void payTicketsClick(String title) {
+        eventTitle = title;
         ValidateShow validateShow = new ValidateShow();
         validateShow.setQuantity(selectedPackageViewModel.getSelectedQuantity());
         validateShow.setGroupId(selectedPackageViewModel.getProductGroupId());

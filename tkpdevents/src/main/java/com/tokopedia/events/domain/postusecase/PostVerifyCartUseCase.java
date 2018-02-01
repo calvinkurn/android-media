@@ -25,6 +25,7 @@ public class PostVerifyCartUseCase extends UseCase<VerifyCartResponse> {
 
     CartItems cartItems;
     private final EventRepository eventRepository;
+    boolean flag;
 
 
     @Inject
@@ -37,10 +38,11 @@ public class PostVerifyCartUseCase extends UseCase<VerifyCartResponse> {
     public Observable<VerifyCartResponse> createObservable(RequestParams requestParams) {
         JsonElement jsonElement = new JsonParser().parse(new Gson().toJson(cartItems));
         JsonObject requestBody = jsonElement.getAsJsonObject();
-        return eventRepository.verifyCard(requestBody);
+        return eventRepository.verifyCard(requestBody, flag);
     }
 
-    public void setCartItems(CartItems verifyCart){
+    public void setCartItems(CartItems verifyCart, boolean flag){
         this.cartItems = verifyCart;
+        this.flag = flag;
     }
 }

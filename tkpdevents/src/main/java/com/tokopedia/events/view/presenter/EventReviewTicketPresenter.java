@@ -38,6 +38,7 @@ import com.tokopedia.events.domain.postusecase.PostPaymentUseCase;
 import com.tokopedia.events.domain.postusecase.PostVerifyCartUseCase;
 import com.tokopedia.events.view.contractor.EventReviewTicketsContractor;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
+import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,6 +68,7 @@ public class EventReviewTicketPresenter
     String email;
     String number;
     boolean isPromoCodeCase;
+    SelectedSeatViewModel selectedSeatViewModel;
     ArrayList<String> hints = new ArrayList<>();
     ArrayList<String> errors = new ArrayList<>();
 
@@ -189,12 +191,13 @@ public class EventReviewTicketPresenter
         List<EntityPackageItem> entityPackages = new ArrayList<>();
         EntityPackageItem packageItem = new EntityPackageItem();
         packageItem.setPackageId(packageViewModel.getId());
-        packageItem.setAreaCode(new ArrayList<Object>());
+        packageItem.setAreaCode(selectedSeatViewModel.getAreaCodes());
         packageItem.setDescription("");
-        packageItem.setQuantity(packageViewModel.getSelectedQuantity());
-        packageItem.setPricePerSeat(packageViewModel.getSalesPrice());
-        packageItem.setSeatId(new ArrayList<Object>());
-        packageItem.setSeatRowId(new ArrayList<Object>());
+        packageItem.setQuantity(selectedSeatViewModel.getQuantity());
+        packageItem.setPricePerSeat(selectedSeatViewModel.getPrice());
+        packageItem.setSeatId(selectedSeatViewModel.getSeatIds());
+        packageItem.setSeatRowId(selectedSeatViewModel.getSeatRowIds());
+        packageItem.setSeatPhysicalRowId(selectedSeatViewModel.getPhysicalRowIds());
         packageItem.setSessionId("");
         packageItem.setProductId(packageViewModel.getProductId());
         packageItem.setGroupId(packageViewModel.getProductGroupId());
@@ -267,13 +270,14 @@ public class EventReviewTicketPresenter
         getView().showProgressBar();
         Intent intent = view.getActivity().getIntent();
         this.checkoutData = intent.getParcelableExtra(EventBookTicketPresenter.EXTRA_PACKAGEVIEWMODEL);
+        this.selectedSeatViewModel = intent.getParcelableExtra(SeatSelectionPresenter.EXTRA_SEATSELECTEDMODEL);
         getView().renderFromPackageVM(checkoutData);
         getAndInitForms();
     }
 
     public void verifyCart() {
         getView().showProgressBar();
-        postVerifyCartUseCase.setCartItems(convertPackageToCartItem(checkoutData));
+        postVerifyCartUseCase.setCartItems(convertPackageToCartItem(checkoutData), false);
         postVerifyCartUseCase.execute(RequestParams.EMPTY, new Subscriber<VerifyCartResponse>() {
             @Override
             public void onCompleted() {

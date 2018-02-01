@@ -6,6 +6,7 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.events.data.entity.response.EventLocationEntity;
 import com.tokopedia.events.data.entity.response.EventResponseEntity;
 import com.tokopedia.events.data.entity.response.EventsDetailsEntity;
+import com.tokopedia.events.data.entity.response.SeatLayoutItem;
 import com.tokopedia.events.data.entity.response.ValidateResponse;
 import com.tokopedia.events.data.entity.response.checkoutreponse.CheckoutResponse;
 import com.tokopedia.events.data.entity.response.searchresponse.SearchResponse;
@@ -114,10 +115,10 @@ public class EventRepositoryData implements EventRepository {
     }
 
     @Override
-    public Observable<VerifyCartResponse> verifyCard(JsonObject requestBody) {
+    public Observable<VerifyCartResponse> verifyCard(JsonObject requestBody, boolean flag) {
         return eventsDataStoreFactory
                 .createCloudDataStore()
-                .verifyCart(requestBody);
+                .verifyCart(requestBody, flag);
     }
 
     @Override
@@ -136,6 +137,13 @@ public class EventRepositoryData implements EventRepository {
         return eventsDataStoreFactory
                 .createCloudDataStore()
                 .getSeatLayout(category_id,product_id,schedule_id,group_id,package_id);
+    }
+
+    @Override
+    public Observable<List<SeatLayoutItem>> getEventSeatLayout(String url) {
+        return eventsDataStoreFactory
+                .createCloudDataStore()
+                .getEventSeatLayout(url);
     }
 
 

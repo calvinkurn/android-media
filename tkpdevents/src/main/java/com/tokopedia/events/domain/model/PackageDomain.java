@@ -31,6 +31,7 @@ public class PackageDomain {
     private String venueDetail;
     private Integer startDate;
     private String updatedAt;
+    private String fetchSectionUrl;
     private String createdAt;
 
     public Integer getId() {
@@ -255,6 +256,14 @@ public class PackageDomain {
 
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getFetchSectionUrl() {
+        return fetchSectionUrl;
+    }
+
+    public void setFetchSectionUrl(String fetchSectionUrl) {
+        this.fetchSectionUrl = fetchSectionUrl;
     }
 
     public String getUpdatedAt() {

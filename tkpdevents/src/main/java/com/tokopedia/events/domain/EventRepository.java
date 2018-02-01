@@ -2,6 +2,7 @@ package com.tokopedia.events.domain;
 
 import com.google.gson.JsonObject;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.events.data.entity.response.SeatLayoutItem;
 import com.tokopedia.events.data.entity.response.ValidateResponse;
 import com.tokopedia.events.data.entity.response.checkoutreponse.CheckoutResponse;
 import com.tokopedia.events.data.entity.response.seatlayoutresponse.SeatLayoutResponse;
@@ -33,7 +34,7 @@ public interface EventRepository {
 
     Observable<ValidateResponse> validateShow(JsonObject requestBody);
 
-    Observable<VerifyCartResponse> verifyCard(JsonObject requestBody);
+    Observable<VerifyCartResponse> verifyCard(JsonObject requestBody, boolean flag);
 
     Observable<CheckoutResponse> checkoutCart(JsonObject requestBody);
 
@@ -42,6 +43,6 @@ public interface EventRepository {
                                                  int schedule_id,
                                                  int group_id,
                                                  int package_id);
-
+    Observable<List<SeatLayoutItem>> getEventSeatLayout(String url);
 
 }

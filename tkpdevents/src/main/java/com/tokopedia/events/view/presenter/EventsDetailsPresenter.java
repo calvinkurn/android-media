@@ -39,6 +39,9 @@ public class EventsDetailsPresenter extends BaseDaggerPresenter<EventsDetailsCon
     Subscriber<EventDetailsDomain> eventDetailsDomainSubscriber;
     public static String EXTRA_EVENT_VIEWMODEL = "extraeventviewmodel";
     public static String EXTRA_SEATING_URL = "extraseatingurl";
+    public static String EXTRA_SEATING_PARAMETER = "hasSeatLayout";
+
+    int hasSeatLayout;
 
     @Inject
     public EventsDetailsPresenter(GetEventDetailsRequestUseCase eventDetailsRequestUseCase,
@@ -130,6 +133,7 @@ public class EventsDetailsPresenter extends BaseDaggerPresenter<EventsDetailsCon
                 getView().renderFromCloud(convertIntoEventDetailsViewModel(eventDetailEntities));   //TODO:should be chained using concatMap
                 if (eventsDetailsViewModel.getSeatMapImage() != null && !eventsDetailsViewModel.getSeatMapImage().isEmpty())
                     getView().renderSeatmap(eventsDetailsViewModel.getSeatMapImage());
+                hasSeatLayout = eventsDetailsViewModel.getHasSeatLayout();
                 getView().hideProgressBar();
                 CommonUtils.dumper("enter onNext");
             }
@@ -174,6 +178,7 @@ public class EventsDetailsPresenter extends BaseDaggerPresenter<EventsDetailsCon
         Intent bookTicketIntent = new Intent(getView().getActivity(), EventBookTicketActivity.class);
         bookTicketIntent.putExtra(EXTRA_EVENT_VIEWMODEL, eventsDetailsViewModel);
         bookTicketIntent.putExtra(EXTRA_SEATING_URL, seatingURL);
+        bookTicketIntent.putExtra(EXTRA_SEATING_PARAMETER, hasSeatLayout);
         getView().navigateToActivityRequest(bookTicketIntent, 100);
     }
 
