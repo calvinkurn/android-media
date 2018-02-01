@@ -18,6 +18,7 @@ import com.tokopedia.tkpd.beranda.presentation.view.compoundview.CountDownView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
@@ -136,7 +137,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
 
     private Date getExpiredTime(DynamicChannelViewModel model) {
         String expiredTimeString = model.getChannel().getHeader().getExpiredTime();
-        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-ddThh:mm:ss.nnnnnn+|-hh:mm");
         try {
             return format.parse(expiredTimeString);
         } catch (ParseException e) {
