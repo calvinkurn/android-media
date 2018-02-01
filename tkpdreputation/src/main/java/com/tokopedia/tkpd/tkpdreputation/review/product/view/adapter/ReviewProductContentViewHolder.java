@@ -155,7 +155,7 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
                 counterLike.setText(itemView.getContext().getString(R.string.product_review_label_counter_like_1_formatted, element.getTotalLike() - 1));
             } else if (element.isLikeStatus() && element.getTotalLike() == 1) {
                 counterLike.setText(R.string.product_review_label_counter_like_2_formatted);
-            } else if (!element.isLikeStatus() && element.getTotalLike() < 1 && !element.isHelpful()) {
+            } else if (!element.isLikeStatus() && element.getTotalLike() < 1 ) {
                 counterLike.setText(R.string.product_review_label_counter_like_3_formatted);
             } else {
                 counterLike.setText(itemView.getContext().getString(R.string.product_review_label_counter_like_4_formatted, element.getTotalLike()));
