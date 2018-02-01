@@ -1,155 +1,148 @@
 package com.tokopedia.inbox.rescenter.inboxv2.view.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
-import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.rescenter.inboxv2.view.listener.ResoInboxFragmentListener;
+import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.core.base.adapter.model.EmptyModel;
+import com.tokopedia.core.base.adapter.model.LoadingModel;
+import com.tokopedia.core.base.adapter.model.RetryModel;
+import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.inbox.rescenter.inboxv2.view.adapter.typefactory.ResoInboxTypeFactory;
+import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.FilterListViewModel;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.InboxItemViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by yfsx on 24/01/18.
+ * Created by yfsx on 01/02/18.
  */
 
-public class ResoInboxAdapter extends RecyclerView.Adapter<ResoInboxAdapter.Holder> {
-    private ResoInboxFragmentListener.View mainView;
-    private List<InboxItemViewModel> itemList;
-    private Context context;
+public class ResoInboxAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
+    private List<Visitable> list;
+    private final ResoInboxTypeFactory typeFactory;
+    private EmptyModel emptyModel;
+    private LoadingModel loadingModel;
+    private RetryModel retryModel;
+    private boolean canLoadMore;
 
-    public ResoInboxAdapter(Context context, ResoInboxFragmentListener.View mainView, List<InboxItemViewModel> itemList) {
-        this.itemList = itemList;
-        this.context = context;
-        this.mainView = mainView;
+    public ResoInboxAdapter(ResoInboxTypeFactory typeFactory) {
+        this.typeFactory = typeFactory;
+        this.list = new ArrayList<>();
+        this.emptyModel = new EmptyModel();
+        this.loadingModel = new LoadingModel();
+        this.retryModel = new RetryModel();
     }
 
     @Override
-    public Holder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        return new Holder(LayoutInflater.from(context).inflate(R.layout.item_reso_inbox, viewGroup, false));
+    public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Context context = parent.getContext();
+        View view = LayoutInflater.from(context).inflate(viewType, parent, false);
+        return typeFactory.createViewHolder(view, viewType);
     }
 
     @Override
-    public void onBindViewHolder(Holder holder, int pos) {
-        InboxItemViewModel item = itemList.get(pos);
-        bindView(holder, item);
-        bindViewListener(holder, item);
+    public void onBindViewHolder(AbstractViewHolder holder, int position) {
+        holder.bind(list.get(position));
     }
 
-    private void bindView(Holder holder, InboxItemViewModel item) {
-        if (item.isLoadingItem()) {
-            holder.loading.setVisibility(View.VISIBLE);
-        } else {
-            holder.loading.setVisibility(View.GONE);
-            if (TextUtils.isEmpty(item.getInboxMessage())) {
-                holder.ffTitleNotif.setVisibility(View.GONE);
-            } else {
-                holder.ffTitleNotif.setVisibility(View.VISIBLE);
-                holder.tvTitle.setText(item.getInboxMessage());
-                holder.tvTitle.setTextColor(Color.parseColor(item.getInboxMessageTextColor()));
-                holder.ffTitleNotif.setBackgroundColor(Color.parseColor(item.getInboxMessageBackgroundColor()));
-            }
-
-            holder.tvInvoice.setText(item.getInvoiceNumber());
-            holder.ivNotification.setVisibility(item.isNotificationShow() ? View.VISIBLE : View.GONE);
-
-            holder.tvUsernameTitle.setText(item.getNameTitle());
-            holder.tvUsername.setText(item.getUserName());
-            holder.tvAutoExecute.setText(item.getAutoDoneText());
-            holder.tvLastReply.setText(item.getLastReplyText());
-            holder.tvFreeReturn.setText(item.getFreeReturnText());
-
-            if (item.getImageList() != null) {
-                holder.ffProduct.setVisibility(View.VISIBLE);
-                holder.tvMoreImage.setText(item.getExtraImageCountText());
-                holder.rvProduct.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
-                ProductAdapter adapter = new ProductAdapter(context, item.getImageList());
-                holder.rvProduct.setAdapter(adapter);
-            } else {
-                holder.ffProduct.setVisibility(View.GONE);
-            }
-        }
+    @Override
+    public int getItemViewType(int position) {
+        return list.get(position).type(typeFactory);
     }
 
-    private void bindViewListener(Holder holder, final InboxItemViewModel item) {
-        holder.llItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mainView.onItemClicked(item.getResId(), item.getSellerName(), item.getCustomerName());
-            }
-        });
-    }
 
     @Override
     public int getItemCount() {
-        return itemList.size();
+        return  list.size();
     }
 
-    public class Holder extends RecyclerView.ViewHolder {
-        TextView tvTitle, tvInvoice, tvUsernameTitle, tvUsername,
-                tvAutoExecute, tvLastReply, tvFreeReturn, tvMoreImage,
-                tvSeeConversation;
-        ImageView ivNotification;
-        RecyclerView rvProduct;
-        FrameLayout ffTitleNotif, ffProduct;
-        LinearLayout llItem;
-        ProgressBar loading;
-        public Holder(View itemView) {
-            super(itemView);
-            ffTitleNotif = (FrameLayout) itemView.findViewById(R.id.ff_title_notif);
-            ivNotification = (ImageView) itemView.findViewById(R.id.ic_notification);
-            tvTitle = (TextView) itemView.findViewById(R.id.tv_title);
-            tvInvoice = (TextView) itemView.findViewById(R.id.tv_invoice);
-            tvUsernameTitle = (TextView) itemView.findViewById(R.id.tv_username_title);
-            tvUsername = (TextView) itemView.findViewById(R.id.tv_username);
-            tvAutoExecute = (TextView) itemView.findViewById(R.id.tv_auto_execute);
-            tvLastReply = (TextView) itemView.findViewById(R.id.tv_last_reply);
-            tvFreeReturn = (TextView) itemView.findViewById(R.id.tv_free_return);
-            tvMoreImage = (TextView) itemView.findViewById(R.id.tv_more_image);
-            tvSeeConversation = (TextView) itemView.findViewById(R.id.tv_see_conversation);
-            rvProduct = (RecyclerView) itemView.findViewById(R.id.rv_product);
-            ffProduct = (FrameLayout) itemView.findViewById(R.id.ff_product);
-            llItem = (LinearLayout) itemView.findViewById(R.id.ll_item);
-            loading = (ProgressBar) itemView.findViewById(R.id.loading);
-        }
+    public void setList(List<Visitable> list) {
+        this.list = list;
     }
 
-    public void addMoreItem(List<InboxItemViewModel> list) {
-        itemList.addAll(list);
-        notifyDataSetChanged();
+    public void addList(List<Visitable> list) {
+        this.list.addAll(list);
+
     }
 
-    public void addLoadingItem() {
-        itemList.add(new InboxItemViewModel(true));
-        notifyDataSetChanged();
+    public void clearData() {
+        this.list.clear();
     }
 
-    public void removeLoadingItem() {
-        if (itemList.get(itemList.size() - 1).isLoadingItem()) {
-            itemList.remove(itemList.size() - 1);
-        }
-        notifyDataSetChanged();
+    public void showEmpty() {
+        this.list.add(emptyModel);
     }
 
-    public void updateSingleItem(InboxItemViewModel updateItem) {
-        int posUpdated = 0;
-        for (int i = 0 ; i < itemList.size() ; i++) {
-            if (itemList.get(i).getId() == updateItem.getId()) {
-                itemList.get(i).updateItem(updateItem);
-                posUpdated = i;
+    public void removeEmpty() {
+        this.list.remove(emptyModel);
+    }
+
+    public void showRetry(){
+        int positionStart = getItemCount();
+        this.list.add(retryModel);
+        notifyItemRangeInserted(positionStart, 1);
+    }
+
+    public void removeRetry(){
+        int index = this.list.indexOf(retryModel);
+        this.list.remove(retryModel);
+        notifyItemRemoved(index);
+    }
+
+    public void showLoading() {
+        this.list.add(loadingModel);
+    }
+
+    public void removeLoading() {
+        this.list.remove(loadingModel);
+    }
+
+    public boolean isLoading() {
+        return this.list.contains(loadingModel);
+    }
+
+    public void setCanLoadMore(boolean canLoadMore) {
+        this.canLoadMore = canLoadMore;
+    }
+
+    public boolean isCanLoadMore() {
+        return canLoadMore;
+    }
+
+    public List<Visitable> getlist() {
+        return list;
+    }
+
+
+    public void addItem(Visitable item) {
+        this.list.add(item);
+    }
+
+    public void updateSingleInboxItem(InboxItemViewModel model) {
+        int pos = 0;
+        for (Visitable item : list) {
+            if (item instanceof InboxItemViewModel) {
+                if (((InboxItemViewModel) item).getId() == model.getId()) {
+                    ((InboxItemViewModel) item).updateItem(model);
+                    notifyItemChanged(pos);
+                    break;
+                }
             }
+            pos++;
         }
-        notifyItemChanged(posUpdated);
+    }
+
+    public void updateQuickFilter(FilterListViewModel filterListModel) {
+        if (list.get(0) instanceof FilterListViewModel) {
+            FilterListViewModel newModel = new FilterListViewModel(filterListModel.getFilterList());
+            list.remove(0);
+            list.add(0, newModel);
+            notifyItemChanged(0);
+        }
     }
 }

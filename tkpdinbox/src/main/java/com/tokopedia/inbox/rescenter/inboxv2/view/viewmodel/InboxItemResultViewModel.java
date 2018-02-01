@@ -3,6 +3,9 @@ package com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.core.base.adapter.Visitable;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,6 +15,9 @@ import java.util.List;
 public class InboxItemResultViewModel implements Parcelable {
     private List<InboxItemViewModel> inboxItemViewModels;
     private List<FilterViewModel> filterViewModels;
+
+    private FilterListViewModel filterListViewModel;
+    private List<Visitable> inboxVisitableList;
 
     public InboxItemResultViewModel(List<InboxItemViewModel> inboxItemViewModels, List<FilterViewModel> filterViewModels) {
         this.inboxItemViewModels = inboxItemViewModels;
@@ -34,6 +40,22 @@ public class InboxItemResultViewModel implements Parcelable {
         this.inboxItemViewModels = inboxItemViewModels;
     }
 
+    public FilterListViewModel getFilterListViewModel() {
+        return filterListViewModel;
+    }
+
+    public void setFilterListViewModel(FilterListViewModel filterListViewModel) {
+        this.filterListViewModel = filterListViewModel;
+    }
+
+    public List<Visitable> getInboxVisitableList() {
+        return inboxVisitableList;
+    }
+
+    public void setInboxVisitableList(List<Visitable> inboxVisitableList) {
+        this.inboxVisitableList = inboxVisitableList;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -43,11 +65,16 @@ public class InboxItemResultViewModel implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeTypedList(this.inboxItemViewModels);
         dest.writeTypedList(this.filterViewModels);
+        dest.writeParcelable(this.filterListViewModel, flags);
+        dest.writeList(this.inboxVisitableList);
     }
 
     protected InboxItemResultViewModel(Parcel in) {
         this.inboxItemViewModels = in.createTypedArrayList(InboxItemViewModel.CREATOR);
         this.filterViewModels = in.createTypedArrayList(FilterViewModel.CREATOR);
+        this.filterListViewModel = in.readParcelable(FilterListViewModel.class.getClassLoader());
+        this.inboxVisitableList = new ArrayList<Visitable>();
+        in.readList(this.inboxVisitableList, Visitable.class.getClassLoader());
     }
 
     public static final Creator<InboxItemResultViewModel> CREATOR = new Creator<InboxItemResultViewModel>() {

@@ -19,6 +19,8 @@ public interface ResoInboxFragmentListener {
 
     interface View extends CustomerView {
 
+        void getInboxWithParams(ResoInboxFilterModel inboxFilterModel);
+
         void onSuccessGetInbox(InboxItemResultViewModel result);
 
         void onErrorGetInbox(String err);
@@ -42,6 +44,12 @@ public interface ResoInboxFragmentListener {
         void onItemClicked(int resolutionId, String sellerName, String customerName);
 
         void onSortItemClicked(SortModel sortModel);
+
+        void onResetFilterButtonClicked();
+
+        ResoInboxFilterModel getInboxFilterModel();
+
+        ResoInboxSortModel getInboxSortModel();
 
     }
 

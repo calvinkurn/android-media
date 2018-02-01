@@ -3,13 +3,16 @@ package com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.inbox.rescenter.inboxv2.view.adapter.typefactory.ResoInboxTypeFactory;
+
 import java.util.List;
 
 /**
  * Created by yfsx on 24/01/18.
  */
 
-public class InboxItemViewModel implements Parcelable {
+public class InboxItemViewModel implements Parcelable, Visitable<ResoInboxTypeFactory>  {
     private int id;
     private int resId;
     private int actionBy;
@@ -260,6 +263,11 @@ public class InboxItemViewModel implements Parcelable {
     @Override
     public int describeContents() {
         return 0;
+    }
+
+    @Override
+    public int type(ResoInboxTypeFactory typeFactory) {
+        return typeFactory.type(this);
     }
 
     @Override
