@@ -24,8 +24,8 @@ import com.tokopedia.digital.product.view.model.Operator;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.digital.product.view.model.Product;
 import com.tokopedia.digital.product.view.model.Validation;
-import com.tokopedia.digital.widget.view.compoundview.WidgetOperatorChooserView3;
-import com.tokopedia.digital.widget.view.compoundview.WidgetProductChooserView3;
+import com.tokopedia.digital.widget.view.compoundview.NewWidgetOperatorChooserView;
+import com.tokopedia.digital.widget.view.compoundview.NewWidgetProductChooserView;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -60,10 +60,10 @@ public class CategoryProductStyle3View extends
     @BindView(R2.id.tooltip_instant_checkout)
     ImageView tooltipInstantCheckout;
 
-    private WidgetOperatorChooserView3 widgetOperatorChooserView;
+    private NewWidgetOperatorChooserView widgetOperatorChooserView;
     private DigitalOperatorChooserView digitalOperatorChooserView;
     private ClientNumberInputView clientNumberInputView;
-    private WidgetProductChooserView3 widgetProductChooserView;
+    private NewWidgetProductChooserView widgetProductChooserView;
     private DigitalProductChooserView digitalProductChooserView;
     private ProductAdditionalInfoView productAdditionalInfoView;
     private ProductPriceInfoView productPriceInfoView;
@@ -85,10 +85,10 @@ public class CategoryProductStyle3View extends
 
     @Override
     protected void onCreateView() {
-        widgetOperatorChooserView = new WidgetOperatorChooserView3(context);
+        widgetOperatorChooserView = new NewWidgetOperatorChooserView(context);
         digitalOperatorChooserView = new DigitalOperatorChooserView(context);
         clientNumberInputView = new ClientNumberInputView(context);
-        widgetProductChooserView = new WidgetProductChooserView3(context);
+        widgetProductChooserView = new NewWidgetProductChooserView(context);
         digitalProductChooserView = new DigitalProductChooserView(context);
         productAdditionalInfoView = new ProductAdditionalInfoView(context);
         productPriceInfoView = new ProductPriceInfoView(context);

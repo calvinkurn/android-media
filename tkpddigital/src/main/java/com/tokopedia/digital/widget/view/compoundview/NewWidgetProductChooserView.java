@@ -21,7 +21,7 @@ import butterknife.BindView;
  * Created by Rizky on 31/01/18.
  */
 
-public class WidgetProductChooserView3 extends BaseDigitalChooserView<Product> {
+public class NewWidgetProductChooserView extends BaseDigitalChooserView<Product> {
 
     private final static int OUT_OF_STOCK = 3;
 
@@ -32,15 +32,15 @@ public class WidgetProductChooserView3 extends BaseDigitalChooserView<Product> {
     @BindView(R2.id.error_nominal)
     TextView errorNominal;
 
-    public WidgetProductChooserView3(Context context) {
+    public NewWidgetProductChooserView(Context context) {
         super(context);
     }
 
-    public WidgetProductChooserView3(Context context, AttributeSet attrs) {
+    public NewWidgetProductChooserView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public WidgetProductChooserView3(Context context, AttributeSet attrs, int defStyleAttr) {
+    public NewWidgetProductChooserView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 

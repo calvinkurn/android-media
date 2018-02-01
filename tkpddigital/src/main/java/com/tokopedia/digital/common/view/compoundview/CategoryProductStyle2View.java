@@ -24,8 +24,8 @@ import com.tokopedia.digital.product.view.model.Operator;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.digital.product.view.model.Product;
 import com.tokopedia.digital.product.view.model.Validation;
+import com.tokopedia.digital.widget.view.compoundview.NewWidgetProductChooserView;
 import com.tokopedia.digital.widget.view.compoundview.RadioChooserView;
-import com.tokopedia.digital.widget.view.compoundview.WidgetProductChooserView3;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -62,7 +62,7 @@ public class CategoryProductStyle2View extends
 
     private RadioChooserView radioChooserView;
     private ClientNumberInputView clientNumberInputView;
-    private WidgetProductChooserView3 widgetProductChooserView;
+    private NewWidgetProductChooserView widgetProductChooserView;
     private DigitalProductChooserView digitalProductChooserView;
     private ProductAdditionalInfoView productAdditionalInfoView;
     private ProductPriceInfoView productPriceInfoView;
@@ -85,9 +85,9 @@ public class CategoryProductStyle2View extends
     @Override
     protected void onCreateView() {
         radioChooserView = new RadioChooserView(context);
-        widgetProductChooserView = new WidgetProductChooserView3(context);
+        widgetProductChooserView = new NewWidgetProductChooserView(context);
         clientNumberInputView = new ClientNumberInputView(context);
-        widgetProductChooserView = new WidgetProductChooserView3(context);
+        widgetProductChooserView = new NewWidgetProductChooserView(context);
         digitalProductChooserView = new DigitalProductChooserView(context);
         productAdditionalInfoView = new ProductAdditionalInfoView(context);
         productPriceInfoView = new ProductPriceInfoView(context);

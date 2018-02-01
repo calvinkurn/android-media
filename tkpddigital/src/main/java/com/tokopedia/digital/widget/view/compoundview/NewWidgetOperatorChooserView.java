@@ -20,20 +20,20 @@ import butterknife.BindView;
  * Created by Rizky on 31/01/18.
  */
 
-public class WidgetOperatorChooserView3 extends BaseDigitalChooserView<Operator> {
+public class NewWidgetOperatorChooserView extends BaseDigitalChooserView<Operator> {
 
     @BindView(R2.id.spinner_operator)
     Spinner spinnerOperator;
 
-    public WidgetOperatorChooserView3(Context context) {
+    public NewWidgetOperatorChooserView(Context context) {
         super(context);
     }
 
-    public WidgetOperatorChooserView3(Context context, AttributeSet attrs) {
+    public NewWidgetOperatorChooserView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public WidgetOperatorChooserView3(Context context, AttributeSet attrs, int defStyleAttr) {
+    public NewWidgetOperatorChooserView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 

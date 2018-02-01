@@ -20,7 +20,7 @@ import rx.subscriptions.CompositeSubscription;
  *         Modified by rizkyfadillah at 10/6/17.
  */
 
-// TODO: this interactor should be replace with usecase
+// TODO: this interactor should be replaced with usecase
     // don't use DigitalWidgetRepository anymore
 
 @Deprecated

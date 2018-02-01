@@ -24,7 +24,7 @@ import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.digital.product.view.model.Product;
 import com.tokopedia.digital.product.view.model.Validation;
 import com.tokopedia.digital.utils.DeviceUtil;
-import com.tokopedia.digital.widget.view.compoundview.WidgetProductChooserView3;
+import com.tokopedia.digital.widget.view.compoundview.NewWidgetProductChooserView;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -58,7 +58,7 @@ public class CategoryProductStyle1View extends
     ImageView tooltipInstantCheckout;
 
     private DigitalProductChooserView digitalProductChooserView;
-    private WidgetProductChooserView3 widgetProductChooserView;
+    private NewWidgetProductChooserView widgetProductChooserView;
     private ClientNumberInputView clientNumberInputView;
     private ProductAdditionalInfoView productAdditionalInfoView;
     private ProductPriceInfoView productPriceInfoView;
@@ -82,7 +82,7 @@ public class CategoryProductStyle1View extends
     protected void onCreateView() {
         clientNumberInputView = new ClientNumberInputView(context);
         digitalProductChooserView = new DigitalProductChooserView(context);
-        widgetProductChooserView = new WidgetProductChooserView3(context);
+        widgetProductChooserView = new NewWidgetProductChooserView(context);
         productAdditionalInfoView = new ProductAdditionalInfoView(context);
         productPriceInfoView = new ProductPriceInfoView(context);
         productAdditionalInfoView.setActionListener(this);
@@ -96,9 +96,9 @@ public class CategoryProductStyle1View extends
     @Override
     protected void onInitialDataRendered() {
         if (source == NATIVE) {
-            tvTitle.setVisibility(GONE);
-        } else {
             tvTitle.setText(TextUtils.isEmpty(data.getTitleText()) ? "" : data.getTitleText());
+        } else {
+            tvTitle.setVisibility(GONE);
         }
         renderClientNumberInputForm();
         renderInstantCheckoutOption();

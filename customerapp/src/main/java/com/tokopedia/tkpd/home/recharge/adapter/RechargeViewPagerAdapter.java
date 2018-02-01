@@ -28,7 +28,6 @@ public class RechargeViewPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         Category category = categoryList.get(position);
         return WidgetAllStyleRechargeFragment.newInstance(category, position);
-//        return WidgetFactory.buildFragment(category, position);
     }
 
     @Override
