@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
@@ -37,11 +36,11 @@ public class CartAddressListAdapter
     private Context mContext;
 
     public CartAddressListAdapter() {
-        mAddressModelList = new ArrayList<>();
+
     }
 
     public void setAddressList(List<ShippingRecipientModel> addressModelList) {
-        mAddressModelList.addAll(addressModelList);
+        mAddressModelList = new ArrayList<>(addressModelList);
     }
 
     @Override
@@ -59,6 +58,7 @@ public class CartAddressListAdapter
         holder.mTvRecipientAddress.setText(address.getRecipientAddress());
 
         holder.mAddressContainer.setOnClickListener(new OnItemClickListener(position));
+        holder.mLlRadioButtonAddressSelect.setOnClickListener(new OnItemClickListener(position));
     }
 
     @Override

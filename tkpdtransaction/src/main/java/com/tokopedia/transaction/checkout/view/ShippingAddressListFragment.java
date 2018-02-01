@@ -1,11 +1,13 @@
 package com.tokopedia.transaction.checkout.view;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -20,6 +22,7 @@ import com.tokopedia.transaction.checkout.view.data.ShippingRecipientModel;
 import com.tokopedia.transaction.checkout.view.presenter.CartAddressListPresenter;
 import com.tokopedia.transaction.checkout.view.view.ISearchAddressListView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -187,7 +190,8 @@ public class ShippingAddressListFragment extends BasePresenterFragment
 
     @Override
     public void showListEmpty() {
-
+        mCartAddressListAdapter.setAddressList(new ArrayList<ShippingRecipientModel>());
+        mCartAddressListAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -208,8 +212,8 @@ public class ShippingAddressListFragment extends BasePresenterFragment
         return new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                Toast.makeText(getActivity(), "Touch", Toast.LENGTH_SHORT).show();
                 mSvAddressSearchBox.getSearchTextView().setCursorVisible(true);
+                openSoftKeyboard();
                 return false;
             }
         };
@@ -219,25 +223,21 @@ public class ShippingAddressListFragment extends BasePresenterFragment
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getActivity(), "Click", Toast.LENGTH_SHORT).show();
                 mSvAddressSearchBox.getSearchTextView().setCursorVisible(true);
+                openSoftKeyboard();
             }
         };
-    }
-
-    private String getSearchKeyword() {
-        return mSvAddressSearchBox.getSearchText();
     }
 
     @Override
     public void onSearchSubmitted(String text) {
         Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
         if (!text.isEmpty()) {
-            mCartAddressListPresenter.initSearch(getSearchKeyword());
+            mCartAddressListPresenter.initSearch(text);
         } else {
             onSearchReset();
-
         }
+        closeSoftKeyboard();
     }
 
     @Override
@@ -248,6 +248,20 @@ public class ShippingAddressListFragment extends BasePresenterFragment
     @Override
     public void onSearchReset() {
         mCartAddressListPresenter.resetSearch();
+    }
+
+    private void openSoftKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.showSoftInput(mSvAddressSearchBox.getSearchTextView(), InputMethodManager.SHOW_IMPLICIT);
+        }
+    }
+
+    private void closeSoftKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(mSvAddressSearchBox.getSearchTextView().getWindowToken(), 0);
+        }
     }
 
 }

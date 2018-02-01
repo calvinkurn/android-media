@@ -5,8 +5,12 @@ import com.tokopedia.transaction.checkout.view.data.factory.ShippingRecipientMod
 import com.tokopedia.transaction.checkout.view.view.ISearchAddressListView;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import rx.Observable;
 import rx.Observer;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * @author Aghny A. Putra on 26/01/18
@@ -29,7 +33,7 @@ public class CartAddressListPresenter
     }
 
     public void initSearch(String keyword) {
-        // TODO execute search use case
+        filter(fetchAddressList(), keyword);
     }
 
     public void resetSearch() {
@@ -38,7 +42,30 @@ public class CartAddressListPresenter
 
     public void getAddressList() {
         // TODO remove this, and invoke use case
-        getMvpView().showList(ShippingRecipientModelFactory.getDummyShippingRecipientModelList());
+        getMvpView().showList(fetchAddressList());
+    }
+
+    private List<ShippingRecipientModel> fetchAddressList() {
+        return ShippingRecipientModelFactory.getDummyShippingRecipientModelList();
+    }
+
+    private void filter(List<ShippingRecipientModel> addressList, final String keyword) {
+        Observable.from(addressList)
+                .debounce(500, TimeUnit.MILLISECONDS)
+                .filter(new Func1<ShippingRecipientModel, Boolean>() {
+                    @Override
+                    public Boolean call(ShippingRecipientModel shippingRecipientMode) {
+                        boolean isNameContainsKeyword = shippingRecipientMode.getRecipientName().contains(keyword);
+                        boolean isAddressContainKeyword = shippingRecipientMode.getRecipientAddress().contains(keyword);
+
+                        boolean result = isAddressContainKeyword || isNameContainsKeyword;
+                        return result;
+                    }
+                })
+                .toList()
+                .observeOn(Schedulers.computation())
+                .subscribe(new AddressListObserver());
+        // TODO make sure to put proper scheduler
     }
 
     private final class AddressListObserver implements Observer<List<ShippingRecipientModel>> {
