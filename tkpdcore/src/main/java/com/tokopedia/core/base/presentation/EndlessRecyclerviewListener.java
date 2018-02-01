@@ -8,6 +8,11 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 /**
  * @author by erry on 02/02/17.
  */
+
+/**
+ * Use EndlessRecyclerViewScrollListener from tkpd abstraction
+ */
+@Deprecated
 public abstract class EndlessRecyclerviewListener extends RecyclerView.OnScrollListener {
 
     private int visibleThreshold = 3;
