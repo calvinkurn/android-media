@@ -48,12 +48,6 @@
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".checkout.view.ShipmentChoiceActivity"
-            android:label="@string/title_activity_shipment_choice"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"/>
-
-        <activity
             android:name=".checkout.view.ShipmentDetailActivity"
             android:label="@string/title_activity_shipment_detail"
             android:launchMode="singleTask"
