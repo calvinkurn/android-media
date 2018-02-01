@@ -127,6 +127,7 @@ public interface Constants {
         String FAVORITE = "tokopedia://home/favorite";
         String PROMO_LIST = "tokopedia://promoNative";
         String KOLCOMMENT = "tokopedia://kolcomment/{id}";
+        String SELLER_INFO_DETAIL = "tokopedia://sellerinfo/detail";
 
         interface SellerApp {
             String PRODUCT_ADD = "sellerapp://product/add";
@@ -139,6 +140,7 @@ public interface Constants {
             String TOPADS_PRODUCT_DETAIL = "sellerapp://topads/product/{ad_id}";
             String TOPADS_PRODUCT_DETAIL_CONSTS = "sellerapp://topads/product";
             String BROWSER = "sellerapp://browser";
+            String SELLER_INFO_DETAIL = "sellerapp://sellerinfo/detail";
         }
     }
 
@@ -160,6 +162,7 @@ public interface Constants {
         String NOTIFICATION_SALES = "notification_sales";
         String NOTIFICATION_PURCHASE = "notification_purchase";
         String NOTIFICATION_RESCENTER = "notification_receive_rescenter";
+        String NOTIFICATION_SELLER_INFO = "notification_receive_seller_info";
     }
 
     interface AppLinkQueryParameter {

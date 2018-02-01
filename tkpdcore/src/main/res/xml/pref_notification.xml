@@ -42,4 +42,9 @@
         android:key="notification_receive_promo"
         android:title="@string/pref_receive_promo" />
 
+    <com.tkpd.library.ui.utilities.CustomCheckBoxPreference
+        android:defaultValue="true"
+        android:key="notification_seller_info"
+        android:title="@string/pref_receive_seller_info" />
+
 </PreferenceScreen>

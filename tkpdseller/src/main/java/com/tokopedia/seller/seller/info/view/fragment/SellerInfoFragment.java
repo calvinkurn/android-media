@@ -103,7 +103,7 @@ public class SellerInfoFragment extends BaseListFragment<BlankPresenter, SellerI
             return;
         UnifyTracking.eventClickItemSellerInfo(sellerInfoModel.getTitle());
 
-        startActivity(SellerInfoWebViewActivity.getCallingIntent(this, sellerInfoModel.getExternalLink()));
+        startActivity(SellerInfoWebViewActivity.getCallingIntent(getContext(), sellerInfoModel.getExternalLink()));
     }
 
 

@@ -1,13 +1,21 @@
 package com.tokopedia.seller.seller.info.view.activity;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.TaskStackBuilder;
+import android.text.TextUtils;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.router.SellerAppRouter;
+import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.seller.info.view.fragment.SellerInfoWebViewFragment;
+
+import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_URL;
 
 /**
  * Created by normansyahputa on 12/5/17.
@@ -15,10 +23,33 @@ import com.tokopedia.seller.seller.info.view.fragment.SellerInfoWebViewFragment;
 
 public class SellerInfoWebViewActivity extends BaseSimpleActivity {
 
-    public static Intent getCallingIntent(Fragment activity, String url) {
+    @DeepLink({Constants.Applinks.SELLER_INFO_DETAIL, Constants.Applinks.SellerApp.SELLER_INFO_DETAIL})
+    public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
+        Intent homeIntent;
+        if (GlobalConfig.isSellerApp()) {
+            homeIntent = SellerAppRouter.getSellerHomeActivity(context);
+        } else {
+            homeIntent = HomeRouter.getHomeActivityInterfaceRouter(context);
+        }
+
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+        taskStackBuilder.addNextIntent(homeIntent);
+
+        Intent parentIntent = new Intent(context, SellerInfoActivity.class);
+        taskStackBuilder.addNextIntent(parentIntent);
+
+        String url = extras.getString(ARG_NOTIFICATION_URL, "");
+        if (!TextUtils.isEmpty(url)) {
+            Intent detailsIntent = getCallingIntent(context, url);
+            taskStackBuilder.addNextIntent(detailsIntent);
+        }
+        return taskStackBuilder;
+    }
+
+    public static Intent getCallingIntent(Context context, String url) {
         Bundle bundle = new Bundle();
         bundle.putString(SellerInfoWebViewFragment.EXTRA_URL, url);
-        Intent intent = new Intent(activity.getActivity(), SellerInfoWebViewActivity.class);
+        Intent intent = new Intent(context, SellerInfoWebViewActivity.class);
         intent.putExtras(bundle);
         return intent;
     }
