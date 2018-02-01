@@ -4,9 +4,12 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.di.component.CartAddressListComponent;
@@ -18,27 +21,39 @@ import com.tokopedia.transaction.checkout.view.presenter.CartAddressListPresente
 import com.tokopedia.transaction.checkout.view.view.ISearchAddressListView;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * @author Aghny A. Putra on 25/01/18
  */
 public class ShippingAddressListFragment extends BasePresenterFragment
-        implements ISearchAddressListView<List<ShippingRecipientModel>> {
+        implements ISearchAddressListView<List<ShippingRecipientModel>>,
+        SearchInputView.Listener,
+        SearchInputView.ResetListener {
 
-    private static final String SCREEN_NAME = ShippingAddressListFragment.class.getSimpleName();
+    private static final String TAG = ShippingAddressListFragment.class.getSimpleName();
 
     @BindView(R2.id.rv_address_list) RecyclerView mRvRecipientAddressList;
+    @BindView(R2.id.sv_address_search_box) SearchInputView mSvAddressSearchBox;
 
     @Inject CartAddressListAdapter mCartAddressListAdapter;
     @Inject CartAddressListPresenter mCartAddressListPresenter;
 
     public static ShippingAddressListFragment newInstance() {
         return new ShippingAddressListFragment();
+    }
+
+    public static ShippingAddressListFragment newInstance(Map<String, String> params) {
+        ShippingAddressListFragment fragment = new ShippingAddressListFragment();
+        Bundle bundle = new Bundle();
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Override
@@ -52,7 +67,7 @@ public class ShippingAddressListFragment extends BasePresenterFragment
 
     @Override
     protected String getScreenName() {
-        return SCREEN_NAME;
+        return TAG;
     }
 
     @Override
@@ -131,6 +146,8 @@ public class ShippingAddressListFragment extends BasePresenterFragment
         mRvRecipientAddressList.setAdapter(mCartAddressListAdapter);
 
         mCartAddressListPresenter.attachView(this);
+
+        initSearchView();
     }
 
     /**
@@ -157,6 +174,11 @@ public class ShippingAddressListFragment extends BasePresenterFragment
 
     }
 
+    @OnClick(R2.id.btn_add_new_address)
+    protected void addNewAddress() {
+
+    }
+
     @Override
     public void showList(List<ShippingRecipientModel> shippingRecipientModels) {
         mCartAddressListAdapter.setAddressList(shippingRecipientModels);
@@ -171,6 +193,61 @@ public class ShippingAddressListFragment extends BasePresenterFragment
     @Override
     public void showError() {
 
+    }
+
+    private void initSearchView() {
+        mSvAddressSearchBox.getSearchTextView().setOnClickListener(onSearchViewClickListener());
+        mSvAddressSearchBox.getSearchTextView().setOnTouchListener(onSearchViewTouchListener());
+
+        mSvAddressSearchBox.setListener(this);
+        mSvAddressSearchBox.setResetListener(this);
+        mSvAddressSearchBox.setSearchHint("Cari Nama Penerima/Alamat/Kota");
+    }
+
+    private View.OnTouchListener onSearchViewTouchListener() {
+        return new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                Toast.makeText(getActivity(), "Touch", Toast.LENGTH_SHORT).show();
+                mSvAddressSearchBox.getSearchTextView().setCursorVisible(true);
+                return false;
+            }
+        };
+    }
+
+    private View.OnClickListener onSearchViewClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getActivity(), "Click", Toast.LENGTH_SHORT).show();
+                mSvAddressSearchBox.getSearchTextView().setCursorVisible(true);
+            }
+        };
+    }
+
+    private String getSearchKeyword() {
+        return mSvAddressSearchBox.getSearchText();
+    }
+
+    @Override
+    public void onSearchSubmitted(String text) {
+        Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
+        if (!text.isEmpty()) {
+            mCartAddressListPresenter.initSearch(getSearchKeyword());
+        } else {
+            onSearchReset();
+
+        }
+    }
+
+    @Override
+    public void onSearchTextChanged(String text) {
+
+    }
+
+    @Override
+    public void onSearchReset() {
+        mCartAddressListPresenter.resetSearch();
     }
 
 }

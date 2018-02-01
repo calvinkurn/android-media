@@ -28,6 +28,14 @@ public class CartAddressListPresenter
         super.checkViewAttached();
     }
 
+    public void initSearch(String keyword) {
+        // TODO execute search use case
+    }
+
+    public void resetSearch() {
+
+    }
+
     public void getAddressList() {
         // TODO remove this, and invoke use case
         getMvpView().showList(ShippingRecipientModelFactory.getDummyShippingRecipientModelList());

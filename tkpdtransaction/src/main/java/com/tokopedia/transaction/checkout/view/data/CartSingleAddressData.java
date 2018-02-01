@@ -1,5 +1,8 @@
 package com.tokopedia.transaction.checkout.view.data;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 
 /**
@@ -7,7 +10,7 @@ import java.util.List;
  *
  * @author Aghny A. Putra on 25/01/18
  */
-public class CartSingleAddressData {
+public class CartSingleAddressData implements Parcelable {
 
     private ShippingFeeBannerModel shippingFeeBannerModel;
     private ShippingRecipientModel shippingRecipientModel;
@@ -55,4 +58,40 @@ public class CartSingleAddressData {
         this.cartPayableDetailModel = cartPayableDetailModel;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(this.shippingFeeBannerModel, flags);
+        dest.writeParcelable(this.shippingRecipientModel, flags);
+        dest.writeParcelable(this.dropshipperShippingOptionModel, flags);
+        dest.writeTypedList(this.cartItemModelList);
+        dest.writeParcelable(this.cartPayableDetailModel, flags);
+    }
+
+    public CartSingleAddressData() {
+    }
+
+    protected CartSingleAddressData(Parcel in) {
+        this.shippingFeeBannerModel = in.readParcelable(ShippingFeeBannerModel.class.getClassLoader());
+        this.shippingRecipientModel = in.readParcelable(ShippingRecipientModel.class.getClassLoader());
+        this.dropshipperShippingOptionModel = in.readParcelable(DropshipperShippingOptionModel.class.getClassLoader());
+        this.cartItemModelList = in.createTypedArrayList(CartItemModel.CREATOR);
+        this.cartPayableDetailModel = in.readParcelable(CartPayableDetailModel.class.getClassLoader());
+    }
+
+    public static final Parcelable.Creator<CartSingleAddressData> CREATOR = new Parcelable.Creator<CartSingleAddressData>() {
+        @Override
+        public CartSingleAddressData createFromParcel(Parcel source) {
+            return new CartSingleAddressData(source);
+        }
+
+        @Override
+        public CartSingleAddressData[] newArray(int size) {
+            return new CartSingleAddressData[size];
+        }
+    };
 }

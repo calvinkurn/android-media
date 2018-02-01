@@ -1,10 +1,13 @@
 package com.tokopedia.transaction.checkout.view.data;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * @author Aghny A. Putra on 25/01/18
  */
 
-public class CartPayableDetailModel {
+public class CartPayableDetailModel implements Parcelable {
 
     private String totalItem;
     private String totalItemPrice;
@@ -78,4 +81,47 @@ public class CartPayableDetailModel {
     public void setPromoFreeShipping(String promoFreeShipping) {
         this.promoFreeShipping = promoFreeShipping;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.totalItem);
+        dest.writeString(this.totalItemPrice);
+        dest.writeString(this.shippingWeight);
+        dest.writeString(this.shippingFee);
+        dest.writeString(this.insuranceFee);
+        dest.writeString(this.promoPrice);
+        dest.writeString(this.payablePrice);
+        dest.writeString(this.promoFreeShipping);
+    }
+
+    public CartPayableDetailModel() {
+    }
+
+    protected CartPayableDetailModel(Parcel in) {
+        this.totalItem = in.readString();
+        this.totalItemPrice = in.readString();
+        this.shippingWeight = in.readString();
+        this.shippingFee = in.readString();
+        this.insuranceFee = in.readString();
+        this.promoPrice = in.readString();
+        this.payablePrice = in.readString();
+        this.promoFreeShipping = in.readString();
+    }
+
+    public static final Parcelable.Creator<CartPayableDetailModel> CREATOR = new Parcelable.Creator<CartPayableDetailModel>() {
+        @Override
+        public CartPayableDetailModel createFromParcel(Parcel source) {
+            return new CartPayableDetailModel(source);
+        }
+
+        @Override
+        public CartPayableDetailModel[] newArray(int size) {
+            return new CartPayableDetailModel[size];
+        }
+    };
 }
