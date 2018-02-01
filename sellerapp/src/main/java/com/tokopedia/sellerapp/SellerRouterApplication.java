@@ -15,7 +15,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.abstraction.common.data.model.storage.GlobalAbsCacheManager;
+import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.SessionRouter;
@@ -399,7 +399,7 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public GlobalAbsCacheManager getGlobalCacheManager() {
+    public CacheManager getGlobalCacheManager() {
         return new GlobalCacheManager();
     }
 
