@@ -6,6 +6,7 @@ import android.util.Base64;
 
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 
@@ -37,6 +38,7 @@ public class AuthUtil {
     private static final String HEADER_CONTENT_MD5 = "Content-MD5";
     private static final String HEADER_DATE = "Date";
     public static final String HEADER_AUTHORIZATION = "Authorization";
+    public static final String HEADER_ACCOUNTS_AUTHORIZATION = "Accounts-Authorization";
     private static final String HEADER_USER_ID = "X-User-ID";
     private static final String HEADER_X_TKPD_USER_ID = "X-Tkpd-UserId";
     public static final String HEADER_DEVICE = "X-Device";
@@ -55,6 +57,7 @@ public class AuthUtil {
     private static final String PARAM_OS_TYPE = "os_type";
     private static final String PARAM_TIMESTAMP = "device_time";
     private static final String PARAM_X_TKPD_USER_ID = "x-tkpd-userid";
+    private static final String PARAM_BEARER = "Bearer ";
 
     public static final String WEBVIEW_FLAG_PARAM_FLAG_APP = "flag_app";
     public static final String WEBVIEW_FLAG_PARAM_DEVICE = "device";
@@ -155,6 +158,26 @@ public class AuthUtil {
         return finalHeader;
     }
 
+    public static Map<String, String> generateWebviewHeaders(String path,
+                                                             String strParam,
+                                                             String method,
+                                                             String authKey) {
+        Map<String, String> finalHeader = getDefaultHeaderMap(
+                path,
+                strParam,
+                method,
+                CONTENT_TYPE,
+                authKey,
+                DATE_FORMAT
+        );
+        finalHeader.put(
+                HEADER_ACCOUNTS_AUTHORIZATION,
+                PARAM_BEARER + SessionHandler.getAccessToken()
+        );
+        finalHeader.remove(HEADER_CONTENT_TYPE);
+        return finalHeader;
+    }
+
     public static Map<String, String> generateHeaders(
             String path, String strParam, String method, String authKey, String contentType
     ) {
@@ -224,7 +247,7 @@ public class AuthUtil {
     }
 
     public static Map<String, String> getDefaultHeaderMapNew(String path, String strParam, String method,
-                                                          String contentType, String authKey, String dateFormat) {
+                                                             String contentType, String authKey, String dateFormat) {
         String date = generateDate(dateFormat);
         String contentMD5 = generateContentMd5(strParam);
         String userId = SessionHandler.getLoginID(MainApplication.getAppContext());

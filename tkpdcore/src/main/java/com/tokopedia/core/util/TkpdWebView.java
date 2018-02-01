@@ -37,9 +37,14 @@ public class TkpdWebView extends WebView {
         loadUrl(generateUri(url));
     }
 
+    @Override
+    public void loadUrl(String url) {
+        loadAuthUrl(url);
+    }
+
     public void loadAuthUrl(String url) {
         loadUrl(url,
-                AuthUtil.generateHeaders(
+                AuthUtil.generateWebviewHeaders(
                         Uri.parse(url).getPath(),
                         getQuery(Uri.parse(url).getQuery()),
                         "GET",
