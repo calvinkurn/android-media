@@ -21,10 +21,6 @@
             android:background="@color/white"
             android:orientation="vertical"
             android:paddingBottom="@dimen/padding_small"
-            android:paddingEnd="@dimen/padding_16"
-            android:paddingLeft="@dimen/padding_16"
-            android:paddingRight="@dimen/padding_16"
-            android:paddingStart="@dimen/padding_16"
             android:paddingTop="@dimen/padding_small">
 
             <android.support.v7.widget.AppCompatTextView
@@ -32,6 +28,10 @@
                 style="@style/TextView.TitleBig.Bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingEnd="@dimen/padding_16"
+                android:paddingLeft="@dimen/padding_16"
+                android:paddingRight="@dimen/padding_16"
+                android:paddingStart="@dimen/padding_16"
                 android:layout_marginBottom="@dimen/margin_vvs"
                 android:layout_marginTop="@dimen/margin_sm"
                 tools:text="Penumpang 1 (Dewasa)" />
@@ -40,6 +40,10 @@
                 android:id="@+id/tv_subheader"
                 style="@style/TextView.Small"
                 android:layout_width="match_parent"
+                android:paddingEnd="@dimen/padding_16"
+                android:paddingLeft="@dimen/padding_16"
+                android:paddingRight="@dimen/padding_16"
+                android:paddingStart="@dimen/padding_16"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_sm"
                 tools:text="Usia diatas 12 tahun" />
@@ -49,6 +53,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_sm"
+                android:paddingEnd="@dimen/padding_16"
+                android:paddingLeft="@dimen/padding_16"
+                android:paddingRight="@dimen/padding_16"
+                android:paddingStart="@dimen/padding_16"
                 android:layout_marginTop="@dimen/margin_vs"
                 app:spinner_hint="Pilih Titel" />
 
@@ -57,6 +65,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_sm"
                 android:layout_marginTop="@dimen/margin_vs"
+                android:paddingEnd="12dp"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingStart="12dp"
                 android:orientation="horizontal">
 
                 <com.tokopedia.design.text.TkpdHintTextInputLayout
@@ -104,6 +116,10 @@
                 style="@style/HintTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingEnd="@dimen/padding_16"
+                android:paddingLeft="@dimen/padding_16"
+                android:paddingRight="@dimen/padding_16"
+                android:paddingStart="@dimen/padding_16"
                 android:layout_marginBottom="@dimen/margin_sm"
                 android:layout_marginTop="@dimen/margin_vs"
                 android:hint="@string/flight_booking_passenger_birthdate_hint">

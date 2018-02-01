@@ -112,7 +112,7 @@ public class TopAdsDetailProductActivity extends BaseSimpleActivity implements T
         if (isTaskRoot()) {
             //coming from deeplink
             String deepLink = getIntent().getStringExtra(DeepLink.URI);
-            if(deepLink.contains(Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL)) {
+            if(deepLink!= null && deepLink.contains(Constants.Applinks.SellerApp.TOPADS_PRODUCT_DETAIL)) {
                 super.onBackPressed();
             } else {
                 Intent intent = new Intent(this, TopAdsDashboardActivity.class);

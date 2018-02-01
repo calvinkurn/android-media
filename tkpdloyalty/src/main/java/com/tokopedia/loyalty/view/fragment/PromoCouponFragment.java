@@ -380,6 +380,12 @@ public class PromoCouponFragment extends BasePresenterFragment
             dPresenter.processGetCouponList(getArguments().getString(PLATFORM_KEY));
     }
 
+    @Override
+    public void onDestroy() {
+        dPresenter.detachView();
+        super.onDestroy();
+    }
+
     public interface ChooseCouponListener {
 
         void onCouponSuccess(

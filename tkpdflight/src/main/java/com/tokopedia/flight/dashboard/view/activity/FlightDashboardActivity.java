@@ -26,7 +26,9 @@ public class FlightDashboardActivity extends BaseFlightActivity implements HasCo
 
     private static final String EXTRA_DASHBOARD = "EXTRA_DASHBOARD";
     private static final String EXTRA_TRIP = "EXTRA_TRIP";
-    private static final String EXTRA_PASSENGER = "EXTRA_PASSENGER";
+    private static final String EXTRA_ADULT = "EXTRA_ADULT";
+    private static final String EXTRA_CHILD = "EXTRA_CHILD";
+    private static final String EXTRA_INFANT = "EXTRA_INFANT";
     private static final String EXTRA_CLASS = "EXTRA_CLASS";
 
     public static Intent getCallingIntent(Context context) {
@@ -52,9 +54,11 @@ public class FlightDashboardActivity extends BaseFlightActivity implements HasCo
     public static Intent getCallingApplinkSearchIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         Intent intent = new Intent(context, FlightDashboardActivity.class);
-        intent.putExtra(EXTRA_TRIP, extras.getString("trip"));
-        intent.putExtra(EXTRA_PASSENGER, extras.getString("passenger"));
-        intent.putExtra(EXTRA_CLASS, extras.getString("class"));
+        intent.putExtra(EXTRA_TRIP, extras.getString("dest"));
+        intent.putExtra(EXTRA_ADULT, extras.getString("a"));
+        intent.putExtra(EXTRA_CHILD, extras.getString("c"));
+        intent.putExtra(EXTRA_INFANT, extras.getString("i"));
+        intent.putExtra(EXTRA_CLASS, extras.getString("s"));
 
         return intent
                 .setData(uri.build());
@@ -62,10 +66,12 @@ public class FlightDashboardActivity extends BaseFlightActivity implements HasCo
 
     @Override
     protected Fragment getNewFragment() {
-        if (getIntent().hasExtra(EXTRA_TRIP) && getIntent().hasExtra(EXTRA_PASSENGER) && getIntent().hasExtra(EXTRA_CLASS)) {
+        if (getIntent().hasExtra(EXTRA_TRIP) && getIntent().hasExtra(EXTRA_ADULT) && getIntent().hasExtra(EXTRA_CHILD) && getIntent().hasExtra(EXTRA_INFANT) && getIntent().hasExtra(EXTRA_CLASS)) {
             return FlightDashboardFragment.getInstance(
                 getIntent().getStringExtra(EXTRA_TRIP),
-                getIntent().getStringExtra(EXTRA_PASSENGER),
+                getIntent().getStringExtra(EXTRA_ADULT),
+                getIntent().getStringExtra(EXTRA_CHILD),
+                getIntent().getStringExtra(EXTRA_INFANT),
                 getIntent().getStringExtra(EXTRA_CLASS)
             );
         } else {
