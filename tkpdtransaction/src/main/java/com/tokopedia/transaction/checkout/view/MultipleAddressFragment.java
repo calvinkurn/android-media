@@ -95,7 +95,8 @@ public class MultipleAddressFragment extends TkpdFragment
     public void onGoToChooseCourier() {
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.animator.slide_in_left, R.animator.slide_in_left)
-                .add(R.id.container, MultipleAddressShipmentFragment.newInstance())
+                .replace(R.id.container, MultipleAddressShipmentFragment.newInstance())
+                .addToBackStack("")
                 .commit();
     }
 
@@ -109,7 +110,8 @@ public class MultipleAddressFragment extends TkpdFragment
         fragment.setTargetFragment(this, ADD_SHIPMENT_ADDRESS_REQUEST_CODE);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.animator.slide_in_left, R.animator.slide_in_left)
-                .add(R.id.container, fragment, ADD_SHIPMENT_FRAGMENT_TAG)
+                .replace(R.id.container, fragment, ADD_SHIPMENT_FRAGMENT_TAG)
+                .addToBackStack("")
                 .commit();
     }
 
@@ -123,7 +125,8 @@ public class MultipleAddressFragment extends TkpdFragment
         fragment.setTargetFragment(this, EDIT_SHIPMENT_ADDRESS_REQUEST_CODE);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.animator.slide_in_left, R.animator.slide_in_left)
-                .add(R.id.container, fragment, ADD_SHIPMENT_FRAGMENT_TAG)
+                .replace(R.id.container, fragment, ADD_SHIPMENT_FRAGMENT_TAG)
+                .addToBackStack("")
                 .commit();
     }
 
