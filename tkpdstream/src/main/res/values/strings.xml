@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">TkpdChat</string>
+
+    <!--Channel List-->
+    <string name="activity_channel">Channel</string>
+
+</resources>
