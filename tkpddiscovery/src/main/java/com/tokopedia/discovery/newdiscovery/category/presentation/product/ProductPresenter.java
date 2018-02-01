@@ -113,12 +113,14 @@ public class ProductPresenter extends SearchSectionFragmentPresenterImpl<Product
         requestParams.putString(BrowseApi.SOURCE, BrowseApi.DEFAULT_VALUE_SOURCE_DIRECTORY);
         requestParams.putString(BrowseApi.DEVICE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
         requestParams.putString(BrowseApi.SC, getView().getDepartmentId());
-        if (getView().getSelectedSort() != null) {
-            requestParams.putAll(getView().getSelectedSort());
-        }
+        if (getView() != null) {
+            if (getView().getSelectedSort() != null) {
+                requestParams.putAll(getView().getSelectedSort());
+            }
 
-        if (getView().getSelectedFilter() != null) {
-            requestParams.putAll(getView().getSelectedFilter());
+            if (getView().getSelectedFilter() != null) {
+                requestParams.putAll(getView().getSelectedFilter());
+            }
         }
         return requestParams;
     }
@@ -128,10 +130,10 @@ public class ProductPresenter extends SearchSectionFragmentPresenterImpl<Product
         RequestParams requestParams
                 = enrichWithFilterAndSortParams(GetProductUseCase.createInitializeSearchParam(searchParameter));
         removeDefaultCategoryParam(requestParams);
-        getProductUseCase.execute(requestParams, new DefaultSubscriber<SearchResultModel>(){
+        getProductUseCase.execute(requestParams, new DefaultSubscriber<SearchResultModel>() {
             @Override
             public void onStart() {
-                if(isViewAttached()){
+                if (isViewAttached()) {
                     getView().showRefreshLayout();
                     getView().setTopAdsEndlessListener();
                 }
@@ -139,10 +141,10 @@ public class ProductPresenter extends SearchSectionFragmentPresenterImpl<Product
 
             @Override
             public void onNext(SearchResultModel searchResultModel) {
-                if(isViewAttached()){
+                if (isViewAttached()) {
                     ProductViewModel productViewModel
                             = CategoryModelHelper.convertToProductViewModel(searchResultModel, categoryHeaderModel);
-                    if(productViewModel.getProductList().isEmpty()){
+                    if (productViewModel.getProductList().isEmpty()) {
                         getView().unSetTopAdsEndlessListener();
                         getView().showEmptyProduct();
                     } else {
@@ -156,7 +158,7 @@ public class ProductPresenter extends SearchSectionFragmentPresenterImpl<Product
 
             @Override
             public void onError(Throwable e) {
-                if(isViewAttached()){
+                if (isViewAttached()) {
                     getView().showNetworkError(0);
                     getView().hideRefreshLayout();
                 }
@@ -164,7 +166,7 @@ public class ProductPresenter extends SearchSectionFragmentPresenterImpl<Product
 
             @Override
             public void onCompleted() {
-                if(isViewAttached()){
+                if (isViewAttached()) {
                     getView().hideRefreshLayout();
                     viewListener.getDynamicFilter();
                 }
@@ -175,7 +177,7 @@ public class ProductPresenter extends SearchSectionFragmentPresenterImpl<Product
     @Override
     public void loadMore(SearchParameter searchParameter, ProductPresenter.LoadMoreListener loadMoreListener) {
         RequestParams requestParams
-                = enrichWithFilterAndSortParams(GetProductUseCase.createInitializeSearchParam(searchParameter,false));
+                = enrichWithFilterAndSortParams(GetProductUseCase.createInitializeSearchParam(searchParameter, false));
         removeDefaultCategoryParam(requestParams);
         getProductUseCase.execute(requestParams, createLoadMoreSubscriber(loadMoreListener));
     }
@@ -203,6 +205,7 @@ public class ProductPresenter extends SearchSectionFragmentPresenterImpl<Product
 
     interface LoadMoreListener {
         void onSuccess(List<ProductItem> productItemList);
+
         void onFailed();
     }
 
