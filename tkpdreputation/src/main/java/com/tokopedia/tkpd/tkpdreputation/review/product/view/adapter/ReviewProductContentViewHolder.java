@@ -119,7 +119,12 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
             }
         });
 
-        reviewOverflow.setOnClickListener(onReviewOverflowClicked(element));
+        if (element.isReviewCanReported()) {
+            reviewOverflow.setVisibility(View.VISIBLE);
+            reviewOverflow.setOnClickListener(onReviewOverflowClicked(element));
+        }else{
+            reviewOverflow.setVisibility(View.GONE);
+        }
 
         if (element.isReviewHasReplied()) {
             setSellerReply(element);
@@ -155,7 +160,7 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
                 counterLike.setText(itemView.getContext().getString(R.string.product_review_label_counter_like_1_formatted, element.getTotalLike() - 1));
             } else if (element.isLikeStatus() && element.getTotalLike() == 1) {
                 counterLike.setText(R.string.product_review_label_counter_like_2_formatted);
-            } else if (!element.isLikeStatus() && element.getTotalLike() < 1 ) {
+            } else if (!element.isLikeStatus() && element.getTotalLike() < 1) {
                 counterLike.setText(R.string.product_review_label_counter_like_3_formatted);
             } else {
                 counterLike.setText(itemView.getContext().getString(R.string.product_review_label_counter_like_4_formatted, element.getTotalLike()));
@@ -294,28 +299,26 @@ public class ReviewProductContentViewHolder extends AbstractViewHolder<ReviewPro
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (element.isReviewCanReported()) {
-                    PopupMenu popup = new PopupMenu(itemView.getContext(), v);
-                    popup.getMenu().add(1, R.id.menu_report, 2, MainApplication.getAppContext()
-                            .getString(R.string.menu_report));
-                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                PopupMenu popup = new PopupMenu(itemView.getContext(), v);
+                popup.getMenu().add(1, R.id.menu_report, 2, MainApplication.getAppContext()
+                        .getString(R.string.menu_report));
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 
-                        @Override
-                        public boolean onMenuItemClick(MenuItem item) {
-                            if (item.getItemId() == R.id.menu_report) {
-                                viewListener.onGoToReportReview(
-                                        element.getShopId(),
-                                        element.getReviewId()
-                                );
-                                return true;
-                            } else {
-                                return false;
-                            }
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        if (item.getItemId() == R.id.menu_report) {
+                            viewListener.onGoToReportReview(
+                                    element.getShopId(),
+                                    element.getReviewId()
+                            );
+                            return true;
+                        } else {
+                            return false;
                         }
+                    }
 
-                    });
-                    popup.show();
-                }
+                });
+                popup.show();
 
             }
         };
