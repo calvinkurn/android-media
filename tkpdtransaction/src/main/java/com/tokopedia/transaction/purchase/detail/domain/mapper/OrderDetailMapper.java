@@ -103,6 +103,11 @@ public class OrderDetailMapper {
         viewData.setProductPrice(responseData.getSummary().getItemsPrice());
         viewData.setTotalPayment(responseData.getSummary().getTotalPrice());
 
+        viewData.setShowInsuranceNotification(
+                responseData.getDetail().getInsuranceType().equals("2")
+        );
+        viewData.setInsuranceNotification(responseData.getDetail().getInsuranceNote());
+
         List<OrderDetailItemData> productList = new ArrayList<>();
         for (int i = 0; i < responseData.getProducts().size(); i++) {
             OrderDetailItemData product = new OrderDetailItemData();

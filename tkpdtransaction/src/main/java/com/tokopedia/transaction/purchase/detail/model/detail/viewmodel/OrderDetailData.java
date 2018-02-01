@@ -97,6 +97,10 @@ public class OrderDetailData implements Parcelable{
 
     private String driverVehicle;
 
+    private boolean showInsuranceNotification;
+
+    private String insuranceNotification;
+
     public OrderDetailData() {
 
     }
@@ -145,6 +149,8 @@ public class OrderDetailData implements Parcelable{
         driverPhone = in.readString();
         driverImage = in.readString();
         driverVehicle = in.readString();
+        showInsuranceNotification = in.readByte() != 0;
+        insuranceNotification = in.readString();
     }
 
     @Override
@@ -192,6 +198,8 @@ public class OrderDetailData implements Parcelable{
         dest.writeString(driverPhone);
         dest.writeString(driverImage);
         dest.writeString(driverVehicle);
+        dest.writeByte((byte) (showInsuranceNotification ? 1 : 0));
+        dest.writeString(insuranceNotification);
     }
 
     @Override
@@ -553,5 +561,21 @@ public class OrderDetailData implements Parcelable{
 
     public void setDriverVehicle(String driverVehicle) {
         this.driverVehicle = driverVehicle;
+    }
+
+    public boolean isShowInsuranceNotification() {
+        return showInsuranceNotification;
+    }
+
+    public void setShowInsuranceNotification(boolean showInsuranceNotification) {
+        this.showInsuranceNotification = showInsuranceNotification;
+    }
+
+    public String getInsuranceNotification() {
+        return insuranceNotification;
+    }
+
+    public void setInsuranceNotification(String insuranceNotification) {
+        this.insuranceNotification = insuranceNotification;
     }
 }

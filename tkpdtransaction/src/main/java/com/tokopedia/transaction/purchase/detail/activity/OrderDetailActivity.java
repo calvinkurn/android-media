@@ -123,6 +123,7 @@ public class OrderDetailActivity extends TActivity
     }
 
     private void initView(OrderDetailData data) {
+        setInsuranceNotificationView(data);
         setRejectionNoticeLayout(data);
         setStatusView(data);
         setDriverInfoView(data);
@@ -134,12 +135,26 @@ public class OrderDetailActivity extends TActivity
 
     }
 
+    private void setInsuranceNotificationView(OrderDetailData data) {
+        if(data.isShowInsuranceNotification()) {
+            ViewGroup notificationLayout = findViewById(R.id.notification_layout);
+            TextView notificationTextView = findViewById(R.id.notification_text_view);
+            notificationLayout.setVisibility(View.VISIBLE);
+            notificationTextView.setText(Html.fromHtml(data.getInsuranceNotification()));
+        }
+    }
+
     private void setRejectionNoticeLayout(OrderDetailData data) {
         if (data.isRequestCancel()) {
-            ViewGroup rejectionNoticeLayout = findViewById(R.id.header_view);
+            ViewGroup rejectionNoticeLayout = findViewById(R.id.rejection_notice_layout);
             TextView rejectionNoticeSubtitle = findViewById(R.id.rejection_notice_subtitle);
             rejectionNoticeLayout.setVisibility(View.VISIBLE);
-            rejectionNoticeSubtitle.setText(Html.fromHtml(data.getRequestCancelReason()));
+            rejectionNoticeSubtitle.setText(
+                    rejectionNoticeSubtitle
+                            .getText()
+                            .toString()
+                            .replace("#", Html.fromHtml(data.getRequestCancelReason()))
+            );
         }
     }
 
@@ -710,6 +725,7 @@ public class OrderDetailActivity extends TActivity
             toolbar.setTitle(getString(R.string.title_detail_transaction));
             removeFragmentOnBackPressed(VALIDATION_FRAGMENT_TAG);
         } else if (getFragmentManager().findFragmentByTag(FRAGMENT_REJECT_ORDER_SUB_MENU_TAG) != null) {
+            toolbar.setTitle("");
             removeFragmentOnBackPressed(FRAGMENT_REJECT_ORDER_SUB_MENU_TAG);
         } else if (getFragmentManager().findFragmentByTag(REJECT_ORDER_MENU_FRAGMENT_TAG) != null) {
             removeFragmentOnBackPressed(REJECT_ORDER_MENU_FRAGMENT_TAG);
@@ -794,5 +810,15 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void onWebViewProgressLoad() {
 
+    }
+
+    @Override
+    public void onRemoveTitle() {
+        toolbar.setTitle("");
+    }
+
+    @Override
+    public void onChangeTitle(String toolbarTitle) {
+        toolbar.setTitle(toolbarTitle);
     }
 }

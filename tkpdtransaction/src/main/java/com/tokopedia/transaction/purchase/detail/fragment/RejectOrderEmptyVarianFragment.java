@@ -12,6 +12,7 @@ import com.tokopedia.transaction.purchase.detail.adapter.RejectOrderEmptyVarianA
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailItemData;
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.EmptyVarianProductEditable;
+import com.tokopedia.transaction.purchase.listener.ToolbarChangeListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,8 @@ import java.util.List;
 public class RejectOrderEmptyVarianFragment extends RejectOrderBaseFragment{
 
     private RejectOrderEmptyVarianFragmentListener listener;
+
+    private ToolbarChangeListener toolbarListener;
 
     private RejectOrderEmptyVarianAdapter adapter;
 
@@ -40,12 +43,14 @@ public class RejectOrderEmptyVarianFragment extends RejectOrderBaseFragment{
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         listener = (RejectOrderEmptyVarianFragmentListener) activity;
+        toolbarListener = (ToolbarChangeListener) activity;
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         listener = (RejectOrderEmptyVarianFragmentListener) context;
+        toolbarListener = (ToolbarChangeListener) context;
     }
 
     @Override
@@ -102,6 +107,9 @@ public class RejectOrderEmptyVarianFragment extends RejectOrderBaseFragment{
                             RejectOrderEmptyVarianFragment.this,
                             FRAGMENT_EDIT_EMPTY_VARIAN_REQUEST_CODE
                     );
+                    toolbarListener
+                            .onChangeTitle(getActivity()
+                                    .getString(R.string.label_change_varian_description));
                     getFragmentManager()
                             .beginTransaction()
                             .setCustomAnimations(R.animator.enter_bottom, R.animator.enter_bottom)
@@ -123,6 +131,7 @@ public class RejectOrderEmptyVarianFragment extends RejectOrderBaseFragment{
                 .setCustomAnimations(R.animator.exit_bottom, R.animator.exit_bottom)
                 .remove(getFragmentManager().findFragmentByTag(FRAGMENT_REJECT_ORDER_SUB_MENU_TAG))
                 .commit();
+        toolbarListener.onRemoveTitle();
     }
 
     @Override

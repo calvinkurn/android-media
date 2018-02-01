@@ -18,6 +18,7 @@ import com.tokopedia.transaction.purchase.detail.fragment.RejectOrderShopClosedF
 import com.tokopedia.transaction.purchase.detail.fragment.RejectOrderWeightPriceFragment;
 import com.tokopedia.transaction.purchase.detail.fragment.RequestPickupFragment;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
+import com.tokopedia.transaction.purchase.listener.ToolbarChangeListener;
 
 /**
  * Created by kris on 11/13/17. Tokopedia
@@ -38,7 +39,8 @@ public interface OrderDetailView extends FinishOrderDialog.FinishOrderDialogList
         RejectOrderEmptyVarianFragment.RejectOrderEmptyVarianFragmentListener,
         RejectOrderWeightPriceFragment.RejectOrderChangeWeightPriceListener,
         RequestPickupFragment.ConfirmRequestPickupListener,
-        FragmentGeneralWebView.OnFragmentInteractionListener {
+        FragmentGeneralWebView.OnFragmentInteractionListener,
+        ToolbarChangeListener {
 
     void onReceiveDetailData(OrderDetailData data);
 

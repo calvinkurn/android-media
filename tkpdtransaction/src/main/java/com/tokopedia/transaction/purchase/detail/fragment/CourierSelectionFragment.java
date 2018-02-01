@@ -17,6 +17,7 @@ import com.tokopedia.transaction.purchase.detail.adapter.OrderCourierAdapter;
 import com.tokopedia.transaction.purchase.detail.model.detail.editmodel.CourierSelectionModel;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.CourierViewModel;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.ListCourierViewModel;
+import com.tokopedia.transaction.purchase.listener.ToolbarChangeListener;
 
 import static com.tokopedia.transaction.purchase.detail.activity.ConfirmShippingActivity.SELECT_SERVICE_FRAGMENT_TAG;
 
@@ -29,6 +30,8 @@ public class CourierSelectionFragment extends TkpdFragment implements OrderCouri
     private static final String ORDER_COURIER_EXTRAS = "ORDER_COURIER_EXTRAS";
 
     private OrderCourierFragmentListener listener;
+
+    private ToolbarChangeListener toolbarListener;
 
     public static CourierSelectionFragment createInstance(ListCourierViewModel model) {
         CourierSelectionFragment fragment = new CourierSelectionFragment();
@@ -46,6 +49,7 @@ public class CourierSelectionFragment extends TkpdFragment implements OrderCouri
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(new OrderCourierAdapter((ListCourierViewModel)getArguments()
                 .getParcelable(ORDER_COURIER_EXTRAS), this));
+        toolbarListener.onChangeTitle(getString(R.string.label_select_courier));
         return view;
     }
 
@@ -53,12 +57,14 @@ public class CourierSelectionFragment extends TkpdFragment implements OrderCouri
     public void onAttach(Context context) {
         super.onAttach(context);
         listener = (OrderCourierFragmentListener) context;
+        toolbarListener = (ToolbarChangeListener) context;
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         listener = (OrderCourierFragmentListener) activity;
+        toolbarListener = (ToolbarChangeListener) activity;
     }
 
     @Override
@@ -76,6 +82,7 @@ public class CourierSelectionFragment extends TkpdFragment implements OrderCouri
                     .add(R.id.main_view, serviceSelectionFragment, SELECT_SERVICE_FRAGMENT_TAG)
                     .commit();
         } else {
+            toolbarListener.onChangeTitle(getString(R.string.title_confirm_shipment));
             CourierSelectionModel model = new CourierSelectionModel();
             model.setCourierName(courierViewModel.getCourierName());
             model.setCourierId(courierViewModel.getCourierId());

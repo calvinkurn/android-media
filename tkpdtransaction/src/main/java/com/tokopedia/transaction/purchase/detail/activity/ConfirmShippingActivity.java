@@ -26,6 +26,8 @@ import com.tokopedia.transaction.purchase.detail.model.detail.editmodel.OrderDet
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.ListCourierViewModel;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
 import com.tokopedia.transaction.purchase.detail.presenter.OrderCourierPresenterImpl;
+import com.tokopedia.transaction.purchase.listener.ToolbarChangeListener;
+
 import javax.inject.Inject;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
@@ -38,7 +40,8 @@ import permissions.dispatcher.RuntimePermissions;
 public class ConfirmShippingActivity extends TActivity
         implements ConfirmShippingView,
         ServiceSelectionFragment.ServiceSelectionListener,
-        CourierSelectionFragment.OrderCourierFragmentListener{
+        CourierSelectionFragment.OrderCourierFragmentListener,
+        ToolbarChangeListener{
 
     private static final String EXTRA_ORDER_DETAIL_DATA = "EXTRA_ORDER_DETAIL_DATA";
     private static final String SELECT_COURIER_FRAGMENT_TAG = "select_courier";
@@ -138,6 +141,7 @@ public class ConfirmShippingActivity extends TActivity
         removeServiceSelectionFragment();
         removeCourierSelectionFragment();
         generateShipmentData(courierSelectionModel);
+        toolbar.setTitle(getString(R.string.title_confirm_shipment));
     }
 
     @Override
@@ -197,8 +201,10 @@ public class ConfirmShippingActivity extends TActivity
     public void onBackPressed() {
         if(getFragmentManager().findFragmentByTag(SELECT_SERVICE_FRAGMENT_TAG) != null) {
             removeServiceSelectionFragment();
+            toolbar.setTitle(R.string.label_select_courier);
         } else if(getFragmentManager().findFragmentByTag(SELECT_COURIER_FRAGMENT_TAG) != null) {
             removeCourierSelectionFragment();
+            toolbar.setTitle(R.string.title_confirm_shipment);
         } else super.onBackPressed();
     }
 
@@ -226,5 +232,15 @@ public class ConfirmShippingActivity extends TActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         barcodeEditText.setText(CommonUtils.getBarcode(requestCode, resultCode, data));
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onRemoveTitle() {
+        toolbar.setTitle("");
+    }
+
+    @Override
+    public void onChangeTitle(String toolbarTitle) {
+        toolbar.setTitle(toolbarTitle);
     }
 }

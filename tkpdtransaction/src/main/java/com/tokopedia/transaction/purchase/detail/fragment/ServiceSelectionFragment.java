@@ -16,6 +16,7 @@ import com.tokopedia.transaction.purchase.detail.adapter.OrderServiceAdapter;
 import com.tokopedia.transaction.purchase.detail.model.detail.editmodel.CourierSelectionModel;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.CourierServiceModel;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.CourierViewModel;
+import com.tokopedia.transaction.purchase.listener.ToolbarChangeListener;
 
 import java.util.List;
 
@@ -30,11 +31,14 @@ public class ServiceSelectionFragment extends Fragment
 
     private ServiceSelectionListener listener;
 
+    private ToolbarChangeListener toolbarListener;
+
     public static ServiceSelectionFragment createFragment(CourierViewModel model) {
         ServiceSelectionFragment fragment = new ServiceSelectionFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(COURIER_MODEL_EXTRA, model);
         fragment.setArguments(bundle);
+
         return fragment;
     }
 
@@ -42,12 +46,14 @@ public class ServiceSelectionFragment extends Fragment
     public void onAttach(Context context) {
         super.onAttach(context);
         listener = (ServiceSelectionListener) context;
+        toolbarListener = (ToolbarChangeListener) context;
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         listener = (ServiceSelectionListener) activity;
+        toolbarListener = (ToolbarChangeListener) activity;
     }
 
     @Nullable
@@ -61,6 +67,7 @@ public class ServiceSelectionFragment extends Fragment
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(new OrderServiceAdapter(courierServiceModelList,
                 courierViewModel.getCourierId(), courierViewModel.getCourierName(), this));
+        toolbarListener.onChangeTitle(getString(R.string.label_select_service));
         return view;
     }
 

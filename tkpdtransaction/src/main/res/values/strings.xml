@@ -204,5 +204,11 @@
     <string name="label_detail_credit_card">Kartu Kredit</string>
     <string name="tag_delete_credit_card_dialog">delete_credit_card_dialog</string>
     <string name="title_saved_credit_card">Kartu Kredit Tersimpan (%d/4)</string>
+    <string name="label_select_service">Tipe Pesanan</string>
+    <string name="label_select_courier">Kurir Pengiriman</string>
+    <string name="label_change_varian_description">Ubah Keterangan</string>
+    <string name="label_change_weight_price">Ubah harga/berat</string>
+    <string name="title_buyer_cancelled_order">Pembeli mengajukan pembatalan pesanan</string>
+    <string name="sub_title_buyer_cancelled_order">dengan alasan: #</string>
     <string name="apply">Terapkan</string>
 </resources>

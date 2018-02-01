@@ -12,6 +12,7 @@ import com.tokopedia.transaction.purchase.detail.adapter.RejectOrderPriceWeightC
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailItemData;
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.WrongProductPriceWeightEditable;
+import com.tokopedia.transaction.purchase.listener.ToolbarChangeListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,8 @@ public class RejectOrderWeightPriceFragment extends RejectOrderBaseFragment {
     private static final int FIXED_KILOGRAM_MODE = 2;
 
     private RejectOrderChangeWeightPriceListener listener;
+
+    private ToolbarChangeListener toolbarListener;
 
     private RejectOrderPriceWeightChangeAdapter adapter;
 
@@ -52,12 +55,14 @@ public class RejectOrderWeightPriceFragment extends RejectOrderBaseFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         listener = (RejectOrderChangeWeightPriceListener)  activity;
+        toolbarListener = (ToolbarChangeListener) activity;
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         listener = (RejectOrderChangeWeightPriceListener)  context;
+        toolbarListener = (ToolbarChangeListener) context;
     }
 
     @Override
@@ -83,6 +88,8 @@ public class RejectOrderWeightPriceFragment extends RejectOrderBaseFragment {
                             RejectOrderWeightPriceFragment.this,
                             FRAGMENT_EDIT_WEIGHT_PRICE_REQUEST_CODE
                     );
+                    toolbarListener.onChangeTitle(getActivity()
+                            .getString(R.string.label_change_weight_price));
                     getFragmentManager()
                             .beginTransaction()
                             .setCustomAnimations(R.animator.enter_bottom, R.animator.enter_bottom)
@@ -141,6 +148,7 @@ public class RejectOrderWeightPriceFragment extends RejectOrderBaseFragment {
                 .setCustomAnimations(R.animator.exit_bottom, R.animator.exit_bottom)
                 .remove(getFragmentManager().findFragmentByTag(FRAGMENT_REJECT_ORDER_SUB_MENU_TAG))
                 .commit();
+        toolbarListener.onRemoveTitle();
     }
 
     public interface RejectOrderChangeWeightPriceListener {

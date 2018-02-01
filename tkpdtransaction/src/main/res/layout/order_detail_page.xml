@@ -31,7 +31,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/margin_vs"
-                    android:text="Pembeli mengajukan pembatalan pesanan"
+                    android:text="@string/title_buyer_cancelled_order"
                     android:textColor="@color/red_500"
                     android:textStyle="bold" />
 
@@ -39,6 +39,7 @@
                     android:id="@+id/rejection_notice_subtitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:text="@string/title_buyer_cancelled_order"
                     tools:text="pada 17 Oktober dengan alasan galau" />
 
             </LinearLayout>
