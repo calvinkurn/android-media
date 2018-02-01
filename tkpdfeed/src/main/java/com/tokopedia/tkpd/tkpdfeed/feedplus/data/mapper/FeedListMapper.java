@@ -292,11 +292,10 @@ public class FeedListMapper implements Func1<FeedQuery.Data, FeedDomain> {
         if (kolrecommendation == null) {
             return null;
         } else {
-            //TODO milhamj add explore text to this mapper
             KolRecommendationDomain domain = new KolRecommendationDomain(kolrecommendation
                     .headerTitle() == null ? "" : kolrecommendation.headerTitle(),
                     kolrecommendation.exploreLink() == null ? "" : kolrecommendation.exploreLink(),
-                    "Explore now. Be wild. Go.",
+                    kolrecommendation.exploreText() == null ? "" : kolrecommendation.exploreText(),
                     convertToListKolRecommendation(kolrecommendation.kols()));
             return domain;
         }
