@@ -87,14 +87,12 @@ import com.tokopedia.flight.contactus.model.FlightContactUsPassData;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 import com.tokopedia.inbox.contactus.activity.ContactUsCreateTicketActivity;
 import com.tokopedia.inbox.inboxchat.activity.InboxChatActivity;
-import com.tokopedia.inbox.inboxchat.activity.SendMessageActivity;
 import com.tokopedia.inbox.inboxchat.activity.TimeMachineActivity;
 import com.tokopedia.inbox.inboxmessageold.activity.InboxMessageActivity;
 import com.tokopedia.inbox.inboxmessageold.activity.SendMessageActivityOld;
 import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
-import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
 import com.tokopedia.otp.phoneverification.activity.RidePhoneNumberVerificationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
@@ -110,6 +108,7 @@ import com.tokopedia.seller.TkpdSeller;
 import com.tokopedia.seller.common.cashback.DataCashbackModel;
 import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
+import com.tokopedia.seller.common.imageeditor.GalleryCropWatermarkActivity;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.instoped.InstopedActivity;
 import com.tokopedia.seller.instoped.presenter.InstagramMediaPresenterImpl;
@@ -148,7 +147,6 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActi
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.activity.ReputationProduct;
 import com.tokopedia.tkpd.tkpdreputation.shopreputation.ShopReputationList;
 import com.tokopedia.tkpd.truecaller.TruecallerActivity;
-import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
@@ -380,6 +378,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                                  ArrayList<String> imageDesc, int position) {
         Intent intent = PreviewProductImageDetail.getCallingIntent(context, images, imageDesc,
                 position);
+        context.startActivity(intent);
+    }
+
+    @Override
+    public void openImagePreviewFromChat(Context context, ArrayList<String> images,
+                                         ArrayList<String> imageDesc, int position, String title) {
+        Intent intent = PreviewProductImageDetail.getCallingIntentChat(context, images, imageDesc,
+                position, title);
         context.startActivity(intent);
     }
 
@@ -959,6 +965,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             return InboxChatActivity.getCallingIntent(context);
         else
             return InboxMessageActivity.getCallingIntent(context);
+    }
+
+    @Override
+    public Intent getGalleryIntent(Context context) {
+        return GalleryCropWatermarkActivity.createIntent(context,1, false, 1, true);
     }
 
     @Override

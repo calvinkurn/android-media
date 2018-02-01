@@ -1,21 +1,28 @@
 package com.tokopedia.inbox.inboxchat.fragment;
 
+import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -25,17 +32,24 @@ import android.widget.TextView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.core.PreviewProductImage;
+import com.tokopedia.core.GalleryBrowser;
+import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.myproduct.fragment.ImageGalleryAlbumFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
+import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketConstant;
@@ -55,29 +69,44 @@ import com.tokopedia.inbox.inboxchat.adapter.TemplateChatTypeFactoryImpl;
 import com.tokopedia.inbox.inboxchat.analytics.TopChatTrackingEventLabel;
 import com.tokopedia.inbox.inboxchat.di.DaggerInboxChatComponent;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
+import com.tokopedia.inbox.inboxchat.domain.model.reply.AttachmentAttributes;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
+import com.tokopedia.inbox.inboxchat.helper.AttachmentChatHelper;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomPresenter;
+import com.tokopedia.inbox.inboxchat.uploadimage.ImageUpload;
 import com.tokopedia.inbox.inboxchat.util.Events;
+import com.tokopedia.inbox.inboxchat.util.ImageUploadHandlerChat;
 import com.tokopedia.inbox.inboxchat.viewholder.ListChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
+import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
 
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
+import static com.tokopedia.core.newgallery.GalleryActivity.ADD_PRODUCT_IMAGE_LOCATION;
+import static com.tokopedia.core.newgallery.GalleryActivity.FRAGMENT_TO_SHOW;
 import static com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity.PARAM_SENDER_ROLE;
 import static com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity.PARAM_WEBSOCKET;
 
@@ -85,6 +114,7 @@ import static com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity.PARAM_WEBS
  * Created by stevenfredian on 9/19/17.
  */
 
+@RuntimePermissions
 public class ChatRoomFragment extends BaseDaggerFragment
         implements ChatRoomContract.View, InboxMessageConstant, InboxChatConstant
         , WebSocketInterface {
@@ -116,6 +146,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
     private ImageView sendButton;
     private EditText replyColumn;
     private ImageView attachButton;
+    private View pickerButton;
+    private View maximize;
     private View mainHeader;
     private Toolbar toolbar;
     private Observable<String> replyWatcher;
@@ -123,6 +155,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     private int mode;
     private View notifier;
     private LinearLayoutManager templateLayoutManager;
+    private String title;
 
     private RemoteConfig remoteConfig;
 
@@ -149,6 +182,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
         replyColumn = rootView.findViewById(R.id.new_comment);
         sendButton.requestFocus();
         attachButton = rootView.findViewById(R.id.add_url);
+        pickerButton = rootView.findViewById(R.id.image_picker);
+        maximize = rootView.findViewById(R.id.maximize);
         notifier = rootView.findViewById(R.id.notifier);
         replyWatcher = Events.text(replyColumn);
         recyclerView.setHasFixedSize(true);
@@ -179,43 +214,54 @@ public class ChatRoomFragment extends BaseDaggerFragment
         return (remoteConfig.getBoolean(ENABLE_TOPCHAT));
     }
 
+    @Override
+    public Fragment getFragment() {
+        return this;
+    }
+
 
     private void initListener() {
 
+        replyIsTyping = replyWatcher.map(new Func1<String, Boolean>() {
+            @Override
+            public Boolean call(String s) {
+                return s.length() > 0;
+            }
+        });
+
+        replyIsTyping.subscribe(new Action1<Boolean>() {
+            @Override
+            public void call(Boolean isNotEmpty) {
+                try {
+                    if (isNotEmpty) {
+                        presenter.setIsTyping(getArguments().getString(ChatRoomActivity
+                                .PARAM_MESSAGE_ID));
+                        maximize.setVisibility(View.VISIBLE);
+                        pickerButton.setVisibility(View.GONE);
+                        attachButton.setVisibility(View.GONE);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        replyIsTyping.debounce(2, TimeUnit.SECONDS)
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean aBoolean) {
+                        try {
+                            presenter.stopTyping(getArguments().getString(ChatRoomActivity
+                                    .PARAM_MESSAGE_ID));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+
         if (needCreateWebSocket()) {
             sendButton.setOnClickListener(getSendWithWebSocketListener());
-            replyIsTyping = replyWatcher.map(new Func1<String, Boolean>() {
-                @Override
-                public Boolean call(String s) {
-                    return s.length() > 0;
-                }
-            });
-
-            replyIsTyping.subscribe(new Action1<Boolean>() {
-                @Override
-                public void call(Boolean aBoolean) {
-                    try {
-                        if (aBoolean)
-                            presenter.setIsTyping(getArguments().getString(ChatRoomActivity
-                                    .PARAM_MESSAGE_ID));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-
-            replyIsTyping.debounce(2, TimeUnit.SECONDS)
-                    .subscribe(new Action1<Boolean>() {
-                        @Override
-                        public void call(Boolean aBoolean) {
-                            try {
-                                presenter.stopTyping(getArguments().getString(ChatRoomActivity
-                                        .PARAM_MESSAGE_ID));
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
         } else {
             sendButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -230,6 +276,39 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
         }
 
+        maximize.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                maximize.setVisibility(View.GONE);
+                pickerButton.setVisibility(View.VISIBLE);
+                attachButton.setVisibility(View.VISIBLE);
+            }
+        });
+
+        pickerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                replyColumn.clearFocus();
+
+                AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
+                myAlertDialog.setMessage(getActivity().getString(R.string.dialog_upload_option));
+                myAlertDialog.setPositiveButton(getActivity().getString(R.string.title_gallery), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        ChatRoomFragmentPermissionsDispatcher.actionImagePickerWithCheck(ChatRoomFragment.this);
+                    }
+                });
+                myAlertDialog.setNegativeButton(getActivity().getString(R.string.title_camera), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        ChatRoomFragmentPermissionsDispatcher.actionCameraWithCheck(ChatRoomFragment.this);
+                    }
+                });
+                Dialog dialog = myAlertDialog.create();
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.show();
+            }
+        });
 
         attachButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -280,7 +359,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         ArrayList<String> strings = new ArrayList<>();
         strings.add(attachment.getAttributes().getImageUrl());
 
-        ((PdpRouter) getActivity().getApplication()).openImagePreview(getActivity(), strings, new ArrayList<String>(), 1);
+        ((PdpRouter) getActivity().getApplication()).openImagePreviewFromChat(getActivity(), strings, new ArrayList<String>(), 1, title);
     }
 
     @Override
@@ -362,11 +441,10 @@ public class ChatRoomFragment extends BaseDaggerFragment
             }
         });
 
-        recyclerView.setOnTouchListener(new View.OnTouchListener() {
+        recyclerView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
+            public void onClick(View view) {
                 KeyboardHandler.hideSoftKeyboard(getActivity());
-                return false;
             }
         });
 
@@ -419,7 +497,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
             onlineDesc = toolbar.findViewById(R.id.subtitle);
             label = toolbar.findViewById(R.id.label);
             ImageHandler.loadImageCircle2(getActivity(), avatar, getArguments().getString(PARAM_SENDER_IMAGE), R.drawable.ic_image_avatar_boy);
-            user.setText(getArguments().getString(PARAM_SENDER_NAME));
+            title = getArguments().getString(PARAM_SENDER_NAME);
+            user.setText(title);
             if (!TextUtils.isEmpty(getArguments().getString(PARAM_SENDER_TAG, ""))
                     && !getArguments().getString(PARAM_SENDER_TAG, "").equals(ListChatViewHolder
                     .USER)) {
@@ -515,6 +594,11 @@ public class ChatRoomFragment extends BaseDaggerFragment
         }
     }
 
+    @Override
+    public Activity getActivityReal() {
+        return getActivity();
+    }
+
 
     @Override
     public void scrollToBottom() {
@@ -566,9 +650,11 @@ public class ChatRoomFragment extends BaseDaggerFragment
         MyChatViewModel item = new MyChatViewModel();
         item.setReplyId(replyData.getChat().getMsgId());
         item.setSenderId(replyData.getChat().getSenderId());
+        item.setSenderName(replyData.getChat().getFrom());
         item.setMsg(replyData.getChat().getMsg());
         item.setReplyTime(replyData.getChat().getReplyTime());
-
+        item.setAttachment(replyData.getChat().getAttachment());
+        item.setAttachmentId(Integer.parseInt(replyData.getChat().getAttachment().getId()));
         adapter.addReply(item);
         finishLoading();
         replyColumn.setText("");
@@ -639,6 +725,21 @@ public class ChatRoomFragment extends BaseDaggerFragment
         item.setSenderId(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
         adapter.addReply(item);
         scrollToBottom();
+    }
+
+    private void addDummyAttachImage(List<ImageUpload> list){
+        MyChatViewModel item = new MyChatViewModel();
+        Attachment attachment = new Attachment();
+        attachment.setType(AttachmentChatHelper.IMAGE_ATTACHED);
+        AttachmentAttributes attachmentAttributes = new AttachmentAttributes();
+        attachmentAttributes.setImageUrl(list.get(0).getFileLoc());
+        attachment.setAttributes(attachmentAttributes);
+        item.setAttachment(attachment);
+        item.setReplyTime(MyChatViewModel.SENDING_TEXT);
+        item.setDummy(true);
+        item.setSenderId(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
+        adapter.addReply(item);
+        recyclerView.scrollToPosition(adapter.getList().size()-1);
     }
 
     @Override
@@ -823,8 +924,123 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     templateAdapter.update(strings);
                     break;
                 }
+                break;
+            case ImageUploadHandlerChat.REQUEST_CODE:
+                if(resultCode == Activity.RESULT_OK){
+                    String fileLoc = presenter.getFileLocFromCamera();
+                    ImageUpload model = new ImageUpload();
+                    model.setImageId(String.valueOf(System.currentTimeMillis()/1000));
+                    model.setFileLoc(fileLoc);
+                    presenter.startUpload(Collections.singletonList(model));
+                    addDummyAttachImage(Collections.singletonList(model));
+                }
+                break;
+
+            case ImageGallery.TOKOPEDIA_GALLERY:
+                if(data==null){
+                    break;
+                }
+                String imageUrl = data.getStringExtra(GalleryActivity.IMAGE_URL);
+                List<ImageUpload> list = new ArrayList<>();
+
+                if (!TextUtils.isEmpty(imageUrl)) {
+                    ImageUpload model = new ImageUpload();
+                    model.setImageId(String.valueOf(System.currentTimeMillis()/1000));
+                    model.setFileLoc(imageUrl);
+                    list.add(model);
+                } else {
+                    ArrayList<String> imageUrls = data.getStringArrayListExtra(GalleryActivity.IMAGE_URLS);
+                    if (imageUrls != null) {
+                        for (int i = 0; i < imageUrls.size(); i++) {
+                            ImageUpload model = new ImageUpload();
+                            model.setImageId(String.valueOf(System.currentTimeMillis()/1000));
+                            model.setFileLoc(imageUrls.get(i));
+                            list.add(model);
+                        }
+                    }
+                }
+                presenter.startUpload(list);
+                addDummyAttachImage(list);
+                break;
             default:
                 break;
         }
     }
+
+
+
+    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    public void actionCamera() {
+        presenter.openCamera();
+    }
+
+    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+    public void actionImagePicker() {
+//        presenter.openImageGallery();
+        Intent intent = ((TkpdInboxRouter) MainApplication.getAppContext())
+                .getGalleryIntent(getActivity());
+        startActivityForResult(intent, com.tokopedia.core.ImageGallery.TOKOPEDIA_GALLERY);
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        ChatRoomFragmentPermissionsDispatcher.onRequestPermissionsResult(
+                ChatRoomFragment.this, requestCode, grantResults);
+    }
+
+
+    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    void showRationaleForStorageAndCamera(final PermissionRequest request) {
+        List<String> listPermission = new ArrayList<>();
+        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        listPermission.add(Manifest.permission.CAMERA);
+
+        RequestPermissionUtil.onShowRationale(getActivity(), request, listPermission);
+    }
+
+    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showRationaleForStorage(final PermissionRequest request) {
+        RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @OnPermissionDenied(Manifest.permission.CAMERA)
+    void showDeniedForCamera() {
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.CAMERA);
+    }
+
+    @OnNeverAskAgain(Manifest.permission.CAMERA)
+    void showNeverAskForCamera() {
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.CAMERA);
+    }
+
+    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showDeniedForStorage() {
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
+    void showNeverAskForStorage() {
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    void showDeniedForStorageAndCamera() {
+        List<String> listPermission = new ArrayList<>();
+        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        listPermission.add(Manifest.permission.CAMERA);
+
+        RequestPermissionUtil.onPermissionDenied(getActivity(), listPermission);
+    }
+
+    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    void showNeverAskForStorageAndCamera() {
+        List<String> listPermission = new ArrayList<>();
+        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        listPermission.add(Manifest.permission.CAMERA);
+
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
+    }
+
 }

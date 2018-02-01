@@ -32,4 +32,10 @@ public class GenerateHostUseCase extends UseCase<GenerateHostModel> {
         return uploadImageRepository.generateHost(
                 requestParams.getParameters());
     }
+
+    public static RequestParams getParam() {
+        RequestParams params = RequestParams.create();
+        params.putString(PARAM_SERVER_LANGUAGE, "2");
+        return params;
+    }
 }

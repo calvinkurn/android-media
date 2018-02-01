@@ -240,19 +240,24 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
     }
 
     public static void loadImageChat(ImageView imageview, String url, int resId) {
-        if (url != null && !TextUtils.isEmpty(url)) {
+        if (url != null) {
             Glide.with(imageview.getContext())
                     .load(url)
-                    .placeholder(R.drawable.loading_page)
                     .dontAnimate()
-                    .error(resId)
                     .fitCenter()
+                    .placeholder(R.drawable.loading_page)
                     .into(imageview);
-        } else {
+        }
+    }
+
+    public static void loadImageChatBlurred(ImageView imageview, String url, int resId) {
+        if (url != null) {
             Glide.with(imageview.getContext())
                     .load(url)
-                    .placeholder(resId)
-                    .error(resId)
+                    .dontAnimate()
+                    .override(10,10)
+                    .fitCenter()
+                    .placeholder(R.drawable.loading_page)
                     .into(imageview);
         }
     }

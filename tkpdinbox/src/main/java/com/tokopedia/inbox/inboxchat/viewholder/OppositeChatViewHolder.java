@@ -131,7 +131,7 @@ public class OppositeChatViewHolder extends AbstractViewHolder<OppositeChatViewM
             oldMessageView.setVisibility(View.GONE);
         }
 
-        attachmentChatHelper.parse(attachment, message, element.getAttachment(), element.getRole(), element.getMsg(), viewListener);
+        attachmentChatHelper.parse(attachment, message, element, viewListener);
     }
 
     private Spanned getOldMessageText(OppositeChatViewModel element) {

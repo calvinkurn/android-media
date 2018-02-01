@@ -1,8 +1,10 @@
 package com.tokopedia.inbox.inboxchat.presenter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
@@ -12,7 +14,9 @@ import com.tokopedia.inbox.inboxchat.adapter.ChatRoomAdapter;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
+import com.tokopedia.inbox.inboxchat.uploadimage.ImageUpload;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
+import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
 
 import java.util.List;
 
@@ -74,6 +78,8 @@ public class ChatRoomContract {
 
         Context getActivity();
 
+        Activity getActivityReal();
+
         void onSuccessSendReply(ReplyActionData data, String reply);
 
         void onErrorSendReply();
@@ -107,6 +113,8 @@ public class ChatRoomContract {
         void onErrorInitMessage(String s);
 
         boolean isAllowedTemplate();
+
+        Fragment getFragment();
     }
 
     interface Presenter extends CustomerPresenter<View>{
@@ -125,5 +133,13 @@ public class ChatRoomContract {
         void addDummyMessage(WebSocketResponse response);
 
         void initMessage(String s, String string, String string1, String string2);
+
+        void openCamera();
+
+        void openImageGallery();
+
+        void startUpload(List<ImageUpload> list);
+
+        String getFileLocFromCamera();
     }
 }

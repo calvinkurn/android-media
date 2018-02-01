@@ -150,7 +150,7 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
             dot.setVisibility(View.GONE);
         }
 
-        attachmentChatHelper.parse(attachment, message, element.getAttachment(), element.getRole(), element.getMsg(), viewListener);
+        attachmentChatHelper.parse(attachment, message, element, viewListener, element.isDummy());
 
     }
 

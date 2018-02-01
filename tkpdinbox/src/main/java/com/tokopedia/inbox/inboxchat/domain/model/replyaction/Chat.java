@@ -3,6 +3,7 @@ package com.tokopedia.inbox.inboxchat.domain.model.replyaction;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
 
 public class Chat {
 
@@ -24,6 +25,9 @@ public class Chat {
     @SerializedName("role")
     @Expose
     private int role;
+    @SerializedName("attachment")
+    @Expose
+    private Attachment attachment;
 
     public int getMsgId() {
         return msgId;
@@ -71,5 +75,13 @@ public class Chat {
 
     public void setRole(int role) {
         this.role = role;
+    }
+
+    public Attachment getAttachment() {
+        return attachment;
+    }
+
+    public void setAttachment(Attachment attachment) {
+        this.attachment = attachment;
     }
 }
