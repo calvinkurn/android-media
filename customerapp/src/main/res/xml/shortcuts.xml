@@ -1,7 +1,7 @@
 <shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
     <shortcut
         android:enabled="true"
-        android:icon="@drawable/ic_favorite"
+        android:icon="@drawable/ic_beli"
         android:shortcutId="Beli"
         android:shortcutLongLabel="@string/beli"
         android:shortcutShortLabel="@string/beli">
@@ -14,7 +14,7 @@
 
     <shortcut
         android:enabled="true"
-        android:icon="@drawable/ic_favorite"
+        android:icon="@drawable/ic_bayar"
         android:shortcutId="Bayar"
         android:shortcutLongLabel="@string/bayar"
         android:shortcutShortLabel="@string/bayar">

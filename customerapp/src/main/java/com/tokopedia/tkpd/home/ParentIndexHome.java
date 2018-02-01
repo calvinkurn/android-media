@@ -298,7 +298,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             shopShortcut = new ShortcutInfo.Builder(this, SHOP_ID)
                     .setShortLabel(getResources().getString(R.string.jual))
                     .setLongLabel(getResources().getString(R.string.jual))
-                    .setIcon(Icon.createWithResource(this, R.drawable.ic_favorite))
+                    .setIcon(Icon.createWithResource(this, R.drawable.ic_jual))
                     .setIntent(shopIntent)
                     .build();
 
@@ -309,7 +309,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             referralShortcut = new ShortcutInfo.Builder(this, REFERRAL_ID)
                     .setShortLabel(getResources().getString(R.string.referral))
                     .setLongLabel(getResources().getString(R.string.referral))
-                    .setIcon(Icon.createWithResource(this, R.drawable.ic_favorite))
+                    .setIcon(Icon.createWithResource(this, R.drawable.ic_share))
                     .setIntent(referralIntent)
                     .build();
 
