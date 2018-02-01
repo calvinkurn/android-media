@@ -140,8 +140,6 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
             @Override
             public void onNext(ReferralCodeEntity referralCodeEntity) {
-
-
                 if (referralCodeEntity.getErorMessage() == null) {
                     LocalCacheHandler localCacheHandler = new LocalCacheHandler(activity, TkpdCache.REFERRAL);
                     localCacheHandler.putString(TkpdCache.Key.REFERRAL_CODE, referralCodeEntity.getPromoContent().getCode());

@@ -34,5 +34,4 @@ public class ReferralDataRepository implements ReferralRepository {
                     }
                 });
     }
-
 }
