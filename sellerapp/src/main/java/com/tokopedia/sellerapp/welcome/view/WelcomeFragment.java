@@ -91,6 +91,8 @@ public class WelcomeFragment extends BaseDaggerFragment implements
 
     @Override
     public void onResume() {
+        Log.d("NISNIS", "WELCOME FRAGMENT ON RESUME");
+
         super.onResume();
 
         decorView = getActivity().getWindow().getDecorView();
@@ -374,6 +376,8 @@ public class WelcomeFragment extends BaseDaggerFragment implements
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("NISNIS", "WELCOME FRAGMENT ON ACTIVITY RESULT");
+
         super.onActivityResult(requestCode, resultCode, data);
         if ((requestCode == REQUEST_LOGIN
                 || requestCode == REQUEST_REGISTER)

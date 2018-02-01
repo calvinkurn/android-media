@@ -15,6 +15,7 @@ import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -423,6 +424,8 @@ public class LoginFragment extends BaseDaggerFragment
     }
 
     private void saveSmartLock(int state, String email, String password) {
+        Log.d("NISNIS", "SAVE SMARTLOCK");
+
         Intent intent = new Intent(getActivity(), SmartLockActivity.class);
         Bundle bundle = new Bundle();
         bundle.putInt(SmartLockActivity.STATE, state);
@@ -436,6 +439,8 @@ public class LoginFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessLogin() {
+        Log.d("NISNIS", "ON SUCCESS LOGIN");
+
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
     }
@@ -573,6 +578,8 @@ public class LoginFragment extends BaseDaggerFragment
 
     @Override
     public void setSmartLock() {
+        Log.d("NISNIS", "SET SMARTLOCK");
+
         saveSmartLock(SmartLockActivity.RC_SAVE_SECURITY_QUESTION,
                 emailEditText.getText().toString(),
                 passwordEditText.getText().toString());
@@ -759,6 +766,8 @@ public class LoginFragment extends BaseDaggerFragment
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("NISNIS", "onActivityResult " + requestCode + " - " + resultCode);
+
         if (requestCode == REQUEST_SMART_LOCK
                 && resultCode == Activity.RESULT_OK
                 && data != null
@@ -770,6 +779,7 @@ public class LoginFragment extends BaseDaggerFragment
             presenter.login(data.getExtras().getString(SmartLockActivity.USERNAME),
                     data.getExtras().getString(SmartLockActivity.PASSWORD));
         } else if (requestCode == REQUEST_SMART_LOCK && resultCode == SmartLockActivity.RESULT_CANCELED) {
+            Log.d("NISNIS", "REQUEST SMART LOCK " + resultCode);
             //TODO : FIX SMART LOCK ERROR STATE
 //            onErrorLogin(ErrorHandler.getDefaultErrorCodeMessage(ErrorCode
 //                    .SMART_LOCK_FAILED_TO_GET_CREDENTIALS));

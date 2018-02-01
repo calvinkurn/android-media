@@ -1,6 +1,7 @@
 package com.tokopedia.session.login.loginemail.view.subscriber;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.tokopedia.network.ErrorCode;
 import com.tokopedia.network.ErrorHandler;
@@ -52,14 +53,17 @@ public class LoginSubscriber extends Subscriber<LoginEmailDomain> {
         } else if (loginEmailDomain.getLoginResult() != null
                 && !goToSecurityQuestion(loginEmailDomain.getLoginResult())
                 && (isMsisdnVerified(loginEmailDomain.getInfo()) || GlobalConfig.isSellerApp())) {
+            Log.d("NISNIS", "LOGIN ONSUCCESSLOGINSUBSCRIBER");
             view.dismissLoadingLogin();
             view.setSmartLock();
             view.onSuccessLoginEmail();
         } else if (!goToSecurityQuestion(loginEmailDomain.getLoginResult())
                 && !isMsisdnVerified(loginEmailDomain.getInfo())) {
+            Log.d("NISNIS", "LOGIN GOTOPV");
             view.setSmartLock();
             view.onGoToPhoneVerification();
         } else if (goToSecurityQuestion(loginEmailDomain.getLoginResult())) {
+            Log.d("NISNIS", "LOGIN GOTOSQ");
             view.setSmartLock();
             view.onGoToSecurityQuestion(
                     loginEmailDomain.getLoginResult().getSecurityDomain(),

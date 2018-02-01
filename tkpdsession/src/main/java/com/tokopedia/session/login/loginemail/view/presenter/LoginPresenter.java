@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -93,6 +94,8 @@ public class LoginPresenter extends BaseDaggerPresenter<Login.View>
 
     @Override
     public void login(String email, String password) {
+        Log.d("NISNIS", "login ");
+
         getView().resetError();
         if (isValid(email, password)) {
             getView().showLoadingLogin();

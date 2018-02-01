@@ -109,6 +109,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         HockeyAppHelper.setHockeyappKey(HockeyAppHelper.KEY_SELLERAPP);
         GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION;
         GlobalConfig.PACKAGE_APPLICATION = GlobalConfig.PACKAGE_SELLER_APP;
+        GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
         initializeDatabase();

@@ -3,6 +3,7 @@ package com.tokopedia.session.register.view.fragment;
 import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -84,6 +85,8 @@ import static com.tokopedia.session.google.GoogleSignInActivity.RC_SIGN_IN_GOOGL
 @RuntimePermissions
 public class RegisterEmailFragment extends BaseDaggerFragment
         implements RegisterEmailViewListener, RegisterConstant {
+
+    private static final int REQUEST_AUTO_LOGIN = 101;
 
     View container;
     View redirectView;
@@ -571,20 +574,12 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
     @Override
     public void goToAutomaticLogin() {
-        dismissLoadingProgress();
         Intent intentLogin = LoginActivity.getAutomaticLogin(
                 getActivity(),
                 email.getText().toString(),
                 registerPassword.getText().toString()
         );
-        Intent intentHome = ((TkpdCoreRouter) MainApplication.getAppContext()).getHomeIntent
-                (getActivity());
-        intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        getActivity().startActivities(new Intent[]
-                {
-                        intentHome,
-                        intentLogin
-                });
+        startActivityForResult(intentLogin, REQUEST_AUTO_LOGIN);
     }
 
     @Override
@@ -707,6 +702,14 @@ public class RegisterEmailFragment extends BaseDaggerFragment
                     if (googleSignInAccount.getDisplayName() != null
                             && !googleSignInAccount.getDisplayName().equals(googleSignInAccount.getEmail()))
                         name.setText(googleSignInAccount.getDisplayName());
+                }
+                break;
+            case REQUEST_AUTO_LOGIN:
+                if (resultCode == Activity.RESULT_OK) {
+                    getActivity().setResult(Activity.RESULT_OK);
+                    getActivity().finish();
+                } else {
+                    dismissLoadingProgress();
                 }
                 break;
         }
