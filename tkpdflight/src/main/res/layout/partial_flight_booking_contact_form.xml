@@ -95,7 +95,7 @@
                 android:background="@drawable/selectable_background_tokopedia"
                 android:gravity="bottom"
                 android:orientation="vertical"
-                android:paddingBottom="@dimen/padding_ms">
+                android:paddingBottom="7dp">
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/et_phone_country_code"
