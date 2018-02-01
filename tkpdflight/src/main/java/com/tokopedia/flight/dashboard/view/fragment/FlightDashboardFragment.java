@@ -58,7 +58,9 @@ import javax.inject.Inject;
 public class FlightDashboardFragment extends BaseDaggerFragment implements FlightDashboardContract.View {
 
     public static final String EXTRA_TRIP = "EXTRA_TRIP";
-    public static final String EXTRA_PASSENGER = "EXTRA_PASSENGER";
+    private static final String EXTRA_ADULT = "EXTRA_ADULT";
+    private static final String EXTRA_CHILD = "EXTRA_CHILD";
+    private static final String EXTRA_INFANT = "EXTRA_INFANT";
     public static final String EXTRA_CLASS = "EXTRA_CLASS";
     private static final int REQUEST_CODE_AIRPORT_DEPARTURE = 1;
     private static final int REQUEST_CODE_AIRPORT_ARRIVAL = 2;
@@ -90,11 +92,13 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         return new FlightDashboardFragment();
     }
 
-    public static FlightDashboardFragment getInstance(String extrasTrip, String extrasPassenger, String extrasClass) {
+    public static FlightDashboardFragment getInstance(String extrasTrip, String extrasAdultPassenger, String extrasChildPassenger, String extrasInfantPassenger, String extrasClass) {
         FlightDashboardFragment flightDashboardFragment = new FlightDashboardFragment();
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_TRIP, extrasTrip);
-        bundle.putString(EXTRA_PASSENGER, extrasPassenger);
+        bundle.putString(EXTRA_ADULT, extrasAdultPassenger);
+        bundle.putString(EXTRA_CHILD, extrasChildPassenger);
+        bundle.putString(EXTRA_INFANT, extrasInfantPassenger);
         bundle.putString(EXTRA_CLASS, extrasClass);
         flightDashboardFragment.setArguments(bundle);
         return flightDashboardFragment;
@@ -240,7 +244,6 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         presenter.attachView(this);
         presenter.initialize();
         KeyboardHandler.hideSoftKeyboard(getActivity());
-
     }
 
     @Override
@@ -252,7 +255,9 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     public boolean isFromApplink() {
         return getArguments() != null &&
                 !TextUtils.isEmpty(getArguments().getString(EXTRA_TRIP, null)) &&
-                !TextUtils.isEmpty(getArguments().getString(EXTRA_PASSENGER, null)) &&
+                !TextUtils.isEmpty(getArguments().getString(EXTRA_ADULT, null)) &&
+                !TextUtils.isEmpty(getArguments().getString(EXTRA_CHILD, null)) &&
+                !TextUtils.isEmpty(getArguments().getString(EXTRA_INFANT, null)) &&
                 !TextUtils.isEmpty(getArguments().getString(EXTRA_CLASS, null));
     }
 
@@ -262,8 +267,18 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     }
 
     @Override
-    public String getPassengerArguments() {
-        return getArguments().getString(EXTRA_PASSENGER);
+    public String getAdultPassengerArguments() {
+        return getArguments().getString(EXTRA_ADULT);
+    }
+
+    @Override
+    public String getChildPassengerArguments() {
+        return getArguments().getString(EXTRA_CHILD);
+    }
+
+    @Override
+    public String getInfantPassengerArguments() {
+        return getArguments().getString(EXTRA_INFANT);
     }
 
     @Override

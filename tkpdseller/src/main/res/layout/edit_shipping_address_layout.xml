@@ -57,12 +57,12 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@id/location_field_title"
         android:layout_below="@id/location_field_title"
-        android:layout_marginTop="@dimen/padding_small">
+        android:layout_marginTop="@dimen/padding_small"
+        android:hint="@string/title_activity_shop_address_form">
         <EditText
             android:id="@+id/address_text_field"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/title_activity_shop_address_form"/>
+            android:layout_height="wrap_content"/>
     </android.support.design.widget.TextInputLayout>
 
     <include
