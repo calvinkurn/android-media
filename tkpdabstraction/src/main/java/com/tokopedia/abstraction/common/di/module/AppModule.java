@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.abstraction.common.data.model.storage.GlobalAbsCacheManager;
+import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.module.net.NetModule;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
@@ -50,7 +50,7 @@ public class AppModule {
 
     @ApplicationScope
     @Provides
-    GlobalAbsCacheManager provideGlobalCacheManager(AbstractionRouter abstractionRouter){
+    CacheManager provideGlobalCacheManager(AbstractionRouter abstractionRouter){
         return abstractionRouter.getGlobalCacheManager();
     }
 

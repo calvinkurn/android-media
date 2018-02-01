@@ -20,7 +20,7 @@ import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.abstraction.common.data.model.storage.GlobalAbsCacheManager;
+import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
@@ -212,7 +212,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private ReactNativeComponent reactNativeComponent;
     private RemoteConfig remoteConfig;
 
-    private GlobalAbsCacheManager globalAbsCacheManager;
+    private CacheManager cacheManager;
     private UserSession userSession;
 
     public static List<PeriodRangeModel> convert(List<PeriodRangeModelCore> periodRangeModelCores) {
@@ -1153,11 +1153,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public GlobalAbsCacheManager getGlobalCacheManager() {
-        if (globalAbsCacheManager == null) {
-            globalAbsCacheManager = new GlobalCacheManager();
+    public CacheManager getGlobalCacheManager() {
+        if (cacheManager == null) {
+            cacheManager = new GlobalCacheManager();
         }
-        return globalAbsCacheManager;
+        return cacheManager;
     }
 
     @Override
