@@ -1265,4 +1265,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public BroadcastReceiver getBroadcastReceiverTokocashPending() {
         return new TokocashPendingDataBroadcastReceiver();
     }
+                
+    public GetShopInfoUseCase getShopInfo(){    
+            return getShopComponent().getShopInfoUseCase();
+    }
 }
