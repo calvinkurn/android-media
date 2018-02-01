@@ -1,7 +1,5 @@
 package com.tokopedia.flight.common.data.repository;
 
-import android.util.Log;
-
 import com.tokopedia.flight.airline.data.FlightAirlineDataListSource;
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.airport.data.source.FlightAirportDataListBackgroundSource;
@@ -42,7 +40,6 @@ import java.util.List;
 import java.util.Map;
 
 import rx.Observable;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -320,17 +317,6 @@ public class FlightRepositoryImpl implements FlightRepository {
 
     @Override
     public Observable<List<BannerDetail>> getBanners(Map<String, String> params) {
-        return bannerDataSource.getBannerData(params).doOnNext(new Action1<List<BannerDetail>>() {
-            @Override
-            public void call(List<BannerDetail> bannerDetailList) {
-                Log.d("DAPAT DATA REPOSITORY", bannerDetailList.get(0).getAttributes().getImgUrl());
-            }
-        }).doOnError(new Action1<Throwable>() {
-            @Override
-            public void call(Throwable throwable) {
-                Log.d("DAPAT DATA CLOUD", throwable.getLocalizedMessage());
-                Log.d("DAPAT DATA CLOUD", throwable.getMessage());
-            }
-        });
+        return bannerDataSource.getBannerData(params);
     }
 }

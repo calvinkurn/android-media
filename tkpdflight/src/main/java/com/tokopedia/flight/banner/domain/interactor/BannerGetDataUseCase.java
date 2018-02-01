@@ -1,7 +1,5 @@
 package com.tokopedia.flight.banner.domain.interactor;
 
-import android.util.Log;
-
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.usecase.RequestParams;
@@ -12,7 +10,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Observable;
-import rx.functions.Action1;
 
 /**
  * Created by nakama on 28/12/17.
@@ -32,21 +29,7 @@ public class BannerGetDataUseCase extends UseCase<List<BannerDetail>> {
 
     @Override
     public Observable<List<BannerDetail>> createObservable(RequestParams requestParams) {
-        return flightRepository.getBanners(requestParams.getParamsAllValueInString())
-                .doOnNext(new Action1<List<BannerDetail>>() {
-                    @Override
-                    public void call(List<BannerDetail> bannerDetailList) {
-                        Log.d("DAPAT USECASE", bannerDetailList.get(0).getAttributes().getImgUrl());
-                        Log.d("DAPAT USECASE", bannerDetailList.size() + "");
-                    }
-                })
-                .doOnError(new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        Log.d("DAPAT USECASE", throwable.getLocalizedMessage());
-                        Log.d("DAPAT USECASE", throwable.getMessage());
-                    }
-                });
+        return flightRepository.getBanners(requestParams.getParamsAllValueInString());
     }
 
     public RequestParams createRequestParams(String deviceId, String categoryId) {

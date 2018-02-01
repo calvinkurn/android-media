@@ -1,7 +1,5 @@
 package com.tokopedia.flight.banner.data.source.cloud;
 
-import android.util.Log;
-
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.common.constant.FlightUrl;
@@ -14,7 +12,6 @@ import javax.inject.Inject;
 
 import retrofit2.Response;
 import rx.Observable;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -36,19 +33,6 @@ public class BannerDataCloudSource {
                     @Override
                     public Observable<List<BannerDetail>> call(Response<DataResponse<List<BannerDetail>>> dataResponseResponse) {
                         return Observable.just(dataResponseResponse.body().getData());
-                    }
-                })
-                .doOnNext(new Action1<List<BannerDetail>>() {
-                    @Override
-                    public void call(List<BannerDetail> bannerDetailList) {
-                        Log.d("DAPAT DATA CLOUD", bannerDetailList.get(0).getAttributes().getImgUrl());
-                    }
-                })
-                .doOnError(new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        Log.d("DAPAT DATA CLOUD", throwable.getLocalizedMessage());
-                        Log.d("DAPAT DATA CLOUD", throwable.getMessage());
                     }
                 });
     }
