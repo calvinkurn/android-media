@@ -17,4 +17,13 @@
     <dimen name="home_channel_sprint_sale_countdown_height">24dp</dimen>
     <dimen name="home_channel_3_image_size">104dp</dimen>
     <dimen name="count_down_item_size">24dp</dimen>
+    <dimen name="padding_2">2dp</dimen>
+    <dimen name="label_padding_top_bottom">2dp</dimen>
+    <dimen name="label_padding_left_right">5dp</dimen>
+    <dimen name="margin_xl">45dp</dimen>
+    <dimen name="keyline_1">16dp</dimen>
+    <dimen name="fontvs">12sp</dimen>
+    <dimen name="margin_small_sm">12dp</dimen>
+    <dimen name="keyline_1_minus_8dp">8dp</dimen>
+    <dimen name="card_view_margin">5dp</dimen>
 </resources>

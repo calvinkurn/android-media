@@ -24,7 +24,7 @@
             android:layout_marginTop="@dimen/card_view_margin"
             android:padding="@dimen/keyline_1_minus_8dp"
             android:visibility="visible"
-            app:srcCompat="@drawable/ic_tokocash_icon" />
+            app:srcCompat="@drawable/ic_tokocash" />
 
         <RelativeLayout
             android:layout_width="match_parent"

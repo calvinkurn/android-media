@@ -17,7 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="@dimen/keyline_1_minus_8dp"
-        app:srcCompat="@drawable/ic_tokocash_icon" />
+        app:srcCompat="@drawable/ic_tokocash" />
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -21,7 +21,7 @@
 
     </com.tokopedia.core.customwidget.SwipeToRefresh>
 
-    <com.tokopedia.tkpd.beranda.presentation.view.SectionContainer
+    <com.tokopedia.home.beranda.presentation.view.SectionContainer
         android:id="@+id/tab_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -42,6 +42,6 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/grey_hint" />
-    </com.tokopedia.tkpd.beranda.presentation.view.SectionContainer>
+    </com.tokopedia.home.beranda.presentation.view.SectionContainer>
 
 </android.support.design.widget.CoordinatorLayout>

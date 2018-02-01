@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.tkpd.tkpdfeed.feedplus.view.customview.RoundedCornerImageView
+        android:id="@+id/product_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_vs"
+        android:layout_marginRight="@dimen/margin_vs"
+        android:layout_marginTop="@dimen/margin_vs"
+        android:adjustViewBounds="true"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/image_product_desc"
+        android:gravity="center"
+        android:scaleType="fitCenter"
+        tools:src="@color/colorAccent" />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/product_image"
+        android:layout_marginLeft="@dimen/margin_vs"
+        android:layout_marginRight="@dimen/margin_vs"
+        android:layout_marginTop="@dimen/margin_vs"
+        android:ellipsize="end"
+        android:fontFamily="sans-serif-medium"
+        android:textStyle="normal"
+        android:maxLines="2"
+        android:textColor="@color/black_70"
+        tools:text="Nexus 5X 32 ,awawdawdasdas  pure white dan juga warna rose gold" />
+
+    <TextView
+        android:id="@+id/price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@id/title"
+        android:gravity="bottom"
+        android:paddingBottom="@dimen/padding_small"
+        android:paddingLeft="@dimen/padding_vs"
+        android:paddingRight="@dimen/padding_vs"
+        android:paddingTop="@dimen/padding_vs"
+        android:fontFamily="sans-serif-medium"
+        android:textStyle="normal"
+        android:textColor="@color/orange_red"
+        android:textSize="12sp"
+        tools:text="Rp 3.121.500" />
+</RelativeLayout>
+

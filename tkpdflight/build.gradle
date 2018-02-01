@@ -68,4 +68,6 @@ dependencies {
     apt rootProject.ext.miscDependencies.daggerCompiler
 
     compile rootProject.ext.debugToolsDependencies.stetho
+    compile project(':tkpddigital')
+    compile project(':tkpdfeed')
 }

@@ -29,7 +29,7 @@
         <TextView
             android:id="@+id/see_all_button"
             style="@style/TextView.Small.Green"
-            android:text="@string/see_all"
+            android:text="@string/lihat_semua"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"/>
 

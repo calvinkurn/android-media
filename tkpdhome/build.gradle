@@ -48,7 +48,7 @@ apt {
 }
 
 dependencies {
-    compile getTkpdCore()
+//    compile getTkpdCore()
     compile getTkpdAbstraction()
     compile getTkpdUseCase()
     compile(rootProject.ext.tkpdLibDependencies.expandableOption) {
@@ -70,7 +70,6 @@ dependencies {
     apt rootProject.ext.miscDependencies.daggerCompiler
 
     compile rootProject.ext.debugToolsDependencies.stetho
-    compile rootProject.ext.supportLibDependencies.supportV4
     compile project(':tkpddigital')
     compile project(':tkpdfeed')
 }
