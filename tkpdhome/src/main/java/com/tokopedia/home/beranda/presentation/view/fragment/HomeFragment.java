@@ -542,7 +542,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void actionScannerQRTokoCash() {
-//        HomeFragmentPermissionsDispatcher.scanQRCodeWithCheck(this);
+        HomeFragmentPermissionsDispatcher.scanQRCodeWithCheck(this);
     }
 
     @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
