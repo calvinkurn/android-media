@@ -21,12 +21,14 @@ import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
+import com.tokopedia.core.router.loyaltytokopoint.ILoyaltyRouter;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.facades.GetShopInfoRetrofit;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.DeepLinkChecker;
+import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.tokocash.model.CashBackData;
@@ -39,13 +41,16 @@ import com.tokopedia.tkpd.beranda.domain.interactor.GetLocalHomeDataUseCase;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetTickerUseCase;
 import com.tokopedia.tkpd.beranda.domain.interactor.GetTopPicksUseCase;
 import com.tokopedia.tkpd.beranda.domain.model.category.CategoryLayoutRowModel;
+import com.tokopedia.tkpd.beranda.listener.HomeFeedListener;
 import com.tokopedia.tkpd.beranda.presentation.view.HomeContract;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.BrandsViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategoryItemViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TopPicksViewModel;
+import com.tokopedia.tkpd.beranda.presentation.view.subscriber.GetHomeFeedsSubscriber;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
+import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.usecase.GetHomeFeedsUseCase;
 
 import java.util.List;
 
@@ -80,11 +85,18 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     GetLocalHomeDataUseCase localHomeDataUseCase;
     @Inject
     HomeDataMapper homeDataMapper;
+    @Inject
+    GetHomeFeedsUseCase getHomeFeedsUseCase;
+    @Inject
+    SessionHandler sessionHandler;
 
     protected CompositeSubscription compositeSubscription;
     protected Subscription subscription;
     private final Context context;
     private GetShopInfoRetrofit getShopInfoRetrofit;
+    private String currentCursor = "";
+    private PagingHandler pagingHandler;
+    private HomeFeedListener feedListener;
 
     private HeaderViewModel headerViewModel;
 
@@ -92,6 +104,8 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         this.context = context;
         compositeSubscription = new CompositeSubscription();
         subscription = Subscriptions.empty();
+        this.pagingHandler = new PagingHandler();
+        resetPageFeed();
     }
 
     @Override
@@ -294,11 +308,11 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     public void getHeaderData(boolean initialStart) {
         if (!SessionHandler.isV4Login(context)) return;
-        Intent intentGetTokocash = new Intent(DrawerActivityBroadcastReceiverConstant.INTENT_ACTION);
+        Intent intentGetTokocash = new Intent(DrawerActivityBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP);
         intentGetTokocash.putExtra(DrawerActivityBroadcastReceiverConstant.EXTRA_ACTION_RECEIVER,
                 DrawerActivityBroadcastReceiverConstant.ACTION_RECEIVER_GET_TOKOCASH_DATA);
 
-        Intent intentGetTokoPoint = new Intent(TokoPointDrawerBroadcastReceiverConstant.INTENT_ACTION);
+        Intent intentGetTokoPoint = new Intent(TokoPointDrawerBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP);
 
         if (initialStart && headerViewModel != null) {
             if (headerViewModel.getHomeHeaderWalletActionData() == null)
@@ -309,6 +323,38 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
             context.sendBroadcast(intentGetTokocash);
             context.sendBroadcast(intentGetTokoPoint);
         }
+    }
+
+    public void setFeedListener(HomeFeedListener feedListener) {
+        this.feedListener = feedListener;
+    }
+
+    public void resetPageFeed() {
+        currentCursor = "";
+        pagingHandler.setPage(0);
+        if (getHomeFeedsUseCase != null) {
+            getHomeFeedsUseCase.unsubscribe();
+        }
+    }
+
+    public void fetchNextPageFeed() {
+        pagingHandler.nextPage();
+        fetchCurrentPageFeed();
+    }
+
+    public void fetchCurrentPageFeed() {
+        if (currentCursor == null)
+            return;
+        getHomeFeedsUseCase.execute(
+                getHomeFeedsUseCase.getFeedPlusParam(
+                        pagingHandler.getPage(),
+                        sessionHandler,
+                        currentCursor),
+                new GetHomeFeedsSubscriber(feedListener, pagingHandler.getPage()));
+    }
+
+    public void setCursor(String currentCursor) {
+        this.currentCursor = currentCursor;
     }
 
     private class HomeDataSubscriber extends Subscriber<List<Visitable>> {
@@ -335,7 +381,6 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
             if (isViewAttached()) {
                 getView().showNetworkError(ErrorHandler.getErrorMessage(e));
                 onCompleted();
-                Log.e(TAG, e.getLocalizedMessage());
             }
         }
 

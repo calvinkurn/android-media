@@ -21,7 +21,6 @@ import com.tokopedia.core.gcm.notification.promotions.GeneralNotification;
 import com.tokopedia.core.gcm.notification.promotions.PromoNotification;
 import com.tokopedia.core.gcm.notification.promotions.VerificationNotification;
 import com.tokopedia.core.gcm.notification.promotions.WishlistNotification;
-import com.tokopedia.core.gcm.utils.GCMUtils;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.TkpdInboxRouter;
@@ -264,7 +263,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
         promoNotifications.put(TkpdState.GCMServiceState.GCM_VERIFICATION, new VerificationNotification(mContext));
         promoNotifications.put(TkpdState.GCMServiceState.GCM_WISHLIST, new WishlistNotification(mContext));
         promoNotifications.put(TkpdState.GCMServiceState.GCM_DEEPLINK, new DeeplinkNotification(mContext));
-        Visitable visitable = promoNotifications.get(GCMUtils.getCode(data));
+        Visitable visitable = promoNotifications.get(getCode(data));
         if (visitable != null) {
             visitable.proccessReceivedNotification(data);
         }
@@ -296,7 +295,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
         visitables.put(TkpdState.GCMServiceState.GCM_PURCHASE_CONFIRM_SHIPPING, new PurchaseShippedNotification(mContext));
         visitables.put(TkpdState.GCMServiceState.GCM_RESCENTER_BUYER_REPLY, new ResCenterBuyerReplyNotification(mContext));
 
-        Visitable visitable = visitables.get(GCMUtils.getCode(data));
+        Visitable visitable = visitables.get(getCode(data));
         if (visitable != null) {
             visitable.proccessReceivedNotification(data);
         }

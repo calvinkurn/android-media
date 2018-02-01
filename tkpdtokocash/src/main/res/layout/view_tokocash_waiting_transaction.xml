@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/waiting_transaction_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:visibility="gone">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:paddingBottom="@dimen/padding_med"
+        android:paddingLeft="@dimen/padding_detail"
+        android:paddingRight="@dimen/padding_detail"
+        android:paddingTop="@dimen/padding_med">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Transaksi Menunggu"
+            android:textColor="@color/black_70"
+            android:textSize="@dimen/font_medium" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/arrow_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/title"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/title"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_arrow_right" />
+
+    </RelativeLayout>
+
+</LinearLayout>

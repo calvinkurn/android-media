@@ -1,0 +1,219 @@
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
+        android:descendantFocusability="beforeDescendants"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical"
+        tools:context="com.tokopedia.flight.booking.view.fragment.FlightBookingPassengerFragment">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_med"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/padding_small"
+            android:paddingTop="@dimen/padding_small">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tv_header"
+                style="@style/TextView.TitleBig.Bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingEnd="@dimen/padding_16"
+                android:paddingLeft="@dimen/padding_16"
+                android:paddingRight="@dimen/padding_16"
+                android:paddingStart="@dimen/padding_16"
+                android:layout_marginBottom="@dimen/margin_vvs"
+                android:layout_marginTop="@dimen/margin_sm"
+                tools:text="Penumpang 1 (Dewasa)" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/tv_subheader"
+                style="@style/TextView.Small"
+                android:layout_width="match_parent"
+                android:paddingEnd="@dimen/padding_16"
+                android:paddingLeft="@dimen/padding_16"
+                android:paddingRight="@dimen/padding_16"
+                android:paddingStart="@dimen/padding_16"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_sm"
+                tools:text="Usia diatas 12 tahun" />
+
+            <com.tokopedia.design.text.SpinnerTextView
+                android:id="@+id/sp_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_sm"
+                android:paddingEnd="@dimen/padding_16"
+                android:paddingLeft="@dimen/padding_16"
+                android:paddingRight="@dimen/padding_16"
+                android:paddingStart="@dimen/padding_16"
+                android:layout_marginTop="@dimen/margin_vs"
+                app:spinner_hint="Pilih Titel" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_sm"
+                android:layout_marginTop="@dimen/margin_vs"
+                android:paddingEnd="12dp"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:paddingStart="12dp"
+                android:orientation="horizontal">
+
+                <com.tokopedia.design.text.TkpdHintTextInputLayout
+                    android:id="@+id/til_first_name"
+                    style="@style/HintTextInputLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/margin_vs"
+                    android:layout_marginRight="@dimen/margin_vs"
+                    android:layout_weight="1"
+                    android:hint="@string/flight_booking_passenger_first_name_hint">
+
+                    <android.support.v7.widget.AppCompatEditText
+                        android:id="@+id/et_first_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/flight_booking_passenger_firstname_secondary_hint"
+                        android:singleLine="true"
+                        android:textColor="@color/font_black_primary_70" />
+                </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
+                <com.tokopedia.design.text.TkpdHintTextInputLayout
+                    android:id="@+id/til_last_name"
+                    style="@style/HintTextInputLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_vs"
+                    android:layout_marginStart="@dimen/margin_vs"
+                    android:layout_weight="1"
+                    android:hint="@string/flight_booking_passenger_last_name_hint">
+
+                    <android.support.v7.widget.AppCompatEditText
+                        android:id="@+id/et_last_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/flight_booking_passenger_last_name_secondary_hint"
+                        android:singleLine="true"
+                        android:textColor="@color/font_black_primary_70" />
+                </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
+            </LinearLayout>
+
+            <com.tokopedia.design.text.TkpdHintTextInputLayout
+                android:id="@+id/til_birth_date"
+                style="@style/HintTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingEnd="@dimen/padding_16"
+                android:paddingLeft="@dimen/padding_16"
+                android:paddingRight="@dimen/padding_16"
+                android:paddingStart="@dimen/padding_16"
+                android:layout_marginBottom="@dimen/margin_sm"
+                android:layout_marginTop="@dimen/margin_vs"
+                android:hint="@string/flight_booking_passenger_birthdate_hint">
+
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/et_birth_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:drawableEnd="@drawable/ic_arrow_down_grey"
+                    android:drawableRight="@drawable/ic_arrow_down_grey"
+                    android:focusable="false"
+                    android:hint="@string/flight_booking_passenger_birthdate_secondary_hint"
+                    android:paddingEnd="10dp"
+                    android:paddingRight="10dp"
+                    android:singleLine="true"
+                    android:textColor="@color/font_black_primary_70" />
+            </com.tokopedia.design.text.TkpdHintTextInputLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/luggage_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_med"
+            android:layout_marginTop="@dimen/margin_med"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/padding_small"
+            android:paddingEnd="@dimen/padding_16"
+            android:paddingLeft="@dimen/padding_16"
+            android:paddingRight="@dimen/padding_16"
+            android:paddingStart="@dimen/padding_16"
+            android:paddingTop="@dimen/padding_small"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <android.support.v7.widget.AppCompatTextView
+                style="@style/TextView.TitleBig.Bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_sm"
+                android:layout_marginTop="@dimen/margin_sm"
+                android:text="@string/flight_booking_passenger_luggage_label" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_luggages"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/meals_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_med"
+            android:layout_marginTop="@dimen/margin_med"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/padding_small"
+            android:paddingEnd="@dimen/padding_16"
+            android:paddingLeft="@dimen/padding_16"
+            android:paddingRight="@dimen/padding_16"
+            android:paddingStart="@dimen/padding_16"
+            android:paddingTop="@dimen/padding_small"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <android.support.v7.widget.AppCompatTextView
+                style="@style/TextView.TitleBig.Bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_sm"
+                android:layout_marginTop="@dimen/margin_sm"
+                android:text="@string/flight_booking_passenger_meal_label" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_meals"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/padding_small">
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/button_submit"
+                style="@style/Button.Submit.Green"
+                android:text="@string/flight_booking_passenger_submit_button" />
+        </LinearLayout>
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>
+
+

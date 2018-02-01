@@ -45,7 +45,7 @@ public class ReactNativeHostFactory {
 
             @Override
             public boolean getUseDeveloperSupport() {
-                return GlobalConfig.isAllowDebuggingTools();
+                return GlobalConfig.DEBUG;
             }
 
             @Override
@@ -74,7 +74,7 @@ public class ReactNativeHostFactory {
 
             @Override
             protected String getJSMainModuleName() {
-                return "rnscript/index.android";
+                return "index.android";
             }
         };
     }

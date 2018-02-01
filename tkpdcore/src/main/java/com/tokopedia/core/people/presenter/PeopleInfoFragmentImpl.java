@@ -58,6 +58,11 @@ public class PeopleInfoFragmentImpl implements PeopleInfoFragmentPresenter {
     }
 
     @Override
+    public void onFollowingClicked(@NonNull Context context, PeopleInfoData.UserInfo userInfo) {
+        listener.openFollowingPage(Integer.valueOf(userInfo.getUserId()));
+    }
+
+    @Override
     public void onShopClicked(@NonNull Context context, String shopId) {
         listener.openShopDetail(shopId);
     }

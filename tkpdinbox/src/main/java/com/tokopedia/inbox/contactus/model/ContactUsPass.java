@@ -20,6 +20,7 @@ public class ContactUsPass {
     private static final String PARAM_NAME = "name";
     private static final String PARAM_MESSAGE = "message";
     private static final String PARAM_ORDER_ID = "order_id";
+    private static final String PARAM_INVOICE = "invoice";
     private static final String PARAM_PHONE = "phone";
     private static final String PARAM_TAG = "tag";
 
@@ -118,6 +119,9 @@ public class ContactUsPass {
         param.put(PARAM_EMAIL, getEmail());
         param.put(PARAM_NAME, getName());
         param.put(PARAM_ORDER_ID, getOrderId());
+        if (getInvoiceNumber() != null && getInvoiceNumber().length() > 0) {
+            param.put(PARAM_INVOICE, getInvoiceNumber());
+        }
         param.put(PARAM_PHONE, getPhoneNumber());
         param.put(PARAM_TAG, getPhoneNumber());
         param.put(PARAM_UTM_SOURCE, "android");
@@ -180,28 +184,28 @@ public class ContactUsPass {
         this.generatedHost = generatedHost;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getEmail() {
         return email;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getPhoneNumber() {
         return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public String getOrderId() {

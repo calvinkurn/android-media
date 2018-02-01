@@ -12,6 +12,11 @@ def getArtifactVersionCode() {
     return project.hasProperty('artifactVersion') ? artifactVersion : '1.0';
 }
 
+def getTkpdAbstraction() {
+    return project.hasProperty('isArtifact') ?
+            rootProject.ext.tkpdDependencies.abstraction : project(':tkpdabstraction');
+}
+
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
@@ -95,6 +100,8 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
+    compile getTkpdAbstraction()
+
     testCompile rootProject.ext.testDependencies.junit
     testCompile rootProject.ext.testDependencies.mockitorCore
     testCompile rootProject.ext.testDependencies.assertJ
@@ -112,7 +119,6 @@ dependencies {
     compile rootProject.ext.playServicesDependencies.base
     compile rootProject.ext.playServicesDependencies.appIndexing
     compile rootProject.ext.playServicesDependencies.analytics
-    compile rootProject.ext.playServicesDependencies.gcm
     compile rootProject.ext.playServicesDependencies.firebase
     compile rootProject.ext.playServicesDependencies.location
     compile rootProject.ext.playServicesDependencies.maps
@@ -144,7 +150,6 @@ dependencies {
     compile(rootProject.ext.analyticsDependencies.moengage) {
         exclude group: 'com.moengage', module: 'moe-push-gcm'
     }
-    compile rootProject.ext.analyticsDependencies.moengageFCM
     compile(rootProject.ext.analyticsDependencies.moengageMSG) {
         exclude group: 'com.android.support'
     }
@@ -160,7 +165,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'design'
     }
 
-    compile rootProject.ext.miscDependencies.captureActivity
+    compile rootProject.ext.miscDependencies.scannerZxing
     compile rootProject.ext.miscDependencies.multiDex
     compile rootProject.ext.miscDependencies.parcelerApi
     apt rootProject.ext.miscDependencies.parceler
@@ -181,7 +186,6 @@ dependencies {
         exclude group: 'com.squareup.okio'
         exclude group: 'com.android.support'
     }
-    compile rootProject.ext.debugToolsDependencies.stetho
     compile(rootProject.ext.analyticsDependencies.branch) {
         exclude module: 'answers-shim'
     }
@@ -192,6 +196,7 @@ dependencies {
 
     compile rootProject.ext.playServicesDependencies.firebase
     compile rootProject.ext.playServicesDependencies.remoteConfig
+    compile rootProject.ext.debugToolsDependencies.stetho
 }
 
 apply plugin: 'com.google.gms.google-services'

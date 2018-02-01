@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -58,7 +59,7 @@ public class AuthenticationListAdapter extends RecyclerView.Adapter<Authenticati
 
         private ViewGroup rootLayout;
 
-        private RadioButton selectedRadioButton;
+        private CheckBox selectedRadioButton;
 
         private TextView authenticationTitle;
 
@@ -69,7 +70,7 @@ public class AuthenticationListAdapter extends RecyclerView.Adapter<Authenticati
 
             rootLayout = (ViewGroup) itemView.findViewById(R.id.authentication_adapter_root_view);
 
-            selectedRadioButton = (RadioButton) itemView.findViewById(R.id.selection_radio_button);
+            selectedRadioButton = (CheckBox) itemView.findViewById(R.id.selection_radio_button);
 
             authenticationTitle = (TextView) itemView.findViewById(R.id.authentincation_title);
 

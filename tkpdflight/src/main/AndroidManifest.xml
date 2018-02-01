@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.flight">
+
+    <application android:label="@string/app_name">
+        <activity
+            android:name=".dashboard.view.activity.FlightDashboardActivity"
+            android:label="@string/flight_dashboard_toolbar_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight" />
+        <activity
+            android:name=".dashboard.view.activity.FlightSelectPassengerActivity"
+            android:label="@string/select_passenger_toolbar_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight" />
+        <activity
+            android:name=".airport.view.activity.FlightAirportPickerActivity"
+            android:label="@string/search_flight"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight" />
+        <activity
+            android:name=".search.view.activity.FlightSearchFilterActivity"
+            android:label="@string/filter"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight" />
+        <activity
+            android:name=".search.view.activity.FlightSearchActivity"
+            android:label="@string/search_flight"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight" />
+        <activity
+            android:name=".search.view.activity.FlightSearchReturnActivity"
+            android:label="@string/search_flight"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight" />
+        <activity
+            android:name=".dashboard.view.activity.FlightClassesActivity"
+            android:label="@string/flight_classes_toolbar_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight" />
+        <activity
+            android:name=".dashboard.view.activity.FlightDatePickerActivity"
+            android:label="@string/search_flight"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight" />
+        <activity
+            android:name=".detail.view.activity.FlightDetailActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight" />
+        <activity
+            android:name=".booking.view.activity.FlightBookingActivity"
+            android:label="@string/flight_booking_toolbar_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight" />
+        <activity
+            android:name=".booking.view.activity.FlightBookingAmenityActivity"
+            android:label="@string/flight_booking_luggage_toolbar_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight" />
+        <activity
+            android:name=".booking.view.activity.FlightBookingPassengerActivity"
+            android:label="@string/flight_booking_passenger_toolbar_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight" />
+        <activity
+            android:name=".booking.view.activity.FlightBookingPhoneCodeActivity"
+            android:label="@string/activity_label_flight_booking_phone_code"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight" />
+        <activity
+            android:name=".booking.view.activity.FlightBookingNationalityActivity"
+            android:label="@string/activity_label_flight_nationality"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight" />
+        <activity
+            android:name=".booking.view.activity.FlightBookingIssuingCountryActivity"
+            android:label="@string/activity_label_flight_issuing_country"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight" />
+        <activity
+            android:name=".review.view.activity.FlightBookingReviewActivity"
+            android:label="@string/activity_label_flight_review"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight" />
+        <activity
+            android:name=".orderlist.view.FlightOrderListActivity"
+            android:label="@string/activity_label_flight_order_list"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight"/>
+        <activity
+            android:name=".detail.view.activity.FlightDetailOrderActivity"
+            android:label="@string/activity_label_flight_order_list"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight"/>
+
+        <service
+            android:name=".airport.service.GetAirportListService"
+            android:exported="false" />
+    </application>
+</manifest>

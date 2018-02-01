@@ -50,6 +50,7 @@ public class NewOnboardingActivity extends OnboardingActivity {
         addSlides();
         pager.setOffscreenPageLimit(1);
         setSkip();
+        setNext();
         pager.setPageTransformer(false, new CustomAnimationPageTransformer());
     }
 
@@ -60,13 +61,7 @@ public class NewOnboardingActivity extends OnboardingActivity {
         skipView = (TextView) skipButton;
 
         decorView = getWindow().getDecorView();
-        decorView.setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE);
+        showStatusBar(false);
 
         fragmentColor = new int[]{R.color.green_nob,
                 R.color.blue_nob,
@@ -157,14 +152,17 @@ public class NewOnboardingActivity extends OnboardingActivity {
         onDonePressed();
     }
 
+    private void setNext() {
+        nextView.setImageResource(R.drawable.next_ic);
+        nextView.setMinimumWidth(0);
+        FrameLayout.LayoutParams nextViewLayoutParams =
+                (FrameLayout.LayoutParams) nextView.getLayoutParams();
+        float density = getResources().getDisplayMetrics().density;
+        nextViewLayoutParams.rightMargin = (int) (20 * density);
+    }
+
     public void setNextResource() {
         if (nextView != null) {
-            nextView.setImageResource(R.drawable.next_ic);
-            nextView.setMinimumWidth(0);
-            FrameLayout.LayoutParams params1 = (FrameLayout.LayoutParams) nextView.getLayoutParams();
-            float density = getResources().getDisplayMetrics().density;
-            params1.rightMargin = (int) (20 * density);
-
             nextButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(@NonNull View v) {
@@ -190,7 +188,8 @@ public class NewOnboardingActivity extends OnboardingActivity {
                                 permissionsArray.remove(position);
                                 isNextPressed = false;
                             } else {
-                                ((NewOnBoardingFragment) fragments.get(pager.getCurrentItem())).animateOut();
+                                NewOnBoardingFragment currentFragment = ((NewOnBoardingFragment) fragments.get(pager.getCurrentItem()));
+                                if (currentFragment != null) currentFragment.animateOut();
                                 pager.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
@@ -201,7 +200,8 @@ public class NewOnboardingActivity extends OnboardingActivity {
                                 onNextPressed();
                             }
                         } else {
-                            ((NewOnBoardingFragment) fragments.get(pager.getCurrentItem())).animateOut();
+                            NewOnBoardingFragment currentFragment = ((NewOnBoardingFragment) fragments.get(pager.getCurrentItem()));
+                            if (currentFragment != null) currentFragment.animateOut();
                             pager.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {

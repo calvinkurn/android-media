@@ -30,7 +30,7 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.DownloadService;
@@ -138,50 +138,51 @@ public class FragmentBannerWebView extends Fragment {
             }
         }
 
-        if (TrackingUtils.getBoolean(AppEventTracking.GTM.OVERRIDE_BANNER) ||
-                FragmentBannerWebView.this.getArguments().getBoolean(EXTRA_OVERRIDE_URL, false)) {
-            if (((Uri.parse(url).getHost().contains(Uri.parse(TkpdBaseURL.WEB_DOMAIN).getHost()))
-                    || Uri.parse(url).getHost().contains(Uri.parse(TkpdBaseURL.MOBILE_DOMAIN).getHost()))
-                    && !url.endsWith(".pl")) {
-                switch ((DeepLinkChecker.getDeepLinkType(url))) {
-                    case DeepLinkChecker.CATEGORY:
-                        DeepLinkChecker.openCategory(url, getActivity());
-                        return true;
-                    case DeepLinkChecker.BROWSE:
-                        DeepLinkChecker.openBrowse(url, getActivity());
-                        return true;
-                    case DeepLinkChecker.HOT:
-                        DeepLinkChecker.openHot(url, getActivity());
-                        return true;
-                    case DeepLinkChecker.CATALOG:
-                        DeepLinkChecker.openCatalog(url, getActivity());
-                        return true;
-                    case DeepLinkChecker.PRODUCT:
-                        DeepLinkChecker.openProduct(url, getActivity());
-                        return true;
-                    case DeepLinkChecker.SHOP:
-                        ((BannerWebView) getActivity()).openShop(url);
-                        return true;
-                    case DeepLinkChecker.HOME:
-                        DeepLinkChecker.openHomepage(getActivity(), HomeRouter.INIT_STATE_FRAGMENT_HOME);
-                        return true;
-                    default:
-                        return false;
+
+        if (((Uri.parse(url).getHost().contains(Uri.parse(TkpdBaseURL.WEB_DOMAIN).getHost()))
+                || Uri.parse(url).getHost().contains(Uri.parse(TkpdBaseURL.MOBILE_DOMAIN).getHost()))
+                && !(Uri.parse(url).getLastPathSegment() != null && Uri.parse(url).getLastPathSegment().endsWith(".pl"))
+                && !url.contains("login")) {
+
+            if (FragmentBannerWebView.this.getArguments().getBoolean(EXTRA_OVERRIDE_URL, false)) {
+                String query = Uri.parse(url).getQueryParameter(LOGIN_TYPE);
+                if (query != null && query.equals(QUERY_PARAM_PLUS)) {
+                    Intent intent = OldSessionRouter.getLoginActivityIntent(getActivity());
+                    intent.putExtra("login", DownloadService.GOOGLE);
+                    intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
+                    startActivityForResult(intent, LOGIN_GPLUS);
+                    return true;
                 }
-            } else {
-                return false;
+            }
+            switch ((DeepLinkChecker.getDeepLinkType(url))) {
+                case DeepLinkChecker.CATEGORY:
+                    DeepLinkChecker.openCategory(url, getActivity());
+                    return true;
+                case DeepLinkChecker.BROWSE:
+                    DeepLinkChecker.openBrowse(url, getActivity());
+                    return true;
+                case DeepLinkChecker.HOT:
+                    DeepLinkChecker.openHot(url, getActivity());
+                    return true;
+                case DeepLinkChecker.CATALOG:
+                    DeepLinkChecker.openCatalog(url, getActivity());
+                    return true;
+                case DeepLinkChecker.PRODUCT:
+                    DeepLinkChecker.openProduct(url, getActivity());
+                    return true;
+                case DeepLinkChecker.SHOP:
+                    ((BannerWebView) getActivity()).openShop(url);
+                    return true;
+                case DeepLinkChecker.HOME:
+                    DeepLinkChecker.openHomepage(getActivity(), HomeRouter.INIT_STATE_FRAGMENT_HOME);
+                    return true;
+                default:
+                    return false;
             }
         } else {
-            String query = Uri.parse(url).getQueryParameter(LOGIN_TYPE);
-            if (query != null && query.equals(QUERY_PARAM_PLUS)) {
-                Intent intent = SessionRouter.getLoginActivityIntent(getActivity());
-                intent.putExtra("login", DownloadService.GOOGLE);
-                intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
-                startActivityForResult(intent, LOGIN_GPLUS);
-                return true;
-            }
+            return false;
         }
-        return false;
+
     }
 
     @Override

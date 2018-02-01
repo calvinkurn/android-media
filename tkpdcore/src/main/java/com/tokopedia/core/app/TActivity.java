@@ -13,7 +13,7 @@ import android.widget.FrameLayout;
 
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.R;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.session.presenter.Session;
@@ -23,6 +23,11 @@ import com.tokopedia.core.var.TkpdState;
 /**
  * Created by Nisie on 31/08/15.
  */
+
+/**
+ * Extends one of BaseActivity from tkpd abstraction eg:BaseSimpleActivity, BaseStepperActivity, BaseTabActivity, etc
+ */
+@Deprecated
 public abstract class TActivity extends BaseActivity {
 
     protected FrameLayout parentView;
@@ -80,7 +85,7 @@ public abstract class TActivity extends BaseActivity {
 
     public static boolean onCartOptionSelected(Context context) {
         if (!SessionHandler.isV4Login(context)) {
-            Intent intent = SessionRouter.getLoginActivityIntent(context);
+            Intent intent = OldSessionRouter.getLoginActivityIntent(context);
             intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
             context.startActivity(intent);
         } else {
@@ -92,7 +97,7 @@ public abstract class TActivity extends BaseActivity {
     private Boolean onCartOptionSelected() {
 
         if (!SessionHandler.isV4Login(getBaseContext())) {
-            Intent intent = SessionRouter.getLoginActivityIntent(getBaseContext());
+            Intent intent = OldSessionRouter.getLoginActivityIntent(getBaseContext());
             intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
             startActivity(intent);
         } else {
@@ -102,25 +107,24 @@ public abstract class TActivity extends BaseActivity {
     }
 
     public boolean onHomeOptionSelected() {
-        KeyboardHandler.DropKeyboard(this, parentView);
+        if (parentView != null) KeyboardHandler.DropKeyboard(this, parentView);
         onBackPressed();
         return true;
     }
 
     public void inflateView(int layoutId) {
-        getLayoutInflater().inflate(layoutId, parentView);
+        if (parentView != null) getLayoutInflater().inflate(layoutId, parentView);
     }
 
     public void hideToolbar() {
         getSupportActionBar().hide();
     }
 
-
     private void setLightToolbarStyle() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.setElevation(10);
             toolbar.setBackgroundResource(com.tokopedia.core.R.color.white);
-        }else {
+        } else {
             toolbar.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
         }
         Drawable drawable = ContextCompat.getDrawable(this, R.drawable.ic_toolbar_overflow_level_two_black);
@@ -131,7 +135,6 @@ public abstract class TActivity extends BaseActivity {
             getSupportActionBar().setHomeAsUpIndicator(
                     com.tokopedia.core.R.drawable.ic_webview_back_button
             );
-
 
         toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.WebViewToolbarText);
         toolbar.setSubtitleTextAppearance(this, com.tokopedia.core.R.style
