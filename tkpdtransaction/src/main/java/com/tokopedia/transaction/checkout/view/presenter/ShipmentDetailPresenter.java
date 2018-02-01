@@ -78,8 +78,8 @@ public class ShipmentDetailPresenter extends BaseDaggerPresenter<IShipmentDetail
 
     @Override
     public void loadShipmentData() {
-//        shipmentDetailData = DummyCreator.createDummyInstantShipmentDetailData();
-//        getView().renderInstantShipment(shipmentDetailData);
+        shipmentDetailData = DummyCreator.createDummyInstantShipmentDetailData();
+        getView().renderInstantShipment(shipmentDetailData);
 
 //        shipmentDetailData = DummyCreator.createDummySameDayShipmentDetailData();
 //        getView().renderSameDayShipment(shipmentDetailData);
@@ -87,8 +87,8 @@ public class ShipmentDetailPresenter extends BaseDaggerPresenter<IShipmentDetail
 //        shipmentDetailData = DummyCreator.createDummyNextDayShipmentDetailData();
 //        getView().renderNextDayShipment(shipmentDetailData);
 
-        shipmentDetailData = DummyCreator.createDummyRegularShipmentDetailData();
-        getView().renderRegularShipment(shipmentDetailData);
+//        shipmentDetailData = DummyCreator.createDummyRegularShipmentDetailData();
+//        getView().renderRegularShipment(shipmentDetailData);
 
 //        shipmentDetailData = DummyCreator.createDummyKargoShipmentDetailData();
 //        getView().renderKargoShipment(shipmentDetailData);

@@ -552,6 +552,17 @@
 
                     </LinearLayout>
 
+                    <TextView
+                        android:id="@+id/tv_insurance_terms"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_small"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:paddingTop="16dp"
+                        android:text="@string/message_tos_agreement"
+                        android:visibility="gone" />
+
                     <LinearLayout
                         android:id="@+id/ll_additional_fee"
                         android:layout_width="match_parent"
