@@ -1,5 +1,6 @@
 package com.tokopedia.core.referral.data;
 
+import com.tokopedia.core.referral.domain.ReferralRepository;
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -7,7 +8,7 @@ import rx.functions.Func1;
  * Created by ashwanityagi on 22/01/18.
  */
 
-public class ReferralDataRepository implements com.tokopedia.core.referral.domain.ReferralRepository {
+public class ReferralDataRepository implements ReferralRepository {
 
     private final ReferralDataStoreFactory referralDataStoreFactory;
 
@@ -27,8 +28,7 @@ public class ReferralDataRepository implements com.tokopedia.core.referral.domai
                         if (factory.isError() && factory.getErrorMessages() != null && factory.getErrorMessages().size() > 0) {
                             referralCodeEntity.setErorMessage(factory.getErrorMessages().get(0));
                         } else {
-                            referralCodeEntity = factory.convertToObj(ReferralCodeEntity.class);// new Gson().fromJson(tkpdResponseResponse, ReferralCodeEntity.class);
-
+                            referralCodeEntity = factory.convertToObj(ReferralCodeEntity.class);
                         }
                         return referralCodeEntity;
                     }

@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,14 +17,14 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.manage.general.ManageWebViewActivity;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.referral.di.DaggerReferralComponent;
 import com.tokopedia.core.referral.di.ReferralComponent;
 import com.tokopedia.core.referral.di.ReferralModule;
-import com.tokopedia.core.referral.listner.ReferralView;
+import com.tokopedia.core.referral.listener.ReferralView;
 import com.tokopedia.core.referral.presenter.IReferralPresenter;
 import com.tokopedia.core.referral.presenter.ReferralPresenter;
 import com.tokopedia.core.router.OtpRouter;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdUrl;
 
 import javax.inject.Inject;
@@ -95,7 +94,7 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
 
     @Override
     protected void initialPresenter() {
-
+        presenter.attachView(this);
     }
 
 
@@ -116,7 +115,6 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
 
     @Override
     protected void initView(View view) {
-        presenter.attachView(this);
         presenter.initialize();
         appShareButton.setOnClickListener(getButtonAppShareClickListner());
         referralContentTextView.setText(presenter.getReferralContents());
@@ -203,16 +201,6 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
     }
 
     @Override
-    public boolean isUserLoggedIn() {
-        return SessionHandler.isV4Login(getActivity());
-    }
-
-    @Override
-    public boolean isUserPhoneNumberVerified() {
-        return SessionHandler.isMsisdnVerified();
-    }
-
-    @Override
     public void navigateToLoginPage() {
 
     }
@@ -265,7 +253,17 @@ public class FragmentReferral extends BasePresenterFragment<IReferralPresenter> 
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         presenter.detachView();
+        super.onDestroy();
+    }
+
+    @Override
+    public void renderErrorGetVoucherCode(String message) {
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), message, new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                presenter.getReferralVoucherCode();
+            }
+        }).showRetrySnackbar();
     }
 }

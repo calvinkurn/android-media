@@ -12,7 +12,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.manage.general.ManageWebViewActivity;
-import com.tokopedia.core.referral.listner.FriendsWelcomeView;
+import com.tokopedia.core.referral.listener.FriendsWelcomeView;
 import com.tokopedia.core.referral.presenter.IReferralFriendsWelcomePresenter;
 import com.tokopedia.core.referral.presenter.ReferralFriendsWelcomePresenter;
 import com.tokopedia.core.var.TkpdUrl;

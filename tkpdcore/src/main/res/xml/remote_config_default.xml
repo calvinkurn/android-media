@@ -118,10 +118,6 @@
         <value> Info lebih lanjut</value>
     </entry>
     <entry>
-        <key>app_referral_screen_info</key>
-        <value>Share this code with your friends and earn TokoCash when they signup and buy a product on Tokopedia</value>
-    </entry>
-    <entry>
         <key>app_show_referral_button</key>
         <value>false</value>
     </entry>

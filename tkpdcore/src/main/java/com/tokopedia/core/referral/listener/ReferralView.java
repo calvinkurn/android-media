@@ -1,4 +1,4 @@
-package com.tokopedia.core.referral.listner;
+package com.tokopedia.core.referral.listener;
 
 import android.app.Activity;
 
@@ -18,10 +18,6 @@ public interface ReferralView extends CustomerView {
 
     void closeView();
 
-    boolean isUserLoggedIn();
-
-    boolean isUserPhoneNumberVerified();
-
     void navigateToLoginPage();
 
     void showVerificationPhoneNumberPage();
@@ -31,4 +27,6 @@ public interface ReferralView extends CustomerView {
     void showProcessDialog();
 
     void hideProcessDialog();
+
+    void renderErrorGetVoucherCode(String message);
 }

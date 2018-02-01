@@ -9,7 +9,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.referral.listner.FriendsWelcomeView;
+import com.tokopedia.core.referral.listener.FriendsWelcomeView;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.SessionHandler;
@@ -76,7 +76,6 @@ public class ReferralFriendsWelcomePresenter implements IReferralFriendsWelcomeP
             owner = URLDecoder.decode(owner, "UTF-8");// here is double encoding characters that's why i am decoding it twice.
             owner = URLDecoder.decode(owner, "UTF-8");
 
-            //  welcomeMessage = String.format("%s , %s",username,owner); it throws Exception
             welcomeMessage = welcomeMessage.replaceFirst("%s", username);
             welcomeMessage = welcomeMessage.replaceFirst("%s", owner);
 

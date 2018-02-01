@@ -16,7 +16,6 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashModel;
 import com.tokopedia.core.drawer2.domain.interactor.TokoCashUseCase;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ResponseErrorException;
@@ -24,12 +23,13 @@ import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.referral.data.ReferralCodeEntity;
 import com.tokopedia.core.referral.domain.GetReferralDataUseCase;
-import com.tokopedia.core.referral.listner.ReferralView;
+import com.tokopedia.core.referral.listener.ReferralView;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.share.ShareActivity;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TokoCashTypeDef;
 
@@ -50,15 +50,15 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
     private String contents = "";
     private RemoteConfig remoteConfig;
     private Activity activity;
-    public static final String ShareScreenName = "Share Channel";
-    public static final String phoneVerificationScreenName = "Phone Number Verification";
     private GetReferralDataUseCase getReferralDataUseCase;
     private TokoCashUseCase tokoCashUseCase;
+    private SessionHandler sessionHandler;
 
     @Inject
-    public ReferralPresenter(GetReferralDataUseCase getReferralDataUseCase, TokoCashUseCase tokoCashUseCase) {
+    public ReferralPresenter(GetReferralDataUseCase getReferralDataUseCase, TokoCashUseCase tokoCashUseCase , SessionHandler sessionHandler) {
         this.getReferralDataUseCase = getReferralDataUseCase;
         this.tokoCashUseCase = tokoCashUseCase;
+        this.sessionHandler = sessionHandler;
     }
 
 
@@ -66,13 +66,13 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
     public void initialize() {
         remoteConfig = new FirebaseRemoteConfigImpl(getView().getActivity());
         activity = getView().getActivity();
-        if (getView().isUserLoggedIn()) {
+        if (sessionHandler.isV4Login(getView().getActivity())) {
             if (isAppShowReferralButtonActivated()) {
-                if (getView().isUserPhoneNumberVerified()) {
+                if (sessionHandler.isMsisdnVerified()) {
                     fetchTokoCashBalance();
                 } else {
                     getView().showVerificationPhoneNumberPage();
-                    TrackingUtils.sendMoEngageReferralScreenOpen(phoneVerificationScreenName);
+                    TrackingUtils.sendMoEngageReferralScreenOpen(activity.getString(R.string.referral_phone_number_verify_screen_name));
 
                 }
             }
@@ -92,7 +92,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
                 .setUri(Constants.WEB_PLAYSTORE_BUYER_APP_URL)
                 .build();
         activity.startActivity(ShareActivity.createIntent(activity, shareData));
-        TrackingUtils.sendMoEngageReferralScreenOpen(ShareScreenName);
+        TrackingUtils.sendMoEngageReferralScreenOpen(activity.getString(R.string.referral_share_screen_name));
 
 
     }
@@ -122,25 +122,20 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
             public void onError(Throwable e) {
                 getView().hideProcessDialog();
                 e.printStackTrace();
-                if (!TextUtils.isEmpty(getVoucherCodeFromCache())) {
-                    return;
-                }
-                String message = ErrorNetMessage.MESSAGE_ERROR_DEFAULT;
-                if (e instanceof UnknownHostException || e instanceof ConnectException) {
-                    message = ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL;
-                } else if (e instanceof SocketTimeoutException) {
-                    message = ErrorNetMessage.MESSAGE_ERROR_TIMEOUT;
-                } else if (e instanceof ResponseErrorException
-                        || e instanceof ResponseDataNullException
-                        || e instanceof HttpErrorException) {
-                    message = e.getMessage();
-                }
-                NetworkErrorHelper.createSnackbarWithAction(getView().getActivity(), message, new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        getReferralVoucherCode();
+                if (TextUtils.isEmpty(getVoucherCodeFromCache())) {
+                    String message = ErrorNetMessage.MESSAGE_ERROR_DEFAULT;
+                    if (e instanceof UnknownHostException || e instanceof ConnectException) {
+                        message = ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL;
+                    } else if (e instanceof SocketTimeoutException) {
+                        message = ErrorNetMessage.MESSAGE_ERROR_TIMEOUT;
+                    } else if (e instanceof ResponseErrorException
+                            || e instanceof ResponseDataNullException
+                            || e instanceof HttpErrorException) {
+                        message = e.getMessage();
                     }
-                }).showRetrySnackbar();
+
+                    getView().renderErrorGetVoucherCode(message);
+                }
             }
 
             @Override
@@ -154,18 +149,11 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
                     contents = referralCodeEntity.getPromoContent().getContent();
                     getView().renderVoucherCode(referralCodeEntity.getPromoContent().getCode());
                 } else {
-                    NetworkErrorHelper.createSnackbarWithAction(getView().getActivity(), referralCodeEntity.getErorMessage(), new NetworkErrorHelper.RetryClickedListener() {
-                        @Override
-                        public void onRetryClicked() {
-                            getReferralVoucherCode();
-                        }
-                    }).showRetrySnackbar();
+                    getView().renderErrorGetVoucherCode(referralCodeEntity.getErorMessage());
                 }
                 getView().hideProcessDialog();
-
             }
         });
-
     }
 
     @Override

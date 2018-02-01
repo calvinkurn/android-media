@@ -27,7 +27,6 @@ import com.tokopedia.core.referral.di.DaggerReferralComponent;
 
 public class ReferralActivity extends BasePresenterActivity implements HasComponent<ReferralComponent> {
 
-    public static final String screenName = "Referral Home";
     ReferralComponent referralComponent = null;
 
     @DeepLink(Constants.Applinks.REFERRAL)
@@ -41,7 +40,7 @@ public class ReferralActivity extends BasePresenterActivity implements HasCompon
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        TrackingUtils.sendMoEngageReferralScreenOpen(screenName);
+        TrackingUtils.sendMoEngageReferralScreenOpen(getString(R.string.referral_screen_name));
 
     }
 

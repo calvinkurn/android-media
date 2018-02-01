@@ -48,13 +48,6 @@ public class TkpdReferralResponse {
             e.printStackTrace();
             return null;
         }
-//        try {
-//            status = jsonResponse.getString("status");
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//           // return null;
-//        }
-
 
         try {
             JSONObject jsonHeader = null;

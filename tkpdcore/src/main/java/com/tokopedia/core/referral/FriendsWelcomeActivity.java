@@ -19,7 +19,6 @@ import com.tokopedia.core.var.TkpdCache;
 
 public class FriendsWelcomeActivity extends BasePresenterActivity   {
 
-    public static final String screenName = "Friend View After Install";
 
     @DeepLink(Constants.Applinks.REFERRAL_WELCOME)
     public static Intent getCallingReferral(Context context, Bundle extras) {
@@ -65,7 +64,7 @@ public class FriendsWelcomeActivity extends BasePresenterActivity   {
             getFragmentManager().beginTransaction().replace(R.id.container,
                     FragmentReferralFriendsWelcome.newInstance()).commit();
 
-        TrackingUtils.sendMoEngageReferralScreenOpen(screenName);
+        TrackingUtils.sendMoEngageReferralScreenOpen(getString(R.string.referral_friend_welcome_screen_name));
 
     }
 

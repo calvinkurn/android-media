@@ -1,4 +1,4 @@
-package com.tokopedia.core.referral.listner;
+package com.tokopedia.core.referral.listener;
 
 import android.app.Activity;
 
