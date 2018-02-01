@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.transaction.R;
@@ -216,8 +217,12 @@ public class CartSingleAddressAdapter
             return new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mSwDropshipper.toggle();
-                    mDropshipperOptionModel.setDropshipping(!mDropshipperOptionModel.isDropshipping());
+                    boolean isDropshipping = !mDropshipperOptionModel.isDropshipping();
+
+                    mSwDropshipper.setChecked(isDropshipping);
+                    mDropshipperOptionModel.setDropshipping(isDropshipping);
+
+                    Toast.makeText(mContext, isDropshipping ? "True" : "False", Toast.LENGTH_SHORT).show();
                 }
             };
         }
@@ -233,6 +238,7 @@ public class CartSingleAddressAdapter
 
     class ShipmentCostDetailViewHolder extends RecyclerView.ViewHolder {
 
+        @BindView(R2.id.rl_detail_shipment_fee_view_layout) RelativeLayout mRlDetailFee;
         @BindView(R2.id.tv_total_item) TextView mTvTotalItem;
         @BindView(R2.id.tv_total_item_price) TextView mTvTotalItemPrice;
         @BindView(R2.id.tv_shipping_fee) TextView mTvShippingFee;
@@ -255,8 +261,7 @@ public class CartSingleAddressAdapter
         void bindViewHolder() {
             mCartPayableDetailModel = mCartSingleAddressData.getCartPayableDetailModel();
 
-            isExpanded = false;
-            mTvDrawerDetailPayable.setOnClickListener(expandDetailListener);
+            isExpanded = true;
 
             mTvTotalItem.setText(getTotalItem());
             mTvTotalItemPrice.setText(getTotalItemPrice());
@@ -265,15 +270,26 @@ public class CartSingleAddressAdapter
             mTvInsuranceFeePrice.setText(getInsuranceFeePrice());
             mTvPromoPrice.setText(getPromoPrice());
             mTvDrawerDetailPayable.setText(getDrawerDetailPayableText());
-            mIvDrawerChevron.setBackgroundResource(getResourceDrawerChevron());
+            mIvDrawerChevron.setImageResource(getResourceDrawerChevron());
             mTvPayablePrice.setText(getPayablePrice());
             mTvPromoFreeShipping.setText(getPromoFreeShippingText());
+
+            mTvDrawerDetailPayable.setOnClickListener(expandDetailListener);
+            mIvDrawerChevron.setOnClickListener(expandDetailListener);
+        }
+
+        private void toggleDetail() {
+            isExpanded = !isExpanded;
+
+            mTvDrawerDetailPayable.setText(getTextDrawerChevron());
+            mIvDrawerChevron.setImageResource(getResourceDrawerChevron());
+            mRlDetailFee.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
         }
 
         View.OnClickListener expandDetailListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                isExpanded = !isExpanded;
+                toggleDetail();
             }
         };
 
@@ -305,6 +321,10 @@ public class CartSingleAddressAdapter
             return isExpanded ? "Tutup" : "Detil";
         }
 
+        private String getTextDrawerChevron() {
+            return isExpanded ? "Tutup" : "Buka";
+        }
+
         private int getResourceDrawerChevron() {
             return isExpanded ? R.drawable.chevron_thin_up : R.drawable.chevron_thin_down;
         }
@@ -321,6 +341,7 @@ public class CartSingleAddressAdapter
 
     class ShippedProductDetailsViewHolder extends RecyclerView.ViewHolder {
 
+        @BindView(R2.id.rl_detail_shipment_fee_view_layout) RelativeLayout mRlDetailFee;
         @BindView(R2.id.tv_sender_name) TextView mTvSenderName;
         @BindView(R2.id.iv_product_image_container) ImageView mIvProductImage;
         @BindView(R2.id.tv_shipping_product_name) TextView mTvProductName;
@@ -340,6 +361,7 @@ public class CartSingleAddressAdapter
         @BindView(R2.id.tv_sub_total_item_price) TextView mTvSubTotalItemPrice;
 
         private CartItemModel mCartItemModel;
+        private boolean isExpanded;
 
         ShippedProductDetailsViewHolder(View itemView) {
             super(itemView);
@@ -348,6 +370,7 @@ public class CartSingleAddressAdapter
 
         void bindViewHolder() {
             mCartItemModel = mCartSingleAddressData.getCartItemModelList().get(0);
+            isExpanded = true;
 
             mTvSenderName.setText(getSenderName());
             mTvProductName.setText(getProductName());
@@ -365,16 +388,35 @@ public class CartSingleAddressAdapter
             mTvPoSign.setVisibility(getPoStatus());
             mRlProductGalleriesLayout.setVisibility(getProductGalleryVisibility());
 
+            mTvShipmentOption.setOnClickListener(courierOptionSelectionListener());
             mIvChevronShipmentOption.setOnClickListener(courierOptionSelectionListener());
+
             mTvCartDetailOption.setOnClickListener(itemPriceDetailListener());
             mIvDetailDrawerChevron.setOnClickListener(itemPriceDetailListener());
+        }
+
+        private void toggleDetail() {
+            isExpanded = !isExpanded;
+
+            mTvCartDetailOption.setText(getTextDrawerChevron());
+            mIvDetailDrawerChevron.setImageResource(getResourceDrawerChevron());
+
+            mRlDetailFee.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
+        }
+
+        private String getTextDrawerChevron() {
+            return isExpanded ? "Tutup" : "Buka";
+        }
+
+        private int getResourceDrawerChevron() {
+            return isExpanded ? R.drawable.chevron_thin_up : R.drawable.chevron_thin_down;
         }
 
         private View.OnClickListener itemPriceDetailListener() {
             return new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    toggleDetail();
                 }
             };
         }
@@ -383,7 +425,7 @@ public class CartSingleAddressAdapter
             return new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    Toast.makeText(mContext, "Select Courier", Toast.LENGTH_SHORT).show();
                 }
             };
         }
@@ -441,7 +483,7 @@ public class CartSingleAddressAdapter
         }
 
         private int getProductGalleryVisibility() {
-            return View.GONE;
+            return View.VISIBLE;
         }
 
     }
