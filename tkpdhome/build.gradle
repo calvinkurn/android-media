@@ -41,10 +41,16 @@ android {
     }
 }
 
+apt {
+    arguments {
+        targetModuleName 'TkpdHome'
+    }
+}
+
 dependencies {
     compile getTkpdCore()
-    compile getTkpdUseCase()
     compile getTkpdAbstraction()
+    compile getTkpdUseCase()
     compile(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"
     }
@@ -53,8 +59,18 @@ dependencies {
     apt rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
     compile rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     apt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+
     compile rootProject.ext.supportLibDependencies.supportV4
+    apt rootProject.ext.dbDependencies.dbFlowProcessor
+    compile rootProject.ext.dbDependencies.dbFlowCore
+    compile rootProject.ext.dbDependencies.dbFlow
+
+    provided rootProject.ext.miscDependencies.javaxAnnotation
+    compile rootProject.ext.miscDependencies.dagger
+    apt rootProject.ext.miscDependencies.daggerCompiler
+
     compile rootProject.ext.debugToolsDependencies.stetho
+    compile rootProject.ext.supportLibDependencies.supportV4
     compile project(':tkpddigital')
     compile project(':tkpdfeed')
 }
