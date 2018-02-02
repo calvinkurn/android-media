@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <WebView
+    <com.tokopedia.core.util.TkpdWebView
         android:id="@+id/web_view_terms_and_condition"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

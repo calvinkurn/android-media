@@ -12,6 +12,7 @@ import android.widget.ProgressBar;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.insurance.di.DaggerInsuranceTnCComponent;
@@ -29,7 +30,7 @@ public class InsuranceTnCFragment extends BasePresenterFragment<InsuranceTnCCont
         implements InsuranceTnCContract.View {
 
     @BindView(R2.id.web_view_terms_and_condition)
-    WebView webViewTermsAndCondition;
+    TkpdWebView webViewTermsAndCondition;
     @BindView(R2.id.pb_loading)
     ProgressBar pbLoading;
 
@@ -147,8 +148,7 @@ public class InsuranceTnCFragment extends BasePresenterFragment<InsuranceTnCCont
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            view.loadUrl(url);
-            return true;
+            return false;
         }
 
         @Override
