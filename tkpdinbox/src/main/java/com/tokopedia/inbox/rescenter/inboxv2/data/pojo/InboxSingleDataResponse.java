@@ -9,18 +9,8 @@ import com.google.gson.annotations.SerializedName;
 public class InboxSingleDataResponse {
     @SerializedName("actionBy")
     private int actionBy;
-    @SerializedName("inbox")
+    @SerializedName("inboxData")
     private InboxDataResponse inbox;
-    @SerializedName("quickFilter")
-    private QuickFilterResponse quickFilter;
-
-    public QuickFilterResponse getQuickFilter() {
-        return quickFilter;
-    }
-
-    public void setQuickFilter(QuickFilterResponse quickFilter) {
-        this.quickFilter = quickFilter;
-    }
 
     public int getActionBy() {
             return actionBy;

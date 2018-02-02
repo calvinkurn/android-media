@@ -17,14 +17,6 @@ import static com.tokopedia.core.network.ErrorMessageException.DEFAULT_ERROR;
 
 public class GetInboxSingleItemMapper implements Func1<Response<TkpdResponse>, InboxItemViewModel> {
 
-    public static final int ACTION_BY_USER = 1;
-    public static final int ACTION_BY_SELLER = 2;
-    public static final int ACTION_BY_ADMIN = 3;
-    public static final int ACTION_BY_SYSTEM = 4;
-
-    public static final int STATUS_UNREAD = 1;
-    public static final int STATUS_READ = 2;
-
     @Override
     public InboxItemViewModel call(Response<TkpdResponse> response) {
         return mappingResponse(response);
