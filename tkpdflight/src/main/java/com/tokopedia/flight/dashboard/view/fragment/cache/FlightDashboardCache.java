@@ -35,9 +35,6 @@ public class FlightDashboardCache {
     }
 
     public void putArrivalAirport(String airportId) {
-        /*editor
-                .putString(ARRIVAL, gson.toJson(airportDB))
-                .apply();*/
         editor
                 .putString(ARRIVAL, airportId)
                 .apply();
