@@ -31,6 +31,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.constants.HomeFragmentBroadcastReceiverConstant;
 import com.tokopedia.core.constants.TokocashPendingDataBroadcastReceiverConstant;
@@ -62,6 +63,7 @@ import com.tokopedia.digital.tokocash.model.CashBackData;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.di.BerandaComponent;
+import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.domain.model.brands.BrandDataModel;
 import com.tokopedia.home.beranda.domain.model.category.CategoryLayoutRowModel;
@@ -157,10 +159,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     protected void initInjector() {
-//        getComponent(BerandaComponent.class).inject(this);
-//        BerandaComponent component = DaggerHomeComponent.builder().appComponent(getComponent(AppComponent.class)).build();
-//        component.inject(this);
-//        component.inject(presenter);
+        BerandaComponent component = DaggerBerandaComponent.builder().appComponent(getComponent(AppComponent.class)).build();
+        component.inject(this);
+        component.inject(presenter);
     }
 
     private void fetchRemoteConfig() {
