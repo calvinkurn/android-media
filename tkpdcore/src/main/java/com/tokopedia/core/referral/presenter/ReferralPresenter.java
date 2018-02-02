@@ -157,12 +157,12 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
     @Override
     public void copyVoucherCode(String voucherCode) {
         android.content.ClipboardManager clipboard = (android.content.ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
-        android.content.ClipData clip = android.content.ClipData.newPlainText(getView().getActivity().getString(R.string.copied_to_clipboard), voucherCode);
+        android.content.ClipData clip = android.content.ClipData.newPlainText(getView().getActivity().getString(R.string.copy_coupon_code_text), voucherCode);
         clipboard.setPrimaryClip(clip);
         if (TextUtils.isEmpty(voucherCode)) {
             getView().showToastMessage(getView().getActivity().getString(R.string.no_coupon_to_copy_text));
         } else {
-            getView().showToastMessage(getView().getActivity().getString(R.string.copied_to_clipboard) + " " + voucherCode);
+            getView().showToastMessage(getView().getActivity().getString(R.string.copy_coupon_code_text) + " " + voucherCode);
         }
         UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_COPY_REFERRAL_CODE, voucherCode);
 

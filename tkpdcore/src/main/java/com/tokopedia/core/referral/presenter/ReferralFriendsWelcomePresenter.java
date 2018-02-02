@@ -53,13 +53,13 @@ public class ReferralFriendsWelcomePresenter implements IReferralFriendsWelcomeP
         ClipboardManager clipboard = (ClipboardManager)
                 view.getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText(
-                view.getActivity().getString(R.string.copied_to_clipboard), voucherCode
+                view.getActivity().getString(R.string.copy_coupon_code_text), voucherCode
         );
         clipboard.setPrimaryClip(clip);
         if(TextUtils.isEmpty(voucherCode)){
             view.showToastMessage(view.getActivity().getString(R.string.no_coupon_to_copy_text));
         }else{
-            view.showToastMessage(view.getActivity().getString(R.string.copied_to_clipboard) + " " + voucherCode);
+            view.showToastMessage(view.getActivity().getString(R.string.copy_coupon_code_text) + " " + voucherCode);
         }
 
         UnifyTracking.eventReferralAndShare(AppEventTracking.Action.CLICK_COPY_REFERRAL_CODE, voucherCode);
