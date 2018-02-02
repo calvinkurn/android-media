@@ -170,6 +170,7 @@ public class EventBookTicketActivity extends TActivity implements EventBookTicke
         totalPrice.setText(CurrencyUtil.convertToCurrencyString(ticketQuantity * price));
         ticketCount.setText(String.format(getString(R.string.x_type), ticketQuantity, type));
         buttonPayTickets.setVisibility(View.VISIBLE);
+        buttonPayTickets.setBackgroundColor(getResources().getColor(R.color.white));
         if (buttonCountLayout.getVisibility() != View.VISIBLE)
             buttonCountLayout.setVisibility(View.VISIBLE);
     }

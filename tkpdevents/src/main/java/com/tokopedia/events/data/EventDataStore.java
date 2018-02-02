@@ -27,6 +27,8 @@ public interface EventDataStore {
 
     Observable<SearchResponse> getSearchEvents(TKPDMapParam<String, Object> params);
 
+    Observable<SearchResponse> getSearchNext(String nextUrl);
+
     Observable<EventLocationEntity> getEventsLocationList(TKPDMapParam<String, Object> params);
 
     Observable<EventResponseEntity> getEventsListByLocation(String location);

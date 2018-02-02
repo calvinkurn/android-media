@@ -26,6 +26,8 @@ public interface EventRepository {
 
     Observable<SearchDomainModel> getSearchEvents(TKPDMapParam<String, Object> params);
 
+    Observable<SearchDomainModel> getSearchNext(String nextUrl);
+
     Observable<List<EventLocationDomain>> getEventsLocationList(TKPDMapParam<String, Object> params);
 
     Observable<List<EventsCategoryDomain>> getEventsListByLocation(String location);

@@ -13,9 +13,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:text="The 90s Festival"
-        android:textStyle="bold"
         android:textColor="@color/grey_700"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/text_view_display_tag"
@@ -28,12 +28,12 @@
         android:paddingBottom="4dp"
         android:paddingLeft="12dp"
         android:paddingRight="12dp"
-        android:visibility="gone"
         android:paddingTop="4dp"
-        android:textStyle="normal"
         android:text="@string/_350_u0020_ticket_u0020_sold"
-        android:textColor="@color/colorPrimary"
-        android:textSize="14sp" />
+        android:textColor="@color/black_38"
+        android:textSize="14sp"
+        android:textStyle="normal"
+        android:visibility="visible" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -67,6 +67,12 @@
 
     </LinearLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_marginTop="@dimen/margin_default"
+        android:background="@color/grey_100" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -84,14 +90,14 @@
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
+        android:autoLink="web"
         android:ellipsize="end"
-        android:textColor="@color/grey_500"
         android:maxLines="3"
         android:text="@string/bigcontent"
+        android:textColor="@color/grey_500"
         android:textSize="12sp"
-        app:animation_duration="300"
-        android:autoLink="web"
-        android:textStyle="normal"/>
+        android:textStyle="normal"
+        app:animation_duration="300" />
 
     <TextView
         android:id="@+id/seemorebutton"
@@ -103,6 +109,6 @@
         android:text="@string/expand"
         android:textColor="@color/green_nob"
         android:textSize="12sp"
-        android:textStyle="bold"/>
+        android:textStyle="bold" />
 
 </LinearLayout>

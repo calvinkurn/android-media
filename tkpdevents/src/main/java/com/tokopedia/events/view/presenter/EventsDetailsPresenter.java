@@ -100,8 +100,6 @@ public class EventsDetailsPresenter extends BaseDaggerPresenter<EventsDetailsCon
         getView().renderFromHome(dataFromHome);
         String url = dataFromHome.getUrl();
         getEventDetailsRequestUseCase.setUrl(url);
-
-
     }
 
     @Override

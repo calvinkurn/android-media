@@ -33,6 +33,11 @@ public class DiskEventsdataStore implements EventDataStore {
     }
 
     @Override
+    public Observable<SearchResponse> getSearchNext(String nextUrl) {
+        return null;
+    }
+
+    @Override
     public Observable<EventLocationEntity> getEventsLocationList(TKPDMapParam<String, Object> params) {
         return null;
     }

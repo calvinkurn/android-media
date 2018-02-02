@@ -47,6 +47,9 @@ public interface EventsApi {
     @GET()
     Observable<EventsDetailsEntity> getEventDetails(@Url String url);
 
+    @GET()
+    Observable<SearchResponse> getSearchNext(@Url String nextUrl);
+
     @POST(EventsUrl.EVENTS_VERIFY)
     @Headers({"Content-Type: application/json"})
     Observable<VerifyCartResponse> postCartVerify(@Body JsonObject requestBody, @Query("book") boolean value);

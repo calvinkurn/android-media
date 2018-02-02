@@ -85,9 +85,7 @@
                 android:layout_marginLeft="@dimen/margin_default"
                 android:background="@color/transparent"
                 android:scaleType="fitXY"
-                app:srcCompat="@drawable/ic_minus_square"
-                android:tint="@color/green_nob" />
-
+                app:srcCompat="@drawable/minus_button_layerlist_green"/>
             <TextView
                 android:id="@+id/tv_ticket_cnt"
                 android:layout_width="24dp"
@@ -104,9 +102,8 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:background="#00000000"
-                android:scaleType="centerCrop"
-                app:srcCompat="@drawable/ic_plus_square"
-                android:tint="#42b549" />
+                android:scaleType="fitXY"
+                app:srcCompat="@drawable/add_button_layerlist_green" />
         </LinearLayout>
     </FrameLayout>
 </RelativeLayout>

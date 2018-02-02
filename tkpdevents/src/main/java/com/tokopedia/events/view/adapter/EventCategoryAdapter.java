@@ -16,11 +16,9 @@ import com.tokopedia.events.view.activity.EventDetailsActivity;
 import com.tokopedia.events.view.utils.CurrencyUtil;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 
-import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.TimeZone;
 
 /**
@@ -59,11 +57,11 @@ public class EventCategoryAdapter extends RecyclerView.Adapter<EventCategoryAdap
 
         }
 
-        public void setIndex(int position){
+        public void setIndex(int position) {
             this.index = position;
         }
 
-        public int getIndex(){
+        public int getIndex() {
             return this.index;
         }
 
@@ -87,13 +85,18 @@ public class EventCategoryAdapter extends RecyclerView.Adapter<EventCategoryAdap
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.eventTitle.setText("" + categoryItems.get(position).getDisplayName());
-        holder.eventPrice.setText("Rp" + " " + CurrencyUtil.convertToCurrencyString(categoryItems.get(position).getSalesPrice()));
-        holder.eventLocation.setText("" + categoryItems.get(position).getCityName());
-        if (categoryItems.get(position).getMinStartDate() == 0) {
+        CategoryItemsViewModel model = categoryItems.get(position);
+        holder.eventTitle.setText(model.getDisplayName());
+        holder.eventPrice.setText("Rp" + " " + CurrencyUtil.convertToCurrencyString(model.getSalesPrice()));
+        holder.eventLocation.setText(model.getCityName());
+        if (model.getMinStartDate() == 0) {
             holder.eventTimeLayout.setVisibility(View.GONE);
         } else {
-            holder.eventTime.setText("" + convertEpochToString(categoryItems.get(position).getMinStartDate()));
+            if (model.getMinStartDate().equals(model.getMaxEndDate()))
+                holder.eventTime.setText(convertEpochToString(model.getMinStartDate()));
+            else
+                holder.eventTime.setText(convertEpochToString(model.getMinStartDate())
+                        + " - " + convertEpochToString(model.getMaxEndDate()));
         }
         holder.setIndex(position);
 
@@ -104,18 +107,18 @@ public class EventCategoryAdapter extends RecyclerView.Adapter<EventCategoryAdap
         holder.itemView.setOnClickListener(listener);
     }
 
-    class CategoryItemViewListener implements View.OnClickListener{
+    class CategoryItemViewListener implements View.OnClickListener {
 
         ViewHolder mViewHolder;
 
-        public CategoryItemViewListener(ViewHolder holder){
+        public CategoryItemViewListener(ViewHolder holder) {
             this.mViewHolder = holder;
         }
 
         @Override
         public void onClick(View view) {
             Intent detailsIntent = new Intent(context, EventDetailsActivity.class);
-            detailsIntent.putExtra("homedata",categoryItems.get(mViewHolder.getIndex()));
+            detailsIntent.putExtra("homedata", categoryItems.get(mViewHolder.getIndex()));
             context.startActivity(detailsIntent);
         }
     }

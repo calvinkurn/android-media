@@ -3,10 +3,16 @@ package com.tokopedia.events.view.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.text.Layout;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.AlignmentSpan;
+import android.text.style.StyleSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -52,6 +58,8 @@ public class EventsHomeActivity extends TActivity
     private Unbinder unbinder;
     public static final int REQUEST_CODE_EVENTLOCATIONACTIVITY = 101;
     public static final int REQUEST_CODE_EVENTSEARCHACTIVITY = 901;
+
+    private Menu mMenu;
 
 
     EventComponent eventComponent;
@@ -161,6 +169,20 @@ public class EventsHomeActivity extends TActivity
     }
 
     @Override
+    public void hideSearchButton() {
+        MenuItem item = mMenu.findItem(R.id.action_menu_search);
+        item.setVisible(false);
+        item.setEnabled(false);
+    }
+
+    @Override
+    public void showSearchButton() {
+        MenuItem item = mMenu.findItem(R.id.action_menu_search);
+        item.setVisible(true);
+        item.setEnabled(true);
+    }
+
+    @Override
     public void showMessage(String message) {
 
     }
@@ -193,6 +215,14 @@ public class EventsHomeActivity extends TActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_event_home, menu);
+        mMenu = menu;
+        for (int i = 0; i < mMenu.size(); i++) {
+            MenuItem item = menu.getItem(i);
+            SpannableString s = new SpannableString(item.getTitle());
+            s.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER), 0, s.length(), 0);
+            s.setSpan(new StyleSpan(Typeface.BOLD), 0, s.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            item.setTitle(s);
+        }
         return super.onCreateOptionsMenu(menu);
     }
 

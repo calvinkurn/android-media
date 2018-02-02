@@ -97,11 +97,11 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             tvTicketCnt.setText(String.valueOf(viewModel.getSelectedQuantity()));
             if (holderViewModel.getSelectedQuantity() > 0) {
                 //btnDecrement.setAlpha(1.0f);
-                btnDecrement.setColorFilter(mContext.getResources().getColor(R.color.green_nob));
+                btnDecrement.setImageDrawable(mContext.getResources().getDrawable(R.drawable.minus_button_layerlist_green));
                 btnDecrement.setClickable(true);
             } else {
                 //btnDecrement.setAlpha(0.2f);
-                btnDecrement.setColorFilter(mContext.getResources().getColor(R.color.grey_button));
+                btnDecrement.setImageDrawable(mContext.getResources().getDrawable(R.drawable.minus_button_layerlist_grey));
                 btnDecrement.setClickable(false);
             }
             if (holderViewModel.getAvailable() > 0) {
@@ -124,10 +124,10 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         void onClickIncrement() {
             mPresenter.addTickets(index, holderViewModel, this);
             if (holderViewModel.getSelectedQuantity() > 0) {
-                btnDecrement.setColorFilter(mContext.getResources().getColor(R.color.green_nob));
+                btnDecrement.setImageDrawable(mContext.getResources().getDrawable(R.drawable.minus_button_layerlist_green));
                 btnDecrement.setClickable(true);
             } else {
-                btnDecrement.setColorFilter(mContext.getResources().getColor(R.color.grey_button));
+                btnDecrement.setImageDrawable(mContext.getResources().getDrawable(R.drawable.minus_button_layerlist_grey));
                 btnDecrement.setClickable(false);
             }
             //notifyItemChanged(index,holderViewModel);
@@ -137,10 +137,12 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         void onClickDecrement() {
             mPresenter.removeTickets();
             if (holderViewModel.getSelectedQuantity() > 0) {
-                btnDecrement.setColorFilter(mContext.getResources().getColor(R.color.green_nob));
+                //btnDecrement.setColorFilter(mContext.getResources().getColor(R.color.green_nob));
+                btnDecrement.setImageDrawable(mContext.getResources().getDrawable(R.drawable.minus_button_layerlist_green));
                 btnDecrement.setClickable(true);
             } else {
-                btnDecrement.setColorFilter(mContext.getResources().getColor(R.color.grey_button));
+                //btnDecrement.setColorFilter(mContext.getResources().getColor(R.color.grey_button));
+                btnDecrement.setImageDrawable(mContext.getResources().getDrawable(R.drawable.minus_button_layerlist_grey));
                 btnDecrement.setClickable(false);
             }
             //notifyItemChanged(index,holderViewModel);
@@ -167,7 +169,7 @@ public class AddTicketAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
 
         public void setTicketViewColor(int color) {
-            btnDecrement.setColorFilter(mContext.getResources().getColor(R.color.grey_button));
+            btnDecrement.setImageDrawable(mContext.getResources().getDrawable(R.drawable.minus_button_layerlist_grey));
             btnDecrement.setClickable(false);
             thisView.setBackgroundColor(color);
         }

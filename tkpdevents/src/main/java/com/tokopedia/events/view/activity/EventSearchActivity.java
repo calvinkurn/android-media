@@ -6,11 +6,10 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.domain.RequestParams;
@@ -20,10 +19,12 @@ import com.tokopedia.events.di.DaggerEventComponent;
 import com.tokopedia.events.di.EventComponent;
 import com.tokopedia.events.di.EventModule;
 import com.tokopedia.events.view.adapter.EventCategoryAdapter;
+import com.tokopedia.events.view.adapter.TopEventsSuggestionsAdapter;
 import com.tokopedia.events.view.contractor.EventSearchContract;
 import com.tokopedia.events.view.customview.SearchInputView;
 import com.tokopedia.events.view.presenter.EventSearchPresenter;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
+import com.tokopedia.events.view.viewmodel.SearchViewModel;
 
 import java.util.List;
 
@@ -38,7 +39,7 @@ import butterknife.Unbinder;
  */
 
 public class EventSearchActivity extends TActivity implements
-        EventSearchContract.EventSearchView, SearchInputView.Listener {
+        EventSearchContract.IEventSearchView, SearchInputView.Listener {
 
     EventComponent eventComponent;
     @Inject
@@ -56,6 +57,12 @@ public class EventSearchActivity extends TActivity implements
 
     @BindView(R2.id.rv_search_results)
     RecyclerView rvSearchResults;
+    @BindView(R2.id.rv_top_events_suggestions)
+    RecyclerView rvTopEventSuggestions;
+    @BindView(R2.id.tv_topevents)
+    TextView tvTopevents;
+
+    LinearLayoutManager layoutManager;
 
     Unbinder unbinder;
 
@@ -69,9 +76,11 @@ public class EventSearchActivity extends TActivity implements
         ButterKnife.bind(this);
         searchInputView.setListener(this);
         mPresenter.attachView(this);
-        setupToolbar();
+        //setupToolbar();
         toolbar.setTitle("Events");
+        layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mPresenter.initialize();
+
     }
 
     public static Intent getCallingIntent(Activity activity) {
@@ -80,11 +89,13 @@ public class EventSearchActivity extends TActivity implements
 
     @Override
     public void onSearchSubmitted(String text) {
-        mPresenter.getEventsListBySearch(text);
+        mPresenter.searchSubmitted(text);
     }
 
     @Override
     public void onSearchTextChanged(String text) {
+
+        mPresenter.searchTextChanged(text);
 
     }
 
@@ -105,10 +116,19 @@ public class EventSearchActivity extends TActivity implements
 
     @Override
     public void renderFromSearchResults(List<CategoryItemsViewModel> categoryItemsViewModels) {
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        EventCategoryAdapter eventCategoryAdapter = new EventCategoryAdapter(getActivity(), categoryItemsViewModels);
-        rvSearchResults.setLayoutManager(linearLayoutManager);
-        rvSearchResults.setAdapter(eventCategoryAdapter);
+        if (categoryItemsViewModels != null && categoryItemsViewModels.size() != 0) {
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+            EventCategoryAdapter eventCategoryAdapter = new EventCategoryAdapter(getActivity(), categoryItemsViewModels);
+            rvSearchResults.setLayoutManager(linearLayoutManager);
+            rvSearchResults.setAdapter(eventCategoryAdapter);
+            tvTopevents.setVisibility(View.GONE);
+            rvTopEventSuggestions.setVisibility(View.GONE);
+        } else {
+            rvSearchResults.setVisibility(View.GONE);
+            rvTopEventSuggestions.setVisibility(View.GONE);
+            tvTopevents.setText("No Events Found");
+            tvTopevents.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -136,6 +156,65 @@ public class EventSearchActivity extends TActivity implements
         return getSupportFragmentManager();
     }
 
+    @Override
+    public void setTopEvents(List<SearchViewModel> searchViewModels) {
+        if (searchViewModels != null && !searchViewModels.isEmpty()) {
+            TopEventsSuggestionsAdapter adapter = new TopEventsSuggestionsAdapter(this, searchViewModels, mPresenter);
+            rvTopEventSuggestions.setLayoutManager(layoutManager);
+            rvTopEventSuggestions.setAdapter(adapter);
+            rvTopEventSuggestions.removeOnScrollListener(rvOnScrollListener);
+            tvTopevents.setText("TOP EVENTS");
+            tvTopevents.setVisibility(View.VISIBLE);
+            rvTopEventSuggestions.setVisibility(View.VISIBLE);
+            rvSearchResults.setVisibility(View.GONE);
+        } else {
+            tvTopevents.setVisibility(View.GONE);
+            rvTopEventSuggestions.setVisibility(View.GONE);
+            rvSearchResults.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void setSuggestions(List<SearchViewModel> suggestions, String highlight) {
+        if (suggestions != null && !suggestions.isEmpty()) {
+            TopEventsSuggestionsAdapter adapter = new TopEventsSuggestionsAdapter(this, suggestions, mPresenter);
+            adapter.setHighLightText(highlight);
+            rvTopEventSuggestions.setLayoutManager(layoutManager);
+            rvTopEventSuggestions.setAdapter(adapter);
+            rvTopEventSuggestions.addOnScrollListener(rvOnScrollListener);
+            tvTopevents.setVisibility(View.GONE);
+            rvTopEventSuggestions.setVisibility(View.VISIBLE);
+            rvSearchResults.setVisibility(View.GONE);
+        } else {
+            rvSearchResults.setVisibility(View.GONE);
+            rvTopEventSuggestions.setVisibility(View.GONE);
+            tvTopevents.setText("No Events Found");
+            tvTopevents.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void removeFooter() {
+        ((TopEventsSuggestionsAdapter) rvTopEventSuggestions.getAdapter()).removeFooter();
+    }
+
+    @Override
+    public void addFooter() {
+        ((TopEventsSuggestionsAdapter) rvTopEventSuggestions.getAdapter()).addFooter();
+
+    }
+
+    @Override
+    public void addEvents(List<SearchViewModel> searchViewModels) {
+        ((TopEventsSuggestionsAdapter) rvTopEventSuggestions.getAdapter()).addAll(searchViewModels);
+
+    }
+
+    @Override
+    public LinearLayoutManager getLayoutManager() {
+        return layoutManager;
+    }
+
     private void executeInjector() {
         if (eventComponent == null) initInjector();
         eventComponent.inject(this);
@@ -148,19 +227,32 @@ public class EventSearchActivity extends TActivity implements
                 .build();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_event_search, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        return mPresenter.onOptionMenuClick(item.getItemId());
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_event_search, menu);
+//        return super.onCreateOptionsMenu(menu);
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        return mPresenter.onOptionMenuClick(item.getItemId());
+//    }
 
     @Override
     protected boolean isLightToolbarThemes() {
         return true;
     }
+
+    private RecyclerView.OnScrollListener rvOnScrollListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+        }
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            mPresenter.onRecyclerViewScrolled(layoutManager);
+        }
+    };
 }
