@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.analytics.LoginPhoneNumberAnalytics;
@@ -20,6 +21,7 @@ import com.tokopedia.otp.tokocashotp.view.activity.VerificationActivity;
 import com.tokopedia.otp.tokocashotp.view.adapter.VerificationMethodAdapter;
 import com.tokopedia.otp.tokocashotp.view.viewlistener.SelectVerification;
 import com.tokopedia.otp.tokocashotp.view.viewmodel.MethodItem;
+import com.tokopedia.profilecompletion.view.util.ProgressBarAnimation;
 import com.tokopedia.session.R;
 
 import java.util.ArrayList;
@@ -67,7 +69,8 @@ public class ChooseTokocashVerificationMethodFragment extends BaseDaggerFragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle
             savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_choose_verification_method, parent, false);
+        View view = inflater.inflate(R.layout.fragment_choose_verification_method_tokocash, parent,
+                false);
         methodListRecyclerView = view.findViewById(R.id.method_list);
         prepareView();
         return view;
