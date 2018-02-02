@@ -97,11 +97,14 @@ public class ShipmentAddressListAdapter
             Log.d(TAG, msg);
 
             FragmentManager fragmentManager = ((Activity)mContext).getFragmentManager();
-            Fragment fragment = fragmentManager.findFragmentById(R.id.container);
+            Fragment fragment = CartSingleAddressFragment.newInstance();
+            String backStateName = fragment.getClass().getName();
 
-            if (fragment == null || !(fragment instanceof CartSingleAddressFragment)) {
+            boolean isFragmentPopped = fragmentManager.popBackStackImmediate(backStateName, 0);
+            if (!isFragmentPopped) {
                 fragmentManager.beginTransaction()
-                        .replace(R.id.container, CartSingleAddressFragment.newInstance())
+                        .replace(R.id.container, fragment)
+                        .addToBackStack(backStateName)
                         .commit();
             }
 

@@ -172,12 +172,16 @@ public class CartSingleAddressAdapter
                 @Override
                 public void onClick(View view) {
                     FragmentManager fragmentManager = ((Activity)mContext).getFragmentManager();
-                    Fragment fragment = fragmentManager.findFragmentById(R.id.container);
-                    if (fragment == null || !(fragment instanceof ShipmentAddressListFragment)) {
+                    Fragment fragment = ShipmentAddressListFragment.newInstance();
+
+                    String backStateName = fragment.getClass().getName();
+
+                    boolean isFragmentPopped = fragmentManager.popBackStackImmediate(backStateName, 0);
+                    if (!isFragmentPopped) {
                         fragmentManager.beginTransaction()
-                                .replace(R.id.container, ShipmentAddressListFragment.newInstance())
+                                .replace(R.id.container, fragment)
+                                .addToBackStack(backStateName)
                                 .commit();
-                        // TODO: add to back stack
                     }
                 }
             };
@@ -250,8 +254,8 @@ public class CartSingleAddressAdapter
         @BindView(R2.id.tv_payable_price) TextView mTvPayablePrice;
         @BindView(R2.id.tv_promo_free_shipping) TextView mTvPromoFreeShipping;
 
-        private boolean isExpanded;
         private CartPayableDetailModel mCartPayableDetailModel;
+        private boolean isExpanded;
 
         ShipmentCostDetailViewHolder(View itemView) {
             super(itemView);
@@ -260,7 +264,6 @@ public class CartSingleAddressAdapter
 
         void bindViewHolder() {
             mCartPayableDetailModel = mCartSingleAddressData.getCartPayableDetailModel();
-
             isExpanded = true;
 
             mTvTotalItem.setText(getTotalItem());
