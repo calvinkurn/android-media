@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.design.button.BottomActionView;
@@ -46,7 +47,10 @@ import javax.inject.Inject;
  * Created by yfsx on 24/01/18.
  */
 
-public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFragmentListener.View {
+public class ResoInboxFragment
+        extends BaseDaggerFragment
+        implements ResoInboxFragmentListener.View,
+        SwipeToRefresh.OnRefreshListener{
 
     public static final String STATE_IS_SELLER = "is_seller";
     public static final String STATE_IS_CAN_LOAD_MORE = "can_load_more";
@@ -66,6 +70,7 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
     private ProgressBar progressBar;
     private BottomActionView bottomActionView;
     private BottomSheetDialog sortDialog;
+    private SwipeToRefresh swipeToRefresh;
 
     private boolean isSeller;
     private String lastCursor = "";
@@ -114,6 +119,7 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
         rvInbox = (RecyclerView) view.findViewById(R.id.rv_inbox);
         progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
         bottomActionView = (BottomActionView) view.findViewById(R.id.bav);
+        swipeToRefresh = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
         return view;
     }
 
@@ -194,6 +200,11 @@ public class ResoInboxFragment extends BaseDaggerFragment implements ResoInboxFr
             }
         }
     };
+
+    @Override
+    public void onRefresh() {
+        initView();
+    }
 
     private void sortButtonClicked() {
         sortDialog = new BottomSheetDialog(getActivity());
