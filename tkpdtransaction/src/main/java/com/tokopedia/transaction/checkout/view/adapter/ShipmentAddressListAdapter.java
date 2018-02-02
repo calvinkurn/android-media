@@ -100,20 +100,27 @@ public class ShipmentAddressListAdapter
             Fragment fragment = fragmentManager.findFragmentById(R.id.container);
 
             if (fragment == null || !(fragment instanceof CartSingleAddressFragment)) {
-                fragmentManager.beginTransaction().replace(R.id.container,
-                        CartSingleAddressFragment.newInstance()).commit();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, CartSingleAddressFragment.newInstance())
+                        .commit();
             }
 
-            rxBus.publishEvent(new Event("HALLO!"));
+            rxBus.publishEvent(new Event(mAddressModelList.get(mPosition), "Selected!"));
         }
 
     }
 
     public class Event {
+        Object obj;
         String msg;
 
-        public Event(String msg) {
+        public Event(Object obj, String msg) {
+            this.obj = obj;
             this.msg = msg;
+        }
+
+        public Object getObject() {
+            return obj;
         }
 
         public String getMessage() {

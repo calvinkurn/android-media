@@ -12,7 +12,10 @@ public class ShipmentRecipientModelFactory {
 
     public static List<ShipmentRecipientModel> getDummyShipmentRecipientModelList() {
         List<ShipmentRecipientModel> shipmentRecipientModelList = new ArrayList<>();
-        shipmentRecipientModelList.add(createDummyShipmentRecipientModel("Pooh Panda",
+        shipmentRecipientModelList.add(createDummyShipmentRecipientModel("Sherlock Holmes",
+                "No. 221B, Baker Street, London"));
+
+        shipmentRecipientModelList.add(createDummyShipmentRecipientModel("Burung Hantu Tokped",
                 "Jl. Letjen S. Parman Kav.77, Wisma 77 Tower 2,\nTokopedia Lt. 2, Jakarta, 0817 1234 5678"));
 
         shipmentRecipientModelList.add(createDummyShipmentRecipientModel("Agus Maulana",

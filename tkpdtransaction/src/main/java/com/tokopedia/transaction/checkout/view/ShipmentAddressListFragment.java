@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.checkout.view;
 
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -37,7 +38,8 @@ import butterknife.OnClick;
 public class ShipmentAddressListFragment extends BasePresenterFragment
         implements ISearchAddressListView<List<ShipmentRecipientModel>>,
         SearchInputView.Listener,
-        SearchInputView.ResetListener {
+        SearchInputView.ResetListener,
+        FragmentManager.OnBackStackChangedListener {
 
     private static final String TAG = ShipmentAddressListFragment.class.getSimpleName();
 
@@ -243,6 +245,11 @@ public class ShipmentAddressListFragment extends BasePresenterFragment
     @Override
     public void onSearchReset() {
         mShipmentAddressListPresenter.resetSearch();
+    }
+
+    @Override
+    public void onBackStackChanged() {
+
     }
 
     private void performSearch(String keyword) {

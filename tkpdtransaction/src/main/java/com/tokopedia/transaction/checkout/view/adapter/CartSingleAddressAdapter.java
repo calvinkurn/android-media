@@ -281,7 +281,7 @@ public class CartSingleAddressAdapter
         private void toggleDetail() {
             isExpanded = !isExpanded;
 
-            mTvDrawerDetailPayable.setText(getTextDrawerChevron());
+            mTvDrawerDetailPayable.setText(getDrawerDetailPayableText());
             mIvDrawerChevron.setImageResource(getResourceDrawerChevron());
             mRlDetailFee.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
         }
@@ -319,10 +319,6 @@ public class CartSingleAddressAdapter
 
         private String getDrawerDetailPayableText() {
             return isExpanded ? "Tutup" : "Detil";
-        }
-
-        private String getTextDrawerChevron() {
-            return isExpanded ? "Tutup" : "Buka";
         }
 
         private int getResourceDrawerChevron() {
@@ -379,7 +375,7 @@ public class CartSingleAddressAdapter
             mTvProductWeight.setText(getProductWeight());
             mTvTotalProductItem.setText(getTotalProductItem());
             mTvNoteToSeller.setText(getNoteToSeller());
-            mTvShipmentOption.setText(getShippmentOption());
+            mTvShipmentOption.setText(getShipmentOption());
             mTvSubTotalItemPrice.setText(getTotalPrice());
 
             ImageHandler.LoadImage(mIvProductImage, getProductImage());
@@ -391,8 +387,13 @@ public class CartSingleAddressAdapter
             mTvShipmentOption.setOnClickListener(courierOptionSelectionListener());
             mIvChevronShipmentOption.setOnClickListener(courierOptionSelectionListener());
 
+            mTvCartDetailOption.setText(getTextDrawerChevron());
+            mIvDetailDrawerChevron.setImageResource(getResourceDrawerChevron());
+
             mTvCartDetailOption.setOnClickListener(itemPriceDetailListener());
             mIvDetailDrawerChevron.setOnClickListener(itemPriceDetailListener());
+
+            mRlDetailFee.setVisibility(getDetailFeeVisibility() );
         }
 
         private void toggleDetail() {
@@ -401,11 +402,11 @@ public class CartSingleAddressAdapter
             mTvCartDetailOption.setText(getTextDrawerChevron());
             mIvDetailDrawerChevron.setImageResource(getResourceDrawerChevron());
 
-            mRlDetailFee.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
+            mRlDetailFee.setVisibility(getDetailFeeVisibility());
         }
 
         private String getTextDrawerChevron() {
-            return isExpanded ? "Tutup" : "Buka";
+            return isExpanded ? "Tutup" : "Detil";
         }
 
         private int getResourceDrawerChevron() {
@@ -458,7 +459,7 @@ public class CartSingleAddressAdapter
             return mCartItemModel.getNoteToSeller();
         }
 
-        private String getShippmentOption() {
+        private String getShipmentOption() {
             return mCartItemModel.getShipmentOption();
         }
 
@@ -480,6 +481,10 @@ public class CartSingleAddressAdapter
 
         private int getPoStatus() {
             return mCartItemModel.isPoAvailable() ? View.VISIBLE : View.GONE;
+        }
+
+        private int getDetailFeeVisibility() {
+            return isExpanded ? View.VISIBLE : View.GONE;
         }
 
         private int getProductGalleryVisibility() {
