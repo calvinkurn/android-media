@@ -1,5 +1,7 @@
 package com.tokopedia.inbox.rescenter.inboxv2.data.mapper;
 
+import android.text.TextUtils;
+
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
@@ -135,21 +137,41 @@ public class GetInboxMapper implements Func1<Response<TkpdResponse>, InboxItemRe
                 response.getResolution().getId(),
                 actionBy,
                 response.getResolution().getStatus().getString(),
-                "#ffffff",
-                "#000000",
+                response.getResolution().getStatus().getBgColor(),
+                response.getResolution().getStatus().getFontColor().startsWith("#") ?
+                        response.getResolution().getStatus().getFontColor() :
+                        "#b2000000",
                 response.getOrder().getRefNum(),
                 response.getResolution().getRead() == STATUS_UNREAD,
-                actionBy == ACTION_BY_USER ? "Penjual:" : "Pembeli:",
-                actionBy == ACTION_BY_USER ? response.getShop().getName() : response.getCustomer().getName(),
-                response.getResolution().getAutoExecuteTime().getString(),
-                "#ffffff",
-                "#000000",
-                response.getResolution().getLastReplyTime().getString(),
-                response.getResolution().getFreeReturn() == 1 ? "Ya" : "-",
-                response.getResolution().getProduct() != null ? mappingProductImage(response.getResolution().getProduct()) : null,
-                response.getResolution().getProduct() != null ? buildStringForExtraImage(response.getResolution().getProduct()) : "",
-                response.getCustomer() != null ? response.getCustomer().getName() : "",
-                response.getShop() != null ? response.getShop().getName() : ""
+                actionBy == ACTION_BY_USER ?
+                        "Penjual:" :
+                        "Pembeli:",
+                actionBy == ACTION_BY_USER ?
+                        response.getShop().getName() :
+                        response.getCustomer().getName(),
+                !TextUtils.isEmpty(response.getResolution().getAutoExecuteTime().getString()) ?
+                        response.getResolution().getAutoExecuteTime().getString() :
+                        "-",
+                response.getResolution().getAutoExecuteTime().getColor(),
+                !TextUtils.isEmpty(response.getResolution().getAutoExecuteTime().getColor()) ?
+                        "#ffffff" :
+                        "#b2000000",
+                response.getResolution().getLastReplyTime().getFullString(),
+                response.getResolution().getFreeReturn() == 1 ?
+                        "Ya" :
+                        "-",
+                response.getResolution().getProduct() != null ?
+                        mappingProductImage(response.getResolution().getProduct()) :
+                        null,
+                response.getResolution().getProduct() != null ?
+                        buildStringForExtraImage(response.getResolution().getProduct()) :
+                        "",
+                response.getCustomer() != null ?
+                        response.getCustomer().getName() :
+                        "",
+                response.getShop() != null ?
+                        response.getShop().getName() :
+                        ""
         );
     }
 

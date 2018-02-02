@@ -6,15 +6,15 @@ import com.google.gson.annotations.SerializedName;
  * Created by yfsx on 24/01/18.
  */
 public class StatusResponse {
-    /**
-     * int : 500
-     * string : Kendala Selesai
-     */
 
     @SerializedName("int")
     private int intX;
     @SerializedName("string")
     private String string;
+    @SerializedName("fontColor")
+    private String fontColor;
+    @SerializedName("bgColor")
+    private String bgColor;
 
     public int getIntX() {
         return intX;
@@ -30,5 +30,21 @@ public class StatusResponse {
 
     public void setString(String string) {
         this.string = string;
+    }
+
+    public String getFontColor() {
+        return fontColor;
+    }
+
+    public void setFontColor(String fontColor) {
+        this.fontColor = fontColor;
+    }
+
+    public String getBgColor() {
+        return bgColor;
+    }
+
+    public void setBgColor(String bgColor) {
+        this.bgColor = bgColor;
     }
 }

@@ -277,6 +277,8 @@ yang ditemukan</string>
 
 
     <!--reso inbox-->
+    <string name="string_buyer">Pembeli:</string>
+    <string name="string_seller">Penjual:</string>
     <string name="string_auto_execute">Selesai Otomatis Dalam</string>
     <string name="string_last_reply">Terakhir Dibalas :</string>
     <string name="string_free_return">Free Return :</string>

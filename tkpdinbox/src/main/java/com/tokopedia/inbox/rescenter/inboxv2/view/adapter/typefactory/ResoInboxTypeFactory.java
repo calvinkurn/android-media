@@ -3,8 +3,7 @@ package com.tokopedia.inbox.rescenter.inboxv2.view.adapter.typefactory;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
-import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.EmptyInboxFilterDataModel;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.FilterListViewModel;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.InboxItemViewModel;
@@ -16,8 +15,6 @@ import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.InboxItemViewModel;
 public interface ResoInboxTypeFactory {
 
     int type(EmptyModel emptyModel);
-
-    int type(ErrorNetworkModel errorNetworkModel);
 
     int type(InboxItemViewModel viewModel);
 

@@ -6,11 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.core.base.adapter.model.EmptyModel;
-import com.tokopedia.core.base.adapter.model.LoadingModel;
-import com.tokopedia.core.base.adapter.model.RetryModel;
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.inbox.rescenter.inboxv2.view.adapter.typefactory.ResoInboxTypeFactory;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.FilterListViewModel;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.InboxItemViewModel;
@@ -27,7 +26,6 @@ public class ResoInboxAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     private final ResoInboxTypeFactory typeFactory;
     private EmptyModel emptyModel;
     private LoadingModel loadingModel;
-    private RetryModel retryModel;
     private boolean canLoadMore;
 
     public ResoInboxAdapter(ResoInboxTypeFactory typeFactory) {
@@ -35,7 +33,6 @@ public class ResoInboxAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         this.list = new ArrayList<>();
         this.emptyModel = new EmptyModel();
         this.loadingModel = new LoadingModel();
-        this.retryModel = new RetryModel();
     }
 
     @Override
@@ -80,18 +77,6 @@ public class ResoInboxAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     public void removeEmpty() {
         this.list.remove(emptyModel);
-    }
-
-    public void showRetry(){
-        int positionStart = getItemCount();
-        this.list.add(retryModel);
-        notifyItemRangeInserted(positionStart, 1);
-    }
-
-    public void removeRetry(){
-        int index = this.list.indexOf(retryModel);
-        this.list.remove(retryModel);
-        notifyItemRemoved(index);
     }
 
     public void showLoading() {

@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.inboxv2.view.adapter.ProductAdapter;
 import com.tokopedia.inbox.rescenter.inboxv2.view.listener.ResoInboxFragmentListener;
@@ -80,6 +80,11 @@ public class InboxItemViewHolder extends AbstractViewHolder<InboxItemViewModel> 
         tvAutoExecute.setText(item.getAutoDoneText());
         tvLastReply.setText(item.getLastReplyText());
         tvFreeReturn.setText(item.getFreeReturnText());
+
+        if (!TextUtils.isEmpty(item.getAutoDoneBackgroundColor())) {
+            tvAutoExecute.setTextColor(Color.parseColor(item.getAutoDoneTextColor()));
+            tvAutoExecute.setBackgroundColor(Color.parseColor(item.getInboxMessageBackgroundColor()));
+        }
 
         if (item.getImageList() != null) {
             ffProduct.setVisibility(View.VISIBLE);

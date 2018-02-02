@@ -6,15 +6,13 @@ import com.google.gson.annotations.SerializedName;
  * Created by yfsx on 24/01/18.
  */
 public class LastReplyTimeResponse {
-    /**
-     * time : 2017-10-24T15:34:44.084317Z
-     * string : 24/10/17 15:34
-     */
 
     @SerializedName("time")
     private String time;
     @SerializedName("string")
     private String string;
+    @SerializedName("fullString")
+    private String fullString;
 
     public String getTime() {
         return time;
@@ -30,5 +28,13 @@ public class LastReplyTimeResponse {
 
     public void setString(String string) {
         this.string = string;
+    }
+
+    public String getFullString() {
+        return fullString;
+    }
+
+    public void setFullString(String fullString) {
+        this.fullString = fullString;
     }
 }

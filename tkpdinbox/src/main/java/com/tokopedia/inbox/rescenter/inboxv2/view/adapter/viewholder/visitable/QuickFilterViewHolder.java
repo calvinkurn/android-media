@@ -3,7 +3,7 @@ package com.tokopedia.inbox.rescenter.inboxv2.view.adapter.viewholder.visitable;
 import android.support.annotation.LayoutRes;
 import android.view.View;
 
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.custom.multiple.view.QuickMultipleFilterView;
 import com.tokopedia.inbox.R;

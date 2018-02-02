@@ -1,6 +1,6 @@
 package com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel;
 
-import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.inbox.rescenter.inboxv2.view.adapter.typefactory.ResoInboxTypeFactory;
 
 /**

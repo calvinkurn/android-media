@@ -3,7 +3,7 @@ package com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.inbox.rescenter.inboxv2.view.adapter.typefactory.ResoInboxTypeFactory;
 
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.List;
  * Created by yfsx on 24/01/18.
  */
 
-public class InboxItemViewModel implements Parcelable, Visitable<ResoInboxTypeFactory>  {
+public class InboxItemViewModel implements Parcelable, Visitable<ResoInboxTypeFactory> {
     private int id;
     private int resId;
     private int actionBy;

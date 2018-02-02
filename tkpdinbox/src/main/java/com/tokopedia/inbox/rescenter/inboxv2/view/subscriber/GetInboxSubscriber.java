@@ -2,7 +2,7 @@ package com.tokopedia.inbox.rescenter.inboxv2.view.subscriber;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.inbox.rescenter.inboxv2.view.listener.ResoInboxFragmentListener;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.FilterListViewModel;

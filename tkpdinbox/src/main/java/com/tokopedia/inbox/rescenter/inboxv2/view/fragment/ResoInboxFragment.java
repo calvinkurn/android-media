@@ -15,8 +15,8 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ProgressBar;
 
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.design.button.BottomActionView;

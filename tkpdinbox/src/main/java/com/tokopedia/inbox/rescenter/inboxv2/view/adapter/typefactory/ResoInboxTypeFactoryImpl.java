@@ -2,10 +2,9 @@ package com.tokopedia.inbox.rescenter.inboxv2.view.adapter.typefactory;
 
 import android.view.View;
 
+import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
-import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
-import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
-import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.inbox.rescenter.inboxv2.view.adapter.viewholder.visitable.EmptyResoInboxFilterViewHolder;
 import com.tokopedia.inbox.rescenter.inboxv2.view.adapter.viewholder.visitable.EmptyResoInboxViewHolder;
 import com.tokopedia.inbox.rescenter.inboxv2.view.adapter.viewholder.visitable.InboxItemViewHolder;
@@ -31,10 +30,6 @@ public class ResoInboxTypeFactoryImpl extends BaseAdapterTypeFactory implements 
         return EmptyResoInboxViewHolder.LAYOUT;
     }
 
-    @Override
-    public int type(ErrorNetworkModel errorNetworkModel) {
-        return 0;
-    }
 
     @Override
     public int type(EmptyInboxFilterDataModel emptyInboxFilterDataModel) {
