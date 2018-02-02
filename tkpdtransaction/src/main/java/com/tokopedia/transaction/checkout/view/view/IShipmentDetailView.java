@@ -20,15 +20,9 @@ public interface IShipmentDetailView extends CustomerView {
 
     void showData();
 
-    void renderInstantShipment(ShipmentDetailData shipmentDetailData);
+    void renderShipmentWithMap(ShipmentDetailData shipmentDetailData);
 
-    void renderSameDayShipment(ShipmentDetailData shipmentDetailData);
-
-    void renderNextDayShipment(ShipmentDetailData shipmentDetailData);
-
-    void renderRegularShipment(ShipmentDetailData shipmentDetailData);
-
-    void renderKargoShipment(ShipmentDetailData shipmentDetailData);
+    void renderShipmentWithoutMap(ShipmentDetailData shipmentDetailData);
 
     void showFirstThreeCouriers(List<CourierItemData> couriers);
 

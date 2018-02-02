@@ -211,6 +211,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
     @Override
     protected void initialPresenter() {
         presenter = new ShipmentDetailPresenter();
+        presenter.setContext(getActivity());
     }
 
     @Override
@@ -320,41 +321,18 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
         setText(tvDeliveryFeeTotal, shipmentDetailData.getDeliveryPriceTotal());
     }
 
-    private void renderShipmentWithMap(ShipmentDetailData shipmentDetailData) {
+    @Override
+    public void renderShipmentWithMap(ShipmentDetailData shipmentDetailData) {
         showPinPointMap(shipmentDetailData);
         renderShipment(shipmentDetailData);
         presenter.setCourierList(shipmentDetailData.getShipmentItemData().get(0).getCourierItemData());
     }
 
-    private void renderShipmentWithoutMap(ShipmentDetailData shipmentDetailData) {
+    @Override
+    public void renderShipmentWithoutMap(ShipmentDetailData shipmentDetailData) {
         llPinpoint.setVisibility(View.GONE);
         renderShipment(shipmentDetailData);
         presenter.setCourierList(shipmentDetailData.getShipmentItemData().get(0).getCourierItemData());
-    }
-
-    @Override
-    public void renderInstantShipment(ShipmentDetailData shipmentDetailData) {
-        renderShipmentWithMap(shipmentDetailData);
-    }
-
-    @Override
-    public void renderSameDayShipment(ShipmentDetailData shipmentDetailData) {
-        renderShipmentWithMap(shipmentDetailData);
-    }
-
-    @Override
-    public void renderNextDayShipment(ShipmentDetailData shipmentDetailData) {
-        renderShipmentWithMap(shipmentDetailData);
-    }
-
-    @Override
-    public void renderRegularShipment(ShipmentDetailData shipmentDetailData) {
-        renderShipmentWithoutMap(shipmentDetailData);
-    }
-
-    @Override
-    public void renderKargoShipment(ShipmentDetailData shipmentDetailData) {
-        renderShipmentWithoutMap(shipmentDetailData);
     }
 
     @Override
@@ -404,6 +382,11 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
                 LinearLayoutManager.VERTICAL, false);
         rvCourierChoice.setLayoutManager(linearLayoutManager);
         rvCourierChoice.setAdapter(courierChoiceAdapter);
+        if (courierChoiceAdapter.getItemCount() > 3) {
+            llExpandedCourierList.setVisibility(View.VISIBLE);
+        } else {
+            llExpandedCourierList.setVisibility(View.GONE);
+        }
     }
 
     private void renderNoPinpoint() {
