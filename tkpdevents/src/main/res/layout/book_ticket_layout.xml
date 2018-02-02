@@ -15,7 +15,7 @@
         android:layout_gravity="top"
         android:background="@color/white"
         app:theme="@style/AppBarTheme"
-        app:titleTextAppearance="@style/Toolbar.TitleText"
+        app:titleTextAppearance="@style/EventToolbarTextStyle"
         app:titleTextColor="@color/grey_900" />
 
     <android.support.v4.widget.NestedScrollView
@@ -34,12 +34,16 @@
                 android:id="@+id/seating_layout_card"
                 layout="@layout/seating_layout" />
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/grey_100" />
+
 
             <android.support.design.widget.TabLayout
                 android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
                 android:layout_height="76dp"
-                android:layout_marginTop="2dp"
                 android:background="@color/white"
                 android:overScrollMode="ifContentScrolls"
                 android:paddingBottom="4dp"
@@ -50,12 +54,17 @@
                 app:tabPaddingEnd="2dp"
                 app:tabPaddingStart="0dp" />
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/grey_100" />
+
             <android.support.v4.view.ViewPager
                 android:id="@+id/viewpager_book_ticket"
                 android:layout_width="match_parent"
                 android:layout_height="480dp"
-                android:layout_marginTop="2dp"
-                android:background="@color/white" />
+                android:background="@color/white"
+                android:paddingBottom="@dimen/margin_default" />
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
@@ -65,8 +74,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:visibility="gone"
-        android:background="@color/white">
+        android:background="@color/white"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/tiket"

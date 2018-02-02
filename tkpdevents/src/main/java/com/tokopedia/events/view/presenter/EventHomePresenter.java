@@ -20,6 +20,7 @@ import com.tokopedia.events.view.contractor.EventsContract;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.events.view.viewmodel.CategoryViewModel;
+import com.tokopedia.events.view.viewmodel.SearchViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +42,7 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
     public GetEventsListRequestUseCase getEventsListRequestUsecase;
     public GetEventsListByLocationRequestUseCase getEventsListByLocationRequestUseCase;
     CategoryViewModel carousel;
+    List<CategoryViewModel> categoryViewModels;
     TouchViewPager mTouchViewPager;
     int currentPage, totalPages;
     String PROMOURL = "https://www.tokopedia.com/promo/tiket/events/";
@@ -101,7 +103,11 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
     @Override
     public boolean onOptionMenuClick(int id) {
         if (id == R.id.action_menu_search) {
-            getView().navigateToActivityRequest(EventSearchActivity.getCallingIntent(getView().getActivity()),
+            ArrayList<SearchViewModel> searchViewModelList = Utils.getSingletonInstance()
+                    .convertIntoSearchViewModel(categoryViewModels);
+            Intent searchIntent = EventSearchActivity.getCallingIntent(getView().getActivity());
+            searchIntent.putParcelableArrayListExtra("TOPEVENTS",searchViewModelList);
+            getView().navigateToActivityRequest(searchIntent,
                     EventsHomeActivity.REQUEST_CODE_EVENTSEARCHACTIVITY);
             return true;
         } else if (id == R.id.action_promo) {
@@ -142,10 +148,11 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
             @Override
             public void onNext(List<EventsCategoryDomain> categoryEntities) {
                 getView().hideProgressBar();
-                List<CategoryViewModel> categoryViewModels = Utils.getSingletonInstance()
+                categoryViewModels = Utils.getSingletonInstance()
                         .convertIntoCategoryListVeiwModel(categoryEntities);
                 getCarousel(categoryViewModels);
                 getView().renderCategoryList(categoryViewModels);
+                getView().showSearchButton();
                 CommonUtils.dumper("enter onNext");
             }
         });

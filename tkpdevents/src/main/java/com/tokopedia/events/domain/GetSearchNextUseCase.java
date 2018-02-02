@@ -9,23 +9,25 @@ import com.tokopedia.events.domain.model.searchdomainmodel.SearchDomainModel;
 import rx.Observable;
 
 /**
- * Created by ashwanityagi on 06/11/17.
+ * Created by pranaymohapatra on 30/01/18.
  */
 
-public class GetSearchEventsListRequestUseCase extends UseCase<SearchDomainModel> {
-    private final EventRepository eventRepository;
-    public final String TAG = "tags";
-    public final String CATEGORY = "child_category_ids";
-    public final String TIME = "time";
+public class GetSearchNextUseCase extends UseCase<SearchDomainModel> {
 
-    public GetSearchEventsListRequestUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, EventRepository eventRepository) {
+    private final EventRepository eventRepository;
+    String nextUrl;
+
+    public GetSearchNextUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, EventRepository eventRepository) {
         super(threadExecutor, postExecutionThread);
         this.eventRepository = eventRepository;
     }
 
+    public void setNextUrl(String Url) {
+        nextUrl = Url;
+    }
+
     @Override
     public Observable<SearchDomainModel> createObservable(RequestParams requestParams) {
-        return eventRepository.getSearchEvents(requestParams.getParameters());
-
+        return eventRepository.getSearchNext(nextUrl);
     }
 }

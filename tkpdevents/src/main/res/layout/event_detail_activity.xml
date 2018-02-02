@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_content"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/grey_100">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -24,7 +25,9 @@
                 app:layout_behavior="com.tokopedia.events.view.behaviours.ToolBarBehaviour"
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                app:theme="@style/AppBarTheme" />
+                app:theme="@style/AppBarTheme"
+                app:titleTextAppearance="@style/EventToolbarTextStyle"
+                app:subtitleTextAppearance="@style/EventToolbarTextStyle"/>
         </android.support.design.widget.AppBarLayout>
 
         <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"

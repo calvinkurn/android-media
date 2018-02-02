@@ -180,7 +180,7 @@ public class EventBookTicketPresenter
         date[0] = dateRange.substring(0, 3);//day
         //Sat, 14 Apr 2018 - Sat, 14 Apr 2018
         date[1] = dateRange.substring(5, 7).trim();//date
-        date[2] = dateRange.substring(8, 11);//month
+        date[2] = dateRange.substring(7, 11).trim();//month
         return date;
     }
 }

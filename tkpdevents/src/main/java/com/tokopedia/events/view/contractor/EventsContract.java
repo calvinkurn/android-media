@@ -38,6 +38,10 @@ public class EventsContract {
 
         void hideProgressBar();
 
+        void hideSearchButton();
+
+        void showSearchButton();
+
     }
 
     public interface Presenter extends CustomerPresenter<View> {

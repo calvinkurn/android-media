@@ -38,6 +38,11 @@ public class CloudEventsDataStore implements EventDataStore {
     }
 
     @Override
+    public Observable<SearchResponse> getSearchNext(String nextUrl) {
+        return eventsApi.getSearchNext(nextUrl);
+    }
+
+    @Override
     public Observable<EventLocationEntity> getEventsLocationList(TKPDMapParam<String, Object> params) {
         return eventsApi.getEventsLocationList();
     }

@@ -22,6 +22,7 @@ import com.tokopedia.events.domain.GetEventsListByLocationRequestUseCase;
 import com.tokopedia.events.domain.GetEventsListRequestUseCase;
 import com.tokopedia.events.domain.GetEventsLocationListRequestUseCase;
 import com.tokopedia.events.domain.GetSearchEventsListRequestUseCase;
+import com.tokopedia.events.domain.GetSearchNextUseCase;
 import com.tokopedia.events.domain.GetSeatLayoutUseCase;
 import com.tokopedia.events.domain.postusecase.PostValidateShowUseCase;
 import com.tokopedia.events.domain.postusecase.PostVerifyCartUseCase;
@@ -170,6 +171,14 @@ public class EventModule {
                                                       PostExecutionThread postExecutionThread,
                                                       EventRepository eventRepository) {
         return new GetSeatLayoutUseCase(threadExecutor, postExecutionThread, eventRepository);
+    }
+
+    @Provides
+    @EventScope
+    GetSearchNextUseCase providesGetSearchNextUseCase(ThreadExecutor threadExecutor,
+                                                      PostExecutionThread postExecutionThread,
+                                                      EventRepository eventRepository) {
+        return new GetSearchNextUseCase(threadExecutor, postExecutionThread, eventRepository);
     }
 
     @Provides

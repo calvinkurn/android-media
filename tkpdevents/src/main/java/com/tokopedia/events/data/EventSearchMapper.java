@@ -150,6 +150,7 @@ public class EventSearchMapper {
         PageDomain pageDomain = new PageDomain();
         pageDomain.setUriNext(source.getPage().getUriNext());
         pageDomain.setUriPrev(source.getPage().getUriPrev());
+        target.setPage(pageDomain);
         return target;
     }
 

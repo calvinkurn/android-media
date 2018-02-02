@@ -206,12 +206,14 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
 //        } else {
 //            tvExpandableTermsNCondition.setText(Html.fromHtml(homedata.getTnc()));
 //        }
-        if (homedata.getDisplayTags().length() < 3)
+        if (homedata.getDisplayTags() == null || homedata.getDisplayTags().length() < 3)
             tvDisplayTag.setVisibility(View.GONE);
-        else
+        else {
             tvDisplayTag.setText(homedata.getDisplayTags());
-        if (homedata.getHasSeatLayout() != 1)
-            seatingLayoutCard.setVisibility(View.GONE);
+            tvDisplayTag.setVisibility(View.VISIBLE);
+        }
+//        if (homedata.getHasSeatLayout() != 1)
+//            seatingLayoutCard.setVisibility(View.GONE);
 
         String buttonText = getString(R.string.lanjutkan) + " " +
                 String.format(getString(R.string.starting_from),
@@ -231,6 +233,39 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     @Override
     public void renderFromCloud(EventsDetailsViewModel data) {
         setHolder(R.drawable.ic_skyline, data.getSchedulesViewModels().get(0).getaDdress(), addressHolder);
+        tvExpandableDescription.setText(Html.fromHtml(data.getLongRichDesc()));
+
+
+        String tnc = data.getTnc();
+        String splitArray[] = tnc.split("~");
+        int flag = 1;
+
+        StringBuilder tncBuffer = new StringBuilder();
+
+        for (String line : splitArray) {
+            if (flag == 1) {
+                tncBuffer.append("<i>").append(line).append("</i>").append("<br>");
+                flag = 2;
+            } else {
+                tncBuffer.append("<b>").append(line).append("</b>").append("<br>");
+                flag = 1;
+            }
+        }
+        tvExpandableTermsNCondition.setText(Html.fromHtml(tncBuffer.toString()));
+
+        if (data.getDisplayTags() == null || data.getDisplayTags().length() < 3)
+            tvDisplayTag.setVisibility(View.GONE);
+        else {
+            tvDisplayTag.setText(data.getDisplayTags());
+            tvDisplayTag.setVisibility(View.VISIBLE);
+        }
+        if (data.getHasSeatLayout() != 1)
+            seatingLayoutCard.setVisibility(View.GONE);
+
+        String buttonText = getString(R.string.lanjutkan) + " " +
+                String.format(getString(R.string.starting_from),
+                        "Rp " + CurrencyUtil.convertToCurrencyString(data.getSalesPrice()));
+        buttonTextView.setText(buttonText);
     }
 
     @Override

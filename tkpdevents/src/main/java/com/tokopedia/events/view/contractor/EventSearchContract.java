@@ -3,6 +3,7 @@ package com.tokopedia.events.view.contractor;
 import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.LinearLayoutManager;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
@@ -10,6 +11,7 @@ import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.events.domain.model.searchdomainmodel.ValuesItemDomain;
 import com.tokopedia.events.view.adapter.FiltersAdapter;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
+import com.tokopedia.events.view.viewmodel.SearchViewModel;
 
 import java.util.List;
 
@@ -18,7 +20,7 @@ import java.util.List;
  */
 
 public class EventSearchContract {
-    public interface EventSearchView extends CustomerView {
+    public interface IEventSearchView extends CustomerView {
         void showMessage(String message);
 
         Activity getActivity();
@@ -36,9 +38,21 @@ public class EventSearchContract {
         android.view.View getRootView();
 
         FragmentManager getFragmentManagerInstance();
+
+        void setTopEvents(List<SearchViewModel> searchViewModels);
+
+        void setSuggestions(List<SearchViewModel> suggestions, String highlight);
+
+        void removeFooter();
+
+        void addFooter();
+
+        void addEvents(List<SearchViewModel> searchViewModels);
+
+        LinearLayoutManager getLayoutManager();
     }
 
-    public interface EventSearchPresenter extends CustomerPresenter<EventSearchView>{
+    public interface IEventSearchPresenter extends CustomerPresenter<IEventSearchView>{
 
         void getEventsListBySearch(String searchText);
 
@@ -53,5 +67,9 @@ public class EventSearchContract {
         boolean onOptionMenuClick(int id);
 
         void onClickFilterItem(ValuesItemDomain filterItem, FiltersAdapter.FilterViewHolder viewHolder);
+
+        void onSearchResultClick(SearchViewModel searchViewModel);
+
+        void onRecyclerViewScrolled(LinearLayoutManager layoutManager);
     }
 }

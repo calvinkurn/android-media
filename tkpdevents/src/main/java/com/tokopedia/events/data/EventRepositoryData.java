@@ -13,8 +13,8 @@ import com.tokopedia.events.data.entity.response.seatlayoutresponse.SeatLayoutRe
 import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
 import com.tokopedia.events.domain.EventRepository;
 import com.tokopedia.events.domain.model.EventDetailsDomain;
-import com.tokopedia.events.domain.model.EventsCategoryDomain;
 import com.tokopedia.events.domain.model.EventLocationDomain;
+import com.tokopedia.events.domain.model.EventsCategoryDomain;
 import com.tokopedia.events.domain.model.searchdomainmodel.SearchDomainModel;
 
 import java.util.List;
@@ -59,6 +59,19 @@ public class EventRepositoryData implements EventRepository {
         return eventsDataStoreFactory
                 .createCloudDataStore()
                 .getSearchEvents(params).map(new Func1<SearchResponse, SearchDomainModel>() {
+                    @Override
+                    public SearchDomainModel call(SearchResponse searchResponseEntity) {
+                        CommonUtils.dumper("inside SearchResponseEntity = " + searchResponseEntity);
+                        return EventSearchMapper.getSearchMapper().convertToSearchDomain(searchResponseEntity);
+                    }
+                });
+    }
+
+    @Override
+    public Observable<SearchDomainModel> getSearchNext(String nextUrl) {
+        return eventsDataStoreFactory
+                .createCloudDataStore()
+                .getSearchNext(nextUrl).map(new Func1<SearchResponse, SearchDomainModel>() {
                     @Override
                     public SearchDomainModel call(SearchResponse searchResponseEntity) {
                         CommonUtils.dumper("inside SearchResponseEntity = " + searchResponseEntity);
@@ -135,7 +148,7 @@ public class EventRepositoryData implements EventRepository {
                                                         int package_id) {
         return eventsDataStoreFactory
                 .createCloudDataStore()
-                .getSeatLayout(category_id,product_id,schedule_id,group_id,package_id);
+                .getSeatLayout(category_id, product_id, schedule_id, group_id, package_id);
     }
 
 
