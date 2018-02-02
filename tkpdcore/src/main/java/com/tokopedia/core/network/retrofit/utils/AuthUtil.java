@@ -174,7 +174,6 @@ public class AuthUtil {
                 HEADER_ACCOUNTS_AUTHORIZATION,
                 PARAM_BEARER + SessionHandler.getAccessToken()
         );
-        finalHeader.remove(HEADER_CONTENT_TYPE);
         return finalHeader;
     }
 
