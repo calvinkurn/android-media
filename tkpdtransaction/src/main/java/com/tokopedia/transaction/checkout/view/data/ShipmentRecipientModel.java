@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * @author Aghny A. Putra on 25/01/18
  */
 
-public class ShippingRecipientModel implements Parcelable {
+public class ShipmentRecipientModel implements Parcelable {
 
     private String recipientName;
     private String recipientAddress;
@@ -39,23 +39,23 @@ public class ShippingRecipientModel implements Parcelable {
         dest.writeString(this.recipientAddress);
     }
 
-    public ShippingRecipientModel() {
+    public ShipmentRecipientModel() {
     }
 
-    protected ShippingRecipientModel(Parcel in) {
+    protected ShipmentRecipientModel(Parcel in) {
         this.recipientName = in.readString();
         this.recipientAddress = in.readString();
     }
 
-    public static final Parcelable.Creator<ShippingRecipientModel> CREATOR = new Parcelable.Creator<ShippingRecipientModel>() {
+    public static final Parcelable.Creator<ShipmentRecipientModel> CREATOR = new Parcelable.Creator<ShipmentRecipientModel>() {
         @Override
-        public ShippingRecipientModel createFromParcel(Parcel source) {
-            return new ShippingRecipientModel(source);
+        public ShipmentRecipientModel createFromParcel(Parcel source) {
+            return new ShipmentRecipientModel(source);
         }
 
         @Override
-        public ShippingRecipientModel[] newArray(int size) {
-            return new ShippingRecipientModel[size];
+        public ShipmentRecipientModel[] newArray(int size) {
+            return new ShipmentRecipientModel[size];
         }
     };
 }

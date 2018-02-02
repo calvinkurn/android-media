@@ -12,26 +12,26 @@ import java.util.List;
  */
 public class CartSingleAddressData implements Parcelable {
 
-    private ShippingFeeBannerModel shippingFeeBannerModel;
-    private ShippingRecipientModel shippingRecipientModel;
+    private ShipmentFeeBannerModel shipmentFeeBannerModel;
+    private ShipmentRecipientModel shipmentRecipientModel;
     private DropshipperShippingOptionModel dropshipperShippingOptionModel;
     private List<CartItemModel> cartItemModelList;
     private CartPayableDetailModel cartPayableDetailModel;
 
-    public ShippingFeeBannerModel getShippingFeeBannerModel() {
-        return shippingFeeBannerModel;
+    public ShipmentFeeBannerModel getShipmentFeeBannerModel() {
+        return shipmentFeeBannerModel;
     }
 
-    public void setShippingFeeBannerModel(ShippingFeeBannerModel shippingFeeBannerModel) {
-        this.shippingFeeBannerModel = shippingFeeBannerModel;
+    public void setShipmentFeeBannerModel(ShipmentFeeBannerModel shipmentFeeBannerModel) {
+        this.shipmentFeeBannerModel = shipmentFeeBannerModel;
     }
 
-    public ShippingRecipientModel getShippingRecipientModel() {
-        return shippingRecipientModel;
+    public ShipmentRecipientModel getShipmentRecipientModel() {
+        return shipmentRecipientModel;
     }
 
-    public void setShippingRecipientModel(ShippingRecipientModel shippingRecipientModel) {
-        this.shippingRecipientModel = shippingRecipientModel;
+    public void setShipmentRecipientModel(ShipmentRecipientModel shipmentRecipientModel) {
+        this.shipmentRecipientModel = shipmentRecipientModel;
     }
 
     public DropshipperShippingOptionModel getDropshipperShippingOptionModel() {
@@ -65,8 +65,8 @@ public class CartSingleAddressData implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(this.shippingFeeBannerModel, flags);
-        dest.writeParcelable(this.shippingRecipientModel, flags);
+        dest.writeParcelable(this.shipmentFeeBannerModel, flags);
+        dest.writeParcelable(this.shipmentRecipientModel, flags);
         dest.writeParcelable(this.dropshipperShippingOptionModel, flags);
         dest.writeTypedList(this.cartItemModelList);
         dest.writeParcelable(this.cartPayableDetailModel, flags);
@@ -76,8 +76,8 @@ public class CartSingleAddressData implements Parcelable {
     }
 
     protected CartSingleAddressData(Parcel in) {
-        this.shippingFeeBannerModel = in.readParcelable(ShippingFeeBannerModel.class.getClassLoader());
-        this.shippingRecipientModel = in.readParcelable(ShippingRecipientModel.class.getClassLoader());
+        this.shipmentFeeBannerModel = in.readParcelable(ShipmentFeeBannerModel.class.getClassLoader());
+        this.shipmentRecipientModel = in.readParcelable(ShipmentRecipientModel.class.getClassLoader());
         this.dropshipperShippingOptionModel = in.readParcelable(DropshipperShippingOptionModel.class.getClassLoader());
         this.cartItemModelList = in.createTypedArrayList(CartItemModel.CREATOR);
         this.cartPayableDetailModel = in.readParcelable(CartPayableDetailModel.class.getClassLoader());

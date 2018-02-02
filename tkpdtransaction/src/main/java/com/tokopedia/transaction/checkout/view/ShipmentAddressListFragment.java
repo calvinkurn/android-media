@@ -8,7 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Toast;
 
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.design.text.SearchInputView;
@@ -17,9 +16,9 @@ import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.di.component.CartAddressListComponent;
 import com.tokopedia.transaction.checkout.di.component.DaggerCartAddressListComponent;
 import com.tokopedia.transaction.checkout.di.module.CartAddressListModule;
-import com.tokopedia.transaction.checkout.view.adapter.CartAddressListAdapter;
-import com.tokopedia.transaction.checkout.view.data.ShippingRecipientModel;
-import com.tokopedia.transaction.checkout.view.presenter.CartAddressListPresenter;
+import com.tokopedia.transaction.checkout.view.adapter.ShipmentAddressListAdapter;
+import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
+import com.tokopedia.transaction.checkout.view.presenter.ShipmentAddressListPresenter;
 import com.tokopedia.transaction.checkout.view.view.ISearchAddressListView;
 
 import java.util.ArrayList;
@@ -35,25 +34,25 @@ import butterknife.OnClick;
 /**
  * @author Aghny A. Putra on 25/01/18
  */
-public class ShippingAddressListFragment extends BasePresenterFragment
-        implements ISearchAddressListView<List<ShippingRecipientModel>>,
+public class ShipmentAddressListFragment extends BasePresenterFragment
+        implements ISearchAddressListView<List<ShipmentRecipientModel>>,
         SearchInputView.Listener,
         SearchInputView.ResetListener {
 
-    private static final String TAG = ShippingAddressListFragment.class.getSimpleName();
+    private static final String TAG = ShipmentAddressListFragment.class.getSimpleName();
 
     @BindView(R2.id.rv_address_list) RecyclerView mRvRecipientAddressList;
     @BindView(R2.id.sv_address_search_box) SearchInputView mSvAddressSearchBox;
 
-    @Inject CartAddressListAdapter mCartAddressListAdapter;
-    @Inject CartAddressListPresenter mCartAddressListPresenter;
+    @Inject ShipmentAddressListAdapter mShipmentAddressListAdapter;
+    @Inject ShipmentAddressListPresenter mShipmentAddressListPresenter;
 
-    public static ShippingAddressListFragment newInstance() {
-        return new ShippingAddressListFragment();
+    public static ShipmentAddressListFragment newInstance() {
+        return new ShipmentAddressListFragment();
     }
 
-    public static ShippingAddressListFragment newInstance(Map<String, String> params) {
-        ShippingAddressListFragment fragment = new ShippingAddressListFragment();
+    public static ShipmentAddressListFragment newInstance(Map<String, String> params) {
+        ShipmentAddressListFragment fragment = new ShipmentAddressListFragment();
         Bundle bundle = new Bundle();
         fragment.setArguments(bundle);
         return fragment;
@@ -146,9 +145,9 @@ public class ShippingAddressListFragment extends BasePresenterFragment
         ButterKnife.bind(this, view);
 
         mRvRecipientAddressList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRvRecipientAddressList.setAdapter(mCartAddressListAdapter);
+        mRvRecipientAddressList.setAdapter(mShipmentAddressListAdapter);
 
-        mCartAddressListPresenter.attachView(this);
+        mShipmentAddressListPresenter.attachView(this);
 
         initSearchView();
     }
@@ -158,7 +157,7 @@ public class ShippingAddressListFragment extends BasePresenterFragment
      */
     @Override
     protected void setViewListener() {
-        mCartAddressListPresenter.getAddressList();
+        mShipmentAddressListPresenter.getAddressList();
     }
 
     /**
@@ -183,15 +182,15 @@ public class ShippingAddressListFragment extends BasePresenterFragment
     }
 
     @Override
-    public void showList(List<ShippingRecipientModel> shippingRecipientModels) {
-        mCartAddressListAdapter.setAddressList(shippingRecipientModels);
-        mCartAddressListAdapter.notifyDataSetChanged();
+    public void showList(List<ShipmentRecipientModel> shipmentRecipientModels) {
+        mShipmentAddressListAdapter.setAddressList(shipmentRecipientModels);
+        mShipmentAddressListAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void showListEmpty() {
-        mCartAddressListAdapter.setAddressList(new ArrayList<ShippingRecipientModel>());
-        mCartAddressListAdapter.notifyDataSetChanged();
+        mShipmentAddressListAdapter.setAddressList(new ArrayList<ShipmentRecipientModel>());
+        mShipmentAddressListAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -231,23 +230,27 @@ public class ShippingAddressListFragment extends BasePresenterFragment
 
     @Override
     public void onSearchSubmitted(String text) {
-        Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
-        if (!text.isEmpty()) {
-            mCartAddressListPresenter.initSearch(text);
-        } else {
-            onSearchReset();
-        }
+        performSearch(text);
         closeSoftKeyboard();
     }
 
     @Override
     public void onSearchTextChanged(String text) {
-
+        openSoftKeyboard();
+        performSearch(text);
     }
 
     @Override
     public void onSearchReset() {
-        mCartAddressListPresenter.resetSearch();
+        mShipmentAddressListPresenter.resetSearch();
+    }
+
+    private void performSearch(String keyword) {
+        if (!keyword.isEmpty()) {
+            mShipmentAddressListPresenter.initSearch(keyword);
+        } else {
+            onSearchReset();
+        }
     }
 
     private void openSoftKeyboard() {

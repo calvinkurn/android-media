@@ -17,13 +17,13 @@ import android.widget.Toast;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
-import com.tokopedia.transaction.checkout.view.ShippingAddressListFragment;
+import com.tokopedia.transaction.checkout.view.ShipmentAddressListFragment;
 import com.tokopedia.transaction.checkout.view.data.CartItemModel;
 import com.tokopedia.transaction.checkout.view.data.CartPayableDetailModel;
 import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
 import com.tokopedia.transaction.checkout.view.data.DropshipperShippingOptionModel;
-import com.tokopedia.transaction.checkout.view.data.ShippingFeeBannerModel;
-import com.tokopedia.transaction.checkout.view.data.ShippingRecipientModel;
+import com.tokopedia.transaction.checkout.view.data.ShipmentFeeBannerModel;
+import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -122,7 +122,7 @@ public class CartSingleAddressAdapter
         @BindView(R2.id.rl_free_shipment_fee_header) RelativeLayout mRlFreeShipmentFeeHeader;
         @BindView(R2.id.tv_shpping_fee) TextView mTvShippingFee;
 
-        private ShippingFeeBannerModel mShippingFeeBannerModel;
+        private ShipmentFeeBannerModel mShipmentFeeBannerModel;
 
         FreeShippingFeeViewHolder(View itemView) {
             super(itemView);
@@ -130,18 +130,18 @@ public class CartSingleAddressAdapter
         }
 
         void bindViewHolder() {
-            mShippingFeeBannerModel = mCartSingleAddressData.getShippingFeeBannerModel();
+            mShipmentFeeBannerModel = mCartSingleAddressData.getShipmentFeeBannerModel();
 
             mRlFreeShipmentFeeHeader.setVisibility(getVisibility());
             mTvShippingFee.setText(getShippingFee());
         }
 
         private int getVisibility() {
-            return mShippingFeeBannerModel.isVisible() ? View.VISIBLE : View.GONE;
+            return mShipmentFeeBannerModel.isVisible() ? View.VISIBLE : View.GONE;
         }
 
         private String getShippingFee() {
-            return mShippingFeeBannerModel.getShipmentFeeDiscount();
+            return mShipmentFeeBannerModel.getShipmentFeeDiscount();
         }
 
     }
@@ -152,7 +152,7 @@ public class CartSingleAddressAdapter
         @BindView(R2.id.tv_recipient_address) TextView mTvRecipientAddress;
         @BindView(R2.id.tv_add_or_change_address) TextView mTvAddOrChangeAddress;
 
-        private ShippingRecipientModel mShippingRecipientModel;
+        private ShipmentRecipientModel mShipmentRecipientModel;
 
         ShippingRecipientViewHolder(View itemView) {
             super(itemView);
@@ -160,7 +160,7 @@ public class CartSingleAddressAdapter
         }
 
         void bindViewHolder() {
-            mShippingRecipientModel = mCartSingleAddressData.getShippingRecipientModel();
+            mShipmentRecipientModel = mCartSingleAddressData.getShipmentRecipientModel();
 
             mTvRecipientName.setText(getRecipientName());
             mTvRecipientAddress.setText(getRecipientAddress());
@@ -173,9 +173,9 @@ public class CartSingleAddressAdapter
                 public void onClick(View view) {
                     FragmentManager fragmentManager = ((Activity)mContext).getFragmentManager();
                     Fragment fragment = fragmentManager.findFragmentById(R.id.container);
-                    if (fragment == null || !(fragment instanceof ShippingAddressListFragment)) {
+                    if (fragment == null || !(fragment instanceof ShipmentAddressListFragment)) {
                         fragmentManager.beginTransaction()
-                                .replace(R.id.container, ShippingAddressListFragment.newInstance())
+                                .replace(R.id.container, ShipmentAddressListFragment.newInstance())
                                 .commit();
                         // TODO: add to back stack
                     }
@@ -184,11 +184,11 @@ public class CartSingleAddressAdapter
         }
 
         private String getRecipientName() {
-            return mShippingRecipientModel.getRecipientName();
+            return mShipmentRecipientModel.getRecipientName();
         }
 
         private String getRecipientAddress() {
-            return mShippingRecipientModel.getRecipientAddress();
+            return mShipmentRecipientModel.getRecipientAddress();
         }
 
     }

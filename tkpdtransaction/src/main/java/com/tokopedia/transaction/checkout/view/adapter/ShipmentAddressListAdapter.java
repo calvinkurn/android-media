@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.view.CartSingleAddressFragment;
-import com.tokopedia.transaction.checkout.view.data.ShippingRecipientModel;
+import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,19 +27,19 @@ import butterknife.ButterKnife;
 /**
  * @author Aghny A. Putra on 26/01/18
  */
-public class CartAddressListAdapter
-        extends RecyclerView.Adapter<CartAddressListAdapter.RecipientAddressViewHolder> {
+public class ShipmentAddressListAdapter
+        extends RecyclerView.Adapter<ShipmentAddressListAdapter.RecipientAddressViewHolder> {
 
-    private static final String TAG = CartAddressListAdapter.class.getSimpleName();
+    private static final String TAG = ShipmentAddressListAdapter.class.getSimpleName();
 
-    private List<ShippingRecipientModel> mAddressModelList;
+    private List<ShipmentRecipientModel> mAddressModelList;
     private Context mContext;
 
-    public CartAddressListAdapter() {
+    public ShipmentAddressListAdapter() {
 
     }
 
-    public void setAddressList(List<ShippingRecipientModel> addressModelList) {
+    public void setAddressList(List<ShipmentRecipientModel> addressModelList) {
         mAddressModelList = new ArrayList<>(addressModelList);
     }
 
@@ -52,7 +52,7 @@ public class CartAddressListAdapter
 
     @Override
     public void onBindViewHolder(final RecipientAddressViewHolder holder, int position) {
-        ShippingRecipientModel address = mAddressModelList.get(position);
+        ShipmentRecipientModel address = mAddressModelList.get(position);
 
         holder.mTvRecipientName.setText(address.getRecipientName());
         holder.mTvRecipientAddress.setText(address.getRecipientAddress());

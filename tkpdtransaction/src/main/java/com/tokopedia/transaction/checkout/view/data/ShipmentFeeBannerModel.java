@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * @author Aghny A. Putra on 25/01/18
  */
 
-public class ShippingFeeBannerModel implements Parcelable {
+public class ShipmentFeeBannerModel implements Parcelable {
 
     private boolean visible;
     private String shipmentFeeDiscount;
@@ -39,23 +39,23 @@ public class ShippingFeeBannerModel implements Parcelable {
         dest.writeString(this.shipmentFeeDiscount);
     }
 
-    public ShippingFeeBannerModel() {
+    public ShipmentFeeBannerModel() {
     }
 
-    protected ShippingFeeBannerModel(Parcel in) {
+    protected ShipmentFeeBannerModel(Parcel in) {
         this.visible = in.readByte() != 0;
         this.shipmentFeeDiscount = in.readString();
     }
 
-    public static final Parcelable.Creator<ShippingFeeBannerModel> CREATOR = new Parcelable.Creator<ShippingFeeBannerModel>() {
+    public static final Parcelable.Creator<ShipmentFeeBannerModel> CREATOR = new Parcelable.Creator<ShipmentFeeBannerModel>() {
         @Override
-        public ShippingFeeBannerModel createFromParcel(Parcel source) {
-            return new ShippingFeeBannerModel(source);
+        public ShipmentFeeBannerModel createFromParcel(Parcel source) {
+            return new ShipmentFeeBannerModel(source);
         }
 
         @Override
-        public ShippingFeeBannerModel[] newArray(int size) {
-            return new ShippingFeeBannerModel[size];
+        public ShipmentFeeBannerModel[] newArray(int size) {
+            return new ShipmentFeeBannerModel[size];
         }
     };
 }
