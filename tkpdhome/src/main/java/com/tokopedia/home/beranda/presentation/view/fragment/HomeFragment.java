@@ -172,11 +172,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-        recyclerView = (RecyclerView) view.findViewById(R.id.list);
-        refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.sw_refresh_layout);
-        tabLayout = (TabLayout) view.findViewById(R.id.tabs);
-        tabContainer = (SectionContainer) view.findViewById(R.id.tab_container);
-        root = (CoordinatorLayout) view.findViewById(R.id.root);
+        recyclerView = view.findViewById(R.id.list);
+        refreshLayout = view.findViewById(R.id.sw_refresh_layout);
+        tabLayout = view.findViewById(R.id.tabs);
+        tabContainer = view.findViewById(R.id.tab_container);
+        root = view.findViewById(R.id.root);
         presenter.attachView(this);
         presenter.setFeedListener(this);
         return view;
