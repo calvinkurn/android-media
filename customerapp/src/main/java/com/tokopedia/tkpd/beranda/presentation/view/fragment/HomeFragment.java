@@ -51,9 +51,9 @@ import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
+import com.tokopedia.core.router.digitalmodule.sellermodule.TokoCashRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.router.digitalmodule.sellermodule.TokoCashRouter;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -78,9 +78,7 @@ import com.tokopedia.tkpd.beranda.presentation.view.SectionContainer;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.LinearLayoutManagerWithSmoothScroller;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
-import com.tokopedia.tkpd.beranda.presentation.view.adapter.itemdecoration.VerticalSpaceItemDecoration;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategoryItemViewModel;
-import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategorySectionViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.LayoutSections;
@@ -126,7 +124,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private SnackbarRetry messageSnackbar;
     private HomeAdapterFactory adapterFactory;
     private String[] tabSectionTitle;
-    private VerticalSpaceItemDecoration spaceItemDecoration;
     private HomeFragmentBroadcastReceiver homeFragmentBroadcastReceiver;
     private EndlessRecyclerviewListener feedLoadMoreTriggerListener;
     private LinearLayoutManager layoutManager;
@@ -268,8 +265,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         recyclerView.setLayoutManager(layoutManager);
         adapterFactory = new HomeAdapterFactory(getFragmentManager(), this, this);
         adapter = new HomeRecycleAdapter(adapterFactory, new ArrayList<Visitable>());
-        spaceItemDecoration = new VerticalSpaceItemDecoration(getResources().getDimensionPixelSize(R.dimen.margin_card_home), true, 1);
-        recyclerView.addItemDecoration(spaceItemDecoration);
         recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener(new HomeRecycleScrollListener(layoutManager, this));
     }
@@ -618,8 +613,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void setItems(List<Visitable> items) {
-        spaceItemDecoration.setStart(lastIndexOfInstance(items, CategorySectionViewModel.class));
-        recyclerView.invalidateItemDecorations();
         adapter.setItems(items);
     }
 
