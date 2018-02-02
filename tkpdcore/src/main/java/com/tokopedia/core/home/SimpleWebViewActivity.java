@@ -47,7 +47,11 @@ public class SimpleWebViewActivity extends TkpdCoreWebViewActivity {
             fragmentTransaction.commit();
         }
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent){
+        super.onActivityResult(requestCode, resultCode, intent);
 
+    }
     @Override
     public void onBackPressed() {
         try {
