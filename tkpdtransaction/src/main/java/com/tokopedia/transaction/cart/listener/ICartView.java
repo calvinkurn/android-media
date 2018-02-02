@@ -121,4 +121,8 @@ public interface ICartView extends IBaseView {
     void renderInstantPromo(CartPromo cartPromo);
 
     void renderPromoView(boolean isCouponActive);
+
+    void trackCheckoutStep1();
+
+    void trackCheckoutStep2();
 }

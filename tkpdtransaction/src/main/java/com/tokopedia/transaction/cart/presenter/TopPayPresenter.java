@@ -25,7 +25,6 @@ import org.json.JSONArray;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -114,16 +113,16 @@ public class TopPayPresenter implements ITopPayPresenter {
     @Override
     public void processCheckoutAnalytics(LocalCacheHandler cacheHandler, String gateway){
 
-        Gson afGSON = new Gson();
-        Checkout checkoutData = afGSON.fromJson(
-                cacheHandler.getString(Jordan.CACHE_KEY_DATA_CHECKOUT),
-                new TypeToken<Checkout>() {
-                }.getType());
-
-        checkoutData.setStep("2");
-        checkoutData.setCheckoutOption("click payment option button");
-
-        PaymentTracking.eventCartCheckout(checkoutData);
+//        Gson afGSON = new Gson();
+//        Checkout checkoutData = afGSON.fromJson(
+//                cacheHandler.getString(Jordan.CACHE_KEY_DATA_CHECKOUT),
+//                new TypeToken<Checkout>() {
+//                }.getType());
+//
+//        checkoutData.setStep("2");
+//        checkoutData.setCheckoutOption("click payment option button");
+//
+//        PaymentTracking.eventCartCheckoutStep1(checkoutData);
     }
 
     @Override

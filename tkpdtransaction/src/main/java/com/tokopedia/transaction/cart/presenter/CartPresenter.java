@@ -15,7 +15,6 @@ import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.nishikino.model.Checkout;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.BranchSdkUtils;
@@ -50,12 +49,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
-import rx.Observable;
 import rx.Subscriber;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 /**
  * @author anggaprasetiyo on 11/3/16.
@@ -96,6 +91,7 @@ public class CartPresenter implements ICartPresenter {
                 CartData cartData = responseTransform.getData();
                 try {
                     processCartAnalytics(cartData);
+                    view.trackCheckoutStep1();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -509,15 +505,17 @@ public class CartPresenter implements ICartPresenter {
     }
 
     @Override
-    public void processCheckoutAnalytics(LocalCacheHandler localCacheHandler, String gateway) {
-        Gson afGSON = new Gson();
-        Checkout checkoutData = afGSON.fromJson(
-                localCacheHandler.getString(Jordan.CACHE_KEY_DATA_CHECKOUT),
-                new TypeToken<Checkout>() {
-                }.getType());
+    public void trackStep1CheckoutEE(Checkout checkoutData) {
         checkoutData.setStep("1");
         checkoutData.setCheckoutOption("cart page loaded");
-        PaymentTracking.eventCartCheckout(checkoutData);
+        PaymentTracking.eventCartCheckoutStep1(checkoutData);
+    }
+
+    @Override
+    public void trackStep2CheckoutEE(Checkout checkoutData) {
+        checkoutData.setStep("2");
+        checkoutData.setCheckoutOption("click payment option button");
+        PaymentTracking.eventCartCheckoutStep2(checkoutData);
     }
 
     @Override
@@ -706,6 +704,7 @@ public class CartPresenter implements ICartPresenter {
             bundle.putInt(TopPayIntentService.EXTRA_ACTION,
                     TopPayIntentService.SERVICE_ACTION_GET_PARAMETER_DATA);
             view.executeIntentService(bundle, TopPayIntentService.class);
+            view.trackCheckoutStep2();
         }
     }
 

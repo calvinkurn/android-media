@@ -3,6 +3,7 @@ package com.tokopedia.transaction.cart.presenter;
 import android.support.annotation.NonNull;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.analytics.nishikino.model.Checkout;
 import com.tokopedia.transaction.cart.model.CartItemEditable;
 import com.tokopedia.transaction.cart.model.calculateshipment.ProductEditData;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
@@ -41,7 +42,9 @@ public interface ICartPresenter {
 
     void processValidationPayment(String paymentId);
 
-    void processCheckoutAnalytics(LocalCacheHandler localCacheHandler, String gateway);
+    void trackStep1CheckoutEE(Checkout checkoutData);
+
+    void trackStep2CheckoutEE(Checkout checkoutData);
 
     void processPaymentAnalytics(LocalCacheHandler localCacheHandler, ThanksTopPayData data);
 
