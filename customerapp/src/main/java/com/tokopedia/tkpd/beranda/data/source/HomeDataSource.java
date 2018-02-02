@@ -4,23 +4,23 @@ import android.content.Context;
 import android.content.res.Resources;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.beranda.data.mapper.HomeMapper;
 import com.tokopedia.tkpd.beranda.data.source.api.HomeDataApi;
+import com.tokopedia.tkpd.beranda.data.source.pojo.HomeData;
+import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.GraphqlResponse;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Type;
 import java.util.List;
 
+import retrofit2.Response;
 import rx.Observable;
-import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -46,34 +46,39 @@ public class HomeDataSource {
         this.gson = gson;
     }
 
-    private Action1<List<Visitable>> saveToCache() {
-        return new Action1<List<Visitable>>() {
-            @Override
-            public void call(List<Visitable> itemList) {
-                Type listType = new TypeToken<List<Visitable>>() {}.getType();
-                cacheManager.setKey(TkpdCache.Key.HOME_DATA_CACHE);
-                cacheManager.setValue(gson.toJson(itemList, listType));
-                cacheManager.store();
-            }
-        };
-    }
-
     public Observable<List<Visitable>> getCache() {
-        return Observable.just(true).map(new Func1<Boolean, List<Visitable>>() {
+        return Observable.just(true).map(new Func1<Boolean, Response<GraphqlResponse<HomeData>>>() {
             @Override
-            public List<Visitable> call(Boolean aBoolean) {
+            public Response<GraphqlResponse<HomeData>> call(Boolean aBoolean) {
                 String cache = cacheManager.getValueString(TkpdCache.Key.HOME_DATA_CACHE);
                 if (cache != null) {
-                    Type listType = new TypeToken<List<Visitable>>() {}.getType();
-                    return gson.fromJson(cache, listType);
+                    HomeData homeData = gson.fromJson(cache, HomeData.class);
+                    GraphqlResponse<HomeData> graphqlResponse = new GraphqlResponse<>();
+                    graphqlResponse.setData(homeData);
+                    return Response.success(graphqlResponse);
                 }
                 throw new RuntimeException("Cache is empty!!");
             }
-        }).onErrorResumeNext(getHomeData());
+        }).map(homeMapper).onErrorResumeNext(getHomeData());
     }
 
     public Observable<List<Visitable>> getHomeData() {
-        return homeDataApi.getHomeData(getRequestPayload()).map(homeMapper).doOnNext(saveToCache());
+        return homeDataApi.getHomeData(getRequestPayload()).map(saveToCache()).map(homeMapper);
+    }
+
+    private Func1<Response<GraphqlResponse<HomeData>>, Response<GraphqlResponse<HomeData>>> saveToCache() {
+        return new Func1<Response<GraphqlResponse<HomeData>>, Response<GraphqlResponse<HomeData>>>() {
+            @Override
+            public Response<GraphqlResponse<HomeData>> call(Response<GraphqlResponse<HomeData>> response) {
+                if (response.isSuccessful()) {
+                    HomeData homeData = response.body().getData();
+                    cacheManager.setKey(TkpdCache.Key.HOME_DATA_CACHE);
+                    cacheManager.setValue(gson.toJson(homeData));
+                    cacheManager.store();
+                }
+                return response;
+            }
+        };
     }
 
     private String getRequestPayload() {
