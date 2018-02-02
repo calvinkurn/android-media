@@ -107,6 +107,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivit
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
 import com.tokopedia.otp.phoneverification.activity.RidePhoneNumberVerificationActivity;
+import com.tokopedia.otp.phoneverification.view.activity.ReferralPhoneNumberVerificationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
@@ -782,6 +783,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getRidePhoneNumberActivityIntent(Activity activity) {
         return RidePhoneNumberVerificationActivity.getCallingIntent(activity);
+    }
+
+    @Override
+    public Intent getReferralPhoneNumberActivityIntent(Activity activity) {
+        return ReferralPhoneNumberVerificationActivity.getCallingIntent(activity);
     }
 
     @Override
