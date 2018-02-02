@@ -4,14 +4,14 @@ import android.content.Context;
 import android.content.res.Resources;
 
 import com.google.gson.Gson;
+import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.data.mapper.HomeMapper;
 import com.tokopedia.home.beranda.data.source.api.HomeDataApi;
-import com.tokopedia.tkpd.beranda.data.source.pojo.HomeData;
-import com.tokopedia.tkpd.thankyou.data.pojo.marketplace.GraphqlResponse;
+import com.tokopedia.home.beranda.data.source.pojo.HomeData;
 
 import java.io.BufferedReader;
 import java.io.IOException;

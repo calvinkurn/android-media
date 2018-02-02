@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.beranda.helper;
+package com.tokopedia.home.beranda.helper;
 
 import android.text.TextUtils;
 import android.view.View;
