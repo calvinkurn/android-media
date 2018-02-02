@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
+import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.cart.model.InstantCheckoutData;
@@ -43,7 +44,7 @@ public class InstantCheckoutActivity extends BasePresenterActivity {
     public static final String EXTRA_INSTANT_CHECKOUT_DATA = "EXTRA_INSTANT_CHECKOUT_DATA";
 
     @BindView(R2.id.webview)
-    WebView webView;
+    TkpdWebView webView;
     @BindView(R2.id.progressbar)
     ProgressBar progressBar;
 
