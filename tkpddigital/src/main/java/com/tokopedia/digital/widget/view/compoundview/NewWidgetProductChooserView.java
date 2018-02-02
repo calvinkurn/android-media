@@ -58,7 +58,7 @@ public class NewWidgetProductChooserView extends BaseDigitalChooserView<Product>
         return new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                actionListener.onUpdateDataDigitalChooserSelectedRendered(dataList.get(i));
+                ((ProductActionListener) actionListener).onUpdateDataDigitalChooserSelectedRendered(dataList.get(i));
                 actionListener.tracking();
                 showProductStatus(dataList.get(i));
             }
@@ -73,7 +73,7 @@ public class NewWidgetProductChooserView extends BaseDigitalChooserView<Product>
     private void setSpnNominalSelectionBasedLastOrder(String defaultProductId) {
         for (int i = 0; i < dataList.size(); i++) {
             if (dataList.get(i).getProductId().equals(defaultProductId)) {
-                spinnerNominal.setSelection(i);
+                spinnerNominal.setSelection(i, true);
                 break;
             }
         }
@@ -119,7 +119,7 @@ public class NewWidgetProductChooserView extends BaseDigitalChooserView<Product>
     public void renderUpdateDataSelected(Product data) {
         for (int i = 0; i < dataList.size(); i++) {
             if (dataList.get(i).getProductId().equals(data.getProductId())) {
-                spinnerNominal.setSelection(i);
+                spinnerNominal.setSelection(i, true);
                 break;
             }
         }

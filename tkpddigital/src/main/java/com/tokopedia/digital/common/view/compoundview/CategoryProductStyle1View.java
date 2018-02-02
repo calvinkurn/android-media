@@ -107,10 +107,12 @@ public class CategoryProductStyle1View extends
 
     @Override
     protected void onUpdateSelectedProductData() {
-        if (source == NATIVE) {
-            this.digitalProductChooserView.renderUpdateDataSelected(productSelected);
-        } else {
-            this.widgetProductChooserView.renderUpdateDataSelected(productSelected);
+        if (operatorSelected.getRule().getProductViewStyle() != 99) {
+            if (source == NATIVE) {
+                this.digitalProductChooserView.renderUpdateDataSelected(productSelected);
+            } else {
+                this.widgetProductChooserView.renderUpdateDataSelected(productSelected);
+            }
         }
     }
 
@@ -451,8 +453,8 @@ public class CategoryProductStyle1View extends
     }
 
     @NonNull
-    private BaseDigitalChooserView.ActionListener<Product> getActionListenerProductChooser() {
-        return new BaseDigitalChooserView.ActionListener<Product>() {
+    private BaseDigitalChooserView.ProductActionListener<Product> getActionListenerProductChooser() {
+        return new BaseDigitalChooserView.ProductActionListener<Product>() {
             @Override
             public void onUpdateDataDigitalChooserSelectedRendered(Product product) {
                 productSelected = product;

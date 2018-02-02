@@ -25,6 +25,8 @@ public class NewWidgetOperatorChooserView extends BaseDigitalChooserView<Operato
     @BindView(R2.id.spinner_operator)
     Spinner spinnerOperator;
 
+    private boolean resetClientNumber;
+
     public NewWidgetOperatorChooserView(Context context) {
         super(context);
     }
@@ -50,8 +52,10 @@ public class NewWidgetOperatorChooserView extends BaseDigitalChooserView<Operato
         return new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                actionListener.onUpdateDataDigitalChooserSelectedRendered(dataList.get(i));
+                ((OperatorActionListener) actionListener)
+                        .onUpdateDataDigitalChooserSelectedRendered(dataList.get(i), resetClientNumber);
                 actionListener.tracking();
+                resetClientNumber = true;
             }
 
             @Override
@@ -66,9 +70,12 @@ public class NewWidgetOperatorChooserView extends BaseDigitalChooserView<Operato
             Operator operator = dataList.get(i);
             if (String.valueOf(operator.getOperatorId())
                     .equalsIgnoreCase(String.valueOf(defaultOperatorId))) {
+                resetClientNumber = true;
                 spinnerOperator.setSelection(i);
-                actionListener.onUpdateDataDigitalChooserSelectedRendered(operator);
+                ((OperatorActionListener) actionListener)
+                        .onUpdateDataDigitalChooserSelectedRendered(dataList.get(i), resetClientNumber);
                 actionListener.tracking();
+                break;
             }
         }
     }
@@ -104,9 +111,12 @@ public class NewWidgetOperatorChooserView extends BaseDigitalChooserView<Operato
             Operator operator = dataList.get(i);
             if (String.valueOf(operator.getOperatorId())
                     .equalsIgnoreCase(String.valueOf(data.getOperatorId()))) {
+                resetClientNumber = false;
                 spinnerOperator.setSelection(i);
-                actionListener.onUpdateDataDigitalChooserSelectedRendered(operator);
+                ((OperatorActionListener) actionListener)
+                        .onUpdateDataDigitalChooserSelectedRendered(dataList.get(i), resetClientNumber);
                 actionListener.tracking();
+                break;
             }
         }
     }

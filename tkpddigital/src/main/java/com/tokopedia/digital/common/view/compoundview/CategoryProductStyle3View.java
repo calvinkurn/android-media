@@ -127,10 +127,12 @@ public class CategoryProductStyle3View extends
 
     @Override
     protected void onUpdateSelectedProductData() {
-        if (source == NATIVE) {
-            this.digitalProductChooserView.renderUpdateDataSelected(productSelected);
-        } else {
-            this.widgetProductChooserView.renderUpdateDataSelected(productSelected);
+        if (operatorSelected.getRule().getProductViewStyle() != 99) {
+            if (source == NATIVE) {
+                this.digitalProductChooserView.renderUpdateDataSelected(productSelected);
+            } else {
+                this.widgetProductChooserView.renderUpdateDataSelected(productSelected);
+            }
         }
     }
 
@@ -188,7 +190,7 @@ public class CategoryProductStyle3View extends
                 if (operator.getOperatorId().equalsIgnoreCase(
                         historyClientNumber.getLastOrderClientNumber().getOperatorId()
                 )) {
-                    widgetOperatorChooserView.renderUpdateDataSelected(operator);
+                    widgetOperatorChooserView.renderInitDataList(data.getOperatorList(), operator.getOperatorId());
                     break;
                 }
             }
@@ -361,13 +363,15 @@ public class CategoryProductStyle3View extends
     }
 
     @NonNull
-    private BaseDigitalChooserView.ActionListener<Operator> getActionListenerOperatorChooser() {
-        return new BaseDigitalChooserView.ActionListener<Operator>() {
+    private BaseDigitalChooserView.OperatorActionListener<Operator> getActionListenerOperatorChooser() {
+        return new BaseDigitalChooserView.OperatorActionListener<Operator>() {
             @Override
-            public void onUpdateDataDigitalChooserSelectedRendered(Operator operator) {
+            public void onUpdateDataDigitalChooserSelectedRendered(Operator operator, boolean resetClientNumber) {
                 operatorSelected = operator;
                 if (!operator.getClientNumberList().isEmpty()) {
-                    renderClientNumberInputForm(operator);
+                    if (resetClientNumber) {
+                        renderClientNumberInputForm(operator);
+                    }
                 }
                 if (operator.getRule().getProductViewStyle() == 99) {
                     renderDefaultProductSelected();
@@ -437,8 +441,8 @@ public class CategoryProductStyle3View extends
     }
 
     @NonNull
-    private BaseDigitalChooserView.ActionListener<Product> getActionListenerProductChooser() {
-        return new BaseDigitalChooserView.ActionListener<Product>() {
+    private BaseDigitalChooserView.ProductActionListener<Product> getActionListenerProductChooser() {
+        return new BaseDigitalChooserView.ProductActionListener<Product>() {
             @Override
             public void onUpdateDataDigitalChooserSelectedRendered(Product product) {
                 productSelected = product;

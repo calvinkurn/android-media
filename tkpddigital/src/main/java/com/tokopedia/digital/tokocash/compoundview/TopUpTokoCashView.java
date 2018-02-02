@@ -81,8 +81,8 @@ public class TopUpTokoCashView extends LinearLayout {
         digitalProductChooserView.renderUpdateDataSelected(data);
     }
 
-    private BaseDigitalChooserView.ActionListener<Product> getActionListener(final String productText) {
-        return new BaseDigitalChooserView.ActionListener<Product>() {
+    private BaseDigitalChooserView.ProductActionListener<Product> getActionListener(final String productText) {
+        return new BaseDigitalChooserView.ProductActionListener<Product>() {
             @Override
             public void onUpdateDataDigitalChooserSelectedRendered(Product data) {
                 productSelected = data;

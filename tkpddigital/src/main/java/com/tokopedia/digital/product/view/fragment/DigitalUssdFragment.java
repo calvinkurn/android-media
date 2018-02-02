@@ -292,8 +292,8 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
     }
 
     @NonNull
-    private BaseDigitalChooserView.ActionListener<Product> getActionListenerProductChooser() {
-        return new BaseDigitalChooserView.ActionListener<Product>() {
+    private BaseDigitalChooserView.ProductActionListener<Product> getActionListenerProductChooser() {
+        return new BaseDigitalChooserView.ProductActionListener<Product>() {
             @Override
             public void onUpdateDataDigitalChooserSelectedRendered(Product data) {
                 productSelected = data;

@@ -68,10 +68,22 @@ public abstract class BaseDigitalChooserView<T> extends RelativeLayout {
 
     public interface ActionListener<Z> {
 
-        void onUpdateDataDigitalChooserSelectedRendered(Z data);
-
         void onDigitalChooserClicked(List<Z> data);
 
         void tracking();
+
     }
+
+    public interface OperatorActionListener <Z> extends ActionListener<Z> {
+
+        void onUpdateDataDigitalChooserSelectedRendered(Z data, boolean resetClientNumber);
+
+    }
+
+    public interface ProductActionListener<Z> extends ActionListener<Z> {
+
+        void onUpdateDataDigitalChooserSelectedRendered(Z data);
+
+    }
+
 }
