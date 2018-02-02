@@ -17,6 +17,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.purchase.constant.OrderShipmentTypeDef;
 import com.tokopedia.transaction.purchase.detail.di.DaggerOrderCourierComponent;
 import com.tokopedia.transaction.purchase.detail.di.OrderCourierComponent;
 import com.tokopedia.transaction.purchase.detail.fragment.CourierSelectionFragment;
@@ -82,11 +83,24 @@ public class ConfirmShippingActivity extends TActivity
         ImageView barcodeScanner = findViewById(R.id.icon_scan);
         LinearLayout courierLayout = findViewById(R.id.courier_layout);
         TextView confirmButton = findViewById(R.id.confirm_button);
+        if(isChangeCourierMode(orderDetailData))
+            toolbar.setTitle(getString(R.string.button_order_detail_change_courier));
         courierLayout.setOnClickListener(onGetCourierButtonClickedListener(orderDetailData));
         confirmButton.setOnClickListener(onConfirmButtonClickedListener(barcodeEditText));
         barcodeEditText.setText(orderDetailData.getAwb());
         barcodeScanner.setOnClickListener(onBarcodeScanClickedListener());
         courierName.setText(editableModel.getShipmentName() + " " + editableModel.getPackageName());
+    }
+
+    private boolean isChangeCourierMode(OrderDetailData orderDetailData) {
+        return Integer
+                .parseInt(orderDetailData.getOrderCode()) >= OrderShipmentTypeDef.ORDER_WAITING
+                || Integer
+                .parseInt(orderDetailData.getOrderCode())< OrderShipmentTypeDef.ORDER_DELIVERED
+                || Integer
+                .parseInt(orderDetailData.getOrderCode())< OrderShipmentTypeDef.ACCEPT_FULL
+                || Integer
+                .parseInt(orderDetailData.getOrderCode())< OrderShipmentTypeDef.ACCEPT_PARTIAL;
     }
 
     private void initateData(OrderDetailData orderDetailData) {
