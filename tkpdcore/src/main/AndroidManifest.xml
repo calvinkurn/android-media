@@ -313,9 +313,6 @@
             android:name=".onboarding.FreeReturnOnboardingActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".topads.WebViewTopAdsActivity"
-            android:theme="@style/Theme.BrowseProduct" />
 
         <activity android:name=".welcome.WelcomeActivity"
             android:screenOrientation="portrait"/>
