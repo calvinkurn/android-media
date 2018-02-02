@@ -26,6 +26,7 @@ public class CheckStatusMapper implements Func1<Response<TkpdResponse>, CheckSta
             if (!response.body().isError()) {
                 CheckStatusData data = response.body().convertDataObj(CheckStatusData.class);
                 model.setSuccess(true);
+                data.setIsPending(0);
                 model.setCheckStatusData(data);
             } else {
                 if (response.body().getErrorMessages() == null
