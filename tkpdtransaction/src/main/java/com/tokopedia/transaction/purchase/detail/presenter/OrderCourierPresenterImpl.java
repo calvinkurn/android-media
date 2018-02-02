@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.transaction.purchase.constant.OrderShipmentTypeDef;
 import com.tokopedia.transaction.purchase.detail.activity.ConfirmShippingView;
 import com.tokopedia.transaction.purchase.detail.interactor.OrderCourierInteractor;
 import com.tokopedia.transaction.purchase.detail.interactor.OrderCourierInteractorImpl;
@@ -71,7 +72,8 @@ public class OrderCourierPresenterImpl implements OrderCourierPresenter {
 
     @Override
     public void onProcessCourier(Context context, OrderDetailShipmentModel editableModel) {
-        if (editableModel.getOrderStatusCode() >= 500 && editableModel.getOrderStatusCode() <600) {
+        if (editableModel.getOrderStatusCode() >= OrderShipmentTypeDef.ORDER_WAITING
+                && editableModel.getOrderStatusCode() < OrderShipmentTypeDef.ORDER_DELIVERED) {
             onChangeCourier(context, editableModel);
         } else onConfirmShipping(context, editableModel);
     }
