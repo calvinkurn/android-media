@@ -6,7 +6,7 @@
   "partialOrderInfo":"Aktifkan untuk tetap menerima stok yang tersedia jika stok Toko tidak mencukupi total pesanan.",
   "dropshipperInfo":"Penjual, sebagai supplier akan mengirim barang ke pembeli Anda dengan mengatasnamakan toko Anda. Syarat dan Ketentuan toko berlaku.",
   "shipmentInfo":"Pengiriman instan dan same day yang dipesan diatas pk 15:00 WIB, akan dikirim hari kerja berikutnya.",
-  "deliveryPriceTotal":"Rp 299.000",
+  "deliveryPriceTotal":"Rp 999.000",
   "shipmentItemData":
   [
     {
@@ -26,11 +26,12 @@
           "insurancePrice":"Rp 2.000",
           "additionalPrice":"Rp 0",
           "courierInfo":null,
-          "insuranceType":2,
+          "insuranceType":3,
           "insuranceUsedType":2,
           "insuranceUsedInfo":"Biaya ganti rugi senilai harga barang hingga Rp50.000.000, dengan biaya sebesar 0.2% dari harga barang.",
           "insuranceUsedDefault":2,
           "allowDropshiper":false,
+          "usePinPoint":true,
           "selected":false
         },
         {
@@ -42,11 +43,12 @@
           "insurancePrice":"Rp 3.000",
           "additionalPrice":"Rp 0",
           "courierInfo":null,
-          "insuranceType":2,
+          "insuranceType":3,
           "insuranceUsedType":2,
           "insuranceUsedInfo":"Biaya ganti rugi senilai harga barang hingga Rp50.000.000, dengan biaya sebesar 0.2% dari harga barang.",
           "insuranceUsedDefault":2,
           "allowDropshiper":false,
+          "usePinPoint":true,
           "selected":false
         }
       ]
@@ -68,11 +70,12 @@
           "insurancePrice":"Rp 2.000",
           "additionalPrice":"Rp 0",
           "courierInfo":null,
-          "insuranceType":1,
-          "insuranceUsedType":1,
-          "insuranceUsedInfo":"Produk kategori ini hanya dapat menggunakan asuransi untuk pengiriman Instan dan Same Day.",
-          "insuranceUsedDefault":1,
+          "insuranceType":2,
+          "insuranceUsedType":2,
+          "insuranceUsedInfo":"Biaya ganti rugi senilai harga barang hingga Rp50.000.000, dengan biaya sebesar 0.2% dari harga barang.",
+          "insuranceUsedDefault":2,
           "allowDropshiper":false,
+          "usePinPoint":true,
           "selected":false
         },
         {
@@ -84,11 +87,12 @@
           "insurancePrice":"Rp 3.000",
           "additionalPrice":"Rp 0",
           "courierInfo":null,
-          "insuranceType":1,
-          "insuranceUsedType":1,
-          "insuranceUsedInfo":"Produk kategori ini hanya dapat menggunakan asuransi untuk pengiriman Instan dan Same Day.",
-          "insuranceUsedDefault":1,
+          "insuranceType":2,
+          "insuranceUsedType":2,
+          "insuranceUsedInfo":"Biaya ganti rugi senilai harga barang hingga Rp50.000.000, dengan biaya sebesar 0.2% dari harga barang.",
+          "insuranceUsedDefault":2,
           "allowDropshiper":false,
+          "usePinPoint":true,
           "selected":false
         }
       ]
@@ -103,6 +107,23 @@
       [
         {
           "id":"4",
+          "name":"Grab Parcel",
+          "estimatedTimeDelivery":"6-8 jam*",
+          "deliverySchedule":"Jadwal pengiriman 09:00-16:00 WIB",
+          "deliveryPrice":"Rp 20.000",
+          "insurancePrice":"Rp 3.000",
+          "additionalPrice":"Rp 0",
+          "courierInfo":null,
+          "insuranceType":1,
+          "insuranceUsedType":1,
+          "insuranceUsedInfo":"Produk kategori ini hanya dapat menggunakan asuransi untuk pengiriman Instan dan Same Day.",
+          "insuranceUsedDefault":1,
+          "allowDropshiper":false,
+          "usePinPoint":true,
+          "selected":false
+        },
+        {
+          "id":"5",
           "name":"JNE YES",
           "estimatedTimeDelivery":"1-2 hari kerja*",
           "deliverySchedule":null,
@@ -110,15 +131,16 @@
           "insurancePrice":"Rp 2.000",
           "additionalPrice":"Rp 1.000",
           "courierInfo":null,
-          "insuranceType":2,
-          "insuranceUsedType":3,
+          "insuranceType":3,
+          "insuranceUsedType":2,
           "insuranceUsedInfo":"Biaya ganti rugi senilai harga barang hingga Rp50.000.000, dengan biaya sebesar 0.2% dari harga barang.",
           "insuranceUsedDefault":2,
           "allowDropshiper":true,
+          "usePinPoint":false,
           "selected":false
         },
         {
-          "id":"5",
+          "id":"6",
           "name":"TIKI ONS",
           "estimatedTimeDelivery":"1-2 hari kerja*",
           "deliverySchedule":null,
@@ -126,15 +148,16 @@
           "insurancePrice":"Rp 3.000",
           "additionalPrice":"Rp 0",
           "courierInfo":null,
-          "insuranceType":2,
-          "insuranceUsedType":3,
+          "insuranceType":3,
+          "insuranceUsedType":2,
           "insuranceUsedInfo":"Biaya ganti rugi senilai harga barang hingga Rp50.000.000, dengan biaya sebesar 0.2% dari harga barang.",
           "insuranceUsedDefault":2,
           "allowDropshiper":true,
+          "usePinPoint":false,
           "selected":false
         },
         {
-          "id":"6",
+          "id":"7",
           "name":"Pos Express",
           "estimatedTimeDelivery":"1-2 hari kerja*",
           "deliverySchedule":null,
@@ -147,10 +170,11 @@
           "insuranceUsedInfo":"Biaya ganti rugi senilai harga barang hingga Rp50.000.000, dengan biaya sebesar 0.2% dari harga barang.",
           "insuranceUsedDefault":2,
           "allowDropshiper":true,
+          "usePinPoint":false,
           "selected":false
         },
         {
-          "id":"7",
+          "id":"8",
           "name":"Si Cepat BEST",
           "estimatedTimeDelivery":"1-2 hari kerja*",
           "deliverySchedule":null,
@@ -163,6 +187,7 @@
           "insuranceUsedInfo":"Biaya ganti rugi senilai harga barang hingga Rp50.000.000, dengan biaya sebesar 0.2% dari harga barang.",
           "insuranceUsedDefault":2,
           "allowDropshiper":true,
+          "usePinPoint":false,
           "selected":false
         }
       ]
@@ -175,7 +200,7 @@
       "selected":false,
       "courierItemData":[
         {
-          "id":"8",
+          "id":"9",
           "name":"JNE Reguler",
           "estimatedTimeDelivery":"2-3 hari kerja*",
           "deliverySchedule":null,
@@ -188,10 +213,11 @@
           "insuranceUsedInfo":"Biaya ganti rugi senilai harga barang hingga Rp50.000.000, dengan biaya sebesar 0.2% dari harga barang.",
           "insuranceUsedDefault":2,
           "allowDropshiper":true,
+          "usePinPoint":false,
           "selected":false
         },
         {
-          "id":"9",
+          "id":"10",
           "name":"TIKI Reguler",
           "estimatedTimeDelivery":"2-3 hari kerja*",
           "deliverySchedule":null,
@@ -204,26 +230,28 @@
           "insuranceUsedInfo":"Biaya ganti rugi senilai harga barang hingga Rp50.000.000, dengan biaya sebesar 0.2% dari harga barang.",
           "insuranceUsedDefault":2,
           "allowDropshiper":true,
+          "usePinPoint":false,
           "selected":false
         },
         {
-          "id":"10",
-          "name":"Pos Reguler",
+          "id":"11",
+          "name":"Wahana",
           "estimatedTimeDelivery":"1-2 hari kerja*",
           "deliverySchedule":null,
           "deliveryPrice":"Rp 11.000",
           "insurancePrice":"Rp 2.000",
           "additionalPrice":"Rp 0",
           "courierInfo":null,
-          "insuranceType":2,
-          "insuranceUsedType":2,
-          "insuranceUsedInfo":"Biaya ganti rugi senilai harga barang hingga Rp50.000.000, dengan biaya sebesar 0.2% dari harga barang.",
+          "insuranceType":3,
+          "insuranceUsedType":1,
+          "insuranceUsedInfo":"Wahana menerapkan asuransi otomatis apabila harga barang lebih besar dari Rp300.000, dengan biaya 0.5% dari harga barang.",
           "insuranceUsedDefault":2,
           "allowDropshiper":true,
+          "usePinPoint":false,
           "selected":false
         },
         {
-          "id":"11",
+          "id":"12",
           "name":"Si Cepat Reguler",
           "estimatedTimeDelivery":"1-2 hari kerja*",
           "deliverySchedule":null,
@@ -232,10 +260,11 @@
           "additionalPrice":"Rp 0",
           "courierInfo":null,
           "insuranceType":2,
-          "insuranceUsedType":2,
+          "insuranceUsedType":1,
           "insuranceUsedInfo":"Biaya ganti rugi senilai harga barang hingga Rp50.000.000, dengan biaya sebesar 0.2% dari harga barang.",
           "insuranceUsedDefault":2,
           "allowDropshiper":true,
+          "usePinPoint":false,
           "selected":false
         }
       ]
@@ -248,7 +277,7 @@
       "selected":false,
       "courierItemData":[
         {
-          "id":"12",
+          "id":"13",
           "name":"REX-10",
           "estimatedTimeDelivery":"7-10 hari kerja*",
           "deliverySchedule":null,
@@ -261,6 +290,7 @@
           "insuranceUsedInfo":"Biaya ganti rugi senilai harga barang hingga Rp50.000.000, dengan biaya sebesar 0.2% dari harga barang.",
           "insuranceUsedDefault":2,
           "allowDropshiper":true,
+          "usePinPoint":true,
           "selected":false
         }
       ]
@@ -273,7 +303,7 @@
       "selected":false,
       "courierItemData":[
         {
-          "id":"13",
+          "id":"14",
           "name":"Shop own logictic",
           "estimatedTimeDelivery":null,
           "deliverySchedule":null,
@@ -286,6 +316,7 @@
           "insuranceUsedInfo":"",
           "insuranceUsedDefault":2,
           "allowDropshiper":true,
+          "usePinPoint":false,
           "selected":false
         }
       ]

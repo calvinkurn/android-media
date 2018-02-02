@@ -53,6 +53,11 @@
         android:orientation="horizontal"
         android:visibility="gone">
 
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="@color/yellow_ticker" />
+
         <TextView
             android:id="@+id/tv_shipment_info_ticker"
             android:layout_width="0dp"

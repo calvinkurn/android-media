@@ -94,11 +94,7 @@ public class ShipmentDetailPresenter extends BaseDaggerPresenter<IShipmentDetail
     public void loadShipmentData() {
         shipmentDetailData = DummyCreator.createDummyShipmentDetailData(context);
         if (shipmentDetailData != null) {
-            if (shipmentDetailData.getLatitude() == null || shipmentDetailData.getLongitude() == null) {
-                getView().renderShipmentWithoutMap(shipmentDetailData);
-            } else {
-                getView().renderShipmentWithMap(shipmentDetailData);
-            }
+            getView().renderShipmentWithoutMap(shipmentDetailData);
         }
     }
 
