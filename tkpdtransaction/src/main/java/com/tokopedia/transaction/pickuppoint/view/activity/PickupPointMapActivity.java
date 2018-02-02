@@ -49,6 +49,14 @@ public class PickupPointMapActivity extends BasePresenterActivity implements OnM
     }
 
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setElevation(0);
+        }
+    }
+
+    @Override
     protected void setupURIPass(Uri data) {
 
     }

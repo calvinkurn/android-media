@@ -559,8 +559,11 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
 
     private void resetView() {
         switchInsurance.setChecked(false);
-        switchInsurance.setVisibility(View.VISIBLE);
-        tvSpecialInsuranceCondition.setVisibility(View.GONE);
+        switchDropshipper.setChecked(false);
+        switchPartlyAccept.setChecked(false);
+        switchInsurance.setVisibility(View.GONE);
+        tvSpecialInsuranceCondition.setVisibility(View.VISIBLE);
+        tvSpecialInsuranceCondition.setText(R.string.label_insurance_not_available);
         llFeesGroup.setVisibility(View.GONE);
         llPinpoint.setVisibility(View.GONE);
     }
@@ -651,6 +654,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
     public void onCourierItemClick(CourierItemData courierItemData) {
         if (presenter.getSelectedCourier() == null ||
                 !presenter.getSelectedCourier().getId().equals(courierItemData.getId())) {
+            resetView();
             presenter.setSelectedCourier(courierItemData);
             if (courierItemData.isUsePinPoint()) {
                 renderShipmentWithMap(presenter.getShipmentDetailData());
