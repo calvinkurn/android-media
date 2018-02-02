@@ -340,7 +340,11 @@ public class OrderDetailButtonLayout extends LinearLayout{
                                          Context context) {
         if(confirmButtonVisibility == 0 && changeCourierButtonVisibility == 0)
             button.setVisibility(GONE);
-        else if(confirmButtonVisibility == 1 && changeCourierButtonVisibility == 0) {
+        else if(confirmButtonVisibility == 1 && changeCourierButtonVisibility == 1) {
+            button.setVisibility(VISIBLE);
+            button.setText(R.string.button_order_detail_confirm_shipping_alternative);
+            button.setOnClickListener(onConfirmShipping(context, presenter, data));
+        } else if(confirmButtonVisibility == 1 && changeCourierButtonVisibility == 0) {
             button.setVisibility(VISIBLE);
             button.setText(R.string.button_order_detail_confirm_shipping_alternative);
             button.setOnClickListener(onConfirmShipping(context, presenter, data));

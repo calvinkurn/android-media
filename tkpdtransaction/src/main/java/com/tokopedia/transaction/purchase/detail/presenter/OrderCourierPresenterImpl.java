@@ -73,7 +73,9 @@ public class OrderCourierPresenterImpl implements OrderCourierPresenter {
     @Override
     public void onProcessCourier(Context context, OrderDetailShipmentModel editableModel) {
         if (editableModel.getOrderStatusCode() >= OrderShipmentTypeDef.ORDER_WAITING
-                && editableModel.getOrderStatusCode() < OrderShipmentTypeDef.ORDER_DELIVERED) {
+                && editableModel.getOrderStatusCode() < OrderShipmentTypeDef.ORDER_DELIVERED
+                && editableModel.getOrderStatusCode() == OrderShipmentTypeDef.ACCEPT_FULL
+                && editableModel.getOrderStatusCode() == OrderShipmentTypeDef.ACCEPT_PARTIAL) {
             onChangeCourier(context, editableModel);
         } else onConfirmShipping(context, editableModel);
     }
