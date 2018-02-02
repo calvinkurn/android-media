@@ -8,11 +8,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home.explore.listener.CategoryAdapterListener;
 import com.tokopedia.home.explore.view.adapter.viewholder.CategoryFavoriteViewHolder;
 import com.tokopedia.home.explore.view.adapter.viewholder.CategoryGridListViewHolder;
-import com.tokopedia.home.explore.view.adapter.viewholder.DigitalsViewHolder;
 import com.tokopedia.home.explore.view.adapter.viewholder.SellViewHolder;
 import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryFavoriteViewModel;
 import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryGridListViewModel;
-import com.tokopedia.home.explore.view.adapter.viewmodel.DigitalsViewModel;
 import com.tokopedia.home.explore.view.adapter.viewmodel.SellViewModel;
 
 /**
@@ -40,11 +38,6 @@ public class ExploreAdapter extends BaseAdapterTypeFactory implements TypeFactor
     }
 
     @Override
-    public int type(DigitalsViewModel viewModel) {
-        return DigitalsViewHolder.LAYOUT;
-    }
-
-    @Override
     public int type(CategoryFavoriteViewModel viewModel) {
         return CategoryFavoriteViewHolder.LAYOUT;
     }
@@ -55,8 +48,6 @@ public class ExploreAdapter extends BaseAdapterTypeFactory implements TypeFactor
             return new CategoryGridListViewHolder(parent, listener);
         } if (type == SellViewHolder.LAYOUT) {
             return new SellViewHolder(parent, listener);
-        } if (type == DigitalsViewHolder.LAYOUT) {
-            return new DigitalsViewHolder(fragmentManager, parent, listener);
         } if (type == CategoryFavoriteViewHolder.LAYOUT) {
             return new CategoryFavoriteViewHolder(parent, listener);
         } else {

@@ -22,7 +22,7 @@ import com.tokopedia.digital.widget.model.mapper.CategoryMapper;
 import com.tokopedia.digital.widget.model.mapper.StatusMapper;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
-import com.tokopedia.home.explore.view.adapter.viewmodel.DigitalsViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
 import com.tokopedia.home.recharge.adapter.RechargeViewPagerAdapter;
 import com.tokopedia.home.recharge.interactor.RechargeNetworkInteractorImpl;
 import com.tokopedia.home.recharge.presenter.RechargeCategoryPresenter;
