@@ -5,7 +5,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,7 +15,6 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -270,28 +268,21 @@ public class LoginFragment extends BaseDaggerFragment
             }
         });
 
-        enableArrow();
-
         loginView.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             @Override
             public void onScrollChanged() {
-                Display display = getActivity().getWindowManager().getDefaultDisplay();
-                Point size = new Point();
-                display.getSize(size);
-                int height = size.y;
-
-                if (loginView != null && height < MINIMAL_HEIGHT) {
-                    if (loginView.getChildAt(0).getBottom() <= (loginView.getHeight() + loginView
-                            .getScrollY())) {
-                        loadMoreFab.hide();
-                    } else {
-                        loadMoreFab.show();
-                    }
+                if (isLastItem()) {
+                    loadMoreFab.hide();
+                } else {
+                    loadMoreFab.show();
                 }
+
             }
         });
 
-        loadMoreFab.setOnClickListener(new View.OnClickListener() {
+        loadMoreFab.setOnClickListener(new View.OnClickListener()
+
+        {
             @Override
             public void onClick(View v) {
                 loginView.post(new Runnable() {
@@ -305,8 +296,13 @@ public class LoginFragment extends BaseDaggerFragment
 
     }
 
+    private boolean lastItemVisible() {
+        return false;
+    }
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+
         autoCompleteAdapter = new ArrayAdapter<>(getActivity(),
                 android.R.layout.simple_dropdown_item_1line,
                 presenter.getLoginIdList());
@@ -506,6 +502,8 @@ public class LoginFragment extends BaseDaggerFragment
                 loginLayout.addView(tv, loginLayout.getChildCount(), layoutParams);
             }
         }
+
+        enableArrow();
     }
 
     @Override
@@ -646,16 +644,25 @@ public class LoginFragment extends BaseDaggerFragment
 
     @Override
     public void enableArrow() {
-        Display display = getActivity().getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int height = size.y;
+        ViewTreeObserver observer = loginView.getViewTreeObserver();
+        observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                int viewHeight = loginView.getMeasuredHeight();
+                int contentHeight = loginView.getChildAt(0).getHeight();
+                if (viewHeight - contentHeight < 0
+                        && !isLastItem()) {
+                    loadMoreFab.show();
+                } else {
+                    loadMoreFab.hide();
+                }
+            }
+        });
+    }
 
-        if (height < MINIMAL_HEIGHT) {
-            loadMoreFab.show();
-        } else {
-            loadMoreFab.hide();
-        }
+    private boolean isLastItem() {
+        return loginView.getChildAt(0).getBottom() <= (loginView.getHeight() + loginView
+                .getScrollY());
     }
 
     private void setDiscoverListener(final DiscoverItemViewModel discoverItemViewModel,
