@@ -14,7 +14,7 @@ import rx.Observable;
  */
 
 public interface HomeDataApi {
-    @POST("graphql")
+    @POST("./")
     @Headers({"Content-Type: application/json"})
     Observable<Response<GraphqlResponse<HomeData>>> getHomeData(@Body String requestBody);
 }

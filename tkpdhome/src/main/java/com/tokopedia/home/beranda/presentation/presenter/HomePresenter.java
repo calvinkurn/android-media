@@ -65,8 +65,6 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     @Inject
     SessionHandler sessionHandler;
 
-    protected CompositeSubscription compositeSubscription;
-    protected Subscription subscription;
     private final Context context;
     private GetShopInfoRetrofit getShopInfoRetrofit;
     private String currentCursor = "";
@@ -77,8 +75,6 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     public HomePresenter(Context context) {
         this.context = context;
-        compositeSubscription = new CompositeSubscription();
-        subscription = Subscriptions.empty();
         this.pagingHandler = new PagingHandler();
         resetPageFeed();
     }
@@ -86,20 +82,13 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     @Override
     public void detachView() {
         super.detachView();
-        if (!compositeSubscription.isUnsubscribed()) {
-            compositeSubscription.unsubscribe();
-        }
-    }
 
-    @NonNull
-    private Observable<List<Visitable>> getDataFromNetwork() {
-        return getHomeDataUseCase.getExecuteObservable(RequestParams.EMPTY);
     }
 
     @Override
     public void getHomeData() {
         initHeaderViewModelData();
-        compositeSubscription.add(getDataFromNetwork().subscribe(new HomeDataSubscriber()));
+        getHomeDataUseCase.execute(RequestParams.EMPTY, new HomeDataSubscriber());
     }
 
     private void initHeaderViewModelData() {
@@ -110,16 +99,6 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
             }
             headerViewModel.setPendingTokocashChecked(false);
         }
-    }
-
-    @NonNull
-    private Action1<List<Visitable>> refreshData() {
-        return new Action1<List<Visitable>>() {
-            @Override
-            public void call(List<Visitable> visitables) {
-                compositeSubscription.add(getDataFromNetwork().subscribe(new HomeDataSubscriber()));
-            }
-        };
     }
 
     @Override
