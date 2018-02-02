@@ -156,14 +156,7 @@ public class DrawerBuyerHelper extends DrawerHelper
                 true));
         data.add(getInboxMenu());
         data.add(getBuyerMenu());
-        if (SessionHandler.isUserHasShop(context)) {
-            data.add(getResoMenu());
-        } else {
-            data.add(new DrawerItem(context.getString(R.string.drawer_title_new_reso),
-                    R.drawable.ic_reso,
-                    TkpdState.DrawerPosition.RESOLUTION_CENTER,
-                    true));
-        }
+
         if (SessionHandler.isUserHasShop(context)) {
             data.add(getSellerMenu());
             data.add(getProductMenu());
@@ -173,7 +166,14 @@ public class DrawerBuyerHelper extends DrawerHelper
                     TkpdState.DrawerPosition.SELLER_TOP_ADS,
                     true));
         }
-
+        if (SessionHandler.isUserHasShop(context)) {
+            data.add(getResoMenu());
+        } else {
+            data.add(new DrawerItem(context.getString(R.string.drawer_title_new_reso),
+                    R.drawable.ic_reso,
+                    TkpdState.DrawerPosition.RESOLUTION_CENTER,
+                    true, getTotalResoNotif()));
+        }
         data.add(new DrawerItem(context.getString(R.string.drawer_title_setting),
                 R.drawable.icon_setting,
                 TkpdState.DrawerPosition.SETTINGS,

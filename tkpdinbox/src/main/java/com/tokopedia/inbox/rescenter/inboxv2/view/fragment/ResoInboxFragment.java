@@ -142,7 +142,7 @@ public class ResoInboxFragment
         bottomActionView.setVisibility(View.GONE);
         rvInbox.setVisibility(View.GONE);
         inboxFilterModel = new ResoInboxFilterModel();
-        inboxSortModel = new ResoInboxSortModel(SortModel.getSortList(), SORT_DEFAULT_ID, new SortModel());
+        inboxSortModel = new ResoInboxSortModel(SortModel.getSortList(getActivity()), SORT_DEFAULT_ID, new SortModel());
         presenter.initPresenterData(getActivity(), isSeller);
     }
 
@@ -225,6 +225,7 @@ public class ResoInboxFragment
 
     private void getFirstInboxResult(InboxItemResultViewModel result, boolean isInboxWithFilter) {
         dismissProgressBar();
+        swipeToRefresh.setRefreshing(false);
         rvInbox.setVisibility(View.VISIBLE);
         bottomActionView.setVisibility(View.VISIBLE);
         adapter.clearData();

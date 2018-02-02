@@ -295,4 +295,8 @@ yang ditemukan</string>
     <string name="string_empty_inbox_2_title">Oopppsss..</string>
     <string name="string_empty_inbox_2_desc">Kami tidak dapat menemukan komplain yang anda cari.</string>
     <string name="string_reset_filter">Reset Filter</string>
+    <string name="string_sort_2">Komplain Terbaru</string>
+    <string name="string_sort_3">Komplain Terlama</string>
+    <string name="string_sort_1">Terakhir Dibalas</string>
+    <string name="string_other_products">Produk Lainnya</string>
 </resources>

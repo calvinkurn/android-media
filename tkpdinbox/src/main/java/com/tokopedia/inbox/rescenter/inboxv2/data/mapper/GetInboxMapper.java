@@ -144,8 +144,8 @@ public class GetInboxMapper implements Func1<Response<TkpdResponse>, InboxItemRe
                 response.getOrder().getRefNum(),
                 response.getResolution().getRead() == STATUS_UNREAD,
                 actionBy == ACTION_BY_USER ?
-                        "Penjual:" :
-                        "Pembeli:",
+                        "Penjual :" :
+                        "Pembeli :",
                 actionBy == ACTION_BY_USER ?
                         response.getShop().getName() :
                         response.getCustomer().getName(),
@@ -186,7 +186,7 @@ public class GetInboxMapper implements Func1<Response<TkpdResponse>, InboxItemRe
 
     private static String buildStringForExtraImage(List<ProductResponse> responseList) {
         return responseList.size() > 3 ?
-                "+ " + String.valueOf(responseList.size() - 3).concat("Produk Lainnya") :
+                "+ " + String.valueOf(responseList.size() - 3).concat(" Produk Lainnya") :
                 "";
     }
 }

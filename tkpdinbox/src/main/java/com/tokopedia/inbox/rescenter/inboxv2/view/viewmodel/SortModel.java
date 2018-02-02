@@ -1,7 +1,10 @@
 package com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.tokopedia.inbox.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,11 +29,14 @@ public class SortModel implements Parcelable {
         this.ascId = ascId;
     }
 
-    public static List<SortModel> getSortList() {
+    public static List<SortModel> getSortList(Context context) {
         List<SortModel> list = new ArrayList<>();
-        list.add(new SortModel("Terakhir Dibalas", 1, 1, 0));
-        list.add(new SortModel("Komplain Terbaru", 2, 2, 0));
-        list.add(new SortModel("Komplain Terlama", 3, 2, 1));
+        list.add(new SortModel(
+                context.getResources().getString(R.string.string_sort_2), 2, 2, 0));
+        list.add(new SortModel(
+                context.getResources().getString(R.string.string_sort_3), 3, 2, 1));
+        list.add(new SortModel(
+                context.getResources().getString(R.string.string_sort_1), 1, 1, 0));
         return list;
     }
 
