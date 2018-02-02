@@ -69,11 +69,11 @@ public class HomeDataSource {
                 }
                 throw new RuntimeException("Cache is empty!!");
             }
-        }).onErrorResumeNext(getHomeData());
+        });
     }
 
     public Observable<List<Visitable>> getHomeData() {
-        return homeDataApi.getHomeData(getRequestPayload()).map(homeMapper).doOnNext(saveToCache());
+        return homeDataApi.getHomeData(getRequestPayload()).map(homeMapper);
     }
 
     private String getRequestPayload() {
