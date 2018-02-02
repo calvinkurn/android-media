@@ -338,13 +338,11 @@ public class OrderDetailButtonLayout extends LinearLayout{
                                          OrderDetailData data,
                                          OrderDetailPresenter presenter,
                                          Context context) {
-        if(confirmButtonVisibility == 0 && changeCourierButtonVisibility == 0)
+        if(confirmButtonVisibility == OrderDetailTypeDef.HIDE_BUTTON
+                && changeCourierButtonVisibility == OrderDetailTypeDef.HIDE_BUTTON)
             button.setVisibility(GONE);
-        else if(confirmButtonVisibility == 1 && changeCourierButtonVisibility == 1) {
-            button.setVisibility(VISIBLE);
-            button.setText(R.string.button_order_detail_confirm_shipping_alternative);
-            button.setOnClickListener(onConfirmShipping(context, presenter, data));
-        } else if(confirmButtonVisibility == 1 && changeCourierButtonVisibility == 0) {
+        else if(checkIfVisible(confirmButtonVisibility)
+                && changeCourierButtonVisibility == OrderDetailTypeDef.HIDE_BUTTON) {
             button.setVisibility(VISIBLE);
             button.setText(R.string.button_order_detail_confirm_shipping_alternative);
             button.setOnClickListener(onConfirmShipping(context, presenter, data));
@@ -354,13 +352,9 @@ public class OrderDetailButtonLayout extends LinearLayout{
         }
     }
 
-    private void switchChangeCourierButtonColor(Button button,
-                                                int acceptOrderButtonVisibility,
-                                                int confirmButtonVisibility) {
-        if(acceptOrderButtonVisibility == 0 && confirmButtonVisibility == 0) {
-            button.setBackgroundResource(R.drawable.white_button_rounded);
-            button.setTextColor(getResources().getColor(R.color.black));
-        }
+    private boolean checkIfVisible(int visibility) {
+        return visibility == OrderDetailTypeDef.WHITE_BUTTON
+                || visibility == OrderDetailTypeDef.GREEN_BUTTON;
     }
 
 }
