@@ -434,6 +434,15 @@ public interface AppEventTracking {
         String CLICK_IMAGE_SETTINGS = "click image settings";
         String CLICK_SAVE_EDIT = "click save edit";
 
+
+        String CLICK_VERIFY_NUMBER = "click verify number";
+        String CLICK_HOW_IT_WORKS = "click how it works";
+        String CLICK_COPY_REFERRAL_CODE = "click copy referral code";
+        String CLICK_SHARE_CODE = "click share code";
+        String SELECT_CHANNEL = "select channel";
+        String CLICK_KNOW_MORE = "click know more";
+        String CLICK_EXPLORE_TOKOPEDIA = "click explore tokopedia";
+
         String CLICK_PRODUCT_PROBLEM = "click barang & masalah";
         String CLICK_SOLUTION = "click solution";
         String CLICK_PROVE = "click bukti & keterangan";
@@ -926,6 +935,8 @@ public interface AppEventTracking {
         String TOTAL_ACTIVE_PRODUCT     = "total_active_product";
         String SHOP_SCORE     = "shop_score";
         String QUALITY_SCORE     = "quality_score";
+        String SCREEN_NAME     = "screen_name";
+        String CHANNEL     = "channel";
 
     }
 
@@ -960,6 +971,8 @@ public interface AppEventTracking {
         String EVENT_USER_ATTR = "User_Attribute_Name";
         String SELLER_SCREEN_OPEN = "Penjualan_Screen_Launched";
         String SHIPPING_CONFIRMED = "Shipping_Received_Confirmation";
+        String REFERRAL_SCREEN_LAUNCHED = "Referral_Screen_Launched";
+        String REFERRAL_SHARE_EVENT = "Share_Event";
     }
 
 
