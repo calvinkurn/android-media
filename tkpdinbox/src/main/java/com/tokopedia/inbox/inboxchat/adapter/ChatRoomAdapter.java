@@ -14,6 +14,7 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
 import com.tokopedia.inbox.inboxchat.domain.model.ListReplyViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.ReplyParcelableModel;
+import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.TypingChatModel;
@@ -182,6 +183,12 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         }
     }
 
+    public void remove(MyChatViewModel model) {
+        int position = list.indexOf(model);
+        list.remove(model);
+        notifyItemRemoved(position);
+    }
+
     public void addReply(Visitable item) {
         this.list.add(item);
         notifyItemInserted(this.list.size() - 1);
@@ -254,5 +261,11 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     public boolean isTyping() {
         return isTyping;
+    }
+
+    public void showRetryFor(MyChatViewModel model, boolean b) {
+        int position = list.indexOf(model);
+        ((MyChatViewModel) list.get(position)).setRetry(true);
+        notifyItemChanged(position);
     }
 }

@@ -1,18 +1,15 @@
 package com.tokopedia.inbox.inboxchat.viewholder;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.LayoutRes;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.format.DateFormat;
 import android.text.style.BackgroundColorSpan;
-import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
@@ -22,7 +19,6 @@ import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
 import com.tokopedia.inbox.inboxchat.helper.AttachmentChatHelper;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
-import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 
 import java.util.Date;
 
@@ -41,6 +37,7 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
     private TextView label;
     private TextView dot;
     private ImageView attachment;
+    private ImageView action;
     ChatRoomContract.View viewListener;
     private static final String ROLE_USER = "User";
 
@@ -59,12 +56,15 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
         label = itemView.findViewById(R.id.label);
         dot = itemView.findViewById(R.id.dot);
         attachment = itemView.findViewById(R.id.image);
+        action = itemView.findViewById(R.id.left_action);
         attachmentChatHelper = new AttachmentChatHelper();
         this.viewListener = viewListener;
     }
 
     @Override
     public void bind(final MyChatViewModel element) {
+
+        action.setVisibility(View.GONE);
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,7 +150,7 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
             dot.setVisibility(View.GONE);
         }
 
-        attachmentChatHelper.parse(attachment, message, element, viewListener, element.isDummy());
+        attachmentChatHelper.parse(element, attachment, message, action, element, viewListener, element.isDummy(), element.isRetry());
 
     }
 

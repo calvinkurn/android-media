@@ -28,7 +28,7 @@ public class AttachmentChatHelper {
     private static final String DEFAULT = "1";
     public static final String IMAGE_ATTACHED = "2";
 
-    public void parse(ImageView view, TextView message, ListReplyViewModel element, ChatRoomContract.View viewListener, boolean dummy) {
+    public void parse(MyChatViewModel myChatViewModel, ImageView view, TextView message, ImageView action, ListReplyViewModel element, ChatRoomContract.View viewListener, boolean dummy, boolean retry) {
         Attachment attachment = element.getAttachment();
         String role = element.getRole();
         String msg = element.getMsg();
@@ -38,7 +38,7 @@ public class AttachmentChatHelper {
                     parseType(view, message, attachment, role, msg, viewListener);
                     break;
                 case IMAGE_ATTACHED:
-                    parseAttachedImage(view, message, attachment, role, msg, viewListener, dummy);
+                    parseAttachedImage(myChatViewModel, view, message, attachment, role, msg, viewListener, dummy, retry, action);
                     break;
                 default:
                     parseDefaultType(view, message, attachment, viewListener);
@@ -51,10 +51,21 @@ public class AttachmentChatHelper {
     }
 
     public void parse(ImageView view, TextView message, ListReplyViewModel element, ChatRoomContract.View viewListener) {
-        parse(view, message, element, viewListener, false);
+        parse(null, view, message, null, element, viewListener, false, false);
     }
 
-    private void parseAttachedImage(ImageView view, TextView message, final Attachment attachment, String role, String msg, final ChatRoomContract.View viewListener, boolean dummy) {
+    private void parseAttachedImage(final MyChatViewModel myChatViewModel, ImageView view, TextView message, final Attachment attachment, String role, String msg, final ChatRoomContract.View viewListener, boolean dummy, boolean retry, ImageView action) {
+
+        if(retry){
+            action.setVisibility(View.VISIBLE);
+            action.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    viewListener.onRetrySend(myChatViewModel);
+                }
+            });
+        }
+
         if (attachment.getAttributes().getImageUrl() != null) {
             view.setVisibility(View.VISIBLE);
             view.setOnClickListener(new View.OnClickListener() {

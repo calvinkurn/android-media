@@ -18,6 +18,7 @@ import com.tokopedia.inbox.inboxchat.uploadimage.domain.interactor.GenerateHostU
 import com.tokopedia.inbox.inboxchat.uploadimage.domain.interactor.UploadImageUseCase;
 import com.tokopedia.inbox.inboxchat.uploadimage.domain.model.GenerateHostDomain;
 import com.tokopedia.inbox.inboxchat.uploadimage.domain.model.UploadImageDomain;
+import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
 
 import java.util.List;
@@ -118,15 +119,15 @@ public class AttachImageUseCase extends UseCase<ReplyActionData>{
 
     private Observable<ReplyActionData> uploadFiles(final RequestParams uploadFileParam, final RequestParams requestParams) {
         return Observable.from(getListImage(uploadFileParam))
-                .flatMap(new Func1<ImageUpload, Observable<UploadImageDomain>>() {
+                .flatMap(new Func1<MyChatViewModel, Observable<UploadImageDomain>>() {
                     @Override
-                    public Observable<UploadImageDomain> call(ImageUpload imageUpload) {
+                    public Observable<UploadImageDomain> call(MyChatViewModel imageUpload) {
                         return uploadImageUseCase.createObservable(
                                 UploadImageUseCase.getParam(
                                         requestParams,
                                         requestParams.getString(PARAM_UPLOAD_HOST,""),
-                                        imageUpload.getImageId(),
-                                        imageUpload.getFileLoc(),
+                                        imageUpload.getAttachment().getId(),
+                                        imageUpload.getAttachment().getAttributes().getImageUrl(),
                                         requestParams.getString(PARAM_SERVER_ID,"")
                                 ));
                     }
@@ -144,12 +145,12 @@ public class AttachImageUseCase extends UseCase<ReplyActionData>{
     }
 
 
-    private List<ImageUpload> getListImage(RequestParams uploadFileParam) {
-        return (List<ImageUpload>) uploadFileParam.getObject(PARAM_ATTACHMENT);
+    private List<MyChatViewModel> getListImage(RequestParams uploadFileParam) {
+        return (List<MyChatViewModel>) uploadFileParam.getObject(PARAM_ATTACHMENT);
     }
 
 
-    public static RequestParams getParam(List<ImageUpload> attachmentList, String messageId, String userId, String deviceId) {
+    public static RequestParams getParam(List<MyChatViewModel> attachmentList, String messageId, String userId, String deviceId) {
         RequestParams params = RequestParams.create();
         params.putObject(PARAM_ATTACHMENT, attachmentList);
         params.putString(PARAM_MESSAGE_ID, messageId);

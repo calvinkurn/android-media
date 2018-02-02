@@ -14,9 +14,8 @@ import com.tokopedia.inbox.inboxchat.adapter.ChatRoomAdapter;
 import com.tokopedia.inbox.inboxchat.domain.model.reply.Attachment;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
-import com.tokopedia.inbox.inboxchat.uploadimage.ImageUpload;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
-import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 
 import java.util.List;
 
@@ -115,6 +114,12 @@ public class ChatRoomContract {
         boolean isAllowedTemplate();
 
         Fragment getFragment();
+
+        void onErrorUploadImages(String throwable, MyChatViewModel model);
+
+        void onRetrySend(MyChatViewModel attachment);
+
+        void onSuccessSendAttach(ReplyActionData data, MyChatViewModel model);
     }
 
     interface Presenter extends CustomerPresenter<View>{
@@ -138,7 +143,7 @@ public class ChatRoomContract {
 
         void openImageGallery();
 
-        void startUpload(List<ImageUpload> list);
+        void startUpload(List<MyChatViewModel> list);
 
         String getFileLocFromCamera();
     }

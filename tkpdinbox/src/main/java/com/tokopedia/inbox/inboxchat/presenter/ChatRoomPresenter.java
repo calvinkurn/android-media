@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.RequestParams;
@@ -14,14 +13,12 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
-import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.getproducturlutil.GetProductUrlUtil;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketConstant;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketListenerImpl;
-import com.tokopedia.inbox.inboxchat.domain.model.AttachImageViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.domain.usecase.AttachImageUseCase;
@@ -38,7 +35,6 @@ import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.SendMessageViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.TemplateChatModel;
-import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -155,7 +151,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         getTemplateUseCase.unsubscribe();
         replyMessageUseCase.unsubscribe();
         sendMessageUseCase.unsubscribe();
-
+        attachImageUseCase.unsubscribe();
     }
 
     public void createWebSocket() {
@@ -300,7 +296,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     }
 
     @Override
-    public void startUpload(List<ImageUpload> list) {
+    public void startUpload(final List<MyChatViewModel> list) {
         String userId = SessionHandler.getTempLoginSession(getView().getActivity());
         String deviceId = GCMHandler.getRegistrationId(getView().getActivity());
         String messageId = (getView().getArguments().getString(PARAM_MESSAGE_ID));
@@ -312,12 +308,12 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
             @Override
             public void onError(Throwable throwable) {
-                getView().showError(ErrorHandler.getErrorMessage(throwable,getView().getActivity()));
+                getView().onErrorUploadImages(ErrorHandler.getErrorMessage(throwable,getView().getActivity()), list.get(0));
             }
 
             @Override
             public void onNext(ReplyActionData data) {
-                getView().onSuccessSendReply(data, "Uploaded Image");
+                getView().onSuccessSendAttach(data, list.get(0));
             }
         });
     }

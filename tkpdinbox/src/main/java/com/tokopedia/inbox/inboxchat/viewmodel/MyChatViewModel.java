@@ -16,9 +16,12 @@ public class MyChatViewModel extends ListReplyViewModel{
 
     boolean readStatus;
 
+    boolean isRetry;
+
     public MyChatViewModel() {
         super();
         this.isDummy = false;
+        this.isRetry = false;
     }
 
     @Override
@@ -40,5 +43,13 @@ public class MyChatViewModel extends ListReplyViewModel{
 
     public void setReadStatus(boolean readStatus) {
         this.readStatus = readStatus;
+    }
+
+    public boolean isRetry() {
+        return isRetry;
+    }
+
+    public void setRetry(boolean retry) {
+        isRetry = retry;
     }
 }

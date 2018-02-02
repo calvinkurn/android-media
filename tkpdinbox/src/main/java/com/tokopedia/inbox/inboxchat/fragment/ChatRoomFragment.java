@@ -15,10 +15,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -32,23 +30,18 @@ import android.widget.TextView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.myproduct.fragment.ImageGalleryAlbumFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.newgallery.GalleryActivity;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
-import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
-import com.tokopedia.core.util.ImageUploadHandler;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
@@ -83,12 +76,10 @@ import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.InboxChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxmessage.InboxMessageConstant;
-import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
 
 import org.json.JSONException;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -105,8 +96,6 @@ import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
-import static com.tokopedia.core.newgallery.GalleryActivity.ADD_PRODUCT_IMAGE_LOCATION;
-import static com.tokopedia.core.newgallery.GalleryActivity.FRAGMENT_TO_SHOW;
 import static com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity.PARAM_SENDER_ROLE;
 import static com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity.PARAM_WEBSOCKET;
 
@@ -211,7 +200,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     public boolean isAllowedTemplate(){
-        return (remoteConfig.getBoolean(ENABLE_TOPCHAT));
+//        return (remoteConfig.getBoolean(ENABLE_TOPCHAT));
+        return true;
     }
 
     @Override
@@ -219,6 +209,26 @@ public class ChatRoomFragment extends BaseDaggerFragment
         return this;
     }
 
+    @Override
+    public void onErrorUploadImages(String errorMessage, MyChatViewModel model) {
+        showError(errorMessage);
+        showRetryFor(model);
+    }
+
+    private void showRetryFor(MyChatViewModel model) {
+        adapter.showRetryFor(model, true);
+    }
+
+    @Override
+    public void onRetrySend(MyChatViewModel attachment) {
+        adapter.remove(attachment);
+        ImageUpload model = new ImageUpload();
+        model.setImageId(String.valueOf(System.currentTimeMillis()/1000));
+        model.setFileLoc(attachment.getAttachment().getAttributes().getImageUrl());
+        MyChatViewModel temp = addDummyAttachImage(model);
+        presenter.startUpload(Collections.singletonList(temp));
+
+    }
 
     private void initListener() {
 
@@ -646,6 +656,17 @@ public class ChatRoomFragment extends BaseDaggerFragment
     @Override
     public void onSuccessSendReply(ReplyActionData replyData, String reply) {
         adapter.removeLast();
+        addView(replyData, reply);
+    }
+
+
+    @Override
+    public void onSuccessSendAttach(ReplyActionData data, MyChatViewModel model) {
+        adapter.remove(model);
+        addView(data, "Uploaded Image");
+    }
+
+    private void addView(ReplyActionData replyData, String reply){
         setViewEnabled(true);
         MyChatViewModel item = new MyChatViewModel();
         item.setReplyId(replyData.getChat().getMsgId());
@@ -727,12 +748,13 @@ public class ChatRoomFragment extends BaseDaggerFragment
         scrollToBottom();
     }
 
-    private void addDummyAttachImage(List<ImageUpload> list){
+    private MyChatViewModel addDummyAttachImage(ImageUpload imageUpload){
         MyChatViewModel item = new MyChatViewModel();
         Attachment attachment = new Attachment();
         attachment.setType(AttachmentChatHelper.IMAGE_ATTACHED);
         AttachmentAttributes attachmentAttributes = new AttachmentAttributes();
-        attachmentAttributes.setImageUrl(list.get(0).getFileLoc());
+        attachmentAttributes.setImageUrl(imageUpload.getFileLoc());
+        attachment.setId(imageUpload.getImageId());
         attachment.setAttributes(attachmentAttributes);
         item.setAttachment(attachment);
         item.setReplyTime(MyChatViewModel.SENDING_TEXT);
@@ -740,6 +762,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
         item.setSenderId(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
         adapter.addReply(item);
         recyclerView.scrollToPosition(adapter.getList().size()-1);
+
+        return item;
     }
 
     @Override
@@ -931,8 +955,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     ImageUpload model = new ImageUpload();
                     model.setImageId(String.valueOf(System.currentTimeMillis()/1000));
                     model.setFileLoc(fileLoc);
-                    presenter.startUpload(Collections.singletonList(model));
-                    addDummyAttachImage(Collections.singletonList(model));
+                    MyChatViewModel temp = addDummyAttachImage(model);
+                    presenter.startUpload(Collections.singletonList(temp));
                 }
                 break;
 
@@ -941,13 +965,14 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     break;
                 }
                 String imageUrl = data.getStringExtra(GalleryActivity.IMAGE_URL);
-                List<ImageUpload> list = new ArrayList<>();
+                List<MyChatViewModel> list = new ArrayList<>();
 
                 if (!TextUtils.isEmpty(imageUrl)) {
                     ImageUpload model = new ImageUpload();
                     model.setImageId(String.valueOf(System.currentTimeMillis()/1000));
                     model.setFileLoc(imageUrl);
-                    list.add(model);
+                    MyChatViewModel temp = addDummyAttachImage(model);
+                    list.add(temp);
                 } else {
                     ArrayList<String> imageUrls = data.getStringArrayListExtra(GalleryActivity.IMAGE_URLS);
                     if (imageUrls != null) {
@@ -955,12 +980,13 @@ public class ChatRoomFragment extends BaseDaggerFragment
                             ImageUpload model = new ImageUpload();
                             model.setImageId(String.valueOf(System.currentTimeMillis()/1000));
                             model.setFileLoc(imageUrls.get(i));
-                            list.add(model);
+                            MyChatViewModel temp = addDummyAttachImage(model);
+                            list.add(temp);
                         }
                     }
                 }
+
                 presenter.startUpload(list);
-                addDummyAttachImage(list);
                 break;
             default:
                 break;
