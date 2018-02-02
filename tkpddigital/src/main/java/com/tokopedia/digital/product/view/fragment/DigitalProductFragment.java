@@ -627,8 +627,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     @Override
     public void onProductChooserClicked(List<Product> productListData, String operatorId, String titleChooser) {
-        UnifyTracking.eventSelectProductOnNativePage(categoryDataState.getName(), categoryDataState.getName());
-
         startActivityForResult(
                 DigitalChooserActivity.newInstanceProductChooser(
                         getActivity(), categoryId, operatorId, titleChooser
