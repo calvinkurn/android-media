@@ -122,37 +122,43 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     private void prepareAndExecuteApplinkNotification(Bundle data) {
         String applinks = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
         String category = Uri.parse(applinks).getHost();
-        if (category != null && category.equals(Constants.ARG_NOTIFICATION_APPLINK_TOPCHAT)) {
-            if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT)) {
-                if (mActivitiesLifecycleCallbacks.getLiveActivityOrNull() != null
-                        && mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof ChatNotifInterface) {
-                    NotificationReceivedListener listener = (NotificationReceivedListener) MainApplication.currentActivity();
-                    listener.onGetNotif(data);
-                } else {
-                    String applink = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
-                    String fullname = data
-                            .getString("full_name");
-                    applink += "?" + "fullname=" + fullname;
-                    data.putString(Constants.ARG_NOTIFICATION_APPLINK, applink);
-                    ApplinkPushNotificationBuildAndShow applinkBuildAndShowNotification = new
-                            ApplinkPushNotificationBuildAndShow(data);
-                    Intent intent = new Intent(mContext, DeepLinkHandlerActivity.class);
-                    applinkBuildAndShowNotification.process(mContext, intent);
+        switch (category) {
+            case Constants.ARG_NOTIFICATION_APPLINK_TOPCHAT:
+                if (remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT)) {
+                    if (mActivitiesLifecycleCallbacks.getLiveActivityOrNull() != null
+                            && mActivitiesLifecycleCallbacks.getLiveActivityOrNull() instanceof ChatNotifInterface) {
+                        NotificationReceivedListener listener = (NotificationReceivedListener) MainApplication.currentActivity();
+                        listener.onGetNotif(data);
+                    } else {
+                        String applink = data.getString(Constants.ARG_NOTIFICATION_APPLINK);
+                        String fullname = data
+                                .getString("full_name");
+                        applink += "?" + "fullname=" + fullname;
+                        data.putString(Constants.ARG_NOTIFICATION_APPLINK, applink);
+                        buildNotifByData(data);
+                    }
                 }
-            }
-        } else if (category != null && category.equals(Constants.ARG_NOTIFICATION_APPLINK_MESSAGE)) {
-            if (!remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT)) {
-                ApplinkPushNotificationBuildAndShow buildAndShow = new ApplinkPushNotificationBuildAndShow(data);
-                Intent intent = new Intent(mContext, DeepLinkHandlerActivity.class);
-                buildAndShow.process(mContext, intent);
-            }
-        } else {
-            ApplinkPushNotificationBuildAndShow buildAndShow = new ApplinkPushNotificationBuildAndShow(data);
-            Intent intent = new Intent(mContext, DeepLinkHandlerActivity.class);
-            buildAndShow.process(mContext, intent);
+                break;
+            case Constants.ARG_NOTIFICATION_APPLINK_MESSAGE:
+                if (!remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT)) {
+                    buildNotifByData(data);
+                }
+                break;
+            case Constants.ARG_NOTIFICATION_APPLINK_SELLER_INFO:
+                if (SessionHandler.isUserHasShop(mContext)) {
+                    buildNotifByData(data);
+                }
+                break;
+            default:
+                buildNotifByData(data);
+                break;
         }
+    }
 
-
+    private void buildNotifByData(Bundle data) {
+        ApplinkPushNotificationBuildAndShow buildAndShow = new ApplinkPushNotificationBuildAndShow(data);
+        Intent intent = new Intent(mContext, DeepLinkHandlerActivity.class);
+        buildAndShow.process(mContext, intent);
     }
 
     public void handleDedicatedNotification(Bundle data) {

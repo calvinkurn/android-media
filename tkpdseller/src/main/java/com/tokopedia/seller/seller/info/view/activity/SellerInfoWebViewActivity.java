@@ -15,15 +15,16 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.seller.info.view.fragment.SellerInfoWebViewFragment;
 
-import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_URL;
-
 /**
  * Created by normansyahputa on 12/5/17.
  */
 
 public class SellerInfoWebViewActivity extends BaseSimpleActivity {
 
-    @DeepLink({Constants.Applinks.SELLER_INFO_DETAIL, Constants.Applinks.SellerApp.SELLER_INFO_DETAIL})
+    public static final String KEY_APPLINK_URL = "url";
+
+    // example url: tokopedia://sellerinfo/detail?url=http%3A%2F%2Ftkp.me%2Fta43
+    @DeepLink({Constants.Applinks.SELLER_INFO_DETAIL})
     public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
         Intent homeIntent;
         if (GlobalConfig.isSellerApp()) {
@@ -38,7 +39,7 @@ public class SellerInfoWebViewActivity extends BaseSimpleActivity {
         Intent parentIntent = new Intent(context, SellerInfoActivity.class);
         taskStackBuilder.addNextIntent(parentIntent);
 
-        String url = extras.getString(ARG_NOTIFICATION_URL, "");
+        String url = extras.getString(KEY_APPLINK_URL, "");
         if (!TextUtils.isEmpty(url)) {
             Intent detailsIntent = getCallingIntent(context, url);
             taskStackBuilder.addNextIntent(detailsIntent);

@@ -20,6 +20,7 @@ public interface Constants {
     String ARG_NOTIFICATION_APPLINK = "applinks";
     String ARG_NOTIFICATION_ISPROMO = "ispromo";
     String ARG_NOTIFICATION_APPLINK_MESSAGE = "message";
+    String ARG_NOTIFICATION_APPLINK_SELLER_INFO = "seller_info";
     String ARG_NOTIFICATION_APPLINK_MESSAGE_CUSTOM_INDEX = "sender_id";
     String ARG_NOTIFICATION_APPLINK_DISCUSSION = "talk";
     String ARG_NOTIFICATION_APPLINK_DISCUSSION_CUSTOM_INDEX = "sender_id";
@@ -140,7 +141,6 @@ public interface Constants {
             String TOPADS_PRODUCT_DETAIL = "sellerapp://topads/product/{ad_id}";
             String TOPADS_PRODUCT_DETAIL_CONSTS = "sellerapp://topads/product";
             String BROWSER = "sellerapp://browser";
-            String SELLER_INFO_DETAIL = "sellerapp://sellerinfo/detail";
         }
     }
 
