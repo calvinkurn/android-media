@@ -18,7 +18,7 @@ import com.tokopedia.home.beranda.data.source.api.HomeDataApi;
 import com.tokopedia.home.beranda.data.source.api.HomeDataService;
 import com.tokopedia.home.beranda.di.HomeScope;
 import com.tokopedia.home.beranda.domain.interactor.GetHomeDataUseCase;
-import com.tokopedia.tkpd.beranda.domain.interactor.GetLocalHomeDataUseCase;
+import com.tokopedia.home.beranda.domain.interactor.GetLocalHomeDataUseCase;
 import com.tokopedia.home.beranda.presentation.presenter.HomePresenter;
 
 import dagger.Module;
@@ -89,9 +89,7 @@ public class HomeModule {
 
     @HomeScope
     @Provides
-    GetLocalHomeDataUseCase getLocalHomeDataUseCase(ThreadExecutor threadExecutor,
-                                                    PostExecutionThread postExecutionThread,
-                                                    HomeRepository repository){
-        return new GetLocalHomeDataUseCase(threadExecutor, postExecutionThread, repository);
+    GetLocalHomeDataUseCase getLocalHomeDataUseCase(HomeRepository repository){
+        return new GetLocalHomeDataUseCase(repository);
     }
 }

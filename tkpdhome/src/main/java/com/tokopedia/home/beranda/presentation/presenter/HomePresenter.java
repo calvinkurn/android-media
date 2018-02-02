@@ -29,24 +29,8 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.tokocash.model.CashBackData;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
-import com.tokopedia.tkpd.beranda.domain.interactor.GetBrandsOfficialStoreUseCase;
-import com.tokopedia.tkpd.beranda.domain.interactor.GetHomeBannerUseCase;
-import com.tokopedia.tkpd.beranda.domain.interactor.GetHomeCategoryUseCase;
-import com.tokopedia.tkpd.beranda.domain.interactor.GetHomeDataUseCase;
-import com.tokopedia.tkpd.beranda.domain.interactor.GetLocalHomeDataUseCase;
-import com.tokopedia.tkpd.beranda.domain.interactor.GetTickerUseCase;
-import com.tokopedia.tkpd.beranda.domain.interactor.GetTopPicksUseCase;
-import com.tokopedia.tkpd.beranda.domain.model.category.CategoryLayoutRowModel;
-import com.tokopedia.tkpd.beranda.listener.HomeFeedListener;
-import com.tokopedia.tkpd.beranda.presentation.view.HomeContract;
-import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
-import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.BrandsViewModel;
-import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategoryItemViewModel;
-import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
-import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TopPicksViewModel;
-import com.tokopedia.tkpd.beranda.presentation.view.subscriber.GetHomeFeedsSubscriber;
-import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.home.beranda.domain.interactor.GetHomeDataUseCase;
+import com.tokopedia.home.beranda.domain.interactor.GetLocalHomeDataUseCase;
 import com.tokopedia.home.beranda.domain.model.category.CategoryLayoutRowModel;
 import com.tokopedia.home.beranda.listener.HomeFeedListener;
 import com.tokopedia.home.beranda.presentation.view.HomeContract;
@@ -118,7 +102,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     @Override
     public void getHomeData() {
         initHeaderViewModelData();
-        subscription = localHomeDataUseCase.getExecuteObservableAsync(RequestParams.EMPTY)
+        subscription = localHomeDataUseCase.getExecuteObservable(RequestParams.EMPTY)
                 .doOnNext(refreshData())
                 .onErrorResumeNext(getDataFromNetwork())
                 .subscribe(new HomeDataSubscriber());
