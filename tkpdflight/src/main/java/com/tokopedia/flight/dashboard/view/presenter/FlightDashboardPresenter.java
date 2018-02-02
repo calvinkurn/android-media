@@ -131,18 +131,41 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     private void actionLoadFromCache() {
         boolean isChanged = false;
         if (flightDashboardCache.getDepartureAirport() != null) {
-            getView().getCurrentDashboardViewModel().setDepartureAirport(flightDashboardCache.getDepartureAirport());
-            getView().getCurrentDashboardViewModel().setDepartureAirportFmt(buildAirportFmt(flightDashboardCache.getDepartureAirport()));
+            actionGetAirportById(flightDashboardCache.getDepartureAirport(), true);
             isChanged = true;
         }
         if (flightDashboardCache.getArrivalAirport() != null) {
-            getView().getCurrentDashboardViewModel().setArrivalAirport(flightDashboardCache.getArrivalAirport());
-            getView().getCurrentDashboardViewModel().setArrivalAirportFmt(buildAirportFmt(flightDashboardCache.getArrivalAirport()));
+            actionGetAirportById(flightDashboardCache.getArrivalAirport(), false);
             isChanged = true;
         }
         if (isChanged) {
             renderUi();
         }
+    }
+
+    private void actionGetAirportById(String airportId, final boolean isDepartureAirport) {
+        getFlightAirportByIdUseCase.execute(getFlightAirportByIdUseCase.createRequestParams(airportId), new Subscriber<FlightAirportDB>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+
+            }
+
+            @Override
+            public void onNext(FlightAirportDB flightAirportDB) {
+                if (isDepartureAirport) {
+                    getView().getCurrentDashboardViewModel().setDepartureAirport(flightAirportDB);
+                    getView().getCurrentDashboardViewModel().setDepartureAirportFmt(buildAirportFmt(flightAirportDB));
+                } else {
+                    getView().getCurrentDashboardViewModel().setArrivalAirport(flightAirportDB);
+                    getView().getCurrentDashboardViewModel().setArrivalAirportFmt(buildAirportFmt(flightAirportDB));
+                }
+            }
+        });
     }
 
     private void actionGetClassesAndSetDefaultClass() {
@@ -323,7 +346,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         String code = buildAirportFmt(departureAirport);
         flightDashboardViewModel.setDepartureAirportFmt(code);
         getView().setDashBoardViewModel(flightDashboardViewModel);
-        flightDashboardCache.putDepartureAirport(departureAirport);
+        flightDashboardCache.putDepartureAirport(departureAirport.getAirportId());
         renderUi();
     }
 
@@ -348,7 +371,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         }
         flightDashboardViewModel.setArrivalAirportFmt(arrivalAirport.getCityName() + " (" + code + ")");
         getView().setDashBoardViewModel(flightDashboardViewModel);
-        flightDashboardCache.putArrivalAirport(arrivalAirport);
+        flightDashboardCache.putArrivalAirport(arrivalAirport.getAirportId());
         renderUi();
     }
 

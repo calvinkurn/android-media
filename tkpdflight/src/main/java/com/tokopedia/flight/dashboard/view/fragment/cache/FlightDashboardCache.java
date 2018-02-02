@@ -24,23 +24,26 @@ public class FlightDashboardCache {
         this.gson = gson;
     }
 
-    public void putDepartureAirport(FlightAirportDB airportDB) {
+    public void putDepartureAirport(String airportId) {
         editor
-                .putString(DEPARTURE, gson.toJson(airportDB))
+                .putString(DEPARTURE, airportId)
                 .apply();
     }
 
-    public FlightAirportDB getDepartureAirport() {
-        return gson.fromJson(sharedPrefs.getString(DEPARTURE, ""), FlightAirportDB.class);
+    public String getDepartureAirport() {
+        return sharedPrefs.getString(DEPARTURE, "CGK");
     }
 
-    public void putArrivalAirport(FlightAirportDB airportDB) {
-        editor
+    public void putArrivalAirport(String airportId) {
+        /*editor
                 .putString(ARRIVAL, gson.toJson(airportDB))
+                .apply();*/
+        editor
+                .putString(ARRIVAL, airportId)
                 .apply();
     }
 
-    public FlightAirportDB getArrivalAirport() {
-        return gson.fromJson(sharedPrefs.getString(ARRIVAL, ""), FlightAirportDB.class);
+    public String getArrivalAirport() {
+        return sharedPrefs.getString(ARRIVAL, "DPS");
     }
 }
