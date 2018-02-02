@@ -1,0 +1,37 @@
+package com.tokopedia.transaction.utils;
+
+import rx.Observable;
+import rx.subjects.PublishSubject;
+
+/**
+ * @author Aghny A. Putra on 02/02/18
+ */
+public class TkpdRxBus {
+
+    private static TkpdRxBus instance;
+
+    private PublishSubject<Object> subject = PublishSubject.create();
+
+    public static TkpdRxBus instanceOf() {
+        if (instance == null) {
+            instance = new TkpdRxBus();
+        }
+        return instance;
+    }
+
+    /**
+     * Pass events to event listeners
+     * @param o Event object
+     */
+    public void publishEvent(Object o) {
+        subject.onNext(o);
+    }
+
+    /**
+     * Subscribe to this observable
+     * @return Observable<Object> object to be subscribed
+     */
+    public Observable<Object> subscribeEvents() {
+        return subject;
+    }
+}
