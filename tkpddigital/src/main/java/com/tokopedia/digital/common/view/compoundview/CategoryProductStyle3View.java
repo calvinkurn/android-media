@@ -363,8 +363,22 @@ public class CategoryProductStyle3View extends
     }
 
     @NonNull
-    private BaseDigitalChooserView.OperatorActionListener<Operator> getActionListenerOperatorChooser() {
-        return new BaseDigitalChooserView.OperatorActionListener<Operator>() {
+    private BaseDigitalChooserView.ActionListener<Operator> getActionListenerOperatorChooser() {
+        return new BaseDigitalChooserView.ActionListener<Operator>() {
+            @Override
+            public void onUpdateDataDigitalChooserSelectedRendered(Operator operator) {
+                operatorSelected = operator;
+                if (!operator.getClientNumberList().isEmpty()) {
+                    renderClientNumberInputForm(operator);
+                }
+                if (operator.getRule().getProductViewStyle() == 99) {
+                    renderDefaultProductSelected();
+                } else {
+                    showProducts();
+                }
+                setBtnBuyDigitalText(operator.getRule().getButtonText());
+            }
+
             @Override
             public void onUpdateDataDigitalChooserSelectedRendered(Operator operator, boolean resetClientNumber) {
                 operatorSelected = operator;
@@ -441,13 +455,18 @@ public class CategoryProductStyle3View extends
     }
 
     @NonNull
-    private BaseDigitalChooserView.ProductActionListener<Product> getActionListenerProductChooser() {
-        return new BaseDigitalChooserView.ProductActionListener<Product>() {
+    private BaseDigitalChooserView.ActionListener<Product> getActionListenerProductChooser() {
+        return new BaseDigitalChooserView.ActionListener<Product>() {
             @Override
             public void onUpdateDataDigitalChooserSelectedRendered(Product product) {
                 productSelected = product;
                 renderAdditionalProductInfo();
                 renderPriceProductInfo();
+            }
+
+            @Override
+            public void onUpdateDataDigitalChooserSelectedRendered(Product data, boolean resetClientNumber) {
+
             }
 
             @Override

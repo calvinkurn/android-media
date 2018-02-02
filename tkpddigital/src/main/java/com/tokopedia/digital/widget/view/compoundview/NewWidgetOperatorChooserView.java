@@ -52,8 +52,7 @@ public class NewWidgetOperatorChooserView extends BaseDigitalChooserView<Operato
         return new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                ((OperatorActionListener) actionListener)
-                        .onUpdateDataDigitalChooserSelectedRendered(dataList.get(i), resetClientNumber);
+                actionListener.onUpdateDataDigitalChooserSelectedRendered(dataList.get(i), resetClientNumber);
                 actionListener.tracking();
                 resetClientNumber = true;
             }
@@ -72,8 +71,7 @@ public class NewWidgetOperatorChooserView extends BaseDigitalChooserView<Operato
                     .equalsIgnoreCase(String.valueOf(defaultOperatorId))) {
                 resetClientNumber = true;
                 spinnerOperator.setSelection(i);
-                ((OperatorActionListener) actionListener)
-                        .onUpdateDataDigitalChooserSelectedRendered(dataList.get(i), resetClientNumber);
+                actionListener.onUpdateDataDigitalChooserSelectedRendered(dataList.get(i), resetClientNumber);
                 actionListener.tracking();
                 break;
             }
@@ -113,8 +111,7 @@ public class NewWidgetOperatorChooserView extends BaseDigitalChooserView<Operato
                     .equalsIgnoreCase(String.valueOf(data.getOperatorId()))) {
                 resetClientNumber = false;
                 spinnerOperator.setSelection(i);
-                ((OperatorActionListener) actionListener)
-                        .onUpdateDataDigitalChooserSelectedRendered(dataList.get(i), resetClientNumber);
+                actionListener.onUpdateDataDigitalChooserSelectedRendered(dataList.get(i), resetClientNumber);
                 actionListener.tracking();
                 break;
             }

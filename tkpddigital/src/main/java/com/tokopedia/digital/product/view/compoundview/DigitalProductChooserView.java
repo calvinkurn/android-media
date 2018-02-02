@@ -85,7 +85,7 @@ public class DigitalProductChooserView extends BaseDigitalChooserView<Product> {
         }
         invalidateContentView();
         if (actionListener != null) {
-            ((ProductActionListener) actionListener).onUpdateDataDigitalChooserSelectedRendered(dataSelected);
+            actionListener.onUpdateDataDigitalChooserSelectedRendered(dataSelected);
             actionListener.tracking();
         }
         layoutProduct.setOnClickListener(getOnChooserClickedListener());
@@ -122,7 +122,7 @@ public class DigitalProductChooserView extends BaseDigitalChooserView<Product> {
         dataSelected = data;
         invalidateContentView();
         if (actionListener != null) {
-            ((ProductActionListener) actionListener).onUpdateDataDigitalChooserSelectedRendered(dataSelected);
+            actionListener.onUpdateDataDigitalChooserSelectedRendered(dataSelected);
             actionListener.tracking();
         }
     }

@@ -58,7 +58,7 @@ public class NewWidgetProductChooserView extends BaseDigitalChooserView<Product>
         return new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                ((ProductActionListener) actionListener).onUpdateDataDigitalChooserSelectedRendered(dataList.get(i));
+                actionListener.onUpdateDataDigitalChooserSelectedRendered(dataList.get(i));
                 actionListener.tracking();
                 showProductStatus(dataList.get(i));
             }

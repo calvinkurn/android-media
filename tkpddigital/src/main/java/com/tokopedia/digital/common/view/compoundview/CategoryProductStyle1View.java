@@ -453,13 +453,18 @@ public class CategoryProductStyle1View extends
     }
 
     @NonNull
-    private BaseDigitalChooserView.ProductActionListener<Product> getActionListenerProductChooser() {
-        return new BaseDigitalChooserView.ProductActionListener<Product>() {
+    private BaseDigitalChooserView.ActionListener<Product> getActionListenerProductChooser() {
+        return new BaseDigitalChooserView.ActionListener<Product>() {
             @Override
             public void onUpdateDataDigitalChooserSelectedRendered(Product product) {
                 productSelected = product;
                 renderAdditionalInfoProduct();
                 renderPriceProductInfo();
+            }
+
+            @Override
+            public void onUpdateDataDigitalChooserSelectedRendered(Product data, boolean resetClientNumber) {
+
             }
 
             @Override
