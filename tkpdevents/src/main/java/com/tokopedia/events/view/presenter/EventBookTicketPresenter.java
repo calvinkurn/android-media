@@ -107,16 +107,16 @@ public class EventBookTicketPresenter
             @Override
             public void onNext(ValidateResponse objectResponse) {
                 if (objectResponse.getStatus() != 400) {
-//                    if (hasSeatLayout == 1) {
+                    if (hasSeatLayout == 1) {
                         Intent reviewTicketIntent = new Intent(getView().getActivity(), SeatSelectionActivity.class);
                         reviewTicketIntent.putExtra(EXTRA_PACKAGEVIEWMODEL, selectedPackageViewModel);
                         reviewTicketIntent.putExtra("EventTitle", eventTitle);
                         getView().navigateToActivityRequest(reviewTicketIntent, 100);
-//                    } else {
-//                        Intent reviewTicketIntent = new Intent(getView().getActivity(), ReviewTicketActivity.class);
-//                        reviewTicketIntent.putExtra(EXTRA_PACKAGEVIEWMODEL, selectedPackageViewModel);
-//                        getView().navigateToActivityRequest(reviewTicketIntent, 100);
-//                    }
+                    } else {
+                        Intent reviewTicketIntent = new Intent(getView().getActivity(), ReviewTicketActivity.class);
+                        reviewTicketIntent.putExtra(EXTRA_PACKAGEVIEWMODEL, selectedPackageViewModel);
+                        getView().navigateToActivityRequest(reviewTicketIntent, 100);
+                    }
                 } else {
                     getView().showMessage(objectResponse.getMessageError());
                 }
