@@ -1,4 +1,4 @@
-package com.tokopedia.tkpdchat.channel;
+package com.tokopedia.tkpdstream.channel;
 
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
