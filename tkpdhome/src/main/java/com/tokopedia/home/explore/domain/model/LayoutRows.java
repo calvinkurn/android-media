@@ -1,4 +1,4 @@
-package com.tokopedia.home.beranda.domain.model.category;
+package com.tokopedia.home.explore.domain.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -6,9 +6,9 @@ import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * @author by errysuprayogi on 11/27/17.
+ * Created by errysuprayogi on 2/2/18.
  */
-public class CategoryLayoutRowModel implements Parcelable {
+public class LayoutRows implements Parcelable {
 
     @SerializedName("id")
     private int id;
@@ -16,29 +16,29 @@ public class CategoryLayoutRowModel implements Parcelable {
     private String name;
     @SerializedName("url")
     private String url;
-    @SerializedName("image_url")
+    @SerializedName("imageUrl")
     private String imageUrl;
-    @SerializedName("Weight")
-    private int Weight;
-    @SerializedName("type")
-    private String type;
-    @SerializedName("additional_info")
-    private String additionalInfo;
-    @SerializedName("category_id")
-    private int categoryId;
     @SerializedName("applinks")
     private String applinks;
+    @SerializedName("type")
+    private String type;
+    @SerializedName("categoryId")
+    private int categoryId;
+    @SerializedName("categoryLabel")
+    private String categoryLabel;
+    @SerializedName("score")
+    private int score;
 
-    protected CategoryLayoutRowModel(Parcel in) {
+    protected LayoutRows(Parcel in) {
         id = in.readInt();
         name = in.readString();
         url = in.readString();
         imageUrl = in.readString();
-        Weight = in.readInt();
-        type = in.readString();
-        additionalInfo = in.readString();
-        categoryId = in.readInt();
         applinks = in.readString();
+        type = in.readString();
+        categoryId = in.readInt();
+        categoryLabel = in.readString();
+        score = in.readInt();
     }
 
     @Override
@@ -47,11 +47,11 @@ public class CategoryLayoutRowModel implements Parcelable {
         dest.writeString(name);
         dest.writeString(url);
         dest.writeString(imageUrl);
-        dest.writeInt(Weight);
-        dest.writeString(type);
-        dest.writeString(additionalInfo);
-        dest.writeInt(categoryId);
         dest.writeString(applinks);
+        dest.writeString(type);
+        dest.writeInt(categoryId);
+        dest.writeString(categoryLabel);
+        dest.writeInt(score);
     }
 
     @Override
@@ -59,15 +59,15 @@ public class CategoryLayoutRowModel implements Parcelable {
         return 0;
     }
 
-    public static final Creator<CategoryLayoutRowModel> CREATOR = new Creator<CategoryLayoutRowModel>() {
+    public static final Creator<LayoutRows> CREATOR = new Creator<LayoutRows>() {
         @Override
-        public CategoryLayoutRowModel createFromParcel(Parcel in) {
-            return new CategoryLayoutRowModel(in);
+        public LayoutRows createFromParcel(Parcel in) {
+            return new LayoutRows(in);
         }
 
         @Override
-        public CategoryLayoutRowModel[] newArray(int size) {
-            return new CategoryLayoutRowModel[size];
+        public LayoutRows[] newArray(int size) {
+            return new LayoutRows[size];
         }
     };
 
@@ -103,30 +103,6 @@ public class CategoryLayoutRowModel implements Parcelable {
         this.imageUrl = imageUrl;
     }
 
-    public int getWeight() {
-        return Weight;
-    }
-
-    public void setWeight(int Weight) {
-        this.Weight = Weight;
-    }
-
-    public String getAdditionalInfo() {
-        return additionalInfo;
-    }
-
-    public void setAdditionalInfo(String additionalInfo) {
-        this.additionalInfo = additionalInfo;
-    }
-
-    public int getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(int categoryId) {
-        this.categoryId = categoryId;
-    }
-
     public String getApplinks() {
         return applinks;
     }
@@ -143,4 +119,27 @@ public class CategoryLayoutRowModel implements Parcelable {
         this.type = type;
     }
 
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public String getCategoryLabel() {
+        return categoryLabel;
+    }
+
+    public void setCategoryLabel(String categoryLabel) {
+        this.categoryLabel = categoryLabel;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
 }

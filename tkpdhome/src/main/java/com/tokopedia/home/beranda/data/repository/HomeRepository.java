@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.data.repository;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.entity.home.Ticker;
+import com.tokopedia.home.beranda.data.source.pojo.HomeData;
 import com.tokopedia.home.beranda.domain.model.banner.HomeBannerResponseModel;
 import com.tokopedia.home.beranda.domain.model.brands.BrandsOfficialStoreResponseModel;
 import com.tokopedia.home.beranda.domain.model.category.HomeCategoryResponseModel;
@@ -39,5 +40,6 @@ public interface HomeRepository {
     Observable<Ticker> getTickersCache();
 
     Observable<List<Visitable>> getAllHomeData();
+
 
 }

@@ -1,7 +1,8 @@
 package com.tokopedia.home.explore.view.adapter.viewmodel;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.home.explore.domain.model.CategoryLayoutRowModel;
+import com.tokopedia.home.beranda.domain.model.category.CategoryLayoutRowModel;
+import com.tokopedia.home.explore.domain.model.LayoutRows;
 import com.tokopedia.home.explore.view.adapter.TypeFactory;
 
 import java.util.List;
@@ -14,7 +15,8 @@ public class CategoryGridListViewModel implements Visitable<TypeFactory> {
 
     private int sectionId;
     private String title;
-    private List<CategoryLayoutRowModel> itemList;
+    private List<LayoutRows> itemList;
+
 
     public int getSectionId() {
         return sectionId;
@@ -32,11 +34,11 @@ public class CategoryGridListViewModel implements Visitable<TypeFactory> {
         this.title = title;
     }
 
-    public List<CategoryLayoutRowModel> getItemList() {
+    public List<LayoutRows> getItemList() {
         return itemList;
     }
 
-    public void setItemList(List<CategoryLayoutRowModel> itemList) {
+    public void setItemList(List<LayoutRows> itemList) {
         this.itemList = itemList;
     }
 

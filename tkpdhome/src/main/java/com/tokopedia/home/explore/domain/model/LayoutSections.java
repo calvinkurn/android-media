@@ -1,4 +1,4 @@
-package com.tokopedia.home.beranda.domain.model.category;
+package com.tokopedia.home.explore.domain.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -8,9 +8,9 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 /**
- * @author by errysuprayogi on 11/27/17.
+ * Created by errysuprayogi on 2/2/18.
  */
-public class CategoryLayoutSectionsModel implements Parcelable {
+public class LayoutSections implements Parcelable {
 
     @SerializedName("id")
     private int id;
@@ -18,14 +18,14 @@ public class CategoryLayoutSectionsModel implements Parcelable {
     private String title;
     @SerializedName("weight")
     private int weight;
-    @SerializedName("layout_rows")
-    private List<CategoryLayoutRowModel> layoutRows;
+    @SerializedName("layoutRows")
+    private List<LayoutRows> layoutRows;
 
-    protected CategoryLayoutSectionsModel(Parcel in) {
+    protected LayoutSections(Parcel in) {
         id = in.readInt();
         title = in.readString();
         weight = in.readInt();
-        layoutRows = in.createTypedArrayList(CategoryLayoutRowModel.CREATOR);
+        layoutRows = in.createTypedArrayList(LayoutRows.CREATOR);
     }
 
     @Override
@@ -41,15 +41,15 @@ public class CategoryLayoutSectionsModel implements Parcelable {
         return 0;
     }
 
-    public static final Creator<CategoryLayoutSectionsModel> CREATOR = new Creator<CategoryLayoutSectionsModel>() {
+    public static final Creator<LayoutSections> CREATOR = new Creator<LayoutSections>() {
         @Override
-        public CategoryLayoutSectionsModel createFromParcel(Parcel in) {
-            return new CategoryLayoutSectionsModel(in);
+        public LayoutSections createFromParcel(Parcel in) {
+            return new LayoutSections(in);
         }
 
         @Override
-        public CategoryLayoutSectionsModel[] newArray(int size) {
-            return new CategoryLayoutSectionsModel[size];
+        public LayoutSections[] newArray(int size) {
+            return new LayoutSections[size];
         }
     };
 
@@ -77,11 +77,11 @@ public class CategoryLayoutSectionsModel implements Parcelable {
         this.weight = weight;
     }
 
-    public List<CategoryLayoutRowModel> getLayoutRows() {
+    public List<LayoutRows> getLayoutRows() {
         return layoutRows;
     }
 
-    public void setLayoutRows(List<CategoryLayoutRowModel> layoutRows) {
+    public void setLayoutRows(List<LayoutRows> layoutRows) {
         this.layoutRows = layoutRows;
     }
 

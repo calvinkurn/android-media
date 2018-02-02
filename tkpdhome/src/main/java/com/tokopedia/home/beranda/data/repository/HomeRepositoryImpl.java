@@ -8,6 +8,7 @@ import com.tokopedia.home.beranda.data.source.HomeCategoryDataSource;
 import com.tokopedia.home.beranda.data.source.HomeDataSource;
 import com.tokopedia.home.beranda.data.source.TickerDataSource;
 import com.tokopedia.home.beranda.data.source.TopPicksDataSource;
+import com.tokopedia.home.beranda.data.source.pojo.HomeData;
 import com.tokopedia.home.beranda.domain.model.banner.HomeBannerResponseModel;
 import com.tokopedia.home.beranda.domain.model.brands.BrandsOfficialStoreResponseModel;
 import com.tokopedia.home.beranda.domain.model.category.HomeCategoryResponseModel;
@@ -99,6 +100,5 @@ public class HomeRepositoryImpl implements HomeRepository {
     public Observable<List<Visitable>> getAllHomeData() {
         return homeDataSource.getHomeData();
     }
-
 
 }

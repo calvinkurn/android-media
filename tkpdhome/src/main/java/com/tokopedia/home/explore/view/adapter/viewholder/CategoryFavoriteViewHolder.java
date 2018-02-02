@@ -16,7 +16,8 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.home.R;
-import com.tokopedia.home.explore.domain.model.CategoryLayoutRowModel;
+import com.tokopedia.home.beranda.domain.model.category.CategoryLayoutRowModel;
+import com.tokopedia.home.explore.domain.model.LayoutRows;
 import com.tokopedia.home.explore.listener.CategoryAdapterListener;
 import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryFavoriteViewModel;
 
@@ -38,7 +39,7 @@ public class CategoryFavoriteViewHolder extends AbstractViewHolder<CategoryFavor
     private CategoryAdapterListener listener;
     private ItemAdapter adapter;
     private int spanCount = 2;
-    private List<CategoryLayoutRowModel> rowModelList = new ArrayList<>();
+    private List<LayoutRows> rowModelList = new ArrayList<>();
 
 
     public CategoryFavoriteViewHolder(View itemView, CategoryAdapterListener listener) {
@@ -63,14 +64,14 @@ public class CategoryFavoriteViewHolder extends AbstractViewHolder<CategoryFavor
     private class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> {
 
         private final Context context;
-        private List<CategoryLayoutRowModel> data;
+        private List<LayoutRows> data;
 
         public ItemAdapter(Context context) {
             this.context = context;
             this.data = new ArrayList<>();
         }
 
-        public void setData(List<CategoryLayoutRowModel> data) {
+        public void setData(List<LayoutRows> data) {
             this.data = data;
             notifyDataSetChanged();
         }
@@ -82,7 +83,7 @@ public class CategoryFavoriteViewHolder extends AbstractViewHolder<CategoryFavor
 
         @Override
         public void onBindViewHolder(ItemAdapter.ItemViewHolder holder, final int position) {
-            final CategoryLayoutRowModel rowModel = data.get(position);
+            final LayoutRows rowModel = data.get(position);
             holder.title.setText(rowModel.getName());
             ImageHandler.loadImageAndCache(holder.icon, rowModel.getImageUrl());
             holder.container.setOnClickListener(new View.OnClickListener() {

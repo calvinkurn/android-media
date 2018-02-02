@@ -15,7 +15,8 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.home.R;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.home.explore.domain.model.CategoryLayoutRowModel;
+import com.tokopedia.home.beranda.domain.model.category.CategoryLayoutRowModel;
+import com.tokopedia.home.explore.domain.model.LayoutRows;
 import com.tokopedia.home.explore.listener.CategoryAdapterListener;
 import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryGridListViewModel;
 
@@ -40,7 +41,7 @@ public class CategoryGridListViewHolder extends AbstractViewHolder<CategoryGridL
     private ItemAdapter adapter;
     private int spanCount = 2;
     private CategoryAdapterListener listener;
-    private List<CategoryLayoutRowModel> rowModelList = new ArrayList<>();
+    private List<LayoutRows> rowModelList = new ArrayList<>();
 
     public CategoryGridListViewHolder(View itemView, CategoryAdapterListener listener) {
         super(itemView);
@@ -64,14 +65,14 @@ public class CategoryGridListViewHolder extends AbstractViewHolder<CategoryGridL
     private class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> {
 
         private final Context context;
-        private List<CategoryLayoutRowModel> data;
+        private List<LayoutRows> data;
 
         public ItemAdapter(Context context) {
             this.context = context;
             this.data = new ArrayList<>();
         }
 
-        public void setData(List<CategoryLayoutRowModel> data) {
+        public void setData(List<LayoutRows> data) {
             this.data = data;
             notifyDataSetChanged();
         }
@@ -83,7 +84,7 @@ public class CategoryGridListViewHolder extends AbstractViewHolder<CategoryGridL
 
         @Override
         public void onBindViewHolder(ItemViewHolder holder, final int position) {
-            final CategoryLayoutRowModel rowModel = data.get(position);
+            final LayoutRows rowModel = data.get(position);
             holder.title.setText(rowModel.getName());
             ImageHandler.loadImageAndCache(holder.icon, rowModel.getImageUrl());
             holder.container.setOnClickListener(new View.OnClickListener() {

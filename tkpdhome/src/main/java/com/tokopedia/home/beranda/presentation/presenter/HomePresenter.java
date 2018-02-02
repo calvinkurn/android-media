@@ -43,12 +43,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import rx.Observable;
 import rx.Subscriber;
-import rx.Subscription;
-import rx.functions.Action1;
-import rx.subscriptions.CompositeSubscription;
-import rx.subscriptions.Subscriptions;
 
 /**
  * @author by errysuprayogi on 11/27/17.
@@ -82,7 +77,8 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     @Override
     public void detachView() {
         super.detachView();
-
+        getHomeDataUseCase.unsubscribe();
+        getHomeFeedsUseCase.unsubscribe();
     }
 
     @Override

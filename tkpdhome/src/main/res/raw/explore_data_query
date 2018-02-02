@@ -1,0 +1,1 @@
+{"query":"\n{\ndynamicHomeIcon {\nlayoutSections {\nid\ntitle\nweight\nlayoutRows {\nid\nname\nurl\nimageUrl\napplinks\ntype\ncategoryId\ncategoryLabel\nscore\n}\n}\n}\n}\n"}

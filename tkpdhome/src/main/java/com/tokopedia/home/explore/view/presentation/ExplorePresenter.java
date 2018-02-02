@@ -1,20 +1,18 @@
 package com.tokopedia.home.explore.view.presentation;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
-
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
-import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
-import com.tokopedia.core.router.wallet.IWalletRouter;
-import com.tokopedia.core.router.wallet.WalletRouterUtil;
-import com.tokopedia.home.IHomeRouter;
-import com.tokopedia.home.explore.domain.model.CategoryLayoutRowModel;
+import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.home.beranda.domain.interactor.GetHomeDataUseCase;
+import com.tokopedia.home.beranda.presentation.presenter.HomePresenter;
+import com.tokopedia.home.explore.domain.GetExploreDataUseCase;
+import com.tokopedia.home.explore.domain.model.ExploreDataModel;
+import com.tokopedia.usecase.RequestParams;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import rx.Subscriber;
 
 /**
  * Created by errysuprayogi on 1/30/18.
@@ -22,4 +20,29 @@ import com.tokopedia.home.explore.domain.model.CategoryLayoutRowModel;
 
 public class ExplorePresenter extends BaseDaggerPresenter<ExploreContract.View> implements ExploreContract.Presenter {
 
+    @Inject
+    GetExploreDataUseCase dataUseCase;
+
+
+    @Override
+    public void getData() {
+        dataUseCase.execute(RequestParams.EMPTY, new Subscriber<ExploreDataModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(ExploreDataModel exploreDataModel) {
+                if(isViewAttached()){
+                    getView().renderData(exploreDataModel);
+                }
+            }
+        });
+    }
 }

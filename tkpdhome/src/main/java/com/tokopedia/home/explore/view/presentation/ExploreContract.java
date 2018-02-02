@@ -1,14 +1,13 @@
 package com.tokopedia.home.explore.view.presentation;
 
 
-import android.app.Activity;
-import android.content.Context;
 import android.support.annotation.StringRes;
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.home.explore.domain.model.CategoryLayoutRowModel;
+import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.home.beranda.data.source.pojo.HomeData;
+import com.tokopedia.home.explore.domain.model.ExploreDataModel;
 
 import java.util.List;
 
@@ -30,15 +29,12 @@ public interface ExploreContract {
 
         String getString(@StringRes int res);
 
-        Context getContext();
-
-        void openWebViewURL(String url, Context context);
-
-        Activity getActivity();
-
+        void renderData(ExploreDataModel dataModel);
     }
 
     interface Presenter extends CustomerPresenter<View> {
+
+        void getData();
 
     }
 

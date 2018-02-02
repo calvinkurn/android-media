@@ -5,6 +5,8 @@ import com.tokopedia.home.beranda.di.module.ApiModule;
 import com.tokopedia.home.beranda.di.module.HomeModule;
 import com.tokopedia.home.beranda.presentation.presenter.HomePresenter;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
+import com.tokopedia.home.explore.view.activity.ExploreActivity;
+import com.tokopedia.home.explore.view.presentation.ExplorePresenter;
 
 import dagger.Component;
 
@@ -19,4 +21,5 @@ public interface BerandaComponent {
     void inject(HomeFragment homeFragment);
 
     void inject(HomePresenter homePresenter);
+
 }

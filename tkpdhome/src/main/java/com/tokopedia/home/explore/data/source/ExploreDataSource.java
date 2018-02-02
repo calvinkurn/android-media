@@ -1,51 +1,59 @@
-package com.tokopedia.home.beranda.data.source;
+package com.tokopedia.home.explore.data.source;
 
 import android.content.Context;
 import android.content.res.Resources;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
-import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.home.R;
-import com.tokopedia.home.beranda.data.mapper.HomeMapper;
 import com.tokopedia.home.beranda.data.source.api.HomeDataApi;
-import com.tokopedia.home.beranda.data.source.pojo.HomeData;
+import com.tokopedia.home.explore.domain.model.ExploreDataModel;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.List;
 
 import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Func1;
 
 /**
- * Created by henrypriyono on 26/01/18.
+ * Created by errysuprayogi on 2/2/18.
  */
 
-public class HomeDataSource {
-    private HomeDataApi homeDataApi;
-    private HomeMapper homeMapper;
+public class ExploreDataSource {
     private Context context;
+    private HomeDataApi homeDataApi;
 
-    public HomeDataSource(HomeDataApi homeDataApi,
-                          HomeMapper homeMapper,
-                          Context context) {
-        this.homeDataApi = homeDataApi;
-        this.homeMapper = homeMapper;
+    public ExploreDataSource(Context context, HomeDataApi homeDataApi) {
         this.context = context;
+        this.homeDataApi = homeDataApi;
     }
 
-    public Observable<List<Visitable>> getHomeData() {
-        return homeDataApi.getHomeData(getRequestPayload()).map(homeMapper);
+    public Observable<ExploreDataModel> getExploreData() {
+        return homeDataApi.getExploreData(getRequestPayload())
+                .map(new Func1<Response<GraphqlResponse<ExploreDataModel>>, ExploreDataModel>() {
+            @Override
+            public ExploreDataModel call(Response<GraphqlResponse<ExploreDataModel>> response) {
+                if(response.isSuccessful()) {
+                    return response.body().getData();
+                } else {
+                    String messageError = ErrorHandler.getErrorMessage(response);
+                    if (!TextUtils.isEmpty(messageError)) {
+                        throw new ErrorMessageException(messageError);
+                    } else {
+                        throw new RuntimeException(String.valueOf(response.code()));
+                    }
+                }
+            }
+        });
     }
 
     private String getRequestPayload() {
-        return loadRawString(context.getResources(), R.raw.home_data_query);
+        return loadRawString(context.getResources(), R.raw.explore_data_query);
     }
 
     private String loadRawString(Resources resources, int resId) {

@@ -1,19 +1,20 @@
 package com.tokopedia.home.explore.listener;
 
-import com.tokopedia.home.explore.domain.model.CategoryLayoutRowModel;
+
+import com.tokopedia.home.explore.domain.model.LayoutRows;
 
 /**
  * Created by errysuprayogi on 1/30/18.
  */
 
 public interface CategoryAdapterListener {
-    void onMarketPlaceItemClicked(CategoryLayoutRowModel data);
+    void onMarketPlaceItemClicked(LayoutRows data);
 
-    void onDigitalItemClicked(CategoryLayoutRowModel data);
+    void onDigitalItemClicked(LayoutRows data);
 
-    void onGimickItemClicked(CategoryLayoutRowModel data);
+    void onGimickItemClicked(LayoutRows data);
 
-    void onApplinkClicked(CategoryLayoutRowModel data);
+    void onApplinkClicked(LayoutRows data);
 
     void openShop();
 

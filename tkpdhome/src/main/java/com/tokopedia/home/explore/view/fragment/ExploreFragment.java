@@ -21,7 +21,10 @@ import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
-import com.tokopedia.home.explore.domain.model.CategoryLayoutRowModel;
+import com.tokopedia.home.beranda.domain.model.category.CategoryLayoutRowModel;
+import com.tokopedia.home.beranda.domain.model.category.CategoryLayoutSectionsModel;
+import com.tokopedia.home.explore.domain.model.LayoutRows;
+import com.tokopedia.home.explore.domain.model.LayoutSections;
 import com.tokopedia.home.explore.listener.CategoryAdapterListener;
 import com.tokopedia.home.explore.view.adapter.ExploreAdapter;
 import com.tokopedia.home.explore.view.adapter.TypeFactory;
@@ -41,12 +44,14 @@ import java.util.Map;
  * Created by errysuprayogi on 1/26/18.
  */
 
-public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> implements ExploreContract.View, CategoryAdapterListener {
+public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> implements CategoryAdapterListener {
 
-    public static ExploreFragment newInstance() {
+    private static final String EXTRA_DATA = "EXTRA_DATA";
+
+    public static ExploreFragment newInstance(LayoutSections sectionsModel) {
 
         Bundle args = new Bundle();
-
+        args.putParcelable(EXTRA_DATA, sectionsModel);
         ExploreFragment fragment = new ExploreFragment();
         fragment.setArguments(args);
         return fragment;
@@ -70,46 +75,18 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        LayoutSections sectionsModel = getArguments().getParcelable(EXTRA_DATA);
+        renderList(mappingModel(sectionsModel));
+    }
+
+    private List<Visitable> mappingModel(LayoutSections section) {
         List<Visitable> list = new ArrayList<>();
-        CategoryGridListViewModel gridListViewModel = new CategoryGridListViewModel();
-        CategoryFavoriteViewModel favoriteViewModel = new CategoryFavoriteViewModel();
-        gridListViewModel.setTitle("Beli ini itu di Tokopedia");
-        favoriteViewModel.setTitle("Kategory Favorite Anda");
-        ArrayList<CategoryLayoutRowModel> rowModels1 = new ArrayList<>();
-        ArrayList<CategoryLayoutRowModel> rowModels2 = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
-            rowModels1.add(createDummyFavoriteModel());
-        }
-        favoriteViewModel.setItemList(rowModels1);
-        for (int i = 0; i < 10; i++) {
-            rowModels2.add(createDummyRowModel());
-        }
-        gridListViewModel.setItemList(rowModels2);
-        list.add(favoriteViewModel);
-        list.add(gridListViewModel);
-        list.add(new SellViewModel(getString(R.string.empty_shop_wording_title), getString(R.string.empty_shop_wording_subtitle), getString(R.string.buka_toko)));
-        list.add(new DigitalsViewModel("Bayar ini itu di Tokopedia", 0));
-        renderList(list);
-    }
-
-    private CategoryLayoutRowModel createDummyFavoriteModel() {
-        CategoryLayoutRowModel rowModel = new CategoryLayoutRowModel();
-        rowModel.setType("Marketplace");
-        rowModel.setName("Fashion Pria");
-        rowModel.setCategoryId(54);
-        rowModel.setApplinks("tokopedia://category/54");
-        rowModel.setImageUrl("https://ecs7.tokopedia.net/img/cache/300-square/attachment/2017/8/30/7492183/7492183_05b0a852-cec1-4efb-928d-4d457d357b0b.jpg.webp");
-        return rowModel;
-    }
-
-    private CategoryLayoutRowModel createDummyRowModel() {
-        CategoryLayoutRowModel rowModel = new CategoryLayoutRowModel();
-        rowModel.setType("Marketplace");
-        rowModel.setCategoryId(54);
-        rowModel.setApplinks("tokopedia://category/54");
-        rowModel.setName("Souvenir, Kado & Hadiah");
-        rowModel.setImageUrl("https://ecs7.tokopedia.net/img/category/new/v1/icon_kado.png");
-        return rowModel;
+        CategoryGridListViewModel viewModel = new CategoryGridListViewModel();
+        viewModel.setSectionId(section.getId());
+        viewModel.setTitle(section.getTitle());
+        viewModel.setItemList(section.getLayoutRows());
+        list.add(viewModel);
+        return list;
     }
 
     @Override
@@ -129,27 +106,7 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     }
 
     @Override
-    public void showLoading() {
-
-    }
-
-    @Override
-    public void hideLoading() {
-
-    }
-
-    @Override
-    public void showNetworkError(String message) {
-
-    }
-
-    @Override
-    public void removeNetworkError() {
-
-    }
-
-    @Override
-    public void onMarketPlaceItemClicked(CategoryLayoutRowModel data) {
+    public void onMarketPlaceItemClicked(LayoutRows data) {
         TrackingUtils.sendMoEngageClickMainCategoryIcon(data.getName());
         ((IHomeRouter) getActivity().getApplication()).openIntermediaryActivity(getActivity(),
                 String.valueOf(data.getCategoryId()), data.getName());
@@ -159,7 +116,7 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     }
 
     @Override
-    public void onDigitalItemClicked(CategoryLayoutRowModel data) {
+    public void onDigitalItemClicked(LayoutRows data) {
         if (((TkpdCoreRouter) getActivity().getApplication())
                 .isSupportedDelegateDeepLink(data.getApplinks())) {
             DigitalCategoryDetailPassData passData = new DigitalCategoryDetailPassData.Builder()
@@ -177,7 +134,7 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     }
 
     @Override
-    public void onGimickItemClicked(CategoryLayoutRowModel data) {
+    public void onGimickItemClicked(LayoutRows data) {
         String redirectUrl = data.getUrl();
         if (redirectUrl != null && redirectUrl.length() > 0) {
             String resultGenerateUrl = URLGenerator.generateURLSessionLogin(
@@ -187,7 +144,12 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     }
 
     @Override
-    public void onApplinkClicked(CategoryLayoutRowModel data) {
+    public void showNetworkError(String string) {
+
+    }
+
+    @Override
+    public void onApplinkClicked(LayoutRows data) {
         ((TkpdCoreRouter) getActivity().getApplication()).actionApplinkFromActivity(getActivity() ,
                 data.getApplinks());
     }
@@ -198,15 +160,6 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
             intent.putExtra(BannerWebView.EXTRA_TITLE, title);
             startActivity(intent);
             UnifyTracking.eventHomeGimmick(label);
-        }
-    }
-
-    @Override
-    public void openWebViewURL(String url, Context context) {
-        if (url != "" && context != null) {
-            Intent intent = new Intent(context, BannerWebView.class);
-            intent.putExtra("url", url);
-            context.startActivity(intent);
         }
     }
 

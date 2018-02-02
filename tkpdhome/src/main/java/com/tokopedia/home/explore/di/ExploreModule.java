@@ -1,0 +1,59 @@
+package com.tokopedia.home.explore.di;
+
+import android.content.Context;
+
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.home.beranda.data.source.api.HomeDataApi;
+import com.tokopedia.home.beranda.data.source.api.HomeDataService;
+import com.tokopedia.home.beranda.di.HomeScope;
+import com.tokopedia.home.explore.data.repository.ExploreRepositoryImpl;
+import com.tokopedia.home.explore.data.source.ExploreDataSource;
+import com.tokopedia.home.explore.domain.GetExploreDataUseCase;
+import com.tokopedia.home.explore.view.presentation.ExplorePresenter;
+
+import dagger.Module;
+import dagger.Provides;
+
+/**
+ * Created by errysuprayogi on 2/2/18.
+ */
+
+@ExploreScope
+@Module
+public class ExploreModule {
+
+    @Provides
+    ExplorePresenter explorePresenter(){
+        return new ExplorePresenter();
+    }
+
+    @ExploreScope
+    @Provides
+    HomeDataService provideHomeDataService() {
+        return new HomeDataService();
+    }
+
+    @ExploreScope
+    @Provides
+    HomeDataApi provideHomeDataApi(HomeDataService service) {
+        return service.getApi();
+    }
+
+    @ExploreScope
+    @Provides
+    ExploreDataSource dataSource(@ApplicationContext Context context, HomeDataApi dataApi){
+        return new ExploreDataSource(context, dataApi);
+    }
+
+    @ExploreScope
+    @Provides
+    ExploreRepositoryImpl exploreRepository(ExploreDataSource dataSource){
+        return new ExploreRepositoryImpl(dataSource);
+    }
+
+    @ExploreScope
+    @Provides
+    GetExploreDataUseCase getExploreDataUseCase(ExploreRepositoryImpl repository){
+        return new GetExploreDataUseCase(repository);
+    }
+}
