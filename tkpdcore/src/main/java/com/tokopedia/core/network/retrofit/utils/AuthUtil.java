@@ -5,6 +5,7 @@ import android.support.v4.util.ArrayMap;
 import android.util.Base64;
 
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.util.GlobalConfig;
@@ -38,7 +39,10 @@ public class AuthUtil {
     private static final String HEADER_CONTENT_MD5 = "Content-MD5";
     private static final String HEADER_DATE = "Date";
     public static final String HEADER_AUTHORIZATION = "Authorization";
-    public static final String HEADER_ACCOUNTS_AUTHORIZATION = "Accounts-Authorization";
+    private static final String HEADER_ACCOUNTS_AUTHORIZATION = "accounts-authorization";
+    private static final String HEADER_TKPD_SESSION_ID = "tkpd-sessionid";
+    private static final String HEADER_TKPD_USER_AGENT = "tkpd-useragent";
+
     private static final String HEADER_USER_ID = "X-User-ID";
     private static final String HEADER_X_TKPD_USER_ID = "X-Tkpd-UserId";
     public static final String HEADER_DEVICE = "X-Device";
@@ -173,6 +177,14 @@ public class AuthUtil {
         finalHeader.put(
                 HEADER_ACCOUNTS_AUTHORIZATION,
                 PARAM_BEARER + SessionHandler.getAccessToken()
+        );
+        finalHeader.put(
+                HEADER_TKPD_SESSION_ID,
+                FCMCacheManager.getRegistrationIdWithTemp(MainApplication.getAppContext())
+        );
+        finalHeader.put(
+                HEADER_TKPD_USER_AGENT,
+                DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
         );
         return finalHeader;
     }
