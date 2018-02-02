@@ -37,8 +37,8 @@ public class InboxFilterFragment
         extends BaseDaggerFragment
         implements InboxFilterFragmentListener.View {
 
-    public static final String FORMAT_DATE = "dd/MM/YYYY";
-    public static final String FORMAT_DATE_API = "dd/MM/YYYY hh:mm:ss";
+    public static final String FORMAT_DATE = "dd/MM/yyyy";
+    public static final String FORMAT_DATE_API = "dd/MM/yyyy hh:mm:ss";
 
     private Button btnFinish;
     private EditText etDateFrom, etDateTo;
