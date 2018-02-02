@@ -5,11 +5,6 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/grey_300" />
-
     <include layout="@layout/inspiration_header" />
 
     <android.support.v7.widget.RecyclerView
