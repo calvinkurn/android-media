@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 
@@ -28,6 +29,7 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.cache.domain.interactor.CacheApiClearAllUseCase;
+import com.tokopedia.core.cache.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
@@ -61,6 +63,7 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPas
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.router.digitalmodule.sellermodule.PeriodRangeModelCore;
 import com.tokopedia.core.router.digitalmodule.sellermodule.TokoCashRouter;
+import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.loyaltytokopoint.ILoyaltyRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
@@ -80,6 +83,8 @@ import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.product.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.activity.DigitalWebActivity;
 import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
+import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
+import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.TkpdFlight;
@@ -139,6 +144,7 @@ import com.tokopedia.tkpd.deeplink.domain.interactor.MapUrlUseCase;
 import com.tokopedia.tkpd.drawer.DrawerBuyerHelper;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.ParentIndexHome;
+import com.tokopedia.tkpd.home.ReactNativeOfficialStoreActivity;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
@@ -151,6 +157,7 @@ import com.tokopedia.tkpd.truecaller.TruecallerActivity;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
+import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
 import com.tokopedia.tokocash.historytokocash.presentation.activity.HistoryTokoCashActivity;
@@ -182,7 +189,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TkpdCoreRouter, SellerModuleRouter, IDigitalModuleRouter, PdpRouter,
         OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication, TkpdInboxRouter,
         TokoCashRouter, IWalletRouter, ILoyaltyRouter, ReputationRouter, SessionRouter,
-        AbstractionRouter, FlightModuleRouter, LogisticRouter {
+        AbstractionRouter, FlightModuleRouter, LogisticRouter, IHomeRouter {
 
     private DaggerProductComponent.Builder daggerProductBuilder;
     private DaggerReactNativeComponent.Builder daggerReactNativeBuilder;
@@ -1179,5 +1186,32 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getTrueCallerIntent(Context context) {
         return TruecallerActivity.getCallingIntent(context);
+    }
+
+    @Override
+    public void openIntermediaryActivity(Activity activity, String depID, String title) {
+        IntermediaryActivity.moveTo(activity, depID, title);
+    }
+
+    @Override
+    public void onDigitalItemClick(Activity activity, DigitalCategoryDetailPassData passData, String appLink) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(DigitalProductActivity.EXTRA_CATEGORY_PASS_DATA, passData);
+        Intent intent = new Intent(activity, DeeplinkHandlerActivity.class);
+        intent.putExtras(bundle);
+        intent.setData(Uri.parse(appLink));
+        startActivity(intent);
+    }
+
+    @Override
+    public void openReactNativeOfficialStore(FragmentActivity activity) {
+        startActivity(ReactNativeOfficialStoreActivity.createCallingIntent(
+                activity, ReactConst.Screen.OFFICIAL_STORE,
+                getString(R.string.react_native_banner_official_title)));
+    }
+
+    @Override
+    protected List<CacheApiWhiteListDomain> getWhiteList() {
+        return null;
     }
 }
