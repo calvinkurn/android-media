@@ -4,13 +4,13 @@
     android:background="@drawable/btn_plain"
     android:layout_height="match_parent">
 
-    <WebView android:id="@+id/additional_option_dialog"
+    <com.tokopedia.core.util.TkpdWebView android:id="@+id/additional_option_dialog"
         android:orientation="vertical" android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/padding_small"
         android:layout_marginEnd="@dimen/padding_small"
         android:layout_marginTop="@dimen/padding_small">
-    </WebView>
+    </com.tokopedia.core.util.TkpdWebView>
 
     <LinearLayout
         android:layout_below="@id/additional_option_dialog"
