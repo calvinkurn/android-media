@@ -348,7 +348,7 @@ public class ResoInboxFragment
     @Override
     public void onResetFilterButtonClicked() {
         inboxFilterModel = new ResoInboxFilterModel();
-        initView();
+        getInboxWithParams(inboxFilterModel);
     }
 
     @Override
