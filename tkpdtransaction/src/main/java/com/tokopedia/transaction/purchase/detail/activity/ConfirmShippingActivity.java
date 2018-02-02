@@ -96,6 +96,7 @@ public class ConfirmShippingActivity extends TActivity
         editableModel.setPackageId(orderDetailData.getShipmentServiceId());
         editableModel.setShipmentName(orderDetailData.getShipmentName());
         editableModel.setPackageName(orderDetailData.getShipmentServiceName());
+        editableModel.setOrderStatusCode(Integer.parseInt(orderDetailData.getOrderCode()));
     }
 
     @Override
@@ -174,7 +175,7 @@ public class ConfirmShippingActivity extends TActivity
             @Override
             public void onClick(View view) {
                 editableModel.setShippingRef(barcodeEditText.getText().toString());
-                presenter.onConfirmShipping(ConfirmShippingActivity.this, editableModel);
+                presenter.onProcessCourier(ConfirmShippingActivity.this, editableModel);
             }
         };
     }

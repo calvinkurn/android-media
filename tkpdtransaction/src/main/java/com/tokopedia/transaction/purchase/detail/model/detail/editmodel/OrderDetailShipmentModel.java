@@ -21,6 +21,8 @@ public class OrderDetailShipmentModel implements Parcelable{
 
     private String packageName;
 
+    private int orderStatusCode;
+
     public OrderDetailShipmentModel() {
     }
 
@@ -31,6 +33,7 @@ public class OrderDetailShipmentModel implements Parcelable{
         shipmentName = in.readString();
         packageId = in.readString();
         packageName = in.readString();
+        orderStatusCode = in.readInt();
     }
 
     public static final Creator<OrderDetailShipmentModel> CREATOR = new Creator<OrderDetailShipmentModel>() {
@@ -93,6 +96,14 @@ public class OrderDetailShipmentModel implements Parcelable{
         this.packageName = packageName;
     }
 
+    public int getOrderStatusCode() {
+        return orderStatusCode;
+    }
+
+    public void setOrderStatusCode(int orderStatusCode) {
+        this.orderStatusCode = orderStatusCode;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -106,5 +117,6 @@ public class OrderDetailShipmentModel implements Parcelable{
         parcel.writeString(shipmentName);
         parcel.writeString(packageId);
         parcel.writeString(packageName);
+        parcel.writeInt(orderStatusCode);
     }
 }

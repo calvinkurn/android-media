@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.purchase.detail.di;
 
 import com.tokopedia.core.network.apiservices.shop.MyShopOrderService;
+import com.tokopedia.core.network.apiservices.transaction.OrderDetailService;
 import com.tokopedia.transaction.network.MyShopOrderActService;
 import com.tokopedia.transaction.purchase.detail.domain.OrderCourierRepository;
 import com.tokopedia.transaction.purchase.detail.domain.mapper.OrderDetailMapper;
@@ -40,6 +41,12 @@ public class OrderCourierModule {
 
     @Provides
     @OrderCourierScope
+    OrderDetailService provideOrderDetailService() {
+        return new OrderDetailService();
+    }
+
+    @Provides
+    @OrderCourierScope
     MyShopOrderService provideOrderService() {
         return new MyShopOrderService();
     }
@@ -50,7 +57,8 @@ public class OrderCourierModule {
         return new OrderCourierRepository(
                 provideOrderDetailMapper(),
                 provideOrderService(),
-                provideOrderActService());
+                provideOrderActService(),
+                provideOrderDetailService());
     }
 
     @Provides

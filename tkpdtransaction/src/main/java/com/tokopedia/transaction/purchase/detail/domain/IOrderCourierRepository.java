@@ -3,6 +3,8 @@ package com.tokopedia.transaction.purchase.detail.domain;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.ListCourierViewModel;
 
+import java.util.Map;
+
 import rx.Observable;
 
 /**
@@ -15,5 +17,7 @@ public interface IOrderCourierRepository {
                                                               TKPDMapParam<String, String> params);
 
     Observable<String> processShipping(TKPDMapParam<String, String> param);
+
+    Observable<String> changeCourier(Map<String, String> param);
 
 }
