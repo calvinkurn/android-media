@@ -8,16 +8,26 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.referral.di.ReferralComponent;
 import com.tokopedia.core.referral.fragment.FragmentReferral;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.core.referral.di.DaggerReferralComponent;
 
 /**
  * Created by ashwanityagi on 18/09/17.
  */
 
-public class ReferralActivity extends BasePresenterActivity {
+public class ReferralActivity extends BasePresenterActivity implements HasComponent<ReferralComponent> {
+
+    ReferralComponent referralComponent = null;
 
     @DeepLink(Constants.Applinks.REFERRAL)
     public static Intent getCallingReferral(Context context, Bundle extras) {
@@ -25,6 +35,13 @@ public class ReferralActivity extends BasePresenterActivity {
         return new Intent(context, ReferralActivity.class)
                 .setData(uri.build())
                 .putExtras(extras);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        TrackingUtils.sendMoEngageReferralScreenOpen(getString(R.string.referral_screen_name));
+
     }
 
     @Override
@@ -69,6 +86,22 @@ public class ReferralActivity extends BasePresenterActivity {
     protected void setActionVar() {
 
     }
+
+    @Override
+    public ReferralComponent getComponent() {
+        if (referralComponent == null) {
+            initInjector();
+        }
+        return referralComponent;
+    }
+
+
+    private void initInjector() {
+        referralComponent = DaggerReferralComponent.builder()
+                .appComponent(getApplicationComponent())
+                .build();
+    }
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -88,12 +121,21 @@ public class ReferralActivity extends BasePresenterActivity {
     }
 
     private void invalidateTitleToolBar() {
-        String titleToolbar=getString(R.string.drawer_title_appshare);
+        String titleToolbar = getToolbarTitle();
         if (!TextUtils.isEmpty(titleToolbar)) toolbar.setTitle(titleToolbar);
     }
 
     @Override
     protected boolean isLightToolbarThemes() {
         return true;
+    }
+
+    private String getToolbarTitle() {
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(ReferralActivity.this);
+        if(remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_REFERRAL_BUTTON)){
+            return remoteConfig.getString(TkpdCache.RemoteConfigKey.APP_REFERRAL_TITLE, getString(R.string.drawer_title_referral_appshare));
+        }else{
+            return getString(R.string.drawer_title_appshare);
+        }
     }
 }
