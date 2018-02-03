@@ -27,7 +27,7 @@ public class GetChannelListUseCase extends UseCase<ChannelListViewModel> {
         return channelRepository.getChannels(requestParams.getParameters());
     }
 
-    public RequestParams createParam() {
+    public RequestParams createParamFirstTime() {
         RequestParams requestParams = RequestParams.create();
         return requestParams;
     }

@@ -43,7 +43,7 @@ android {
 
 apt {
     arguments {
-        targetModuleName 'TkpdChat'
+        targetModuleName 'TkpdStream'
     }
 }
 
