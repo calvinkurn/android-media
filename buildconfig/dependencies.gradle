@@ -10,6 +10,7 @@ ext {
     deeplinkDispatchVersion = '3.0.0-rc1'
     tkpdUseCaseVersion = '1.+'
     tkpdAbstractionVersion = '1.+'
+    tkpdInterfaceVersion = '1.+'
     tkpdCoreVersion = '1.+'
     tkpdInboxVersion = '1.+'
     tkpdSessionVersion = '1.+'
@@ -178,6 +179,7 @@ ext {
     tkpdDependencies = [
             usecase    : "com.tokopedia.usecase:usecase:${tkpdUseCaseVersion}",
             abstraction: "com.tokopedia.abstraction:abstraction:${tkpdAbstractionVersion}",
+            interface  : "com.tokopedia.interface:interface:${tkpdInterfaceVersion}",
             core       : "com.tokopedia.core:core:${tkpdCoreVersion}",
             inbox      : "com.tokopedia.inbox:inbox:${tkpdInboxVersion}",
             session    : "com.tokopedia.session:session:${tkpdSessionVersion}",
