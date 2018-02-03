@@ -1,4 +1,4 @@
-package com.tokopedia.tkpdchat.common.di;
+package com.tokopedia.tkpdstream.common.di.scope;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -11,5 +11,5 @@ import javax.inject.Scope;
 
 @Scope
 @Retention(RetentionPolicy.CLASS)
-public @interface ChatScope {
+public @interface StreamScope {
 }

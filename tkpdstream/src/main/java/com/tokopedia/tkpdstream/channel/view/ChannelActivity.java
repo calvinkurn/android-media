@@ -1,11 +1,10 @@
-package com.tokopedia.tkpdchat.channel;
+package com.tokopedia.tkpdstream.channel.view;
 
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.tkpdchat.channel.fragment.ChannelFragment;
+import com.tokopedia.tkpdstream.channel.view.fragment.ChannelFragment;
 
 public class ChannelActivity extends BaseSimpleActivity {
 

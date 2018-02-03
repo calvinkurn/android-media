@@ -1,9 +1,9 @@
-package com.tokopedia.tkpdchat.channel.fragment;
+package com.tokopedia.tkpdstream.channel.view.fragment;
 
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.tkpdchat.common.analytics.ChannelAnalytics;
+import com.tokopedia.tkpdstream.common.analytics.ChannelAnalytics;
 
 /**
  * @author by nisie on 2/1/18.

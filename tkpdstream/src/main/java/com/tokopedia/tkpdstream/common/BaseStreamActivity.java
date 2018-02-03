@@ -1,19 +1,18 @@
-package com.tokopedia.tkpdchat.common;
+package com.tokopedia.tkpdstream.common;
 
 import android.os.Bundle;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.tkpdchat.common.di.ChatComponent;
-import com.tokopedia.tkpdchat.common.di.DaggerChatComponent;
+import com.tokopedia.tkpdstream.common.di.component.StreamComponent;
 
 
 /**
  * @author by nisie on 2/1/18.
  */
 
-public abstract class BaseChatActivity extends BaseSimpleActivity {
+public abstract class BaseStreamActivity extends BaseSimpleActivity {
 
-    private ChatComponent component;
+    private StreamComponent component;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +24,7 @@ public abstract class BaseChatActivity extends BaseSimpleActivity {
         getChatComponent().inject(this);
     }
 
-    protected ChatComponent getChatComponent() {
+    protected StreamComponent getChatComponent() {
         if (component == null) {
             component = DaggerChatComponent.getFlightComponent(getApplication());
         }
