@@ -1,3 +1,4 @@
+include ':tkpdinterface'
 include ':customerapp'
 include ':react-native-codepush'
 include ':tkpdloyalty'
