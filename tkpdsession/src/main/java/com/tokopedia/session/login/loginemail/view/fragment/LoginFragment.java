@@ -27,6 +27,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
@@ -126,7 +127,7 @@ public class LoginFragment extends BaseDaggerFragment
     TextView loginButton;
     TkpdHintTextInputLayout wrapperEmail;
     TkpdHintTextInputLayout wrapperPassword;
-    FloatingActionButton loadMoreFab;
+    ImageView loadMoreFab;
 
     ArrayAdapter<String> autoCompleteAdapter;
     CallbackManager callbackManager;
@@ -219,7 +220,7 @@ public class LoginFragment extends BaseDaggerFragment
         loginButton = view.findViewById(R.id.accounts_sign_in);
         wrapperEmail = view.findViewById(R.id.wrapper_email);
         wrapperPassword = view.findViewById(R.id.wrapper_password);
-        loadMoreFab = view.findViewById(R.id.fab);
+        loadMoreFab = view.findViewById(R.id.btn_load_more);
         prepareView();
         presenter.attachView(this);
         return view;
@@ -272,9 +273,9 @@ public class LoginFragment extends BaseDaggerFragment
             @Override
             public void onScrollChanged() {
                 if (isLastItem()) {
-                    loadMoreFab.hide();
+                    loadMoreFab.setVisibility(View.GONE);
                 } else {
-                    loadMoreFab.show();
+                    loadMoreFab.setVisibility(View.VISIBLE);
                 }
 
             }
@@ -639,7 +640,7 @@ public class LoginFragment extends BaseDaggerFragment
 
     @Override
     public void disableArrow() {
-        loadMoreFab.hide();
+        loadMoreFab.setVisibility(View.GONE);
     }
 
     @Override
@@ -652,9 +653,9 @@ public class LoginFragment extends BaseDaggerFragment
                 int contentHeight = loginView.getChildAt(0).getHeight();
                 if (viewHeight - contentHeight < 0
                         && !isLastItem()) {
-                    loadMoreFab.show();
+                    loadMoreFab.setVisibility(View.VISIBLE);
                 } else {
-                    loadMoreFab.hide();
+                    loadMoreFab.setVisibility(View.GONE);
                 }
             }
         });

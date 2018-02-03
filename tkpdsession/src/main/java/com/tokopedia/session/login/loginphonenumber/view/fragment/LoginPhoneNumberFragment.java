@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -113,6 +115,23 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
             }
         });
 
+        phoneNumber.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (!phoneNumber.getText().equals(s.toString()))
+                    errorText.setVisibility(View.GONE);
+            }
+        });
 
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
