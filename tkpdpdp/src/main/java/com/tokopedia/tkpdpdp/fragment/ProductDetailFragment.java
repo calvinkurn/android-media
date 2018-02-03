@@ -424,6 +424,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                         .setShopId(productData.getShopInfo().getShopId())
                         .setPrice(productData.getInfo().getProductPrice())
                         .build();
+                pass.setNotes(generateVariantString());
                 if (!productData.getBreadcrumb().isEmpty())
                     pass.setProductCategory(productData.getBreadcrumb().get(0).getDepartmentName());
                 onProductBuySessionLogin(pass);
@@ -1010,12 +1011,10 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             case REQUEST_VARIANT:
                 if (data.getParcelableExtra(KEY_LEVEL1_SELECTED)!=null && data.getParcelableExtra(KEY_LEVEL1_SELECTED) instanceof Option) {
                     variantLevel1 = data.getParcelableExtra(KEY_LEVEL1_SELECTED);
-                    String variantText = variantLevel1.getValue();
                     if (data.getParcelableExtra(KEY_LEVEL2_SELECTED)!=null && data.getParcelableExtra(KEY_LEVEL2_SELECTED) instanceof Option) {
                         variantLevel2 = data.getParcelableExtra(KEY_LEVEL2_SELECTED);
-                        variantText+= (", "+((Option) data.getParcelableExtra(KEY_LEVEL2_SELECTED)).getValue());
                     }
-                    priceSimulationView.updateVariant(variantText);
+                    priceSimulationView.updateVariant(generateVariantString());
                     if (data.getParcelableExtra(KEY_PRODUCT_DETAIL_DATA) !=null) {
                         productData = data.getParcelableExtra(KEY_PRODUCT_DETAIL_DATA);
                         pictureView.renderData(productData);
@@ -1033,6 +1032,14 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
             default:
                 break;
         }
+    }
+
+    public String generateVariantString() {
+        String variantText = variantLevel1 !=null ? variantLevel1.getValue() : "";
+        if (variantLevel2!=null && variantLevel2 instanceof Option) {
+            variantText+= (", "+((Option) variantLevel2).getValue());
+        }
+        return variantText;
     }
 
     @Override
