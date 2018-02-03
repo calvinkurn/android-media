@@ -1,9 +1,8 @@
 package com.tokopedia.tkpdstream.common.di.module;
 
 import com.tokopedia.abstraction.common.di.qualifier.OkHttpClientBuilderNonBaseQualifier;
-import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
-import com.tokopedia.tkpdstream.common.di.StreamScope;
+import com.tokopedia.tkpdstream.common.di.scope.StreamScope;
 import com.tokopedia.tkpdstream.common.network.StreamErrorInterceptor;
 import com.tokopedia.tkpdstream.common.network.StreamErrorResponse;
 

@@ -2,8 +2,8 @@ package com.tokopedia.tkpdstream.common.di.module;
 
 
 import com.tokopedia.tkpdstream.common.data.GroupChatUrl;
-import com.tokopedia.tkpdstream.common.di.scope.StreamScope;
 import com.tokopedia.tkpdstream.common.di.qualifier.GroupChatQualifier;
+import com.tokopedia.tkpdstream.common.di.scope.StreamScope;
 
 import dagger.Module;
 import dagger.Provides;
@@ -21,7 +21,7 @@ public class StreamModule {
     @StreamScope
     @Provides
     @GroupChatQualifier
-    public Retrofit provideFlightRetrofit(OkHttpClient okHttpClient,
+    public Retrofit provideStreamRetrofit(OkHttpClient okHttpClient,
                                           Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(GroupChatUrl.BASE_URL).client(okHttpClient).build();
     }
