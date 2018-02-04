@@ -48,18 +48,17 @@ public class CategoryDetailDataSource {
     }
 
     private Observable<CategoryData> getDataFromLocal(String categoryId) {
-        CategoryData categoryData = CacheUtil.convertStringToModel(
-                globalCacheManager.getValueString(TkpdCache.Key.DIGITAL_CATEGORY_DETAIL + "/" + categoryId),
-                new TypeToken<CategoryData>() {
-                }.getType());
+        CategoryData categoryData;
+        try {
+            categoryData = CacheUtil.convertStringToModel(
+                    globalCacheManager.getValueString(TkpdCache.Key.DIGITAL_CATEGORY_DETAIL + "/" + categoryId),
+                    new TypeToken<CategoryData>() {
+                    }.getType());
+        } catch (RuntimeException e) {
+            categoryData = null;
+        }
 
-        return Observable.just(categoryData)
-                .onErrorReturn(new Func1<Throwable, CategoryData>() {
-                    @Override
-                    public CategoryData call(Throwable throwable) {
-                        return null;
-                    }
-                });
+        return Observable.just(categoryData);
     }
 
     private Observable<CategoryData> getDataFromCloud(String categoryId, TKPDMapParam<String, String> param) {
@@ -76,6 +75,7 @@ public class CategoryDetailDataSource {
                 globalCacheManager.setValue(CacheUtil.convertModelToString(categoryData,
                         new TypeToken<CategoryData>() {
                         }.getType()));
+                globalCacheManager.setCacheDuration(50);
                 globalCacheManager.store();
             }
         };
