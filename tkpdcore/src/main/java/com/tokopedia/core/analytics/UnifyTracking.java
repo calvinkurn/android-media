@@ -2503,6 +2503,15 @@ public class UnifyTracking extends TrackingUtils {
                         .getEvent());
     }
 
+    public static void eventReferralAndShare(String action, String label) {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_APP_SHARE_REFERRAL,
+                AppEventTracking.Category.REFERRAL,
+                action,
+                label
+        ).getEvent());
+    }
+
     public static void eventAppShare() {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.CLICK_APP_SHARE_REFERRAL,

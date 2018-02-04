@@ -49,7 +49,7 @@ public class CheckoutRepository implements ICheckoutRepository {
         JsonElement jsonElement = new JsonParser().parse(new Gson().toJson(requestBodyCheckout));
         JsonObject requestBody = new JsonObject();
         requestBody.add("data", jsonElement);
-        return digitalEndpointService.getApi().checkout(requestBody)
+        return digitalEndpointService.getApi().checkout( requestBody)
                 .map(getFuncResponseToInstantCheckoutData());
     }
 
