@@ -50,10 +50,10 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:paddingBottom="@dimen/padding_med"
-                    android:paddingEnd="@dimen/padding_small"
-                    android:paddingLeft="@dimen/padding_small"
-                    android:paddingRight="@dimen/padding_small"
-                    android:paddingStart="@dimen/padding_small"
+                    android:paddingEnd="@dimen/padding_16"
+                    android:paddingLeft="@dimen/padding_16"
+                    android:paddingRight="@dimen/padding_16"
+                    android:paddingStart="@dimen/padding_16"
                     android:paddingTop="@dimen/padding_med">
 
                     <android.support.v7.widget.AppCompatTextView
@@ -82,8 +82,8 @@
                     <TextView
                         style="@style/TextView.Micro"
                         android:layout_width="match_parent"
-                        android:layout_marginLeft="@dimen/margin_small"
-                        android:layout_marginRight="@dimen/margin_small"
+                        android:layout_marginLeft="@dimen/margin_16"
+                        android:layout_marginRight="@dimen/margin_16"
                         android:layout_marginTop="@dimen/margin_med"
                         android:background="@drawable/bg_stroke_dash_green_flight"
                         android:padding="@dimen/padding_small"
@@ -92,7 +92,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="@dimen/padding_med">
+                        android:padding="@dimen/padding_16">
 
                         <TextView
                             style="@style/TextView.TitleBig.Bold"
@@ -115,7 +115,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:nestedScrollingEnabled="false"
-                        android:paddingBottom="@dimen/padding_med" />
+                        android:paddingBottom="@dimen/padding_small" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -129,7 +129,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="@dimen/padding_med">
+                        android:padding="@dimen/padding_16">
 
                         <TextView
                             style="@style/TextView.TitleBig.Bold"
@@ -152,9 +152,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:nestedScrollingEnabled="false"
-                        android:paddingBottom="@dimen/padding_med"
-                        android:paddingLeft="@dimen/padding_med"
-                        android:paddingRight="@dimen/padding_med" />
+                        android:paddingBottom="@dimen/padding_small"
+                        android:paddingLeft="@dimen/padding_16"
+                        android:paddingRight="@dimen/padding_16" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -166,16 +166,15 @@
 
                     <TextView
                         style="@style/TextView.TitleBig.Bold"
-                        android:padding="@dimen/padding_med"
+                        android:padding="@dimen/padding_16"
                         android:text="@string/flight_label_passenger_data" />
 
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/recycler_view_data_passenger"
-
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:nestedScrollingEnabled="false"
-                        android:paddingBottom="@dimen/padding_med"
+                        android:paddingBottom="@dimen/padding_small"
                         android:paddingLeft="@dimen/padding_med"
                         android:paddingRight="@dimen/padding_med" />
                 </LinearLayout>
@@ -197,7 +196,7 @@
 
                     <TextView
                         style="@style/TextView.TitleBig.Bold"
-                        android:padding="@dimen/padding_med"
+                        android:padding="@dimen/padding_16"
                         android:text="@string/flight_label_detail_price" />
 
                     <android.support.v7.widget.RecyclerView
@@ -205,18 +204,18 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:nestedScrollingEnabled="false"
-                        android:paddingLeft="@dimen/padding_med"
-                        android:paddingRight="@dimen/padding_med" />
+                        android:paddingLeft="@dimen/padding_16"
+                        android:paddingRight="@dimen/padding_16" />
 
                     <LinearLayout
                         android:id="@+id/voucher_applied_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:paddingEnd="@dimen/padding_med"
-                        android:paddingLeft="@dimen/padding_med"
-                        android:paddingRight="@dimen/padding_med"
-                        android:paddingStart="@dimen/padding_med"
+                        android:paddingEnd="@dimen/padding_16"
+                        android:paddingLeft="@dimen/padding_16"
+                        android:paddingRight="@dimen/padding_16"
+                        android:paddingStart="@dimen/padding_16"
                         android:paddingTop="@dimen/padding_med">
 
                         <View

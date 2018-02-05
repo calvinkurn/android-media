@@ -3,6 +3,7 @@ package com.tokopedia.flight.booking.view.adapter;
 import android.graphics.Typeface;
 import android.support.annotation.ColorInt;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +25,7 @@ import java.util.List;
 public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapter.ViewHolder> {
     private static final int PARAM_EMPTY_MARGIN = 0;
     private List<SimpleViewModel> viewModels;
+    private float fontSize;
     private boolean isArrowVisible;
     private boolean isClickable;
     private boolean isTitleBold;
@@ -92,6 +95,10 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
         isTitleHalfView = titleHalfView;
     }
 
+    public void setFontSize(float fontSize) {
+        this.fontSize = fontSize;
+    }
+
     public void setInteractionListener(OnAdapterInteractionListener interactionListener) {
         this.interactionListener = interactionListener;
     }
@@ -133,6 +140,11 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
                 titleTextView.setTypeface(Typeface.DEFAULT_BOLD);
             } else {
                 titleTextView.setTypeface(Typeface.DEFAULT);
+            }
+
+            if (fontSize != 0f) {
+                titleTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, fontSize);
+                contentTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, fontSize);
             }
 
             if (isTitleHalfView) {

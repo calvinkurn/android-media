@@ -6,11 +6,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:paddingBottom="@dimen/padding_4"
+    android:paddingTop="@dimen/padding_4">
 
     <TextView
         android:id="@+id/tv_title"
-        style="@style/TextView.Small"
+        style="@style/TextView.Micro"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:maxLines="1"
@@ -18,7 +20,7 @@
 
     <TextView
         android:id="@+id/tv_content"
-        style="@style/TextView.Small"
+        style="@style/TextView.Micro"
         android:layout_width="0dp"
         android:layout_weight="1"
         android:gravity="end"
