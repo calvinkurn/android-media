@@ -54,11 +54,11 @@ public class GetFacebookCredentialUseCase {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 if (TextUtils.isEmpty(loginResult.getAccessToken().getToken())) {
+                    LoginManager.getInstance().logOut();
                     subscriber.onError(new ErrorMessageException(
                             MainApplication.getAppContext().getString(R.string.facebook_error_not_authorized),
                             ErrorCode.EMPTY_ACCESS_TOKEN));
                 } else {
-
                     getFacebookEmail(loginResult.getAccessToken(), subscriber);
                 }
             }
@@ -70,8 +70,8 @@ public class GetFacebookCredentialUseCase {
 
             @Override
             public void onError(FacebookException e) {
+                LoginManager.getInstance().logOut();
                 if (e instanceof FacebookAuthorizationException) {
-                    LoginManager.getInstance().logOut();
                     subscriber.onError(new ErrorMessageException(
                             MainApplication.getAppContext().getString(R.string.facebook_error_not_authorized),
                             ErrorCode.FACEBOOK_AUTHORIZATION_EXCEPTION));
@@ -96,6 +96,7 @@ public class GetFacebookCredentialUseCase {
                             subscriber.onSuccess(accessToken, email);
 
                         } catch (JSONException e) {
+                            LoginManager.getInstance().logOut();
                             subscriber.onError(new ErrorMessageException(
                                     MainApplication.getAppContext().getString(R.string.facebook_error_not_authorized),
                                     ErrorCode.FACEBOOK_EXCEPTION));
