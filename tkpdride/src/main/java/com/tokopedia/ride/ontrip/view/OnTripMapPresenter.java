@@ -422,7 +422,7 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
                 getView().renderAcceptedRequest(result);
                 getView().renderInProgressRequest(result);
                 getView().hideCurrentLocationIndicator();
-                //updatePolylineBetweenUserAndDestination(result);
+                updatePolylineBetweenUserAndDestination(result);
                 break;
             case RideStatus.DRIVER_CANCELED:
                 getView().hideBlockTranslucentLayout();
@@ -1077,12 +1077,6 @@ public class OnTripMapPresenter extends BaseDaggerPresenter<OnTripMapContract.Vi
 
                 if (getView() != null) {
                     getView().saveDefaultLocation(currentLocation.getLatitude(), currentLocation.getLongitude());
-                }
-
-                //render route of ride is progress
-                if (getView() != null && activeRideRequest != null && activeRideRequest.getStatus().equalsIgnoreCase(RideStatus.IN_PROGRESS)) {
-                    CommonUtils.dumper("Render Path Again and again");
-                    updatePolylineBetweenUserAndDestination(activeRideRequest);
                 }
             }
         });
