@@ -251,6 +251,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     @Override
     public void onReturnDateChange(int year, int month, int dayOfMonth) {
+        flightDashboardCache.putReturnDate(year + "-" + month + "-" + dayOfMonth);
         FlightDashboardViewModel viewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
         Calendar now = FlightDateUtil.getCurrentCalendar();
         now.set(Calendar.YEAR, year);
@@ -485,17 +486,19 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         onFlightPassengerChange(new FlightPassengerViewModel(flightDashboardPassDataViewModel.getAdultPassengerCount(), flightDashboardPassDataViewModel.getChildPassengerCount(), flightDashboardPassDataViewModel.getInfantPassengerCount()));
 
         compositeSubscription.add(
-                Observable.zip(getFlightAirportWithParamUseCase
+                Observable.zip(
+                        getFlightClassByIdUseCase
+                                .createObservable(getFlightClassByIdUseCase.createRequestParams(flightDashboardPassDataViewModel.getFlightClass())),
+                        getFlightAirportWithParamUseCase
                                 .createObservable(getFlightAirportWithParamUseCase.createRequestParams(flightDashboardPassDataViewModel.getDepartureAirportId())),
                         getFlightAirportWithParamUseCase
                                 .createObservable(getFlightAirportWithParamUseCase.createRequestParams(flightDashboardPassDataViewModel.getArrivalAirportId())),
-                        getFlightClassByIdUseCase.createObservable(getFlightClassByIdUseCase.createRequestParams(flightDashboardPassDataViewModel.getFlightClass())),
-                        new Func3<FlightAirportDB, FlightAirportDB, FlightClassEntity, Boolean>() {
+                        new Func3<FlightClassEntity, FlightAirportDB, FlightAirportDB, Boolean>() {
                             @Override
-                            public Boolean call(FlightAirportDB flightAirportDB, FlightAirportDB flightAirportDB2, FlightClassEntity flightClassEntity) {
+                            public Boolean call(FlightClassEntity flightClassEntity, FlightAirportDB flightAirportDB, FlightAirportDB flightAirportDB2) {
+                                onFlightClassesChange(flightClassViewModelMapper.transform(flightClassEntity));
                                 onDepartureAirportChange(flightAirportDB);
                                 onArrivalAirportChange(flightAirportDB2);
-                                onFlightClassesChange(flightClassViewModelMapper.transform(flightClassEntity));
                                 return true;
                             }
                         }
