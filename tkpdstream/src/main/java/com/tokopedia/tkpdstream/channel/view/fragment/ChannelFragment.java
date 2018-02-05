@@ -7,9 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.tkpdstream.R;
+import com.tokopedia.tkpdstream.channel.di.ChannelComponent;
 import com.tokopedia.tkpdstream.channel.view.listener.ChannelContract;
 import com.tokopedia.tkpdstream.channel.view.model.ChannelListViewModel;
 import com.tokopedia.tkpdstream.channel.view.presenter.ChannelPresenter;
@@ -40,9 +42,14 @@ public class ChannelFragment extends BaseDaggerFragment implements ChannelContra
 
     @Override
     protected void initInjector() {
-        DaggerStreamComponent.builder()
-                .appComponent(getComponent(StreamComponent.class))
-                .build().inject(this);
+//        StreamComponent streamComponent = DaggerStreamComponent.builder().baseAppComponent(
+//                ((BaseMainApplication) application).getBaseAppComponent()).build();
+//
+//        DaggerChannelComponent.builder()
+//                .strea(getComponent(ChannelComponent.class))
+//                .build().inject(this);
+
+
         presenter.attachView(this);
     }
 

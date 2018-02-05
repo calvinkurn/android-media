@@ -1,6 +1,7 @@
 package com.tokopedia.tkpdstream.common.di.module;
 
 
+import com.tokopedia.tkpdstream.common.data.GroupChatApi;
 import com.tokopedia.tkpdstream.common.data.GroupChatUrl;
 import com.tokopedia.tkpdstream.common.di.qualifier.GroupChatQualifier;
 import com.tokopedia.tkpdstream.common.di.scope.StreamScope;
@@ -26,5 +27,10 @@ public class StreamModule {
         return retrofitBuilder.baseUrl(GroupChatUrl.BASE_URL).client(okHttpClient).build();
     }
 
+    @StreamScope
+    @Provides
+    public GroupChatApi provideGroupChatApi(@GroupChatQualifier Retrofit retrofit) {
+        return retrofit.create(GroupChatApi.class);
+    }
 
 }

@@ -166,6 +166,7 @@ import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
+import com.tokopedia.tkpdstream.channel.view.ChannelActivity;
 import com.tokopedia.tokocash.historytokocash.presentation.activity.HistoryTokoCashActivity;
 import com.tokopedia.tokocash.qrpayment.presentation.activity.CustomScannerTokoCashActivity;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
@@ -1264,5 +1265,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public BroadcastReceiver getBroadcastReceiverTokocashPending() {
         return new TokocashPendingDataBroadcastReceiver();
+    }
+
+    @Override
+    public Intent getGroupChatIntent(Context context) {
+        return new Intent(context, ChannelActivity.class);
     }
 }

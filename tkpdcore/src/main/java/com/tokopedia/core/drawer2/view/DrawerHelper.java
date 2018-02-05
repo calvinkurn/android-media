@@ -96,14 +96,7 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
                         });
                 context.finish();
                 break;
-            case TkpdState.DrawerPosition.INBOX_MESSAGE:
-                if (context.getApplication() instanceof TkpdInboxRouter) {
-                    intent = ((TkpdInboxRouter) context.getApplication()).getInboxMessageIntent
-                            (context);
-                    context.startActivity(intent);
-                    sendGTMNavigationEvent(AppEventTracking.EventLabel.MESSAGE);
-                }
-                break;
+
             case TkpdState.DrawerPosition.INBOX_TALK:
                 intent = InboxRouter.getInboxTalkActivityIntent(context);
                 context.startActivity(intent);
