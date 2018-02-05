@@ -29,8 +29,6 @@ public interface BaseAppComponent {
     @ApplicationContext
     Context getContext();
 
-    OkHttpClient.Builder getDefaultOkHttpClientBuilder();
-
     Retrofit.Builder retrofitBuilder();
 
     Gson gson();

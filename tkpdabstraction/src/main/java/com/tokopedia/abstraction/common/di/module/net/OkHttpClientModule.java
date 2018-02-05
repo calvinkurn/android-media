@@ -26,10 +26,4 @@ public class OkHttpClientModule {
         return OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy();
     }
 
-    @ApplicationScope
-    @Provides
-    public OkHttpClient.Builder provideOkHttpClientBuilder() {
-        return new OkHttpClient().newBuilder();
-    }
-
 }
