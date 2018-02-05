@@ -2,7 +2,9 @@ package com.tokopedia.transaction.checkout.di.module;
 
 import com.tokopedia.transaction.checkout.di.scope.CartListScope;
 import com.tokopedia.transaction.checkout.domain.CartListInteractor;
+import com.tokopedia.transaction.checkout.domain.CartMapper;
 import com.tokopedia.transaction.checkout.domain.ICartListInteractor;
+import com.tokopedia.transaction.checkout.domain.ICartMapper;
 import com.tokopedia.transaction.checkout.domain.ICartRepository;
 import com.tokopedia.transaction.checkout.view.CartFragment;
 import com.tokopedia.transaction.checkout.view.adapter.CartListAdapter;
@@ -37,9 +39,16 @@ public class CartListModule {
 
     @Provides
     @CartListScope
+    ICartMapper provideICartMapper() {
+        return new CartMapper();
+    }
+
+    @Provides
+    @CartListScope
     ICartListInteractor provideICartListInteractor(CompositeSubscription compositeSubscription,
-                                                   ICartRepository cartRepository){
-        return new CartListInteractor(compositeSubscription, cartRepository);
+                                                   ICartRepository cartRepository,
+                                                   ICartMapper cartMapper) {
+        return new CartListInteractor(compositeSubscription, cartRepository, cartMapper);
     }
 
     @Provides

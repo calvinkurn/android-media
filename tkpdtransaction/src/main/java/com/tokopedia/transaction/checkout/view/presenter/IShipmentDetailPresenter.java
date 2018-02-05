@@ -6,6 +6,7 @@ import com.tokopedia.core.product.model.CourierItem;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import com.tokopedia.transaction.checkout.view.data.CourierItemData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
+import com.tokopedia.transaction.checkout.view.data.ShipmentItemData;
 import com.tokopedia.transaction.checkout.view.view.IShipmentDetailView;
 
 import java.util.List;
@@ -27,6 +28,10 @@ public interface IShipmentDetailPresenter extends CustomerPresenter<IShipmentDet
     ShipmentDetailData getShipmentDetailData();
 
     CourierItemData getSelectedCourier();
+
+    ShipmentItemData getSelectedShipment();
+
+    void setSelectedShipment(ShipmentItemData selectedShipment);
 
     void setSelectedCourier(CourierItemData selectedCourier);
 

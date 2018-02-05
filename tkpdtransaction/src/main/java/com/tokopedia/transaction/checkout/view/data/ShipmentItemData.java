@@ -15,6 +15,7 @@ public class ShipmentItemData implements Parcelable {
     private String priceRange;
     private String deliveryTimeRange;
     private List<CourierItemData> courierItemData;
+    private boolean selected;
 
     public ShipmentItemData() {
     }
@@ -25,6 +26,7 @@ public class ShipmentItemData implements Parcelable {
         priceRange = in.readString();
         deliveryTimeRange = in.readString();
         courierItemData = in.createTypedArrayList(CourierItemData.CREATOR);
+        selected = in.readByte() != 0;
     }
 
     public static final Creator<ShipmentItemData> CREATOR = new Creator<ShipmentItemData>() {
@@ -79,6 +81,14 @@ public class ShipmentItemData implements Parcelable {
         this.courierItemData = courierItemData;
     }
 
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -91,5 +101,6 @@ public class ShipmentItemData implements Parcelable {
         dest.writeString(priceRange);
         dest.writeString(deliveryTimeRange);
         dest.writeTypedList(courierItemData);
+        dest.writeByte((byte) (selected ? 1 : 0));
     }
 }

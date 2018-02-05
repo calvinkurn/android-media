@@ -108,7 +108,7 @@ public class ShipmentChoiceFragment extends BasePresenterFragment<IShipmentChoic
     protected void initView(View view) {
         ButterKnife.bind(view);
         presenter.attachView(this);
-        presenter.loadShipmentChoice();
+//        presenter.loadShipmentChoice();
         setupRecyclerView();
     }
 
@@ -152,7 +152,7 @@ public class ShipmentChoiceFragment extends BasePresenterFragment<IShipmentChoic
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
-                        presenter.loadShipmentChoice();
+//                        presenter.loadShipmentChoice();
                     }
                 });
     }

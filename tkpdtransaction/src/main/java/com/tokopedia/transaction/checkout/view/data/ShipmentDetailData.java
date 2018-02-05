@@ -19,7 +19,7 @@ public class ShipmentDetailData implements Parcelable {
     private String partialOrderInfo;
     private String dropshipperInfo;
     private String deliveryPriceTotal;
-    private String additionalPrice;
+    private String shipmentInfo;
 
     public ShipmentDetailData() {
     }
@@ -33,7 +33,7 @@ public class ShipmentDetailData implements Parcelable {
         partialOrderInfo = in.readString();
         dropshipperInfo = in.readString();
         deliveryPriceTotal = in.readString();
-        additionalPrice = in.readString();
+        shipmentInfo = in.readString();
     }
 
     public static final Creator<ShipmentDetailData> CREATOR = new Creator<ShipmentDetailData>() {
@@ -112,12 +112,12 @@ public class ShipmentDetailData implements Parcelable {
         this.deliveryPriceTotal = deliveryPriceTotal;
     }
 
-    public String getAdditionalPrice() {
-        return additionalPrice;
+    public String getShipmentInfo() {
+        return shipmentInfo;
     }
 
-    public void setAdditionalPrice(String additionalPrice) {
-        this.additionalPrice = additionalPrice;
+    public void setShipmentInfo(String shipmentInfo) {
+        this.shipmentInfo = shipmentInfo;
     }
 
     @Override
@@ -135,6 +135,6 @@ public class ShipmentDetailData implements Parcelable {
         dest.writeString(partialOrderInfo);
         dest.writeString(dropshipperInfo);
         dest.writeString(deliveryPriceTotal);
-        dest.writeString(additionalPrice);
+        dest.writeString(shipmentInfo);
     }
 }

@@ -448,8 +448,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/new_margin_med"
                         android:layout_marginRight="@dimen/new_margin_med"
+                        android:layout_marginTop="@dimen/margin_ms"
                         android:orientation="vertical"
-                        android:visibility="gone">
+                        android:visibility="visible">
 
                         <android.support.design.widget.TextInputLayout
                             android:id="@+id/text_input_layout_shipper_name"
