@@ -423,6 +423,7 @@ public class ResoInboxFragment
 
     private void updateParams(boolean isCanLoadMore, InboxItemResultViewModel resultViewModel) {
         adapter.setCanLoadMore(isCanLoadMore);
+//        adapter.setCanLoadMore(resultViewModel.isCanLoadMore());
         this.lastCursor = String.valueOf(resultViewModel.getInboxItemViewModels()
                 .get(resultViewModel.getInboxItemViewModels().size() - 1).getId());
     }
