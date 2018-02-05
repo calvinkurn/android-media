@@ -1,4 +1,4 @@
-package com.tokopedia.shop.info.domain.repository;
+package com.tokopedia.shop.common.repository;
 
 import com.tokopedia.interfaces.merchant.shop.info.ShopInfo;
 
@@ -10,5 +10,5 @@ import rx.Observable;
 
 public interface ShopInfoRepository {
 
-    Observable<ShopInfo> getShopInfo();
+    Observable<ShopInfo> getShopInfo(String shopId);
 }

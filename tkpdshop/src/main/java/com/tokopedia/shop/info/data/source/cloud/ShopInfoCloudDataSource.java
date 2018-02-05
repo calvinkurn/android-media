@@ -2,16 +2,8 @@ package com.tokopedia.shop.info.data.source.cloud;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.abstraction.common.utils.AuthUtil;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.interfaces.merchant.shop.info.ShopInfo;
-import com.tokopedia.seller.common.data.response.DataResponse;
-import com.tokopedia.seller.shop.common.data.source.cloud.api.ShopApi;
 import com.tokopedia.shop.info.data.source.cloud.api.ShopApi;
 
 import java.util.HashMap;
@@ -21,7 +13,6 @@ import javax.inject.Inject;
 
 import retrofit2.Response;
 import rx.Observable;
-import rx.functions.Func1;
 
 /**
  * @author hendry on 4/4/17.
@@ -41,9 +32,9 @@ public class ShopInfoCloudDataSource {
         this.userSession = userSession;
     }
 
-    public Observable<Response<DataResponse<ShopInfo>>> getShopInfo() {
+    public Observable<Response<DataResponse<ShopInfo>>> getShopInfo(String shopId) {
         Map<String, String> params = new HashMap<>();
-        params.put(SHOP_ID, userSession.getShopId());
+        params.put(SHOP_ID, shopId);
         params.put(SHOW_ALL, "1");
         params = AuthUtil.generateParams(userSession.getUserId(), userSession.getDeviceId(), params);
         return shopApi.getShopInfo(params);

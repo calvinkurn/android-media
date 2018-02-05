@@ -1,10 +1,7 @@
 package com.tokopedia.shop.info.data.source;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
-import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.interfaces.merchant.shop.info.ShopInfo;
-import com.tokopedia.seller.common.data.mapper.SimpleDataResponseMapper;
-import com.tokopedia.seller.shop.common.data.source.cloud.ShopInfoCloud;
 import com.tokopedia.shop.info.data.source.cloud.ShopInfoCloudDataSource;
 
 import javax.inject.Inject;
@@ -24,8 +21,8 @@ public class ShopInfoDataSource {
         this.shopInfoCloudDataSource = shopInfoCloudDataSource;
     }
 
-    public Observable<ShopInfo> getShopInfo() {
-        return shopInfoCloudDataSource.getShopInfo().flatMap(new Func1<Response<DataResponse<ShopInfo>>, Observable<ShopInfo>>() {
+    public Observable<ShopInfo> getShopInfo(String shopId) {
+        return shopInfoCloudDataSource.getShopInfo(shopId).flatMap(new Func1<Response<DataResponse<ShopInfo>>, Observable<ShopInfo>>() {
             @Override
             public Observable<ShopInfo> call(Response<DataResponse<ShopInfo>> dataResponseResponse) {
                 return Observable.just(dataResponseResponse.body().getData());

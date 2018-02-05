@@ -1,7 +1,7 @@
 package com.tokopedia.shop.info.domain.interactor;
 
 import com.tokopedia.interfaces.merchant.shop.info.ShopInfo;
-import com.tokopedia.shop.info.domain.repository.ShopInfoRepository;
+import com.tokopedia.shop.common.repository.ShopInfoRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

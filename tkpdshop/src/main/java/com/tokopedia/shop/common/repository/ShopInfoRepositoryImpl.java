@@ -1,4 +1,4 @@
-package com.tokopedia.shop.info.domain.repository;
+package com.tokopedia.shop.common.repository;
 
 import com.tokopedia.interfaces.merchant.shop.info.ShopInfo;
 import com.tokopedia.shop.info.data.source.ShopInfoDataSource;
@@ -20,8 +20,8 @@ public class ShopInfoRepositoryImpl implements ShopInfoRepository {
     }
 
     @Override
-    public Observable<ShopInfo> getShopInfo() {
-        return shopInfoDataSource.getShopInfo();
+    public Observable<ShopInfo> getShopInfo(String shopId) {
+        return shopInfoDataSource.getShopInfo(shopId);
     }
 
 }
