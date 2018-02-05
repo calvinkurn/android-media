@@ -7,11 +7,13 @@ public class LayoutSections {
     String title;
     String icon;
     String applink;
+    String url;
 
-    public LayoutSections(String title, String icon, String applink) {
+    public LayoutSections(String title, String icon, String applink, String url) {
         this.title = title;
         this.icon = icon;
         this.applink = applink;
+        this.url = url;
     }
 
     public String getTitle() {
@@ -36,5 +38,13 @@ public class LayoutSections {
 
     public void setApplink(String applink) {
         this.applink = applink;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }
