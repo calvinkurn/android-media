@@ -4,8 +4,11 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.core.base.adapter.Visitable;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.home.R;
@@ -31,17 +34,54 @@ public class HomeDataSource {
     private HomeDataApi homeDataApi;
     private HomeMapper homeMapper;
     private Context context;
+    private GlobalCacheManager cacheManager;
+    private Gson gson;
 
     public HomeDataSource(HomeDataApi homeDataApi,
                           HomeMapper homeMapper,
-                          Context context) {
+                          Context context,
+                          GlobalCacheManager cacheManager,
+                          Gson gson) {
         this.homeDataApi = homeDataApi;
         this.homeMapper = homeMapper;
         this.context = context;
+        this.cacheManager = cacheManager;
+        this.gson = gson;
+    }
+
+    public Observable<List<Visitable>> getCache() {
+        return Observable.just(true).map(new Func1<Boolean, Response<GraphqlResponse<HomeData>>>() {
+            @Override
+            public Response<GraphqlResponse<HomeData>> call(Boolean aBoolean) {
+                String cache = cacheManager.getValueString(TkpdCache.Key.HOME_DATA_CACHE);
+                if (cache != null) {
+                    HomeData homeData = gson.fromJson(cache, HomeData.class);
+                    GraphqlResponse<HomeData> graphqlResponse = new GraphqlResponse<>();
+                    graphqlResponse.setData(homeData);
+                    return Response.success(graphqlResponse);
+                }
+                throw new RuntimeException("Cache is empty!!");
+            }
+        }).map(homeMapper).onErrorResumeNext(getHomeData());
     }
 
     public Observable<List<Visitable>> getHomeData() {
-        return homeDataApi.getHomeData(getRequestPayload()).map(homeMapper);
+        return homeDataApi.getHomeData(getRequestPayload()).map(saveToCache()).map(homeMapper);
+    }
+
+    private Func1<Response<GraphqlResponse<HomeData>>, Response<GraphqlResponse<HomeData>>> saveToCache() {
+        return new Func1<Response<GraphqlResponse<HomeData>>, Response<GraphqlResponse<HomeData>>>() {
+            @Override
+            public Response<GraphqlResponse<HomeData>> call(Response<GraphqlResponse<HomeData>> response) {
+                if (response.isSuccessful()) {
+                    HomeData homeData = response.body().getData();
+                    cacheManager.setKey(TkpdCache.Key.HOME_DATA_CACHE);
+                    cacheManager.setValue(gson.toJson(homeData));
+                    cacheManager.store();
+                }
+                return response;
+            }
+        };
     }
 
     private String getRequestPayload() {

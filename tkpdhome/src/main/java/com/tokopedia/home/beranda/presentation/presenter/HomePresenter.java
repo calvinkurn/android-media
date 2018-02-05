@@ -30,6 +30,7 @@ import com.tokopedia.digital.tokocash.model.CashBackData;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.domain.interactor.GetHomeDataUseCase;
+import com.tokopedia.home.beranda.domain.interactor.GetLocalHomeDataUseCase;
 import com.tokopedia.home.beranda.domain.model.category.CategoryLayoutRowModel;
 import com.tokopedia.home.beranda.listener.HomeFeedListener;
 import com.tokopedia.home.beranda.presentation.view.HomeContract;
@@ -43,7 +44,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscriber;
+import rx.Subscription;
+import rx.functions.Action1;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * @author by errysuprayogi on 11/27/17.
@@ -54,12 +59,16 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     private static final String TAG = HomePresenter.class.getSimpleName();
 
     @Inject
+    GetLocalHomeDataUseCase localHomeDataUseCase;
+    @Inject
     GetHomeDataUseCase getHomeDataUseCase;
     @Inject
     GetHomeFeedsUseCase getHomeFeedsUseCase;
     @Inject
     SessionHandler sessionHandler;
 
+    protected CompositeSubscription compositeSubscription;
+    protected Subscription subscription;
     private final Context context;
     private GetShopInfoRetrofit getShopInfoRetrofit;
     private String currentCursor = "";
@@ -81,10 +90,19 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         getHomeFeedsUseCase.unsubscribe();
     }
 
+    @NonNull
+    private Observable<List<Visitable>> getDataFromNetwork() {
+        return getHomeDataUseCase.getExecuteObservable(RequestParams.EMPTY);
+    }
+
     @Override
     public void getHomeData() {
         initHeaderViewModelData();
-        getHomeDataUseCase.execute(RequestParams.EMPTY, new HomeDataSubscriber());
+        subscription = localHomeDataUseCase.getExecuteObservable(RequestParams.EMPTY)
+                .doOnNext(refreshData())
+                .onErrorResumeNext(getDataFromNetwork())
+                .subscribe(new HomeDataSubscriber());
+        compositeSubscription.add(subscription);
     }
 
     private void initHeaderViewModelData() {
@@ -95,6 +113,16 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
             }
             headerViewModel.setPendingTokocashChecked(false);
         }
+    }
+
+    @NonNull
+    private Action1<List<Visitable>> refreshData() {
+        return new Action1<List<Visitable>>() {
+            @Override
+            public void call(List<Visitable> visitables) {
+                compositeSubscription.add(getDataFromNetwork().subscribe(new HomeDataSubscriber()));
+            }
+        };
     }
 
     @Override

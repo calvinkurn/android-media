@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.di.module;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.home.beranda.data.mapper.HomeMapper;
@@ -17,6 +18,7 @@ import com.tokopedia.home.beranda.data.source.api.HomeDataApi;
 import com.tokopedia.home.beranda.data.source.api.HomeDataService;
 import com.tokopedia.home.beranda.di.HomeScope;
 import com.tokopedia.home.beranda.domain.interactor.GetHomeDataUseCase;
+import com.tokopedia.home.beranda.domain.interactor.GetLocalHomeDataUseCase;
 import com.tokopedia.home.beranda.presentation.presenter.HomePresenter;
 
 import dagger.Module;
@@ -74,12 +76,20 @@ public class HomeModule {
     @Provides
     HomeDataSource provideHomeDataSource(HomeDataApi homeDataApi,
                                          HomeMapper homeMapper,
-                                         @ApplicationContext Context context){
-        return new HomeDataSource(homeDataApi, homeMapper, context);
+                                         @ApplicationContext Context context,
+                                         GlobalCacheManager cacheManager,
+                                         Gson gson){
+        return new HomeDataSource(homeDataApi, homeMapper, context, cacheManager, gson);
     }
 
     @Provides
     GetHomeDataUseCase provideGetHomeDataUseCase(HomeRepository homeRepository){
         return new GetHomeDataUseCase(homeRepository);
+    }
+
+    @HomeScope
+    @Provides
+    GetLocalHomeDataUseCase getLocalHomeDataUseCase(HomeRepository repository){
+        return new GetLocalHomeDataUseCase(repository);
     }
 }

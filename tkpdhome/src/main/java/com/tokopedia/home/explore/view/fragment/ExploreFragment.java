@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -19,8 +21,6 @@ import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.home.beranda.domain.model.category.CategoryLayoutRowModel;
 import com.tokopedia.home.beranda.domain.model.category.CategoryLayoutSectionsModel;
 import com.tokopedia.home.explore.domain.model.LayoutRows;
@@ -28,10 +28,8 @@ import com.tokopedia.home.explore.domain.model.LayoutSections;
 import com.tokopedia.home.explore.listener.CategoryAdapterListener;
 import com.tokopedia.home.explore.view.adapter.ExploreAdapter;
 import com.tokopedia.home.explore.view.adapter.TypeFactory;
-import com.tokopedia.home.explore.view.adapter.viewholder.CategoryFavoriteViewHolder;
 import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryFavoriteViewModel;
 import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryGridListViewModel;
-import com.tokopedia.home.explore.view.adapter.viewmodel.DigitalsViewModel;
 import com.tokopedia.home.explore.view.adapter.viewmodel.SellViewModel;
 import com.tokopedia.home.explore.view.presentation.ExploreContract;
 

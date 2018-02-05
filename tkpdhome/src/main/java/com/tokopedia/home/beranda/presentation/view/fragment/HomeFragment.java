@@ -123,7 +123,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private SnackbarRetry messageSnackbar;
     private HomeAdapterFactory adapterFactory;
     private String[] tabSectionTitle;
-    private VerticalSpaceItemDecoration spaceItemDecoration;
     private HomeFragmentBroadcastReceiver homeFragmentBroadcastReceiver;
     private EndlessRecyclerviewListener feedLoadMoreTriggerListener;
     private LinearLayoutManager layoutManager;
@@ -265,8 +264,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         recyclerView.setLayoutManager(layoutManager);
         adapterFactory = new HomeAdapterFactory(getFragmentManager(), this, this);
         adapter = new HomeRecycleAdapter(adapterFactory, new ArrayList<Visitable>());
-        spaceItemDecoration = new VerticalSpaceItemDecoration(getResources().getDimensionPixelSize(R.dimen.margin_card_home), true, 1);
-        recyclerView.addItemDecoration(spaceItemDecoration);
         recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener(new HomeRecycleScrollListener(layoutManager, this));
     }
@@ -611,8 +608,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void setItems(List<Visitable> items) {
-        spaceItemDecoration.setStart(lastIndexOfInstance(items, CategorySectionViewModel.class));
-        recyclerView.invalidateItemDecorations();
         adapter.setItems(items);
     }
 

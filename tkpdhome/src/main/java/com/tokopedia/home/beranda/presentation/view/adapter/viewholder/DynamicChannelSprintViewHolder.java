@@ -11,9 +11,14 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.data.source.pojo.DynamicHomeChannel;
+import com.tokopedia.home.beranda.helper.TextViewHelper;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
 import com.tokopedia.home.beranda.presentation.view.compoundview.CountDownView;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by henrypriyono on 31/01/18.
@@ -75,6 +80,12 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
     @Override
     public void bind(final DynamicChannelViewModel element) {
         final DynamicHomeChannel.Channels channel = element.getChannel();
+        if (DynamicHomeChannel.Channels.LAYOUT_SPRINT.equals(channel.getLayout())) {
+            countDownView.setVisibility(View.VISIBLE);
+            countDownView.setup(getExpiredTime(element));
+        } else {
+            countDownView.setVisibility(View.GONE);
+        }
         homeChannelTitle.setText(channel.getHeader().getName());
         ImageHandler.loadImageThumbs(context, channelImage1, channel.getGrids()[0].getImageUrl());
         ImageHandler.loadImageThumbs(context, channelImage2, channel.getGrids()[1].getImageUrl());
@@ -82,9 +93,9 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
         channelPrice1.setText(channel.getGrids()[0].getPrice());
         channelPrice2.setText(channel.getGrids()[1].getPrice());
         channelPrice3.setText(channel.getGrids()[2].getPrice());
-        channelDiscount1.setText(channel.getGrids()[0].getDiscount());
-        channelDiscount2.setText(channel.getGrids()[1].getDiscount());
-        channelDiscount3.setText(channel.getGrids()[2].getDiscount());
+        TextViewHelper.displayText(channelDiscount1, channel.getGrids()[0].getDiscount());
+        TextViewHelper.displayText(channelDiscount2, channel.getGrids()[1].getDiscount());
+        TextViewHelper.displayText(channelDiscount3, channel.getGrids()[2].getDiscount());
         channelBeforeDiscPrice1.setText(channel.getGrids()[0].getSlashedPrice());
         channelBeforeDiscPrice2.setText(channel.getGrids()[1].getSlashedPrice());
         channelBeforeDiscPrice3.setText(channel.getGrids()[2].getSlashedPrice());
@@ -121,5 +132,16 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                 listener.onDynamicChannelClicked(channel.getGrids()[2].getApplink());
             }
         });
+    }
+
+    private Date getExpiredTime(DynamicChannelViewModel model) {
+        String expiredTimeString = model.getChannel().getHeader().getExpiredTime();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZZZZ");
+        try {
+            return format.parse(expiredTimeString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return new Date();
+        }
     }
 }

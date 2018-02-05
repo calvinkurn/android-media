@@ -41,5 +41,6 @@ public interface HomeRepository {
 
     Observable<List<Visitable>> getAllHomeData();
 
+    Observable<List<Visitable>> getHomeDataCache();
 
 }

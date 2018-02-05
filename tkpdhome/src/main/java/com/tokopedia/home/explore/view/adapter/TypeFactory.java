@@ -3,7 +3,6 @@ package com.tokopedia.home.explore.view.adapter;
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory;
 import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryFavoriteViewModel;
 import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryGridListViewModel;
-import com.tokopedia.home.explore.view.adapter.viewmodel.DigitalsViewModel;
 import com.tokopedia.home.explore.view.adapter.viewmodel.SellViewModel;
 
 /**
@@ -15,8 +14,6 @@ public interface TypeFactory extends AdapterTypeFactory {
     int type(CategoryGridListViewModel viewModel);
 
     int type(SellViewModel viewModel);
-
-    int type(DigitalsViewModel viewModel);
 
     int type(CategoryFavoriteViewModel viewModel);
 

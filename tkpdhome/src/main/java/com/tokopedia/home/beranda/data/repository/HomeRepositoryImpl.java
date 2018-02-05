@@ -101,4 +101,8 @@ public class HomeRepositoryImpl implements HomeRepository {
         return homeDataSource.getHomeData();
     }
 
+    @Override
+    public Observable<List<Visitable>> getHomeDataCache() {
+        return homeDataSource.getCache();
+    }
 }
