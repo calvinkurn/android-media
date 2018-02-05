@@ -9,5 +9,10 @@ import rx.Observable;
  */
 
 public interface ShopInfoRepository {
+
+    Observable<Boolean> saveShopId(String shopId);
+
+    Observable<String> getShopId();
+
     Observable<ShopInfo> getShopInfo();
 }

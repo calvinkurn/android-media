@@ -13,18 +13,18 @@ import rx.Observable;
  * Created by User on 9/8/2017.
  */
 
-public class ShopInfoUseCase extends UseCase<ShopInfo> {
+public class SaveShopIdUseCase extends UseCase<ShopInfo> {
 
     private ShopInfoRepository shopInfoRepository;
 
     @Inject
-    public ShopInfoUseCase(ShopInfoRepository shopInfoRepository) {
+    public SaveShopIdUseCase(ShopInfoRepository shopInfoRepository) {
         super();
         this.shopInfoRepository = shopInfoRepository;
     }
 
     @Override
-    public Observable<ShopInfo> createObservable(RequestParams requestParams) {
+    public Observable<Boolean> createObservable(RequestParams requestParams) {
         return shopInfoRepository.getShopInfo();
     }
 }

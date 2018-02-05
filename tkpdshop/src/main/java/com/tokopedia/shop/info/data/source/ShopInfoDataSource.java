@@ -5,6 +5,7 @@ import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.interfaces.merchant.shop.info.ShopInfo;
 import com.tokopedia.seller.common.data.mapper.SimpleDataResponseMapper;
 import com.tokopedia.seller.shop.common.data.source.cloud.ShopInfoCloud;
+import com.tokopedia.shop.info.data.source.cache.ShopInfoCacheDataSource;
 import com.tokopedia.shop.info.data.source.cloud.ShopInfoCloudDataSource;
 
 import javax.inject.Inject;
@@ -17,20 +18,34 @@ import rx.functions.Func1;
  * @author sebastianuskh on 3/8/17.
  */
 public class ShopInfoDataSource {
-    private final ShopInfoCloudDataSource shopInfoCloud;
+    private ShopInfoCloudDataSource shopInfoCloudDataSource;
+    private ShopInfoCacheDataSource shopInfoCacheDataSource;
 
     @Inject
-    public ShopInfoDataSource(ShopInfoCloudDataSource shopInfoCloud) {
-        this.shopInfoCloud = shopInfoCloud;
+    public ShopInfoDataSource(ShopInfoCacheDataSource shopInfoCacheDataSource, ShopInfoCloudDataSource shopInfoCloudDataSource) {
+        this.shopInfoCacheDataSource = shopInfoCacheDataSource;
+        this.shopInfoCloudDataSource = shopInfoCloudDataSource;
+    }
+
+    public Observable<Boolean> saveShopId(String shopId) {
+        return shopInfoCacheDataSource.saveShopId(shopId);
+    }
+
+    public Observable<String> getShopId() {
+        return shopInfoCacheDataSource.getShopId();
     }
 
     public Observable<ShopInfo> getShopInfo() {
-        return shopInfoCloud.getShopInfo().flatMap(new Func1<Response<DataResponse<ShopInfo>>, Observable<ShopInfo>>() {
+        return shopInfoCacheDataSource.getShopId().flatMap(new Func1<String, Observable<ShopInfo>>() {
             @Override
-            public Observable<ShopInfo> call(Response<DataResponse<ShopInfo>> dataResponseResponse) {
-                return Observable.just(dataResponseResponse.body().getData());
+            public Observable<ShopInfo> call(String s) {
+                return shopInfoCloudDataSource.getShopInfo(s).flatMap(new Func1<Response<DataResponse<ShopInfo>>, Observable<ShopInfo>>() {
+                    @Override
+                    public Observable<ShopInfo> call(Response<DataResponse<ShopInfo>> dataResponseResponse) {
+                        return Observable.just(dataResponseResponse.body().getData());
+                    }
+                });
             }
         });
     }
-
 }
