@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Tokopedia</string>
+
+    <!-- history transaction -->
     <string name="back_to_top">Kembali ke Atas</string>
     <string name="title_menu_history_tokocash">Riwayat Transaksi</string>
     <string name="desc_empty_page_tokocash">Pilih filter lain untuk melihat jenis transaksi lainnya, atau tutup filter untuk melihat semua riwayat transaksi.</string>
@@ -12,6 +14,7 @@
     <string name="range_date_last_month">Bulan Lalu</string>
     <string name="title_empty_page_tokocash">Belum ada Riwayat Transaksi</string>
 
+    <!-- scan QR Payment -->
     <string name="title_scan_qr">Scan Kode QR</string>
     <string name="title_dialog_wrong_scan">Oops!</string>
     <string name="msg_dialog_wrong_scan">Kode QR yang Anda scan invalid.</string>
@@ -32,5 +35,32 @@
     <string name="failed_payment_body">Cek Koneksi dan Ulangi Proses Transfer.</string>
     <string name="failed_payment_retry">Ulangi Transaksi</string>
     <string name="scanner_info">Arahkan kode QR ke area yang telah ditentukan</string>
+
+    <!-- activation -->
+    <string name="benefit_tokocash_title">Kemudahan Bertransaksi \ndengan TokoCash</string>
+    <string name="benefit_tokocash_title_item_1">Mudah melakukan Pembayaran Online</string>
+    <string name="benefit_tokocash_detail_item_1">Nikmati mudahnya belanja, isi pulsa, bayar berbagai tagihan, beli voucher game hingga tiket kereta di Tokopedia dengan TokoCash.</string>
+    <string name="benefit_tokocash_title_item_2">Dana Tersimpan Aman</string>
+    <string name="benefit_tokocash_detail_item_2">Dengan  sistem keamanan yang setara dengan Tokopedia, akun TokoCash-mu jadi lebih terlindungi. Tim Fraud Prevention kami juga akan memantau selama 24 jam untuk mencegah penyalahgunaan akun</string>
+    <string name="benefit_tokocash_title_item_3">Cashback ke TokoCash</string>
+    <string name="benefit_tokocash_detail_item_3">Dapatkan cashback berupa TokoCash dari berbagai promo Tokopedia. Cashback ini bisa juga kamu gunakan untuk kembali bertransaksi di Tokopedia.</string>
+    <string name="benefit_tokocash_title_item_4">Refund dana ke TokoCash</string>
+    <string name="benefit_tokocash_detail_item_4">Jika terjadi pembatalan transaksi, kamu tidak perlu khawatir karena dana akan dikembalikan ke akun TokoCash-mu.</string>
+    <string name="syarat_ketentuan_tokocash">Dengan klik tombol \'Aktivasi\' Anda menyetujui \n syarat dan ketentuan TokoCash.</string>
+    <string name="url_help_center_tokocash">https://www.tokopedia.com/bantuan/pembeli/fitur-belanja/tokocash/</string>
+    <string name="desc_success_tokocash">Selamat, Anda berhasil melakukan aktivasi TokoCash dengan nomor %s. \nKini Anda bisa bertransaksi dengan lebih mudah di Tokopedia.</string>
+    <string name="repeat_sms_verification">Kirim SMS Ulang (%s)</string>
+    <string name="tokocash_title_success">Aktivasi TokoCash Berhasil!</string>
+    <string name="tokocash_direct_home_button">Ke Halaman Utama</string>
+    <string name="tokocash_desc_activation">Anda bisa melakukan aktivasi TokoCash dengan nomor handphone yang terdaftar di akun Tokopedia Anda</string>
+    <string name="tokocash_phone_number">Nomor Handphone</string>
+    <string name="tokocash_activation">Aktivasi</string>
+    <string name="tokocash_desc_request_otp">Nomor Handphone Anda belum terverifikasi. Setelah terverifikasi, Tokocash akan aktif dan dapat digunakan sebagai pilihan pembayaran.</string>
+    <string name="tokocash_send_sms_verification">Kirim SMS Verifikasi</string>
+    <string name="tokocash_button_verification">Verifikasi</string>
+    <string name="tokocash_toolbar_activate">Aktivasi TokoCash</string>
+    <string name="tokocash_toolbar_verification">Verifikasi Nomor Handphone</string>
+    <string name="tokocash_toolbar_success_activation">Aktivasi TokoCash Berhasil</string>
+    <string name="help_general_tokocash">Bantuan TokoCash</string>
 
 </resources>
