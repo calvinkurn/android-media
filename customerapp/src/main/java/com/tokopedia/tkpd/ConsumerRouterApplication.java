@@ -59,7 +59,6 @@ import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.OtpRouter;
-import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
@@ -1060,16 +1059,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void onForceLogout(Activity activity) {
         SessionHandler sessionHandler = new SessionHandler(activity);
         sessionHandler.forceLogout();
-        if (GlobalConfig.isSellerApp()) {
-            Intent intent = SellerRouter.getActivitySplashScreenActivity(getBaseContext());
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        } else {
-            invalidateCategoryMenuData();
-            Intent intent = CustomerRouter.getSplashScreenIntent(getBaseContext());
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        }
+        invalidateCategoryMenuData();
+        Intent intent = CustomerRouter.getSplashScreenIntent(getBaseContext());
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     @Override

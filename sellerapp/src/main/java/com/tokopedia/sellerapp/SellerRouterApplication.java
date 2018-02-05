@@ -46,7 +46,6 @@ import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
-import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
@@ -319,16 +318,9 @@ public abstract class SellerRouterApplication extends MainApplication
     public void onForceLogout(Activity activity) {
         SessionHandler sessionHandler = new SessionHandler(activity);
         sessionHandler.forceLogout();
-        if (GlobalConfig.isSellerApp()) {
-            Intent intent = SellerRouter.getActivitySplashScreenActivity(getBaseContext());
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        } else {
-            invalidateCategoryMenuData();
-            Intent intent = CustomerRouter.getSplashScreenIntent(getBaseContext());
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        }
+        Intent intent = SellerRouter.getActivitySplashScreenActivity(getBaseContext());
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     @Override
