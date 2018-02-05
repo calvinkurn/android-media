@@ -2,10 +2,10 @@ package com.tokopedia.session.login.loginemail.view.subscriber;
 
 import android.text.TextUtils;
 
-import com.tokopedia.network.ErrorCode;
-import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.network.ErrorCode;
+import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
 import com.tokopedia.session.login.loginemail.view.viewlistener.Login;
 import com.tokopedia.session.register.domain.model.LoginSosmedDomain;

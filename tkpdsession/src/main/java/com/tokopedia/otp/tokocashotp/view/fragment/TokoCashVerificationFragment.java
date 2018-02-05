@@ -219,6 +219,14 @@ public class TokoCashVerificationFragment extends BaseDaggerFragment implements 
                 presenter.verifyOtp(viewModel.getPhoneNumber(), inputOtp.getText().toString());
             }
         });
+
+        errorImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                inputOtp.setText("");
+                removeErrorOtp();
+            }
+        });
     }
 
     private void disableVerifyButton() {

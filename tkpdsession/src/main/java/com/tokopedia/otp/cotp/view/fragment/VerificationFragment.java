@@ -304,6 +304,14 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
                 presenter.verifyOtp(verificationPassModel, inputOtp.getText().toString());
             }
         });
+
+        errorImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                inputOtp.setText("");
+                removeErrorOtp();
+            }
+        });
     }
 
     private void disableVerifyButton() {

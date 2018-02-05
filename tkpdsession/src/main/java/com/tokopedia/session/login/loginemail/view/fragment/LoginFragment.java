@@ -598,7 +598,6 @@ public class LoginFragment extends BaseDaggerFragment
     public void onGoToActivationPage(String email) {
         Intent intent = ActivationActivity.getCallingIntent(getActivity(),
                 email, passwordEditText.getText().toString());
-        intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         startActivityForResult(intent, REQUEST_ACTIVATE_ACCOUNT);
     }
 
