@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/transparent"
+    android:orientation="vertical">
+
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_gravity="top"
+        android:background="@color/white"
+        app:theme="@style/AppBarTheme"
+        app:titleTextAppearance="@style/EventToolbarTextStyle"
+        app:titleTextColor="@color/grey_900" />
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:weightSum="10">
+
+            <include
+                android:id="@+id/seating_layout_card"
+                layout="@layout/seating_layout" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/grey_100" />
+
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/tab_layout"
+                android:layout_width="match_parent"
+                android:layout_height="76dp"
+                android:background="@color/white"
+                android:overScrollMode="ifContentScrolls"
+                android:paddingBottom="4dp"
+                android:paddingTop="4dp"
+                app:tabGravity="center"
+                app:tabMaxWidth="0dp"
+                app:tabMode="scrollable"
+                app:tabPaddingEnd="2dp"
+                app:tabPaddingStart="0dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/grey_100" />
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/viewpager_book_ticket"
+                android:layout_width="match_parent"
+                android:layout_height="480dp"
+                android:background="@color/white"
+                android:paddingBottom="@dimen/margin_default" />
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+
+    <RelativeLayout
+        android:id="@+id/button_count_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@color/white"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tiket"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_default"
+            android:layout_marginStart="@dimen/margin_default"
+            android:text="TIKET:"
+            android:textColor="@color/black_70"
+            android:textSize="10sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/ticketcount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/tiket"
+            android:layout_alignStart="@+id/tiket"
+            android:layout_below="@+id/tiket"
+            android:layout_marginTop="3dp"
+            android:text="1 x Festival"
+            android:textColor="@color/green_nob"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="@dimen/margin_default"
+            android:layout_marginRight="@dimen/margin_default"
+            android:text="TOTAL:"
+            android:textColor="@color/black_70"
+            android:textSize="10sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/totalprice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/ticketcount"
+            android:layout_below="@+id/total"
+            android:layout_marginEnd="@dimen/margin_default"
+            android:layout_marginRight="@dimen/margin_default"
+            android:text="TOTAL:"
+            android:textColor="@color/price_pdp"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+
+        <include
+            android:id="@+id/pay_tickets"
+            layout="@layout/btn_lanjutkan_event"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ticketcount"
+            android:layout_gravity="bottom"
+            android:visibility="visible" />
+
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/progress_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:background="@color/black_12"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/prog_bar"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center" />
+    </FrameLayout>
+
+</FrameLayout>

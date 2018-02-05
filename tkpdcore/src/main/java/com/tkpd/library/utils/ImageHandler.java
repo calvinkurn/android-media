@@ -164,6 +164,7 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
                 .placeholder(R.drawable.loading_page)
                 .error(R.drawable.error_drawable)
                 .skipMemoryCache(true)
+                .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into(imageview);
     }

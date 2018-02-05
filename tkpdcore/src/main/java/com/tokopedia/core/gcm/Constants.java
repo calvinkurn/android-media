@@ -125,6 +125,7 @@ public interface Constants {
         String BROWSER = "tokopedia://browser";
         String REGISTER = "tokopedia://registration";
         String FAVORITE = "tokopedia://home/favorite";
+        String EVENTS = "tokopedia://events";
         String PROMO_LIST = "tokopedia://promoNative";
         String KOLCOMMENT = "tokopedia://kolcomment/{id}";
 
