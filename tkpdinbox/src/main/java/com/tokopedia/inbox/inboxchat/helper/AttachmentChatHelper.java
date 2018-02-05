@@ -78,7 +78,7 @@ public class AttachmentChatHelper {
 
             Spannable spannable = new SpannableString(string);
 
-            if (hasFallback(fallback)) {
+            if (hasFallback(fallback.getSpan())) {
                 spannable.setSpan(new ClickableSpan() {
                                       @Override
                                       public void onClick(View view) {
@@ -101,7 +101,7 @@ public class AttachmentChatHelper {
         }
     }
 
-    private boolean hasFallback(FallbackAttachment fallback) {
+    private boolean hasFallback(String fallback) {
         return fallback != null;
     }
 }
