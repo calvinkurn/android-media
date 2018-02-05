@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +18,7 @@ import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -44,6 +46,10 @@ import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.design.bottomsheet.BottomSheetBuilder;
+import com.tokopedia.design.bottomsheet.adapter.BottomSheetAdapterBuilder;
+import com.tokopedia.design.bottomsheet.adapter.BottomSheetItemClickListener;
+import com.tokopedia.design.bottomsheet.custom.CheckedBottomSheetBuilder;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketConstant;
 import com.tokopedia.inbox.inboxchat.InboxChatConstant;
@@ -148,6 +154,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     private RemoteConfig remoteConfig;
 
+    public BottomSheetBuilder bottomSheetBuilder;
+    public BottomSheetAdapterBuilder bottomSheetAdapterBuilder;
+
     public static ChatRoomFragment createInstance(Bundle extras) {
         ChatRoomFragment fragment = new ChatRoomFragment();
         fragment.setArguments(extras);
@@ -220,14 +229,37 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onRetrySend(MyChatViewModel attachment) {
-        adapter.remove(attachment);
-        ImageUpload model = new ImageUpload();
-        model.setImageId(String.valueOf(System.currentTimeMillis()/1000));
-        model.setFileLoc(attachment.getAttachment().getAttributes().getImageUrl());
-        MyChatViewModel temp = addDummyAttachImage(model);
-        presenter.startUpload(Collections.singletonList(temp));
+    public void onRetrySend(final MyChatViewModel attachment) {
 
+        BottomSheetBuilder bottomSheetBuilder = new CheckedBottomSheetBuilder(getActivity())
+                .setMode(BottomSheetBuilder.MODE_LIST);
+
+        bottomSheetBuilder.addItem(RESEND, R.string.resend, null);
+        bottomSheetBuilder.addItem(DELETE, R.string.delete, null);
+
+        BottomSheetDialog bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
+                .setItemClickListener(new BottomSheetItemClickListener() {
+                    @SuppressWarnings("WrongConstant")
+                    @Override
+                    public void onBottomSheetItemClick(MenuItem item) {
+                        switch (item.getItemId()){
+                            case RESEND:
+                                adapter.remove(attachment);
+                                ImageUpload model = new ImageUpload();
+                                model.setImageId(String.valueOf(System.currentTimeMillis()/1000));
+                                model.setFileLoc(attachment.getAttachment().getAttributes().getImageUrl());
+                                MyChatViewModel temp = addDummyAttachImage(model);
+                                presenter.startUpload(Collections.singletonList(temp));
+                                break;
+                            case DELETE:
+                                adapter.remove(attachment);
+                                break;
+                        }
+                    }
+                })
+                .createDialog();
+
+        bottomSheetDialog.show();
     }
 
     private void initListener() {

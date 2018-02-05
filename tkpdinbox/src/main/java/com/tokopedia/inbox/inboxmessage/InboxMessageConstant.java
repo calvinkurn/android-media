@@ -101,4 +101,8 @@ public interface InboxMessageConstant {
     int STATE_CHAT_UNREAD = 1;
     int STATE_CHAT_READ = 2;
     int STATE_CHAT_BOTH = 3;
+
+
+    int RESEND = 1;
+    int DELETE = 2;
 }

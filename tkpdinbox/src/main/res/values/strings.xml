@@ -91,6 +91,7 @@ yang ditemukan</string>
     <string name="delete_chat">"Hapus chat?"</string>
     <string name="forever_deleted_chat">"Chat akan terhapus selamanya"</string>
     <string name="search_chat_user">"Cari chat atau pengguna"</string>
+    <string name="resend">"Kirim Ulang"</string>
     <string name="delete">"Hapus"</string>
     <string name="cancel">"Batal"</string>
 

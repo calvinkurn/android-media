@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.util.MethodChecker;
@@ -42,7 +43,7 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
     private static final String ROLE_USER = "User";
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.message_item_mine;
+    public static final int LAYOUT = R.layout.chat_mine;
     private AttachmentChatHelper attachmentChatHelper;
 
     public MyChatViewHolder(View itemView, ChatRoomContract.View viewListener) {
@@ -90,10 +91,13 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
         try {
             long myTime = Long.parseLong(element.getReplyTime());
             time = DateFormat.getLongDateFormat(itemView.getContext()).format(new Date(myTime));
+            date.setText(time);
+            date.setVisibility(View.VISIBLE);
         }catch (NumberFormatException e){
             time = element.getReplyTime();
+            date.setVisibility(View.GONE);
         }
-        date.setText(time);
+
 
         if (element.isShowTime()) {
             date.setVisibility(View.VISIBLE);
@@ -170,5 +174,9 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
         }
 
         return spannableString;
+    }
+
+    public void onViewRecycled() {
+        Glide.clear(attachment);
     }
 }

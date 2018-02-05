@@ -16,6 +16,7 @@ import com.tokopedia.inbox.inboxchat.domain.model.ListReplyViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.ReplyParcelableModel;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
+import com.tokopedia.inbox.inboxchat.viewholder.MyChatViewHolder;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.TypingChatModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.chatroom.TimeMachineChatModel;
@@ -62,6 +63,14 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
             showHour(holder.itemView.getContext(), holder.getAdapterPosition());
         }
         holder.bind(list.get(holder.getAdapterPosition()));
+    }
+
+    @Override
+    public void onViewRecycled(AbstractViewHolder holder) {
+        super.onViewRecycled(holder);
+        if(holder instanceof MyChatViewHolder) {
+            ((MyChatViewHolder) holder).onViewRecycled();
+        }
     }
 
     private void showTime(Context context, int position) {
