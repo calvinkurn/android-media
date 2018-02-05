@@ -5,11 +5,17 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.tokopedia.transaction.R;
 
-import com.tokopedia.transaction.checkout.view.data.CartProductData;
+import com.tokopedia.transaction.R2;
+import com.tokopedia.transaction.checkout.view.data.CartItemModel;
 import java.util.List;
+
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -26,14 +32,14 @@ public class CartRemoveProductAdapter
     private static final int TOP_POSITION = 0;
 
     private Context mContext;
-    private List<CartProductData> mCartProductDataList;
+    private List<CartItemModel> mCartItemModelList;
 
     public CartRemoveProductAdapter() {
 
     }
 
-    public void updateData(List<CartProductData> cartProductDataList) {
-        mCartProductDataList = cartProductDataList;
+    public void updateData(List<CartItemModel> cartItemModels) {
+        mCartItemModelList = cartItemModels;
     }
 
     @Override
@@ -61,7 +67,7 @@ public class CartRemoveProductAdapter
 
     @Override
     public int getItemCount() {
-        return 3;
+        return mCartItemModelList.size() + 1;
     }
 
     @Override
@@ -74,6 +80,9 @@ public class CartRemoveProductAdapter
     }
 
     class SelectRemoveAllCheckboxViewHolder extends RecyclerView.ViewHolder {
+
+        @BindView(R2.id.checkBox)
+        CheckBox mCbRemoveAll;
 
         SelectRemoveAllCheckboxViewHolder(View itemView) {
             super(itemView);
@@ -88,13 +97,28 @@ public class CartRemoveProductAdapter
 
     class CartProductDataViewHolder extends RecyclerView.ViewHolder {
 
+        @BindView(R2.id.cb_remove_product)
+        CheckBox mCbRemoveProduct;
+        @BindView(R2.id.tv_sender_name)
+        TextView mTvSenderName;
+        @BindView(R2.id.iv_product_image_container)
+        ImageView mIvProductImage;
+        @BindView(R2.id.tv_shipping_product_name)
+        TextView mTvProductName;
+        @BindView(R2.id.tv_shipped_product_price)
+        TextView mTvProductPrice;
+        @BindView(R2.id.tv_product_weight)
+        TextView mTvProductWeight;
+        @BindView(R2.id.tv_total_product_item)
+        TextView mTvTotalProductItem;
+
         CartProductDataViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
         void bindViewHolder() {
-
+            mCbRemoveProduct.isChecked();
         }
 
     }
