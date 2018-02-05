@@ -354,7 +354,6 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     public void onSuccessGetOTP() {
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string
                 .verification_code_sent));
-        verifyButton.setEnabled(true);
         startTimer();
     }
 

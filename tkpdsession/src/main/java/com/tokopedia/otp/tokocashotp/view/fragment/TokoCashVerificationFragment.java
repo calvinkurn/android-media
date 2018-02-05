@@ -261,7 +261,6 @@ public class TokoCashVerificationFragment extends BaseDaggerFragment implements 
 
     @Override
     public void onSuccessGetOTP() {
-        verifyButton.setEnabled(true);
         startTimer();
     }
 
