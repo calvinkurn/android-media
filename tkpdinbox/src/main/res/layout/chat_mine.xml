@@ -101,6 +101,16 @@
         android:visibility="visible"
         android:src="@drawable/ic_error_to_send"/>
 
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="@dimen/new_margin_med"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/card_group_chat_message"
+        android:layout_alignBottom="@+id/card_group_chat_message"
+        android:layout_toLeftOf="@+id/card_group_chat_message"
+        android:layout_toStartOf="@+id/card_group_chat_message"
+        android:visibility="visible" />
+
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/main"
         android:layout_width="wrap_content"

@@ -304,6 +304,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
         if (needCreateWebSocket()) {
             sendButton.setOnClickListener(getSendWithWebSocketListener());
+            pickerButton.setVisibility(View.VISIBLE);
         } else {
             sendButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -315,7 +316,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                             getArguments().getString(ChatRoomActivity.PARAM_USER_ID));
                 }
             });
-
+            pickerButton.setVisibility(View.GONE);
         }
 
         maximize.setOnClickListener(new View.OnClickListener() {
