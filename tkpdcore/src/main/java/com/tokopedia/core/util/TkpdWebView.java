@@ -12,6 +12,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Map;
 
 /**
  * Created by nisie on 11/30/16.
@@ -43,15 +44,18 @@ public class TkpdWebView extends WebView {
     }
 
     public void loadAuthUrl(String url) {
-        loadUrl(url,
-                AuthUtil.generateWebviewHeaders(
-                        Uri.parse(url).getPath(),
-                        getQuery(Uri.parse(url).getQuery()),
-                        "GET",
-                        AuthUtil.KEY.KEY_WSV4));
+        loadUrl(url, getWebviewHeaders(url));
     }
 
-    private String getQuery(String query) {
+    public static Map<String, String> getWebviewHeaders(String url) {
+        return AuthUtil.generateWebviewHeaders(
+                Uri.parse(url).getPath(),
+                getQuery(Uri.parse(url).getQuery()),
+                "GET",
+                AuthUtil.KEY.KEY_WSV4);
+    }
+
+    private static String getQuery(String query) {
         return query != null ? query : "";
     }
 
