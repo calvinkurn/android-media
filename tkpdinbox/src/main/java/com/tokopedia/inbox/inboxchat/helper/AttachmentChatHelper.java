@@ -28,7 +28,7 @@ public class AttachmentChatHelper {
     private static final String DEFAULT = "1";
     public static final String IMAGE_ATTACHED = "2";
 
-    public void parse(MyChatViewModel myChatViewModel, ImageView view, TextView message, ImageView action, ListReplyViewModel element, ChatRoomContract.View viewListener, boolean dummy, boolean retry) {
+    public void parse(MyChatViewModel myChatViewModel, ImageView view, TextView message, ImageView action, ListReplyViewModel element, ChatRoomContract.View viewListener, boolean dummy, boolean retry, TextView hour){
         Attachment attachment = element.getAttachment();
         String role = element.getRole();
         String msg = element.getMsg();
@@ -38,7 +38,7 @@ public class AttachmentChatHelper {
                     parseType(view, message, attachment, role, msg, viewListener);
                     break;
                 case IMAGE_ATTACHED:
-                    parseAttachedImage(myChatViewModel, view, message, attachment, role, msg, viewListener, dummy, retry, action);
+                    parseAttachedImage(myChatViewModel, view, message, attachment, viewListener, dummy, retry, action, hour);
                     break;
                 default:
                     parseDefaultType(view, message, attachment, viewListener);
@@ -50,11 +50,13 @@ public class AttachmentChatHelper {
         }
     }
 
-    public void parse(ImageView view, TextView message, ListReplyViewModel element, ChatRoomContract.View viewListener) {
-        parse(null, view, message, null, element, viewListener, false, false);
+    public void parse(ImageView view, TextView message
+            , ListReplyViewModel element
+            , ChatRoomContract.View viewListener) {
+        parse(null, view, message, null, element, viewListener, false, false, null);
     }
 
-    private void parseAttachedImage(final MyChatViewModel myChatViewModel, ImageView view, TextView message, final Attachment attachment, String role, String msg, final ChatRoomContract.View viewListener, boolean dummy, boolean retry, ImageView action) {
+    private void parseAttachedImage(final MyChatViewModel myChatViewModel, ImageView view, TextView message, final Attachment attachment, final ChatRoomContract.View viewListener, boolean dummy, boolean retry, ImageView action, TextView hour) {
 
         if(retry){
             action.setVisibility(View.VISIBLE);
@@ -64,6 +66,7 @@ public class AttachmentChatHelper {
                     viewListener.onRetrySend(myChatViewModel);
                 }
             });
+            hour.setVisibility(View.GONE);
         }
 
         if (attachment.getAttributes().getImageUrl() != null) {
