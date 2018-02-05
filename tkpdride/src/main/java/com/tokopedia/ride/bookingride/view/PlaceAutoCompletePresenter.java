@@ -1,9 +1,11 @@
 package com.tokopedia.ride.bookingride.view;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -150,8 +152,16 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
             getView().hideGoogleLabel();
 
             if (getView().isShowNearbyPlaces()) {
-                getView().setActiveGooglePlaceSource();
-                showNearbyPlaces();
+                //show nearby places if location is enabled else show recent address
+                LocationManager manager = (LocationManager) getView().getActivity().getSystemService(Context.LOCATION_SERVICE);
+                if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    getView().setActiveGooglePlaceSource();
+                    showNearbyPlaces();
+                } else {
+                    getView().setActiveMarketplaceSource();
+                    actionGetUserAddressesFromCache();
+                    actionGetUserAddresses(false);
+                }
             } else {
                 getView().setActiveMarketplaceSource();
                 actionGetUserAddressesFromCache();

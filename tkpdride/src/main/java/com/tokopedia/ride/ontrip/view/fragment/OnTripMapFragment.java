@@ -550,8 +550,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 break;
             case REQUEST_CODE_DRIVER_NOT_FOUND:
                 if (resultCode == DriverNotFoundDialogFragment.BOOK_AGAIN_RESULT_CODE) {
-                    getActivity().setResult(OnTripActivity.RIDE_HOME_RESULT_CODE);
-                    getActivity().finish();
+                    setResultWithSourceAndDestination();
                 } else {
                     getActivity().setResult(OnTripActivity.RIDE_HOME_RESULT_CODE);
                     getActivity().finish();
@@ -559,7 +558,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 break;
             case REQUEST_CODE_CANCEL_REASON:
                 if (resultCode == Activity.RESULT_OK) {
-                    onSuccessCancelRideRequest();
+                    setResultWithSourceAndDestination();
                 }
                 break;
             case PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE:
@@ -745,7 +744,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     @Override
-    public void onSuccessCancelRideRequest() {
+    public void setResultWithSourceAndDestination() {
         PlacePassViewModel source = null, destination = null;
         if (confirmBookingViewModel != null) {
             source = confirmBookingViewModel.getSource();

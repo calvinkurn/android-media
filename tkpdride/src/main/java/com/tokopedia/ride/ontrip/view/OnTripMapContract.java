@@ -88,7 +88,7 @@ public interface OnTripMapContract {
 
         void setTitle(String title);
 
-        void onSuccessCancelRideRequest();
+        void setResultWithSourceAndDestination();
 
         void renderTripRoute(List<List<LatLng>> routes);
 
