@@ -382,7 +382,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
                 LinearLayoutManager.VERTICAL, false);
         rvCourierChoice.setLayoutManager(linearLayoutManager);
         rvCourierChoice.setAdapter(courierChoiceAdapter);
-        if (courierChoiceAdapter.getItemCount() > 3) {
+        if (presenter.getSelectedShipment().getCourierItemData().size() > 3) {
             llExpandedCourierList.setVisibility(View.VISIBLE);
         } else {
             llExpandedCourierList.setVisibility(View.GONE);

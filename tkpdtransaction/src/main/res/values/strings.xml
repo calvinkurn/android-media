@@ -180,7 +180,7 @@
     <string name="apply">Terapkan</string>
     <string name="title_send_to_pick_up_booth">Gerai Pengambilan di %s</string>
     <string name="label_send_to_pick_up_booth">Kirim ke Gerai Pengambilan</string>
-    <string name="label_edit_pickup">Edit</string>
+    <string name="label_edit_pickup">Ubah Gerai</string>
     <string name="label_pickup_booth">Gerai Pengambilan</string>
     <string name="label_no_pickup_booth_found">Oops, Gerai tidak ditemukan</string>
     <string name="label_pickup_booth_check_keyword">Periksa kembali kata kunci Anda</string>

@@ -115,7 +115,6 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
             public void onClick(DialogInterface dialog, int which) {
                 shipmentAdapter.unSetPickupPoint(position);
                 shipmentAdapter.notifyItemChanged(position);
-                // Todo : Change text `alfatrex` with `pilih kurir`
             }
         });
         builder.setNegativeButton(R.string.title_no, null);
@@ -141,7 +140,6 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
                 addressAdapterData.getDestinationDistrictName(),
                 GetPickupPointsUseCase.generateParams(addressAdapterData)
         ), REQUEST_CHOOSE_PICKUP_POINT);
-        // Todo : Change text `pilih kurir` with `alfatrex`
     }
 
     @Override
