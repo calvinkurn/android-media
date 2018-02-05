@@ -60,6 +60,8 @@ import com.tokopedia.core.home.GetUserInfoListener;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.network.retrofit.utils.DialogHockeyApp;
 import com.tokopedia.core.onboarding.NewOnboardingActivity;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
@@ -84,6 +86,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusFragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import rx.subscriptions.CompositeSubscription;
@@ -302,18 +305,21 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                     .setIntent(shopIntent)
                     .build();
 
-            // TODO: 2/1/18 check for referral config from firebase
+            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
+            if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_REFERRAL_BUTTON)) {
+                Intent referralIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.Applinks.REFERRAL));
+                referralIntent.putExtras(args);
+                referralShortcut = new ShortcutInfo.Builder(this, REFERRAL_ID)
+                        .setShortLabel(getResources().getString(R.string.referral))
+                        .setLongLabel(getResources().getString(R.string.referral))
+                        .setIcon(Icon.createWithResource(this, R.drawable.ic_referral))
+                        .setIntent(referralIntent)
+                        .build();
 
-            Intent referralIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.Applinks.REFERRAL));
-            referralIntent.putExtras(args);
-            referralShortcut = new ShortcutInfo.Builder(this, REFERRAL_ID)
-                    .setShortLabel(getResources().getString(R.string.referral))
-                    .setLongLabel(getResources().getString(R.string.referral))
-                    .setIcon(Icon.createWithResource(this, R.drawable.ic_share))
-                    .setIntent(referralIntent)
-                    .build();
-
-            shortcutManager.addDynamicShortcuts(Arrays.asList(referralShortcut, shopShortcut));
+                shortcutManager.addDynamicShortcuts(Arrays.asList(referralShortcut, shopShortcut));
+            } else {
+                shortcutManager.addDynamicShortcuts(Collections.singletonList(shopShortcut));
+            }
         }
     }
 
