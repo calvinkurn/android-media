@@ -149,8 +149,8 @@ public class GetInboxMapper implements Func1<Response<TkpdResponse>, InboxItemRe
                 actionBy == ACTION_BY_USER ?
                         response.getShop().getName() :
                         response.getCustomer().getName(),
-                !TextUtils.isEmpty(response.getResolution().getAutoExecuteTime().getString()) ?
-                        response.getResolution().getAutoExecuteTime().getString() :
+                !TextUtils.isEmpty(response.getResolution().getAutoExecuteTime().getTimeLeft()) ?
+                        response.getResolution().getAutoExecuteTime().getTimeLeft() :
                         "-",
                 response.getResolution().getAutoExecuteTime().getColor(),
                 !TextUtils.isEmpty(response.getResolution().getAutoExecuteTime().getColor()) ?
