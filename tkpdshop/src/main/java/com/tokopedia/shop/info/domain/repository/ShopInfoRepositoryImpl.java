@@ -20,16 +20,6 @@ public class ShopInfoRepositoryImpl implements ShopInfoRepository {
     }
 
     @Override
-    public Observable<Boolean> saveShopId(String shopId) {
-        return shopInfoDataSource.saveShopId(shopId);
-    }
-
-    @Override
-    public Observable<String> getShopId() {
-        return shopInfoDataSource.getShopId();
-    }
-
-    @Override
     public Observable<ShopInfo> getShopInfo() {
         return shopInfoDataSource.getShopInfo();
     }

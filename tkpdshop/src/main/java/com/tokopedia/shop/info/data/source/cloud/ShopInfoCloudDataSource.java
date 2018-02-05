@@ -3,6 +3,7 @@ package com.tokopedia.shop.info.data.source.cloud;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.AuthUtil;
+import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -40,9 +41,9 @@ public class ShopInfoCloudDataSource {
         this.userSession = userSession;
     }
 
-    public Observable<Response<DataResponse<ShopInfo>>> getShopInfo(String shopId) {
+    public Observable<Response<DataResponse<ShopInfo>>> getShopInfo() {
         Map<String, String> params = new HashMap<>();
-        params.put(SHOP_ID, shopId);
+        params.put(SHOP_ID, userSession.getShopId());
         params.put(SHOW_ALL, "1");
         params = AuthUtil.generateParams(userSession.getUserId(), userSession.getDeviceId(), params);
         return shopApi.getShopInfo(params);
