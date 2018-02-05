@@ -3,20 +3,26 @@ package com.tokopedia.events.view.presenter;
 import android.content.Intent;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.events.R;
+import com.tokopedia.events.data.entity.response.SeatLayoutItem;
 import com.tokopedia.events.data.entity.response.ValidateResponse;
+import com.tokopedia.events.data.entity.response.seatlayoutresponse.EventSeatLayoutResonse;
+import com.tokopedia.events.domain.GetEventSeatLayoutUseCase;
 import com.tokopedia.events.domain.model.request.verify.ValidateShow;
 import com.tokopedia.events.domain.postusecase.PostValidateShowUseCase;
 import com.tokopedia.events.view.activity.ReviewTicketActivity;
 import com.tokopedia.events.view.activity.SeatSelectionActivity;
 import com.tokopedia.events.view.adapter.AddTicketAdapter;
 import com.tokopedia.events.view.contractor.EventBookTicketContract;
+import com.tokopedia.events.view.mapper.SeatLayoutResponseToSeatLayoutViewModelMapper;
 import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
 import com.tokopedia.events.view.viewmodel.SchedulesViewModel;
+import com.tokopedia.events.view.viewmodel.SeatLayoutViewModel;
 
 import java.util.List;
 
@@ -32,6 +38,8 @@ public class EventBookTicketPresenter
         implements EventBookTicketContract.Presenter {
 
     PackageViewModel selectedPackageViewModel;
+    GetEventSeatLayoutUseCase getSeatLayoutUseCase;
+    private SeatLayoutViewModel seatLayoutViewModel;
     int mSelectedPackage = -1;
     int mSelectedSchedule = 0;
     AddTicketAdapter.TicketViewHolder selectedViewHolder;
@@ -41,11 +49,14 @@ public class EventBookTicketPresenter
     String seatingURL;
     String eventTitle;
     int hasSeatLayout;
+    String url;
 
     public static String EXTRA_PACKAGEVIEWMODEL = "packageviewmodel";
+    public static String EXTRA_SEATLAYOUTVIEWMODEL = "seatlayoutviewmodel";
 
     @Inject
-    public EventBookTicketPresenter(PostValidateShowUseCase useCase) {
+    public EventBookTicketPresenter(GetEventSeatLayoutUseCase seatLayoutUseCase, PostValidateShowUseCase useCase) {
+        this.getSeatLayoutUseCase = seatLayoutUseCase;
         this.postValidateShowUseCase = useCase;
     }
 
@@ -107,9 +118,10 @@ public class EventBookTicketPresenter
             @Override
             public void onNext(ValidateResponse objectResponse) {
                 if (objectResponse.getStatus() != 400) {
-                    if (hasSeatLayout == 1) {
+                    if (hasSeatLayout == 1 && seatLayoutViewModel.getArea() != null) {
                         Intent reviewTicketIntent = new Intent(getView().getActivity(), SeatSelectionActivity.class);
                         reviewTicketIntent.putExtra(EXTRA_PACKAGEVIEWMODEL, selectedPackageViewModel);
+                        reviewTicketIntent.putExtra(EXTRA_SEATLAYOUTVIEWMODEL, seatLayoutViewModel);
                         reviewTicketIntent.putExtra("EventTitle", eventTitle);
                         getView().navigateToActivityRequest(reviewTicketIntent, 100);
                     } else {
@@ -195,4 +207,47 @@ public class EventBookTicketPresenter
         date[2] = dateRange.substring(7, 11).trim();//month
         return date;
     }
+
+
+    public void getSeatSelectionDetails() {
+        getView().showProgressBar();
+        getSeatLayoutUseCase.setUrl(url);
+        getSeatLayoutUseCase.execute(RequestParams.EMPTY, new Subscriber<List<SeatLayoutItem>>() {
+            @Override
+            public void onCompleted() {
+                Log.d("Naveen", " on Completed");
+                getView().hideProgressBar();
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+//                Log.d("Naveen", " on Error" + throwable.getMessage());
+            }
+
+            @Override
+            public void onNext(List<SeatLayoutItem> response) {
+                getView().hideProgressBar();
+                seatLayoutViewModel = convertResponseToViewModel(convertoSeatLayoutResponse(response.get(0)));
+            }
+
+        });
+
+    }
+
+    private EventSeatLayoutResonse convertoSeatLayoutResponse(SeatLayoutItem responseEntity) {
+
+        String  data = responseEntity.getLayout();
+        Gson gson = new Gson();
+        EventSeatLayoutResonse seatLayoutResponse = gson.fromJson(data, EventSeatLayoutResonse.class);
+        return seatLayoutResponse;
+    }
+
+
+    private SeatLayoutViewModel convertResponseToViewModel(EventSeatLayoutResonse response) {
+        seatLayoutViewModel = new SeatLayoutViewModel();
+        seatLayoutViewModel = SeatLayoutResponseToSeatLayoutViewModelMapper.map(response, seatLayoutViewModel);
+
+        return seatLayoutViewModel;
+    }
+
 }

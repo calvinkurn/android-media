@@ -82,7 +82,6 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
     int quantity;
 
 
-
     @Inject
     public SeatSelectionPresenter(GetEventSeatLayoutUseCase seatLayoutUseCase, PostVerifyCartUseCase postVerifyCartUseCase) {
         this.getSeatLayoutUseCase = seatLayoutUseCase;
@@ -148,6 +147,7 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
     public void attachView(SeatSelectionContract.SeatSelectionView view) {
         super.attachView(view);
         selectedpkgViewModel = getView().getActivity().getIntent().getParcelableExtra(EventBookTicketPresenter.EXTRA_PACKAGEVIEWMODEL);
+        seatLayoutViewModel = getView().getActivity().getIntent().getParcelableExtra(EventBookTicketPresenter.EXTRA_SEATLAYOUTVIEWMODEL);
         eventTitle = getView().getActivity().getIntent().getStringExtra("EventTitle");
         maxTickets = selectedpkgViewModel.getMaxQty();
         url = selectedpkgViewModel.getFetchSectionUrl();
@@ -156,49 +156,8 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
     }
 
 
-    @Override
     public void getSeatSelectionDetails() {
-        getView().showProgressBar();
-        getSeatLayoutUseCase.setUrl(url);
-        getSeatLayoutUseCase.execute(RequestParams.EMPTY, new Subscriber<List<SeatLayoutItem>>() {
-            @Override
-            public void onCompleted() {
-                Log.d("Naveen", " on Completed");
-                getView().hideProgressBar();
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                Log.d("Naveen", " on Error" + throwable.getMessage());
-                throwable.printStackTrace();
-            }
-
-            @Override
-            public void onNext(List<SeatLayoutItem> response) {
-                Log.d("Naveen", " on Next" + response.get(0));
-                getView().hideProgressBar();
-                getView().renderSeatSelection(selectedpkgViewModel.getSalesPrice(), maxTickets, convertResponseToViewModel(convertoSeatLayoutResponse(response.get(0))));
-
-            }
-
-        });
-
-    }
-
-    private EventSeatLayoutResonse convertoSeatLayoutResponse(SeatLayoutItem responseEntity) {
-
-            String  data = responseEntity.getLayout();
-            Gson gson = new Gson();
-             EventSeatLayoutResonse seatLayoutResponse = gson.fromJson(data, EventSeatLayoutResonse.class);
-            return seatLayoutResponse;
-    }
-
-
-    private SeatLayoutViewModel convertResponseToViewModel(EventSeatLayoutResonse response) {
-        seatLayoutViewModel = new SeatLayoutViewModel();
-        seatLayoutViewModel = SeatLayoutResponseToSeatLayoutViewModelMapper.map(response, seatLayoutViewModel);
-
-        return seatLayoutViewModel;
+        getView().renderSeatSelection(selectedpkgViewModel.getSalesPrice(), maxTickets, seatLayoutViewModel);
     }
 
     @Override
@@ -233,13 +192,13 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
 
             @Override
             public void onError(Throwable throwable) {
-                Log.d("Naveen"," On Error" + throwable.getMessage());
+                Log.d("Naveen", " On Error" + throwable.getMessage());
 
             }
 
             @Override
             public void onNext(VerifyCartResponse verifyCartResponse) {
-                Log.d("Naveen","on Next" + verifyCartResponse.getStatus().getMessage().getMessage());
+                Log.d("Naveen", "on Next" + verifyCartResponse.getStatus().getMessage().getMessage());
             }
         });
     }

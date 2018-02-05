@@ -206,13 +206,23 @@ public class EventReviewTicketPresenter
         List<EntityPackageItem> entityPackages = new ArrayList<>();
         EntityPackageItem packageItem = new EntityPackageItem();
         packageItem.setPackageId(packageViewModel.getId());
-        packageItem.setAreaCode(selectedSeatViewModel.getAreaCodes());
+        if (selectedSeatViewModel != null) {
+            packageItem.setAreaCode(selectedSeatViewModel.getAreaCodes());
+            packageItem.setSeatId(selectedSeatViewModel.getSeatIds());
+            packageItem.setSeatRowId(selectedSeatViewModel.getSeatRowIds());
+            packageItem.setSeatPhysicalRowId(selectedSeatViewModel.getPhysicalRowIds());
+            packageItem.setQuantity(selectedSeatViewModel.getQuantity());
+            packageItem.setPricePerSeat(selectedSeatViewModel.getPrice());
+        } else {
+            packageItem.setAreaCode(new ArrayList<String>());
+            packageItem.setSeatId(new ArrayList<String>());
+            packageItem.setSeatRowId(new ArrayList<String>());
+            packageItem.setSeatPhysicalRowId(new ArrayList<String>());
+            packageItem.setQuantity(packageViewModel.getSelectedQuantity());
+            packageItem.setPricePerSeat(packageViewModel.getSalesPrice());
+        }
         packageItem.setDescription("");
-        packageItem.setQuantity(selectedSeatViewModel.getQuantity());
-        packageItem.setPricePerSeat(selectedSeatViewModel.getPrice());
-        packageItem.setSeatId(selectedSeatViewModel.getSeatIds());
-        packageItem.setSeatRowId(selectedSeatViewModel.getSeatRowIds());
-        packageItem.setSeatPhysicalRowId(selectedSeatViewModel.getPhysicalRowIds());
+
         packageItem.setSessionId("");
         packageItem.setProductId(packageViewModel.getProductId());
         packageItem.setGroupId(packageViewModel.getProductGroupId());

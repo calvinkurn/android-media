@@ -52,7 +52,6 @@ public class SeatSelectionContract {
         void onDestroy();
 
 
-        void getSeatSelectionDetails();
         void validateSelection();
 
     }
