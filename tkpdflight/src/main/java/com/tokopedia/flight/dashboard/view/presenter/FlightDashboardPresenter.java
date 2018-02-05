@@ -196,6 +196,9 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         viewModel.setDepartureAirport(flightAirportDB);
         viewModel.setDepartureAirportFmt(destinationFmt);
         getView().setDashBoardViewModel(viewModel);
+        String airportTemp = flightDashboardCache.getArrivalAirport();
+        flightDashboardCache.putArrivalAirport(flightDashboardCache.getDepartureAirport());
+        flightDashboardCache.putDepartureAirport(airportTemp);
         renderUi();
     }
 
