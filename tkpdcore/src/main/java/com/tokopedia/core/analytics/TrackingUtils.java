@@ -58,8 +58,8 @@ public class TrackingUtils extends TrackingConfig {
     private static final String COMP_2 = "com.shopee.id";
     private static final String COMP_3 = "com.lazada.android";
     private static final String COMP_4 = "com.bukalapak.android";
-    private static final String COMP_5 = "id.co.elevenia";
-    private static final String COMP_6 = "com.traveloka.android"; //GRAB
+    private static final String COMP_5 = "com.grabtaxi.passenger";
+    private static final String COMP_6 = "com.traveloka.android";
 
     private static final String[] COMPARR = {
             COMP_1, COMP_2, COMP_3, COMP_4, COMP_5, COMP_6
