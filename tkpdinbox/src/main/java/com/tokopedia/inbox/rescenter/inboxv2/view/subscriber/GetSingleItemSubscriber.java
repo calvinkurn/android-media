@@ -34,6 +34,10 @@ public class GetSingleItemSubscriber extends Subscriber<InboxItemViewModel> {
 
     @Override
     public void onNext(InboxItemViewModel model) {
-        mainView.onSuccessGetSingleInboxItem(model);
+        if (model != null) {
+            mainView.onSuccessGetSingleInboxItem(model);
+        } else {
+            mainView.dismissProgressBar();
+        }
     }
 }
