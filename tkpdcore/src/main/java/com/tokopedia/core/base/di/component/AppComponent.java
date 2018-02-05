@@ -152,5 +152,4 @@ public interface AppComponent {
 
     BearerInterceptor bearerInterceptor();
 
-    OkHttpClient.Builder getHttpClientBuilder();
 }
