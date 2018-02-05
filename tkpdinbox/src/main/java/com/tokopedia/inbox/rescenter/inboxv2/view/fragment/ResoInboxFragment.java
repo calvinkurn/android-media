@@ -293,6 +293,12 @@ public class ResoInboxFragment
     }
 
     @Override
+    public void onEmptyGetInbox() {
+        dismissProgressBar();
+        adapter.addItem(new EmptyModel());
+    }
+
+    @Override
     public void onSuccessGetInboxWithFilter(InboxItemResultViewModel result) {
         getFirstInboxResult(result, true);
     }
@@ -301,6 +307,12 @@ public class ResoInboxFragment
     public void onErrorGetInboxWithFilter(String err) {
         dismissProgressBar();
         showFullError(err);
+    }
+
+    @Override
+    public void onEmptyGetInboxWithFilter(InboxItemResultViewModel result) {
+        dismissProgressBar();
+        adapter.addItem(new EmptyInboxFilterDataModel());
     }
 
     @Override

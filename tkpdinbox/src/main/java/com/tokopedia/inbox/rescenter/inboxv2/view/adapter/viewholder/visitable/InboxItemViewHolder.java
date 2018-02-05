@@ -77,7 +77,7 @@ public class InboxItemViewHolder extends AbstractViewHolder<InboxItemViewModel> 
 
         tvUsernameTitle.setText(item.getNameTitle());
         tvUsername.setText(item.getUserName());
-        tvAutoExecute.setText(item.getAutoDoneText());
+        tvAutoExecute.setText(buildAutoDoneText(item.getAutoDoneText()));
         tvLastReply.setText(item.getLastReplyText());
         tvFreeReturn.setText(item.getFreeReturnText());
 
@@ -104,6 +104,10 @@ public class InboxItemViewHolder extends AbstractViewHolder<InboxItemViewModel> 
                 mainView.onItemClicked(item.getResId(), item.getSellerName(), item.getCustomerName());
             }
         });
+    }
+
+    private String buildAutoDoneText(String text) {
+        return " " + text + " ";
     }
     
 }

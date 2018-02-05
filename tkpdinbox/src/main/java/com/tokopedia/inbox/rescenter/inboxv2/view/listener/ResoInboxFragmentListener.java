@@ -25,9 +25,13 @@ public interface ResoInboxFragmentListener {
 
         void onErrorGetInbox(String err);
 
+        void onEmptyGetInbox();
+
         void onSuccessLoadMoreInbox(InboxItemResultViewModel result);
 
         void onErrorLoadMoreInbox(String err);
+
+        void onEmptyGetInboxWithFilter(InboxItemResultViewModel result);
 
         void onSuccessGetInboxWithFilter(InboxItemResultViewModel result);
 
