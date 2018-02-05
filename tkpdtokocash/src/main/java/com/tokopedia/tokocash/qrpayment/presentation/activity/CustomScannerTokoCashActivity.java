@@ -74,12 +74,12 @@ public class CustomScannerTokoCashActivity extends BaseScannerQRActivity impleme
 
     @Override
     protected int getColorUpScannerLaser() {
-        return R.drawable.digital_gradient_green_up;
+        return R.drawable.qrpayment_gradient_green_up;
     }
 
     @Override
     protected int getColorDownScannerLaser() {
-        return R.drawable.digital_gradient_green_down;
+        return R.drawable.qr_payment_gradient_green_down;
     }
 
     @Override
@@ -96,12 +96,12 @@ public class CustomScannerTokoCashActivity extends BaseScannerQRActivity impleme
                     isTorchOn = false;
                     decoratedBarcodeView.setTorchOff();
                     torch.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),
-                            R.drawable.ic_flash_turn_on));
+                            R.drawable.qrpayment_ic_flash_turn_on));
                 } else {
                     isTorchOn = true;
                     decoratedBarcodeView.setTorchOn();
                     torch.setImageDrawable(ContextCompat.getDrawable(getApplicationContext(),
-                            R.drawable.ic_flash_turn_off));
+                            R.drawable.qrpayment_ic_flash_turn_off));
                 }
             }
         });

@@ -36,7 +36,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/padding_detail"
-                android:background="@drawable/bg_white_border_shadow"
+                android:background="@drawable/qrpayment_bg_white_border_shadow"
                 android:padding="@dimen/margin_small">
 
                 <TextView
