@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:padding="@dimen/padding_small">
+
+    <ImageView
+        android:layout_width="144dp"
+        android:layout_height="108dp"
+        android:src="@drawable/activate_ic_activated"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/margin_med"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tokocash_title_success"
+        android:textColor="@color/digital_voucher"
+        android:textSize="@dimen/fontm"
+        android:textStyle="bold"
+        android:layout_marginTop="@dimen/margin_large"
+        android:layout_gravity="center_horizontal"/>
+
+    <TextView
+        android:id="@+id/desc_success"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding_large"
+        android:gravity="center_horizontal"/>
+
+    <Button
+        android:id="@+id/back_to_home_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/green_button_rounded_unify"
+        android:paddingBottom="@dimen/padding_small"
+        android:paddingLeft="@dimen/large_dp"
+        android:paddingRight="@dimen/large_dp"
+        android:paddingTop="@dimen/padding_small"
+        android:text="@string/tokocash_direct_home_button"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="@dimen/fonts" />
+
+</LinearLayout>
