@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by Nathaniel on 12/28/2016.
- * use DataResponse in other package
+ * use {@link com.tokopedia.abstraction.common.data.model.response.DataResponse} in other package
  */
 @Deprecated
 public class DataResponse<T> {

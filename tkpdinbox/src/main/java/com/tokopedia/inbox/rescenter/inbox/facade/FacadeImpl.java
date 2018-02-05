@@ -104,7 +104,7 @@ public class FacadeImpl implements Facade {
                 .map(new Func1<String, ResCenterInboxData>() {
                     @Override
                     public ResCenterInboxData call(String key) {
-                        // initialize local variable GlobalCacheManager
+                        // initialize local variable CacheManager
                         GlobalCacheManager cacheManager = new GlobalCacheManager();
 
                         // initialize class you want to be converted from string
@@ -144,7 +144,7 @@ public class FacadeImpl implements Facade {
                 new Func2<String, ResCenterInboxData, Boolean>() {
                     @Override
                     public Boolean call(String cacheKey, ResCenterInboxData cacheData) {
-                        // initialize local variable GlobalCacheManager
+                        // initialize local variable CacheManager
                         GlobalCacheManager cacheManager = new GlobalCacheManager();
 
                         // initialize class you want to be converted from string

@@ -53,6 +53,7 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.gm.featured.view.activity.GMFeaturedProductActivity;
 import com.tokopedia.gm.statistic.view.activity.GMStatisticDashboardActivity;
 import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
+import com.tokopedia.mitratoppers.MitraToppersRouter;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.data.mapper.SimpleDataResponseMapper;
@@ -480,8 +481,9 @@ public class DrawerSellerHelper extends DrawerHelper
                     UnifyTracking.eventClickGMStat();
                     break;
                 case TkpdState.DrawerPosition.SELLER_MITRA_TOPPERS:
-                    intent = new Intent(context, MitraToppersActivity.class);
-                    context.startActivity(intent);
+                    Intent mitraToppersIntent = ((MitraToppersRouter) context.getApplication())
+                            .getMitraToppersActivityIntent(context);
+                    context.startActivity(mitraToppersIntent);
                     break;
                 case TkpdState.DrawerPosition.SELLER_TOP_ADS:
                     UnifyTracking.eventDrawerTopads();

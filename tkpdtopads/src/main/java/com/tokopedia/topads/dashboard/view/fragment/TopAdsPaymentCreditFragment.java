@@ -3,28 +3,20 @@ package com.tokopedia.topads.dashboard.view.fragment;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.webkit.WebChromeClient;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.ProgressBar;
 
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.base.view.fragment.BaseWebViewFragment;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.utils.network.URLGenerator;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.app.TkpdBaseV4Fragment;
-import com.tokopedia.core.loyaltysystem.util.URLGenerator;
-import com.tokopedia.core.util.TkpdWebView;
-import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.dashboard.data.model.data.DataCredit;
 
-public class TopAdsPaymentCreditFragment extends TkpdBaseV4Fragment {
-
-    TkpdWebView webView;
-    ProgressBar progressBar;
+public class TopAdsPaymentCreditFragment extends BaseWebViewFragment {
 
     private DataCredit dataCredit;
+    private UserSession userSession;
 
     public static TopAdsPaymentCreditFragment createInstance() {
         TopAdsPaymentCreditFragment fragment = new TopAdsPaymentCreditFragment();
@@ -35,52 +27,32 @@ public class TopAdsPaymentCreditFragment extends TkpdBaseV4Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         dataCredit = getActivity().getIntent().getParcelableExtra(TopAdsConstant.EXTRA_CREDIT);
+        userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
+    }
+
+    @Override
+    protected String getUrl() {
+        return URLGenerator.generateURLSessionLogin(
+                Uri.encode(dataCredit.getProductUrl()),
+                userSession.getFcmId(),
+                userSession.getUserId());
     }
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_fragment_general_web_view, container, false);
-        webView = (TkpdWebView) view.findViewById(R.id.webview);
-        progressBar = (ProgressBar) view.findViewById(R.id.progressbar);
-        return view;
+    protected String getUserIdForHeader() {
+        return userSession.getUserId();
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        progressBar.setIndeterminate(true);
-        loadWeb();
-    }
-
-    private void loadWeb() {
-        webView.clearCache(true);
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.getSettings().setDomStorageEnabled(true);
-        webView.getSettings().setBuiltInZoomControls(false);
-        webView.getSettings().setDisplayZoomControls(true);
-        webView.setWebChromeClient(new WebChromeClient() {
-            @Override
-            public void onProgressChanged(WebView view, int newProgress) {
-                if (newProgress == 100) {
-                    if (progressBar != null) progressBar.setVisibility(View.GONE);
-                }
-                super.onProgressChanged(view, newProgress);
-            }
-        });
-        webView.loadAuthUrl(URLGenerator.generateURLSessionLogin(Uri.encode(dataCredit.getProductUrl()), getActivity()));
-        webView.setWebViewClient(new WebViewClient() {
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                if (getActivity() != null && ((TkpdCoreRouter) getActivity().getApplication())
-                        .isSupportedDelegateDeepLink(url)) {
-                    ((TkpdCoreRouter) getActivity().getApplication())
-                            .actionNavigateByApplinksUrl(getActivity(), url, new Bundle());
-                    return true;
-                }
-                return false;
-            }
-        });
+    protected boolean shouldOverrideUrlLoading(WebView webView, String url) {
+        if (getActivity() != null && ((TkpdCoreRouter) getActivity().getApplication())
+                .isSupportedDelegateDeepLink(url)) {
+            ((TkpdCoreRouter) getActivity().getApplication())
+                    .actionNavigateByApplinksUrl(getActivity(), url, new Bundle());
+            return true;
+        }
+        return false;
     }
 
     @Override

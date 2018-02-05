@@ -38,6 +38,8 @@ public class LabelView extends BaseCustomView {
     private boolean showArrow;
     private int maxLines;
     private float textSize;
+    private float titleTextSize;
+    private float contentTextSize;
     private int minTitleWidth;
 
     private boolean enabled;
@@ -70,6 +72,7 @@ public class LabelView extends BaseCustomView {
             maxLines = styledAttributes.getInt(R.styleable.LabelView_lv_content_max_lines, 1);
             textSize = styledAttributes.getDimension(R.styleable.LabelView_lv_font_size,
                     getResources().getDimension(com.tokopedia.design.R.dimen.font_title));
+            titleTextSize = styledAttributes.getDimension(R.styleable.LabelView_lv_title_text_size, textSize);
             minTitleWidth = styledAttributes.getDimensionPixelSize(R.styleable.LabelView_lv_title_min_width, 0);
         } finally {
             styledAttributes.recycle();
@@ -94,7 +97,7 @@ public class LabelView extends BaseCustomView {
         contentTextView.setMaxLines(maxLines);
         titleTextView.setTypeface(null, titleTextStyleValue);
         setVisibleArrow(showArrow);
-        titleTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+        titleTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, titleTextSize);
         contentTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
         titleTextView.setMinWidth(minTitleWidth);
         invalidate();

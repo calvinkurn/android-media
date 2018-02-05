@@ -4,15 +4,16 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.network.exception.HeaderErrorResponse;
+import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.common.di.qualifier.AuthKeyQualifier;
-import com.tokopedia.abstraction.common.di.qualifier.FreshAccessTokenQualifier;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
-import com.tokopedia.abstraction.common.utils.AuthUtil;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.logging.HttpLoggingInterceptor;
 
 /**
  * Created by ricoharisin on 3/22/17.
@@ -23,42 +24,28 @@ public class InterceptorModule {
 
     @ApplicationScope
     @Provides
-    TkpdAuthInterceptor provideTkpdAuthInterceptor(@AuthKeyQualifier String authKey,
-                                                   Context context,
-                                                   @FreshAccessTokenQualifier String freshAccessToken,
+    public HttpLoggingInterceptor provideHttpLoggingInterceptor() {
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+        } else {
+            logging.setLevel(HttpLoggingInterceptor.Level.NONE);
+        }
+        return logging;
+    }
+
+    @ApplicationScope
+    @Provides
+    TkpdAuthInterceptor provideTkpdAuthInterceptor(@ApplicationContext Context context,
                                                    AbstractionRouter abstractionRouter,
                                                    UserSession userSession){
-        return new TkpdAuthInterceptor(authKey, context, freshAccessToken, abstractionRouter, userSession);
-    }
-
-    @AuthKeyQualifier
-    @ApplicationScope
-    @Provides
-    String provideAuthKey(@ApplicationContext Context context){
-        return AuthUtil.KEY.KEY_WSV4;
-    }
-
-
-    @ApplicationScope
-    @Provides
-    UserSession provideUserSession(AbstractionRouter abstractionRouter){
-        return abstractionRouter.getSession();
+        return new TkpdAuthInterceptor(context, abstractionRouter, userSession);
     }
 
     @ApplicationScope
     @Provides
-    AbstractionRouter provideAbstractionRouter(@ApplicationContext Context context){
-        if(context instanceof AbstractionRouter){
-            return ((AbstractionRouter)context);
-        }else{
-            return null;
-        }
+    HeaderErrorResponseInterceptor provideHeaderErrorResponseInterceptor(){
+        return new HeaderErrorResponseInterceptor(HeaderErrorResponse.class);
     }
 
-    @FreshAccessTokenQualifier
-    @ApplicationScope
-    @Provides
-    String provideFreshToken(AbstractionRouter abstractionRouter){
-        return abstractionRouter.getSession().getFreshToken();
-    }
 }

@@ -7,6 +7,7 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
+import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.core.database.DbFlowDatabase;
 import com.tokopedia.core.database.DbFlowOperation;
 import com.tokopedia.core.database.model.SimpleDatabaseModel;
@@ -17,12 +18,13 @@ import java.util.List;
 /**
  * Created by ricoharisin on 11/23/15.
  */
-public class GlobalCacheManager implements DbFlowOperation<SimpleDatabaseModel> {
+public class GlobalCacheManager implements DbFlowOperation<SimpleDatabaseModel>,
+        CacheManager {
 
     private String Key;
     private String Value;
     private long expiredTime = 0;
-    private static String TAG = "GlobalCacheManager";
+    private static String TAG = "CacheManager";
 
     public GlobalCacheManager() {
 
@@ -61,8 +63,37 @@ public class GlobalCacheManager implements DbFlowOperation<SimpleDatabaseModel> 
 
     }
 
+    @Override
+    public void save(String key, String value, long durationInSeconds) {
+        SimpleDatabaseModel simpleDB = new SimpleDatabaseModel();
+        simpleDB.key = key;
+        simpleDB.value = value;
+        simpleDB.expiredTime = System.currentTimeMillis() + durationInSeconds * 1000L;
+        simpleDB.save();
+    }
+
     public void delete(String key) {
         new Delete().from(SimpleDatabaseModel.class).where(SimpleDatabaseModel_Table.key.is(key)).execute();
+    }
+
+    @Override
+    public String get(String key) {
+        SimpleDatabaseModel cache = new Select().from(SimpleDatabaseModel.class)
+                .where(SimpleDatabaseModel_Table.key.is(key)).querySingle();
+        if (cache == null)
+            return null;
+        if (isExpired(cache.expiredTime)) {
+            return null;
+        } else {
+            return cache.value;
+        }
+    }
+
+    @Override
+    public boolean isExpired(String key) {
+        SimpleDatabaseModel cache = new Select().from(SimpleDatabaseModel.class)
+                .where(SimpleDatabaseModel_Table.key.is(key)).querySingle();
+        return cache == null || isExpired(cache.expiredTime);
     }
 
     public void bulkInsert(List<String> key, List<String> value) {

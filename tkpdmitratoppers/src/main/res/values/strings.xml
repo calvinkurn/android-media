@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">tkpdmitratoppers</string>
+    <string name="title_mitra_toppers">Mitra Toppers</string>
+    <string name="mitra_toppers_preapprove_limit">Limit pinjaman toko Anda</string>
+</resources>

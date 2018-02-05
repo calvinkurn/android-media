@@ -13,7 +13,7 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 
 import com.tokopedia.abstraction.R;
-import com.tokopedia.abstraction.common.utils.MenuTintUtils;
+import com.tokopedia.abstraction.common.utils.view.MenuTintUtils;
 
 /**
  * Created by nathan on 7/11/17.
