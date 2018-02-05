@@ -1,5 +1,6 @@
 package com.tokopedia.topads.dashboard.view.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -10,13 +11,16 @@ import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
+import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailProductDomainModel;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDetailGroupActivity;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailNewGroupView;
 import com.tokopedia.topads.dashboard.view.model.TopAdsCreatePromoExistingGroupModel;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailAdViewModel;
+import com.tokopedia.topads.dashboard.view.model.TopAdsDetailShopViewModel;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailNewGroupPresenter;
 
 /**
@@ -67,6 +71,15 @@ public class TopAdsNewProductListExistingGroupFragment extends TopAdsNewProductL
     @Override
     public void onSaveAdSuccess(TopAdsDetailAdViewModel topAdsDetailAdViewModel) {
         hideLoading();
+
+        Intent intent = new Intent();
+        if(topAdsDetailAdViewModel != null && topAdsDetailAdViewModel instanceof TopAdsDetailShopViewModel){
+            intent.putExtra(TopAdsNewScheduleNewGroupFragment.EXTRA_IS_ENOUGH_DEPOSIT, ((TopAdsDetailShopViewModel)topAdsDetailAdViewModel).isEnoughDeposit());
+            intent.putExtra(TopAdsNewScheduleNewGroupFragment.EXTRA_NEW_GROUP_ID, (Long.valueOf(((TopAdsDetailShopViewModel) topAdsDetailAdViewModel).getGroupId())));
+        }
+        intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
+        getActivity().setResult(Activity.RESULT_OK, intent);
+
         if (stepperListener != null) {
             stepperListener.finishPage();
         }
@@ -88,8 +101,6 @@ public class TopAdsNewProductListExistingGroupFragment extends TopAdsNewProductL
 
     @Override
     public void goToGroupDetail(String groupId) {
-        Intent intent = TopAdsDetailGroupActivity.createIntent(getActivity(), groupId);
-        startActivity(intent);
     }
 
     protected void showSnackBarError(String errorMessage) {

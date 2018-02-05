@@ -117,7 +117,8 @@ public class TopAdsNewCostWithoutGroupFragment extends TopAdsNewCostFragment<Top
     private void setResultAdSaved(TopAdsDetailAdViewModel topAdsDetailAdViewModel) {
         Intent intent = new Intent();
         if(topAdsDetailAdViewModel != null && topAdsDetailAdViewModel instanceof TopAdsDetailShopViewModel){
-            intent.putExtra(EXTRA_NEW_PRODUCT_ID, ((TopAdsDetailShopViewModel)topAdsDetailAdViewModel).getId());
+            intent.putExtra(TopAdsNewScheduleNewGroupFragment.EXTRA_IS_ENOUGH_DEPOSIT, ((TopAdsDetailShopViewModel)topAdsDetailAdViewModel).isEnoughDeposit());
+            intent.putExtra(EXTRA_NEW_PRODUCT_ID, topAdsDetailAdViewModel.getId());
         }
         intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
         getActivity().setResult(Activity.RESULT_OK, intent);
