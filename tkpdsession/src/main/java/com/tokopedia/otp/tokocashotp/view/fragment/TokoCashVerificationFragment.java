@@ -58,8 +58,6 @@ public class TokoCashVerificationFragment extends BaseDaggerFragment implements 
 
     private static final int COUNTDOWN_LENGTH = 90;
     private static final int INTERVAL = 1000;
-    private static final String RESEND = "Kirim ulang";
-    private static final String USE_OTHER_METHOD = "gunakan metode verifikasi lain";
     private static final int MAX_INPUT_OTP = 6;
 
 
