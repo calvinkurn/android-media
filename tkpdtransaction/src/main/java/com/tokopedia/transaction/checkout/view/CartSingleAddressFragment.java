@@ -127,7 +127,7 @@ public class CartSingleAddressFragment extends BasePresenterFragment
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_single_address_shipment;
+        return R.layout.fragment_cart_single_address;
     }
 
     @Override
