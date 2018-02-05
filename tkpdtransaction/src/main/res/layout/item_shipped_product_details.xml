@@ -454,7 +454,7 @@
             android:layout_toRightOf="@id/tv_cart_sub_total"
             android:textSize="12sp"
             android:textColor="@color/medium_green"
-            android:text="Detil" />
+            tools:text="Detil" />
 
             <ImageView android:id="@+id/iv_drawer_chevron"
             android:layout_width="10dp"
@@ -465,7 +465,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginStart="10dp"
             android:tint="@color/medium_green"
-            android:src="@drawable/chevron_thin_down"
+            tools:src="@drawable/chevron_thin_down"
             tools:ignore="ContentDescription" />
 
             <TextView android:id="@+id/tv_sub_total_item_price"

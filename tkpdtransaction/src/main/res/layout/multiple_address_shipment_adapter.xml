@@ -212,6 +212,13 @@
 
         </LinearLayout>
 
+        <com.tokopedia.transaction.pickuppoint.view.customview.PickupPointLayout
+            android:id="@+id/pickup_point_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="16dp"
+            android:visibility="gone" />
+
     </LinearLayout>
 
     <View
@@ -276,11 +283,11 @@
             android:id="@+id/sub_total_detail_button"
             android:layout_width="10dp"
             android:layout_height="10dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/margin_vs"
             android:layout_marginStart="@dimen/margin_vs"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:src="@drawable/chevron_down" />
 
         <TextView

@@ -2,7 +2,7 @@ package com.tokopedia.transaction.checkout.di.component;
 
 import com.tokopedia.transaction.checkout.di.module.CartAddressListModule;
 import com.tokopedia.transaction.checkout.di.scope.CartAddressListScope;
-import com.tokopedia.transaction.checkout.view.ShippingAddressListFragment;
+import com.tokopedia.transaction.checkout.view.ShipmentAddressListFragment;
 
 import dagger.Component;
 
@@ -12,5 +12,5 @@ import dagger.Component;
 @CartAddressListScope
 @Component(modules = CartAddressListModule.class)
 public interface CartAddressListComponent {
-    void inject(ShippingAddressListFragment shippingAddressListFragment);
+    void inject(ShipmentAddressListFragment shipmentAddressListFragment);
 }

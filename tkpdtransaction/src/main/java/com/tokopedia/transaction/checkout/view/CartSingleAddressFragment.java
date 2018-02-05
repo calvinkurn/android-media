@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -14,15 +15,18 @@ import com.tokopedia.transaction.checkout.di.component.CartSingleAddressComponen
 import com.tokopedia.transaction.checkout.di.component.DaggerCartSingleAddressComponent;
 import com.tokopedia.transaction.checkout.di.module.CartSingleAddressModule;
 import com.tokopedia.transaction.checkout.view.adapter.CartSingleAddressAdapter;
+import com.tokopedia.transaction.checkout.view.adapter.ShipmentAddressListAdapter;
 import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
 import com.tokopedia.transaction.checkout.view.presenter.CartSingleAddressPresenter;
 import com.tokopedia.transaction.checkout.view.view.ICartSingleAddressView;
+import com.tokopedia.transaction.utils.TkpdRxBus;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.functions.Action1;
 
 /**
  * @author Aghny A. Putra on 24/1/18
@@ -30,14 +34,17 @@ import butterknife.OnClick;
 public class CartSingleAddressFragment extends BasePresenterFragment
         implements ICartSingleAddressView<CartSingleAddressData>{
 
-    private static final String SCREEN_NAME = CartSingleAddressFragment.class.getSimpleName();
+    private static final String TAG = CartSingleAddressFragment.class.getSimpleName();
 
     @BindView(R2.id.rv_cart_order_details) RecyclerView mRvCartOrderDetails;
 
     @Inject CartSingleAddressAdapter mCartSingleAddressAdapter;
     @Inject CartSingleAddressPresenter mCartSingleAddressPresenter;
 
+    private static TkpdRxBus rxBus;
+
     public static CartSingleAddressFragment newInstance() {
+        rxBus = TkpdRxBus.instanceOf();
         return new CartSingleAddressFragment();
     }
 
@@ -51,8 +58,23 @@ public class CartSingleAddressFragment extends BasePresenterFragment
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        rxBus.subscribeEvents()
+                .subscribe(new Action1<Object>() {
+                    @Override
+                    public void call(Object o) {
+                        if (o instanceof ShipmentAddressListAdapter.Event) {
+                            String msg = ((ShipmentAddressListAdapter.Event) o).getMessage();
+                            Log.d(TAG, msg);
+                        }
+                    }
+                });
+    }
+
+    @Override
     protected String getScreenName() {
-        return SCREEN_NAME;
+        return TAG;
     }
 
     @Override

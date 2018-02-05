@@ -1,28 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <com.google.android.gms.maps.MapView
-        xmlns:map="http://schemas.android.com/apk/res-auto"
+    <com.google.android.gms.maps.MapView xmlns:map="http://schemas.android.com/apk/res-auto"
         android:id="@+id/mapview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:clickable="false"
+        map:cameraZoom="17"
         map:liteMode="true"
-        map:mapType="normal"
-        map:cameraZoom="17" />
+        map:mapType="normal" />
 
-    <Button
-        android:id="@+id/btn_choose_pickup_booth"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_margin="16dp"
-        android:background="@drawable/bg_button_green_enabled"
-        android:foreground="?selectableItemBackground"
-        android:text="@string/label_button_pick_pickup_booth"
-        android:textAllCaps="false"
-        android:textColor="@color/white" />
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:paddingTop="16dp">
 
-</FrameLayout>
+        <TextView
+            android:id="@+id/tv_pick_up_booth_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_ms"
+            android:layout_marginLeft="@dimen/new_margin_med"
+            android:layout_marginRight="@dimen/new_margin_med"
+            android:fontFamily="sans-serif-medium"
+            tools:text="Alfamart - Tebet Baru" />
+
+        <TextView
+            android:id="@+id/tv_pick_up_booth_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="@dimen/new_margin_med"
+            android:layout_marginRight="@dimen/new_margin_med"
+            tools:text="Jl. Raya Alfamart Gg 1 No 19, Tebet, Jakarta Selatan" />
+
+        <Button
+            android:id="@+id/btn_choose_pickup_booth"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_margin="@dimen/margin_ms"
+            android:background="@drawable/bg_button_green_enabled"
+            android:foreground="?selectableItemBackground"
+            android:text="@string/label_button_pick_pickup_booth"
+            android:textAllCaps="false"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

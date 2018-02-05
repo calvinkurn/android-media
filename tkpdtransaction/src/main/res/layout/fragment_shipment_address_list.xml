@@ -28,7 +28,7 @@
     <RelativeLayout android:id="@+id/rl_search_address_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white">
+        android:background="@color/grey_200">
 
         <com.tokopedia.design.text.SearchInputView
             android:id="@+id/sv_address_search_box"

@@ -17,13 +17,13 @@ import android.widget.Toast;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
-import com.tokopedia.transaction.checkout.view.ShippingAddressListFragment;
+import com.tokopedia.transaction.checkout.view.ShipmentAddressListFragment;
 import com.tokopedia.transaction.checkout.view.data.CartItemModel;
 import com.tokopedia.transaction.checkout.view.data.CartPayableDetailModel;
 import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
 import com.tokopedia.transaction.checkout.view.data.DropshipperShippingOptionModel;
-import com.tokopedia.transaction.checkout.view.data.ShippingFeeBannerModel;
-import com.tokopedia.transaction.checkout.view.data.ShippingRecipientModel;
+import com.tokopedia.transaction.checkout.view.data.ShipmentFeeBannerModel;
+import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -122,7 +122,7 @@ public class CartSingleAddressAdapter
         @BindView(R2.id.rl_free_shipment_fee_header) RelativeLayout mRlFreeShipmentFeeHeader;
         @BindView(R2.id.tv_shpping_fee) TextView mTvShippingFee;
 
-        private ShippingFeeBannerModel mShippingFeeBannerModel;
+        private ShipmentFeeBannerModel mShipmentFeeBannerModel;
 
         FreeShippingFeeViewHolder(View itemView) {
             super(itemView);
@@ -130,18 +130,18 @@ public class CartSingleAddressAdapter
         }
 
         void bindViewHolder() {
-            mShippingFeeBannerModel = mCartSingleAddressData.getShippingFeeBannerModel();
+            mShipmentFeeBannerModel = mCartSingleAddressData.getShipmentFeeBannerModel();
 
             mRlFreeShipmentFeeHeader.setVisibility(getVisibility());
             mTvShippingFee.setText(getShippingFee());
         }
 
         private int getVisibility() {
-            return mShippingFeeBannerModel.isVisible() ? View.VISIBLE : View.GONE;
+            return mShipmentFeeBannerModel.isVisible() ? View.VISIBLE : View.GONE;
         }
 
         private String getShippingFee() {
-            return mShippingFeeBannerModel.getShipmentFeeDiscount();
+            return mShipmentFeeBannerModel.getShipmentFeeDiscount();
         }
 
     }
@@ -152,7 +152,7 @@ public class CartSingleAddressAdapter
         @BindView(R2.id.tv_recipient_address) TextView mTvRecipientAddress;
         @BindView(R2.id.tv_add_or_change_address) TextView mTvAddOrChangeAddress;
 
-        private ShippingRecipientModel mShippingRecipientModel;
+        private ShipmentRecipientModel mShipmentRecipientModel;
 
         ShippingRecipientViewHolder(View itemView) {
             super(itemView);
@@ -160,7 +160,7 @@ public class CartSingleAddressAdapter
         }
 
         void bindViewHolder() {
-            mShippingRecipientModel = mCartSingleAddressData.getShippingRecipientModel();
+            mShipmentRecipientModel = mCartSingleAddressData.getShipmentRecipientModel();
 
             mTvRecipientName.setText(getRecipientName());
             mTvRecipientAddress.setText(getRecipientAddress());
@@ -172,23 +172,27 @@ public class CartSingleAddressAdapter
                 @Override
                 public void onClick(View view) {
                     FragmentManager fragmentManager = ((Activity)mContext).getFragmentManager();
-                    Fragment fragment = fragmentManager.findFragmentById(R.id.container);
-                    if (fragment == null || !(fragment instanceof ShippingAddressListFragment)) {
+                    Fragment fragment = ShipmentAddressListFragment.newInstance();
+
+                    String backStateName = fragment.getClass().getName();
+
+                    boolean isFragmentPopped = fragmentManager.popBackStackImmediate(backStateName, 0);
+                    if (!isFragmentPopped) {
                         fragmentManager.beginTransaction()
-                                .replace(R.id.container, ShippingAddressListFragment.newInstance())
+                                .replace(R.id.container, fragment)
+                                .addToBackStack(backStateName)
                                 .commit();
-                        // TODO: add to back stack
                     }
                 }
             };
         }
 
         private String getRecipientName() {
-            return mShippingRecipientModel.getRecipientName();
+            return mShipmentRecipientModel.getRecipientName();
         }
 
         private String getRecipientAddress() {
-            return mShippingRecipientModel.getRecipientAddress();
+            return mShipmentRecipientModel.getRecipientAddress();
         }
 
     }
@@ -250,8 +254,8 @@ public class CartSingleAddressAdapter
         @BindView(R2.id.tv_payable_price) TextView mTvPayablePrice;
         @BindView(R2.id.tv_promo_free_shipping) TextView mTvPromoFreeShipping;
 
-        private boolean isExpanded;
         private CartPayableDetailModel mCartPayableDetailModel;
+        private boolean isExpanded;
 
         ShipmentCostDetailViewHolder(View itemView) {
             super(itemView);
@@ -260,7 +264,6 @@ public class CartSingleAddressAdapter
 
         void bindViewHolder() {
             mCartPayableDetailModel = mCartSingleAddressData.getCartPayableDetailModel();
-
             isExpanded = true;
 
             mTvTotalItem.setText(getTotalItem());
@@ -281,7 +284,7 @@ public class CartSingleAddressAdapter
         private void toggleDetail() {
             isExpanded = !isExpanded;
 
-            mTvDrawerDetailPayable.setText(getTextDrawerChevron());
+            mTvDrawerDetailPayable.setText(getDrawerDetailPayableText());
             mIvDrawerChevron.setImageResource(getResourceDrawerChevron());
             mRlDetailFee.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
         }
@@ -319,10 +322,6 @@ public class CartSingleAddressAdapter
 
         private String getDrawerDetailPayableText() {
             return isExpanded ? "Tutup" : "Detil";
-        }
-
-        private String getTextDrawerChevron() {
-            return isExpanded ? "Tutup" : "Buka";
         }
 
         private int getResourceDrawerChevron() {
@@ -379,7 +378,7 @@ public class CartSingleAddressAdapter
             mTvProductWeight.setText(getProductWeight());
             mTvTotalProductItem.setText(getTotalProductItem());
             mTvNoteToSeller.setText(getNoteToSeller());
-            mTvShipmentOption.setText(getShippmentOption());
+            mTvShipmentOption.setText(getShipmentOption());
             mTvSubTotalItemPrice.setText(getTotalPrice());
 
             ImageHandler.LoadImage(mIvProductImage, getProductImage());
@@ -391,8 +390,13 @@ public class CartSingleAddressAdapter
             mTvShipmentOption.setOnClickListener(courierOptionSelectionListener());
             mIvChevronShipmentOption.setOnClickListener(courierOptionSelectionListener());
 
+            mTvCartDetailOption.setText(getTextDrawerChevron());
+            mIvDetailDrawerChevron.setImageResource(getResourceDrawerChevron());
+
             mTvCartDetailOption.setOnClickListener(itemPriceDetailListener());
             mIvDetailDrawerChevron.setOnClickListener(itemPriceDetailListener());
+
+            mRlDetailFee.setVisibility(getDetailFeeVisibility() );
         }
 
         private void toggleDetail() {
@@ -401,11 +405,11 @@ public class CartSingleAddressAdapter
             mTvCartDetailOption.setText(getTextDrawerChevron());
             mIvDetailDrawerChevron.setImageResource(getResourceDrawerChevron());
 
-            mRlDetailFee.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
+            mRlDetailFee.setVisibility(getDetailFeeVisibility());
         }
 
         private String getTextDrawerChevron() {
-            return isExpanded ? "Tutup" : "Buka";
+            return isExpanded ? "Tutup" : "Detil";
         }
 
         private int getResourceDrawerChevron() {
@@ -458,7 +462,7 @@ public class CartSingleAddressAdapter
             return mCartItemModel.getNoteToSeller();
         }
 
-        private String getShippmentOption() {
+        private String getShipmentOption() {
             return mCartItemModel.getShipmentOption();
         }
 
@@ -480,6 +484,10 @@ public class CartSingleAddressAdapter
 
         private int getPoStatus() {
             return mCartItemModel.isPoAvailable() ? View.VISIBLE : View.GONE;
+        }
+
+        private int getDetailFeeVisibility() {
+            return isExpanded ? View.VISIBLE : View.GONE;
         }
 
         private int getProductGalleryVisibility() {

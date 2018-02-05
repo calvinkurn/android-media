@@ -18,8 +18,8 @@ public class CartSingleAddressDataFactory {
         cartSingleAddressData.setCartItemModelList(CartItemModelFactory.getDummyCartItemModelList());
         cartSingleAddressData.setCartPayableDetailModel(CartPayableDetailModelFactory.getCartPayableDetailModel());
         cartSingleAddressData.setDropshipperShippingOptionModel(DropshipperShippingOptionModelFactory.getDummyDropshippingOptionModel());
-        cartSingleAddressData.setShippingFeeBannerModel(ShippingFeeBannerModelFactory.getDummyShippingFeeBannerModel());
-        cartSingleAddressData.setShippingRecipientModel(ShippingRecipientModelFactory.getDummyShippingRecipientModel());
+        cartSingleAddressData.setShipmentFeeBannerModel(ShipmentFeeBannerModelFactory.getDummyShippingFeeBannerModel());
+        cartSingleAddressData.setShipmentRecipientModel(ShipmentRecipientModelFactory.getDummyShipmentRecipientModel());
 
         return cartSingleAddressData;
     }

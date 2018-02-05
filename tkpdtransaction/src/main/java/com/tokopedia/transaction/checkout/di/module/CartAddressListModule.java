@@ -1,8 +1,8 @@
 package com.tokopedia.transaction.checkout.di.module;
 
 import com.tokopedia.transaction.checkout.di.scope.CartAddressListScope;
-import com.tokopedia.transaction.checkout.view.adapter.CartAddressListAdapter;
-import com.tokopedia.transaction.checkout.view.presenter.CartAddressListPresenter;
+import com.tokopedia.transaction.checkout.view.adapter.ShipmentAddressListAdapter;
+import com.tokopedia.transaction.checkout.view.presenter.ShipmentAddressListPresenter;
 
 import dagger.Module;
 import dagger.Provides;
@@ -15,14 +15,14 @@ public class CartAddressListModule {
 
     @Provides
     @CartAddressListScope
-    CartAddressListPresenter provideCartAddressListPresenter() {
-        return new CartAddressListPresenter();
+    ShipmentAddressListPresenter provideCartAddressListPresenter() {
+        return new ShipmentAddressListPresenter();
     }
 
     @Provides
     @CartAddressListScope
-    CartAddressListAdapter provideCartAddressListAdapter() {
-        return new CartAddressListAdapter();
+    ShipmentAddressListAdapter provideCartAddressListAdapter() {
+        return new ShipmentAddressListAdapter();
     }
 
 

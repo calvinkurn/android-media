@@ -1,5 +1,9 @@
 package com.tokopedia.transaction.checkout.view.presenter;
 
+import android.content.Context;
+import android.text.TextUtils;
+
+import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.transaction.checkout.view.data.CourierItemData;
@@ -7,6 +11,8 @@ import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentItemData;
 import com.tokopedia.transaction.checkout.view.view.IShipmentDetailView;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +27,14 @@ public class ShipmentDetailPresenter extends BaseDaggerPresenter<IShipmentDetail
     private CourierItemData selectedCourier;
     private ShipmentItemData selectedShipment;
     private List<CourierItemData> couriers = new ArrayList<>();
+
+    //Temporary
+    private Context context;
+
+    @Override
+    public void setContext(Context context) {
+        this.context = context;
+    }
 
     @Override
     public void attachView(IShipmentDetailView view) {
@@ -78,20 +92,10 @@ public class ShipmentDetailPresenter extends BaseDaggerPresenter<IShipmentDetail
 
     @Override
     public void loadShipmentData() {
-//        shipmentDetailData = DummyCreator.createDummyInstantShipmentDetailData();
-//        getView().renderInstantShipment(shipmentDetailData);
-
-//        shipmentDetailData = DummyCreator.createDummySameDayShipmentDetailData();
-//        getView().renderSameDayShipment(shipmentDetailData);
-
-//        shipmentDetailData = DummyCreator.createDummyNextDayShipmentDetailData();
-//        getView().renderNextDayShipment(shipmentDetailData);
-
-        shipmentDetailData = DummyCreator.createDummyRegularShipmentDetailData();
-        getView().renderRegularShipment(shipmentDetailData);
-
-//        shipmentDetailData = DummyCreator.createDummyKargoShipmentDetailData();
-//        getView().renderKargoShipment(shipmentDetailData);
+        shipmentDetailData = DummyCreator.createDummyShipmentDetailData(context);
+        if (shipmentDetailData != null) {
+            getView().renderShipmentWithoutMap(shipmentDetailData);
+        }
     }
 
     @Override
@@ -128,75 +132,24 @@ public class ShipmentDetailPresenter extends BaseDaggerPresenter<IShipmentDetail
 
     private static class DummyCreator {
 
-        private static final String ID = "0";
-        private static final String ADDRESS = "Wisma 77 - Jalan Letjen S. Parman, Palmerah,11410";
-        private static final Double LATITUDE = -6.190251;
-        private static final Double LONGITUDE = 106.798920;
-        private static final String PARTIAL_ORDER_INFO = "Aktifkan untuk tetap menerima stok yang tersedia jika stok Toko tidak mencukupi total pesanan.";
-        private static final String SHIPMENT_INFO = "Pengiriman instan dan same day yang dipesan diatas pk 15:00 WIB, akan dikirim hari kerja berikutnya";
-        private static final String DROPSHIPPER_INFO = "Penjual, sebagai supplier akan mengirim barang ke pembeli Anda dengan mengatasnamakan toko Anda. Syarat dan Ketentuan toko berlaku.";
+        private static ShipmentDetailData createDummyShipmentDetailData(Context context) {
+            String json = null;
+            try {
+                InputStream is = context.getAssets().open("shipment.json");
+                int size = is.available();
+                byte[] buffer = new byte[size];
+                is.read(buffer);
+                is.close();
+                json = new String(buffer, "UTF-8");
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                return null;
+            }
 
-        private static ShipmentDetailData createDummyInstantShipmentDetailData() {
-            ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
-            shipmentDetailData.setId(ID);
-            shipmentDetailData.setAddress(ADDRESS);
-            shipmentDetailData.setLatitude(LATITUDE);
-            shipmentDetailData.setLongitude(LONGITUDE);
-            shipmentDetailData.setPartialOrderInfo(PARTIAL_ORDER_INFO);
-            shipmentDetailData.setShipmentItemData(ShipmentChoicePresenter.DummyCreator.createDummyShipmentChoices());
-            shipmentDetailData.setDeliveryPriceTotal("Rp 299.000");
-            shipmentDetailData.setShipmentInfo(SHIPMENT_INFO);
-
-            return shipmentDetailData;
-        }
-
-        private static ShipmentDetailData createDummySameDayShipmentDetailData() {
-            ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
-            shipmentDetailData.setId(ID);
-            shipmentDetailData.setAddress(ADDRESS);
-            shipmentDetailData.setLatitude(LATITUDE);
-            shipmentDetailData.setLongitude(LONGITUDE);
-            shipmentDetailData.setPartialOrderInfo(PARTIAL_ORDER_INFO);
-            shipmentDetailData.setShipmentItemData(ShipmentChoicePresenter.DummyCreator.createDummyShipmentChoices());
-            shipmentDetailData.setDeliveryPriceTotal("Rp 299.000");
-            shipmentDetailData.setShipmentInfo(SHIPMENT_INFO);
-
-            return shipmentDetailData;
-        }
-
-        private static ShipmentDetailData createDummyNextDayShipmentDetailData() {
-            ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
-            shipmentDetailData.setId(ID);
-            shipmentDetailData.setAddress(ADDRESS);
-            shipmentDetailData.setLatitude(LATITUDE);
-            shipmentDetailData.setLongitude(LONGITUDE);
-            shipmentDetailData.setShipmentItemData(ShipmentChoicePresenter.DummyCreator.createDummyShipmentChoices());
-            shipmentDetailData.setShipmentInfo(SHIPMENT_INFO);
-
-            return shipmentDetailData;
-        }
-
-        private static ShipmentDetailData createDummyRegularShipmentDetailData() {
-            ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
-            shipmentDetailData.setId(ID);
-            shipmentDetailData.setAddress(ADDRESS);
-            shipmentDetailData.setDropshipperInfo(DROPSHIPPER_INFO);
-            shipmentDetailData.setPartialOrderInfo(PARTIAL_ORDER_INFO);
-            shipmentDetailData.setShipmentItemData(ShipmentChoicePresenter.DummyCreator.createDummyShipmentChoices());
-            shipmentDetailData.setDeliveryPriceTotal("Rp 299.000");
-            shipmentDetailData.setShipmentInfo(SHIPMENT_INFO);
-
-            return shipmentDetailData;
-        }
-
-        private static ShipmentDetailData createDummyKargoShipmentDetailData() {
-            ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
-            shipmentDetailData.setId(ID);
-            shipmentDetailData.setAddress(ADDRESS);
-            shipmentDetailData.setShipmentItemData(ShipmentChoicePresenter.DummyCreator.createDummyShipmentChoices());
-            shipmentDetailData.setShipmentInfo(SHIPMENT_INFO);
-
-            return shipmentDetailData;
+            if (!TextUtils.isEmpty(json)) {
+                return new Gson().fromJson(json, ShipmentDetailData.class);
+            }
+            return null;
         }
 
     }

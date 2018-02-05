@@ -12,12 +12,12 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.view.CartSingleAddressFragment;
-import com.tokopedia.transaction.checkout.view.data.ShippingRecipientModel;
+import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
+import com.tokopedia.transaction.utils.TkpdRxBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,20 +28,22 @@ import butterknife.ButterKnife;
 /**
  * @author Aghny A. Putra on 26/01/18
  */
-public class CartAddressListAdapter
-        extends RecyclerView.Adapter<CartAddressListAdapter.RecipientAddressViewHolder> {
+public class ShipmentAddressListAdapter
+        extends RecyclerView.Adapter<ShipmentAddressListAdapter.RecipientAddressViewHolder> {
 
-    private static final String TAG = CartAddressListAdapter.class.getSimpleName();
+    private static final String TAG = ShipmentAddressListAdapter.class.getSimpleName();
 
-    private List<ShippingRecipientModel> mAddressModelList;
+    private List<ShipmentRecipientModel> mAddressModelList;
     private Context mContext;
 
-    public CartAddressListAdapter() {
-        mAddressModelList = new ArrayList<>();
+    private static TkpdRxBus rxBus;
+
+    public ShipmentAddressListAdapter() {
+        rxBus = TkpdRxBus.instanceOf();
     }
 
-    public void setAddressList(List<ShippingRecipientModel> addressModelList) {
-        mAddressModelList.addAll(addressModelList);
+    public void setAddressList(List<ShipmentRecipientModel> addressModelList) {
+        mAddressModelList = new ArrayList<>(addressModelList);
     }
 
     @Override
@@ -53,12 +55,13 @@ public class CartAddressListAdapter
 
     @Override
     public void onBindViewHolder(final RecipientAddressViewHolder holder, int position) {
-        ShippingRecipientModel address = mAddressModelList.get(position);
+        ShipmentRecipientModel address = mAddressModelList.get(position);
 
         holder.mTvRecipientName.setText(address.getRecipientName());
         holder.mTvRecipientAddress.setText(address.getRecipientAddress());
 
         holder.mAddressContainer.setOnClickListener(new OnItemClickListener(position));
+        holder.mLlRadioButtonAddressSelect.setOnClickListener(new OnItemClickListener(position));
     }
 
     @Override
@@ -94,14 +97,38 @@ public class CartAddressListAdapter
             Log.d(TAG, msg);
 
             FragmentManager fragmentManager = ((Activity)mContext).getFragmentManager();
-            Fragment fragment = fragmentManager.findFragmentById(R.id.container);
+            Fragment fragment = CartSingleAddressFragment.newInstance();
+            String backStateName = fragment.getClass().getName();
 
-            if (fragment == null || !(fragment instanceof CartSingleAddressFragment)) {
-                fragmentManager.beginTransaction().replace(R.id.container,
-                        CartSingleAddressFragment.newInstance()).commit();
+            boolean isFragmentPopped = fragmentManager.popBackStackImmediate(backStateName, 0);
+            if (!isFragmentPopped) {
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, fragment)
+                        .addToBackStack(backStateName)
+                        .commit();
             }
+
+            rxBus.publishEvent(new Event(mAddressModelList.get(mPosition), "Selected!"));
         }
 
+    }
+
+    public class Event {
+        Object obj;
+        String msg;
+
+        public Event(Object obj, String msg) {
+            this.obj = obj;
+            this.msg = msg;
+        }
+
+        public Object getObject() {
+            return obj;
+        }
+
+        public String getMessage() {
+            return msg;
+        }
     }
 
 }
