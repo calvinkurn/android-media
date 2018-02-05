@@ -24,7 +24,6 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.flight.TkpdFlight;
 import com.tokopedia.flight.common.constant.FlightUrl;
-import com.tokopedia.tkpd.deeplink.DeepLinkReceiver;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
@@ -119,8 +118,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @Override
     public boolean onClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
-        CommonUtils.dumper("GAv4 MOE NGGAGE on notif click "+deepLinkUri+" bundle "+extras);
-        return handleClick(screenName,extras,deepLinkUri);
+        CommonUtils.dumper("GAv4 MOE NGGAGE on notif click " + deepLinkUri + " bundle " + extras);
+        return handleClick(screenName, extras, deepLinkUri);
     }
 
     @Override
@@ -141,32 +140,35 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @Override
     public boolean onInAppClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
-        return handleClick(screenName,extras,deepLinkUri);
+        return handleClick(screenName, extras, deepLinkUri);
     }
 
-    private boolean handleClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri){
+    private boolean handleClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
 
-        if(deepLinkUri!=null){
+        if (deepLinkUri != null) {
 
-            if(deepLinkUri.getScheme().equals(Constants.Schemes.HTTP)||deepLinkUri.getScheme().equals(Constants.Schemes.HTTPS))
-            {
+            if (deepLinkUri.getScheme().equals(Constants.Schemes.HTTP) || deepLinkUri.getScheme().equals(Constants.Schemes.HTTPS)) {
                 Intent intent = new Intent(this, DeepLinkActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.setData(Uri.parse(deepLinkUri.toString()));
+                if (extras != null) intent.putExtras(extras);
+
                 startActivity(intent);
 
-            }else if(deepLinkUri.getScheme().equals(Constants.Schemes.APPLINKS)){
+            } else if (deepLinkUri.getScheme().equals(Constants.Schemes.APPLINKS)) {
                 Intent intent = new Intent(this, DeeplinkHandlerActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.setData(Uri.parse(deepLinkUri.toString()));
+                if (extras != null) intent.putExtras(extras);
+
                 startActivity(intent);
 
-            }else{
+            } else {
                 CommonUtils.dumper("FCM entered no one");
             }
 
             return true;
-        }else{
+        } else {
             return false;
         }
     }
