@@ -290,6 +290,7 @@ public class ResoInboxFragment
     @Override
     public void onEmptyGetInbox() {
         dismissProgressBar();
+        rvInbox.setVisibility(View.VISIBLE);
         adapter.setCanLoadMore(false);
         adapter.addItem(new EmptyModel());
         adapter.notifyDataSetChanged();
@@ -309,6 +310,7 @@ public class ResoInboxFragment
     @Override
     public void onEmptyGetInboxWithFilter(InboxItemResultViewModel result) {
         dismissProgressBar();
+        rvInbox.setVisibility(View.VISIBLE);
         adapter.setCanLoadMore(false);
         adapter.clearData();
         adapter.addItem(result.getFilterListViewModel());
