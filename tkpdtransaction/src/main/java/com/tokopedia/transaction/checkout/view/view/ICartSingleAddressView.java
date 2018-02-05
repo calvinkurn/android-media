@@ -3,11 +3,9 @@ package com.tokopedia.transaction.checkout.view.view;
 /**
  * @author Aghny A. Putra on 26/01/18
  */
-public interface ISearchAddressListView<T> {
+public interface ICartSingleAddressView<T> {
 
-    void showList(T t);
-
-    void showListEmpty();
+    void show(T t);
 
     void showError();
 

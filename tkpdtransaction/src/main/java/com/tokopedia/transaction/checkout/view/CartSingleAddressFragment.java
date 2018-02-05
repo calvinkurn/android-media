@@ -1,0 +1,177 @@
+package com.tokopedia.transaction.checkout.view;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
+
+import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.R2;
+import com.tokopedia.transaction.checkout.di.component.CartSingleAddressComponent;
+import com.tokopedia.transaction.checkout.di.component.DaggerCartSingleAddressComponent;
+import com.tokopedia.transaction.checkout.di.module.CartSingleAddressModule;
+import com.tokopedia.transaction.checkout.view.adapter.CartSingleAddressAdapter;
+import com.tokopedia.transaction.checkout.view.adapter.ShipmentAddressListAdapter;
+import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
+import com.tokopedia.transaction.checkout.view.presenter.CartSingleAddressPresenter;
+import com.tokopedia.transaction.checkout.view.view.ICartSingleAddressView;
+import com.tokopedia.transaction.utils.TkpdRxBus;
+
+import javax.inject.Inject;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import rx.functions.Action1;
+
+/**
+ * @author Aghny A. Putra on 24/1/18
+ */
+public class CartSingleAddressFragment extends BasePresenterFragment
+        implements ICartSingleAddressView<CartSingleAddressData>{
+
+    private static final String TAG = CartSingleAddressFragment.class.getSimpleName();
+
+    @BindView(R2.id.rv_cart_order_details) RecyclerView mRvCartOrderDetails;
+
+    @Inject CartSingleAddressAdapter mCartSingleAddressAdapter;
+    @Inject CartSingleAddressPresenter mCartSingleAddressPresenter;
+
+    private static TkpdRxBus rxBus;
+
+    public static CartSingleAddressFragment newInstance() {
+        rxBus = TkpdRxBus.instanceOf();
+        return new CartSingleAddressFragment();
+    }
+
+    @Override
+    protected void initInjector() {
+        super.initInjector();
+        CartSingleAddressComponent component = DaggerCartSingleAddressComponent.builder()
+                .cartSingleAddressModule(new CartSingleAddressModule())
+                .build();
+        component.inject(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        rxBus.subscribeEvents()
+                .subscribe(new Action1<Object>() {
+                    @Override
+                    public void call(Object o) {
+                        if (o instanceof ShipmentAddressListAdapter.Event) {
+                            String msg = ((ShipmentAddressListAdapter.Event) o).getMessage();
+                            Log.d(TAG, msg);
+                        }
+                    }
+                });
+    }
+
+    @Override
+    protected String getScreenName() {
+        return TAG;
+    }
+
+    @Override
+    protected boolean isRetainInstance() {
+        return false;
+    }
+
+    @Override
+    protected void onFirstTimeLaunched() {}
+
+    @Override
+    public void onSaveState(Bundle state) {}
+
+    @Override
+    public void onRestoreState(Bundle savedState) {}
+
+    /**
+     * apakah fragment ini support options menu?
+     *
+     * @return iya atau tidak
+     */
+    @Override
+    protected boolean getOptionsMenuEnable() {
+        return false;
+    }
+
+    /**
+     * instantiate presenter disini. sesuai dengan Type param di class
+     */
+    @Override
+    protected void initialPresenter() {}
+
+    /**
+     * Cast si activity ke listener atau bisa juga ini untuk context activity
+     *
+     * @param activity si activity yang punya fragment
+     */
+    @Override
+    protected void initialListener(Activity activity) {}
+
+    /**
+     * kalau memang argument tidak kosong. ini data argumentnya
+     *
+     * @param arguments argument nya
+     */
+    @Override
+    protected void setupArguments(Bundle arguments) {}
+
+    @Override
+    protected int getFragmentLayout() {
+        return R.layout.fragment_single_address_shipment;
+    }
+
+    @Override
+    protected void initView(View view) {
+        ButterKnife.bind(this, view);
+
+        mRvCartOrderDetails.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRvCartOrderDetails.setAdapter(mCartSingleAddressAdapter);
+
+        mCartSingleAddressPresenter.attachView(this);
+    }
+
+    /**
+     * set listener atau attribute si view. misalkan texView.setText("blablalba");
+     */
+    @Override
+    protected void setViewListener() {
+        mCartSingleAddressPresenter.getCartSingleAddressItemView();
+    }
+
+    /**
+     * initial Variabel di fragment, selain yg sifatnya widget. Misal: variable state, handler dll
+     */
+    @Override
+    protected void initialVar() {}
+
+    /**
+     * setup aksi, attr, atau listener untuk si variable. misal. appHandler.startAction();
+     */
+    @Override
+    protected void setActionVar() {}
+
+    @OnClick(R2.id.btn_next_to_payment_option)
+    protected void onClickToPaymentSection() {
+        Toast.makeText(getActivity(), "Select Payment Options", Toast.LENGTH_SHORT)
+                .show();
+    }
+
+    @Override
+    public void show(CartSingleAddressData cartSingleAddressData) {
+        mCartSingleAddressAdapter.updateData(cartSingleAddressData);
+        mCartSingleAddressAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void showError() {
+
+    }
+}

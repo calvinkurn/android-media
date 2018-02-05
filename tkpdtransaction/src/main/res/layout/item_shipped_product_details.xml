@@ -23,7 +23,7 @@
             android:textStyle="normal"
             android:textColor="@color/black_54"
             android:lineSpacingExtra="5sp"
-            tools:text="Dikirim oleh : " />
+            android:text="Dikirim oleh : " />
 
         <TextView android:id="@+id/tv_sender_name"
             android:layout_width="wrap_content"
@@ -40,9 +40,11 @@
             tools:text="Adidas" />
     </RelativeLayout>
 
-    <view
+    <View
         android:layout_width="match_parent"
-        android:layout_height="0.5dp" />
+        android:layout_height="0.5dp"
+        android:background="#e0e0e0"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -117,7 +119,7 @@
                 android:textSize="12sp"
                 android:fontFamily="sans-serif"
                 android:textStyle="normal"
-                tools:text="Free Returns" />
+                android:text="Free Returns" />
 
             <TextView android:id="@+id/tv_po_sign"
                 android:layout_width="wrap_content"
@@ -132,7 +134,7 @@
                 android:textSize="10sp"
                 android:fontFamily="sans-serif"
                 android:textStyle="normal"
-                tools:text="PO"
+                android:text="PO"
                 tools:ignore="SmallSp" />
 
             <TextView android:id="@+id/tv_cashback_text"
@@ -164,7 +166,7 @@
                 android:textSize="12sp"
                 android:fontFamily="sans-serif"
                 android:textStyle="normal"
-                tools:text="Berat :" />
+                android:text="Berat :" />
 
             <TextView android:id="@+id/tv_product_weight"
                 android:layout_width="wrap_content"
@@ -201,7 +203,7 @@
                 android:fontFamily="sans-serif"
                 android:textSize="12sp"
                 android:textStyle="normal"
-                tools:text="Jumlah :" />
+                android:text="Jumlah :" />
 
 
         </RelativeLayout>
@@ -213,7 +215,7 @@
             android:textSize="12sp"
             android:fontFamily="sans-serif"
             android:textStyle="normal"
-            tools:text="Catatan untuk penjual (Opsional)" />
+            android:text="Catatan untuk penjual (Opsional)" />
 
         <TextView android:id="@+id/tv_optional_note_to_seller"
             android:layout_width="match_parent"
@@ -226,7 +228,7 @@
             android:textColor="@color/black_70"
             tools:text="Saya pesan warna merah yah min.. jangan sampai salah kirim barangnya gan!" />
 
-        <view
+        <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:background="#e0e0e0"
@@ -275,25 +277,21 @@
                 android:textColor="@color/medium_green"
                 android:fontFamily="sans-serif-medium"
                 android:textStyle="normal"
-                tools:text="+3 Produk Lainnya" />
+                android:text="+3 Produk Lainnya" />
 
         </RelativeLayout>
 
     </LinearLayout>
 
-    <view
+    <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:background="#e0e0e0"/>
 
-    <RelativeLayout
+    <RelativeLayout android:id="@+id/rl_shipment_option_view_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="16dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
+        android:padding="16dp"
         android:background="@color/white">
 
         <TextView android:id="@+id/tv_text_shipment"
@@ -301,7 +299,7 @@
             android:layout_height="wrap_content"
             android:textSize="12sp"
             android:textColor="@color/black_54"
-            tools:text="Pengiriman" />
+            android:text="Pengiriman" />
 
         <ImageView android:id="@+id/iv_chevron_shipment_option"
             android:layout_width="20dp"
@@ -329,7 +327,7 @@
 
     </RelativeLayout>
 
-    <view
+    <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:background="#e0e0e0" />
@@ -337,35 +335,128 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="16dp"
-        android:paddingLeft="16dp"
-        android:paddingEnd="16dp"
+        android:padding="16dp"
         android:background="@color/white">
 
-        <TextView android:id="@+id/tv_cart_sub_total"
+        <RelativeLayout android:id="@+id/rl_detail_shipment_fee_view_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp">
+
+            <TextView android:id="@+id/tv_total_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="18dp"
+                android:textSize="12sp"
+                android:fontFamily="sans-serif"
+                android:textStyle="normal"
+                android:text="Jumlah Barang (1 Item)" />
+
+            <TextView android:id="@+id/tv_total_item_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/tv_total_item"
+                android:layout_toEndOf="@id/tv_total_item"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:textSize="14sp"
+                android:fontFamily="sans-serif"
+                android:textStyle="normal"
+                android:gravity="end"
+                android:text="Rp1.400.000" />
+
+            <TextView android:id="@+id/tv_shipping_fee"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="18dp"
+                android:layout_below="@id/tv_total_item"
+                android:textSize="12sp"
+                android:fontFamily="sans-serif"
+                android:textStyle="normal"
+                android:text="Ongkos Kirim (1kg)" />
+
+            <TextView android:id="@+id/tv_shipping_fee_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_total_item"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:textSize="14sp"
+                android:fontFamily="sans-serif"
+                android:textStyle="normal"
+                android:gravity="end"
+                android:text="Rp0" />
+
+            <TextView android:id="@+id/tv_insurance_fee"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="18dp"
+                android:layout_below="@id/tv_shipping_fee"
+                android:textSize="12sp"
+                android:fontFamily="sans-serif"
+                android:textStyle="normal"
+                android:text="Biaya Asuransi" />
+
+            <TextView android:id="@+id/tv_insurance_fee_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_shipping_fee"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:textSize="14sp"
+                android:fontFamily="sans-serif"
+                android:textStyle="normal"
+                android:gravity="end"
+                android:text="Rp0" />
+
+            <TextView android:id="@+id/tv_promo_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_insurance_fee"
+                android:textSize="12sp"
+                android:fontFamily="sans-serif"
+                android:textStyle="normal"
+                android:text="Promo" />
+
+            <TextView android:id="@+id/tv_promo_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_insurance_fee"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:textSize="14sp"
+                android:fontFamily="sans-serif"
+                android:textStyle="normal"
+                android:gravity="end"
+                android:text="Rp100.000" />
+
+        </RelativeLayout>
+
+        <RelativeLayout android:id="@+id/rl_cart_sub_total_view_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/rl_detail_shipment_fee_view_layout">
+
+            <TextView android:id="@+id/tv_cart_sub_total"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
             android:textColor="@color/black_54"
             android:textSize="12sp"
             tools:ignore="SmallSp"
             android:text="Sub total" />
 
-        <TextView android:id="@+id/tv_cart_detail_option"
+            <TextView android:id="@+id/tv_cart_detail_option"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
             android:layout_marginLeft="4dp"
             android:layout_marginStart="4dp"
             android:layout_toEndOf="@id/tv_cart_sub_total"
             android:layout_toRightOf="@id/tv_cart_sub_total"
             android:textSize="12sp"
             android:textColor="@color/medium_green"
-            android:text="Detil" />
+            tools:text="Detil" />
 
-        <ImageView android:id="@+id/iv_drawer_chevron"
+            <ImageView android:id="@+id/iv_drawer_chevron"
             android:layout_width="10dp"
             android:layout_height="10dp"
             android:layout_centerVertical="true"
@@ -374,10 +465,10 @@
             android:layout_marginLeft="10dp"
             android:layout_marginStart="10dp"
             android:tint="@color/medium_green"
-            android:src="@drawable/chevron_thin_down"
+            tools:src="@drawable/chevron_thin_down"
             tools:ignore="ContentDescription" />
 
-        <TextView android:id="@+id/tv_sub_total_item_price"
+            <TextView android:id="@+id/tv_sub_total_item_price"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -389,6 +480,7 @@
             android:textSize="14sp"
             android:textColor="@color/orange_red"
             tools:text="Rp200.000" />
+        </RelativeLayout>
 
     </RelativeLayout>
 

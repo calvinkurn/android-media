@@ -9,8 +9,8 @@ import android.os.Parcelable;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.checkout.view.CartSingleAddressFragment;
 import com.tokopedia.transaction.checkout.view.MultipleAddressFragment;
-import com.tokopedia.transaction.checkout.view.SingleAddressFragment;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
 
 import java.util.ArrayList;
@@ -68,10 +68,10 @@ public class CartShipmentActivity extends BasePresenterActivity implements ICart
     protected void initView() {
         Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
         if (fragment == null || !((fragment instanceof MultipleAddressFragment)
-                || (fragment instanceof SingleAddressFragment))) {
+                || (fragment instanceof CartSingleAddressFragment))) {
             if (typeAddressShipment == TYPE_ADDRESS_SHIPMENT_SINGLE) {
                 getFragmentManager().beginTransaction().replace(R.id.container,
-                        SingleAddressFragment.newInstance()).commit();
+                        CartSingleAddressFragment.newInstance()).commit();
             } else {
                 getFragmentManager().beginTransaction().replace(R.id.container,
                         MultipleAddressFragment.newInstance()).commit();

@@ -1,6 +1,9 @@
 package com.tokopedia.transaction.checkout.view.presenter;
 
-public class BaseListPresenter<T> {
+/**
+ * @author Aghny A. Putra on 26/01/18
+ */
+public class CartMvpPresenter<T> {
 
     private T mMvpView;
 
