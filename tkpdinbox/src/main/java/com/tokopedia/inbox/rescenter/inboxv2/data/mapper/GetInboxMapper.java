@@ -36,6 +36,13 @@ public class GetInboxMapper implements Func1<Response<TkpdResponse>, InboxItemRe
     public static final int STATUS_UNREAD = 1;
     public static final int STATUS_READ = 2;
 
+    private static final String STATUS_SELLER = "Penjual :";
+    private static final String STATUS_BUYER = "Pembeli :";
+    private static final String STATUS_OTHER_PRODUCT = "Produk Lainnya";
+    private static final String COLOR_BLACK_70 = "#b2000000";
+    private static final String COLOR_WHITE = "#ffffff";
+    private static final String STRING_YES = "Ya";
+
     @Override
     public InboxItemResultViewModel call(Response<TkpdResponse> response) {
         return mappingResponse(response);
@@ -140,12 +147,12 @@ public class GetInboxMapper implements Func1<Response<TkpdResponse>, InboxItemRe
                 response.getResolution().getStatus().getBgColor(),
                 response.getResolution().getStatus().getFontColor().startsWith("#") ?
                         response.getResolution().getStatus().getFontColor() :
-                        "#b2000000",
+                        COLOR_BLACK_70,
                 response.getOrder().getRefNum(),
                 response.getResolution().getRead() == STATUS_UNREAD,
                 actionBy == ACTION_BY_USER ?
-                        "Penjual :" :
-                        "Pembeli :",
+                        STATUS_SELLER :
+                        STATUS_BUYER,
                 actionBy == ACTION_BY_USER ?
                         response.getShop().getName() :
                         response.getCustomer().getName(),
@@ -154,11 +161,11 @@ public class GetInboxMapper implements Func1<Response<TkpdResponse>, InboxItemRe
                         "-",
                 response.getResolution().getAutoExecuteTime().getColor(),
                 !TextUtils.isEmpty(response.getResolution().getAutoExecuteTime().getColor()) ?
-                        "#ffffff" :
-                        "#b2000000",
+                        COLOR_WHITE :
+                        COLOR_BLACK_70,
                 response.getResolution().getLastReplyTime().getFullString(),
                 response.getResolution().getFreeReturn() == 1 ?
-                        "Ya" :
+                        STRING_YES :
                         "-",
                 response.getResolution().getProduct() != null ?
                         mappingProductImage(response.getResolution().getProduct()) :
@@ -186,7 +193,7 @@ public class GetInboxMapper implements Func1<Response<TkpdResponse>, InboxItemRe
 
     private static String buildStringForExtraImage(List<ProductResponse> responseList) {
         return responseList.size() > 3 ?
-                "+ " + String.valueOf(responseList.size() - 3).concat(" Produk Lainnya") :
+                "+" + String.valueOf(responseList.size() - 3)+ " " + STATUS_OTHER_PRODUCT :
                 "";
     }
 }
