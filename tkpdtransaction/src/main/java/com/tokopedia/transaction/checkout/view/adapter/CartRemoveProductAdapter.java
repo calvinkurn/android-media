@@ -126,7 +126,6 @@ public class CartRemoveProductAdapter
         }
 
         void bindViewHolder(CartItemModel cartItemModel) {
-            mTvSenderName.setText(cartItemModel.getSenderName());
             mTvProductName.setText(cartItemModel.getProductName());
             mTvProductPrice.setText(cartItemModel.getProductPrice());
             mTvProductWeight.setText(cartItemModel.getProductWeight());

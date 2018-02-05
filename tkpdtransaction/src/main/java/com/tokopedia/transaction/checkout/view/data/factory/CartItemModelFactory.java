@@ -14,8 +14,7 @@ public class CartItemModelFactory {
     public static List<CartItemModel> getDummyCartItemModelList() {
         List<CartItemModel> cartItemModels = new ArrayList<>();
 
-        cartItemModels.add(createDummyCartItemModel("Adidas",
-                "Kaos Adidas Camo Tongue Tee... White & Red, XS",
+        cartItemModels.add(createDummyCartItemModel("Kaos Adidas Camo Tongue Tee... White & Red, XS",
                 "Rp200.000",
                 "3kg",
                 "5%",
@@ -30,8 +29,7 @@ public class CartItemModelFactory {
         return cartItemModels;
     }
 
-    public static CartItemModel createDummyCartItemModel(String senderName,
-                                                  String productName,
+    public static CartItemModel createDummyCartItemModel(String productName,
                                                   String productPrice,
                                                   String productWeight,
                                                   String cashback,
@@ -44,7 +42,6 @@ public class CartItemModelFactory {
                                                   boolean freeReturn) {
 
         CartItemModel cartItemModel = new CartItemModel();
-        cartItemModel.setSenderName(senderName);
         cartItemModel.setProductName(productName);
         cartItemModel.setProductPrice(productPrice);
         cartItemModel.setProductWeight(productWeight);

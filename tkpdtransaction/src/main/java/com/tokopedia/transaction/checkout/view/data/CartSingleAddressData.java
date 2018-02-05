@@ -15,7 +15,7 @@ public class CartSingleAddressData implements Parcelable {
     private ShipmentFeeBannerModel shipmentFeeBannerModel;
     private ShipmentRecipientModel shipmentRecipientModel;
     private DropshipperShippingOptionModel dropshipperShippingOptionModel;
-    private List<CartItemModel> cartItemModelList;
+    private List<CartSellerItemModel> cartSellerItemModelList;
     private CartPayableDetailModel cartPayableDetailModel;
 
     public ShipmentFeeBannerModel getShipmentFeeBannerModel() {
@@ -42,12 +42,12 @@ public class CartSingleAddressData implements Parcelable {
         this.dropshipperShippingOptionModel = dropshipperShippingOptionModel;
     }
 
-    public List<CartItemModel> getCartItemModelList() {
-        return cartItemModelList;
+    public List<CartSellerItemModel> getCartSellerItemModelList() {
+        return cartSellerItemModelList;
     }
 
-    public void setCartItemModelList(List<CartItemModel> cartItemModelList) {
-        this.cartItemModelList = cartItemModelList;
+    public void setCartSellerItemModelList(List<CartSellerItemModel> cartSellerItemModelList) {
+        this.cartSellerItemModelList = cartSellerItemModelList;
     }
 
     public CartPayableDetailModel getCartPayableDetailModel() {
@@ -68,7 +68,7 @@ public class CartSingleAddressData implements Parcelable {
         dest.writeParcelable(this.shipmentFeeBannerModel, flags);
         dest.writeParcelable(this.shipmentRecipientModel, flags);
         dest.writeParcelable(this.dropshipperShippingOptionModel, flags);
-        dest.writeTypedList(this.cartItemModelList);
+        dest.writeTypedList(this.cartSellerItemModelList);
         dest.writeParcelable(this.cartPayableDetailModel, flags);
     }
 
@@ -79,11 +79,11 @@ public class CartSingleAddressData implements Parcelable {
         this.shipmentFeeBannerModel = in.readParcelable(ShipmentFeeBannerModel.class.getClassLoader());
         this.shipmentRecipientModel = in.readParcelable(ShipmentRecipientModel.class.getClassLoader());
         this.dropshipperShippingOptionModel = in.readParcelable(DropshipperShippingOptionModel.class.getClassLoader());
-        this.cartItemModelList = in.createTypedArrayList(CartItemModel.CREATOR);
+        this.cartSellerItemModelList = in.createTypedArrayList(CartSellerItemModel.CREATOR);
         this.cartPayableDetailModel = in.readParcelable(CartPayableDetailModel.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<CartSingleAddressData> CREATOR = new Parcelable.Creator<CartSingleAddressData>() {
+    public static final Creator<CartSingleAddressData> CREATOR = new Creator<CartSingleAddressData>() {
         @Override
         public CartSingleAddressData createFromParcel(Parcel source) {
             return new CartSingleAddressData(source);
