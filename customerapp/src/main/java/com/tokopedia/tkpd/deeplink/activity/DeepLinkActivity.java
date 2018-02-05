@@ -106,7 +106,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     @Override
     protected void initialPresenter() {
         DeeplinkRepository deeplinkRepository = new DeeplinkRepositoryImpl(this, new GlobalCacheManager());
-        MapUrlUseCase mapUrlUseCase = new MapUrlUseCase(new JobExecutor(), new UIThread(), deeplinkRepository);
+        MapUrlUseCase mapUrlUseCase = new MapUrlUseCase(deeplinkRepository);
         presenter = new DeepLinkPresenterImpl(this, mapUrlUseCase);
     }
 

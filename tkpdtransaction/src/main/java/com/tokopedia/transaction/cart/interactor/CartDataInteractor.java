@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
-import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.apiservices.kero.KeroAuthService;
 import com.tokopedia.core.network.apiservices.transaction.TXActService;
@@ -396,47 +395,6 @@ public class CartDataInteractor implements ICartDataInteractor {
                     .unsubscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread()).subscribe(responseList(listener)));
         } else listener.onRatesFailed(ErrorNetMessage.MESSAGE_ERROR_DEFAULT_SHORT);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public void saveCartDataToCache(CheckoutData checkoutData, List<CartItem> cartItemList) {
-        Observable.zip(
-            Observable.just(checkoutData),
-            Observable.just(cartItemList),
-            new Func2<CheckoutData, List<CartItem>, Boolean>() {
-                @Override
-                public Boolean call(CheckoutData checkoutData, List<CartItem> cartItemList) {
-                    GlobalCacheManager cacheManager = new GlobalCacheManager();
-                    cacheManager.setCacheDuration((int) TimeUnit.DAYS.toSeconds(1));
-                    LinkedTreeMap mapData = new LinkedTreeMap();
-                    mapData.put(COUPON, checkoutData.getVoucherCode());
-                    mapData.put(DATA, cartItemList);
-                    String data = new Gson().toJson(mapData, LinkedTreeMap.class);
-                    cacheManager.setKey(TkpdCache.Key.CART_CACHE_TRACKER);
-                    cacheManager.setValue(data);
-                    cacheManager.store();
-                    return true;
-                }
-            }
-        )
-        .subscribeOn(Schedulers.newThread())
-        .subscribe(new Subscriber<Boolean>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onNext(Boolean aBoolean) {
-                //no-op
-            }
-        });
     }
 
     private boolean isValidated(List<CartItem> cartItemList, int i) {

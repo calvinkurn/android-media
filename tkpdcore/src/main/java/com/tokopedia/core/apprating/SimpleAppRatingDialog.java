@@ -67,8 +67,12 @@ public class SimpleAppRatingDialog extends AppRatingDialog {
 
     @Override
     protected boolean isDialogNeedToBeShown() {
-        Integer appRatingVersion = cacheHandler.getInt(TkpdCache.Key.KEY_APP_RATING_VERSION);
-        return  appRatingVersion == null || appRatingVersion == -1;
+        if(remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.MAINAPP_SHOW_SIMPLE_APP_RATING, false)) {
+            Integer appRatingVersion = cacheHandler.getInt(TkpdCache.Key.KEY_APP_RATING_VERSION);
+            return appRatingVersion == null || appRatingVersion == -1;
+        }
+
+        return false;
     }
 
     @Override

@@ -45,7 +45,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize"/>
         <activity
-            android:name="com.tokopedia.otp.securityquestion.view.view.activity.ChangePhoneNumberRequestActivity"
+            android:name=".changephonenumber.view.activity.ChangePhoneNumberRequestActivity"
             android:label="@string/title_change_phone_number_request"
             android:screenOrientation="portrait"/>
         <activity
@@ -121,7 +121,11 @@
         <activity
             android:name=".google.GoogleSignInActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/DialogTheme"/>
+            android:theme="@style/DialogTheme" />
+
+        <activity android:name="com.tokopedia.otp.phoneverification.view.activity.ReferralPhoneNumberVerificationActivity">
+        </activity>
+
         <activity
             android:name=".changephonenumber.view.activity.ChangePhoneNumberWarningActivity"
             android:label=""

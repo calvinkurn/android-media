@@ -27,6 +27,8 @@ public class FlightOrderMapper {
             flightOrder = new FlightOrder();
             flightOrder.setId(orderEntity.getId());
             flightOrder.setStatus(orderEntity.getAttributes().getStatus());
+            flightOrder.setPdf(orderEntity.getAttributes().getFlight().getPdf());
+            flightOrder.setStatusString(orderEntity.getAttributes().getStatusFmt());
             flightOrder.setCreateTime(orderEntity.getAttributes().getCreateTime());
             flightOrder.setEmail(orderEntity.getAttributes().getFlight().getEmail());
             flightOrder.setCurrency(orderEntity.getAttributes().getFlight().getCurrency());
@@ -39,6 +41,7 @@ public class FlightOrderMapper {
             flightOrder.setTotalInfantNumeric(orderEntity.getAttributes().getFlight().getTotalInfantNumeric());
             flightOrder.setJourneys(flightOrderJourneyMapper.transform(orderEntity.getAttributes().getFlight().getJourneys()));
             flightOrder.setPassengerViewModels(passengerViewModelMapper.transform(orderEntity.getAttributes().getFlight().getPassengers()));
+            flightOrder.setPayment(orderEntity.getAttributes().getFlight().getPayment());
         }
         return flightOrder;
     }
