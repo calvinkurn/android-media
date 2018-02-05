@@ -53,7 +53,7 @@ gradle.projectsEvaluated {
             def bundleJsAndAssetsTaskName = "bundle${targetName}JsAndAssets"
 
             // Additional node and packager commandline arguments
-            def nodeExecutableAndArgs = config.nodeExecutableAndArgs ?: ["/usr/local/bin/node"]
+            def nodeExecutableAndArgs = config.nodeExecutableAndArgs ?: ["node"]
             def extraPackagerArgs = config.extraPackagerArgs ?: []
 
             def currentBundleTask = tasks.create(
@@ -78,7 +78,7 @@ gradle.projectsEvaluated {
 
                 // Set up dev mode
                 def devEnabled = !(config."devDisabledIn${targetName}"
-                    || targetName.toLowerCase().contains("release"))
+                        || targetName.toLowerCase().contains("release"))
                 if (Os.isFamily(Os.FAMILY_WINDOWS)) {
                     commandLine("cmd", "/c", *nodeExecutableAndArgs, cliPath, "bundle", "--platform", "android", "--dev", "${devEnabled}",
                             "--reset-cache", "--entry-file", entryFile, "--bundle-output", jsBundleFile, "--assets-dest", resourcesDir, *extraPackagerArgs)
@@ -88,8 +88,8 @@ gradle.projectsEvaluated {
                 }
 
                 enabled config."bundleIn${targetName}" ||
-                    config."bundleIn${buildTypeName.capitalize()}" ?:
-                            targetName.toLowerCase().contains("release")
+                        config."bundleIn${buildTypeName.capitalize()}" ?:
+                        targetName.toLowerCase().contains("release")
             }
 
             // Hook bundle${productFlavor}${buildType}JsAndAssets into the android build process
