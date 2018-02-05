@@ -241,6 +241,7 @@ public class ResoInboxFragment
         adapter.notifyDataSetChanged();
 
         updateParams(true, result);
+//        updateParams(result.isCanLoadMore(), result);
     }
 
     private void updateFilterValue(InboxItemResultViewModel result) {
@@ -325,6 +326,7 @@ public class ResoInboxFragment
         adapter.removeLoading();
         adapter.addList(result.getInboxVisitableList());
         updateParams(true, result);
+//        updateParams(result.isCanLoadMore(), result);
         updateStringFilterValue(result);
         adapter.notifyDataSetChanged();
     }

@@ -15,13 +15,23 @@ import java.util.List;
 public class InboxItemResultViewModel implements Parcelable {
     private List<InboxItemViewModel> inboxItemViewModels;
     private List<FilterViewModel> filterViewModels;
+    private boolean isCanLoadMore;
 
     private FilterListViewModel filterListViewModel;
     private List<Visitable> inboxVisitableList;
 
-    public InboxItemResultViewModel(List<InboxItemViewModel> inboxItemViewModels, List<FilterViewModel> filterViewModels) {
+    public InboxItemResultViewModel(List<InboxItemViewModel> inboxItemViewModels, List<FilterViewModel> filterViewModels, boolean isCanLoadMore) {
         this.inboxItemViewModels = inboxItemViewModels;
         this.filterViewModels = filterViewModels;
+        this.isCanLoadMore = isCanLoadMore;
+    }
+
+    public boolean isCanLoadMore() {
+        return isCanLoadMore;
+    }
+
+    public void setCanLoadMore(boolean canLoadMore) {
+        isCanLoadMore = canLoadMore;
     }
 
     public List<FilterViewModel> getFilterViewModels() {

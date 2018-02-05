@@ -53,11 +53,12 @@ public class GetInboxMapper implements Func1<Response<TkpdResponse>, InboxItemRe
                 InboxResponse.class);
         InboxItemResultViewModel model = new InboxItemResultViewModel(
                 dataResponse.getInboxes() != null ?
-                      mappingInboxItem(dataResponse.getInboxes(), dataResponse.getActionBy()) :
-                      null,
+                        mappingInboxItem(dataResponse.getInboxes(), dataResponse.getActionBy()) :
+                        null,
                 dataResponse.getQuickFilter() != null ?
                         mappingFilterItem(dataResponse.getQuickFilter()) :
-                        null
+                        null,
+                dataResponse.isCanLoadMore()
         );
         if (response.isSuccessful()) {
             if (response.raw().code() == ResponseStatus.SC_OK) {

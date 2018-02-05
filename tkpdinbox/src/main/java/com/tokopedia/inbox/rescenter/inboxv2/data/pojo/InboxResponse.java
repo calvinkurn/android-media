@@ -15,6 +15,8 @@ public class InboxResponse {
     private List<InboxDataResponse> inboxes;
     @SerializedName("quickFilter")
     private QuickFilterResponse quickFilter;
+    @SerializedName("canLoadMore")
+    private boolean isCanLoadMore;
 
     public QuickFilterResponse getQuickFilter() {
         return quickFilter;
@@ -40,4 +42,11 @@ public class InboxResponse {
             this.inboxes = inboxes;
         }
 
+    public boolean isCanLoadMore() {
+        return isCanLoadMore;
+    }
+
+    public void setCanLoadMore(boolean canLoadMore) {
+        isCanLoadMore = canLoadMore;
+    }
 }
