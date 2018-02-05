@@ -559,8 +559,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 break;
             case REQUEST_CODE_CANCEL_REASON:
                 if (resultCode == Activity.RESULT_OK) {
-                    getActivity().setResult(OnTripActivity.RIDE_HOME_RESULT_CODE);
-                    getActivity().finish();
+                    onSuccessCancelRideRequest();
                 }
                 break;
             case PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE:

@@ -441,8 +441,8 @@ public class RideHomeActivity extends BaseActivity implements RideHomeMapFragmen
         mToolbar.setVisibility(View.GONE);
 
         if (source != null && destination != null) {
-            replaceFragment(R.id.top_container, RideHomeMapFragment.newInstance(source, destination), MAP_FRAGMENT_TAG);
             replaceFragment(R.id.bottom_container, UberProductFragment.newInstance(source, destination), PRODUCTS_FRAGMENT_TAG);
+            replaceFragment(R.id.top_container, RideHomeMapFragment.newInstance(source, destination), MAP_FRAGMENT_TAG);
         } else {
             replaceFragment(R.id.top_container, RideHomeMapFragment.newInstance(), MAP_FRAGMENT_TAG);
             replaceFragment(R.id.bottom_container, UberProductFragment.newInstance(), PRODUCTS_FRAGMENT_TAG);
