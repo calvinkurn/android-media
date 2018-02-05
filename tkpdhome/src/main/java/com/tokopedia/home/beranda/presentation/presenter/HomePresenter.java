@@ -47,8 +47,11 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+import rx.subscriptions.Subscriptions;
 
 /**
  * @author by errysuprayogi on 11/27/17.
@@ -79,6 +82,8 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     public HomePresenter(Context context) {
         this.context = context;
+        compositeSubscription = new CompositeSubscription();
+        subscription = Subscriptions.empty();
         this.pagingHandler = new PagingHandler();
         resetPageFeed();
     }
@@ -86,13 +91,16 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     @Override
     public void detachView() {
         super.detachView();
-        getHomeDataUseCase.unsubscribe();
-        getHomeFeedsUseCase.unsubscribe();
+        if (!compositeSubscription.isUnsubscribed()) {
+            compositeSubscription.unsubscribe();
+        }
     }
 
     @NonNull
     private Observable<List<Visitable>> getDataFromNetwork() {
-        return getHomeDataUseCase.getExecuteObservable(RequestParams.EMPTY);
+        return getHomeDataUseCase.getExecuteObservable(RequestParams.EMPTY)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     @Override

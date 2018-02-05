@@ -17,7 +17,7 @@
             style="@style/TextView.Title.Bold"
             android:layout_centerVertical="true"
             tools:text="Sprint Sale"/>
-        
+
         <com.tokopedia.home.beranda.presentation.view.compoundview.CountDownView
             android:id="@+id/count_down"
             android:layout_width="wrap_content"
@@ -29,7 +29,7 @@
         <TextView
             android:id="@+id/see_all_button"
             style="@style/TextView.Small.Green"
-            android:text="@string/lihat_semua"
+            android:text="@string/see_all"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"/>
 

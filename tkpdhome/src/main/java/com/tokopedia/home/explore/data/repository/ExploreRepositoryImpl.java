@@ -21,4 +21,8 @@ public class ExploreRepositoryImpl implements ExploreRepository {
     public Observable<ExploreDataModel> getExploreData() {
         return dataSource.getExploreData();
     }
+
+    public Observable<ExploreDataModel> getExploreDataCache() {
+        return dataSource.getDataCache();
+    }
 }

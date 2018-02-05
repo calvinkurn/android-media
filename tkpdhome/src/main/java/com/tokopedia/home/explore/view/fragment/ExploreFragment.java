@@ -19,19 +19,16 @@ import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.SimpleWebViewActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
-import com.tokopedia.home.beranda.domain.model.category.CategoryLayoutRowModel;
-import com.tokopedia.home.beranda.domain.model.category.CategoryLayoutSectionsModel;
 import com.tokopedia.home.explore.domain.model.LayoutRows;
 import com.tokopedia.home.explore.domain.model.LayoutSections;
 import com.tokopedia.home.explore.listener.CategoryAdapterListener;
 import com.tokopedia.home.explore.view.adapter.ExploreAdapter;
 import com.tokopedia.home.explore.view.adapter.TypeFactory;
-import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryFavoriteViewModel;
 import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryGridListViewModel;
 import com.tokopedia.home.explore.view.adapter.viewmodel.SellViewModel;
-import com.tokopedia.home.explore.view.presentation.ExploreContract;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,11 +42,13 @@ import java.util.Map;
 public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> implements CategoryAdapterListener {
 
     private static final String EXTRA_DATA = "EXTRA_DATA";
+    private static final String EXTRA_POS = "EXTRA_POS";
 
-    public static ExploreFragment newInstance(LayoutSections sectionsModel) {
+    public static ExploreFragment newInstance(LayoutSections sectionsModel, int pos) {
 
         Bundle args = new Bundle();
         args.putParcelable(EXTRA_DATA, sectionsModel);
+        args.putInt(EXTRA_POS, pos);
         ExploreFragment fragment = new ExploreFragment();
         fragment.setArguments(args);
         return fragment;
@@ -79,12 +78,35 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
 
     private List<Visitable> mappingModel(LayoutSections section) {
         List<Visitable> list = new ArrayList<>();
+        if (getArguments().getInt(EXTRA_POS, 0) == 4) {
+            if (SessionHandler.isUserHasShop(getActivity())) {
+                list.add(mappingManageShop());
+            } else {
+                list.add(mappingOpenShop());
+            }
+        }
         CategoryGridListViewModel viewModel = new CategoryGridListViewModel();
         viewModel.setSectionId(section.getId());
         viewModel.setTitle(section.getTitle());
         viewModel.setItemList(section.getLayoutRows());
         list.add(viewModel);
         return list;
+    }
+
+    private Visitable mappingOpenShop() {
+        SellViewModel model = new SellViewModel();
+        model.setTitle(getString(R.string.empty_shop_wording_title));
+        model.setSubtitle(getString(R.string.empty_shop_wording_subtitle));
+        model.setBtn_title(getString(R.string.buka_toko));
+        return model;
+    }
+
+    private Visitable mappingManageShop() {
+        SellViewModel model = new SellViewModel();
+        model.setTitle(getString(R.string.open_shop_wording_title));
+        model.setSubtitle(getString(R.string.manage_shop_wording_subtitle));
+        model.setBtn_title(getString(R.string.manage_toko));
+        return model;
     }
 
     @Override
@@ -94,7 +116,7 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
 
     @Override
     protected TypeFactory getAdapterTypeFactory() {
-        return new ExploreAdapter(getFragmentManager(),this);
+        return new ExploreAdapter(getFragmentManager(), this);
     }
 
     @Nullable
@@ -148,7 +170,7 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
 
     @Override
     public void onApplinkClicked(LayoutRows data) {
-        ((TkpdCoreRouter) getActivity().getApplication()).actionApplinkFromActivity(getActivity() ,
+        ((TkpdCoreRouter) getActivity().getApplication()).actionApplinkFromActivity(getActivity(),
                 data.getApplinks());
     }
 

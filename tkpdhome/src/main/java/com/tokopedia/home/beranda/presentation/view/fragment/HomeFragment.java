@@ -557,8 +557,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (getActivity() != null
                 && getActivity().getApplicationContext() instanceof TkpdCoreRouter
                 && ((TkpdCoreRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(slidesModel.getApplink())) {
-            ((TkpdCoreRouter) getActivity().getApplicationContext())
-                    .actionAppLink(getActivity(), slidesModel.getApplink());
+            openApplink(slidesModel.getApplink());
         } else {
             openWebViewURL(slidesModel.getRedirectUrl(), getContext());
         }
@@ -611,16 +610,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         adapter.setItems(items);
     }
 
-    public int lastIndexOfInstance(List list, Class clazz) {
-        for (int i = 0; i < list.size(); i++) {
-            if (clazz.isInstance(list.get(i))) {
-                if (i > 0)
-                    return i - 1;
-            }
-        }
-        return 0;
-    }
-
     @Override
     public void updateHeaderItem(HeaderViewModel headerViewModel) {
         if (adapter.getItemCount() > 0 && adapter.getItem(0) instanceof HeaderViewModel) {
@@ -658,7 +647,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onDynamicChannelClicked(String applink) {
-        //TODO HOME_REVAMP : Handle Applink here
+        openApplink(applink);
+    }
+
+    private void openApplink(String applink) {
+        ((TkpdCoreRouter) getActivity().getApplicationContext())
+                .actionAppLink(getActivity(), applink);
     }
 
     @Override
