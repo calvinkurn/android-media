@@ -2,6 +2,7 @@ package com.tokopedia.flight.airport.data.source.db;
 
 import android.text.TextUtils;
 
+import com.raizlabs.android.dbflow.sql.language.Condition;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.Method;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
@@ -18,6 +19,7 @@ import com.tokopedia.flight.common.data.db.BaseDataListDBSource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -293,6 +295,29 @@ public class FlightAirportDataListDBSource extends BaseDataListDBSource<FlightAi
                 FlightAirportDB flightAirportDBList = new Select()
                         .from(FlightAirportDB.class)
                         .where(FlightAirportDB_Table.airport_id.like(queryLike))
+                        .querySingle();
+                subscriber.onNext(flightAirportDBList);
+            }
+        });
+    }
+
+    public Observable<FlightAirportDB> getAirport(Map<String, String> params){
+        final ConditionGroup conditionGroup = ConditionGroup.clause();
+
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            if (entry.getKey().equals(FlightAirportDataListSource.CITY_CODE)) {
+                conditionGroup.or(FlightAirportDB_Table.city_code.eq(entry.getValue()));
+            } else if (entry.getKey().equals(FlightAirportDataListSource.AIRPORT_ID)) {
+                conditionGroup.or(FlightAirportDB_Table.airport_id.eq(entry.getValue()));
+            }
+        }
+
+        return Observable.unsafeCreate(new Observable.OnSubscribe<FlightAirportDB>() {
+            @Override
+            public void call(Subscriber<? super FlightAirportDB> subscriber) {
+                FlightAirportDB flightAirportDBList = new Select()
+                        .from(FlightAirportDB.class)
+                        .where(conditionGroup)
                         .querySingle();
                 subscriber.onNext(flightAirportDBList);
             }

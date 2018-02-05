@@ -3,6 +3,7 @@ package com.tokopedia.flight.dashboard.view.presenter;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
@@ -14,7 +15,7 @@ import com.tokopedia.flight.common.data.domain.DeleteFlightCacheUseCase;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
-import com.tokopedia.flight.dashboard.domain.GetFlightAirportByIdUseCase;
+import com.tokopedia.flight.dashboard.domain.GetFlightAirportWithParamUseCase;
 import com.tokopedia.flight.dashboard.domain.GetFlightClassByIdUseCase;
 import com.tokopedia.flight.dashboard.domain.GetFlightClassesUseCase;
 import com.tokopedia.flight.dashboard.view.fragment.cache.FlightDashboardCache;
@@ -24,7 +25,6 @@ import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardVie
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.mapper.FlightClassViewModelMapper;
 import com.tokopedia.flight.dashboard.view.validator.FlightDashboardValidator;
-import com.tokopedia.usecase.RequestParams;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -65,7 +65,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     private FlightDashboardValidator validator;
     private DeleteFlightCacheUseCase deleteFlightCacheUseCase;
     private GetFlightClassesUseCase getFlightClassesUseCase;
-    private GetFlightAirportByIdUseCase getFlightAirportByIdUseCase;
+    private GetFlightAirportWithParamUseCase getFlightAirportWithParamUseCase;
     private GetFlightClassByIdUseCase getFlightClassByIdUseCase;
     private FlightClassViewModelMapper flightClassViewModelMapper;
     private FlightDashboardCache flightDashboardCache;
@@ -78,7 +78,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                                     FlightDashboardValidator validator,
                                     DeleteFlightCacheUseCase deleteFlightCacheUseCase,
                                     GetFlightClassesUseCase getFlightClassesUseCase,
-                                    GetFlightAirportByIdUseCase getFlightAirportByIdUseCase,
+                                    GetFlightAirportWithParamUseCase getFlightAirportWithParamUseCase,
                                     GetFlightClassByIdUseCase getFlightClassByIdUseCase,
                                     FlightClassViewModelMapper flightClassViewModelMapper,
                                     FlightDashboardCache flightDashboardCache,
@@ -88,7 +88,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         this.validator = validator;
         this.deleteFlightCacheUseCase = deleteFlightCacheUseCase;
         this.getFlightClassesUseCase = getFlightClassesUseCase;
-        this.getFlightAirportByIdUseCase = getFlightAirportByIdUseCase;
+        this.getFlightAirportWithParamUseCase = getFlightAirportWithParamUseCase;
         this.getFlightClassByIdUseCase = getFlightClassByIdUseCase;
         this.flightClassViewModelMapper = flightClassViewModelMapper;
         this.flightDashboardCache = flightDashboardCache;
@@ -299,7 +299,11 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         String code = buildAirportFmt(departureAirport);
         flightDashboardViewModel.setDepartureAirportFmt(code);
         getView().setDashBoardViewModel(flightDashboardViewModel);
-        flightDashboardCache.putDepartureAirport(departureAirport.getAirportId());
+        if (!departureAirport.getAirportIds().isEmpty() && departureAirport.getAirportIds() != null) {
+            flightDashboardCache.putDepartureAirport(departureAirport.getCityCode());
+        } else {
+            flightDashboardCache.putDepartureAirport(departureAirport.getAirportId());
+        }
         renderUi();
     }
 
@@ -324,7 +328,11 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         }
         flightDashboardViewModel.setArrivalAirportFmt(arrivalAirport.getCityName() + " (" + code + ")");
         getView().setDashBoardViewModel(flightDashboardViewModel);
-        flightDashboardCache.putArrivalAirport(arrivalAirport.getAirportId());
+        if (!arrivalAirport.getAirportIds().isEmpty() && arrivalAirport.getAirportIds() != null) {
+            flightDashboardCache.putArrivalAirport(arrivalAirport.getCityCode());
+        } else {
+            flightDashboardCache.putArrivalAirport(arrivalAirport.getAirportId());
+        }
         renderUi();
     }
 
@@ -474,10 +482,10 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         onFlightPassengerChange(new FlightPassengerViewModel(flightDashboardPassDataViewModel.getAdultPassengerCount(), flightDashboardPassDataViewModel.getChildPassengerCount(), flightDashboardPassDataViewModel.getInfantPassengerCount()));
 
         compositeSubscription.add(
-                Observable.zip(getFlightAirportByIdUseCase
-                                .createObservable(getFlightAirportByIdUseCase.createRequestParams(flightDashboardPassDataViewModel.getDepartureAirportId())),
-                        getFlightAirportByIdUseCase
-                                .createObservable(getFlightAirportByIdUseCase.createRequestParams(flightDashboardPassDataViewModel.getArrivalAirportId())),
+                Observable.zip(getFlightAirportWithParamUseCase
+                                .createObservable(getFlightAirportWithParamUseCase.createRequestParams(flightDashboardPassDataViewModel.getDepartureAirportId())),
+                        getFlightAirportWithParamUseCase
+                                .createObservable(getFlightAirportWithParamUseCase.createRequestParams(flightDashboardPassDataViewModel.getArrivalAirportId())),
                         getFlightClassByIdUseCase.createObservable(getFlightClassByIdUseCase.createRequestParams(flightDashboardPassDataViewModel.getFlightClass())),
                         new Func3<FlightAirportDB, FlightAirportDB, FlightClassEntity, Boolean>() {
                             @Override
@@ -489,8 +497,8 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                             }
                         }
                 )
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Boolean>() {
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Boolean>() {
                     @Override
                     public void onCompleted() {
 
