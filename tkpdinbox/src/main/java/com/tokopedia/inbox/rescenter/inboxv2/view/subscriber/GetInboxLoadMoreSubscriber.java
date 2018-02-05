@@ -45,7 +45,7 @@ public class GetInboxLoadMoreSubscriber extends Subscriber<InboxItemResultViewMo
             }
             mainView.onSuccessLoadMoreInbox(inboxItemResultViewModel);
         } else {
-            mainView.dismissProgressBar();
+            mainView.removeLoadingItem();
         }
     }
 }

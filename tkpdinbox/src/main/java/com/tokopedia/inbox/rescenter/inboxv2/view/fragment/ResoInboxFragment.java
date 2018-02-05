@@ -316,6 +316,11 @@ public class ResoInboxFragment
     }
 
     @Override
+    public void removeLoadingItem() {
+        adapter.removeLoading();
+    }
+
+    @Override
     public void onSuccessLoadMoreInbox(InboxItemResultViewModel result) {
         adapter.removeLoading();
         adapter.addList(result.getInboxVisitableList());

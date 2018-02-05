@@ -41,6 +41,8 @@ public interface ResoInboxFragmentListener {
 
         void onErrorGetSingleInboxItem(String err);
 
+        void removeLoadingItem();
+
         void showProgressBar();
 
         void dismissProgressBar();
