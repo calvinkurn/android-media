@@ -74,11 +74,12 @@ public class AttachmentChatHelper {
     private void setMessage(Attachment attachment, final ChatRoomContract.View viewListener, final TextView message) {
         if (attachment.getFallbackAttachment().getMessage() != null) {
             final FallbackAttachment fallback = attachment.getFallbackAttachment();
-            String string = String.format("%s\n%s", fallback.getMessage(), fallback.getSpan());
 
-            Spannable spannable = new SpannableString(string);
+            Spannable spannable = new SpannableString(fallback.getMessage());
 
             if (hasFallback(fallback.getSpan())) {
+                String string = String.format("%s\n%s", fallback.getMessage(), fallback.getSpan());
+                spannable = new SpannableString(string);
                 spannable.setSpan(new ClickableSpan() {
                                       @Override
                                       public void onClick(View view) {
