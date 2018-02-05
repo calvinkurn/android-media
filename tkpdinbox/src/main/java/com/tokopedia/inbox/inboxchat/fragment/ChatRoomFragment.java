@@ -304,7 +304,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
         if (needCreateWebSocket()) {
             sendButton.setOnClickListener(getSendWithWebSocketListener());
-            pickerButton.setVisibility(View.VISIBLE);
         } else {
             sendButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -316,14 +315,15 @@ public class ChatRoomFragment extends BaseDaggerFragment
                             getArguments().getString(ChatRoomActivity.PARAM_USER_ID));
                 }
             });
-            pickerButton.setVisibility(View.GONE);
         }
+
+        setPickerButton();
 
         maximize.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 maximize.setVisibility(View.GONE);
-                pickerButton.setVisibility(View.VISIBLE);
+                setPickerButton();
                 attachButton.setVisibility(View.VISIBLE);
             }
         });
@@ -366,6 +366,14 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 );
             }
         });
+    }
+
+    private void setPickerButton() {
+        if(needCreateWebSocket()){
+            pickerButton.setVisibility(View.VISIBLE);
+        }else{
+            pickerButton.setVisibility(View.GONE);
+        }
     }
 
     @Override

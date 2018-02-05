@@ -30,6 +30,7 @@ import java.util.Date;
 public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
 
     View view;
+    View progressBarSendImage;
     TextView message;
     TextView hour;
     TextView date;
@@ -58,6 +59,7 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
         dot = itemView.findViewById(R.id.dot);
         attachment = itemView.findViewById(R.id.image);
         action = itemView.findViewById(R.id.left_action);
+        progressBarSendImage = itemView.findViewById(R.id.progress_bar);
         attachmentChatHelper = new AttachmentChatHelper();
         this.viewListener = viewListener;
     }
@@ -66,6 +68,7 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
     public void bind(final MyChatViewModel element) {
 
         action.setVisibility(View.GONE);
+        progressBarSendImage.setVisibility(View.GONE);
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -154,7 +157,7 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
             dot.setVisibility(View.GONE);
         }
 
-        attachmentChatHelper.parse(element, attachment, message, action, element, viewListener, element.isDummy(), element.isRetry(), hour);
+        attachmentChatHelper.parse(element, attachment, message, action, element, viewListener, element.isDummy(), element.isRetry(), hour, progressBarSendImage);
 
     }
 

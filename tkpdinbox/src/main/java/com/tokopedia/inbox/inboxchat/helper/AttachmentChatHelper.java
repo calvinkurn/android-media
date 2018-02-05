@@ -28,7 +28,7 @@ public class AttachmentChatHelper {
     private static final String DEFAULT = "1";
     public static final String IMAGE_ATTACHED = "2";
 
-    public void parse(MyChatViewModel myChatViewModel, ImageView view, TextView message, ImageView action, ListReplyViewModel element, ChatRoomContract.View viewListener, boolean dummy, boolean retry, TextView hour){
+    public void parse(MyChatViewModel myChatViewModel, ImageView view, TextView message, ImageView action, ListReplyViewModel element, ChatRoomContract.View viewListener, boolean dummy, boolean retry, TextView hour, View progressBarSendImage){
         Attachment attachment = element.getAttachment();
         String role = element.getRole();
         String msg = element.getMsg();
@@ -38,7 +38,7 @@ public class AttachmentChatHelper {
                     parseType(view, message, attachment, role, msg, viewListener);
                     break;
                 case IMAGE_ATTACHED:
-                    parseAttachedImage(myChatViewModel, view, message, attachment, viewListener, dummy, retry, action, hour);
+                    parseAttachedImage(myChatViewModel, view, message, attachment, viewListener, dummy, retry, action, hour, progressBarSendImage);
                     break;
                 default:
                     parseDefaultType(view, message, attachment, viewListener);
@@ -53,10 +53,10 @@ public class AttachmentChatHelper {
     public void parse(ImageView view, TextView message
             , ListReplyViewModel element
             , ChatRoomContract.View viewListener) {
-        parse(null, view, message, null, element, viewListener, false, false, null);
+        parse(null, view, message, null, element, viewListener, false, false, null, null);
     }
 
-    private void parseAttachedImage(final MyChatViewModel myChatViewModel, ImageView view, TextView message, final Attachment attachment, final ChatRoomContract.View viewListener, boolean dummy, boolean retry, ImageView action, TextView hour) {
+    private void parseAttachedImage(final MyChatViewModel myChatViewModel, ImageView view, TextView message, final Attachment attachment, final ChatRoomContract.View viewListener, boolean dummy, boolean retry, ImageView action, TextView hour, View progressBarSendImage) {
 
         if(retry){
             action.setVisibility(View.VISIBLE);
@@ -80,6 +80,7 @@ public class AttachmentChatHelper {
 
             if(dummy) {
                 ImageHandler.loadImageChatBlurred(view, attachment.getAttributes().getImageUrl(), R.drawable.product_no_photo_default);
+                progressBarSendImage.setVisibility(View.VISIBLE);
             }else {
                 ImageHandler.loadImageChat(view, attachment.getAttributes().getImageUrl(), R.drawable.product_no_photo_default);
             }
