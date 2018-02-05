@@ -15,11 +15,11 @@ import retrofit2.Retrofit;
 
 public class WalletTokenRefresh {
 
-    private TokoCashSession tokoCashSession;
+    private WalletUserSession walletUserSession;
     private Retrofit retrofit;
 
-    public WalletTokenRefresh(TokoCashSession tokoCashSession, Retrofit retrofit) {
-        this.tokoCashSession = tokoCashSession;
+    public WalletTokenRefresh(WalletUserSession walletUserSession, Retrofit retrofit) {
+        this.walletUserSession = walletUserSession;
         this.retrofit = retrofit;
     }
 
@@ -35,7 +35,7 @@ public class WalletTokenRefresh {
             e.printStackTrace();
         }
         if (walletTokenEntity != null) {
-            tokoCashSession.setTokenWallet(walletTokenEntity.getToken());
+            walletUserSession.setTokenWallet(walletTokenEntity.getToken());
         }
         return walletTokenEntity.getToken();
     }

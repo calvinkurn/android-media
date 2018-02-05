@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.common.di.qualifier.AuthKeyQualifier;
 import com.tokopedia.abstraction.common.di.qualifier.FreshAccessTokenQualifier;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.tokocash.network.TokoCashSession;
+import com.tokopedia.tokocash.network.WalletUserSession;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
@@ -32,21 +32,21 @@ public class WalletAuthInterceptor extends TkpdAuthInterceptor {
     private final static String DEVICE = "android-";
     private static final String HEADER_DEVICE = "X-Device";
 
-    private TokoCashSession tokoCashSession;
+    private WalletUserSession walletUserSession;
 
     @Inject
     public WalletAuthInterceptor(@AuthKeyQualifier String authKey, @ApplicationContext Context context,
                                  @FreshAccessTokenQualifier String freshAccessToken, AbstractionRouter abstractionRouter,
-                                 UserSession userSession, TokoCashSession tokoCashSession) {
+                                 UserSession userSession, WalletUserSession walletUserSession) {
         super(authKey, context, freshAccessToken, abstractionRouter, userSession);
-        this.tokoCashSession = tokoCashSession;
+        this.walletUserSession = walletUserSession;
         maxRetryAttempt = 0;
     }
 
     @Override
     protected Map<String, String> getHeaderMap(
             String path, String strParam, String method, String authKey, String contentTypeHeader) {
-        String bearerTokoCash = BEARER + " " + tokoCashSession.getTokenWallet();
+        String bearerTokoCash = BEARER + " " + walletUserSession.getTokenWallet();
         Map<String, String> header = new HashMap<>();
         header.put(AUTHORIZATION, bearerTokoCash);
         header.put(HEADER_DEVICE, DEVICE + GlobalConfig.VERSION_NAME);

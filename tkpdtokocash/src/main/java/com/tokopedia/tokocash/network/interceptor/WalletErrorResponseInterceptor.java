@@ -7,7 +7,7 @@ import com.google.gson.JsonSyntaxException;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.response.BaseResponseError;
 import com.tokopedia.abstraction.common.utils.CommonUtils;
-import com.tokopedia.tokocash.network.TokoCashSession;
+import com.tokopedia.tokocash.network.WalletUserSession;
 import com.tokopedia.tokocash.network.WalletTokenRefresh;
 
 import java.io.IOException;
@@ -30,17 +30,17 @@ public class WalletErrorResponseInterceptor implements Interceptor {
     private Class<? extends BaseResponseError> responseErrorClass;
     private AbstractionRouter abstractionRouter;
     private WalletTokenRefresh walletTokenRefresh;
-    private TokoCashSession tokoCashSession;
+    private WalletUserSession walletUserSession;
     private Gson gson;
     private BaseResponseError responseError;
 
     public WalletErrorResponseInterceptor(@NonNull Class<? extends BaseResponseError> responseErrorClass,
                                           AbstractionRouter abstractionRouter,
-                                          WalletTokenRefresh walletTokenRefresh, TokoCashSession tokoCashSession,
+                                          WalletTokenRefresh walletTokenRefresh, WalletUserSession walletUserSession,
                                           Gson gson) {
         this.abstractionRouter = abstractionRouter;
         this.walletTokenRefresh = walletTokenRefresh;
-        this.tokoCashSession = tokoCashSession;
+        this.walletUserSession = walletUserSession;
         this.responseErrorClass = responseErrorClass;
         this.gson = gson;
     }
@@ -104,7 +104,7 @@ public class WalletErrorResponseInterceptor implements Interceptor {
 
     private Request reCreateRequestWithNewAccessToken(Chain chain) {
         return chain.request().newBuilder()
-                .header(AUTHORIZATION, BEARER + " " + tokoCashSession.getTokenWallet())
+                .header(AUTHORIZATION, BEARER + " " + walletUserSession.getTokenWallet())
                 .build();
     }
 
