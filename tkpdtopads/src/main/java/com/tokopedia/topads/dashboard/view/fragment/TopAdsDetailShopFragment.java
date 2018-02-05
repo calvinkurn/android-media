@@ -61,7 +61,6 @@ public class TopAdsDetailShopFragment extends TopAdsDetailStatisticFragment<TopA
                     .BottomSheetFieldBuilder()
                     .setTitle(getString(R.string.promo_not_active))
                     .setBody(getString(R.string.promo_not_active_body))
-                    .setUrlButton("", getString(R.string.promo_not_active_url_button))
                     .setCloseButton(getString(R.string.promo_not_active_add_top_ads_credit))
                     .build());
 
