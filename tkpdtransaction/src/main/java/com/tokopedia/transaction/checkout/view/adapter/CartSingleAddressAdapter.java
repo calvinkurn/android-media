@@ -95,7 +95,7 @@ public class CartSingleAddressAdapter
 
     @Override
     public int getItemCount() {
-        return 5;
+        return getCartItemSize() + 4;
     }
 
     @Override
@@ -113,7 +113,7 @@ public class CartSingleAddressAdapter
         }
     }
 
-    private int getShippedItemListSize() {
+    private int getCartItemSize() {
         return mCartSingleAddressData.getCartItemModelList().size();
     }
 

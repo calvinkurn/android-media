@@ -41,6 +41,10 @@ public class CartRemoveProductFragment extends BasePresenterFragment
     @Inject
     CartRemoveProductPresenter mCartRemoveProductPresenter;
 
+    public static CartRemoveProductFragment newInstance() {
+        return new CartRemoveProductFragment();
+    }
+
     @Override
     protected void initInjector() {
         super.initInjector();
