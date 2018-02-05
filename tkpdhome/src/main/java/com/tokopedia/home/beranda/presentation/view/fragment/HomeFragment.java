@@ -318,7 +318,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void onSectionItemClicked(LayoutSections sections) {
+    public void onSectionItemClicked(String actionLink) {
         //TODO HOME_REVAMP : Handle Applink here
         startActivity(new Intent(getActivity(), ExploreActivity.class));
     }

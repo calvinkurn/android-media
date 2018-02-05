@@ -5,6 +5,7 @@ import android.support.annotation.LayoutRes;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CategorySectionViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.LayoutSections;
 
 import butterknife.ButterKnife;
 
@@ -77,9 +79,17 @@ public class CategorySectionViewHolder extends AbstractViewHolder<CategorySectio
             holder.container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    listener.onSectionItemClicked(sectionViewModel.getSectionList().get(position));
+                    listener.onSectionItemClicked(getActionLink(sectionViewModel.getSectionList().get(position)));
                 }
             });
+        }
+
+        private String getActionLink(LayoutSections layoutSections) {
+            if (!TextUtils.isEmpty(layoutSections.getApplink())) {
+                return layoutSections.getApplink();
+            } else {
+                return layoutSections.getUrl();
+            }
         }
 
         @Override
