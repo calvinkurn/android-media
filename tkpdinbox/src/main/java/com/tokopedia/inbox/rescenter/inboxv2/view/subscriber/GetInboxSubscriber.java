@@ -36,11 +36,13 @@ public class GetInboxSubscriber extends Subscriber<InboxItemResultViewModel> {
 
     @Override
     public void onError(Throwable e) {
+        mainView.dismissSwipeToRefresh();
         mainView.onErrorGetInbox(ErrorHandler.getErrorMessage(e));
     }
 
     @Override
     public void onNext(InboxItemResultViewModel inboxItemResultViewModel) {
+        mainView.dismissSwipeToRefresh();
         if (inboxItemResultViewModel.getInboxItemViewModels().size() != 0) {
             if (inboxItemResultViewModel.getFilterViewModels() != null) {
                 inboxItemResultViewModel.setFilterListViewModel(

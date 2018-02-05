@@ -35,6 +35,8 @@ public class GetInboxMapper implements Func1<Response<TkpdResponse>, InboxItemRe
 
     public static final int STATUS_UNREAD = 1;
     public static final int STATUS_READ = 2;
+    public static final int STATUS_RESO_CANCELED = 0;
+    public static final int STATUS_RESO_FINISHED = 500;
 
     private static final String STATUS_SELLER = "Penjual :";
     private static final String STATUS_BUYER = "Pembeli :";
@@ -157,7 +159,9 @@ public class GetInboxMapper implements Func1<Response<TkpdResponse>, InboxItemRe
                 actionBy == ACTION_BY_USER ?
                         response.getShop().getName() :
                         response.getCustomer().getName(),
-                !TextUtils.isEmpty(response.getResolution().getAutoExecuteTime().getTimeLeft()) ?
+                (!TextUtils.isEmpty(response.getResolution().getAutoExecuteTime().getTimeLeft()) &&
+                        !(response.getResolution().getStatus().getIntX() != STATUS_RESO_FINISHED ||
+                                response.getResolution().getStatus().getIntX() != STATUS_RESO_CANCELED )) ?
                         response.getResolution().getAutoExecuteTime().getTimeLeft() :
                         "-",
                 response.getResolution().getAutoExecuteTime().getColor(),

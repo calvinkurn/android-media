@@ -29,11 +29,13 @@ public class GetInboxWithFilterSubscriber extends Subscriber<InboxItemResultView
 
     @Override
     public void onError(Throwable e) {
+        mainView.dismissSwipeToRefresh();
         mainView.onErrorGetInboxWithFilter(ErrorHandler.getErrorMessage(e));
     }
 
     @Override
     public void onNext(InboxItemResultViewModel inboxItemResultViewModel) {
+        mainView.dismissSwipeToRefresh();
         if (inboxItemResultViewModel.getFilterViewModels() != null) {
             inboxItemResultViewModel.setFilterListViewModel(
                     GetInboxSubscriber.convertListToModel(inboxItemResultViewModel.getFilterViewModels()));

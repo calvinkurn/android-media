@@ -47,6 +47,10 @@ public interface ResoInboxFragmentListener {
 
         void dismissProgressBar();
 
+        void showSwipeToRefresh();
+
+        void dismissSwipeToRefresh();
+
         void onItemClicked(int resolutionId, String sellerName, String customerName);
 
         void onSortItemClicked(SortModel sortModel);

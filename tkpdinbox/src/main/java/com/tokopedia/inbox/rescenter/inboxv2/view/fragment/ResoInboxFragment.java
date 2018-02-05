@@ -134,15 +134,17 @@ public class ResoInboxFragment
         isSeller = getArguments().getBoolean(ResoInboxActivity.PARAM_IS_SELLER);
         rvInbox.addOnScrollListener(rvInboxScrollListener);
         rvInbox.setAdapter(adapter);
-        initView();
+        initView(true);
         initViewListener();
     }
 
-    private void initView() {
+    private void initView(boolean isFilterNeedRefreshed) {
         bottomActionView.setVisibility(View.GONE);
         rvInbox.setVisibility(View.GONE);
-        inboxFilterModel = new ResoInboxFilterModel();
-        inboxSortModel = new ResoInboxSortModel(SortModel.getSortList(getActivity()), SORT_DEFAULT_ID, new SortModel());
+        if (isFilterNeedRefreshed) {
+            inboxFilterModel = new ResoInboxFilterModel();
+            inboxSortModel = new ResoInboxSortModel(SortModel.getSortList(getActivity()), SORT_DEFAULT_ID, new SortModel());
+        }
         presenter.initPresenterData(getActivity(), isSeller);
     }
 
@@ -203,7 +205,7 @@ public class ResoInboxFragment
 
     @Override
     public void onRefresh() {
-        initView();
+        initView(false);
     }
 
     private void sortButtonClicked() {
@@ -408,6 +410,20 @@ public class ResoInboxFragment
     public void dismissProgressBar() {
         if (progressBar.getVisibility() == View.VISIBLE) {
             progressBar.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void showSwipeToRefresh() {
+        if (!swipeToRefresh.isRefreshing()) {
+            swipeToRefresh.setRefreshing(true);
+        }
+    }
+
+    @Override
+    public void dismissSwipeToRefresh() {
+        if (swipeToRefresh.isRefreshing()) {
+            swipeToRefresh.setRefreshing(false);
         }
     }
 
