@@ -320,7 +320,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onSectionItemClicked(LayoutSections sections) {
         //TODO HOME_REVAMP : Handle Applink here
-        startActivity(new Intent(getActivity(), ExploreActivity.class));
+//        startActivity(new Intent(getActivity(), ExploreActivity.class));
+        openApplink(sections.getApplink());
     }
 
     private void onGoToSell() {
@@ -554,13 +555,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onPromoClick(BannerSlidesModel slidesModel) {
-        if (getActivity() != null
-                && getActivity().getApplicationContext() instanceof TkpdCoreRouter
-                && ((TkpdCoreRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(slidesModel.getApplink())) {
-            openApplink(slidesModel.getApplink());
-        } else {
-            openWebViewURL(slidesModel.getRedirectUrl(), getContext());
-        }
+//        if (getActivity() != null
+//                && getActivity().getApplicationContext() instanceof TkpdCoreRouter
+//                && ((TkpdCoreRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(slidesModel.getApplink())) {
+//            openApplink(slidesModel.getApplink());
+//        } else {
+//            openWebViewURL(slidesModel.getRedirectUrl(), getContext());
+//        }
+        openApplink("tokopedia://jump/bayar");
     }
 
     @Override

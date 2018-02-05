@@ -18,10 +18,13 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.SimpleWebViewActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
+import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
+import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.VerticalSpaceItemDecoration;
 import com.tokopedia.home.explore.domain.model.LayoutRows;
 import com.tokopedia.home.explore.domain.model.LayoutSections;
 import com.tokopedia.home.explore.listener.CategoryAdapterListener;
@@ -43,6 +46,9 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
 
     private static final String EXTRA_DATA = "EXTRA_DATA";
     private static final String EXTRA_POS = "EXTRA_POS";
+
+    private VerticalSpaceItemDecoration spaceItemDecoration;
+
 
     public static ExploreFragment newInstance(LayoutSections sectionsModel, int pos) {
 
@@ -67,6 +73,13 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     @Override
     public void onItemClicked(Visitable visitable) {
 
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        spaceItemDecoration = new VerticalSpaceItemDecoration(getResources().getDimensionPixelSize(R.dimen.margin_card_home), true, 1);
+        getRecyclerView(view).addItemDecoration(spaceItemDecoration);
     }
 
     @Override
@@ -185,7 +198,39 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
 
     @Override
     public void openShop() {
+        if (SessionHandler.isV2Login(getContext())) {
+            String shopId = SessionHandler.getShopID(getContext());
+            if (!shopId.equals("0")) {
+                onGoToShop(shopId);
+            } else {
+                onGoToCreateShop();
+            }
+        } else {
+            onGoToLogin();
+        }
+    }
 
+    private void onGoToLogin() {
+        Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).getLoginIntent(getContext());
+        Intent intentHome = ((TkpdCoreRouter) getActivity().getApplication()).getHomeIntent(getContext());
+        intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        getActivity().startActivities(new Intent[]{intentHome, intent});
+        getActivity().finish();
+    }
+
+    private void onGoToCreateShop() {
+        Intent intent = SellerRouter.getActivityShopCreateEdit(getContext());
+//        intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
+//                SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        getActivity().startActivity(intent);
+    }
+
+    private void onGoToShop(String shopId) {
+        Intent intent = new Intent(getContext(), ShopInfoActivity.class);
+        intent.putExtras(ShopInfoActivity.createBundle(shopId, ""));
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        getActivity().startActivity(intent);
     }
 
     @Override

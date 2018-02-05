@@ -127,6 +127,7 @@ public interface Constants {
         String FAVORITE = "tokopedia://home/favorite";
         String PROMO_LIST = "tokopedia://promoNative";
         String KOLCOMMENT = "tokopedia://kolcomment/{id}";
+        String EXPLORE = "tokopedia://jump/{section}";
 
         interface SellerApp {
             String PRODUCT_ADD = "sellerapp://product/add";

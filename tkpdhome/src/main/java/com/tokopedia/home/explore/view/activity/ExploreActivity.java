@@ -1,11 +1,9 @@
 package com.tokopedia.home.explore.view.activity;
 
-import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.os.Bundle;
@@ -15,8 +13,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.home.R;
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
 import com.tokopedia.home.explore.di.DaggerExploreComponent;
@@ -31,11 +31,20 @@ import javax.inject.Inject;
 
 public class ExploreActivity extends BaseTabActivity implements HasComponent<ExploreComponent>, ExploreContract.View {
 
+    private static final String SECTION = "section";
 
     @Inject
     ExplorePresenter presenter;
 
     private ExploreFragmentAdapter fragmentAdapter;
+
+    @DeepLink(Constants.Applinks.EXPLORE)
+    public static Intent getCallingIntent(Context context, Bundle extras) {
+        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        return new Intent(context, ExploreActivity.class)
+                .setData(uri.build())
+                .putExtras(extras);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +94,7 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
         for (int i = 0; i < dataModel.getDynamicHomeIcon().getLayoutSections().size(); i++) {
             setupTabIcon(i);
         }
+        initSection(getIntent().getStringExtra(SECTION));
     }
 
     @Override
@@ -124,6 +134,27 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
             }
         });
     }
+
+    private void initSection(String section) {
+        switch (section){
+            case "beli":
+                viewPager.setCurrentItem(0);
+                break;
+            case "bayar":
+                viewPager.setCurrentItem(1);
+                break;
+            case "pesan":
+                viewPager.setCurrentItem(2);
+                break;
+            case "ajukan":
+                viewPager.setCurrentItem(3);
+                break;
+            case "jual":
+                viewPager.setCurrentItem(4);
+                break;
+        }
+    }
+
 
     private void setupTabIcon(int i) {
         View view = LayoutInflater.from(this).inflate(R.layout.explore_tab_item, null, false);
