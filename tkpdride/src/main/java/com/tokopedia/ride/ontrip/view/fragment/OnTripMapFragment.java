@@ -662,8 +662,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                        getActivity().setResult(OnTripActivity.RIDE_HOME_RESULT_CODE);
-                        getActivity().finish();
+                        setResultWithSourceAndDestination();
                     }
                 });
 
