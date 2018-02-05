@@ -17,7 +17,7 @@ import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.view.CartSingleAddressFragment;
 import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
-import com.tokopedia.transaction.utils.TkpdRxBus;
+import com.tokopedia.transaction.utils.RxBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,13 +33,13 @@ public class ShipmentAddressListAdapter
 
     private static final String TAG = ShipmentAddressListAdapter.class.getSimpleName();
 
+    private static RxBus sRxBus;
+
     private List<ShipmentRecipientModel> mAddressModelList;
     private Context mContext;
 
-    private static TkpdRxBus rxBus;
-
     public ShipmentAddressListAdapter() {
-        rxBus = TkpdRxBus.instanceOf();
+        sRxBus = RxBus.instanceOf();
     }
 
     public void setAddressList(List<ShipmentRecipientModel> addressModelList) {
@@ -108,7 +108,7 @@ public class ShipmentAddressListAdapter
                         .commit();
             }
 
-            rxBus.publishEvent(new Event(mAddressModelList.get(mPosition), "Selected!"));
+            sRxBus.sendEvent(new Event(mAddressModelList.get(mPosition), "pos = " + mPosition));
         }
 
     }

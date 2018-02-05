@@ -17,9 +17,10 @@ import com.tokopedia.transaction.checkout.di.module.CartSingleAddressModule;
 import com.tokopedia.transaction.checkout.view.adapter.CartSingleAddressAdapter;
 import com.tokopedia.transaction.checkout.view.adapter.ShipmentAddressListAdapter;
 import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
+import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
 import com.tokopedia.transaction.checkout.view.presenter.CartSingleAddressPresenter;
 import com.tokopedia.transaction.checkout.view.view.ICartSingleAddressView;
-import com.tokopedia.transaction.utils.TkpdRxBus;
+import com.tokopedia.transaction.utils.RxBus;
 
 import javax.inject.Inject;
 
@@ -41,10 +42,10 @@ public class CartSingleAddressFragment extends BasePresenterFragment
     @Inject CartSingleAddressAdapter mCartSingleAddressAdapter;
     @Inject CartSingleAddressPresenter mCartSingleAddressPresenter;
 
-    private static TkpdRxBus rxBus;
+    private static RxBus sRxBus;
 
     public static CartSingleAddressFragment newInstance() {
-        rxBus = TkpdRxBus.instanceOf();
+        sRxBus = RxBus.instanceOf();
         return new CartSingleAddressFragment();
     }
 
@@ -60,13 +61,14 @@ public class CartSingleAddressFragment extends BasePresenterFragment
     @Override
     public void onResume() {
         super.onResume();
-        rxBus.subscribeEvents()
+        sRxBus.getEvents()
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object o) {
                         if (o instanceof ShipmentAddressListAdapter.Event) {
                             String msg = ((ShipmentAddressListAdapter.Event) o).getMessage();
-                            Log.d(TAG, msg);
+                            ShipmentRecipientModel recipientModel = (ShipmentRecipientModel)((ShipmentAddressListAdapter.Event) o).getObject();
+                            Log.d(TAG, msg + " " + recipientModel.getRecipientName());
                         }
                     }
                 });
