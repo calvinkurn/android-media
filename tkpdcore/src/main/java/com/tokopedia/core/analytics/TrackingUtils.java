@@ -2,6 +2,7 @@ package com.tokopedia.core.analytics;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -10,6 +11,7 @@ import android.util.Log;
 import com.appsflyer.AFInAppEventParameterName;
 import com.appsflyer.AFInAppEventType;
 import com.google.firebase.perf.metrics.Trace;
+import com.google.gson.Gson;
 import com.moe.pushlibrary.PayloadBuilder;
 import com.moengage.push.PushManager;
 import com.tkpd.library.utils.CommonUtils;
@@ -52,6 +54,16 @@ public class TrackingUtils extends TrackingConfig {
                 .clearCampaign(campaign);
     }
 
+    private static final String COMP_1 = "com.gojek.app";
+    private static final String COMP_2 = "com.shopee.id";
+    private static final String COMP_3 = "com.lazada.android";
+    private static final String COMP_4 = "com.bukalapak.android";
+    private static final String COMP_5 = "id.co.elevenia";
+    private static final String COMP_6 = "com.traveloka.android"; //GRAB
+
+    private static final String[] COMPARR = {
+            COMP_1, COMP_2, COMP_3, COMP_4, COMP_5, COMP_6
+    };
 
     public static void activityBasedAFEvent(String tag) {
         Map<String, Object> afValue = new HashMap<>();
@@ -74,7 +86,7 @@ public class TrackingUtils extends TrackingConfig {
             CustomerWrapper customerWrapper = new CustomerWrapper.Builder()
                     .setFullName(profileData.getUserInfo().getUserName())
                     .setEmailAddress(profileData.getUserInfo().getUserEmail())
-                    .setPhoneNumber(normalizePhoneNumber(profileData.getUserInfo().getUserPhone()!= null ? profileData.getUserInfo().getUserPhone() : ""))
+                    .setPhoneNumber(normalizePhoneNumber(profileData.getUserInfo().getUserPhone() != null ? profileData.getUserInfo().getUserPhone() : ""))
                     .setCustomerId(profileData.getUserInfo().getUserId())
                     .setShopId(profileData.getShopInfo() != null ? profileData.getShopInfo().getShopId() : "")
                     .setSeller(profileData.getShopInfo() != null)
@@ -88,11 +100,10 @@ public class TrackingUtils extends TrackingConfig {
             PushManager.getInstance().refreshToken(MainApplication.getAppContext(), FCMCacheManager.getRegistrationId(MainApplication.getAppContext()));
     }
 
-    public static String getNetworkSpeed(Context context){
-        if(ConnectivityUtils.isConnected(context))
-        {
+    public static String getNetworkSpeed(Context context) {
+        if (ConnectivityUtils.isConnected(context)) {
             return ConnectivityUtils.getConnectionType(context);
-        }else{
+        } else {
             return ConnectivityUtils.CONN_UNKNOWN;
         }
     }
@@ -190,7 +201,7 @@ public class TrackingUtils extends TrackingConfig {
     }
 
     private static String normalizePhoneNumber(String phoneNum) {
-        if(!TextUtils.isEmpty(phoneNum))
+        if (!TextUtils.isEmpty(phoneNum))
             return phoneNum.replaceFirst("^0(?!$)", "62");
         else
             return "";
@@ -328,11 +339,11 @@ public class TrackingUtils extends TrackingConfig {
         builder.putAttrString(AppEventTracking.MOENGAGE.SHOP_NAME, model.info.shopName);
         builder.putAttrString(AppEventTracking.MOENGAGE.SHOP_ID, model.info.shopId);
         builder.putAttrString(AppEventTracking.MOENGAGE.SHOP_LOCATION, model.info.shopLocation);
-        builder.putAttrBoolean(AppEventTracking.MOENGAGE.IS_OFFICIAL_STORE, model.info.getShopIsOfficial()==1);
+        builder.putAttrBoolean(AppEventTracking.MOENGAGE.IS_OFFICIAL_STORE, model.info.getShopIsOfficial() == 1);
         getMoEngine().sendEvent(
                 builder.build(),
                 model.info.shopAlreadyFavorited == 0 ?
-                AppEventTracking.EventMoEngage.SELLER_ADDED_FAVORITE :
+                        AppEventTracking.EventMoEngage.SELLER_ADDED_FAVORITE :
                         AppEventTracking.EventMoEngage.SELLER_REMOVE_FAVORITE
         );
     }
@@ -397,7 +408,7 @@ public class TrackingUtils extends TrackingConfig {
         }
     }
 
-    public static void sendMoEngageClickedNewOrder(){
+    public static void sendMoEngageClickedNewOrder() {
         PayloadBuilder builder = new PayloadBuilder();
         getMoEngine().sendEvent(builder.build(), AppEventTracking.EventMoEngage.CLICKED_NEW_ORDER);
     }
@@ -665,6 +676,50 @@ public class TrackingUtils extends TrackingConfig {
     public static void eventTrackingEnhancedEcommerce(Map<String, Object> trackingData) {
         getGTMEngine().clearEnhanceEcommerce();
         getGTMEngine().eventTrackingEnhancedEcommerce(trackingData);
+    }
+
+    public static String getCIntelData(Context context) {
+        ArrayList<String> compList = new ArrayList<>();
+        PackageManager pm = context.getPackageManager();
+        for (String key : COMPARR) {
+            if (pm != null) {
+                if (TrackingUtils.isAppInstalled(key, pm)) {
+                    compList.add(getAlias(key));
+                }
+            }
+        }
+        return new Gson().toJson(compList);
+    }
+
+    private static boolean isAppInstalled(String uri, PackageManager pm) {
+
+        try {
+            pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    private static String getAlias(String key) {
+        switch (key) {
+            case COMP_1:
+                return "app 1";
+            case COMP_2:
+                return "app 2";
+            case COMP_3:
+                return "app 3";
+            case COMP_4:
+                return "app 4";
+            case COMP_5:
+                return "app 5";
+            case COMP_6:
+                return "app 6";
+            default:
+                return "";
+        }
     }
 }
 

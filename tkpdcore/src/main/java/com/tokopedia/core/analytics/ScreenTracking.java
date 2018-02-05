@@ -62,6 +62,7 @@ public class ScreenTracking extends TrackingUtils {
 
             if(activity.getClass().getSimpleName().equals("ParentIndexHome")){
                 authEvent.setNetworkSpeed(TrackingUtils.getNetworkSpeed(activity));
+                authEvent.setKeyCompetitorIntelligence(TrackingUtils.getCIntelData(activity));
             }
 
         }
