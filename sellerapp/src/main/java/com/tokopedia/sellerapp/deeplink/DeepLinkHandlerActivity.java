@@ -12,7 +12,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.applink.DigitalApplinkModule;
 import com.tokopedia.digital.applink.DigitalApplinkModuleLoader;
@@ -59,7 +59,7 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
         DeepLinkDelegate deepLinkDelegate = getDelegateInstance();
         DeepLinkAnalyticsImpl presenter = new DeepLinkAnalyticsImpl();
         if (getIntent() != null) {
-            if (!SessionHandler.isV4Login(this) || SessionHandler.getShopID(this).isEmpty() || SessionHandler.getShopID(this).equals("0")) {
+            if (!SessionHandler.isV4Login(this) || !SessionHandler.isUserHasShop(this)) {
                 if (SessionHandler.isV4Login(this)) {
                     startActivity(moveToCreateShop(this));
                 } else {
@@ -91,20 +91,9 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
         if (context == null)
             return null;
 
-        if (SessionHandler.isMsisdnVerified()) {
-            Intent intent = SellerRouter.getAcitivityShopCreateEdit(context);
-            intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
-                    SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
-            intent.putExtra(SellerRouter.ShopSettingConstant.ON_BACK, SellerRouter.ShopSettingConstant.LOG_OUT);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            return intent;
-        } else {
-            Intent intent;
-            intent = SessionRouter.getPhoneVerificationActivationActivityIntent(context);
-            intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
-                    SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
-            return intent;
-        }
+        Intent intent = SellerRouter.getActivityShopCreateEdit(context);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        return intent;
     }
 
     @DeepLink(Constants.Applinks.SellerApp.BROWSER)

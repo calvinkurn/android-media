@@ -93,8 +93,7 @@ public class ChatCreateLeftViewHolder extends AbstractViewHolder<ChatCreateLeftV
 
         tvUserTitle.setText(context.getResources().getString(R.string.string_tokopedia_system));
         tvUsername.setText(context.getResources().getString(R.string.string_tokopedia));
-        String date = DateFormatUtils.formatDateForResoChatV2(
-                element.getConversationDomain().getCreateTime().getTimestamp());
+        String date = element.getConversationDomain().getCreateTime().getTimestamp();
         tvDate1.setText(date);
         tvDate2.setText(date);
         tvDate3.setText(date);
@@ -111,7 +110,7 @@ public class ChatCreateLeftViewHolder extends AbstractViewHolder<ChatCreateLeftV
         if (element.getConversationDomain().getAttachment() != null && element.getConversationDomain().getAttachment().size() != 0) {
             rvProve.setVisibility(View.VISIBLE);
             tvProve.setVisibility(View.VISIBLE);
-            rvProve.setLayoutManager(new LinearLayoutManager(context));
+            rvProve.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
             proveAdapter = new ChatProveAdapter(context, element.getConversationDomain().getAttachment());
             rvProve.setAdapter(proveAdapter);
             rvProve.setHasFixedSize(true);

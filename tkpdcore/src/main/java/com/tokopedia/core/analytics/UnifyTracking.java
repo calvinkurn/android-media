@@ -2521,6 +2521,11 @@ public class UnifyTracking extends TrackingUtils {
                 event, category, action, "").getEvent());
     }
 
+    public static void eventClickTemplate(String category, String action, String event) {
+        sendGTMEvent(new EventTracking(
+                event, category, action, "").getEvent());
+    }
+
     public static void eventPDPSendChat() {
         sendGTMEvent(new EventTracking(AppEventTracking.Event.PRODUCT_PAGE
                                     , AppEventTracking.Category.PRODUCT_PAGE
@@ -2545,6 +2550,14 @@ public class UnifyTracking extends TrackingUtils {
                 , ""
         ).getEvent());
     }
+
+
+    public static void eventClickThumbnailMarketing(String category, String action, String event) {
+        sendGTMEvent(new EventTracking(
+                event, category, action, "").getEvent());
+    }
+
+
 
     public static void eventSellerHomeDashboardClick(String main, String item) {
         sendGTMEvent(new EventTracking(
@@ -2801,30 +2814,30 @@ public class UnifyTracking extends TrackingUtils {
     }
 
 
-    public static void eventAppRatingImpression() {
+    public static void eventAppRatingImpression(String label) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.IMPRESSION_APP_RATING,
                 AppEventTracking.Category.APP_RATING,
                 AppEventTracking.Action.IMPRESSION,
-                ""
+                label
         ).getEvent());
     }
 
-    public static void eventClickAppRating() {
+    public static void eventClickAppRating(String label) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.CLICK_APP_RATING,
                 AppEventTracking.Category.APP_RATING,
                 AppEventTracking.Action.CLICK,
-                ""
+                label
         ).getEvent());
     }
 
-    public static void eventCancelAppRating() {
+    public static void eventCancelAppRating(String label) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.CANCEL_APP_RATING,
                 AppEventTracking.Category.APP_RATING,
                 AppEventTracking.Action.CLICK,
-                ""
+                label
         ).getEvent());
     }
 
@@ -2991,6 +3004,157 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.ONBOARDING,
                 AppEventTracking.Action.ONBOARDING_START,
                 AppEventTracking.EventLabel.ONBOARDING_START_LABEL
+        ).getEvent());
+    }
+
+
+    //Resolution Tracking
+    public static void eventCreateResoStep1SaveAndChooseOther() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_PRODUCT_PROBLEM,
+                AppEventTracking.EventLabel.RESO_PROBLEM_SAVE_CHOOSE_OTHER
+        ).getEvent());
+    }
+
+    public static void eventCreateResoStep1Save() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_PRODUCT_PROBLEM,
+                AppEventTracking.EventLabel.RESO_PROBLEM_SAVE
+        ).getEvent());
+    }
+
+    public static void eventCreateResoStep1Continue() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_PRODUCT_PROBLEM,
+                AppEventTracking.EventLabel.RESO_PROBLEM_CONTINUE
+        ).getEvent());
+    }
+
+    public static void eventCreateResoStep2Continue() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_SOLUTION,
+                AppEventTracking.EventLabel.RESO_SOLUTION_CONTINUE
+        ).getEvent());
+    }
+
+    public static void eventCreateResoStep3Continue() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_PROVE,
+                AppEventTracking.EventLabel.RESO_SOLUTION_CONTINUE
+        ).getEvent());
+    }
+
+    public static void eventCreateResoPre() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_CREATE_RESO,
+                AppEventTracking.EventLabel.RESO_CREATE_COMPLAINT_PRE
+        ).getEvent());
+    }
+
+    public static void eventCreateResoConfirm() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_CREATE_RESO,
+                AppEventTracking.EventLabel.RESO_CREATE_COMPLAINT_CONFIRM
+        ).getEvent());
+    }
+
+    public static void eventCreateResoUnconfirm() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_CREATE_RESO,
+                AppEventTracking.EventLabel.RESO_CREATE_COMPLAINT_UNCONFIRM
+        ).getEvent());
+    }
+
+    public static void eventCreateResoAbandon() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_RESOLUTION,
+                AppEventTracking.Category.RESOLUTION_CENTER,
+                AppEventTracking.Action.CLICK_CREATE_RESO_ABANDON,
+                AppEventTracking.EventLabel.RESO_CREATE_ABANDON
+        ).getEvent());
+    }
+
+    public static void eventClickChangePhoneNumber() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_CLICK_USER_PROFILE,
+                AppEventTracking.Category.MANAGE_PROFILE,
+                AppEventTracking.Action.CLICK_CHANGE_PHONE_NUMBER,
+                ""
+        ).getEvent());
+    }
+
+    public static void eventSuccessChangePhoneNumber() {
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.EVENT_CLICK_USER_PROFILE,
+                AppEventTracking.Category.MANAGE_PROFILE,
+                AppEventTracking.Action.SUCCESS_CHANGE_PHONE_NUMBER,
+                ""
+        ).getEvent());
+    }
+
+    public static void eventTracking(EventTracking eventTracking) {
+        sendGTMEvent(eventTracking.getEvent());
+    }
+
+
+    public static void eventPromoListClickCategory(String categoryName){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_PROMO_MICRO_SITE,
+                AppEventTracking.Category.PROMO_MICROSITE_PROMO_LIST,
+                AppEventTracking.Action.PROMO_CLICK_CATEGORY,
+                categoryName
+        ).getEvent());
+    }
+
+    public static void eventPromoListClickSubCategory(String subCategoryName){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_PROMO_MICRO_SITE,
+                AppEventTracking.Category.PROMO_MICROSITE_PROMO_LIST,
+                AppEventTracking.Action.PROMO_CLICK_SUB_CATEGORY,
+                subCategoryName
+        ).getEvent());
+    }
+
+    public static void eventPromoListClickCopyToClipboardPromoCode(String promoName){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_PROMO_MICRO_SITE,
+                AppEventTracking.Category.PROMO_MICROSITE_PROMO_LIST,
+                AppEventTracking.Action.PROMO_CLICK_COPY_PROMO_CODE,
+                promoName
+        ).getEvent());
+    }
+
+    public static void eventPromoTooltipClickOpenTooltip(){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_PROMO_MICRO_SITE,
+                AppEventTracking.Category.PROMO_MICROSITE_PROMO_TOOLTIP,
+                AppEventTracking.Action.PROMO_CLICK_OPEN_TOOLTIP,
+                ""
+        ).getEvent());
+    }
+
+    public static void eventPromoTooltipClickCloseTooltip(){
+        sendGTMEvent(new EventTracking(
+                AppEventTracking.Event.CLICK_PROMO_MICRO_SITE,
+                AppEventTracking.Category.PROMO_MICROSITE_PROMO_TOOLTIP,
+                AppEventTracking.Action.PROMO_CLICK_CLOSE_TOOLTIP,
+                ""
         ).getEvent());
     }
 }

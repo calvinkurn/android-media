@@ -25,11 +25,12 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
+import com.tokopedia.inbox.inboxchat.activity.ChatRoomActivity;
 import com.tokopedia.inbox.inboxchat.activity.SendMessageActivity;
 import com.tokopedia.inbox.inboxmessageold.activity.SendMessageActivityOld;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
-import com.tokopedia.sellerapp.utils.WhitelistUtils;
+import com.tokopedia.sellerapp.utils.WhiteList;
 
 import java.util.List;
 
@@ -108,6 +109,8 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     @Override
     public void onCreate() {
         HockeyAppHelper.setEnableDistribution(BuildConfig.ENABLE_DISTRIBUTION);
+        HockeyAppHelper.setAllowAnonymousLogin(true);
+        HockeyAppHelper.setHockeyappKey(HockeyAppHelper.KEY_SELLERAPP);
         GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION;
         GlobalConfig.PACKAGE_APPLICATION = GlobalConfig.PACKAGE_SELLER_APP;
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
@@ -132,6 +135,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         TkpdBaseURL.BASE_DOMAIN = SellerAppBaseUrl.BASE_DOMAIN;
         TkpdBaseURL.ACE_DOMAIN = SellerAppBaseUrl.BASE_ACE_DOMAIN;
         TkpdBaseURL.CLOVER_DOMAIN = SellerAppBaseUrl.BASE_CLOVER_DOMAIN;
+        TkpdBaseURL.BASE_API_DOMAIN = SellerAppBaseUrl.BASE_API_DOMAIN;
         TkpdBaseURL.TOPADS_DOMAIN = SellerAppBaseUrl.BASE_TOPADS_DOMAIN;
         TkpdBaseURL.MOJITO_DOMAIN = SellerAppBaseUrl.BASE_MOJITO_DOMAIN;
         TkpdBaseURL.HADES_DOMAIN = SellerAppBaseUrl.BASE_HADES_DOMAIN;
@@ -153,6 +157,8 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         TkpdBaseURL.SCROOGE_CREDIT_CARD_DOMAIN = SellerAppBaseUrl.BASE_SCROOGE_CREDIT_CARD_DOMAIN;
         TkpdBaseURL.CHAT_DOMAIN = SellerAppBaseUrl.CHAT_DOMAIN;
         TkpdBaseURL.CHAT_WEBSOCKET_DOMAIN = SellerAppBaseUrl.CHAT_WEBSOCKET_DOMAIN;
+        TkpdBaseURL.WALLET_DOMAIN = SellerAppBaseUrl.BASE_WALLET;
+
     }
 
     private void generateSellerAppNetworkKeys() {
@@ -171,13 +177,13 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
     @Override
     protected List<CacheApiWhiteListDomain> getWhiteList() {
-        return WhitelistUtils.getWhiteList();
+        return WhiteList.getWhiteList();
     }
 
     @Override
     public Intent getAskSellerIntent(Context context, String toShopId, String shopName, String customSubject, String customMessage, String source, String avatar) {
         if(remoteConfig.getBoolean(TkpdInboxRouter.ENABLE_TOPCHAT))
-            return SendMessageActivity.getAskSellerIntent(context, toShopId, shopName,
+            return ChatRoomActivity.getAskSellerIntent(context, toShopId, shopName,
                     customSubject, customMessage, source, avatar);
         else
             return SendMessageActivityOld.getAskSellerIntent(context, toShopId, shopName,

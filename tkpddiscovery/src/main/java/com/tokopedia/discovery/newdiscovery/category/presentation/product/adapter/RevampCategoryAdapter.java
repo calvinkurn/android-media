@@ -83,6 +83,8 @@ public class RevampCategoryAdapter extends
 
     public interface CategoryListener {
         void onCategoryRevampClick(ChildCategoryModel child);
+
+        void onBannerAdsClicked(String appLink);
     }
 
     public void addDataChild(List<ChildCategoryModel> children) {

@@ -63,7 +63,7 @@ public abstract class BaseDigitalWidgetPresenter implements IBaseDigitalWidgetPr
         );
         localCacheHandlerLastClientNumber.putString(
                 TkpdCache.Key.DIGITAL_PRODUCT_ID_CATEGORY + categoryId,
-                (selectedProduct != null ? String.valueOf(selectedProduct.getId()) : "")
+                (selectedProduct != null ? selectedProduct.getId() : "")
         );
         localCacheHandlerLastClientNumber.applyEditor();
     }

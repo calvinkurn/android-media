@@ -22,6 +22,9 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
+import com.tokopedia.flight.TkpdFlight;
+import com.tokopedia.flight.common.constant.FlightUrl;
+import com.tokopedia.tkpd.deeplink.DeepLinkReceiver;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
@@ -40,6 +43,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     @Override
     public void onCreate() {
         HockeyAppHelper.setEnableDistribution(BuildConfig.ENABLE_DISTRIBUTION);
+        HockeyAppHelper.setHockeyappKey(HockeyAppHelper.KEY_MAINAPP);
         GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
         GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
@@ -93,6 +97,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TkpdBaseURL.WALLET_DOMAIN = ConsumerAppBaseUrl.BASE_WALLET;
         TkpdBaseURL.EVENTS_DOMAIN = ConsumerAppBaseUrl.EVENT_DOMAIN;
         TkpdBaseURL.TOKOPOINT_API_DOMAIN = ConsumerAppBaseUrl.TOKOPOINT_API_DOMAIN;
+        FlightUrl.BASE_URL = ConsumerAppBaseUrl.BASE_API_DOMAIN;
+        FlightUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
+        FlightUrl.PULSA_BASE_URL = ConsumerAppBaseUrl.BASE_DIGITAL_API_DOMAIN;
     }
 
     private void generateConsumerAppNetworkKeys() {
@@ -104,6 +111,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         FlowManager.init(new FlowConfig.Builder(this)
                 .addDatabaseHolder(TkpdSellerGeneratedDatabaseHolder.class)
                 .build());
+        TkpdFlight.initDatabase(getApplicationContext());
     }
 
     @Override
@@ -169,4 +177,5 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     private void initReact() {
         SoLoader.init(this, false);
     }
+
 }

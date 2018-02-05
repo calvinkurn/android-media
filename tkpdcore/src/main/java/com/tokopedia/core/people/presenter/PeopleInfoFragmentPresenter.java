@@ -20,6 +20,8 @@ public interface PeopleInfoFragmentPresenter {
 
     void onFavoritedShoplicked(@NonNull Context context, PeopleInfoData.UserInfo userInfo);
 
+    void onFollowingClicked(@NonNull Context context, PeopleInfoData.UserInfo userInfo);
+
     void onShopClicked(@NonNull Context context, String shopId);
 
     void setOnRequestSuccess(InputOutputData data);

@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_name">abstraction</string>
+
+    <string name="label_next">Selanjutnya</string>
+    <string name="label_choose">Pilih</string>
+    <string name="label_done">Selesai</string>
+    <string name="title_no_result">Tidak ada hasil</string>
+    <string name="title_loading">Loading</string>
+    <string name="product_etalase_picker_add_etalase_add_button_dialog">Tambah</string>
+    <string name="product_etalase_picker_add_etalase_cancel_button_dialog">Batal</string>
+    <string name="msg_network_error">Terjadi kesalahan koneksi, silahkan coba lagi </string>
+    <string name="msg_network_error_1">Terjadi kesalahan koneksi</string>
+    <string name="msg_network_error_2">Silahkan coba lagi </string>
+    <string name="title_try_again_caps">COBA LAGI</string>
+    <string name="title_try_again">Coba Lagi</string>
+    <string name="top_ads_label_stepper">%1$d dari %2$d step</string>
+
+    <!-- NETWORK DEFAULT ERROR MESSAGE -->
+    <string name="msg_no_connection">Tidak ada koneksi internet</string>
+    <string name="default_request_error_timeout">Koneksi timeout. Silakan coba beberapa saat lagi</string>
+    <string name="default_request_error_internal_server">Terjadi kesalahan pada server. Ulangi beberapa saat lagi</string>
+    <string name="default_request_error_forbidden_auth">Terjadi kesalahan. Ulangi beberapa saat lagi</string>
+    <string name="default_request_error_unknown">Terjadi kesalahan. Ulangi beberapa saat lagi</string>
+    <string name="default_request_error_bad_request">Silakan coba kembali</string>
+    <string name="default_request_error_null_data">Data Kosong. Mohon ulangi beberapa saat lagi</string>
+    <string name="default_request_error_unknown_short">Terjadi kesalahan</string>
+
+    <string name="error_no_connection2">Mohon periksa koneksi internet Anda</string>
+    <string name="close">Tutup</string>
+    <string name="msg_server_error_2">Terjadi Kendala Pada Server, Silahkan Laporkan</string>
+    <string name="action_report">Laporkan</string>
+    <string name="check_timezone">Kami mendeteksi perangkat anda tidak menggunakan waktu yang sesuai dengan zona waktu anda. Silahkan periksa pengaturan waktu anda.</string>
+    <string name="action_check">Periksa</string>
+    <string name="mail_to_feedback">mailto:android.feedback@tokopedia.com</string>
+    <string name="server_error_problem">Masalah Server Error</string>
+    <string name="application_version_text">"Versi Aplikasi: "</string>
+    <string name="send_email">Kirim Email</string>
+    <string name="title_session_expired">Sesi anda telah habis, silahkan login kembali</string>
+    <string name="title_ok">OK</string>
+</resources>

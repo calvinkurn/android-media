@@ -15,4 +15,8 @@ public interface TransactionRouter {
     void goToOrderHistory(Context context, String orderId, int userMode);
 
     Intent getInboxReputationIntent(Context context);
+
+    Intent getDetailResChatIntentBuyer(Context context, String resoId, String shopName);
+
+    Intent getResolutionCenterIntent(Context context);
 }

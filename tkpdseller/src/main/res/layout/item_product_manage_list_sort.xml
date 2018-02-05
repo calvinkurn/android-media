@@ -8,7 +8,7 @@
 
     <TextView
         android:id="@+id/text_view_title"
-        style="@style/TextView.Subheading.BlackSecondary"
+        style="@style/TextView.Title.BlackSecondary"
         android:layout_width="0dp"
         android:layout_weight="1"
         tools:text="@string/app_id" />

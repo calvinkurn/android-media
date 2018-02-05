@@ -17,6 +17,10 @@
 
             <include layout="@layout/order_detail_page_header" />
 
+            <include
+                android:id="@+id/layout_driver_info"
+                layout="@layout/order_detail_driver_info" />
+
             <include layout="@layout/order_detail_description" />
 
             <View
@@ -51,11 +55,6 @@
                         android:text="@string/title_look"
                         android:textColor="@color/green_500"
                         android:textStyle="bold" />
-
-                    <ImageView
-                        android:layout_width="12dp"
-                        android:layout_height="12dp"
-                        android:src="@drawable/chevron_thin_right" />
 
                 </LinearLayout>
 
