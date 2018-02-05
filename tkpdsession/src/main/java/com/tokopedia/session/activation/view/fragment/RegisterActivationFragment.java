@@ -41,6 +41,7 @@ import com.tokopedia.session.register.RegisterConstant;
 public class RegisterActivationFragment extends BasePresenterFragment<RegisterActivationPresenter>
         implements RegisterConstant, RegisterActivationView {
 
+    private static final int REQUEST_AUTO_LOGIN = 101;
     TextView activationText;
     EditText verifyCode;
     TextView activateButton;
@@ -297,17 +298,13 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
 
     @Override
     public void onSuccessActivateWithUnicode(LoginTokenViewModel loginTokenViewModel) {
-        finishLoadingProgress();
-        goToAutomaticLogin(loginTokenViewModel);
-    }
-
-    private void goToAutomaticLogin(LoginTokenViewModel loginTokenViewModel) {
-        getActivity().finish();
-
-        startActivity(LoginActivity.getAutomaticLogin(
+        Intent autoLoginIntent = LoginActivity.getAutomaticLogin(
                 getActivity(),
                 email,
-                pw)
+                pw);
+        startActivityForResult(
+                autoLoginIntent,
+                REQUEST_AUTO_LOGIN
         );
     }
 
@@ -332,6 +329,13 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
             email = data.getExtras().getString(ChangeEmailFragment.EXTRA_EMAIL, "");
 
             setActivateText();
+        } else if (requestCode == REQUEST_AUTO_LOGIN
+                && resultCode == Activity.RESULT_OK) {
+            finishLoadingProgress();
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
+        } else if (requestCode == REQUEST_AUTO_LOGIN) {
+            finishLoadingProgress();
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

@@ -87,6 +87,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
         implements RegisterEmailViewListener, RegisterConstant {
 
     private static final int REQUEST_AUTO_LOGIN = 101;
+    private static final int REQUEST_ACTIVATE_ACCOUNT = 102;
 
     View container;
     View redirectView;
@@ -556,13 +557,11 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
     @Override
     public void goToActivationPage(RegisterEmailViewModel viewModel) {
-
-        dismissLoadingProgress();
         Intent intent = ActivationActivity.getCallingIntent(getActivity(),
                 email.getText().toString(),
                 registerPassword.getText().toString()
         );
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_ACTIVATE_ACCOUNT);
     }
 
     @Override
@@ -705,6 +704,15 @@ public class RegisterEmailFragment extends BaseDaggerFragment
                 }
                 break;
             case REQUEST_AUTO_LOGIN:
+                if (resultCode == Activity.RESULT_OK) {
+                    getActivity().setResult(Activity.RESULT_OK);
+                    getActivity().finish();
+                } else {
+                    dismissLoadingProgress();
+                }
+                break;
+
+            case REQUEST_ACTIVATE_ACCOUNT:
                 if (resultCode == Activity.RESULT_OK) {
                     getActivity().setResult(Activity.RESULT_OK);
                     getActivity().finish();

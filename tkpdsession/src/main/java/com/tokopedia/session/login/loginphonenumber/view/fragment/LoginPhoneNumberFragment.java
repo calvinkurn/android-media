@@ -115,27 +115,10 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
             }
         });
 
-        phoneNumber.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (!phoneNumber.getText().equals(s.toString()))
-                    errorText.setVisibility(View.GONE);
-            }
-        });
-
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                errorText.setText("");
                 UnifyTracking.eventTracking(LoginPhoneNumberAnalytics.getLoginWithPhoneTracking());
                 presenter.loginWithPhoneNumber(phoneNumber.getText().toString());
             }

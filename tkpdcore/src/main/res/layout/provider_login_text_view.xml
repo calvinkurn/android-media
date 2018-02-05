@@ -14,7 +14,7 @@
 
     <ImageView
         android:id="@+id/provider_image"
-        android:layout_width="15dp"
+        android:layout_width="wrap_content"
         android:layout_height="20dp"
         android:adjustViewBounds="true"
         tools:src="@drawable/notif_red"
