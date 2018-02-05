@@ -10,6 +10,8 @@ import com.tokopedia.tkpdstream.common.di.module.StreamModule;
 import com.tokopedia.tkpdstream.common.di.scope.StreamScope;
 
 import dagger.Component;
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
 
 /**
  * @author by nisie on 2/1/18.
@@ -21,8 +23,10 @@ public interface StreamComponent {
     @ApplicationContext
     Context context();
 
-    void inject(BaseStreamActivity baseChatActivity);
+    OkHttpClient provideOkHttpClient();
 
-    void inject(ChannelFragment fragment);
+    Retrofit.Builder retrofitBuilder();
+
+    void inject(BaseStreamActivity baseChatActivity);
 
 }

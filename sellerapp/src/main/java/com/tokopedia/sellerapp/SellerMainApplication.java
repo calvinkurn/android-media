@@ -174,4 +174,9 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     protected List<CacheApiWhiteListDomain> getWhiteList() {
         return WhiteList.getWhiteList();
     }
+
+    @Override
+    public Intent getGroupChatIntent(Context context) {
+        return null;
+    }
 }

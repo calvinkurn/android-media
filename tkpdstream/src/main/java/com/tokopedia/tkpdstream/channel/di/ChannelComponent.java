@@ -12,5 +12,6 @@ import dagger.Component;
 @Component(modules = ChannelModule.class, dependencies = StreamComponent.class)
 public interface ChannelComponent {
 
+    void inject(ChannelFragment fragment);
 
 }

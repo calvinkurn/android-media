@@ -43,10 +43,10 @@ public class ChannelFragment extends BaseDaggerFragment implements ChannelContra
     @Override
     protected void initInjector() {
 //        StreamComponent streamComponent = DaggerStreamComponent.builder().baseAppComponent(
-//                ((BaseMainApplication) application).getBaseAppComponent()).build();
+//                ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent()).build();
 //
 //        DaggerChannelComponent.builder()
-//                .strea(getComponent(ChannelComponent.class))
+//                .streamComponent(streamComponent)
 //                .build().inject(this);
 
 

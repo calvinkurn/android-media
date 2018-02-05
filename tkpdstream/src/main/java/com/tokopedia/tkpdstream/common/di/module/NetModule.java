@@ -42,10 +42,12 @@ public class NetModule {
     @Provides
     public OkHttpClient provideOkHttpClient(@OkHttpClientBuilderNonBaseQualifier OkHttpClient.Builder okHttpClientBuilder,
                                             HttpLoggingInterceptor httpLoggingInterceptor,
-                                            StreamErrorInterceptor streamErrorInterceptor) {
+                                            StreamErrorInterceptor streamErrorInterceptor,
+                                            TkpdAuthInterceptor tkpdAuthInterceptor) {
         return okHttpClientBuilder
                 .addInterceptor(httpLoggingInterceptor)
                 .addInterceptor(streamErrorInterceptor)
+                .addInterceptor(tkpdAuthInterceptor)
                 .build();
     }
 

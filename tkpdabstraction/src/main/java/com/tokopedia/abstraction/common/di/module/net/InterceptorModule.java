@@ -24,7 +24,7 @@ public class InterceptorModule {
     @ApplicationScope
     @Provides
     TkpdAuthInterceptor provideTkpdAuthInterceptor(@AuthKeyQualifier String authKey,
-                                                   Context context,
+                                                   @ApplicationContext Context context,
                                                    @FreshAccessTokenQualifier String freshAccessToken,
                                                    AbstractionRouter abstractionRouter,
                                                    UserSession userSession){

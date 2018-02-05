@@ -19,18 +19,4 @@ import retrofit2.Retrofit;
 @Module(includes = {NetModule.class})
 public class StreamModule {
 
-    @StreamScope
-    @Provides
-    @GroupChatQualifier
-    public Retrofit provideStreamRetrofit(OkHttpClient okHttpClient,
-                                          Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(GroupChatUrl.BASE_URL).client(okHttpClient).build();
-    }
-
-    @StreamScope
-    @Provides
-    public GroupChatApi provideGroupChatApi(@GroupChatQualifier Retrofit retrofit) {
-        return retrofit.create(GroupChatApi.class);
-    }
-
 }

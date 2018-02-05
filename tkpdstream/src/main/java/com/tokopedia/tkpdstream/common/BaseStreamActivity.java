@@ -5,7 +5,6 @@ import android.os.Bundle;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.tkpdstream.common.di.component.StreamComponent;
-import com.tokopedia.tkpdstream.common.di.component.DaggerStreamComponent;
 
 
 /**
@@ -23,14 +22,14 @@ public abstract class BaseStreamActivity extends BaseSimpleActivity {
     }
 
     private void initInjector() {
-        getStreamComponent().inject(this);
+//        getStreamComponent().inject(this);
     }
 
-    protected StreamComponent getStreamComponent() {
-        if (component == null) {
-            component = DaggerStreamComponent.builder().baseAppComponent(
-                    ((BaseMainApplication) getApplication()).getBaseAppComponent()).build();
-        }
-        return component;
-    }
+//    protected StreamComponent getStreamComponent() {
+//        if (component == null) {
+//            component = DaggerStreamComponent.builder().baseAppComponent(
+//                    ((BaseMainApplication) getApplication()).getBaseAppComponent()).build();
+//        }
+//        return component;
+//    }
 }
