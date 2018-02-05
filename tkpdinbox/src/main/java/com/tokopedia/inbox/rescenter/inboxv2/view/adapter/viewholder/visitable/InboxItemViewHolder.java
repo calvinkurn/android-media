@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.inboxv2.view.adapter.ProductAdapter;
 import com.tokopedia.inbox.rescenter.inboxv2.view.listener.ResoInboxFragmentListener;
@@ -84,6 +85,7 @@ public class InboxItemViewHolder extends AbstractViewHolder<InboxItemViewModel> 
         if (!TextUtils.isEmpty(item.getAutoDoneBackgroundColor())) {
             tvAutoExecute.setTextColor(Color.parseColor(item.getAutoDoneTextColor()));
             tvAutoExecute.setBackgroundColor(Color.parseColor(item.getAutoDoneBackgroundColor()));
+            tvAutoExecute.setBackground(MethodChecker.getDrawable(context, R.drawable.bg_title_inbox));
         }
 
         if (item.getImageList() != null) {

@@ -134,17 +134,16 @@ public class ResoInboxFragment
         isSeller = getArguments().getBoolean(ResoInboxActivity.PARAM_IS_SELLER);
         rvInbox.addOnScrollListener(rvInboxScrollListener);
         rvInbox.setAdapter(adapter);
-        initView(true);
+        swipeToRefresh.setOnRefreshListener(this);
+        initView();
         initViewListener();
     }
 
-    private void initView(boolean isFilterNeedRefreshed) {
+    private void initView() {
         bottomActionView.setVisibility(View.GONE);
         rvInbox.setVisibility(View.GONE);
-        if (isFilterNeedRefreshed) {
-            inboxFilterModel = new ResoInboxFilterModel();
-            inboxSortModel = new ResoInboxSortModel(SortModel.getSortList(getActivity()), SORT_DEFAULT_ID, new SortModel());
-        }
+        inboxFilterModel = new ResoInboxFilterModel();
+        inboxSortModel = new ResoInboxSortModel(SortModel.getSortList(getActivity()), SORT_DEFAULT_ID, new SortModel());
         presenter.initPresenterData(getActivity(), isSeller);
     }
 
@@ -205,7 +204,7 @@ public class ResoInboxFragment
 
     @Override
     public void onRefresh() {
-        initView(false);
+        presenter.getInboxWithParams(inboxSortModel, inboxFilterModel);
     }
 
     private void sortButtonClicked() {

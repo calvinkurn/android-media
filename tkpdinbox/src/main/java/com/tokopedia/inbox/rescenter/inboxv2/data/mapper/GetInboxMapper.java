@@ -164,8 +164,13 @@ public class GetInboxMapper implements Func1<Response<TkpdResponse>, InboxItemRe
                                 response.getResolution().getStatus().getIntX() != STATUS_RESO_CANCELED )) ?
                         response.getResolution().getAutoExecuteTime().getTimeLeft() :
                         "-",
-                response.getResolution().getAutoExecuteTime().getColor(),
-                !TextUtils.isEmpty(response.getResolution().getAutoExecuteTime().getColor()) ?
+                (!TextUtils.isEmpty(response.getResolution().getAutoExecuteTime().getTimeLeft()) &&
+                        !(response.getResolution().getStatus().getIntX() != STATUS_RESO_FINISHED ||
+                                response.getResolution().getStatus().getIntX() != STATUS_RESO_CANCELED )) ?
+                        response.getResolution().getAutoExecuteTime().getColor() : "",
+                (!TextUtils.isEmpty(response.getResolution().getAutoExecuteTime().getTimeLeft()) &&
+                        !(response.getResolution().getStatus().getIntX() != STATUS_RESO_FINISHED ||
+                                response.getResolution().getStatus().getIntX() != STATUS_RESO_CANCELED )) ?
                         COLOR_WHITE :
                         COLOR_BLACK_70,
                 response.getResolution().getLastReplyTime().getFullString(),
