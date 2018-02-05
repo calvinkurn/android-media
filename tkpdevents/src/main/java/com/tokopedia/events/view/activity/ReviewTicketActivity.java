@@ -5,7 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.method.ArrowKeyMovementMethod;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
@@ -32,6 +35,7 @@ import com.tokopedia.events.di.EventModule;
 import com.tokopedia.events.view.contractor.EventReviewTicketsContractor;
 import com.tokopedia.events.view.presenter.EventReviewTicketPresenter;
 import com.tokopedia.events.view.utils.CurrencyUtil;
+import com.tokopedia.events.view.utils.ImageTextViewHolder;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
 
 import javax.inject.Inject;
@@ -49,9 +53,9 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     @BindView(R2.id.event_name_tv)
     TextView eventNameTv;
     @BindView(R2.id.event_time_tv)
-    TextView eventTimeTv;
+    View eventTimeTv;
     @BindView(R2.id.event_address_tv)
-    TextView eventAddressTv;
+    View eventAddressTv;
     @BindView(R2.id.event_total_tickets)
     TextView eventTotalTickets;
     @BindView(R2.id.tv_ticket_summary)
@@ -110,13 +114,30 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     TextView tvPromoCashbackMsg;
     @BindView(R2.id.batal)
     TextView batal;
-
+    @BindView(R2.id.tooltip_layout)
+    View tooltipLayout;
+    @BindView(R2.id.info_email)
+    ImageView infoEmail;
+    @BindView(R2.id.info_moreinfo)
+    ImageView infoMoreinfo;
+    @BindView(R2.id.tooltipinfo_title)
+    TextView tooltipTitle;
+    @BindView(R2.id.tooltipinfo_subtitle)
+    TextView tooltipSubtitle;
+    @BindView(R2.id.button_dismisstooltip)
+    TextView dismissTooltip;
+    @BindView(R2.id.tv_ticket_cnt_type)
+    TextView tvTicketCntType;
+    @BindView(R2.id.tv_someinfo)
+    TextView tvSomeInfo;
 
     EventComponent eventComponent;
     @Inject
     EventReviewTicketPresenter mPresenter;
 
     public static final int PAYMENT_REQUEST_CODE = 65000;
+    private ImageTextViewHolder timeHolder;
+    private ImageTextViewHolder addressHolder;
 
 
     @Override
@@ -125,8 +146,15 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
         setContentView(R.layout.review_booking_layout);
         ButterKnife.bind(this);
         executeInjector();
+        timeHolder = new ImageTextViewHolder();
+        addressHolder = new ImageTextViewHolder();
+
+        ButterKnife.bind(timeHolder, eventTimeTv);
+        ButterKnife.bind(addressHolder, eventAddressTv);
+        
         mPresenter.attachView(this);
         mPresenter.initialize();
+
         promoCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -194,8 +222,8 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
         String timerange = packageViewModel.getTimeRange();
         ImageHandler.loadImageCover2(eventImageSmall, packageViewModel.getThumbnailApp());
         eventNameTv.setText(packageViewModel.getDisplayName());
-        eventTimeTv.setText(timerange);
-        eventAddressTv.setText(packageViewModel.getAddress());
+        setHolder(R.drawable.ic_time, timerange, timeHolder);
+        setHolder(R.drawable.skyline, packageViewModel.getAddress(), addressHolder);
         eventTotalTickets.setText(String.format(getString(R.string.jumlah_tiket),
                 packageViewModel.getSelectedQuantity()));
 
@@ -206,7 +234,10 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
         tvConvFees.setText("Rp " + CurrencyUtil.convertToCurrencyString(convFees));
         tvTotalPrice.setText("Rp " + CurrencyUtil.convertToCurrencyString(baseFare + convFees));
         buttonTextview.setText(getString(R.string.pay_button));
-        tvTicketSummary.setText(String.format(getString(R.string.x_type),
+        SpannableString someinfo = new SpannableString(getResources().getString(R.string.some_info));
+        someinfo.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.green_nob)), 54, 74, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        tvSomeInfo.setText(someinfo);
+        tvTicketCntType.setText(String.format(getString(R.string.x_type),
                 packageViewModel.getSelectedQuantity(), packageViewModel.getDisplayName()));
         String baseBreak = String.format(getString(R.string.x_type),
                 packageViewModel.getSelectedQuantity(), CurrencyUtil.convertToCurrencyString(packageViewModel.getSalesPrice()));
@@ -285,7 +316,7 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     }
 
     @Override
-    public void showPromoSuccessMessage(String text,int color) {
+    public void showPromoSuccessMessage(String text, int color) {
         tvPromoSuccessMsg.setText(text);
         tvPromoSuccessMsg.setTextColor(color);
         tvPromoSuccessMsg.setVisibility(View.VISIBLE);
@@ -303,6 +334,25 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
         tvPromoSuccessMsg.setVisibility(View.GONE);
         tvPromoCashbackMsg.setVisibility(View.GONE);
         batal.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showEmailTooltip() {
+        tooltipTitle.setText(getResources().getString(R.string.tujuan_pengiriman_tiket));
+        tooltipSubtitle.setText(getResources().getString(R.string.emailinfo_text));
+        tooltipLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showMoreinfoTooltip() {
+        tooltipTitle.setText(getResources().getString(R.string.data_pelanggan_tambahan));
+        tooltipSubtitle.setText(getResources().getString(R.string.additionallinfo_text));
+        tooltipLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideTooltip() {
+        tooltipLayout.setVisibility(View.GONE);
     }
 
     @OnClick(R2.id.btn_go_to_payment)
@@ -328,6 +378,19 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     @OnClick(R2.id.batal)
     void dismissPromoCode() {
         mPresenter.updatePromoCode("");
+    }
+
+    @OnClick({R2.id.info_email,
+            R2.id.info_moreinfo,
+            R2.id.button_dismisstooltip})
+    void onClickInfoIcon(View view) {
+        if (view.getId() == R.id.info_email) {
+            mPresenter.clickEmailIcon();
+        } else if (view.getId() == R.id.info_moreinfo) {
+            mPresenter.clickMoreinfoIcon();
+        } else if (view.getId() == R.id.button_dismisstooltip) {
+            mPresenter.clickDismissTooltip();
+        }
     }
 
     @Override
@@ -381,5 +444,12 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     protected void onResume() {
         super.onResume();
         mPresenter.getProfile();
+    }
+
+    public void setHolder(int resID, String label, ImageTextViewHolder holder) {
+
+        holder.setImage(resID);
+        holder.setTextView(label);
+
     }
 }

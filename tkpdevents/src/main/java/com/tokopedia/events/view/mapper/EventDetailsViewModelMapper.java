@@ -43,7 +43,14 @@ public class EventDetailsViewModelMapper {
         target.setThumbsUp(source.getThumbsUp());
         target.setSeatMapImage(source.getSeatMapImage());
         target.setForms(source.getForms());
-        target.setTimeRange(convertEpochToString(source.getMinStartDate()) + " - " + convertEpochToString(source.getMaxEndDate()));
+        String dateRange = "";
+        if (source.getMinStartDate().equals(source.getMaxEndDate())) {
+            dateRange = convertEpochToString(source.getMinStartDate());
+        } else {
+            dateRange = convertEpochToString(source.getMinStartDate())
+                    + " - " + convertEpochToString(source.getMaxEndDate());
+        }
+        target.setTimeRange(dateRange);
         int size = source.getSchedules().size();
         List<SchedulesViewModel> schedules = new ArrayList<>(size);
         for (ScheduleDomain item : source.getSchedules()) {

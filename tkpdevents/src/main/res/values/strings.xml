@@ -42,11 +42,17 @@
     <string name="and_others">%1$s and %2$d others</string>
     <string name="x_type">%1$d x %2$s</string>
     <string name="jumlah_tiket">Jumlah Tiket : %1$d</string>
+    <string name="some_info">Dengan menekan tombol di bawah, saya telah menyetujui Syarat dan Ketentuan untuk pembelian tiket dengan atas nama di atas.</string>
     <string name="_2_x_rp100000">(2 x Rp100000)</string>
     <string name="no_internet">Check Your Network and Try Again</string>
     <string name="retry">Retry</string>
     <string name="cek_kode">Cek Kode</string>
     <string name="kode_promo">Kode Promo</string>
+    <string name="tujuan_pengiriman_tiket">Tujuan Pengiriman Tiket</string>
+    <string name="emailinfo_text">Alamat email dan nomor telepon yang tertulis akan menjadi tujuan pengiriman e-tiket pemesanan Anda.</string>
+    <string name="data_pelanggan_tambahan">Data Pelanggan Tambahan</string>
+    <string name="additionallinfo_text">Data pelanggan tambahan akan digunakan pada saat penukaran tiket</string>
+    <string name="promo_success_msg">Anda mendapatkan promo:</string>
 
     <!-- need to changed -->
 

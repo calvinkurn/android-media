@@ -39,10 +39,17 @@ public class EventReviewTicketsContractor {
 
         android.view.View getRootView();
 
-        void showPromoSuccessMessage(String text,int color);
+        void showPromoSuccessMessage(String text, int color);
+
         void showCashbackMessage(String text);
 
         void hideSuccessMessage();
+
+        void showEmailTooltip();
+
+        void showMoreinfoTooltip();
+
+        void hideTooltip();
     }
 
     public interface Presenter extends CustomerPresenter<EventReviewTicketsContractor.EventReviewTicketsView> {
@@ -62,5 +69,11 @@ public class EventReviewTicketsContractor {
         void updateNumber(String number);
 
         void getProfile();
+
+        void clickEmailIcon();
+
+        void clickMoreinfoIcon();
+
+        void clickDismissTooltip();
     }
 }

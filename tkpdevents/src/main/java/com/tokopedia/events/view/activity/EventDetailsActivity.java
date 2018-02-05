@@ -173,13 +173,17 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
     public void renderFromHome(CategoryItemsViewModel homedata) {
         toolbar.setTitle(homedata.getTitle());
         ImageHandler.loadImageCover2(eventDetailBanner, homedata.getImageApp());
-        String dateRange = mPresenter.convertEpochToString(homedata.getMinStartDate());
+        String dateRange = "";
 
         if (homedata.getMinStartDate() == 0) {
             timeView.setVisibility(View.GONE);
+        } else if (homedata.getMinStartDate().equals(homedata.getMaxEndDate())) {
+            dateRange = mPresenter.convertEpochToString(homedata.getMinStartDate());
         } else {
-            setHolder(R.drawable.ic_time, dateRange, timeHolder);
+            dateRange = mPresenter.convertEpochToString(homedata.getMinStartDate())
+                    + " - " + mPresenter.convertEpochToString(homedata.getMaxEndDate());
         }
+        setHolder(R.drawable.ic_time, dateRange, timeHolder);
         setHolder(R.drawable.ic_placeholder, homedata.getCityName(), locationHolder);
         setHolder(R.drawable.ic_skyline, homedata.getCityName(), addressHolder);
         textViewTitle.setText(homedata.getTitle());

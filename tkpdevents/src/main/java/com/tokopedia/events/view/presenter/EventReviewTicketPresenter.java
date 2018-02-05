@@ -177,6 +177,21 @@ public class EventReviewTicketPresenter
         });
     }
 
+    @Override
+    public void clickEmailIcon() {
+        getView().showEmailTooltip();
+    }
+
+    @Override
+    public void clickMoreinfoIcon() {
+        getView().showMoreinfoTooltip();
+    }
+
+    @Override
+    public void clickDismissTooltip() {
+        getView().hideTooltip();
+    }
+
 
     private CartItems convertPackageToCartItem(PackageViewModel packageViewModel) {
         Configuration config = new Configuration();
@@ -308,8 +323,8 @@ public class EventReviewTicketPresenter
                             getView().getActivity().getResources().getColor(R.color.red_a700));
                 } else {
                     getView().hideProgressBar();
-                    getView().showPromoSuccessMessage(verifyCartResponse.getCart().getPromocodeSuccessMessage(),
-                            getView().getActivity().getResources().getColor(R.color.red_a700));
+                    getView().showPromoSuccessMessage(getView().getActivity().getResources().getString(R.string.promo_success_msg),
+                            getView().getActivity().getResources().getColor(R.color.black_54));
                     String cashBackDiscount = "Total Discount : "
                             + verifyCartResponse.getCart().getPromocodeDiscount()
                             + " and Total Cashback : " + verifyCartResponse.getCart().getPromocodeCashback();

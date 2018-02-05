@@ -169,7 +169,8 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
 
             @Override
             public void onError(Throwable throwable) {
-//                Log.d("Naveen", " on Error" + throwable.getMessage());
+                Log.d("Naveen", " on Error" + throwable.getMessage());
+                throwable.printStackTrace();
             }
 
             @Override
