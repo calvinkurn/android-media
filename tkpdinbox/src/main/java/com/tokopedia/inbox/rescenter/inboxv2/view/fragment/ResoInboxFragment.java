@@ -224,20 +224,13 @@ public class ResoInboxFragment
         getBottomSheetActivityTransition();
     }
 
-    private void getFirstInboxResult(InboxItemResultViewModel result, boolean isInboxWithFilter) {
+    private void getFirstInboxResult(InboxItemResultViewModel result) {
         dismissProgressBar();
         swipeToRefresh.setRefreshing(false);
         rvInbox.setVisibility(View.VISIBLE);
         bottomActionView.setVisibility(View.VISIBLE);
         adapter.clearData();
         adapter.addItem(result.getFilterListViewModel());
-        if (result.getInboxItemViewModels().size() == 0) {
-            if (isInboxWithFilter) {
-                adapter.addItem(new EmptyInboxFilterDataModel());
-            } else {
-                adapter.addItem(new EmptyModel());
-            }
-        }
         adapter.addList(result.getInboxVisitableList());
         adapter.notifyDataSetChanged();
 
@@ -284,7 +277,7 @@ public class ResoInboxFragment
     @Override
     public void onSuccessGetInbox(InboxItemResultViewModel result) {
         updateFilterValue(result);
-        getFirstInboxResult(result, false);
+        getFirstInboxResult(result);
     }
 
     @Override
@@ -297,12 +290,14 @@ public class ResoInboxFragment
     @Override
     public void onEmptyGetInbox() {
         dismissProgressBar();
+        adapter.setCanLoadMore(false);
         adapter.addItem(new EmptyModel());
+        adapter.notifyDataSetChanged();
     }
 
     @Override
     public void onSuccessGetInboxWithFilter(InboxItemResultViewModel result) {
-        getFirstInboxResult(result, true);
+        getFirstInboxResult(result);
     }
 
     @Override
@@ -314,7 +309,11 @@ public class ResoInboxFragment
     @Override
     public void onEmptyGetInboxWithFilter(InboxItemResultViewModel result) {
         dismissProgressBar();
+        adapter.setCanLoadMore(false);
+        adapter.clearData();
+        adapter.addItem(result.getFilterListViewModel());
         adapter.addItem(new EmptyInboxFilterDataModel());
+        adapter.notifyDataSetChanged();
     }
 
     @Override

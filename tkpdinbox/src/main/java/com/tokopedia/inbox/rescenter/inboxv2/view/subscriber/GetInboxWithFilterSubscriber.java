@@ -40,7 +40,8 @@ public class GetInboxWithFilterSubscriber extends Subscriber<InboxItemResultView
             inboxItemResultViewModel.setFilterListViewModel(
                     GetInboxSubscriber.convertListToModel(inboxItemResultViewModel.getFilterViewModels()));
         }
-        if (inboxItemResultViewModel.getInboxItemViewModels().size() != 0) {
+        if (inboxItemResultViewModel.getInboxItemViewModels()!=null
+                && inboxItemResultViewModel.getInboxItemViewModels().size() != 0) {
             inboxItemResultViewModel.setInboxVisitableList(
                     GetInboxSubscriber.convertModelListToVisitableList(inboxItemResultViewModel.getInboxItemViewModels()));
             mainView.onSuccessGetInboxWithFilter(inboxItemResultViewModel);
