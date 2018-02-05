@@ -1,15 +1,17 @@
 package com.tokopedia.tokocash.network.api;
 
+import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.tokocash.activation.data.ActivateTokoCashEntity;
 import com.tokopedia.tokocash.network.model.RefreshTokenEntity;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.http.GET;
-import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 import rx.Observable;
 
@@ -26,10 +28,10 @@ public interface TokoCashApi {
     Observable<Response<TkpdDigitalResponse>> getTokoCashPending(@QueryMap Map<String, String> params);
 
     @GET(WalletUrl.Account.PATH_REQUEST_OTP_WALLET)
-    Observable<Response<TkpdResponse>> requestOtpWallet();
+    Observable<Response<DataResponse<ActivateTokoCashEntity>>> requestOtpWallet();
 
     @GET(WalletUrl.Account.PATH_LINK_WALLET_TO_TOKOCASH)
-    Observable<Response<TkpdResponse>> linkedWalletToTokocash(@Query("otp") String otp);
+    Observable<Response<DataResponse<ActivateTokoCashEntity>>> linkedWalletToTokocash(@QueryMap HashMap<String, String> params);
 
     @GET(WalletUrl.Account.GET_TOKEN_WALLET)
     Observable<Response<TkpdResponse>> getTokenWallet();

@@ -1,9 +1,9 @@
 package com.tokopedia.tokocash.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.tokocash.activation.presentation.presetation.ActivateTokoCashFragment;
-import com.tokopedia.tokocash.activation.presentation.presetation.RequestOTPWalletFragment;
-import com.tokopedia.tokocash.activation.presentation.presetation.SuccessActivateFragment;
+import com.tokopedia.tokocash.activation.presentation.fragment.ActivateTokoCashFragment;
+import com.tokopedia.tokocash.activation.presentation.fragment.RequestOTPWalletFragment;
+import com.tokopedia.tokocash.activation.presentation.fragment.SuccessActivateFragment;
 import com.tokopedia.tokocash.historytokocash.presentation.activity.HistoryTokoCashActivity;
 import com.tokopedia.tokocash.qrpayment.presentation.activity.CustomScannerTokoCashActivity;
 import com.tokopedia.tokocash.qrpayment.presentation.activity.NominalQrPaymentActivity;

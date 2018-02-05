@@ -24,12 +24,12 @@
             android:label="@string/title_input_nominal"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
-        <activity android:name=".activation.presentation.presetation.ActivateTokoCashActivity"
+        <activity android:name=".activation.presentation.activity.ActivateTokoCashActivity"
             android:windowSoftInputMode="adjustResize"
             android:label="@string/title_input_nominal"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
-        <activity android:name=".activation.presentation.presetation.SuccessActivateTokoCashActivity"
+        <activity android:name=".activation.presentation.activity.SuccessActivateTokoCashActivity"
             android:windowSoftInputMode="adjustResize"
             android:label="@string/title_input_nominal"
             android:screenOrientation="portrait"

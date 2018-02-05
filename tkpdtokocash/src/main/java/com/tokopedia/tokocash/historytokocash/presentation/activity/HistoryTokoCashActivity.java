@@ -367,12 +367,12 @@ public class HistoryTokoCashActivity extends BaseSimpleActivity implements TokoC
             if (header.isSelected()) {
                 if (!header.getType().equals(ALL_TRANSACTION_TYPE)) {
                     emptyIconTransaction.setImageDrawable(ContextCompat.getDrawable(this,
-                            R.drawable.ic_tokocash_no_history_category));
+                            R.drawable.history_ic_no_category));
                     emptyDescTransaction.setText(getString(R.string.desc_empty_page_tokocash));
                     emptyTextTransaction.setText(getString(R.string.message_no_transaction) + " " + header.getName());
                 } else {
                     emptyIconTransaction.setImageDrawable(ContextCompat.getDrawable(this,
-                            R.drawable.ic_tokocash_no_transaction));
+                            R.drawable.history_ic_no_transaction));
                     emptyDescTransaction.setText(getString(R.string.desc_empty_page_no_transaction_tokocash));
                     emptyTextTransaction.setText(getString(R.string.message_no_transaction));
                 }
