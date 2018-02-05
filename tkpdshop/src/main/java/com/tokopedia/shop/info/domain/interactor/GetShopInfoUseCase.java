@@ -15,6 +15,8 @@ import rx.Observable;
 
 public class GetShopInfoUseCase extends UseCase<ShopInfo> {
 
+    private static final String SHOP_ID = "SHOP_ID";
+
     private ShopInfoRepository shopInfoRepository;
 
     @Inject
@@ -25,6 +27,13 @@ public class GetShopInfoUseCase extends UseCase<ShopInfo> {
 
     @Override
     public Observable<ShopInfo> createObservable(RequestParams requestParams) {
-        return shopInfoRepository.getShopInfo();
+        String shopId = requestParams.getString(SHOP_ID, null);
+        return shopInfoRepository.getShopInfo(shopId);
+    }
+
+    public RequestParams createRequestParam(String shopId) {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(SHOP_ID, shopId);
+        return requestParams;
     }
 }
