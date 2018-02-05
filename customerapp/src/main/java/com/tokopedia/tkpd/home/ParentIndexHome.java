@@ -609,6 +609,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
     @Override
     protected void onResume() {
+        HockeyAppHelper.checkForUpdate(this);
         RxUtils.getNewCompositeSubIfUnsubscribed(subscription);
         FCMCacheManager.checkAndSyncFcmId(getApplicationContext());
         if (SessionHandler.isV4Login(this) && indicator.getTabCount() < 4) {

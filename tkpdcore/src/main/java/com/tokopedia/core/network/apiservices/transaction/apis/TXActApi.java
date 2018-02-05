@@ -23,7 +23,7 @@ public interface TXActApi {
     Observable<Response<TkpdResponse>> step1ProcessCreditCard(@FieldMap Map<String, String> params);
 
     @GET(TkpdBaseURL.Transaction.PATH_GET_PARAMETER_DYNAMIC_PAYMENT)
-    Observable<Response<TkpdResponse>> getParameterDynamicPayment(@QueryMap Map<String, String> params);
+    Observable<Response<TkpdResponse>> getParameterDynamicPayment( @QueryMap Map<String, String> params);
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.Transaction.PATH_THANKS_DYNAMIC_PAYMENT)
