@@ -47,7 +47,7 @@ public class Utilities {
     }
 
     private static boolean checkRootMethod2() {
-        String[] paths = { "/system/app/Superuser.apk", "/sbin/su", "/system/bin/su", "/system/xbin/su", "/data/local/xbin/su", "/data/local/bin/su", "/system/sd/xbin/su",
+        String[] paths = {"/system/app/Superuser.apk", "/sbin/su", "/system/bin/su", "/system/xbin/su", "/data/local/xbin/su", "/data/local/bin/su", "/system/sd/xbin/su",
                 "/system/bin/failsafe/su", "/data/local/su", "/su/bin/su"};
         for (String path : paths) {
             if (new File(path).exists()) return true;
@@ -58,7 +58,7 @@ public class Utilities {
     private static boolean checkRootMethod3() {
         Process process = null;
         try {
-            process = Runtime.getRuntime().exec(new String[] { "/system/xbin/which", "su" });
+            process = Runtime.getRuntime().exec(new String[]{"/system/xbin/which", "su"});
             BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
             if (in.readLine() != null) return true;
             return false;
@@ -80,7 +80,7 @@ public class Utilities {
                 || "google_sdk".equals(Build.PRODUCT);
     }
 
-    public static boolean isDeviceTablet(Context context){
+    public static boolean isDeviceTablet(Context context) {
         return context.getResources().getBoolean(R.bool.isTablet);
     }
 
@@ -93,7 +93,7 @@ public class Utilities {
                     if (!addr.isLoopbackAddress()) {
                         String sAddr = addr.getHostAddress();
                         //boolean isIPv4 = InetAddressUtils.isIPv4Address(sAddr);
-                        boolean isIPv4 = sAddr.indexOf(':')<0;
+                        boolean isIPv4 = sAddr.indexOf(':') < 0;
 
                         if (useIPv4) {
                             if (isIPv4)
@@ -101,18 +101,18 @@ public class Utilities {
                         } else {
                             if (!isIPv4) {
                                 int delim = sAddr.indexOf('%'); // drop ip6 zone suffix
-                                return delim<0 ? sAddr.toUpperCase() : sAddr.substring(0, delim).toUpperCase();
+                                return delim < 0 ? sAddr.toUpperCase() : sAddr.substring(0, delim).toUpperCase();
                             }
                         }
                     }
                 }
             }
-        } catch (Exception ex) { } // for now eat exceptions
+        } catch (Exception ex) {
+        } // for now eat exceptions
         return "";
     }
 
-    public static String getScreenResolution(Context context)
-    {
+    public static String getScreenResolution(Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         DisplayMetrics metrics = new DisplayMetrics();
@@ -125,37 +125,38 @@ public class Utilities {
 
     public static String getSSID(Context context) {
         String ssid = null;
-        ConnectivityManager connManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connManager.getActiveNetworkInfo();
-        if (networkInfo != null) {
-            if (networkInfo.isConnected()) {
-                if (networkInfo.getType() == ConnectivityManager.TYPE_WIFI) {
-                    WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-                    WifiInfo connectionInfo = wifiManager.getConnectionInfo();
-                    if (connectionInfo != null && !TextUtils.isEmpty(connectionInfo.getSSID())) {
-                        ssid = connectionInfo.getSSID();
-                    }
+        try {
+            ConnectivityManager connManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connManager.getActiveNetworkInfo();
+            if (networkInfo != null && networkInfo.isConnected() &&
+                    networkInfo.getType() == ConnectivityManager.TYPE_WIFI) {
+                WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                WifiInfo connectionInfo = wifiManager.getConnectionInfo();
+                if (connectionInfo != null && !TextUtils.isEmpty(connectionInfo.getSSID())) {
+                    ssid = connectionInfo.getSSID();
                 }
             }
+        } catch (Exception e) {
+            return null;
         }
         return ssid;
     }
 
-    public static String getCarrierName(Context context){
-        TelephonyManager manager = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
+    public static String getCarrierName(Context context) {
+        TelephonyManager manager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         String carrierName = manager.getNetworkOperatorName();
         return carrierName;
     }
 
-    public static String getTimeZoneOffset(){
+    public static String getTimeZoneOffset() {
         Calendar mCalendar = new GregorianCalendar();
         TimeZone mTimeZone = mCalendar.getTimeZone();
         int mGMTOffset = mTimeZone.getRawOffset();
         long offset = TimeUnit.HOURS.convert(mGMTOffset, TimeUnit.MILLISECONDS);
-        if(offset<0)
-            return "GMT"+TimeUnit.HOURS.convert(mGMTOffset, TimeUnit.MILLISECONDS);
+        if (offset < 0)
+            return "GMT" + TimeUnit.HOURS.convert(mGMTOffset, TimeUnit.MILLISECONDS);
         else
-            return "GMT+"+TimeUnit.HOURS.convert(mGMTOffset, TimeUnit.MILLISECONDS);
+            return "GMT+" + TimeUnit.HOURS.convert(mGMTOffset, TimeUnit.MILLISECONDS);
     }
 
     public static String toBase64(String text, int mode) throws UnsupportedEncodingException {
@@ -163,23 +164,23 @@ public class Utilities {
         return Base64.encodeToString(data, mode);
     }
 
-    public static String getDeviceModel(){
+    public static String getDeviceModel() {
         return Build.MODEL;
     }
 
-    public static String getDeviceFabrik(){
+    public static String getDeviceFabrik() {
         return Build.MANUFACTURER;
     }
 
-    public static String getDeviceOS(){
+    public static String getDeviceOS() {
         return Build.VERSION.RELEASE;
     }
 
-    public static String getHttpAgent(){
+    public static String getHttpAgent() {
         return System.getProperty(HTTP_AGENT);
     }
 
-    public static String getLanguage(){
+    public static String getLanguage() {
         return Locale.getDefault().toString();
     }
 
