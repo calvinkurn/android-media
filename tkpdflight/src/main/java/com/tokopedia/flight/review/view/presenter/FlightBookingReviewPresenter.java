@@ -139,7 +139,7 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
     public void checkVoucherCode(String cartId, String voucherCode) {
         getView().showProgressDialog();
         flightAnalytics.eventVoucherClick(voucherCode);
-        flightCheckVoucherCodeUseCase.execute(flightCheckVoucherCodeUseCase.createRequestParams(cartId, voucherCode), getSubscriberCheckVoucherCode());
+        flightCheckVoucherCodeUseCase.execute(flightCheckVoucherCodeUseCase.createRequestParams(cartId, voucherCode), getSubscriberCheckVoucherCode(voucherCode));
     }
 
     @Override
@@ -186,7 +186,7 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
         };
     }
 
-    private Subscriber<AttributesVoucher> getSubscriberCheckVoucherCode() {
+    private Subscriber<AttributesVoucher> getSubscriberCheckVoucherCode(final String voucherCode) {
         return new Subscriber<AttributesVoucher>() {
             @Override
             public void onCompleted() {
@@ -198,7 +198,7 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
                 if (isViewAttached()) {
                     getView().hideProgressDialog();
                     getView().onErrorCheckVoucherCode(e);
-                    flightAnalytics.eventVoucherErrors(getView().getVoucherCode(), e.getMessage());
+                    flightAnalytics.eventVoucherErrors(voucherCode, e.getMessage());
                 }
             }
 

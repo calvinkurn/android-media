@@ -49,8 +49,6 @@ public interface ShopComponent {
     @ShopQualifier
     TomeApi tomeApi();
 
-    OkHttpClient.Builder getHttpClientBuilder();
-
     BearerInterceptor bearerInterceptor();
 
     @DefaultAuthWithErrorHandler
