@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,14 +28,15 @@ import com.tokopedia.transaction.checkout.view.data.DropshipperShippingOptionMod
 import com.tokopedia.transaction.checkout.view.data.ShipmentFeeBannerModel;
 import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
  * @author Aghny A. Putra on 25/01/18
  */
-public class CartSingleAddressAdapter
-        extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final String TAG = CartSingleAddressAdapter.class.getSimpleName();
 
@@ -335,6 +337,8 @@ public class CartSingleAddressAdapter
         @BindView(R2.id.tv_po_sign) TextView mTvPoSign;
         @BindView(R2.id.tv_cashback_text) TextView mTvCashback;
 
+        @BindView(R2.id.rv_product_list) RecyclerView mRvProductList;
+
         @BindView(R2.id.ll_other_product) LinearLayout mLlOtherProductContainer;
         @BindView(R2.id.tv_expand_other_product) TextView mTvExpandOtherProduct;
 
@@ -381,7 +385,7 @@ public class CartSingleAddressAdapter
             mTvTotalProductItem.setText(mainProductItem.getTotalProductItem());
             mTvOptionalNote.setText(mainProductItem.getNoteToSeller());
 
-            mRlProductPoliciesContainer.setVisibility(getPoliciesVisibility(mainProductItem));
+            mRlProductPoliciesContainer.setVisibility(getPoliciesVisibility());
             mIvFreeReturnIcon.setVisibility(getFreeReturnVisibility(mainProductItem.isFreeReturn()));
             mTvFreeReturnText.setVisibility(getFreeReturnVisibility(mainProductItem.isFreeReturn()));
             mTvPoSign.setVisibility(getPoVisibility(mainProductItem.isPoAvailable()));
@@ -390,6 +394,9 @@ public class CartSingleAddressAdapter
 
             mTvDetailOptionText.setText(getTextDrawerChevron(mIsExpandCostDetail));
             mIvDetailOptionChevron.setImageResource(getResourceDrawerChevron(mIsExpandCostDetail));
+
+            // Recycler View
+            initInnerRecyclerView(model.getCartItemModels());
 
             // Set listeners
             mLlOtherProductContainer.setOnClickListener(showAllProductListener());
@@ -402,7 +409,18 @@ public class CartSingleAddressAdapter
             mIvDetailOptionChevron.setOnClickListener(costDetailOptionListener());
         }
 
-        private int getPoliciesVisibility(CartItemModel mainProductItem) {
+        private void initInnerRecyclerView(List<CartItemModel> cartItemModels) {
+            mRvProductList.setHasFixedSize(true);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
+            layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+            mRvProductList.setLayoutManager(layoutManager);
+
+            InnerProductListAdapter innerProductListAdapter =
+                    new InnerProductListAdapter(cartItemModels);
+            mRvProductList.setAdapter(innerProductListAdapter);
+        }
+
+        private int getPoliciesVisibility() {
             return View.VISIBLE;
         }
 
