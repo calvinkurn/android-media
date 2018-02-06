@@ -146,6 +146,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         flightDashboardPassDataViewModel.setInfantPassengerCount(flightDashboardCache.getPassengerInfant());
         flightDashboardPassDataViewModel.setFlightClass(flightDashboardCache.getClassCache());
         flightDashboardPassDataViewModel.setRoundTrip(flightDashboardCache.isRoundTrip());
+        getView().setDashboardPassData(flightDashboardPassDataViewModel);
 
         actionRenderFromPassData(false);
     }
