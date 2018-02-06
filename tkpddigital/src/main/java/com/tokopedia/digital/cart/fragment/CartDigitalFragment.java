@@ -164,17 +164,17 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         return false;
     }
 
-    @NeedsPermission({Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_CALL_LOG})
+    @NeedsPermission({Manifest.permission.WRITE_CALL_LOG,Manifest.permission.CALL_PHONE,Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_CALL_LOG})
     void requestNOtpWithPermission() {
         presenter.callPermissionCheckSuccess();
     }
 
-    @OnPermissionDenied({Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_CALL_LOG})
+    @OnPermissionDenied({Manifest.permission.WRITE_CALL_LOG,Manifest.permission.CALL_PHONE,Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_CALL_LOG})
     void requestNOtpPermissionDenied() {
         presenter.callPermissionCheckFail();
     }
 
-    @OnNeverAskAgain({Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_CALL_LOG})
+    @OnNeverAskAgain({Manifest.permission.WRITE_CALL_LOG,Manifest.permission.CALL_PHONE,Manifest.permission.READ_PHONE_STATE,Manifest.permission.READ_CALL_LOG})
     void requestNOtpPermissionNeverAsk() {
         presenter.callPermissionCheckFail();
     }

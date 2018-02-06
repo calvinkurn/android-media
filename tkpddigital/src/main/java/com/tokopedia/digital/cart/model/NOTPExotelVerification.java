@@ -102,6 +102,10 @@ public class NOTPExotelVerification {
         } catch (PermissionNotGrantedException e) {
             e.printStackTrace();
         }
+        if(eVerification == null) {
+            verificationlistener.onVerificationFail();
+            return;
+        }
         final String finalPhoneNo = phoneNo;
         class VerifyListener implements VerificationListener {
             public void onVerificationStarted(VerificationStart verificationStart) {

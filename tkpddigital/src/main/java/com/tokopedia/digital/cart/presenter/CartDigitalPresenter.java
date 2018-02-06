@@ -363,10 +363,10 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
             view.checkCallPermissionForNOTP();
         }else {
 
-            if(GlobalConfig.isSellerApp())
-                Log.e(TAG,"nOTP Disabled");
-
-            NOTPTracking.eventNOTPConfiguration(true,false,false);
+            if(GlobalConfig.isSellerApp()) {
+                Log.e(TAG, "nOTP Disabled");
+                NOTPTracking.eventNOTPConfiguration(true, false, false);
+            }
             view.interruptRequestTokenVerification();
         }
     }
