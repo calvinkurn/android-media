@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'android-apt'
 
 def getTkpdAbstraction() {
     return project.hasProperty('isArtifact') ?
@@ -42,6 +43,9 @@ dependencies {
     compile getTkpdUseCase()
     compile getTkpdAbstraction()
     compile getTkpdInterface()
+
+    compile rootProject.ext.miscDependencies.dagger
+    apt rootProject.ext.miscDependencies.daggerCompiler
 
     testCompile 'junit:junit:4.12'
     androidTestCompile('com.android.support.test.espresso:espresso-core:3.0.1', {
