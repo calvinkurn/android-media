@@ -1,7 +1,7 @@
 package com.tokopedia.digital.product.data.mapper;
 
-import com.tokopedia.digital.common.data.entity.response.ResponsePulsaBalance;
 import com.tokopedia.digital.exception.MapperDataException;
+import com.tokopedia.digital.product.data.entity.response.ResponsePulsaBalance;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
 
 /**

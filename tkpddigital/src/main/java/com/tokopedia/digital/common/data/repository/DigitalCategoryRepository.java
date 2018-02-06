@@ -18,7 +18,8 @@ public class DigitalCategoryRepository implements IDigitalCategoryRepository {
     private CategoryDetailDataSource categoryDetailDataSource;
     private FavoriteListDataSource favoriteListDataSource;
 
-    public DigitalCategoryRepository(CategoryDetailDataSource categoryDetailDataSource, FavoriteListDataSource favoriteListDataSource) {
+    public DigitalCategoryRepository(CategoryDetailDataSource categoryDetailDataSource,
+                                     FavoriteListDataSource favoriteListDataSource) {
         this.categoryDetailDataSource = categoryDetailDataSource;
         this.favoriteListDataSource = favoriteListDataSource;
     }

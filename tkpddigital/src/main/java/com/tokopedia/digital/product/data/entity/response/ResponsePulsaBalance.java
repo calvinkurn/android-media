@@ -1,14 +1,13 @@
-package com.tokopedia.digital.common.data.entity.response;
+package com.tokopedia.digital.product.data.entity.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * @author anggaprasetiyo on 4/26/17.
+ * Created by ashwanityagi on 04/07/17.
  */
 
-public class ResponseBanner {
-
+public class ResponsePulsaBalance {
     @SerializedName("type")
     @Expose
     private String type;
@@ -17,7 +16,7 @@ public class ResponseBanner {
     private String id;
     @SerializedName("attributes")
     @Expose
-    private AttributesBanner attributes;
+    private AttributesPulsaBalance attributes;
 
     public String getType() {
         return type;
@@ -27,7 +26,7 @@ public class ResponseBanner {
         return id;
     }
 
-    public AttributesBanner getAttributes() {
+    public AttributesPulsaBalance getAttributes() {
         return attributes;
     }
 }
