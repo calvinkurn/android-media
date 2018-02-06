@@ -187,10 +187,6 @@ public class DrawerSellerHelper extends DrawerHelper
                 TkpdState.DrawerPosition.INBOX_TICKET,
                 drawerCache.getBoolean(DrawerAdapter.IS_INBOX_OPENED, false),
                 drawerCache.getInt(DrawerNotification.CACHE_INBOX_TICKET)));
-        inboxMenu.add(new DrawerItem(context.getString(R.string.drawer_title_resolution_center),
-                TkpdState.DrawerPosition.RESOLUTION_CENTER,
-                drawerCache.getBoolean(DrawerAdapter.IS_INBOX_OPENED, false),
-                drawerCache.getInt(DrawerNotification.CACHE_INBOX_RESOLUTION_CENTER_SELLER)));
         inboxMenu.add(new DrawerItem(context.getString(R.string.drawer_title_seller_info),
                 TkpdState.DrawerPosition.SELLER_INFO,
                 drawerCache.getBoolean(DrawerAdapter.IS_INBOX_OPENED, false),
