@@ -12,6 +12,7 @@ import android.support.v4.view.PagerAdapter;
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopComponentInstance;
+import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.info.di.component.ShopInfoComponent;
 import com.tokopedia.shop.info.view.fragment.ShopInfoDetailFragment;
 
@@ -28,7 +29,7 @@ public class ShopInfoActivity extends BaseTabActivity {
         return intent;
     }
 
-    private ShopInfoComponent component;
+    private ShopComponent component;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +38,7 @@ public class ShopInfoActivity extends BaseTabActivity {
     }
 
     private void initInjector() {
-        getShopComponent().inject(this);
+//        getShopComponent().inject(this);
     }
 
     @Override
@@ -118,7 +119,7 @@ public class ShopInfoActivity extends BaseTabActivity {
         return PAGE_LIMIT;
     }
 
-    protected ShopInfoComponent getShopComponent() {
+    protected ShopComponent getShopComponent() {
         if (component == null) {
             component = ShopComponentInstance.getComponent(getApplication());
         }

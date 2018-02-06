@@ -31,7 +31,7 @@ public class GetShopInfoUseCase extends UseCase<ShopInfo> {
         return shopInfoRepository.getShopInfo(shopId);
     }
 
-    public RequestParams createRequestParam(String shopId) {
+    public static RequestParams createRequestParam(String shopId) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(SHOP_ID, shopId);
         return requestParams;
