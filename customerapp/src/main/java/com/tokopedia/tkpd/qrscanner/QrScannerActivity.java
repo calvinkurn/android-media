@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -65,8 +66,16 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
         return intent;
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        QrScannerActivityPermissionsDispatcher.isCameraPermissionAvailableWithCheck(this);
+    }
+
+
+
     @NeedsPermission({Manifest.permission.CAMERA})
-    void requestCameraPermission() {
+    void isCameraPermissionAvailable() {
 
     }
 
