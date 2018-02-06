@@ -76,7 +76,7 @@ public class CategoryProductStyle99View extends
 
     @Override
     public void onProductLinkClicked(String url) {
-
+        actionListener.onProductDetailLinkClicked(url);
     }
 
     @Override
@@ -424,8 +424,7 @@ public class CategoryProductStyle99View extends
                 for (Validation validation : operatorSelected.getClientNumberList().get(0).getValidation()) {
                     if (!Pattern.matches(validation.getRegex(), getClientNumber())) {
                         clientNumberInputView.setErrorText(
-                                validation.getError() + " " +
-                                        operatorSelected.getClientNumberList().get(0).getText().toLowerCase()
+                                validation.getError()
                         );
                         break;
                     }

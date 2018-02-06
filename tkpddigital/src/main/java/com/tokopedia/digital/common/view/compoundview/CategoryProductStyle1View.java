@@ -287,8 +287,7 @@ public class CategoryProductStyle1View extends
                 for (Validation validation : data.getClientNumberList().get(0).getValidation()) {
                     if (!Pattern.matches(validation.getRegex(), getClientNumber())) {
                         clientNumberInputView.setErrorText(
-                                validation.getError() + " " +
-                                        data.getClientNumberList().get(0).getText().toLowerCase()
+                                validation.getError()
                         );
                         break;
                     }
