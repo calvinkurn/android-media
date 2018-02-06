@@ -674,9 +674,11 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
             boolean isOneWay = flightSearchPassDataViewModel.isOneWay();
             if (!isOneWay) {
-                String dateArrStr = flightSearchPassDataViewModel.getDate(true);
-                Date dateArr = FlightDateUtil.stringToDate(dateArrStr);
-                datePicker.setMaxDate(dateArr.getTime());
+                String dateReturnStr = flightSearchPassDataViewModel.getDate(true);
+                Date dateReturn = FlightDateUtil.stringToDate(dateReturnStr);
+                datePicker.setMaxDate(dateReturn.getTime());
+            } else {
+                datePicker.setMaxDate(FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, 2).getTime());
             }
         }
     }
