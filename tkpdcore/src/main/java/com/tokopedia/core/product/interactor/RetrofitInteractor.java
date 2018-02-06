@@ -4,18 +4,14 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.core.network.entity.variant.ProductVariant;
-import com.tokopedia.core.network.entity.variant.ProductVariantResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.product.listener.ReportProductDialogView;
 import com.tokopedia.core.product.model.etalase.Etalase;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
-import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
-import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productdetail.promowidget.DataPromoWidget;
-import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
 import com.tokopedia.core.product.model.productdink.ProductDinkData;
 import com.tokopedia.core.product.model.productother.ProductOther;
 
@@ -64,9 +60,6 @@ public interface RetrofitInteractor {
     void unSubscribeObservable();
 
     void downloadReportType(Context context, Integer productId, ReportProductDialogView viewListener);
-
-    void getProductCampaign(@NonNull Context context, @NonNull String productId,
-                            @NonNull ProductCampaignListener listener);
 
     void getProductVariant(@NonNull Context context, @NonNull String productId,
                               @NonNull ProductVariantListener listener);
@@ -169,13 +162,6 @@ public interface RetrofitInteractor {
         void onSuccess(@NonNull VideoData data);
 
         void onError();
-    }
-
-    interface ProductCampaignListener {
-
-        void onSucccess(ProductCampaign productCampaign);
-
-        void onError(String error);
     }
 
     interface ProductVariantListener {

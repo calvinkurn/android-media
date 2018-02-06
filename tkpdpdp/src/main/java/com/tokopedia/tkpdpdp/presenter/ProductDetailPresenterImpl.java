@@ -29,6 +29,7 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
+import com.tokopedia.core.network.entity.variant.Campaign;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.network.entity.variant.ProductVariantResponse;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -39,15 +40,12 @@ import com.tokopedia.core.product.interactor.CacheInteractorImpl;
 import com.tokopedia.core.product.interactor.RetrofitInteractor;
 import com.tokopedia.core.product.interactor.RetrofitInteractor.MostHelpfulListener;
 import com.tokopedia.core.product.interactor.RetrofitInteractor.DiscussionListener;
-import com.tokopedia.core.product.interactor.RetrofitInteractor.MostHelpfulListener;
 import com.tokopedia.core.product.interactor.RetrofitInteractorImpl;
 import com.tokopedia.core.product.model.etalase.Etalase;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
-import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
-import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productdetail.promowidget.DataPromoWidget;
 import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
 import com.tokopedia.core.product.model.productdink.ProductDinkData;
@@ -309,7 +307,6 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             requestOtherProducts(context,
                                     NetworkParam.paramOtherProducts(productDetailData));
                             setGoldMerchantFeatures(context, productDetailData);
-                            getProductCampaign(context, productDetailData.getInfo().getProductId().toString(),productDetailData.getInfo().getHasVariant());
                             getTalk(context, productDetailData.getInfo().getProductId().toString(), productDetailData.getShopInfo().getShopId());
                             getMostHelpfulReview(context, productDetailData.getInfo().getProductId
                                     ().toString(), productDetailData.getShopInfo().getShopId());
@@ -647,7 +644,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     @Override
-    public void saveStateProductCampaign(Bundle outState, String key, ProductCampaign value) {
+    public void saveStateProductCampaign(Bundle outState, String key, Campaign value) {
         if (value != null) outState.putParcelable(key, value);
     }
 
@@ -684,8 +681,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
             viewListener.addProductVariant(productVariant);
         }
 
-        if (productData.getProductCampaign() != null) {
-            viewListener.showProductCampaign(productData.getProductCampaign());
+        if (productData.getCampaign() != null) {
+            viewListener.showProductCampaign();
         }
 
         if (promoAttributes != null) {
@@ -824,7 +821,6 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         viewListener.refreshMenu();
                         requestOtherProducts(context, NetworkParam.paramOtherProducts(data));
                         setGoldMerchantFeatures(context, data);
-                        getProductCampaign(context, data.getInfo().getProductId().toString(), data.getInfo().getHasVariant());
                         getMostHelpfulReview(context, data.getInfo().getProductId().toString(),
                                 data.getShopInfo().getShopId());
                         getTalk(context, data.getInfo().getProductId().toString(), data.getShopInfo().getShopId());
@@ -954,23 +950,6 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         });
             }
         });
-    }
-
-    public void getProductCampaign(final @NonNull Context context, final @NonNull String id, final boolean hasVariant) {
-        retrofitInteractor.getProductCampaign(context, id,
-                new RetrofitInteractor.ProductCampaignListener() {
-                    @Override
-                    public void onSucccess(ProductCampaign productCampaign) {
-                        viewListener.showProductCampaign(productCampaign);
-                        if (hasVariant) getProductVariant(context,id);
-                    }
-
-                    @Override
-                    public void onError(String error) {
-                        if (hasVariant) getProductVariant(context,id);
-                    }
-                }
-        );
     }
 
     public void getMostHelpfulReview(@NonNull Context context, @NonNull String productId, String

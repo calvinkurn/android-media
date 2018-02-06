@@ -47,12 +47,10 @@ import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.product.intentservice.ProductInfoIntentService;
 import com.tokopedia.core.product.listener.DetailFragmentInteractionListener;
 import com.tokopedia.core.product.model.goldmerchant.VideoData;
-import com.tokopedia.core.product.model.productdetail.ProductCampaign;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.ProductImage;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
-import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
 import com.tokopedia.core.product.model.productother.ProductOther;
 import com.tokopedia.core.product.model.share.ShareData;
@@ -1022,6 +1020,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
                         shopInfoView.renderData(productData);
                         presenter.updateRecentView(context,productData.getInfo().getProductId());
                         updateWishListStatus(productData.getInfo().getProductAlreadyWishlist());
+                        showProductCampaign();
                     }
                     if (resultCode==VariantActivity.SELECTED_VARIANT_RESULT_TO_BUY) {
                         onBuyClick();
@@ -1191,9 +1190,8 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
     }
 
     @Override
-    public void showProductCampaign(ProductCampaign productCampaign) {
-        productData.setProductCampaign(productCampaign);
-        headerInfoView.renderProductCampaign(productData.getProductCampaign());
+    public void showProductCampaign() {
+        headerInfoView.renderProductCampaign(productData);
     }
 
     @Override

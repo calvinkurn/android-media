@@ -47,6 +47,10 @@ public class Child implements Parcelable {
     @SerializedName("is_wishlist")
     @Expose
     private boolean isWishlist;
+    @SerializedName("campaign")
+    @Expose
+    private Campaign campaign;
+
 
     public int getProductId() {
         return productId;
@@ -144,6 +148,14 @@ public class Child implements Parcelable {
         isWishlist = wishlist;
     }
 
+    public Campaign getCampaign() {
+        return campaign;
+    }
+
+    public void setCampaign(Campaign campaign) {
+        this.campaign = campaign;
+    }
+
     protected Child(Parcel in) {
         productId = in.readInt();
         price = in.readInt();
@@ -162,6 +174,7 @@ public class Child implements Parcelable {
         priceFmt = in.readString();
         url = in.readString();
         isWishlist = in.readByte() != 0x00;
+        campaign = (Campaign) in.readValue(Campaign.class.getClassLoader());
     }
 
     @Override
@@ -188,6 +201,7 @@ public class Child implements Parcelable {
         dest.writeString(priceFmt);
         dest.writeString(url);
         dest.writeByte((byte) (isWishlist ? 0x01 : 0x00));
+        dest.writeValue(campaign);
     }
 
     @SuppressWarnings("unused")

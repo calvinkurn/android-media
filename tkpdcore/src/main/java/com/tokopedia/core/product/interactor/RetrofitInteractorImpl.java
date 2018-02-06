@@ -43,14 +43,10 @@ import com.tokopedia.core.product.facade.NetworkParam;
 import com.tokopedia.core.product.listener.ReportProductDialogView;
 import com.tokopedia.core.product.model.etalase.EtalaseData;
 import com.tokopedia.core.product.model.goldmerchant.ProductVideoData;
-import com.tokopedia.core.product.model.productdetail.ProductCampaign;
-import com.tokopedia.core.product.model.productdetail.ProductCampaignResponse;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.MostHelpfulReviewResponse;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
-import com.tokopedia.core.product.model.productdetail.mosthelpful.MostHelpfulReviewResponse;
-import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 import com.tokopedia.core.product.model.productdetail.promowidget.DataPromoWidget;
 import com.tokopedia.core.product.model.productdetail.promowidget.PromoWidgetResponse;
 import com.tokopedia.core.product.model.productdink.ProductDinkData;
@@ -797,48 +793,6 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
                                 }
                             }
                         })
-        );
-    }
-
-    @Override
-    public void getProductCampaign(@NonNull Context context, @NonNull String productId,
-                                   @NonNull final ProductCampaignListener listener) {
-        Observable<Response<ProductCampaignResponse>> observable = mojitoService
-                .getApi().getProductCampaign(productId);
-
-        Subscriber<ProductCampaign> subscriber = new Subscriber<ProductCampaign>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                listener.onError(e.getMessage());
-            }
-
-            @Override
-            public void onNext(ProductCampaign productCampaign) {
-                if (productCampaign != null) {
-                    listener.onSucccess(productCampaign);
-                }
-            }
-        };
-
-        Func1<Response<ProductCampaignResponse>, ProductCampaign> mapper =
-                new Func1<Response<ProductCampaignResponse>, ProductCampaign>() {
-                    @Override
-                    public ProductCampaign call(Response<ProductCampaignResponse> productCampaignResponse) {
-                        return productCampaignResponse.body().getData();
-                    }
-                };
-
-        compositeSubscription.add(
-                observable.subscribeOn(Schedulers.newThread())
-                .unsubscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(mapper)
-                .subscribe(subscriber)
         );
     }
 

@@ -124,15 +124,15 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
     private void renderHeaderInfo() {
         productName.setText(productDetailData.getInfo().getProductName());
         productPrice.setText(productDetailData.getInfo().getProductPrice());
-        if(productDetailData.getProductCampaign() != null
-                && productDetailData.getProductCampaign().getOriginalPrice() != null) {
-            textOriginalPrice.setText(productDetailData.getProductCampaign().getOriginalPriceIdr());
+        if(productDetailData.getCampaign() != null
+                && productDetailData.getCampaign().getActive()) {
+            textOriginalPrice.setText(productDetailData.getInfo().getProductPrice());
             textOriginalPrice.setPaintFlags(
                     textOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
             );
             textDiscount.setText(String.format(
                     VariantActivity.this.getString(R.string.label_discount_percentage),
-                    productDetailData.getProductCampaign().getPercentageAmount()
+                    productDetailData.getCampaign().getDiscountedPercentage()
             ));
 
             textDiscount.setVisibility(VISIBLE);
@@ -348,6 +348,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             productDetailData.getInfo().setProductPrice(child.getPriceFmt());
             productDetailData.getInfo().setProductUrl(child.getUrl());
             productDetailData.getInfo().setProductAlreadyWishlist(child.isWishlist()?1:0);
+            productDetailData.setCampaign(child.getCampaign());
             if (!TextUtils.isEmpty(child.getPicture().getThumbnail()))  {
                 productDetailData.getProductImages().get(0).setImageSrc300(child.getPicture().getThumbnail());
                 productDetailData.getProductImages().get(0).setImageSrc(child.getPicture().getOriginal());
