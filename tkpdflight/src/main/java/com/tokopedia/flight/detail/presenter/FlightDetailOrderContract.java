@@ -31,7 +31,7 @@ public interface FlightDetailOrderContract {
 
         void updatePrice(List<SimpleViewModel> priceList, String totalPrice);
 
-        void updateOrderData(String transactionDate, String eTicketLink, String invoiceLink, String cancelUrl);
+        void updateOrderData(String eTicketLink, String invoiceLink, String cancelUrl);
 
         String getString(int id, Object... args);
 
@@ -65,6 +65,8 @@ public interface FlightDetailOrderContract {
         void hideTotalTransfer();
 
         void setPaymentDueDate(String dueDate);
+
+        void setTransactionDate(String transactionDate);
     }
 
     interface Presenter extends CustomerPresenter<View> {
