@@ -6,6 +6,7 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,11 +58,13 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
     private static final int ALL_HEADER_SIZE = 3;
     private static final int ALL_FOOTER_SIZE = 1;
 
+    private static final int FIRST_ELEMENT = 0;
+
     private Context mContext;
     private CartSingleAddressData mCartSingleAddressData;
 
     public CartSingleAddressAdapter() {
-
+        Log.d(TAG, "Create instance");
     }
 
     public void updateData(CartSingleAddressData cartSingleAddressData) {
@@ -368,7 +371,9 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
 
         void bindViewHolder(CartSellerItemModel model) {
             // Initialize variables
-            CartItemModel mainProductItem = model.getCartItemModels().get(0);
+            List<CartItemModel> cartItemModels = model.getCartItemModels();
+            CartItemModel mainProductItem = cartItemModels.remove(FIRST_ELEMENT);
+
             mIsExpandAllProduct = false;
             mIsExpandCostDetail = true;
 
@@ -395,8 +400,9 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
             mTvDetailOptionText.setText(getTextDrawerChevron(mIsExpandCostDetail));
             mIvDetailOptionChevron.setImageResource(getResourceDrawerChevron(mIsExpandCostDetail));
 
-            // Recycler View
-            initInnerRecyclerView(model.getCartItemModels());
+            // Init nested recycler view
+            initInnerRecyclerView(cartItemModels);
+//            initInnerHorizontalRecyclerView(cartItemModels);
 
             // Set listeners
             mLlOtherProductContainer.setOnClickListener(showAllProductListener());
@@ -410,6 +416,8 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
         }
 
         private void initInnerRecyclerView(List<CartItemModel> cartItemModels) {
+            mRvProductList.setVisibility(View.VISIBLE);
+
             mRvProductList.setHasFixedSize(true);
             LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
             layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -418,6 +426,19 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
             InnerProductListAdapter innerProductListAdapter =
                     new InnerProductListAdapter(cartItemModels);
             mRvProductList.setAdapter(innerProductListAdapter);
+        }
+
+        private void initInnerHorizontalRecyclerView(List<CartItemModel> cartItemModels) {
+            mRvProductList.setVisibility(View.VISIBLE);
+
+            mRvProductList.setHasFixedSize(true);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
+            layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+            mRvProductList.setLayoutManager(layoutManager);
+
+            InnerProductImageListAdapter innerProductImageListAdapter =
+                    new InnerProductImageListAdapter(cartItemModels);
+            mRvProductList.setAdapter(innerProductImageListAdapter);
         }
 
         private int getPoliciesVisibility() {

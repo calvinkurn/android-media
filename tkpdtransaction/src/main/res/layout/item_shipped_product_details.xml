@@ -61,41 +61,15 @@
         android:orientation="vertical"
         android:background="@color/white">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="#e0e0e0"
-            android:layout_marginBottom="18dp" />
-
         <RelativeLayout android:id="@+id/rl_product_image_galleries"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ImageView android:id="@+id/iv_product_image_small_1"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:background="@color/colorAccent"
-                tools:ignore="ContentDescription" />
-
-            <ImageView android:id="@+id/iv_product_image_small_2"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:background="@color/colorAccent"
-                android:layout_toRightOf="@id/iv_product_image_small_1"
-                android:layout_toEndOf="@id/iv_product_image_small_1"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"
-                tools:ignore="ContentDescription" />
-
-            <ImageView android:id="@+id/iv_product_image_small_3"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:background="@color/colorAccent"
-                android:layout_toRightOf="@id/iv_product_image_small_2"
-                android:layout_toEndOf="@id/iv_product_image_small_2"
-                android:layout_marginLeft="8dp"
-                android:layout_marginStart="8dp"
-                tools:ignore="ContentDescription" />
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_product_thumb_image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
 
             <TextView android:id="@+id/tv_expand_other_product"
                 android:layout_width="wrap_content"
@@ -103,8 +77,8 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:layout_toRightOf="@id/iv_product_image_small_3"
-                android:layout_toEndOf="@id/iv_product_image_small_3"
+                android:layout_toRightOf="@id/rv_product_thumb_image"
+                android:layout_toEndOf="@id/rv_product_thumb_image"
                 android:gravity="end"
                 android:textSize="12sp"
                 android:textColor="@color/medium_green"

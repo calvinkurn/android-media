@@ -5,7 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:paddingTop="16dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingBottom="3dp"
     android:background="@color/white">
 
     <RelativeLayout
@@ -175,5 +178,11 @@
         android:textStyle="normal"
         android:textColor="@color/black_70"
         tools:text="Saya pesan warna merah yah min.. jangan sampai salah kirim barangnya gan!" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="#e0e0e0"
+        android:layout_marginTop="16dp" />
 
 </LinearLayout>
