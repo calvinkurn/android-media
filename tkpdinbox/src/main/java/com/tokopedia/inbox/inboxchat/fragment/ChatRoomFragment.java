@@ -717,6 +717,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         setViewEnabled(true);
         MyChatViewModel item = new MyChatViewModel();
         item.setReplyId(replyData.getChat().getMsgId());
+        item.setMsgId(replyData.getChat().getMsgId());
         item.setSenderId(replyData.getChat().getSenderId());
         item.setSenderName(replyData.getChat().getFrom());
         item.setMsg(replyData.getChat().getMsg());
@@ -977,6 +978,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                scrollToBottom();
                 presenter.sendMessageWithWebsocket();
                 UnifyTracking.sendChat(TopChatTrackingEventLabel.Category.CHAT_DETAIL,
                         TopChatTrackingEventLabel.Action.CHAT_DETAIL_SEND,
