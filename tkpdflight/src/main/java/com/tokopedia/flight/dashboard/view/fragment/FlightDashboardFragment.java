@@ -410,7 +410,12 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     }
 
     @Override
-    public void showArrivalDateShouldGreaterOrEqual(@StringRes int resId) {
+    public void showReturnDateShouldGreaterOrEqual(@StringRes int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
+    public void showReturnDateMaxTwoYears(int resId) {
         showMessageErrorInSnackBar(resId);
     }
 

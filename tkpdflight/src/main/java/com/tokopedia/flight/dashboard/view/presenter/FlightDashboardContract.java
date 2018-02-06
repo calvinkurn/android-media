@@ -44,7 +44,9 @@ public interface FlightDashboardContract {
 
         void showDepartureDateMaxTwoYears(@StringRes int resID);
 
-        void showArrivalDateShouldGreaterOrEqual(@StringRes int resId);
+        void showReturnDateShouldGreaterOrEqual(@StringRes int resId);
+
+        void showReturnDateMaxTwoYears(@StringRes int resId);
 
         void showPassengerAtLeastOneAdult(@StringRes int resId);
 
