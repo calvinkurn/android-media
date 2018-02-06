@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rl_shipment_recipient_address_header"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:padding="16dp">
 
-    <LinearLayout android:id="@+id/ll_address_radio_button_container"
+    <LinearLayout
+        android:id="@+id/ll_address_radio_button_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true">
 
-        <RadioButton android:id="@+id/rb_check_address"
+        <RadioButton
+            android:id="@+id/rb_check_address"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -22,25 +24,28 @@
 
     </LinearLayout>
 
-    <RelativeLayout android:id="@+id/rl_recipient_address"
+    <RelativeLayout
+        android:id="@+id/rl_recipient_address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_toLeftOf="@id/ll_address_radio_button_container"
         android:layout_toStartOf="@id/ll_address_radio_button_container"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
         android:background="@color/white">
 
-        <TextView android:id="@+id/tv_text_address_description"
+        <TextView
+            android:id="@+id/tv_text_address_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="3dp"
+            android:textColor="@color/black_54"
             android:textSize="12sp"
             tools:ignore="SmallSp"
-            android:textColor="@color/black_54"
-            android:text="Alamat Kantor" />
+            tools:text="Alamat Kantor" />
 
-        <TextView android:id="@+id/tv_recipient_name"
+        <TextView
+            android:id="@+id/tv_recipient_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_text_address_description"
@@ -56,11 +61,32 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_recipient_name"
+            android:lineSpacingExtra="3dp"
             android:textColor="@color/black_70"
             android:textSize="12sp"
-            android:lineSpacingExtra="3dp"
             tools:ignore="SmallSp"
             tools:text="Jl. Letjen S. Parman Kav.77, Wisma 77 Tower 2,\nTokopedia Lt. 2, Jakarta, 0817 1234 5678" />
+
+        <TextView
+            android:id="@+id/tv_phone_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_recipient_address"
+            android:lineSpacingExtra="3dp"
+            android:textColor="@color/black_70"
+            android:textSize="12sp"
+            tools:text="080989999" />
+
+        <TextView
+            android:id="@+id/tv_change_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_phone_number"
+            android:layout_marginTop="@dimen/margin_ms"
+            android:drawableLeft="@drawable/ic_action_edit"
+            android:drawablePadding="@dimen/padding_ms"
+            android:drawableStart="@drawable/ic_action_edit"
+            android:text="@string/action_edit" />
 
     </RelativeLayout>
 

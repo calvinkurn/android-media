@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tool="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -191,7 +190,7 @@
                         android:layout_marginRight="@dimen/new_margin_med"
                         android:fontFamily="sans-serif"
                         android:lineSpacingExtra="10sp"
-                        android:text="Pinpoint Lokasi (Opsional)"
+                        android:text="@string/label_pinpoint"
                         android:textColor="@color/black_54"
                         android:textSize="12sp"
                         android:textStyle="normal" />
@@ -475,7 +474,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="@dimen/margin_vs"
                                 android:imeOptions="actionNext"
-                                android:inputType="text"
+                                android:inputType="textPersonName"
                                 android:textSize="@dimen/font_small" />
                         </android.support.design.widget.TextInputLayout>
 

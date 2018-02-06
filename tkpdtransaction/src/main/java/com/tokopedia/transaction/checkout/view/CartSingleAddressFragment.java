@@ -1,7 +1,10 @@
 package com.tokopedia.transaction.checkout.view;
 
 import android.app.Activity;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -14,12 +17,17 @@ import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.di.component.CartSingleAddressComponent;
 import com.tokopedia.transaction.checkout.di.component.DaggerCartSingleAddressComponent;
 import com.tokopedia.transaction.checkout.di.module.CartSingleAddressModule;
+import com.tokopedia.transaction.checkout.view.activity.CartAddressChoiceActivity;
+import com.tokopedia.transaction.checkout.view.activity.ShipmentDetailActivity;
 import com.tokopedia.transaction.checkout.view.adapter.CartSingleAddressAdapter;
 import com.tokopedia.transaction.checkout.view.adapter.ShipmentAddressListAdapter;
 import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
 import com.tokopedia.transaction.checkout.view.presenter.CartSingleAddressPresenter;
 import com.tokopedia.transaction.checkout.view.view.ICartSingleAddressView;
+import com.tokopedia.transaction.pickuppoint.domain.model.Store;
+import com.tokopedia.transaction.pickuppoint.domain.usecase.GetPickupPointsUseCase;
+import com.tokopedia.transaction.pickuppoint.view.activity.PickupPointActivity;
 import com.tokopedia.transaction.utils.RxBus;
 
 import javax.inject.Inject;
@@ -29,13 +37,19 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.functions.Action1;
 
+import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_DATA_STORE;
+
 /**
  * @author Aghny A. Putra on 24/1/18
  */
 public class CartSingleAddressFragment extends BasePresenterFragment
-        implements ICartSingleAddressView<CartSingleAddressData>{
+        implements ICartSingleAddressView<CartSingleAddressData>,
+        CartSingleAddressAdapter.SingleAddressShipmentAdapterListener {
 
     private static final String TAG = CartSingleAddressFragment.class.getSimpleName();
+    private static final int REQUEST_CODE_SHIPMENT_DETAIL = 11;
+    private static final int REQUEST_CHOOSE_PICKUP_POINT = 12;
+    private static final int REQUEST_CODE_CHOOSE_ADDRESS = 13;
 
     @BindView(R2.id.rv_cart_order_details) RecyclerView mRvCartOrderDetails;
 
@@ -138,6 +152,7 @@ public class CartSingleAddressFragment extends BasePresenterFragment
         mRvCartOrderDetails.setAdapter(mCartSingleAddressAdapter);
 
         mCartSingleAddressPresenter.attachView(this);
+        mCartSingleAddressAdapter.setViewListener(this);
     }
 
     /**
@@ -176,4 +191,68 @@ public class CartSingleAddressFragment extends BasePresenterFragment
     public void showError() {
 
     }
+
+    private void showCancelPickupBoothDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(R.string.label_dialog_title_cancel_pickup);
+        builder.setMessage(R.string.label_dialog_message_cancel_pickup_booth);
+        builder.setPositiveButton(R.string.title_yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mCartSingleAddressAdapter.unSetPickupPoint();
+                mCartSingleAddressAdapter.notifyDataSetChanged();
+            }
+        });
+        builder.setNegativeButton(R.string.title_no, null);
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    @Override
+    public void onAddOrChangeAddress(ShipmentRecipientModel shipmentRecipientModel) {
+        startActivityForResult(CartAddressChoiceActivity.createInstance(getActivity(), shipmentRecipientModel), REQUEST_CODE_CHOOSE_ADDRESS);
+    }
+
+    @Override
+    public void onChooseShipment() {
+        startActivityForResult(ShipmentDetailActivity.createInstance(getActivity()), REQUEST_CODE_SHIPMENT_DETAIL);
+    }
+
+    @Override
+    public void onChoosePickupPoint(ShipmentRecipientModel addressAdapterData) {
+        startActivityForResult(PickupPointActivity.createInstance(
+                getActivity(),
+                addressAdapterData.getDestinationDistrictName(),
+                GetPickupPointsUseCase.generateParams(addressAdapterData)
+        ), REQUEST_CHOOSE_PICKUP_POINT);
+    }
+
+    @Override
+    public void onClearPickupPoint(ShipmentRecipientModel addressAdapterData) {
+        showCancelPickupBoothDialog();
+    }
+
+    @Override
+    public void onEditPickupPoint(ShipmentRecipientModel addressAdapterData) {
+        startActivityForResult(PickupPointActivity.createInstance(
+                getActivity(),
+                addressAdapterData.getDestinationDistrictName(),
+                GetPickupPointsUseCase.generateParams(addressAdapterData)
+        ), REQUEST_CHOOSE_PICKUP_POINT);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case REQUEST_CHOOSE_PICKUP_POINT:
+                    Store pickupBooth = data.getParcelableExtra(INTENT_DATA_STORE);
+                    mCartSingleAddressAdapter.setPickupPoint(pickupBooth);
+                    mCartSingleAddressAdapter.notifyDataSetChanged();
+                    break;
+            }
+        }
+
+    }
+
 }

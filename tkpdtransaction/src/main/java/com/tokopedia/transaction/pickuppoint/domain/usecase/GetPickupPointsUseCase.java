@@ -6,6 +6,7 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.transaction.addtocart.model.OrderData;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressShipmentAdapterData;
+import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
 import com.tokopedia.transaction.pickuppoint.data.repository.PickupPointRepository;
 import com.tokopedia.transaction.pickuppoint.domain.model.PickupPointResponse;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
@@ -68,6 +69,18 @@ public class GetPickupPointsUseCase extends UseCase<PickupPointResponse> {
     }
 
     public static HashMap<String, String> generateParams(MultipleAddressShipmentAdapterData data) {
+        HashMap<String, String> params = new HashMap<>();
+        params.put(GetPickupPointsUseCase.PARAM_DISTRICT_ID,
+                String.valueOf(data.getDestinationDistrictId()));
+        params.put(GetPickupPointsUseCase.PARAM_PAGE, GetPickupPointsUseCase.DEFAULT_PAGE);
+        params.put(GetPickupPointsUseCase.PARAM_TOKEN,
+                data.getTokenPickup() != null ? data.getTokenPickup() : "");
+        params.put(GetPickupPointsUseCase.PARAM_UT, data.getUnixTime());
+
+        return params;
+    }
+
+    public static HashMap<String, String> generateParams(ShipmentRecipientModel data) {
         HashMap<String, String> params = new HashMap<>();
         params.put(GetPickupPointsUseCase.PARAM_DISTRICT_ID,
                 String.valueOf(data.getDestinationDistrictId()));

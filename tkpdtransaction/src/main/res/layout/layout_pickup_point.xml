@@ -12,9 +12,12 @@
         android:layout_marginBottom="@dimen/margin_small"
         android:drawableEnd="@drawable/ic_chevron_right"
         android:drawableRight="@drawable/ic_chevron_right"
+        android:fontFamily="sans-serif-medium"
         android:gravity="center_vertical"
         android:text="@string/label_send_to_pick_up_booth"
         android:textColor="@color/tkpd_main_green"
+        android:textSize="12sp"
+        android:textStyle="normal"
         android:visibility="gone" />
 
     <LinearLayout
@@ -35,18 +38,17 @@
 
             <TextView
                 android:id="@+id/tv_pick_up_booth_name"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:fontFamily="sans-serif-medium"
-                android:textSize="16sp"
-                android:textStyle="normal"
+                android:lineSpacingExtra="6sp"
+                android:textSize="14sp"
                 tools:text="Alfamart - Rawa Belong" />
 
             <ImageButton
                 android:id="@+id/btn_cancel_pick_up"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
                 android:background="@color/transparent"
                 android:src="@drawable/ic_clear_24dp" />
 
@@ -57,9 +59,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_ms"
-            android:fontFamily="sans-serif"
-            android:textSize="14sp"
-            android:textStyle="normal"
+            android:lineSpacingExtra="4sp"
+            android:textSize="12sp"
             tools:text="Jl. Rw. Belong, RT.2/RW.6, Sukabumi Utara, Kebayoran Baru, Kota Jakarta Barat, Daerah…" />
 
         <TextView
@@ -69,7 +70,8 @@
             android:drawableLeft="@drawable/ic_action_edit"
             android:drawablePadding="@dimen/padding_vs"
             android:drawableStart="@drawable/ic_action_edit"
-            android:text="@string/label_edit_pickup" />
+            android:text="@string/label_edit_pickup"
+            android:textSize="14sp" />
 
     </LinearLayout>
 

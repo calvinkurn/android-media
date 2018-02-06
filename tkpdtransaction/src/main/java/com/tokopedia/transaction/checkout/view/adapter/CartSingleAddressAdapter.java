@@ -24,8 +24,13 @@ import com.tokopedia.transaction.checkout.view.data.CartPayableDetailModel;
 import com.tokopedia.transaction.checkout.view.data.CartSellerItemModel;
 import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
 import com.tokopedia.transaction.checkout.view.data.DropshipperShippingOptionModel;
+import com.tokopedia.transaction.checkout.view.data.MultipleAddressShipmentAdapterData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentFeeBannerModel;
 import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
+import com.tokopedia.transaction.pickuppoint.domain.model.Store;
+import com.tokopedia.transaction.pickuppoint.view.customview.PickupPointLayout;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,9 +56,14 @@ public class CartSingleAddressAdapter
 
     private Context mContext;
     private CartSingleAddressData mCartSingleAddressData;
+    private SingleAddressShipmentAdapterListener viewListener;
 
     public CartSingleAddressAdapter() {
 
+    }
+
+    public void setViewListener(SingleAddressShipmentAdapterListener viewListener) {
+        this.viewListener = viewListener;
     }
 
     public void updateData(CartSingleAddressData cartSingleAddressData) {
@@ -120,6 +130,28 @@ public class CartSingleAddressAdapter
         }
     }
 
+    public interface SingleAddressShipmentAdapterListener {
+
+        void onAddOrChangeAddress(ShipmentRecipientModel shipmentRecipientModel);
+
+        void onChooseShipment();
+
+        void onChoosePickupPoint(ShipmentRecipientModel addressAdapterData);
+
+        void onClearPickupPoint(ShipmentRecipientModel addressAdapterData);
+
+        void onEditPickupPoint(ShipmentRecipientModel addressAdapterData);
+
+    }
+
+    public void setPickupPoint(Store store) {
+        mCartSingleAddressData.getShipmentRecipientModel().setStore(store);
+    }
+
+    public void unSetPickupPoint() {
+        mCartSingleAddressData.getShipmentRecipientModel().setStore(null);
+    }
+
     private int getCartItemSize() {
         return mCartSingleAddressData.getCartSellerItemModelList().size();
     }
@@ -151,6 +183,7 @@ public class CartSingleAddressAdapter
         @BindView(R2.id.tv_recipient_name) TextView mTvRecipientName;
         @BindView(R2.id.tv_recipient_address) TextView mTvRecipientAddress;
         @BindView(R2.id.tv_add_or_change_address) TextView mTvAddOrChangeAddress;
+        @BindView(R2.id.pickup_point_layout) PickupPointLayout pickupPointLayout;
 
         ShippingRecipientViewHolder(View itemView) {
             super(itemView);
@@ -162,25 +195,56 @@ public class CartSingleAddressAdapter
             mTvRecipientName.setText(model.getRecipientName());
             mTvRecipientAddress.setText(model.getRecipientAddress());
 
-            mTvAddOrChangeAddress.setOnClickListener(addOrChangeAddressListener());
+            mTvAddOrChangeAddress.setOnClickListener(addOrChangeAddressListener(mShipmentRecipientModel));
+            renderPickupPoint(pickupPointLayout, mShipmentRecipientModel);
         }
 
-        private View.OnClickListener addOrChangeAddressListener() {
+        private void renderPickupPoint(PickupPointLayout pickupPointLayout,
+                                       final ShipmentRecipientModel data) {
+            pickupPointLayout.setListener(new PickupPointLayout.ViewListener() {
+                @Override
+                public void onChoosePickupPoint() {
+                    viewListener.onChoosePickupPoint(data);
+                }
+
+                @Override
+                public void onClearPickupPoint(Store oldStore) {
+                    viewListener.onClearPickupPoint(data);
+                }
+
+                @Override
+                public void onEditPickupPoint(Store oldStore) {
+                    viewListener.onEditPickupPoint(data);
+                }
+            });
+            if (data.getStore() == null) {
+                pickupPointLayout.unSetData(pickupPointLayout.getContext());
+                pickupPointLayout.enableChooserButton(pickupPointLayout.getContext());
+            } else {
+                pickupPointLayout.setData(pickupPointLayout.getContext(), data.getStore());
+            }
+            pickupPointLayout.setVisibility(View.VISIBLE);
+        }
+
+
+        private View.OnClickListener addOrChangeAddressListener(final ShipmentRecipientModel model) {
             return new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    FragmentManager fragmentManager = ((Activity)mContext).getFragmentManager();
-                    Fragment fragment = ShipmentAddressListFragment.newInstance();
+                    viewListener.onAddOrChangeAddress(model);
 
-                    String backStateName = fragment.getClass().getName();
-
-                    boolean isFragmentPopped = fragmentManager.popBackStackImmediate(backStateName, 0);
-                    if (!isFragmentPopped) {
-                        fragmentManager.beginTransaction()
-                                .replace(R.id.container, fragment)
-                                .addToBackStack(backStateName)
-                                .commit();
-                    }
+//                    FragmentManager fragmentManager = ((Activity)mContext).getFragmentManager();
+//                    Fragment fragment = ShipmentAddressListFragment.newInstance();
+//
+//                    String backStateName = fragment.getClass().getName();
+//
+//                    boolean isFragmentPopped = fragmentManager.popBackStackImmediate(backStateName, 0);
+//                    if (!isFragmentPopped) {
+//                        fragmentManager.beginTransaction()
+//                                .replace(R.id.container, fragment)
+//                                .addToBackStack(backStateName)
+//                                .commit();
+//                    }
                 }
             };
         }
@@ -416,7 +480,8 @@ public class CartSingleAddressAdapter
             return new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(mContext, "Select Courier", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(mContext, "Select Courier", Toast.LENGTH_SHORT).show();
+                    viewListener.onChooseShipment();
                 }
             };
         }

@@ -180,7 +180,7 @@
     <string name="apply">Terapkan</string>
     <string name="title_send_to_pick_up_booth">Gerai Pengambilan di %s</string>
     <string name="label_send_to_pick_up_booth">Kirim ke Gerai Pengambilan</string>
-    <string name="label_edit_pickup">Edit</string>
+    <string name="label_edit_pickup">Ubah Gerai</string>
     <string name="label_pickup_booth">Gerai Pengambilan</string>
     <string name="label_no_pickup_booth_found">Oops, Gerai tidak ditemukan</string>
     <string name="label_pickup_booth_check_keyword">Periksa kembali kata kunci Anda</string>
@@ -215,6 +215,11 @@
     <string name="label_insurance_not_available">Tidak Didukung</string>
     <string name="label_must_insurance">Wajib Asuransi</string>
     <string name="label_action_snackbar_close">Tutup</string>
+    <string name="button_choose_other_address">Pilih Alamat Lainnya</string>
+    <string name="label_pinpoint">Pinpoint Lokasi (Opsional)</string>
+    <string name="button_label_send_to_current_address">Kirim ke Alamat Ini</string>
+    <string name="label_send_to_multiple_address">Kirim ke Beberapa Alamat</string>
+    <string name="label_add_new_address">Tambah Alamat Baru</string>
 
     <string-array name="pickup_point">
         <item>Alfamart</item>

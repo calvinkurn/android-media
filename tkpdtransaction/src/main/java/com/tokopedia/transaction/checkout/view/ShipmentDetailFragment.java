@@ -69,8 +69,9 @@ import butterknife.OnClick;
  * Created by Irfan Khoirul on 24/01/18.
  */
 
-public class ShipmentDetailFragment extends BasePresenterFragment implements IShipmentDetailView,
-        CourierChoiceAdapter.ViewListener, OnMapReadyCallback, ShipmentChoiceBottomSheet.ActionListener {
+public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetailPresenter>
+        implements IShipmentDetailView, CourierChoiceAdapter.ViewListener, OnMapReadyCallback,
+        ShipmentChoiceBottomSheet.ActionListener {
 
     private static final int REQUEST_CODE_SHIPMENT_CHOICE = 11;
     private static final int REQUEST_CODE_PINPOINT = 22;
@@ -173,7 +174,6 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
 
     private ShipmentChoiceBottomSheet shipmentChoiceBottomSheet;
     private CourierChoiceAdapter courierChoiceAdapter;
-    private IShipmentDetailPresenter presenter;
 
     public static ShipmentDetailFragment newInstance() {
         ShipmentDetailFragment fragment = new ShipmentDetailFragment();
@@ -273,11 +273,6 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
                         presenter.loadShipmentData();
                     }
                 });
-    }
-
-    @Override
-    public void showData() {
-        scrollViewContent.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -382,7 +377,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
                 LinearLayoutManager.VERTICAL, false);
         rvCourierChoice.setLayoutManager(linearLayoutManager);
         rvCourierChoice.setAdapter(courierChoiceAdapter);
-        if (courierChoiceAdapter.getItemCount() > 3) {
+        if (presenter.getSelectedShipment().getCourierItemData().size() > 3) {
             llExpandedCourierList.setVisibility(View.VISIBLE);
         } else {
             llExpandedCourierList.setVisibility(View.GONE);
