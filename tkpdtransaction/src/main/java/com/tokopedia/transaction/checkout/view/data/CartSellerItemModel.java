@@ -15,6 +15,10 @@ public class CartSellerItemModel implements Parcelable {
     private String shipmentOption;
     private String totalPrice;
 
+    public CartSellerItemModel() {
+
+    }
+
     public String getSenderName() {
         return senderName;
     }
@@ -60,7 +64,7 @@ public class CartSellerItemModel implements Parcelable {
         dest.writeString(this.totalPrice);
     }
 
-    protected CartSellerItemModel(Parcel in) {
+    public CartSellerItemModel(Parcel in) {
         this.senderName = in.readString();
         this.cartItemModels = in.createTypedArrayList(CartItemModel.CREATOR);
         this.shipmentOption = in.readString();

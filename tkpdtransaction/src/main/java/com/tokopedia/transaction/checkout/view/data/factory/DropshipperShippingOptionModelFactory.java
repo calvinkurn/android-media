@@ -9,7 +9,7 @@ import com.tokopedia.transaction.checkout.view.data.DropshipperShippingOptionMod
 public class DropshipperShippingOptionModelFactory {
 
     public static DropshipperShippingOptionModel getDummyDropshippingOptionModel() {
-        return createDropshipperShippingOptionModel(true);
+        return createDropshipperShippingOptionModel(false);
     }
 
     public static DropshipperShippingOptionModel createDropshipperShippingOptionModel(boolean isDropshipping) {

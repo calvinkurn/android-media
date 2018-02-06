@@ -48,6 +48,10 @@ public class CartSingleAddressAdapter
             R.layout.item_shipped_product_details;
 
     private static final int TOP_POSITION = 0;
+    private static final int ADDRESS_POSITION = 1;
+    private static final int DROPSHIP_OPT_POSITION = 2;
+    private static final int ALL_HEADER_SIZE = 3;
+    private static final int ALL_FOOTER_SIZE = 1;
 
     private Context mContext;
     private CartSingleAddressData mCartSingleAddressData;
@@ -96,24 +100,25 @@ public class CartSingleAddressAdapter
                     .bindViewHolder(mCartSingleAddressData.getCartPayableDetailModel());
         } else {
             ((ShippedProductDetailsViewHolder)viewHolder)
-                    .bindViewHolder(mCartSingleAddressData.getCartSellerItemModelList().get(position - 3));
+                    .bindViewHolder(mCartSingleAddressData.getCartSellerItemModelList()
+                            .get(position - ALL_HEADER_SIZE));
         }
     }
 
     @Override
     public int getItemCount() {
-        return getCartItemSize() + 4;
+        return getCartItemSize() + ALL_HEADER_SIZE + ALL_FOOTER_SIZE;
     }
 
     @Override
     public int getItemViewType(int position) {
         if (position == TOP_POSITION) {
             return ITEM_VIEW_FREE_SHIPPING_FEE;
-        } else if (position == 1) {
+        } else if (position == ADDRESS_POSITION) {
             return ITEM_VIEW_SHIPMENT_RECIPIENT_ADDRESS;
-        } else if (position == 2) {
+        } else if (position == DROPSHIP_OPT_POSITION) {
             return ITEM_VIEW_DROPSHIPPER_OPTION;
-        } else if (position == 4) {
+        } else if (position == ALL_HEADER_SIZE + getCartItemSize()) {
             return ITEM_VIEW_SHIPMENT_COST_DETAIL;
         } else {
             return ITEM_SHIPPED_PRODUCT_DETAILS;
@@ -137,6 +142,17 @@ public class CartSingleAddressAdapter
         void bindViewHolder(ShipmentFeeBannerModel model) {
             mRlFreeShipmentFeeHeader.setVisibility(getVisibility(model.isVisible()));
             mTvShippingFee.setText(model.getShipmentFeeDiscount());
+
+            mRlFreeShipmentFeeHeader.setOnClickListener(feeShipmentOnClickListener());
+        }
+
+        private View.OnClickListener feeShipmentOnClickListener() {
+            return new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mRlFreeShipmentFeeHeader.setVisibility(View.VISIBLE);
+                }
+            };
         }
 
         private int getVisibility(boolean isVisible) {
@@ -150,6 +166,7 @@ public class CartSingleAddressAdapter
         @BindView(R2.id.tv_text_address_description) TextView mTvAddressDescription;
         @BindView(R2.id.tv_recipient_name) TextView mTvRecipientName;
         @BindView(R2.id.tv_recipient_address) TextView mTvRecipientAddress;
+        @BindView(R2.id.tv_recipient_phone) TextView mTvRecipientPhone;
         @BindView(R2.id.tv_add_or_change_address) TextView mTvAddOrChangeAddress;
 
         ShippingRecipientViewHolder(View itemView) {
@@ -161,6 +178,7 @@ public class CartSingleAddressAdapter
             mTvAddressDescription.setText(model.getAddressIdentifier());
             mTvRecipientName.setText(model.getRecipientName());
             mTvRecipientAddress.setText(model.getRecipientAddress());
+            mTvRecipientPhone.setText(model.getRecipientPhone());
 
             mTvAddOrChangeAddress.setOnClickListener(addOrChangeAddressListener());
         }
@@ -190,8 +208,8 @@ public class CartSingleAddressAdapter
     class DropShipperOptionViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R2.id.rl_dropshipper_option_header) RelativeLayout mRlDropshipperOptionLayout;
+        @BindView(R2.id.ll_detail_dropshipper) LinearLayout mLlDetailDropshipperLayout;
         @BindView(R2.id.sw_dropshipper) Switch mSwDropshipper;
-        @BindView(R2.id.ll_detail_dropshipper) LinearLayout mLlDropshipperDetail;
 
         DropShipperOptionViewHolder(View itemView) {
             super(itemView);
@@ -199,7 +217,7 @@ public class CartSingleAddressAdapter
         }
 
         void bindViewHolder(DropshipperShippingOptionModel model) {
-            mRlDropshipperOptionLayout.setVisibility(getVisibility(model.isDropshipping()));
+            mLlDetailDropshipperLayout.setVisibility(getVisibility(model.isDropshipping()));
             mSwDropshipper.setChecked(model.isDropshipping());
             mSwDropshipper.setOnClickListener(dropshipperSwitchListener(model));
         }
@@ -211,7 +229,7 @@ public class CartSingleAddressAdapter
                     model.setDropshipping(!model.isDropshipping());
 
                     mSwDropshipper.setChecked(model.isDropshipping());
-                    mLlDropshipperDetail.setVisibility(getVisibility(model.isDropshipping()));
+                    mLlDetailDropshipperLayout.setVisibility(getVisibility(model.isDropshipping()));
                 }
             };
         }
@@ -356,6 +374,7 @@ public class CartSingleAddressAdapter
         @BindView(R2.id.tv_cart_detail_option) TextView mTvCartDetailOption;
         @BindView(R2.id.iv_drawer_chevron) ImageView mIvDetailDrawerChevron;
         @BindView(R2.id.tv_sub_total_item_price) TextView mTvSubTotalItemPrice;
+        @BindView(R2.id.ll_other_product) LinearLayout mLlOtherProduct;
 
         private boolean mIsExpanded;
 
@@ -365,6 +384,7 @@ public class CartSingleAddressAdapter
         }
 
         void bindViewHolder(CartSellerItemModel model) {
+
             mIsExpanded = true;
 
             mTvSenderName.setText(model.getSenderName());
