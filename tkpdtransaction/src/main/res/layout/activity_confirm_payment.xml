@@ -11,21 +11,21 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
+        <!--<TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/padding_small"
             android:text="@string/title_confirm_courier_page"
             android:textSize="@dimen/text_size_large"
-            android:textStyle="bold" />
+            android:textStyle="bold" />-->
 
-        <TextView
+        <!--<TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/subtitle_confirm_courier_page"
             android:layout_marginLeft="@dimen/margin_small"
             android:layout_marginStart="@dimen/margin_small"
-            android:layout_marginBottom="@dimen/margin_med"/>
+            android:layout_marginBottom="@dimen/margin_med"/>-->
 
         <View
             android:layout_width="match_parent"

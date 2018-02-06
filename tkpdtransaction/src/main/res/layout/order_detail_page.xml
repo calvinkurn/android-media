@@ -39,7 +39,7 @@
                     android:id="@+id/rejection_notice_subtitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/title_buyer_cancelled_order"
+                    android:text="@string/sub_title_buyer_cancelled_order"
                     tools:text="pada 17 Oktober dengan alasan galau" />
 
             </LinearLayout>
