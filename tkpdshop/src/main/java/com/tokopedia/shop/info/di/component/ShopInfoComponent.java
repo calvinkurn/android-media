@@ -4,8 +4,8 @@ import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.info.di.module.ShopInfoModule;
 import com.tokopedia.shop.info.di.scope.ShopInfoScope;
 import com.tokopedia.shop.info.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.shop.info.view.activity.ShopInfoActivity;
-import com.tokopedia.shop.info.view.fragment.ShopInfoDetailFragment;
+import com.tokopedia.shop.info.view.activity.ShopPageActivity;
+import com.tokopedia.shop.info.view.fragment.ShopInfoFragment;
 
 import dagger.Component;
 
@@ -16,9 +16,9 @@ import dagger.Component;
 @Component(modules = ShopInfoModule.class, dependencies = ShopComponent.class)
 public interface ShopInfoComponent {
 
-    void inject(ShopInfoActivity shopInfoActivity);
+    void inject(ShopPageActivity shopInfoActivity);
 
-    void inject(ShopInfoDetailFragment shopInfoDetailFragment);
+    void inject(ShopInfoFragment shopInfoDetailFragment);
 
     GetShopInfoUseCase getShopInfoUseCase();
 }

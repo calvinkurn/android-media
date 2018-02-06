@@ -8,8 +8,8 @@ import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent;
 import com.tokopedia.shop.info.di.module.ShopInfoModule;
-import com.tokopedia.shop.info.view.listener.ShopInfoDetailView;
-import com.tokopedia.shop.info.view.presenter.ShopInfoDetailPresenter;
+import com.tokopedia.shop.info.view.listener.ShopInfoView;
+import com.tokopedia.shop.info.view.presenter.ShopInfoPresenter;
 
 import javax.inject.Inject;
 
@@ -17,10 +17,10 @@ import javax.inject.Inject;
  * Created by nathan on 2/5/18.
  */
 
-public class ShopInfoDetailFragment extends BaseDaggerFragment implements ShopInfoDetailView {
+public class ShopInfoFragment extends BaseDaggerFragment implements ShopInfoView {
 
-    public static ShopInfoDetailFragment createInstance(String shopId) {
-        ShopInfoDetailFragment shopIndoDetailFragment = new ShopInfoDetailFragment();
+    public static ShopInfoFragment createInstance(String shopId) {
+        ShopInfoFragment shopIndoDetailFragment = new ShopInfoFragment();
         Bundle bundle = new Bundle();
         bundle.putString(ShopParamConstant.SHOP_ID, shopId);
         shopIndoDetailFragment.setArguments(bundle);
@@ -28,7 +28,7 @@ public class ShopInfoDetailFragment extends BaseDaggerFragment implements ShopIn
     }
 
     @Inject
-    ShopInfoDetailPresenter shopInfoDetailPresenter;
+    ShopInfoPresenter shopInfoDetailPresenter;
     private String shopId;
 
     @Override

@@ -3,42 +3,42 @@ package com.tokopedia.shop.info.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopComponentInstance;
+import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
-import com.tokopedia.shop.info.di.component.ShopInfoComponent;
-import com.tokopedia.shop.info.view.fragment.ShopInfoDetailFragment;
+import com.tokopedia.shop.info.view.fragment.ShopInfoFragment;
 
 /**
- * Created by nathan on 2/3/18.
+ * Created by nathan on 2/6/18.
  */
 
-public class ShopInfoActivity extends BaseTabActivity {
+public class ShopInfoActivity extends BaseTabActivity implements HasComponent<ShopComponent> {
 
-    private static final int PAGE_LIMIT = 3;
+    private static final int PAGE_LIMIT = 2;
 
-    public static Intent createIntent(Context context) {
+    public static Intent createIntent(Context context, String shopId) {
         Intent intent = new Intent(context, ShopInfoActivity.class);
+        intent.putExtra(ShopParamConstant.SHOP_ID, shopId);
         return intent;
     }
 
-    private ShopComponent component;
+    private String shopId;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        initInjector();
-        super.onCreate(savedInstanceState);
-    }
-
-    private void initInjector() {
-//        getShopComponent().inject(this);
+    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
+        super.onCreate(savedInstanceState, persistentState);
+        shopId = getIntent().getStringExtra(ShopParamConstant.SHOP_ID);
     }
 
     @Override
@@ -57,8 +57,6 @@ public class ShopInfoActivity extends BaseTabActivity {
                     case 0:
                         break;
                     case 1:
-                        break;
-                    case 2:
                         break;
                 }
             }
@@ -83,11 +81,9 @@ public class ShopInfoActivity extends BaseTabActivity {
             public CharSequence getPageTitle(int position) {
                 switch (position) {
                     case 0:
-                        return getString(R.string.shop_info_title_tab_product);
+                        return getString(R.string.shop_info_title_tab_shop_info);
                     case 1:
-                        return getString(R.string.shop_info_title_tab_review);
-                    case 2:
-                        return getString(R.string.shop_info_title_tab_discussion);
+                        return getString(R.string.shop_info_title_tab_note);
                     default:
                         return super.getPageTitle(position);
                 }
@@ -97,11 +93,9 @@ public class ShopInfoActivity extends BaseTabActivity {
             public Fragment getItem(int position) {
                 switch (position) {
                     case 0:
-                        return ShopInfoDetailFragment.createInstance("");
+                        return ShopInfoFragment.createInstance(shopId);
                     case 1:
-                        return ShopInfoDetailFragment.createInstance("");
-                    case 2:
-                        return ShopInfoDetailFragment.createInstance("");
+                        return ShopInfoFragment.createInstance(shopId);
                     default:
                         return null;
                 }
@@ -119,10 +113,8 @@ public class ShopInfoActivity extends BaseTabActivity {
         return PAGE_LIMIT;
     }
 
-    protected ShopComponent getShopComponent() {
-        if (component == null) {
-            component = ShopComponentInstance.getComponent(getApplication());
-        }
-        return component;
+    @Override
+    public ShopComponent getComponent() {
+        return ShopComponentInstance.getComponent(getApplication());
     }
 }

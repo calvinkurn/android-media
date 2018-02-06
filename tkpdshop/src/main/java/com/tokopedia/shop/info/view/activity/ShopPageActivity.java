@@ -3,43 +3,41 @@ package com.tokopedia.shop.info.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
-import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopComponentInstance;
-import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
-import com.tokopedia.shop.info.view.fragment.ShopInfoDetailFragment;
+import com.tokopedia.shop.info.view.fragment.ShopInfoFragment;
 
 /**
- * Created by nathan on 2/6/18.
+ * Created by nathan on 2/3/18.
  */
 
-public class ShopInfoDetailActivity extends BaseTabActivity implements HasComponent<ShopComponent> {
+public class ShopPageActivity extends BaseTabActivity {
 
-    private static final int PAGE_LIMIT = 2;
+    private static final int PAGE_LIMIT = 3;
 
-    public static Intent createIntent(Context context, String shopId) {
-        Intent intent = new Intent(context, ShopInfoDetailActivity.class);
-        intent.putExtra(ShopParamConstant.SHOP_ID, shopId);
+    public static Intent createIntent(Context context) {
+        Intent intent = new Intent(context, ShopPageActivity.class);
         return intent;
     }
 
-    private String shopId;
+    private ShopComponent component;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
-        shopId = getIntent().getStringExtra(ShopParamConstant.SHOP_ID);
+    protected void onCreate(Bundle savedInstanceState) {
+        initInjector();
+        super.onCreate(savedInstanceState);
+    }
+
+    private void initInjector() {
+//        getShopComponent().inject(this);
     }
 
     @Override
@@ -58,6 +56,8 @@ public class ShopInfoDetailActivity extends BaseTabActivity implements HasCompon
                     case 0:
                         break;
                     case 1:
+                        break;
+                    case 2:
                         break;
                 }
             }
@@ -82,9 +82,11 @@ public class ShopInfoDetailActivity extends BaseTabActivity implements HasCompon
             public CharSequence getPageTitle(int position) {
                 switch (position) {
                     case 0:
-                        return getString(R.string.shop_info_title_tab_shop_info);
+                        return getString(R.string.shop_info_title_tab_product);
                     case 1:
-                        return getString(R.string.shop_info_title_tab_note);
+                        return getString(R.string.shop_info_title_tab_review);
+                    case 2:
+                        return getString(R.string.shop_info_title_tab_discussion);
                     default:
                         return super.getPageTitle(position);
                 }
@@ -94,9 +96,11 @@ public class ShopInfoDetailActivity extends BaseTabActivity implements HasCompon
             public Fragment getItem(int position) {
                 switch (position) {
                     case 0:
-                        return ShopInfoDetailFragment.createInstance(shopId);
+                        return ShopInfoFragment.createInstance("");
                     case 1:
-                        return ShopInfoDetailFragment.createInstance(shopId);
+                        return ShopInfoFragment.createInstance("");
+                    case 2:
+                        return ShopInfoFragment.createInstance("");
                     default:
                         return null;
                 }
@@ -114,8 +118,10 @@ public class ShopInfoDetailActivity extends BaseTabActivity implements HasCompon
         return PAGE_LIMIT;
     }
 
-    @Override
-    public ShopComponent getComponent() {
-        return ShopComponentInstance.getComponent(getApplication());
+    protected ShopComponent getShopComponent() {
+        if (component == null) {
+            component = ShopComponentInstance.getComponent(getApplication());
+        }
+        return component;
     }
 }

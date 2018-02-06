@@ -3,7 +3,7 @@ package com.tokopedia.shop.info.view.presenter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.interfaces.merchant.shop.info.ShopInfo;
 import com.tokopedia.shop.info.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.shop.info.view.listener.ShopInfoDetailView;
+import com.tokopedia.shop.info.view.listener.ShopInfoView;
 
 import javax.inject.Inject;
 
@@ -13,12 +13,12 @@ import rx.Subscriber;
  * Created by nathan on 2/6/18.
  */
 
-public class ShopInfoDetailPresenter extends BaseDaggerPresenter<ShopInfoDetailView> {
+public class ShopInfoPresenter extends BaseDaggerPresenter<ShopInfoView> {
 
     private final GetShopInfoUseCase getShopInfoUseCase;
 
     @Inject
-    public ShopInfoDetailPresenter(GetShopInfoUseCase getShopInfoUseCase) {
+    public ShopInfoPresenter(GetShopInfoUseCase getShopInfoUseCase) {
         this.getShopInfoUseCase = getShopInfoUseCase;
     }
 
