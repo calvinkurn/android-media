@@ -405,6 +405,11 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     }
 
     @Override
+    public void showDepartureDateMaxTwoYears(int resID) {
+        showMessageErrorInSnackBar(resID);
+    }
+
+    @Override
     public void showArrivalDateShouldGreaterOrEqual(@StringRes int resId) {
         showMessageErrorInSnackBar(resId);
     }

@@ -243,9 +243,8 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         now.set(Calendar.DATE, dayOfMonth);
         Date newDepartureDate = now.getTime();
         Date twoYears = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, 2);
-        twoYears = FlightDateUtil.addTimeToSpesificDate(twoYears, Calendar.DATE, 1);
         if (newDepartureDate.after(twoYears)) {
-
+            getView().showDepartureDateMaxTwoYears(R.string.flight_dashboard_departure_max_two_years_from_today_error);
         } else if (newDepartureDate.before(FlightDateUtil.getCurrentDate())) {
             getView().showDepartureDateShouldAtLeastToday(R.string.flight_dashboard_departure_should_atleast_today_error);
         } else {
