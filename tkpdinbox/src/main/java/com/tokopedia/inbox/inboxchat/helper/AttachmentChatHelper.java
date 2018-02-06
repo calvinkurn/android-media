@@ -60,7 +60,7 @@ public class AttachmentChatHelper {
     }
 
     private void parseAttachedImage(final MyChatViewModel myChatViewModel, ImageView view, TextView message, final Attachment attachment, final ChatRoomContract.View viewListener, boolean dummy, boolean retry, ImageView action, TextView hour, View progressBarSendImage, ImageView chatStatus) {
-        progressBarSendImage.setVisibility(View.VISIBLE);
+        setVisibility(progressBarSendImage, View.VISIBLE);
         if(retry){
             action.setVisibility(View.VISIBLE);
             action.setOnClickListener(new View.OnClickListener() {
@@ -71,7 +71,7 @@ public class AttachmentChatHelper {
             });
             hour.setVisibility(View.GONE);
             chatStatus.setVisibility(View.GONE);
-            progressBarSendImage.setVisibility(View.GONE);
+            setVisibility(progressBarSendImage, View.GONE);
         }
 
         if (attachment.getAttributes().getImageUrl() != null) {
@@ -87,7 +87,7 @@ public class AttachmentChatHelper {
                 ImageHandler.loadImageChatBlurred(view, attachment.getAttributes().getImageUrl(), R.drawable.product_no_photo_default);
             }else {
                 ImageHandler.loadImageChat(view, attachment.getAttributes().getImageUrl(), R.drawable.product_no_photo_default);
-
+                setVisibility(progressBarSendImage, View.GONE);
             }
             message.setVisibility(View.GONE);
         }
@@ -157,6 +157,12 @@ public class AttachmentChatHelper {
 
             message.setText(spannable, TextView.BufferType.SPANNABLE);
 
+        }
+    }
+
+    public void setVisibility(View view, int visibility){
+        if(view != null){
+            view.setVisibility(visibility);
         }
     }
 }

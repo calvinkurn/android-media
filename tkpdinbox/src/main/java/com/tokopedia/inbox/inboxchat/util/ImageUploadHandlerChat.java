@@ -12,6 +12,7 @@ import android.util.Log;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.myproduct.utils.FileUtils;
+import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.util.MethodChecker;
 
 import java.io.ByteArrayOutputStream;
@@ -187,28 +188,33 @@ public class ImageUploadHandlerChat {
         BitmapFactory.decodeFile(path, checksize);
         options.inSampleSize = ImageHandler.calculateInSampleSize(checksize);
         Bitmap tempPic = BitmapFactory.decodeFile(path, options);
-        ByteArrayOutputStream bao = new ByteArrayOutputStream();
-        Bitmap tempPicToUpload = null;
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        Bitmap bitmap = null;
+
+
+        if(checkSizeOverLimit(tempPic.getByteCount(), 5)){
+            throw new ErrorMessageException("Gambar melebihi 5MB");
+        }
 
         tempPic = ImageHandler.RotatedBitmap(tempPic, path);
 
         if (tempPic.getWidth() > 2048 || tempPic.getHeight() > 2048) {
-            tempPicToUpload = ImageHandler.ResizeBitmap(tempPic, 2048);
+            bitmap = ImageHandler.ResizeBitmap(tempPic, 2048);
         }
         else {
-            tempPicToUpload = tempPic;
+            bitmap = tempPic;
         }
-        tempPicToUpload.compress(Bitmap.CompressFormat.JPEG, 100, bao);
-        return bao.toByteArray();
+
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+
+        return stream.toByteArray();
     }
 
-    public static boolean checkSizeOverLimit(File file, int limit){
+    public static boolean checkSizeOverLimit(int fileSizeInBytes, int limit){
 
-// Get length of file in bytes
-        long fileSizeInBytes = file.length();
-// Convert the bytes to Kilobytes (1 KB = 1024 Bytes)
+        // Convert the bytes to Kilobytes (1 KB = 1024 Bytes)
         long fileSizeInKB = fileSizeInBytes / 1024;
-// Convert the KB to MegaBytes (1 MB = 1024 KBytes)
+        // Convert the KB to MegaBytes (1 MB = 1024 KBytes)
         long fileSizeInMB = fileSizeInKB / 1024;
 
         return (fileSizeInMB > limit);

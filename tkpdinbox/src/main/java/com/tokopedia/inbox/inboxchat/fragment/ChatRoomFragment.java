@@ -212,8 +212,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     public boolean isAllowedTemplate(){
-//        return (remoteConfig.getBoolean(ENABLE_TOPCHAT));
-        return true;
+        return (remoteConfig.getBoolean(ENABLE_TOPCHAT));
     }
 
     @Override
