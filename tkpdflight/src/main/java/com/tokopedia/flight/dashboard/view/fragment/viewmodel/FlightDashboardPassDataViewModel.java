@@ -13,6 +13,7 @@ public class FlightDashboardPassDataViewModel {
     private int childPassengerCount;
     private int infantPassengerCount;
     private int flightClass;
+    private boolean isRoundTrip;
 
     public String getDepartureAirportId() {
         return departureAirportId;
@@ -76,5 +77,13 @@ public class FlightDashboardPassDataViewModel {
 
     public void setFlightClass(int flightClass) {
         this.flightClass = flightClass;
+    }
+
+    public boolean isRoundTrip() {
+        return isRoundTrip;
+    }
+
+    public void setRoundTrip(boolean roundTrip) {
+        isRoundTrip = roundTrip;
     }
 }

@@ -3,7 +3,6 @@ package com.tokopedia.flight.dashboard.view.presenter;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
@@ -17,7 +16,6 @@ import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
 import com.tokopedia.flight.dashboard.domain.GetFlightAirportWithParamUseCase;
 import com.tokopedia.flight.dashboard.domain.GetFlightClassByIdUseCase;
-import com.tokopedia.flight.dashboard.domain.GetFlightClassesUseCase;
 import com.tokopedia.flight.dashboard.view.fragment.cache.FlightDashboardCache;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardPassDataViewModel;
@@ -64,7 +62,6 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     private BannerGetDataUseCase bannerGetDataUseCase;
     private FlightDashboardValidator validator;
     private DeleteFlightCacheUseCase deleteFlightCacheUseCase;
-    private GetFlightClassesUseCase getFlightClassesUseCase;
     private GetFlightAirportWithParamUseCase getFlightAirportWithParamUseCase;
     private GetFlightClassByIdUseCase getFlightClassByIdUseCase;
     private FlightClassViewModelMapper flightClassViewModelMapper;
@@ -77,7 +74,6 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     public FlightDashboardPresenter(BannerGetDataUseCase bannerGetDataUseCase,
                                     FlightDashboardValidator validator,
                                     DeleteFlightCacheUseCase deleteFlightCacheUseCase,
-                                    GetFlightClassesUseCase getFlightClassesUseCase,
                                     GetFlightAirportWithParamUseCase getFlightAirportWithParamUseCase,
                                     GetFlightClassByIdUseCase getFlightClassByIdUseCase,
                                     FlightClassViewModelMapper flightClassViewModelMapper,
@@ -87,7 +83,6 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         this.bannerGetDataUseCase = bannerGetDataUseCase;
         this.validator = validator;
         this.deleteFlightCacheUseCase = deleteFlightCacheUseCase;
-        this.getFlightClassesUseCase = getFlightClassesUseCase;
         this.getFlightAirportWithParamUseCase = getFlightAirportWithParamUseCase;
         this.getFlightClassByIdUseCase = getFlightClassByIdUseCase;
         this.flightClassViewModelMapper = flightClassViewModelMapper;
@@ -100,6 +95,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     @Override
     public void onSingleTripChecked() {
         flightAnalytics.eventTripTypeClick(getView().getString(R.string.flight_dashboard_analytic_one_way).toString());
+        flightDashboardCache.putRoundTrip(false);
         getView().getCurrentDashboardViewModel().setOneWay(true);
         getView().renderSingleTripView();
     }
@@ -107,6 +103,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     @Override
     public void onRoundTripChecked() {
         flightAnalytics.eventTripTypeClick(getView().getString(R.string.flight_dashboard_analytic_round_trip).toString());
+        flightDashboardCache.putRoundTrip(true);
         getView().getCurrentDashboardViewModel().setOneWay(false);
         getView().renderRoundTripView();
     }
@@ -141,6 +138,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         flightDashboardPassDataViewModel.setChildPassengerCount(flightDashboardCache.getPassengerChild());
         flightDashboardPassDataViewModel.setInfantPassengerCount(flightDashboardCache.getPassengerInfant());
         flightDashboardPassDataViewModel.setFlightClass(flightDashboardCache.getClassCache());
+        flightDashboardPassDataViewModel.setRoundTrip(flightDashboardCache.isRoundTrip());
 
         actionRenderFromPassData(false);
     }
@@ -399,6 +397,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
             flightDashboardPassDataViewModel.setDepartureAirportId(extrasTripDeparture[INDEX_ID_AIRPORT_DEPARTURE_TRIP]);
             flightDashboardPassDataViewModel.setArrivalAirportId(extrasTripDeparture[INDEX_ID_AIRPORT_ARRIVAL_TRIP]);
+            flightDashboardPassDataViewModel.setRoundTrip(false);
 
             Calendar today = FlightDateUtil.getCurrentCalendar();
             if (!validator.validateDepartureDateAtLeastToday(getView().getCurrentDashboardViewModel())) {
@@ -416,6 +415,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
             if (tempExtras.length > 1) {
                 String[] extrasTripReturn = tempExtras[INDEX_RETURN_TRIP].split("_");
                 String[] returnTripDate = extrasTripReturn[INDEX_DATE_TRIP].split("-");
+                flightDashboardPassDataViewModel.setRoundTrip(true);
 
                 if (!validator.validateArrivalDateShouldGreaterOrEqualDeparture(getView().getCurrentDashboardViewModel())) {
                     isReturnDateValid = false;
@@ -477,7 +477,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         onDepartureDateChange(Integer.parseInt(departureDate[INDEX_DATE_YEAR]), Integer.parseInt(departureDate[INDEX_DATE_MONTH]), Integer.parseInt(departureDate[INDEX_DATE_DATE]));
         onSingleTripChecked();
 
-        if (!flightDashboardPassDataViewModel.getReturnDate().isEmpty()) {
+        if (!flightDashboardPassDataViewModel.getReturnDate().isEmpty() && flightDashboardPassDataViewModel.isRoundTrip()) {
             String[] returnDate = flightDashboardPassDataViewModel.getReturnDate().split("-");
             onReturnDateChange(Integer.parseInt(returnDate[INDEX_DATE_YEAR]), Integer.parseInt(returnDate[INDEX_DATE_MONTH]), Integer.parseInt(returnDate[INDEX_DATE_DATE]));
             onRoundTripChecked();

@@ -19,6 +19,7 @@ public class FlightDashboardCache {
     private static final String PASSENGER_ADULT = "PASSENGER_ADULT";
     private static final String PASSENGER_CHILD = "PASSENGER_CHILD";
     private static final String PASSENGER_INFANT = "PASSENGER_INFANT";
+    private static final String IS_ROUND_TRIP = "IS_ROUND_TRIP";
     private static final String CLASS ="CLASS";
     private static final String DEFAULT_DEPARTURE_AIRPORT_ID = "CGK";
     private static final String DEFAULT_ARRIVAL_AIRPORT_ID = "DPS";
@@ -26,14 +27,13 @@ public class FlightDashboardCache {
     private static final int DEFAULT_PASSENGER_CHILD = 0;
     private static final int DEFAULT_PASSENGER_INFANT = 0;
     private static final int DEFAULT_CLASS = 1;
+    private static final boolean DEFAULT_IS_ROUND_TRIP = false;
     private SharedPreferences.Editor editor;
     private SharedPreferences sharedPrefs;
-    private Gson gson;
 
     public FlightDashboardCache(Context context, Gson gson) {
         this.sharedPrefs = context.getSharedPreferences(CACHE_NAME, Context.MODE_PRIVATE);
         this.editor = sharedPrefs.edit();
-        this.gson = gson;
     }
 
     public void putDepartureAirport(String airportId) {
@@ -104,6 +104,16 @@ public class FlightDashboardCache {
 
     public int getClassCache() {
         return sharedPrefs.getInt(CLASS, DEFAULT_CLASS);
+    }
+
+    public void putRoundTrip(boolean isRoundTrip) {
+        editor
+                .putBoolean(IS_ROUND_TRIP, isRoundTrip)
+                .apply();
+    }
+
+    public boolean isRoundTrip() {
+        return sharedPrefs.getBoolean(IS_ROUND_TRIP, DEFAULT_IS_ROUND_TRIP);
     }
 
 }
