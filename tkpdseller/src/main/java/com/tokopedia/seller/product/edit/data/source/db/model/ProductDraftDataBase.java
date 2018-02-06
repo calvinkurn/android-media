@@ -14,6 +14,8 @@ import com.tokopedia.seller.database.TkpdSellerDatabase;
 public class ProductDraftDataBase extends BaseModel{
     public static final String COLUMN_IS_UPLOADING = "is_uploading";
     public static final String COLUMN_SHOP_ID = "shopId";
+    public static final String COLUMN_VERSION = "version";
+    public static final int CURRENT_VERSION = 1;
 
     @PrimaryKey(autoincrement = true)
     @Column
@@ -27,6 +29,17 @@ public class ProductDraftDataBase extends BaseModel{
 
     @Column (name = COLUMN_SHOP_ID)
     String shopId;
+
+    @Column(name = COLUMN_VERSION)
+    int version;
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
 
     public long getId() {
         return id;

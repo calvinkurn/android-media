@@ -2,10 +2,18 @@ package com.tokopedia.seller.product.edit.di.module;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
+import com.tokopedia.core.base.domain.executor.PostExecutionThread;
+import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
-import com.tokopedia.seller.product.edit.data.mapper.AddProductValidationInputMapper;
-import com.tokopedia.seller.product.edit.data.mapper.EditProductInputMapper;
+import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
+import com.tokopedia.core.network.v4.NetworkConfig;
+import com.tokopedia.seller.base.data.repository.UploadImageRepositoryImpl;
+import com.tokopedia.seller.base.data.source.UploadImageDataSource;
+import com.tokopedia.seller.base.domain.UploadImageRepository;
+import com.tokopedia.seller.base.domain.interactor.UploadImageUseCase;
 import com.tokopedia.seller.product.edit.data.mapper.UploadProductPictureInputMapper;
 import com.tokopedia.seller.product.edit.data.repository.GenerateHostRepositoryImpl;
 import com.tokopedia.seller.product.edit.data.repository.ImageProductUploadRepositoryImpl;
@@ -16,7 +24,8 @@ import com.tokopedia.seller.product.edit.data.source.ImageProductUploadDataSourc
 import com.tokopedia.seller.product.draft.data.source.ProductDraftDataSource;
 import com.tokopedia.seller.product.edit.data.source.UploadProductDataSource;
 import com.tokopedia.seller.product.edit.data.source.cloud.api.GenerateHostApi;
-import com.tokopedia.seller.product.edit.data.source.cloud.api.UploadProductApi;
+import com.tokopedia.seller.product.edit.data.source.cloud.api.ProductApi;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.UploadImageModel;
 import com.tokopedia.seller.product.edit.di.scope.AddProductServiceScope;
 import com.tokopedia.seller.product.edit.domain.GenerateHostRepository;
 import com.tokopedia.seller.product.edit.domain.ImageProductUploadRepository;
@@ -64,10 +73,8 @@ public class AddProductserviceModule {
 
     @AddProductServiceScope
     @Provides
-    UploadProductRepository provideUploadProductRepository(UploadProductDataSource uploadProductDataSource,
-                                                           AddProductValidationInputMapper addProductValidationInputMapper,
-                                                           EditProductInputMapper editProductInputMapper){
-        return new UploadProductRepositoryImpl(uploadProductDataSource, addProductValidationInputMapper, editProductInputMapper);
+    UploadProductRepository provideUploadProductRepository(UploadProductDataSource uploadProductDataSource){
+        return new UploadProductRepositoryImpl(uploadProductDataSource);
     }
 
     @AddProductServiceScope
@@ -84,12 +91,6 @@ public class AddProductserviceModule {
 
     @AddProductServiceScope
     @Provides
-    UploadProductApi provideUploadProductApi(@WsV4QualifierWithErrorHander Retrofit retrofit){
-        return retrofit.create(UploadProductApi.class);
-    }
-
-    @AddProductServiceScope
-    @Provides
     ProductVariantRepository productVariantRepository(ProductVariantDataSource productVariantDataSource){
         return new ProductVariantRepositoryImpl(productVariantDataSource);
     }
@@ -99,4 +100,36 @@ public class AddProductserviceModule {
     TomeApi provideTomeApi(@TomeQualifier Retrofit retrofit){
         return retrofit.create(TomeApi.class);
     }
+
+    @AddProductServiceScope
+    @Provides
+    ProductApi provideTomeApiAddProduct(@TomeQualifier Retrofit retrofit){
+        return retrofit.create(ProductApi.class);
+    }
+
+    @AddProductServiceScope
+    @Provides
+    UploadImageUseCase<UploadImageModel> provideUploadImageUseCase(ThreadExecutor threadExecutor,
+                                                                   PostExecutionThread postExecutionThread,
+                                                                   UploadImageRepository uploadImageRepository,
+                                                                   GenerateHostRepository generateHostRepository,
+                                                                   Gson gson,
+                                                                   NetworkCalculator networkCalculator){
+        return new UploadImageUseCase<UploadImageModel>(threadExecutor, postExecutionThread, uploadImageRepository,
+                generateHostRepository,gson, networkCalculator, UploadImageModel.class);
+    }
+
+    @AddProductServiceScope
+    @Provides
+    UploadImageRepository provideUploadImageRepository(UploadImageDataSource uploadImageDataSource){
+        return new UploadImageRepositoryImpl(uploadImageDataSource);
+    }
+
+    @AddProductServiceScope
+    @Provides
+    NetworkCalculator provideNetworkCalculator(@ApplicationContext Context context,
+            UploadImageDataSource uploadImageDataSource){
+        return new NetworkCalculator(NetworkConfig.POST, context, TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL).setIdentity().compileAllParam().finish();
+    }
+
 }

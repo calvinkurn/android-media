@@ -1,75 +1,80 @@
 package com.tokopedia.seller.product.edit.domain.interactor.uploadproduct;
 
-import com.tokopedia.core.base.utils.StringUtils;
-import com.tokopedia.seller.product.edit.domain.ImageProductUploadRepository;
-import com.tokopedia.seller.product.edit.domain.model.ImageProcessDomainModel;
-import com.tokopedia.seller.product.edit.domain.model.ImageProductInputDomainModel;
-import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.seller.base.domain.interactor.UploadImageUseCase;
+import com.tokopedia.seller.base.domain.model.ImageUploadDomainModel;
+import com.tokopedia.seller.product.common.constant.ProductNetworkConstant;
+import com.tokopedia.seller.product.draft.data.mapper.ProductDraftMapper;
+import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.UploadImageModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureResultUploadedViewModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import rx.Observable;
+import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
  * @author sebastianuskh on 5/8/17.
  */
 
-public class AddProductImage implements Func1<UploadProductInputDomainModel, Observable<List<ImageProductInputDomainModel>>> {
+public class AddProductImage implements Func1<ProductViewModel, Observable<List<ProductPictureViewModel>>> {
 
-    private final ImageProductUploadRepository imageProductUploadRepository;
+    private final UploadImageUseCase<UploadImageModel> uploadImageUseCase;
 
-    public AddProductImage(ImageProductUploadRepository imageProductUploadRepository) {
-        this.imageProductUploadRepository = imageProductUploadRepository;
+    public AddProductImage(UploadImageUseCase<UploadImageModel> uploadImageUseCase) {
+        this.uploadImageUseCase = uploadImageUseCase;
     }
 
     @Override
-    public Observable<List<ImageProductInputDomainModel>> call(UploadProductInputDomainModel domainModel) {
-        return Observable.from(domainModel.getProductPhotos().getPhotos())
-                .flatMap(new UploadSingleImage(domainModel.getServerId(), domainModel.getHostUrl()))
+    public Observable<List<ProductPictureViewModel>> call(ProductViewModel productViewModel) {
+        return Observable.from(productViewModel.getProductPicture())
+                .flatMap(new UploadSingleImage())
                 .toList();
     }
 
-    private class UploadSingleImage implements Func1<ImageProductInputDomainModel, Observable<ImageProductInputDomainModel>> {
+    private class UploadSingleImage implements Func1<ProductPictureViewModel, Observable<ProductPictureViewModel>> {
 
-        private final int serverId;
-
-        private final String hostUrl;
-
-        public UploadSingleImage(int serverId, String hostUrl) {
-            this.serverId = serverId;
-            this.hostUrl = hostUrl;
+        public UploadSingleImage() {
         }
 
         @Override
-        public Observable<ImageProductInputDomainModel> call(ImageProductInputDomainModel imageProductInputDomainModel) {
-            if (StringUtils.isNotBlank(imageProductInputDomainModel.getImagePath())) {
-                return imageProductUploadRepository.uploadImageProduct(
-                        hostUrl,
-                        serverId,
-                        imageProductInputDomainModel.getImagePath(),
-                        0)
-                        .map(new MapImageModelToProductInput(imageProductInputDomainModel));
+        public Observable<ProductPictureViewModel> call(ProductPictureViewModel productPictureViewModel) {
+            if (productPictureViewModel.getId() > 0) {
+                return uploadImageUseCase.createObservable(uploadImageUseCase.createRequestParams(
+                        ProductNetworkConstant.UPLOAD_IMAGE_PRODUCT_PATH, productPictureViewModel.getFilePath()))
+                        .map(new MapImageModelToProductInput(productPictureViewModel));
             } else {
-                return Observable.just(imageProductInputDomainModel);
+                return Observable.just(productPictureViewModel);
             }
-        }
-
-        private class MapImageModelToProductInput implements Func1<ImageProcessDomainModel, ImageProductInputDomainModel> {
-
-            private final ImageProductInputDomainModel inputDomainModel;
-
-            public MapImageModelToProductInput(ImageProductInputDomainModel inputDomainModel) {
-                this.inputDomainModel = inputDomainModel;
-            }
-
-            @Override
-            public ImageProductInputDomainModel call(ImageProcessDomainModel uploadImageDomainModel) {
-                inputDomainModel.setUrl(uploadImageDomainModel.getUrl());
-                return inputDomainModel;
-            }
-
         }
     }
 
+    private class MapImageModelToProductInput implements Func1<ImageUploadDomainModel<UploadImageModel>, ProductPictureViewModel> {
+        private ProductPictureViewModel productPictureViewModel;
+
+        public MapImageModelToProductInput(ProductPictureViewModel productPictureViewModel) {
+
+            this.productPictureViewModel = productPictureViewModel;
+        }
+
+        @Override
+        public ProductPictureViewModel call(ImageUploadDomainModel<UploadImageModel> uploadDomainModel) {
+            if(uploadDomainModel.getDataResultImageUpload() != null){
+                try {
+                    ProductPictureResultUploadedViewModel resultUploadedViewModel = ProductDraftMapper.generatePicObj(uploadDomainModel.getDataResultImageUpload().getResult().getPicObj());
+                    productPictureViewModel.setFilePath(resultUploadedViewModel.getFilePath());
+                    productPictureViewModel.setFileName(resultUploadedViewModel.getFileName());
+                    productPictureViewModel.setX(Long.parseLong(resultUploadedViewModel.getW()));
+                    productPictureViewModel.setY(Long.parseLong(resultUploadedViewModel.getH()));
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+            return productPictureViewModel;
+        }
+    }
 }

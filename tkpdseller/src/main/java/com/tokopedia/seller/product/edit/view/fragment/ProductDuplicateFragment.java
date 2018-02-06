@@ -7,10 +7,9 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.edit.di.component.DaggerProductEditComponent;
 import com.tokopedia.seller.product.edit.di.module.ProductEditModule;
-import com.tokopedia.seller.product.edit.view.model.upload.UploadProductInputViewModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 import com.tokopedia.seller.product.edit.view.presenter.ProductEditPresenter;
 import com.tokopedia.seller.product.edit.view.presenter.ProductEditView;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.ProductVariantByPrdModel;
 
 import javax.inject.Inject;
 
@@ -53,7 +52,7 @@ public class ProductDuplicateFragment extends ProductDraftAddFragment implements
     }
 
     @Override
-    public void onSuccessLoadDraftProduct(UploadProductInputViewModel model) {
+    public void onSuccessLoadDraftProduct(ProductViewModel model) {
         super.onSuccessLoadDraftProduct(model);
         productNameBeforeCopy = model.getProductName();
     }

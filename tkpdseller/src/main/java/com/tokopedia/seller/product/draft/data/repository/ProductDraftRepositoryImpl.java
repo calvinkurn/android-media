@@ -1,14 +1,13 @@
 package com.tokopedia.seller.product.draft.data.repository;
 
 import android.content.Context;
-import android.text.TextUtils;
 
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.product.edit.data.source.db.model.ProductDraftDataBase;
 import com.tokopedia.seller.product.draft.data.mapper.ProductDraftMapper;
 import com.tokopedia.seller.product.draft.data.source.ProductDraftDataSource;
 import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
-import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.seller.product.edit.data.source.db.model.ProductDraftDataBase;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 
 import java.util.List;
 
@@ -31,20 +30,20 @@ public class ProductDraftRepositoryImpl implements ProductDraftRepository {
 
 
     @Override
-    public Observable<Long> saveDraft(UploadProductInputDomainModel domainModel, boolean isUploading) {
+    public Observable<Long> saveDraft(ProductViewModel domainModel, boolean isUploading) {
         String productDraft = ProductDraftMapper.mapFromDomain(domainModel);
         String shopId = SessionHandler.getShopID(context);
-        return productDraftDataSource.saveDraft(productDraft, domainModel.getId(), isUploading, shopId);
+        return productDraftDataSource.saveDraft(productDraft, domainModel.getProductId(), isUploading, shopId);
     }
 
     @Override
-    public Observable<UploadProductInputDomainModel> getDraft(long productId) {
+    public Observable<ProductViewModel> getDraft(long productId) {
         return productDraftDataSource.getDraft(productId)
                 .map(new ProductDraftMapper(productId));
     }
 
     @Override
-    public Observable<List<UploadProductInputDomainModel>> getAllDraft() {
+    public Observable<List<ProductViewModel>> getAllDraft() {
         String shopId = SessionHandler.getShopID(context);
         return productDraftDataSource.getAllDraft(shopId)
                 .flatMap(new Func1<List<ProductDraftDataBase>, Observable<ProductDraftDataBase>>() {
@@ -53,17 +52,16 @@ public class ProductDraftRepositoryImpl implements ProductDraftRepository {
                         return Observable.from(productDraftDataBases);
                     }
                 })
-                .map(new Func1<ProductDraftDataBase, UploadProductInputDomainModel>() {
+                .map(new Func1<ProductDraftDataBase, ProductViewModel>() {
                     @Override
-                    public UploadProductInputDomainModel call(ProductDraftDataBase productDraftDataBase) {
+                    public ProductViewModel call(ProductDraftDataBase productDraftDataBase) {
                         long id = productDraftDataBase.getId();
-                        String data = productDraftDataBase.getData();
-                        return Observable.just(data).map(new ProductDraftMapper(id)).toBlocking().first();
+                        return Observable.just(productDraftDataBase).map(new ProductDraftMapper(id)).toBlocking().first();
                     }
-                }).toSortedList(new Func2<UploadProductInputDomainModel, UploadProductInputDomainModel, Integer>() {
+                }).toSortedList(new Func2<ProductViewModel, ProductViewModel, Integer>() {
                     @Override
-                    public Integer call(UploadProductInputDomainModel uploadProductInputDomainModel, UploadProductInputDomainModel uploadProductInputDomainModel2) {
-                        return (int) (uploadProductInputDomainModel2.getId() - uploadProductInputDomainModel.getId());
+                    public Integer call(ProductViewModel productViewModel, ProductViewModel productViewModel2) {
+                        return (int) (productViewModel2.getProductId() - productViewModel.getProductId());
                     }
                 });
     }
@@ -86,14 +84,8 @@ public class ProductDraftRepositoryImpl implements ProductDraftRepository {
     }
 
     @Override
-    public Observable<Long> updateDraft(long productId, UploadProductInputDomainModel domainModel) {
-        String productDraft = ProductDraftMapper.mapFromDomain(domainModel);
-        return productDraftDataSource.updateDraft(productId, productDraft);
-    }
-
-    @Override
-    public Observable<Long> updateDraftToUpload(long productId, UploadProductInputDomainModel domainModel,
-                                                   boolean isUploading) {
+    public Observable<Long> updateDraftToUpload(long productId, ProductViewModel domainModel,
+                                                boolean isUploading) {
         String productDraft = ProductDraftMapper.mapFromDomain(domainModel);
         return productDraftDataSource.updateDraft(productId, productDraft, isUploading);
     }

@@ -12,6 +12,7 @@ import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainMo
 import com.tokopedia.seller.product.draft.domain.interactor.UpdateUploadingDraftProductUseCase;
 import com.tokopedia.seller.product.draft.view.mapper.ProductDraftListMapper;
 import com.tokopedia.seller.product.draft.view.model.ProductDraftViewModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,8 +81,8 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
         };
     }
 
-    private Subscriber<List<UploadProductInputDomainModel>> getSubscriber(){
-        return new Subscriber<List<UploadProductInputDomainModel>>() {
+    private Subscriber<List<ProductViewModel>> getSubscriber(){
+        return new Subscriber<List<ProductViewModel>>() {
             @Override
             public void onCompleted() {
 
@@ -95,17 +96,17 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
             }
 
             @Override
-            public void onNext(List<UploadProductInputDomainModel> uploadProductInputDomainModels) {
-                if (uploadProductInputDomainModels == null || uploadProductInputDomainModels.size() == 0 ) {
+            public void onNext(List<ProductViewModel> productViewModels) {
+                if (productViewModels == null || productViewModels.size() == 0 ) {
                     getView().onSearchLoaded(new ArrayList<ProductDraftViewModel>(), 0);
                 } else {
                     // map to View Model
-                    List<ProductDraftViewModel> viewModelList = new ArrayList<>();
-                    for (int i=0, sizei = uploadProductInputDomainModels.size(); i<sizei; i++) {
-                        UploadProductInputDomainModel domainModel = uploadProductInputDomainModels.get(i);
-                        viewModelList.add(ProductDraftListMapper.mapDomainToView(domainModel));
-                    }
-                    getView().onSearchLoaded(viewModelList, viewModelList.size());
+//                    List<ProductDraftViewModel> viewModelList = new ArrayList<>();
+//                    for (int i=0, sizei = productViewModels.size(); i<sizei; i++) {
+//                        UploadProductInputDomainModel domainModel = productViewModels.get(i);
+//                        viewModelList.add(ProductDraftListMapper.mapDomainToView(domainModel));
+//                    }
+//                    getView().onSearchLoaded(viewModelList, viewModelList.size());
                 }
 
             }

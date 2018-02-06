@@ -60,6 +60,7 @@ import com.tokopedia.seller.product.edit.view.listener.YoutubeAddVideoView;
 import com.tokopedia.seller.product.edit.view.mapper.AnalyticsMapper;
 import com.tokopedia.seller.product.edit.view.model.ImageSelectModel;
 import com.tokopedia.seller.product.edit.view.model.categoryrecomm.ProductCategoryPredictionViewModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductVideoViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.ValueIndicatorScoreModel;
@@ -114,7 +115,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     private ValueIndicatorScoreModel valueIndicatorScoreModel;
 
     // view model to be compare later when we want to save as draft
-    private UploadProductInputViewModel firstTimeViewModel;
+    private ProductViewModel firstTimeViewModel;
 
     /**
      * Url got from gallery or camera or other paths
@@ -223,7 +224,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     }
 
     private void saveAndAddDraft(boolean isUploading) {
-        UploadProductInputViewModel viewModel = collectDataFromView();
+        ProductViewModel viewModel = collectDataFromView();
         if (isUploading) {
             sendAnalyticsAddMore(viewModel);
         }
@@ -241,8 +242,8 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         // will compare will the default value and the current value
         // if there is the difference, then assume that the data has been added.
         // will be overriden when not adding product
-        UploadProductInputViewModel model = collectDataFromView();
-        return !model.equalsDefault(firstTimeViewModel);
+        ProductViewModel model = collectDataFromView();
+        return !model.equals(firstTimeViewModel);
     }
 
     public void deleteNotUsedTkpdCacheImage(){
@@ -258,14 +259,14 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     }
 
     public void saveDraft(boolean isUploading) {
-        UploadProductInputViewModel viewModel = collectDataFromView();
+        ProductViewModel viewModel = collectDataFromView();
         if (isUploading) {
             sendAnalyticsAdd(viewModel);
         }
         presenter.saveDraft(viewModel, isUploading);
     }
 
-    private void sendAnalyticsAdd(UploadProductInputViewModel viewModel) {
+    private void sendAnalyticsAdd(ProductViewModel viewModel) {
         List<String>  listLabelAnalytics = AnalyticsMapper.mapViewToAnalytic(viewModel,
                 Integer.parseInt(getString(R.string.product_free_return_values_active)),
                 productAdditionalInfoViewHolder.isShare()
@@ -279,7 +280,7 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         }
     }
 
-    private void sendAnalyticsAddMore(UploadProductInputViewModel viewModel) {
+    private void sendAnalyticsAddMore(ProductViewModel viewModel) {
         List<String>  listLabelAnalytics = AnalyticsMapper.mapViewToAnalytic(viewModel,
                 Integer.parseInt(getString(R.string.product_free_return_values_active)),
                 productAdditionalInfoViewHolder.isShare()
@@ -382,8 +383,8 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     }
 
     @Override
-    public void onImageResolutionChanged(int maxSize) {
-        valueIndicatorScoreModel.setImageResolution(maxSize);
+    public void onImageResolutionChanged(long maxSize) {
+        valueIndicatorScoreModel.setImageResolution((int)maxSize);
         updateProductScoring();
     }
 
@@ -577,9 +578,9 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     }
 
     @Override
-    public void onImagePickerItemClicked(int position, boolean isPrimary, boolean allowDelete) {
+    public void onImagePickerItemClicked(int position, boolean isPrimary) {
         FragmentManager fm = getActivity().getSupportFragmentManager();
-        DialogFragment dialogFragment = ImageEditProductDialogFragment.newInstance(position, isPrimary,allowDelete);
+        DialogFragment dialogFragment = ImageEditProductDialogFragment.newInstance(position, isPrimary);
         dialogFragment.show(fm, ImageEditProductDialogFragment.FRAGMENT_TAG);
         ((ImageEditProductDialogFragment) dialogFragment).setOnImageEditListener(new ImageEditProductDialogFragment.OnImageEditListener() {
 
@@ -814,12 +815,12 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
     }
 
     @CallSuper
-    protected UploadProductInputViewModel collectDataFromView() {
+    protected ProductViewModel collectDataFromView() {
         ProductViewModel viewModel = new ProductViewModel();
         viewModel.setProductName(productInfoViewHolder.getName());
         viewModel.setProductCategory(productInfoViewHolder.getProductCategory());
         viewModel.setProductCatalog(productInfoViewHolder.getProductCatalog());
-//        viewModel.setProductPhotos(productImageViewHolder.getProductPhotos());
+        viewModel.setProductPicture(productImageViewHolder.getProductPhotos());
 
         viewModel.setProductPriceCurrency(productDetailViewHolder.getPriceUnit());
         viewModel.setProductPrice(productDetailViewHolder.getPriceValue());
@@ -842,10 +843,10 @@ public class ProductAddFragment extends BaseDaggerFragment implements ProductAdd
         viewModel.setProductPreorder(productAdditionalInfoViewHolder.getPreOrder());
         viewModel.setProductStatus(getStatusUpload());
         viewModel.setProductVariant(productAdditionalInfoViewHolder.getProductVariant());
-//        viewModel.setProductNameEditable(productInfoViewHolder.isNameEditable()?1:0);
+        viewModel.setProductNameEditable(productInfoViewHolder.isNameEditable());
 
 //        viewModel.setVariantStringSelection(productAdditionalInfoViewHolder.getVariantStringSelection());
-        return null;
+        return viewModel;
     }
 
     @Override

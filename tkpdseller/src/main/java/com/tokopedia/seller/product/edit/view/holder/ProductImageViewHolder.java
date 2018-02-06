@@ -17,6 +17,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.imageeditor.ImageEditorActivity;
 import com.tokopedia.seller.product.edit.view.adapter.ImageSelectorAdapter;
 import com.tokopedia.seller.product.edit.view.model.ImageSelectModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
 import com.tokopedia.seller.product.edit.view.model.upload.ImageProductInputViewModel;
 import com.tokopedia.seller.product.edit.view.model.upload.ProductPhotoListViewModel;
 import com.tokopedia.seller.product.edit.view.widget.ImagesSelectView;
@@ -35,13 +36,13 @@ public class ProductImageViewHolder extends ProductViewHolder {
     public interface Listener {
         void onAddImagePickerClicked(int position);
 
-        void onImagePickerItemClicked(int position, boolean isPrimary, boolean allowDelete);
+        void onImagePickerItemClicked(int position, boolean isPrimary);
 
         void onResolutionImageCheckFailed(String uri);
 
         void onTotalImageUpdated(int total);
 
-        void onImageResolutionChanged(int maxSize);
+        void onImageResolutionChanged(long maxSize);
 
         void onImageEditor(String uriOrPath);
 
@@ -74,7 +75,7 @@ public class ProductImageViewHolder extends ProductViewHolder {
             @Override
             public void onItemClick(int position, final ImageSelectModel imageSelectModel) {
                 if (listener != null) {
-                    listener.onImagePickerItemClicked(position, imageSelectModel.isPrimary(), imageSelectModel.allowDelete());
+                    listener.onImagePickerItemClicked(position, imageSelectModel.isPrimary());
                 }
             }
         });
@@ -104,11 +105,11 @@ public class ProductImageViewHolder extends ProductViewHolder {
             }
 
             private void updateImageResolution() {
-                ProductPhotoListViewModel productPhotoListViewModel = getProductPhotos();
-                int imageCount = productPhotoListViewModel.getPhotos().size();
+                List<ImageSelectModel> productPhotoListViewModel = imagesSelectView.getImageList();
+                int imageCount = productPhotoListViewModel.size();
                 if (imageCount > 0) {
-                    ImageProductInputViewModel imageProductInputViewModel = productPhotoListViewModel.getPhotos().get(productPhotoListViewModel.getProductDefaultPicture());
-                    listener.onImageResolutionChanged(imageProductInputViewModel.getImageResolution());
+                    ImageSelectModel imageProductInputViewModel = productPhotoListViewModel.get(0);
+                    listener.onImageResolutionChanged(imageProductInputViewModel.getMinResolution());
                 }
             }
         });
@@ -154,54 +155,37 @@ public class ProductImageViewHolder extends ProductViewHolder {
         }
     }
 
-    public ProductPhotoListViewModel getProductPhotos() {
-
-        ProductPhotoListViewModel productPhotos = new ProductPhotoListViewModel();
-        List<ImageProductInputViewModel> listImageViewModel = new ArrayList<>();
+    public List<ProductPictureViewModel> getProductPhotos() {
+        List<ProductPictureViewModel> listImageViewModel = new ArrayList<>();
 
         List<ImageSelectModel> selectModelList = imagesSelectView.getImageList();
         for (int i = 0; i < selectModelList.size(); i++) {
-            ImageProductInputViewModel imageViewModel = new ImageProductInputViewModel();
+            ProductPictureViewModel imageViewModel = new ProductPictureViewModel();
             ImageSelectModel selectModel = selectModelList.get(i);
-
-            if (selectModel.isValidURL()) {
-                imageViewModel.setUrl(selectModel.getUriOrPath());
-            } else {
-                imageViewModel.setImagePath(selectModel.getUriOrPath());
-            }
-
-            imageViewModel.setImageDescription(selectModel.getDescription());
-            imageViewModel.setImageResolution(selectModel.getMinResolution());
-            imageViewModel.setCanDelete(selectModel.allowDelete());
-
-            if (selectModel.isPrimary()) {
-                productPhotos.setProductDefaultPicture(i);
-            }
+            imageViewModel.setFilePath(selectModel.getUriOrPath());
+            imageViewModel.setDescription(selectModel.getDescription());
+            imageViewModel.setX(selectModel.getWidth());
+            imageViewModel.setY(selectModel.getHeight());
+            imageViewModel.setId(selectModel.getId());
+            imageViewModel.setStatus(selectModel.getStatus());
             listImageViewModel.add(imageViewModel);
         }
-        productPhotos.setPhotos(listImageViewModel);
-        return productPhotos;
+        return listImageViewModel;
     }
 
-    public void setProductPhotos(ProductPhotoListViewModel productPhotos, boolean isEditMode) {
+    public void setProductPhotos(List<ProductPictureViewModel> productPhotos) {
         ArrayList<ImageSelectModel> images = new ArrayList<>();
-        int defaultPicture = productPhotos.getProductDefaultPicture();
-        for (int i = 0; i < productPhotos.getPhotos().size(); i++) {
-            ImageProductInputViewModel productPhoto = productPhotos.getPhotos().get(i);
-            String url = productPhoto.getUrl();
-            String path = productPhoto.getImagePath();
-            if (StringUtils.isBlank(url)) {
-                if (StringUtils.isBlank(path)) {
-                    continue;
-                } else {
-                    url = productPhoto.getImagePath();
-                }
-            }
+        for (int i = 0; i < productPhotos.size(); i++) {
+            ProductPictureViewModel productPhoto = productPhotos.get(i);
+            String url = productPhoto.getFilePath();
             ImageSelectModel image = new ImageSelectModel(
                     url,
-                    productPhoto.getImageDescription(),
-                    i == defaultPicture,
-                    isEditMode ? productPhoto.canDelete() : true
+                    productPhoto.getDescription(),
+                    i == 0,
+                    productPhoto.getX(),
+                    productPhoto.getY(),
+                    productPhoto.getId(),
+                    productPhoto.getStatus()
             );
             images.add(image);
         }
@@ -210,7 +194,7 @@ public class ProductImageViewHolder extends ProductViewHolder {
 
     @Override
     public Pair<Boolean, String> isDataValid() {
-        if (getProductPhotos().getPhotos().size() < 1) {
+        if (getProductPhotos().size() < 1) {
             Snackbar.make(imagesSelectView.getRootView().findViewById(android.R.id.content), R.string.product_error_product_picture_empty, Snackbar.LENGTH_LONG)
                     .setActionTextColor(ContextCompat.getColor(imagesSelectView.getContext(), R.color.green_400))
                     .show();

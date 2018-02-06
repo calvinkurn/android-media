@@ -22,7 +22,7 @@ public class ProductViewModel {
     private long productPriceCurrency;
     @SerializedName("product_status")
     @Expose
-    private long productStatus;
+    private int productStatus;
     @SerializedName("product_min_order")
     @Expose
     private long productMinOrder;
@@ -103,6 +103,10 @@ public class ProductViewModel {
     @Expose
     private String productGtin;
 
+    @SerializedName("product_name_editable")
+    @Expose
+    private boolean productNameEditable;
+
     public long getProductId() {
         return productId;
     }
@@ -135,11 +139,11 @@ public class ProductViewModel {
         this.productPriceCurrency = productPriceCurrency;
     }
 
-    public long getProductStatus() {
+    public int getProductStatus() {
         return productStatus;
     }
 
-    public void setProductStatus(long productStatus) {
+    public void setProductStatus(int productStatus) {
         this.productStatus = productStatus;
     }
 
@@ -349,5 +353,13 @@ public class ProductViewModel {
 
     public void setProductVariant(ProductVariantViewModel productVariant) {
         this.productVariant = productVariant;
+    }
+
+    public void setProductNameEditable(boolean productNameEditable) {
+        this.productNameEditable = productNameEditable;
+    }
+
+    public boolean isProductNameEditable() {
+        return productNameEditable;
     }
 }

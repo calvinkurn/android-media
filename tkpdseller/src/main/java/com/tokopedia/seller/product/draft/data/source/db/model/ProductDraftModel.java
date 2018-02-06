@@ -12,6 +12,7 @@ import java.util.List;
  * @author sebastianuskh on 4/13/17.
  */
 
+@Deprecated
 public class ProductDraftModel {
 
     @SerializedName("product_photos")

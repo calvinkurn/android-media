@@ -71,7 +71,7 @@ public class ProductEditPresenter extends ProductAddPresenterImpl<ProductEditVie
             @Override
             public void onNext(UploadProductInputDomainModel editProductFormDomainModel) {
                 UploadProductInputViewModel model = UploadProductMapper.mapDomainToView(editProductFormDomainModel);
-                getView().onSuccessLoadDraftProduct(model);
+//                getView().onSuccessLoadDraftProduct(model);
             }
         };
     }
