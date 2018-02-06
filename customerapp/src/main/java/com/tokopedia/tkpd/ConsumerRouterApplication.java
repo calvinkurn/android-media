@@ -164,6 +164,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActi
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.activity.ReputationProduct;
 import com.tokopedia.tkpd.tkpdreputation.shopreputation.ShopReputationList;
 import com.tokopedia.tkpd.truecaller.TruecallerActivity;
+import com.tokopedia.tkpdcontent.KolRouter;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
@@ -197,7 +198,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TkpdCoreRouter, SellerModuleRouter, IDigitalModuleRouter, PdpRouter,
         OtpRouter, IPaymentModuleRouter, TransactionRouter, IReactNativeRouter, ReactApplication, TkpdInboxRouter,
         TokoCashRouter, IWalletRouter, ILoyaltyRouter, ReputationRouter, SessionRouter,
-        AbstractionRouter, FlightModuleRouter, LogisticRouter {
+        AbstractionRouter, FlightModuleRouter, LogisticRouter, KolRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -1272,8 +1273,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public BroadcastReceiver getBroadcastReceiverTokocashPending() {
         return new TokocashPendingDataBroadcastReceiver();
     }
-                
-    public GetShopInfoUseCase getShopInfo(){    
-            return getShopComponent().getShopInfoUseCase();
+
+    public GetShopInfoUseCase getShopInfo() {
+        return getShopComponent().getShopInfoUseCase();
     }
 }
