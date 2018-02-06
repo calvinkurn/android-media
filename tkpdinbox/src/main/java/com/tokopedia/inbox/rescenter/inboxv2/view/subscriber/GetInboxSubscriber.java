@@ -43,18 +43,16 @@ public class GetInboxSubscriber extends Subscriber<InboxItemResultViewModel> {
     @Override
     public void onNext(InboxItemResultViewModel inboxItemResultViewModel) {
         mainView.dismissSwipeToRefresh();
-        if (inboxItemResultViewModel.getInboxItemViewModels().size() != 0) {
-            if (inboxItemResultViewModel.getFilterViewModels() != null) {
-                inboxItemResultViewModel.setFilterListViewModel(
-                        convertListToModel(inboxItemResultViewModel.getFilterViewModels()));
-            }
-            if (inboxItemResultViewModel.getInboxItemViewModels() != null) {
-                inboxItemResultViewModel.setInboxVisitableList(
-                        convertModelListToVisitableList(inboxItemResultViewModel.getInboxItemViewModels()));
-            }
-            mainView.onSuccessGetInbox(inboxItemResultViewModel);
+        if (inboxItemResultViewModel.getFilterViewModels() != null) {
+            inboxItemResultViewModel.setFilterListViewModel(
+                    convertListToModel(inboxItemResultViewModel.getFilterViewModels()));
+        }
+        if (inboxItemResultViewModel.getInboxItemViewModels() != null &&
+                inboxItemResultViewModel.getInboxItemViewModels().size() != 0) {
+            inboxItemResultViewModel.setInboxVisitableList(
+                    convertModelListToVisitableList(inboxItemResultViewModel.getInboxItemViewModels()));
         } else {
-            mainView.onEmptyGetInbox();
+            mainView.onEmptyGetInbox(inboxItemResultViewModel);
         }
     }
 
