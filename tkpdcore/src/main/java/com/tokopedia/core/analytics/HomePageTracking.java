@@ -3,6 +3,8 @@ package com.tokopedia.core.analytics;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.analytics.nishikino.model.Promotion;
 
+import java.util.Map;
+
 /**
  * Created by nakama on 2/6/18.
  */
@@ -68,4 +70,11 @@ public class HomePageTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventEnhancedImpressionSprintSaleProduct(Map<String, Object> data) {
+        eventTrackingEnhancedEcommerce(data);
+    }
+
+    public static void eventEnhancedClickSprintSaleProduct(Map<String, Object> data) {
+        eventTrackingEnhancedEcommerce(data);
+    }
 }

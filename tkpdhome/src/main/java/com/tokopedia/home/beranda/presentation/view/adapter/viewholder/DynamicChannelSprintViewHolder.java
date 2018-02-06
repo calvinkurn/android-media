@@ -119,18 +119,21 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
         itemContainer1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                HomePageTracking.eventEnhancedClickSprintSaleProduct(channel.getEnhanceClickSprintSaleHomePage(0));
                 listener.onDynamicChannelClicked(channel.getGrids()[0].getApplink());
             }
         });
         itemContainer2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                HomePageTracking.eventEnhancedClickSprintSaleProduct(channel.getEnhanceClickSprintSaleHomePage(1));
                 listener.onDynamicChannelClicked(channel.getGrids()[1].getApplink());
             }
         });
         itemContainer3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                HomePageTracking.eventEnhancedClickSprintSaleProduct(channel.getEnhanceClickSprintSaleHomePage(2));
                 listener.onDynamicChannelClicked(channel.getGrids()[2].getApplink());
             }
         });

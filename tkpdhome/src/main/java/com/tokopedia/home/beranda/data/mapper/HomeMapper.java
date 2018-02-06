@@ -3,6 +3,7 @@ package com.tokopedia.home.beranda.data.mapper;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
+import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.ErrorMessageException;
@@ -57,6 +58,7 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
 
             if (homeData.getDynamicHomeChannel() != null && !homeData.getDynamicHomeChannel().getChannels().isEmpty()) {
                 for(DynamicHomeChannel.Channels channel : homeData.getDynamicHomeChannel().getChannels()) {
+                    eventImpressionDynamicChannel(channel);
                     list.add(mappingDynamicChannel(channel));
                 }
             }
@@ -71,6 +73,14 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
             } else {
                 throw new RuntimeException(String.valueOf(response.code()));
             }
+        }
+    }
+
+    private void eventImpressionDynamicChannel(DynamicHomeChannel.Channels channel) {
+        if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT)) {
+            HomePageTracking.eventEnhancedImpressionSprintSaleProduct(channel.getEnhanceImpressionSprintSaleHomePage());
+        } else {
+
         }
     }
 

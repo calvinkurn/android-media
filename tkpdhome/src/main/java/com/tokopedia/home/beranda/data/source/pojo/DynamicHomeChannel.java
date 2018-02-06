@@ -1,8 +1,12 @@
 package com.tokopedia.home.beranda.data.source.pojo;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.google.gson.annotations.Expose;
+import com.tkpd.library.utils.CurrencyFormatHelper;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by henrypriyono on 26/01/18.
@@ -100,6 +104,73 @@ public class DynamicHomeChannel {
 
         public void setHero(Hero[] hero) {
             this.hero = hero;
+        }
+
+        public Map<String, Object> getEnhanceImpressionSprintSaleHomePage() {
+            List<Object> list = convertGridIntoDataLayer(getGrids());
+            return DataLayer.mapOf(
+                    "event", "productView",
+                    "eventCategory", "homepage",
+                    "eventAction", "sprint sale impression",
+                    "eventLabel", "",
+                    "ecommerce", DataLayer.mapOf(
+                            "currencyCode", "IDR",
+                            "impressions", DataLayer.listOf(
+                                    list.toArray(new Object[list.size()])
+
+                            ))
+            );
+        }
+
+        private List<Object> convertGridIntoDataLayer(Grid[] grids) {
+            List<Object> list = new ArrayList<>();
+            for (int i = 0; i < grids.length; i++) {
+                Grid grid = grids[i];
+                list.add(
+                        DataLayer.mapOf(
+                                "name", grid.getName(),
+                                "id", grid.getId(),
+                                "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(
+                                        grid.getPrice()
+                                )),
+                                "brand", "none / other",
+                                "category", "none / other",
+                                "variant", "none / other",
+                                "list", "/ - p1 - sprint sale",
+                                "position", i + 1
+                        )
+                );
+            }
+            return list;
+        }
+
+        public Map<String, Object> getEnhanceClickSprintSaleHomePage(int position) {
+            return DataLayer.mapOf(
+                    "event", "productClick",
+                    "eventCategory", "homepage",
+                    "eventAction", "sprint sale click",
+                    "eventLabel", "",
+                    "ecommerce", DataLayer.mapOf(
+                            "currencyCode", "IDR",
+                            "click", DataLayer.mapOf(
+                                    "actionField", DataLayer.mapOf("list", "/ - p1 - sprint sale"),
+                                    "products", DataLayer.listOf(
+                                            DataLayer.mapOf(
+                                                    "name", getGrids()[position].getName(),
+                                                    "id", getGrids()[position].getId(),
+                                                    "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(
+                                                            getGrids()[position].getPrice()
+                                                    )),
+                                                    "brand", "none / other",
+                                                    "category", "none / other",
+                                                    "variant", "none / other",
+                                                    "list", "/ - p1 - sprint sale",
+                                                    "position", position + 1
+                                            )
+                                    )
+                            )
+                    )
+            );
         }
     }
 
