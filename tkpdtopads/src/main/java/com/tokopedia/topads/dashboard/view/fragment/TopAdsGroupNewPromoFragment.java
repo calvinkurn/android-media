@@ -81,7 +81,7 @@ public class TopAdsGroupNewPromoFragment extends TopAdsBaseManageGroupPromoFragm
                 long groupId = data.getLongExtra(TopAdsNewScheduleNewGroupFragment.EXTRA_NEW_GROUP_ID, -1);
                 if(groupId != -1){
                     Intent intent = new Intent(getActivity(), TopAdsDetailGroupActivity.class);
-                    intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, groupId);
+                    intent.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, Long.toString(groupId));
                     intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
                     intent.putExtra(TopAdsNewScheduleNewGroupFragment.EXTRA_IS_ENOUGH_DEPOSIT, isEnoughDeposit);
                     getActivity().startActivity(intent);
