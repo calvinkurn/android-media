@@ -125,6 +125,8 @@ public class CartSingleAddressAdapter
 
     public interface SingleAddressShipmentAdapterListener {
 
+        void onAddOrChangeAddress(ShipmentRecipientModel shipmentRecipientModel);
+
         void onChooseShipment();
 
         void onChoosePickupPoint(ShipmentRecipientModel addressAdapterData);
@@ -195,7 +197,7 @@ public class CartSingleAddressAdapter
 
             mTvRecipientName.setText(getRecipientName());
             mTvRecipientAddress.setText(getRecipientAddress());
-            mTvAddOrChangeAddress.setOnClickListener(addOrChangeAddressListener());
+            mTvAddOrChangeAddress.setOnClickListener(addOrChangeAddressListener(mShipmentRecipientModel));
             renderPickupPoint(pickupPointLayout, mShipmentRecipientModel);
         }
 
@@ -227,22 +229,24 @@ public class CartSingleAddressAdapter
         }
 
 
-        private View.OnClickListener addOrChangeAddressListener() {
+        private View.OnClickListener addOrChangeAddressListener(final ShipmentRecipientModel model) {
             return new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    FragmentManager fragmentManager = ((Activity)mContext).getFragmentManager();
-                    Fragment fragment = ShipmentAddressListFragment.newInstance();
+                    viewListener.onAddOrChangeAddress(model);
 
-                    String backStateName = fragment.getClass().getName();
-
-                    boolean isFragmentPopped = fragmentManager.popBackStackImmediate(backStateName, 0);
-                    if (!isFragmentPopped) {
-                        fragmentManager.beginTransaction()
-                                .replace(R.id.container, fragment)
-                                .addToBackStack(backStateName)
-                                .commit();
-                    }
+//                    FragmentManager fragmentManager = ((Activity)mContext).getFragmentManager();
+//                    Fragment fragment = ShipmentAddressListFragment.newInstance();
+//
+//                    String backStateName = fragment.getClass().getName();
+//
+//                    boolean isFragmentPopped = fragmentManager.popBackStackImmediate(backStateName, 0);
+//                    if (!isFragmentPopped) {
+//                        fragmentManager.beginTransaction()
+//                                .replace(R.id.container, fragment)
+//                                .addToBackStack(backStateName)
+//                                .commit();
+//                    }
                 }
             };
         }

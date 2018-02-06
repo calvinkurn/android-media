@@ -12,7 +12,9 @@ import com.tokopedia.transaction.pickuppoint.domain.model.Store;
 public class ShipmentRecipientModel implements Parcelable {
 
     private String recipientName;
+    private String recipientAddressDescription;
     private String recipientAddress;
+    private String recipientPhoneNumber;
     private String destinationDistrictId;
     private String destinationDistrictName;
     private String tokenPickup;
@@ -78,6 +80,22 @@ public class ShipmentRecipientModel implements Parcelable {
     public ShipmentRecipientModel() {
     }
 
+    public String getRecipientAddressDescription() {
+        return recipientAddressDescription;
+    }
+
+    public void setRecipientAddressDescription(String recipientAddressDescription) {
+        this.recipientAddressDescription = recipientAddressDescription;
+    }
+
+    public String getRecipientPhoneNumber() {
+        return recipientPhoneNumber;
+    }
+
+    public void setRecipientPhoneNumber(String recipientPhoneNumber) {
+        this.recipientPhoneNumber = recipientPhoneNumber;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -87,6 +105,8 @@ public class ShipmentRecipientModel implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(recipientName);
         dest.writeString(recipientAddress);
+        dest.writeString(recipientAddressDescription);
+        dest.writeString(recipientPhoneNumber);
         dest.writeString(destinationDistrictId);
         dest.writeString(destinationDistrictName);
         dest.writeString(tokenPickup);
@@ -97,6 +117,8 @@ public class ShipmentRecipientModel implements Parcelable {
     protected ShipmentRecipientModel(Parcel in) {
         recipientName = in.readString();
         recipientAddress = in.readString();
+        recipientAddressDescription = in.readString();
+        recipientPhoneNumber = in.readString();
         destinationDistrictId = in.readString();
         destinationDistrictName = in.readString();
         tokenPickup = in.readString();

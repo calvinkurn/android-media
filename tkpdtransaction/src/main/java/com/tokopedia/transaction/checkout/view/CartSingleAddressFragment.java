@@ -17,6 +17,8 @@ import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.checkout.di.component.CartSingleAddressComponent;
 import com.tokopedia.transaction.checkout.di.component.DaggerCartSingleAddressComponent;
 import com.tokopedia.transaction.checkout.di.module.CartSingleAddressModule;
+import com.tokopedia.transaction.checkout.view.activity.CartAddressChoiceActivity;
+import com.tokopedia.transaction.checkout.view.activity.ShipmentDetailActivity;
 import com.tokopedia.transaction.checkout.view.adapter.CartSingleAddressAdapter;
 import com.tokopedia.transaction.checkout.view.adapter.ShipmentAddressListAdapter;
 import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
@@ -47,6 +49,7 @@ public class CartSingleAddressFragment extends BasePresenterFragment
     private static final String TAG = CartSingleAddressFragment.class.getSimpleName();
     private static final int REQUEST_CODE_SHIPMENT_DETAIL = 11;
     private static final int REQUEST_CHOOSE_PICKUP_POINT = 12;
+    private static final int REQUEST_CODE_CHOOSE_ADDRESS = 13;
 
     @BindView(R2.id.rv_cart_order_details) RecyclerView mRvCartOrderDetails;
 
@@ -202,6 +205,11 @@ public class CartSingleAddressFragment extends BasePresenterFragment
         builder.setNegativeButton(R.string.title_no, null);
         AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    @Override
+    public void onAddOrChangeAddress(ShipmentRecipientModel shipmentRecipientModel) {
+        startActivityForResult(CartAddressChoiceActivity.createInstance(getActivity(), shipmentRecipientModel), REQUEST_CODE_CHOOSE_ADDRESS);
     }
 
     @Override

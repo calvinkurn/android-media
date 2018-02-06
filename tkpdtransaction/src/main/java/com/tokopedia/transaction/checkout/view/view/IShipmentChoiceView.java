@@ -1,6 +1,6 @@
 package com.tokopedia.transaction.checkout.view.view;
 
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
 
 /**
  * Created by Irfan Khoirul on 24/01/18.

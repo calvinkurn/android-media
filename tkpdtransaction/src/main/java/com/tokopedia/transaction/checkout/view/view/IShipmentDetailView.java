@@ -1,6 +1,6 @@
 package com.tokopedia.transaction.checkout.view.view;
 
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.transaction.checkout.view.data.CourierItemData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
 
@@ -17,8 +17,6 @@ public interface IShipmentDetailView extends CustomerView {
     void hideLoading();
 
     void showNoConnection(String message);
-
-    void showData();
 
     void renderShipmentWithMap(ShipmentDetailData shipmentDetailData);
 
