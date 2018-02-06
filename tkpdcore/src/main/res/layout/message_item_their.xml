@@ -143,8 +143,11 @@
             android:id="@+id/image"
             android:layout_width="228dp"
             android:layout_height="148dp"
+            android:maxHeight="270dp"
+            android:maxWidth="270dp"
+            android:minHeight="40dp"
             android:adjustViewBounds="true"
-            android:scaleType="centerCrop"
+            android:scaleType="fitStart"
             android:visibility="gone"
             tools:visibility="visible" />
 
