@@ -103,6 +103,10 @@ public class ProductViewModel {
     @Expose
     private String productGtin;
 
+    @SerializedName("product_name_editable")
+    @Expose
+    private boolean productNameEditable;
+
     public long getProductId() {
         return productId;
     }
@@ -349,5 +353,13 @@ public class ProductViewModel {
 
     public void setProductVariant(ProductVariantViewModel productVariant) {
         this.productVariant = productVariant;
+    }
+
+    public void setProductNameEditable(boolean productNameEditable) {
+        this.productNameEditable = productNameEditable;
+    }
+
+    public boolean isProductNameEditable() {
+        return productNameEditable;
     }
 }

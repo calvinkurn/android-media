@@ -18,6 +18,7 @@ import com.tokopedia.seller.product.edit.utils.ViewUtils;
 import com.tokopedia.seller.product.edit.view.listener.ProductAddView;
 import com.tokopedia.seller.product.edit.view.mapper.CategoryRecommDomainToViewMapper;
 import com.tokopedia.seller.product.edit.view.mapper.UploadProductMapper;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.DataScoringProductView;
 import com.tokopedia.seller.product.edit.view.model.scoringproduct.ValueIndicatorScoreModel;
 import com.tokopedia.seller.product.edit.view.model.upload.UploadProductInputViewModel;
@@ -126,14 +127,13 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
     }
 
     @Override
-    public void saveDraftAndAdd(UploadProductInputViewModel viewModel, boolean isUploading) {
+    public void saveDraftAndAdd(ProductViewModel viewModel, boolean isUploading) {
         RequestParams requestParam = generateRequestParamAddDraft(viewModel, isUploading);
         saveDraftProductUseCase.execute(requestParam, new SaveDraftAndAddSubscriber());
     }
 
-    private RequestParams generateRequestParamAddDraft(UploadProductInputViewModel viewModel, boolean isUploading) {
-        UploadProductInputDomainModel domainModel = UploadProductMapper.mapViewToDomain(viewModel);
-        return SaveDraftProductUseCase.generateUploadProductParam(domainModel, getProductDraftId(), isUploading);
+    private RequestParams generateRequestParamAddDraft(ProductViewModel viewModel, boolean isUploading) {
+        return SaveDraftProductUseCase.generateUploadProductParam(viewModel, getProductDraftId(), isUploading);
     }
 
     private long getProductDraftId(){
@@ -347,7 +347,7 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends ProductAd
     }
 
     @Override
-    public void saveDraft(UploadProductInputViewModel viewModel, boolean isUploading) {
+    public void saveDraft(ProductViewModel viewModel, boolean isUploading) {
         RequestParams requestParam = generateRequestParamAddDraft(viewModel, isUploading);
         saveDraftProductUseCase.execute(requestParam, new SaveDraftSubscriber(isUploading));
     }

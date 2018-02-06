@@ -17,27 +17,24 @@ public class ImageSelectModel implements Parcelable{
     private String uriOrPath;
     private String description;
     private boolean isPrimary;
-    private int width;
-    private int height;
+    private long width;
+    private long height;
     private boolean isValidURL;
-    private boolean allowDelete;
+    private long id;
+    private long status;
 
     public ImageSelectModel(String uriOrPath) {
-        this(uriOrPath, null, false, true);
+        this(uriOrPath, null, false, 0, 0, 0, 0);
     }
 
-    public ImageSelectModel(String uriOrPath,
-                            @Nullable String description,
-                            boolean isPrimary,
-                            boolean allowDelete) {
+    public ImageSelectModel(String uriOrPath, String description, boolean isPrimary, long width, long height, long id, long status) {
         setUriOrPath(uriOrPath);
         this.description = description;
         this.isPrimary = isPrimary;
-        this.allowDelete = allowDelete;
-    }
-
-    public boolean allowDelete() {
-        return allowDelete;
+        this.width = width;
+        this.height = height;
+        this.id = id;
+        this.status = status;
     }
 
     public String getUriOrPath() {
@@ -89,15 +86,15 @@ public class ImageSelectModel implements Parcelable{
         isPrimary = primary;
     }
 
-    public int getWidth() {
+    public long getWidth() {
         return width;
     }
 
-    public int getHeight() {
+    public long getHeight() {
         return height;
     }
 
-    public int getMinResolution() {
+    public long getMinResolution() {
         return Math.min(width, height);
     }
 
@@ -111,6 +108,22 @@ public class ImageSelectModel implements Parcelable{
         }
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public long getStatus() {
+        return status;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setStatus(long status) {
+        this.status = status;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -121,10 +134,9 @@ public class ImageSelectModel implements Parcelable{
         dest.writeString(this.uriOrPath);
         dest.writeString(this.description);
         dest.writeByte(this.isPrimary ? (byte) 1 : (byte) 0);
-        dest.writeInt(this.width);
-        dest.writeInt(this.height);
         dest.writeByte(this.isValidURL ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.allowDelete ? (byte) 1 : (byte) 0);
+        dest.writeLong(this.id);
+        dest.writeLong(this.status);
     }
 
     protected ImageSelectModel(Parcel in) {
@@ -134,7 +146,8 @@ public class ImageSelectModel implements Parcelable{
         this.width = in.readInt();
         this.height = in.readInt();
         this.isValidURL = in.readByte() != 0;
-        this.allowDelete = in.readByte() != 0;
+        this.id = in.readLong();
+        this.status = in.readLong();
     }
 
     public static final Creator<ImageSelectModel> CREATOR = new Creator<ImageSelectModel>() {

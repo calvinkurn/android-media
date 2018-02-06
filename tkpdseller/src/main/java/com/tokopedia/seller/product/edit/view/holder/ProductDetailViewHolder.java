@@ -427,8 +427,12 @@ public class ProductDetailViewHolder extends ProductViewHolder
         return Integer.valueOf(insuranceSpinnerTextView.getSpinnerValue()) == ProductInsuranceValueTypeDef.TYPE_YES;
     }
 
-    public void setInsurance(int unit) {
-        insuranceSpinnerTextView.setSpinnerValue(String.valueOf(unit));
+    public void setInsurance(boolean isMustInsurance) {
+        if(isMustInsurance) {
+            insuranceSpinnerTextView.setSpinnerValue(String.valueOf(ProductInsuranceValueTypeDef.TYPE_YES));
+        }else{
+            insuranceSpinnerTextView.setSpinnerValue(String.valueOf(ProductInsuranceValueTypeDef.TYPE_OPTIONAL));
+        }
     }
 
     public int getFreeReturns() {
@@ -443,8 +447,12 @@ public class ProductDetailViewHolder extends ProductViewHolder
         return getFreeReturns() == FreeReturnTypeDef.TYPE_ACTIVE;
     }
 
-    public void setFreeReturn(int unit) {
-        freeReturnsSpinnerTextView.setSpinnerValue(String.valueOf(unit));
+    public void setFreeReturn(boolean isFreeReturn) {
+        if(isFreeReturn) {
+            freeReturnsSpinnerTextView.setSpinnerValue(String.valueOf(FreeReturnTypeDef.TYPE_ACTIVE));
+        }else{
+            freeReturnsSpinnerTextView.setSpinnerValue(String.valueOf(FreeReturnTypeDef.TYPE_INACTIVE));
+        }
     }
 
     public long getEtalaseId() {

@@ -16,9 +16,12 @@ import com.tokopedia.seller.product.edit.domain.model.ImageProductInputDomainMod
 import com.tokopedia.seller.product.edit.domain.model.ProductPhotoListDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.ProductWholesaleDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductCatalogViewModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductCategoryViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductEtalaseViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureResultUploadedViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductPreorderViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductVideoViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductWholesaleViewModel;
@@ -70,8 +73,8 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
         domainModel.setProductName(draftModel.getProductName());
         domainModel.setProductDescription(draftModel.getProductDescription());
 //        domainModel.setProductChangePhoto(draftModel.getProductChangePhoto());
-//        domainModel.setProductCatalogId(draftModel.getProductCatalogId());
-//        domainModel.setProductDepartmentId(draftModel.getProductDepartmentId());
+        domainModel.setProductCatalog(generateCatalog(draftModel));
+        domainModel.setProductCategory(generateProductCategoryViewModel(draftModel));
         domainModel.setProductCondition(draftModel.getProductCondition());
         domainModel.setProductEtalase(mapToEtalase(draftModel));
         domainModel.setProductMinOrder(draftModel.getProductMinOrder());
@@ -79,20 +82,38 @@ public class ProductDraftMapper implements Func1<ProductDraftDataBase, ProductVi
         domainModel.setProductPrice(draftModel.getProductPrice());
         domainModel.setProductPriceCurrency(draftModel.getProductPriceCurrency());
         domainModel.setProductFreeReturn(mapToFreeReturn(draftModel.getProductReturnable()));
-//        domainModel.setProductUploadTo(draftModel.getProductUploadTo());
+//        domainModel.setProductStatus(draftModel.getProductUploadTo());
 //        domainModel.setProductInvenageSwitch(draftModel.getProductInvenageSwitch());
 //        domainModel.setProductInvenageValue(draftModel.getProductInvenageValue());
         domainModel.setProductWeight(draftModel.getProductWeight());
         domainModel.setProductWeightUnit(draftModel.getProductWeightUnit());
-//        domainModel.setPoProcessType(draftModel.getPoProcessType());
-//        domainModel.setPoProcessValue(draftModel.getPoProcessValue());
+        domainModel.setProductPreorder(generateProductPreorder(draftModel));
 //        domainModel.setServerId(draftModel.getServerId());
         domainModel.setProductStatus(draftModel.getProductStatus());
         domainModel.setProductId(Long.parseLong(draftModel.getProductId()));
-//        domainModel.setNameEditable(draftModel.getProductNameEditable());
+        domainModel.setProductNameEditable(draftModel.getProductNameEditable() != 0);
 //        domainModel.setProductVariantDataSubmit(draftModel.getProductVariantDataSubmit());
 //        domainModel.setVariantStringSelection(draftModel.getVariantStringSelection());
         return domainModel;
+    }
+
+    private ProductPreorderViewModel generateProductPreorder(ProductDraftModel draftModel) {
+        ProductPreorderViewModel productPreorderViewModel= new ProductPreorderViewModel();
+        productPreorderViewModel.setPreorderProcessTime(draftModel.getPoProcessValue());
+        productPreorderViewModel.setPreorderTimeUnit(draftModel.getPoProcessType());
+        return productPreorderViewModel;
+    }
+
+    private ProductCategoryViewModel generateProductCategoryViewModel(ProductDraftModel draftModel) {
+        ProductCategoryViewModel productCategoryViewModel = new ProductCategoryViewModel();
+        productCategoryViewModel.setCategoryId(draftModel.getProductDepartmentId());
+        return productCategoryViewModel;
+    }
+
+    private ProductCatalogViewModel generateCatalog(ProductDraftModel draftModel) {
+        ProductCatalogViewModel productCatalogViewModel = new ProductCatalogViewModel();
+        productCatalogViewModel.setCatalogId(draftModel.getProductCatalogId());
+        return productCatalogViewModel;
     }
 
     private boolean mapToFreeReturn(int productReturnable) {

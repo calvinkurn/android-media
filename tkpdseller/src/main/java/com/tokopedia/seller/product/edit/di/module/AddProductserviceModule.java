@@ -14,8 +14,6 @@ import com.tokopedia.seller.base.data.repository.UploadImageRepositoryImpl;
 import com.tokopedia.seller.base.data.source.UploadImageDataSource;
 import com.tokopedia.seller.base.domain.UploadImageRepository;
 import com.tokopedia.seller.base.domain.interactor.UploadImageUseCase;
-import com.tokopedia.seller.product.edit.data.mapper.AddProductValidationInputMapper;
-import com.tokopedia.seller.product.edit.data.mapper.EditProductInputMapper;
 import com.tokopedia.seller.product.edit.data.mapper.UploadProductPictureInputMapper;
 import com.tokopedia.seller.product.edit.data.repository.GenerateHostRepositoryImpl;
 import com.tokopedia.seller.product.edit.data.repository.ImageProductUploadRepositoryImpl;
@@ -26,6 +24,7 @@ import com.tokopedia.seller.product.edit.data.source.ImageProductUploadDataSourc
 import com.tokopedia.seller.product.draft.data.source.ProductDraftDataSource;
 import com.tokopedia.seller.product.edit.data.source.UploadProductDataSource;
 import com.tokopedia.seller.product.edit.data.source.cloud.api.GenerateHostApi;
+import com.tokopedia.seller.product.edit.data.source.cloud.api.ProductApi;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.UploadImageModel;
 import com.tokopedia.seller.product.edit.di.scope.AddProductServiceScope;
 import com.tokopedia.seller.product.edit.domain.GenerateHostRepository;
@@ -100,6 +99,12 @@ public class AddProductserviceModule {
     @Provides
     TomeApi provideTomeApi(@TomeQualifier Retrofit retrofit){
         return retrofit.create(TomeApi.class);
+    }
+
+    @AddProductServiceScope
+    @Provides
+    ProductApi provideTomeApiAddProduct(@TomeQualifier Retrofit retrofit){
+        return retrofit.create(ProductApi.class);
     }
 
     @AddProductServiceScope

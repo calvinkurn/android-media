@@ -31,7 +31,7 @@ public class ProductDraftDataBase extends BaseModel{
     String shopId;
 
     @Column(name = COLUMN_VERSION)
-    int version = CURRENT_VERSION;
+    int version;
 
     public int getVersion() {
         return version;

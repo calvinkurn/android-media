@@ -58,8 +58,7 @@ public class ProductDraftPresenter extends ProductAddPresenterImpl<ProductDraftV
             @Override
             public void onNext(ProductViewModel productViewModel) {
                 checkViewAttached();
-                UploadProductInputViewModel model = UploadProductMapper.mapDomainToView(productViewModel);
-                getView().onSuccessLoadDraftProduct(model);
+                getView().onSuccessLoadDraftProduct(productViewModel);
             }
         };
     }

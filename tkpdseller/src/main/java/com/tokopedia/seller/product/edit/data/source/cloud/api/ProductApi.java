@@ -17,7 +17,7 @@ import rx.Observable;
  * Created by zulfikarrahman on 2/5/18.
  */
 
-public interface TomeApi {
+public interface ProductApi {
 
     @POST(ProductUrl.URL_ADD_PRODUCT)
     Observable<Response<DataResponse<AddProductSubmitServiceModel>>> addProductSubmit(@Body ProductViewModel productViewModel);
