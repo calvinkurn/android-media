@@ -6,9 +6,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
-import com.tokopedia.digital.common.data.entity.requestbody.pulsabalance.RequestBodyPulsaBalance;
 import com.tokopedia.digital.common.data.entity.response.ResponsePulsaBalance;
-import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
+import com.tokopedia.digital.product.data.entity.requestbody.pulsabalance.RequestBodyPulsaBalance;
 import com.tokopedia.digital.product.data.mapper.USSDMapper;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
 

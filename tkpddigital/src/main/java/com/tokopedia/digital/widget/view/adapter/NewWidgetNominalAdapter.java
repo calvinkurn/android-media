@@ -25,14 +25,14 @@ import butterknife.ButterKnife;
  * Created by Rizky on 16/01/18.
  */
 
-public class WidgetNominalAdapter2 extends ArrayAdapter<Product> {
+public class NewWidgetNominalAdapter extends ArrayAdapter<Product> {
 
     private final static int OUT_OF_STOCK = 3;
     private final LayoutInflater inflater;
     private List<Product> productList;
     private Boolean isShowPrice = true;
 
-    public WidgetNominalAdapter2(Context context, int resource, List<Product> productList, Boolean isShowPrice) {
+    public NewWidgetNominalAdapter(Context context, int resource, List<Product> productList, Boolean isShowPrice) {
         super(context, resource, productList);
         this.productList = productList;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -57,20 +57,20 @@ public class WidgetNominalAdapter2 extends ArrayAdapter<Product> {
 
     private View getCustomView(int position, View convertView, ViewGroup parent) {
         Product product = productList.get(position);
-        WidgetNominalAdapter2.NormalViewHolder normalViewHolder;
+        NewWidgetNominalAdapter.NormalViewHolder normalViewHolder;
         View rowNormal = convertView;
         if (rowNormal == null) {
             rowNormal = inflater.inflate(R.layout.view_widget_product_spinner_item, parent, false);
-            normalViewHolder = new WidgetNominalAdapter2.NormalViewHolder(rowNormal);
+            normalViewHolder = new NewWidgetNominalAdapter.NormalViewHolder(rowNormal);
             rowNormal.setTag(normalViewHolder);
         } else {
-            normalViewHolder = (WidgetNominalAdapter2.NormalViewHolder) rowNormal.getTag();
+            normalViewHolder = (NewWidgetNominalAdapter.NormalViewHolder) rowNormal.getTag();
         }
         renderProduct(normalViewHolder, product);
         return rowNormal;
     }
 
-    private void renderProduct(WidgetNominalAdapter2.NormalViewHolder holder, Product product) {
+    private void renderProduct(NewWidgetNominalAdapter.NormalViewHolder holder, Product product) {
         holder.nominalDescriptionTextview.setText(product.getDesc());
         renderNominalDetail(holder, product);
         if (product.getPromo() != null) {
@@ -81,7 +81,7 @@ public class WidgetNominalAdapter2 extends ArrayAdapter<Product> {
         renderEmptyStock(holder, product);
     }
 
-    private void renderNominalDetail(WidgetNominalAdapter2.NormalViewHolder holder, Product product) {
+    private void renderNominalDetail(NewWidgetNominalAdapter.NormalViewHolder holder, Product product) {
         String nominalDetail = product.getDetail();
         if (nominalDetail != null && nominalDetail.length() > 0) {
             holder.nominalDetailTextView.setText(MethodChecker.fromHtml(nominalDetail));
@@ -91,7 +91,7 @@ public class WidgetNominalAdapter2 extends ArrayAdapter<Product> {
         }
     }
 
-    private void renderProductWithoutPromo(WidgetNominalAdapter2.NormalViewHolder holder, Product product) {
+    private void renderProductWithoutPromo(NewWidgetNominalAdapter.NormalViewHolder holder, Product product) {
         holder.nominalPriceTextView.setText(product.getPrice());
         holder.nominalDiskonTextView.setVisibility(View.GONE);
         holder.nominalTagTextview.setVisibility(View.GONE);
@@ -100,7 +100,7 @@ public class WidgetNominalAdapter2 extends ArrayAdapter<Product> {
             holder.nominalPriceTextView.setVisibility(View.GONE);
     }
 
-    private void renderProductPromo(WidgetNominalAdapter2.NormalViewHolder holder, Product product) {
+    private void renderProductPromo(NewWidgetNominalAdapter.NormalViewHolder holder, Product product) {
         Promo promo = product.getPromo();
         holder.nominalPriceTextView.setText(promo.getNewPrice());
         holder.nominalTagTextview.setText(promo.getTag());
@@ -116,7 +116,7 @@ public class WidgetNominalAdapter2 extends ArrayAdapter<Product> {
         }
     }
 
-    private void renderEmptyStock(WidgetNominalAdapter2.NormalViewHolder holder, Product product) {
+    private void renderEmptyStock(NewWidgetNominalAdapter.NormalViewHolder holder, Product product) {
         if (product.getStatus() == OUT_OF_STOCK) {
             holder.nominalDescriptionTextview.setTextColor(ContextCompat.getColor(getContext(),R.color.grey_400));
             holder.nominalDiskonTextView.setTextColor(ContextCompat.getColor(getContext(),R.color.grey_400));

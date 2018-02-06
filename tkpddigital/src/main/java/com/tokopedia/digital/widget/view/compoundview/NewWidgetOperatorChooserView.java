@@ -10,7 +10,7 @@ import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.view.compoundview.BaseDigitalChooserView;
 import com.tokopedia.digital.product.view.model.Operator;
-import com.tokopedia.digital.widget.view.adapter.WidgetOperatorAdapter2;
+import com.tokopedia.digital.widget.view.adapter.NewWidgetOperatorAdapter;
 
 import java.util.List;
 
@@ -41,7 +41,7 @@ public class NewWidgetOperatorChooserView extends BaseDigitalChooserView<Operato
 
     public void renderInitDataList(final List<Operator> operators, String defaultOperatorId) {
         this.dataList = operators;
-        WidgetOperatorAdapter2 adapterOperator = new WidgetOperatorAdapter2(
+        NewWidgetOperatorAdapter adapterOperator = new NewWidgetOperatorAdapter(
                 getContext(), android.R.layout.simple_spinner_item, operators);
         spinnerOperator.setAdapter(adapterOperator);
         spinnerOperator.setOnItemSelectedListener(getItemSelectedListener());

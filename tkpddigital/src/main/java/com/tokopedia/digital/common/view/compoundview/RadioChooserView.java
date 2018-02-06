@@ -1,4 +1,4 @@
-package com.tokopedia.digital.widget.view.compoundview;
+package com.tokopedia.digital.common.view.compoundview;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;

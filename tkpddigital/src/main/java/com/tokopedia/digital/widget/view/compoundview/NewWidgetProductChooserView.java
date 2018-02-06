@@ -11,7 +11,7 @@ import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.view.compoundview.BaseDigitalChooserView;
 import com.tokopedia.digital.product.view.model.Product;
-import com.tokopedia.digital.widget.view.adapter.WidgetNominalAdapter2;
+import com.tokopedia.digital.widget.view.adapter.NewWidgetNominalAdapter;
 
 import java.util.List;
 
@@ -46,7 +46,7 @@ public class NewWidgetProductChooserView extends BaseDigitalChooserView<Product>
 
     public void renderInitDataList(List<Product> products, boolean showPrice, String defaultProductId) {
         this.dataList = products;
-        WidgetNominalAdapter2 adapter = new WidgetNominalAdapter2(getContext(),
+        NewWidgetNominalAdapter adapter = new NewWidgetNominalAdapter(getContext(),
                 android.R.layout.simple_spinner_item, products, showPrice);
         spinnerNominal.setAdapter(adapter);
         spinnerNominal.setOnItemSelectedListener(getItemSelected());

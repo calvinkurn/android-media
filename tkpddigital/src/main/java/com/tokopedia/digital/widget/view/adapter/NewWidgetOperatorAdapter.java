@@ -21,12 +21,12 @@ import butterknife.ButterKnife;
  * Created by Rizky on 17/01/18.
  */
 
-public class WidgetOperatorAdapter2 extends ArrayAdapter<Operator> {
+public class NewWidgetOperatorAdapter extends ArrayAdapter<Operator> {
     private final static int OUT_OF_STOCK = 3;
     private final LayoutInflater inflater;
     private List<Operator> operatorList;
 
-    public WidgetOperatorAdapter2(Context context, int resource, List<Operator> operatorList) {
+    public NewWidgetOperatorAdapter(Context context, int resource, List<Operator> operatorList) {
         super(context, resource, operatorList);
         this.operatorList = operatorList;
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

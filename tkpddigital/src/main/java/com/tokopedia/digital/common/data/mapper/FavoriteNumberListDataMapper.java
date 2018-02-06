@@ -1,4 +1,4 @@
-package com.tokopedia.digital.widget.data.mapper;
+package com.tokopedia.digital.common.data.mapper;
 
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.digital.widget.data.entity.response.ResponseFavoriteList;

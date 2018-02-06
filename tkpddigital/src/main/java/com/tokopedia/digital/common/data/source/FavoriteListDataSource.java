@@ -3,11 +3,11 @@ package com.tokopedia.digital.common.data.source;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
+import com.tokopedia.digital.common.data.mapper.FavoriteNumberListDataMapper;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.digital.widget.data.entity.response.ResponseFavoriteList;
 import com.tokopedia.digital.widget.data.entity.response.ResponseFavoriteNumber;
 import com.tokopedia.digital.widget.data.entity.response.ResponseMetaFavoriteNumber;
-import com.tokopedia.digital.widget.data.mapper.FavoriteNumberListDataMapper;
 import com.tokopedia.digital.widget.view.model.DigitalNumberList;
 
 import java.util.ArrayList;
