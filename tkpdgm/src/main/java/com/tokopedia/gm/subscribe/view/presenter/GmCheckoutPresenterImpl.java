@@ -1,5 +1,7 @@
 package com.tokopedia.gm.subscribe.view.presenter;
 
+import android.text.TextUtils;
+
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
@@ -255,10 +257,8 @@ public class GmCheckoutPresenterImpl extends BaseDaggerPresenter<GmCheckoutView>
     public void autoApplyCouponIfAvailable(Integer selectedProduct) {
         LocalCacheHandler localCacheHandler = new LocalCacheHandler(getView().getContext(), TkpdCache.CACHE_PROMO_CODE);
         String savedCoupon = localCacheHandler.getString(TkpdCache.Key.KEY_CACHE_PROMO_CODE);
-       // savedCoupon="TOPED20";
-        if (savedCoupon != null && !"".equalsIgnoreCase(savedCoupon.trim())) {
+        if (!TextUtils.isEmpty(savedCoupon)) {
             checkVoucherCode(savedCoupon, selectedProduct);
-
         }
     }
 }

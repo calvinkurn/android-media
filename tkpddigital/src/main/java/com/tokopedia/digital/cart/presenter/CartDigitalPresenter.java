@@ -1,6 +1,7 @@
 package com.tokopedia.digital.cart.presenter;
 
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -480,8 +481,7 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
     public void autoApplyCouponIfAvailable(String digitalCategoryId) {
         LocalCacheHandler localCacheHandler = new LocalCacheHandler(view.getContext(), TkpdCache.CACHE_PROMO_CODE);
         String savedCoupon = localCacheHandler.getString(TkpdCache.Key.KEY_CACHE_PROMO_CODE);
-       // savedCoupon="TOPED20";
-        if (savedCoupon != null && !"".equalsIgnoreCase(savedCoupon.trim())) {
+        if (!TextUtils.isEmpty(savedCoupon)) {
             processCheckVoucher(savedCoupon, digitalCategoryId);
 
         }

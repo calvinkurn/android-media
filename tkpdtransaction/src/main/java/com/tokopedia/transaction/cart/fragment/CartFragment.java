@@ -219,6 +219,7 @@ public class CartFragment extends BasePresenterFragment<ICartPresenter> implemen
     protected void onFirstTimeLaunched() {
         checkoutDataBuilder = new CheckoutData.Builder();
         presenter.processGetCartData();
+        presenter.autoApplyCouponIfAvailable(1,getActivity());
     }
 
     @Override
