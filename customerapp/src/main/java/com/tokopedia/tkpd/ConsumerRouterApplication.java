@@ -32,6 +32,8 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.cache.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
+import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashModel;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
@@ -143,7 +145,8 @@ import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.session.activity.Login;
 import com.tokopedia.tkpd.applink.AppLinkWebsiteActivity;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
-import com.tokopedia.tkpd.datepicker.DatePickerUtil;
+import com.tokopedia.tkpd.tokocash.TokoCashBalanceMapper;
+import com.tokopedia.tkpd.tokocash.datepicker.DatePickerUtil;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
@@ -169,9 +172,12 @@ import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
+import com.tokopedia.tokocash.di.TokoCashComponent;
 import com.tokopedia.tokocash.historytokocash.presentation.activity.HistoryTokoCashActivity;
 import com.tokopedia.tokocash.network.WalletUserSession;
 import com.tokopedia.tokocash.qrpayment.presentation.activity.CustomScannerTokoCashActivity;
+import com.tokopedia.tokocash.di.DaggerTokoCashComponent;
+import com.tokopedia.tokocash.qrpayment.presentation.model.BalanceTokoCash;
 import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.transaction.wallet.WalletActivity;
@@ -185,6 +191,7 @@ import javax.inject.Inject;
 
 import okhttp3.Response;
 import rx.Observable;
+import rx.functions.Func1;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
@@ -215,6 +222,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private ShopComponent shopComponent;
     private ReactNativeComponent reactNativeComponent;
     private RemoteConfig remoteConfig;
+    private TokoCashComponent tokoCashComponent;
 
     public static List<PeriodRangeModel> convert(List<PeriodRangeModelCore> periodRangeModelCores) {
         List<PeriodRangeModel> periodRangeModels = new ArrayList<>();
@@ -261,6 +269,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                         .build();
         daggerFlightBuilder = DaggerFlightConsumerComponent.builder()
                 .sessionComponent(sessionComponent);
+
+        tokoCashComponent = DaggerTokoCashComponent.builder()
+                .baseAppComponent((this).getBaseAppComponent())
+                .build();
     }
 
     private void initRemoteConfig() {
@@ -1259,6 +1271,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getChangePhoneNumberIntent(Context context, String email, String phoneNumber) {
         return ChangePhoneNumberWarningActivity.newInstance(context, email, phoneNumber);
+    }
+
+    @Override
+    public Observable<TokoCashData> getTokoCashBalance() {
+        return tokoCashComponent.getBalanceTokoCashUseCase()
+                .createObservable(com.tokopedia.usecase.RequestParams.EMPTY)
+                .map(new TokoCashBalanceMapper());
     }
 
     @Override

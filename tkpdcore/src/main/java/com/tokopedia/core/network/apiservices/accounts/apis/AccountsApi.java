@@ -149,9 +149,6 @@ public interface AccountsApi {
     @POST(TkpdBaseURL.Accounts.PATH_EDIT_PROFILE)
     Observable<Response<TkpdResponse>> editProfile(@FieldMap TKPDMapParam<String, Object> parameters);
 
-    @GET(TkpdBaseURL.Accounts.Wallet.GET_BALANCE)
-    Observable<Response<TkpdResponse>> getTokoCash(@QueryMap TKPDMapParam<String, Object> params);
-
     @GET(TkpdBaseURL.Accounts.ChangeMSISDN.GET_WARNING)
     Observable<Response<TkpdResponse>> getWarning(@QueryMap TKPDMapParam<String, Object> params);
 

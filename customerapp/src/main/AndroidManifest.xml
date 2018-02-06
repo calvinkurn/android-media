@@ -240,7 +240,7 @@
         <service
             android:name=".thankyou.view.ThanksTrackerService"
             android:exported="false" />
-        <activity android:name=".datepicker.DatePickerTokoCashActivity"
+        <activity android:name=".tokocash.datepicker.DatePickerTokoCashActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Tokopedia3" />
     </application>

@@ -1,12 +1,14 @@
 package com.tokopedia.ride.bookingride.di;
 
+import android.content.Context;
+
+import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.drawer2.domain.TokoCashRepository;
 import com.tokopedia.core.drawer2.domain.interactor.TokoCashUseCase;
 import com.tokopedia.core.geolocation.domain.MapsRepository;
 import com.tokopedia.core.network.apiservices.maps.MapService;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.ride.bookingride.di.scope.BookingRideScope;
 import com.tokopedia.ride.bookingride.domain.AutoCompletePredictionUseCase;
 import com.tokopedia.ride.bookingride.domain.GetCurrentRideRequestUseCase;
@@ -184,12 +186,13 @@ public class BookingRideModule {
     @Provides
     @BookingRideScope
     TokoCashUseCase provideTokoCashUseCase(ThreadExecutor threadExecutor,
-                                           PostExecutionThread postExecutionThread, TokoCashRepository tokoCashRepository, SessionHandler sessionHandler) {
+                                           PostExecutionThread postExecutionThread,
+                                           @ApplicationContext Context context) {
 
         return new TokoCashUseCase(
                 threadExecutor,
                 postExecutionThread,
-                tokoCashRepository
+                ((TkpdCoreRouter) context.getApplicationContext()).getTokoCashBalance()
         );
     }
 }
