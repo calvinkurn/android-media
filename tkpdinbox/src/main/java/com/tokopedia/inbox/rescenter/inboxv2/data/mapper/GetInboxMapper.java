@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.inbox.rescenter.inboxv2.data.pojo.AutoExecuteTimeResponse;
 import com.tokopedia.inbox.rescenter.inboxv2.data.pojo.FilterResponse;
 import com.tokopedia.inbox.rescenter.inboxv2.data.pojo.InboxDataResponse;
 import com.tokopedia.inbox.rescenter.inboxv2.data.pojo.InboxResponse;
@@ -159,18 +160,15 @@ public class GetInboxMapper implements Func1<Response<TkpdResponse>, InboxItemRe
                 actionBy == ACTION_BY_USER ?
                         response.getShop().getName() :
                         response.getCustomer().getName(),
-                (!TextUtils.isEmpty(response.getResolution().getAutoExecuteTime().getTimeLeft()) &&
-                        !(response.getResolution().getStatus().getIntX() != STATUS_RESO_FINISHED ||
-                                response.getResolution().getStatus().getIntX() != STATUS_RESO_CANCELED )) ?
+                isShowAutoExecution(response.getResolution().getAutoExecuteTime(),
+                        response.getResolution().getStatus().getIntX()) ?
                         response.getResolution().getAutoExecuteTime().getTimeLeft() :
                         "-",
-                (!TextUtils.isEmpty(response.getResolution().getAutoExecuteTime().getTimeLeft()) &&
-                        !(response.getResolution().getStatus().getIntX() != STATUS_RESO_FINISHED ||
-                                response.getResolution().getStatus().getIntX() != STATUS_RESO_CANCELED )) ?
+                isShowAutoExecution(response.getResolution().getAutoExecuteTime(),
+                        response.getResolution().getStatus().getIntX())?
                         response.getResolution().getAutoExecuteTime().getColor() : "",
-                (!TextUtils.isEmpty(response.getResolution().getAutoExecuteTime().getTimeLeft()) &&
-                        !(response.getResolution().getStatus().getIntX() != STATUS_RESO_FINISHED ||
-                                response.getResolution().getStatus().getIntX() != STATUS_RESO_CANCELED )) ?
+                isShowAutoExecution(response.getResolution().getAutoExecuteTime(),
+                        response.getResolution().getStatus().getIntX())?
                         COLOR_WHITE :
                         COLOR_BLACK_70,
                 response.getResolution().getLastReplyTime().getFullString(),
@@ -190,6 +188,12 @@ public class GetInboxMapper implements Func1<Response<TkpdResponse>, InboxItemRe
                         response.getShop().getName() :
                         ""
         );
+    }
+
+    private static boolean isShowAutoExecution(AutoExecuteTimeResponse response, int status) {
+        if (TextUtils.isEmpty(response.getTimeLeft())) return false;
+        if (status == STATUS_RESO_FINISHED || status == STATUS_RESO_CANCELED) return false;
+        return true;
     }
 
     private static List<String> mappingProductImage(List<ProductResponse> responseList) {
