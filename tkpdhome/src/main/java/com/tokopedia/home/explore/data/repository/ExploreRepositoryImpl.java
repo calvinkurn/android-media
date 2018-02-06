@@ -1,7 +1,9 @@
 package com.tokopedia.home.explore.data.repository;
 
-import com.tokopedia.home.explore.domain.model.ExploreDataModel;
 import com.tokopedia.home.explore.data.source.ExploreDataSource;
+import com.tokopedia.home.explore.view.adapter.viewmodel.ExploreSectionViewModel;
+
+import java.util.List;
 
 import rx.Observable;
 
@@ -18,11 +20,11 @@ public class ExploreRepositoryImpl implements ExploreRepository {
     }
 
     @Override
-    public Observable<ExploreDataModel> getExploreData() {
+    public Observable<List<ExploreSectionViewModel>> getExploreData() {
         return dataSource.getExploreData();
     }
 
-    public Observable<ExploreDataModel> getExploreDataCache() {
+    public Observable<List<ExploreSectionViewModel>> getExploreDataCache() {
         return dataSource.getDataCache();
     }
 }

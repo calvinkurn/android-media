@@ -1,5 +1,8 @@
 package com.tokopedia.home.explore.view.adapter.viewmodel;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.home.explore.view.adapter.TypeFactory;
 
@@ -7,7 +10,7 @@ import com.tokopedia.home.explore.view.adapter.TypeFactory;
  * Created by errysuprayogi on 12/5/17.
  */
 
-public class SellViewModel implements Visitable<TypeFactory> {
+public class SellViewModel implements Visitable<TypeFactory>, Parcelable {
 
     private String title;
     private String subtitle;
@@ -21,6 +24,36 @@ public class SellViewModel implements Visitable<TypeFactory> {
         this.subtitle = subtitle;
         this.btn_title = btn_title;
     }
+
+    protected SellViewModel(Parcel in) {
+        title = in.readString();
+        subtitle = in.readString();
+        btn_title = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeString(subtitle);
+        dest.writeString(btn_title);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<SellViewModel> CREATOR = new Creator<SellViewModel>() {
+        @Override
+        public SellViewModel createFromParcel(Parcel in) {
+            return new SellViewModel(in);
+        }
+
+        @Override
+        public SellViewModel[] newArray(int size) {
+            return new SellViewModel[size];
+        }
+    };
 
     @Override
     public int type(TypeFactory typeFactory) {

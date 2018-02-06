@@ -248,6 +248,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 }
             }
         };
+
         if (SessionHandler.isV4Login(getContext())) {
             recyclerView.addOnScrollListener(feedLoadMoreTriggerListener);
         }
@@ -319,9 +320,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onSectionItemClicked(String actionLink) {
-        //TODO HOME_REVAMP : Handle Applink here
-//        startActivity(new Intent(getActivity(), ExploreActivity.class));
-        openApplink(sections.getApplink());
+        if (getActivity() != null
+                && getActivity().getApplicationContext() instanceof TkpdCoreRouter
+                && ((TkpdCoreRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(actionLink)) {
+            openApplink(actionLink);
+        } else {
+            openWebViewURL(actionLink, getContext());
+        }
     }
 
     private void onGoToSell() {
@@ -405,8 +410,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onApplinkClicked(CategoryLayoutRowModel data, int parentPosition, int childPosition) {
-        ((TkpdCoreRouter) getActivity().getApplication()).actionApplinkFromActivity(getActivity() ,
-                data.getApplinks());
+        openApplink(data.getApplinks());
     }
 
     @Override
@@ -555,14 +559,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onPromoClick(BannerSlidesModel slidesModel) {
-//        if (getActivity() != null
-//                && getActivity().getApplicationContext() instanceof TkpdCoreRouter
-//                && ((TkpdCoreRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(slidesModel.getApplink())) {
-//            openApplink(slidesModel.getApplink());
-//        } else {
-//            openWebViewURL(slidesModel.getRedirectUrl(), getContext());
-//        }
-        openApplink("tokopedia://jump/bayar");
+        if (getActivity() != null
+                && getActivity().getApplicationContext() instanceof TkpdCoreRouter
+                && ((TkpdCoreRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(slidesModel.getApplink())) {
+            openApplink(slidesModel.getApplink());
+        } else {
+            openWebViewURL(slidesModel.getRedirectUrl(), getContext());
+        }
     }
 
     @Override
@@ -654,7 +657,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void openApplink(String applink) {
         ((TkpdCoreRouter) getActivity().getApplicationContext())
-                .actionAppLink(getActivity(), applink);
+                .actionApplinkFromActivity(getActivity(), applink);
     }
 
     @Override

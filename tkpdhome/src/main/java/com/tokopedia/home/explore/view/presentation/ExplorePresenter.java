@@ -2,12 +2,16 @@ package com.tokopedia.home.explore.view.presentation;
 
 import android.support.annotation.NonNull;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.home.explore.domain.GetExploreDataUseCase;
 import com.tokopedia.home.explore.domain.GetExploreLocalDataUseCase;
-import com.tokopedia.home.explore.domain.model.ExploreDataModel;
+import com.tokopedia.home.explore.domain.model.DataResponseModel;
+import com.tokopedia.home.explore.view.adapter.viewmodel.ExploreSectionViewModel;
 import com.tokopedia.usecase.RequestParams;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -59,18 +63,18 @@ public class ExplorePresenter extends BaseDaggerPresenter<ExploreContract.View> 
     }
 
     @NonNull
-    private Action1<ExploreDataModel> refreshAction() {
-        return new Action1<ExploreDataModel>() {
+    private Action1<List<ExploreSectionViewModel>> refreshAction() {
+        return new Action1<List<ExploreSectionViewModel>>() {
             @Override
-            public void call(ExploreDataModel dataModel) {
+            public void call(List<ExploreSectionViewModel> list) {
                 compositeSubscription.add(getDataFromNetwork().subscribe(getSubscriber()));
             }
         };
     }
 
     @NonNull
-    private Subscriber<ExploreDataModel> getSubscriber() {
-        return new Subscriber<ExploreDataModel>() {
+    private Subscriber<List<ExploreSectionViewModel>> getSubscriber() {
+        return new Subscriber<List<ExploreSectionViewModel>>() {
             @Override
             public void onStart() {
                 if (isViewAttached()) {
@@ -94,15 +98,15 @@ public class ExplorePresenter extends BaseDaggerPresenter<ExploreContract.View> 
             }
 
             @Override
-            public void onNext(ExploreDataModel exploreDataModel) {
+            public void onNext(List<ExploreSectionViewModel> list) {
                 if(isViewAttached()){
-                    getView().renderData(exploreDataModel);
+                    getView().renderData(list);
                 }
             }
         };
     }
 
-    public Observable<ExploreDataModel> getDataFromNetwork() {
+    public Observable<List<ExploreSectionViewModel>> getDataFromNetwork() {
         return dataUseCase.getExecuteObservable(RequestParams.EMPTY)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread());

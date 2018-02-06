@@ -5,9 +5,7 @@ import android.support.annotation.StringRes;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.home.beranda.data.source.pojo.HomeData;
-import com.tokopedia.home.explore.domain.model.ExploreDataModel;
+import com.tokopedia.home.explore.view.adapter.viewmodel.ExploreSectionViewModel;
 
 import java.util.List;
 
@@ -29,7 +27,7 @@ public interface ExploreContract {
 
         String getString(@StringRes int res);
 
-        void renderData(ExploreDataModel dataModel);
+        void renderData(List<ExploreSectionViewModel> list);
     }
 
     interface Presenter extends CustomerPresenter<View> {

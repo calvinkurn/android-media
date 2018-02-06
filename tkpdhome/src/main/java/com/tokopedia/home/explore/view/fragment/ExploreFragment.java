@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,9 +33,11 @@ import com.tokopedia.home.explore.listener.CategoryAdapterListener;
 import com.tokopedia.home.explore.view.adapter.ExploreAdapter;
 import com.tokopedia.home.explore.view.adapter.TypeFactory;
 import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryGridListViewModel;
+import com.tokopedia.home.explore.view.adapter.viewmodel.ExploreSectionViewModel;
 import com.tokopedia.home.explore.view.adapter.viewmodel.SellViewModel;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,17 +48,13 @@ import java.util.Map;
 
 public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> implements CategoryAdapterListener {
 
-    private static final String EXTRA_DATA = "EXTRA_DATA";
-    private static final String EXTRA_POS = "EXTRA_POS";
-
     private VerticalSpaceItemDecoration spaceItemDecoration;
+    private ExploreSectionViewModel data;
 
-
-    public static ExploreFragment newInstance(LayoutSections sectionsModel, int pos) {
+    public static ExploreFragment newInstance() {
 
         Bundle args = new Bundle();
-        args.putParcelable(EXTRA_DATA, sectionsModel);
-        args.putInt(EXTRA_POS, pos);
+
         ExploreFragment fragment = new ExploreFragment();
         fragment.setArguments(args);
         return fragment;
@@ -76,51 +76,19 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        spaceItemDecoration = new VerticalSpaceItemDecoration(getResources().getDimensionPixelSize(R.dimen.margin_card_home), true, 1);
-        getRecyclerView(view).addItemDecoration(spaceItemDecoration);
+    public RecyclerView getRecyclerView(View view) {
+        RecyclerView recyclerView = super.getRecyclerView(view);
+        spaceItemDecoration = new VerticalSpaceItemDecoration(getResources().getDimensionPixelSize(R.dimen.margin_card_home), true, 0);
+        recyclerView.addItemDecoration(spaceItemDecoration);
+        return recyclerView;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        LayoutSections sectionsModel = getArguments().getParcelable(EXTRA_DATA);
-        renderList(mappingModel(sectionsModel));
+        renderList(data.getVisitableList());
     }
 
-    private List<Visitable> mappingModel(LayoutSections section) {
-        List<Visitable> list = new ArrayList<>();
-        if (getArguments().getInt(EXTRA_POS, 0) == 4) {
-            if (SessionHandler.isUserHasShop(getActivity())) {
-                list.add(mappingManageShop());
-            } else {
-                list.add(mappingOpenShop());
-            }
-        }
-        CategoryGridListViewModel viewModel = new CategoryGridListViewModel();
-        viewModel.setSectionId(section.getId());
-        viewModel.setTitle(section.getTitle());
-        viewModel.setItemList(section.getLayoutRows());
-        list.add(viewModel);
-        return list;
-    }
-
-    private Visitable mappingOpenShop() {
-        SellViewModel model = new SellViewModel();
-        model.setTitle(getString(R.string.empty_shop_wording_title));
-        model.setSubtitle(getString(R.string.empty_shop_wording_subtitle));
-        model.setBtn_title(getString(R.string.buka_toko));
-        return model;
-    }
-
-    private Visitable mappingManageShop() {
-        SellViewModel model = new SellViewModel();
-        model.setTitle(getString(R.string.open_shop_wording_title));
-        model.setSubtitle(getString(R.string.manage_shop_wording_subtitle));
-        model.setBtn_title(getString(R.string.manage_toko));
-        return model;
-    }
 
     @Override
     public void loadData(int page) {
@@ -236,5 +204,9 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     @Override
     public void onDigitalMoreClicked() {
 
+    }
+
+    public void setData(ExploreSectionViewModel data) {
+        this.data = data;
     }
 }

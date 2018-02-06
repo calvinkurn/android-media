@@ -2,7 +2,7 @@ package com.tokopedia.home.beranda.data.source.api;
 
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.home.beranda.data.source.pojo.HomeData;
-import com.tokopedia.home.explore.domain.model.ExploreDataModel;
+import com.tokopedia.home.explore.domain.model.DataResponseModel;
 
 import retrofit2.Response;
 import retrofit2.http.Body;
@@ -21,5 +21,5 @@ public interface HomeDataApi {
 
     @POST("./")
     @Headers({"Content-Type: application/json"})
-    Observable<Response<GraphqlResponse<ExploreDataModel>>> getExploreData(@Body String requestBody);
+    Observable<Response<GraphqlResponse<DataResponseModel>>> getExploreData(@Body String requestBody);
 }

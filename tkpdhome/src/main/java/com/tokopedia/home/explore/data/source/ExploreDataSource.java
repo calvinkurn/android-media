@@ -6,20 +6,30 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.data.source.api.HomeDataApi;
-import com.tokopedia.home.beranda.data.source.pojo.HomeData;
-import com.tokopedia.home.explore.domain.model.ExploreDataModel;
+import com.tokopedia.home.explore.domain.model.DataResponseModel;
+import com.tokopedia.home.explore.domain.model.DynamicHomeIcon;
+import com.tokopedia.home.explore.domain.model.LayoutRows;
+import com.tokopedia.home.explore.domain.model.LayoutSections;
+import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryFavoriteViewModel;
+import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryGridListViewModel;
+import com.tokopedia.home.explore.view.adapter.viewmodel.ExploreSectionViewModel;
+import com.tokopedia.home.explore.view.adapter.viewmodel.SellViewModel;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -45,18 +55,18 @@ public class ExploreDataSource {
         this.gson = gson;
     }
 
-    public Observable<ExploreDataModel> getExploreData() {
+    public Observable<List<ExploreSectionViewModel>> getExploreData() {
         return homeDataApi.getExploreData(getRequestPayload())
                 .doOnNext(saveToCache())
                 .map(getMapper());
     }
 
-    private Action1<Response<GraphqlResponse<ExploreDataModel>>> saveToCache() {
-        return new Action1<Response<GraphqlResponse<ExploreDataModel>>>() {
+    private Action1<Response<GraphqlResponse<DataResponseModel>>> saveToCache() {
+        return new Action1<Response<GraphqlResponse<DataResponseModel>>>() {
             @Override
-            public void call(Response<GraphqlResponse<ExploreDataModel>> response) {
+            public void call(Response<GraphqlResponse<DataResponseModel>> response) {
                 if (response.isSuccessful()) {
-                    ExploreDataModel data = response.body().getData();
+                    DataResponseModel data = response.body().getData();
                     cacheManager.setKey(TkpdCache.Key.EXPLORE_DATA_CACHE);
                     cacheManager.setValue(gson.toJson(data));
                     cacheManager.store();
@@ -66,12 +76,32 @@ public class ExploreDataSource {
     }
 
     @NonNull
-    private Func1<Response<GraphqlResponse<ExploreDataModel>>, ExploreDataModel> getMapper() {
-        return new Func1<Response<GraphqlResponse<ExploreDataModel>>, ExploreDataModel>() {
+    private Func1<Response<GraphqlResponse<DataResponseModel>>, List<ExploreSectionViewModel>> getMapper() {
+        return new Func1<Response<GraphqlResponse<DataResponseModel>>, List<ExploreSectionViewModel>>() {
             @Override
-            public ExploreDataModel call(Response<GraphqlResponse<ExploreDataModel>> response) {
+            public List<ExploreSectionViewModel> call(Response<GraphqlResponse<DataResponseModel>> response) {
                 if (response.isSuccessful()) {
-                    return response.body().getData();
+                    List<ExploreSectionViewModel> models = new ArrayList<>();
+
+                    DynamicHomeIcon model = response.body().getData().getDynamicHomeIcon();
+                    for (int i = 0; i < model.getLayoutSections().size(); i++) {
+                        LayoutSections s = model.getLayoutSections().get(i);
+                        ExploreSectionViewModel sectionViewModel = new ExploreSectionViewModel();
+                        sectionViewModel.setTitle(s.getTitle());
+                        if (i == 0 && model.getFavCategory() != null) {
+                            sectionViewModel.addVisitable(mappingFavoriteCategory(model.getFavCategory()));
+                        }
+                        if (i == 4) {
+                            if (SessionHandler.isUserHasShop(context)) {
+                                sectionViewModel.addVisitable(mappingManageShop());
+                            } else {
+                                sectionViewModel.addVisitable(mappingOpenShop());
+                            }
+                        }
+                        sectionViewModel.addVisitable(mappingCategory(s));
+                        models.add(sectionViewModel);
+                    }
+                    return models;
                 } else {
                     String messageError = ErrorHandler.getErrorMessage(response);
                     if (!TextUtils.isEmpty(messageError)) {
@@ -80,6 +110,37 @@ public class ExploreDataSource {
                         throw new RuntimeException(String.valueOf(response.code()));
                     }
                 }
+            }
+
+            private Visitable mappingOpenShop() {
+                SellViewModel model = new SellViewModel();
+                model.setTitle(context.getString(R.string.empty_shop_wording_title));
+                model.setSubtitle(context.getString(R.string.empty_shop_wording_subtitle));
+                model.setBtn_title(context.getString(R.string.buka_toko));
+                return model;
+            }
+
+            private Visitable mappingManageShop() {
+                SellViewModel model = new SellViewModel();
+                model.setTitle(context.getString(R.string.open_shop_wording_title));
+                model.setSubtitle(context.getString(R.string.manage_shop_wording_subtitle));
+                model.setBtn_title(context.getString(R.string.manage_toko));
+                return model;
+            }
+
+            private Visitable mappingFavoriteCategory(List<LayoutRows> favCategory) {
+                CategoryFavoriteViewModel viewModel = new CategoryFavoriteViewModel();
+                viewModel.setTitle("Kategori Favorite Anda");
+                viewModel.setItemList(favCategory);
+                return viewModel;
+            }
+
+            private Visitable mappingCategory(LayoutSections s) {
+                CategoryGridListViewModel viewModel = new CategoryGridListViewModel();
+                viewModel.setSectionId(s.getId());
+                viewModel.setTitle(s.getTitle());
+                viewModel.setItemList(s.getLayoutRows());
+                return viewModel;
             }
         };
     }
@@ -111,14 +172,14 @@ public class ExploreDataSource {
         return stringBuilder.toString();
     }
 
-    public Observable<ExploreDataModel> getDataCache() {
-        return Observable.just(true).map(new Func1<Boolean, Response<GraphqlResponse<ExploreDataModel>>>() {
+    public Observable<List<ExploreSectionViewModel>> getDataCache() {
+        return Observable.just(true).map(new Func1<Boolean, Response<GraphqlResponse<DataResponseModel>>>() {
             @Override
-            public Response<GraphqlResponse<ExploreDataModel>> call(Boolean aBoolean) {
+            public Response<GraphqlResponse<DataResponseModel>> call(Boolean aBoolean) {
                 String cache = cacheManager.getValueString(TkpdCache.Key.EXPLORE_DATA_CACHE);
                 if (cache != null) {
-                    ExploreDataModel data = gson.fromJson(cache, ExploreDataModel.class);
-                    GraphqlResponse<ExploreDataModel> graphqlResponse = new GraphqlResponse<>();
+                    DataResponseModel data = gson.fromJson(cache, DataResponseModel.class);
+                    GraphqlResponse<DataResponseModel> graphqlResponse = new GraphqlResponse<>();
                     graphqlResponse.setData(data);
                     return Response.success(graphqlResponse);
                 }

@@ -15,17 +15,20 @@ import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.home.R;
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
 import com.tokopedia.home.explore.di.DaggerExploreComponent;
 import com.tokopedia.home.explore.di.ExploreComponent;
-import com.tokopedia.home.explore.domain.model.ExploreDataModel;
 import com.tokopedia.home.explore.view.adapter.ExploreFragmentAdapter;
+import com.tokopedia.home.explore.view.adapter.viewmodel.ExploreSectionViewModel;
 import com.tokopedia.home.explore.view.presentation.ExploreContract;
 import com.tokopedia.home.explore.view.presentation.ExplorePresenter;
 
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -89,9 +92,9 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
     }
 
     @Override
-    public void renderData(ExploreDataModel dataModel) {
-        fragmentAdapter.setModelList(dataModel.getDynamicHomeIcon().getLayoutSections());
-        for (int i = 0; i < dataModel.getDynamicHomeIcon().getLayoutSections().size(); i++) {
+    public void renderData(List<ExploreSectionViewModel> list) {
+        fragmentAdapter.setData(list);
+        for (int i = 0; i < list.size(); i++) {
             setupTabIcon(i);
         }
         initSection(getIntent().getStringExtra(SECTION));

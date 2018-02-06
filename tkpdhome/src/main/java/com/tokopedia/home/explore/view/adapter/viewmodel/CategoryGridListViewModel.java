@@ -1,5 +1,8 @@
 package com.tokopedia.home.explore.view.adapter.viewmodel;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.home.beranda.domain.model.category.CategoryLayoutRowModel;
 import com.tokopedia.home.explore.domain.model.LayoutRows;
@@ -11,12 +14,45 @@ import java.util.List;
  * Created by errysuprayogi on 1/26/18.
  */
 
-public class CategoryGridListViewModel implements Visitable<TypeFactory> {
+public class CategoryGridListViewModel implements Visitable<TypeFactory>, Parcelable {
 
     private int sectionId;
     private String title;
     private List<LayoutRows> itemList;
 
+
+    public CategoryGridListViewModel() {
+    }
+
+    protected CategoryGridListViewModel(Parcel in) {
+        sectionId = in.readInt();
+        title = in.readString();
+        itemList = in.createTypedArrayList(LayoutRows.CREATOR);
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(sectionId);
+        dest.writeString(title);
+        dest.writeTypedList(itemList);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<CategoryGridListViewModel> CREATOR = new Creator<CategoryGridListViewModel>() {
+        @Override
+        public CategoryGridListViewModel createFromParcel(Parcel in) {
+            return new CategoryGridListViewModel(in);
+        }
+
+        @Override
+        public CategoryGridListViewModel[] newArray(int size) {
+            return new CategoryGridListViewModel[size];
+        }
+    };
 
     public int getSectionId() {
         return sectionId;

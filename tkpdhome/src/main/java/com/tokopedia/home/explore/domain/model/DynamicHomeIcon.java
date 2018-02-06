@@ -10,6 +10,8 @@ import java.util.List;
 public class DynamicHomeIcon {
     @SerializedName("layoutSections")
     private List<LayoutSections> layoutSections;
+    @SerializedName("favCategory")
+    private List<LayoutRows> favCategory;
 
     public List<LayoutSections> getLayoutSections() {
         return layoutSections;
@@ -19,4 +21,11 @@ public class DynamicHomeIcon {
         this.layoutSections = layoutSections;
     }
 
+    public List<LayoutRows> getFavCategory() {
+        return favCategory;
+    }
+
+    public void setFavCategory(List<LayoutRows> favCategory) {
+        this.favCategory = favCategory;
+    }
 }

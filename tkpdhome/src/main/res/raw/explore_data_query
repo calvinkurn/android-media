@@ -1,1 +1,1 @@
-{"query":"\n{\ndynamicHomeIcon {\nlayoutSections {\nid\ntitle\nweight\nlayoutRows {\nid\nname\nurl\nimageUrl\napplinks\ntype\ncategoryId\ncategoryLabel\nscore\n}\n}\n}\n}\n"}
+{"query":"{\n   dynamicHomeIcon {\n    favCategory {\n      id\n      name\n      url\n      imageUrl\n      applinks\n    }\n    layoutSections {\n      id\n      title\n      weight\n      layoutRows {\n\tid\n\tname\n\turl\n\timageUrl\n\tapplinks\n\ttype\n\tcategoryId\n\tcategoryLabel\n\tscore\n      }\n    }\n  }\n}"}

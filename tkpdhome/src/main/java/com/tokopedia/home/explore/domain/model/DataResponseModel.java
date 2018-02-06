@@ -2,11 +2,13 @@ package com.tokopedia.home.explore.domain.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 /**
  * Created by errysuprayogi on 2/2/18.
  */
 
-public class ExploreDataModel {
+public class DataResponseModel {
 
     @SerializedName("dynamicHomeIcon")
     private DynamicHomeIcon dynamicHomeIcon;
@@ -18,5 +20,4 @@ public class ExploreDataModel {
     public void setDynamicHomeIcon(DynamicHomeIcon dynamicHomeIcon) {
         this.dynamicHomeIcon = dynamicHomeIcon;
     }
-
 }
