@@ -6,6 +6,7 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
 import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 
 import javax.inject.Inject;
 
@@ -30,10 +31,10 @@ public class SaveDraftProductUseCase extends UseCase<Long> {
 
     @Override
     public Observable<Long> createObservable(RequestParams requestParams) {
-        UploadProductInputDomainModel inputModel;
+        ProductViewModel inputModel;
         if (isInputProductNotNull(requestParams) &&
                 isUploadProductDomainModel(requestParams)){
-            inputModel = (UploadProductInputDomainModel)
+            inputModel = (ProductViewModel)
                     requestParams.getObject(UPLOAD_PRODUCT_INPUT_MODEL);
         } else {
             throw new RuntimeException("Input model is missing");
@@ -53,7 +54,7 @@ public class SaveDraftProductUseCase extends UseCase<Long> {
                 instanceof UploadProductInputDomainModel;
     }
 
-    public static RequestParams generateUploadProductParam(UploadProductInputDomainModel domainModel,
+    public static RequestParams generateUploadProductParam(ProductViewModel domainModel,
                                                            long previousDraftId,
                                                            boolean isUploading){
         RequestParams params = RequestParams.create();
@@ -63,7 +64,7 @@ public class SaveDraftProductUseCase extends UseCase<Long> {
         return params;
     }
 
-    private class SaveDraft implements Func1<UploadProductInputDomainModel, Observable<Long>> {
+    private class SaveDraft implements Func1<ProductViewModel, Observable<Long>> {
         boolean isUploading;
         long previousDraftId;
         SaveDraft(long previousDraftId, boolean isUploading){
@@ -71,7 +72,7 @@ public class SaveDraftProductUseCase extends UseCase<Long> {
             this.isUploading = isUploading;
         }
         @Override
-        public Observable<Long> call(UploadProductInputDomainModel inputModel) {
+        public Observable<Long> call(ProductViewModel inputModel) {
             if (previousDraftId <= 0) {
                 return productDraftRepository.saveDraft(inputModel, isUploading);
             } else {

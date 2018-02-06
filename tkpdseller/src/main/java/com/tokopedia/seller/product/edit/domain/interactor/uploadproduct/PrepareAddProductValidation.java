@@ -3,6 +3,8 @@ package com.tokopedia.seller.product.edit.domain.interactor.uploadproduct;
 import com.tokopedia.seller.product.edit.domain.model.ImageProductInputDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.ProductPhotoListDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 
 import java.util.List;
 
@@ -13,18 +15,17 @@ import rx.functions.Func1;
  */
 
 
-public class PrepareAddProductValidation implements Func1<List<ImageProductInputDomainModel>, UploadProductInputDomainModel> {
+public class PrepareAddProductValidation implements Func1<List<ProductPictureViewModel>, ProductViewModel> {
 
-    private final UploadProductInputDomainModel domainModel;
+    private final ProductViewModel productViewModel;
 
-    public PrepareAddProductValidation(UploadProductInputDomainModel domainModel) {
-        this.domainModel = domainModel;
+    public PrepareAddProductValidation(ProductViewModel productViewModel) {
+        this.productViewModel = productViewModel;
     }
     @Override
-    public UploadProductInputDomainModel call(List<ImageProductInputDomainModel> imageProductInputDomainModels) {
-        ProductPhotoListDomainModel productPhotos = domainModel.getProductPhotos();
-        productPhotos.setPhotos(imageProductInputDomainModels);
-        return domainModel;
+    public ProductViewModel call(List<ProductPictureViewModel> productPictureViewModels) {
+        productViewModel.setProductPicture(productPictureViewModels);
+        return productViewModel;
     }
 
 }

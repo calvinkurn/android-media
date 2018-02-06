@@ -14,15 +14,11 @@ import com.tokopedia.seller.product.edit.data.source.cloud.model.AddProductValid
 import com.tokopedia.seller.product.edit.data.source.cloud.model.EditProductInputServiceModel;
 import com.tokopedia.seller.product.edit.domain.UploadProductRepository;
 import com.tokopedia.seller.product.edit.domain.model.AddProductDomainModel;
-import com.tokopedia.seller.product.edit.domain.model.AddProductSubmitInputDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.AddProductValidationDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.EditImageProductDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.ImageProductInputDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
-import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantByCatModel;
-import com.tokopedia.seller.product.variant.data.source.ProductVariantDataSource;
-
-import java.util.List;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 
 import rx.Observable;
 
@@ -32,49 +28,20 @@ import rx.Observable;
 
 public class UploadProductRepositoryImpl implements UploadProductRepository {
     private final UploadProductDataSource uploadProductDataSource;
-    private final AddProductValidationInputMapper addProductValidationInputMapper;
-    private final EditProductInputMapper editProductInputMapper;
 
-    public UploadProductRepositoryImpl(UploadProductDataSource uploadProductDataSource,
-                                       AddProductValidationInputMapper addProductValidationInputMapper,
-                                       EditProductInputMapper editProductInputMapper) {
+    public UploadProductRepositoryImpl(UploadProductDataSource uploadProductDataSource) {
         this.uploadProductDataSource = uploadProductDataSource;
-        this.addProductValidationInputMapper = addProductValidationInputMapper;
-        this.editProductInputMapper = editProductInputMapper;
     }
 
     @Override
-    public Observable<AddProductValidationDomainModel> addProductValidation(UploadProductInputDomainModel domainModel) {
-        AddProductValidationInputServiceModel serviceModel = new AddProductValidationInputServiceModel();
-        addProductValidationInputMapper.map(serviceModel, domainModel);
-        return uploadProductDataSource.addProductValidation(serviceModel)
-                .map(new AddProductValidationMapper());
-    }
-
-    @Override
-    public Observable<AddProductDomainModel> addProductSubmit(AddProductSubmitInputDomainModel domainModel) {
-        AddProductSubmitInputServiceModel serviceModel = AddProductInputMapper.mapSubmit(domainModel);
-        return uploadProductDataSource.addProductSubmit(serviceModel)
+    public Observable<AddProductDomainModel> addProductSubmit(ProductViewModel productViewModel) {
+        return uploadProductDataSource.addProductSubmit(productViewModel)
                 .map(new AddProductSubmitMapper());
     }
 
     @Override
-    public Observable<Boolean> editProduct(UploadProductInputDomainModel uploadProductInputDomainModel) {
-        EditProductInputServiceModel serviceModel = new EditProductInputServiceModel();
-        editProductInputMapper.map(serviceModel, uploadProductInputDomainModel);
-        return uploadProductDataSource.editProduct(serviceModel)
-                .map(new EditProductMapper());
-    }
-
-    @Override
-    public Observable<EditImageProductDomainModel> editImageProduct(String picObj) {
-        return uploadProductDataSource.editProductImage(picObj)
-                .map(new EditProductImageMapper());
-    }
-
-    @Override
-    public Observable<ImageProductInputDomainModel> deleteProductPicture(String picId, String productId) {
-        return uploadProductDataSource.deleteProductPicture(picId, productId)
-                .map(new DeleteProductPictureMapper());
+    public Observable<AddProductDomainModel> editProduct(ProductViewModel productViewModel) {
+        return uploadProductDataSource.editProduct(productViewModel)
+                .map(new AddProductSubmitMapper());
     }
 }

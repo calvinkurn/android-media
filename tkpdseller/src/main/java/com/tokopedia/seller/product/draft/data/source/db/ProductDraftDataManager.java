@@ -30,11 +30,12 @@ public class ProductDraftDataManager {
         productDraftDataBase.setId(draftId);
         productDraftDataBase.setUploading(isUploading);
         productDraftDataBase.setShopId(shopId);
+        productDraftDataBase.setVersion(ProductDraftDataBase.CURRENT_VERSION);
         productDraftDataBase.save();
         return Observable.just(productDraftDataBase.getId());
     }
 
-    public Observable<String> getDraft(long productId) {
+    public Observable<ProductDraftDataBase> getDraft(long productId) {
         ProductDraftDataBase productDraftDatabase =
                 new Select()
                         .from(ProductDraftDataBase.class)
@@ -43,7 +44,7 @@ public class ProductDraftDataManager {
         if (productDraftDatabase == null){
             return Observable.error(new DraftNotFoundException());
         } else {
-            return Observable.just(productDraftDatabase.getData());
+            return Observable.just(productDraftDatabase);
         }
     }
 

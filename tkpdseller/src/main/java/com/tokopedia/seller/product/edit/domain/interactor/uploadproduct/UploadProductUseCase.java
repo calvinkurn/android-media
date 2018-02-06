@@ -7,6 +7,8 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.myproduct.utils.FileUtils;
+import com.tokopedia.seller.base.domain.interactor.UploadImageUseCase;
+import com.tokopedia.seller.product.edit.data.source.cloud.model.UploadImageModel;
 import com.tokopedia.seller.product.edit.domain.GenerateHostRepository;
 import com.tokopedia.seller.product.edit.domain.ImageProductUploadRepository;
 import com.tokopedia.seller.product.draft.domain.model.ProductDraftRepository;
@@ -16,6 +18,8 @@ import com.tokopedia.seller.product.edit.domain.model.AddProductDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.ImageProductInputDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.ProductPhotoListDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductPictureViewModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,26 +39,23 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
     public static final int UNSELECTED_PRODUCT_ID = -1;
 
     private final ProductDraftRepository productDraftRepository;
-    private final ImageProductUploadRepository imageProductUploadRepository;
-    private final GenerateHostRepository generateHostRepository;
     private final UploadProductRepository uploadProductRepository;
 
     private AddProductNotificationListener listener;
-    private UploadProductInputDomainModel uploadProductInputDomainModel;
+    private ProductViewModel productViewModel;
+    private UploadImageUseCase<UploadImageModel> uploadImageUseCase;
 
     @Inject
     public UploadProductUseCase(
             ThreadExecutor threadExecutor,
             PostExecutionThread postExecutionThread,
             ProductDraftRepository productDraftRepository,
-            GenerateHostRepository generateHostRepository,
-            ImageProductUploadRepository imageProductUploadRepository,
-            UploadProductRepository uploadProductRepository) {
+            UploadProductRepository uploadProductRepository,
+            UploadImageUseCase<UploadImageModel> uploadImageUseCase) {
         super(threadExecutor, postExecutionThread);
         this.productDraftRepository = productDraftRepository;
-        this.generateHostRepository = generateHostRepository;
-        this.imageProductUploadRepository = imageProductUploadRepository;
         this.uploadProductRepository = uploadProductRepository;
+        this.uploadImageUseCase = uploadImageUseCase;
     }
 
     public void setListener(AddProductNotificationListener listener) {
@@ -73,15 +74,14 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
         if (productId == UNSELECTED_PRODUCT_ID) {
             throw new RuntimeException("Input model is missing");
         }
-        uploadProductInputDomainModel = productDraftRepository.getDraft(productId).toBlocking().first();
-        if (uploadProductInputDomainModel == null) {
+        productViewModel = productDraftRepository.getDraft(productId).toBlocking().first();
+        if (productViewModel == null) {
             throw new RuntimeException("Draft is already deleted");
         }
 
-        return Observable.just(uploadProductInputDomainModel)
-                .flatMap(new UploadProduct(productId, listener, generateHostRepository,
-                        uploadProductRepository, imageProductUploadRepository,
-                        new ProductDraftUpdate(productDraftRepository, productId)))
+        return Observable.just(productViewModel)
+                .flatMap(new UploadProduct(productId, listener, uploadProductRepository,
+                        uploadImageUseCase))
                 .doOnNext(new DeleteProductDraft(productId, productDraftRepository))
                 .doOnNext(new DeleteImageCacheDraftFile());
     }
@@ -89,18 +89,17 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
     private class DeleteImageCacheDraftFile implements Action1<AddProductDomainModel> {
         @Override
         public void call(AddProductDomainModel addProductDomainModel) {
-            ProductPhotoListDomainModel productPhotoListDomainModel = uploadProductInputDomainModel.getProductPhotos();
-            List<ImageProductInputDomainModel> imageProductInputDomainModelList = productPhotoListDomainModel.getPhotos();
-            if (imageProductInputDomainModelList == null || imageProductInputDomainModelList.size() == 0) {
+            List<ProductPictureViewModel> productPictureViewModels = productViewModel.getProductPicture();
+            if (productPictureViewModels == null || productPictureViewModels.size() == 0) {
                 return;
             }
             ArrayList<String> pathToDelete = new ArrayList<>();
-            for (int i = 0, sizei = imageProductInputDomainModelList.size(); i<sizei; i++) {
-                ImageProductInputDomainModel imageProductInputDomainModel = imageProductInputDomainModelList.get(i);
-                if (imageProductInputDomainModel == null) {
+            for (int i = 0, sizei = productPictureViewModels.size(); i<sizei; i++) {
+                ProductPictureViewModel productPictureViewModel = productPictureViewModels.get(i);
+                if (productPictureViewModel == null) {
                     continue;
                 }
-                String imagePath = imageProductInputDomainModel.getImagePath();
+                String imagePath = productPictureViewModel.getFilePath();
                 if (!TextUtils.isEmpty(imagePath)) {
                     pathToDelete.add(imagePath);
                 }
@@ -123,21 +122,6 @@ public class UploadProductUseCase extends UseCase<AddProductDomainModel> {
         @Override
         public void call(AddProductDomainModel addProductDomainModel) {
             productDraftRepository.deleteDraft(productId);
-        }
-    }
-
-    public class ProductDraftUpdate {
-
-        private final ProductDraftRepository productDraftRepository;
-        private final long productId;
-
-        public ProductDraftUpdate(ProductDraftRepository productDraftRepository, long productId) {
-            this.productDraftRepository = productDraftRepository;
-            this.productId = productId;
-        }
-
-        public void updateDraft(UploadProductInputDomainModel domainModel) {
-            productDraftRepository.updateDraft(productId, domainModel);
         }
     }
 

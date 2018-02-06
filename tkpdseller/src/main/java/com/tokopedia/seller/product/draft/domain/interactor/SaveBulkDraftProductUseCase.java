@@ -17,6 +17,7 @@ import com.tokopedia.seller.product.edit.constant.WeightUnitTypeDef;
 import com.tokopedia.seller.product.edit.domain.model.ImageProductInputDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.ProductPhotoListDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,8 +43,8 @@ public class SaveBulkDraftProductUseCase extends UseCase<List<Long>> {
 
     @Override
     public Observable<List<Long>> createObservable(RequestParams requestParams) {
-        ArrayList<UploadProductInputDomainModel> inputModelList =
-                (ArrayList<UploadProductInputDomainModel>) requestParams.getObject(UPLOAD_PRODUCT_INPUT_MODEL_LIST);
+        ArrayList<ProductViewModel> inputModelList =
+                (ArrayList<ProductViewModel>) requestParams.getObject(UPLOAD_PRODUCT_INPUT_MODEL_LIST);
         return Observable.from(inputModelList)
                 .flatMap(new SaveDraft(0, false))
                 .toList();
@@ -52,14 +53,14 @@ public class SaveBulkDraftProductUseCase extends UseCase<List<Long>> {
     public static RequestParams generateUploadProductParam(@NonNull ArrayList<String> localPathList,
                                                            @NonNull ArrayList<String> instagramDescList){
 
-        ArrayList<UploadProductInputDomainModel> uploadProductInputDomainModelList = new ArrayList<>();
+        ArrayList<ProductViewModel> productViewModels = new ArrayList<>();
 
         for (int i=0, sizei = localPathList.size(); i < sizei ; i++) {
             String localPath = localPathList.get(i);
 
-            UploadProductInputDomainModel uploadProductInputDomainModel = new UploadProductInputDomainModel();
+            ProductViewModel productViewModel = new ProductViewModel();
 
-            uploadProductInputDomainModel.setProductDescription(instagramDescList.get(i) == null? "": instagramDescList.get(i));
+            productViewModel.setProductDescription(instagramDescList.get(i) == null? "": instagramDescList.get(i));
 
             ProductPhotoListDomainModel productPhotoListDomainModel = new ProductPhotoListDomainModel();
             productPhotoListDomainModel.setProductDefaultPicture(0);
@@ -68,27 +69,27 @@ public class SaveBulkDraftProductUseCase extends UseCase<List<Long>> {
             imageProductInputDomainModel.setImagePath(localPath);
             imageProductInputDomainModelArrayList.add(imageProductInputDomainModel);
             productPhotoListDomainModel.setPhotos(imageProductInputDomainModelArrayList);
-            uploadProductInputDomainModel.setProductPhotos(productPhotoListDomainModel);
+//            productViewModel.setProductPhotos(productPhotoListDomainModel);
 
-            uploadProductInputDomainModel.setProductPriceCurrency( CurrencyTypeDef.TYPE_IDR);
-            uploadProductInputDomainModel.setProductWeightUnit(WeightUnitTypeDef.TYPE_GRAM);
+            productViewModel.setProductPriceCurrency( CurrencyTypeDef.TYPE_IDR);
+            productViewModel.setProductWeightUnit(WeightUnitTypeDef.TYPE_GRAM);
 
-            uploadProductInputDomainModel.setProductUploadTo(UploadToTypeDef.TYPE_NOT_ACTIVE);
-            uploadProductInputDomainModel.setProductReturnable(FreeReturnTypeDef.TYPE_ACTIVE);
+//            productViewModel.setProductUploadTo(UploadToTypeDef.TYPE_NOT_ACTIVE);
+//            productViewModel.setProductReturnable(FreeReturnTypeDef.TYPE_ACTIVE);
 
-            uploadProductInputDomainModel.setProductInvenageSwitch(
-                    InvenageSwitchTypeDef.TYPE_NOT_ACTIVE);
-            uploadProductInputDomainModel.setProductCondition(ProductConditionTypeDef.TYPE_NEW);
+//            productViewModel.setProductInvenageSwitch(
+//                    InvenageSwitchTypeDef.TYPE_NOT_ACTIVE);
+            productViewModel.setProductCondition(ProductConditionTypeDef.TYPE_NEW);
 
-            uploadProductInputDomainModel.setProductMustInsurance(ProductInsuranceValueTypeDef.TYPE_OPTIONAL);
-            uploadProductInputDomainModelList.add(uploadProductInputDomainModel);
+//            productViewModel.setProductMustInsurance(ProductInsuranceValueTypeDef.TYPE_OPTIONAL);
+            productViewModels.add(productViewModel);
         }
         RequestParams params = RequestParams.create();
-        params.putObject(UPLOAD_PRODUCT_INPUT_MODEL_LIST, uploadProductInputDomainModelList);
+        params.putObject(UPLOAD_PRODUCT_INPUT_MODEL_LIST, productViewModels);
         return params;
     }
 
-    private class SaveDraft implements Func1<UploadProductInputDomainModel, Observable<Long>> {
+    private class SaveDraft implements Func1<ProductViewModel, Observable<Long>> {
         boolean isUploading;
         long previousDraftId;
         SaveDraft(long previousDraftId, boolean isUploading){
@@ -96,7 +97,7 @@ public class SaveBulkDraftProductUseCase extends UseCase<List<Long>> {
             this.isUploading = isUploading;
         }
         @Override
-        public Observable<Long> call(UploadProductInputDomainModel inputModel) {
+        public Observable<Long> call(ProductViewModel inputModel) {
             if (previousDraftId <= 0) {
                 return productDraftRepository.saveDraft(inputModel, isUploading);
             } else {

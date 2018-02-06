@@ -9,6 +9,7 @@ import com.tokopedia.seller.product.edit.data.source.cloud.model.addproductsubmi
 import com.tokopedia.seller.product.edit.data.source.cloud.model.addproductvalidation.AddProductValidationServiceModel;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.editimageproduct.EditImageProductServiceModel;
 import com.tokopedia.seller.product.edit.data.source.cloud.model.editproduct.EditProductServiceModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 
 import javax.inject.Inject;
 
@@ -26,23 +27,11 @@ public class UploadProductDataSource {
         this.uploadProductCloud = uploadProductCloud;
     }
 
-    public Observable<AddProductValidationServiceModel> addProductValidation(AddProductValidationInputServiceModel serviceModel){
-        return uploadProductCloud.addProductValidation(serviceModel);
-    }
-
-    public Observable<AddProductSubmitServiceModel> addProductSubmit(AddProductSubmitInputServiceModel serviceModel) {
+    public Observable<AddProductSubmitServiceModel> addProductSubmit(ProductViewModel serviceModel) {
         return uploadProductCloud.addProductSubmit(serviceModel);
     }
 
-    public Observable<EditProductServiceModel> editProduct(EditProductInputServiceModel serviceModel) {
-        return uploadProductCloud.editProduct(serviceModel);
-    }
-
-    public Observable<EditImageProductServiceModel> editProductImage(String picObj) {
-        return uploadProductCloud.editProductImage(picObj);
-    }
-
-    public Observable<DeleteProductPictureServiceModel> deleteProductPicture(String picId, String productId) {
-        return uploadProductCloud.deleteProductPicture(picId, productId);
+    public Observable<AddProductSubmitServiceModel> editProduct(ProductViewModel productViewModel) {
+        return uploadProductCloud.editProduct(productViewModel);
     }
 }

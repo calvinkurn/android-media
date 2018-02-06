@@ -3,6 +3,8 @@ package com.tokopedia.seller.product.edit.domain.interactor.uploadproduct;
 import com.tokopedia.seller.product.edit.domain.UploadProductRepository;
 import com.tokopedia.seller.product.edit.domain.model.AddProductDomainModel;
 import com.tokopedia.seller.product.edit.domain.model.AddProductSubmitInputDomainModel;
+import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
+import com.tokopedia.seller.product.edit.view.model.upload.intdef.ProductStatus;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -12,7 +14,7 @@ import rx.functions.Func1;
  */
 
 
-public class AddProductSubmit implements Func1<AddProductSubmitInputDomainModel, Observable<AddProductDomainModel>> {
+public class AddProductSubmit implements Func1<ProductViewModel, Observable<AddProductDomainModel>> {
 
     private final UploadProductRepository uploadProductRepository;
 
@@ -21,9 +23,13 @@ public class AddProductSubmit implements Func1<AddProductSubmitInputDomainModel,
     }
 
     @Override
-    public Observable<AddProductDomainModel> call(AddProductSubmitInputDomainModel addProductSubmitInputDomainModel) {
-        return uploadProductRepository
-                .addProductSubmit(addProductSubmitInputDomainModel);
+    public Observable<AddProductDomainModel> call(ProductViewModel productViewModel) {
+        if(productViewModel.getProductStatus() == ProductStatus.ADD) {
+            return uploadProductRepository
+                    .addProductSubmit(productViewModel);
+        }else{
+            return uploadProductRepository.editProduct(productViewModel);
+        }
     }
 
 }
