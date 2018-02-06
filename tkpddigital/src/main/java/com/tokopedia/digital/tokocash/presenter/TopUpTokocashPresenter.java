@@ -12,7 +12,7 @@ import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.digital.common.domain.GetCategoryByIdUseCase;
+import com.tokopedia.digital.common.domain.interactor.GetCategoryByIdUseCase;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.view.model.ProductDigitalData;
 import com.tokopedia.digital.tokocash.errorhandle.ResponseTokoCashRuntimeException;

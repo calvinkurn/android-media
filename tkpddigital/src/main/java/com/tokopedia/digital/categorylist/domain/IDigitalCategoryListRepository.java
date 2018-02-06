@@ -1,4 +1,4 @@
-package com.tokopedia.digital.categorylist.data.repository;
+package com.tokopedia.digital.categorylist.domain;
 
 import com.tokopedia.digital.categorylist.view.model.DigitalCategoryItemData;
 

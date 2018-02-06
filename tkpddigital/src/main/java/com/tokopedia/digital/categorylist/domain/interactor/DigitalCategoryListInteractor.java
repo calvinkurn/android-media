@@ -8,9 +8,9 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.apiservices.tokocash.TokoCashService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashBalanceData;
-import com.tokopedia.digital.categorylist.data.repository.IDigitalCategoryListRepository;
+import com.tokopedia.digital.categorylist.domain.IDigitalCategoryListRepository;
 import com.tokopedia.digital.categorylist.view.model.DigitalCategoryItemData;
+import com.tokopedia.digital.tokocash.model.tokocashitem.TokoCashBalanceData;
 
 import java.util.List;
 

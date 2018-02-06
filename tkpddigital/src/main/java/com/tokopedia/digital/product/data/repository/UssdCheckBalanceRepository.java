@@ -1,4 +1,4 @@
-package com.tokopedia.digital.product.domain;
+package com.tokopedia.digital.product.data.repository;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -9,6 +9,7 @@ import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.common.data.entity.response.ResponsePulsaBalance;
 import com.tokopedia.digital.product.data.entity.requestbody.pulsabalance.RequestBodyPulsaBalance;
 import com.tokopedia.digital.product.data.mapper.USSDMapper;
+import com.tokopedia.digital.product.domain.IUssdCheckBalanceRepository;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
 
 import retrofit2.Response;

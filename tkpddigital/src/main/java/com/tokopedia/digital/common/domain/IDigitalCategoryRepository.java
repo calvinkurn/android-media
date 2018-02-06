@@ -1,4 +1,4 @@
-package com.tokopedia.digital.common.data.repository;
+package com.tokopedia.digital.common.domain;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.product.view.model.CategoryData;

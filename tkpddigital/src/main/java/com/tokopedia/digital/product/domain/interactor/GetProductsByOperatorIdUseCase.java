@@ -1,6 +1,6 @@
-package com.tokopedia.digital.product.domain;
+package com.tokopedia.digital.product.domain.interactor;
 
-import com.tokopedia.digital.common.domain.GetCategoryByIdUseCase;
+import com.tokopedia.digital.common.domain.interactor.GetCategoryByIdUseCase;
 import com.tokopedia.digital.product.view.model.Operator;
 import com.tokopedia.digital.product.view.model.Product;
 import com.tokopedia.digital.product.view.model.ProductDigitalData;

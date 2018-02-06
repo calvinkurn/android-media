@@ -1,4 +1,4 @@
-package com.tokopedia.digital.common.domain;
+package com.tokopedia.digital.common.domain.interactor;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -9,7 +9,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.digital.common.data.repository.IDigitalCategoryRepository;
+import com.tokopedia.digital.common.domain.IDigitalCategoryRepository;
 import com.tokopedia.digital.product.view.model.BannerData;
 import com.tokopedia.digital.product.view.model.CategoryData;
 import com.tokopedia.digital.product.view.model.HistoryClientNumber;

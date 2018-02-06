@@ -1,6 +1,6 @@
 package com.tokopedia.digital.product.view.presenter;
 
-import com.tokopedia.digital.product.domain.GetOperatorsByCategoryIdUseCase;
+import com.tokopedia.digital.product.domain.interactor.GetOperatorsByCategoryIdUseCase;
 import com.tokopedia.digital.product.view.listener.IOperatorChooserView;
 import com.tokopedia.digital.product.view.model.Operator;
 

@@ -1,4 +1,4 @@
-package com.tokopedia.digital.widget.domain;
+package com.tokopedia.digital.widget.domain.interactor;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.CacheUtil;

@@ -8,7 +8,6 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
 import com.tokopedia.digital.widget.view.model.DigitalNumberList;
 import com.tokopedia.digital.widget.view.model.mapper.OperatorMapper;
 import com.tokopedia.digital.widget.view.model.mapper.ProductMapper;

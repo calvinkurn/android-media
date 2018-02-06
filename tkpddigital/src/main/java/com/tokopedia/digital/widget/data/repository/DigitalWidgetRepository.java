@@ -1,4 +1,4 @@
-package com.tokopedia.digital.common.data.repository;
+package com.tokopedia.digital.widget.data.repository;
 
 import com.tokopedia.digital.common.data.source.CategoryListDataSource;
 import com.tokopedia.digital.common.data.source.StatusDataSource;

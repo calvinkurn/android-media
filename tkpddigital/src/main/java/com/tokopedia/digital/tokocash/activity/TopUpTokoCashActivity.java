@@ -36,9 +36,9 @@ import com.tokopedia.digital.R2;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
 import com.tokopedia.digital.common.data.repository.DigitalCategoryRepository;
-import com.tokopedia.digital.common.data.repository.IDigitalCategoryRepository;
 import com.tokopedia.digital.common.data.source.CategoryDetailDataSource;
-import com.tokopedia.digital.common.domain.GetCategoryByIdUseCase;
+import com.tokopedia.digital.common.domain.IDigitalCategoryRepository;
+import com.tokopedia.digital.common.domain.interactor.GetCategoryByIdUseCase;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.view.activity.DigitalChooserActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
@@ -133,7 +133,7 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
         if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
 
         ITokoCashRepository balanceRepository = new TokoCashRepository(new TokoCashService(
-                sessionHandler.getAccessToken(this)));
+                SessionHandler.getAccessToken(this)));
 
         ITokoCashBalanceInteractor balanceInteractor = new TokoCashBalanceInteractor(balanceRepository,
                 new CompositeSubscription(),

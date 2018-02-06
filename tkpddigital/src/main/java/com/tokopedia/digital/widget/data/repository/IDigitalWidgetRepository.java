@@ -1,4 +1,4 @@
-package com.tokopedia.digital.common.data.repository;
+package com.tokopedia.digital.widget.data.repository;
 
 import com.tokopedia.digital.widget.view.model.category.Category;
 import com.tokopedia.digital.widget.view.model.status.Status;

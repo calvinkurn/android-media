@@ -3,6 +3,7 @@ package com.tokopedia.digital.common.data.repository;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.digital.common.data.source.CategoryDetailDataSource;
 import com.tokopedia.digital.common.data.source.FavoriteListDataSource;
+import com.tokopedia.digital.common.domain.IDigitalCategoryRepository;
 import com.tokopedia.digital.product.view.model.CategoryData;
 import com.tokopedia.digital.widget.view.model.DigitalNumberList;
 
