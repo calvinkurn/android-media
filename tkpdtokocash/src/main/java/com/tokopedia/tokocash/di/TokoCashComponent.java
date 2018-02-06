@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.tokocash.activation.presentation.fragment.ActivateTokoCashFragment;
 import com.tokopedia.tokocash.activation.presentation.fragment.RequestOTPWalletFragment;
 import com.tokopedia.tokocash.activation.presentation.fragment.SuccessActivateFragment;
-import com.tokopedia.tokocash.historytokocash.presentation.activity.HistoryTokoCashActivity;
+import com.tokopedia.tokocash.qrpayment.domain.GetBalanceTokoCashUseCase;
 import com.tokopedia.tokocash.qrpayment.presentation.activity.CustomScannerTokoCashActivity;
 import com.tokopedia.tokocash.qrpayment.presentation.activity.NominalQrPaymentActivity;
 import com.tokopedia.tokocash.qrpayment.presentation.activity.SuccessPaymentQRActivity;
@@ -18,7 +18,7 @@ import dagger.Component;
 @Component(modules = TokoCashModule.class, dependencies = BaseAppComponent.class)
 public interface TokoCashComponent {
 
-    void inject(HistoryTokoCashActivity historyTokoCashActivity);
+    GetBalanceTokoCashUseCase getBalanceTokoCashUseCase();
 
     void inject(CustomScannerTokoCashActivity customScannerTokoCashActivity);
 

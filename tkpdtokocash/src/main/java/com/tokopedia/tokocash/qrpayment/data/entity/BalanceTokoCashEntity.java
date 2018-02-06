@@ -15,7 +15,7 @@ public class BalanceTokoCashEntity {
     @SerializedName("text")
     @Expose
     private String titleText;
-    @SerializedName("actionBalanceEntity")
+    @SerializedName("action")
     @Expose
     private ActionBalanceEntity actionBalanceEntity;
     @SerializedName("balance")
