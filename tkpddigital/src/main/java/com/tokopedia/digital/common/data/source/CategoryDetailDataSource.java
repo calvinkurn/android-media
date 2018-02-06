@@ -75,7 +75,7 @@ public class CategoryDetailDataSource {
                 globalCacheManager.setValue(CacheUtil.convertModelToString(categoryData,
                         new TypeToken<CategoryData>() {
                         }.getType()));
-                globalCacheManager.setCacheDuration(50);
+                globalCacheManager.setCacheDuration(600); // 10 minutes
                 globalCacheManager.store();
             }
         };
