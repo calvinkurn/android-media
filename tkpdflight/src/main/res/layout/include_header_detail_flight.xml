@@ -3,13 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:id="@+id/layout_header_container"
     android:layout_height="wrap_content"
     android:background="@color/white"
+    android:paddingTop="@dimen/padding_small"
     tools:showIn="@layout/item_flight_detail">
 
     <RelativeLayout
         android:id="@+id/container_header"
         android:layout_width="match_parent"
+        android:paddingLeft="@dimen/padding_small"
+        android:paddingRight="@dimen/padding_med"
         android:layout_height="wrap_content">
 
         <android.support.v7.widget.AppCompatImageView
@@ -35,7 +39,7 @@
 
             <TextView
                 android:id="@+id/airline_code"
-                style="@style/TextView.Small.BlackSecondary"
+                style="@style/TextView.Micro.BlackSecondary"
                 android:layout_alignLeft="@+id/airline_name"
                 android:layout_below="@id/airline_name"
                 tools:text="CP - 321" />
@@ -57,10 +61,10 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:background="@drawable/bg_rect_stroke_flight_grey"
-                android:paddingBottom="@dimen/padding_vvs"
-                android:paddingLeft="@dimen/padding_small"
-                android:paddingRight="@dimen/padding_small"
-                android:paddingTop="@dimen/padding_vvs"
+                android:paddingBottom="@dimen/padding_ms"
+                android:paddingLeft="@dimen/padding_16"
+                android:paddingRight="@dimen/padding_16"
+                android:paddingTop="@dimen/padding_ms"
                 android:textSize="10sp"
                 android:visibility="gone"
                 tools:text="Refundable"
@@ -78,6 +82,8 @@
         android:layout_marginTop="@dimen/margin_small"
         android:gravity="center_vertical"
         android:orientation="horizontal"
+        android:paddingLeft="@dimen/padding_med"
+        android:paddingRight="@dimen/padding_med"
         android:visibility="gone"
         tools:visibility="visible">
 
@@ -88,7 +94,7 @@
 
         <TextView
             android:id="@+id/pnr_code"
-            style="@style/TextView.Small.Green.Bold"
+            style="@style/TextView.Small.Green"
             android:layout_marginRight="@dimen/margin_vs"
             tools:text="323088926194" />
 

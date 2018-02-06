@@ -3,30 +3,36 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:layout_marginTop="@dimen/margin_med"
     android:background="@color/white"
-    android:orientation="vertical"
     android:paddingBottom="@dimen/padding_16"
-    android:paddingLeft="@dimen/padding_small"
-    android:paddingRight="@dimen/padding_small"
     android:paddingTop="@dimen/padding_16">
 
     <TextView
         android:id="@+id/counter_flight"
         style="@style/TextView.TitleBig.Bold"
         android:text="@string/flight_label_detail_order"
+        android:paddingLeft="@dimen/padding_med"
+        android:paddingRight="@dimen/padding_med"
         android:textSize="18sp" />
 
     <LinearLayout
         android:id="@+id/layout_expendable_flight"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/padding_med"
+        android:paddingRight="@dimen/padding_med"
         android:orientation="horizontal">
 
         <TextView
             android:id="@+id/title_expendable_passenger"
             style="@style/style_expandable_flight_detail_order_title"
+            android:textStyle="normal"
+            android:paddingTop="@dimen/padding_vvs"
             android:layout_width="0dp"
+            android:ellipsize="end"
+            android:lines="1"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/flight_label_passenger_data" />
@@ -40,6 +46,14 @@
 
     </LinearLayout>
 
+    <View
+        android:id="@+id/flight_detail_order_separator_line"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginBottom="@dimen/margin_small"
+        android:layout_marginTop="@dimen/margin_ms"
+        android:background="@drawable/bg_line_separator" />
+
     <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
         android:id="@+id/recycler_view_flight_detail_journey"
         android:layout_width="match_parent"
@@ -47,10 +61,12 @@
 
 
     <TextView
+        android:id="@+id/text_view_flight_cek_syarat"
         style="@style/TextView.Micro.BlackSecondary"
         android:layout_width="match_parent"
         android:background="@color/white"
         android:paddingBottom="@dimen/padding_med"
+        android:paddingLeft="@dimen/padding_med"
         android:paddingRight="@dimen/padding_med"
         android:paddingTop="@dimen/padding_med"
         android:text="@string/flight_label_cek_t_and_c" />

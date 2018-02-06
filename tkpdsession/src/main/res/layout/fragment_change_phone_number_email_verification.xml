@@ -22,6 +22,7 @@
             android:background="#f05f68" />
 
         <TextView
+            android:id="@+id/limit_otp_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
@@ -83,7 +84,7 @@
                 android:textColor="@color/black_54"
                 android:textSize="@dimen/text_size_medium"
                 android:textStyle="normal"
-                tools:text="Kode verifikasi telah dikirimkan ke\nilham.jamaludin@tokopedia.com" />
+                tools:text="Kode verifikasi telah dikirimkan melalui email ke ilham.jamaludin@tokopedia.com." />
 
             <com.tkpd.library.ui.widget.PinEntryEditText
                 android:id="@+id/input_otp"
@@ -117,7 +118,6 @@
                 android:visibility="invisible"
                 tools:visibility="visible" />
 
-
             <TextView
                 android:id="@+id/verify_button"
                 android:layout_width="match_parent"
@@ -147,32 +147,29 @@
                 android:textSize="@dimen/text_size_small"
                 android:textStyle="normal"
                 android:visibility="visible"
-                tools:text="Gunakan metode verifikasi lain"
+                tools:text="Mohon tunggu dalam 30 detik untuk kirim ulang"
                 tools:visibility="visible" />
 
-            <TextView
-                android:id="@+id/no_code"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/margin_med"
-                android:fontFamily="sans-serif"
-                android:gravity="center_horizontal"
-                android:lineSpacingExtra="6sp"
-                android:text="@string/not_received_code"
-                android:textColor="@color/black_38"
-                android:textSize="@dimen/text_size_small"
-                android:textStyle="normal"
-                android:visibility="gone"
-                tools:visibility="visible" />
-
-            <RelativeLayout
+            <LinearLayout
                 android:id="@+id/finish_countdown"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:visibility="gone"
-                tools:visibility="visible">
+                android:layout_marginTop="@dimen/margin_med"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginEnd="@dimen/text_input_horizontal_padding"
+                    android:layout_marginRight="@dimen/text_input_horizontal_padding"
+                    android:fontFamily="sans-serif"
+                    android:gravity="center_horizontal"
+                    android:lineSpacingExtra="6sp"
+                    android:text="@string/not_received_code"
+                    android:textColor="@color/black_38"
+                    android:textSize="@dimen/text_size_small"
+                    android:textStyle="normal" />
 
                 <TextView
                     android:id="@+id/resend"
@@ -180,13 +177,11 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif"
                     android:lineSpacingExtra="6sp"
-                    android:padding="@dimen/padding_vs"
                     android:text="@string/resend"
                     android:textColor="@color/tkpd_main_green"
                     android:textSize="@dimen/text_size_small"
                     android:textStyle="normal" />
-
-            </RelativeLayout>
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 

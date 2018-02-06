@@ -1,6 +1,7 @@
 package com.tokopedia.flight.detail.presenter;
 
 import android.app.Activity;
+import android.support.annotation.StringRes;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
@@ -34,25 +35,8 @@ public interface FlightDetailOrderContract {
 
         String getString(int id, Object... args);
 
-        void updateViewExpired();
-
-        void updateViewConfirmed();
-
-        void updateViewFailed();
-
-        void updateViewFinished();
-
-        void updateViewProgress();
-
-        void updateViewReadyForQueue();
-
-        void updateViewRefunded();
-
-        void updateViewWaitingForPayment();
-
-        void updateViewWaitingForThirdParty();
-
-        void updateViewWaitingForTransfer();
+        void updateViewStatus(String orderStatusString, int color, boolean isTicketVisible, boolean isScheduleVisible,
+                              boolean isCancelVisible, boolean isReorderVisible);
 
         Activity getActivity();
 
@@ -67,6 +51,20 @@ public interface FlightDetailOrderContract {
         FlightOrder getFlightOrder();
 
         void navigateToContactUs(FlightOrder flightOrder);
+
+        void showPaymentInfoLayout();
+
+        void hidePaymentInfoLayout();
+
+        void setPaymentLabel(@StringRes int resId);
+
+        void setPaymentDescription(CharSequence description);
+
+        void setTotalTransfer(String price);
+
+        void hideTotalTransfer();
+
+        void setPaymentDueDate(String dueDate);
     }
 
     interface Presenter extends CustomerPresenter<View> {

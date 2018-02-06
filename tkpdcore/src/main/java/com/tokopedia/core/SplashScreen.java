@@ -33,11 +33,9 @@ import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.PasswordGenerator.PGListener;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcels;
-
 import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
 

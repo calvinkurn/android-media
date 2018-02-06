@@ -50,6 +50,8 @@ public interface IProductDigitalPresenter {
 
     Operator getSelectedUssdOperator(int selectedSim);
 
-    boolean isCarrierSignalsAvailable( String carrierName);
+    boolean isCarrierSignalsNotAvailable(String carrierName);
+
+    void renderCheckPulsa();
 
 }
