@@ -104,6 +104,13 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     public void onRoundTripChecked() {
         flightAnalytics.eventTripTypeClick(getView().getString(R.string.flight_dashboard_analytic_round_trip).toString());
         flightDashboardCache.putRoundTrip(true);
+        if (!flightDashboardCache.getReturnDate().isEmpty()) {
+            FlightDashboardViewModel viewModel = cloneViewModel(getView().getCurrentDashboardViewModel());
+            Date returnDate = FlightDateUtil.stringToDate(flightDashboardCache.getReturnDate());
+            viewModel.setReturnDate(FlightDateUtil.dateToString(returnDate, FlightDateUtil.DEFAULT_FORMAT));
+            viewModel.setReturnDateFmt(FlightDateUtil.dateToString(returnDate, FlightDateUtil.DEFAULT_VIEW_FORMAT));
+            getView().setDashBoardViewModel(viewModel);
+        }
         getView().getCurrentDashboardViewModel().setOneWay(false);
         getView().renderRoundTripView();
     }
