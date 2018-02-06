@@ -41,6 +41,8 @@ public class OrderDetailData implements Parcelable{
 
     private String buyerUserName;
 
+    private String buyerId;
+
     private String courierName;
 
     private String shipmentName;
@@ -121,6 +123,7 @@ public class OrderDetailData implements Parcelable{
         shopLogo = in.readString();
         buyerName = in.readString();
         buyerUserName = in.readString();
+        buyerId = in.readString();
         courierName = in.readString();
         shipmentName = in.readString();
         shipmentId = in.readString();
@@ -170,6 +173,7 @@ public class OrderDetailData implements Parcelable{
         dest.writeString(shopLogo);
         dest.writeString(buyerName);
         dest.writeString(buyerUserName);
+        dest.writeString(buyerId);
         dest.writeString(courierName);
         dest.writeString(shipmentName);
         dest.writeString(shipmentId);
@@ -329,6 +333,14 @@ public class OrderDetailData implements Parcelable{
 
     public void setBuyerUserName(String buyerUserName) {
         this.buyerUserName = buyerUserName;
+    }
+
+    public String getBuyerId() {
+        return buyerId;
+    }
+
+    public void setBuyerId(String buyerId) {
+        this.buyerId = buyerId;
     }
 
     public String getCourierName() {

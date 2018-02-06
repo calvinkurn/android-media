@@ -42,12 +42,9 @@ public class Detail {
     @SerializedName("checkout_date")
     @Expose
     private String checkoutDate;
-    @SerializedName("type")
+    @SerializedName("insurance")
     @Expose
-    private String insuranceType = "";
-    @SerializedName("note")
-    @Expose
-    private String insuranceNote = "";
+    private Insurance insurance;
 
     public String getPaymentVerifiedDate() {
         return paymentVerifiedDate;
@@ -141,19 +138,11 @@ public class Detail {
         this.checkoutDate = checkoutDate;
     }
 
-    public String getInsuranceType() {
-        return insuranceType;
+    public Insurance getInsurance() {
+        return insurance;
     }
 
-    public void setInsuranceType(String insuranceType) {
-        this.insuranceType = insuranceType;
-    }
-
-    public String getInsuranceNote() {
-        return insuranceNote;
-    }
-
-    public void setInsuranceNote(String insuranceNote) {
-        this.insuranceNote = insuranceNote;
+    public void setInsurance(Insurance insurance) {
+        this.insurance = insurance;
     }
 }

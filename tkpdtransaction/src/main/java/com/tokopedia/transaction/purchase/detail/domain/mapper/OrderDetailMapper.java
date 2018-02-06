@@ -38,10 +38,13 @@ public class OrderDetailMapper {
         viewData.setOrderImage(responseData.getStatus().getImage());
 
         viewData.setBuyerName(responseData.getDetail().getReceiver().getName());
-        if(responseData.getDetail().getCustomer() != null)
+        if(responseData.getDetail().getCustomer() != null) {
             viewData.setBuyerUserName(responseData.getDetail().getCustomer().getName());
-        else viewData.setBuyerUserName(responseData.getDetail().getReceiver().getName());
-
+            viewData.setBuyerId(responseData.getDetail().getCustomer().getId());
+        } else {
+            viewData.setBuyerUserName(responseData.getDetail().getReceiver().getName());
+            viewData.setBuyerId("");
+        }
         viewData.setRequestCancel(responseData.getDetail().getRequestCancel() == 1);
         viewData.setRequestCancelReason(responseData.getDetail().getRequestCancelReason());
         if (responseData.getDetail().getPaymentVerifiedDate() != null) {
@@ -103,10 +106,13 @@ public class OrderDetailMapper {
         viewData.setProductPrice(responseData.getSummary().getItemsPrice());
         viewData.setTotalPayment(responseData.getSummary().getTotalPrice());
 
-        viewData.setShowInsuranceNotification(
-                responseData.getDetail().getInsuranceType().equals("2")
-        );
-        viewData.setInsuranceNotification(responseData.getDetail().getInsuranceNote());
+        if(responseData.getDetail().getInsurance() != null) {
+            viewData.setShowInsuranceNotification(
+                    responseData.getDetail().getInsurance().getInsuranceType().equals("2")
+            );
+            viewData.setInsuranceNotification(responseData.getDetail().getInsurance()
+                    .getInsuranceNote());
+        }
 
         List<OrderDetailItemData> productList = new ArrayList<>();
         for (int i = 0; i < responseData.getProducts().size(); i++) {

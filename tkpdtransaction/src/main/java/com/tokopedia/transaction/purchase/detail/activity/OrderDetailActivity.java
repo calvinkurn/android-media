@@ -429,6 +429,16 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void onAskBuyer(OrderDetailData orderData) {
         //TODO later change get Shop Logo with get buyer logo once available
+        /*String id;
+        String name;
+        String logoUrl;
+        if(getExtraUserMode() == SELLER_MODE) {
+            id = orderData.getBuyerId();
+            name = orderData.getBuyerName();
+            logoUrl = orderData.get
+        } else {
+
+        }*/
         Intent intent = ((TkpdInboxRouter) MainApplication.getAppContext())
                 .getAskBuyerIntent(this,
                         orderData.getShopId(),
