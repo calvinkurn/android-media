@@ -36,6 +36,8 @@ import butterknife.ButterKnife;
 public class CartSingleAddressAdapter
         extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    private static final String TAG = CartSingleAddressAdapter.class.getSimpleName();
+
     private static final int ITEM_VIEW_FREE_SHIPPING_FEE =
             R.layout.view_item_free_shipping_fee;
     private static final int ITEM_VIEW_SHIPMENT_RECIPIENT_ADDRESS =
@@ -315,68 +317,45 @@ public class CartSingleAddressAdapter
 
     }
 
-    class ShippedProductFromSellerViewHolder extends RecyclerView.ViewHolder {
+    class ShippedProductDetailsViewHolder extends RecyclerView.ViewHolder {
 
+        @BindView(R2.id.tv_sender_name) TextView mTvSenderName;
+
+        @BindView(R2.id.ll_item_product_container) LinearLayout mLlMainProductItemContainer;
         @BindView(R2.id.iv_product_image_container) ImageView mIvProductImage;
         @BindView(R2.id.tv_shipping_product_name) TextView mTvProductName;
         @BindView(R2.id.tv_shipped_product_price) TextView mTvProductPrice;
-        @BindView(R2.id.rl_product_policies_layout) RelativeLayout mRlProductPoliciesLayout;
-        @BindView(R2.id.iv_free_return_icon) ImageView mIvFreeReturnIcon;
-        @BindView(R2.id.tv_po_sign) TextView mTvPoSign;
-        @BindView(R2.id.tv_cashback_text) TextView mTvCashback;
         @BindView(R2.id.tv_product_weight) TextView mTvProductWeight;
         @BindView(R2.id.tv_total_product_item) TextView mTvTotalProductItem;
-        @BindView(R2.id.tv_optional_note_to_seller) TextView mTvNoteToSeller;
+        @BindView(R2.id.tv_optional_note_to_seller) TextView mTvOptionalNote;
 
-        ShippedProductFromSellerViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
+        @BindView(R2.id.rl_product_policies_layout) RelativeLayout mRlProductPoliciesContainer;
+        @BindView(R2.id.iv_free_return_icon) ImageView mIvFreeReturnIcon;
+        @BindView(R2.id.tv_free_return_text) TextView mTvFreeReturnText;
+        @BindView(R2.id.tv_po_sign) TextView mTvPoSign;
+        @BindView(R2.id.tv_cashback_text) TextView mTvCashback;
 
-        void bindViewHolder(CartItemModel model) {
-            mTvProductName.setText(model.getProductName());
-            mTvProductPrice.setText(model.getProductPrice());
-            mTvCashback.setText(getCashback(model.getCashback()));
-            mTvProductWeight.setText(model.getProductWeight());
-            mTvTotalProductItem.setText(model.getTotalProductItem());
-            mTvNoteToSeller.setText(model.getNoteToSeller());
-            ImageHandler.LoadImage(mIvProductImage, model.getProductImageUrl());
-            mRlProductPoliciesLayout.setVisibility(getPoliciesVisibility());
-            mIvFreeReturnIcon.setVisibility(getFreeReturnIconVisibility(model.isFreeReturn()));
-            mTvPoSign.setVisibility(getPoStatus(model.isPoAvailable()));
-        }
+        @BindView(R2.id.ll_other_product) LinearLayout mLlOtherProductContainer;
+        @BindView(R2.id.tv_expand_other_product) TextView mTvExpandOtherProduct;
 
-        private String getCashback(String cashback) {
-            return "Cashback " + cashback;
-        }
-
-        private int getPoliciesVisibility() {
-            return View.VISIBLE;
-        }
-
-        private int getFreeReturnIconVisibility(boolean isFreeReturn) {
-            return isFreeReturn ? View.VISIBLE : View.GONE;
-        }
-
-        private int getPoStatus(boolean isPoAvailable) {
-            return isPoAvailable ? View.VISIBLE : View.GONE;
-        }
-
-    }
-
-    class ShippedProductDetailsViewHolder extends RecyclerView.ViewHolder {
-
-        @BindView(R2.id.rl_detail_shipment_fee_view_layout) RelativeLayout mRlDetailFee;
-        @BindView(R2.id.tv_sender_name) TextView mTvSenderName;
-        @BindView(R2.id.rl_product_image_galleries) RelativeLayout mRlProductGalleriesLayout;
         @BindView(R2.id.tv_shipment_option) TextView mTvShipmentOption;
         @BindView(R2.id.iv_chevron_shipment_option) ImageView mIvChevronShipmentOption;
-        @BindView(R2.id.tv_cart_detail_option) TextView mTvCartDetailOption;
-        @BindView(R2.id.iv_drawer_chevron) ImageView mIvDetailDrawerChevron;
-        @BindView(R2.id.tv_sub_total_item_price) TextView mTvSubTotalItemPrice;
-        @BindView(R2.id.ll_other_product) LinearLayout mLlOtherProduct;
 
-        private boolean mIsExpanded;
+        @BindView(R2.id.rl_detail_shipment_fee) RelativeLayout mRlDetailShipmentFeeContainer;
+        @BindView(R2.id.tv_total_item) TextView mTvTotalItem;
+        @BindView(R2.id.tv_total_item_price) TextView mTvTotalItemPrice;
+        @BindView(R2.id.tv_shipping_fee) TextView mTvShippingFee;
+        @BindView(R2.id.tv_shipping_fee_price) TextView mTvShippingFeePrice;
+        @BindView(R2.id.tv_insurance_fee_price) TextView mTvInsuranceFeePrice;
+        @BindView(R2.id.tv_promo_price) TextView mTvPromoPrice;
+
+        @BindView(R2.id.rl_cart_sub_total) RelativeLayout mRlCartSubTotal;
+        @BindView(R2.id.tv_detail_option_text) TextView mTvDetailOptionText;
+        @BindView(R2.id.iv_detail_option_chevron) ImageView mIvDetailOptionChevron;
+        @BindView(R2.id.tv_sub_total_price) TextView mTvSubTotalPrice;
+
+        private boolean mIsExpandAllProduct;
+        private boolean mIsExpandCostDetail;
 
         ShippedProductDetailsViewHolder(View itemView) {
             super(itemView);
@@ -384,69 +363,123 @@ public class CartSingleAddressAdapter
         }
 
         void bindViewHolder(CartSellerItemModel model) {
+            // Initialize variables
+            CartItemModel mainProductItem = model.getCartItemModels().get(0);
+            mIsExpandAllProduct = false;
+            mIsExpandCostDetail = true;
 
-            mIsExpanded = true;
-
+            // Assign variables
             mTvSenderName.setText(model.getSenderName());
-
             mTvShipmentOption.setText(model.getShipmentOption());
-            mTvSubTotalItemPrice.setText(model.getTotalPrice());
+            mTvSubTotalPrice.setText(model.getTotalPrice());
 
-            mRlProductGalleriesLayout.setVisibility(getProductGalleryVisibility());
+            mLlMainProductItemContainer.setVisibility(getMainProductVisibility(mIsExpandAllProduct));
+            ImageHandler.LoadImage(mIvProductImage, mainProductItem.getProductImageUrl());
+            mTvProductName.setText(mainProductItem.getProductName());
+            mTvProductPrice.setText(mainProductItem.getProductPrice());
+            mTvProductWeight.setText(mainProductItem.getProductWeight());
+            mTvTotalProductItem.setText(mainProductItem.getTotalProductItem());
+            mTvOptionalNote.setText(mainProductItem.getNoteToSeller());
 
-            mTvShipmentOption.setOnClickListener(courierOptionSelectionListener());
-            mIvChevronShipmentOption.setOnClickListener(courierOptionSelectionListener());
+            mRlProductPoliciesContainer.setVisibility(getPoliciesVisibility(mainProductItem));
+            mIvFreeReturnIcon.setVisibility(getFreeReturnVisibility(mainProductItem.isFreeReturn()));
+            mTvFreeReturnText.setVisibility(getFreeReturnVisibility(mainProductItem.isFreeReturn()));
+            mTvPoSign.setVisibility(getPoVisibility(mainProductItem.isPoAvailable()));
+            mTvCashback.setVisibility(getCashbackVisibility(mainProductItem.getCashback()));
+            mTvCashback.setText(getCashback(mainProductItem.getCashback()));
 
-            mTvCartDetailOption.setText(getTextDrawerChevron());
-            mIvDetailDrawerChevron.setImageResource(getResourceDrawerChevron());
+            mTvDetailOptionText.setText(getTextDrawerChevron(mIsExpandCostDetail));
+            mIvDetailOptionChevron.setImageResource(getResourceDrawerChevron(mIsExpandCostDetail));
 
-            mTvCartDetailOption.setOnClickListener(itemPriceDetailListener());
-            mIvDetailDrawerChevron.setOnClickListener(itemPriceDetailListener());
+            // Set listeners
+            mLlOtherProductContainer.setOnClickListener(showAllProductListener());
+            mTvExpandOtherProduct.setOnClickListener(showAllProductListener());
 
-            mRlDetailFee.setVisibility(getDetailFeeVisibility() );
+            mTvShipmentOption.setOnClickListener(selectShippingOptionListener());
+            mIvChevronShipmentOption.setOnClickListener(selectShippingOptionListener());
+
+            mTvDetailOptionText.setOnClickListener(costDetailOptionListener());
+            mIvDetailOptionChevron.setOnClickListener(costDetailOptionListener());
         }
 
-        private void toggleDetail() {
-            mIsExpanded = !mIsExpanded;
-
-            mTvCartDetailOption.setText(getTextDrawerChevron());
-            mIvDetailDrawerChevron.setImageResource(getResourceDrawerChevron());
-
-            mRlDetailFee.setVisibility(getDetailFeeVisibility());
+        private int getPoliciesVisibility(CartItemModel mainProductItem) {
+            return View.VISIBLE;
         }
 
-        private String getTextDrawerChevron() {
-            return mIsExpanded ? "Tutup" : "Detil";
+        private int getFreeReturnVisibility(boolean isFreeReturn) {
+            return isFreeReturn ? View.VISIBLE : View.GONE;
         }
 
-        private int getResourceDrawerChevron() {
-            return mIsExpanded ? R.drawable.chevron_thin_up : R.drawable.chevron_thin_down;
+        private int getPoVisibility(boolean isPoAvailable) {
+            return isPoAvailable ? View.VISIBLE : View.GONE;
         }
 
-        private View.OnClickListener itemPriceDetailListener() {
+        private int getCashbackVisibility(String cashback) {
+            return cashback.equals("0%") ? View.GONE : View.VISIBLE;
+        }
+
+        private String getCashback(String cashback) {
+            return "Cashback " + cashback;
+        }
+
+        private View.OnClickListener showAllProductListener() {
             return new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    toggleDetail();
+                    toggleShowAllProduct();
                 }
             };
         }
 
-        private View.OnClickListener courierOptionSelectionListener() {
+        private void toggleShowAllProduct() {
+            mIsExpandAllProduct = !mIsExpandAllProduct;
+
+            mLlMainProductItemContainer.setVisibility(getMainProductVisibility(mIsExpandAllProduct));
+            Toast.makeText(mContext, String.valueOf(mIsExpandAllProduct), Toast.LENGTH_SHORT)
+                    .show();
+        }
+
+        private int getMainProductVisibility(boolean isExpandAllProduct) {
+            return isExpandAllProduct ? View.GONE : View.VISIBLE;
+        }
+
+        private View.OnClickListener selectShippingOptionListener() {
             return new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(mContext, "Select Courier", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "Select Courier", Toast.LENGTH_SHORT)
+                            .show();
                 }
             };
+        }
+
+        private View.OnClickListener costDetailOptionListener() {
+            return new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    toggleShowCostDetail();
+                }
+            };
+        }
+
+        private void toggleShowCostDetail() {
+            mIsExpandCostDetail = !mIsExpandCostDetail;
+            mTvDetailOptionText.setText(getTextDrawerChevron(mIsExpandCostDetail));
+            mIvDetailOptionChevron.setImageResource(getResourceDrawerChevron(mIsExpandCostDetail));
+
+            mRlDetailShipmentFeeContainer.setVisibility(getDetailFeeVisibility());
+        }
+
+        private String getTextDrawerChevron(boolean isExpanded) {
+            return isExpanded ? "Tutup" : "Detil";
+        }
+
+        private int getResourceDrawerChevron(boolean isExpanded) {
+            return isExpanded ? R.drawable.chevron_thin_up : R.drawable.chevron_thin_down;
         }
 
         private int getDetailFeeVisibility() {
-            return mIsExpanded ? View.VISIBLE : View.GONE;
-        }
-
-        private int getProductGalleryVisibility() {
-            return View.VISIBLE;
+            return mIsExpandCostDetail ? View.VISIBLE : View.GONE;
         }
 
     }
