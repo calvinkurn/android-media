@@ -291,6 +291,7 @@ public class ResoInboxFragment
     public void onEmptyGetInbox(InboxItemResultViewModel result) {
         dismissProgressBar();
         rvInbox.setVisibility(View.VISIBLE);
+        bottomActionView.setVisibility(View.VISIBLE);
         adapter.setCanLoadMore(false);
         adapter.addItem(result.getFilterListViewModel());
         adapter.addItem(new EmptyModel());

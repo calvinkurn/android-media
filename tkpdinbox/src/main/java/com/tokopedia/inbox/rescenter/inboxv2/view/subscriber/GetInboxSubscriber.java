@@ -51,6 +51,7 @@ public class GetInboxSubscriber extends Subscriber<InboxItemResultViewModel> {
                 inboxItemResultViewModel.getInboxItemViewModels().size() != 0) {
             inboxItemResultViewModel.setInboxVisitableList(
                     convertModelListToVisitableList(inboxItemResultViewModel.getInboxItemViewModels()));
+            mainView.onSuccessGetInbox(inboxItemResultViewModel);
         } else {
             mainView.onEmptyGetInbox(inboxItemResultViewModel);
         }

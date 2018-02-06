@@ -114,7 +114,7 @@ public class ResoInboxAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
             if (item instanceof InboxItemViewModel) {
                 if (((InboxItemViewModel) item).getId() == model.getId()) {
                     ((InboxItemViewModel) item).updateItem(model);
-                    notifyItemChanged(pos);
+                    notifyDataSetChanged();
                     break;
                 }
             }

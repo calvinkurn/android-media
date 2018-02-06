@@ -84,8 +84,8 @@ public class InboxItemViewHolder extends AbstractViewHolder<InboxItemViewModel> 
 
         if (!TextUtils.isEmpty(item.getAutoDoneBackgroundColor())) {
             tvAutoExecute.setTextColor(Color.parseColor(item.getAutoDoneTextColor()));
-            tvAutoExecute.setBackgroundColor(Color.parseColor(item.getAutoDoneBackgroundColor()));
             tvAutoExecute.setBackground(MethodChecker.getDrawable(context, R.drawable.bg_title_inbox));
+            tvAutoExecute.setBackgroundColor(Color.parseColor(item.getAutoDoneBackgroundColor()));
         }
 
         if (item.getImageList() != null) {

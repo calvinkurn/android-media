@@ -86,7 +86,7 @@ public class GetInboxMapper implements Func1<Response<TkpdResponse>, InboxItemRe
         FilterViewModel unreadModel = new FilterViewModel(
                 unreadResponse.getTitle(),
                 unreadResponse.getFilterWithDateString(),
-                unreadResponse.getTitleCountFullString(),
+                convertStringToHaveBreak(unreadResponse.getTitleCountFullString()),
                 unreadResponse.getCount(),
                 unreadResponse.getOrderValue(),
                 false);
@@ -96,7 +96,7 @@ public class GetInboxMapper implements Func1<Response<TkpdResponse>, InboxItemRe
         FilterViewModel unansweredModel = new FilterViewModel(
                 unansweredResponse.getTitle(),
                 unansweredResponse.getFilterWithDateString(),
-                unansweredResponse.getTitleCountFullString(),
+                convertStringToHaveBreak(unansweredResponse.getTitleCountFullString()),
                 unansweredResponse.getCount(),
                 unansweredResponse.getOrderValue(),
                 false);
@@ -106,7 +106,7 @@ public class GetInboxMapper implements Func1<Response<TkpdResponse>, InboxItemRe
         FilterViewModel finishedModel = new FilterViewModel(
                 finishedResponse.getTitle(),
                 finishedResponse.getFilterWithDateString(),
-                finishedResponse.getTitleCountFullString(),
+                convertStringToHaveBreak(finishedResponse.getTitleCountFullString()),
                 finishedResponse.getCount(),
                 finishedResponse.getOrderValue(),
                 false);
@@ -116,7 +116,7 @@ public class GetInboxMapper implements Func1<Response<TkpdResponse>, InboxItemRe
         FilterViewModel autoExecuteModel = new FilterViewModel(
                 autoExcecuteResponse.getTitle(),
                 autoExcecuteResponse.getFilterWithDateString(),
-                autoExcecuteResponse.getTitleCountFullString(),
+                convertStringToHaveBreak(autoExcecuteResponse.getTitleCountFullString()),
                 autoExcecuteResponse.getCount(),
                 autoExcecuteResponse.getOrderValue(),
                 false);
@@ -126,7 +126,7 @@ public class GetInboxMapper implements Func1<Response<TkpdResponse>, InboxItemRe
         FilterViewModel unfinishedModel = new FilterViewModel(
                 unfinishedResponse.getTitle(),
                 unfinishedResponse.getFilterWithDateString(),
-                unfinishedResponse.getTitleCountFullString(),
+                convertStringToHaveBreak(unfinishedResponse.getTitleCountFullString()),
                 unfinishedResponse.getCount(),
                 unfinishedResponse.getOrderValue(),
                 false);
@@ -140,6 +140,11 @@ public class GetInboxMapper implements Func1<Response<TkpdResponse>, InboxItemRe
             itemList.add(mappingItem(response, actionBy));
         }
         return itemList;
+    }
+
+    private String convertStringToHaveBreak(String string) {
+        String[] strings = string.split(" ", 2);
+        return strings[0] + "\n" + strings[1];
     }
 
     public static InboxItemViewModel mappingItem(InboxDataResponse response, int actionBy) {
