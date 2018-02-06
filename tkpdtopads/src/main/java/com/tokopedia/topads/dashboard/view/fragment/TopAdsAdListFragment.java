@@ -139,7 +139,7 @@ public abstract class TopAdsAdListFragment<P extends
         searchInputView.setDelayTextChanged(DEFAULT_DELAY_TEXT_CHANGED);
         searchInputView.setListener(this);
         buttonActionView = (BottomActionView) view.findViewById(R.id.bottom_action_view);
-        buttonActionView.setOnClickListener(new View.OnClickListener() {
+        buttonActionView.setButton1OnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 goToFilter();

@@ -147,7 +147,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     protected String getScreenName() {
-        return AppScreen.SCREEN_HOME_PRODUCT_FEED;
+        return AppScreen.UnifyScreenTracker.SCREEN_UNIFY_HOME_FEED;
     }
 
     @Override

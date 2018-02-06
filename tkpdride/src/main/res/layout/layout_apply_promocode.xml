@@ -37,7 +37,7 @@
         android:layout_marginRight="20dp"
         android:layout_marginTop="12dp"
         android:ellipsize="marquee"
-        android:text="@string/apply"
+        android:text="@string/btn_apply"
         android:textColor="@color/blue_link"
         android:textSize="14sp"
         android:textStyle="bold" />

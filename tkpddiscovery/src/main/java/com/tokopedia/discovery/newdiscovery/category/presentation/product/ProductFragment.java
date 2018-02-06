@@ -331,6 +331,9 @@ public class ProductFragment extends SearchSectionFragment
                         switchLayoutType();
                         return true;
                     case 3:
+                        String currentCategoryId = productViewModel.getCategoryHeaderModel().getDepartementId();
+                        String currentRootCategoryId = productViewModel.getCategoryHeaderModel().getRootCategoryId();
+                        UnifyTracking.eventBottomCategoryNavigation(currentRootCategoryId, currentCategoryId);
                         Intent intent = CategoryNavigationActivity.createInstance(getActivity(), productViewModel.getCategoryHeaderModel().getDepartementId());
                         startActivityForResult(intent, CategoryNavigationActivity.DESTROY_BROWSE_PARENT);
                         getActivity().overridePendingTransition(com.tokopedia.core.R.anim.pull_up, android.R.anim.fade_out);

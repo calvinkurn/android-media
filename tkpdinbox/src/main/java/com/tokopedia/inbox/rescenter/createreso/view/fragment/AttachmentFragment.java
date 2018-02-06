@@ -23,6 +23,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.gallery.GalleryActivity;
+import com.tokopedia.core.gallery.GalleryType;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.RequestPermissionUtil;
@@ -92,11 +93,12 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
         AttachmentFragmentPermissionsDispatcher.onRequestPermissionsResult(AttachmentFragment.this, requestCode, grantResults);
     }
 
-    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void showRationaleForStorageAndCamera(final PermissionRequest request) {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
+        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         RequestPermissionUtil.onShowRationale(getActivity(), request, listPermission);
     }
@@ -126,20 +128,22 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
         RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
-    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void showDeniedForStorageAndCamera() {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
+        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         RequestPermissionUtil.onPermissionDenied(getActivity(), listPermission);
     }
 
-    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void showNeverAskForStorageAndCamera() {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
+        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
     }
@@ -320,7 +324,7 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
         getActivity().finish();
     }
 
-    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void actionCamera() {
         uploadImageDialog.actionCamera();
     }
@@ -329,7 +333,7 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
     public void actionImagePicker() {
         if (TrackingUtils.getGtmString(AppEventTracking.GTM.RESOLUTION_CENTER_UPLOAD_VIDEO).equals("true")) {
             startActivityForResult(
-                    GalleryActivity.createIntent(getActivity()),
+                    GalleryActivity.createIntent(getActivity(), GalleryType.ofAll()),
                     REQUEST_CODE_GALLERY
             );
         } else {

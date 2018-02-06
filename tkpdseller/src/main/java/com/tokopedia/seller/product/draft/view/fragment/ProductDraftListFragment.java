@@ -260,7 +260,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA})
+    @NeedsPermission({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void onAddFromCamera() {
         GalleryCropWatermarkActivity.moveToImageGalleryCamera(getActivity(), ProductDraftListFragment.this, 0, true, -1);
     }
@@ -277,11 +277,12 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
                 INSTAGRAM_SELECT_REQUEST_CODE, ProductManageSellerFragment.MAX_INSTAGRAM_SELECT);
     }
 
-    @OnShowRationale({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA})
+    @OnShowRationale({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void showRationaleForStorageAndCamera(final PermissionRequest request) {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
+        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         RequestPermissionUtil.onShowRationale(getActivity(), request, listPermission);
     }
@@ -301,20 +302,22 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
         RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
-    @OnPermissionDenied({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA})
+    @OnPermissionDenied({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void showDeniedForStorageAndCamera() {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
+        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         RequestPermissionUtil.onPermissionDenied(getActivity(), listPermission);
     }
 
-    @OnNeverAskAgain({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA})
+    @OnNeverAskAgain({Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void showNeverAskForStorageAndCamera() {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
+        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
     }

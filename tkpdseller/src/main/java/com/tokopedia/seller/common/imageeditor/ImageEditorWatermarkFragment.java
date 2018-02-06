@@ -115,7 +115,7 @@ public class ImageEditorWatermarkFragment extends ImageEditorFragment implements
         if (isUseWatermark) {
             Bitmap bitmap = BitmapFactory.decodeFile(croppedPath);
             bitmap = processBitmap(bitmap);
-            File file = FileUtils.writeImageToTkpdPath(bitmap, FileUtils.generateUniqueFileName());
+            File file = FileUtils.writeImageToTkpdPath(bitmap);
             if (file != null && file.exists()) {
                 onImageEditorFragmentListener.addCroppedPath(croppedPath);
                 return file.getAbsolutePath();

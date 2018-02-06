@@ -56,6 +56,19 @@ public class FlightAirlineDataListDBSource extends BaseDataListDBSource<AirlineD
 
     }
 
+
+    public Observable<Boolean> insert(AirlineData airlineData) {
+        return Observable.just(airlineData)
+                .map(new Func1<AirlineData, Boolean>() {
+                    @Override
+                    public Boolean call(AirlineData airlineData) {
+                        FlightAirlineDB flightAirlineDB = new FlightAirlineDB(airlineData);
+                        flightAirlineDB.insert();
+                        return true ;
+                    }
+                });
+    }
+
     @Override
     public Observable<List<FlightAirlineDB>> getData(HashMap<String, Object> params) {
         final String id = FlightAirlineParamUtil.getId(params);
@@ -85,4 +98,19 @@ public class FlightAirlineDataListDBSource extends BaseDataListDBSource<AirlineD
             }
         });
     }
+
+    public Observable<FlightAirlineDB> getAirline(String airlineId) {
+        final String queryLike = "%" + airlineId + "%";
+        return Observable.unsafeCreate(new Observable.OnSubscribe<FlightAirlineDB>() {
+            @Override
+            public void call(Subscriber<? super FlightAirlineDB> subscriber) {
+                FlightAirlineDB flightAirportDBList = new Select()
+                        .from(FlightAirlineDB.class)
+                        .where(FlightAirlineDB_Table.id.like(queryLike))
+                        .querySingle();
+                subscriber.onNext(flightAirportDBList);
+            }
+        });
+    }
+
 }
