@@ -156,7 +156,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_vs"
         android:layout_marginRight="@dimen/margin_small"
-        android:layout_below="@id/card_group_chat_message"
+        android:layout_below="@+id/card_group_chat_message"
         android:layout_toRightOf="@id/user_ava"
         android:background="@drawable/left_bubble"
         android:gravity="left"
