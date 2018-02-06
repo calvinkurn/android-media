@@ -235,8 +235,29 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         }
     }
 
-    protected boolean isReturning() {
+    @Override
+    public boolean isReturning() {
         return false;
+    }
+
+    @Override
+    public FlightSearchPassDataViewModel getFlightSearchPassData() {
+        return flightSearchPassDataViewModel;
+    }
+
+    @Override
+    public void setFlightSearchPassData(FlightSearchPassDataViewModel flightSearchPassData) {
+        this.flightSearchPassDataViewModel = flightSearchPassData;
+    }
+
+    @Override
+    public void showDepartureDateMaxTwoYears(int resID) {
+        showMessageErrorInSnackBar(resID);
+    }
+
+    @Override
+    public void showDepartureDateShouldAtLeastToday(int resId) {
+        showMessageErrorInSnackBar(resId);
     }
 
     @CallSuper
@@ -654,7 +675,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                onSuccessDateChanged(year, month, dayOfMonth);
+                flightSearchPresenter.onSuccessDateChanged(year, month, dayOfMonth);
             }
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
         DatePicker datePicker = datePickerDialog.getDatePicker();
@@ -681,23 +702,6 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
                 datePicker.setMaxDate(FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, 2).getTime());
             }
         }
-    }
-
-    private void onSuccessDateChanged(int year, int month, int dayOfMonth) {
-        Calendar calendar = FlightDateUtil.getCurrentCalendar();
-        calendar.set(Calendar.YEAR, year);
-        calendar.set(Calendar.MONTH, month);
-        calendar.set(Calendar.DATE, dayOfMonth);
-        Date dateToSet = calendar.getTime();
-
-        String dateString = FlightDateUtil.dateToString(dateToSet, FlightDateUtil.DEFAULT_FORMAT);
-
-        if (isReturning()) {
-            flightSearchPassDataViewModel.setReturnDate(dateString);
-        } else {
-            flightSearchPassDataViewModel.setDepartureDate(dateString);
-        }
-        flightSearchPresenter.deleteFlightCache(isReturning());
     }
 
     @Override
@@ -762,6 +766,11 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
             });
         }
         return emptyResultViewModel;
+    }
+
+    @SuppressWarnings("Range")
+    private void showMessageErrorInSnackBar(int resId) {
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(resId));
     }
 
     @Override
