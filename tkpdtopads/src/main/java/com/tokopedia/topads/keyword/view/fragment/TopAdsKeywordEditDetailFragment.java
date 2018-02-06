@@ -49,7 +49,6 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
     @Inject
     TopAdsKeywordEditDetailPresenter presenter;
     private KeywordAd keywordAd;
-    private String topAdsKeywordCostPerClickDesc;
 
     public static Bundle createArguments(KeywordAd model) {
         Bundle bundle = new Bundle();
@@ -118,11 +117,9 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
     }
 
     protected void settingTopAdsCostPerClick(View view) {
-        topAdsCostPerClick = (PrefixEditText) view.findViewById(R.id.edit_text_top_ads_cost_per_click);
-        topAdsMaxPriceInstruction = (TextView) view.findViewById(R.id.text_view_top_ads_max_price_description);
-        textInputLayoutCostPerClick = (TextInputLayout) view.findViewById(R.id.text_input_layout_top_ads_cost_per_click);
-        topAdsKeywordCostPerClickDesc = getString(R.string.top_ads_keyword_cost_per_click_desc, keywordAd.getGroupBid());
-        topAdsMaxPriceInstruction.setText(topAdsKeywordCostPerClickDesc);
+        topAdsCostPerClick = view.findViewById(R.id.edit_text_top_ads_cost_per_click);
+        topAdsMaxPriceInstruction = view.findViewById(R.id.text_view_top_ads_max_price_description);
+        textInputLayoutCostPerClick = view.findViewById(R.id.text_input_layout_top_ads_cost_per_click);
         EmptyCurrencyIdrTextWatcher textWatcher = new EmptyCurrencyIdrTextWatcher(topAdsCostPerClick){
             @Override
             public void onNumberChanged(double number) {
