@@ -39,7 +39,7 @@ import javax.inject.Inject;
 
 public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment implements TopAdsKeywordEditDetailView {
     public static final String TAG = "TopAdsKeywordEditDetailFragment";
-    public static final int DEFAULT_KELIPATAN = 50;
+    public static final int DEFAULT_KELIPATAN = 1_000;
     protected SpinnerTextView topAdsKeywordType;
     protected EditText topAdsKeyword;
     protected PrefixEditText topAdsCostPerClick;
