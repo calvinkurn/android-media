@@ -73,6 +73,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
 
+import static com.tokopedia.core.gcm.Constants.FROM_APP_SHORTCUTS;
 import static com.tokopedia.core.router.InboxRouter.PARAM_OWNER_FULLNAME;
 import static com.tokopedia.core.shopinfo.models.shopmodel.Info.SHOP_OFFICIAL_VALUE;
 
@@ -269,6 +270,11 @@ public class ShopInfoActivity extends BaseActivity
             } else {
 //                updateView();
             }
+        }
+
+        if (getIntent() != null &&
+                getIntent().getBooleanExtra(FROM_APP_SHORTCUTS, false)) {
+            UnifyTracking.eventJualLongClick();
         }
     }
 

@@ -168,6 +168,7 @@ public interface AppEventTracking {
         String EVENT_ONBOARDING = "onBoardingEvent";
         String EVENT_RESOLUTION = "clickResolution";
         String PRODUCT_VIEW = "productView";
+        String LONG_CLICK = "longClick";
     }
 
     interface Category {
@@ -285,6 +286,7 @@ public interface AppEventTracking {
         String PROMO_MICROSITE_PROMO_TOOLTIP ="promo microsite - promo tooltip";
         String SORT_BY = "sort by";
         String FILTER_PRODUCT = "filter product";
+        String LONG_PRESS = "Long Press";
     }
 
     interface Action {
@@ -462,6 +464,9 @@ public interface AppEventTracking {
         String CLICK_SHOP = "click - shop";
         String CLICK_WISHLIST = "click - wishlist";
         String SORT_BY = "sort by";
+        String CLICK_REFERRAL = "Click Referral";
+        String CLICK_JUAL = "Click Jual";
+        String CLICK_BAYAR = "Click Bayar";
     }
 
     interface ImageEditor{
@@ -812,6 +817,10 @@ public interface AppEventTracking {
         String RESO_CREATE_COMPLAINT_CONFIRM  = "confirm - create complain";
         String RESO_CREATE_COMPLAINT_UNCONFIRM  = "unconfirmed - create complain";
         String RESO_CREATE_ABANDON = "abandon";
+        String REFERRAL = "Referral";
+        String PRODUCT_SEARCH = "Product Search";
+        String TAKE_TO_SHOP = "Take to Shop";
+        String DIGITAL = "Digital";
     }
 
     interface SOCIAL_MEDIA {

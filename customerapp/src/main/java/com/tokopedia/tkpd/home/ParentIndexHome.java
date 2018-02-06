@@ -60,8 +60,6 @@ import com.tokopedia.core.home.GetUserInfoListener;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.network.retrofit.utils.DialogHockeyApp;
 import com.tokopedia.core.onboarding.NewOnboardingActivity;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
@@ -86,7 +84,6 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusFragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import rx.subscriptions.CompositeSubscription;
@@ -115,10 +112,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     private static final String IMAGE_GALLERY = "IMAGE_GALLERY";
     public static final int ONBOARDING_REQUEST = 101;
     public static final int WISHLIST_REQUEST = 202;
-    private static final String DIGITAL_ID = "Bayar";
-    private static final String PRODUCT_ID = "Beli";
-    private static final String REFERRAL_ID = "Referral";
-    private static final String SHOP_ID = "Jual";
+    private static final String SHORTCUT_REFERRAL_ID = "Share";
+    private static final String SHORTCUT_SHOP_ID = "Jual";
     protected PagerAdapter adapter;
     protected ViewPager mViewPager;
     protected TabLayout indicator;
@@ -288,7 +283,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             ShortcutInfo shopShortcut = null, referralShortcut = null, productShortcut = null, digitalShortcut = null;
             Bundle args = new Bundle();
             args.putBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, true);
-
+            args.putBoolean(Constants.FROM_APP_SHORTCUTS, true);
 
             String shopID = SessionHandler.getShopID(this);
             Intent shopIntent;
@@ -298,28 +293,42 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                 shopIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("tokopedia://shop/" + shopID));
             }
             shopIntent.putExtras(args);
-            shopShortcut = new ShortcutInfo.Builder(this, SHOP_ID)
+            shopShortcut = new ShortcutInfo.Builder(this, SHORTCUT_SHOP_ID)
                     .setShortLabel(getResources().getString(R.string.jual))
                     .setLongLabel(getResources().getString(R.string.jual))
                     .setIcon(Icon.createWithResource(this, R.drawable.ic_jual))
                     .setIntent(shopIntent)
                     .build();
 
-            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
-            if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_REFERRAL_BUTTON)) {
-                Intent referralIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.Applinks.REFERRAL));
-                referralIntent.putExtras(args);
-                referralShortcut = new ShortcutInfo.Builder(this, REFERRAL_ID)
-                        .setShortLabel(getResources().getString(R.string.referral))
-                        .setLongLabel(getResources().getString(R.string.referral))
-                        .setIcon(Icon.createWithResource(this, R.drawable.ic_referral))
-                        .setIntent(referralIntent)
-                        .build();
+            Intent referralIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.Applinks.REFERRAL));
+            referralIntent.putExtras(args);
+            referralShortcut = new ShortcutInfo.Builder(this, SHORTCUT_REFERRAL_ID)
+                    .setShortLabel(getResources().getString(R.string.referral))
+                    .setLongLabel(getResources().getString(R.string.referral))
+                    .setIcon(Icon.createWithResource(this, R.drawable.ic_referral))
+                    .setIntent(referralIntent)
+                    .build();
 
-                shortcutManager.addDynamicShortcuts(Arrays.asList(referralShortcut, shopShortcut));
-            } else {
-                shortcutManager.addDynamicShortcuts(Collections.singletonList(shopShortcut));
-            }
+            Intent productIntent;
+            productIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.Applinks.DISCOVERY_SEARCH));
+            productIntent.putExtras(args);
+            productShortcut = new ShortcutInfo.Builder(this, "Beli")
+                    .setShortLabel(getResources().getString(R.string.beli))
+                    .setLongLabel(getResources().getString(R.string.beli))
+                    .setIcon(Icon.createWithResource(this, R.drawable.ic_beli))
+                    .setIntent(productIntent)
+                    .build();
+
+            Intent digitalIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.Applinks.DIGITAL));
+            digitalIntent.putExtras(args);
+            digitalShortcut = new ShortcutInfo.Builder(this, "Digital")
+                    .setShortLabel(getResources().getString(R.string.bayar))
+                    .setLongLabel(getResources().getString(R.string.bayar))
+                    .setIcon(Icon.createWithResource(this, R.drawable.ic_bayar))
+                    .setIntent(digitalIntent)
+                    .build();
+
+            shortcutManager.addDynamicShortcuts(Arrays.asList(referralShortcut, shopShortcut, productShortcut, digitalShortcut));
         }
     }
 
@@ -327,6 +336,33 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             ShortcutManager shortcutManager = getSystemService(ShortcutManager.class);
             shortcutManager.removeAllDynamicShortcuts();
+
+            ShortcutInfo productShortcut = null, digitalShortcut = null;
+
+            Bundle args = new Bundle();
+            args.putBoolean(Constants.EXTRA_APPLINK_FROM_PUSH, true);
+            args.putBoolean(Constants.FROM_APP_SHORTCUTS, true);
+
+            Intent productIntent;
+            productIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.Applinks.DISCOVERY_SEARCH));
+            productIntent.putExtras(args);
+            productShortcut = new ShortcutInfo.Builder(this, "Beli")
+                    .setShortLabel(getResources().getString(R.string.beli))
+                    .setLongLabel(getResources().getString(R.string.beli))
+                    .setIcon(Icon.createWithResource(this, R.drawable.ic_beli))
+                    .setIntent(productIntent)
+                    .build();
+
+            Intent digitalIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.Applinks.DIGITAL));
+            digitalIntent.putExtras(args);
+            digitalShortcut = new ShortcutInfo.Builder(this, "Digital")
+                    .setShortLabel(getResources().getString(R.string.bayar))
+                    .setLongLabel(getResources().getString(R.string.bayar))
+                    .setIcon(Icon.createWithResource(this, R.drawable.ic_bayar))
+                    .setIntent(digitalIntent)
+                    .build();
+
+            shortcutManager.addDynamicShortcuts(Arrays.asList(productShortcut, digitalShortcut));
         }
     }
 

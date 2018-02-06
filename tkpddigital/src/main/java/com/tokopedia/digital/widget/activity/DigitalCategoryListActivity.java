@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.MenuItem;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.app.BasePresenterActivity;
@@ -69,6 +68,10 @@ public class DigitalCategoryListActivity extends BasePresenterActivity {
         if (fragment == null || !(fragment instanceof DigitalCategoryListFragment)) {
             DigitalCategoryListFragment digitalCategoryListFragment
                     = DigitalCategoryListFragment.newInstance();
+
+            if (getIntent() != null)
+                digitalCategoryListFragment.setFromAppShortcut(getIntent().getBooleanExtra(Constants.FROM_APP_SHORTCUTS, false));
+
             getFragmentManager().beginTransaction().replace(R.id.container,
                     digitalCategoryListFragment).commit();
         }

@@ -87,6 +87,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     private LinearLayoutManager linearLayoutManager;
     private TokoCashBalanceData tokoCashBalanceData;
     private List<DigitalCategoryItemData> digitalCategoryListDataState;
+    private boolean fromAppShortcut = false;
 
     public static DigitalCategoryListFragment newInstance() {
         return new DigitalCategoryListFragment();
@@ -118,6 +119,15 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     @Override
     protected boolean getOptionsMenuEnable() {
         return false;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        if(isFromAppShortcut()){
+            UnifyTracking.eventBayarLongClick();
+        }
     }
 
     @Override
@@ -419,5 +429,13 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
                 startActivity(DigitalWebActivity.newInstance(getActivity(), data.getSiteUrl()));
                 break;
         }
+    }
+
+    public boolean isFromAppShortcut() {
+        return fromAppShortcut;
+    }
+
+    public void setFromAppShortcut(boolean fromAppShortcut) {
+        this.fromAppShortcut = fromAppShortcut;
     }
 }
