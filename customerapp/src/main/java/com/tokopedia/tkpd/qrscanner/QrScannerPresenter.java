@@ -58,9 +58,16 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
     @Override
     public void onBarCodeScanComplete(String barcodeData) {
         Uri uri = Uri.parse(barcodeData);
-        if (uri.getHost().equals(QrScannerTypeDef.PAYMENT_QR_CODE)) {
+        String host = uri.getHost();
+
+        //NPE Fix if host returned is null
+        if(host == null) {
+            getView().showErrorGetInfo(context.getString(com.tokopedia.tokocash.R.string.msg_dialog_wrong_scan));
+            return;
+        }
+        if (host.equals(QrScannerTypeDef.PAYMENT_QR_CODE)) {
             getInfoQrWallet(uri.getPathSegments().get(0));
-        } else if (uri.getHost().equals(QrScannerTypeDef.CAMPAIGN_QR_CODE)) {
+        } else if (host.equals(QrScannerTypeDef.CAMPAIGN_QR_CODE)) {
             getInfoQrCampaign(uri.getPathSegments().get(0));
         } else {
             getView().showErrorGetInfo(context.getString(com.tokopedia.tokocash.R.string.msg_dialog_wrong_scan));
