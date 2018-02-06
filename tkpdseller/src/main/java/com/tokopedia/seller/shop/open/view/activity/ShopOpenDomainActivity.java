@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
@@ -11,6 +12,8 @@ import com.tokopedia.seller.shop.open.di.component.DaggerShopOpenDomainComponent
 import com.tokopedia.seller.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.seller.shop.open.di.module.ShopOpenDomainModule;
 import com.tokopedia.seller.shop.open.view.fragment.ShopOpenReserveDomainFragment;
+
+import static com.tokopedia.core.gcm.Constants.FROM_APP_SHORTCUTS;
 
 /**
  * Created by Nathaniel on 3/16/2017.
@@ -26,6 +29,12 @@ public class ShopOpenDomainActivity extends BaseSimpleActivity
 
     @Override
     protected Fragment getNewFragment() {
+
+        if (getIntent() != null &&
+                getIntent().getBooleanExtra(FROM_APP_SHORTCUTS, false)) {
+            UnifyTracking.eventJualLongClick();
+        }
+
         return ShopOpenReserveDomainFragment.newInstance();
     }
 

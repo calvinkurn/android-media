@@ -242,7 +242,7 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
     }
 
     private void goToShopOpenMandatory(String shopName) {
-        Intent intent = ShopOpenReserveDomainSuccessActivity.getIntent(getContext(),shopName);
+        Intent intent = ShopOpenReserveDomainSuccessActivity.getIntent(getContext(), shopName);
         startActivity(intent);
         getActivity().finish();
     }

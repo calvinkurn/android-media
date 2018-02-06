@@ -73,6 +73,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
+import com.tokopedia.seller.shop.open.view.activity.ShopOpenDomainActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.beranda.presentation.view.fragment.HomeFragment;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
@@ -288,7 +289,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             String shopID = SessionHandler.getShopID(this);
             Intent shopIntent;
             if (shopID.equalsIgnoreCase(SessionHandler.DEFAULT_EMPTY_SHOP_ID)) {
-                shopIntent = new Intent(this, ShopInfoActivity.class);
+                shopIntent = new Intent(this, ShopOpenDomainActivity.class);
                 shopIntent.setAction(Intent.ACTION_VIEW);
             } else {
                 shopIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("tokopedia://shop/" + shopID));
