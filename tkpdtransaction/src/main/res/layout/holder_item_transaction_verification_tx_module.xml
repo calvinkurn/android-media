@@ -131,4 +131,13 @@
             android:textStyle="bold"/>
     </LinearLayout>
 
+    <Button
+        android:id="@+id/button_payment_procedure"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/normal_payment_info"
+        android:text="@string/label_button_payment_procedure"
+        style="@style/Button.Submit.Green.Full"
+        android:visibility="gone"/>
+
 </RelativeLayout>

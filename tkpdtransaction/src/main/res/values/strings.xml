@@ -179,4 +179,5 @@
     <string name="title_saved_credit_card">Kartu Kredit Tersimpan (%d/4)</string>
     <string name="apply">Terapkan</string>
     <string name="single_spacing">\u0020</string>
+    <string name="label_button_payment_procedure">Cara Pembayaran</string>
 </resources>
