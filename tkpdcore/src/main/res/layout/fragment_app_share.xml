@@ -8,7 +8,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"
-        android:padding="@dimen/margin_med">
+        android:paddingLeft="@dimen/padding_med"
+        android:paddingRight="@dimen/padding_med"
+        android:paddingTop="@dimen/padding_med">
 
         <ImageView
             android:id="@+id/img_app_share"
@@ -18,44 +20,85 @@
             android:layout_marginTop="@dimen/margin_large"
             android:src="@drawable/img_app_share" />
 
-        <TextView
-            android:id="@+id/tv_app_share_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/img_app_share"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/margin_large"
-            android:fontFamily="sans-serif"
-            android:lineSpacingExtra="@dimen/font_medium"
-            android:text="@string/app_share_label"
-            android:textColor="@color/black_54"
-            android:textSize="@dimen/font_medium"
-            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tv_app_share_desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tv_app_share_title"
+            android:layout_below="@id/img_app_share"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/margin_sm"
             android:fontFamily="sans-serif"
             android:gravity="center_horizontal"
-            android:text="@string/app_share_label_desc"
+            android:text="@string/app_share_referral_label_desc"
             android:textColor="@color/black_54"
             android:textSize="@dimen/font_small"
             android:textStyle="normal" />
+
+        <RelativeLayout
+            android:id="@+id/rl_referral_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_med"
+            android:layout_below="@+id/tv_app_share_desc">
+
+            <TextView
+                android:id="@+id/tv_referral_code"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/margin_sm"
+                android:background="@drawable/shape_dash_rectangle"
+                android:fontFamily="sans-serif"
+                android:gravity="left"
+                android:padding="@dimen/margin_sm"
+                android:text=""
+                android:textColor="@color/colorGreen"
+                android:textSize="@dimen/font_medium"
+                android:textStyle="normal" />
+
+            <TextView
+                android:id="@+id/btn_copy_referral_code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/tv_referral_code"
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@id/tv_referral_code"
+                android:gravity="center_horizontal|center_vertical"
+                android:paddingLeft="@dimen/font_medium"
+                android:paddingRight="@dimen/font_medium"
+                android:text="@string/menu_copy"
+                android:textColor="@color/black"
+                android:textSize="@dimen/font_medium"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/btn_app_share"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
+            android:layout_below="@+id/rl_referral_code"
+            android:layout_marginTop="@dimen/margin_sm"
             android:background="@color/green_btn"
-            android:text="@string/app_share_btn_label"
-            android:textSize="@dimen/fonts"
-            android:padding="@dimen/margin_sm"
             android:gravity="center_horizontal|center_vertical"
-            android:textColor="@color/white" />
+            android:padding="@dimen/margin_sm"
+            android:text="@string/app_share_btn_label"
+            android:textColor="@color/white"
+            android:textSize="@dimen/fonts" />
+
+        <TextView
+            android:id="@+id/tv_referral_help_link"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/margin_large"
+            android:lineSpacingExtra="@dimen/font_medium"
+            android:padding="@dimen/padding_med"
+            android:text="@string/title_app_referral_howitworks"
+            android:textColor="@color/green_btn"
+            android:textSize="@dimen/fontvs" />
+
     </RelativeLayout>
 </ScrollView>

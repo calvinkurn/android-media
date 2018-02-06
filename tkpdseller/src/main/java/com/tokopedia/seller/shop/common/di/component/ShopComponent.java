@@ -16,6 +16,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.shop.common.di.ShopQualifier;
 import com.tokopedia.seller.shop.common.di.ShopScope;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
+import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
 import com.tokopedia.seller.shop.open.analytic.ShopOpenTracking;
 import com.tokopedia.seller.shop.open.data.source.cloud.api.TomeApi;
@@ -48,8 +49,6 @@ public interface ShopComponent {
     @ShopQualifier
     TomeApi tomeApi();
 
-    OkHttpClient.Builder getHttpClientBuilder();
-
     BearerInterceptor bearerInterceptor();
 
     @DefaultAuthWithErrorHandler
@@ -65,4 +64,6 @@ public interface ShopComponent {
     SessionHandler sessionHandler();
 
     GlobalCacheManager globalCacheManager();
+
+    GetShopInfoUseCase getShopInfoUseCase();
 }
