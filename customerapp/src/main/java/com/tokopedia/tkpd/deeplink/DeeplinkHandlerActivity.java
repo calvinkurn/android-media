@@ -76,16 +76,16 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new DiscoveryApplinkModuleLoader(),
                 new SessionApplinkModuleLoader(),
                 new FeedDeeplinkModuleLoader(),
+                new FlightApplinkModuleLoader(),
                 new ReputationApplinkModuleLoader(),
-                new EventsDeepLinkModuleLoader(),
-                new FlightApplinkModuleLoader()
+                new EventsDeepLinkModuleLoader()
         );
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(Branch.getInstance() != null) {
+        if (Branch.getInstance() != null) {
             Branch.getInstance().setRequestMetadata("$google_analytics_client_id", TrackingUtils.getClientID());
             Branch.getInstance().initSession(this);
         }
