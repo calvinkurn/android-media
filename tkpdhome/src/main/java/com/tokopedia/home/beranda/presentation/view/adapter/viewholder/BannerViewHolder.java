@@ -4,8 +4,7 @@ import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.view.View;
 
-import com.tokopedia.core.analytics.PaymentTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.analytics.nishikino.model.Promotion;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.design.banner.BannerView;
@@ -17,9 +16,6 @@ import com.tokopedia.loyalty.view.activity.PromoListActivity;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * @author by errysuprayogi on 11/28/17.
@@ -69,20 +65,20 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
 
     @Override
     public void onPromoClick(int position) {
-        PaymentTracking.eventPromoClick(getPromotion(position));
+        HomePageTracking.eventPromoClick(getPromotion(position));
         listener.onPromoClick(slidesList.get(position));
     }
 
     @Override
     public void onPromoScrolled(int position) {
         if (listener.isMainViewVisible()) {
-            PaymentTracking.eventPromoImpression(getPromotion(position));
+            HomePageTracking.eventPromoImpression(getPromotion(position));
         }
     }
 
     @Override
     public void onPromoAllClick() {
-        UnifyTracking.eventClickViewAllPromo();
+        HomePageTracking.eventClickViewAllPromo();
         context.startActivity(PromoListActivity.newInstance(context));
     }
 }

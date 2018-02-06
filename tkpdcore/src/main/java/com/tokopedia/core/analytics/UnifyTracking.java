@@ -1856,15 +1856,6 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventClickViewAllPromo() {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
-                AppEventTracking.Category.HOMEPAGE_BANNER,
-                AppEventTracking.Action.CLICK_VIEW_ALL,
-                ""
-        ).getEvent());
-    }
-
     public static void eventClickVoucher(String ec, String ea, String el) {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.RECHARGE_TRACKING,
