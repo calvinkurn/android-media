@@ -115,12 +115,14 @@ public class MultipleAddressFragment extends TkpdFragment
 
     @Override
     public void onGoToChooseCourier(List<MultipleAddressAdapterData> dataList) {
+        //TODO release later
         presenter.sendData(dataList);
-        /*getFragmentManager().beginTransaction()
+
+        getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.animator.slide_in_left, R.animator.slide_in_left)
                 .replace(R.id.container, MultipleAddressShipmentFragment.newInstance())
                 .addToBackStack("")
-                .commit();*/
+                .commit();
     }
 
     @Override
