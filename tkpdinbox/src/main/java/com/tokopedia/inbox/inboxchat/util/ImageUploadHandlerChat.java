@@ -191,11 +191,6 @@ public class ImageUploadHandlerChat {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         Bitmap bitmap = null;
 
-
-        if(checkSizeOverLimit(tempPic.getByteCount(), 5)){
-            throw new ErrorMessageException("Gambar melebihi 5MB");
-        }
-
         tempPic = ImageHandler.RotatedBitmap(tempPic, path);
 
         if (tempPic.getWidth() > 2048 || tempPic.getHeight() > 2048) {
