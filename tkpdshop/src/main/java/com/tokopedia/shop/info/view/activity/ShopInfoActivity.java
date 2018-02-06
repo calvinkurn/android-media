@@ -18,6 +18,7 @@ import com.tokopedia.shop.ShopComponentInstance;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.info.view.fragment.ShopInfoFragment;
+import com.tokopedia.shop.info.view.fragment.ShopNoteListFragment;
 
 /**
  * Created by nathan on 2/6/18.
@@ -36,8 +37,8 @@ public class ShopInfoActivity extends BaseTabActivity implements HasComponent<Sh
     private String shopId;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         shopId = getIntent().getStringExtra(ShopParamConstant.SHOP_ID);
     }
 
@@ -95,7 +96,7 @@ public class ShopInfoActivity extends BaseTabActivity implements HasComponent<Sh
                     case 0:
                         return ShopInfoFragment.createInstance(shopId);
                     case 1:
-                        return ShopInfoFragment.createInstance(shopId);
+                        return ShopNoteListFragment.createInstance(shopId);
                     default:
                         return null;
                 }

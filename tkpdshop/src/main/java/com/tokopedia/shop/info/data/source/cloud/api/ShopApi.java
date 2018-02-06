@@ -3,6 +3,8 @@ package com.tokopedia.shop.info.data.source.cloud.api;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.interfaces.merchant.shop.info.ShopInfo;
 import com.tokopedia.shop.common.constant.ShopUrl;
+import com.tokopedia.shop.info.data.source.cloud.model.ResponseList;
+import com.tokopedia.shop.info.data.source.cloud.model.ShopNote;
 
 import java.util.Map;
 
@@ -21,4 +23,8 @@ public interface ShopApi {
     @FormUrlEncoded
     @POST(ShopUrl.SHOP_INFO_PATH)
     Observable<Response<DataResponse<ShopInfo>>> getShopInfo(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST(ShopUrl.SHOP_NOTE_PATH)
+    Observable<Response<DataResponse<ResponseList<ShopNote>>>> getShopNotes(@FieldMap Map<String, String> params);
 }
