@@ -82,9 +82,11 @@
         <ImageView
             android:id="@+id/image"
             android:layout_width="228dp"
-            android:layout_height="148dp"
+            android:layout_height="wrap_content"
+            android:maxHeight="148dp"
+            android:minHeight="40dp"
             android:adjustViewBounds="true"
-            android:scaleType="centerCrop"
+            android:scaleType="fitEnd"
             android:visibility="gone"
             tools:visibility="visible" />
 
