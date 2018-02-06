@@ -289,6 +289,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             Intent shopIntent;
             if (shopID.equalsIgnoreCase(SessionHandler.DEFAULT_EMPTY_SHOP_ID)) {
                 shopIntent = new Intent(this, ShopInfoActivity.class);
+                shopIntent.setAction(Intent.ACTION_VIEW);
             } else {
                 shopIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("tokopedia://shop/" + shopID));
             }
