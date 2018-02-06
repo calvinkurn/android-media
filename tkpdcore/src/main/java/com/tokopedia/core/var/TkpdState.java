@@ -383,6 +383,8 @@ public class TkpdState extends com.tokopedia.abstraction.constant.TkpdState {
         public static final int GCM_TOPADS_TOPUP_SUCCESS = 1101;
         public static final int GCM_RIDEHAILING = 1200;
 
+        //SELLER INFO
+        public static final int GCM_SELLER_INFO = 1300;
     }
 
     public class RecyclerView {
