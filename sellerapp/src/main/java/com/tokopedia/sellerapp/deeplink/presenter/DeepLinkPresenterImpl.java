@@ -16,6 +16,7 @@ import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.sellerapp.SplashScreenActivity;
@@ -31,6 +32,7 @@ import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.List;
 
+
 /**
  * Created by Herdi_WORK on 10.05.17.
  */
@@ -41,6 +43,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final int OTHER = 7;
     private static final int TOPADS = 12;
     private static final int PELUANG = 13;
+    public static final int INVOICE = 14;
     public static final String PARAM_AD_ID = "ad_id";
     public static final String PARAM_ITEM_ID = "item_id";
     public static final String TOPADS_VIEW_TYPE = "view";
@@ -50,7 +53,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private final DeepLinkView viewListener;
     private static final String TAG = "DeepLinkPresenterImpl";
 
-    public DeepLinkPresenterImpl(DeepLinkActivity activity){
+    public DeepLinkPresenterImpl(DeepLinkActivity activity) {
         this.viewListener = activity;
         this.context = activity;
     }
@@ -67,7 +70,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 break;
             case PELUANG:
                 screenName = AppScreen.SCREEN_TX_SHOP_TRANSACTION_SELLING_LIST;
-                openPeluangPage();
+                openPeluangPage(uriData.getPathSegments(), uriData);
+                break;
+            case INVOICE:
+                openInvoice(uriData.getPathSegments(), uriData);
+                screenName = AppScreen.SCREEN_DOWNLOAD_INVOICE;
                 break;
             case OTHER:
                 prepareOpenWebView(uriData);
@@ -79,7 +86,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 break;
         }
         sendCampaignGTM(uriData.toString(), screenName);
+    }
 
+
+    private void openInvoice(List<String> linkSegment, Uri uriData) {
+        AppUtils.InvoiceDialogDeeplink(context, uriData.toString(), uriData.getQueryParameter("pdf"));
     }
 
     private void prepareOpenWebView(Uri uriData) {
@@ -87,7 +98,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         openWebView(Uri.parse(url));
     }
 
-    private void openWebView(Uri encodedUri){
+    private void openWebView(Uri encodedUri) {
         Fragment fragment = FragmentGeneralWebView.createInstance(getUrl(encodedUri.toString()));
         viewListener.inflateFragment(fragment, "WEB_VIEW");
     }
@@ -111,11 +122,14 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private int getDeepLinkType(Uri uriData) {
         List<String> linkSegment = uriData.getPathSegments();
 
+        //Note: since Product and shop is the most general deeplink, always check at the end of the ifs!
         try {
             if (isTopAds(linkSegment))
                 return TOPADS;
             else if (isPeluang(linkSegment))
                 return PELUANG;
+            else if (isInvoice(linkSegment))
+                return INVOICE;
             else if (isExcludedHostUrl(uriData))
                 return OTHER;
             else if (isExcludedUrl(uriData))
@@ -133,8 +147,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private boolean isPeluang(List<String> linkSegment) {
         return linkSegment.size() > 0 && (
-                linkSegment.get(0).equals("peluang") || linkSegment.get(0).equals("peluang.pl")
+                linkSegment.get(0).equals(DeeplinkConst.URL.PELUANG) || linkSegment.get(0).equals(DeeplinkConst.URL.PELUANGPL)
         );
+    }
+    private static boolean isInvoice(List<String> linkSegment) {
+        return linkSegment.size() == 1 && linkSegment.get(0).startsWith(DeeplinkConst.URL.INVOICEPL);
     }
 
     @Override
@@ -157,9 +174,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     public boolean isLandingPageWebView(Uri uri) {
         int type = getDeepLinkType(uri);
         switch (type) {
-            case TOPADS :
+            case TOPADS:
                 return false;
-            case PELUANG :
+            case PELUANG:
+                return false;
+            case INVOICE:
                 return false;
             case OTHER:
                 return true;
@@ -187,22 +206,20 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void openTopAds(Uri uriData) {
 
-        String type = uriData. getQueryParameter(DeeplinkConst.PARAM.TYPE);
+        String type = uriData.getQueryParameter(DeeplinkConst.PARAM.TYPE);
         Intent intentToLaunch = null;
         if (!SessionHandler.isUserHasShop(context)) {
             intentToLaunch = new Intent(context, SplashScreenActivity.class);
             intentToLaunch.setData(uriData);
-        }
-        else if (TextUtils.isEmpty(type)){
+        } else if (TextUtils.isEmpty(type)) {
             intentToLaunch = new Intent(context, TopAdsDashboardActivity.class);
             intentToLaunch.setData(uriData);
-        }
-        else if(TOPADS_VIEW_TYPE.equals(type)){
+        } else if (TOPADS_VIEW_TYPE.equals(type)) {
             String adId = uriData.getQueryParameter(PARAM_AD_ID);
             intentToLaunch = new Intent(context, TopAdsDetailProductActivity.class);
             intentToLaunch.putExtra(TopAdsExtraConstant.EXTRA_AD_ID, adId);
             intentToLaunch.setData(uriData);
-        } else if (TOPADS_CREATE_TYPE.equals(type)){
+        } else if (TOPADS_CREATE_TYPE.equals(type)) {
             String itemId = uriData.getQueryParameter(PARAM_ITEM_ID);
             intentToLaunch = new Intent(context, TopAdsGroupNewPromoActivity.class);
             intentToLaunch.putExtra(TopAdsExtraConstant.EXTRA_ITEM_ID, itemId);
@@ -210,7 +227,19 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         }
         context.startActivity(intentToLaunch);
         context.finish();
+    }
 
+    private void openPeluangPage(List<String> linkSegment, Uri uriData) {
+        String query = "";
+        if (linkSegment.size() == 1 && linkSegment.get(0).equals(DeeplinkConst.URL.PELUANGPL) ) {
+            query = uriData.getQueryParameter("q");
+        }
+        Intent intent = SellerRouter.getActivitySellingTransactionOpportunity(context, query);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+        context.finish();
     }
 
     private boolean isExcludedHostUrl(Uri uriData) {
@@ -223,14 +252,5 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             }
         }
         return false;
-    }
-
-    private void openPeluangPage() {
-        Intent intent = SellerRouter.getActivitySellingTransactionOpportunity(context);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
-        context.finish();
     }
 }

@@ -130,7 +130,7 @@ public interface TkpdCoreRouter {
 
     Intent getActivitySellingTransactionList(Context context);
 
-    Intent getActivitySellingTransactionOpportunity(Context context);
+    Intent getActivitySellingTransactionOpportunity(Context context, String query);
 
     Intent getHomeHotlistIntent(Context context);
 
