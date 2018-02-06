@@ -4,7 +4,7 @@ import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.inbox.rescenter.inboxv2.data.pojo.InboxSingleDataResponse;
-import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.InboxItemViewModel;
+import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.SingleItemInboxResultViewModel;
 
 import retrofit2.Response;
 import rx.functions.Func1;
@@ -15,17 +15,19 @@ import static com.tokopedia.core.network.ErrorMessageException.DEFAULT_ERROR;
  * Created by yfsx on 24/01/18.
  */
 
-public class GetInboxSingleItemMapper implements Func1<Response<TkpdResponse>, InboxItemViewModel> {
+public class GetInboxSingleItemMapper implements Func1<Response<TkpdResponse>, SingleItemInboxResultViewModel> {
 
     @Override
-    public InboxItemViewModel call(Response<TkpdResponse> response) {
+    public SingleItemInboxResultViewModel call(Response<TkpdResponse> response) {
         return mappingResponse(response);
     }
 
-    private InboxItemViewModel mappingResponse(Response<TkpdResponse> response) {
+    private SingleItemInboxResultViewModel mappingResponse(Response<TkpdResponse> response) {
         InboxSingleDataResponse dataResponse = response.body().convertDataObj(
                 InboxSingleDataResponse.class);
-        InboxItemViewModel model = GetInboxMapper.mappingItem(dataResponse.getInbox(), dataResponse.getActionBy());
+        SingleItemInboxResultViewModel model = new SingleItemInboxResultViewModel(
+                GetInboxMapper.mappingItem(dataResponse.getInbox(), dataResponse.getActionBy()),
+                GetInboxMapper.mappingFilterItem(dataResponse.getQuickFilterResponse()));
         if (response.isSuccessful()) {
             if (response.raw().code() == ResponseStatus.SC_OK) {
                 if (response.body().isNullData()) {

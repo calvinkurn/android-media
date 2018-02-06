@@ -36,9 +36,9 @@ import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.EmptyInboxFilterData
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.FilterListViewModel;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.FilterViewModel;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.InboxItemResultViewModel;
-import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.InboxItemViewModel;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.ResoInboxFilterModel;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.ResoInboxSortModel;
+import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.SingleItemInboxResultViewModel;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.SortModel;
 
 import javax.inject.Inject;
@@ -343,9 +343,10 @@ public class ResoInboxFragment
     }
 
     @Override
-    public void onSuccessGetSingleInboxItem(InboxItemViewModel model) {
+    public void onSuccessGetSingleInboxItem(SingleItemInboxResultViewModel model) {
         dismissProgressBar();
-        adapter.updateSingleInboxItem(model);
+        adapter.updateQuickFilter(model.getFilterListViewModel());
+        adapter.updateSingleInboxItem(model.getInboxItemViewModel());
     }
 
     @Override

@@ -2,7 +2,7 @@ package com.tokopedia.inbox.rescenter.inboxv2.domain.usecase;
 
 import com.tokopedia.core.network.apiservices.rescenter.apis.ResolutionApi;
 import com.tokopedia.inbox.rescenter.inboxv2.data.mapper.GetInboxSingleItemMapper;
-import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.InboxItemViewModel;
+import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.SingleItemInboxResultViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -12,7 +12,7 @@ import rx.Observable;
  * Created by yfsx on 24/01/18.
  */
 
-public class GetInboxSingleItemUseCase extends UseCase<InboxItemViewModel> {
+public class GetInboxSingleItemUseCase extends UseCase<SingleItemInboxResultViewModel> {
 
     private static final String PARAM_RESO_ID = "resolutionId";
 
@@ -25,7 +25,7 @@ public class GetInboxSingleItemUseCase extends UseCase<InboxItemViewModel> {
     }
 
     @Override
-    public Observable<InboxItemViewModel> createObservable(RequestParams requestParams) {
+    public Observable<SingleItemInboxResultViewModel> createObservable(RequestParams requestParams) {
         return resolutionApi.getInboxSingleItem(requestParams.getInt(PARAM_RESO_ID, 0),
                 requestParams.getParameters()).map(getInboxMapper);
     }

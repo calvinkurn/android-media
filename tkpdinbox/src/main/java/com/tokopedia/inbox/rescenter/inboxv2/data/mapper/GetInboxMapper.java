@@ -79,7 +79,7 @@ public class GetInboxMapper implements Func1<Response<TkpdResponse>, InboxItemRe
         return model;
     }
 
-    private List<FilterViewModel> mappingFilterItem(QuickFilterResponse response) {
+    public static List<FilterViewModel> mappingFilterItem(QuickFilterResponse response) {
         List<FilterViewModel> modelList = new ArrayList<>();
 
         FilterResponse unreadResponse = response.getUnread();
@@ -142,7 +142,7 @@ public class GetInboxMapper implements Func1<Response<TkpdResponse>, InboxItemRe
         return itemList;
     }
 
-    private String convertStringToHaveBreak(String string) {
+    private static String convertStringToHaveBreak(String string) {
         String[] strings = string.split(" ", 2);
         return strings[0] + "\n" + strings[1];
     }

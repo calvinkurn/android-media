@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.inbox.rescenter.inboxv2.view.listener.ResoInboxFragmentListener;
-import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.InboxItemViewModel;
+import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.SingleItemInboxResultViewModel;
 
 import rx.Subscriber;
 
@@ -12,7 +12,7 @@ import rx.Subscriber;
  * Created by yfsx on 01/02/18.
  */
 
-public class GetSingleItemSubscriber extends Subscriber<InboxItemViewModel> {
+public class GetSingleItemSubscriber extends Subscriber<SingleItemInboxResultViewModel> {
 
     private Context context;
     private ResoInboxFragmentListener.View mainView;
@@ -33,8 +33,9 @@ public class GetSingleItemSubscriber extends Subscriber<InboxItemViewModel> {
     }
 
     @Override
-    public void onNext(InboxItemViewModel model) {
+    public void onNext(SingleItemInboxResultViewModel model) {
         if (model != null) {
+            model.setFilterListViewModel(GetInboxSubscriber.convertListToModel(model.getFilterViewModels()));
             mainView.onSuccessGetSingleInboxItem(model);
         } else {
             mainView.dismissProgressBar();

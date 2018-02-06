@@ -11,6 +11,8 @@ public class InboxSingleDataResponse {
     private int actionBy;
     @SerializedName("inboxData")
     private InboxDataResponse inbox;
+    @SerializedName("quickFilter")
+    private QuickFilterResponse quickFilterResponse;
 
     public int getActionBy() {
             return actionBy;
@@ -26,5 +28,13 @@ public class InboxSingleDataResponse {
 
     public void setInbox(InboxDataResponse inbox) {
         this.inbox = inbox;
+    }
+
+    public QuickFilterResponse getQuickFilterResponse() {
+        return quickFilterResponse;
+    }
+
+    public void setQuickFilterResponse(QuickFilterResponse quickFilterResponse) {
+        this.quickFilterResponse = quickFilterResponse;
     }
 }
