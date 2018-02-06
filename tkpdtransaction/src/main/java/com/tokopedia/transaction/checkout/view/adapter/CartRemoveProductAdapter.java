@@ -9,6 +9,7 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.transaction.R;
 
 import com.tokopedia.transaction.R2;
@@ -34,8 +35,10 @@ public class CartRemoveProductAdapter
     private Context mContext;
     private List<CartItemModel> mCartItemModelList;
 
-    public CartRemoveProductAdapter() {
+    private boolean isRemoveAll;
 
+    public CartRemoveProductAdapter() {
+        isRemoveAll = false;
     }
 
     public void updateData(List<CartItemModel> cartItemModels) {
@@ -61,7 +64,7 @@ public class CartRemoveProductAdapter
         if (viewType == ITEM_VIEW_REMOVE_ALL_CHECKBOX) {
             ((SelectRemoveAllCheckboxViewHolder)viewHolder).bindViewHolder();
         } else {
-            ((CartProductDataViewHolder)viewHolder).bindViewHolder();
+            ((CartProductDataViewHolder)viewHolder).bindViewHolder(mCartItemModelList.get(position - 1));
         }
     }
 
@@ -90,7 +93,12 @@ public class CartRemoveProductAdapter
         }
 
         void bindViewHolder() {
-
+            mCbRemoveAll.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    isRemoveAll = !isRemoveAll;
+                }
+            });
         }
 
     }
@@ -117,8 +125,12 @@ public class CartRemoveProductAdapter
             ButterKnife.bind(this, itemView);
         }
 
-        void bindViewHolder() {
-            mCbRemoveProduct.isChecked();
+        void bindViewHolder(CartItemModel cartItemModel) {
+            mTvProductName.setText(cartItemModel.getProductName());
+            mTvProductPrice.setText(cartItemModel.getProductPrice());
+            mTvProductWeight.setText(cartItemModel.getProductWeight());
+            mTvTotalProductItem.setText(cartItemModel.getTotalProductItem());
+            ImageHandler.LoadImage(mIvProductImage, cartItemModel.getProductImageUrl());
         }
 
     }

@@ -33,6 +33,19 @@
             tools:ignore="SmallSp"
             android:text="Alamat Kantor" />
 
+        <TextView android:id="@+id/tv_primer_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/tv_text_address_description"
+            android:layout_toRightOf="@id/tv_text_address_description"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="3dp"
+            android:textSize="12sp"
+            android:text="Utama"
+            android:visibility="visible" />
+
         <TextView android:id="@+id/tv_recipient_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -51,12 +64,26 @@
             android:layout_below="@id/tv_recipient_name"
             android:layout_toEndOf="@id/iv_image_address_house"
             android:layout_toRightOf="@id/iv_image_address_house"
+            android:layout_marginBottom="3dp"
+            android:textColor="@color/black_54"
+            android:textSize="12sp"
+            android:lineSpacingExtra="3dp"
+            tools:ignore="SmallSp"
+            android:text="Jl. Letjen S. Parman Kav.77, Wisma 77 Tower 2,\nTokopedia Lt. 2, Jakarta" />
+
+        <TextView android:id="@+id/tv_recipient_phone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_recipient_address"
+            android:layout_toEndOf="@id/iv_image_address_house"
+            android:layout_toRightOf="@id/iv_image_address_house"
             android:layout_marginBottom="16dp"
             android:textColor="@color/black_54"
             android:textSize="12sp"
             android:lineSpacingExtra="3dp"
             tools:ignore="SmallSp"
-            android:text="Jl. Letjen S. Parman Kav.77, Wisma 77 Tower 2,\nTokopedia Lt. 2, Jakarta, 0817 1234 5678" />
+            android:text="0817 1234 5678" />
+
 
     </RelativeLayout>
 
