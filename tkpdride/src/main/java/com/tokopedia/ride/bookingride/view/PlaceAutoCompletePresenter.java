@@ -154,7 +154,8 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
             if (getView().isShowNearbyPlaces()) {
                 //show nearby places if location is enabled else show recent address
                 LocationManager manager = (LocationManager) getView().getActivity().getSystemService(Context.LOCATION_SERVICE);
-                if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+
+                if (manager.isProviderEnabled(LocationManager.GPS_PROVIDER) && ActivityCompat.checkSelfPermission(getView().getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     getView().setActiveGooglePlaceSource();
                     showNearbyPlaces();
                 } else {
@@ -754,6 +755,9 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                             if (!getView().isActiveGooglePlaceSource()) return;
                             compositeSubscription.clear();
 
+                            CommonUtils.dumper("Vishal showNearbyPlaces Status Code :: " + placeLikelihoodBuffer.getStatus().getStatusCode());
+                            CommonUtils.dumper("Vishal showNearbyPlaces Status Code :: " + placeLikelihoodBuffer.getStatus().getStatusMessage());
+
                             ArrayList<PlaceAutoCompeleteViewModel> addresses = new ArrayList<>();
                             for (PlaceLikelihood placeLikelihood : placeLikelihoodBuffer) {
                                 PlaceAutoCompeleteViewModel address = new PlaceAutoCompeleteViewModel();
@@ -791,6 +795,7 @@ public class PlaceAutoCompletePresenter extends BaseDaggerPresenter<PlaceAutoCom
                         if (ActivityCompat.checkSelfPermission(getView().getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                             return Observable.empty();
                         }
+
                         return fromPendingResult(Places.PlaceDetectionApi.getCurrentPlace(api, placeFilter));
                     }
                 });
