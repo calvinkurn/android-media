@@ -16,16 +16,22 @@ import com.tokopedia.transaction.checkout.view.adapter.MultipleAddressShipmentAd
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressItemData;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressPriceSummaryData;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressShipmentAdapterData;
+import com.tokopedia.transaction.checkout.view.presenter.IMultipleAddressShipmentPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * Created by kris on 1/23/18. Tokopedia
  */
 
 public class MultipleAddressShipmentFragment extends TkpdFragment
-        implements MultipleAddressShipmentAdapter.MultipleAddressShipmentAdapterListener{
+        implements MultipleAddressShipmentAdapter.MultipleAddressShipmentAdapterListener {
+
+    @Inject
+    IMultipleAddressShipmentPresenter presenter;
 
     private TextView totalPayment;
 
@@ -89,8 +95,9 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
     }
 
     @Override
-    public void onConfirmedButtonClicked(List<MultipleAddressShipmentAdapterData> addressDataList) {
-
+    public void onConfirmedButtonClicked(List<MultipleAddressShipmentAdapterData> addressDataList,
+                                         MultipleAddressPriceSummaryData data) {
+        presenter.sendData(addressDataList, data);
     }
 
     @Override
@@ -106,11 +113,11 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 int totalItemCount = recyclerView.getLayoutManager().getItemCount();
-                int lastVisibleItem = ((LinearLayoutManager)recyclerView.getLayoutManager())
+                int lastVisibleItem = ((LinearLayoutManager) recyclerView.getLayoutManager())
                         .findLastVisibleItemPosition();
                 CommonUtils.dumper("totalItemCount " + totalItemCount);
                 CommonUtils.dumper("lastVisibleItem " + lastVisibleItem);
-                if(lastVisibleItem == totalItemCount - 1) {
+                if (lastVisibleItem == totalItemCount - 1) {
                     totalPaymentLayout.setVisibility(View.GONE);
                 } else {
                     totalPaymentLayout.setVisibility(View.VISIBLE);

@@ -12,13 +12,20 @@ import android.view.ViewGroup;
 
 import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.checkout.di.component.DaggerMultipleAddressComponent;
+import com.tokopedia.transaction.checkout.di.component.MultipleAddressComponent;
+import com.tokopedia.transaction.checkout.di.module.MultipleAddressModule;
 import com.tokopedia.transaction.checkout.view.activity.ICartShipmentActivity;
 import com.tokopedia.transaction.checkout.view.adapter.MultipleAddressAdapter;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressAdapterData;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressItemData;
+import com.tokopedia.transaction.checkout.view.presenter.IMultipleAddressPresenter;
+import com.tokopedia.transaction.checkout.view.presenter.MultipleAddressPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import static com.tokopedia.transaction.checkout.view.AddShipmentAddressFragment.ADD_MODE;
 import static com.tokopedia.transaction.checkout.view.AddShipmentAddressFragment.EDIT_MODE;
@@ -28,7 +35,11 @@ import static com.tokopedia.transaction.checkout.view.AddShipmentAddressFragment
  */
 
 public class MultipleAddressFragment extends TkpdFragment
-        implements MultipleAddressAdapter.MultipleAddressAdapterListener {
+        implements IMultipleAddressView,
+        MultipleAddressAdapter.MultipleAddressAdapterListener {
+
+    @Inject
+    IMultipleAddressPresenter presenter;
 
     private ICartShipmentActivity cartShipmentActivity;
 
@@ -51,6 +62,7 @@ public class MultipleAddressFragment extends TkpdFragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.multiple_address_fragment, container, false);
+        initInjector();
         RecyclerView orderAddressList = view.findViewById(R.id.order_address_list);
         orderAddressList.setLayoutManager(new LinearLayoutManager(getActivity()));
         multipleAddressAdapter = new MultipleAddressAdapter(dummyDataList(), this);
@@ -58,8 +70,18 @@ public class MultipleAddressFragment extends TkpdFragment
         return view;
     }
 
+    private void initInjector() {
+        MultipleAddressComponent component = DaggerMultipleAddressComponent
+                .builder()
+                .multipleAddressModule(new MultipleAddressModule()).build();
+        component.inject(this);
+    }
+
     private MultipleAddressItemData dummyItemData() {
         MultipleAddressItemData data = new MultipleAddressItemData();
+        data.setCartId("2");
+        data.setAddressId("654321");
+        data.setProductId("123456");
         data.setProductWeight("3Kg");
         data.setProductQty("1");
         data.setProductNotes("Saya pesan warna merah yah min.. jangan sampai salah\n" +
@@ -92,12 +114,13 @@ public class MultipleAddressFragment extends TkpdFragment
     }
 
     @Override
-    public void onGoToChooseCourier() {
-        getFragmentManager().beginTransaction()
+    public void onGoToChooseCourier(List<MultipleAddressAdapterData> dataList) {
+        presenter.sendData(dataList);
+        /*getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.animator.slide_in_left, R.animator.slide_in_left)
                 .replace(R.id.container, MultipleAddressShipmentFragment.newInstance())
                 .addToBackStack("")
-                .commit();
+                .commit();*/
     }
 
     @Override
@@ -153,5 +176,10 @@ public class MultipleAddressFragment extends TkpdFragment
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         //cartShipmentActivity = (ICartShipmentActivity) activity;
+    }
+
+    @Override
+    public void receiveData(List<MultipleAddressAdapterData> dataList) {
+
     }
 }

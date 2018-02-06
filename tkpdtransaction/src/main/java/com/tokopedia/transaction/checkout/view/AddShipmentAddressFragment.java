@@ -258,6 +258,7 @@ public class AddShipmentAddressFragment extends TkpdFragment {
         itemData.setAddressTitle(addressTitle.getText().toString());
         itemData.setAddressReceiverName(addressReceiverName.getText().toString());
         itemData.setAddress(address.getText().toString());
+        itemData.setCartId("0");
         if (notesLayout.isShown())
             itemData.setProductNotes(notesEditText.getText().toString());
     }
