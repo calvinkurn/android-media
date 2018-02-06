@@ -56,5 +56,7 @@ public interface FlightSearchView extends BaseListViewListener<FlightSearchViewM
 
     void showDepartureDateMaxTwoYears(@StringRes int resID);
 
-    void showDepartureDateShouldAtLeastToday(@StringRes int resId);
+    void showDepartureDateShouldAtLeastToday(@StringRes int resID);
+
+    void showReturnDateShouldGreaterOrEqual(@StringRes int resID);
 }

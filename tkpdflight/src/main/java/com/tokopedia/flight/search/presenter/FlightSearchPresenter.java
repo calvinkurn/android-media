@@ -199,6 +199,8 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
             getView().showDepartureDateMaxTwoYears(R.string.flight_dashboard_departure_max_two_years_from_today_error);
         } else if (!getView().isReturning() && dateToSet.before(FlightDateUtil.getCurrentDate())) {
             getView().showDepartureDateShouldAtLeastToday(R.string.flight_dashboard_departure_should_atleast_today_error);
+        } else if (getView().isReturning() && dateToSet.before(FlightDateUtil.stringToDate(flightSearchPassDataViewModel.getDepartureDate()))) {
+            getView().showReturnDateShouldGreaterOrEqual(R.string.flight_dashboard_return_should_greater_equal_error);
         } else {
             String dateString = FlightDateUtil.dateToString(dateToSet, FlightDateUtil.DEFAULT_FORMAT);
 

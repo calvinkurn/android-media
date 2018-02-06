@@ -251,12 +251,17 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     }
 
     @Override
-    public void showDepartureDateMaxTwoYears(int resID) {
-        showMessageErrorInSnackBar(resID);
+    public void showDepartureDateMaxTwoYears(int resId) {
+        showMessageErrorInSnackBar(resId);
     }
 
     @Override
     public void showDepartureDateShouldAtLeastToday(int resId) {
+        showMessageErrorInSnackBar(resId);
+    }
+
+    @Override
+    public void showReturnDateShouldGreaterOrEqual(int resId) {
         showMessageErrorInSnackBar(resId);
     }
 
@@ -689,6 +694,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
             String dateDepStr = flightSearchPassDataViewModel.getDate(false);
             Date dateDep = FlightDateUtil.stringToDate(dateDepStr);
             datePicker.setMinDate(dateDep.getTime());
+            datePicker.setMaxDate(FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, 2).getTime());
         } else {
             Date dateNow = FlightDateUtil.getCurrentDate();
             datePicker.setMinDate(dateNow.getTime());
