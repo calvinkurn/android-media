@@ -44,8 +44,7 @@ public class CartFragment extends BasePresenterFragment implements
     @BindView(R2.id.go_to_courier_page_button)
     TextView btnToShipment;
 
-    @BindView(R2.id.go_to_courier_page_button_2)
-    TextView btnToShipment2;
+
     @BindView(R2.id.tv_item_count)
     TextView tvItemCount;
     @BindView(R2.id.tv_total_prices)
@@ -55,6 +54,8 @@ public class CartFragment extends BasePresenterFragment implements
     ICartListPresenter dPresenter;
     @Inject
     CartListAdapter cartListAdapter;
+    @Inject
+    RecyclerView.ItemDecoration cartItemDecoration;
 
     @Override
     protected void initInjector() {
@@ -114,6 +115,7 @@ public class CartFragment extends BasePresenterFragment implements
     protected void initView(View view) {
         cartRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         cartRecyclerView.setAdapter(cartListAdapter);
+        cartRecyclerView.addItemDecoration(cartItemDecoration);
     }
 
     @Override
@@ -123,16 +125,6 @@ public class CartFragment extends BasePresenterFragment implements
             @Override
             public void onClick(View view) {
                 dPresenter.processToShipmentStep();
-            }
-        });
-
-        btnToShipment2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = CartShipmentActivity.createInstanceSingleAddress(
-                        getActivity(), new ArrayList<CartItemData>()
-                );
-                startActivity(intent);
             }
         });
     }

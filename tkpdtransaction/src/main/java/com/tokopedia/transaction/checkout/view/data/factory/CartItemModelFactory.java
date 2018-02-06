@@ -48,8 +48,8 @@ public class CartItemModelFactory {
         cartItemModel.setCashback(cashback);
         cartItemModel.setTotalProductItem(totalProductItem);
         cartItemModel.setNoteToSeller(noteToSeller);
-        cartItemModel.setShipmentOption(shipmentOption);
-        cartItemModel.setTotalPrice(totalPrice);
+//        cartItemModel.setShipmentOption(shipmentOption);
+//        cartItemModel.setTotalPrice(totalPrice);
         cartItemModel.setProductImageUrl(productImageUrl);
         cartItemModel.setPoAvailable(poAvailable);
         cartItemModel.setFreeReturn(freeReturn);

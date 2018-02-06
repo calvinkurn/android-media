@@ -53,20 +53,11 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/btn_height"
             android:layout_margin="@dimen/margin_small"
-            android:background="@drawable/green_button_rounded_unify"
+            android:background="@drawable/orange_button_rounded"
             android:gravity="center"
             android:text="Pilih Kurir Pengiriman"
             android:textColor="@color/white"/>
 
-        <TextView
-            android:id="@+id/go_to_courier_page_button_2"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/btn_height"
-            android:layout_margin="@dimen/margin_small"
-            android:background="@drawable/green_button_rounded_unify"
-            android:gravity="center"
-            android:text="Pilih Kurir Pengiriman"
-            android:textColor="@color/white"/>
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView

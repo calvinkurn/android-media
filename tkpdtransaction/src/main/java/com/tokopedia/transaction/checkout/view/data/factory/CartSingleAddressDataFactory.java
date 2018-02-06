@@ -15,7 +15,7 @@ public class CartSingleAddressDataFactory {
     private static CartSingleAddressData createDummyCartSingleAddressData() {
         CartSingleAddressData cartSingleAddressData = new CartSingleAddressData();
 
-        cartSingleAddressData.setCartItemModelList(CartItemModelFactory.getDummyCartItemModelList());
+     //   cartSingleAddressData.setCartItemModelList(CartItemModelFactory.getDummyCartItemModelList());
         cartSingleAddressData.setCartPayableDetailModel(CartPayableDetailModelFactory.getCartPayableDetailModel());
         cartSingleAddressData.setDropshipperShippingOptionModel(DropshipperShippingOptionModelFactory.getDummyDropshippingOptionModel());
         cartSingleAddressData.setShipmentFeeBannerModel(ShipmentFeeBannerModelFactory.getDummyShippingFeeBannerModel());

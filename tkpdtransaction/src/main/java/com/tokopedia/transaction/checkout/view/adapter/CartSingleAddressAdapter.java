@@ -195,8 +195,8 @@ public class CartSingleAddressAdapter
             mTvRecipientName.setText(model.getRecipientName());
             mTvRecipientAddress.setText(model.getRecipientAddress());
 
-            mTvAddOrChangeAddress.setOnClickListener(addOrChangeAddressListener(mShipmentRecipientModel));
-            renderPickupPoint(pickupPointLayout, mShipmentRecipientModel);
+//            mTvAddOrChangeAddress.setOnClickListener(addOrChangeAddressListener(mShipmentRecipientModel));
+//            renderPickupPoint(pickupPointLayout, mShipmentRecipientModel);
         }
 
         private void renderPickupPoint(PickupPointLayout pickupPointLayout,
