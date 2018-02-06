@@ -232,7 +232,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private void openPeluangPage(List<String> linkSegment, Uri uriData) {
         String query = "";
         if (linkSegment.size() == 1 && linkSegment.get(0).equals(DeeplinkConst.URL.PELUANGPL) ) {
-            query = uriData.getQueryParameter("q");
+            query = uriData.getQueryParameter(DeeplinkConst.PARAM.Q);
         }
         Intent intent = SellerRouter.getActivitySellingTransactionOpportunity(context, query);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
