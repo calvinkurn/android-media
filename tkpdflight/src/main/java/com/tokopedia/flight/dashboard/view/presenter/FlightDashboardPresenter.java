@@ -146,6 +146,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         flightDashboardPassDataViewModel.setInfantPassengerCount(flightDashboardCache.getPassengerInfant());
         flightDashboardPassDataViewModel.setFlightClass(flightDashboardCache.getClassCache());
         flightDashboardPassDataViewModel.setRoundTrip(flightDashboardCache.isRoundTrip());
+        getView().setDashboardPassData(flightDashboardPassDataViewModel);
 
         actionRenderFromPassData(false);
     }
@@ -464,8 +465,11 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     private void actionRenderFromPassData(final boolean isSearchImmediately) {
         FlightDashboardPassDataViewModel flightDashboardPassDataViewModel = getView().getDashboardPassData();
         String[] departureDate = flightDashboardPassDataViewModel.getDepartureDate().split("-");
-        onDepartureDateChange(Integer.parseInt(departureDate[INDEX_DATE_YEAR]), Integer.parseInt(departureDate[INDEX_DATE_MONTH]), Integer.parseInt(departureDate[INDEX_DATE_DATE]));
-        onSingleTripChecked();
+
+        if (flightDashboardPassDataViewModel.getDepartureDate() != null && !flightDashboardPassDataViewModel.getDepartureDate().isEmpty() ) {
+            onDepartureDateChange(Integer.parseInt(departureDate[INDEX_DATE_YEAR]), Integer.parseInt(departureDate[INDEX_DATE_MONTH]), Integer.parseInt(departureDate[INDEX_DATE_DATE]));
+            onSingleTripChecked();
+        }
 
         if (!flightDashboardPassDataViewModel.getReturnDate().isEmpty() && flightDashboardPassDataViewModel.isRoundTrip()) {
             String[] returnDate = flightDashboardPassDataViewModel.getReturnDate().split("-");
