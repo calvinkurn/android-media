@@ -95,12 +95,8 @@ public class ConfirmShippingActivity extends TActivity
     private boolean isChangeCourierMode(OrderDetailData orderDetailData) {
         return Integer
                 .parseInt(orderDetailData.getOrderCode()) >= OrderShipmentTypeDef.ORDER_WAITING
-                || Integer
-                .parseInt(orderDetailData.getOrderCode())< OrderShipmentTypeDef.ORDER_DELIVERED
-                || Integer
-                .parseInt(orderDetailData.getOrderCode())< OrderShipmentTypeDef.ACCEPT_FULL
-                || Integer
-                .parseInt(orderDetailData.getOrderCode())< OrderShipmentTypeDef.ACCEPT_PARTIAL;
+                && Integer
+                .parseInt(orderDetailData.getOrderCode())< OrderShipmentTypeDef.ORDER_DELIVERED;
     }
 
     private void initateData(OrderDetailData orderDetailData) {
