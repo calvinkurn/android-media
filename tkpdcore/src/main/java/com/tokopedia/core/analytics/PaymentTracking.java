@@ -71,6 +71,6 @@ public class PaymentTracking extends TrackingUtils {
 
     public static void eventPromoClick(Promotion promotion) {
         getGTMEngine().clearEnhanceEcommerce();
-        getGTMEngine().eventTrackingEnhancedEcommerce(promotion.getClicknDataLayer());
+        getGTMEngine().eventTrackingEnhancedEcommerce(promotion.getClickDataLayer());
     }
 }

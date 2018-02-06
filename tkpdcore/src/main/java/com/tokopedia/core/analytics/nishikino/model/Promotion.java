@@ -15,6 +15,7 @@ public class Promotion {
     private String promotionName;
     private String promotionAlias;
     private String promotionPosition;
+    private String redirectUrl;
 
     public void setPromotionID(String promotionID) {
         this.promotionID = promotionID;
@@ -87,12 +88,12 @@ public class Promotion {
         );
     }
 
-    public Map<String, Object> getClicknDataLayer() {
+    public Map<String, Object> getClickDataLayer() {
         return DataLayer.mapOf(
                 "event", "promoClick",
                 "eventCategory", "homepage",
                 "eventAction", "slider banner click",
-                "eventLabel", "",
+                "eventLabel", getRedirectUrl(),
                 "ecommerce", DataLayer.mapOf(
                         "promoClick", DataLayer.mapOf(
                                 "promotions", DataLayer.listOf(
@@ -106,5 +107,13 @@ public class Promotion {
                         )
                 )
         );
+    }
+
+    public void setRedirectUrl(String redirectUrl) {
+        this.redirectUrl = redirectUrl;
+    }
+
+    public String getRedirectUrl() {
+        return redirectUrl;
     }
 }

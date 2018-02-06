@@ -63,6 +63,7 @@ public class BannerViewHolder extends AbstractViewHolder<BannerViewModel> implem
         promotion.setPromotionName("/ - p1 - promo");
         promotion.setPromotionAlias(model.getTitle().trim().replaceAll(" ", "_"));
         promotion.setPromotionPosition(position + 1);
+        promotion.setRedirectUrl(slidesList.get(position).getRedirectUrl());
         return promotion;
     }
 
