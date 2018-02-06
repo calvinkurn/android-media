@@ -8,6 +8,7 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
+import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
 
 /**
  * Created by pranaymohapatra on 28/11/17.
@@ -22,7 +23,7 @@ public class EventReviewTicketsContractor {
 
         void navigateToActivityRequest(Intent intent, int requestCode);
 
-        void renderFromPackageVM(PackageViewModel packageViewModel);
+        void renderFromPackageVM(PackageViewModel packageViewModel, SelectedSeatViewModel selectedSeats);
 
         void setEmailID(String emailID);
 

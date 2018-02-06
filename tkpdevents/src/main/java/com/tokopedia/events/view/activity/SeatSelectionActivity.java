@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -77,6 +78,8 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
     View progressBarLayout;
     @BindView(R2.id.prog_bar)
     ProgressBar progBar;
+    @BindView(R2.id.main_content)
+    FrameLayout mainContent;
 
     EventComponent eventComponent;
     @Inject
@@ -305,5 +308,10 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
         }
         selectedSeatViewModel.setSeatIds(seatIds);
         selectedSeatViewModel.setAreaId(areaId);
+    }
+
+    @Override
+    public View getRootView() {
+        return mainContent;
     }
 }

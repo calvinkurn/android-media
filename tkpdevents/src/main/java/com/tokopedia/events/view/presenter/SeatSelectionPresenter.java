@@ -1,10 +1,8 @@
 package com.tokopedia.events.view.presenter;
 
 import android.content.Intent;
-import android.text.TextUtils;
 import android.util.Log;
 
-import com.google.gson.Gson;
 import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.data.executor.JobExecutor;
@@ -18,12 +16,11 @@ import com.tokopedia.core.drawer2.data.pojo.profile.ProfileModel;
 import com.tokopedia.core.drawer2.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.core.drawer2.domain.ProfileRepository;
 import com.tokopedia.core.drawer2.domain.interactor.ProfileUseCase;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.user.PeopleService;
 import com.tokopedia.core.session.presenter.SessionView;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.events.data.entity.response.Form;
-import com.tokopedia.events.data.entity.response.SeatLayoutItem;
-import com.tokopedia.events.data.entity.response.seatlayoutresponse.EventSeatLayoutResonse;
 import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
 import com.tokopedia.events.domain.GetEventSeatLayoutUseCase;
 import com.tokopedia.events.domain.model.request.cart.CartItem;
@@ -39,7 +36,6 @@ import com.tokopedia.events.domain.postusecase.PostVerifyCartUseCase;
 import com.tokopedia.events.view.activity.ReviewTicketActivity;
 import com.tokopedia.events.view.contractor.SeatSelectionContract;
 import com.tokopedia.events.view.customview.SeatLayoutInfo;
-import com.tokopedia.events.view.mapper.SeatLayoutResponseToSeatLayoutViewModelMapper;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
 import com.tokopedia.events.view.viewmodel.SeatLayoutViewModel;
 import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
@@ -78,7 +74,7 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
     String number;
     List<String> selectedSeats = new ArrayList<>();
     List<String> rowIds;
-    SelectedSeatViewModel selectedSeatViewModel;
+    SelectedSeatViewModel mSelectedSeatViewModel;
     int quantity;
 
 
@@ -89,7 +85,7 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
     }
 
     public void initialize() {
-//        getView().showProgressBar();
+        getView().showProgressBar();
         GlobalCacheManager profileCache = new GlobalCacheManager();
 
         ProfileSourceFactory profileSourceFactory = new ProfileSourceFactory(
@@ -134,6 +130,7 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
                 profileModel = model;
                 email = profileModel.getProfileData().getUserInfo().getUserEmail();
                 number = profileModel.getProfileData().getUserInfo().getUserPhone();
+                getView().hideProgressBar();
             }
         });
     }
@@ -157,7 +154,7 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
 
 
     public void getSeatSelectionDetails() {
-        getView().renderSeatSelection(selectedpkgViewModel.getSalesPrice(), maxTickets, seatLayoutViewModel);
+        getView().renderSeatSelection(selectedpkgViewModel.getSalesPrice(), selectedpkgViewModel.getSelectedQuantity(), seatLayoutViewModel);
     }
 
     @Override
@@ -177,15 +174,16 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
         getView().setSelectedSeatText(selectedSeatList, rowIds);
     }
 
-    public void verifySeatSelection(final SelectedSeatViewModel selectedSeatViewModel) {
-        this.selectedSeatViewModel = selectedSeatViewModel;
+    public void verifySeatSelection(SelectedSeatViewModel selectedSeatViewModel) {
+        getView().showProgressBar();
+        this.mSelectedSeatViewModel = selectedSeatViewModel;
         postVerifyCartUseCase.setCartItems(convertPackageToCartItem(selectedpkgViewModel), true);
         postVerifyCartUseCase.execute(RequestParams.EMPTY, new Subscriber<VerifyCartResponse>() {
             @Override
             public void onCompleted() {
                 Intent reviewTicketIntent = new Intent(getView().getActivity(), ReviewTicketActivity.class);
                 reviewTicketIntent.putExtra(EXTRA_PACKAGEVIEWMODEL, selectedpkgViewModel);
-                reviewTicketIntent.putExtra(EXTRA_SEATSELECTEDMODEL, selectedSeatViewModel);
+                reviewTicketIntent.putExtra(EXTRA_SEATSELECTEDMODEL, mSelectedSeatViewModel);
                 getView().navigateToActivityRequest(reviewTicketIntent, 100);
 
             }
@@ -193,7 +191,14 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
             @Override
             public void onError(Throwable throwable) {
                 Log.d("Naveen", " On Error" + throwable.getMessage());
-
+                getView().hideProgressBar();
+                NetworkErrorHelper.showEmptyState(getView().getActivity(),
+                        getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
+                            @Override
+                            public void onRetryClicked() {
+                                verifySeatSelection(mSelectedSeatViewModel);
+                            }
+                        });
             }
 
             @Override
@@ -217,13 +222,13 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
         List<EntityPackageItem> entityPackages = new ArrayList<>();
         EntityPackageItem packageItem = new EntityPackageItem();
         packageItem.setPackageId(packageViewModel.getId());
-        packageItem.setAreaCode(selectedSeatViewModel.getAreaCodes());
+        packageItem.setAreaCode(mSelectedSeatViewModel.getAreaCodes());
         packageItem.setDescription("");
         packageItem.setQuantity(quantity);
-        packageItem.setPricePerSeat(selectedSeatViewModel.getPrice());
-        packageItem.setSeatId(selectedSeatViewModel.getSeatIds());
-        packageItem.setSeatRowId(selectedSeatViewModel.getSeatRowIds());
-        packageItem.setSeatPhysicalRowId(selectedSeatViewModel.getPhysicalRowIds());
+        packageItem.setPricePerSeat(mSelectedSeatViewModel.getPrice());
+        packageItem.setSeatId(mSelectedSeatViewModel.getSeatIds());
+        packageItem.setSeatRowId(mSelectedSeatViewModel.getSeatRowIds());
+        packageItem.setSeatPhysicalRowId(mSelectedSeatViewModel.getPhysicalRowIds());
         packageItem.setSessionId("");
         packageItem.setProductId(packageViewModel.getProductId());
         packageItem.setGroupId(packageViewModel.getProductGroupId());

@@ -110,7 +110,7 @@ public class EventBookTicketPresenter
                         getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
                             @Override
                             public void onRetryClicked() {
-                                payTicketsClick(eventTitle+"");
+                                payTicketsClick(eventTitle + "");
                             }
                         });
             }
@@ -153,7 +153,10 @@ public class EventBookTicketPresenter
         validateShow.setProductId(selectedPackageViewModel.getProductId());
         postValidateShowUseCase.setValidateShowModel(validateShow);
         getView().showProgressBar();
-        validateSelection();
+        if (hasSeatLayout == 1)
+            getSeatSelectionDetails();
+        else
+            validateSelection();
 
     }
 
@@ -176,7 +179,7 @@ public class EventBookTicketPresenter
             selectedViewHolder.setTvTicketCnt(selectedCount);
             selectedViewHolder.setTicketViewColor(getView().getActivity().getResources().getColor(R.color.light_green));
         }
-        getView().showPayButton(selectedCount, selectedPackageViewModel.getSalesPrice(),selectedPackageViewModel.getDisplayName());
+        getView().showPayButton(selectedCount, selectedPackageViewModel.getSalesPrice(), selectedPackageViewModel.getDisplayName());
     }
 
     public void removeTickets() {
@@ -184,7 +187,7 @@ public class EventBookTicketPresenter
         if (selectedCount != 0) {
             selectedPackageViewModel.setSelectedQuantity(--selectedCount);
             selectedViewHolder.setTvTicketCnt(selectedCount);
-            getView().showPayButton(selectedCount, selectedPackageViewModel.getSalesPrice(),selectedPackageViewModel.getDisplayName());
+            getView().showPayButton(selectedCount, selectedPackageViewModel.getSalesPrice(), selectedPackageViewModel.getDisplayName());
         }
         if (selectedCount == 0) {
             selectedViewHolder.setTicketViewColor(getView().getActivity().getResources().getColor(R.color.white));
@@ -209,25 +212,31 @@ public class EventBookTicketPresenter
     }
 
 
-    public void getSeatSelectionDetails() {
-        getView().showProgressBar();
+    private void getSeatSelectionDetails() {
         getSeatLayoutUseCase.setUrl(url);
         getSeatLayoutUseCase.execute(RequestParams.EMPTY, new Subscriber<List<SeatLayoutItem>>() {
             @Override
             public void onCompleted() {
                 Log.d("Naveen", " on Completed");
-                getView().hideProgressBar();
             }
 
             @Override
             public void onError(Throwable throwable) {
+                getView().hideProgressBar();
+                NetworkErrorHelper.showEmptyState(getView().getActivity(),
+                        getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
+                            @Override
+                            public void onRetryClicked() {
+                                getSeatSelectionDetails();
+                            }
+                        });
 //                Log.d("Naveen", " on Error" + throwable.getMessage());
             }
 
             @Override
             public void onNext(List<SeatLayoutItem> response) {
-                getView().hideProgressBar();
                 seatLayoutViewModel = convertResponseToViewModel(convertoSeatLayoutResponse(response.get(0)));
+                validateSelection();
             }
 
         });
@@ -236,7 +245,7 @@ public class EventBookTicketPresenter
 
     private EventSeatLayoutResonse convertoSeatLayoutResponse(SeatLayoutItem responseEntity) {
 
-        String  data = responseEntity.getLayout();
+        String data = responseEntity.getLayout();
         Gson gson = new Gson();
         EventSeatLayoutResonse seatLayoutResponse = gson.fromJson(data, EventSeatLayoutResonse.class);
         return seatLayoutResponse;

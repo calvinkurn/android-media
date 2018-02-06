@@ -37,6 +37,9 @@ import com.tokopedia.events.view.presenter.EventReviewTicketPresenter;
 import com.tokopedia.events.view.utils.CurrencyUtil;
 import com.tokopedia.events.view.utils.ImageTextViewHolder;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
+import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -130,6 +133,10 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
     TextView tvTicketCntType;
     @BindView(R2.id.tv_someinfo)
     TextView tvSomeInfo;
+    @BindView(R2.id.selected_seats_layout)
+    View selectedSeatLayout;
+    @BindView(R2.id.seat_numbers)
+    TextView seatNumbers;
 
     EventComponent eventComponent;
     @Inject
@@ -151,7 +158,7 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
 
         ButterKnife.bind(timeHolder, eventTimeTv);
         ButterKnife.bind(addressHolder, eventAddressTv);
-        
+
         mPresenter.attachView(this);
         mPresenter.initialize();
 
@@ -216,7 +223,7 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
 
 
     @Override
-    public void renderFromPackageVM(PackageViewModel packageViewModel) {
+    public void renderFromPackageVM(PackageViewModel packageViewModel, SelectedSeatViewModel selectedSeats) {
         appBar.setTitle(packageViewModel.getTitle());
         appBar.setNavigationIcon(R.drawable.ic_arrow_back_black);
         String timerange = packageViewModel.getTimeRange();
@@ -242,6 +249,20 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
         String baseBreak = String.format(getString(R.string.x_type),
                 packageViewModel.getSelectedQuantity(), CurrencyUtil.convertToCurrencyString(packageViewModel.getSalesPrice()));
         baseFareBreak.setText("(" + baseBreak + ")");
+        if (selectedSeats != null && selectedSeats.getSeatIds() != null && selectedSeats.getPhysicalRowIds() != null) {
+            List<String> seatID = selectedSeats.getSeatIds();
+            List<String> rowID = selectedSeats.getPhysicalRowIds();
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < seatID.size(); i++) {
+                builder.append(rowID.get(i)).append(seatID.get(i));
+                if (i != seatID.size() - 1)
+                    builder.append(", ");
+                else
+                    builder.append("");
+            }
+            seatNumbers.setText(builder.toString());
+            selectedSeatLayout.setVisibility(View.VISIBLE);
+        }
         hideProgressBar();
     }
 

@@ -6,7 +6,6 @@ import android.content.Intent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.events.view.customview.SeatLayoutInfo;
 import com.tokopedia.events.view.viewmodel.SeatLayoutViewModel;
 
 import java.util.List;
@@ -29,6 +28,7 @@ public class SeatSelectionContract {
         RequestParams getParams();
 
         void showPayButton(int ticketQuantity, int price);
+
         void hidePayButton();
 
         void showProgressBar();
@@ -42,6 +42,8 @@ public class SeatSelectionContract {
         void setEventTitle(String text);
 
         void setSelectedSeatModel();
+
+        android.view.View getRootView();
 
     }
 
