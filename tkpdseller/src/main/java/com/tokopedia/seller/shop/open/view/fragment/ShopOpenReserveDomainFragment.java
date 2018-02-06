@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.MethodChecker;
@@ -51,6 +52,7 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
     ShopOpenDomainPresenterImpl shopOpenDomainPresenter;
     @Inject
     ShopOpenTracking trackingOpenShop;
+    private boolean fromAppShortCut = false;
 
     public static ShopOpenReserveDomainFragment newInstance() {
         return new ShopOpenReserveDomainFragment();
@@ -121,6 +123,14 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
             }
         });
         return view;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        if (isFromAppShortCut())
+            UnifyTracking.eventJualLongClick();
     }
 
     private void hideSnackBarRetry() {
@@ -245,5 +255,13 @@ public class ShopOpenReserveDomainFragment extends BasePresenterFragment impleme
         Intent intent = ShopOpenReserveDomainSuccessActivity.getIntent(getContext(), shopName);
         startActivity(intent);
         getActivity().finish();
+    }
+
+    public void setFromAppShortcut(boolean booleanExtra) {
+        fromAppShortCut = booleanExtra;
+    }
+
+    public boolean isFromAppShortCut() {
+        return fromAppShortCut;
     }
 }
