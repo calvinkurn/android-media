@@ -6,7 +6,6 @@ import android.webkit.WebViewClient;
 
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 
-import static com.tokopedia.core.util.TkpdWebView.getQuery;
 import static com.tokopedia.core.util.TkpdWebView.getWebviewHeaders;
 
 /**
