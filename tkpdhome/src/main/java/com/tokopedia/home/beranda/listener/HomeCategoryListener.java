@@ -13,7 +13,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.LayoutSect
 
 public interface HomeCategoryListener {
 
-    void onSectionItemClicked(LayoutSections sections);
+    void onSectionItemClicked(String actionLink);
 
     void onMarketPlaceItemClicked(CategoryLayoutRowModel data, int parentPosition, int childPosition);
 
