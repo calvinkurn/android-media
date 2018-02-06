@@ -1,4 +1,4 @@
-package com.tokopedia.shop.common.di;
+package com.tokopedia.shop.info.di;
 
 import javax.inject.Qualifier;
 
@@ -7,5 +7,5 @@ import javax.inject.Qualifier;
  */
 
 @Qualifier
-public @interface ShopQualifier {
+public @interface ShopInfoQualifier {
 }

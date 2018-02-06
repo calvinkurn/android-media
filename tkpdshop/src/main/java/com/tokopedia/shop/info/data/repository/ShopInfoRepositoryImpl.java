@@ -1,6 +1,7 @@
-package com.tokopedia.shop.common.repository;
+package com.tokopedia.shop.info.data.repository;
 
 import com.tokopedia.interfaces.merchant.shop.info.ShopInfo;
+import com.tokopedia.shop.info.domain.repository.ShopInfoRepository;
 import com.tokopedia.shop.info.data.source.ShopInfoDataSource;
 
 import javax.inject.Inject;

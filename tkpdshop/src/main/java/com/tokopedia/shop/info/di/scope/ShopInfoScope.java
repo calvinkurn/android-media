@@ -1,4 +1,4 @@
-package com.tokopedia.shop.common.di.scope;
+package com.tokopedia.shop.info.di.scope;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -11,5 +11,5 @@ import javax.inject.Scope;
 
 @Scope
 @Retention(RetentionPolicy.CLASS)
-public @interface ShopScope {
+public @interface ShopInfoScope {
 }

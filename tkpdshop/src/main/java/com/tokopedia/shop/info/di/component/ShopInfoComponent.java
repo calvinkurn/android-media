@@ -1,11 +1,11 @@
-package com.tokopedia.shop.common.di.component;
+package com.tokopedia.shop.info.di.component;
 
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.shop.common.di.module.ShopModule;
-import com.tokopedia.shop.common.di.scope.ShopScope;
+import com.tokopedia.shop.info.di.module.ShopInfoModule;
+import com.tokopedia.shop.info.di.scope.ShopInfoScope;
 import com.tokopedia.shop.info.view.activity.ShopInfoActivity;
 
 import dagger.Component;
@@ -13,9 +13,9 @@ import dagger.Component;
 /**
  * Created by hendry on 18/01/18.
  */
-@ShopScope
-@Component(modules = ShopModule.class, dependencies = BaseAppComponent.class)
-public interface ShopComponent {
+@ShopInfoScope
+@Component(modules = ShopInfoModule.class, dependencies = BaseAppComponent.class)
+public interface ShopInfoComponent {
 
     @ApplicationContext
     Context context();

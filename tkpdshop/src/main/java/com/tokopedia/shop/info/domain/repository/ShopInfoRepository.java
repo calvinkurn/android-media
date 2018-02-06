@@ -1,4 +1,4 @@
-package com.tokopedia.shop.common.repository;
+package com.tokopedia.shop.info.domain.repository;
 
 import com.tokopedia.interfaces.merchant.shop.info.ShopInfo;
 
