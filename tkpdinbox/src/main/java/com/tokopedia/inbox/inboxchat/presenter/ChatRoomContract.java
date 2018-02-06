@@ -120,6 +120,8 @@ public class ChatRoomContract {
         void onRetrySend(MyChatViewModel attachment);
 
         void onSuccessSendAttach(ReplyActionData data, MyChatViewModel model);
+
+        void setUploadingMode(boolean b);
     }
 
     interface Presenter extends CustomerPresenter<View>{

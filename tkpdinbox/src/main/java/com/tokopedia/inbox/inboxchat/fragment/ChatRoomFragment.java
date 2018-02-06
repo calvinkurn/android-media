@@ -115,6 +115,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         , WebSocketInterface {
 
     private static final String ENABLE_TOPCHAT = "topchat_template";
+    public static final String TAG = "ChatRoomFragment";
     @Inject
     ChatRoomPresenter presenter;
 
@@ -156,6 +157,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     public BottomSheetBuilder bottomSheetBuilder;
     public BottomSheetAdapterBuilder bottomSheetAdapterBuilder;
+    private boolean uploading;
 
     public static ChatRoomFragment createInstance(Bundle extras) {
         ChatRoomFragment fragment = new ChatRoomFragment();
@@ -187,6 +189,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         recyclerView.setHasFixedSize(true);
         templateRecyclerView.setHasFixedSize(true);
         presenter.attachView(this);
+        uploading = false;
         prepareView();
         initListener();
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
@@ -410,7 +413,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         ArrayList<String> strings = new ArrayList<>();
         strings.add(attachment.getAttributes().getImageUrl());
 
-        ((PdpRouter) getActivity().getApplication()).openImagePreviewFromChat(getActivity(), strings, new ArrayList<String>(), 1, title);
+        ((PdpRouter) getActivity().getApplication()).openImagePreviewFromChat(getActivity(), strings, new ArrayList<String>(), title, "");
     }
 
     @Override
@@ -650,7 +653,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
         return getActivity();
     }
 
-
     @Override
     public void scrollToBottom() {
         recyclerView.scrollToPosition(adapter.getItemCount());
@@ -705,6 +707,11 @@ public class ChatRoomFragment extends BaseDaggerFragment
     public void onSuccessSendAttach(ReplyActionData data, MyChatViewModel model) {
         adapter.remove(model);
         addView(data, "Uploaded Image");
+    }
+
+    @Override
+    public void setUploadingMode(boolean mode) {
+        uploading = mode;
     }
 
     private void addView(ReplyActionData replyData, String reply){
@@ -1034,7 +1041,34 @@ public class ChatRoomFragment extends BaseDaggerFragment
         }
     }
 
+    public void onBackPressed(){
+        if(uploading){
+            showDialogConfirmToAbortUpload();
+        }else {
+            ((ChatRoomActivity)getActivity()).destroy();
+        }
+    }
 
+    private void showDialogConfirmToAbortUpload() {
+        final AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
+        myAlertDialog.setTitle(getActivity().getString(R.string.exit_chat_title));
+        myAlertDialog.setMessage(getActivity().getString(R.string.exit_chat_body));
+        myAlertDialog.setPositiveButton(getActivity().getString(R.string.exit_chat_title), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                ((ChatRoomActivity)getActivity()).destroy();
+            }
+        });
+        myAlertDialog.setNegativeButton(getActivity().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.cancel();
+            }
+        });
+        Dialog dialog = myAlertDialog.create();
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.show();
+    }
 
     @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     public void actionCamera() {

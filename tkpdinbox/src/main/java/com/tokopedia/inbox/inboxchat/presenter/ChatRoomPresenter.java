@@ -297,6 +297,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
     @Override
     public void startUpload(final List<MyChatViewModel> list) {
+        getView().setUploadingMode(true);
         String userId = SessionHandler.getTempLoginSession(getView().getActivity());
         String deviceId = GCMHandler.getRegistrationId(getView().getActivity());
         String messageId = (getView().getArguments().getString(PARAM_MESSAGE_ID));
@@ -308,11 +309,13 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
             @Override
             public void onError(Throwable throwable) {
+                getView().setUploadingMode(false);
                 getView().onErrorUploadImages(ErrorHandler.getErrorMessage(throwable,getView().getActivity()), list.get(0));
             }
 
             @Override
             public void onNext(ReplyActionData data) {
+                getView().setUploadingMode(false);
                 getView().onSuccessSendAttach(data, list.get(0));
             }
         });

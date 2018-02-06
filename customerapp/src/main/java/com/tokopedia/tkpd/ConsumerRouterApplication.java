@@ -382,10 +382,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void openImagePreviewFromChat(Context context, ArrayList<String> images,
-                                         ArrayList<String> imageDesc, int position, String title) {
+    public void openImagePreviewFromChat(Context context, ArrayList<String> images, ArrayList<String> imageDesc, String title, String date) {
         Intent intent = PreviewProductImageDetail.getCallingIntentChat(context, images, imageDesc,
-                position, title);
+                title, date);
         context.startActivity(intent);
     }
 

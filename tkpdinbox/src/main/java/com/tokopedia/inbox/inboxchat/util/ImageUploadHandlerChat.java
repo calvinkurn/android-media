@@ -198,8 +198,20 @@ public class ImageUploadHandlerChat {
         else {
             tempPicToUpload = tempPic;
         }
-        tempPicToUpload.compress(Bitmap.CompressFormat.JPEG, 70, bao);
+        tempPicToUpload.compress(Bitmap.CompressFormat.JPEG, 100, bao);
         return bao.toByteArray();
+    }
+
+    public static boolean checkSizeOverLimit(File file, int limit){
+
+// Get length of file in bytes
+        long fileSizeInBytes = file.length();
+// Convert the bytes to Kilobytes (1 KB = 1024 Bytes)
+        long fileSizeInKB = fileSizeInBytes / 1024;
+// Convert the KB to MegaBytes (1 MB = 1024 KBytes)
+        long fileSizeInMB = fileSizeInKB / 1024;
+
+        return (fileSizeInMB > limit);
     }
 
 }

@@ -6,14 +6,13 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.inboxchat.uploadimage.UploadImageChatRequestModel;
 import com.tokopedia.inbox.inboxchat.uploadimage.data.repository.ImageUploadRepository;
 import com.tokopedia.inbox.inboxchat.uploadimage.domain.model.UploadImageDomain;
-
+import com.tokopedia.inbox.inboxchat.util.ImageUploadHandlerChat;
 
 import java.io.File;
 import java.io.IOException;
@@ -117,9 +116,11 @@ public class UploadImageUseCase extends UseCase<UploadImageDomain> {
     private RequestBody generateImage(RequestParams requestParams) {
         File file = null;
         try {
-            file = ImageUploadHandler.writeImageToTkpdPath(
-                    ImageUploadHandler.compressImage(requestParams.getString(PARAM_FILE_TO_UPLOAD, ""))
-            );
+            byte[] temp = ImageUploadHandlerChat.compressImage(requestParams.getString(PARAM_FILE_TO_UPLOAD, ""));
+            file = ImageUploadHandlerChat.writeImageToTkpdPath(temp);
+            if(ImageUploadHandlerChat.checkSizeOverLimit(file, 5)){
+                throw new ErrorMessageException("Gambar melebihi 5MB");
+            }
         } catch (IOException e) {
             throw new RuntimeException(MainApplication.getAppContext().getString(R.string.error_upload_image));
         }

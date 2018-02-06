@@ -255,7 +255,7 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
             Glide.with(imageview.getContext())
                     .load(url)
                     .dontAnimate()
-                    .override(10,10)
+                    .override(30,30)
                     .fitCenter()
                     .placeholder(R.drawable.loading_page)
                     .into(imageview);

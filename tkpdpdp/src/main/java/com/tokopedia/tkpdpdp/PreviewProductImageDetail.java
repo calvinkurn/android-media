@@ -96,7 +96,7 @@ public class PreviewProductImageDetail extends TActivity {
         if (getIntent().getExtras() != null) {
             extras = getIntent().getExtras();
             fileLocations = extras.getStringArrayList(FILELOC);
-            position = extras.getInt(IMG_POSITION);
+            position = 0;
         } else {
             fileLocations = new ArrayList<>();
         }
@@ -400,14 +400,14 @@ public class PreviewProductImageDetail extends TActivity {
     }
 
     public static Intent getCallingIntentChat(Context context, ArrayList<String> images,
-                                              ArrayList<String> imageDesc, int position, String title) {
+                                              ArrayList<String> imageDesc, String title, String date) {
         Intent intent = new Intent(context, PreviewProductImageDetail.class);
         Bundle bundle = new Bundle();
         bundle.putBoolean(PreviewProductImageDetail.FROM_CHAT, true);
-        bundle.putString(PreviewProductImageDetail.TITLE, title);
+        bundle.putString(PreviewProductImageDetail.TITLE, date);
         bundle.putStringArrayList(PreviewProductImageDetail.FILELOC, images);
         bundle.putStringArrayList(PreviewProductImageDetail.IMAGE_DESC, imageDesc);
-        bundle.putInt(PreviewProductImageDetail.IMG_POSITION, position);
+        bundle.putString(PreviewProductImageDetail.IMG_POSITION, title);
         intent.putExtras(bundle);
         return intent;
     }
