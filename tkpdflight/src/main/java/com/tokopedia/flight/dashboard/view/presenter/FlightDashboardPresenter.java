@@ -411,7 +411,6 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
             // transform trip extras
             String[] tempExtras = getView().getTripArguments().split(",");
             String[] extrasTripDeparture = tempExtras[INDEX_DEPARTURE_TRIP].split("_");
-            String[] departureTripDate = extrasTripDeparture[INDEX_DATE_TRIP].split("-");
 
             /**
              * tokopedia://flight/search?dest=CGK_DPS_2018-04-01,CGK_DPS_2018-05-01&a=1&c=1&i=1&s=1
@@ -420,45 +419,14 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
             flightDashboardPassDataViewModel.setDepartureAirportId(extrasTripDeparture[INDEX_ID_AIRPORT_DEPARTURE_TRIP]);
             flightDashboardPassDataViewModel.setArrivalAirportId(extrasTripDeparture[INDEX_ID_AIRPORT_ARRIVAL_TRIP]);
             flightDashboardPassDataViewModel.setRoundTrip(false);
-
-            Calendar today = FlightDateUtil.getCurrentCalendar();
-            if (!validator.validateDepartureDateAtLeastToday(getView().getCurrentDashboardViewModel())) {
-                isDepartureDateValid = false;
-                getView().showDepartureDateShouldAtLeastToday(R.string.flight_dashboard_departure_should_atleast_today_error);
-                flightDashboardPassDataViewModel.setDepartureDate(FlightDateUtil.dateToString(today.getTime(), FlightDateUtil.DEFAULT_FORMAT));
-            } else if ((Integer.parseInt(departureTripDate[INDEX_DATE_YEAR]) - today.get(Calendar.YEAR)) > MAX_TWO_YEARS) {
-                isDepartureDateValid = false;
-                getView().showApplinkErrorMessage(R.string.flight_dashboard_departure_max_two_years_from_today_error);
-                flightDashboardPassDataViewModel.setDepartureDate(FlightDateUtil.dateToString(today.getTime(), FlightDateUtil.DEFAULT_FORMAT));
-            } else {
-                flightDashboardPassDataViewModel.setDepartureDate(extrasTripDeparture[INDEX_DATE_TRIP]);
-            }
+            flightDashboardPassDataViewModel.setDepartureDate(extrasTripDeparture[INDEX_DATE_TRIP]);
 
             if (tempExtras.length > 1) {
                 String[] extrasTripReturn = tempExtras[INDEX_RETURN_TRIP].split("_");
-                String[] returnTripDate = extrasTripReturn[INDEX_DATE_TRIP].split("-");
                 flightDashboardPassDataViewModel.setRoundTrip(true);
-
-                if (!validator.validateReturnDateShouldGreaterOrEqualDeparture(getView().getCurrentDashboardViewModel())) {
-                    isReturnDateValid = false;
-                    if (isDepartureDateValid) {
-                        getView().showArrivalDateShouldGreaterOrEqual(R.string.flight_dashboard_arrival_should_greater_equal_error);
-                        flightDashboardPassDataViewModel.setReturnDate(departureTripDate[INDEX_DATE_YEAR] + "-" + departureTripDate[INDEX_DATE_MONTH] + "-" + Integer.parseInt(departureTripDate[INDEX_DATE_DATE]) + 1);
-                    } else {
-                        today.add(Calendar.DATE, +1);
-                        flightDashboardPassDataViewModel.setReturnDate(FlightDateUtil.dateToString(today.getTime(), FlightDateUtil.DEFAULT_FORMAT));
-                    }
-                } else if ((Integer.parseInt(returnTripDate[INDEX_DATE_YEAR]) - today.get(Calendar.YEAR)) > MAX_TWO_YEARS) {
-                    isReturnDateValid = false;
-                    if (isDepartureDateValid) {
-                        getView().showApplinkErrorMessage(R.string.flight_dashboard_arrival_max_two_years_from_today_error);
-                        flightDashboardPassDataViewModel.setReturnDate(departureTripDate[INDEX_DATE_YEAR] + "-" + departureTripDate[INDEX_DATE_MONTH] + "-" + Integer.parseInt(departureTripDate[INDEX_DATE_DATE]) + 1);
-                    } else {
-                        today.add(Calendar.DATE, +1);
-                        flightDashboardPassDataViewModel.setReturnDate(FlightDateUtil.dateToString(today.getTime(), FlightDateUtil.DEFAULT_FORMAT));
-                    }
-                }
+                flightDashboardPassDataViewModel.setReturnDate(extrasTripReturn[INDEX_DATE_TRIP]);
             } else {
+                flightDashboardPassDataViewModel.setRoundTrip(false);
                 flightDashboardPassDataViewModel.setReturnDate("");
             }
 
