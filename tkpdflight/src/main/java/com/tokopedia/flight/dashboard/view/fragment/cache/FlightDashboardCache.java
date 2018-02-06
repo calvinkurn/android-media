@@ -14,33 +14,106 @@ public class FlightDashboardCache {
     private static final String CACHE_NAME = "FlightDashboardCache";
     private static final String DEPARTURE = "DEPARTURE";
     private static final String ARRIVAL = "ARRIVAL";
+    private static final String DEPARTURE_DATE = "DEPARTURE_DATE";
+    private static final String RETURN_DATE = "RETURN_DATE";
+    private static final String PASSENGER_ADULT = "PASSENGER_ADULT";
+    private static final String PASSENGER_CHILD = "PASSENGER_CHILD";
+    private static final String PASSENGER_INFANT = "PASSENGER_INFANT";
+    private static final String IS_ROUND_TRIP = "IS_ROUND_TRIP";
+    private static final String CLASS ="CLASS";
+    private static final String DEFAULT_DEPARTURE_AIRPORT_ID = "CGK";
+    private static final String DEFAULT_ARRIVAL_AIRPORT_ID = "DPS";
+    private static final int DEFAULT_PASSENGER_ADULT = 1;
+    private static final int DEFAULT_PASSENGER_CHILD = 0;
+    private static final int DEFAULT_PASSENGER_INFANT = 0;
+    private static final int DEFAULT_CLASS = 1;
+    private static final boolean DEFAULT_IS_ROUND_TRIP = false;
     private SharedPreferences.Editor editor;
     private SharedPreferences sharedPrefs;
-    private Gson gson;
 
     public FlightDashboardCache(Context context, Gson gson) {
         this.sharedPrefs = context.getSharedPreferences(CACHE_NAME, Context.MODE_PRIVATE);
         this.editor = sharedPrefs.edit();
-        this.gson = gson;
     }
 
-    public void putDepartureAirport(FlightAirportDB airportDB) {
+    public void putDepartureAirport(String airportId) {
         editor
-                .putString(DEPARTURE, gson.toJson(airportDB))
+                .putString(DEPARTURE, airportId)
                 .apply();
     }
 
-    public FlightAirportDB getDepartureAirport() {
-        return gson.fromJson(sharedPrefs.getString(DEPARTURE, ""), FlightAirportDB.class);
+    public String getDepartureAirport() {
+        return sharedPrefs.getString(DEPARTURE, DEFAULT_DEPARTURE_AIRPORT_ID);
     }
 
-    public void putArrivalAirport(FlightAirportDB airportDB) {
+    public void putArrivalAirport(String airportId) {
         editor
-                .putString(ARRIVAL, gson.toJson(airportDB))
+                .putString(ARRIVAL, airportId)
                 .apply();
     }
 
-    public FlightAirportDB getArrivalAirport() {
-        return gson.fromJson(sharedPrefs.getString(ARRIVAL, ""), FlightAirportDB.class);
+    public String getArrivalAirport() {
+        return sharedPrefs.getString(ARRIVAL, DEFAULT_ARRIVAL_AIRPORT_ID);
     }
+
+    public void putDepartureDate(String departureDate) {
+        editor
+                .putString(DEPARTURE_DATE, departureDate)
+                .apply();
+    }
+
+    public String getDepartureDate() {
+        return sharedPrefs.getString(DEPARTURE_DATE, "");
+    }
+
+    public void putReturnDate(String returnDate) {
+        editor
+                .putString(RETURN_DATE, returnDate)
+                .apply();
+    }
+
+    public String getReturnDate() {
+        return sharedPrefs.getString(RETURN_DATE, "");
+    }
+
+    public void putPassengerCount(int adult, int child, int infant) {
+        editor
+                .putInt(PASSENGER_ADULT, adult)
+                .putInt(PASSENGER_CHILD, child)
+                .putInt(PASSENGER_INFANT, infant)
+                .apply();
+    }
+
+    public int getPassengerAdult() {
+        return sharedPrefs.getInt(PASSENGER_ADULT, DEFAULT_PASSENGER_ADULT);
+    }
+
+    public int getPassengerChild() {
+        return sharedPrefs.getInt(PASSENGER_CHILD, DEFAULT_PASSENGER_CHILD);
+    }
+
+    public int getPassengerInfant() {
+        return sharedPrefs.getInt(PASSENGER_INFANT, DEFAULT_PASSENGER_INFANT);
+    }
+
+    public void putClassCache(int classId) {
+        editor
+                .putInt(CLASS, classId)
+                .apply();
+    }
+
+    public int getClassCache() {
+        return sharedPrefs.getInt(CLASS, DEFAULT_CLASS);
+    }
+
+    public void putRoundTrip(boolean isRoundTrip) {
+        editor
+                .putBoolean(IS_ROUND_TRIP, isRoundTrip)
+                .apply();
+    }
+
+    public boolean isRoundTrip() {
+        return sharedPrefs.getBoolean(IS_ROUND_TRIP, DEFAULT_IS_ROUND_TRIP);
+    }
+
 }
