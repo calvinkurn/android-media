@@ -68,6 +68,12 @@ public class MitraToppersPreApproveLabelFragment extends BaseDaggerFragment impl
         mitraToppersPreApprovePresenter.getPreApproveBalanceUseCase();
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        mitraToppersPreApprovePresenter.detachView();
+    }
+
     private void showLoading(){
         // no loading shown currently
     }
