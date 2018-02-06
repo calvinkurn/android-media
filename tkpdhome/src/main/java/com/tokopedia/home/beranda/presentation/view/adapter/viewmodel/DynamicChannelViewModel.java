@@ -1,7 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewmodel;
 
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.home.beranda.data.source.pojo.DynamicHomeChannel;
+import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory;
 
 /**

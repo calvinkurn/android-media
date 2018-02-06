@@ -1198,6 +1198,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Bundle bundle = new Bundle();
         bundle.putParcelable(DigitalProductActivity.EXTRA_CATEGORY_PASS_DATA, passData);
         Intent intent = new Intent(activity, DeeplinkHandlerActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtras(bundle);
         intent.setData(Uri.parse(appLink));
         startActivity(intent);

@@ -10,7 +10,6 @@ import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.digital.tokocash.model.CashBackData;
-import com.tokopedia.home.beranda.domain.model.category.CategoryLayoutRowModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 
 import java.util.List;
@@ -42,8 +41,6 @@ public interface HomeContract {
 
         Activity getActivity();
 
-        void onGimickItemClicked(CategoryLayoutRowModel data, int parentPosition, int childPosition);
-
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -61,6 +58,5 @@ public interface HomeContract {
 
         void openProductPageIfValid(String url, String shopDomain);
 
-        void onDigitalItemClicked(CategoryLayoutRowModel data, int parentPosition, int childPosition);
     }
 }

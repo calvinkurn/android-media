@@ -10,13 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.home.R;
-import com.tokopedia.home.beranda.domain.model.category.CategoryLayoutRowModel;
 import com.tokopedia.home.explore.domain.model.LayoutRows;
 import com.tokopedia.home.explore.listener.CategoryAdapterListener;
 import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryFavoriteViewModel;

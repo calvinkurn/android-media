@@ -1,10 +1,9 @@
 package com.tokopedia.home.beranda.di.module;
 
 import com.apollographql.apollo.ApolloClient;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.base.data.executor.JobExecutor;
+import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.factory.HomeFeedFactory;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.FeedResultMapper;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.data.mapper.HomeFeedMapper;
@@ -25,7 +24,7 @@ import okhttp3.OkHttpClient;
 public class HomeFeedModule {
 
     @Provides
-    ApolloClient providesApolloClient(@DefaultAuthWithErrorHandler OkHttpClient okHttpClient) {
+    ApolloClient providesApolloClient(OkHttpClient okHttpClient) {
         return ApolloClient.builder()
                 .okHttpClient(okHttpClient)
                 .serverUrl(TkpdBaseURL.GRAPHQL_DOMAIN)
@@ -60,9 +59,7 @@ public class HomeFeedModule {
 
     @Provides
     GetHomeFeedsUseCase provideGetHomeFeedsUseCase(
-            ThreadExecutor threadExecutor,
-            PostExecutionThread postExecutionThread,
             HomeFeedRepository feedRepository) {
-        return new GetHomeFeedsUseCase(threadExecutor, postExecutionThread, feedRepository);
+        return new GetHomeFeedsUseCase(new JobExecutor(), new UIThread(), feedRepository);
     }
 }

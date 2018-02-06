@@ -2,19 +2,16 @@ package com.tokopedia.home.beranda.data.source;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.data.mapper.HomeMapper;
-import com.tokopedia.home.beranda.data.source.api.HomeDataApi;
-import com.tokopedia.home.beranda.data.source.pojo.HomeData;
+import com.tokopedia.home.common.HomeDataApi;
+import com.tokopedia.home.beranda.domain.model.HomeData;
 
 import java.io.BufferedReader;
 import java.io.IOException;
