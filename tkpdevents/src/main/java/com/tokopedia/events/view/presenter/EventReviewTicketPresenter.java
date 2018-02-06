@@ -296,7 +296,7 @@ public class EventReviewTicketPresenter
         Intent intent = view.getActivity().getIntent();
         this.checkoutData = intent.getParcelableExtra(EventBookTicketPresenter.EXTRA_PACKAGEVIEWMODEL);
         this.selectedSeatViewModel = intent.getParcelableExtra(SeatSelectionPresenter.EXTRA_SEATSELECTEDMODEL);
-        getView().renderFromPackageVM(checkoutData);
+        getView().renderFromPackageVM(checkoutData, selectedSeatViewModel);
         getAndInitForms();
     }
 
