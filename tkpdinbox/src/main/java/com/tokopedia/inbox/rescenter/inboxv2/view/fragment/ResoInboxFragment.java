@@ -41,6 +41,8 @@ import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.ResoInboxSortModel;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.SingleItemInboxResultViewModel;
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.SortModel;
 
+import java.util.ArrayList;
+
 import javax.inject.Inject;
 
 /**
@@ -372,6 +374,11 @@ public class ResoInboxFragment
 
     @Override
     public void onResetFilterButtonClicked() {
+        inboxFilterModel.setSelectedFilterList(new ArrayList<Integer>());
+        inboxFilterModel.setDateToString("");
+        inboxFilterModel.setDateFromString("");
+        inboxFilterModel.setDateTo(null);
+        inboxFilterModel.setDateFrom(null);
         getInboxWithParams(inboxFilterModel);
     }
 
