@@ -1156,6 +1156,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+
         if (digitalProductView != null && categoryDataState != null) {
             Operator selectedOperator = digitalProductView.getSelectedOperator();
             Product selectedProduct = digitalProductView.getSelectedProduct();
@@ -1166,8 +1167,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
                     digitalProductView.getClientNumber(),
                     selectedProduct != null ? selectedProduct.getProductId() : "");
         }
-
-
     }
 
 }

@@ -58,7 +58,6 @@ import java.util.List;
 import butterknife.BindView;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * @author Rizky on 15/01/18.
@@ -83,8 +82,6 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
     private DigitalCheckoutPassData digitalCheckoutPassDataState;
 
     private DigitalWidgetPresenter presenter;
-
-    private CompositeSubscription compositeSubscription;
 
     private LocalCacheHandler cacheHandlerRecentInstantCheckoutUsed;
 
@@ -126,8 +123,6 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
 
     @Override
     protected void initialPresenter() {
-        if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
-
         DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
         CategoryDetailDataSource categoryDetailDataSource = new CategoryDetailDataSource(
                 digitalEndpointService, new GlobalCacheManager(), new ProductDigitalMapper()
@@ -522,14 +517,9 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
 
     @Override
     public void onDestroy() {
-        if (compositeSubscription != null && compositeSubscription.hasSubscriptions())
-            compositeSubscription.unsubscribe();
+        presenter.detachView();
 
         super.onDestroy();
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-    }
 }
