@@ -58,5 +58,14 @@ public class HomePageTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventClickSeeAllProductSprint() {
+        flushEventTracker();
+        sendGTMEvent(new EventTracking(
+                DEFAULT_VALUE_EVENT_NAME,
+                DEFAULT_VALUE_EVENT_CATEGORY,
+                "sprint sale click view all",
+                ""
+        ).getEvent());
+    }
 
 }
