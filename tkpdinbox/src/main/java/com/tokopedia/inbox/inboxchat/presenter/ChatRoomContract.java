@@ -95,7 +95,7 @@ public class ChatRoomContract {
 
         void goToSettingTemplate();
 
-        void onGoToGallery(Attachment attachment);
+        void onGoToGallery(Attachment attachment, String fullTime);
 
         void onGoToWebView(String attachment);
 

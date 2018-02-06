@@ -407,12 +407,12 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToGallery(Attachment attachment) {
+    public void onGoToGallery(Attachment attachment, String fullTime) {
 
         ArrayList<String> strings = new ArrayList<>();
         strings.add(attachment.getAttributes().getImageUrl());
 
-        ((PdpRouter) getActivity().getApplication()).openImagePreviewFromChat(getActivity(), strings, new ArrayList<String>(), title, "");
+        ((PdpRouter) getActivity().getApplication()).openImagePreviewFromChat(getActivity(), strings, new ArrayList<String>(), title, fullTime);
     }
 
     @Override
@@ -1052,7 +1052,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         final AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
         myAlertDialog.setTitle(getActivity().getString(R.string.exit_chat_title));
         myAlertDialog.setMessage(getActivity().getString(R.string.exit_chat_body));
-        myAlertDialog.setPositiveButton(getActivity().getString(R.string.exit_chat_title), new DialogInterface.OnClickListener() {
+        myAlertDialog.setPositiveButton(getActivity().getString(R.string.exit_chat_yes), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 ((ChatRoomActivity)getActivity()).destroy();
@@ -1069,7 +1069,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         dialog.show();
     }
 
-    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void actionCamera() {
         presenter.openCamera();
     }

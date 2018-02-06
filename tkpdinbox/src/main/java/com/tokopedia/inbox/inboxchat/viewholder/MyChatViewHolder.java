@@ -157,8 +157,15 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
             dot.setVisibility(View.GONE);
         }
 
+        String fullTime;
+        try {
+            fullTime = ChatTimeConverter.formatFullTime(Long.parseLong(element.getReplyTime()));
+        }catch (NumberFormatException e){
+            fullTime = "";
+        }
+
         attachmentChatHelper.parse(element, attachment, message, action, element, viewListener
-                , element.isDummy(), element.isRetry(), hour, progressBarSendImage, chatStatus);
+                , element.isDummy(), element.isRetry(), hour, progressBarSendImage, chatStatus, fullTime);
 
     }
 

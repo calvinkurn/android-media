@@ -674,7 +674,8 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="chat_edit_text">Tulis pesan ...</string>
     <string name="add_template_chat">Tambah Template</string>
     <string name="exit_chat_title">Keluar dari Chat?</string>
-    <string name="exit_chat_body">Keluar dari Chat?\nKeluar dari Chat akan membatalkan pengiriman gambar yang sedang berlangsung.</string>
+    <string name="exit_chat_body">Keluar dari Chat akan membatalkan pengiriman gambar yang sedang berlangsung.</string>
+    <string name="exit_chat_yes">Keluar dari Chat</string>
 
 
 

@@ -30,18 +30,18 @@ public class AttachmentChatHelper {
 
     public void parse(MyChatViewModel myChatViewModel, ImageView view, TextView message
             , ImageView action, ListReplyViewModel element, ChatRoomContract.View viewListener
-            , boolean dummy, boolean retry, TextView hour, View progressBarSendImage, ImageView chatStatus){
+            , boolean dummy, boolean retry, TextView hour, View progressBarSendImage, ImageView chatStatus, String fullTime){
         Attachment attachment = element.getAttachment();
         String role = element.getRole();
         String msg = element.getMsg();
-        String date = element.getReplyTime();
         if (element.getAttachment() != null) {
             switch (attachment.getType()) {
                 case DEFAULT:
-                    parseType(view, message, attachment, role, msg, viewListener);
+                    parseType(view, message, attachment, role, msg, viewListener, fullTime);
                     break;
                 case IMAGE_ATTACHED:
-                    parseAttachedImage(myChatViewModel, view, message, attachment, viewListener, dummy, retry, action, hour, progressBarSendImage, chatStatus);
+                    parseAttachedImage(myChatViewModel, view, message, attachment, viewListener
+                            , dummy, retry, action, hour, progressBarSendImage, chatStatus, fullTime);
                     break;
                 default:
                     parseDefaultType(view, message, attachment, viewListener);
@@ -55,11 +55,14 @@ public class AttachmentChatHelper {
 
     public void parse(ImageView view, TextView message
             , ListReplyViewModel element
-            , ChatRoomContract.View viewListener) {
-        parse(null, view, message, null, element, viewListener, false, false, null, null, null);
+            , ChatRoomContract.View viewListener, String fullTime) {
+        parse(null, view, message, null, element, viewListener, false, false, null, null, null, fullTime);
     }
 
-    private void parseAttachedImage(final MyChatViewModel myChatViewModel, ImageView view, TextView message, final Attachment attachment, final ChatRoomContract.View viewListener, boolean dummy, boolean retry, ImageView action, TextView hour, View progressBarSendImage, ImageView chatStatus) {
+    private void parseAttachedImage(final MyChatViewModel myChatViewModel
+            , ImageView view, TextView message, final Attachment attachment
+            , final ChatRoomContract.View viewListener, boolean dummy, boolean retry
+            , ImageView action, TextView hour, View progressBarSendImage, ImageView chatStatus, final String fullTime) {
         setVisibility(progressBarSendImage, View.VISIBLE);
         if(retry){
             action.setVisibility(View.VISIBLE);
@@ -79,7 +82,7 @@ public class AttachmentChatHelper {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    viewListener.onGoToGallery(attachment);
+                    viewListener.onGoToGallery(attachment, fullTime);
                 }
             });
 
@@ -99,7 +102,7 @@ public class AttachmentChatHelper {
         setMessage(attachment, viewListener, message);
     }
 
-    private void parseType(final ImageView view, TextView message, final Attachment attachment, String role, String msg, final ChatRoomContract.View viewListener) {
+    private void parseType(final ImageView view, TextView message, final Attachment attachment, String role, String msg, final ChatRoomContract.View viewListener, final String fullTime) {
         message.setVisibility(View.VISIBLE);
         if (attachment.getAttributes().getImageUrl() != null) {
             view.setVisibility(View.VISIBLE);
@@ -124,7 +127,7 @@ public class AttachmentChatHelper {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    viewListener.onGoToGallery(attachment);
+                    viewListener.onGoToGallery(attachment, fullTime);
                 }
             });
         }

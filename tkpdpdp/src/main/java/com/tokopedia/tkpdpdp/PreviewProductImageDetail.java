@@ -65,7 +65,7 @@ public class PreviewProductImageDetail extends TActivity {
     private TouchViewPager vpImage;
     private View tvDownload;
     private ImageView closeButton;
-    private TextView title;
+    private TextView title, subtitle;
     private TouchImageAdapter adapter;
     private ArrayList<String> fileLocations;
     private int lastPos = 0;
@@ -86,6 +86,7 @@ public class PreviewProductImageDetail extends TActivity {
                 inflateView(R.layout.activity_preview_image_new);
                 initTitleView();
                 title.setText(extras.getString(TITLE));
+                subtitle.setText(extras.getString(IMG_POSITION));
             } else {
                 inflateView(R.layout.activity_preview_image);
             }
@@ -113,6 +114,7 @@ public class PreviewProductImageDetail extends TActivity {
 
     private void initTitleView() {
         title = findViewById(R.id.title);
+        subtitle = findViewById(R.id.subtitle);
     }
 
 
@@ -404,10 +406,10 @@ public class PreviewProductImageDetail extends TActivity {
         Intent intent = new Intent(context, PreviewProductImageDetail.class);
         Bundle bundle = new Bundle();
         bundle.putBoolean(PreviewProductImageDetail.FROM_CHAT, true);
-        bundle.putString(PreviewProductImageDetail.TITLE, date);
+        bundle.putString(PreviewProductImageDetail.TITLE, title);
         bundle.putStringArrayList(PreviewProductImageDetail.FILELOC, images);
         bundle.putStringArrayList(PreviewProductImageDetail.IMAGE_DESC, imageDesc);
-        bundle.putString(PreviewProductImageDetail.IMG_POSITION, title);
+        bundle.putString(PreviewProductImageDetail.IMG_POSITION, date);
         intent.putExtras(bundle);
         return intent;
     }

@@ -45,6 +45,21 @@
             android:layout_marginLeft="@dimen/margin_med"
             android:layout_marginRight="@dimen/margin_med"
             tools:text="Store"/>
+
+        <TextView
+            android:id="@+id/subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_small"
+            android:layout_below="@id/title"
+            android:layout_toRightOf="@id/close_button"
+            android:layout_toEndOf="@id/close_button"
+            android:layout_toLeftOf="@id/download_image"
+            android:layout_toStartOf="@id/download_image"
+            android:layout_marginLeft="@dimen/margin_med"
+            android:layout_marginRight="@dimen/margin_med"
+            tools:text="12:20"/>
     </RelativeLayout>
 
 </RelativeLayout>
