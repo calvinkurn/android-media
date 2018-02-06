@@ -110,7 +110,9 @@ public class FlightBookingGetSingleResultUseCase extends UseCase<FlightSearchVie
                     public Observable<FlightSearchViewModel> call(FlightSearchViewModel flightSearchViewModel) {
                         List<String> airlineList = new ArrayList<>();
                         for (Route route : flightSearchViewModel.getRouteList()) {
-                            airlineList.add(route.getAirline());
+                            if (!airlineList.contains(route.getAirline())) {
+                                airlineList.add(route.getAirline());
+                            }
                         }
 
                         return Observable.zip(Observable.from(airlineList)
