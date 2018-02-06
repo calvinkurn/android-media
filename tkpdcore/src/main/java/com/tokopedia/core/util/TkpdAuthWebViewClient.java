@@ -18,10 +18,10 @@ public class TkpdAuthWebViewClient extends WebViewClient {
     @SuppressWarnings("deprecation")
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        if (view instanceof TkpdWebView) {
+        try {
             TkpdWebView tkpdWebView = (TkpdWebView) view;
             tkpdWebView.loadAuthUrl(url);
-        } else {
+        } catch (Exception e) {
             view.loadUrl(url, getWebviewHeaders(url));
         }
         return true;
