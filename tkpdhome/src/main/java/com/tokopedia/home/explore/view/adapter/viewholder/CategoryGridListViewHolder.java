@@ -29,7 +29,6 @@ import java.util.List;
 
 public class CategoryGridListViewHolder extends AbstractViewHolder<CategoryGridListViewModel> {
 
-
     private static final String MARKETPLACE = "Marketplace";
     private static final String DIGITAL = "Digital";
 
@@ -90,7 +89,11 @@ public class CategoryGridListViewHolder extends AbstractViewHolder<CategoryGridL
             holder.container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (!TextUtils.isEmpty(rowModel.getApplinks())) {
+                    if (rowModel.getType().equalsIgnoreCase(MARKETPLACE)) {
+                        listener.onMarketPlaceItemClicked(rowModel);
+                    } else if (rowModel.getType().equalsIgnoreCase(DIGITAL)) {
+                        listener.onDigitalItemClicked(rowModel);
+                    } else if (!TextUtils.isEmpty(rowModel.getApplinks())) {
                         listener.onApplinkClicked(rowModel);
                     } else {
                         listener.onGimickItemClicked(rowModel);

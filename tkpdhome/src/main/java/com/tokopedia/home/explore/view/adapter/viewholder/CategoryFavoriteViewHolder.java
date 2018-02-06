@@ -30,6 +30,9 @@ import java.util.List;
 
 public class CategoryFavoriteViewHolder extends AbstractViewHolder<CategoryFavoriteViewModel> {
 
+    private static final String MARKETPLACE = "Marketplace";
+    private static final String DIGITAL = "Digital";
+
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_category_favorite;
     private TextView titleTxt;
@@ -89,7 +92,11 @@ public class CategoryFavoriteViewHolder extends AbstractViewHolder<CategoryFavor
             holder.container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (!TextUtils.isEmpty(rowModel.getApplinks())) {
+                    if (rowModel.getType().equalsIgnoreCase(MARKETPLACE)) {
+                        listener.onMarketPlaceItemClicked(rowModel);
+                    } else if (rowModel.getType().equalsIgnoreCase(DIGITAL)) {
+                        listener.onDigitalItemClicked(rowModel);
+                    } else if (!TextUtils.isEmpty(rowModel.getApplinks())) {
                         listener.onApplinkClicked(rowModel);
                     } else {
                         listener.onGimickItemClicked(rowModel);
