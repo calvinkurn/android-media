@@ -96,11 +96,11 @@ public class ShopInfoActivity extends BaseTabActivity {
             public Fragment getItem(int position) {
                 switch (position) {
                     case 0:
-                        return ShopInfoDetailFragment.createInstance();
+                        return ShopInfoDetailFragment.createInstance("");
                     case 1:
-                        return ShopInfoDetailFragment.createInstance();
+                        return ShopInfoDetailFragment.createInstance("");
                     case 2:
-                        return ShopInfoDetailFragment.createInstance();
+                        return ShopInfoDetailFragment.createInstance("");
                     default:
                         return null;
                 }
@@ -120,7 +120,7 @@ public class ShopInfoActivity extends BaseTabActivity {
 
     protected ShopInfoComponent getShopComponent() {
         if (component == null) {
-            component = ShopComponentInstance.getFlightComponent(getApplication());
+            component = ShopComponentInstance.getComponent(getApplication());
         }
         return component;
     }

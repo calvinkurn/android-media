@@ -13,7 +13,7 @@ import com.tokopedia.shop.info.di.component.ShopInfoComponent;
 public class ShopComponentInstance {
     private static ShopInfoComponent shopInfoComponent;
 
-    public static ShopInfoComponent getFlightComponent(Application application) {
+    public static ShopInfoComponent getComponent(Application application) {
         if (shopInfoComponent == null) {
             shopInfoComponent = DaggerShopInfoComponent.builder().baseAppComponent(
                     ((BaseMainApplication)application).getBaseAppComponent()).build();
