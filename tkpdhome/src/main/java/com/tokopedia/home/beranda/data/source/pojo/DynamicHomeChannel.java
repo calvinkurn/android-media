@@ -49,6 +49,7 @@ public class DynamicHomeChannel {
 
         @Expose
         private Header header;
+        private String promoName;
 
         public String getId() {
             return id;
@@ -107,7 +108,7 @@ public class DynamicHomeChannel {
         }
 
         public Map<String, Object> getEnhanceImpressionSprintSaleHomePage() {
-            List<Object> list = convertGridIntoDataLayer(getGrids());
+            List<Object> list = convertProductEnhanceSprintSaleDataLayer(getGrids());
             return DataLayer.mapOf(
                     "event", "productView",
                     "eventCategory", "homepage",
@@ -122,7 +123,7 @@ public class DynamicHomeChannel {
             );
         }
 
-        private List<Object> convertGridIntoDataLayer(Grid[] grids) {
+        private List<Object> convertProductEnhanceSprintSaleDataLayer(Grid[] grids) {
             List<Object> list = new ArrayList<>();
             for (int i = 0; i < grids.length; i++) {
                 Grid grid = grids[i];
@@ -171,6 +172,100 @@ public class DynamicHomeChannel {
                             )
                     )
             );
+        }
+
+        public Map<String, Object> getEnhanceImpressionDynamicChannelHomePage() {
+            List<Object> list = convertPromoEnhanceDynamicChannelDataLayer(getHero(), getGrids(), getPromoName());
+            return DataLayer.mapOf(
+                    "event", "promoView",
+                    "eventCategory", "homepage",
+                    "eventAction", "curated list banner impression",
+                    "eventLabel", getHeader().getName(),
+                    "ecommerce", DataLayer.mapOf(
+                            "promoView", DataLayer.mapOf(
+                                    "promotions", DataLayer.listOf(
+                                            list.toArray(new Object[list.size()])
+                                    )
+                            )
+                    )
+            );
+        }
+
+        private List<Object> convertPromoEnhanceDynamicChannelDataLayer(Hero[] hero, Grid[] grids, String promoName) {
+            List<Object> list = new ArrayList<>();
+            if (hero != null) {
+                list.add(DataLayer.mapOf(
+                        "id", hero[0].getId(),
+                        "name", promoName,
+                        "creative", hero[0].getName(),
+                        "position", String.valueOf(1)
+                ));
+            }
+
+            if (grids != null) {
+                for (int i = 0; i < grids.length; i++) {
+                    Grid grid = grids[i];
+                    list.add(
+                            DataLayer.mapOf(
+                                    "id", grid.getId(),
+                                    "name", promoName,
+                                    "creative", grid.getName(),
+                                    "position", String.valueOf(i + 2)
+                            )
+                    );
+                }
+            }
+            return list;
+        }
+
+        public Map<String, Object> getEnhanceClickDynamicChannelHomePage(Hero hero, int position) {
+            return DataLayer.mapOf(
+                    "event", "promoClick",
+                    "eventCategory", "homepage",
+                    "eventAction", "curated list banner click",
+                    "eventLabel", String.format("%s - %s", getHeader().getName(), getHeader().getApplink()),
+                    "ecommerce", DataLayer.mapOf(
+                            "promoClick", DataLayer.mapOf(
+                                    "promotions", DataLayer.listOf(
+                                            DataLayer.mapOf(
+                                                    "id", hero.getId(),
+                                                    "name", getPromoName(),
+                                                    "creative", hero.getName(),
+                                                    "position", String.valueOf(position)
+                                            )
+                                    )
+                            )
+                    )
+            );
+        }
+
+        public Map<String, Object> getEnhanceClickDynamicChannelHomePage(Grid grid, int position) {
+            return DataLayer.mapOf(
+                    "event", "promoClick",
+                    "eventCategory", "homepage",
+                    "eventAction", "curated list banner click",
+                    "eventLabel", String.format("%s - %s", getHeader().getName(), getHeader().getApplink()),
+                    "ecommerce", DataLayer.mapOf(
+                            "promoClick", DataLayer.mapOf(
+                                    "promotions", DataLayer.listOf(
+                                            DataLayer.mapOf(
+                                                    "id", grid.getId(),
+                                                    "name", getPromoName(),
+                                                    "creative", grid.getName(),
+                                                    "position", String.valueOf(position)
+                                            )
+                                    )
+                            )
+                    )
+            );
+        }
+
+        public void setPromoName(String promoName) {
+            this.promoName = promoName;
+        }
+
+        public String getPromoName() {
+            return promoName;
         }
     }
 

@@ -57,8 +57,19 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
             }
 
             if (homeData.getDynamicHomeChannel() != null && !homeData.getDynamicHomeChannel().getChannels().isEmpty()) {
+                int position = 0;
                 for(DynamicHomeChannel.Channels channel : homeData.getDynamicHomeChannel().getChannels()) {
-                    eventImpressionDynamicChannel(channel);
+                    if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT)) {
+                        HomePageTracking.eventEnhancedImpressionSprintSaleHomePage(
+                                channel.getEnhanceImpressionSprintSaleHomePage()
+                        );
+                    } else {
+                        position++;
+                        channel.setPromoName(String.format("/ - p%d - %s", position, channel.getHeader().getName()));
+                        HomePageTracking.eventEnhancedImpressionDynamicChannelHomePage(
+                                channel.getEnhanceImpressionDynamicChannelHomePage()
+                        );
+                    }
                     list.add(mappingDynamicChannel(channel));
                 }
             }
@@ -73,14 +84,6 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
             } else {
                 throw new RuntimeException(String.valueOf(response.code()));
             }
-        }
-    }
-
-    private void eventImpressionDynamicChannel(DynamicHomeChannel.Channels channel) {
-        if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT)) {
-            HomePageTracking.eventEnhancedImpressionSprintSaleProduct(channel.getEnhanceImpressionSprintSaleHomePage());
-        } else {
-
         }
     }
 

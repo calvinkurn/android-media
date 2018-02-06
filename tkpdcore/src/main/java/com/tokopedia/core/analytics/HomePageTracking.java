@@ -70,11 +70,29 @@ public class HomePageTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventEnhancedImpressionSprintSaleProduct(Map<String, Object> data) {
+    public static void eventEnhancedImpressionSprintSaleHomePage(Map<String, Object> data) {
         eventTrackingEnhancedEcommerce(data);
     }
 
     public static void eventEnhancedClickSprintSaleProduct(Map<String, Object> data) {
         eventTrackingEnhancedEcommerce(data);
+    }
+
+    public static void eventEnhancedImpressionDynamicChannelHomePage(Map<String, Object> data) {
+        eventTrackingEnhancedEcommerce(data);
+    }
+
+    public static void eventEnhancedClickDynamicChannelHomePage(Map<String, Object> data) {
+        eventTrackingEnhancedEcommerce(data);
+    }
+
+    public static void eventClickSeeAllDynamicChannel(String applink) {
+        flushEventTracker();
+        sendGTMEvent(new EventTracking(
+                DEFAULT_VALUE_EVENT_NAME,
+                DEFAULT_VALUE_EVENT_CATEGORY,
+                "curated list click view all",
+                applink
+        ).getEvent());
     }
 }
