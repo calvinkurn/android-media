@@ -147,7 +147,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         BerandaComponent component = DaggerBerandaComponent.builder().baseAppComponent(((BaseMainApplication)
                 getActivity().getApplication()).getBaseAppComponent()).build();
         component.inject(this);
-        component.inject(this);
+        component.inject(presenter);
     }
 
     private void fetchRemoteConfig() {
