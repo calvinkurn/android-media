@@ -12,6 +12,10 @@ public class ShopFeedViewModel implements Visitable<AdsTypeFactory> {
 
     private Data data;
 
+    public ShopFeedViewModel(Data data) {
+        this.data = data;
+    }
+
     @Override
     public int type(AdsTypeFactory typeFactory) {
         return typeFactory.type(this);
