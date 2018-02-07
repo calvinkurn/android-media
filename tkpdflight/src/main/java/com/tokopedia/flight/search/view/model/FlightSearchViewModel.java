@@ -277,6 +277,10 @@ public class FlightSearchViewModel implements Parcelable, Visitable<FilterSearch
         return routeList;
     }
 
+    public void setRouteList(List<Route> routeList) {
+        this.routeList = routeList;
+    }
+
     public Fare getFare() {
         return fare;
     }

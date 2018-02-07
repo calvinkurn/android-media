@@ -119,7 +119,10 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
             }
         });
 
-        setPickupLocationText();
+        // start hotfix, comment pickup location
+        // because the new logistic API (if user click cargo or express) make the user cannot checkout
+        // setPickupLocationText();
+        // end hotfix
 
         return view;
     }
@@ -167,6 +170,7 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         tvMakeSurePickupLoc.setMovementMethod(LinkMovementMethod.getInstance());
         tvMakeSurePickupLoc.setText(spannableString);
+        tvMakeSurePickupLoc.setVisibility(View.VISIBLE);
     }
 
     private int getDistrictId() {
@@ -295,6 +299,19 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     @Override
     public void onSuccessLoadLogistic(CouriersModel couriersModel) {
         hideLoading();
+
+        // this is temporary hotfix,
+        // because the new logistic API (if user click cargo or express) make the user cannot checkout
+        if (couriersModel.getCourier()!= null && couriersModel.getCourier().size() > 0) {
+            for (int i = couriersModel.getCourier().size() - 1; i >= 0; i--) {
+                Courier courier = couriersModel.getCourier().get(i);
+                if (courier.isExpressCourierId() || courier.isCargoCourierId()) {
+                    couriersModel.getCourier().remove(i);
+                }
+            }
+        }
+        // end hotfix
+
         courierListViewGroup.setCourierList(couriersModel.getCourier(), selectedCourierServiceIdWrapper,
                 hasPinPointLocation());
     }
@@ -311,9 +328,9 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     @Override
     public void onErrorSaveCourier(Throwable t) {
         hideSubmitLoading();
-        Crashlytics.logException(t);      
+        Crashlytics.logException(t);
         trackingOpenShop.eventOpenShopShippingError(ShopErrorHandler.getErrorMessage(getActivity(), t));
-        NetworkErrorHelper.showSnackbar(getActivity(),ShopErrorHandler.getErrorMessage(getActivity(), t));
+        NetworkErrorHelper.showSnackbar(getActivity(), ShopErrorHandler.getErrorMessage(getActivity(), t));
     }
 
     @Override

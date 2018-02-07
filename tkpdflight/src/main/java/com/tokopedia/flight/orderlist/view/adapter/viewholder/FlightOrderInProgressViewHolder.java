@@ -40,11 +40,11 @@ public class FlightOrderInProgressViewHolder extends FlightOrderBaseViewHolder<F
         tvOrderId = (AppCompatTextView) view.findViewById(R.id.tv_order_id);
         tvDepartureCity = (AppCompatTextView) view.findViewById(R.id.tv_departure_city);
         tvArrivalCity = (AppCompatTextView) view.findViewById(R.id.tv_arrival_city);
-        tvRebooking = (AppCompatTextView) view.findViewById(R.id.tv_rebooking);
+        tvRebooking = (AppCompatTextView) view.findViewById(R.id.tv_order_detail);
         tvRebooking.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                adapterInteractionListener.onReBookingClicked(item);
+                onDetailOptionClicked();
             }
         });
         view.setOnClickListener(new View.OnClickListener() {

@@ -165,7 +165,7 @@
                 android:layout_height="40dp"
                 android:layout_marginEnd="@dimen/padding_vs"
                 android:layout_marginRight="@dimen/padding_vs"
-                android:padding="@dimen/padding_small_sm"
+                android:padding="@dimen/padding_vvs"
                 android:src="@drawable/ic_coupon_promo"
                 tools:ignore="ContentDescription"/>
 
