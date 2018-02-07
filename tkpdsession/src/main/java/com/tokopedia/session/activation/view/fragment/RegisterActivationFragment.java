@@ -288,6 +288,7 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
 
     @Override
     public void onErrorActivateWithUnicode(String errorMessage) {
+        verifyCode.setText("");
         KeyboardHandler.DropKeyboard(getActivity(), verifyCode);
         finishLoadingProgress();
         if (errorMessage.equals(""))

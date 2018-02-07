@@ -83,6 +83,7 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.core.manage.people.profile.fragment.ManagePeopleProfileFragment.REQUEST_VERIFY_PHONE;
 import static com.tokopedia.session.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT;
 import static com.tokopedia.session.google.GoogleSignInActivity.KEY_GOOGLE_ACCOUNT_TOKEN;
 import static com.tokopedia.session.google.GoogleSignInActivity.RC_SIGN_IN_GOOGLE;
@@ -106,6 +107,8 @@ public class LoginFragment extends BaseDaggerFragment
     private static final int REQUEST_LOGIN_PHONE_NUMBER = 105;
     private static final int REQUESTS_CREATE_PASSWORD = 106;
     private static final int REQUEST_ACTIVATE_ACCOUNT = 107;
+    private static final int REQUEST_VERIFY_PHONE = 108;
+
 
     public static final int TYPE_SQ_PHONE = 1;
     public static final int TYPE_SQ_EMAIL = 2;
@@ -534,10 +537,9 @@ public class LoginFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToPhoneVerification() {
-        getActivity().setResult(Activity.RESULT_OK);
-        startActivity(
-                PhoneVerificationActivationActivity.getCallingIntent(getActivity()));
-        getActivity().finish();
+        startActivityForResult(
+                PhoneVerificationActivationActivity.getCallingIntent(getActivity()),
+                REQUEST_VERIFY_PHONE);
     }
 
     @Override
@@ -812,6 +814,9 @@ public class LoginFragment extends BaseDaggerFragment
             dismissLoadingLogin();
             getActivity().setResult(Activity.RESULT_CANCELED);
             sessionHandler.clearToken();
+        } else if (requestCode == REQUEST_VERIFY_PHONE) {
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
         } else {
             super.onActivityResult(requestCode, resultCode, data);
             callbackManager.onActivityResult(requestCode, resultCode, data);

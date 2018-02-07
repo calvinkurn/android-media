@@ -232,7 +232,7 @@ public class VerificationActivity extends TActivity implements HasComponent {
 
     private String createSmsMessage(String phoneNumber, int otpType) {
         if (!TextUtils.isEmpty(phoneNumber)) {
-            return getString(R.string.verification_code_sent_to) + "<br/>" + getMaskedPhone
+            return getString(R.string.verification_code_sms_sent_to) + "<br/>" + getMaskedPhone
                     (phoneNumber, otpType);
         } else {
             return "";
@@ -241,7 +241,7 @@ public class VerificationActivity extends TActivity implements HasComponent {
 
     private String createEmailMessage(String email) {
         if (!TextUtils.isEmpty(email)) {
-            return getString(R.string.verification_code_sent_to)
+            return getString(R.string.verification_code_email_sent_to)
                     + "<br/><b>" + email + "</b>";
         } else {
             return "";

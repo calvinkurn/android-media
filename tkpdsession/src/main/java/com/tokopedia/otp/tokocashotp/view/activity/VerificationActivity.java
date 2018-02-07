@@ -85,7 +85,7 @@ public class VerificationActivity extends TActivity implements HasComponent {
 
     private String createSmsMessage(String phoneNumber) {
         if (!TextUtils.isEmpty(phoneNumber)) {
-            return getString(R.string.verification_code_sent_to) + " " + getMaskedPhone(phoneNumber);
+            return getString(R.string.verification_code_sms_sent_to) + " " + getMaskedPhone(phoneNumber);
         } else {
             return "";
         }

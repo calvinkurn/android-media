@@ -692,7 +692,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case RC_SIGN_IN_GOOGLE:
                 if (data != null) {
@@ -719,6 +718,9 @@ public class RegisterEmailFragment extends BaseDaggerFragment
                 } else {
                     dismissLoadingProgress();
                 }
+                break;
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
                 break;
         }
     }

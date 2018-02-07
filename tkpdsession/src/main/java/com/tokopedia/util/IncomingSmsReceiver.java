@@ -34,24 +34,28 @@ public class IncomingSmsReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        final Bundle bundle = intent.getExtras();
-        if (bundle != null) {
-            SmsMessage currentMessage;
-            if (MethodChecker.createSmsFromPdu(intent) != null) {
-                currentMessage = MethodChecker.createSmsFromPdu(intent);
+        try {
+            final Bundle bundle = intent.getExtras();
+            if (bundle != null) {
+                SmsMessage currentMessage;
+                if (MethodChecker.createSmsFromPdu(intent) != null) {
+                    currentMessage = MethodChecker.createSmsFromPdu(intent);
 
-                if (isTokopediaOtpSms(currentMessage)) {
-                    String regexString = Pattern.quote("Tokopedia - ") + "(.*?)" + Pattern.quote("adalah");
-                    Pattern pattern = Pattern.compile(regexString);
-                    Matcher matcher = pattern.matcher(currentMessage.getDisplayMessageBody());
+                    if (isTokopediaOtpSms(currentMessage)) {
+                        String regexString = Pattern.quote("Tokopedia - ") + "(.*?)" + Pattern.quote("adalah");
+                        Pattern pattern = Pattern.compile(regexString);
+                        Matcher matcher = pattern.matcher(currentMessage.getDisplayMessageBody());
 
-                    while (matcher.find()) {
-                        String otpCode = matcher.group(1).trim();
-                        if (listener != null)
-                            listener.onReceiveOTP(otpCode);
+                        while (matcher.find()) {
+                            String otpCode = matcher.group(1).trim();
+                            if (listener != null)
+                                listener.onReceiveOTP(otpCode);
+                        }
                     }
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

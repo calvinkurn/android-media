@@ -81,7 +81,7 @@ public class ForgotPasswordFragment extends BaseDaggerFragment
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_forgot_password, container, false);
+        View view = inflater.inflate(R.layout.fragment_forgotpassword, container, false);
         frontView = view.findViewById(R.id.front_view);
         successView = view.findViewById(R.id.success_view);
         emailSend = view.findViewById(R.id.email_send);

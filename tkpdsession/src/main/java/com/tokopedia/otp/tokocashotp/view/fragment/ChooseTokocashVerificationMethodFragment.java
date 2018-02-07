@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.analytics.LoginPhoneNumberAnalytics;
@@ -35,6 +36,7 @@ public class ChooseTokocashVerificationMethodFragment extends BaseDaggerFragment
 
     RecyclerView methodListRecyclerView;
     VerificationMethodAdapter adapter;
+    TextView changePhoneNumberButton;
 
     @Override
     protected String getScreenName() {
@@ -72,11 +74,13 @@ public class ChooseTokocashVerificationMethodFragment extends BaseDaggerFragment
         View view = inflater.inflate(R.layout.fragment_choose_verification_method_tokocash, parent,
                 false);
         methodListRecyclerView = view.findViewById(R.id.method_list);
+        changePhoneNumberButton = view.findViewById(R.id.phone_inactive);
         prepareView();
         return view;
     }
 
     private void prepareView() {
+        changePhoneNumberButton.setVisibility(View.GONE);
         adapter = VerificationMethodAdapter.createInstance(getList(), this);
         methodListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager
                 .VERTICAL, false));

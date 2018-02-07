@@ -101,7 +101,6 @@
     <string name="phone_number">Nomor Ponsel</string>
     <string name="we_will_send_verification_code">Kami akan mengirimkan SMS kode verifikasi</string>
     <string name="title_verify">Verifikasi</string>
-    <string name="verification_code_sent_to">Kode verifikasi telah dikirimkan ke</string>
     <string name="verification_code_email_sent_to">Kode verifikasi telah dikirimkan melalui email ke</string>
     <string name="verification_code_sms_sent_to">Kode verifikasi telah dikirimkan melalui SMS ke</string>
     <string name="verification_code_call_sent_to">Kode verifikasi telah dikirimkan melalui panggilan telepon ke</string>
