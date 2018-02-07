@@ -2,16 +2,16 @@ package com.tokopedia.shop.info.view.fragment;
 
 import android.os.Bundle;
 
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
-import com.tokopedia.shop.info.data.source.cloud.model.ShopNote;
 import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent;
 import com.tokopedia.shop.info.di.module.ShopInfoModule;
+import com.tokopedia.shop.info.view.adapter.ShopNoteAdapterTypeFactory;
+import com.tokopedia.shop.info.view.adapter.ShopNoteTypeFactory;
 import com.tokopedia.shop.info.view.listener.ShopNoteListView;
 import com.tokopedia.shop.info.view.presenter.ShopNoteListPresenter;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -19,7 +19,7 @@ import javax.inject.Inject;
  * Created by nathan on 2/5/18.
  */
 
-public class ShopNoteListFragment extends BaseDaggerFragment implements ShopNoteListView {
+public class ShopNoteListFragment extends BaseListFragment<Visitable, ShopNoteTypeFactory> implements ShopNoteListView {
 
     public static ShopNoteListFragment createInstance(String shopId) {
         ShopNoteListFragment shopNoteListFragment = new ShopNoteListFragment();
@@ -38,16 +38,20 @@ public class ShopNoteListFragment extends BaseDaggerFragment implements ShopNote
         super.onCreate(savedInstanceState);
         shopId = getArguments().getString(ShopParamConstant.SHOP_ID);
         shopNoteListPresenter.attachView(this);
+    }
+
+    @Override
+    public void loadData(int page) {
         shopNoteListPresenter.getShopNoteList(shopId);
     }
 
     @Override
-    public void onSuccessGetShopNoteList(List<ShopNote> shopNoteList) {
-
+    protected ShopNoteTypeFactory getAdapterTypeFactory() {
+        return new ShopNoteAdapterTypeFactory();
     }
 
     @Override
-    public void onErrorGetShopNoteList(Throwable e) {
+    public void onItemClicked(Visitable visitable) {
 
     }
 

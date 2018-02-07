@@ -1,11 +1,10 @@
 package com.tokopedia.shop.info.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.interfaces.merchant.shop.info.ShopInfo;
 import com.tokopedia.shop.info.data.source.cloud.model.ShopNote;
-import com.tokopedia.shop.info.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.shop.info.domain.interactor.GetShopNoteListUseCase;
 import com.tokopedia.shop.info.view.listener.ShopNoteListView;
+import com.tokopedia.shop.info.view.mapper.ShopNoteViewModelMapper;
 
 import java.util.List;
 
@@ -20,10 +19,12 @@ import rx.Subscriber;
 public class ShopNoteListPresenter extends BaseDaggerPresenter<ShopNoteListView> {
 
     private final GetShopNoteListUseCase getShopNoteListUseCase;
+    private final ShopNoteViewModelMapper shopNoteViewModelMapper;
 
     @Inject
-    public ShopNoteListPresenter(GetShopNoteListUseCase getShopNoteListUseCase) {
+    public ShopNoteListPresenter(GetShopNoteListUseCase getShopNoteListUseCase, ShopNoteViewModelMapper shopNoteViewModelMapper) {
         this.getShopNoteListUseCase = getShopNoteListUseCase;
+        this.shopNoteViewModelMapper = shopNoteViewModelMapper;
     }
 
     public void getShopNoteList(String shopId) {
@@ -36,13 +37,13 @@ public class ShopNoteListPresenter extends BaseDaggerPresenter<ShopNoteListView>
             @Override
             public void onError(Throwable e) {
                 if (isViewAttached()) {
-                    getView().onErrorGetShopNoteList(e);
+                    getView().showGetListError(e);
                 }
             }
 
             @Override
             public void onNext(List<ShopNote> shopNoteList) {
-                getView().onSuccessGetShopNoteList(shopNoteList);
+                getView().renderList(shopNoteViewModelMapper.transform(shopNoteList), false);
             }
         });
     }

@@ -4,6 +4,7 @@ import com.tokopedia.shop.info.data.repository.ShopInfoRepositoryImpl;
 import com.tokopedia.shop.info.data.source.ShopInfoDataSource;
 import com.tokopedia.shop.info.di.scope.ShopInfoScope;
 import com.tokopedia.shop.info.domain.repository.ShopInfoRepository;
+import com.tokopedia.shop.info.view.model.ShopNoteViewModel;
 
 import dagger.Module;
 import dagger.Provides;
@@ -16,6 +17,12 @@ public class ShopInfoModule {
     @Provides
     public ShopInfoRepository provideShopInfoRepository(ShopInfoDataSource shopInfoDataSource){
         return new ShopInfoRepositoryImpl(shopInfoDataSource);
+    }
+
+    @ShopInfoScope
+    @Provides
+    public ShopNoteViewModel provideShopNoteViewModel(){
+        return new ShopNoteViewModel();
     }
 }
 
