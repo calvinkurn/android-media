@@ -885,10 +885,16 @@ public class CartPresenter implements ICartPresenter {
 
     @Override
     public void autoApplyCouponIfAvailable(Integer selectedProduct, Context context) {
-        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.CACHE_PROMO_CODE);
-        String savedCoupon = localCacheHandler.getString(TkpdCache.Key.KEY_CACHE_PROMO_CODE);
-        if (!TextUtils.isEmpty(savedCoupon)) {
-            processCheckVoucherCode(savedCoupon, selectedProduct);
+        if(TextUtils.isEmpty(BranchSdkUtils.REFERRAL_ADVOCATE_PROMO_CODE)) {
+
+            LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.CACHE_PROMO_CODE);
+            String savedCoupon = localCacheHandler.getString(TkpdCache.Key.KEY_CACHE_PROMO_CODE);
+            if (!TextUtils.isEmpty(savedCoupon)) {
+                processCheckVoucherCode(savedCoupon, selectedProduct);
+            }
+
+        }else{
+            processCheckVoucherCode(BranchSdkUtils.REFERRAL_ADVOCATE_PROMO_CODE, selectedProduct);
         }
     }
 }

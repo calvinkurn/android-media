@@ -29,8 +29,8 @@ public class BranchSdkUtils {
     private static final String BRANCH_ANDROID_DEEPLINK_PATH_KEY = "$android_deeplink_path";
     private static final String BRANCH_IOS_DEEPLINK_PATH_KEY = "$ios_deeplink_path";
     private static final String BRANCH_DESKTOP_URL_KEY = "$desktop_url";
-    private static final String URI_REDIRECT_MODE_KEY = "$uri_redirect_mode";
     private static final String CAMPAIGN_NAME = "Android App";
+    public static String REFERRAL_ADVOCATE_PROMO_CODE;
 
     private static BranchUniversalObject createBranchUniversalObject(ShareData data) {
         BranchUniversalObject branchUniversalObject = new BranchUniversalObject()
