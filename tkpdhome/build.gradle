@@ -48,7 +48,6 @@ apt {
 }
 
 dependencies {
-//    compile getTkpdCore()
     compile getTkpdAbstraction()
     compile getTkpdUseCase()
     compile(rootProject.ext.tkpdLibDependencies.expandableOption) {

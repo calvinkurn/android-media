@@ -5,9 +5,7 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.home.beranda.data.source.api.HomeDataApi;
-import com.tokopedia.home.beranda.data.source.api.HomeDataService;
-import com.tokopedia.home.beranda.di.HomeScope;
+import com.tokopedia.home.common.HomeDataApi;
 import com.tokopedia.home.explore.data.repository.ExploreRepositoryImpl;
 import com.tokopedia.home.explore.data.source.ExploreDataSource;
 import com.tokopedia.home.explore.domain.GetExploreDataUseCase;
@@ -28,18 +26,6 @@ public class ExploreModule {
     @Provides
     ExplorePresenter explorePresenter(){
         return new ExplorePresenter();
-    }
-
-    @ExploreScope
-    @Provides
-    HomeDataService provideHomeDataService() {
-        return new HomeDataService();
-    }
-
-    @ExploreScope
-    @Provides
-    HomeDataApi provideHomeDataApi(HomeDataService service) {
-        return service.getApi();
     }
 
     @ExploreScope

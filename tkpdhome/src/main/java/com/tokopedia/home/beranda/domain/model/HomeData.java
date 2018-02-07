@@ -1,4 +1,4 @@
-package com.tokopedia.home.beranda.data.source.pojo;
+package com.tokopedia.home.beranda.domain.model;
 
 import com.google.gson.annotations.Expose;
 import com.tokopedia.core.network.entity.home.Ticker;

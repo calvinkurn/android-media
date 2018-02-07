@@ -1,4 +1,4 @@
-package com.tokopedia.home.beranda.data.source.pojo;
+package com.tokopedia.home.beranda.domain.model;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.gson.annotations.Expose;

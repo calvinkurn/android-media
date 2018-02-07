@@ -1,25 +1,18 @@
 package com.tokopedia.home.beranda.presentation.presenter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
-import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.constants.DrawerActivityBroadcastReceiverConstant;
 import com.tokopedia.core.constants.TokoPointDrawerBroadcastReceiverConstant;
 import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
-import com.tokopedia.core.router.wallet.IWalletRouter;
-import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.shopinfo.facades.GetShopInfoRetrofit;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
@@ -27,11 +20,9 @@ import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.tokocash.model.CashBackData;
-import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.domain.interactor.GetHomeDataUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetLocalHomeDataUseCase;
-import com.tokopedia.home.beranda.domain.model.category.CategoryLayoutRowModel;
 import com.tokopedia.home.beranda.listener.HomeFeedListener;
 import com.tokopedia.home.beranda.presentation.view.HomeContract;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
@@ -67,9 +58,9 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
     GetHomeDataUseCase getHomeDataUseCase;
     @Inject
     GetHomeFeedsUseCase getHomeFeedsUseCase;
-    @Inject
-    SessionHandler sessionHandler;
 
+
+    private SessionHandler sessionHandler;
     protected CompositeSubscription compositeSubscription;
     protected Subscription subscription;
     private final Context context;
@@ -86,6 +77,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         subscription = Subscriptions.empty();
         this.pagingHandler = new PagingHandler();
         resetPageFeed();
+        sessionHandler = new SessionHandler(context);
     }
 
     @Override
@@ -204,43 +196,6 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
             }
         });
         getShopInfoRetrofit.getShopInfo();
-    }
-
-    @Override
-    public void onDigitalItemClicked(CategoryLayoutRowModel data, int parentPosition, int childPosition) {
-        Activity activity = getView().getActivity();
-        if (activity != null && !activity.isFinishing()) {
-            UnifyTracking.eventClickCategoriesIcon(data.getName());
-            if (String.valueOf(data.getCategoryId()).equalsIgnoreCase("103")
-                    && headerViewModel.getHomeHeaderWalletActionData() != null
-                    && headerViewModel.getHomeHeaderWalletActionData().getTypeAction()
-                    == HomeHeaderWalletAction.TYPE_ACTION_ACTIVATION) {
-                WalletRouterUtil.navigateWallet(activity.getApplication(), this,
-                        IWalletRouter.DEFAULT_WALLET_APPLINK_REQUEST_CODE,
-                        headerViewModel.getHomeHeaderWalletActionData().getAppLinkActionButton() == null ? ""
-                                : headerViewModel.getHomeHeaderWalletActionData().getAppLinkActionButton(),
-                        headerViewModel.getHomeHeaderWalletActionData().getRedirectUrlActionButton() == null ? ""
-                                : headerViewModel.getHomeHeaderWalletActionData().getRedirectUrlActionButton(),
-                        new Bundle()
-                );
-            } else {
-                if (((TkpdCoreRouter) activity.getApplication())
-                        .isSupportedDelegateDeepLink(data.getApplinks())) {
-                    DigitalCategoryDetailPassData passData = new DigitalCategoryDetailPassData.Builder()
-                            .appLinks(data.getApplinks())
-                            .categoryId(String.valueOf(data.getCategoryId()))
-                            .categoryName(data.getName())
-                            .url(data.getUrl())
-                            .build();
-
-                    ((IHomeRouter) activity.getApplication()).onDigitalItemClick(activity,
-                            passData, data.getApplinks());
-                } else {
-                    getView().onGimickItemClicked(data, parentPosition, childPosition);
-                }
-            }
-            TrackingUtils.sendMoEngageClickMainCategoryIcon(data.getName());
-        }
     }
 
     @Override

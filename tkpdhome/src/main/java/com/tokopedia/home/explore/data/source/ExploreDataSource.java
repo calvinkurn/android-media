@@ -14,7 +14,7 @@ import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.home.R;
-import com.tokopedia.home.beranda.data.source.api.HomeDataApi;
+import com.tokopedia.home.common.HomeDataApi;
 import com.tokopedia.home.explore.domain.model.DataResponseModel;
 import com.tokopedia.home.explore.domain.model.DynamicHomeIcon;
 import com.tokopedia.home.explore.domain.model.LayoutRows;
@@ -130,7 +130,7 @@ public class ExploreDataSource {
 
             private Visitable mappingFavoriteCategory(List<LayoutRows> favCategory) {
                 CategoryFavoriteViewModel viewModel = new CategoryFavoriteViewModel();
-                viewModel.setTitle("Kategori Favorite Anda");
+                viewModel.setTitle(context.getString(R.string.kategori_favorit));
                 viewModel.setItemList(favCategory);
                 return viewModel;
             }

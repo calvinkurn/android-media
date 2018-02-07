@@ -6,12 +6,10 @@ import android.view.View;
 import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
 import com.tokopedia.core.base.adapter.model.RetryModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.home.beranda.data.source.pojo.DynamicHomeChannel;
+import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.listener.HomeFeedListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.BannerViewHolder;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.BrandsViewHolder;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.CategoryItemViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.CategorySectionViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.DigitalsViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.DynamicChannelHeroViewHolder;
@@ -20,18 +18,14 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HeaderVie
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.RetryViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.SellViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.TickerViewHolder;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.TopPicksViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.inspiration.InspirationViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BrandsViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CategoryItemViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CategorySectionViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SellViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopPicksViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
 
 /**
@@ -62,16 +56,6 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
     }
 
     @Override
-    public int type(TopPicksViewModel topPicksViewModel) {
-        return TopPicksViewHolder.LAYOUT;
-    }
-
-    @Override
-    public int type(BrandsViewModel brandsViewModel) {
-        return BrandsViewHolder.LAYOUT;
-    }
-
-    @Override
     public int type(DigitalsViewModel digitalsViewModel) {
         return DigitalsViewHolder.LAYOUT;
     }
@@ -84,11 +68,6 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
     @Override
     public int type(SellViewModel sellViewModel) {
         return SellViewHolder.LAYOUT;
-    }
-
-    @Override
-    public int type(CategoryItemViewModel categoryItemViewModel) {
-        return CategoryItemViewHolder.LAYOUT;
     }
 
     @Override
@@ -125,16 +104,10 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
             viewHolder = new BannerViewHolder(view, listener);
         else if (type == TickerViewHolder.LAYOUT)
             viewHolder = new TickerViewHolder(view, listener);
-        else if (type == TopPicksViewHolder.LAYOUT)
-            viewHolder = new TopPicksViewHolder(view, listener);
-        else if (type == BrandsViewHolder.LAYOUT)
-            viewHolder = new BrandsViewHolder(view, listener);
         else if (type == DigitalsViewHolder.LAYOUT)
             viewHolder = new DigitalsViewHolder(fragmentManager, view, listener);
         else if (type == CategorySectionViewHolder.LAYOUT)
             viewHolder = new CategorySectionViewHolder(view, listener);
-        else if (type == CategoryItemViewHolder.LAYOUT)
-            viewHolder = new CategoryItemViewHolder(view, listener);
         else if (type == SellViewHolder.LAYOUT)
             viewHolder = new SellViewHolder(view, listener);
         else if(type == HeaderViewHolder.LAYOUT)

@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.data.source.api;
 
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.services.AuthService;
+import com.tokopedia.home.common.HomeDataApi;
 
 import retrofit2.Retrofit;
 

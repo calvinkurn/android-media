@@ -22,13 +22,13 @@ import android.view.ViewGroup;
 
 import com.google.firebase.perf.metrics.Trace;
 import com.tkpd.library.ui.view.LinearLayoutManager;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -46,6 +46,7 @@ import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
+import com.tokopedia.home.R;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
@@ -60,37 +61,22 @@ import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.digital.tokocash.model.CashBackData;
-import com.tokopedia.home.IHomeRouter;
-import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.di.BerandaComponent;
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
-import com.tokopedia.home.beranda.domain.model.brands.BrandDataModel;
-import com.tokopedia.home.beranda.domain.model.category.CategoryLayoutRowModel;
-import com.tokopedia.home.beranda.domain.model.toppicks.TopPicksItemModel;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.listener.HomeFeedListener;
-import com.tokopedia.home.beranda.listener.HomeRecycleScrollListener;
-import com.tokopedia.home.beranda.listener.OnSectionChangeListener;
 import com.tokopedia.home.beranda.presentation.presenter.HomePresenter;
 import com.tokopedia.home.beranda.presentation.view.HomeContract;
 import com.tokopedia.home.beranda.presentation.view.SectionContainer;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.LinearLayoutManagerWithSmoothScroller;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
-import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.VerticalSpaceItemDecoration;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CategoryItemViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CategorySectionViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.LayoutSections;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SellViewModel;
-import com.tokopedia.home.explore.view.activity.ExploreActivity;
+import com.tokopedia.home.explore.di.DaggerExploreComponent;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -104,8 +90,8 @@ import static com.tokopedia.core.constants.HomeFragmentBroadcastReceiverConstant
  */
 @RuntimePermissions
 public class HomeFragment extends BaseDaggerFragment implements HomeContract.View,
-        SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener, OnSectionChangeListener,
-        TabLayout.OnTabSelectedListener, TokoCashUpdateListener, HomeFeedListener {
+        SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener,
+        TokoCashUpdateListener, HomeFeedListener {
 
     @Inject
     HomePresenter presenter;
@@ -158,7 +144,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     protected void initInjector() {
-        BerandaComponent component = DaggerBerandaComponent.builder().appComponent(getComponent(AppComponent.class)).build();
+        BerandaComponent component = DaggerBerandaComponent.builder().baseAppComponent(((BaseMainApplication)
+                getActivity().getApplication()).getBaseAppComponent()).build();
         component.inject(this);
         component.inject(presenter);
     }
@@ -206,7 +193,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             tab.setIcon(icons.getResourceId(i, R.drawable.ic_beli));
             tabLayout.addTab(tab);
         }
-        tabLayout.addOnTabSelectedListener(this);
     }
 
     @Override
@@ -266,56 +252,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         adapterFactory = new HomeAdapterFactory(getFragmentManager(), this, this);
         adapter = new HomeRecycleAdapter(adapterFactory, new ArrayList<Visitable>());
         recyclerView.setAdapter(adapter);
-        recyclerView.addOnScrollListener(new HomeRecycleScrollListener(layoutManager, this));
-    }
-
-    @Override
-    public void onChange(int position) {
-        if (adapter.getItemCount() > position) {
-            Visitable visitable = adapter.getItem(position);
-            if (visitable instanceof CategoryItemViewModel) {
-                tabLayout.getTabAt(((CategoryItemViewModel) visitable).getSectionId()).select();
-            } else if (visitable instanceof DigitalsViewModel) {
-                tabLayout.getTabAt(((DigitalsViewModel) visitable).getSectionId()).select();
-            }
-        }
-    }
-
-    private void toggleSectionTab(int firstPosition) {
-        if (firstPosition >= 2) {
-            tabContainer.setVisibility(View.VISIBLE);
-        } else {
-            tabContainer.setVisibility(View.GONE);
-        }
-    }
-
-    @Override
-    public void onScrollStateChanged(int newState, int firstPosition) {
-        switch (newState) {
-            case RecyclerView.SCROLL_STATE_DRAGGING:
-            case RecyclerView.SCROLL_STATE_SETTLING:
-                tabLayout.removeOnTabSelectedListener(this);
-                break;
-            case RecyclerView.SCROLL_STATE_IDLE:
-                tabLayout.addOnTabSelectedListener(this);
-                break;
-        }
-    }
-
-
-    @Override
-    public void onTabSelected(TabLayout.Tab tab) {
-        focusView(tabSectionTitle[tab.getPosition()]);
-    }
-
-    @Override
-    public void onTabUnselected(TabLayout.Tab tab) {
-
-    }
-
-    @Override
-    public void onTabReselected(TabLayout.Tab tab) {
-
     }
 
     @Override
@@ -363,95 +299,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         getActivity().startActivity(intent);
     }
 
-    private void focusView(String title) {
-        if (title.equalsIgnoreCase("Jual")) {
-            for (int i = 0; i < adapter.getItemCount(); i++) {
-                if (adapter.getItem(i) instanceof SellViewModel) {
-                    recyclerView.smoothScrollToPosition(i);
-                    break;
-                }
-            }
-        } else {
-            for (int i = 0; i < adapter.getItemCount(); i++) {
-                Visitable visitable = adapter.getItem(i);
-                if ((visitable instanceof CategoryItemViewModel && ((CategoryItemViewModel) visitable).getTitle().startsWith(title))
-                        || (visitable instanceof DigitalsViewModel && ((DigitalsViewModel) visitable).getTitle().startsWith(title))) {
-                    recyclerView.smoothScrollToPosition(i);
-                    break;
-                }
-            }
-        }
-    }
-
-    @Override
-    public void onMarketPlaceItemClicked(CategoryLayoutRowModel data, int parentPosition, int childPosition) {
-        TrackingUtils.sendMoEngageClickMainCategoryIcon(data.getName());
-        ((IHomeRouter) getActivity().getApplication()).openIntermediaryActivity(getActivity(),
-                String.valueOf(data.getCategoryId()), data.getName());
-        Map<String, String> values = new HashMap<>();
-        values.put(getString(R.string.value_category_name), data.getName());
-        UnifyTracking.eventHomeCategory(data.getName());
-    }
-
-    @Override
-    public void onDigitalItemClicked(CategoryLayoutRowModel data, int parentPosition, int childPosition) {
-        presenter.onDigitalItemClicked(data, parentPosition, childPosition);
-    }
-
-    @Override
-    public void onGimickItemClicked(CategoryLayoutRowModel data, int parentPosition, int childPosition) {
-        String redirectUrl = data.getUrl();
-        if (redirectUrl != null && redirectUrl.length() > 0) {
-            String resultGenerateUrl = URLGenerator.generateURLSessionLogin(
-                    Uri.encode(redirectUrl), MainApplication.getAppContext());
-            openWebViewGimicURL(resultGenerateUrl, data.getUrl(), data.getName());
-        }
-    }
-
-    @Override
-    public void onApplinkClicked(CategoryLayoutRowModel data, int parentPosition, int childPosition) {
-        openApplink(data.getApplinks());
-    }
-
-    @Override
-    public void onTopPicksItemClicked(TopPicksItemModel data, int parentPosition, int childPosition) {
-        if (getActivity() != null
-                && getActivity().getApplicationContext() instanceof IDigitalModuleRouter
-                && ((IDigitalModuleRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(data.getApplinks())) {
-            ((IDigitalModuleRouter) getActivity().getApplicationContext())
-                    .actionNavigateByApplinksUrl(getActivity(), data.getApplinks(), new Bundle());
-        } else {
-            openWebViewURL(data.getUrl(), getContext());
-        }
-    }
-
-    @Override
-    public void onTopPicksMoreClicked(String url, int pos) {
-        openWebViewTopPicksURL(url);
-    }
-
-    @Override
-    public void onBrandsItemClicked(BrandDataModel data, int parentPosition, int childPosition) {
-        UnifyTracking.eventClickOfficialStore(AppEventTracking.EventLabel.OFFICIAL_STORE + data.getShopName());
-        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
-        intent.putExtras(ShopInfoActivity.createBundle(String.valueOf(data.getShopId()), ""));
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        getActivity().startActivity(intent);
-    }
-
-    @Override
-    public void onBrandsMoreClicked(int pos) {
-        if (SessionHandler.isV4Login(getContext())) {
-            UnifyTracking.eventViewAllOSLogin();
-        } else {
-            UnifyTracking.eventViewAllOSNonLogin();
-        }
-        if (firebaseRemoteConfig.getBoolean(MAINAPP_SHOW_REACT_OFFICIAL_STORE)) {
-            ((IHomeRouter) getActivity().getApplication()).openReactNativeOfficialStore(getActivity());
-        } else {
-            openWebViewBrandsURL(TkpdBaseURL.OfficialStore.URL_WEBVIEW);
-        }
-    }
 
     @Override
     public void onDigitalMoreClicked(int pos) {

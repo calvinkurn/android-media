@@ -13,19 +13,19 @@ public class LayoutRows implements Parcelable {
     @SerializedName("id")
     private int id;
     @SerializedName("name")
-    private String name;
+    private String name = "";
     @SerializedName("url")
-    private String url;
+    private String url = "";
     @SerializedName("imageUrl")
-    private String imageUrl;
+    private String imageUrl = "";
     @SerializedName("applinks")
-    private String applinks;
+    private String applinks = "";
     @SerializedName("type")
-    private String type;
+    private String type = "";
     @SerializedName("categoryId")
     private int categoryId;
     @SerializedName("categoryLabel")
-    private String categoryLabel;
+    private String categoryLabel = "";
     @SerializedName("score")
     private int score;
 

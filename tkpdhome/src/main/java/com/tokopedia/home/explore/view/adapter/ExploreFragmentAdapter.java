@@ -4,14 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.home.R;
-import com.tokopedia.home.beranda.domain.model.category.CategoryLayoutSectionsModel;
-import com.tokopedia.home.explore.domain.model.LayoutSections;
-import com.tokopedia.home.explore.view.adapter.viewmodel.CategoryGridListViewModel;
 import com.tokopedia.home.explore.view.adapter.viewmodel.ExploreSectionViewModel;
-import com.tokopedia.home.explore.view.adapter.viewmodel.SellViewModel;
 import com.tokopedia.home.explore.view.fragment.ExploreFragment;
 
 import java.util.ArrayList;

@@ -151,8 +151,20 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
 
     @Override
     public void onApplinkClicked(LayoutRows data) {
-        ((TkpdCoreRouter) getActivity().getApplication()).actionApplinkFromActivity(getActivity(),
-                data.getApplinks());
+        TkpdCoreRouter router = ((TkpdCoreRouter) getActivity().getApplicationContext());
+        if(router.isSupportedDelegateDeepLink(data.getApplinks())){
+            router.actionAppLink(getActivity(), data.getApplinks());
+        } else{
+            openWebViewURL(data.getUrl(), getActivity());
+        }
+    }
+
+    public void openWebViewURL(String url, Context context) {
+        if (url != "" && context != null) {
+            Intent intent = new Intent(context, BannerWebView.class);
+            intent.putExtra("url", url);
+            context.startActivity(intent);
+        }
     }
 
     private void openWebViewGimicURL(String url, String label, String title) {

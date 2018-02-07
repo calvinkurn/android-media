@@ -16,6 +16,7 @@
     <string name="lihat_semua">Lihat Semua</string>
     <string name="kunjungi_sekarang">Kunjungi Sekarang</string>
     <string name="format_btn_category_more">+%d Kategori Lainnya</string>
+    <string name="kategori_favorit">Kategori Favorit Anda</string>
 
     <!--tokocash cashback-->
     <string name="toko_cash_pending_title">Bonus Cashback</string>

@@ -12,6 +12,7 @@
     android:paddingLeft="@dimen/page_margin"
     android:paddingRight="@dimen/page_margin"
     android:paddingTop="@dimen/category_item_margin"
+    app:cardCornerRadius="5dp"
     app:cardUseCompatPadding="true">
 
     <ImageView
