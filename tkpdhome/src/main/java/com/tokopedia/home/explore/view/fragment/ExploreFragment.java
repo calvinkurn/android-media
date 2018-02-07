@@ -153,7 +153,7 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     public void onApplinkClicked(LayoutRows data) {
         TkpdCoreRouter router = ((TkpdCoreRouter) getActivity().getApplicationContext());
         if(router.isSupportedDelegateDeepLink(data.getApplinks())){
-            router.actionApplinkFromActivity(getActivity(), data.getApplinks());
+            router.actionApplink(getActivity(), data.getApplinks());
         } else{
             openWebViewURL(data.getUrl(), getActivity());
         }
