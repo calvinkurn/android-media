@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.common.di.qualifier.AuthKeyQualifier;
 import com.tokopedia.abstraction.common.di.qualifier.FreshAccessTokenQualifier;
 import com.tokopedia.abstraction.common.di.qualifier.OkHttpClientBuilderNonBaseQualifier;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
+import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 
 import dagger.Component;
 import okhttp3.OkHttpClient;
@@ -46,4 +47,7 @@ public interface BaseAppComponent {
 
     @FreshAccessTokenQualifier
     String provideAccessToken();
+
+    TkpdAuthInterceptor provideTkpdAuthInterceptor();
+
 }

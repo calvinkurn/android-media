@@ -319,3 +319,6 @@
 -keep public class com.google.android.gms.iid.InstanceID {
     public *;
 }
+
+#Sendbird
+-dontwarn com.sendbird.android.shadow.**

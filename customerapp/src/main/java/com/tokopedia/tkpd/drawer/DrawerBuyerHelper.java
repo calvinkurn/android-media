@@ -36,6 +36,7 @@ import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.SellerRouter;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.home.SimpleHomeRouter;
@@ -521,6 +522,14 @@ public class DrawerBuyerHelper extends DrawerHelper
                     intent = new Intent(context, SellerInfoActivity.class);
                     context.startActivity(intent);
                     break;
+                case TkpdState.DrawerPosition.INBOX_MESSAGE:
+                    if (context.getApplication() instanceof TkpdCoreRouter) {
+                        intent = ((TkpdCoreRouter) context.getApplication()).getGroupChatIntent
+                                (context);
+                        context.startActivity(intent);
+                        sendGTMNavigationEvent(AppEventTracking.EventLabel.MESSAGE);
+                    }
+                    break;
                 default:
                     super.onItemClicked(item);
             }
@@ -615,10 +624,15 @@ public class DrawerBuyerHelper extends DrawerHelper
 
     private void showAppShareButton(ArrayList<DrawerItem> data) {
         if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.MAINAPP_SHOW_APP_SHARE_BUTTON)) {
-            data.add(new DrawerItem(context.getString(R.string.drawer_title_appshare),
-                    R.drawable.share_ke_teman,
-                    TkpdState.DrawerPosition.APPSHARE,
-                    true, true));
+            if(remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_REFERRAL_BUTTON)){
+                data.add(new DrawerItem(remoteConfig.getString(TkpdCache.RemoteConfigKey.APP_REFERRAL_TITLE, context.getString(R.string.drawer_title_referral_appshare)),
+                        R.drawable.share_ke_teman, TkpdState.DrawerPosition.APPSHARE,
+                        true, true));
+            }else{
+                data.add(new DrawerItem(context.getString(R.string.drawer_title_appshare),
+                        R.drawable.share_ke_teman, TkpdState.DrawerPosition.APPSHARE,
+                        true, true));
+            }
         }
     }
 }

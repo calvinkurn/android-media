@@ -48,6 +48,9 @@ import rx.schedulers.Schedulers;
  * Created by nisie on 2/7/17.
  */
 
+/**
+ * Extends one of BaseActivity from tkpd abstraction eg:BaseSimpleActivity, BaseStepperActivity, BaseTabActivity, etc
+ */
 @Deprecated
 public class BaseActivity extends AppCompatActivity implements SessionHandler.onLogoutListener,
         ErrorNetworkReceiver.ReceiveListener, ScreenTracking.IOpenScreenAnalytics {
@@ -85,7 +88,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         globalCacheManager = new GlobalCacheManager();
 
         HockeyAppHelper.handleLogin(this);
-        HockeyAppHelper.checkForUpdate(this);
     }
 
     @Override
@@ -106,7 +108,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         unregisterForceLogoutReceiver();
         MainApplication.setActivityState(0);
         MainApplication.setActivityname(null);
-        HockeyAppHelper.unregisterManager();
     }
 
     @Override
@@ -137,8 +138,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-        HockeyAppHelper.unregisterManager();
 
         sessionHandler = null;
         gcmHandler = null;

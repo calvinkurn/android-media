@@ -253,6 +253,7 @@ public class FlightRepositoryImpl implements FlightRepository {
     @Override
     public Observable<FlightSearchSingleRouteDB> getFlightSearchById(boolean isReturning, String id) {
         if (isReturning) {
+
             return flightSearchReturnDataListSource.getSingleFlight(id);
         } else {
             return flightSearchSingleDataListSource.getSingleFlight(id);

@@ -10,6 +10,9 @@ import com.tokopedia.core.base.di.component.AppComponent;
  * @author kulomady on 11/20/16.
  */
 
+/**
+ * Extends BaseDaggerPresenter from tkpd abstraction
+ */
 @Deprecated
 public abstract class BaseDaggerPresenter<T extends CustomerView> implements CustomerPresenter<T> {
 

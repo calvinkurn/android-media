@@ -149,4 +149,5 @@ public interface TkpdCoreRouter {
 
     Intent getChangePhoneNumberIntent(Context context, String email, String phoneNumber);
 
+    Intent getGroupChatIntent(Context context);
 }
