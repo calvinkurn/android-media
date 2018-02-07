@@ -19,6 +19,7 @@ import com.tokopedia.core.util.getproducturlutil.GetProductUrlUtil;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketConstant;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketListenerImpl;
+import com.tokopedia.inbox.inboxchat.InboxChatConstant;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
 import com.tokopedia.inbox.inboxchat.domain.usecase.AttachImageUseCase;
@@ -27,7 +28,7 @@ import com.tokopedia.inbox.inboxchat.domain.usecase.ReplyMessageUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.SendMessageUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.template.GetTemplateUseCase;
 import com.tokopedia.inbox.inboxchat.presenter.subscriber.GetReplySubscriber;
-import com.tokopedia.inbox.inboxchat.uploadimage.ImageUpload;
+import com.tokopedia.inbox.inboxchat.uploadimage.domain.model.UploadImageDomain;
 import com.tokopedia.inbox.inboxchat.util.ImageUploadHandlerChat;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.GetTemplateViewModel;
@@ -184,15 +185,40 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         }
     }
 
+
+    public void uploadWithApi(final String path, final MyChatViewModel model) {
+        String messageId = (getView().getArguments().getString(PARAM_MESSAGE_ID));
+        RequestParams params = ReplyMessageUseCase.generateParamAttachImage(messageId, path);
+
+        replyMessageUseCase.execute(params, new Subscriber<ReplyActionData>() {
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                getView().setUploadingMode(false);
+                getView().onErrorUploadImages(ErrorHandler.getErrorMessage(throwable,getView().getActivity()), model);
+            }
+
+            @Override
+            public void onNext(ReplyActionData data) {
+                getView().setUploadingMode(false);
+                getView().onSuccessSendAttach(data, model);
+            }
+        });
+
+    }
+
     @Override
-    public void sendMessageWithApi() {
+    public void sendMessageWithApi(){
         if (isValidReply()) {
             getView().addDummyMessage();
             getView().setViewEnabled(false);
             final String reply = (getView().getReplyMessage());
             String messageId = (getView().getArguments().getString(PARAM_MESSAGE_ID));
             RequestParams params = ReplyMessageUseCase.generateParam(messageId, reply);
-            isRequesting = true;
+
             replyMessageUseCase.execute(params, new Subscriber<ReplyActionData>() {
                 @Override
                 public void onCompleted() {
@@ -211,6 +237,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
             });
         }
     }
+
 
     @Override
     public void addDummyMessage(WebSocketResponse response) {
@@ -295,12 +322,12 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     }
 
     @Override
-    public void startUpload(final List<MyChatViewModel> list) {
+    public void startUpload(final List<MyChatViewModel> list, final int network) {
         getView().setUploadingMode(true);
         String userId = SessionHandler.getTempLoginSession(getView().getActivity());
         String deviceId = GCMHandler.getRegistrationId(getView().getActivity());
-        String messageId = (getView().getArguments().getString(PARAM_MESSAGE_ID));
-        attachImageUseCase.execute(AttachImageUseCase.getParam(list, messageId, userId, deviceId), new Subscriber<ReplyActionData>() {
+        final String messageId = (getView().getArguments().getString(PARAM_MESSAGE_ID));
+        attachImageUseCase.execute(AttachImageUseCase.getParam(list, messageId, userId, deviceId), new Subscriber<UploadImageDomain>() {
             @Override
             public void onCompleted() {
 
@@ -313,9 +340,17 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
             }
 
             @Override
-            public void onNext(ReplyActionData data) {
-                getView().setUploadingMode(false);
-                getView().onSuccessSendAttach(data, list.get(0));
+            public void onNext(UploadImageDomain uploadImageDomain) {
+                if(network == InboxChatConstant.MODE_WEBSOCKET){
+                    try {
+                        sendImage(messageId, uploadImageDomain.getPicSrc());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else if(network == InboxChatConstant.MODE_API) {
+                    uploadWithApi(uploadImageDomain.getPicSrc(), list.get(0));
+                }
             }
         });
     }
@@ -430,6 +465,24 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                 "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
         date.setTimeZone(TimeZone.getTimeZone("UTC"));
         data.put("start_time", date.format(Calendar.getInstance().getTime()));
+        json.put("data", data);
+        ws.send(json.toString());
+        flagTyping = false;
+
+    }
+
+    public void sendImage(String messageId, String path) throws JSONException {
+        JSONObject json = new JSONObject();
+        json.put("code", ChatWebSocketConstant.EVENT_TOPCHAT_REPLY_MESSAGE);
+        JSONObject data = new JSONObject();
+        data.put("message_id", Integer.valueOf(messageId));
+        data.put("message", "Uploaded Image");
+        SimpleDateFormat date = new SimpleDateFormat(
+                "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
+        date.setTimeZone(TimeZone.getTimeZone("UTC"));
+        data.put("start_time", date.format(Calendar.getInstance().getTime()));
+        data.put("file_path", path);
+        data.put("attachment_type", 2);
         json.put("data", data);
         ws.send(json.toString());
         flagTyping = false;

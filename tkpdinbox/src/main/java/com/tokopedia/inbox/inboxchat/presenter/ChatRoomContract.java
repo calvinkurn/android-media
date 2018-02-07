@@ -145,7 +145,7 @@ public class ChatRoomContract {
 
         void openImageGallery();
 
-        void startUpload(List<MyChatViewModel> list);
+        void startUpload(List<MyChatViewModel> list, int network);
 
         String getFileLocFromCamera();
     }

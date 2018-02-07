@@ -122,7 +122,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     @Inject
     SessionHandler sessionHandler;
 
-    public static final String FILELOC = "fileloc";
+    private int network;
     private RecyclerView recyclerView;
     private RecyclerView templateRecyclerView;
     private ProgressBar progressBar;
@@ -251,7 +251,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                                 model.setImageId(String.valueOf(System.currentTimeMillis()/1000));
                                 model.setFileLoc(attachment.getAttachment().getAttributes().getImageUrl());
                                 MyChatViewModel temp = addDummyAttachImage(model);
-                                presenter.startUpload(Collections.singletonList(temp));
+                                presenter.startUpload(Collections.singletonList(temp), network);
                                 break;
                             case DELETE:
                                 adapter.remove(attachment);
@@ -449,6 +449,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     private void initVar() {
+        network = MODE_API;
         typeFactory = new ChatRoomTypeFactoryImpl(this);
         templateChatFactory = new TemplateChatTypeFactoryImpl(this);
     }
@@ -916,6 +917,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     @Override
     public void onErrorWebSocket() {
         if (getActivity() != null && presenter != null) {
+            network = MODE_API;
             sendButton.setOnClickListener(getSendWithApiListener());
             notifyConnectionWebSocket();
             presenter.recreateWebSocket();
@@ -933,7 +935,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     title.setText(R.string.connected_websocket);
                     View action = notifier.findViewById(R.id.action);
                     action.setVisibility(View.GONE);
-
+                    network = MODE_WEBSOCKET;
                     sendButton.setOnClickListener(getSendWithWebSocketListener());
 
                 }
@@ -1004,7 +1006,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     model.setImageId(String.valueOf(System.currentTimeMillis()/1000));
                     model.setFileLoc(fileLoc);
                     MyChatViewModel temp = addDummyAttachImage(model);
-                    presenter.startUpload(Collections.singletonList(temp));
+                    presenter.startUpload(Collections.singletonList(temp), network);
                 }
                 break;
 
@@ -1034,7 +1036,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     }
                 }
 
-                presenter.startUpload(list);
+                presenter.startUpload(list, network);
                 break;
             default:
                 break;

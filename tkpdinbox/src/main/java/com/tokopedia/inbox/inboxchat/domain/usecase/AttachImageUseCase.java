@@ -21,7 +21,7 @@ import rx.functions.Func1;
  * Created by StevenFredian on 25/01/18.
  */
 
-public class AttachImageUseCase extends UseCase<ReplyActionData>{
+public class AttachImageUseCase extends UseCase<UploadImageDomain>{
 
     public static final String PARAM_USER_ID = "user_id";
     public static final String PARAM_DEVICE_ID = "device_id";
@@ -56,7 +56,7 @@ public class AttachImageUseCase extends UseCase<ReplyActionData>{
     }
 
     @Override
-    public Observable<ReplyActionData> createObservable(final RequestParams requestParams) {
+    public Observable<UploadImageDomain> createObservable(final RequestParams requestParams) {
         return Observable.just(requestParams)
                 .flatMap(new Func1<RequestParams, Observable<RequestParams>>() {
                     @Override
@@ -76,16 +76,16 @@ public class AttachImageUseCase extends UseCase<ReplyActionData>{
                         else
                             return Observable.just(new UploadImageDomain(null, null));
                     }
-                })
-                .flatMap(new Func1<UploadImageDomain, Observable<ReplyActionData>>() {
-                    @Override
-                    public Observable<ReplyActionData> call(UploadImageDomain uploadImageDomain) {
-                        if(uploadImageDomain.getPicSrc()!=null){
-                            return reply(requestParams, uploadImageDomain);
-                        }else
-                            return Observable.just(new ReplyActionData());
-                    }
                 });
+//                .flatMap(new Func1<UploadImageDomain, Observable<ReplyActionData>>() {
+//                    @Override
+//                    public Observable<ReplyActionData> call(UploadImageDomain uploadImageDomain) {
+//                        if(uploadImageDomain.getPicSrc()!=null){
+//                            return reply(requestParams, uploadImageDomain);
+//                        }else
+//                            return Observable.just(new ReplyActionData());
+//                    }
+//                });
     }
 
     private RequestParams getUploadFileParam(RequestParams requestParams) {

@@ -7,4 +7,7 @@ package com.tokopedia.inbox.inboxchat;
 public interface InboxChatConstant {
 
     String PARCEL = "parcel";
+
+    int MODE_WEBSOCKET = 1;
+    int MODE_API = 2;
 }
