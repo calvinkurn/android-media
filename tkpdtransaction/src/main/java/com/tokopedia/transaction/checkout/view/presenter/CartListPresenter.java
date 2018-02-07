@@ -33,27 +33,25 @@ public class CartListPresenter implements ICartListPresenter {
 
     @Override
     public void processGetCartData() {
-//        TKPDMapParam<String, String> param = new TKPDMapParam<>();
-//        param.put("lang", "id");
-//        cartListInteractor.getCartList(new Subscriber<List<CartItemData>>() {
-//            @Override
-//            public void onCompleted() {
-//
-//            updatedData.setQuantity(originData.getMinimalQtyOrder());
-//            updatedData.setRemark(originData.getProductVarianRemark());
-//
-//            cartItemData.setOriginData(originData);
-//            cartItemData.setUpdatedData(updatedData);
-//            cartItemDataList.add(cartItemData);
-//        }
-//
-//            @Override
-//            public void onNext(List<CartItemData> cartItemDataList) {
-//                view.renderCartListData(cartItemDataList);
-//            }
-//        }, view.getGeneratedAuthParamNetwork(param));
+        TKPDMapParam<String, String> param = new TKPDMapParam<>();
+        param.put("lang", "id");
+        cartListInteractor.getCartList(new Subscriber<List<CartItemData>>() {
+            @Override
+            public void onCompleted() {
+            }
 
-        getDummyCartList();
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(List<CartItemData> cartItemDataList) {
+                view.renderCartListData(cartItemDataList);
+            }
+        }, view.getGeneratedAuthParamNetwork(param));
+
+        // getDummyCartList();
 
     }
 
@@ -96,7 +94,7 @@ public class CartListPresenter implements ICartListPresenter {
     @Override
     public void processToShipmentStep() {
         List<CartItemData> cartItemDataList = extractCartItemList(view.getFinalCartList());
-        Intent intent = CartShipmentActivity.createInstanceMultipleAddress(
+        Intent intent = CartShipmentActivity.createInstanceSingleAddress(
                 view.getActivityContext(), cartItemDataList
         );
         view.navigateToActivity(intent);

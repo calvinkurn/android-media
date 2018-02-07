@@ -14,6 +14,9 @@ apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'maven-publish'
 apply plugin: 'maven'
 
+group = 'com.tokopedia.core'
+version = rootProject.ext.tkpdTransactionVersion
+
 def getArtifactVersionCode() {
     return project.hasProperty('artifactVersion') ? artifactVersion : '1.0';
 }
@@ -46,9 +49,9 @@ def getTkpdLoyalty() {
 publishing {
     publications {
         aar(MavenPublication) {
-            groupId 'com.tokopedia.transaction'
-            artifactId 'transaction'
-            version getArtifactVersionCode()
+            groupId 'com.tokopedia.core'
+            artifactId 'tkpdtransaction'
+            version rootProject.ext.tkpdTransactionVersion
             artifact("$buildDir/outputs/aar/tkpdtransaction-release.aar")
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
@@ -88,7 +91,7 @@ artifactory {
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion "25.0.0"
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion

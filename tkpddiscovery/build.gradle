@@ -2,6 +2,10 @@ apply plugin: 'com.android.library'
 apply plugin: 'android-apt'
 apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'maven-publish'
+apply plugin: 'maven'
+
+group = 'com.tokopedia.core'
+version = rootProject.ext.tkpdDiscoveryVersion
 
 def getArtifactVersionCode() {
     return project.hasProperty('artifactVersion') ? artifactVersion : '1.0';
@@ -30,9 +34,9 @@ def getTkpdDesign() {
 publishing {
     publications {
         aar(MavenPublication) {
-            groupId 'com.tokopedia.discovery'
-            artifactId 'discovery'
-            version getArtifactVersionCode()
+            groupId 'com.tokopedia.core'
+            artifactId 'tkpddiscovery'
+            version rootProject.ext.tkpdDiscoveryVersion
             artifact("$buildDir/outputs/aar/tkpddiscovery-release.aar")
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')

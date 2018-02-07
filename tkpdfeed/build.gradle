@@ -6,6 +6,9 @@ apply plugin: 'maven-publish'
 apply plugin: 'maven'
 apply plugin: 'com.apollographql.android'
 
+group = 'com.tokopedia.core'
+version = rootProject.ext.tkpdFeedVersion
+
 buildscript {
     repositories {
         mavenCentral()
@@ -35,9 +38,9 @@ def getTopAdsSdk() {
 publishing {
     publications {
         aar(MavenPublication) {
-            groupId 'com.tokopedia.feed'
-            artifactId 'feed'
-            version getArtifactVersionCode()
+            groupId 'com.tokopedia.core'
+            artifactId 'tkpdfeed'
+            version rootProject.ext.tkpdFeedVersion
             artifact("$buildDir/outputs/aar/tkpdfeed-release.aar")
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')

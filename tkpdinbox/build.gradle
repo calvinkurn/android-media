@@ -2,6 +2,10 @@ apply plugin: 'com.android.library'
 apply plugin: 'android-apt'
 apply plugin: 'com.jfrog.artifactory'
 apply plugin: 'maven-publish'
+apply plugin:'maven'
+
+group = 'com.tokopedia.core'
+version = rootProject.ext.tkpdInboxVersion
 
 def getArtifactVersionCode() {
     return project.hasProperty('artifactVersion') ? artifactVersion : '1.998';
@@ -14,15 +18,15 @@ def getTkpdCore() {
 
 def getTkpdDesign() {
     return project.hasProperty('isArtifact') ?
-            rootProject.ext.tkpdDependencies.core : project(':tkpddesign');
+            rootProject.ext.tkpdDependencies.design : project(':tkpddesign');
 }
 
 publishing {
     publications {
         aar(MavenPublication) {
-            groupId 'com.tokopedia.inbox'
-            artifactId 'inbox'
-            version getArtifactVersionCode()
+            groupId 'com.tokopedia.core'
+            artifactId 'tkpdinbox'
+            version rootProject.ext.tkpdInboxVersion
             artifact("$buildDir/outputs/aar/tkpdinbox-release.aar")
             pom.withXml {
                 def dependenciesNode = asNode().appendNode('dependencies')
@@ -62,7 +66,7 @@ artifactory {
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion "25.0.0"
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion

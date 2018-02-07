@@ -2,6 +2,7 @@ package com.tokopedia.transaction.checkout.di.module;
 
 import com.tokopedia.transaction.apiservice.CartService;
 import com.tokopedia.transaction.checkout.domain.CartRepository;
+import com.tokopedia.transaction.checkout.domain.CartRepositoryDataDummy;
 import com.tokopedia.transaction.checkout.domain.ICartRepository;
 
 import dagger.Module;
@@ -20,6 +21,6 @@ public class DataModule {
 
     @Provides
     ICartRepository provideICartRepository(CartService cartService) {
-        return new CartRepository(cartService);
+        return new CartRepositoryDataDummy();
     }
 }
