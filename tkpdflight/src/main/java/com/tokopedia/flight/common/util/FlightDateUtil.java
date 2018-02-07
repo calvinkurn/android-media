@@ -50,7 +50,7 @@ public class FlightDateUtil {
             toFormat.setLenient(false);
             Date date = fromFormat.parse(dateString);
             return toFormat.format(date);
-        } catch (Exception e) {
+        } catch (ParseException e) {
             e.printStackTrace();
             return dateString;
         }
