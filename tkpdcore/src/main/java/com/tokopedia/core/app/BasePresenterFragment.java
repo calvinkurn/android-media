@@ -15,6 +15,10 @@ import butterknife.Unbinder;
 /**
  *
  * Created by Angga.Prasetiyo on 30/10/2015.
+
+
+ /**
+ * Extends TkpdBaseV4Fragment from tkpd abstraction
  */
 @Deprecated
 public abstract class BasePresenterFragment<P> extends TkpdFragment {
