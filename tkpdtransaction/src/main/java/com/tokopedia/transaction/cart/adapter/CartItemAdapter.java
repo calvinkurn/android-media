@@ -664,9 +664,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     private boolean isInsuranced(CartItem cartItem) {
-        return (cartItem.getCartForceInsurance() == 1
-                || cartItem.getCartInsuranceProd() == 1
-                || isProductUseInsurance(cartItem.getCartProducts()));
+        return (isProductUseInsurance(cartItem.getCartProducts()));
     }
 
     @NonNull
