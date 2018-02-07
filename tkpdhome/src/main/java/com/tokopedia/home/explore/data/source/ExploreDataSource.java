@@ -130,7 +130,7 @@ public class ExploreDataSource {
 
             private Visitable mappingFavoriteCategory(List<LayoutRows> favCategory) {
                 CategoryFavoriteViewModel viewModel = new CategoryFavoriteViewModel();
-                viewModel.setTitle("Kategori Favorite Anda");
+                viewModel.setTitle(context.getString(R.string.kategori_favorit));
                 viewModel.setItemList(favCategory);
                 return viewModel;
             }
