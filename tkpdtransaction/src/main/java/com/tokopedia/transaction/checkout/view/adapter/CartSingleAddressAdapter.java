@@ -340,6 +340,7 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
         @BindView(R2.id.tv_cashback_text) TextView mTvCashback;
 
         @BindView(R2.id.rv_product_list) RecyclerView mRvProductList;
+        @BindView(R2.id.rv_product_thumb_image) RecyclerView mRvProductThumbImage;
 
         @BindView(R2.id.ll_other_product) LinearLayout mLlOtherProductContainer;
         @BindView(R2.id.tv_expand_other_product) TextView mTvExpandOtherProduct;
@@ -403,7 +404,7 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
 
             // Init nested recycler view
             initInnerRecyclerView(cartItemModels);
-//            initInnerHorizontalRecyclerView(cartItemModels);
+            initInnerHorizontalRecyclerView(cartItemModels);
 
             // Set listeners
             mLlOtherProductContainer.setOnClickListener(showAllProductListener());
@@ -430,16 +431,16 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
         }
 
         private void initInnerHorizontalRecyclerView(List<CartItemModel> cartItemModels) {
-            mRvProductList.setVisibility(View.VISIBLE);
+            mRvProductThumbImage.setVisibility(View.VISIBLE);
 
-            mRvProductList.setHasFixedSize(true);
+            mRvProductThumbImage.setHasFixedSize(true);
             LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
             layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-            mRvProductList.setLayoutManager(layoutManager);
+            mRvProductThumbImage.setLayoutManager(layoutManager);
 
             InnerProductImageListAdapter innerProductImageListAdapter =
                     new InnerProductImageListAdapter(cartItemModels);
-            mRvProductList.setAdapter(innerProductImageListAdapter);
+            mRvProductThumbImage.setAdapter(innerProductImageListAdapter);
         }
 
         private int getExpandOtherProductVisibility(List<CartItemModel> cartItemModels) {
