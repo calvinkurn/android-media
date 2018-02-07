@@ -6,6 +6,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.support.annotation.LayoutRes;
 import android.support.v4.view.ViewCompat;
+import android.support.v7.widget.RecyclerView;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.network.entity.home.Ticker;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
@@ -92,7 +94,7 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> implem
     @Override
     public void onClick(View view) {
         int i = view.getId();
-        if (i == R.id.btn_close) {
+        if (i == R.id.btn_close && getAdapterPosition() != RecyclerView.NO_POSITION) {
             listener.onCloseTicker(getAdapterPosition());
 
         }
