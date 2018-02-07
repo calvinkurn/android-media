@@ -326,7 +326,6 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
 
         @BindView(R2.id.tv_sender_name) TextView mTvSenderName;
 
-        @BindView(R2.id.ll_item_product_container) LinearLayout mLlMainProductItemContainer;
         @BindView(R2.id.iv_product_image_container) ImageView mIvProductImage;
         @BindView(R2.id.tv_shipping_product_name) TextView mTvProductName;
         @BindView(R2.id.tv_shipped_product_price) TextView mTvProductPrice;
@@ -382,13 +381,15 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
             mTvShipmentOption.setText(model.getShipmentOption());
             mTvSubTotalPrice.setText(model.getTotalPrice());
 
-            mLlMainProductItemContainer.setVisibility(getMainProductVisibility(mIsExpandAllProduct));
             ImageHandler.LoadImage(mIvProductImage, mainProductItem.getProductImageUrl());
             mTvProductName.setText(mainProductItem.getProductName());
             mTvProductPrice.setText(mainProductItem.getProductPrice());
             mTvProductWeight.setText(mainProductItem.getProductWeight());
             mTvTotalProductItem.setText(mainProductItem.getTotalProductItem());
             mTvOptionalNote.setText(mainProductItem.getNoteToSeller());
+
+            mLlOtherProductContainer.setVisibility(getExpandOtherProductVisibility(cartItemModels));
+            mTvExpandOtherProduct.setText(getExpandOtherProductLabel(cartItemModels));
 
             mRlProductPoliciesContainer.setVisibility(getPoliciesVisibility());
             mIvFreeReturnIcon.setVisibility(getFreeReturnVisibility(mainProductItem.isFreeReturn()));
@@ -416,7 +417,7 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
         }
 
         private void initInnerRecyclerView(List<CartItemModel> cartItemModels) {
-            mRvProductList.setVisibility(View.VISIBLE);
+            mRvProductList.setVisibility(View.GONE);
 
             mRvProductList.setHasFixedSize(true);
             LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
@@ -439,6 +440,14 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
             InnerProductImageListAdapter innerProductImageListAdapter =
                     new InnerProductImageListAdapter(cartItemModels);
             mRvProductList.setAdapter(innerProductImageListAdapter);
+        }
+
+        private int getExpandOtherProductVisibility(List<CartItemModel> cartItemModels) {
+            return cartItemModels.isEmpty() ? View.GONE : View.VISIBLE;
+        }
+
+        private String getExpandOtherProductLabel(List<CartItemModel> cartItemModels) {
+            return String.format("+%s Produk Lainnya", cartItemModels.size());
         }
 
         private int getPoliciesVisibility() {
@@ -472,14 +481,11 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
 
         private void toggleShowAllProduct() {
             mIsExpandAllProduct = !mIsExpandAllProduct;
-
-            mLlMainProductItemContainer.setVisibility(getMainProductVisibility(mIsExpandAllProduct));
-            Toast.makeText(mContext, String.valueOf(mIsExpandAllProduct), Toast.LENGTH_SHORT)
-                    .show();
+            mRvProductList.setVisibility(getOtherProductsVisibility(mIsExpandAllProduct));
         }
 
-        private int getMainProductVisibility(boolean isExpandAllProduct) {
-            return isExpandAllProduct ? View.GONE : View.VISIBLE;
+        private int getOtherProductsVisibility(boolean isExpandAllProduct) {
+            return isExpandAllProduct ? View.VISIBLE : View.GONE;
         }
 
         private View.OnClickListener selectShippingOptionListener() {
