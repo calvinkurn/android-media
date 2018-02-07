@@ -385,7 +385,8 @@ public class ResoInboxFragment
         inboxFilterModel.setDateFromString("");
         inboxFilterModel.setDateTo(null);
         inboxFilterModel.setDateFrom(null);
-        getInboxWithParams(inboxFilterModel);
+        inboxSortModel = new ResoInboxSortModel();
+        presenter.getInbox();
     }
 
     @Override
