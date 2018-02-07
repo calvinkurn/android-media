@@ -335,7 +335,7 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
         }
 
         void bindViewHolder(CartPayableDetailModel model) {
-            mIsExpanded = true;
+            mIsExpanded = false;
 
             mTvTotalItem.setText(getTotalItem(model.getTotalItem()));
             mTvTotalItemPrice.setText(model.getTotalItemPrice());
@@ -441,7 +441,7 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
             CartItemModel mainProductItem = cartItemModels.remove(FIRST_ELEMENT);
 
             mIsExpandAllProduct = false;
-            mIsExpandCostDetail = true;
+            mIsExpandCostDetail = false;
 
             // Assign variables
             mTvSenderName.setText(model.getSenderName());
