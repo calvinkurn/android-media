@@ -6,15 +6,15 @@ import rx.subjects.PublishSubject;
 /**
  * @author Aghny A. Putra on 02/02/18
  */
-public class TkpdRxBus {
+public class RxBus {
 
-    private static TkpdRxBus instance;
+    private static RxBus instance;
 
     private PublishSubject<Object> subject = PublishSubject.create();
 
-    public static TkpdRxBus instanceOf() {
+    public static RxBus instanceOf() {
         if (instance == null) {
-            instance = new TkpdRxBus();
+            instance = new RxBus();
         }
         return instance;
     }
@@ -23,7 +23,7 @@ public class TkpdRxBus {
      * Pass events to event listeners
      * @param o Event object
      */
-    public void publishEvent(Object o) {
+    public void sendEvent(Object o) {
         subject.onNext(o);
     }
 
@@ -31,7 +31,7 @@ public class TkpdRxBus {
      * Subscribe to this observable
      * @return Observable<Object> object to be subscribed
      */
-    public Observable<Object> subscribeEvents() {
+    public Observable<Object> getEvents() {
         return subject;
     }
 }

@@ -14,15 +14,32 @@ public class CartItemModelFactory {
     public static List<CartItemModel> getDummyCartItemModelList() {
         List<CartItemModel> cartItemModels = new ArrayList<>();
 
-        cartItemModels.add(createDummyCartItemModel("Adidas",
-                "Kaos Adidas Camo Tongue Tee... White & Red, XS",
+        cartItemModels.add(createDummyCartItemModel("Kaos Adidas Camo Tongue Tee... White & Red, XS",
                 "Rp200.000",
                 "3kg",
                 "5%",
                 "1",
                 "Saya pesan warna merah yah min.. jangan sampai salah kirim barangnya gan!",
-                "Go-send Instan",
+                "https://s1.bukalapak.com/img/1856437411/s-194-194/original_Kaos_Adidas_.jpg",
+                true,
+                true));
+
+        cartItemModels.add(createDummyCartItemModel("Kaos Partai",
                 "Rp200.000",
+                "3kg",
+                "5%",
+                "1",
+                "Minta nomor hape modelnya dong",
+                "https://s1.bukalapak.com/img/1856437411/s-194-194/original_Kaos_Adidas_.jpg",
+                true,
+                true));
+
+        cartItemModels.add(createDummyCartItemModel("Kaos KW Original",
+                "Rp200.000",
+                "3kg",
+                "5%",
+                "1",
+                "Saya pesen kaosnya yang KW ya, tapi original!",
                 "https://s1.bukalapak.com/img/1856437411/s-194-194/original_Kaos_Adidas_.jpg",
                 true,
                 true));
@@ -30,29 +47,23 @@ public class CartItemModelFactory {
         return cartItemModels;
     }
 
-    public static CartItemModel createDummyCartItemModel(String senderName,
-                                                  String productName,
+    public static CartItemModel createDummyCartItemModel(String productName,
                                                   String productPrice,
                                                   String productWeight,
                                                   String cashback,
                                                   String totalProductItem,
                                                   String noteToSeller,
-                                                  String shipmentOption,
-                                                  String totalPrice,
                                                   String productImageUrl,
                                                   boolean poAvailable,
                                                   boolean freeReturn) {
 
         CartItemModel cartItemModel = new CartItemModel();
-        cartItemModel.setSenderName(senderName);
         cartItemModel.setProductName(productName);
         cartItemModel.setProductPrice(productPrice);
         cartItemModel.setProductWeight(productWeight);
         cartItemModel.setCashback(cashback);
         cartItemModel.setTotalProductItem(totalProductItem);
         cartItemModel.setNoteToSeller(noteToSeller);
-        cartItemModel.setShipmentOption(shipmentOption);
-        cartItemModel.setTotalPrice(totalPrice);
         cartItemModel.setProductImageUrl(productImageUrl);
         cartItemModel.setPoAvailable(poAvailable);
         cartItemModel.setFreeReturn(freeReturn);

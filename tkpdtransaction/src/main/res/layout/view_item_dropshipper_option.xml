@@ -1,48 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/rl_dropshipper_option_header"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:layout_marginTop="16dp"
     android:layout_marginBottom="16dp"
-    android:background="@color/white">
+    android:background="@color/grey_200">
 
-    <TextView
-        android:id="@+id/tv_dropshipper_text"
-        android:layout_width="wrap_content"
+    <RelativeLayout android:id="@+id/rl_dropshipper_option_header"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginStart="15dp"
-        android:textSize="14sp"
-        android:fontFamily="sans-serif"
-        android:textStyle="normal"
-        android:lineSpacingExtra="6sp"
-        android:text="Dropshipper" />
+        android:background="@color/white">
 
-    <ImageView
-        android:layout_width="14dp"
-        android:layout_height="14dp"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="4dp"
-        android:layout_marginStart="4dp"
-        android:src="@drawable/icon_info"
-        android:layout_toRightOf="@id/tv_dropshipper_text"
-        android:layout_toEndOf="@id/tv_dropshipper_text"
-        tools:ignore="ContentDescription" />
+        <TextView
+            android:id="@+id/tv_dropshipper_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:textSize="14sp"
+            android:fontFamily="sans-serif"
+            android:textStyle="normal"
+            android:lineSpacingExtra="6sp"
+            android:text="Dropshipper" />
 
-    <Switch
-        android:id="@+id/sw_dropshipper"
-        android:layout_width="wrap_content"
+        <ImageView
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="4dp"
+            android:layout_marginStart="4dp"
+            android:src="@drawable/icon_info"
+            android:layout_toRightOf="@id/tv_dropshipper_text"
+            android:layout_toEndOf="@id/tv_dropshipper_text"
+            tools:ignore="ContentDescription" />
+
+        <Switch
+            android:id="@+id/sw_dropshipper"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_toEndOf="@+id/tv_dropshipper_text"
+            android:layout_toRightOf="@+id/tv_dropshipper_text" />
+
+    </RelativeLayout>
+
+    <LinearLayout android:id="@+id/ll_detail_dropshipper"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_toEndOf="@+id/tv_dropshipper_text"
-        android:layout_toRightOf="@+id/tv_dropshipper_text" />
+        android:paddingStart="15dp"
+        android:paddingLeft="15dp"
+        android:paddingEnd="15dp"
+        android:background="@color/white"
+        android:orientation="vertical">
 
-</RelativeLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:textSize="12sp"
+            android:fontFamily="sans-serif"
+            android:textStyle="normal"
+            android:lineSpacingExtra="4sp"
+            android:text="Dropshipper" />
+
+        <EditText android:id="@+id/et_dropshipper_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:background="@color/transparent"
+            android:textSize="16sp"
+            android:fontFamily="sans-serif"
+            android:textStyle="normal"
+            android:lineSpacingExtra="8sp"
+            android:text="Toko Agus" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#e0e0e0"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:textSize="12sp"
+            android:fontFamily="sans-serif"
+            android:textStyle="normal"
+            android:lineSpacingExtra="4sp"
+            android:text="Nomor Ponsel" />
+
+        <EditText android:id="@+id/et_dropshipper_phone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:background="@color/transparent"
+            android:textSize="16sp"
+            android:fontFamily="sans-serif"
+            android:textStyle="normal"
+            android:lineSpacingExtra="8sp"
+            android:text="081234567890" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#e0e0e0"
+            android:layout_marginBottom="20dp" />
+    </LinearLayout>
+
+</LinearLayout>

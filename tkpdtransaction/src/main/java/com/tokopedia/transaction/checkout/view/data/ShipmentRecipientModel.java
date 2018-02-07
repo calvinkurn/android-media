@@ -8,9 +8,10 @@ import com.tokopedia.transaction.pickuppoint.domain.model.Store;
 /**
  * @author Aghny A. Putra on 25/01/18
  */
-
 public class ShipmentRecipientModel implements Parcelable {
 
+    private boolean isPrimerAddress;
+    private String addressIdentifier;
     private String recipientName;
     private String recipientAddressDescription;
     private String recipientAddress;
@@ -20,6 +21,26 @@ public class ShipmentRecipientModel implements Parcelable {
     private String tokenPickup;
     private String unixTime;
     private Store store;
+    private String recipientPhone;
+
+    public ShipmentRecipientModel() {
+    }
+
+    public boolean isPrimerAddress() {
+        return isPrimerAddress;
+    }
+
+    public void setPrimerAddress(boolean isPrimerAddress) {
+        this.isPrimerAddress = isPrimerAddress;
+    }
+
+    public String getAddressIdentifier() {
+        return addressIdentifier;
+    }
+
+    public void setAddressIdentifier(String addressIdentifier) {
+        this.addressIdentifier = addressIdentifier;
+    }
 
     public String getRecipientName() {
         return recipientName;
@@ -96,6 +117,14 @@ public class ShipmentRecipientModel implements Parcelable {
         this.recipientPhoneNumber = recipientPhoneNumber;
     }
 
+    public String getRecipientPhone() {
+        return recipientPhone;
+    }
+
+    public void setRecipientPhone(String recipientPhone) {
+        this.recipientPhone = recipientPhone;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -112,6 +141,11 @@ public class ShipmentRecipientModel implements Parcelable {
         dest.writeString(tokenPickup);
         dest.writeString(unixTime);
         dest.writeParcelable(store, flags);
+        dest.writeByte(this.isPrimerAddress ? (byte) 1 : (byte) 0);
+        dest.writeString(this.addressIdentifier);
+        dest.writeString(this.recipientName);
+        dest.writeString(this.recipientAddress);
+        dest.writeString(this.recipientPhone);
     }
 
     protected ShipmentRecipientModel(Parcel in) {
@@ -124,6 +158,11 @@ public class ShipmentRecipientModel implements Parcelable {
         tokenPickup = in.readString();
         unixTime = in.readString();
         store = in.readParcelable(Store.class.getClassLoader());
+        this.isPrimerAddress = in.readByte() != 0;
+        this.addressIdentifier = in.readString();
+        this.recipientName = in.readString();
+        this.recipientAddress = in.readString();
+        this.recipientPhone = in.readString();
     }
 
     public static final Creator<ShipmentRecipientModel> CREATOR = new Creator<ShipmentRecipientModel>() {

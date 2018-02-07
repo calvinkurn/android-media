@@ -8,27 +8,16 @@ import android.os.Parcelable;
  */
 public class CartItemModel implements Parcelable {
 
-    private String senderName;
     private String productName;
     private String productPrice;
     private String productWeight;
     private String cashback;
     private String totalProductItem;
     private String noteToSeller;
-    private String shipmentOption;
-    private String totalPrice;
 
     private String productImageUrl;
     private boolean poAvailable;
     private boolean freeReturn;
-
-    public String getSenderName() {
-        return senderName;
-    }
-
-    public void setSenderName(String senderName) {
-        this.senderName = senderName;
-    }
 
     public String getProductName() {
         return productName;
@@ -78,22 +67,6 @@ public class CartItemModel implements Parcelable {
         this.noteToSeller = noteToSeller;
     }
 
-    public String getShipmentOption() {
-        return shipmentOption;
-    }
-
-    public void setShipmentOption(String shipmentOption) {
-        this.shipmentOption = shipmentOption;
-    }
-
-    public String getTotalPrice() {
-        return totalPrice;
-    }
-
-    public void setTotalPrice(String totalPrice) {
-        this.totalPrice = totalPrice;
-    }
-
     public String getProductImageUrl() {
         return productImageUrl;
     }
@@ -125,15 +98,12 @@ public class CartItemModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.senderName);
         dest.writeString(this.productName);
         dest.writeString(this.productPrice);
         dest.writeString(this.productWeight);
         dest.writeString(this.cashback);
         dest.writeString(this.totalProductItem);
         dest.writeString(this.noteToSeller);
-        dest.writeString(this.shipmentOption);
-        dest.writeString(this.totalPrice);
         dest.writeString(this.productImageUrl);
         dest.writeByte(this.poAvailable ? (byte) 1 : (byte) 0);
         dest.writeByte(this.freeReturn ? (byte) 1 : (byte) 0);
@@ -143,15 +113,12 @@ public class CartItemModel implements Parcelable {
     }
 
     protected CartItemModel(Parcel in) {
-        this.senderName = in.readString();
         this.productName = in.readString();
         this.productPrice = in.readString();
         this.productWeight = in.readString();
         this.cashback = in.readString();
         this.totalProductItem = in.readString();
         this.noteToSeller = in.readString();
-        this.shipmentOption = in.readString();
-        this.totalPrice = in.readString();
         this.productImageUrl = in.readString();
         this.poAvailable = in.readByte() != 0;
         this.freeReturn = in.readByte() != 0;
