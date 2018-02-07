@@ -4,9 +4,9 @@ import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.shop.common.constant.ShopUrl;
 import com.tokopedia.shop.common.data.interceptor.ShopAuthInterceptor;
+import com.tokopedia.shop.common.data.source.cloud.api.ShopApi;
 import com.tokopedia.shop.common.di.ShopQualifier;
 import com.tokopedia.shop.common.di.scope.ShopScope;
-import com.tokopedia.shop.common.data.source.cloud.api.WS4ShopApi;
 
 import dagger.Module;
 import dagger.Provides;
@@ -23,8 +23,8 @@ public class ShopModule {
 
     @ShopScope
     @Provides
-    WS4ShopApi provideShopApi(@ShopQualifier Retrofit retrofit){
-        return retrofit.create(WS4ShopApi.class);
+    ShopApi provideShopApi(@ShopQualifier Retrofit retrofit){
+        return retrofit.create(ShopApi.class);
     }
 
     @ShopQualifier

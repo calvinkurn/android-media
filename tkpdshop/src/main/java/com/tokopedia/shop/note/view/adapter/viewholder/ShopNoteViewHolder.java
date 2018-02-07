@@ -32,7 +32,7 @@ public class ShopNoteViewHolder extends AbstractViewHolder<ShopNoteViewModel> {
 
     @Override
     public void bind(ShopNoteViewModel element) {
-        tvTitle.setText(element.getNoteTitle());
-        tvOrderDate.setText(element.getNoteStatus());
+        tvTitle.setText(element.getTitle());
+        tvOrderDate.setText(element.getLastUpdate());
     }
 }

@@ -6,38 +6,61 @@ import com.google.gson.annotations.SerializedName;
 
 public class ShopNote {
 
-    @SerializedName("note_title")
+    @SerializedName("shop_note_id")
     @Expose
-    private String noteTitle;
-    @SerializedName("note_id")
+    private long shopNoteId;
+    @SerializedName("title")
     @Expose
-    private String noteId;
-    @SerializedName("note_status")
+    private String title;
+    @SerializedName("position")
     @Expose
-    private String noteStatus;
+    private long position;
+    @SerializedName("url")
+    @Expose
+    private String url;
+    @SerializedName("last_update")
+    @Expose
+    private String lastUpdate;
 
-    public String getNoteTitle() {
-        return noteTitle;
+    public long getShopNoteId() {
+        return shopNoteId;
     }
 
-    public void setNoteTitle(String noteTitle) {
-        this.noteTitle = noteTitle;
+    public void setShopNoteId(long shopNoteId) {
+        this.shopNoteId = shopNoteId;
     }
 
-    public String getNoteId() {
-        return noteId;
+    public String getTitle() {
+        return title;
     }
 
-    public void setNoteId(String noteId) {
-        this.noteId = noteId;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public String getNoteStatus() {
-        return noteStatus;
+    public long getPosition() {
+        return position;
     }
 
-    public void setNoteStatus(String noteStatus) {
-        this.noteStatus = noteStatus;
+    public void setPosition(long position) {
+        this.position = position;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getLastUpdate() {
+        return lastUpdate;
+    }
+
+    public void setLastUpdate(String lastUpdate) {
+        this.lastUpdate = lastUpdate;
     }
 
 }
+

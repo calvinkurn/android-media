@@ -23,9 +23,10 @@ public class ShopNoteViewModelMapper {
         List<Visitable> visitableList = new ArrayList<>();
         for (ShopNote shopNote : shopNoteList) {
             ShopNoteViewModel shopNoteViewModel = new ShopNoteViewModel();
-            shopNoteViewModel.setNoteId(shopNote.getNoteId());
-            shopNoteViewModel.setNoteStatus(shopNote.getNoteStatus());
-            shopNoteViewModel.setNoteTitle(shopNote.getNoteTitle());
+            shopNoteViewModel.setShopNoteId(shopNote.getShopNoteId());
+            shopNoteViewModel.setTitle(shopNote.getTitle());
+            shopNoteViewModel.setLastUpdate(shopNote.getLastUpdate());
+            shopNoteViewModel.setPosition(shopNote.getPosition());
             visitableList.add(shopNoteViewModel);
         }
         return visitableList;

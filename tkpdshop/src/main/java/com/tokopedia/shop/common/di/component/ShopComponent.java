@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.shop.common.di.module.ShopModule;
 import com.tokopedia.shop.common.di.scope.ShopScope;
-import com.tokopedia.shop.common.data.source.cloud.api.WS4ShopApi;
+import com.tokopedia.shop.common.data.source.cloud.api.ShopApi;
 
 import dagger.Component;
 
@@ -15,7 +15,7 @@ import dagger.Component;
 @Component(modules = ShopModule.class, dependencies = BaseAppComponent.class)
 public interface ShopComponent {
 
-    WS4ShopApi shopApi();
+    ShopApi shopApi();
 
     UserSession userSession();
 }

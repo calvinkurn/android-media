@@ -3,9 +3,8 @@ package com.tokopedia.shop.note.data.source.cloud;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
-import com.tokopedia.interfaces.merchant.shop.info.ShopInfo;
-import com.tokopedia.shop.common.data.source.cloud.api.WS4ShopApi;
-import com.tokopedia.shop.note.data.source.cloud.model.ResponseList;
+import com.tokopedia.shop.common.data.source.cloud.api.ShopApi;
+import com.tokopedia.shop.note.data.source.cloud.model.ShopNoteList;
 import com.tokopedia.shop.note.data.source.cloud.model.ShopNote;
 
 import java.util.HashMap;
@@ -22,23 +21,14 @@ import rx.Observable;
 
 public class ShopNoteCloudDataSource {
 
-    public static final String SHOP_ID = "shop_id";
-    public static final String SHOW_ALL = "show_all";
-
-    private WS4ShopApi shopApi;
-    private UserSession userSession;
+    private ShopApi shopApi;
 
     @Inject
-    public ShopNoteCloudDataSource(WS4ShopApi shopApi, UserSession userSession) {
+    public ShopNoteCloudDataSource(ShopApi shopApi) {
         this.shopApi = shopApi;
-        this.userSession = userSession;
     }
 
-    public Observable<Response<DataResponse<ResponseList<ShopNote>>>> getShopNoteList(String shopId) {
-        Map<String, String> params = new HashMap<>();
-        params.put(SHOP_ID, shopId);
-        params.put(SHOW_ALL, "1");
-        params = AuthUtil.generateParams(userSession.getUserId(), userSession.getDeviceId(), params);
-        return shopApi.getShopNotes(params);
+    public Observable<Response<DataResponse<ShopNoteList>>> getShopNoteList(String shopId) {
+        return shopApi.getShopNotes(shopId);
     }
 }
