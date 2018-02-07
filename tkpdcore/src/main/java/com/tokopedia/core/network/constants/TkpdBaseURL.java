@@ -1014,8 +1014,14 @@ public class TkpdBaseURL {
         public static final String PATH_ORDER_HISTORY = "/v4/order/history";
     }
 
+
+    public class Referral {
+        public static final String PATH_GET_REFERRAL_VOUCHER_CODE = "galadriel/promos/referral/code";
+    }
+
     public class Promo {
         public static final String PATH_MENU_INDEX = "wp-json/wp/v2/hmenu";
         public static final String PATH_PROMO_LIST = "wp-json/wp/v2/posts";
+
     }
 }
