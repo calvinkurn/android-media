@@ -21,7 +21,5 @@ public interface ShopInfoComponent {
 
     void inject(ShopInfoFragment shopInfoDetailFragment);
 
-    void inject(ShopNoteListFragment shopNoteListFragment);
-
     GetShopInfoUseCase getShopInfoUseCase();
 }

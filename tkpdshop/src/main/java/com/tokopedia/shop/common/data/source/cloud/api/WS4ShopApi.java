@@ -3,8 +3,8 @@ package com.tokopedia.shop.common.data.source.cloud.api;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.interfaces.merchant.shop.info.ShopInfo;
 import com.tokopedia.shop.common.constant.ShopUrl;
-import com.tokopedia.shop.info.data.source.cloud.model.ResponseList;
-import com.tokopedia.shop.info.data.source.cloud.model.ShopNote;
+import com.tokopedia.shop.note.data.source.cloud.model.ResponseList;
+import com.tokopedia.shop.note.data.source.cloud.model.ShopNote;
 
 import java.util.Map;
 

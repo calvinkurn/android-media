@@ -1,5 +1,5 @@
 
-package com.tokopedia.shop.info.data.source.cloud.model;
+package com.tokopedia.shop.note.data.source.cloud.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

@@ -6,8 +6,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
-import com.tokopedia.shop.info.di.component.DaggerShopInfoComponent;
-import com.tokopedia.shop.info.di.module.ShopInfoModule;
+import com.tokopedia.shop.note.di.component.DaggerShopNoteComponent;
+import com.tokopedia.shop.note.di.module.ShopNoteModule;
 import com.tokopedia.shop.note.view.adapter.ShopNoteAdapterTypeFactory;
 import com.tokopedia.shop.note.view.adapter.ShopNoteTypeFactory;
 import com.tokopedia.shop.note.view.listener.ShopNoteListView;
@@ -57,9 +57,9 @@ public class ShopNoteListFragment extends BaseListFragment<Visitable, ShopNoteTy
 
     @Override
     protected void initInjector() {
-        DaggerShopInfoComponent
+        DaggerShopNoteComponent
                 .builder()
-                .shopInfoModule(new ShopInfoModule())
+                .shopNoteModule(new ShopNoteModule())
                 .shopComponent(getComponent(ShopComponent.class))
                 .build()
                 .inject(this);

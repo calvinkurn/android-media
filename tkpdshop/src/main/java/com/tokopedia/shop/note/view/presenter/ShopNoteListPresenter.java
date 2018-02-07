@@ -1,8 +1,8 @@
 package com.tokopedia.shop.note.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.shop.info.data.source.cloud.model.ShopNote;
-import com.tokopedia.shop.info.domain.interactor.GetShopNoteListUseCase;
+import com.tokopedia.shop.note.data.source.cloud.model.ShopNote;
+import com.tokopedia.shop.note.domain.interactor.GetShopNoteListUseCase;
 import com.tokopedia.shop.note.view.listener.ShopNoteListView;
 import com.tokopedia.shop.note.view.mapper.ShopNoteViewModelMapper;
 

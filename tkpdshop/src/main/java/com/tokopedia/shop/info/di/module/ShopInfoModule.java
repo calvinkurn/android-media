@@ -18,11 +18,5 @@ public class ShopInfoModule {
     public ShopInfoRepository provideShopInfoRepository(ShopInfoDataSource shopInfoDataSource){
         return new ShopInfoRepositoryImpl(shopInfoDataSource);
     }
-
-    @ShopInfoScope
-    @Provides
-    public ShopNoteViewModel provideShopNoteViewModel(){
-        return new ShopNoteViewModel();
-    }
 }
 

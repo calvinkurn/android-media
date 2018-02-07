@@ -1,8 +1,8 @@
-package com.tokopedia.shop.info.domain.interactor;
+package com.tokopedia.shop.note.domain.interactor;
 
-import com.tokopedia.interfaces.merchant.shop.info.ShopInfo;
-import com.tokopedia.shop.info.data.source.cloud.model.ShopNote;
+import com.tokopedia.shop.note.data.source.cloud.model.ShopNote;
 import com.tokopedia.shop.info.domain.repository.ShopInfoRepository;
+import com.tokopedia.shop.note.domain.repository.ShopNoteRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -20,18 +20,18 @@ public class GetShopNoteListUseCase extends UseCase<List<ShopNote>> {
 
     private static final String SHOP_ID = "SHOP_ID";
 
-    private ShopInfoRepository shopInfoRepository;
+    private ShopNoteRepository shopNoteRepository;
 
     @Inject
-    public GetShopNoteListUseCase(ShopInfoRepository shopInfoRepository) {
+    public GetShopNoteListUseCase(ShopNoteRepository shopNoteRepository) {
         super();
-        this.shopInfoRepository = shopInfoRepository;
+        this.shopNoteRepository = shopNoteRepository;
     }
 
     @Override
     public Observable<List<ShopNote>> createObservable(RequestParams requestParams) {
         String shopId = requestParams.getString(SHOP_ID, null);
-        return shopInfoRepository.getShopNoteList(shopId);
+        return shopNoteRepository.getShopNoteList(shopId);
     }
 
     public static RequestParams createRequestParam(String shopId) {

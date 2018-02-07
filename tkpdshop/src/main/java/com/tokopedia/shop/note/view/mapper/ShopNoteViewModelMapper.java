@@ -1,7 +1,7 @@
 package com.tokopedia.shop.note.view.mapper;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.shop.info.data.source.cloud.model.ShopNote;
+import com.tokopedia.shop.note.data.source.cloud.model.ShopNote;
 import com.tokopedia.shop.note.view.model.ShopNoteViewModel;
 
 import java.util.ArrayList;

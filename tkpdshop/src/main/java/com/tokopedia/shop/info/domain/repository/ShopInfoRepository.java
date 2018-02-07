@@ -1,7 +1,7 @@
 package com.tokopedia.shop.info.domain.repository;
 
 import com.tokopedia.interfaces.merchant.shop.info.ShopInfo;
-import com.tokopedia.shop.info.data.source.cloud.model.ShopNote;
+import com.tokopedia.shop.note.data.source.cloud.model.ShopNote;
 
 import java.util.List;
 
@@ -14,6 +14,4 @@ import rx.Observable;
 public interface ShopInfoRepository {
 
     Observable<ShopInfo> getShopInfo(String shopId);
-
-    Observable<List<ShopNote>> getShopNoteList(String shopId);
 }

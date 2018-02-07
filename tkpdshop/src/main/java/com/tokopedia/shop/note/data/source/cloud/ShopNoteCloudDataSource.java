@@ -1,4 +1,4 @@
-package com.tokopedia.shop.info.data.source.cloud;
+package com.tokopedia.shop.note.data.source.cloud;
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
@@ -20,7 +20,7 @@ import rx.Observable;
  * @author hendry on 4/4/17.
  */
 
-public class ShopInfoCloudDataSource {
+public class ShopNoteCloudDataSource {
 
     public static final String SHOP_ID = "shop_id";
     public static final String SHOW_ALL = "show_all";
@@ -29,16 +29,16 @@ public class ShopInfoCloudDataSource {
     private UserSession userSession;
 
     @Inject
-    public ShopInfoCloudDataSource(WS4ShopApi shopApi, UserSession userSession) {
+    public ShopNoteCloudDataSource(WS4ShopApi shopApi, UserSession userSession) {
         this.shopApi = shopApi;
         this.userSession = userSession;
     }
 
-    public Observable<Response<DataResponse<ShopInfo>>> getShopInfo(String shopId) {
+    public Observable<Response<DataResponse<ResponseList<ShopNote>>>> getShopNoteList(String shopId) {
         Map<String, String> params = new HashMap<>();
         params.put(SHOP_ID, shopId);
         params.put(SHOW_ALL, "1");
         params = AuthUtil.generateParams(userSession.getUserId(), userSession.getDeviceId(), params);
-        return shopApi.getShopInfo(params);
+        return shopApi.getShopNotes(params);
     }
 }
