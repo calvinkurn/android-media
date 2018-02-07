@@ -133,6 +133,7 @@ public class DetailResChatFragment
     private ImageView ivNextStepStatic;
     private GlowingView glowingView;
     private FrameLayout ffChat;
+    private ConversationDomain conversationDomain;
 
     private DetailResChatDomain detailResChatDomain;
     private LinearLayoutManager linearLayoutManager;
@@ -477,41 +478,47 @@ public class DetailResChatFragment
     }
 
     private ConversationDomain getTempConversationDomain(String message) {
-        return new ConversationDomain(
+        conversationDomain = new ConversationDomain(
                 0,
                 null,
                 message.replaceAll("(\r\n|\n)", "<br />"),
                 null,
                 null,
-                getConversationCreateTime(),
+                getDummySendingMessage(),
                 null,
                 null,
                 null,
                 null,
                 null,
                 null);
+        return conversationDomain;
     }
 
     private ConversationDomain getTempConversationDomain(String message, List<AttachmentViewModel> attachmentList) {
-        return new ConversationDomain(
+        conversationDomain = new ConversationDomain(
                 0,
                 null,
                 message.replaceAll("(\r\n|\n)", "<br />"),
                 null,
                 null,
-                getConversationCreateTime(),
+                getDummySendingMessage(),
                 getConversationAttachmentTemp(attachmentList),
                 null,
                 null,
                 null,
                 null,
                 null);
+        return conversationDomain;
     }
 
     private ConversationCreateTimeDomain getConversationCreateTime() {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat format = new SimpleDateFormat(DateFormatUtils.FORMAT_RESO);
         return new ConversationCreateTimeDomain(format.format(calendar.getTime()) + " WIB", "");
+    }
+
+    private ConversationCreateTimeDomain getDummySendingMessage() {
+        return new ConversationCreateTimeDomain(context.getResources().getString(R.string.string_sending_message), "");
     }
 
     private List<ConversationAttachmentDomain> getConversationAttachmentTemp(List<AttachmentViewModel> attachmentList) {
@@ -902,6 +909,9 @@ public class DetailResChatFragment
         attachmentAdapter.getList().clear();
         attachmentAdapter.notifyDataSetChanged();
         rvAttachment.setVisibility(View.GONE);
+        conversationDomain.setCreateTime(getConversationCreateTime());
+        chatAdapter.replaceLastItem(new ChatRightViewModel(null, null, conversationDomain));
+        chatAdapter.notifyDataSetChanged();
         initActionButton(detailResChatDomain.getButton());
         etChat.setText("");
         enableIvSend();
@@ -1177,12 +1187,16 @@ public class DetailResChatFragment
     public void enableIvSend() {
         ivSend.setClickable(true);
         ivSend.setEnabled(true);
+        etChat.setClickable(true);
+        etChat.setEnabled(true);
     }
 
     @Override
     public void disableIvSend() {
         ivSend.setClickable(false);
         ivSend.setEnabled(false);
+        etChat.setClickable(false);
+        etChat.setEnabled(false);
     }
 
     @Override
