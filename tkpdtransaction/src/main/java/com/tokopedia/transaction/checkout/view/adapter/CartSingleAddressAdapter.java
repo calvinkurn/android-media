@@ -253,19 +253,6 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
                 @Override
                 public void onClick(View view) {
                     viewListener.onAddOrChangeAddress(model);
-
-//                    FragmentManager fragmentManager = ((Activity)mContext).getFragmentManager();
-//                    Fragment fragment = ShipmentAddressListFragment.newInstance();
-//
-//                    String backStateName = fragment.getClass().getName();
-//
-//                    boolean isFragmentPopped = fragmentManager.popBackStackImmediate(backStateName, 0);
-//                    if (!isFragmentPopped) {
-//                        fragmentManager.beginTransaction()
-//                                .replace(R.id.container, fragment)
-//                                .addToBackStack(backStateName)
-//                                .commit();
-//                    }
                 }
             };
         }
