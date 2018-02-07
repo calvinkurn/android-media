@@ -47,6 +47,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.FirstData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.InvoiceData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.LastData;
+import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.LastSolutionData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.LogData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.OrderData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.PictureData;
@@ -56,7 +57,6 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.SellerAddressData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.ShippingData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.ShopData;
-import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.LastSolutionData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.StatusData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.TroubleData;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailrescenter.v2.UserAwbData;
@@ -86,7 +86,7 @@ public class DetailResCenterMapperV2 implements Func1<Response<TkpdResponse>, De
         if (detailResponse == null) {
             throw new ErrorMessageException(ErrorMessageException.DEFAULT_ERROR);
         }
-        DetailResponseData model = mappingResponse(detailResponse);
+        DetailResponseData model = null;
         if (response.isSuccessful()) {
             if (response.raw().code() == ResponseStatus.SC_OK) {
                 if (response.body().isNullData()) {
@@ -96,7 +96,7 @@ public class DetailResCenterMapperV2 implements Func1<Response<TkpdResponse>, De
                         throw new ErrorMessageException(ErrorMessageException.DEFAULT_ERROR);
                     }
                 } else {
-                    model.setSuccess(true);
+                    model = mappingResponse(detailResponse);
                 }
             }
         } else {

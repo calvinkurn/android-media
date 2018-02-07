@@ -1,7 +1,6 @@
 package com.tokopedia.inbox.rescenter.detailv2.data.mapper;
 
 import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.retrofit.response.Error;
 import com.tokopedia.core.network.retrofit.response.ResponseStatus;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.inbox.rescenter.detailv2.data.pojo.detailreschat.LastResponse;
@@ -35,7 +34,6 @@ public class GetNextActionMapper implements Func1<Response<TkpdResponse>, NextAc
     private NextActionDomain mappingResponse(Response<TkpdResponse> response) {
         NextActionResponse detailResChatResponse = response.body().convertDataObj(
                 NextActionResponse.class);
-        NextActionDomain model = mappingNextActionDomain(detailResChatResponse);
         if (response.isSuccessful()) {
             if (response.raw().code() == ResponseStatus.SC_OK) {
                 if (response.body().isNullData()) {
@@ -45,13 +43,12 @@ public class GetNextActionMapper implements Func1<Response<TkpdResponse>, NextAc
                         throw new ErrorMessageException(ErrorMessageException.DEFAULT_ERROR);
                     }
                 } else {
-                    model.setSuccess(true);
                 }
             }
         } else {
             throw new RuntimeException(String.valueOf(response.code()));
         }
-        return model;
+        return mappingNextActionDomain(detailResChatResponse);
     }
 
     private NextActionDomain mappingNextActionDomain(NextActionResponse response) {

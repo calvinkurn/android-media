@@ -575,7 +575,7 @@ public class DetailResChatFragment
 
     @Override
     public void errorGetConversation(String error) {
-        NetworkErrorHelper.showEmptyState(getActivity(), getView(), new NetworkErrorHelper.RetryClickedListener() {
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), error, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
                 presenter.loadConversation(resolutionId);
@@ -595,7 +595,7 @@ public class DetailResChatFragment
     @Override
     public void errorGetConversationMore(String error) {
         if (resolutionId != null && lastConvId != null) {
-            NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+            NetworkErrorHelper.createSnackbarWithAction(getActivity(), error, new NetworkErrorHelper.RetryClickedListener() {
                 @Override
                 public void onRetryClicked() {
                     presenter.doLoadMore(resolutionId, lastConvId, detailResChatDomain);

@@ -72,6 +72,19 @@ public class GetDetailResChatMapper implements Func1<Response<TkpdResponse>, Det
     private DetailResChatDomain mappingResponse(Response<TkpdResponse> response) {
         DetailResChatResponse detailResChatResponse = response.body().convertDataObj(
                 DetailResChatResponse.class);
+        if (response.isSuccessful()) {
+            if (response.raw().code() == ResponseStatus.SC_OK) {
+                if (response.body().isNullData()) {
+                    if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
+                        throw new ErrorMessageException(response.body().getErrorMessageJoined());
+                    } else {
+                        throw new ErrorMessageException(DEFAULT_ERROR);
+                    }
+                }
+            }
+        } else {
+            throw new RuntimeException(String.valueOf(response.code()));
+        }
         DetailResChatDomain model = new DetailResChatDomain(
                 detailResChatResponse.getNextAction() != null ?
                         mappingNextActionDomain(detailResChatResponse.getNextAction()) :
@@ -98,21 +111,6 @@ public class GetDetailResChatMapper implements Func1<Response<TkpdResponse>, Det
                 detailResChatResponse.getLast() != null ?
                         mappingLastDomain(detailResChatResponse.getLast()) :
                         null);
-        if (response.isSuccessful()) {
-            if (response.raw().code() == ResponseStatus.SC_OK) {
-                if (response.body().isNullData()) {
-                    if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
-                        throw new ErrorMessageException(response.body().getErrorMessageJoined());
-                    } else {
-                        throw new ErrorMessageException(DEFAULT_ERROR);
-                    }
-                } else {
-                    model.setSuccess(true);
-                }
-            }
-        } else {
-            throw new RuntimeException(String.valueOf(response.code()));
-        }
         return model;
     }
 
