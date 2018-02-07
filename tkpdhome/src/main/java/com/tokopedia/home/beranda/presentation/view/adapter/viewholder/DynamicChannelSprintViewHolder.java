@@ -124,7 +124,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
             @Override
             public void onClick(View view) {
                 if (isSprintSale(channel)) {
-                    HomePageTracking.eventEnhancedClickSprintSaleProduct(channel.getEnhanceClickSprintSaleHomePage(0));
+                    HomePageTracking.eventEnhancedClickSprintSaleProduct(channel.getEnhanceClickSprintSaleHomePage(0, countDownView.getCurrentCountDown()));
                 } else {
                     HomePageTracking.eventEnhancedClickDynamicChannelHomePage(channel.getEnhanceClickDynamicChannelHomePage(channel.getGrids()[0], 1));
                 }
@@ -135,7 +135,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
             @Override
             public void onClick(View view) {
                 if (isSprintSale(channel)) {
-                    HomePageTracking.eventEnhancedClickSprintSaleProduct(channel.getEnhanceClickSprintSaleHomePage(1));
+                    HomePageTracking.eventEnhancedClickSprintSaleProduct(channel.getEnhanceClickSprintSaleHomePage(1, countDownView.getCurrentCountDown()));
                 } else {
                     HomePageTracking.eventEnhancedClickDynamicChannelHomePage(channel.getEnhanceClickDynamicChannelHomePage(channel.getGrids()[1], 2));
                 }
@@ -146,7 +146,7 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
             @Override
             public void onClick(View view) {
                 if (isSprintSale(channel)) {
-                    HomePageTracking.eventEnhancedClickSprintSaleProduct(channel.getEnhanceClickSprintSaleHomePage(2));
+                    HomePageTracking.eventEnhancedClickSprintSaleProduct(channel.getEnhanceClickSprintSaleHomePage(2, countDownView.getCurrentCountDown()));
                 } else {
                     HomePageTracking.eventEnhancedClickDynamicChannelHomePage(channel.getEnhanceClickDynamicChannelHomePage(channel.getGrids()[2], 3));
                 }

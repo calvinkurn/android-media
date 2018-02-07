@@ -145,12 +145,12 @@ public class DynamicHomeChannel {
             return list;
         }
 
-        public Map<String, Object> getEnhanceClickSprintSaleHomePage(int position) {
+        public Map<String, Object> getEnhanceClickSprintSaleHomePage(int position, String countDown) {
             return DataLayer.mapOf(
                     "event", "productClick",
                     "eventCategory", "homepage",
                     "eventAction", "sprint sale click",
-                    "eventLabel", "",
+                    "eventLabel", countDown,
                     "ecommerce", DataLayer.mapOf(
                             "currencyCode", "IDR",
                             "click", DataLayer.mapOf(

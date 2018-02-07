@@ -120,6 +120,10 @@ public class CountDownView extends FrameLayout {
         startAutoRefreshCounter();
     }
 
+    public String getCurrentCountDown() {
+        return String.format("%s:%s:%s", hourView.getText(), minuteView.getText(), secondView.getText());
+    }
+
     private static class TimeDiffModel {
         private int second;
         private int minute;
