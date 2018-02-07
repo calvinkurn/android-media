@@ -135,32 +135,39 @@ public class AttachmentChatHelper {
         setMessage(attachment, viewListener, message);
     }
 
-    private void setMessage(Attachment attachment, final ChatRoomContract.View viewListener, final TextView message) {
+    private void setMessage(final Attachment attachment, final ChatRoomContract.View viewListener, final TextView message) {
         if (attachment.getFallbackAttachment().getMessage() != null) {
             final FallbackAttachment fallback = attachment.getFallbackAttachment();
-            String string = String.format("%s\n%s", fallback.getMessage(), fallback.getSpan());
 
-            Spannable spannable = new SpannableString(string);
+            Spannable spannable = new SpannableString(fallback.getMessage());
 
-            spannable.setSpan(new ClickableSpan() {
-                                  @Override
-                                  public void onClick(View view) {
-                                      viewListener.onGoToWebView(fallback.getUrl());
+            if (hasFallback(fallback.getSpan())) {
+                String string = String.format("%s\n%s", fallback.getMessage(), fallback.getSpan());
+                spannable = new SpannableString(string);
+                spannable.setSpan(new ClickableSpan() {
+                                      @Override
+                                      public void onClick(View view) {
+                                          viewListener.onGoToWebView(fallback.getUrl());
+                                      }
+
+                                      @Override
+                                      public void updateDrawState(TextPaint ds) {
+                                          ds.setColor(message.getContext().getResources().getColor(com.tokopedia.core.R.color.medium_green));
+                                          ds.setUnderlineText(false);
+                                      }
                                   }
-
-                                  @Override
-                                  public void updateDrawState(TextPaint ds) {
-                                      ds.setColor(message.getContext().getResources().getColor(com.tokopedia.core.R.color.medium_green));
-                                      ds.setUnderlineText(false);
-                                  }
-                              }
-                    , string.indexOf(fallback.getSpan())
-                    , string.length()
-                    , 0);
+                        , string.indexOf(fallback.getSpan())
+                        , string.length()
+                        , 0);
+            }
 
             message.setText(spannable, TextView.BufferType.SPANNABLE);
 
         }
+    }
+
+    private boolean hasFallback(String fallback) {
+        return fallback != null;
     }
 
     public void setVisibility(View view, int visibility){

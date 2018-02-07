@@ -1,26 +1,17 @@
 package com.tokopedia.inbox.inboxchat.domain.usecase;
 
-import android.text.TextUtils;
-
-import com.drew.lang.annotations.Nullable;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.inbox.inboxchat.data.repository.AttachImageRepository;
-import com.tokopedia.inbox.inboxchat.domain.model.AttachImageViewModel;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
-import com.tokopedia.inbox.inboxchat.uploadimage.ImageUpload;
-import com.tokopedia.inbox.inboxchat.uploadimage.UploadImageChatRequestModel;
 import com.tokopedia.inbox.inboxchat.uploadimage.domain.interactor.GenerateHostUseCase;
 import com.tokopedia.inbox.inboxchat.uploadimage.domain.interactor.UploadImageUseCase;
 import com.tokopedia.inbox.inboxchat.uploadimage.domain.model.GenerateHostDomain;
 import com.tokopedia.inbox.inboxchat.uploadimage.domain.model.UploadImageDomain;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
-import com.tokopedia.inbox.rescenter.discussion.view.viewmodel.AttachmentViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -65,7 +56,7 @@ public class AttachImageUseCase extends UseCase<ReplyActionData>{
     }
 
     @Override
-    public Observable<ReplyActionData> createObservable(RequestParams requestParams) {
+    public Observable<ReplyActionData> createObservable(final RequestParams requestParams) {
         return Observable.just(requestParams)
                 .flatMap(new Func1<RequestParams, Observable<RequestParams>>() {
                     @Override
@@ -76,13 +67,22 @@ public class AttachImageUseCase extends UseCase<ReplyActionData>{
                             return Observable.just(requestParams);
                     }
                 })
-                .flatMap(new Func1<RequestParams, Observable<ReplyActionData>>() {
+                .flatMap(new Func1<RequestParams, Observable<UploadImageDomain>>() {
                     @Override
-                    public Observable<ReplyActionData> call(RequestParams requestParams) {
+                    public Observable<UploadImageDomain> call(RequestParams requestParams) {
                         if (isHasAttachment(requestParams))
                             return uploadFiles(getUploadFileParam(requestParams),
                                     requestParams);
                         else
+                            return Observable.just(new UploadImageDomain(null, null));
+                    }
+                })
+                .flatMap(new Func1<UploadImageDomain, Observable<ReplyActionData>>() {
+                    @Override
+                    public Observable<ReplyActionData> call(UploadImageDomain uploadImageDomain) {
+                        if(uploadImageDomain.getPicSrc()!=null){
+                            return reply(requestParams, uploadImageDomain);
+                        }else
                             return Observable.just(new ReplyActionData());
                     }
                 });
@@ -116,8 +116,7 @@ public class AttachImageUseCase extends UseCase<ReplyActionData>{
         return GenerateHostUseCase.getParam();
     }
 
-
-    private Observable<ReplyActionData> uploadFiles(final RequestParams uploadFileParam, final RequestParams requestParams) {
+    private Observable<UploadImageDomain> uploadFiles(final RequestParams uploadFileParam, final RequestParams requestParams) {
         return Observable.from(getListImage(uploadFileParam))
                 .flatMap(new Func1<MyChatViewModel, Observable<UploadImageDomain>>() {
                     @Override
@@ -131,17 +130,16 @@ public class AttachImageUseCase extends UseCase<ReplyActionData>{
                                         requestParams.getString(PARAM_SERVER_ID,"")
                                 ));
                     }
-                }).toList()
-                .flatMap(new Func1<List<UploadImageDomain>, Observable<ReplyActionData>>() {
-                    @Override
-                    public Observable<ReplyActionData> call(List<UploadImageDomain> uploadImageDomains) {
-                        return replyMessageUseCase.createObservable(
-                                ReplyMessageUseCase.generateParamAttachImage(
-                                        requestParams.getString(PARAM_MESSAGE_ID,"")
-                                        , uploadImageDomains.get(0).getPicSrc()
-                                ));
-                    }
                 });
+
+    }
+
+    private Observable<ReplyActionData> reply(RequestParams requestParams, UploadImageDomain uploadImageDomain) {
+        return replyMessageUseCase.createObservable(
+                ReplyMessageUseCase.generateParamAttachImage(
+                        requestParams.getString(PARAM_MESSAGE_ID,"")
+                        , uploadImageDomain.getPicSrc()));
+
     }
 
 
