@@ -137,7 +137,12 @@ public class FingerprintInterceptor implements Interceptor {
                         } catch (IOException | GooglePlayServicesNotAvailableException | GooglePlayServicesRepairableException e) {
                             e.printStackTrace();
                         }
-                        return adInfo == null ? null : adInfo.getId();
+                        return adInfo.getId();
+                    }
+                }).onErrorReturn(new Func1<Throwable, String>() {
+                    @Override
+                    public String call(Throwable throwable) {
+                        return "";
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
