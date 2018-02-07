@@ -2,7 +2,6 @@ package com.tokopedia.discovery.newdiscovery.search;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.TabLayout;
@@ -138,7 +137,6 @@ public class SearchActivity extends DiscoveryActivity
                 getIntent().getBooleanExtra(FROM_APP_SHORTCUTS, false)) {
             UnifyTracking.eventBeliLongClick();
         }
-
     }
 
     private void initInjector() {
