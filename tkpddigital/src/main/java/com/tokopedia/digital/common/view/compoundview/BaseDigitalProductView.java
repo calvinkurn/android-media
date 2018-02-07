@@ -26,6 +26,8 @@ import butterknife.ButterKnife;
  */
 public abstract class BaseDigitalProductView<C, O, P, H> extends RelativeLayout {
 
+    protected static final int SINGLE_PRODUCT = 99;
+
     public static final int WIDGET = 0;
     public static final int NATIVE = 1;
 

@@ -71,6 +71,9 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
     @BindView(R2.id.pb_main_loading)
     ProgressBar pbMainLoading;
 
+    private final String INSTANT = "instant";
+    private final String NO_INSTANT = "no instant";
+
     protected static final String ARG_PARAM_CATEGORY = "ARG_PARAM_CATEGORY";
     protected static final String ARG_TAB_INDEX_POSITION = "ARG_TAB_INDEX_POSITION";
 
@@ -196,7 +199,7 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
     @Override
     public void onButtonBuyClicked(BaseDigitalProductView.PreCheckoutProduct preCheckoutProduct,
                                    boolean isInstantCheckoutChecked) {
-        UnifyTracking.eventClickBuyOnWidget(categoryDataState.getName(), isInstantCheckoutChecked ? "instant" : "no instant");
+        UnifyTracking.eventClickBuyOnWidget(categoryDataState.getName(), isInstantCheckoutChecked ? INSTANT : NO_INSTANT);
 
         if (!preCheckoutProduct.isCanBeCheckout()) {
             if (!TextUtils.isEmpty(preCheckoutProduct.getErrorCheckout())) {

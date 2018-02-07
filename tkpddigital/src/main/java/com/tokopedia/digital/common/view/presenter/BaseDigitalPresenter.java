@@ -22,6 +22,9 @@ import com.tokopedia.digital.widget.view.model.product.Product;
 
 public abstract class BaseDigitalPresenter implements IBaseDigitalPresenter {
 
+    private final String IDN_CALLING_CODE = "62";
+    private final String IDN_CALLING_CODE_WITH_PLUS = "+62";
+
     private final Context context;
 
     private LocalCacheHandler localCacheHandlerLastClientNumber;
@@ -155,11 +158,11 @@ public abstract class BaseDigitalPresenter implements IBaseDigitalPresenter {
             cursorPhone.close();
         }
         String phoneFormatted = contact.getContactNumber();
-        if (phoneFormatted.startsWith("62")) {
-            phoneFormatted = phoneFormatted.replaceFirst("62", "0");
+        if (phoneFormatted.startsWith(IDN_CALLING_CODE)) {
+            phoneFormatted = phoneFormatted.replaceFirst(IDN_CALLING_CODE, "0");
         }
-        if (phoneFormatted.startsWith("+62")) {
-            phoneFormatted = phoneFormatted.replace("+62", "0");
+        if (phoneFormatted.startsWith(IDN_CALLING_CODE_WITH_PLUS)) {
+            phoneFormatted = phoneFormatted.replace(IDN_CALLING_CODE_WITH_PLUS, "0");
         }
         phoneFormatted = phoneFormatted.replace(".", "");
 
