@@ -3,6 +3,7 @@ package com.tokopedia.tkpdstream.channel.view.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,9 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.tkpdstream.R;
 import com.tokopedia.tkpdstream.channel.di.DaggerChannelComponent;
+import com.tokopedia.tkpdstream.channel.view.adapter.GroupChatAdapter;
+import com.tokopedia.tkpdstream.channel.view.adapter.typefactory.GroupChatTypeFactory;
+import com.tokopedia.tkpdstream.channel.view.adapter.typefactory.GroupChatTypeFactoryImpl;
 import com.tokopedia.tkpdstream.channel.view.listener.GroupChatContract;
 import com.tokopedia.tkpdstream.channel.view.presenter.GroupChatPresenter;
 import com.tokopedia.tkpdstream.common.analytics.ChannelAnalytics;
@@ -27,6 +31,9 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
 
     @Inject
     GroupChatPresenter presenter;
+
+    RecyclerView chatRecyclerView;
+    GroupChatAdapter adapter;
 
     @Override
     protected String getScreenName() {
@@ -54,7 +61,14 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_group_chat_room, container, false);
+        chatRecyclerView = view.findViewById(R.id.chat_list);
+        prepareView();
         return view;
+    }
+
+    private void prepareView() {
+        GroupChatTypeFactory groupChatTypeFactory = new GroupChatTypeFactoryImpl(this);
+        adapter = GroupChatAdapter.createInstance(groupChatTypeFactory);
     }
 
     @Override

@@ -29,7 +29,8 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
         loginUseCase.execute("NISNIS1", new LoginSendbirdUseCase.LoginSendbirdListener() {
             @Override
             public void onConnected(User user) {
-                Log.d("NISNIS", "onCONNECTED");
+                Log.d("NISNIS", "onCONNECTED" + user.getUserId());
+
             }
 
             @Override

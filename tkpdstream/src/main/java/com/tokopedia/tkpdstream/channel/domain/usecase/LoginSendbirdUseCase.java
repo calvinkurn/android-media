@@ -29,10 +29,10 @@ public class LoginSendbirdUseCase {
             @Override
             public void onConnected(User user, SendBirdException e) {
                 if (e != null) {
-                    Log.d("NISNIS ", user.getNickname());
+                    Log.d("NISNIS", e.getCode() + "");
                     listener.onError(e);
                 } else {
-                    Log.d("NISNIS ", e.getCode() + "");
+                    Log.d("NISNIS", user.getNickname());
                     listener.onConnected(user);
                 }
             }

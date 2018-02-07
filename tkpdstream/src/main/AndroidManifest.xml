@@ -8,6 +8,11 @@
             android:label="@string/activity_channel"
             android:screenOrientation="portrait">
         </activity>
+        <activity
+            android:name=".channel.view.activity.GroupChatActivity"
+            android:label="@string/activity_channel"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>
