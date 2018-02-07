@@ -14,8 +14,8 @@ public class GetInboxParams {
     public static final String PARAM_SORT_BY = "sortBy";
     public static final String PARAM_ASC = "asc";
     public static final String PARAM_FILTER = "filter";
-    public static final String PARAM_START_DATE = "startDate";
-    public static final String PARAM_END_DATE = "endDate";
+    public static final String PARAM_START_DATE = "startTime";
+    public static final String PARAM_END_DATE = "endTime";
     public static final String PARAM_START_ID = "startID";
     public static final String PARAM_LIMIT = "limit";
     public static final int PARAM_LIMIT_COUNT = 10;
