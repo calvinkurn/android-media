@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 
 import rx.Observable;
+import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -99,6 +100,11 @@ public class FlightRepositoryImpl implements FlightRepository {
     }
 
     @Override
+    public Observable<FlightAirportDB> getAirportById(final String aiport) {
+        return flightAirportDataListSource.getAirport(aiport);
+    }
+
+    @Override
     public Observable<List<FlightAirportDB>> getAirportList(String query, String idCountry) {
         return flightAirportDataListSource.getAirportList(query, idCountry);
     }
@@ -106,6 +112,11 @@ public class FlightRepositoryImpl implements FlightRepository {
     @Override
     public Observable<List<FlightAirportDB>> getPhoneCodeList(String query) {
         return flightAirportDataListSource.getPhoneCodeList(query);
+    }
+
+    @Override
+    public Observable<FlightAirlineDB> getAirlineById(final String airlineId) {
+        return flightAirlineDataListSource.getAirline(airlineId);
     }
 
     @Override
@@ -197,6 +208,23 @@ public class FlightRepositoryImpl implements FlightRepository {
     @Override
     public Observable<List<FlightClassEntity>> getFlightClasses() {
         return flightClassesDataSource.getClasses();
+    }
+
+    @Override
+    public Observable<FlightClassEntity> getFlightClassById(final int classId) {
+        return flightClassesDataSource.getClasses()
+                .flatMap(new Func1<List<FlightClassEntity>, Observable<FlightClassEntity>>() {
+                    @Override
+                    public Observable<FlightClassEntity> call(final List<FlightClassEntity> flightClassEntities) {
+                        return Observable.from(flightClassEntities)
+                                .filter(new Func1<FlightClassEntity, Boolean>() {
+                                    @Override
+                                    public Boolean call(FlightClassEntity flightClassEntity) {
+                                        return flightClassEntity.getId() == classId;
+                                    }
+                                });
+                    }
+                });
     }
 
     @Override

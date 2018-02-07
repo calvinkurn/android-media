@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.booking.di.DaggerFlightBookingComponent;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
+import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.view.BaseFlightActivity;
 import com.tokopedia.flight.review.view.fragment.FlightBookingReviewFragment;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
@@ -45,5 +46,10 @@ public class FlightBookingReviewActivity extends BaseFlightActivity implements H
             }
         }
         super.onBackPressed();
+    }
+
+    @Override
+    public String getScreenName() {
+        return FlightAnalytics.Screen.REVIEW;
     }
 }

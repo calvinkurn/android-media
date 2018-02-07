@@ -14,6 +14,10 @@ import com.tokopedia.core.util.DataBinder;
 /**
  * Created by Nisie on 2/26/16.
  */
+
+/**
+ * Use base adapter with visitor pattern from tkpd abstraction
+ */
 @Deprecated
 public class RetryDataBinder extends DataBinder<RetryDataBinder.ViewHolder> {
     boolean isFullScreen = false;

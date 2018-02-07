@@ -3,9 +3,7 @@ package com.tokopedia.topads.dashboard.view.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.view.View;
 
-import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
@@ -42,8 +40,7 @@ public class TopAdsEditCostShopFragment extends TopAdsEditCostFragment<TopAdsDet
 
     @Override
     protected void onClickedNext() {
-        if (firstTimeCheck()) return;
-        if (!isError()) {
+        if (!isPriceError()) {
             super.onClickedNext();
             if (detailAd != null) {
                 daggerPresenter.saveAd(detailAd);

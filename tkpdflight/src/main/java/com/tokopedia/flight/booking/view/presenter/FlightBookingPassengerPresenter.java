@@ -20,7 +20,6 @@ import javax.inject.Inject;
 
 /**
  * @author by alvarisi on 11/16/17.
- *         TODO :this class still
  */
 
 public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightBookingPassengerContract.View> implements FlightBookingPassengerContract.Presenter {
@@ -96,14 +95,18 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         Date departureDate = FlightDateUtil.stringToDate(getView().getDepartureDateString());
 
         if (isChildPassenger()) {
+            // minDate = 12 tahun + 1 hari
             minDate = FlightDateUtil.addTimeToSpesificDate(departureDate, Calendar.YEAR, -12);
+            minDate = FlightDateUtil.addTimeToSpesificDate(minDate, Calendar.DATE, +1);
             maxDate = FlightDateUtil.addTimeToSpesificDate(departureDate, Calendar.YEAR, -2);
             selectedDate = maxDate;
         } else if(isAdultPassenger()) {
             maxDate = FlightDateUtil.addTimeToSpesificDate(departureDate, Calendar.YEAR, -12);
             selectedDate = maxDate;
         } else {
+            // minDate = 2 tahun + 1 hari
             minDate = FlightDateUtil.addTimeToSpesificDate(departureDate, Calendar.YEAR, -2);
+            minDate = FlightDateUtil.addTimeToSpesificDate(minDate, Calendar.DATE, +1);
             maxDate = FlightDateUtil.addTimeToSpesificDate(departureDate, Calendar.DATE, -1);
             selectedDate = maxDate;
         }
@@ -119,15 +122,48 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
     }
 
     @Override
-    public void onBirthdateChange(int year, int month, int date) {
+    public void onBirthdateChange(int year, int month, int date, Date minDate, Date maxDate) {
         Calendar now = FlightDateUtil.getCurrentCalendar();
         now.set(Calendar.YEAR, year);
         now.set(Calendar.MONTH, month);
         now.set(Calendar.DATE, date);
         Date newReturnDate = now.getTime();
-        String birthdateStr = FlightDateUtil.dateToString(newReturnDate, FlightDateUtil.DEFAULT_VIEW_FORMAT);
+
+        //max Date + 1 hari, karena pengecekan pakai before
+        maxDate = FlightDateUtil.addTimeToSpesificDate(maxDate, Calendar.DATE, +1);
+
+        if (newReturnDate.before(minDate) || newReturnDate.after(maxDate)) {
+            if (isChildPassenger()) {
+                getView().showPassengerNameEmptyError(R.string.flight_booking_passenger_birthdate_child_shoud_between_twelve_to_two_years);
+            } else if (isInfantPassenger()) {
+                getView().showPassengerNameEmptyError(R.string.flight_booking_passenger_birthdate_infant_should_no_more_than_two_years);
+            }
+        } else {
+            String birthdateStr = FlightDateUtil.dateToString(newReturnDate, FlightDateUtil.DEFAULT_VIEW_FORMAT);
+            getView().renderBirthdate(birthdateStr);
+        }
+
         getView().hideKeyboard();
-        getView().renderBirthdate(birthdateStr);
+    }
+
+    @Override
+    public void onBirthdateChange(int year, int month, int date, Date maxDate) {
+        Calendar now = FlightDateUtil.getCurrentCalendar();
+        now.set(Calendar.YEAR, year);
+        now.set(Calendar.MONTH, month);
+        now.set(Calendar.DATE, date);
+        Date newReturnDate = now.getTime();
+
+        //max Date + 1 hari, karena pengecekan pakai before
+        maxDate = FlightDateUtil.addTimeToSpesificDate(maxDate, Calendar.DATE, +1);
+
+        if (newReturnDate.after(maxDate)) {
+            getView().showPassengerNameEmptyError(R.string.flight_booking_passenger_birthdate_adult_shoud_more_than_twelve_years);
+        } else {
+            String birthdateStr = FlightDateUtil.dateToString(newReturnDate, FlightDateUtil.DEFAULT_VIEW_FORMAT);
+            getView().renderBirthdate(birthdateStr);
+        }
+        getView().hideKeyboard();
     }
 
     @Override
@@ -231,18 +267,15 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         if (getView().getPassengerFirstName().isEmpty() || getView().getPassengerFirstName().length() == 0) {
             isValid = false;
             getView().showPassengerNameEmptyError(R.string.flight_booking_passenger_first_name_empty_error);
-        } else if (getView().getPassengerFirstName().length() > 48) {
-            isValid = false;
-            getView().showPassengerFirstNameShouldNoMoreThanMaxError(R.string.flight_booking_passenger_first_name_max_error);
         } else if (getView().getPassengerFirstName().length() > 0 && !isAlphabetAndSpaceOnly(getView().getPassengerFirstName())) {
             isValid = false;
             getView().showPassengerFirstNameShouldAlphabetAndSpaceOnlyError(R.string.flight_booking_passenger_first_name_alpha_space_error);
-        } else if (getView().getPassengerLastName().length() > 48) {
-            isValid = false;
-            getView().showPassengerLastNameShouldNoMoreThanMaxError(R.string.flight_booking_passenger_last_name_max_error);
         } else if ((getView().getPassengerFirstName().length() + getView().getPassengerLastName().length()) > 48) {
             isValid = false;
             getView().showPassengerFirstNameShouldNoMoreThanMaxError(R.string.flight_booking_passenger_first_last_name_max_error);
+        } else if (getView().getPassengerLastName().length() == 0) {
+            isValid = false;
+            getView().showPassengerLastNameShouldSameWithFirstNameError(R.string.flight_booking_passenger_last_name_should_same_error);
         } else if (getView().getPassengerLastName().length() < 2) {
             isValid = false;
             getView().showPassengerLastNameEmptyError(R.string.flight_booking_passenger_last_name_empty_error);

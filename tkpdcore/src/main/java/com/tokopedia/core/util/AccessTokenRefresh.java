@@ -54,7 +54,7 @@ public class AccessTokenRefresh {
         return new Retrofit.Builder()
                 .baseUrl(TkpdBaseURL.ACCOUNTS_DOMAIN)
                 .addConverterFactory(new StringResponseConverter())
-                .client(OkHttpFactory.create().buildClientAccountsAuth("", false, false, false))
+                .client(OkHttpFactory.create().buildClientAccountsAuth("", false, false, true))
                 .build();
     }
 }
