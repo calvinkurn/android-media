@@ -33,6 +33,12 @@ public class Campaign implements Parcelable {
     @SerializedName("end_date")
     @Expose
     private String endDate;
+    @SerializedName("original_price")
+    @Expose
+    private String originalPrice;
+    @SerializedName("original_price_fmt")
+    @Expose
+    private String originalPriceFmt;
 
     public Boolean getActive() {
         return isActive;
@@ -90,6 +96,22 @@ public class Campaign implements Parcelable {
         this.endDate = endDate;
     }
 
+    public String getOriginalPrice() {
+        return originalPrice;
+    }
+
+    public void setOriginalPrice(String originalPrice) {
+        this.originalPrice = originalPrice;
+    }
+
+    public String getOriginalPriceFmt() {
+        return originalPriceFmt;
+    }
+
+    public void setOriginalPriceFmt(String originalPriceFmt) {
+        this.originalPriceFmt = originalPriceFmt;
+    }
+
     protected Campaign(Parcel in) {
         byte isActiveVal = in.readByte();
         isActive = isActiveVal == 0x02 ? null : isActiveVal != 0x00;
@@ -99,6 +121,8 @@ public class Campaign implements Parcelable {
         campaignType = in.readInt();
         startDate = in.readString();
         endDate = in.readString();
+        originalPrice = in.readString();
+        originalPriceFmt = in.readString();
     }
 
     @Override
@@ -119,6 +143,8 @@ public class Campaign implements Parcelable {
         dest.writeInt(campaignType);
         dest.writeString(startDate);
         dest.writeString(endDate);
+        dest.writeString(originalPrice);
+        dest.writeString(originalPriceFmt);
     }
 
     @SuppressWarnings("unused")

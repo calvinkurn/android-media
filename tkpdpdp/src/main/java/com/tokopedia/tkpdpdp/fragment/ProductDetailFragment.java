@@ -1191,7 +1191,7 @@ public class ProductDetailFragment extends BasePresenterFragment<ProductDetailPr
 
     @Override
     public void showProductCampaign() {
-        headerInfoView.renderProductCampaign(productData);
+        headerInfoView.renderProductCampaign(productData.getCampaign());
     }
 
     @Override

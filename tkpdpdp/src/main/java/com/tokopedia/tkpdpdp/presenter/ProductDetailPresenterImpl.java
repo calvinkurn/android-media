@@ -315,6 +315,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                                 getPromoWidget(context, generatePromoTargetType(productDetailData, context),
                                         SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : NON_LOGIN_USER_ID, shopType);
                             }
+                            if (productDetailData.getInfo().getHasVariant()) getProductVariant(context
+                                    ,Integer.toString(productDetailData.getInfo().getProductId()));
                         }
 
                         @Override
@@ -830,6 +832,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                                     SessionHandler.isV4Login(context) ? SessionHandler.getLoginID(context) : NON_LOGIN_USER_ID,shopType
                                     );
                         }
+                        if (data.getInfo().getHasVariant()) getProductVariant(context
+                                ,Integer.toString(data.getInfo().getProductId()));
                     }
 
                     @Override

@@ -13,6 +13,7 @@ import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tokopedia.core.network.entity.variant.Campaign;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
@@ -94,7 +95,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
     public void renderData(@NonNull ProductDetailData data) {
         tvName.setText(MethodChecker.fromHtml(data.getInfo().getProductName()));
         if(data != null && data.getCampaign() != null && data.getCampaign().getActive()) {
-            renderProductCampaign(data);
+            renderProductCampaign(data.getCampaign());
         } else {
             tvPriceFinal.setText(data.getInfo().getProductPrice());
         }
@@ -127,31 +128,33 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
         setVisibility(VISIBLE);
     }
 
-    public void renderProductCampaign(ProductDetailData data) {
-        if(data != null && data.getCampaign() != null && data.getCampaign().getActive()) {
-            tvPriceFinal.setText(data.getCampaign().getDiscountedPriceFmt());
-            textOriginalPrice.setText(data.getInfo().getProductPrice());
+    public void renderProductCampaign(Campaign campaign) {
+        if(campaign != null && campaign.getActive()) {
+            tvPriceFinal.setText(campaign.getDiscountedPriceFmt());
+            textOriginalPrice.setText(campaign.getOriginalPriceFmt());
             textOriginalPrice.setPaintFlags(
                     textOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
             );
 
             textDiscount.setText(String.format(
                     getContext().getString(R.string.label_discount_percentage),
-                    data.getCampaign().getDiscountedPercentage()
+                    campaign.getDiscountedPercentage()
             ));
 
+            tvPriceFinal.setVisibility(VISIBLE);
             textDiscount.setVisibility(VISIBLE);
             textOriginalPrice.setVisibility(VISIBLE);
 
-            showCountdownTimer(data);
+            showCountdownTimer(campaign);
         }
     }
 
-    private void showCountdownTimer(final ProductDetailData data) {
+    private void showCountdownTimer(final Campaign campaign) {
         try {
-            SimpleDateFormat sf = new SimpleDateFormat(DATE_TIME_FORMAT);
+            linearDiscountTimerHolder.setVisibility(GONE);
+            SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");;
             Calendar now = new GregorianCalendar(TimeZone.getTimeZone("Asia/Jakarta"));
-            long delta = sf.parse(data.getCampaign().getEndDate()).getTime() - now.getTimeInMillis();
+            long delta = sf.parse(campaign.getEndDate()).getTime() - now.getTimeInMillis();
 
             if (TimeUnit.MILLISECONDS.toDays(delta) < 1) {
                 textDiscountTimer.setText(getCountdownText(delta));
@@ -165,7 +168,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
 
                     @Override
                     public void onFinish() {
-                        hideProductCampaign(data);
+                        hideProductCampaign(campaign);
                     }
                 }.start();
             }
@@ -175,11 +178,11 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
         }
     }
 
-    private void hideProductCampaign(ProductDetailData data) {
+    private void hideProductCampaign(Campaign campaign) {
         linearDiscountTimerHolder.setVisibility(GONE);
         textDiscount.setVisibility(GONE);
         textOriginalPrice.setVisibility(GONE);
-        tvPriceFinal.setText(data.getInfo().getProductPrice());
+        tvPriceFinal.setText(campaign.getOriginalPriceFmt());
     }
 
     private String getCountdownText(long millisUntilFinished) {

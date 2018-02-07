@@ -462,6 +462,11 @@ public interface AppEventTracking {
         String CLICK_SHOP = "click - shop";
         String CLICK_WISHLIST = "click - wishlist";
         String SORT_BY = "sort by";
+
+        String CLICK_VARIANTS = "click - variants";
+        String CLICK_CART_BUTTON_VARIANT = "click - cart button on sticky header";
+        String SELECT_COLOR_VARIANT = "select color on variants page";
+        String SELECT_SIZE_VARIANT = "select size on variants page";
     }
 
     interface ImageEditor{
