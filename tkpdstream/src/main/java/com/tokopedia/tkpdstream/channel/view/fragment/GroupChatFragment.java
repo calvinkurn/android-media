@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -33,6 +34,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     GroupChatPresenter presenter;
 
     RecyclerView chatRecyclerView;
+    EditText replyEditText;
+    View sendButton;
     GroupChatAdapter adapter;
 
     @Override
@@ -62,6 +65,8 @@ public class GroupChatFragment extends BaseDaggerFragment implements GroupChatCo
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_group_chat_room, container, false);
         chatRecyclerView = view.findViewById(R.id.chat_list);
+        replyEditText = view.findViewById(R.id.reply_edit_text);
+
         prepareView();
         return view;
     }

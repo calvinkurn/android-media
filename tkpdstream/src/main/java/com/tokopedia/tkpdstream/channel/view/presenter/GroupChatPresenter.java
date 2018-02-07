@@ -29,7 +29,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
     @Override
     public void initMessageFirstTime() {
-        ConnectionManager.addConnectionManagementHandler("NISNIS1", ConnectionManager
+        ConnectionManager.addConnectionManagementHandler("Nisie123", ConnectionManager
                 .CONNECTION_HANDLER_ID, new ConnectionManager.ConnectionManagementHandler() {
             @Override
             public void onConnected(boolean reconnect) {
@@ -43,7 +43,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
     }
 
     private void getMessagesFirstTime() {
-        getGroupChatMessagesFirstTimeUseCase.execute("LALALA",
+        getGroupChatMessagesFirstTimeUseCase.execute("pub1",
                 new GetGroupChatMessagesFirstTimeUseCase.SendbirdChannelListener() {
                     @Override
                     public void onGetMessages() {

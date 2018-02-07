@@ -5,5 +5,5 @@ package com.tokopedia.tkpdstream;
  */
 
 public class SendbirdKey {
-    public static final String APP_ID = "12EF8F49-022C-4E9D-BE26-9613AC04F4A9";
+    public static final String APP_ID = "C32AC42B-B073-4F76-B662-CF33A68031EB";
 }
