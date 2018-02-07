@@ -25,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_small"
-        android:background="@drawable/bg_label_outline_grey"
+        android:background="@drawable/bg_outline_pickup_point"
         android:orientation="vertical"
         android:padding="@dimen/padding_detail"
         android:visibility="gone">
