@@ -1,8 +1,5 @@
 package com.tokopedia.transaction.checkout.view.adapter;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -20,20 +17,17 @@ import android.widget.Toast;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
-import com.tokopedia.transaction.checkout.view.ShipmentAddressListFragment;
 import com.tokopedia.transaction.checkout.view.data.CartItemModel;
 import com.tokopedia.transaction.checkout.view.data.CartPayableDetailModel;
 import com.tokopedia.transaction.checkout.view.data.CartSellerItemModel;
 import com.tokopedia.transaction.checkout.view.data.CartSingleAddressData;
 import com.tokopedia.transaction.checkout.view.data.DropshipperShippingOptionModel;
-import com.tokopedia.transaction.checkout.view.data.MultipleAddressShipmentAdapterData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentFeeBannerModel;
 import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
 import com.tokopedia.transaction.pickuppoint.view.customview.PickupPointLayout;
 
-import java.util.List;
-
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -68,6 +62,7 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
     private Context mContext;
     private CartSingleAddressData mCartSingleAddressData;
     private SingleAddressShipmentAdapterListener viewListener;
+    private boolean firstItemHasRemoved;
 
     public CartSingleAddressAdapter() {
         Log.d(TAG, "Create instance");
@@ -436,7 +431,8 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
 
         void bindViewHolder(CartSellerItemModel model) {
             // Initialize variables
-            List<CartItemModel> cartItemModels = model.getCartItemModels();
+            List<CartItemModel> cartItemModels = new ArrayList<>();
+            cartItemModels.addAll(model.getCartItemModels());
             CartItemModel mainProductItem = cartItemModels.remove(FIRST_ELEMENT);
 
             mIsExpandAllProduct = false;
