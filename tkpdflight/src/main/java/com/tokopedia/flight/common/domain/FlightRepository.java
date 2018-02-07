@@ -31,6 +31,8 @@ public interface FlightRepository {
 
     Observable<FlightAirportDB> getAirportById(String aiport);
 
+    Observable<FlightAirportDB> getAirportWithParam(Map<String, String> params);
+
     Observable<List<FlightAirportDB>> getAirportList(String query, String idCountry);
 
     Observable<List<FlightClassEntity>> getFlightClasses();

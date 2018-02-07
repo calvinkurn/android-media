@@ -308,13 +308,11 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
     }
 
     private boolean isAlphabetAndSpaceOnly(String expression) {
-        Pattern pattern = Pattern.compile(new String("^[a-zA-Z\\s]*$"));
-        Matcher matcher = pattern.matcher(expression);
-        return matcher.matches();
+        return expression.matches(new String("^[a-zA-Z\\s]*$"));
     }
 
     private boolean isSingleWord(String passengerLastName) {
-        return TextUtils.split(passengerLastName, " ").length == 1;
+        return passengerLastName != null && passengerLastName.split(" ").length == 1;
     }
 
     private boolean isAdultPassenger() {
