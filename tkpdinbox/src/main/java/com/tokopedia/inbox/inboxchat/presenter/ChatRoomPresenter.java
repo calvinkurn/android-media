@@ -241,7 +241,6 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
             }
             getView().getAdapter().addReply(item);
             getView().finishLoading();
-            getView().resetReplyColumn();
             try {
                 readMessage(String.valueOf(response.getData().getMsgId()));
             } catch (JSONException e) {
