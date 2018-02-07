@@ -20,6 +20,7 @@ import com.tokopedia.design.text.SpinnerTextView;
 import com.tokopedia.seller.product.edit.utils.ViewUtils;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
+import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.keyword.di.component.DaggerTopAdsKeywordEditDetailComponent;
 import com.tokopedia.topads.keyword.di.module.TopAdsKeywordEditDetailModule;
@@ -120,7 +121,7 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
         topAdsCostPerClick = view.findViewById(R.id.edit_text_top_ads_cost_per_click);
         topAdsMaxPriceInstruction = view.findViewById(R.id.text_view_top_ads_max_price_description);
         textInputLayoutCostPerClick = view.findViewById(R.id.text_input_layout_top_ads_cost_per_click);
-        EmptyCurrencyIdrTextWatcher textWatcher = new EmptyCurrencyIdrTextWatcher(topAdsCostPerClick){
+        CurrencyIdrTextWatcher textWatcher = new CurrencyIdrTextWatcher(topAdsCostPerClick){
             @Override
             public void onNumberChanged(double number) {
                 super.onNumberChanged(number);
@@ -133,7 +134,6 @@ public abstract class TopAdsKeywordEditDetailFragment extends BaseDaggerFragment
                 }
             }
         };
-        textWatcher.setAvoidMessageErrorValue(DEFAULT_KELIPATAN);
         topAdsCostPerClick.addTextChangedListener(textWatcher);
     }
 
