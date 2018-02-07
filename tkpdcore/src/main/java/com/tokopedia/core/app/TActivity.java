@@ -23,6 +23,10 @@ import com.tokopedia.core.var.TkpdState;
 /**
  * Created by Nisie on 31/08/15.
  */
+
+/**
+ * Extends one of BaseActivity from tkpd abstraction eg:BaseSimpleActivity, BaseStepperActivity, BaseTabActivity, etc
+ */
 @Deprecated
 public abstract class TActivity extends BaseActivity {
 
