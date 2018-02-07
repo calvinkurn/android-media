@@ -23,12 +23,10 @@ import android.view.ViewGroup;
 import com.google.firebase.perf.metrics.Trace;
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -142,9 +140,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     protected void initInjector() {
-        BerandaComponent component = DaggerBerandaComponent.builder().appComponent(getComponent(AppComponent.class)).build();
+//        BerandaComponent component = DaggerBerandaComponent.builder().appComponent(getComponent(AppComponent.class)).build();
+//        component.inject(this);
+//        component.inject(presenter);
+        BerandaComponent component = getComponent(BerandaComponent.class);
         component.inject(this);
-        component.inject(presenter);
+        component.inject(this);
     }
 
     private void fetchRemoteConfig() {

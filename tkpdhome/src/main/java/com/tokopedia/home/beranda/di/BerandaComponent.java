@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.home.common.ApiModule;
 import com.tokopedia.home.beranda.di.module.HomeModule;
 import com.tokopedia.home.beranda.presentation.presenter.HomePresenter;

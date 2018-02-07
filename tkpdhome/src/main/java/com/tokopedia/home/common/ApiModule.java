@@ -29,10 +29,8 @@ public class ApiModule {
 
     @Provides
     public OkHttpClient provideOkHttpClient(OkHttpClient.Builder okHttpClientBuilder,
-                                            HttpLoggingInterceptor httpLoggingInterceptor,
-                                            HomeAuthInterceptor authInterceptor) {
+                                            HttpLoggingInterceptor httpLoggingInterceptor) {
         return okHttpClientBuilder
-                .addInterceptor(authInterceptor)
                 .addInterceptor(httpLoggingInterceptor)
                 .build();
     }
