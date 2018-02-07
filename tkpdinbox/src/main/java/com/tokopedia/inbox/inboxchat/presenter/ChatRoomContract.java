@@ -92,7 +92,7 @@ public class ChatRoomContract {
 
         void onGoToGallery(Attachment attachment);
 
-        void onGoToWebView(String attachment);
+        void onGoToWebView(String attachment, String id);
 
         boolean needCreateWebSocket();
 

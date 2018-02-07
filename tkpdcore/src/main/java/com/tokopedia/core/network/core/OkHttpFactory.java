@@ -27,6 +27,7 @@ import com.tokopedia.core.network.retrofit.interceptors.WalletAuthInterceptor;
 import com.tokopedia.core.network.retrofit.response.TkpdV4ResponseError;
 import com.tokopedia.core.network.retrofit.response.TopAdsResponseError;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.SessionHandler;
 
 import java.util.HashMap;
 
@@ -380,10 +381,12 @@ public class OkHttpFactory {
                                                                      OkHttpRetryPolicy okHttpRetryPolicy,
                                                                      ChuckInterceptor chuckInterceptor,
                                                                      DebugInterceptor debugInterceptor,
-                                                                     Interceptor tkpdErrorHandlerInterceptor) {
+                                                                     Interceptor tkpdErrorHandlerInterceptor,
+                                                                     ApiCacheInterceptor apiCacheInterceptor) {
         TkpdOkHttpBuilder tkpdbBuilder = new TkpdOkHttpBuilder(builder)
                 .addInterceptor(fingerprintInterceptor)
                 .addInterceptor(tkpdAuthInterceptor)
+                .addInterceptor(apiCacheInterceptor)
                 .addInterceptor(tkpdErrorHandlerInterceptor)
                 .setOkHttpRetryPolicy(okHttpRetryPolicy);
 
@@ -462,11 +465,12 @@ public class OkHttpFactory {
                 .build();
     }
 
-    public OkHttpClient buildClientTopAdsAuth(String authorizationString) {
+    @Deprecated
+    public OkHttpClient buildClientTopAdsAuth(SessionHandler sessionHandler) {
         return new TkpdOkHttpBuilder(builder)
                 .addInterceptor(new ApiCacheInterceptor())
                 .addInterceptor(new FingerprintInterceptor())
-                .addInterceptor(new TopAdsAuthInterceptor(authorizationString))
+                .addInterceptor(new TopAdsAuthInterceptor(sessionHandler))
                 .addInterceptor(new TkpdErrorResponseInterceptor(TopAdsResponseError.class))
                 .setOkHttpRetryPolicy(getOkHttpRetryPolicy())
                 .addDebugInterceptor()

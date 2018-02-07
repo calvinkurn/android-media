@@ -75,6 +75,8 @@ public interface CompleteTripContract {
 
         void showProgressbar();
 
+        void showAddShortcutDialog();
+
         void hideProgressbar();
     }
 
@@ -88,5 +90,9 @@ public interface CompleteTripContract {
         void sendTip(RequestParams tipParams);
 
         void payPendingFare();
+
+        void showPopupToAddShortcutForFirstTime();
+
+        void setShortcutDialogIsShowninCache();
     }
 }

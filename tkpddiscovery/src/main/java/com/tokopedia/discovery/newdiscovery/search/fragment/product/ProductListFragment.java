@@ -14,6 +14,8 @@ import android.view.ViewGroup;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.SearchTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
@@ -279,7 +281,19 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void setProductList(List<Visitable> list) {
+        sendProductImpressionTrackingEvent(list);
         adapter.appendItems(list);
+    }
+
+    private void sendProductImpressionTrackingEvent(List<Visitable> list) {
+        String userId = SessionHandler.isV4Login(getContext()) ? SessionHandler.getLoginID(getContext()) : "";
+        List<Object> dataLayerList = new ArrayList<>();
+        for(Visitable object : list) {
+            if (object instanceof ProductItem) {
+                dataLayerList.add(((ProductItem) object).getProductAsObjectDataLayer(userId));
+            }
+        }
+        SearchTracking.eventImpressionSearchResultProduct(dataLayerList, getQueryKey());
     }
 
     @Override
@@ -456,7 +470,18 @@ public class ProductListFragment extends SearchSectionFragment
         bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
         intent.putExtras(bundle);
         intent.putExtra(ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition);
+        sendItemClickTrackingEvent(item);
         startActivityForResult(intent, REQUEST_CODE_GOTO_PRODUCT_DETAIL);
+    }
+
+    private void sendItemClickTrackingEvent(ProductItem item) {
+        SearchTracking.trackEventClickSearchResultProduct(
+                item.getProductName(),
+                item.getProductID(),
+                item.getPrice(),
+                item.getPosition(),
+                SessionHandler.isV4Login(getContext()) ? SessionHandler.getLoginID(getContext()) : "",
+                productViewModel.getQuery());
     }
 
     @Override
@@ -490,6 +515,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void onSuccessAddWishlist(int adapterPosition) {
+        UnifyTracking.eventSearchResultProductWishlistClick(true, getQueryKey());
         adapter.updateWishlistStatus(adapterPosition, true);
         enableWishlistButton(adapterPosition);
         adapter.notifyItemChanged(adapterPosition);
@@ -504,6 +530,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void onSuccessRemoveWishlist(int adapterPosition) {
+        UnifyTracking.eventSearchResultProductWishlistClick(false, getQueryKey());
         adapter.updateWishlistStatus(adapterPosition, false);
         enableWishlistButton(adapterPosition);
         adapter.notifyItemChanged(adapterPosition);

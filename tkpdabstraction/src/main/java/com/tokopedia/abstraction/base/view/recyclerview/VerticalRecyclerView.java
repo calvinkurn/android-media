@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 public class VerticalRecyclerView extends RecyclerView {
 
     protected LinearLayoutManager linearLayoutManager;
+    private DividerItemDecoration dividerItemDecoration;
 
     public VerticalRecyclerView(Context context) {
         super(context);
@@ -32,6 +33,7 @@ public class VerticalRecyclerView extends RecyclerView {
     }
 
     private void init() {
+        dividerItemDecoration = new DividerItemDecoration(getContext());
         linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         this.setLayoutManager(linearLayoutManager);
         ItemDecoration itemDecoration = getItemDecoration();
@@ -40,8 +42,17 @@ public class VerticalRecyclerView extends RecyclerView {
         }
     }
 
+    @Override
+    public void removeItemDecoration(ItemDecoration decor) {
+        super.removeItemDecoration(decor);
+    }
+
     protected ItemDecoration getItemDecoration() {
-        return new DividerItemDecoration(getContext());
+        return dividerItemDecoration;
+    }
+
+    public void clearItemDecoration(){
+        removeItemDecoration(getItemDecoration());
     }
 
 }

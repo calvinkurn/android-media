@@ -82,7 +82,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_shop_open_location, container, false);
-        requestParams = RequestParams.EMPTY;
+        requestParams = RequestParams.create();
         requestParams.putAll((HashMap<String, String>) AuthUtil.generateParams(getActivity()));
         initView(root);
         return root;

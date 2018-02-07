@@ -126,8 +126,10 @@ public interface Constants {
         String REGISTER = "tokopedia://registration";
         String FAVORITE = "tokopedia://home/favorite";
         String EVENTS = "tokopedia://events";
-        String PROMO_LIST = "tokopedia://promoNative";
+        String REFERRAL_WELCOME = "tokopedia://referral/{code}/{owner}";
         String KOLCOMMENT = "tokopedia://kolcomment/{id}";
+        String PROMO_LIST = "tokopedia://promoNative";
+
 
         interface SellerApp {
             String PRODUCT_ADD = "sellerapp://product/add";

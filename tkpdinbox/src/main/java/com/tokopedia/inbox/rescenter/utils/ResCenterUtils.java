@@ -3,7 +3,6 @@ package com.tokopedia.inbox.rescenter.utils;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
@@ -70,7 +69,7 @@ public class ResCenterUtils {
         File dest = null;
         try{
 
-            File directory = new File(FileUtils.getFolderPathForUpload(Environment.getExternalStorageDirectory().getAbsolutePath()));
+            File directory = new File(FileUtils.getFolderPathForUploadRandom());
             if(!directory.exists()){
                 directory.mkdirs();
             }
@@ -106,7 +105,7 @@ public class ResCenterUtils {
         File dest = null;
         try{
 
-            File directory = new File(FileUtils.getFolderPathForUpload(Environment.getExternalStorageDirectory().getAbsolutePath()));
+            File directory = new File(FileUtils.getFolderPathForUploadRandom());
             if(!directory.exists()){
                 directory.mkdirs();
             }
@@ -139,7 +138,7 @@ public class ResCenterUtils {
 
     @NonNull
     public static File writeImageToTkpdPath(byte[] buffer) {
-        File directory = new File(FileUtils.getFolderPathForUpload(Environment.getExternalStorageDirectory().getAbsolutePath()));
+        File directory = new File(FileUtils.getFolderPathForUploadRandom());
         if(!directory.exists()){
             directory.mkdirs();
         }

@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -109,7 +110,11 @@ public class ImageEditorFragment extends Fragment implements CropImageView.OnSet
                 onImageEditorFragmentListener.onSuccessCrop(localPath);
             } else {
                 boolean isRotate = mCropImageView.getRotatedDegrees() != 0;
-                boolean isCrop = !mCropImageView.getCropRect().equals(mCropImageView.getWholeImageRect());
+                boolean isCrop = false;
+                Rect cropRect = mCropImageView.getCropRect();
+                if (cropRect!= null) {
+                    isCrop = !cropRect.equals(mCropImageView.getWholeImageRect());
+                }
                 if (isRotate) {
                     UnifyTracking.eventClickSaveEditImageProduct(AppEventTracking.ImageEditor.ROTATE);
                 }
@@ -169,7 +174,7 @@ public class ImageEditorFragment extends Fragment implements CropImageView.OnSet
                 Bitmap bitmap = result.getBitmap();
                 if (bitmap != null) {
                     bitmap = processBitmap(bitmap);
-                    File file = FileUtils.writeImageToTkpdPath(bitmap, FileUtils.generateUniqueFileName());
+                    File file = FileUtils.writeImageToTkpdPath(bitmap);
                     if (file != null && file.exists()) {
                         String path = file.getAbsolutePath();
                         onImageEditorFragmentListener.onSuccessCrop(path);
