@@ -67,7 +67,6 @@ import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.events.view.activity.EventsHomeActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.beranda.presentation.view.fragment.HomeFragment;
@@ -776,11 +775,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     private void checkIsHaveApplinkComeFromDeeplink(Intent intent) {
         if (!TextUtils.isEmpty(intent.getStringExtra(HomeRouter.EXTRA_APPLINK))) {
             String applink = intent.getStringExtra(HomeRouter.EXTRA_APPLINK);
-
-            if(applink.contains("events")){
-                Intent eventsIntent = new Intent(this, EventsHomeActivity.class);
-                startActivity(eventsIntent);
-            } else if (!isPausing()) {
+            if (!isPausing()) {
                 DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
                 Intent applinkIntent = new Intent(this, ParentIndexHome.class);
                 applinkIntent.setData(Uri.parse(applink));

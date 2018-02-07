@@ -64,8 +64,6 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import rx.subscriptions.CompositeSubscription;
 
-import static com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter.PAYMENT_SUCCESS;
-
 /**
  * @author anggaprasetiyo on 2/21/17.
  */

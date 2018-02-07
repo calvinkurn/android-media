@@ -17,18 +17,6 @@
         <item name="android:backgroundDimEnabled">false</item>
     </style>
 
-    <style name="EventTabLayoutTextStyle">
-        <item name="android:textSize">12sp</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textAllCaps">false</item>
-    </style>
-
-    <style name="EventToolbarTextStyle">
-        <item name="android:textSize">16sp</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textAllCaps">false</item>
-    </style>
-
     <style name="Theme.Tokopedia2.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.Tokopedia2.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
@@ -254,10 +242,6 @@
 
     <style name="Medium.RatingBar" parent="@android:style/Widget.RatingBar">
         <item name="android:progressDrawable">@drawable/app_rating_bar</item>
-    </style>
-
-    <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
-        <item name="android:textSize">16sp</item>
     </style>
 
 </resources>

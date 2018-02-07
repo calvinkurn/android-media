@@ -230,7 +230,7 @@ public class ReviewTicketActivity extends TActivity implements HasComponent<Even
         ImageHandler.loadImageCover2(eventImageSmall, packageViewModel.getThumbnailApp());
         eventNameTv.setText(packageViewModel.getDisplayName());
         setHolder(R.drawable.ic_time, timerange, timeHolder);
-        setHolder(R.drawable.skyline, packageViewModel.getAddress(), addressHolder);
+        setHolder(R.drawable.ic_skyline, packageViewModel.getAddress(), addressHolder);
         eventTotalTickets.setText(String.format(getString(R.string.jumlah_tiket),
                 packageViewModel.getSelectedQuantity()));
 

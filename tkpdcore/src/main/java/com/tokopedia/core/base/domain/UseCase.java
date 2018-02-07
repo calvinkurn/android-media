@@ -1,7 +1,5 @@
 package com.tokopedia.core.base.domain;
 
-import android.util.Log;
-
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 
@@ -77,7 +75,6 @@ public abstract class UseCase<T> implements Interactor<T> {
                 compositeSubscription.add(subscription);
             }
         } catch (Throwable t) {
-            Log.d("Pranay","UseCase Catch");
             t.printStackTrace();
         }
     }
