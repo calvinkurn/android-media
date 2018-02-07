@@ -1,5 +1,7 @@
 package com.tokopedia.inbox.rescenter.inboxv2.domain.params;
 
+import android.text.TextUtils;
+
 import com.tokopedia.inbox.rescenter.inboxv2.view.viewmodel.ResoInboxSortFilterModel;
 import com.tokopedia.usecase.RequestParams;
 
@@ -45,6 +47,8 @@ public class GetInboxParams {
         params.putString(PARAM_START_ID, model.getStartID());
         params.putInt(PARAM_SORT_BY, model.getSortBy());
         params.putInt(PARAM_ASC, model.getAsc());
+        params.putString(PARAM_START_DATE, model.getStartDateString());
+        params.putString(PARAM_END_DATE, model.getEndDateString());
         String filterString = "";
         if (model.getFilters().size() != 0) {
             int pos = 0;
@@ -54,9 +58,15 @@ public class GetInboxParams {
                 pos++;
             }
         }
+        if (!TextUtils.isEmpty(model.getStartDateString())
+                || !TextUtils.isEmpty(model.getEndDateString())) {
+            if (!TextUtils.isEmpty(filterString)) {
+                filterString += ",4";
+            } else {
+                filterString += "4";
+            }
+        }
         params.putString(PARAM_FILTER, filterString);
-        params.putString(PARAM_START_DATE, model.getStartDateString());
-        params.putString(PARAM_END_DATE, model.getEndDateString());
         return params;
     }
 
