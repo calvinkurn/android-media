@@ -81,7 +81,7 @@ public class InterceptorModule {
         return new StandardizedInterceptor(oAuthString);
     }
 
-    @Named(AuthUtil.KEY.KEY_WSV4)
+    @KeyDefaultQualifier
     @ApplicationScope
     @Provides
     public GlobalTkpdAuthInterceptor provideWsV4TkpdAuthInterceptor() {

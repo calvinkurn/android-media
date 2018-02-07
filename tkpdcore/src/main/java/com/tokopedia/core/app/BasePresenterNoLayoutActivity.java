@@ -13,6 +13,9 @@ import butterknife.ButterKnife;
  * @author by alifa on 5/5/17.
  */
 
+/**
+ * Extends one of BaseActivity from tkpd abstraction eg:BaseSimpleActivity, BaseStepperActivity, BaseTabActivity, etc
+ */
 @Deprecated
 public abstract class BasePresenterNoLayoutActivity<P> extends BaseActivity {
     protected P presenter;

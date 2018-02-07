@@ -9,6 +9,7 @@ import com.tokopedia.core.network.di.qualifier.BearerAuth;
 import com.tokopedia.core.network.di.qualifier.BearerAuthTypeJsonUt;
 import com.tokopedia.core.network.di.qualifier.DefaultAuth;
 import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
+import com.tokopedia.core.network.di.qualifier.KeyDefaultQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoAuth;
 import com.tokopedia.core.network.di.qualifier.MojitoNoRetryAuth;
 import com.tokopedia.core.network.di.qualifier.MojitoSmallTimeoutNoAuth;
@@ -48,19 +49,12 @@ import okhttp3.logging.HttpLoggingInterceptor;
 @Module(includes={InterceptorModule.class})
 public class OkHttpClientModule {
 
-    @ApplicationScope
-    @Provides
-    public OkHttpClient.Builder provideOkHttpClientBuilder() {
-        return new OkHttpClient.Builder();
-    }
-
     @TomeBearerAuth
     @ApplicationScope
     @Provides
-    public OkHttpClient provideOkHttpClientTomeBearerAuth(OkHttpClient.Builder okHttpClientBuilder,
-                                                          HttpLoggingInterceptor httpLoggingInterceptor,
+    public OkHttpClient provideOkHttpClientTomeBearerAuth(HttpLoggingInterceptor httpLoggingInterceptor,
                                                           BearerInterceptor bearerInterceptor) {
-        return okHttpClientBuilder
+        return new OkHttpClient.Builder()
                 .addInterceptor(bearerInterceptor)
                 .addInterceptor(httpLoggingInterceptor)
                 .build();
@@ -114,13 +108,15 @@ public class OkHttpClientModule {
                                                                        OkHttpRetryPolicy okHttpRetryPolicy,
                                                                        ChuckInterceptor chuckInterceptor,
                                                                        DebugInterceptor debugInterceptor,
-                                                                       TkpdErrorResponseInterceptor errorHandlerInterceptor){
+                                                                       TkpdErrorResponseInterceptor errorHandlerInterceptor,
+                                                                       ApiCacheInterceptor apiCacheInterceptor){
         return OkHttpFactory.create().buildDaggerClientDefaultAuthWithErrorHandler(fingerprintInterceptor,
                 tkpdAuthInterceptor,
                 okHttpRetryPolicy,
                 chuckInterceptor,
                 debugInterceptor,
-                errorHandlerInterceptor);
+                errorHandlerInterceptor,
+                apiCacheInterceptor);
     }
 
     @BearerAuth
@@ -202,7 +198,7 @@ public class OkHttpClientModule {
     @ApplicationScope
     @Provides
     public OkHttpClient provideOkHttpClientWsV4Auth(FingerprintInterceptor fingerprintInterceptor,
-                                                      @Named(AuthUtil.KEY.KEY_WSV4) GlobalTkpdAuthInterceptor globalTkpdAuthInterceptor,
+                                                      @KeyDefaultQualifier GlobalTkpdAuthInterceptor globalTkpdAuthInterceptor,
                                                       OkHttpRetryPolicy okHttpRetryPolicy,
                                                       ChuckInterceptor chuckInterceptor,
                                                       DebugInterceptor debugInterceptor,

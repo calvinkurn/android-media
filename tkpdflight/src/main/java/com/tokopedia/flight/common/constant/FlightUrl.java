@@ -17,6 +17,10 @@ public class FlightUrl {
     public static final String FLIGHT_CHECKOUT_BOOKING = "travel/v1/oms/checkout";
     public static final String FLIGHT_ORDERS = FLIGHT_PATH + "order/list";
     public static final String FLIGHT_ORDER = FLIGHT_PATH + "order/{id}";
+    public static final String FLIGHT_BANNER_VERSION = "v1.4/banner";
+    public static final String PROMO_PATH =  "promo/";
+    public static final String CONTACT_US_PATH = "contact-us";
+    public static final String CONTACT_US_FLIGHT_PREFIX = "?pid=46&ivtype=4";
     public static String BASE_URL = "https://api-staging.tokopedia.com";
     public static String WEB_DOMAIN = "https://staging.tokopedia.com/";
     public static String ALL_PROMO_LINK = WEB_DOMAIN + "promo/";
@@ -26,7 +30,7 @@ public class FlightUrl {
     public static String BANNER_PATH = PULSA_BASE_URL + "v1.4/banner";
 
     public static String getUrlPdf(String orderId, String filename, String userId) {
-        return BASE_URL + FLIGHT_PATH + "pdf/generate?invoice_id=" + orderId + "&pdf=" + filename + "&user_id=" + userId;
+        return WEB_DOMAIN + "pesawat/pdf/generate?invoice_id=" + orderId + "&pdf=" + filename + "&user_id=" + userId;
     }
 
     public static String getUrlInvoice(String orderId, String userId) {
