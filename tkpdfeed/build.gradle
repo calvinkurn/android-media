@@ -26,12 +26,6 @@ def getTkpdCore() {
             rootProject.ext.tkpdDependencies.core : project(':tkpdcore');
 }
 
-//TODO milhamj
-//def getTopAdsSdk() {
-//    return project.hasProperty('isArtifact') ?
-//            rootProject.ext.tkpdDependencies.topads : project(':tkpdtopadssdk');
-//}
-
 publishing {
     publications {
         aar(MavenPublication) {
@@ -109,9 +103,6 @@ dependencies {
 
 
     compile getTkpdCore()
-
-    //TODO milhamj
-//    compile getTopAdsSdk()
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
