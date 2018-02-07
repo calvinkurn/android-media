@@ -17,9 +17,9 @@
         <item name="android:backgroundDimEnabled">false</item>
     </style>
 
-    <style name="Theme.Tokopedia2.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.Tokopedia2.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
-    <style name="Theme.Tokopedia2.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="Theme.Tokopedia2.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
     <!-- RADITYA -->
     <!-- This for base Style -->

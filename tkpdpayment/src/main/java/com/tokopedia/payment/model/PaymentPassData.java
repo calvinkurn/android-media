@@ -9,12 +9,12 @@ import android.os.Parcelable;
 
 public class PaymentPassData implements Parcelable {
 
-    public String paymentId;
-    public String queryString;
-    public String redirectUrl;
-    public String callbackSuccessUrl;
-    public String callbackFailedUrl;
-    public String transactionId;
+    private String paymentId;
+    private String queryString;
+    private String redirectUrl;
+    private String callbackSuccessUrl;
+    private String callbackFailedUrl;
+    private String transactionId;
 
     public String getPaymentId() {
         return paymentId;

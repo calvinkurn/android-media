@@ -381,11 +381,11 @@ public class EventReviewTicketPresenter
             public void onNext(CheckoutResponse checkoutResponse) {
 
                 com.tokopedia.payment.model.PaymentPassData paymentPassData = new com.tokopedia.payment.model.PaymentPassData();
-                paymentPassData.queryString = checkoutResponse.getQueryString();
-                paymentPassData.redirectUrl = checkoutResponse.getRedirectUrl();
-                paymentPassData.callbackSuccessUrl = checkoutResponse.getCallbackUrlSuccess();
-                paymentPassData.transactionId = checkoutResponse.getParameter().getTransactionId();
-                paymentPassData.callbackFailedUrl = checkoutResponse.getCallbackUrlFailed();
+                paymentPassData.setQueryString(checkoutResponse.getQueryString());
+                paymentPassData.setRedirectUrl(checkoutResponse.getRedirectUrl());
+                paymentPassData.setCallbackSuccessUrl(checkoutResponse.getCallbackUrlSuccess());
+                paymentPassData.setCallbackFailedUrl(checkoutResponse.getCallbackUrlFailed());
+                paymentPassData.setTransactionId(checkoutResponse.getParameter().getTransactionId());
                 getView().navigateToActivityRequest(com.tokopedia.payment.activity.TopPayActivity.
                                 createInstance(getView().getActivity().getApplicationContext(), paymentPassData),
                         PAYMENT_REQUEST_CODE);
