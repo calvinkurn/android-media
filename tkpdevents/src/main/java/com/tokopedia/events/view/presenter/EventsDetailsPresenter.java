@@ -141,7 +141,37 @@ public class EventsDetailsPresenter extends BaseDaggerPresenter<EventsDetailsCon
 
     private void getSeatLayout() {
         getView().showProgressBar();
-        getSeatLayoutUseCase.execute(RequestParams.EMPTY, seatLayoutResponseSubscriber);
+        getSeatLayoutUseCase.execute(RequestParams.EMPTY, new Subscriber<SeatLayoutResponse>() {
+            @Override
+            public void onCompleted() {
+                CommonUtils.dumper("enter onCompleted seatlayout usecase");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                CommonUtils.dumper("enter error in seatlayout usecase");
+                e.printStackTrace();
+                getView().hideProgressBar();
+                NetworkErrorHelper.showEmptyState(getView().getActivity(),
+                        getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
+                            @Override
+                            public void onRetryClicked() {
+                                getSeatLayout();
+                            }
+                        });
+            }
+
+            @Override
+            public void onNext(SeatLayoutResponse seatLayoutResponse) {
+                getView().hideProgressBar();
+                try {
+                    seatingURL = seatLayoutResponse.getUrl();
+                    getView().renderSeatLayout(seatingURL);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     private EventsDetailsViewModel convertIntoEventDetailsViewModel(EventDetailsDomain eventDetailsDomain) {
