@@ -14,10 +14,8 @@
         android:id="@+id/old_message_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/margin_med"
-        android:layout_marginRight="@dimen/margin_med"
-        android:layout_marginTop="@dimen/margin_small"
-        android:layout_marginBottom="@dimen/margin_small"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
         android:background="@drawable/border_button_default"
         android:orientation="horizontal"
         android:padding="@dimen/padding_small">
@@ -26,8 +24,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/margin_vs"
-            android:src="@drawable/ic_info_green"
-            />
+            android:src="@drawable/ic_info_green" />
 
         <TextView
             android:id="@+id/old_message"
@@ -38,8 +35,7 @@
             android:textColor="@color/black_38"
             android:textSize="12sp"
             android:textStyle="italic"
-            tools:text="Pesan ini dikirim menggunakan Chat versi lama, dengan subjek: Wolverine Cap Toe Boot Warna Red Tua Ukurannya 42"
-            />
+            tools:text="Pesan ini dikirim menggunakan Chat versi lama, dengan subjek: Wolverine Cap Toe Boot Warna Red Tua Ukurannya 42" />
     </LinearLayout>
 
     <TextView
@@ -84,7 +80,7 @@
         android:text="●"
         android:gravity="center_vertical"
         android:textColor="@color/grey_500"
-        android:textSize="7sp"
+        android:textSize="5sp"
         android:textStyle="normal" />
 
 
@@ -187,7 +183,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/view_user_box"
         android:layout_gravity="left"
-        android:layout_marginTop="@dimen/margin_vs"
+        android:layout_marginTop="@dimen/margin_vvs"
         android:layout_toRightOf="@id/user_ava"
         android:gravity="left"
         android:textColor="@color/time_color"

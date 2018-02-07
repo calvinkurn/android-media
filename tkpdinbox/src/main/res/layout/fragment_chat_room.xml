@@ -131,9 +131,10 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_alignTop="@+id/add_url"
                 android:layout_gravity="center"
                 android:padding="@dimen/padding_ms"
+                android:layout_alignBottom="@id/new_comment"
+                android:layout_centerVertical="true"
                 android:src="@drawable/ic_send_24dp_green" />
 
             <EditText
