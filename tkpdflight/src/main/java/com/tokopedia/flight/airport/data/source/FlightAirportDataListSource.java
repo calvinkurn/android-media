@@ -26,7 +26,6 @@ public class FlightAirportDataListSource extends DataListSource<FlightAirportCou
     public static final String CITY_CODE = "CITY_CODE";
     public static final String AIRPORT_ID = "AIRPORT_ID";
     private FlightAirportDataListDBSource flightAirportDataListDBSource;
-    private FlightAirportDataListFileSource flightAirportDataListFileSource;
 
     @Inject
     public FlightAirportDataListSource(FlightAirportDataCacheSource dataListCacheManager,
@@ -34,7 +33,6 @@ public class FlightAirportDataListSource extends DataListSource<FlightAirportCou
                                        FlightAirportDataListFileSource dataListCloudManager) {
         super(dataListCacheManager, dataListDBManager, dataListCloudManager);
         flightAirportDataListDBSource = dataListDBManager;
-        flightAirportDataListFileSource = dataListCloudManager;
     }
 
     public static HashMap<String, Object> generateGetParam(String query) {
@@ -111,7 +109,7 @@ public class FlightAirportDataListSource extends DataListSource<FlightAirportCou
         });
     }
 
-    public Observable<FlightAirportDB> getAirport(final Map<String, String> params){
+    public Observable<FlightAirportDB> getAirport(final Map<String, String> params) {
         return flightAirportDataListDBSource.isDataAvailable().flatMap(new Func1<Boolean, Observable<FlightAirportDB>>() {
             @Override
             public Observable<FlightAirportDB> call(Boolean aBoolean) {
