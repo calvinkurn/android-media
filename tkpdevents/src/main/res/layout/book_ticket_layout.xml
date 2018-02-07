@@ -20,7 +20,7 @@
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize"
         android:fillViewport="true">
 
@@ -62,7 +62,7 @@
             <android.support.v4.view.ViewPager
                 android:id="@+id/viewpager_book_ticket"
                 android:layout_width="match_parent"
-                android:layout_height="720dp"
+                android:layout_height="wrap_content"
                 android:background="@color/white"
                 android:paddingBottom="@dimen/margin_default" />
         </LinearLayout>
