@@ -54,7 +54,7 @@ public class TxVerData implements Parcelable {
     @SerializedName("payment_amount")
     @Expose
     private String paymentAmount;
-    @SerializedName("howtopay")
+    @SerializedName("howtopay_flag")
     @Expose
     private Integer howtopay;
     @SerializedName("howtopay_url")

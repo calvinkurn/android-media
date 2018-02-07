@@ -99,7 +99,7 @@ public class TxVerAdapter extends ArrayAdapter<TxVerData> {
                 break;
         }
 
-        if(item.getHowtopay() == 1 && item.getHowtopayUrl() != null) {
+        if(item.getHowtopay() != null && item.getHowtopay() == 1 && item.getHowtopayUrl() != null) {
             holder.btnPaymentProcedure.setVisibility(View.VISIBLE);
             holder.btnPaymentProcedure.setOnClickListener(new View.OnClickListener() {
                 @Override
