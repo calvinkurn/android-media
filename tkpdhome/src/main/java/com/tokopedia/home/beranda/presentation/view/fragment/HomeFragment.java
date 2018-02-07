@@ -656,8 +656,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void openApplink(String applink) {
-        ((TkpdCoreRouter) getActivity().getApplicationContext())
-                .actionApplinkFromActivity(getActivity(), applink);
+        if (!TextUtils.isEmpty(applink)) {
+            ((TkpdCoreRouter) getActivity().getApplicationContext())
+                    .actionApplinkFromActivity(getActivity(), applink);
+        }
     }
 
     @Override
