@@ -7,11 +7,6 @@ def getArtifactVersionCode() {
     return project.hasProperty('artifactVersion') ? artifactVersion : '1.0';
 }
 
-def getTkpdAbstraction() {
-    return project.hasProperty('isArtifact') ?
-            rootProject.ext.tkpdDependencies.abstraction : project(':tkpdabstraction');
-}
-
 def getTkpdCore() {
     return project.hasProperty('isArtifact') ?
             rootProject.ext.tkpdDependencies.core : project(':tkpdcore');
