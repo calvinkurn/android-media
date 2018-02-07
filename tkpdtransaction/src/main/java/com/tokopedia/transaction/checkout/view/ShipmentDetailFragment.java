@@ -3,6 +3,7 @@ package com.tokopedia.transaction.checkout.view;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -11,7 +12,13 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -49,6 +56,7 @@ import com.tokopedia.transaction.checkout.view.data.ShipmentItemData;
 import com.tokopedia.transaction.checkout.view.presenter.IShipmentDetailPresenter;
 import com.tokopedia.transaction.checkout.view.presenter.ShipmentDetailPresenter;
 import com.tokopedia.transaction.checkout.view.view.IShipmentDetailView;
+import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
 
 import java.util.List;
 
@@ -61,8 +69,9 @@ import butterknife.OnClick;
  * Created by Irfan Khoirul on 24/01/18.
  */
 
-public class ShipmentDetailFragment extends BasePresenterFragment implements IShipmentDetailView,
-        CourierChoiceAdapter.ViewListener, OnMapReadyCallback, ShipmentChoiceBottomSheet.ActionListener {
+public class ShipmentDetailFragment extends BasePresenterFragment<IShipmentDetailPresenter>
+        implements IShipmentDetailView, CourierChoiceAdapter.ViewListener, OnMapReadyCallback,
+        ShipmentChoiceBottomSheet.ActionListener {
 
     private static final int REQUEST_CODE_SHIPMENT_CHOICE = 11;
     private static final int REQUEST_CODE_PINPOINT = 22;
@@ -160,10 +169,11 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
     View vNoPinpointLayer;
     @BindView(R2.id.ll_shipment_address)
     LinearLayout llShipmentAddress;
+    @BindView(R2.id.tv_insurance_terms)
+    TextView tvInsuranceTerms;
 
     private ShipmentChoiceBottomSheet shipmentChoiceBottomSheet;
     private CourierChoiceAdapter courierChoiceAdapter;
-    private IShipmentDetailPresenter presenter;
 
     public static ShipmentDetailFragment newInstance() {
         ShipmentDetailFragment fragment = new ShipmentDetailFragment();
@@ -201,6 +211,7 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
     @Override
     protected void initialPresenter() {
         presenter = new ShipmentDetailPresenter();
+        presenter.setContext(getActivity());
     }
 
     @Override
@@ -265,11 +276,6 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
     }
 
     @Override
-    public void showData() {
-        scrollViewContent.setVisibility(View.VISIBLE);
-    }
-
-    @Override
     public void showPinPointMap(ShipmentDetailData shipmentDetailData) {
         setText(tvShipmentAddress, shipmentDetailData.getAddress());
         setupMapView();
@@ -303,48 +309,25 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
     }
 
     private void renderShipment(ShipmentDetailData shipmentDetailData) {
-        presenter.setSelectedShipment(shipmentDetailData.getShipmentItemData().get(0));
+        if (presenter.getSelectedShipment() == null) {
+            presenter.setSelectedShipment(shipmentDetailData.getShipmentItemData().get(0));
+        }
         tvShipmentType.setText(presenter.getSelectedShipment().getType());
         llDropshipper.setVisibility(View.GONE);
         separatorPartialOrder.setVisibility(View.GONE);
         setText(tvDeliveryFeeTotal, shipmentDetailData.getDeliveryPriceTotal());
     }
 
-    private void renderShipmentWithMap(ShipmentDetailData shipmentDetailData) {
+    @Override
+    public void renderShipmentWithMap(ShipmentDetailData shipmentDetailData) {
         showPinPointMap(shipmentDetailData);
         renderShipment(shipmentDetailData);
-        presenter.setCourierList(shipmentDetailData.getShipmentItemData().get(0).getCourierItemData());
     }
 
-    private void renderShipmentWithoutMap(ShipmentDetailData shipmentDetailData) {
+    @Override
+    public void renderShipmentWithoutMap(ShipmentDetailData shipmentDetailData) {
         llPinpoint.setVisibility(View.GONE);
         renderShipment(shipmentDetailData);
-        presenter.setCourierList(shipmentDetailData.getShipmentItemData().get(0).getCourierItemData());
-    }
-
-    @Override
-    public void renderInstantShipment(ShipmentDetailData shipmentDetailData) {
-        renderShipmentWithMap(shipmentDetailData);
-    }
-
-    @Override
-    public void renderSameDayShipment(ShipmentDetailData shipmentDetailData) {
-        renderShipmentWithMap(shipmentDetailData);
-    }
-
-    @Override
-    public void renderNextDayShipment(ShipmentDetailData shipmentDetailData) {
-        renderShipmentWithMap(shipmentDetailData);
-    }
-
-    @Override
-    public void renderRegularShipment(ShipmentDetailData shipmentDetailData) {
-        renderShipmentWithoutMap(shipmentDetailData);
-    }
-
-    @Override
-    public void renderKargoShipment(ShipmentDetailData shipmentDetailData) {
-        renderShipmentWithoutMap(shipmentDetailData);
     }
 
     @Override
@@ -367,12 +350,38 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
         setupRecyclerView(couriers);
     }
 
+    private void formatInsuranceTncView() {
+        String formatText = getString(R.string.text_tos_agreement);
+        String messageTosAgreement = getString(R.string.message_tos_agreement);
+        int startSpan = messageTosAgreement.indexOf(formatText);
+        int endSpan = messageTosAgreement.indexOf(formatText) + formatText.length();
+        Spannable tosAgreementText = new SpannableString(messageTosAgreement);
+        int color = ContextCompat.getColor(context, R.color.tkpd_green_header);
+        tosAgreementText.setSpan(new ForegroundColorSpan(color), startSpan, endSpan,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        tosAgreementText.setSpan(new StyleSpan(Typeface.BOLD), startSpan, endSpan,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        tosAgreementText.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                getActivity().startActivity(new Intent(getActivity(), InsuranceTnCActivity.class));
+            }
+        }, startSpan, endSpan, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        tvInsuranceTerms.setMovementMethod(LinkMovementMethod.getInstance());
+        tvInsuranceTerms.setText(tosAgreementText);
+    }
+
     private void setupRecyclerView(List<CourierItemData> couriers) {
         courierChoiceAdapter = new CourierChoiceAdapter(couriers, this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.VERTICAL, false);
         rvCourierChoice.setLayoutManager(linearLayoutManager);
         rvCourierChoice.setAdapter(courierChoiceAdapter);
+        if (presenter.getSelectedShipment().getCourierItemData().size() > 3) {
+            llExpandedCourierList.setVisibility(View.VISIBLE);
+        } else {
+            llExpandedCourierList.setVisibility(View.GONE);
+        }
     }
 
     private void renderNoPinpoint() {
@@ -514,26 +523,44 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
     }
 
     private void renderInsuranceView(CourierItemData courierItemData) {
+        imgBtInsuranceInfo.setVisibility(View.VISIBLE);
         if (courierItemData.getInsuranceType() == InsuranceConstant.InsuranceType.NO) {
-            imgBtInsuranceInfo.setVisibility(View.GONE);
             tvSpecialInsuranceCondition.setText(R.string.label_insurance_not_available);
             switchInsurance.setVisibility(View.GONE);
             switchInsurance.setChecked(false);
             tvSpecialInsuranceCondition.setVisibility(View.VISIBLE);
         } else if (courierItemData.getInsuranceType() == InsuranceConstant.InsuranceType.MUST) {
-            imgBtInsuranceInfo.setVisibility(View.VISIBLE);
             tvSpecialInsuranceCondition.setText(R.string.label_must_insurance);
             switchInsurance.setVisibility(View.GONE);
             switchInsurance.setChecked(true);
             tvSpecialInsuranceCondition.setVisibility(View.VISIBLE);
         } else {
-            imgBtInsuranceInfo.setVisibility(View.VISIBLE);
             tvSpecialInsuranceCondition.setVisibility(View.GONE);
             switchInsurance.setVisibility(View.VISIBLE);
             if (courierItemData.getInsuranceUsedDefault() == InsuranceConstant.InsuranceUsedDefault.YES) {
                 switchInsurance.setChecked(true);
             }
         }
+    }
+
+    private void renderInsuranceTncView(CourierItemData courierItemData) {
+        if (courierItemData.getInsuranceUsedType() == InsuranceConstant.InsuranceUsedType.TOKOPEDIA_INSURANCE) {
+            formatInsuranceTncView();
+            tvInsuranceTerms.setVisibility(View.VISIBLE);
+        } else {
+            tvInsuranceTerms.setVisibility(View.GONE);
+        }
+    }
+
+    private void resetView() {
+        switchInsurance.setChecked(false);
+        switchDropshipper.setChecked(false);
+        switchPartlyAccept.setChecked(false);
+        switchInsurance.setVisibility(View.GONE);
+        tvSpecialInsuranceCondition.setVisibility(View.VISIBLE);
+        tvSpecialInsuranceCondition.setText(R.string.label_insurance_not_available);
+        llFeesGroup.setVisibility(View.GONE);
+        llPinpoint.setVisibility(View.GONE);
     }
 
     @OnClick(R2.id.bt_choose_pinpoint)
@@ -592,8 +619,13 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
     void onSwitchInsuranceChanged(CompoundButton view, boolean checked) {
         if (checked) {
             llInsuranceFee.setVisibility(View.VISIBLE);
+            if (presenter.getSelectedCourier().getInsuranceType() == InsuranceConstant.InsuranceType.MUST ||
+                    presenter.getSelectedCourier().getInsuranceType() == InsuranceConstant.InsuranceType.OPTIONAL) {
+                renderInsuranceTncView(presenter.getSelectedCourier());
+            }
         } else {
             llInsuranceFee.setVisibility(View.GONE);
+            tvInsuranceTerms.setVisibility(View.GONE);
         }
         updateFeesGroupLayout();
     }
@@ -615,19 +647,33 @@ public class ShipmentDetailFragment extends BasePresenterFragment implements ISh
 
     @Override
     public void onCourierItemClick(CourierItemData courierItemData) {
-        presenter.setSelectedCourier(courierItemData);
-        setText(tvDeliveryFee, courierItemData.getDeliveryPrice());
-        renderTickerView(courierItemData);
-        renderInsuranceView(courierItemData);
-        renderAdditionalPriceView(courierItemData);
-        renderDropshipperView(courierItemData);
-        updateFeesGroupLayout();
+        if (presenter.getSelectedCourier() == null ||
+                !presenter.getSelectedCourier().getId().equals(courierItemData.getId())) {
+            resetView();
+            presenter.setSelectedCourier(courierItemData);
+            if (courierItemData.isUsePinPoint()) {
+                renderShipmentWithMap(presenter.getShipmentDetailData());
+            } else {
+                renderShipmentWithoutMap(presenter.getShipmentDetailData());
+            }
+            switchInsurance.setChecked(false);
+            setText(tvDeliveryFee, courierItemData.getDeliveryPrice());
+            renderTickerView(courierItemData);
+            renderInsuranceView(courierItemData);
+            renderAdditionalPriceView(courierItemData);
+            renderDropshipperView(courierItemData);
+            updateFeesGroupLayout();
+        }
     }
 
     @Override
     public void onShipmentItemClick(ShipmentItemData shipmentItemData) {
-        presenter.setSelectedShipment(shipmentItemData);
-        tvShipmentType.setText(shipmentItemData.getType());
+        if (presenter.getSelectedShipment() == null ||
+                !presenter.getSelectedShipment().getId().equals(shipmentItemData.getId())) {
+            resetView();
+            presenter.setSelectedShipment(shipmentItemData);
+            tvShipmentType.setText(shipmentItemData.getType());
+        }
     }
 
     @Override

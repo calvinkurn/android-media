@@ -52,6 +52,12 @@ public class ShipmentRecipientModelFactory {
         shipmentRecipientModel.setAddressIdentifier(addressIdentifier);
         shipmentRecipientModel.setRecipientName(recipientName);
         shipmentRecipientModel.setRecipientAddress(recipientAddress);
+        shipmentRecipientModel.setRecipientAddressDescription("Alamat Kantor");
+        shipmentRecipientModel.setRecipientPhoneNumber("080989999");
+        shipmentRecipientModel.setDestinationDistrictId("2283");
+        shipmentRecipientModel.setDestinationDistrictName("Kelapa Gading");
+        shipmentRecipientModel.setTokenPickup("Tokopedia%2BKero:juMixO/k%2ButV%2BcQ4pVNm3FSG1pw%3D");
+        shipmentRecipientModel.setUnixTime("1515753331");
         shipmentRecipientModel.setRecipientPhone(recipientPhone);
 
         return shipmentRecipientModel;

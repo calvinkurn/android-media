@@ -2,6 +2,7 @@ package com.tokopedia.transaction.checkout.view.adapter;
 
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,9 +45,11 @@ public class ShipmentChoiceAdapter extends RecyclerView.Adapter<ShipmentChoiceAd
     public void onBindViewHolder(final ShipmentViewHolder holder, final int position) {
         ShipmentItemData shipmentItemData = shipments.get(position);
         holder.tvShipmentType.setText(shipmentItemData.getType());
-        holder.tvPriceRange.setText(
-                holder.tvShipmentType.getContext().getResources().getString(
-                        R.string.label_shipment_type_format, shipmentItemData.getPriceRange()));
+        if (!TextUtils.isEmpty(shipmentItemData.getPriceRange())) {
+            holder.tvPriceRange.setText(
+                    holder.tvShipmentType.getContext().getResources().getString(
+                            R.string.label_shipment_type_format, shipmentItemData.getPriceRange()));
+        }
         holder.tvDeliveryTimeRange.setText(shipmentItemData.getDeliveryTimeRange());
         holder.itemView.setOnClickListener(getItemClickListener(shipmentItemData, position));
 

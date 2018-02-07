@@ -13,6 +13,8 @@ import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressItemData;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressPriceSummaryData;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressShipmentAdapterData;
+import com.tokopedia.transaction.pickuppoint.domain.model.Store;
+import com.tokopedia.transaction.pickuppoint.view.customview.PickupPointLayout;
 
 import java.util.List;
 
@@ -21,7 +23,7 @@ import java.util.List;
  */
 
 public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
-        <RecyclerView.ViewHolder>{
+        <RecyclerView.ViewHolder> {
 
     private static final int MULTIPLE_ADDRESS_SHIPMENT_HEADER_LAYOUT =
             R.layout.multiple_address_header;
@@ -68,7 +70,7 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
             return new MultipleAddressHeaderViewHolder(itemView);
         else if (viewType == MULTIPLE_ADDRESS_FOOTER_SHIPMENT_LAYOUT)
             return new MultipleAddressShipmentFooterViewHolder(itemView);
-        else if(viewType == MULTIPLE_ADDRESS_FOOTER_TOTAL_PAYMENT)
+        else if (viewType == MULTIPLE_ADDRESS_FOOTER_TOTAL_PAYMENT)
             return new MultipleAddressShipmentFooterTotalPayment(itemView);
         else return new MultipleShippingAddressViewHolder(itemView);
     }
@@ -77,9 +79,9 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof MultipleShippingAddressViewHolder) {
             bindItems((MultipleShippingAddressViewHolder) holder, position);
-        } else if(holder instanceof MultipleAddressShipmentFooterViewHolder) {
+        } else if (holder instanceof MultipleAddressShipmentFooterViewHolder) {
             bindFooterView((MultipleAddressShipmentFooterViewHolder) holder);
-        } else if(holder instanceof MultipleAddressShipmentFooterTotalPayment) {
+        } else if (holder instanceof MultipleAddressShipmentFooterTotalPayment) {
             MultipleAddressShipmentFooterTotalPayment totalPaymentHolder =
                     (MultipleAddressShipmentFooterTotalPayment) holder;
             totalPaymentHolder.totalPayment.setText(
@@ -132,6 +134,54 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
         itemViewHolder.addressReceiverName.setText(itemData.getAddressReceiverName());
         itemViewHolder.address.setText(itemData.getAddress());
         itemViewHolder.subTotalAmount.setText(data.getSubTotalAmount());
+        itemViewHolder.chooseCourierButton.setOnClickListener(getChooseCourierClickListener(data));
+        renderPickupPoint(itemViewHolder, data);
+    }
+
+    private View.OnClickListener getChooseCourierClickListener(final MultipleAddressShipmentAdapterData data) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onChooseShipment(data);
+            }
+        };
+    }
+
+    private void renderPickupPoint(final MultipleShippingAddressViewHolder itemViewHolder,
+                                   final MultipleAddressShipmentAdapterData data) {
+        itemViewHolder.pickupPointLayout.setListener(new PickupPointLayout.ViewListener() {
+            @Override
+            public void onChoosePickupPoint() {
+                listener.onChoosePickupPoint(data, itemViewHolder.getAdapterPosition());
+            }
+
+            @Override
+            public void onClearPickupPoint(Store oldStore) {
+                listener.onClearPickupPoint(data, itemViewHolder.getAdapterPosition());
+            }
+
+            @Override
+            public void onEditPickupPoint(Store oldStore) {
+                listener.onEditPickupPoint(data, itemViewHolder.getAdapterPosition());
+            }
+        });
+        if (data.getStore() == null) {
+            itemViewHolder.pickupPointLayout.unSetData(itemViewHolder.pickupPointLayout.getContext());
+            itemViewHolder.pickupPointLayout.enableChooserButton(itemViewHolder.pickupPointLayout.getContext());
+            itemViewHolder.chooseCourierButton.setText("Pilih Kurir");
+        } else {
+            itemViewHolder.pickupPointLayout.setData(itemViewHolder.pickupPointLayout.getContext(), data.getStore());
+            itemViewHolder.chooseCourierButton.setText("Alfatrex");
+        }
+        itemViewHolder.pickupPointLayout.setVisibility(View.VISIBLE);
+    }
+
+    public void setPickupPoint(Store store, int position) {
+        addressDataList.get(position - 1).setStore(store);
+    }
+
+    public void unSetPickupPoint(int position) {
+        addressDataList.get(position - 1).setStore(null);
     }
 
     public List<MultipleAddressShipmentAdapterData> getAddressDataList() {
@@ -177,6 +227,8 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 
         private TextView subTotalAmount;
 
+        private PickupPointLayout pickupPointLayout;
+
         MultipleShippingAddressViewHolder(View itemView) {
             super(itemView);
 
@@ -207,6 +259,8 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
             subTotalLayout = itemView.findViewById(R.id.sub_total_layout);
 
             subTotalAmount = itemView.findViewById(R.id.sub_total_amount);
+
+            pickupPointLayout = itemView.findViewById(R.id.pickup_point_layout);
         }
     }
 
@@ -274,15 +328,21 @@ public class MultipleAddressShipmentAdapter extends RecyclerView.Adapter
 
         void onChooseShipment(MultipleAddressShipmentAdapterData addressAdapterData);
 
+        void onChoosePickupPoint(MultipleAddressShipmentAdapterData addressAdapterData, int position);
+
+        void onClearPickupPoint(MultipleAddressShipmentAdapterData addressAdapterData, int position);
+
+        void onEditPickupPoint(MultipleAddressShipmentAdapterData addressAdapterData, int position);
+
     }
 
     private String totalPriceChecker(String totalPriceText, long shipmentPrice) {
-        if(shipmentPrice > 0) return totalPriceText;
+        if (shipmentPrice > 0) return totalPriceText;
         else return "-";
     }
 
     private String priceChecker(long price, long shipmentPrice) {
-        if(shipmentPrice > 0) return formatPrice(price);
+        if (shipmentPrice > 0) return formatPrice(price);
         else return "-";
     }
 

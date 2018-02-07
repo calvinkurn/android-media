@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -33,6 +34,10 @@ public class PickupPointMapActivity extends BasePresenterActivity implements OnM
     Button btnChoosePickupBooth;
     @BindView(R2.id.mapview)
     MapView mapView;
+    @BindView(R2.id.tv_pick_up_booth_name)
+    TextView tvPickUpBoothName;
+    @BindView(R2.id.tv_pick_up_booth_address)
+    TextView tvPickUpBoothAddress;
 
     private Store store;
 
@@ -41,6 +46,14 @@ public class PickupPointMapActivity extends BasePresenterActivity implements OnM
         intent.putExtra(INTENT_DATA_STORE, store);
         intent.putExtra(INTENT_DISTRICT_NAME, districtName);
         return intent;
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setElevation(0);
+        }
     }
 
     @Override
@@ -67,6 +80,8 @@ public class PickupPointMapActivity extends BasePresenterActivity implements OnM
     protected void initView() {
         if (getIntent().getParcelableExtra(INTENT_DATA_STORE) != null) {
             store = getIntent().getParcelableExtra(INTENT_DATA_STORE);
+            tvPickUpBoothName.setText(store.getStoreName());
+            tvPickUpBoothAddress.setText(store.getAddress());
             setupMapView();
         }
     }

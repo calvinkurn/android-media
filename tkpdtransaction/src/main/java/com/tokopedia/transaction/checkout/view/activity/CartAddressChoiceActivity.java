@@ -1,32 +1,30 @@
-package com.tokopedia.transaction.checkout.view;
+package com.tokopedia.transaction.checkout.view.activity;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.FragmentManager;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.checkout.view.CartAddressChoiceFragment;
+import com.tokopedia.transaction.checkout.view.data.ShipmentRecipientModel;
 
 /**
- * Created by Irfan Khoirul on 26/01/18.
+ * Created by Irfan Khoirul on 05/02/18.
  */
 
-public class ShipmentDetailActivity extends BasePresenterActivity {
+public class CartAddressChoiceActivity extends BasePresenterActivity {
 
-    public static Intent createInstance(Activity activity) {
-        return new Intent(activity, ShipmentDetailActivity.class);
-    }
+    public static final String INTENT_EXTRA_RECIPIENT = "recipient";
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setElevation(0);
-        }
+    public static Intent createInstance(Activity activity, ShipmentRecipientModel shipmentRecipientModel) {
+        Intent intent = new Intent(activity, CartAddressChoiceActivity.class);
+        intent.putExtra(INTENT_EXTRA_RECIPIENT, shipmentRecipientModel);
+
+        return intent;
     }
 
     @Override
@@ -51,10 +49,12 @@ public class ShipmentDetailActivity extends BasePresenterActivity {
 
     @Override
     protected void initView() {
-        ShipmentDetailFragment fragment = ShipmentDetailFragment.newInstance();
+        CartAddressChoiceFragment fragment = CartAddressChoiceFragment.newInstance(
+                (ShipmentRecipientModel) getIntent().getParcelableExtra(INTENT_EXTRA_RECIPIENT)
+        );
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        fragmentTransaction.add(R.id.container, fragment, ShipmentChoiceFragment.class.getSimpleName());
+        fragmentTransaction.add(R.id.container, fragment, CartAddressChoiceFragment.class.getSimpleName());
         fragmentTransaction.commit();
     }
 

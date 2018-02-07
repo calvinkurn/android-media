@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import com.tokopedia.transaction.checkout.view.holderitemdata.CartItemHolderData;
@@ -52,7 +53,12 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         holderView.tvProductName.setText(data.getCartItemData().getOriginData().getProductName());
         holderView.tvProductPrice.setText(data.getCartItemData().getOriginData().getPriceFormatted());
         holderView.tvProductWeight.setText(data.getCartItemData().getOriginData().getWeightFormatted());
-//        holderView.etQty.setText(data.getCartItemData().getUpdatedData().getQuantity());
+        holderView.etQty.setText(String.valueOf(data.getCartItemData().getUpdatedData().getQuantity()));
+        ImageHandler.loadImageRounded2(
+                holderView.itemView.getContext(), holderView.ivProductImage,
+                data.getCartItemData().getOriginData().getProductImage()
+        );
+
 
         if (!TextUtils.isEmpty(data.getCartItemData().getUpdatedData().getRemark())) {
             holderView.etRemark.setVisibility(View.VISIBLE);

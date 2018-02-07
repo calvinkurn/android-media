@@ -182,7 +182,7 @@
     <Button
         android:id="@+id/btn_choose_pickup_booth"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="52dp"
         android:layout_gravity="bottom"
         android:layout_margin="16dp"
         android:background="@color/xco_button_color_disable"

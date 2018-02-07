@@ -1,9 +1,9 @@
 package com.tokopedia.transaction.checkout.view.presenter;
 
-import com.tokopedia.core.base.presentation.CustomerPresenter;
+import android.content.Context;
+
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
-import com.tokopedia.core.product.model.CourierItem;
-import com.tokopedia.transaction.checkout.view.data.CartItemData;
 import com.tokopedia.transaction.checkout.view.data.CourierItemData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentDetailData;
 import com.tokopedia.transaction.checkout.view.data.ShipmentItemData;
@@ -38,5 +38,9 @@ public interface IShipmentDetailPresenter extends CustomerPresenter<IShipmentDet
     void setCourierList(List<CourierItemData> couriers);
 
     void updatePinPoint(LocationPass locationPass);
+
+    //Temporary
+
+    void setContext(Context context);
 
 }

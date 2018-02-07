@@ -1,5 +1,7 @@
 package com.tokopedia.transaction.checkout.di.module;
 
+import android.support.v7.widget.RecyclerView;
+
 import com.tokopedia.transaction.checkout.di.scope.CartListScope;
 import com.tokopedia.transaction.checkout.domain.CartListInteractor;
 import com.tokopedia.transaction.checkout.domain.CartMapper;
@@ -7,6 +9,7 @@ import com.tokopedia.transaction.checkout.domain.ICartListInteractor;
 import com.tokopedia.transaction.checkout.domain.ICartMapper;
 import com.tokopedia.transaction.checkout.domain.ICartRepository;
 import com.tokopedia.transaction.checkout.view.CartFragment;
+import com.tokopedia.transaction.checkout.view.activity.CartItemDecoration;
 import com.tokopedia.transaction.checkout.view.adapter.CartListAdapter;
 import com.tokopedia.transaction.checkout.view.presenter.CartListPresenter;
 import com.tokopedia.transaction.checkout.view.presenter.ICartListPresenter;
@@ -57,6 +60,13 @@ public class CartListModule {
                                                  ICartListInteractor cartListInteractor) {
         return new CartListPresenter(cartListView, cartListInteractor);
     }
+
+    @Provides
+    @CartListScope
+    RecyclerView.ItemDecoration provideCartItemDecoration() {
+        return new CartItemDecoration(10, true, 0);
+    }
+
 
     @Provides
     @CartListScope

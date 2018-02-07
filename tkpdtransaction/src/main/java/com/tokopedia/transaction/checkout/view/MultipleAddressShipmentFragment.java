@@ -1,7 +1,11 @@
 package com.tokopedia.transaction.checkout.view;
 
+import android.app.Activity;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,20 +16,30 @@ import android.widget.TextView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.checkout.view.activity.ShipmentDetailActivity;
 import com.tokopedia.transaction.checkout.view.adapter.MultipleAddressShipmentAdapter;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressItemData;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressPriceSummaryData;
 import com.tokopedia.transaction.checkout.view.data.MultipleAddressShipmentAdapterData;
+import com.tokopedia.transaction.pickuppoint.domain.model.Store;
+import com.tokopedia.transaction.pickuppoint.domain.usecase.GetPickupPointsUseCase;
+import com.tokopedia.transaction.pickuppoint.view.activity.PickupPointActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_DATA_POSITION;
+import static com.tokopedia.transaction.pickuppoint.view.contract.PickupPointContract.Constant.INTENT_DATA_STORE;
 
 /**
  * Created by kris on 1/23/18. Tokopedia
  */
 
 public class MultipleAddressShipmentFragment extends TkpdFragment
-        implements MultipleAddressShipmentAdapter.MultipleAddressShipmentAdapterListener{
+        implements MultipleAddressShipmentAdapter.MultipleAddressShipmentAdapterListener {
+
+    private static final int REQUEST_CODE_SHIPMENT_DETAIL = 11;
+    private static final int REQUEST_CHOOSE_PICKUP_POINT = 12;
 
     private TextView totalPayment;
 
@@ -71,6 +85,10 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
         data.setProductImageUrl("https://t00.deviantart.net/Qgvu_0dClD_BotaDpLBflGKcvbI=/300x200/filters:fixed_height(100,100):origin()/pre00/69b2/th/pre/f/2013/143/9/1/pusheen_the_cat_png_15_by_13taylorswiftlover13-d66chev.png");
         data.setProductName("Kaos Adidas Camo Tongue Tee...White & Red, XS");
         data.setProductPrice("Rp200.000");
+        data.setDestinationDistrictId("2283");
+        data.setDestinationDistrictName("Kelapa Gading");
+        data.setTokenPickup("Tokopedia%2BKero:juMixO/k%2ButV%2BcQ4pVNm3FSG1pw%3D");
+        data.setUnixTime("1515753331");
         data.setItemData(dummyItemData());
         return data;
     }
@@ -88,6 +106,22 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
         return data;
     }
 
+    private void showCancelPickupBoothDialog(final int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(R.string.label_dialog_title_cancel_pickup);
+        builder.setMessage(R.string.label_dialog_message_cancel_pickup_booth);
+        builder.setPositiveButton(R.string.title_yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                shipmentAdapter.unSetPickupPoint(position);
+                shipmentAdapter.notifyItemChanged(position);
+            }
+        });
+        builder.setNegativeButton(R.string.title_no, null);
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
     @Override
     public void onConfirmedButtonClicked(List<MultipleAddressShipmentAdapterData> addressDataList) {
 
@@ -95,7 +129,32 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
 
     @Override
     public void onChooseShipment(MultipleAddressShipmentAdapterData addressAdapterData) {
+        startActivityForResult(ShipmentDetailActivity.createInstance(getActivity()), REQUEST_CODE_SHIPMENT_DETAIL);
+    }
 
+    @Override
+    public void onChoosePickupPoint(MultipleAddressShipmentAdapterData addressAdapterData, int position) {
+        startActivityForResult(PickupPointActivity.createInstance(
+                getActivity(),
+                position,
+                addressAdapterData.getDestinationDistrictName(),
+                GetPickupPointsUseCase.generateParams(addressAdapterData)
+        ), REQUEST_CHOOSE_PICKUP_POINT);
+    }
+
+    @Override
+    public void onClearPickupPoint(MultipleAddressShipmentAdapterData addressAdapterData, int position) {
+        showCancelPickupBoothDialog(position);
+    }
+
+    @Override
+    public void onEditPickupPoint(MultipleAddressShipmentAdapterData addressAdapterData, int position) {
+        startActivityForResult(PickupPointActivity.createInstance(
+                getActivity(),
+                position,
+                addressAdapterData.getDestinationDistrictName(),
+                GetPickupPointsUseCase.generateParams(addressAdapterData)
+        ), REQUEST_CHOOSE_PICKUP_POINT);
     }
 
     private RecyclerView.OnScrollListener onRecyclerViewScrolledListener(
@@ -106,11 +165,11 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 int totalItemCount = recyclerView.getLayoutManager().getItemCount();
-                int lastVisibleItem = ((LinearLayoutManager)recyclerView.getLayoutManager())
+                int lastVisibleItem = ((LinearLayoutManager) recyclerView.getLayoutManager())
                         .findLastVisibleItemPosition();
                 CommonUtils.dumper("totalItemCount " + totalItemCount);
                 CommonUtils.dumper("lastVisibleItem " + lastVisibleItem);
-                if(lastVisibleItem == totalItemCount - 1) {
+                if (lastVisibleItem == totalItemCount - 1) {
                     totalPaymentLayout.setVisibility(View.GONE);
                 } else {
                     totalPaymentLayout.setVisibility(View.VISIBLE);
@@ -128,5 +187,19 @@ public class MultipleAddressShipmentFragment extends TkpdFragment
         data.setQuantity(3);
         data.setTotalProductPrice(10000);
         return new MultipleAddressPriceSummaryData();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case REQUEST_CHOOSE_PICKUP_POINT:
+                    Store pickupBooth = data.getParcelableExtra(INTENT_DATA_STORE);
+                    int position = data.getIntExtra(INTENT_DATA_POSITION, 0);
+                    shipmentAdapter.setPickupPoint(pickupBooth, position);
+                    shipmentAdapter.notifyItemChanged(position);
+                    break;
+            }
+        }
     }
 }

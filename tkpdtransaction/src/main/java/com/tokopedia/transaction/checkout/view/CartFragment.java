@@ -11,7 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.common.utils.AuthUtil;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.R;
@@ -41,6 +40,8 @@ public class CartFragment extends BasePresenterFragment implements
     RecyclerView cartRecyclerView;
     @BindView(R2.id.go_to_courier_page_button)
     TextView btnToShipment;
+
+
     @BindView(R2.id.tv_item_count)
     TextView tvItemCount;
     @BindView(R2.id.tv_total_prices)
@@ -50,6 +51,8 @@ public class CartFragment extends BasePresenterFragment implements
     ICartListPresenter dPresenter;
     @Inject
     CartListAdapter cartListAdapter;
+    @Inject
+    RecyclerView.ItemDecoration cartItemDecoration;
 
     @Override
     protected void initInjector() {
@@ -109,6 +112,7 @@ public class CartFragment extends BasePresenterFragment implements
     protected void initView(View view) {
         cartRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         cartRecyclerView.setAdapter(cartListAdapter);
+        cartRecyclerView.addItemDecoration(cartItemDecoration);
     }
 
     @Override

@@ -48,14 +48,14 @@
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".checkout.view.ShipmentChoiceActivity"
-            android:label="@string/title_activity_shipment_choice"
+            android:name=".checkout.view.activity.ShipmentDetailActivity"
+            android:label="@string/title_activity_shipment_detail"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".checkout.view.ShipmentDetailActivity"
-            android:label="@string/title_activity_shipment_detail"
+            android:name=".checkout.view.activity.CartAddressChoiceActivity"
+            android:label="@string/title_shipping_dest"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"/>
 

@@ -21,6 +21,7 @@ public class CourierItemData implements Parcelable {
     private String insuranceUsedInfo;
     private int insuranceUsedDefault;
     private boolean allowDropshiper;
+    private boolean usePinPoint;
     private boolean selected;
 
     public CourierItemData() {
@@ -40,6 +41,7 @@ public class CourierItemData implements Parcelable {
         insuranceUsedInfo = in.readString();
         insuranceUsedDefault = in.readInt();
         selected = in.readByte() != 0;
+        usePinPoint = in.readByte() != 0;
         allowDropshiper = in.readByte() != 0;
     }
 
@@ -167,6 +169,14 @@ public class CourierItemData implements Parcelable {
         this.allowDropshiper = allowDropshiper;
     }
 
+    public boolean isUsePinPoint() {
+        return usePinPoint;
+    }
+
+    public void setUsePinPoint(boolean usePinPoint) {
+        this.usePinPoint = usePinPoint;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -188,5 +198,6 @@ public class CourierItemData implements Parcelable {
         dest.writeInt(insuranceUsedDefault);
         dest.writeByte((byte) (selected ? 1 : 0));
         dest.writeByte((byte) (allowDropshiper ? 1 : 0));
+        dest.writeByte((byte) (usePinPoint ? 1 : 0));
     }
 }

@@ -28,12 +28,48 @@ public class ShipmentDetailData implements Parcelable {
         id = in.readString();
         shipmentItemData = in.createTypedArrayList(ShipmentItemData.CREATOR);
         address = in.readString();
-        latitude = in.readDouble();
-        longitude = in.readDouble();
+        if (in.readByte() == 0) {
+            latitude = null;
+        } else {
+            latitude = in.readDouble();
+        }
+        if (in.readByte() == 0) {
+            longitude = null;
+        } else {
+            longitude = in.readDouble();
+        }
         partialOrderInfo = in.readString();
         dropshipperInfo = in.readString();
         deliveryPriceTotal = in.readString();
         shipmentInfo = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeTypedList(shipmentItemData);
+        dest.writeString(address);
+        if (latitude == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeDouble(latitude);
+        }
+        if (longitude == null) {
+            dest.writeByte((byte) 0);
+        } else {
+            dest.writeByte((byte) 1);
+            dest.writeDouble(longitude);
+        }
+        dest.writeString(partialOrderInfo);
+        dest.writeString(dropshipperInfo);
+        dest.writeString(deliveryPriceTotal);
+        dest.writeString(shipmentInfo);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<ShipmentDetailData> CREATOR = new Creator<ShipmentDetailData>() {
@@ -120,21 +156,4 @@ public class ShipmentDetailData implements Parcelable {
         this.shipmentInfo = shipmentInfo;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeTypedList(shipmentItemData);
-        dest.writeString(address);
-        dest.writeDouble(latitude);
-        dest.writeDouble(longitude);
-        dest.writeString(partialOrderInfo);
-        dest.writeString(dropshipperInfo);
-        dest.writeString(deliveryPriceTotal);
-        dest.writeString(shipmentInfo);
-    }
 }

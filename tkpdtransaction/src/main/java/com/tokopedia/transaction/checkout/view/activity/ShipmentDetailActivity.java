@@ -1,4 +1,4 @@
-package com.tokopedia.transaction.checkout.view;
+package com.tokopedia.transaction.checkout.view.activity;
 
 import android.app.Activity;
 import android.app.FragmentTransaction;
@@ -9,15 +9,16 @@ import android.support.v4.app.FragmentManager;
 
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.checkout.view.ShipmentDetailFragment;
 
 /**
- * Created by Irfan Khoirul on 25/01/18.
+ * Created by Irfan Khoirul on 26/01/18.
  */
 
-public class ShipmentChoiceActivity extends BasePresenterActivity {
+public class ShipmentDetailActivity extends BasePresenterActivity {
 
     public static Intent createInstance(Activity activity) {
-        return new Intent(activity, ShipmentChoiceActivity.class);
+        return new Intent(activity, ShipmentDetailActivity.class);
     }
 
     @Override
@@ -50,10 +51,10 @@ public class ShipmentChoiceActivity extends BasePresenterActivity {
 
     @Override
     protected void initView() {
-        ShipmentChoiceFragment fragment = ShipmentChoiceFragment.newInstance();
+        ShipmentDetailFragment fragment = ShipmentDetailFragment.newInstance();
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        fragmentTransaction.add(R.id.container, fragment, ShipmentChoiceFragment.class.getSimpleName());
+        fragmentTransaction.add(R.id.container, fragment, ShipmentDetailFragment.class.getSimpleName());
         fragmentTransaction.commit();
     }
 
@@ -70,12 +71,6 @@ public class ShipmentChoiceActivity extends BasePresenterActivity {
     @Override
     protected void setActionVar() {
 
-    }
-
-    @Override
-    protected void setupToolbar() {
-        super.setupToolbar();
-        toolbar.setNavigationIcon(com.tokopedia.core.R.drawable.ic_clear_24dp);
     }
 
     @Override

@@ -135,9 +135,9 @@ public class PickupPointLayout extends LinearLayout {
     public interface ViewListener {
         void onChoosePickupPoint();
 
-        void onClearPickupPoint(Store store);
+        void onClearPickupPoint(Store oldStore);
 
-        void onEditPickupPoint(Store store);
+        void onEditPickupPoint(Store oldStore);
     }
 
 }
