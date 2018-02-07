@@ -28,7 +28,6 @@ import com.tokopedia.transaction.checkout.view.view.ICartSingleAddressView;
 import com.tokopedia.transaction.pickuppoint.domain.model.Store;
 import com.tokopedia.transaction.pickuppoint.domain.usecase.GetPickupPointsUseCase;
 import com.tokopedia.transaction.pickuppoint.view.activity.PickupPointActivity;
-import com.tokopedia.transaction.utils.TkpdRxBus;
 import com.tokopedia.transaction.utils.RxBus;
 
 import javax.inject.Inject;

@@ -98,9 +98,6 @@ public class ShipmentRecipientModel implements Parcelable {
         this.store = store;
     }
 
-    public ShipmentRecipientModel() {
-    }
-
     public String getRecipientAddressDescription() {
         return recipientAddressDescription;
     }

@@ -164,8 +164,6 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
         mCartSingleAddressData.getShipmentRecipientModel().setStore(null);
     }
 
-    private int getShippedItemListSize() {
-        return mCartSingleAddressData.getCartItemModelList().size();
     private int getCartItemSize() {
         return mCartSingleAddressData.getCartSellerItemModelList().size();
     }
@@ -222,11 +220,9 @@ public class CartSingleAddressAdapter extends RecyclerView.Adapter<RecyclerView.
             mTvRecipientAddress.setText(model.getRecipientAddress());
             mTvRecipientPhone.setText(model.getRecipientPhone());
 
-            mTvRecipientName.setText(getRecipientName());
-            mTvRecipientAddress.setText(getRecipientAddress());
-            mTvAddOrChangeAddress.setOnClickListener(addOrChangeAddressListener(mShipmentRecipientModel));
-            renderPickupPoint(pickupPointLayout, mShipmentRecipientModel);
-            mTvAddOrChangeAddress.setOnClickListener(addOrChangeAddressListener());
+            renderPickupPoint(pickupPointLayout, mCartSingleAddressData.getShipmentRecipientModel());
+            mTvAddOrChangeAddress.setOnClickListener(
+                    addOrChangeAddressListener(mCartSingleAddressData.getShipmentRecipientModel()));
         }
 
         private void renderPickupPoint(PickupPointLayout pickupPointLayout,

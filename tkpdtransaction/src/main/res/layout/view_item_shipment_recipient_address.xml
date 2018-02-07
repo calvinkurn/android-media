@@ -67,6 +67,15 @@
                 tools:ignore="SmallSp"
                 tools:text="0817 1234 5678" />
 
+            <com.tokopedia.transaction.pickuppoint.view.customview.PickupPointLayout
+                android:id="@+id/pickup_point_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_recipient_phone"
+                android:layout_marginEnd="@dimen/new_margin_med"
+                android:layout_marginRight="@dimen/new_margin_med"
+                android:visibility="gone" />
+
         </RelativeLayout>
 
     </RelativeLayout>
