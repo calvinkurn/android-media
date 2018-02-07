@@ -66,7 +66,6 @@ import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.session.presenter.Session;
 import com.tokopedia.core.session.presenter.SessionView;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.core.util.SessionHandler;
@@ -113,7 +112,9 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     private static final String IMAGE_GALLERY = "IMAGE_GALLERY";
     public static final int ONBOARDING_REQUEST = 101;
     public static final int WISHLIST_REQUEST = 202;
-    private static final String SHORTCUT_REFERRAL_ID = "Share";
+    private static final String SHORTCUT_BELI_ID = "Beli";
+    private static final String SHORTCUT_DIGITAL_ID = "Bayar";
+    private static final String SHORTCUT_SHARE_ID = "Share";
     private static final String SHORTCUT_SHOP_ID = "Jual";
     protected PagerAdapter adapter;
     protected ViewPager mViewPager;
@@ -296,17 +297,17 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             }
             shopIntent.putExtras(args);
             shopShortcut = new ShortcutInfo.Builder(this, SHORTCUT_SHOP_ID)
-                    .setShortLabel(getResources().getString(R.string.jual))
-                    .setLongLabel(getResources().getString(R.string.jual))
+                    .setShortLabel(getResources().getString(R.string.longpress_jual))
+                    .setLongLabel(getResources().getString(R.string.longpress_jual))
                     .setIcon(Icon.createWithResource(this, R.drawable.ic_jual))
                     .setIntent(shopIntent)
                     .build();
 
             Intent referralIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.Applinks.REFERRAL));
             referralIntent.putExtras(args);
-            referralShortcut = new ShortcutInfo.Builder(this, SHORTCUT_REFERRAL_ID)
-                    .setShortLabel(getResources().getString(R.string.referral))
-                    .setLongLabel(getResources().getString(R.string.referral))
+            referralShortcut = new ShortcutInfo.Builder(this, SHORTCUT_SHARE_ID)
+                    .setShortLabel(getResources().getString(R.string.longpress_share))
+                    .setLongLabel(getResources().getString(R.string.longpress_share))
                     .setIcon(Icon.createWithResource(this, R.drawable.ic_referral))
                     .setIntent(referralIntent)
                     .build();
@@ -314,18 +315,18 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             Intent productIntent;
             productIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.Applinks.DISCOVERY_SEARCH));
             productIntent.putExtras(args);
-            productShortcut = new ShortcutInfo.Builder(this, "Beli")
-                    .setShortLabel(getResources().getString(R.string.beli))
-                    .setLongLabel(getResources().getString(R.string.beli))
+            productShortcut = new ShortcutInfo.Builder(this, SHORTCUT_BELI_ID)
+                    .setShortLabel(getResources().getString(R.string.longpress_beli))
+                    .setLongLabel(getResources().getString(R.string.longpress_beli))
                     .setIcon(Icon.createWithResource(this, R.drawable.ic_beli))
                     .setIntent(productIntent)
                     .build();
 
             Intent digitalIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.Applinks.DIGITAL));
             digitalIntent.putExtras(args);
-            digitalShortcut = new ShortcutInfo.Builder(this, "Digital")
-                    .setShortLabel(getResources().getString(R.string.bayar))
-                    .setLongLabel(getResources().getString(R.string.bayar))
+            digitalShortcut = new ShortcutInfo.Builder(this, SHORTCUT_DIGITAL_ID)
+                    .setShortLabel(getResources().getString(R.string.longpress_bayar))
+                    .setLongLabel(getResources().getString(R.string.longpress_bayar))
                     .setIcon(Icon.createWithResource(this, R.drawable.ic_bayar))
                     .setIntent(digitalIntent)
                     .build();
@@ -349,8 +350,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             productIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.Applinks.DISCOVERY_SEARCH));
             productIntent.putExtras(args);
             productShortcut = new ShortcutInfo.Builder(this, "Beli")
-                    .setShortLabel(getResources().getString(R.string.beli))
-                    .setLongLabel(getResources().getString(R.string.beli))
+                    .setShortLabel(getResources().getString(R.string.longpress_beli))
+                    .setLongLabel(getResources().getString(R.string.longpress_beli))
                     .setIcon(Icon.createWithResource(this, R.drawable.ic_beli))
                     .setIntent(productIntent)
                     .build();
@@ -358,8 +359,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             Intent digitalIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.Applinks.DIGITAL));
             digitalIntent.putExtras(args);
             digitalShortcut = new ShortcutInfo.Builder(this, "Digital")
-                    .setShortLabel(getResources().getString(R.string.bayar))
-                    .setLongLabel(getResources().getString(R.string.bayar))
+                    .setShortLabel(getResources().getString(R.string.longpress_bayar))
+                    .setLongLabel(getResources().getString(R.string.longpress_bayar))
                     .setIcon(Icon.createWithResource(this, R.drawable.ic_bayar))
                     .setIntent(digitalIntent)
                     .build();
