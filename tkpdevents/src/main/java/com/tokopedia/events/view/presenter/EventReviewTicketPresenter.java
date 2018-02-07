@@ -389,22 +389,6 @@ public class EventReviewTicketPresenter
                 getView().navigateToActivityRequest(com.tokopedia.payment.activity.TopPayActivity.
                                 createInstance(getView().getActivity().getApplicationContext(), paymentPassData),
                         PAYMENT_REQUEST_CODE);
-//
-//                com.tokopedia.payment.model.PaymentPassData paymentPassData = new com.tokopedia.payment.model.PaymentPassData();
-//                paymentPassData.queryString =
-//                        "amount=1000000&currency=IDR&customer_email=tkpd.qc%2B47%40gmail.com&customer_name=Cincin+Seller&fee=&items%5Bname%5D=cita+citata+Concert++-+dummy+x+1&items%5Bprice%5D=1000000&items%5Bquantity%5D=1&language=id-ID&merchant_code=tokopediapulsa&nid=&profile_code=PULSA_EVENT&signature=9c6dc817243d807e2a728fad43f3116420f5f10e&state=0&transaction_code=&transaction_date=2017-12-28T07%3A41%3A55Z&transaction_id=1000038823&user_defined_value=%7B%22user_id%22%3A3045010%2C%22voucher_code%22%3A%22%22%2C%22device%22%3A1%2C%22product_id%22%3A614%2C%22price%22%3A1000000%2C%22client_number%22%3A%22%22%2C%22payment_description%22%3A%22%22%2C%22promo_code_id%22%3A0%2C%22discount_amount%22%3A0%2C%22cashback_amount%22%3A0%2C%22cashback_voucher_amount%22%3A0%2C%22cashback_top_cash_amount%22%3A0%2C%22va_code%22%3A%22085729640914%22%2C%22refresh_token%22%3A%22GfDjW5HpRuyqLHR8zVRHFg%22%2C%22access_token%22%3A%22AXXJ-JvwTuuarYhrVurgqA%22%2C%22fingerprint_id%22%3A%22%22%2C%22hide_header_flag%22%3Afalse%2C%22category_code%22%3A%2223%22%2C%22product_code%22%3A%22TICKETEVENT%22%7D";
-//                paymentPassData.redirectUrl = "https://pay-staging.tokopedia.com/v2/payment";
-//                paymentPassData.callbackSuccessUrl = "https://pulsa-staging.tokopedia.com/checkout/back-to-app";
-//                paymentPassData.transactionId = "1000038823";
-//                paymentPassData.callbackFailedUrl = "https://pulsa-staging.tokopedia.com/checkout";
-//                getView().navigateToActivityRequest(com.tokopedia.payment.activity.TopPayActivity.
-//                                createInstance(getView().getActivity(), paymentPassData),
-//                        com.tokopedia.payment.activity.TopPayActivity.REQUEST_CODE);
-
-//                PaymentPassData paymentPassData = new PaymentPassData();
-//                paymentPassData.convertToPaymenPassData(checkoutResponse);
-//                getView().navigateToActivityRequest(TopPayActivity.
-//                        createInstance(getView().getActivity(), paymentPassData), TopPayActivity.REQUEST_CODE);
                 getView().hideProgressBar();
 
             }
