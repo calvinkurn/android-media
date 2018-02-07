@@ -404,6 +404,7 @@ public class OrderDetailData implements Parcelable{
         this.driverVehicle = driverVehicle;
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -411,37 +412,98 @@ public class OrderDetailData implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(orderId);
-        dest.writeString(orderCode);
-        dest.writeString(orderStatus);
-        dest.writeString(resoId);
-        dest.writeString(orderImage);
-        dest.writeString(purchaseDate);
-        dest.writeString(responseTimeLimit);
-        dest.writeString(deadlineColorString);
-        dest.writeString(shopId);
-        dest.writeString(shopName);
-        dest.writeString(shopLogo);
-        dest.writeString(buyerName);
-        dest.writeString(courierName);
-        dest.writeString(shippingAddress);
-        dest.writeString(partialOrderStatus);
-        dest.writeString(preorderPeriod);
-        dest.writeString(preorderPeriodText);
-        dest.writeByte((byte) (isPreorder ? 1 : 0));
-        dest.writeString(dropshipperName);
-        dest.writeString(dropshipperPhone);
-        dest.writeString(invoiceNumber);
-        dest.writeString(invoiceUrl);
-        dest.writeString(totalItemQuantity);
-        dest.writeString(productPrice);
-        dest.writeString(deliveryPrice);
-        dest.writeString(insurancePrice);
-        dest.writeString(additionalFee);
-        dest.writeString(totalPayment);
-        dest.writeString(driverName);
-        dest.writeString(driverPhone);
-        dest.writeString(driverImage);
-        dest.writeString(driverVehicle);
+        dest.writeString(this.orderId);
+        dest.writeString(this.orderCode);
+        dest.writeString(this.orderStatus);
+        dest.writeString(this.resoId);
+        dest.writeString(this.orderImage);
+        dest.writeString(this.purchaseDate);
+        dest.writeString(this.responseTimeLimit);
+        dest.writeString(this.deadlineColorString);
+        dest.writeString(this.shopId);
+        dest.writeString(this.shopName);
+        dest.writeString(this.shopLogo);
+        dest.writeString(this.buyerName);
+        dest.writeString(this.courierName);
+        dest.writeString(this.shipmentName);
+        dest.writeString(this.shipmentId);
+        dest.writeString(this.shipmentServiceName);
+        dest.writeString(this.shipmentServiceId);
+        dest.writeString(this.shippingAddress);
+        dest.writeString(this.awb);
+        dest.writeString(this.partialOrderStatus);
+        dest.writeString(this.preorderPeriod);
+        dest.writeString(this.preorderPeriodText);
+        dest.writeByte(this.isPreorder ? (byte) 1 : (byte) 0);
+        dest.writeString(this.dropshipperName);
+        dest.writeString(this.dropshipperPhone);
+        dest.writeString(this.invoiceNumber);
+        dest.writeString(this.invoiceUrl);
+        dest.writeTypedList(this.itemList);
+        dest.writeString(this.totalItemQuantity);
+        dest.writeString(this.productPrice);
+        dest.writeString(this.deliveryPrice);
+        dest.writeString(this.insurancePrice);
+        dest.writeString(this.additionalFee);
+        dest.writeString(this.totalPayment);
+        dest.writeParcelable(this.buttonData, flags);
+        dest.writeString(this.driverName);
+        dest.writeString(this.driverPhone);
+        dest.writeString(this.driverImage);
+        dest.writeString(this.driverVehicle);
     }
+
+    protected OrderDetailData(Parcel in) {
+        this.orderId = in.readString();
+        this.orderCode = in.readString();
+        this.orderStatus = in.readString();
+        this.resoId = in.readString();
+        this.orderImage = in.readString();
+        this.purchaseDate = in.readString();
+        this.responseTimeLimit = in.readString();
+        this.deadlineColorString = in.readString();
+        this.shopId = in.readString();
+        this.shopName = in.readString();
+        this.shopLogo = in.readString();
+        this.buyerName = in.readString();
+        this.courierName = in.readString();
+        this.shipmentName = in.readString();
+        this.shipmentId = in.readString();
+        this.shipmentServiceName = in.readString();
+        this.shipmentServiceId = in.readString();
+        this.shippingAddress = in.readString();
+        this.awb = in.readString();
+        this.partialOrderStatus = in.readString();
+        this.preorderPeriod = in.readString();
+        this.preorderPeriodText = in.readString();
+        this.isPreorder = in.readByte() != 0;
+        this.dropshipperName = in.readString();
+        this.dropshipperPhone = in.readString();
+        this.invoiceNumber = in.readString();
+        this.invoiceUrl = in.readString();
+        this.itemList = in.createTypedArrayList(OrderDetailItemData.CREATOR);
+        this.totalItemQuantity = in.readString();
+        this.productPrice = in.readString();
+        this.deliveryPrice = in.readString();
+        this.insurancePrice = in.readString();
+        this.additionalFee = in.readString();
+        this.totalPayment = in.readString();
+        this.buttonData = in.readParcelable(ButtonData.class.getClassLoader());
+        this.driverName = in.readString();
+        this.driverPhone = in.readString();
+        this.driverImage = in.readString();
+        this.driverVehicle = in.readString();
+    }
+
+    public static final Creator<OrderDetailData> CREATOR = new Creator<OrderDetailData>() {
+        @Override
+        public OrderDetailData createFromParcel(Parcel source) {
+            return new OrderDetailData(source);
+        }
+
+        @Override
+        public OrderDetailData[] newArray(int size) {
+            return new OrderDetailData[size];
+        }
+    };
 }
