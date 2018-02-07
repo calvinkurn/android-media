@@ -88,10 +88,10 @@ import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.di.SessionComponent;
 import com.tokopedia.di.SessionModule;
 import com.tokopedia.digital.cart.activity.CartDigitalActivity;
-import com.tokopedia.digital.product.activity.DigitalProductActivity;
-import com.tokopedia.digital.product.activity.DigitalWebActivity;
+import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
+import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
+import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.digital.receiver.TokocashPendingDataBroadcastReceiver;
-import com.tokopedia.digital.widget.activity.DigitalCategoryListActivity;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.TkpdFlight;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
@@ -576,7 +576,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void getUserInfo(RequestParams empty, ProfileCompletionSubscriber profileSubscriber) {
         Bundle bundle = new Bundle();
         SessionHandler sessionHandler = new SessionHandler(this);
-        String authKey = sessionHandler.getAccessToken(this);
+        String authKey = SessionHandler.getAccessToken(this);
         authKey = sessionHandler.getTokenType(this) + " " + authKey;
         bundle.putString(AccountsService.AUTH_KEY, authKey);
 

@@ -1,12 +1,13 @@
-package com.tokopedia.digital.widget.domain;
+package com.tokopedia.digital.widget.domain.interactor;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.retrofit.response.TkpdDigitalResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.digital.apiservice.DigitalEndpointService;
-import com.tokopedia.digital.product.model.OrderClientNumber;
+import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
+import com.tokopedia.digital.common.data.mapper.FavoriteNumberListDataMapper;
+import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.digital.widget.data.entity.category.CategoryEntity;
 import com.tokopedia.digital.widget.data.entity.operator.OperatorEntity;
 import com.tokopedia.digital.widget.data.entity.product.ProductEntity;
@@ -14,8 +15,7 @@ import com.tokopedia.digital.widget.data.entity.response.ResponseFavoriteList;
 import com.tokopedia.digital.widget.data.entity.response.ResponseFavoriteNumber;
 import com.tokopedia.digital.widget.data.entity.response.ResponseMetaFavoriteNumber;
 import com.tokopedia.digital.widget.data.entity.status.StatusEntity;
-import com.tokopedia.digital.widget.data.mapper.IFavoriteNumberMapper;
-import com.tokopedia.digital.widget.model.DigitalNumberList;
+import com.tokopedia.digital.widget.view.model.DigitalNumberList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +30,11 @@ import rx.functions.Func1;
  * Modified by rizkyfadillah at 10/6/17.
  */
 
+// TODO: all implementation of this repository should be removed
+    // change to DigitalWidgetUseCase and new DigitalWidgetRepository
+    // without operator/list and product/list
+
+@Deprecated
 public class DigitalWidgetRepository implements IDigitalWidgetRepository {
 
     private final static String KEY_CATEGORY = "RECHARGE_CATEGORY";
@@ -38,10 +43,10 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
     private final static String KEY_STATUS_CURRENT = "RECHARGE_STATUS_CURRENT";
 
     private final DigitalEndpointService digitalEndpointService;
-    private final IFavoriteNumberMapper favoriteNumberMapper;
+    private final FavoriteNumberListDataMapper favoriteNumberMapper;
 
     public DigitalWidgetRepository(DigitalEndpointService digitalEndpointService,
-                                   IFavoriteNumberMapper favoriteNumberMapper) {
+                                   FavoriteNumberListDataMapper favoriteNumberMapper) {
         this.digitalEndpointService = digitalEndpointService;
         this.favoriteNumberMapper = favoriteNumberMapper;
     }
@@ -249,7 +254,7 @@ public class DigitalWidgetRepository implements IDigitalWidgetRepository {
 
     @Override
     public Observable<DigitalNumberList> getObservableNumberList(TKPDMapParam<String, String> param) {
-        return digitalEndpointService.getApi().getNumberList(param)
+        return digitalEndpointService.getApi().getFavoriteList(param)
                 .map(getFuncTransformNumberList())
                 .onErrorReturn(new Func1<Throwable, DigitalNumberList>() {
                     @Override

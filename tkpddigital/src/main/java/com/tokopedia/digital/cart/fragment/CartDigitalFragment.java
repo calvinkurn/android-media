@@ -32,7 +32,6 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.voucher.VoucherCartHachikoView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
-import com.tokopedia.digital.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.cart.activity.InstantCheckoutActivity;
 import com.tokopedia.digital.cart.activity.OtpVerificationActivity;
 import com.tokopedia.digital.cart.compoundview.CheckoutHolderView;
@@ -54,6 +53,7 @@ import com.tokopedia.digital.cart.model.VoucherAttributeDigital;
 import com.tokopedia.digital.cart.model.VoucherDigital;
 import com.tokopedia.digital.cart.presenter.CartDigitalPresenter;
 import com.tokopedia.digital.cart.presenter.ICartDigitalPresenter;
+import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
@@ -367,7 +367,6 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     }
 
     private void sendGTMAnalytics(String ec, String el, boolean analyticsKind) {
-
         UnifyTracking.eventViewCheckoutPage(ec, el);
 
         if (analyticsKind) {
@@ -491,7 +490,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
 
     @Override
     public String getAccountToken() {
-        return sessionHandler.getAccessToken(getActivity());
+        return SessionHandler.getAccessToken(getActivity());
     }
 
     @Override

@@ -645,20 +645,6 @@ public class TkpdBaseURL {
         public static final String PATH_OS_BANNER = "/os/api/search/banner/android";
     }
 
-
-    public static class Recharge {
-        public static final String VERSION = "v1.4";
-        public static final String RECHARGE = "recharge";
-
-        public static final String PATH_STATUS = VERSION + "/status";
-        public static final String PATH_CATEGORY = VERSION + "/category/list";
-        public static final String PATH_OPERATOR = VERSION + "/operator/list";
-        public static final String PATH_PRODUCT = VERSION + "/product/list";
-        public static final String PATH_RECENT_NUMBER = VERSION + "/recent-number";
-        public static final String PATH_LAST_ORDER = VERSION + "/last-order";
-        public static final String PATH_SALDO = "/saldo/";
-    }
-
     public static class KunyitTalk {
         public static final String BASE_HOST_INBOX_TALK = "/talk/v2";
 
@@ -812,13 +798,10 @@ public class TkpdBaseURL {
         public static final String PATH_CATEGORY = "category";
         public static final String PATH_OPERATOR = "operator/list";
         public static final String PATH_PRODUCT = "product/list";
-        public static final String PATH_RECENT_NUMBER = "recent-number";
-        public static final String PATH_NUMBER_LIST = "favorite/list";
-        public static final String PATH_LAST_ORDER = "last-order";
+        public static final String PATH_FAVORITE_LIST = "favorite/list";
         public static final String PATH_SALDO = "saldo";
         public static final String PATH_GET_CART = "cart";
         public static final String PATH_PATCH_OTP_SUCCESS = "cart/otp-success";
-        public static final String PATH_BANNER = "banner";
         public static final String PATH_ORDER = "order";
         public static final String PATH_ADD_TO_CART = "cart";
         public static final String PATH_CHECKOUT = "checkout";
