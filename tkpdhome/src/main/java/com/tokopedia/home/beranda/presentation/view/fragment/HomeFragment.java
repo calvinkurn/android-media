@@ -22,7 +22,9 @@ import android.view.ViewGroup;
 
 import com.google.firebase.perf.metrics.Trace;
 import com.tkpd.library.ui.view.LinearLayoutManager;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -60,6 +62,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.digital.tokocash.model.CashBackData;
 import com.tokopedia.home.beranda.di.BerandaComponent;
+import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.listener.HomeFeedListener;
@@ -70,6 +73,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.LinearLayoutManagerWithSmoothScroller;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
+import com.tokopedia.home.explore.di.DaggerExploreComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -140,10 +144,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     protected void initInjector() {
-//        BerandaComponent component = DaggerBerandaComponent.builder().appComponent(getComponent(AppComponent.class)).build();
-//        component.inject(this);
-//        component.inject(presenter);
-        BerandaComponent component = getComponent(BerandaComponent.class);
+        BerandaComponent component = DaggerBerandaComponent.builder().baseAppComponent(((BaseMainApplication)
+                getActivity().getApplication()).getBaseAppComponent()).build();
         component.inject(this);
         component.inject(this);
     }
