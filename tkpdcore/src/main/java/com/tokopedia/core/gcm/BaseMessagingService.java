@@ -28,12 +28,18 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
             appNotificationReceiver.init(getApplication());
 
             if (MoEngageNotificationUtils.isFromMoEngagePlatform(remoteMessage.getData())) {
-                appNotificationReceiver.onMoengageNotificationReceived(remoteMessage);
+                if(showPromoNotification) {
+                    appNotificationReceiver.onMoengageNotificationReceived(remoteMessage);
+                }
             } else {
                 AnalyticsLog.logNotification(remoteMessage.getFrom(), data.getString(Constants.ARG_NOTIFICATION_CODE, ""));
                 appNotificationReceiver.onNotificationReceived(remoteMessage.getFrom(), data);
             }
         }
+    }
+
+    private boolean showPromoNotification() {
+        return false;
     }
 
     public static IAppNotificationReceiver createInstance() {
