@@ -10,7 +10,7 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.topads.AdsT
 
 public class ShopFeedViewModel implements Visitable<AdsTypeFactory> {
 
-    Data data;
+    private Data data;
 
     @Override
     public int type(AdsTypeFactory typeFactory) {
