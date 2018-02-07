@@ -8,7 +8,7 @@
         <!--android:title="Search"/>-->
 
     <item android:id ="@+id/action_barcode_scan"
-        android:icon="@drawable/ic_qr_scanner"
+        android:icon="@drawable/ic_qr_scanner_white"
         app:showAsAction="always"
         android:title="Scan Barcode"></item>
     <item
