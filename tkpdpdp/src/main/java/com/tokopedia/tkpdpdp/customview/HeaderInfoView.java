@@ -46,6 +46,7 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
     private TextView textDiscountTimer;
     private Context context;
     private LinearLayout textOfficialStore;
+    private CountDownTimer countDownTimer = null;
 
     public HeaderInfoView(Context context) {
         super(context);
@@ -151,16 +152,16 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
 
     private void showCountdownTimer(final Campaign campaign) {
         try {
+            if (countDownTimer!=null) countDownTimer.cancel();
             linearDiscountTimerHolder.setVisibility(GONE);
             SimpleDateFormat sf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");;
             Calendar now = new GregorianCalendar(TimeZone.getTimeZone("Asia/Jakarta"));
             long delta = sf.parse(campaign.getEndDate()).getTime() - now.getTimeInMillis();
-
             if (TimeUnit.MILLISECONDS.toDays(delta) < 1) {
                 textDiscountTimer.setText(getCountdownText(delta));
                 linearDiscountTimerHolder.setVisibility(VISIBLE);
 
-                new CountDownTimer(delta, 1000) {
+                countDownTimer = new CountDownTimer(delta, 1000) {
                     @Override
                     public void onTick(long millisUntilFinished) {
                         textDiscountTimer.setText(getCountdownText(millisUntilFinished));
@@ -170,7 +171,8 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
                     public void onFinish() {
                         hideProductCampaign(campaign);
                     }
-                }.start();
+                };
+                countDownTimer.start();
             }
         } catch (Exception ex) {
             ex.printStackTrace();
