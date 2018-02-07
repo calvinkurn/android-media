@@ -296,6 +296,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                 shopIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("tokopedia://shop/" + shopID));
             }
             shopIntent.putExtras(args);
+            shopIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            shopIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             shopShortcut = new ShortcutInfo.Builder(this, SHORTCUT_SHOP_ID)
                     .setShortLabel(getResources().getString(R.string.longpress_jual))
                     .setLongLabel(getResources().getString(R.string.longpress_jual))
@@ -305,6 +307,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
             Intent referralIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.Applinks.REFERRAL));
             referralIntent.putExtras(args);
+            referralIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            referralIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             referralShortcut = new ShortcutInfo.Builder(this, SHORTCUT_SHARE_ID)
                     .setShortLabel(getResources().getString(R.string.longpress_share))
                     .setLongLabel(getResources().getString(R.string.longpress_share))
@@ -315,6 +319,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             Intent productIntent;
             productIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.Applinks.DISCOVERY_SEARCH));
             productIntent.putExtras(args);
+            productIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            productIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             productShortcut = new ShortcutInfo.Builder(this, SHORTCUT_BELI_ID)
                     .setShortLabel(getResources().getString(R.string.longpress_beli))
                     .setLongLabel(getResources().getString(R.string.longpress_beli))
@@ -324,6 +330,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
             Intent digitalIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.Applinks.DIGITAL));
             digitalIntent.putExtras(args);
+            digitalIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            digitalIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             digitalShortcut = new ShortcutInfo.Builder(this, SHORTCUT_DIGITAL_ID)
                     .setShortLabel(getResources().getString(R.string.longpress_bayar))
                     .setLongLabel(getResources().getString(R.string.longpress_bayar))
@@ -348,8 +356,10 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
             Intent productIntent;
             productIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.Applinks.DISCOVERY_SEARCH));
+            productIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            productIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
             productIntent.putExtras(args);
-            productShortcut = new ShortcutInfo.Builder(this, "Beli")
+            productShortcut = new ShortcutInfo.Builder(this, SHORTCUT_BELI_ID)
                     .setShortLabel(getResources().getString(R.string.longpress_beli))
                     .setLongLabel(getResources().getString(R.string.longpress_beli))
                     .setIcon(Icon.createWithResource(this, R.drawable.ic_beli))
@@ -358,7 +368,9 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
             Intent digitalIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.Applinks.DIGITAL));
             digitalIntent.putExtras(args);
-            digitalShortcut = new ShortcutInfo.Builder(this, "Digital")
+            digitalIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            digitalIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            digitalShortcut = new ShortcutInfo.Builder(this, SHORTCUT_DIGITAL_ID)
                     .setShortLabel(getResources().getString(R.string.longpress_bayar))
                     .setLongLabel(getResources().getString(R.string.longpress_bayar))
                     .setIcon(Icon.createWithResource(this, R.drawable.ic_bayar))
