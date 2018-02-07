@@ -120,6 +120,11 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         removeCartErrors(cartItemEditable);
         cartItemEditable.setInsuranceUsedInfo(cartCourierPrices.getInsuranceUsedInfo());
         cartItemEditable.setInsuranceType(cartCourierPrices.getInsuranceMode());
+        if (cartCourierPrices.getInsuranceMode() == KeroppiConstants.InsuranceType.NO) {
+            cartItemEditable.setUseInsurance(false);
+        } else if (cartCourierPrices.getInsuranceMode() == KeroppiConstants.InsuranceType.MUST) {
+            cartItemEditable.setUseInsurance(true);
+        }
     }
 
     private void removeCartErrors(CartItemEditable cartItemEditable) {
