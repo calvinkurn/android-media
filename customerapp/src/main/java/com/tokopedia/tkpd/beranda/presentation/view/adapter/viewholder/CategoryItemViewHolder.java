@@ -83,7 +83,7 @@ public class CategoryItemViewHolder extends AbstractViewHolder<CategoryItemViewM
         seeMoreBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                rowModelList = element.getItemList();
+                rowModelList = new ArrayList<>(element.getItemList());
                 adapter.setData(rowModelList);
                 seeMoreBtn.setVisibility(View.GONE);
             }

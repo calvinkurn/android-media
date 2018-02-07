@@ -11,19 +11,22 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.view.adapter.typefactory.kol.KolType
  */
 
 public class KolCommentViewModel implements Visitable<KolTypeFactory>, Parcelable{
-    private int id;
-    private String avatarUrl;
-    private String name;
-    private String review;
-    private String time;
-    private String url;
-    private boolean isOfficial;
-    private String userId;
-    private boolean canDeleteComment;
+    protected String id;
+    protected String avatarUrl;
+    protected String name;
+    protected String review;
+    protected String time;
+    protected String url;
+    protected boolean isOfficial;
+    protected String userId;
+    protected boolean canDeleteComment;
 
-    public KolCommentViewModel(int id, String avatarUrl, String name, String review, String time,
+    public KolCommentViewModel(String id, String userId, String avatarUrl, String name, String
+            review,
+                               String time,
                                boolean isOfficial, boolean canDeleteComment) {
         this.id = id;
+        this.userId = userId;
         this.avatarUrl = avatarUrl;
         this.name = name;
         this.review = review;
@@ -34,7 +37,7 @@ public class KolCommentViewModel implements Visitable<KolTypeFactory>, Parcelabl
 
 
     protected KolCommentViewModel(Parcel in) {
-        id = in.readInt();
+        id = in.readString();
         avatarUrl = in.readString();
         name = in.readString();
         review = in.readString();
@@ -110,11 +113,11 @@ public class KolCommentViewModel implements Visitable<KolTypeFactory>, Parcelabl
         this.isOfficial = official;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -130,7 +133,7 @@ public class KolCommentViewModel implements Visitable<KolTypeFactory>, Parcelabl
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
+        dest.writeString(id);
         dest.writeString(avatarUrl);
         dest.writeString(name);
         dest.writeString(review);
@@ -140,4 +143,9 @@ public class KolCommentViewModel implements Visitable<KolTypeFactory>, Parcelabl
         dest.writeString(userId);
         dest.writeByte((byte) (canDeleteComment ? 1 : 0));
     }
+
+    public String getUserId() {
+        return userId;
+    }
+
 }

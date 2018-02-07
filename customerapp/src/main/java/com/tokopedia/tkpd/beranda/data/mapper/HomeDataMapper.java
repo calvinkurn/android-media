@@ -1,12 +1,9 @@
 package com.tokopedia.tkpd.beranda.data.mapper;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.TypedArray;
 
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.core.constants.DrawerActivityBroadcastReceiverConstant;
-import com.tokopedia.core.constants.TokoPointDrawerBroadcastReceiverConstant;
 import com.tokopedia.core.network.entity.home.Ticker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.R;
@@ -23,10 +20,8 @@ import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.BrandsView
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategoryItemViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategorySectionViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
-import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.EmptyShopViewModel;
-import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.LayoutSections;
-import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.SaldoViewModel;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.SellViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.TopPicksViewModel;
 
@@ -35,7 +30,6 @@ import java.util.Collections;
 import java.util.List;
 
 import rx.functions.Func5;
-import rx.functions.Func6;
 
 /**
  * @author by errysuprayogi on 11/28/17.
@@ -43,7 +37,7 @@ import rx.functions.Func6;
 public class HomeDataMapper implements Func5<HomeBannerResponseModel, Ticker,
         BrandsOfficialStoreResponseModel, TopPicksResponseModel,
         HomeCategoryResponseModel, List<Visitable>> {
-    public static final int DIGITAL_ID = 22;
+    public static final int DIGITAL_ID = 57;
     private final Context context;
     public HomeDataMapper(Context context) {
         this.context = context;
@@ -55,9 +49,8 @@ public class HomeDataMapper implements Func5<HomeBannerResponseModel, Ticker,
                                 TopPicksResponseModel topPicksResponseModel,
                                 HomeCategoryResponseModel homeCategoryResponseModel) {
         List<Visitable> list = new ArrayList<>();
-        boolean isLogin = SessionHandler.isV4Login(context);
 
-        if (homeBannerResponseModel.isSuccess()) {
+        if (homeBannerResponseModel.isSuccess() && homeBannerResponseModel.getData().getSlides().size() > 0) {
             list.add(mappingBanner(homeBannerResponseModel));
         }
 
@@ -81,10 +74,28 @@ public class HomeDataMapper implements Func5<HomeBannerResponseModel, Ticker,
         if (homeCategoryResponseModel.isSuccess() && homeCategoryResponseModel.getData().getLayoutSections().size() > 0) {
             list.addAll(mappingCategoryItem(homeCategoryResponseModel.getData().getLayoutSections()));
         }
-        if (!isLogin || !SessionHandler.isUserSeller(context)) {
-            list.add(new EmptyShopViewModel());
+        if (SessionHandler.isUserHasShop(context)) {
+            list.add(mappingManageShop());
+        } else {
+            list.add(mappingOpenShop());
         }
         return swapList(list);
+    }
+
+    private Visitable mappingOpenShop() {
+        SellViewModel model = new SellViewModel();
+        model.setTitle(context.getString(R.string.empty_shop_wording_title));
+        model.setSubtitle(context.getString(R.string.empty_shop_wording_subtitle));
+        model.setBtn_title(context.getString(R.string.buka_toko));
+        return model;
+    }
+
+    private Visitable mappingManageShop() {
+        SellViewModel model = new SellViewModel();
+        model.setTitle(context.getString(R.string.open_shop_wording_title));
+        model.setSubtitle(context.getString(R.string.manage_shop_wording_subtitle));
+        model.setBtn_title(context.getString(R.string.manage_toko));
+        return model;
     }
 
     private List<Visitable> swapList(List<Visitable> list) {

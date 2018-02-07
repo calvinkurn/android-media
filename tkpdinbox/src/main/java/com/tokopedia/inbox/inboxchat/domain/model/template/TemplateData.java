@@ -16,6 +16,9 @@ public class TemplateData {
     @SerializedName("templates")
     @Expose
     private List<String> templates = null;
+    @SerializedName("is_success")
+    @Expose
+    private boolean isSuccess;
 
     public boolean isIsEnable() {
         return isEnable;
@@ -31,5 +34,13 @@ public class TemplateData {
 
     public void setTemplates(List<String> templates) {
         this.templates = templates;
+    }
+
+    public boolean isSuccess() {
+        return isSuccess;
+    }
+
+    public void setSuccess(boolean success) {
+        isSuccess = success;
     }
 }

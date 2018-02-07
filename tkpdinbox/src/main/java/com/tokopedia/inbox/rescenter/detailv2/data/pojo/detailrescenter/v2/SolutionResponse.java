@@ -21,8 +21,8 @@ public class SolutionResponse {
     private AmountResponse amount;
     @SerializedName("createTime")
     private String createTime;
-    @SerializedName("createTimeStr")
-    private String createTimeStr;
+    @SerializedName("createTimeFullStr")
+    private String createTimeFullStr;
 
     public int getId() {
         return id;
@@ -80,12 +80,12 @@ public class SolutionResponse {
         this.createTime = createTime;
     }
 
-    public String getCreateTimeStr() {
-        return createTimeStr;
+    public String getCreateTimeFullStr() {
+        return createTimeFullStr;
     }
 
-    public void setCreateTimeStr(String createTimeStr) {
-        this.createTimeStr = createTimeStr;
+    public void setCreateTimeFullStr(String createTimeFullStr) {
+        this.createTimeFullStr = createTimeFullStr;
     }
 
 }

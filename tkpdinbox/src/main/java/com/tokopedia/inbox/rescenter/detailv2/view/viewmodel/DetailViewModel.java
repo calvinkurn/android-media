@@ -10,17 +10,6 @@ import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.detailreschat.NextA
  */
 
 public class DetailViewModel implements Parcelable {
-    public static final Creator<DetailViewModel> CREATOR = new Creator<DetailViewModel>() {
-        @Override
-        public DetailViewModel createFromParcel(Parcel source) {
-            return new DetailViewModel(source);
-        }
-
-        @Override
-        public DetailViewModel[] newArray(int size) {
-            return new DetailViewModel[size];
-        }
-    };
     private boolean timeOut;
     private boolean success;
     private String messageError;
@@ -34,24 +23,17 @@ public class DetailViewModel implements Parcelable {
     private AwbData awbData;
     private AddressReturData addressReturData;
     private NextActionDomain nextActionDomain;
+    private FreeReturnData freeReturnData;
 
     public DetailViewModel() {
     }
 
-    protected DetailViewModel(Parcel in) {
-        this.timeOut = in.readByte() != 0;
-        this.success = in.readByte() != 0;
-        this.messageError = in.readString();
-        this.buttonData = in.readParcelable(ButtonData.class.getClassLoader());
-        this.statusData = in.readParcelable(StatusData.class.getClassLoader());
-        this.detailData = in.readParcelable(DetailData.class.getClassLoader());
-        this.productData = in.readParcelable(ProductData.class.getClassLoader());
-        this.solutionData = in.readParcelable(SolutionData.class.getClassLoader());
-        this.proveData = in.readParcelable(ProveData.class.getClassLoader());
-        this.historyData = in.readParcelable(HistoryData.class.getClassLoader());
-        this.awbData = in.readParcelable(AwbData.class.getClassLoader());
-        this.addressReturData = in.readParcelable(AddressReturData.class.getClassLoader());
-        this.nextActionDomain = in.readParcelable(NextActionDomain.class.getClassLoader());
+    public FreeReturnData getFreeReturnData() {
+        return freeReturnData;
+    }
+
+    public void setFreeReturnData(FreeReturnData freeReturnData) {
+        this.freeReturnData = freeReturnData;
     }
 
     public boolean isTimeOut() {
@@ -178,5 +160,35 @@ public class DetailViewModel implements Parcelable {
         dest.writeParcelable(this.awbData, flags);
         dest.writeParcelable(this.addressReturData, flags);
         dest.writeParcelable(this.nextActionDomain, flags);
+        dest.writeParcelable(this.freeReturnData, flags);
     }
+
+    protected DetailViewModel(Parcel in) {
+        this.timeOut = in.readByte() != 0;
+        this.success = in.readByte() != 0;
+        this.messageError = in.readString();
+        this.buttonData = in.readParcelable(ButtonData.class.getClassLoader());
+        this.statusData = in.readParcelable(StatusData.class.getClassLoader());
+        this.detailData = in.readParcelable(DetailData.class.getClassLoader());
+        this.productData = in.readParcelable(ProductData.class.getClassLoader());
+        this.solutionData = in.readParcelable(SolutionData.class.getClassLoader());
+        this.proveData = in.readParcelable(ProveData.class.getClassLoader());
+        this.historyData = in.readParcelable(HistoryData.class.getClassLoader());
+        this.awbData = in.readParcelable(AwbData.class.getClassLoader());
+        this.addressReturData = in.readParcelable(AddressReturData.class.getClassLoader());
+        this.nextActionDomain = in.readParcelable(NextActionDomain.class.getClassLoader());
+        this.freeReturnData = in.readParcelable(FreeReturnData.class.getClassLoader());
+    }
+
+    public static final Creator<DetailViewModel> CREATOR = new Creator<DetailViewModel>() {
+        @Override
+        public DetailViewModel createFromParcel(Parcel source) {
+            return new DetailViewModel(source);
+        }
+
+        @Override
+        public DetailViewModel[] newArray(int size) {
+            return new DetailViewModel[size];
+        }
+    };
 }

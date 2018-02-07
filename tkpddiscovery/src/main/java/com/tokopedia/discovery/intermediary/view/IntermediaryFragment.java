@@ -3,6 +3,7 @@ package com.tokopedia.discovery.intermediary.view;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -13,6 +14,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -32,9 +34,11 @@ import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.entity.intermediary.CategoryHadesModel;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
@@ -65,12 +69,15 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmo
 import com.tokopedia.discovery.view.CategoryHeaderTransformation;
 import com.tokopedia.tkpdpdp.customview.YoutubeWebViewThumbnail;
 import com.tokopedia.topads.sdk.base.Config;
+import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
+import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
+import com.tokopedia.topads.sdk.view.TopAdsBannerView;
 import com.tokopedia.topads.sdk.view.TopAdsView;
 
 import java.util.ArrayList;
@@ -93,6 +100,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     public static final String TAG = "INTERMEDIARY_FRAGMENT";
     private static final long SLIDE_DELAY = 8000;
+    public static final String DEFAULT_ITEM_VALUE = "1";
 
     @BindView(R2.id.nested_intermediary)
     NestedScrollView nestedScrollView;
@@ -151,6 +159,9 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     @BindView(R2.id.top_ads_view)
     TopAdsView topAdsView;
 
+    @BindView(R2.id.top_ads_banner)
+    TopAdsBannerView topAdsBannerView;
+
     private CirclePageIndicator bannerIndicator;
     private View banner;
     private ViewPager bannerViewPager;
@@ -203,7 +214,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if(context instanceof YoutubeViewHolder.YouTubeThumbnailLoadInProcess)
+        if (context instanceof YoutubeViewHolder.YouTubeThumbnailLoadInProcess)
             youTubeThumbnailLoadInProcessListener = (YoutubeViewHolder.YouTubeThumbnailLoadInProcess) context;
     }
 
@@ -217,7 +228,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         headerContainer.setVisibility(View.VISIBLE);
         bannerContainer.setVisibility(View.GONE);
         viewAllCategory.setText("Lihat Produk " + headerModel.getCategoryName() + " Lainnya");
-        ((IntermediaryActivity)getActivity()).updateTitle(headerModel.getCategoryName());
+        ((IntermediaryActivity) getActivity()).updateTitle(headerModel.getCategoryName());
     }
 
     @Override
@@ -237,6 +248,28 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         topAdsView.setAdsListener(this);
         topAdsView.setConfig(config);
         topAdsView.loadTopAds();
+
+        TopAdsParams adsBannerParams = new TopAdsParams();
+        adsBannerParams.getParam().put(TopAdsParams.KEY_SRC, SRC_INTERMEDIARY_VALUE);
+        adsBannerParams.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, departmentId);
+        adsBannerParams.getParam().put(TopAdsParams.KEY_ITEM, DEFAULT_ITEM_VALUE);
+
+        Config configAdsBanner = new Config.Builder()
+                .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
+                .setUserId(SessionHandler.getLoginID(getActivity()))
+                .setEndpoint(Endpoint.CPM)
+                .topAdsParams(adsBannerParams)
+                .build();
+        topAdsBannerView.setConfig(configAdsBanner);
+        topAdsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
+            @Override
+            public void onBannerAdsClicked(String applink) {
+                if (!TextUtils.isEmpty(applink)) {
+                    ((TkpdCoreRouter) getActivity().getApplication()).actionApplink(getActivity(), applink);
+                }
+            }
+        });
+        topAdsBannerView.loadTopAds();
     }
 
     @Override
@@ -402,7 +435,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(getContext().getApplicationContext())
                 .equals(YouTubeInitializationResult.SUCCESS)) {
 
-            placeHolderVideo.addView(new YoutubeViewHolder(getContext(), videoModel.getVideoUrl(), departmentId,youTubeThumbnailLoadInProcessListener));
+            placeHolderVideo.addView(new YoutubeViewHolder(getContext(), videoModel.getVideoUrl(), departmentId, youTubeThumbnailLoadInProcessListener));
 
         } else {
             placeHolderVideo.addView(new YoutubeWebViewThumbnail(getContext(), videoModel.getVideoUrl()));
@@ -614,7 +647,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
     @Override
     public void onBrandClick(BrandModel brandModel) {
-        UnifyTracking.eventOfficialStoreIntermediary(departmentId,brandModel.getBrandName());
+        UnifyTracking.eventOfficialStoreIntermediary(departmentId, brandModel.getBrandName());
         Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
         intent.putExtras(ShopInfoActivity.createBundle(brandModel.getId(), ""));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

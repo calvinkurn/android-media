@@ -13,6 +13,7 @@ import android.support.v7.app.AlertDialog;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
+import com.tokopedia.seller.base.view.model.StepperModel;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordAddFragment;
@@ -70,17 +71,17 @@ public class TopAdsKeywordNewChooseGroupActivity extends BaseStepperActivity
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    public StepperModel createNewStepperModel() {
         boolean isPositive = false;
         String groupId = null;
         if (getIntent() != null && getIntent().getExtras() != null) {
             isPositive = getIntent().getBooleanExtra(EXTRA_IS_POSITIVE, true);
             groupId = getIntent().getStringExtra(EXTRA_CHOOSEN_GROUP);
         }
-        stepperModel = new TopAdsKeywordStepperModel();
-        ((TopAdsKeywordStepperModel) stepperModel).setGroupId(groupId);
-        ((TopAdsKeywordStepperModel) stepperModel).setPositive(isPositive);
-        super.onCreate(savedInstanceState);
+        TopAdsKeywordStepperModel stepperModel = new TopAdsKeywordStepperModel();
+        stepperModel.setGroupId(groupId);
+        stepperModel.setPositive(isPositive);
+        return stepperModel;
     }
 
     @NonNull

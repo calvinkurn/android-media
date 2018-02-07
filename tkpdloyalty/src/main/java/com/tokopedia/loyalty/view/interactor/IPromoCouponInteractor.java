@@ -26,6 +26,7 @@ public interface IPromoCouponInteractor {
                               String voucherCode,
                               TKPDMapParam<String, String> param,
                               Subscriber<CouponViewModel> subscriber);
+
     void postCouponValidateRedeem(RequestBodyValidateRedeem requestBodyValidateRedeem,
                                   Subscriber<String> subscriber);
 
@@ -44,5 +45,7 @@ public interface IPromoCouponInteractor {
     void getCatalogDetail(TKPDMapParam<String, String> param, Subscriber<String> subscriber);
 
     void getCatalogFilterCategory(TKPDMapParam<String, String> param, Subscriber<String> subscriber);
+
+    void unsubscribe();
 
 }

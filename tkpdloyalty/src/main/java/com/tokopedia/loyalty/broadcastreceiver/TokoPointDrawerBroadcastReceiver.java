@@ -61,12 +61,20 @@ public class TokoPointDrawerBroadcastReceiver extends BroadcastReceiver {
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
+                Intent intentHomeFragment = new Intent(
+                        HomeFragmentBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP
+                );
+                intentHomeFragment.putExtra(
+                        HomeFragmentBroadcastReceiverConstant.EXTRA_ACTION_RECEIVER,
+                        HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOPOINT_DATA_ERROR
+                );
+                context.sendBroadcast(intentHomeFragment);
             }
 
             @Override
             public void onNext(TokoPointDrawerData topPointDrawerData) {
                 Intent intentHomeFragment = new Intent(
-                        HomeFragmentBroadcastReceiverConstant.INTENT_ACTION
+                        HomeFragmentBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP
                 );
                 intentHomeFragment.putExtra(
                         HomeFragmentBroadcastReceiverConstant.EXTRA_ACTION_RECEIVER,
@@ -80,7 +88,7 @@ public class TokoPointDrawerBroadcastReceiver extends BroadcastReceiver {
 
 
                 Intent intentDrawerActivity = new Intent(
-                        DrawerActivityBroadcastReceiverConstant.INTENT_ACTION
+                        DrawerActivityBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP
                 );
                 intentDrawerActivity.putExtra(
                         DrawerActivityBroadcastReceiverConstant.EXTRA_ACTION_RECEIVER,

@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:background="@color/white_three">
 
-    <ScrollView
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -60,7 +61,7 @@
                 android:nestedScrollingEnabled="false"
                 context:listitem="@layout/item_next_action"/>
         </LinearLayout>
-    </ScrollView>
+    </android.support.v4.widget.NestedScrollView>
 
 
     <ProgressBar

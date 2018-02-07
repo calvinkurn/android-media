@@ -5,5 +5,5 @@ package com.tokopedia.core.constants;
  */
 
 public interface TokocashPendingDataBroadcastReceiverConstant {
-    String INTENT_ACTION = "com.tokopedia.digital.receiver.TokocashPendingDataBroadcastReceiver.ACTION_GET_TOKOCASH_PENDING_DATA";
+    String INTENT_ACTION_MAIN_APP = "com.tokopedia.digital.receiver.TokocashPendingDataBroadcastReceiver.ACTION_GET_TOKOCASH_PENDING_DATA";
 }

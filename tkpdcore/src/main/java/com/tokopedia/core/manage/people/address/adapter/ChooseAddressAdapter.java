@@ -56,11 +56,10 @@ public class ChooseAddressAdapter extends BaseLinearRecyclerViewAdapter {
             itemView.setOnClickListener(this);
             ButterKnife.bind(this, itemView);
         }
-
         @Override
         public void onClick(View view) {
             Destination destination = list.get(getAdapterPosition());
-            presenter.setOnChooseAddressClick(context, destination);
+            if (list.size() > 0 && list.size() > getAdapterPosition()) presenter.setOnChooseAddressClick(context, destination);
         }
     }
 

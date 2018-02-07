@@ -25,10 +25,10 @@ public class CreateTicketFormFragmentPresenterImpl implements CreateTicketFormFr
     ContactUsRetrofitInteractor networkInteractor;
     CreateTicketFormFragment.FinishContactUsListener listener;
 
-    public CreateTicketFormFragmentPresenterImpl(CreateTicketFormFragmentView viewListener) {
+    public CreateTicketFormFragmentPresenterImpl(CreateTicketFormFragmentView viewListener, CreateTicketFormFragment.FinishContactUsListener listener) {
         this.viewListener = viewListener;
         this.networkInteractor = new ContactUsRetrofitInteractorImpl();
-        this.listener = (ContactUsActivity) viewListener.getActivity();
+        this.listener = listener;
     }
 
     @Override
@@ -39,7 +39,9 @@ public class CreateTicketFormFragmentPresenterImpl implements CreateTicketFormFr
                 @Override
                 public void onSuccess() {
                     viewListener.finishLoading();
-                    listener.onFinishCreateTicket();
+                    if (listener != null) {
+                        listener.onFinishCreateTicket();
+                    }
                 }
 
                 @Override
@@ -89,6 +91,10 @@ public class CreateTicketFormFragmentPresenterImpl implements CreateTicketFormFr
                 ContactUsActivity.PARAM_ORDER_ID, "").length() > 0)
             pass.setOrderId(String.valueOf(viewListener.getArguments().getString(
                     ContactUsActivity.PARAM_ORDER_ID)));
+        if (viewListener.getArguments().getString(
+                ContactUsActivity.PARAM_INVOICE_ID, "").length() > 0)
+            pass.setInvoiceNumber(String.valueOf(viewListener.getArguments().getString(
+                    ContactUsActivity.PARAM_INVOICE_ID)));
         if (!SessionHandler.isV4Login(viewListener.getActivity())) {
             pass.setName(viewListener.getName().getText().toString());
             pass.setEmail(viewListener.getEmail().getText().toString());

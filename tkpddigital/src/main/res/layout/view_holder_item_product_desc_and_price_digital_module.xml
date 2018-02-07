@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/digital_bg_chooser_operator_product_item"
-    android:minHeight="60dp"
     android:orientation="vertical"
     android:paddingTop="@dimen/padding_small">
 

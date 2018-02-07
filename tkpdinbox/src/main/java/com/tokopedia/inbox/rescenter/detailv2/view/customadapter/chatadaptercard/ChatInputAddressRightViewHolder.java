@@ -57,7 +57,7 @@ public class ChatInputAddressRightViewHolder extends AbstractViewHolder<ChatInpu
                 addressDomain.getPostalCode(),
                 addressDomain.getProvince(),
                 addressDomain.getPhone()));
-        String date = DateFormatUtils.formatDateForResoChatV2(element.getConversation().getCreateTime().getTimestamp());
+        String date = element.getConversation().getCreateTime().getTimestamp();
         tvDate.setText(date);
         ffChangeAddress.setVisibility(element.getConversation().getButton().getEditAddress() == 1 ?
                 View.VISIBLE : View.GONE);

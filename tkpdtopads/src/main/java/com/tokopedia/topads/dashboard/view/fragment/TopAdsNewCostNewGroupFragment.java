@@ -7,6 +7,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
+import com.tokopedia.topads.dashboard.constant.TopAdsSuggestionBidInteractionTypeDef;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
@@ -45,7 +46,7 @@ public class TopAdsNewCostNewGroupFragment extends TopAdsNewCostFragment<TopAdsC
     @Override
     protected void initView(View view) {
         super.initView(view);
-        if(stepperModel != null){
+        if (stepperModel != null) {
             loadAd(stepperModel.getDetailAd());
         }
     }
@@ -55,16 +56,14 @@ public class TopAdsNewCostNewGroupFragment extends TopAdsNewCostFragment<TopAdsC
         // get id from view model
         List<String> ids = new ArrayList<>();
         for (TopAdsProductViewModel topAdsProductViewModel : stepperModel.getTopAdsProductViewModels()) {
-            ids.add(topAdsProductViewModel.getDepartmentId()+"");
+            ids.add(topAdsProductViewModel.getDepartmentId() + "");
         }
-
         topAdsDetailNewProductPresenter.getSuggestionBid(ids, TopAdsNetworkConstant.SOURCE_NEW_COST_GROUP);
     }
 
     @Override
     protected void onClickedNext() {
-        if (firstTimeCheck()) return;
-        if(!isError()) {
+        if (!isPriceError()) {
             super.onClickedNext();
             if (stepperListener != null) {
                 trackingNewCostTopads();
@@ -84,9 +83,9 @@ public class TopAdsNewCostNewGroupFragment extends TopAdsNewCostFragment<TopAdsC
     }
 
     private void trackingNewCostTopads() {
-        if(detailAd != null && detailAd.isBudget()) {
+        if (detailAd != null && detailAd.isBudget()) {
             UnifyTracking.eventTopAdsProductAddPromoStep2(AppEventTracking.EventLabel.BUDGET_PER_DAY);
-        }else{
+        } else {
             UnifyTracking.eventTopAdsProductAddPromoStep2(AppEventTracking.EventLabel.BUDGET_NOT_LIMITED);
         }
     }
@@ -100,36 +99,44 @@ public class TopAdsNewCostNewGroupFragment extends TopAdsNewCostFragment<TopAdsC
     @Override
     public void onSuggestionSuccess(GetSuggestionResponse s) {
         setSuggestionBidText(s);
-        if(isFirstTime){
-            setSuggestionBidText(maxPriceEditText, s);
-        }
+        detailAd.setSuggestionBidValue(suggestionBidValue);
+        detailAd.setSuggestionBidButton(TopAdsSuggestionBidInteractionTypeDef.SUGGESTION_NOT_IMPLEMENTED);
+        defaultSuggestionBidButtonStatus = TopAdsSuggestionBidInteractionTypeDef.SUGGESTION_NOT_IMPLEMENTED;
     }
 
     @Override
     public void onSuggestionError(@Nullable Throwable t) {
-        setDefaultSuggestionBidText();
+        detailAd.setSuggestionBidButton(TopAdsSuggestionBidInteractionTypeDef.NO_SUGGESTION);
     }
 
     @Override
-    protected void onSuggestionTitleUseClick() {
-        // TODO things to do
+    protected void onSuggestionBidClicked() {
+        detailAd.setSuggestionBidButton(TopAdsSuggestionBidInteractionTypeDef.SUGGESTION_IMPLEMENTED);
     }
 
     @Override
-    public void onSuccessLoadTopAdsProduct(TopAdsProductViewModel topAdsProductViewModel) { /* remain empty*/  }
+    protected void onPriceChanged(double number) {
+        super.onPriceChanged(number);
+        if (suggestionBidValue != number) {
+            detailAd.setSuggestionBidButton(defaultSuggestionBidButtonStatus);
+        }
+    }
 
     @Override
-    public void onErrorLoadTopAdsProduct(String errorMessage) { /* remain empty*/  }
+    public void onSuccessLoadTopAdsProduct(TopAdsProductViewModel topAdsProductViewModel) { /* remain empty*/ }
 
     @Override
-    public void onDetailAdLoaded(TopAdsDetailAdViewModel topAdsDetailAdViewModel) { /* remain empty*/  }
+    public void onErrorLoadTopAdsProduct(String errorMessage) { /* remain empty*/ }
 
     @Override
-    public void onLoadDetailAdError(String errorMessage) { /* remain empty*/  }
+    public void onDetailAdLoaded(TopAdsDetailAdViewModel topAdsDetailAdViewModel) { /* remain empty*/ }
 
     @Override
-    public void onSaveAdSuccess(TopAdsDetailAdViewModel topAdsDetailAdViewModel) { /* remain empty*/  }
+    public void onLoadDetailAdError(String errorMessage) { /* remain empty*/ }
 
     @Override
-    public void onSaveAdError(String errorMessage) { /* remain empty*/  }
+    public void onSaveAdSuccess(TopAdsDetailAdViewModel topAdsDetailAdViewModel) { /* remain empty*/ }
+
+    @Override
+    public void onSaveAdError(String errorMessage) { /* remain empty*/ }
 }

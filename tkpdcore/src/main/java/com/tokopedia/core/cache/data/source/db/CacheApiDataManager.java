@@ -37,7 +37,7 @@ public class CacheApiDataManager {
     }
 
     public Observable<CacheApiWhitelist> getWhiteList(final String host, final String path) {
-        return Observable.create(new Observable.OnSubscribe<CacheApiWhitelist>() {
+        return Observable.unsafeCreate(new Observable.OnSubscribe<CacheApiWhitelist>() {
             @Override
             public void call(Subscriber<? super CacheApiWhitelist> subscriber) {
                 subscriber.onNext(new Select()
@@ -59,7 +59,7 @@ public class CacheApiDataManager {
     }
 
     public Observable<Boolean> insertWhiteList(final Collection<CacheApiWhiteListDomain> cacheApiDatas) {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+        return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
                 CommonUtils.dumper(String.format("Inserting White List"));
@@ -74,7 +74,7 @@ public class CacheApiDataManager {
     }
 
     public Observable<Boolean> deleteAllWhiteListData() {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+        return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
                 new Delete().from(CacheApiWhitelist.class).execute();
@@ -84,7 +84,7 @@ public class CacheApiDataManager {
     }
 
     public Observable<String> getCachedResponse(final String host, final String path, final String param) {
-        return Observable.create(new Observable.OnSubscribe<String>() {
+        return Observable.unsafeCreate(new Observable.OnSubscribe<String>() {
             @Override
             public void call(Subscriber<? super String> subscriber) {
                 Where<CacheApiData> selection = new Select()
@@ -105,7 +105,7 @@ public class CacheApiDataManager {
     }
 
     public Observable<Boolean> deleteAllCacheData() {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+        return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
                 new Delete().from(CacheApiData.class).execute();
@@ -115,7 +115,7 @@ public class CacheApiDataManager {
     }
 
     public Observable<Boolean> deleteExpiredCachedData() {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+        return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
                 long currentTime = System.currentTimeMillis() / DIVIDE_FOR_SECONDS;
@@ -129,7 +129,7 @@ public class CacheApiDataManager {
     }
 
     public Observable<Boolean> deleteCachedData(final String host, final String path) {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+        return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
                 new Delete()
@@ -153,7 +153,7 @@ public class CacheApiDataManager {
     }
 
     public Observable<Boolean> updateResponse(final Response response, final int expiredTime) {
-        return Observable.create(new Observable.OnSubscribe<Boolean>() {
+        return Observable.unsafeCreate(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
                 String responseBody = CacheApiUtils.getResponseBody(response);

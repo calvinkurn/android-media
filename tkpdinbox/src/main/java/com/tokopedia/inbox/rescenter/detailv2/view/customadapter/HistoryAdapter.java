@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.animation.GlowingView;
@@ -89,7 +88,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
         holder.tvUsername.setText(item.getProvider());
         holder.tvMonth.setText(item.getMonth());
         holder.tvDateNumber.setText(item.getDateNumber());
-        holder.tvTime.setText(item.getDate());
+        holder.tvTime.setText(item.getTimeNumber());
         holder.lineSeparator.setVisibility(position == 0 ? View.GONE : View.VISIBLE);
         holder.lineIndicator.setVisibility(position == getHistoryItems().size() - 1 ? View.GONE : View.VISIBLE);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -109,6 +108,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryV
             holder.indicator.setVisibility(View.VISIBLE);
             holder.indicator.setImageResource(R.drawable.ic_dot_grey_24dp);
             holder.tvUsername.setTextColor(MethodChecker.getColor(context, R.color.label_text_color));
+            holder.history.setTextColor(MethodChecker.getColor(context, R.color.label_text_color));
         } else {
             holder.indicator.setImageResource(
                     item.isLatest() ? R.drawable.bg_circle_green : R.drawable.ic_dot_grey_24dp

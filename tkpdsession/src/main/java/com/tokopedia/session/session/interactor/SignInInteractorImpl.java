@@ -196,7 +196,7 @@ public class SignInInteractorImpl implements SignInInteractor{
 
         AccountsService accountService = new AccountsService(bundle);
         Observable<Response<String>> observable = accountService.getApi()
-                .getToken(AuthUtil
+                .getTokenOld(AuthUtil
                         .generateParams(context, params));
         return Observable.zip(Observable.just(accountsParameter), observable, new Func2<AccountsParameter, Response<String>, AccountsParameter>() {
             @Override

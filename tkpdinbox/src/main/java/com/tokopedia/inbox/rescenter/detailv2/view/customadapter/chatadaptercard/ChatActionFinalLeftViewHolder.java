@@ -53,8 +53,7 @@ public class ChatActionFinalLeftViewHolder extends AbstractViewHolder<ChatAction
     @Override
     public void bind(ChatActionFinalLeftViewModel element) {
         final Context context = itemView.getContext();
-        String date = DateFormatUtils.formatDateForResoChatV2(
-                element.getConversation().getCreateTime().getTimestamp());
+        String date = element.getConversation().getCreateTime().getTimestamp();
 
         tvUserTitle1.setText(context.getResources().getString(R.string.string_tokopedia_admin_title));
         tvUserName1.setText(context.getResources().getString(R.string.string_tokopedia_admin_username));

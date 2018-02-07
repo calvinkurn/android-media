@@ -6,7 +6,10 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
+import com.tokopedia.seller.base.view.model.StepperModel;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsNewCostNewGroupFragment;
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsNewCostShopFragment;
@@ -21,8 +24,8 @@ import java.util.List;
  * Created by zulfikarrahman on 8/9/17.
  */
 
-public class TopAdsCreatePromoShopActivity extends BaseStepperActivity {
-    List<Fragment> fragmentList;
+public class TopAdsCreatePromoShopActivity extends BaseStepperActivity implements HasComponent<AppComponent> {
+    private List<Fragment> fragmentList;
 
     @NonNull
     @Override
@@ -37,7 +40,12 @@ public class TopAdsCreatePromoShopActivity extends BaseStepperActivity {
         }
     }
 
-    public static Intent createIntent(Context context,String name) {
+    @Override
+    public StepperModel createNewStepperModel() {
+        return null;
+    }
+
+    public static Intent createIntent(Context context, String name) {
         Intent intent = new Intent(context, TopAdsCreatePromoShopActivity.class);
         intent.putExtra(TopAdsExtraConstant.EXTRA_NAME, name);
         return intent;
@@ -53,5 +61,11 @@ public class TopAdsCreatePromoShopActivity extends BaseStepperActivity {
         Intent intent = new Intent();
         intent.putExtra(TopAdsExtraConstant.EXTRA_AD_CHANGED, true);
         setResult(Activity.RESULT_OK, intent);
+    }
+
+
+    @Override
+    public AppComponent getComponent() {
+        return getApplicationComponent();
     }
 }

@@ -21,7 +21,7 @@
 
     <TextView
         android:id="@+id/text_view_percentage"
-        style="@style/TextView.Caption"
+        style="@style/TextView.Micro"
         android:textColor="@color/tkpd_main_green"
         android:layout_marginLeft="@dimen/margin_vs"
         android:layout_marginStart="@dimen/margin_vs"

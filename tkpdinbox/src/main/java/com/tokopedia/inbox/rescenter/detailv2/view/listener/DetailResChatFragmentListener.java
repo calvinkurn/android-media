@@ -48,7 +48,7 @@ public interface DetailResChatFragmentListener {
 
         void errorReplyDiscussion(String error);
 
-        void showSnackBarError(String message);
+        void showSnackBar(String message);
 
         void addAttachmentFile(AttachmentViewModel attachmentViewModel);
 
@@ -108,6 +108,12 @@ public interface DetailResChatFragmentListener {
         void openImagePreview(ArrayList<String> imageUrls, int position);
 
         void openVideoPlayer(String videoUrl);
+
+        void showDummyText();
+
+        void enableIvSend();
+
+        void disableIvSend();
     }
 
     interface Presenter extends CustomerPresenter<DetailResChatFragmentListener.View> {

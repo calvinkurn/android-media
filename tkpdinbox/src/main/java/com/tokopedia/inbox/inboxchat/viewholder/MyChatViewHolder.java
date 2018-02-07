@@ -19,6 +19,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SelectableSpannedMovementMethod;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.inboxchat.ChatTimeConverter;
+import com.tokopedia.inbox.inboxchat.helper.AttachmentChatHelper;
 import com.tokopedia.inbox.inboxchat.presenter.ChatRoomContract;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
@@ -39,11 +40,13 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
     private TextView name;
     private TextView label;
     private TextView dot;
+    private ImageView attachment;
     ChatRoomContract.View viewListener;
     private static final String ROLE_USER = "User";
 
     @LayoutRes
     public static final int LAYOUT = R.layout.message_item_mine;
+    private AttachmentChatHelper attachmentChatHelper;
 
     public MyChatViewHolder(View itemView, ChatRoomContract.View viewListener) {
         super(itemView);
@@ -55,11 +58,13 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
         name = itemView.findViewById(R.id.name);
         label = itemView.findViewById(R.id.label);
         dot = itemView.findViewById(R.id.dot);
+        attachment = itemView.findViewById(R.id.image);
+        attachmentChatHelper = new AttachmentChatHelper();
         this.viewListener = viewListener;
     }
 
     @Override
-    public void bind(MyChatViewModel element) {
+    public void bind(final MyChatViewModel element) {
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,7 +150,7 @@ public class MyChatViewHolder extends AbstractViewHolder<MyChatViewModel>{
             dot.setVisibility(View.GONE);
         }
 
-        element.getSenderId();
+        attachmentChatHelper.parse(attachment, message, element.getAttachment(), element.getRole(), element.getMsg(), viewListener);
 
     }
 

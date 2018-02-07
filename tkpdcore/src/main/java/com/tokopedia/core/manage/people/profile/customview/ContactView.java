@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
@@ -38,6 +39,8 @@ public class ContactView extends BaseView<Profile, ManagePeopleProfileFragmentPr
     public EditText verification;
     @BindView(R2.id.verify_phone_button)
     public View verificationBtn;
+    @BindView(R2.id.check_email_info)
+    public TextView checkEmailInfo;
 
     public ContactView(Context context) {
         super(context);

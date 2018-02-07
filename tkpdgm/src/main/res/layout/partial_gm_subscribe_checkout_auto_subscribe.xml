@@ -62,39 +62,39 @@
 
             <TextView
                 android:text="@string/gmsubscribe_auto_package_title"
-                style="@style/TextView.Caption.BlackSecondary" />
+                style="@style/TextView.Micro.BlackSecondary" />
 
             <TextView
                 android:id="@+id/text_view_current_auto_package_title"
                 android:layout_marginBottom="5dp"
-                style="@style/TextView.Body1.BlackSecondary"/>
+                style="@style/TextView.Small.BlackSecondary"/>
 
             <TextView
-                style="@style/TextView.Caption.BlackSecondary"
+                style="@style/TextView.Micro.BlackSecondary"
                 android:text="@string/gmsubscribe_auto_package_price"/>
 
             <TextView
                 android:id="@+id/text_view_current_auto_package_price"
                 android:layout_marginBottom="5dp"
-                style="@style/TextView.Body1.BlackSecondary"/>
+                style="@style/TextView.Small.BlackSecondary"/>
 
             <TextView
-                style="@style/TextView.Caption.BlackSecondary"
+                style="@style/TextView.Micro.BlackSecondary"
                 android:text="@string/gmsubscribe_auto_package_next_subscribe"/>
 
             <TextView
                 android:id="@+id/text_view_current_auto_package_next_subscribe"
                 android:layout_marginBottom="5dp"
-                style="@style/TextView.Body1.BlackSecondary"/>
+                style="@style/TextView.Small.BlackSecondary"/>
 
             <TextView
                 android:text="@string/gmsubscribe_auto_package_payment_method"
-                style="@style/TextView.Caption.BlackSecondary"/>
+                style="@style/TextView.Micro.BlackSecondary"/>
 
             <TextView
                 android:id="@+id/text_view_current_auto_package_payment_method"
                 android:layout_marginBottom="5dp"
-                style="@style/TextView.Body1.BlackSecondary"/>
+                style="@style/TextView.Small.BlackSecondary"/>
 
         </LinearLayout>
 

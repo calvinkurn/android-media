@@ -5,8 +5,8 @@ import android.content.Context;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.otp.data.RequestOtpModel;
-import com.tokopedia.otp.data.ValidateOtpModel;
+import com.tokopedia.otp.data.model.RequestOtpModel;
+import com.tokopedia.otp.data.model.ValidateOtpModel;
 import com.tokopedia.otp.data.mapper.RequestOtpMapper;
 import com.tokopedia.otp.data.mapper.ValidateOtpMapper;
 
@@ -15,7 +15,7 @@ import rx.Observable;
 /**
  * Created by nisie on 3/7/17.
  */
-
+@Deprecated
 public class CloudOtpSource {
 
     private final Context context;

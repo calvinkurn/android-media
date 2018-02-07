@@ -24,7 +24,6 @@ public class InboxRouter {
 
     private static final String INBOX_CONTACT_US_ACTIVITY = "com.tokopedia.inbox.contactus.activity.ContactUsActivity";
     private static final String CREATE_RESCENTER_ACTIVITY = "com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity";
-    private static final String DETAIL_RESCENTER_ACTIVITY = "com.tokopedia.inbox.rescenter.detailv2.view.DetailResCenterActivity";
     private static final String INBOX_RESCENTER_ACTIVITY = "com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity";
     private static final String INBOX_RESCENTER_FRAGMENT = "com.tokopedia.inbox.rescenter.inbox.fragment.InboxResCenterFragment";
     private static final String INBOX_TALK_ACTIVITY = "com.tokopedia.inbox.inboxtalk.activity.InboxTalkActivity";
@@ -135,16 +134,6 @@ public class InboxRouter {
         return RouterUtils.getActivityComponentName(context, INBOX_MESSAGE_ACTIVITY);
     }
 
-
-    public static Intent getInboxResCenterActivityIntent(Context context) {
-        Intent intent = RouterUtils.getActivityIntent(context, INBOX_RESCENTER_ACTIVITY);
-        return intent;
-    }
-
-    public static ComponentName getActivityInboxResCenterName(Context context) {
-        return RouterUtils.getActivityComponentName(context, INBOX_RESCENTER_ACTIVITY);
-    }
-
     public static Intent getCreateResCenterActivityIntent(Context context, String orderID) {
         Intent intent = RouterUtils.getActivityIntent(context, CREATE_RESCENTER_ACTIVITY);
         Bundle bundle = new Bundle();
@@ -165,18 +154,6 @@ public class InboxRouter {
         return intent;
     }
 
-    public static Intent getDetailResCenterActivityIntent(Context context, String resolutionID) {
-        Intent intent = RouterUtils.getActivityIntent(context, DETAIL_RESCENTER_ACTIVITY);
-        Bundle bundle = new Bundle();
-        bundle.putString(EXTRA_RESOLUTION_ID, resolutionID);
-        intent.putExtras(bundle);
-        return intent;
-    }
-
-    public static ComponentName getInboxResCenterActivityComponentName(Context context) {
-        return RouterUtils.getActivityComponentName(context, INBOX_RESCENTER_ACTIVITY);
-    }
-
     public static Class<?> getInboxResCenterActivityClass() {
         Class<?> parentIndexHomeClass = null;
         try {
@@ -193,13 +170,5 @@ public class InboxRouter {
         bundle.putString(EXTRA_ORDER_ID, orderID);
         intent.putExtras(bundle);
         return intent;
-    }
-
-    public static Fragment instanceInboxResCenterFromNotification(Context context, int state) {
-        Fragment fragment = Fragment.instantiate(context, INBOX_RESCENTER_FRAGMENT);
-        Bundle bundle = new Bundle();
-        bundle.putInt(ARG_PARAM_EXTRA_INSTANCE_TYPE, state);
-        fragment.setArguments(bundle);
-        return fragment;
     }
 }

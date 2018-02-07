@@ -303,4 +303,6 @@ public interface ProductDetailView extends ViewListener {
     void onPromoAdsClicked();
 
     void restoreIsAppBarCollapsed(boolean isAppBarCollapsed);
+
+    boolean isSellerApp();
 }

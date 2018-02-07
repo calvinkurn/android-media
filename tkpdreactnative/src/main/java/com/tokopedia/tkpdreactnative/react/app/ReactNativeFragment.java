@@ -52,6 +52,14 @@ public abstract class ReactNativeFragment extends Fragment implements DefaultHar
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if(reactRootView != null) {
+            reactRootView.unmountReactApplication();
+        }
+    }
+
+    @Override
     public void invokeDefaultOnBackPressed() {
         getActivity().onBackPressed();
     }

@@ -8,6 +8,8 @@ ext {
     glideVersion = '3.7.0'
     permissionDispatcherVersion = '2.2.0'
     deeplinkDispatchVersion = '3.0.0-rc1'
+    tkpdUseCaseVersion = '1.+'
+    tkpdAbstractionVersion = '1.+'
     tkpdCoreVersion = '1.+'
     tkpdInboxVersion = '1.+'
     tkpdSessionVersion = '1.+'
@@ -21,16 +23,19 @@ ext {
     tkpdDesignVersion = '1.+'
     tkpdFeedVersion = '1.+'
     tkpdRideVersion = '1.+'
+    tkpdLoyaltyVersion = '1.+'
     tkpdReactNativeVersion = '1.+'
+    tkpdFlightVersion = '1.+'
     compileSdkVersion = 26
     minSdkVersion = 16
     targetSdkVersion = 26
+    buildToolsVersion = "25.0.0"
     espressoVersion = "2.2.2"
     runnerVersion = "0.5"
     rulesVersion = "0.5"
     apolloVersion = '0.3.0'
     lottieVersion = '2.0.0-rc1'
-    reactNativeVersion = '0.46.4'
+    reactNativeVersion = '0.51.0'
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
@@ -55,7 +60,8 @@ ext {
             supportV13    : "com.android.support:support-v13:${supportLibraryVersion}",
             design        : "com.android.support:design:${supportLibraryVersion}",
             cardViewV7    : "com.android.support:cardview-v7:${supportLibraryVersion}",
-            exifinterface : "com.android.support:exifinterface:${supportLibraryVersion}"
+            exifinterface : "com.android.support:exifinterface:${supportLibraryVersion}",
+            constraintLayout : "com.android.support.constraint:constraint-layout:1.0.2"
     ]
 
     playServicesDependencies = [
@@ -63,7 +69,6 @@ ext {
             base            : "com.google.android.gms:play-services-base:${playServiceVersion}",
             appIndexing     : "com.google.firebase:firebase-appindexing:${playServiceVersion}",
             analytics       : "com.google.android.gms:play-services-analytics:${playServiceVersion}",
-            gcm             : "com.google.android.gms:play-services-gcm:${playServiceVersion}",
             firebase        : "com.google.firebase:firebase-messaging:${playServiceVersion}",
             location        : "com.google.android.gms:play-services-location:${playServiceVersion}",
             maps            : "com.google.android.gms:play-services-maps:${playServiceVersion}",
@@ -88,7 +93,7 @@ ext {
     viewDependencies = [
             ahBottomNavigation : "com.aurelhubert:ahbottomnavigation:1.4.0",
             recyclerMultiSelect: "com.bignerdranch.android:recyclerview-multiselect:0.2@aar",
-            appIntro           : "com.github.apl-devs:appintro:v4.2.2"
+            appIntro           : "com.github.apl-devs:appintro:v4.2.2",
     ]
 
     serviceDependencies = [
@@ -100,9 +105,8 @@ ext {
     analyticsDependencies = [
             appsflyer : "com.appsflyer:af-android-sdk:4.8.6@aar",
             installRef : "com.android.installreferrer:installreferrer:1.0",
-            moengage   : "com.moengage:moe-android-sdk:7.7.10",
-            moengageFCM: "com.moengage:moe-push-firebase:1.1.01",
-            moengageMSG: "com.moengage:addon-messaging:1.1.01",
+            moengage   : "com.moengage:moe-android-sdk:8.2.00",
+            moengageMSG: "com.moengage:addon-messaging:2.0.03",
             branch:"io.branch.sdk.android:library:2.+"
     ]
 
@@ -121,7 +125,7 @@ ext {
     ]
 
     miscDependencies = [
-            captureActivity       : "info.vividcode.android.zxing:capture-activity:2.3.0-1.2",
+            scannerZxing          : "com.journeyapps:zxing-android-embedded:3.5.0",
             facebook              : "com.facebook.android:facebook-android-sdk:4.26.0",
             parcelerApi           : "org.parceler:parceler-api:1.1.6",
             parceler              : "org.parceler:parceler:1.1.6",
@@ -172,6 +176,8 @@ ext {
     ]
 
     tkpdDependencies = [
+            usecase    : "com.tokopedia.usecase:usecase:${tkpdUseCaseVersion}",
+            abstraction: "com.tokopedia.abstraction:abstraction:${tkpdAbstractionVersion}",
             core       : "com.tokopedia.core:core:${tkpdCoreVersion}",
             inbox      : "com.tokopedia.inbox:inbox:${tkpdInboxVersion}",
             session    : "com.tokopedia.session:session:${tkpdSessionVersion}",
@@ -185,11 +191,14 @@ ext {
             design     : "com.tokopedia.design:design:${tkpdDesignVersion}",
             feed       : "com.tokopedia.feed:feed:${tkpdFeedVersion}",
             ride       : "com.tokopedia.ride:ride:${tkpdRideVersion}",
-            reactNative: "com.tokopedia.tkpdreactnative:reactnative:${tkpdReactNativeVersion}"
+            reactNative: "com.tokopedia.tkpdreactnative:reactnative:${tkpdReactNativeVersion}",
+            loyalty    : "com.tokopedia.loyalty:loyalty:${tkpdLoyaltyVersion}",
+            flight     : "com.tokopedia.flight:flight:${tkpdFlightVersion}",
+            flightNoOp : "com.tokopedia.flight:flight-no-op:${tkpdFlightVersion}",
     ]
 
     tkpdLibDependencies = [
-            expandableOption: "com.tokopedia.tkpdlib:expandableoption:0.5.9",
+            expandableOption: "com.tokopedia.tkpdlib:expandableoption:0.7.1",
             showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.5.11"
     ]
 

@@ -31,13 +31,13 @@
 
             <TextView
                 android:id="@+id/text_popular_product"
-                style="@style/TextView.Caption.BlackSecondary"
+                style="@style/TextView.Micro.BlackSecondary"
                 android:layout_marginTop="@dimen/margin_small"
                 android:text="@string/gm_statistic_most_popular_product" />
 
             <TextView
                 android:id="@+id/tv_popular_product"
-                style="@style/TextView.Body1"
+                style="@style/TextView.Small"
                 android:layout_marginTop="@dimen/margin_vs"
                 android:ellipsize="end"
                 android:maxLines="2"
@@ -52,11 +52,11 @@
 
                 <TextView
                     android:id="@+id/tv_no_of_selling"
-                    style="@style/TextView.Headline"
+                    style="@style/TextView.SubHeadline"
                     tools:text="@string/app_id" />
 
                 <TextView
-                    style="@style/TextView.Caption.BlackDisabled"
+                    style="@style/TextView.Micro.BlackDisabled"
                     android:layout_marginLeft="@dimen/padding_ms"
                     android:layout_marginStart="@dimen/padding_ms"
                     android:text="@string/gm_statistic_x_sold" />
@@ -65,7 +65,7 @@
     </LinearLayout>
 
     <TextView
-        style="@style/TextView.Caption.BlackDisabled"
+        style="@style/TextView.Micro.BlackDisabled"
         android:layout_marginTop="@dimen/margin_sm"
         android:text="@string/gm_statistic_last_thirty_days_ago"
         android:textStyle="italic" />

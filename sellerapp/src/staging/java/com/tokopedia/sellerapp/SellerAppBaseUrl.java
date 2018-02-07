@@ -8,6 +8,7 @@ public class SellerAppBaseUrl {
     public static final String BASE_DOMAIN = "https://ws-staging.tokopedia.com/";
     public static final String BASE_ACE_DOMAIN = "https://ace-staging.tokopedia.com/";
     public static final String BASE_TOME_DOMAIN = "https://tome-staging.tokopedia.com/";
+    public static final String BASE_API_DOMAIN = "https://api-staging.tokopedia.com/";
     public static final String BASE_CLOVER_DOMAIN = "https://points.tokopedia.com/";
     public static final String BASE_TOPADS_DOMAIN = "https://ta-staging.tokopedia.com/";
     public static final String BASE_MOJITO_DOMAIN = "https://mojito-staging.tokopedia.com/";
@@ -28,4 +29,6 @@ public class SellerAppBaseUrl {
     public static final String CHAT_DOMAIN = "https://chat-staging.tokopedia.com";
     public static final String CHAT_WEBSOCKET_DOMAIN = "wss://chat-staging.tokopedia.com";
     public static final String BASE_SCROOGE_CREDIT_CARD_DOMAIN = "https://pay-staging.tokopedia.id/";
+    public static final String BASE_WALLET = "https://wallet-staging.tokopedia.id/";
+
 }

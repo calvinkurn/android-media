@@ -423,7 +423,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_success_edit_addr">Sukses mengubah alamat</string>
     <string name="title_success_default_bank">Sukses mengganti rekening Bank Utama.</string>
     <string name="title_add_bank_account">Tambah Rekening Bank</string>
-    <string name="title_see_all_addr">Lihat semua &gt;</string>
+    <string name="title_see_all_addr">Lihat semua</string>
     <string name="error_load_shop">Terjadi kesalahan ketika mengambil informasi toko</string>
     <string name="error_empty_report">Mohon diisi</string>
     <string name="title_gold_merchant_redirect">Akses maupun pembelian fitur Gold Merchant hanya
@@ -574,6 +574,8 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="error_max_account">Mohon maaf, Anda hanya dapat menambahkan hingga 10 rekening bank. Harap menghapus rekening bank yang tidak diinginkan dahulu.</string>
     <string name="title_change_email">Anda telah mengirim permintaan untuk mengubah alamat email Anda. Sebuah email konfirmasi telah dikirim ke Email Anda untuk melanjutkan perubahan. Silakan periksa email baru Anda untuk informasi lebih lanjut.</string>
     <string name="title_sort_by">Urutkan</string>
+    <string name="success_change_phone_number">Nomor Ponsel Berhasil Diubah</string>
+    <string name="check_email_change_phone_number">Segera konfirmasi perubahan nomor ponsel melalui email Anda.</string>
     <!-- Strings related Manage People -->
 
 
@@ -670,6 +672,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="item_all">Semua</string>
     <string name="item_unread">Belum Dibaca</string>
     <string name="chat_edit_text">Tulis pesan ...</string>
+    <string name="add_template_chat">Tambah Template</string>
 
     <!-- Strings related to inbox -->
 
@@ -1041,7 +1044,9 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="title_shop_tag">Slogan Toko</string>
     <string name="title_shop_desc">Deskripsi Toko</string>
     <string name="title_open_shop">Buka Toko</string>
+    <string name="title_shop_is_active">Toko Sudah Aktif</string>
     <string name="domain">https://www.tokopedia.com/</string>
+    <string name="domain_short">www.tokopedia.com/</string>
     <string name="title_activity_contact_us">Hubungi Kami</string>
     <string name="title_select_city">Pilih Asal Kota</string>
 
@@ -1282,7 +1287,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
 ]]>
     </string>
     <string name="message_deposit_review">Saldo Tokopedia Anda sejumlah :</string>
-    <string name="message_time_deposit_return">"sedang kami review. Jika review melebihi 1x24 jam, silakan hubungi Customer Service kami untuk penjelasan lebih lanjut. Terima kasih."</string>
+    <string name="message_time_deposit_return">"sedang kami review. Jika review melebihi 3x24 jam, silakan hubungi Customer Service kami untuk penjelasan lebih lanjut. Terima kasih."</string>
     <string name="message_changer_courrier_warning">Biaya pergantian kurir sepenuhnya ditanggung oleh Penjual</string>
     <string name="title_shop_phone_verification">Anda dapat membuka toko setelah melakukan verifikasi nomor HP</string>
     <string name="title_activity_developer_options">DeveloperOptions</string>
@@ -1758,6 +1763,9 @@ di Tokopedia Sekarang!</string>
     <string name="message_share_shop">Klik link ini untuk menemukan toko dari Tokopedia. </string>
     <!-- End of Strings related Share Mods -->
     <string name="shop_name_available">Nama toko tersedia</string>
+    <string name="shop_name_not_available">Nama toko sudah terpakai</string>
+    <string name="domain_name_available">Nama domain tersedia</string>
+    <string name="domain_name_not_available">Nama domain sudah terpakai</string>
     <string name="prompt_send_comment">Apakah anda yakin ingin mengirim komentar ini?</string>
 
     <string name="title_edit_stok_reject_order">Atur Stok Kosong pada produk</string>
@@ -1899,6 +1907,7 @@ di Tokopedia Sekarang!</string>
 
 
     <string name="template_people_total_fav_shop">XYZ Toko Favoritku</string>
+    <string name="template_people_total_following">Following List</string>
     <string name="message_success_people_unfav">Sukses menghapus toko favorit</string>
     <string name="message_success_people_fav">Sukses menambahkan toko favorit</string>
     <string name="failed_create_ticket">Gagal membuat tiket</string>
@@ -1996,7 +2005,7 @@ di Tokopedia Sekarang!</string>
     <string name="server_error_problem">Masalah Server Error</string>
     <string name="application_version_text">"Versi Aplikasi: "</string>
     <string name="send_email">Kirim Email</string>
-    <string name="hello_blank_name">Halo,</string>
+    <string name="hello_blank_name">Halo,®</string>
     <string name="create_tokopedia_account">Buat Akun Tokopedia</string>
     <string name="fill_your_profile">Isi data dirimu</string>
     <string name="already_has_account_sign_in">Sudah punya akun? Masuk</string>
@@ -2120,16 +2129,45 @@ di Tokopedia Sekarang!</string>
     <string name="app_share_title">Tokopedia, Satu Aplikasi untuk Semua Kebutuhan</string>
     <string name="app_share_contents"><![CDATA[Mudahnya beli produk idaman, pulsa, token listrik, tiket liburan, hingga bayar berbagai tagihan, semua dimulai dari aplikasi Tokopedia. Kamu juga bisa mulai & kembangkan bisnis di sini. Yuk, download sekarang!]]></string>
     <string name="app_share_label">Share ke Temanmu, Yuk!</string>
-    <string name="app_share_label_desc"><![CDATA[Sudah merasakan berbagai kemudahan dengan aplikasi Tokopedia? Ayo ajak orang-orang terdekatmu untuk ikut menikmati mudahnya beli & bayar ini itu lewat aplikasi Tokopedia]]></string>
-    <string name="app_share_btn_label">Undang Teman</string>
+    <string name="app_share_referral_label_desc"><![CDATA[Ayo share kode ini dan dapatkan voucher cashback TokoCash 25% hingga Rp20.000 saat mereka melakukan transaksi pertama di Tokopedia.]]></string>
+    <string name="app_share_btn_label">Ajak Teman</string>
     <string name="tambah_produk">+ Tambah Produk</string>
     <string name="product_share_subtitle">Dimana saja dan kapan saja</string>
     <string name="product_share_app_subtitle">Pilih cara berbagimu</string>
     <string name="title_share_feed">Bagikan Post ini</string>
     <string name="bri_transfer_info">*) Penarikan dana ke rekening BRI akan dikenakan biaya transfer Rp 1,500.- oleh bank BRI</string>
+
     <string name="app_rating_button_rate">Beri Rating</string>
     <string name="app_rating_button_later">Nanti</string>
     <string name="app_rating_title">Beri Rating Aplikasi Kami</string>
     <string name="app_rating_message">Jika Kamu suka dengan aplikasi Tokopedia, silakan berikan dukungan Kamu dengan memberi rating 5 bintang dan ulasan di Google Play.</string>
 
+    <string name="title_app_referral_howitworks">Info lebih lanjut</string>
+    <string name="app_rating_title_2">Bagaimana penilaian Kamu terhadap aplikasi Tokopedia?</string>
+    <string name="app_rating_message_2">Geser kanan atau kiri untuk memberikan rating</string>
+    <string name="app_rating_button_send">Kirim</string>
+    <string name="app_rating_button_close">Tutup</string>
+    <string name="app_rating_desc_worst">Sangat Buruk</string>
+    <string name="app_rating_desc_bad">Buruk</string>
+    <string name="app_rating_desc_ordinary">Biasa</string>
+    <string name="app_rating_desc_good">Bagus</string>
+    <string name="app_rating_desc_super">Super</string>
+    <string name="code_error">Kode error :</string>
+
+    <string name="notif_channel_general">Notifikasi</string>
+    <string name="title_hockeyapp_download">Nakama harus menggunakan aplikasi Tokopedia versi beta</string>
+    <string name="title_download">Download</string>
+    <string name="app_share_explore_btn_label">Mulai Belanja</string>
+    <string name="app_share_label_desc"><![CDATA[Sudah merasakan berbagai kemudahan dengan aplikasi Tokopedia? Ayo ajak orang-orang terdekatmu untuk ikut menikmati mudahnya beli, bayar ini itu lewat aplikasi Tokopedia]]></string>
+    <string name="drawer_title_referral_appshare">Dapatkan TokoCash</string>
+    <string name="app_share_default_msg"><![CDATA[Ada bonus cashback hingga Rp30.000 khusus buat kamu! Yuk mulai beli & bayar ini itu di Aplikasi Tokopedia, gunakan kode %s.]]></string>
+    <string name="no_coupon_to_copy_text">Gagal menyalin kode voucher</string>
+    <string name="referral_friend_welcome_screen_name">Friend View After Install</string>
+    <string name="referral_screen_name">Referral Home</string>
+    <string name="referral_share_screen_name">Share Channel</string>
+    <string name="referral_phone_number_verify_screen_name">Phone Number Verification</string>
+    <string name="phone_not_verified_error_message">Silakan verifikasi nomor handphone Anda untuk masuk ke halaman berikutnya.</string>
+    <string name="copy_coupon_code_text">Kode voucher telah tersalin</string>
+
 </resources>
+

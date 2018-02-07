@@ -8,13 +8,23 @@ import android.os.Parcelable;
  */
 public class DigitalCategoryDetailPassData implements Parcelable {
     public static final String PARAM_CATEGORY_ID = "category_id";
+    public static final String PARAM_OPERATOR_ID = "operator_id";
+    public static final String PARAM_PRODUCT_ID = "product_id";
+    public static final String PARAM_CLIENT_NUMBER = "client_number";
+
     private String categoryId;
+    private String operatorId;
+    private String productId;
+    private String clientNumber;
     private String url;
     private String appLinks;
     private String categoryName;
 
     private DigitalCategoryDetailPassData(Builder builder) {
         setCategoryId(builder.categoryId);
+        setOperatorId(builder.operatorId);
+        setProductId(builder.productId);
+        setClientNumber(builder.clientNumber);
         setUrl(builder.url);
         setAppLinks(builder.appLinks);
         setCategoryName(builder.categoryName);
@@ -26,6 +36,30 @@ public class DigitalCategoryDetailPassData implements Parcelable {
 
     public void setCategoryId(String categoryId) {
         this.categoryId = categoryId;
+    }
+
+    public String getOperatorId() {
+        return operatorId;
+    }
+
+    public void setOperatorId(String operatorId) {
+        this.operatorId = operatorId;
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
+    }
+
+    public String getClientNumber() {
+        return clientNumber;
+    }
+
+    public void setClientNumber(String clientNumber) {
+        this.clientNumber = clientNumber;
     }
 
     public String getUrl() {
@@ -61,6 +95,9 @@ public class DigitalCategoryDetailPassData implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.categoryId);
+        dest.writeString(this.operatorId);
+        dest.writeString(this.productId);
+        dest.writeString(this.clientNumber);
         dest.writeString(this.url);
         dest.writeString(this.appLinks);
         dest.writeString(this.categoryName);
@@ -71,6 +108,9 @@ public class DigitalCategoryDetailPassData implements Parcelable {
 
     protected DigitalCategoryDetailPassData(Parcel in) {
         this.categoryId = in.readString();
+        this.operatorId = in.readString();
+        this.productId = in.readString();
+        this.clientNumber = in.readString();
         this.url = in.readString();
         this.appLinks = in.readString();
         this.categoryName = in.readString();
@@ -92,6 +132,13 @@ public class DigitalCategoryDetailPassData implements Parcelable {
 
     public static final class Builder {
         private String categoryId;
+        private String operatorId;
+        private String productId;
+        private String clientNumber;
+        private String utmSource;
+        private String utmMedium;
+        private String utmCampaign;
+        private String utmContent;
         private String url;
         private String appLinks;
         private String categoryName;
@@ -101,6 +148,21 @@ public class DigitalCategoryDetailPassData implements Parcelable {
 
         public Builder categoryId(String val) {
             categoryId = val;
+            return this;
+        }
+
+        public Builder operatorId(String val) {
+            operatorId = val;
+            return this;
+        }
+
+        public Builder productId(String val) {
+            productId = val;
+            return this;
+        }
+
+        public Builder clientNumber(String val) {
+            clientNumber = val;
             return this;
         }
 

@@ -169,9 +169,7 @@ public class GetProductUrlUtil {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
-                Intent intent = SellerRouter.getAcitivityShopCreateEdit(context);
-                intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
-                        SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
+                Intent intent = SellerRouter.getActivityShopCreateEdit(context);
                 context.startActivity(intent);
             }
         };

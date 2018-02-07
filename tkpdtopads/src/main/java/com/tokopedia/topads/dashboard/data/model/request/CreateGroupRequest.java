@@ -58,6 +58,13 @@ public class CreateGroupRequest {
     @Expose
     private List<AdCreateGroupRequest> ads = new ArrayList();
 
+    @SerializedName("suggested_bid_value")
+    @Expose
+    private long suggestionBidValue;
+    @SerializedName("is_suggestion_bid_button")
+    @Expose
+    private String suggestionBidButton;
+
     public String getGroupName() {
         return groupName;
     }
@@ -178,4 +185,19 @@ public class CreateGroupRequest {
         this.ads = ads;
     }
 
+    public long getSuggestionBidValue() {
+        return suggestionBidValue;
+    }
+
+    public void setSuggestionBidValue(long suggestionBidValue) {
+        this.suggestionBidValue = suggestionBidValue;
+    }
+
+    public String getSuggestionBidButton() {
+        return suggestionBidButton;
+    }
+
+    public void setSuggestionBidButton(String suggestionBidButton) {
+        this.suggestionBidButton = suggestionBidButton;
+    }
 }

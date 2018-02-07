@@ -6,11 +6,22 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.ReadableMap;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.container.GTMDataLayer;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpdreactnative.react.app.ReactNativeView;
+
+import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import static com.facebook.react.bridge.UiThreadUtil.runOnUiThread;
 
@@ -92,5 +103,11 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule {
         } else {
             promise.resolve("");
         }
+    }
+
+    @ReactMethod
+    public void sendTrackingEvent(ReadableMap dataLayer) {
+        HashMap<String, Object> maps = dataLayer.toHashMap();
+        TrackingUtils.eventTrackingEnhancedEcommerce(maps);
     }
 }

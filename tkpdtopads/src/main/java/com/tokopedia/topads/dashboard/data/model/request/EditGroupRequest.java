@@ -50,8 +50,16 @@ public class EditGroupRequest {
     @SerializedName("source")
     @Expose
     private String source;
+    @SerializedName("suggested_bid_value")
+    @Expose
+    private long suggestionBidValue;
+    @SerializedName("is_suggestion_bid_button")
+    @Expose
+    private String suggestionBidButton;
 
-    public EditGroupRequest(String groupId, String groupName, String shopId, String toggle, Integer priceBid, Integer priceDaily, String groupBudget, String groupSchedule, String groupStartDate, String groupStartTime, String groupEndDate, String groupEndTime, String stickerId, String source) {
+    public EditGroupRequest(String groupId, String groupName, String shopId, String toggle, Integer priceBid, Integer priceDaily, String groupBudget,
+                            String groupSchedule, String groupStartDate, String groupStartTime, String groupEndDate, String groupEndTime,
+                            String stickerId, String source, long suggestionBidValue, String suggestionBidButton) {
         this.groupId = groupId;
         this.groupName = groupName;
         this.shopId = shopId;
@@ -66,6 +74,8 @@ public class EditGroupRequest {
         this.groupEndTime = groupEndTime;
         this.stickerId = stickerId;
         this.source = source;
+        this.suggestionBidValue = suggestionBidValue;
+        this.suggestionBidButton = suggestionBidButton;
     }
 
     public String getGroupId() {

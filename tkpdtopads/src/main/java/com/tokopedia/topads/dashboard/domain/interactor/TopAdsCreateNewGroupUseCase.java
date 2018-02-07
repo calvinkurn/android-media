@@ -99,7 +99,8 @@ public class TopAdsCreateNewGroupUseCase extends UseCase<TopAdsDetailGroupViewMo
             ads.add(adCreateGroupRequest);
         }
         createGroupRequest.setAds(ads);
-
+        createGroupRequest.setSuggestionBidValue(viewModel.getSuggestionBidValue());
+        createGroupRequest.setSuggestionBidButton(viewModel.getSuggestionBidButton());
         return createGroupRequest;
     }
 

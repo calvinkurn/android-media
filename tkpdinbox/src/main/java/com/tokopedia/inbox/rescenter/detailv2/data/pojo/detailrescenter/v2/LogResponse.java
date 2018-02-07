@@ -21,19 +21,21 @@ public class LogResponse {
     private String createTime;
     @SerializedName("createTimeStr")
     private String createTimeStr;
-    @SerializedName("createTimestampStr")
-    private String createTimestampStr;
+    @SerializedName("createTimeFullStr")
+    private String createTimeFullStr;
     @SerializedName("month")
     private String month;
     @SerializedName("dateNumber")
     private String dateNumber;
+    @SerializedName("times")
+    private String timeNumber;
 
-    public String getCreateTimestampStr() {
-        return createTimestampStr;
+    public String getCreateTimeFullStr() {
+        return createTimeFullStr;
     }
 
-    public void setCreateTimestampStr(String createTimestampStr) {
-        this.createTimestampStr = createTimestampStr;
+    public void setCreateTimeFullStr(String createTimeFullStr) {
+        this.createTimeFullStr = createTimeFullStr;
     }
 
     public String getMonth() {
@@ -108,5 +110,11 @@ public class LogResponse {
         this.createTimeStr = createTimeStr;
     }
 
+    public String getTimeNumber() {
+        return timeNumber;
+    }
 
+    public void setTimeNumber(String timeNumber) {
+        this.timeNumber = timeNumber;
+    }
 }

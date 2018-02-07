@@ -132,13 +132,13 @@ public class WidgetProductChooserView extends LinearLayout {
                 && lastOrder != null && lastOrder.getAttributes() != null) {
             int lastProductId = lastOrder.getAttributes().getProductId();
             for (int i = 0; i < productList.size(); i++) {
-                if (productList.get(i).getId() == (lastProductId)) {
+                if (Integer.valueOf(productList.get(i).getId()) == (lastProductId)) {
                     spinnerNominal.setSelection(i);
                 }
             }
         } else {
             for (int i = 0; i < productList.size(); i++) {
-                if (String.valueOf(productList.get(i).getId())
+                if (productList.get(i).getId()
                         .equalsIgnoreCase(lastProductSelected)) {
                     spinnerNominal.setSelection(i);
                 }

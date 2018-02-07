@@ -85,8 +85,8 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 216001101;
-        defaultVersionName = "2.16";
+        defaultVersionCode = 218001101;
+        defaultVersionName = "2.18";
     }
 
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -198,6 +198,7 @@ android {
 
     dexOptions {
         javaMaxHeapSize "8g"
+        keepRuntimeAnnotatedClasses false
     }
 
     compileOptions {
@@ -274,6 +275,8 @@ dependencies {
     compile project(':tkpdreactnative')
     compile project(':tkpdloyalty')
     compile project(':tkpdreputation')
+    compile project(':tkpdtokocash')
+    compile project(':tkpdflight')
 
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'

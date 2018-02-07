@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:background="@color/white"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/padding_med"
+    android:paddingRight="@dimen/padding_med"
+    android:paddingTop="@dimen/margin_sm"
+    android:paddingBottom="@dimen/margin_sm">
+
+    <TextView
+        android:id="@+id/city"
+        style="@style/TextView.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Jakarta, Indonesia"/>
+
+    <TextView
+        android:id="@+id/airport"
+        style="@style/TextView.Micro.BlackDisabled"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Semua Bandara"/>
+</LinearLayout>

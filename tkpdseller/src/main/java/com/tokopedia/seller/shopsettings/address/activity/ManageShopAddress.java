@@ -35,8 +35,8 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.shop.common.domain.interactor.DeleteShopInfoUseCase;
-import com.tokopedia.seller.shop.di.component.DaggerDeleteCacheComponent;
-import com.tokopedia.seller.shop.di.component.DeleteCacheComponent;
+import com.tokopedia.seller.shop.common.di.component.DaggerDeleteCacheComponent;
+import com.tokopedia.seller.shop.common.di.component.DeleteCacheComponent;
 import com.tokopedia.seller.shopsettings.address.adapter.ListViewManageShopLocation;
 
 import org.json.JSONArray;

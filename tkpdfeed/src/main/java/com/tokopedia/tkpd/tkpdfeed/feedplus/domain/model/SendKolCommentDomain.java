@@ -8,13 +8,13 @@ import com.tokopedia.tkpd.tkpdfeed.feedplus.domain.model.feed.KolCommentUserDoma
 
 public class SendKolCommentDomain {
 
-    private final int id;
+    private final String id;
     private final String comment;
     private final String time;
     private final KolCommentUserDomain domainUser;
     private boolean canDeleteComment;
 
-    public SendKolCommentDomain(int id, String comment, String time, KolCommentUserDomain
+    public SendKolCommentDomain(String id, String comment, String time, KolCommentUserDomain
             domainUser, boolean canDeleteComment) {
         this.id = id;
         this.comment = comment;
@@ -23,7 +23,7 @@ public class SendKolCommentDomain {
         this.canDeleteComment = canDeleteComment;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 

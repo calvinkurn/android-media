@@ -21,10 +21,11 @@ import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.base.view.model.StepperModel;
 import com.tokopedia.seller.util.CurrencyIdrTextWatcher;
 import com.tokopedia.topads.R;
+import com.tokopedia.topads.dashboard.constant.TopAdsSuggestionBidInteractionTypeDef;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.utils.ViewUtils;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailAdViewModel;
-import com.tokopedia.topads.dashboard.view.widget.PrefixEditText;
+import com.tokopedia.seller.common.widget.PrefixEditText;
 
 /**
  * Created by zulfikarrahman on 8/7/17.
@@ -51,19 +52,12 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
     private TextInputLayout budgetPerDayInputLayout;
     private View containerBudgetPerDay;
     private PrefixEditText budgetPerDayEditText;
-    private String suggestionBidText;
-    private String prefixSuggestion;
-    protected boolean isFirstTime; // when first time, all edit text should be empty without validation
-    private String IS_FIRST_TIME = "IS_FIRST_TIME";
+    protected long suggestionBidValue;
+    protected String defaultSuggestionBidButtonStatus;
 
     protected void onClickedNext() {
         showLoading();
         populateDataFromFields();
-    }
-
-    protected boolean isError() {
-        return (maxPriceInputLayout.isErrorEnabled() && maxPriceInputLayout.getError() != null) ||
-                (budgetPerDayInputLayout.isErrorEnabled() && budgetPerDayInputLayout.getError() != null);
     }
 
     protected abstract V initiateDetailAd();
@@ -87,78 +81,24 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
         titleSuggestionBid = (TextView) view.findViewById(R.id.text_suggestion_bid);
-        titleSuggestionBidUse = (TextView)view.findViewById(R.id.text_suggestion_bid_use);
+        titleSuggestionBidUse = (TextView) view.findViewById(R.id.text_suggestion_bid_use);
         titleSuggestionBidUse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                maxPriceEditText.setText(getSuggestionBidRaw());
+                maxPriceEditText.setText(String.valueOf(suggestionBidValue));
+                onSuggestionBidClicked();
             }
         });
-        setDefaultSuggestionBidText();
-        prefixSuggestion = getString(R.string.title_currency_rp_space);
-    }
-
-    private String getSuggestionBidRaw(){
-        if(suggestionBidText == null)
-            return null;
-
-        return suggestionBidText.substring(prefixSuggestion.length()).trim();
     }
 
     @Override
     protected void setActionVar() {
         super.setActionVar();
         loadSuggestionBid();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putBoolean(IS_FIRST_TIME, isFirstTime);
+        defaultSuggestionBidButtonStatus = TopAdsSuggestionBidInteractionTypeDef.NO_SUGGESTION;
     }
 
     protected abstract void loadSuggestionBid();
-
-    protected abstract void onSuggestionTitleUseClick();
-
-    protected void setSuggestionBidText(@Nullable GetSuggestionResponse data){
-        if(data == null)
-            return;
-        setSuggestionBidText(data.getData().get(0).getMedianFmt());
-    }
-
-    protected void setSuggestionBidText(@Nullable TextView text, @Nullable GetSuggestionResponse data){
-        if(data == null || text == null)
-            return;
-        this.suggestionBidText = data.getData().get(0).getMedianFmt();
-
-        text.setText(getSuggestionBidRaw());
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            isFirstTime = savedInstanceState.getBoolean(IS_FIRST_TIME, false);
-        } else {
-            isFirstTime = true;
-        }
-        super.onViewCreated(view, savedInstanceState);
-    }
-
-    protected void setSuggestionBidText(@Nullable String data){
-        if(data == null)
-            return;
-
-        this.suggestionBidText = data;
-
-        CommonUtils.dumper(TAG+" >> "+ data);
-        titleSuggestionBid.setText(MethodChecker.fromHtml(getRecSuggestionBid(data)));
-        titleSuggestionBidUse.setVisibility(View.VISIBLE);
-    }
-
-    protected String getRecSuggestionBid(String data){
-        return getString(R.string.label_top_ads_max_price_description)+" <b>"+data+"</b> ";
-    }
 
     @Override
     protected void initialVar() {
@@ -174,20 +114,8 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
             @Override
             public void onNumberChanged(double number) {
                 super.onNumberChanged(number);
-
-                if (isFirstTime) {
-                    isFirstTime = false;
-                    return;
-                }
-
                 checkMaxPrice(number);
-
-                String suggestionBidRaw = getSuggestionBidRaw();
-                if (suggestionBidRaw == null)
-                    return;
-
-                setSuggestionBidText(suggestionBidText);
-                titleSuggestionBidUse.setVisibility(View.VISIBLE);
+                onPriceChanged(number);
             }
         });
         budgetPerDayEditText.addTextChangedListener(new CurrencyIdrTextWatcher(budgetPerDayEditText, getString(R.string.top_ads_detail_edit_default_currency_value)) {
@@ -236,6 +164,42 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
         progressDialog.setMessage(getString(R.string.title_loading));
     }
 
+    protected boolean isPriceError() {
+        boolean maxPriceError = maxPriceInputLayout.isErrorEnabled() && maxPriceInputLayout.getError() != null;
+        if (maxPriceError) {
+            return true;
+        }
+        boolean budgetPerDayError = budgetPerDayInputLayout.isErrorEnabled() && budgetPerDayInputLayout.getError() != null;
+        if (budgetPerDayRadioButton.isChecked() && budgetPerDayError) {
+            return true;
+        }
+        return false;
+    }
+
+    protected void onPriceChanged(double number) {
+
+    }
+
+    protected void onSuggestionBidClicked() {
+
+    }
+
+    protected void setSuggestionBidText(@Nullable GetSuggestionResponse data) {
+        if (data == null) {
+            return;
+        }
+        setSuggestionBidText(data.getData().get(0).getMedian(), data.getData().get(0).getMedianFmt());
+        if (TextUtils.isEmpty(maxPriceEditText.getTextWithoutPrefix())) {
+            maxPriceEditText.setText(String.valueOf(data.getData().get(0).getMedian()));
+        }
+    }
+
+    protected void setSuggestionBidText(long suggestionBidValue, @Nullable String suggestionBidText){
+        this.suggestionBidValue = suggestionBidValue;
+        titleSuggestionBid.setText(MethodChecker.fromHtml(getString(R.string.label_top_ads_max_price_description) + " <b>" + suggestionBidText + "</b> "));
+        titleSuggestionBidUse.setVisibility(View.VISIBLE);
+    }
+
     private void checkMaxPrice(double number) {
         String errorMessage = ViewUtils.getClickBudgetError(getActivity(), number);
         if (!TextUtils.isEmpty(errorMessage)) {
@@ -243,14 +207,6 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
         } else {
             maxPriceInputLayout.setError(null);
         }
-    }
-
-    protected void setDefaultSuggestionBidText() {
-        if(getSuggestionBidRaw() != null && !getSuggestionBidRaw().isEmpty()){
-            return;
-        }
-        titleSuggestionBid.setText(R.string.top_ads_label_price_desc);
-        titleSuggestionBidUse.setVisibility(View.GONE);
     }
 
     private void showBudgetPerDay(boolean show) {
@@ -291,15 +247,6 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
             }
             detailAd.setBudget(true);
         }
-    }
-
-    protected boolean firstTimeCheck() {
-        if (isFirstTime) {
-            isFirstTime = false;
-            checkMaxPrice(0);
-            return true;
-        }
-        return false;
     }
 
     protected void loadAd(V detailAd) {

@@ -9,7 +9,6 @@ import android.support.v4.app.TaskStackBuilder;
 import android.text.TextUtils;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.gcm.Constants;
@@ -61,6 +60,9 @@ public class DigitalProductActivity extends BasePresenterActivity
         DigitalCategoryDetailPassData passData = new DigitalCategoryDetailPassData.Builder()
                 .appLinks(uri.toString())
                 .categoryId(extras.getString(DigitalCategoryDetailPassData.PARAM_CATEGORY_ID))
+                .operatorId(extras.getString(DigitalCategoryDetailPassData.PARAM_OPERATOR_ID))
+                .productId(extras.getString(DigitalCategoryDetailPassData.PARAM_PRODUCT_ID))
+                .clientNumber(extras.getString(DigitalCategoryDetailPassData.PARAM_CLIENT_NUMBER))
                 .build();
         Intent destination = DigitalProductActivity.newInstance(context, passData);
         destination.putExtra(Constants.EXTRA_FROM_PUSH, true);
@@ -88,7 +90,12 @@ public class DigitalProductActivity extends BasePresenterActivity
         Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
         if (fragment == null || !(fragment instanceof DigitalProductFragment))
             getFragmentManager().beginTransaction().replace(R.id.container,
-                    DigitalProductFragment.newInstance(passData.getCategoryId())).commit();
+                    DigitalProductFragment.newInstance(
+                            passData.getCategoryId(),
+                            passData.getOperatorId(),
+                            passData.getProductId(),
+                            passData.getClientNumber()))
+                    .commit();
     }
 
     @Override

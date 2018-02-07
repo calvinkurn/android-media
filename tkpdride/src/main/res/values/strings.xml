@@ -48,7 +48,6 @@
     <string name="your_trips_toolbar_title">Your Trips</string>
     <string name="btn_request">Request</string>
     <string name="apply_promocode">Click to apply promo code?</string>
-    <string name="apply">APPLY</string>
     <string name="btn_apply">APPLY</string>
     <string name="hint_enter_promo_code">Enter Promo Code</string>
     <string name="apply_promo_toolbar_title">Apply Promo Code</string>
@@ -192,4 +191,11 @@
     <string name="prefx_trip_id">Trip Id:</string>
     <string name="auto_debit_not_allowed">Auto debit not allowed</string>
     <string name="auto_debit_allowed">Auto debit allowed</string>
+    <string name="booking_ride_menu_add_to_home_screen">Add Shortcut to Home</string>
+    <string name="str_payment_with">Payment With</string>
+    <string name="dialog_title_add_uber_shortcut">Add Tokopedia Uber rides shortcut to home screen</string>
+    <string name="label_book_uber_shortcut">TokoRides</string>
+    <string name="msg_shortcut_created_successfully">Shortcut added on Home Screen</string>
+    <string name="msg_shortcut_created_failed">Unable to create shortcut on your home screen</string>
+    <string name="btn_maybe_later">Maybe Later</string>
 </resources>

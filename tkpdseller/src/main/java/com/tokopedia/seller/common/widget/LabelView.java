@@ -2,15 +2,12 @@ package com.tokopedia.seller.common.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.design.base.BaseCustomView;
@@ -67,7 +64,7 @@ public class LabelView extends BaseCustomView {
             titleTextStyleValue = styledAttributes.getInt(R.styleable.LabelView_title_textStyle, Typeface.NORMAL);
             maxLines = styledAttributes.getInt(R.styleable.LabelView_content_max_lines, 1);
             textSize = styledAttributes.getDimension(R.styleable.LabelView_lv_font_size,
-                    getResources().getDimension(com.tokopedia.design.R.dimen.font_subheading));
+                    getResources().getDimension(R.dimen.font_title));
             minTitleWidth = styledAttributes.getDimensionPixelSize(R.styleable.LabelView_lv_min_title_width, 0);
         } finally {
             styledAttributes.recycle();
@@ -76,7 +73,7 @@ public class LabelView extends BaseCustomView {
     }
 
     private void init() {
-        View view = inflate(getContext(), R.layout.widget_label_view, this);
+        View view = inflate(getContext(), R.layout.widget_label_view_seller, this);
         titleTextView = (TextView) view.findViewById(R.id.title_text_view);
         contentTextView = (TextView) view.findViewById(R.id.content_text_view);
     }

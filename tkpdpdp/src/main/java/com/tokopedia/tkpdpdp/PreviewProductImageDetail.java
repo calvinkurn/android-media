@@ -37,6 +37,7 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.customadapter.TouchImageAdapter;
 import com.tokopedia.core.customadapter.TouchImageAdapter.OnImageStateChange;
+import com.tokopedia.core.gcm.utils.NotificationChannelId;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 
@@ -246,7 +247,7 @@ public class PreviewProductImageDetail extends TActivity {
         final NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         final NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(PreviewProductImageDetail.this);
+                new NotificationCompat.Builder(PreviewProductImageDetail.this, NotificationChannelId.GENERAL);
         notificationBuilder.setContentTitle(filenameParam)
                 .setContentText(getString(com.tokopedia.core.R.string.download_in_process))
                 .setSmallIcon(com.tokopedia.core.R.drawable.ic_stat_notify_white)

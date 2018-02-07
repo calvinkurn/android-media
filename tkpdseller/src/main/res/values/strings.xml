@@ -55,6 +55,15 @@
     <string name="title_shop_score_indicator">Indikator Performa Toko</string>
     <string name="subtitle_shop_score_indicator_thirtydays">30 hari terakhir</string>
     <string name="description_shop_score_gold_badge_state">Mulai tanggal 27 Maret 2017, ikon Gold Badge hanya akan diberikan kepada seller dengan skor minimal 75 poin.</string>
+    <string name="title_shop_setting_location">Lokasi Pengiriman</string>
+    <string name="description_shop_setting_location">Lengkapi informasi lokasi pengiriman untuk memilih layanan jasa pengiriman yang tersedia di lokasi Anda.</string>
+    <string name="hint_shop_setting_location_city">Kota Asal Pengiriman</string>
+    <string name="hint_shop_setting_location_zip_code">Kode Pos</string>
+    <string name="title_shop_setting">Pengaturan Toko</string>
+    <string name="title_shop_setting_location_pickup">Lokasi pickup (Opsional)</string>
+    <string name="description_shop_setting_location_pickup"><![CDATA[Wajib diisi untuk aktifkan jasa pengiriman Go-JEK, Grab, & Ninja Xpress. Pastikan lokasi yang Anda tandai di peta sesuai dengan Alamat Pickup.]]></string>
+    <string name="action_shop_setting_location_pickup">Lokasi Pickup</string>
+    <string name="title_shop_setting_location_address">Alamat Pickup</string>
 
     <string name="list_sold_product_text">Daftar Produk Terjual</string>
 
@@ -159,6 +168,17 @@
     <string name="product_manage_label_add_product">+ Tambah Produk</string>
     <string name="product_manage_label_supervision">Pengawasan</string>
 
+    <!-- Open Shop -->
+    <string name="shop_name">Nama Toko</string>
+    <string name="domain_name">Nama Domain</string>
+    <string name="fill_domain_and_shop">Isi nama dan domain toko!</string>
+    <string name="hello_x">Halo, <![CDATA[<b>%1$s</b>]]></string>
+    <string name="openshop_make_sure_pickup_location">Pastikan Lokasi Pickup Anda telah sesuai untuk jasa pengiriman Go-JEK, Grab &amp; Ninja Express</string>
+    <string name="label_pickup_location">Lokasi Pickup</string>
+    <string name="select_pickup_location">Pilih Lokasi Pickup</string>
+
+    <!-- Shop Setting -->
+
     <string name="edit_from_instagram_text_description">Ubah gambar dari Instagram</string>
     <string name="edit_from_gallery_text_description">Ubah gambar dari Galeri</string>
     <string name="edit_from_camera_text_description">Ubah gambar dari Kamera</string>
@@ -179,7 +199,27 @@
     <string name="note_for_seller">Catatan untuk Penjual:</string>
     <string name="see_product">Lihat Produk</string>
     <string name="transaction_value">Nilai Transaksi</string>
-    <string name="title_tooltip_reputation_multiplier">Nilai Reputasi</string>
-    <string name="body_tooltip_reputation_multiplier">Ini adalah Nilai Kelipatan Reputasi. Reputasi dari pesanan ini akan dikalikan dengan Nilai Kelipatan Reputasi.</string>
+
+    <string name="product_manage_title_dialog_variant">Produk dengan Varian</string>
+    <string name="product_manage_label_dialog_variant">Saat ini produk yang memiliki varian hanya bisa diubah dan dihapus melalui desktop</string>
+    <string name="product_manage_label_snackbar_variant">Produk dengan Varian hanya dapat dihapus dan diubah melalui desktop.</string>
+    <string name="product_desc_guide">Panduan Deskripsi Produk</string>
+    <string name="test_strike"><strike>TextView</strike></string>
+    <string name="item_price_label">Harga Barang</string>
+    <string name="shipping_fee_label">Ongkos Kirim</string>
+	<string name="shipping_location_pinpoint_label">Pinpoint Lokasi Pengiriman</string>
+    <string name="shipping_location_pinpoint_detail">Isi pinpoint lokasi toko Anda untuk mengaktifkan Layanan Pengiriman Ekspress.</string>
+
+    <!-- Opportunity -->
+    <string name="opportunity_showcase_reputation_value_title">Nilai Reputasi Peluang</string>
+    <string name="opportunity_showcase_reputation_value_content">Ini adalah angka pengali nilai reputasi yang akan diperbaharui setiap 30 menit. Ayo ambil order peluang sebanyak-banyaknya dan tingkatkan reputasi tokomu!</string>
+    <string name="opportunity_detail_info_reputation_multiplier_title">Nilai Reputasi</string>
+    <string name="opportunity_detail_info_reputation_multiplier_content">Ini adalah Nilai Kelipatan Reputasi. Reputasi dari pesanan ini akan dikalikan dengan Nilai Kelipatan Reputasi.</string>
+    <string name="opportunity_detail_info_product_price_title">Harga Barang</string>
+    <string name="opportunity_detail_info_product_price_content">Estimasi harga barang telah disesuaikan dengan lokasi Anda.</string>
+    <string name="opportunity_detail_info_different_product_price_content">Harga yang dicoret akan dicantumkan di invoice. Estimasi harga barang baru telah disesuaikan dengan lokasi Anda.</string>
+    <string name="opportunity_detail_info_shipping_price_title">Ongkos Kirim</string>
+    <string name="opportunity_detail_info_delivery_price_content">Estimasi ongkos kirim telah disesuaikan dengan lokasi Anda.</string>
+    <string name="opportunity_detail_info_different_delivery_price_content">Ongkos kirim yang dicoret akan dicantumkan di invoice. Estimasi ongkos kirim baru telah disesuaikan dengan lokasi Anda.</string>
 
 </resources>

@@ -4,44 +4,46 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="18dp"
+    android:layout_marginRight="@dimen/small_dp"
+    android:layout_marginLeft="@dimen/small_dp"
     android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:background="@drawable/card_thick_edge"
+        android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <TextView
+            android:id="@+id/credit_card_main_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/small_dp"
-            android:layout_marginStart="@dimen/small_dp"
-            android:text="@string/title_credit_card"
-            android:textSize="@dimen/font_medium" />
-
-        <ImageView
-            android:id="@+id/credit_card_menu_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:paddingEnd="@dimen/small_dp"
-            android:paddingLeft="@dimen/small_dp"
-            android:paddingRight="@dimen/small_dp"
-            android:paddingStart="@dimen/small_dp"
-            android:src="@drawable/ic_new_action_overflow_black" />
+            android:layout_marginLeft="@dimen/margin_vs"
+            android:layout_marginRight="@dimen/margin_vs"
+            android:text="@string/header_title_pembayaran_kartu_kredit"
+            android:textSize="@dimen/font_medium"
+            android:textStyle="bold"
+            android:textColor="@color/black_70" />
 
     </RelativeLayout>
+
+    <TextView
+        android:id="@+id/credit_card_sub_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/sub_header_title_kartu_kredit_tersimpan"
+        android:textSize="14sp"
+        android:layout_marginLeft="@dimen/small_dp"
+        android:layout_marginStart="@dimen/small_dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginBottom="@dimen/margin_small"
+        android:textColor="@color/black_70" />
 
     <LinearLayout
         android:id="@+id/add_credit_card_layout"
         android:layout_width="match_parent"
         android:layout_height="115dp"
         android:layout_margin="@dimen/margin_vs"
-        android:background="@drawable/btn_plain"
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="gone"

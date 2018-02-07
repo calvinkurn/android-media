@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.beranda.domain.model.toppicks;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -17,6 +18,9 @@ public class TopPicksItemModel {
     private String name;
     @SerializedName("url")
     private String url;
+    @SerializedName("applinks")
+    @Expose
+    private String applinks="";
 
     public int getId() {
         return id;
@@ -56,5 +60,13 @@ public class TopPicksItemModel {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getApplinks() {
+        return applinks;
+    }
+
+    public void setApplinks(String applinks) {
+        this.applinks = applinks;
     }
 }

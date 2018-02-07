@@ -18,11 +18,11 @@ import rx.Observable;
 
 public interface IDigitalWidgetRepository {
 
-    Observable<List<CategoryEntity>> getObservableCategoryData(boolean useCache);
+    Observable<List<CategoryEntity>> getObservableCategoryData();
 
-    Observable<List<ProductEntity>> getObservableProducts(boolean useCache);
+    Observable<List<ProductEntity>> getObservableProducts();
 
-    Observable<List<OperatorEntity>> getObservableOperators(boolean useCache);
+    Observable<List<OperatorEntity>> getObservableOperators();
 
     Observable<DigitalNumberList> getObservableNumberList(TKPDMapParam<String, String> param);
 

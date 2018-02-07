@@ -1,5 +1,7 @@
 package com.tokopedia.tkpd.beranda.presentation.view.fragment;
 
+import android.Manifest;
+import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -21,6 +23,8 @@ import android.view.ViewGroup;
 import com.google.firebase.perf.metrics.Trace;
 import com.tkpd.library.ui.view.LinearLayoutManager;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -28,6 +32,7 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
 import com.tokopedia.core.constants.HomeFragmentBroadcastReceiverConstant;
 import com.tokopedia.core.constants.TokocashPendingDataBroadcastReceiverConstant;
 import com.tokopedia.core.drawer.listener.TokoCashUpdateListener;
@@ -36,6 +41,7 @@ import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.BrandsWebViewActivity;
+import com.tokopedia.core.home.SimpleWebViewActivity;
 import com.tokopedia.core.home.TopPicksWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -45,14 +51,17 @@ import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
+import com.tokopedia.core.router.productdetail.PdpRouter;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.router.digitalmodule.sellermodule.TokoCashRouter;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
-import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.digital.tokocash.model.CashBackData;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
+import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.beranda.di.DaggerHomeComponent;
 import com.tokopedia.tkpd.beranda.di.HomeComponent;
@@ -61,6 +70,7 @@ import com.tokopedia.tkpd.beranda.domain.model.brands.BrandDataModel;
 import com.tokopedia.tkpd.beranda.domain.model.category.CategoryLayoutRowModel;
 import com.tokopedia.tkpd.beranda.domain.model.toppicks.TopPicksItemModel;
 import com.tokopedia.tkpd.beranda.listener.HomeCategoryListener;
+import com.tokopedia.tkpd.beranda.listener.HomeFeedListener;
 import com.tokopedia.tkpd.beranda.listener.HomeRecycleScrollListener;
 import com.tokopedia.tkpd.beranda.listener.OnSectionChangeListener;
 import com.tokopedia.tkpd.beranda.presentation.presenter.HomePresenter;
@@ -75,9 +85,10 @@ import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.CategorySe
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.LayoutSections;
+import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.SellViewModel;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
-import com.tokopedia.tkpd.home.ReactNativeActivity;
+import com.tokopedia.tkpd.home.ReactNativeOfficialStoreActivity;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 
 import java.util.ArrayList;
@@ -87,15 +98,18 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.RuntimePermissions;
+
 import static com.tokopedia.core.constants.HomeFragmentBroadcastReceiverConstant.EXTRA_ACTION_RECEIVER;
 
 /**
  * @author by errysuprayogi on 11/27/17.
  */
-
+@RuntimePermissions
 public class HomeFragment extends BaseDaggerFragment implements HomeContract.View,
         SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener, OnSectionChangeListener,
-        TabLayout.OnTabSelectedListener, TokoCashUpdateListener {
+        TabLayout.OnTabSelectedListener, TokoCashUpdateListener, HomeFeedListener {
 
     @Inject
     HomePresenter presenter;
@@ -115,6 +129,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private String[] tabSectionTitle;
     private VerticalSpaceItemDecoration spaceItemDecoration;
     private HomeFragmentBroadcastReceiver homeFragmentBroadcastReceiver;
+    private EndlessRecyclerviewListener feedLoadMoreTriggerListener;
+    private LinearLayoutManager layoutManager;
 
     public static HomeFragment newInstance() {
 
@@ -135,15 +151,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         getActivity().registerReceiver(
                 homeFragmentBroadcastReceiver,
                 new IntentFilter(
-                        HomeFragmentBroadcastReceiverConstant.INTENT_ACTION
+                        HomeFragmentBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP
                 )
         );
-
     }
 
     @Override
     protected String getScreenName() {
-        return null;
+        return AppScreen.UnifyScreenTracker.SCREEN_UNIFY_HOME_BERANDA;
     }
 
     @Override
@@ -167,6 +182,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         tabContainer = (SectionContainer) view.findViewById(R.id.tab_container);
         root = (CoordinatorLayout) view.findViewById(R.id.root);
         presenter.attachView(this);
+        presenter.setFeedListener(this);
         return view;
     }
 
@@ -183,6 +199,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         initTabNavigation();
         initAdapter();
         initRefreshLayout();
+        initFeedLoadMoreTriggerListener();
         fetchRemoteConfig();
     }
 
@@ -219,15 +236,38 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             @Override
             public void run() {
                 presenter.getHomeData();
+                presenter.getHeaderData(true);
             }
         });
         refreshLayout.setOnRefreshListener(this);
     }
 
+    private void initFeedLoadMoreTriggerListener() {
+        feedLoadMoreTriggerListener = new EndlessRecyclerviewListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                if (isAllowLoadMore()) {
+                    recyclerView.removeOnScrollListener(feedLoadMoreTriggerListener);
+                    adapter.showLoading();
+                    presenter.fetchNextPageFeed();
+                }
+            }
+        };
+        if (SessionHandler.isV4Login(getContext())) {
+            recyclerView.addOnScrollListener(feedLoadMoreTriggerListener);
+        }
+    }
+
+    private boolean isAllowLoadMore() {
+        return getUserVisibleHint()
+                && !adapter.isLoading()
+                && !refreshLayout.isRefreshing();
+    }
+
     private void initAdapter() {
-        LinearLayoutManager layoutManager = new LinearLayoutManagerWithSmoothScroller(getContext());
+        layoutManager = new LinearLayoutManagerWithSmoothScroller(getContext());
         recyclerView.setLayoutManager(layoutManager);
-        adapterFactory = new HomeAdapterFactory(getFragmentManager(), this);
+        adapterFactory = new HomeAdapterFactory(getFragmentManager(), this, this);
         adapter = new HomeRecycleAdapter(adapterFactory, new ArrayList<Visitable>());
         spaceItemDecoration = new VerticalSpaceItemDecoration(getResources().getDimensionPixelSize(R.dimen.margin_card_home), true, 1);
         recyclerView.addItemDecoration(spaceItemDecoration);
@@ -312,9 +352,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     private void onGoToCreateShop() {
-        Intent intent = SellerRouter.getAcitivityShopCreateEdit(getContext());
-        intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
-                SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
+        Intent intent = SellerRouter.getActivityShopCreateEdit(getContext());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         getActivity().startActivity(intent);
     }
@@ -328,7 +366,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void focusView(String title) {
         if (title.equalsIgnoreCase("Jual")) {
-            onGoToSell();
+            for (int i = 0; i < adapter.getItemCount(); i++) {
+                if (adapter.getItem(i) instanceof SellViewModel) {
+                    recyclerView.smoothScrollToPosition(i);
+                    break;
+                }
+            }
         } else {
             for (int i = 0; i < adapter.getItemCount(); i++) {
                 Visitable visitable = adapter.getItem(i);
@@ -373,20 +416,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onTopPicksItemClicked(TopPicksItemModel data, int parentPosition, int childPosition) {
-        String url = data.getUrl();
-        UnifyTracking.eventHomeTopPicksItem(data.getName(), data.getName());
-        switch ((DeepLinkChecker.getDeepLinkType(url))) {
-            case DeepLinkChecker.BROWSE:
-                DeepLinkChecker.openBrowse(url, getActivity());
-                break;
-            case DeepLinkChecker.HOT:
-                DeepLinkChecker.openHot(url, getActivity());
-                break;
-            case DeepLinkChecker.CATALOG:
-                DeepLinkChecker.openCatalog(url, getActivity());
-                break;
-            default:
-                openWebViewTopPicksURL(url);
+        if (getActivity() != null
+                && getActivity().getApplicationContext() instanceof IDigitalModuleRouter
+                && ((IDigitalModuleRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(data.getApplinks())) {
+            ((IDigitalModuleRouter) getActivity().getApplicationContext())
+                    .actionNavigateByApplinksUrl(getActivity(), data.getApplinks(), new Bundle());
+        } else {
+            openWebViewURL(data.getUrl(), getContext());
         }
     }
 
@@ -414,10 +450,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
         if (firebaseRemoteConfig.getBoolean(MAINAPP_SHOW_REACT_OFFICIAL_STORE)) {
             getActivity().startActivity(
-                    ReactNativeActivity.createOfficialStoresReactNativeActivity(
+                    ReactNativeOfficialStoreActivity.createCallingIntent(
                             getActivity(), ReactConst.Screen.OFFICIAL_STORE,
-                            getString(R.string.react_native_banner_official_title)
-                    )
+                            getString(R.string.react_native_banner_official_title))
             );
         } else {
             openWebViewBrandsURL(TkpdBaseURL.OfficialStore.URL_WEBVIEW);
@@ -455,7 +490,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onRequestPendingCashBack() {
-        getActivity().sendBroadcast(new Intent(TokocashPendingDataBroadcastReceiverConstant.INTENT_ACTION));
+        getActivity().sendBroadcast(new Intent(TokocashPendingDataBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP));
     }
 
     @Override
@@ -508,74 +543,36 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void actionTokoPointClicked(String tokoPointUrl, String pageTitle) {
         if (TextUtils.isEmpty(pageTitle))
-            startActivity(BannerWebView.getCallingIntent(getActivity(), tokoPointUrl));
+            startActivity(TokoPointWebviewActivity.getIntent(getActivity(), tokoPointUrl));
         else
-            startActivity(BannerWebView.getCallingIntentWithTitle(getActivity(), tokoPointUrl, pageTitle));
+            startActivity(TokoPointWebviewActivity.getIntentWithTitle(getActivity(), tokoPointUrl, pageTitle));
+    }
+
+
+    @Override
+    public void actionScannerQRTokoCash() {
+        HomeFragmentPermissionsDispatcher.scanQRCodeWithCheck(this);
+    }
+
+    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    public void scanQRCode() {
+        Application application = getActivity().getApplication();
+        if (application != null && application instanceof TokoCashRouter) {
+            Intent intent = ((TokoCashRouter) application).goToQRScannerTokoCash(getActivity());
+            startActivity(intent);
+        }
     }
 
     @Override
     public void onPromoClick(BannerSlidesModel slidesModel) {
         if (getActivity() != null
-                && getActivity().getApplicationContext() instanceof IDigitalModuleRouter
-                && ((IDigitalModuleRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(slidesModel.getApplink())) {
-            ((IDigitalModuleRouter) getActivity().getApplicationContext())
-                    .actionNavigateByApplinksUrl(getActivity(), slidesModel.getApplink(), new Bundle());
+                && getActivity().getApplicationContext() instanceof TkpdCoreRouter
+                && ((TkpdCoreRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(slidesModel.getApplink())) {
+            ((TkpdCoreRouter) getActivity().getApplicationContext())
+                    .actionAppLink(getActivity(), slidesModel.getApplink());
         } else {
-
-            String url = slidesModel.getRedirectUrl();
-            try {
-                UnifyTracking.eventSlideBannerClicked(url);
-                Uri uri = Uri.parse(url);
-                String host = uri.getHost();
-                List<String> linkSegment = uri.getPathSegments();
-                if (isBaseHost(host) && isShop(linkSegment)) {
-                    String shopDomain = linkSegment.get(0);
-                    presenter.getShopInfo(url, shopDomain);
-                } else if (isBaseHost(host) && isProduct(linkSegment)) {
-                    String shopDomain = linkSegment.get(0);
-                    presenter.openProductPageIfValid(url, shopDomain);
-                } else if (DeepLinkChecker.getDeepLinkType(url) == DeepLinkChecker.CATEGORY) {
-                    DeepLinkChecker.openCategory(url, getActivity());
-                } else {
-                    openWebViewURL(url, getActivity());
-                }
-            } catch (Exception e) {
-                openWebViewURL(url, getActivity());
-                e.printStackTrace();
-            }
+            openWebViewURL(slidesModel.getRedirectUrl(), getContext());
         }
-    }
-
-    private boolean isBaseHost(String host) {
-        return (host.contains(TkpdBaseURL.BASE_DOMAIN) || host.contains(TkpdBaseURL.MOBILE_DOMAIN));
-    }
-
-    private boolean isShop(List<String> linkSegment) {
-        return linkSegment.size() == 1
-                && !isReservedLink(linkSegment.get(0));
-    }
-
-    private boolean isProduct(List<String> linkSegment) {
-        return linkSegment.size() == 2
-                && !isReservedLink(linkSegment.get(0));
-    }
-
-    private boolean isReservedLink(String link) {
-        return link.equals("pulsa")
-                || link.equals("iklan")
-                || link.equals("newemail.pl")
-                || link.equals("search")
-                || link.equals("hot")
-                || link.equals("about")
-                || link.equals("reset.pl")
-                || link.equals("activation.pl")
-                || link.equals("privacy.pl")
-                || link.equals("terms.pl")
-                || link.equals("p")
-                || link.equals("catalog")
-                || link.equals("toppicks")
-                || link.equals("promo")
-                || link.startsWith("invoice.pl");
     }
 
     @Override
@@ -601,7 +598,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onRefresh() {
+        presenter.resetPageFeed();
+        if (SessionHandler.isV4Login(getContext()) && feedLoadMoreTriggerListener != null) {
+            feedLoadMoreTriggerListener.resetState();
+            recyclerView.addOnScrollListener(feedLoadMoreTriggerListener);
+        }
         presenter.getHomeData();
+        presenter.getHeaderData(false);
     }
 
     @Override
@@ -641,24 +644,28 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void showNetworkError(String message) {
-        if (adapter.getItemCount() > 0) {
-            if (messageSnackbar == null) {
-                messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        presenter.getHomeData();
-                    }
-                });
-            }
-            messageSnackbar.showRetrySnackbar();
-        } else {
-            NetworkErrorHelper.showEmptyState(getActivity(), root, message,
-                    new NetworkErrorHelper.RetryClickedListener() {
+        if (isAdded() && getActivity() != null) {
+            if (adapter.getItemCount() > 0) {
+                if (messageSnackbar == null) {
+                    messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
                         @Override
                         public void onRetryClicked() {
                             presenter.getHomeData();
+                            presenter.getHeaderData(false);
                         }
                     });
+                }
+                messageSnackbar.showRetrySnackbar();
+            } else {
+                NetworkErrorHelper.showEmptyState(getActivity(), root, message,
+                        new NetworkErrorHelper.RetryClickedListener() {
+                            @Override
+                            public void onRetryClicked() {
+                                presenter.getHomeData();
+                                presenter.getHeaderData(false);
+                            }
+                        });
+            }
         }
     }
 
@@ -668,6 +675,61 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (messageSnackbar != null && messageSnackbar.isShown()) {
             messageSnackbar.hideRetrySnackbar();
         }
+    }
+
+    @Override
+    public void onGoToProductDetailFromInspiration(String productId,
+                                                   String imageSource,
+                                                   String name,
+                                                   String price) {
+        goToProductDetail(productId, imageSource, name, price);
+    }
+
+    private void goToProductDetail(String productId, String imageSourceSingle, String name, String price) {
+        if (getActivity().getApplication() instanceof PdpRouter) {
+            ((PdpRouter) getActivity().getApplication()).goToProductDetail(
+                    getActivity(),
+                    ProductPass.Builder.aProductPass()
+                            .setProductId(productId)
+                            .setProductImage(imageSourceSingle)
+                            .setProductName(name)
+                            .setProductPrice(price)
+                            .build()
+            );
+        }
+    }
+
+    @Override
+    public void updateCursor(String currentCursor) {
+        presenter.setCursor(currentCursor);
+    }
+
+    @Override
+    public void onSuccessGetFeed(ArrayList<Visitable> visitables) {
+        adapter.hideLoading();
+        int posStart = adapter.getItemCount();
+        adapter.addItems(visitables);
+        adapter.notifyItemRangeInserted(posStart, visitables.size());
+        recyclerView.addOnScrollListener(feedLoadMoreTriggerListener);
+    }
+
+    @Override
+    public void onRetryClicked() {
+        adapter.removeRetry();
+        adapter.showLoading();
+        presenter.fetchCurrentPageFeed();
+    }
+
+    @Override
+    public void onShowRetryGetFeed() {
+        recyclerView.removeOnScrollListener(feedLoadMoreTriggerListener);
+        adapter.hideLoading();
+        adapter.showRetry();
+    }
+
+    @Override
+    public void unsetEndlessScroll() {
+        recyclerView.removeOnScrollListener(feedLoadMoreTriggerListener);
     }
 
     private void openActivity(String depID, String title) {
@@ -695,13 +757,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private void openWebViewGimicURL(String url, String label, String title) {
         if (!url.equals("")) {
-            Intent intent = new Intent(getActivity(), BannerWebView.class);
-            intent.putExtra("url", url);
-            intent.putExtra(BannerWebView.EXTRA_TITLE, title);
+            Intent intent = SimpleWebViewActivity.getIntentWithTitle(getActivity(), url, title);
             startActivity(intent);
             UnifyTracking.eventHomeGimmick(label);
         }
     }
+
 
     public void openWebViewURL(String url, Context context) {
         if (url != "" && context != null) {
@@ -725,29 +786,35 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (!HomeFragmentBroadcastReceiverConstant.INTENT_ACTION.equalsIgnoreCase(intent.getAction()))
+            if (!HomeFragmentBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP.equalsIgnoreCase(intent.getAction()))
                 return;
             switch (intent.getIntExtra(EXTRA_ACTION_RECEIVER, 0)) {
                 case HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOPOINT_DATA:
                     TokoPointDrawerData tokoPointDrawerData = intent.getParcelableExtra(
                             HomeFragmentBroadcastReceiverConstant.EXTRA_TOKOPOINT_DRAWER_DATA
                     );
-                    if (tokoPointDrawerData == null) return;
-                    presenter.updateHeaderTokoPointData(tokoPointDrawerData);
+                    if (tokoPointDrawerData != null)
+                        presenter.updateHeaderTokoPointData(tokoPointDrawerData);
                     break;
                 case HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOCASH_DATA:
                     HomeHeaderWalletAction homeHeaderWalletAction = intent.getParcelableExtra(
                             HomeFragmentBroadcastReceiverConstant.EXTRA_TOKOCASH_DRAWER_DATA
                     );
-                    if (homeHeaderWalletAction == null) return;
-                    presenter.updateHeaderTokoCashData(homeHeaderWalletAction);
+                    if (homeHeaderWalletAction != null)
+                        presenter.updateHeaderTokoCashData(homeHeaderWalletAction);
                     break;
                 case HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOCASH_PENDING_DATA:
                     CashBackData cashBackData = intent.getParcelableExtra(
                             HomeFragmentBroadcastReceiverConstant.EXTRA_TOKOCASH_PENDING_DATA
                     );
-                    if (cashBackData == null) return;
-                    presenter.updateHeaderTokoCashPendingData(cashBackData);
+                    if (cashBackData != null)
+                        presenter.updateHeaderTokoCashPendingData(cashBackData);
+                    break;
+                case HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOCASH_DATA_ERROR:
+                    presenter.updateHeaderTokoCashData(null);
+                    break;
+                case HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOPOINT_DATA_ERROR:
+                    presenter.updateHeaderTokoPointData(null);
                     break;
                 default:
                     break;
@@ -758,14 +825,19 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser && getView() != null) {
-            restartBanner();
+        trackScreen(isVisibleToUser);
+        restartBanner(isVisibleToUser);
+    }
+
+    private void restartBanner(boolean isVisibleToUser) {
+        if ((isVisibleToUser && getView() != null) && adapter != null) {
+            adapter.notifyDataSetChanged();
         }
     }
 
-    private void restartBanner() {
-        if (adapter != null) {
-            adapter.notifyDataSetChanged();
+    private void trackScreen(boolean isVisibleToUser) {
+        if (isVisibleToUser && isAdded() && getActivity() != null) {
+            ScreenTracking.screen(getScreenName());
         }
     }
 
@@ -773,5 +845,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public boolean isMainViewVisible() {
         return getUserVisibleHint();
     }
+
 
 }

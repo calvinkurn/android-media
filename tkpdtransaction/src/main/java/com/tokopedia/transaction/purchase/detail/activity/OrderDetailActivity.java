@@ -3,11 +3,13 @@ package com.tokopedia.transaction.purchase.detail.activity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,8 +30,10 @@ import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.design.bottomsheet.BottomSheetCallAction;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.purchase.detail.adapter.OrderItemAdapter;
 import com.tokopedia.transaction.purchase.detail.customview.OrderDetailButtonLayout;
@@ -46,6 +50,7 @@ import com.tokopedia.transaction.purchase.detail.fragment.ChangeAwbFragment;
 import com.tokopedia.transaction.purchase.detail.fragment.RejectOrderFragment;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
 import com.tokopedia.transaction.purchase.detail.presenter.OrderDetailPresenterImpl;
+import com.tokopedia.transaction.purchase.receiver.TxListUIReceiver;
 
 import javax.inject.Inject;
 
@@ -119,6 +124,7 @@ public class OrderDetailActivity extends TActivity
 
     private void initView(OrderDetailData data) {
         setStatusView(data);
+        setDriverInfoView(data);
         setItemListView(data);
         setInvoiceView(data);
         setDescriptionView(data);
@@ -157,6 +163,82 @@ public class OrderDetailActivity extends TActivity
         additionalFee.setText(data.getAdditionalFee());
         totalPayment.setText(data.getTotalPayment());
     }
+
+    private void setDriverInfoView(OrderDetailData data) {
+        LinearLayout layoutDriverInfo = findViewById(R.id.layout_driver_info);
+
+        if (data.getDriverName() != null) {
+            ImageView driverPhoto = findViewById(R.id.driver_photo);
+            TextView driverName = findViewById(R.id.driver_name);
+            TextView driverPhone = findViewById(R.id.driver_phone);
+            TextView driverVehicle = findViewById(R.id.driver_vehicle);
+            TextView btnCallDriver = findViewById(R.id.btn_call_driver);
+
+            driverName.setText(data.getDriverName());
+            driverPhone.setText(data.getDriverPhone());
+            driverVehicle.setText(data.getDriverVehicle());
+
+            ImageHandler.loadImageCircle2(this, driverPhoto, data.getDriverImage());
+
+            btnCallDriver.setOnClickListener(getClickListenerCallDriver(data.getDriverPhone()));
+
+            layoutDriverInfo.setVisibility(View.VISIBLE);
+        } else {
+            layoutDriverInfo.setVisibility(View.GONE);
+        }
+    }
+
+    private View.OnClickListener getClickListenerCallDriver(final String driverPhone) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new BottomSheetCallAction.Builder(OrderDetailActivity.this)
+                        .actionListener(new BottomSheetCallAction.ActionListener() {
+                            @Override
+                            public void onCallAction1Clicked(BottomSheetCallAction.CallActionData callActionData) {
+                                openDialCaller(callActionData.getPhoneNumber());
+                            }
+
+                            @Override
+                            public void onCallAction2Clicked(BottomSheetCallAction.CallActionData callActionData) {
+                                openSmsApplication(callActionData.getPhoneNumber());
+                            }
+                        })
+                        .callActionData(
+                                new BottomSheetCallAction.CallActionData().setPhoneNumber(driverPhone
+                                ).setLabelAction1(
+                                        getString(R.string.label_call_ondemand_driver_logistic_action_1)
+                                ).setLabelAction2(
+                                        getString(R.string.label_call_ondemand_driver_logistic_action_2)
+                                )
+                        ).build().show();
+            }
+        };
+    }
+
+    void openSmsApplication(String phoneNumber) {
+        Intent smsIntent = new Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:" + phoneNumber));
+        try {
+            startActivity(smsIntent);
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+            Toast.makeText(this, getString(R.string.error_message_sms_app_not_found),
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    void openDialCaller(String phoneNumber) {
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        intent.setData(Uri.parse("tel:" + phoneNumber));
+        try {
+            startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+            Toast.makeText(this, getString(R.string.error_message_phone_dialer_app_not_found),
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
     private void setButtonView(OrderDetailData data) {
         OrderDetailButtonLayout buttonLayout = findViewById(R.id.button_layout);
@@ -322,12 +404,14 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void onOrderFinished(String message) {
         Toast.makeText(this, getString(R.string.success_finish_order_message), Toast.LENGTH_LONG).show();
+        TxListUIReceiver.sendBroadcastForceRefreshListData(this);
         finish();
     }
 
     @Override
     public void onOrderCancelled(String message) {
         Toast.makeText(this, getString(R.string.success_request_cancel_order), Toast.LENGTH_LONG).show();
+        TxListUIReceiver.sendBroadcastForceRefreshListData(this);
         finish();
     }
 
@@ -444,9 +528,12 @@ public class OrderDetailActivity extends TActivity
     }
 
     @Override
-    public void onViewComplaint(String resoId) {
-        Intent intent = InboxRouter.getDetailResCenterActivityIntent(this, resoId);
-        startActivity(intent);
+    public void onViewComplaint(OrderDetailData data) {
+        if (MainApplication.getAppContext() instanceof TransactionRouter) {
+            Intent intent = ((TransactionRouter) MainApplication.getAppContext())
+                    .getDetailResChatIntentBuyer(this, data.getResoId(), data.getShopName());
+            startActivity(intent);
+        }
     }
 
     @Override
@@ -509,6 +596,7 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void onConfirmFinish(String orderId, String orderStatus) {
         presenter.processFinish(this, orderId, orderStatus);
+        TxListUIReceiver.sendBroadcastForceRefreshListData(this);
     }
 
     @Override
@@ -530,6 +618,7 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void cancelSearch(String orderId, int reasonId, String notes) {
         presenter.cancelReplacement(this, orderId, reasonId, notes);
+        TxListUIReceiver.sendBroadcastForceRefreshListData(this);
     }
 
     @Override

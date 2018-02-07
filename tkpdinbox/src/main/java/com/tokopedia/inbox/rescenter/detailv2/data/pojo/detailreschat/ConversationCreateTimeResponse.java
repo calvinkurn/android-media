@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class ConversationCreateTimeResponse {
 
-    @SerializedName("timestampz")
+    @SerializedName("fullString")
     private String timestamp;
 
     @SerializedName("string")

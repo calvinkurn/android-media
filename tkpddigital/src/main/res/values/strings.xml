@@ -22,8 +22,8 @@
     <string name="label_btn_next_cart_digital">LANJUT</string>
     <string name="message_otp_verification_cancelled">Verifikasi kode keamanan dibatalkan</string>
 
-    <string name="label_btn_buy_digital">BELI</string>
-    <string name="label_btn_pay_digital">BAYAR</string>
+    <string name="label_btn_buy_digital">Beli</string>
+    <string name="label_btn_pay_digital">Bayar</string>
     <string name="message_error_digital_product_not_selected">Anda belum memilih produk</string>
     <string name="message_error_digital_client_number_format_invalid">yang anda masukkan tidak sesuai</string>
     <string name="message_error_digital_operator_not_selected">Anda belum memilih operator</string>
@@ -157,5 +157,9 @@
 
     <string name="title_waiting_transaction_tokocash">Transaksi Menunggu</string>
     <string name="back_to_top">Kembali ke Atas</string>
+    <string name="label_operator_not_support">Operator tidak tersedia</string>
+    <string name="label_sim">SIM</string>
+    <string name="label_no_signal">No signal</string>
+    <string name="label_no_service">No service</string>
 
 </resources>

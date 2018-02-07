@@ -6,6 +6,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.support.annotation.LayoutRes;
 import android.support.v4.view.ViewCompat;
+import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -56,6 +57,7 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> {
     public void bind(TickerViewModel element) {
         Ticker.Tickers ticker = element.getTickers().get(0);
         textMessage.setText(ticker.getMessage());
+        textMessage.setMovementMethod(LinkMovementMethod.getInstance());
         ViewCompat.setBackgroundTintList(btnClose, ColorStateList.valueOf(Color.parseColor(ticker.getColor())));
         if (!hasStarted)
             timer.scheduleAtFixedRate(new SwitchTicker(element.getTickers()), 0, SLIDE_DELAY);

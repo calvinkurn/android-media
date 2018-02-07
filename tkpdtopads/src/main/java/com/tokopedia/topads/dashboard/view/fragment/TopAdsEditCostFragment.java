@@ -55,9 +55,6 @@ public abstract class TopAdsEditCostFragment<T extends TopAdsDetailEditPresenter
         loadAdDetail();
     }
 
-    @Override
-    protected void loadSuggestionBid() { /*override by its child */ }
-
     private void loadAdDetail() {
         if (!TextUtils.isEmpty(adId)) {
             showLoading();
@@ -93,11 +90,6 @@ public abstract class TopAdsEditCostFragment<T extends TopAdsDetailEditPresenter
     public void onSaveAdError(String errorMessage) {
         hideLoading();
         showSnackBarError(errorMessage);
-    }
-
-    @Override
-    public void onSuggestionError(@Nullable Throwable t) {
-        setDefaultSuggestionBidText();
     }
 
     @Override

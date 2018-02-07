@@ -152,7 +152,16 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         wishList.initAnalyticsHandler(getActivity());
         prepareView();
         setListener();
+        loadWishlistData();
         return parentView;
+    }
+
+    private void loadWishlistData() {
+        if (searchEditText.getQuery().length() > 0) {
+            wishList.refreshDataOnSearch(searchEditText.getQuery());
+        } else {
+            wishList.fetchDataFromInternet(getContext());
+        }
     }
 
     @Override
@@ -166,12 +175,6 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         super.onDestroyView();
         unbinder.unbind();
         wishList.unSubscribe();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        wishList.onResume(getActivity());
     }
 
     @Override
@@ -394,6 +397,8 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     @Override
     public boolean isPullToRefresh() {
+        if (swipeToRefresh == null)
+            return false;
         return swipeToRefresh.isRefreshing();
     }
 

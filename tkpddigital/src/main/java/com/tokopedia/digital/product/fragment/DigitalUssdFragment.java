@@ -25,7 +25,7 @@ import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.router.SessionRouter;
+import com.tokopedia.core.router.OldSessionRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.session.presenter.Session;
@@ -50,6 +50,7 @@ import com.tokopedia.digital.product.presenter.IUssdProductDigitalPresenter;
 import com.tokopedia.digital.product.presenter.UssdProductDigitalPresenter;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
+import com.tokopedia.digital.widget.model.product.Attributes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -303,7 +304,7 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
             public void onDigitalChooserClicked(List<Product> data) {
                 startActivityForResult(
                         DigitalChooserActivity.newInstanceProductChooser(
-                                getActivity(), selectedOperator.getProductList(), "Nominal"
+                                getActivity(), mCategoryId, selectedOperator.getOperatorId(), "Nominal"
                         ),
                         IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER
                 );
@@ -330,12 +331,10 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER:
-                if (resultCode == Activity.RESULT_OK && data != null)
-                    handleCallBackProductChooser(
-                            (Product) data.getParcelableExtra(
-                                    DigitalChooserActivity.EXTRA_CALLBACK_PRODUCT_DATA
-                            )
-                    );
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    Product product = data.getParcelableExtra(DigitalChooserActivity.EXTRA_CALLBACK_PRODUCT_DATA);
+                    handleCallBackProductChooser(product);
+                }
             case IDigitalModuleRouter.REQUEST_CODE_LOGIN:
                 if (isUserLoggedIn() && digitalCheckoutPassDataState != null) {
                     // presenter.processAddToCartProduct(digitalCheckoutPassDataState);
@@ -392,7 +391,7 @@ public class DigitalUssdFragment extends BasePresenterFragment<IUssdProductDigit
     @Override
     public void interruptUserNeedLoginOnCheckout(DigitalCheckoutPassData digitalCheckoutPassData) {
         this.digitalCheckoutPassDataState = digitalCheckoutPassData;
-        Intent intent = SessionRouter.getLoginActivityIntent(getActivity());
+        Intent intent = OldSessionRouter.getLoginActivityIntent(getActivity());
         intent.putExtra(Session.WHICH_FRAGMENT_KEY, TkpdState.DrawerPosition.LOGIN);
         navigateToActivityRequest(intent, IDigitalModuleRouter.REQUEST_CODE_LOGIN);
     }

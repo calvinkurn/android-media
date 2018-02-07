@@ -25,7 +25,7 @@
 
     <TextView
         android:id="@+id/text_view_title"
-        style="@style/TextView.Body1"
+        style="@style/TextView.Small"
         android:layout_width="0dp"
         android:layout_marginLeft="@dimen/margin_ms"
         android:layout_marginStart="@dimen/margin_ms"

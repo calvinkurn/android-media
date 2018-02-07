@@ -376,9 +376,12 @@ public class TxListPresenterImpl implements TxListPresenter {
     public void processShowComplain(Context context, OrderData data) {
         Uri uri = Uri.parse(data.getOrderButton().getButtonResCenterUrl());
         String res_id = uri.getQueryParameter("id");
-        viewListener.navigateToActivity(
-                InboxRouter.getDetailResCenterActivityIntent(context, res_id)
-        );
+
+        if (MainApplication.getAppContext() instanceof TransactionRouter) {
+            Intent intent = ((TransactionRouter) MainApplication.getAppContext())
+                    .getDetailResChatIntentBuyer(context, res_id, data.getOrderShop().getShopName());
+            viewListener.navigateToActivity(intent);
+        }
     }
 
     @Override
@@ -592,9 +595,12 @@ public class TxListPresenterImpl implements TxListPresenter {
         builder.setMessage(message).setPositiveButton(context.getString(R.string.title_ok),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        viewListener.navigateToActivity(
-                                InboxRouter.getInboxResCenterActivityIntent(context)
-                        );
+                        if (MainApplication.getAppContext() instanceof TransactionRouter) {
+                            viewListener.navigateToActivity(((TransactionRouter) MainApplication.getAppContext())
+                                    .getResolutionCenterIntent(context)
+                            );
+
+                        }
                     }
                 });
         Dialog alertDialog = builder.create();
@@ -753,6 +759,8 @@ public class TxListPresenterImpl implements TxListPresenter {
                 if (resultCode == Activity.RESULT_OK) {
                     viewListener.showToastSuccessMessage(
                             context.getString(com.tokopedia.transaction.R.string.success_cancel_replacement));
+                } else {
+                    viewListener.resetData();
                 }
             default:
                 break;

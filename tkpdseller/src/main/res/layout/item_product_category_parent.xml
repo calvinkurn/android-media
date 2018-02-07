@@ -7,7 +7,7 @@
 
     <TextView
         android:id="@+id/category_name"
-        style="@style/TextView.Subheading"
+        style="@style/TextView.Title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1" />

@@ -351,21 +351,23 @@ public class ShareSocmedHandler {
         share.putExtra(Intent.EXTRA_REFERRER, ProductUri);
         share.putExtra(Intent.EXTRA_HTML_TEXT, ProductUri);
         share.putExtra(Intent.EXTRA_TEXT, shareTxt);
-
-        List<ResolveInfo> resInfo = context.getPackageManager().queryIntentActivities(share, 0);
-        for (ResolveInfo info : resInfo) {
-            if (info.activityInfo.packageName.equals(packageName)) {
-                Resolved = true;
-                share.setPackage(info.activityInfo.packageName);
+        if (context != null) {
+            if (context.getPackageManager() != null) {
+                List<ResolveInfo> resInfo = context.getPackageManager().queryIntentActivities(share, 0);
+                for (ResolveInfo info : resInfo) {
+                    if (info.activityInfo.packageName.equals(packageName)) {
+                        Resolved = true;
+                        share.setPackage(info.activityInfo.packageName);
+                    }
+                }
             }
+            if (Resolved) {
+                context.startActivity(share);
+            } else if (altUrl != null) {
+                context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(altUrl)));
+            } else
+                Toast.makeText(context, context.getString(R.string.error_apps_not_installed), Toast.LENGTH_SHORT).show();
         }
-
-        if (Resolved) {
-            context.startActivity(share);
-        } else if (altUrl != null) {
-            context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(altUrl)));
-        } else
-            Toast.makeText(context, context.getString(R.string.error_apps_not_installed), Toast.LENGTH_SHORT).show();
     }
 
 
@@ -445,7 +447,7 @@ public class ShareSocmedHandler {
 
         boolean isShop = false;
         if (SessionHandler.isV4Login(context)) {
-            if (!SessionHandler.getShopID(context).equals("0")) {
+            if (SessionHandler.isUserHasShop(context)) {
                 isShop = true;
             }
         }

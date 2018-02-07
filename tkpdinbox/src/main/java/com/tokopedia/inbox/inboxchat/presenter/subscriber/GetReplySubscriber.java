@@ -41,6 +41,7 @@ public class GetReplySubscriber extends Subscriber<ChatRoomViewModel> {
         view.setViewEnabled(true);
         view.showError(ErrorHandler.getErrorMessage(e));
         view.finishLoading();
+        view.hideMainLoading();
         presenter.finishRequest();
     }
 

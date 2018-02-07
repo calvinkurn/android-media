@@ -27,7 +27,7 @@
                 android:layout_marginLeft="@dimen/margin_vs"
                 android:padding="@dimen/padding_vs"
                 android:id="@+id/button_sign_in"
-                style="@style/TextView.Body1.BlackSecondary"
+                style="@style/TextView.Small.BlackSecondary"
                 android:text="@string/action_sign_in_short"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

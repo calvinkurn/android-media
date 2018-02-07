@@ -3,6 +3,9 @@ package com.tokopedia.topads.dashboard.view.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by Nathaniel on 2/23/2017.
  */
@@ -27,6 +30,8 @@ public class TopAdsDetailProductViewModel implements TopAdsDetailAdViewModel, Pa
     private String image;
     private String title;
     private boolean toggled;
+    private long suggestionBidValue;
+    private String suggestionBidButton;
 
     @Override
     public int getStickerId() {
@@ -186,8 +191,25 @@ public class TopAdsDetailProductViewModel implements TopAdsDetailAdViewModel, Pa
         this.title = title;
     }
 
+    public void setSuggestionBidValue(long suggestionBidValue) {
+        this.suggestionBidValue = suggestionBidValue;
+    }
+
+    public long getSuggestionBidValue() {
+        return suggestionBidValue;
+    }
+
+    public void setSuggestionBidButton(String suggestionBidButton) {
+        this.suggestionBidButton = suggestionBidButton;
+    }
+
+    public String getSuggestionBidButton() {
+        return suggestionBidButton;
+    }
+
     public TopAdsDetailProductViewModel() {
     }
+
 
     @Override
     public int describeContents() {
@@ -214,6 +236,8 @@ public class TopAdsDetailProductViewModel implements TopAdsDetailAdViewModel, Pa
         dest.writeString(this.image);
         dest.writeString(this.title);
         dest.writeByte(this.toggled ? (byte) 1 : (byte) 0);
+        dest.writeLong(this.suggestionBidValue);
+        dest.writeString(this.suggestionBidButton);
     }
 
     protected TopAdsDetailProductViewModel(Parcel in) {
@@ -235,6 +259,8 @@ public class TopAdsDetailProductViewModel implements TopAdsDetailAdViewModel, Pa
         this.image = in.readString();
         this.title = in.readString();
         this.toggled = in.readByte() != 0;
+        this.suggestionBidValue = in.readLong();
+        this.suggestionBidButton = in.readString();
     }
 
     public static final Creator<TopAdsDetailProductViewModel> CREATOR = new Creator<TopAdsDetailProductViewModel>() {

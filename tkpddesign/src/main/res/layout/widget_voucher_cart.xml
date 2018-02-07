@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/padding_small"
-    android:paddingRight="@dimen/padding_small"
-    android:paddingTop="@dimen/padding_small">
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
 
     <android.support.v7.widget.CardView
         style="@style/CardViewWidget.Voucher"
@@ -29,7 +27,7 @@
                 android:buttonTint="@color/tkpd_main_green"
                 android:gravity="center"
                 android:textColor="@color/font_voucher"
-                android:textSize="@dimen/font_caption"
+                android:textSize="@dimen/font_micro"
                 android:textStyle="bold"
                 tools:ignore="UnusedAttribute"/>
 
@@ -46,8 +44,6 @@
 
                 <TextView
                     android:id="@+id/button_voucher"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:layout_marginLeft="@dimen/margin_small"
@@ -56,9 +52,7 @@
                     android:gravity="center"
                     android:padding="@dimen/padding_small"
                     android:text="@string/use_voucher"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/font_button"
-                    android:textStyle="bold"/>
+                    style="@style/TextView.Small.WhitePrimary.Bold"/>
 
                 <EditText
                     android:id="@+id/edittext_voucher"
@@ -89,8 +83,7 @@
                     android:layout_marginBottom="@dimen/margin_small"
                     android:layout_marginTop="@dimen/margin_small"
                     android:text="@string/notes_voucher"
-                    android:textColor="@color/font_voucher_caption"
-                    android:textSize="@dimen/font_caption"
+                    style="@style/TextView.Micro.BlackDisabled"
                     android:visibility="gone"/>
 
             </RelativeLayout>
@@ -112,8 +105,6 @@
 
                 <TextView
                     android:id="@+id/button_cancel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:layout_marginLeft="@dimen/margin_small"
@@ -123,8 +114,7 @@
                     android:gravity="center"
                     android:padding="@dimen/padding_small"
                     android:text="@string/button_cancel_voucher"
-                    android:textColor="@color/font_voucher_caption"
-                    android:textSize="@dimen/font_body1"/>
+                    style="@style/TextView.Small.BlackDisabled"/>
 
                 <TextView
                     android:id="@+id/textview_title_voucher"

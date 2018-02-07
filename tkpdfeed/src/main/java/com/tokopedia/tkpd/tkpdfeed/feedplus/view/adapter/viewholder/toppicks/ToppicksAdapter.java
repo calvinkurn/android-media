@@ -50,7 +50,8 @@ public class ToppicksAdapter extends RecyclerView.Adapter<ToppicksAdapter.ViewHo
                             toppicksViewModel.getPage(),
                             toppicksViewModel.getRowNumber(),
                             toppicksViewModel.getList().get(getAdapterPosition()).getName(),
-                            toppicksViewModel.getList().get(getAdapterPosition()).getUrl());
+                            toppicksViewModel.getList().get(getAdapterPosition()).getUrl(),
+                            getAdapterPosition());
                 }
             });
         }

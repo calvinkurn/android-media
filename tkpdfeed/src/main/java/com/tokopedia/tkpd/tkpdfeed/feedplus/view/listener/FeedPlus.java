@@ -6,7 +6,6 @@ import android.content.res.Resources;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.tkpd.tkpdfeed.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.kol.KolViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
 import com.tokopedia.tkpd.tkpdfeed.feedplus.view.viewmodel.product.ProductFeedViewModel;
@@ -24,6 +23,7 @@ public interface FeedPlus {
         void showLoadingProgress();
 
         void finishLoadingProgress();
+
 
         interface Kol {
             void onGoToKolProfile(int page, int rowNumber, String url);
@@ -62,7 +62,7 @@ public interface FeedPlus {
         void setFirstCursor(String firstCursor);
 
         interface Toppicks {
-            void onToppicksClicked(int page, int rowNumber, String name, String url);
+            void onToppicksClicked(int page, int rowNumber, String name, String url, int itemPosition);
 
             void onSeeAllToppicks(int page, int rowNumber);
         }
@@ -75,9 +75,25 @@ public interface FeedPlus {
 
         void onGoToProductDetail(int rowNumber, int page, String id, String imageSourceSingle, String name, String productId);
 
+        void onGoToProductDetailFromProductUpload(
+                int rowNumber,
+                int positionFeedCard,
+                int page,
+                int itemPosition,
+                String productId,
+                String imageSourceSingle,
+                String name,
+                String price,
+                String priceInt,
+                String productUrl,
+                String eventLabel
+        );
+
         void onGoToProductDetailFromRecentView(String productID, String imgUri, String name, String price);
 
-        void onGoToProductDetailFromInspiration(int page, int rowNumber, String productId, String imageSource, String name, String price);
+        void onGoToProductDetailFromInspiration(int page, int rowNumber, String productId,
+                                                String imageSource, String name, String price, String priceInt,
+                                                String productUrl, String source, int positionFeedCard, int itemPosition, String eventLabel);
 
         void onGoToFeedDetail(int page, int rowNumber, String feedId);
 
@@ -173,6 +189,8 @@ public interface FeedPlus {
                                              String imageSourceSingle, String name, String price);
 
         void onGoToShopDetailFromCampaign(int page, int rowNumber, String shopUrl);
+
+        void onContentProductLinkClicked(String url);
     }
 
     interface Presenter extends CustomerPresenter<View> {

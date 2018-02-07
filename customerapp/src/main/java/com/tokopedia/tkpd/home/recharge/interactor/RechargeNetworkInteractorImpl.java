@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd.home.recharge.interactor;
 
-import com.tokopedia.digital.widget.data.entity.category.CategoryEntity;
 import com.tokopedia.digital.widget.domain.DigitalWidgetRepository;
 import com.tokopedia.digital.widget.model.category.Category;
 import com.tokopedia.digital.widget.model.mapper.CategoryMapper;
@@ -8,7 +7,6 @@ import com.tokopedia.digital.widget.model.mapper.StatusMapper;
 import com.tokopedia.digital.widget.model.status.Status;
 
 import java.util.List;
-import java.util.Observable;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -38,9 +36,9 @@ public class RechargeNetworkInteractorImpl implements RechargeNetworkInteractor 
     }
 
     @Override
-    public void getCategoryData(Subscriber<List<Category>> subscriber, boolean useCache) {
+    public void getCategoryData(Subscriber<List<Category>> subscriber) {
         compositeSubscription.add(
-                repository.getObservableCategoryData(useCache)
+                repository.getObservableCategoryData()
                         .map(categoryMapper)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeOn(Schedulers.newThread())

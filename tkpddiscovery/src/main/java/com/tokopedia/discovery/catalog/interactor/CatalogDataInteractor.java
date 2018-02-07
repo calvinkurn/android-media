@@ -70,7 +70,7 @@ public class CatalogDataInteractor implements ICataloDataInteractor {
     @Override
     public void getDetailCatalogListData(CatalogListWrapperData catalogListWrapperData,
                                          Subscriber<CatalogDetailListData> subscriber) {
-        Observable.just(catalogListWrapperData)
+        compositeSubscription.add(Observable.just(catalogListWrapperData)
                 .flatMap(new Func1<CatalogListWrapperData, Observable<CatalogListWrapperData>>() {
                     @Override
                     public Observable<CatalogListWrapperData> call(CatalogListWrapperData catalogListWrapperData) {
@@ -92,7 +92,7 @@ public class CatalogDataInteractor implements ICataloDataInteractor {
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.newThread())
-                .subscribe(subscriber);
+                .subscribe(subscriber));
     }
 
     @Override

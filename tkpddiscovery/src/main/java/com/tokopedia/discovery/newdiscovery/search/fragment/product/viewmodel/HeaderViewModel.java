@@ -11,7 +11,6 @@ import com.tokopedia.discovery.newdiscovery.search.model.SuggestionModel;
 
 public class HeaderViewModel implements Visitable<ProductListTypeFactory> {
 
-    OfficialStoreBannerModel officialStoreBannerModel;
     SuggestionModel suggestionModel;
 
     @Override
@@ -22,16 +21,8 @@ public class HeaderViewModel implements Visitable<ProductListTypeFactory> {
     public HeaderViewModel() {
     }
 
-    public void setOfficialStoreBannerModel(OfficialStoreBannerModel officialStoreBannerModel) {
-        this.officialStoreBannerModel = officialStoreBannerModel;
-    }
-
     public void setSuggestionModel(SuggestionModel suggestionModel) {
         this.suggestionModel = suggestionModel;
-    }
-
-    public OfficialStoreBannerModel getOfficialStoreBannerModel() {
-        return officialStoreBannerModel;
     }
 
     public SuggestionModel getSuggestionModel() {
@@ -39,6 +30,6 @@ public class HeaderViewModel implements Visitable<ProductListTypeFactory> {
     }
 
     public boolean hasHeader() {
-        return (suggestionModel != null || officialStoreBannerModel != null);
+        return (suggestionModel != null);
     }
 }

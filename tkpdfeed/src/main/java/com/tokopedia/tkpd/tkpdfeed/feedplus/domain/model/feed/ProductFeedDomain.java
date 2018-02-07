@@ -67,6 +67,9 @@ public class ProductFeedDomain {
     @NonNull
     private String cursor;
 
+    @Nullable
+    private String priceInt;
+
     public ProductFeedDomain(@Nullable int id,
                              @Nullable String name,
                              @Nullable String price,
@@ -80,6 +83,7 @@ public class ProductFeedDomain {
                              @Nullable String productLink,
                              @Nullable boolean wishlist,
                              @Nullable double rating,
+                             @Nullable String priceInt,
                              @NonNull String cursor) {
         this.id = id;
         this.name = name;
@@ -95,6 +99,7 @@ public class ProductFeedDomain {
         this.wishlist = wishlist;
         this.rating = rating;
         this.cursor = cursor;
+        this.priceInt = priceInt;
     }
 
     @Nullable
@@ -211,5 +216,14 @@ public class ProductFeedDomain {
 
     public void setCursor(String cursor) {
         this.cursor = cursor;
+    }
+
+    @Nullable
+    public String getPriceInt() {
+        return priceInt;
+    }
+
+    public void setPriceInt(@Nullable String priceInt) {
+        this.priceInt = priceInt;
     }
 }

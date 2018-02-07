@@ -35,7 +35,6 @@ public class HistoryClientNumber implements Parcelable {
         this.lastOrderClientNumber = lastOrderClientNumber;
     }
 
-
     @Override
     public int describeContents() {
         return 0;

@@ -29,6 +29,7 @@ public class CopyPromoVoucher extends BaseCustomView {
     private CountDownTimer timer;
 
     private String textVoucherCode;
+    private CallbackListener callbackListener;
 
     public CopyPromoVoucher(@NonNull Context context) {
         super(context);
@@ -79,6 +80,9 @@ public class CopyPromoVoucher extends BaseCustomView {
                 flipBackground(true);
                 tvVoucherCode.setText(getContext().getString(R.string.success_copy_voucher_code));
                 timer.start();
+                if (callbackListener != null) {
+                    callbackListener.onCopyButtonClick();
+                }
             }
         });
     }
@@ -108,4 +112,11 @@ public class CopyPromoVoucher extends BaseCustomView {
         tvVoucherCode.setText(textVoucherCode);
     }
 
+    public void setCallbackListener(CallbackListener callbackListener) {
+        this.callbackListener = callbackListener;
+    }
+
+    public interface CallbackListener {
+        void onCopyButtonClick();
+    }
 }

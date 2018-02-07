@@ -1,6 +1,7 @@
 package com.tokopedia.discovery.newdiscovery.hotlist.view.subscriber;
 
 import com.tkpd.library.utils.network.MessageErrorException;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.exception.RuntimeHttpErrorException;
 import com.tokopedia.discovery.newdiscovery.domain.model.BadgeModel;
@@ -153,9 +154,14 @@ public class GetHotlistInitializeSubscriber extends rx.Subscriber<HotlistModel> 
     private HotlistHeaderViewModel mappingHotlistHeader(HotlistBannerModel banner, List<HotlistHashtagModel> hashTags) {
         HotlistHeaderViewModel headerViewModel = new HotlistHeaderViewModel();
         headerViewModel.setImageUrl(banner.getBannerImage());
+        headerViewModel.setHotlistTitle(banner.getHotlistTitle());
         headerViewModel.setDesc(banner.getBannerDesc());
         headerViewModel.setHashTags(mappingHashtags(hashTags));
-        headerViewModel.setHotlistPromo(banner.getHotlistPromoInfo() != null ? mappingHotlistPromo(banner.getHotlistPromoInfo()) : null);
+        if (banner.getHotlistPromoInfo() != null) {
+            HotlistPromoInfo info = banner.getHotlistPromoInfo();
+            headerViewModel.setHotlistPromo(mappingHotlistPromo(info));
+            TrackingUtils.impressionHotlistPromo(banner.getHotlistTitle(), info.getTitle(), info.getVoucherCode());
+        }
         return headerViewModel;
     }
 

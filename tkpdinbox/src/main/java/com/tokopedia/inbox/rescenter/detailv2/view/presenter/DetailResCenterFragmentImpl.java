@@ -10,6 +10,7 @@ import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.FinishReturSolut
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResCenterDetailUseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.GetResCenterDetailV2UseCase;
 import com.tokopedia.inbox.rescenter.detailv2.domain.interactor.InputAddressUseCase;
+import com.tokopedia.inbox.rescenter.detailv2.view.DetailResCenterFragment;
 import com.tokopedia.inbox.rescenter.detailv2.view.listener.DetailResCenterFragmentView;
 import com.tokopedia.inbox.rescenter.detailv2.view.subscriber.
         GetResCenterDetailV2Subscriber;
@@ -85,7 +86,7 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
     public void finishReturProduct() {
         fragmentView.showLoadingDialog(true);
         finishReturSolutionUseCase.execute(getFinishReturSolutionParam(),
-                new ResolutionActionSubscriber(fragmentView));
+                new ResolutionActionSubscriber(fragmentView, DetailResCenterFragment.ACTION_FINISH));
     }
 
     private RequestParams getFinishReturSolutionParam() {
@@ -97,7 +98,7 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
     @Override
     public void acceptSolution() {
         acceptSolutionUseCase.execute(getAcceptSolutionParam(),
-                new ResolutionActionSubscriber(fragmentView));
+                new ResolutionActionSubscriber(fragmentView, DetailResCenterFragment.ACTION_ACCEPT));
     }
 
     private RequestParams getAcceptSolutionParam() {
@@ -109,7 +110,7 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
     @Override
     public void acceptAdminSolution() {
         acceptAdminSolutionUseCase.execute(getAcceptAdminSolutionParam(),
-                new ResolutionActionSubscriber(fragmentView));
+                new ResolutionActionSubscriber(fragmentView, DetailResCenterFragment.ACTION_ACCEPT));
     }
 
     private RequestParams getAcceptAdminSolutionParam() {
@@ -122,7 +123,7 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
     public void cancelResolution() {
         fragmentView.showLoadingDialog(true);
         cancelResolutionUseCase.execute(getCancelResolutionParam(),
-                new ResolutionActionSubscriber(fragmentView));
+                new ResolutionActionSubscriber(fragmentView, DetailResCenterFragment.ACTION_CANCEL));
     }
 
     private RequestParams getCancelResolutionParam() {
@@ -135,7 +136,7 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
     public void askHelpResolution() {
         fragmentView.showLoadingDialog(true);
         askHelpResolutionUseCase.execute(getAskHelpResolutionParam(),
-                new ResolutionActionSubscriber(fragmentView));
+                new ResolutionActionSubscriber(fragmentView, DetailResCenterFragment.ACTION_HELP));
     }
 
     private RequestParams getAskHelpResolutionParam() {
@@ -162,14 +163,14 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
     public void inputAddressAcceptSolution(String addressId) {
         fragmentView.showLoadingDialog(true);
         inputAddressUseCase.execute(getInputAddressParam(addressId, InputAddressUseCase.DEFAULT_BY_PASS),
-                new ResolutionActionSubscriber(fragmentView));
+                new ResolutionActionSubscriber(fragmentView, DetailResCenterFragment.ACTION_INPUT_ADDRESS));
     }
 
     @Override
     public void inputAddressAcceptAdminSolution(String addressId) {
         fragmentView.showLoadingDialog(true);
         inputAddressUseCase.execute(getInputAddressParam(addressId, InputAddressUseCase.ADMIN_BY_PASS),
-                new ResolutionActionSubscriber(fragmentView));
+                new ResolutionActionSubscriber(fragmentView, DetailResCenterFragment.ACTION_INPUT_ADDRESS));
     }
 
     private RequestParams getInputAddressParam(String addressId, int paramByPass) {
@@ -185,7 +186,7 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
     public void inputAddressMigrateVersion(String addressId) {
         fragmentView.showLoadingDialog(true);
         inputAddressUseCase.execute(getInputAddressMigrateVersionParam(addressId),
-                new ResolutionActionSubscriber(fragmentView));
+                new ResolutionActionSubscriber(fragmentView, DetailResCenterFragment.ACTION_INPUT_ADDRESS));
     }
 
     private RequestParams getInputAddressMigrateVersionParam(String addressId) {
@@ -200,11 +201,12 @@ public class DetailResCenterFragmentImpl implements DetailResCenterFragmentPrese
     public void actionEditAddress(String addressId, String oldAddressId, String conversationId) {
         fragmentView.showLoadingDialog(true);
         editAddressUseCase.execute(getEditAddressParam(addressId, oldAddressId, conversationId),
-                new ResolutionActionSubscriber(fragmentView));
+                new ResolutionActionSubscriber(fragmentView, DetailResCenterFragment.ACTION_EDIT_ADDRESS));
     }
 
     private RequestParams getEditAddressParam(String addressId, String oldAddressId, String conversationId) {
         RequestParams params = RequestParams.create();
+        params.putString(EditAddressUseCase.PARAM_CONVERSATION_ID, conversationId);
         params.putString(EditAddressUseCase.PARAM_ADDRESS_ID, addressId);
         params.putString(EditAddressUseCase.PARAM_RESOLUTION_ID, fragmentView.getResolutionID());
         params.putString(EditAddressUseCase.PARAM_OLD_DATA, oldAddressId + "-" + conversationId);

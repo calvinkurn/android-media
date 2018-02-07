@@ -15,6 +15,9 @@ public class UserTier {
     @SerializedName("tier_name")
     @Expose
     private String tierName;
+    @SerializedName("tier_name_desc")
+    @Expose
+    private String tierNameDesc;
     @SerializedName("tier_image_url")
     @Expose
     private String tierImageUrl;
@@ -31,6 +34,10 @@ public class UserTier {
 
     public String getTierName() {
         return tierName;
+    }
+
+    public String getTierNameDesc() {
+        return tierNameDesc;
     }
 
     public String getTierImageUrl() {

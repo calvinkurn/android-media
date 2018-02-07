@@ -17,7 +17,7 @@
 
     <TextView
         android:id="@+id/name_product"
-        style="@style/TextView.Body1"
+        style="@style/TextView.Small"
         android:layout_centerVertical="true"
         android:layout_marginRight="@dimen/margin_small"
         android:layout_toLeftOf="@+id/delete_product"

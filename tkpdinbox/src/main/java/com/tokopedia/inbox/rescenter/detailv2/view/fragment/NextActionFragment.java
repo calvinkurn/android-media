@@ -1,6 +1,7 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.fragment;
 
 import android.os.Bundle;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -39,6 +40,7 @@ public class NextActionFragment
     private RecyclerView rvNextAction;
     private NextActionAdapter adapter;
     private ProgressBar progressBar;
+    private NestedScrollView scrollView;
 
     public static NextActionFragment newInstance(String resolutionId,
                                                  NextActionDomain nextActionDomain,
@@ -117,10 +119,9 @@ public class NextActionFragment
         rvNextAction = (RecyclerView) view.findViewById(R.id.rv_next_step);
         progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
         adapter = new NextActionAdapter(getActivity());
-
+        scrollView = (NestedScrollView) view.findViewById(R.id.scroll_view);
         rvNextAction.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvNextAction.setAdapter(adapter);
-
         presenter.initPresenter(nextActionDomain);
 
     }
@@ -149,5 +150,7 @@ public class NextActionFragment
         tvProblem.setText(nextActionDomain.getProblem());
         tvSolution.setText(nextActionDomain.getDetail().getSolution());
         adapter.populateAdapter(nextActionDomain.getDetail().getStep(), resolutionStatus);
+        scrollView.setFocusableInTouchMode(true);
+        scrollView.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
     }
 }

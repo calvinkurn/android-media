@@ -52,6 +52,10 @@ public class ImageLoader {
         }, false);
     }
 
+    public void loadImageWithMemoryCache(String url, ImageView imageView){
+        imageFetcher.loadImage(url, imageView);
+    }
+
     public void loadBadge(final LinearLayout container, List<Badge> badges) {
         container.removeAllViews();
         for (Badge badge : badges) {

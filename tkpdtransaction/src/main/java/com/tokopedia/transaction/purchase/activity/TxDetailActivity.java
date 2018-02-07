@@ -403,7 +403,7 @@ public class TxDetailActivity extends BasePresenterActivity<TxDetailPresenter> i
 
     @OnClick(R2.id.complain_but)
     void actionShowComplain() {
-        presenter.processShowComplain(this, orderData.getOrderButton());
+        presenter.processShowComplain(this, orderData.getOrderButton(), orderData.getOrderShop());
     }
 
     @OnClick(R2.id.ask_seller)

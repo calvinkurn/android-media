@@ -61,20 +61,6 @@ public class DetailResCenterActivity extends BasePresenterActivity<DetailResCent
         return intent;
     }
 
-
-    @DeepLink(Constants.Applinks.RESCENTER)
-    public static TaskStackBuilder getCallingIntent(Context context, Bundle bundle) {
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-        Intent parentIntent = InboxResCenterActivity.createIntent(context);
-        Intent destinationIntent = new Intent(context, DetailResCenterActivity.class);
-        String resoId = bundle.getString(EXTRA_PARAM_RESOLUTION_CENTER_DETAIL, "");
-        destinationIntent.putExtra(EXTRA_PARAM_RESOLUTION_CENTER_DETAIL, resoId);
-        destinationIntent.putExtras(bundle);
-        taskStackBuilder.addNextIntent(parentIntent);
-        taskStackBuilder.addNextIntent(destinationIntent);
-        return taskStackBuilder;
-    }
-
     @Override
     public String getResolutionID() {
         return resolutionID;

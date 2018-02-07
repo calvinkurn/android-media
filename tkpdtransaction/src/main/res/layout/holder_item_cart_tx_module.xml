@@ -277,6 +277,7 @@
                 android:textSize="@dimen/font_small" />
 
             <LinearLayout
+                android:id="@+id/calculation_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">

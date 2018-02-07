@@ -7,6 +7,8 @@
 
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
+
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         tools:node="remove"
@@ -61,6 +63,16 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="tokopedia.link"
+                    android:scheme="https" />
             </intent-filter>
         </activity>
         <activity
@@ -199,7 +211,16 @@
             android:label="@string/title_activity_deep_link"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".home.ReactNativeActivity"
+            android:name=".home.ReactNativeOfficialStoreActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".home.ReactNativeDiscoveryActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".home.ReactNativeOfficialStorePromoActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".home.ReactNativePromoSaleActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".thankyou.view.ReactNativeThankYouPageActivity"

@@ -191,7 +191,7 @@ public class FragmentFavorite extends BaseDaggerFragment
 
     @Override
     protected String getScreenName() {
-        return AppScreen.SCREEN_HOME_FAVORITE_SHOP;
+        return AppScreen.UnifyScreenTracker.SCREEN_UNIFY_HOME_SHOP_FAVORIT;
     }
 
     @Override

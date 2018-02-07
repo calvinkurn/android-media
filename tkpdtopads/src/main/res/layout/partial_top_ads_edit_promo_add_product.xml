@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <TextView
-        style="@style/TextView.Body1.BlackSecondary"
+        style="@style/TextView.Small.BlackSecondary"
         android:text="@string/top_ads_title_product"
         android:layout_marginBottom="@dimen/margin_ms"/>
 
@@ -17,7 +17,7 @@
 
         <TextView
             android:id="@+id/text_view_selected_product"
-            style="@style/TextView.Subheading"
+            style="@style/TextView.Title"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:text="@string/label_top_ads_total_selected_product"/>
@@ -33,7 +33,7 @@
 
             <TextView
                 android:id="@+id/add_product"
-                style="@style/TextView.Subheading.Green"
+                style="@style/TextView.Title.Green"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="5dp"

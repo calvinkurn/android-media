@@ -64,7 +64,7 @@ public class ChatSystemLeftViewHolder extends AbstractViewHolder<ChatSystemLeftV
                             element.getConversation().getAction().getTitle()));
         if (element.getConversation().getSolution().getName() != null)
             tvMessage.setText(MethodChecker.fromHtml(element.getConversation().getSolution().getName()));
-        String date = DateFormatUtils.formatDateForResoChatV2(element.getConversation().getCreateTime().getTimestamp());
+        String date = element.getConversation().getCreateTime().getTimestamp();
         tvDate.setText(date);
 
         layoutTitle.setVisibility(View.VISIBLE);

@@ -1,5 +1,7 @@
 package com.tokopedia.inbox.rescenter.createreso.domain.usecase.createwithattach;
 
+import android.text.TextUtils;
+
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
@@ -58,7 +60,7 @@ public class CreateSubmitUseCase extends UseCase<CreateSubmitDomain> {
             }
             submitObject.put(PARAM_PICTURES, imageArrayList);
             submitObject.put(PARAM_VIDEOS, videoArrayList);
-            if (createResoRequestDomain.getResolutionId() != null) {
+            if (!TextUtils.isEmpty(createResoRequestDomain.getResolutionId())) {
                 submitObject.put(RESOLUTION_ID, Integer.valueOf(createResoRequestDomain.getResolutionId()));
             }
             RequestParams params = RequestParams.create();

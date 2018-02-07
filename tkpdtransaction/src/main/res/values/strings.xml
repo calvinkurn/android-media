@@ -77,13 +77,13 @@
     <string name="label_transaction_total_cart">Total Belanja</string>
     <string name="label_transaction_info_deposit_tokopedia">Saldo Tokopedia Anda saat ini</string>
     <string name="label_transaction_hint_form_voucher_code">Kode Promo</string>
-    <string name="label_transaction_potential_cashback">Potensi Cashback</string>
+    <string name="label_transaction_potential_cashback">Cashback dari Penjual</string>
     <string name="label_transaction_title_summary_puchase">Ringkasan Notifikasi Anda</string>
     <string name="message_transaction_toppay_canceled">Proses pembayaran dibatalkan</string>
     <string name="cancel_replacement">Batalkan Pencarian</string>
     <string name="dialog_cancel_order">Apakah anda yakin ingin membatalkan pesanan?</string>
     <string name="alert_payment_canceled_transaction_module">Pembayaran dibatalkan</string>
-    <string name="title_driver_detail">Detil Driver</string>
+    <string name="title_driver_detail">Detail Driver</string>
     <string name="alert_payment_canceled_or_failed_transaction_module">Pembayaran tidak berhasil atau dibatalkan</string>
     <string name="message_payment_succeded_transaction_module">Pembayaran berhasil</string>
 
@@ -127,10 +127,10 @@
     <string name="authentication_title_2">Autentikasi Ganda</string>
     <string name="authentication_description_1">Anda hanya akan diminta memasukkan CVV untuk setiap transaksi. Verifikasi via SMS akan diperlukan untuk transaksi kasus tertentu.</string>
     <string name="authentication_description_2">Anda akan diminta memasukkan CVV dan verifikasi via SMS untuk setiap transaksi.</string>
-    <string name="menu_credit_card_authentication">Pengaturan Autentikasi</string>
+    <string name="menu_credit_card_authentication">Autentikasi Kartu Kredit</string>
     <string name="title_preorder_proccess_time">Waktu Proses: </string>
     <string name="title_use_promo_code">Gunakan Kode Promo</string>
-    <string name="title_use_promo_code_and_voucher">Gunakan Kode Promo dan Voucher</string>
+    <string name="title_use_promo_code_and_voucher">Gunakan Kode Promo atau Kupon</string>
     <string name="text_complaint_dialog">Apakah Pesanan dari toko %s bermasalah? \n\n\nKlik <b>Ya</b> untuk komplain barang yang berkendala atau belum sampai.\nKlik <b>Kembali</b> untuk membatalkan aksi ini</string>
     <string name="dialog_message_ask_seller"><![CDATA[<br/><br/>Invoice:<br/>XXX]]></string>
 
@@ -174,4 +174,16 @@
     <string name="sub_title_change_awb_instruction">Karena kami tidak akan memproses resi invalid</string>
     <string name="title_term_and_condition">Syarat dan Ketentuan</string>
     <string name="title_bottomsheet_insurance">Asuransi Pengiriman</string>
+    <string name="delete_credit_card">Hapus kartu kredit?</string>
+    <string name="forever_delete_credit_card">Kartu kredit akan terhapus selamanya</string>
+    <string name="label_month_year">month/year</string>
+    <string name="label_button_delete_cc">Hapus Kartu</string>
+    <string name="header_title_pembayaran_kartu_kredit">Pembayaran Kartu Kredit</string>
+    <string name="sub_header_title_kartu_kredit_tersimpan">Kartu Kredit Tersimpan (0/4)</string>
+    <string name="text_cc_authentication">Autentikasi Pembayaran Kartu Kredit</string>
+    <string name="label_detail_credit_card">Kartu Kredit</string>
+    <string name="tag_delete_credit_card_dialog">delete_credit_card_dialog</string>
+    <string name="title_saved_credit_card">Kartu Kredit Tersimpan (%d/4)</string>
+    <string name="apply">Terapkan</string>
+    <string name="single_spacing">\u0020</string>
 </resources>

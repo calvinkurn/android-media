@@ -126,7 +126,7 @@ public class InboxChatActivity extends DrawerPresenterActivity
 
     @Override
     public String getScreenName() {
-        return AppScreen.SCREEN_INBOX_MESSAGE;
+        return AppScreen.SCREEN_CHAT;
     }
 
     @Override

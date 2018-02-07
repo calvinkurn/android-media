@@ -34,7 +34,7 @@
         android:layout_marginTop="@dimen/activity_horizontal_margin">
 
         <TextView
-            style="@style/TextView.Body1.BlackSecondary"
+            style="@style/TextView.Small.BlackSecondary"
             android:text="@string/product_variant_manage_variant"
             android:layout_marginTop="@dimen/activity_horizontal_margin"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"

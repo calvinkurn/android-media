@@ -22,20 +22,20 @@
 
     <TextView
         android:id="@+id/retry_text"
-        style="@style/TextView.Title.Bold"
+        style="@style/TextView.TitleBig.Bold"
         android:layout_margin="@dimen/margin_vs"
         android:gravity="center"
         android:text="@string/msg_network_error_1" />
 
     <TextView
-        style="@style/TextView.Body1.BlackDisabled.Bold"
+        style="@style/TextView.Small.BlackDisabled.Bold"
         android:layout_margin="@dimen/margin_vs"
         android:gravity="center"
         android:text="@string/msg_network_error_2" />
 
     <TextView
         android:id="@+id/retry_but"
-        style="@style/TextView.Body1.Green.Bold"
+        style="@style/TextView.Small.Green.Bold"
         android:layout_margin="@dimen/margin_med"
         android:gravity="center"
         android:text="@string/title_try_again_caps" />

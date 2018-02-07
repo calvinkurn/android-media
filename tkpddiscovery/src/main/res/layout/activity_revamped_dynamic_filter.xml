@@ -37,7 +37,7 @@
             android:layout_height="@dimen/dynamic_filter_apply_button_height"
             android:gravity="center"
             android:background="@color/medium_green"
-            style="@style/TextView.Button.White"
+            style="@style/TextView.Small.WhitePrimary.Bold"
             android:text="@string/dynamic_filter_finish_button_text"/>
 
     </LinearLayout>

@@ -53,7 +53,7 @@
                     android:layout_marginBottom="@dimen/top_ads_margin_layout_very_small"
                     android:hint="@string/top_ads_keyword_cost_per_click">
 
-                    <com.tokopedia.topads.dashboard.view.widget.PrefixEditText
+                    <com.tokopedia.seller.common.widget.PrefixEditText
                         android:id="@+id/edit_text_top_ads_cost_per_click"
                         style="@style/EditText.Currency"
                         android:layout_width="match_parent"
@@ -63,7 +63,7 @@
 
                 <TextView
                     android:id="@+id/text_view_top_ads_max_price_description"
-                    style="@style/TextView.Body1.BlackSecondary"
+                    style="@style/TextView.Small.BlackSecondary"
                     android:layout_marginBottom="@dimen/top_ads_margin_layout_small"
                     android:maxLines="3"
                     android:text="@string/top_ads_label_price_desc" />

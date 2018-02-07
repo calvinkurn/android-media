@@ -6,7 +6,9 @@ import android.support.annotation.Nullable;
 
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.DrawerPresenterActivity;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
@@ -29,6 +31,24 @@ public class ProductManageActivity extends DrawerPresenterActivity implements Ha
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, new ProductManageSellerFragment(), TAG).commit();
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        checkLogin();
+    }
+
+    private void checkLogin() {
+        if (getApplication() instanceof TkpdCoreRouter) {
+            if (!SessionHandler.isV4Login(this)) {
+                startActivity(((TkpdCoreRouter) getApplication()).getLoginIntent(this));
+                finish();
+            } else if (!SessionHandler.isUserHasShop(this)) {
+                startActivity(((TkpdCoreRouter) getApplication()).getHomeIntent(this));
+                finish();
+            }
         }
     }
 

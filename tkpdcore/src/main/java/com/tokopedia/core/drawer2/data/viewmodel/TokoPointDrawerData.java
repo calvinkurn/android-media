@@ -225,6 +225,9 @@ public class TokoPointDrawerData implements Parcelable {
             this.catalog = catalog;
         }
 
+        public PopUpNotif() {
+        }
+
         @Override
         public int describeContents() {
             return 0;
@@ -242,9 +245,6 @@ public class TokoPointDrawerData implements Parcelable {
             dest.writeParcelable(this.catalog, flags);
         }
 
-        public PopUpNotif() {
-        }
-
         protected PopUpNotif(Parcel in) {
             this.title = in.readString();
             this.text = in.readString();
@@ -256,7 +256,7 @@ public class TokoPointDrawerData implements Parcelable {
             this.catalog = in.readParcelable(Catalog.class.getClassLoader());
         }
 
-        public static final Parcelable.Creator<PopUpNotif> CREATOR = new Parcelable.Creator<PopUpNotif>() {
+        public static final Creator<PopUpNotif> CREATOR = new Creator<PopUpNotif>() {
             @Override
             public PopUpNotif createFromParcel(Parcel source) {
                 return new PopUpNotif(source);
@@ -273,6 +273,7 @@ public class TokoPointDrawerData implements Parcelable {
 
         private int tierId;
         private String tierName;
+        private String tierNameDesc;
         private String tierImageUrl;
         private int rewardPoints;
         private String rewardPointsStr;
@@ -288,6 +289,14 @@ public class TokoPointDrawerData implements Parcelable {
 
         public String getTierName() {
             return tierName;
+        }
+
+        public String getTierNameDesc() {
+            return tierNameDesc;
+        }
+
+        public void setTierNameDesc(String tierNameDesc) {
+            this.tierNameDesc = tierNameDesc;
         }
 
         public void setTierName(String tierName) {
@@ -338,6 +347,7 @@ public class TokoPointDrawerData implements Parcelable {
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeInt(this.tierId);
             dest.writeString(this.tierName);
+            dest.writeString(this.tierNameDesc);
             dest.writeString(this.tierImageUrl);
             dest.writeInt(this.rewardPoints);
             dest.writeString(this.rewardPointsStr);
@@ -347,6 +357,7 @@ public class TokoPointDrawerData implements Parcelable {
         protected UserTier(Parcel in) {
             this.tierId = in.readInt();
             this.tierName = in.readString();
+            this.tierNameDesc = in.readString();
             this.tierImageUrl = in.readString();
             this.rewardPoints = in.readInt();
             this.rewardPointsStr = in.readString();

@@ -86,7 +86,7 @@ public class TheirMessageDataBinder extends DataBinder<TheirMessageDataBinder.Vi
                                     if (!(nav.equals(MESSAGE_TRASH) || list.get(getAdapterPosition()).getUserLabelId() == 1)) {
                                         AlertDialog.Builder builder = new AlertDialog.Builder(context);
                                         builder.setMessage(com.tokopedia.core.R.string.dialog_spam);
-                                        builder.setPositiveButton(com.tokopedia.core.R.string.button_ok, new DialogInterface.OnClickListener() {
+                                        builder.setPositiveButton(com.tokopedia.core.R.string.title_ok, new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
                                                 presenter.flagSpam(getAdapterPosition(), list.get(getAdapterPosition()));

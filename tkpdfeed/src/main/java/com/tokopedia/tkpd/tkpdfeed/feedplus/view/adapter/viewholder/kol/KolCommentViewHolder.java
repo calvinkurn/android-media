@@ -72,12 +72,9 @@ public class KolCommentViewHolder extends AbstractViewHolder<KolCommentViewModel
         mainView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                if (element.canDeleteComment()) {
-                    showDeleteDialog(v, viewListener, element.getId(), getAdapterPosition());
-                    return true;
-                } else {
-                    return false;
-                }
+                return viewListener.onDeleteCommentKol(element.getId(),
+                        element.canDeleteComment(), getAdapterPosition());
+
             }
         });
 
@@ -85,26 +82,5 @@ public class KolCommentViewHolder extends AbstractViewHolder<KolCommentViewModel
 
     private String getCommentText(KolCommentViewModel element) {
         return "<b>" + element.getName() + "</b>" + " " + element.getReview();
-    }
-
-    private void showDeleteDialog(View v, final KolComment.View viewListener, final int id, final int adapterPosition) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-
-        builder.setMessage(R.string.prompt_delete_comment_kol);
-        builder.setPositiveButton(R.string.title_delete, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                viewListener.onDeleteCommentKol(id, adapterPosition);
-            }
-        });
-        builder.setNegativeButton(R.string.title_cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-
-        AlertDialog dialog = builder.create();
-        dialog.show();
     }
 }

@@ -13,6 +13,6 @@
         <TextView
             android:text="@string/label_top_ads_info_group_option_empty"
             android:id="@+id/view_info_radio_not_in_group"
-            style="@style/TextView.Caption.BlackSecondary"/>
+            style="@style/TextView.Micro.BlackSecondary"/>
     </com.tokopedia.topads.dashboard.view.widget.TopAdsRadioExpandView>
 </merge>

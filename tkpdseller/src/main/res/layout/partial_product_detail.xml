@@ -11,7 +11,7 @@
         android:orientation="vertical">
 
         <TextView
-            style="@style/TextView.Body1.BlackSecondary"
+            style="@style/TextView.Small.BlackSecondary"
             android:text="@string/product_label_product_about" />
 
     </LinearLayout>

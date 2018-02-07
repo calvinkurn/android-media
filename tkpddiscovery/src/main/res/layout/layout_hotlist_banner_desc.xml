@@ -11,7 +11,7 @@
         android:ellipsize="end"
         android:maxLength="320"
         android:padding="@dimen/padding_small"
-        style="@style/TextView.Body1"
+        style="@style/TextView.Small"
         />
 
 </LinearLayout>

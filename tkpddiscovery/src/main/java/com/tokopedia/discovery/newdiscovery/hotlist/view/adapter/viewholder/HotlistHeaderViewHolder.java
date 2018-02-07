@@ -20,7 +20,12 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
+import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.HotlistViewPagerAdapter;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.ItemClickListener;
@@ -28,6 +33,12 @@ import com.tokopedia.discovery.newdiscovery.hotlist.view.customview.HotlistPromo
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistHashTagViewModel;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistHeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistPromo;
+import com.tokopedia.topads.sdk.base.Config;
+import com.tokopedia.topads.sdk.base.Endpoint;
+import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
+import com.tokopedia.topads.sdk.view.DisplayMode;
+import com.tokopedia.topads.sdk.view.TopAdsBannerView;
 
 import java.util.List;
 
@@ -39,6 +50,8 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
 
     @LayoutRes
     public static final int LAYOUT = R.layout.recyclerview_hotlist_banner;
+    public static final String DEFAULT_ITEM_VALUE = "1";
+    public static final String HOTLIST_ADS_SRC = "hotlist";
 
     private final Context context;
     private final ItemClickListener mItemClickListener;
@@ -49,19 +62,46 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
     private final RelativeLayout hotlistBackground;
     private final View hashtTagScrollView;
     private final HotlistPromoView hotlistPromoView;
-
+    private final TopAdsBannerView topAdsBannerView;
     private int counterError;
+    private final String searchQuery;
 
-    public HotlistHeaderViewHolder(View parent, ItemClickListener mItemClickListener) {
+    public HotlistHeaderViewHolder(View parent, ItemClickListener mItemClickListener, String searchQuery) {
         super(parent);
         context = parent.getContext();
         this.mItemClickListener = mItemClickListener;
+        this.searchQuery = searchQuery;
         this.indicator = (CirclePageIndicator) parent.findViewById(R.id.hot_list_banner_indicator);
         this.viewpager = (ViewPager) parent.findViewById(R.id.hot_list_banner_view_pager);
         this.containerHashtag = (LinearLayout) parent.findViewById(R.id.hot_list_banner_hashtags);
         this.hotlistBackground = (RelativeLayout) parent.findViewById(R.id.hotlist_background);
         this.hashtTagScrollView = parent.findViewById(R.id.hashtag_scroll_view);
         this.hotlistPromoView = (HotlistPromoView) parent.findViewById(R.id.view_hotlist_promo);
+        this.topAdsBannerView = (TopAdsBannerView) parent.findViewById(R.id.topAdsBannerView);
+        initTopAds();
+    }
+
+    private void initTopAds() {
+        TopAdsParams adsParams = new TopAdsParams();
+        adsParams.getParam().put(TopAdsParams.KEY_SRC, HOTLIST_ADS_SRC);
+        adsParams.getParam().put(TopAdsParams.KEY_QUERY, searchQuery);
+        adsParams.getParam().put(TopAdsParams.KEY_ITEM, DEFAULT_ITEM_VALUE);
+        Config config = new Config.Builder()
+                .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
+                .setUserId(SessionHandler.getLoginID(context))
+                .setEndpoint(Endpoint.CPM)
+                .topAdsParams(adsParams)
+                .build();
+        this.topAdsBannerView.setConfig(config);
+        this.topAdsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
+            @Override
+            public void onBannerAdsClicked(String applink) {
+                mItemClickListener.onBannerAdsClicked(applink);
+            }
+        });
+        if (!searchQuery.isEmpty()) {
+            this.topAdsBannerView.loadTopAds();
+        }
     }
 
     @Override
@@ -81,14 +121,24 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
 
         if (element.getHotlistPromo() != null) {
             hotlistPromoView.setVisibility(View.VISIBLE);
-            renderPromoView(element.getHotlistPromo());
+            renderPromoView(element.getHotlistTitle(), element.getHotlistPromo());
         } else {
             hotlistPromoView.setVisibility(View.GONE);
         }
     }
 
-    private void renderPromoView(HotlistPromo hotlistPromo) {
-        hotlistPromoView.renderData(hotlistPromo);
+    private void renderPromoView(final String hotlistTitle, HotlistPromo hotlistPromo) {
+        hotlistPromoView.renderData(hotlistPromo, new HotlistPromoView.CallbackListener() {
+            @Override
+            public void onTncButtonClick(String titlePromo, String voucherCode) {
+                TrackingUtils.clickTnCButtonHotlistPromo(hotlistTitle, titlePromo, voucherCode);
+            }
+
+            @Override
+            public void onCopyButtonClick(String titlePromo, String voucherCode) {
+                TrackingUtils.clickCopyButtonHotlistPromo(hotlistTitle, titlePromo, voucherCode);
+            }
+        });
     }
 
     private void renderHashtag(final List<HotlistHashTagViewModel> hashTags) {

@@ -18,6 +18,9 @@ public class AttributesEntity {
     @SerializedName("detail_url")
     @Expose
     private String detailUrl;
+    @SerializedName("detail_url_text")
+    @Expose
+    private String detailUrlText;
     @SerializedName("info")
     @Expose
     private String info;
@@ -59,6 +62,14 @@ public class AttributesEntity {
 
     public void setDetailUrl(String detailUrl) {
         this.detailUrl = detailUrl;
+    }
+
+    public String getDetailUrlText() {
+        return detailUrlText;
+    }
+
+    public void setDetailUrlText(String detailUrlText) {
+        this.detailUrlText = detailUrlText;
     }
 
     public String getInfo() {

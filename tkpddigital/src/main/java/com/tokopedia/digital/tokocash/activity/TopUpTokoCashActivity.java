@@ -68,11 +68,11 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by nabillasabbaha on 8/18/17.
  */
-
 public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPresenter>
         implements TopUpTokoCashListener {
     public static final String EXTRA_TOP_UP_AVAILABLE = "EXTRA_TOP_UP_AVAILABLE";
     public static final int REQUEST_CODE_ACCOUNT_SETTING = 112;
+    private static final int QR_REQUEST_CODE = 12;
 
     @BindView(R2.id.balance_tokocash_layout)
     LinearLayout balanceTokoCashViewLayout;
@@ -92,6 +92,9 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
     private BottomSheetView bottomSheetTokoCashView;
 
     private boolean topUpAvailable;
+
+    private String categoryId;
+    private String operatorId;
 
     @SuppressWarnings("unused")
     @DeepLink(Constants.Applinks.WALLET_HOME)
@@ -265,6 +268,8 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
                 operatorSelected = operator;
             }
         }
+        categoryId = categoryData.getCategoryId();
+        operatorId = operatorSelected.getOperatorId();
         topUpTokoCashView.renderDataTopUp(categoryData, operatorSelected);
         topUpTokoCashView.setListener(getActionListenerTopUpView());
         if (topUpAvailable) topupTokoCashViewLayout.addView(topUpTokoCashView);
@@ -276,7 +281,7 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
             public void onDigitalChooserClicked(List<Product> productList, String productText) {
                 startActivityForResult(
                         DigitalChooserActivity.newInstanceProductChooser(
-                                TopUpTokoCashActivity.this, productList, productText
+                                TopUpTokoCashActivity.this, categoryId, operatorId, productText
                         ),
                         IDigitalModuleRouter.REQUEST_CODE_DIGITAL_PRODUCT_CHOOSER
                 );
@@ -313,6 +318,7 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
                     setResult(RESULT_OK);
                     finish();
                 }
+                break;
         }
     }
 
@@ -326,6 +332,14 @@ public class TopUpTokoCashActivity extends BasePresenterActivity<TopUpTokocashPr
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_menu_history_tokocash) {
             startActivity(HistoryTokocashActivity.newInstance(this));
+
+            //TODO in next sprint activate this code below to use the new version clean architecture
+//            Application application = this.getApplication();
+//            if (application != null && application instanceof TokoCashRouter) {
+//                Intent intent = ((TokoCashRouter) application).goToHistoryTokoCash(this);
+//                startActivity(intent);
+//            }
+
             return true;
         } else if (item.getItemId() == R.id.action_account_setting_tokocash) {
             startActivityForResult(WalletAccountSettingActivity.newInstance(this),

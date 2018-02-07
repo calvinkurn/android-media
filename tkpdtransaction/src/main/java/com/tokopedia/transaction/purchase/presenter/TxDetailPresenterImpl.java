@@ -17,7 +17,9 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.onboarding.ConstantOnBoarding;
@@ -75,12 +77,15 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
     }
 
     @Override
-    public void processShowComplain(Context context, OrderButton orderButton) {
+    public void processShowComplain(Context context, OrderButton orderButton, OrderShop orderShop) {
         Uri uri = Uri.parse(orderButton.getButtonResCenterUrl());
         String res_id = uri.getQueryParameter("id");
-        viewListener.navigateToActivity(
-                InboxRouter.getDetailResCenterActivityIntent(context, res_id)
-        );
+        if (MainApplication.getAppContext() instanceof TransactionRouter) {
+            Intent intent = ((TransactionRouter) MainApplication.getAppContext())
+                    .getDetailResChatIntentBuyer(context, res_id, orderShop.getShopName());
+            viewListener.navigateToActivity(intent);
+        }
+
     }
 
     @SuppressWarnings("deprecation")
@@ -391,9 +396,12 @@ public class TxDetailPresenterImpl implements TxDetailPresenter {
                 .setPositiveButton(context.getString(R.string.title_ok),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                viewListener.navigateToActivity(
-                                        InboxRouter.getInboxResCenterActivityIntent(context)
-                                );
+                                if (MainApplication.getAppContext() instanceof TransactionRouter) {
+                                    viewListener.navigateToActivity(((TransactionRouter) MainApplication.getAppContext())
+                                            .getResolutionCenterIntent(context)
+                                    );
+
+                                }
                                 viewListener.closeWithResult(
                                         TkpdState.TxActivityCode.BuyerCreateResolution, null
                                 );

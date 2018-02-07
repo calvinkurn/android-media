@@ -180,9 +180,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
     public void renderData() {
         productName.setText(viewData.getProductName());
         productPrice.setText(viewData.getProductPrice());
-        ImageHandler.loadImage2(
-                productImage, viewData.getProductThumbUrl(), R.drawable.remove_thin
-        );
+        ImageHandler.LoadImage(productImage, viewData.getProductThumbUrl());
         troubleName.setText(getTroubleText());
         troubleReason.setText(viewData.getTroubleReason());
         if (viewData.getAttachment() != null && !viewData.getAttachment().isEmpty()) {

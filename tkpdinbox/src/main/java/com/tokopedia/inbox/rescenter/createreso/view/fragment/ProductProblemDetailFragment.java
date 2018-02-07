@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.text.SpinnerTextView;
@@ -208,6 +209,7 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
             @Override
             public void onClick(View view) {
                 presenter.btnSaveClicked(false);
+                UnifyTracking.eventCreateResoStep1Save();
             }
         });
 
@@ -215,6 +217,7 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements 
             @Override
             public void onClick(View view) {
                 presenter.btnSaveClicked(true);
+                UnifyTracking.eventCreateResoStep1SaveAndChooseOther();
             }
         });
 

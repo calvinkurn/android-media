@@ -1,13 +1,11 @@
 package com.tokopedia.gm.cashback.domain;
 
-import android.text.TextUtils;
-
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.common.cashback.DataCashbackModel;
-import com.tokopedia.seller.product.edit.domain.ShopInfoRepository;
+import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
 
 import java.util.ArrayList;
 import java.util.List;

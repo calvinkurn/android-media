@@ -12,7 +12,6 @@ import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.digital.tokocash.model.CashBackData;
 import com.tokopedia.tkpd.beranda.domain.model.category.CategoryLayoutRowModel;
 import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
-import com.tokopedia.tkpd.beranda.presentation.view.adapter.viewmodel.SaldoViewModel;
 
 import java.util.List;
 
@@ -49,6 +48,8 @@ public interface HomeContract {
 
     interface Presenter extends CustomerPresenter<View> {
         void getHomeData();
+
+        void getHeaderData(boolean initialStart);
 
         void updateHeaderTokoCashData(HomeHeaderWalletAction homeHeaderWalletActionData);
 

@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -45,6 +46,7 @@ public class ImageEditorFragment extends Fragment implements CropImageView.OnSet
 
     public interface OnImageEditorFragmentListener {
         void onSuccessCrop(String localPath);
+
         void addCroppedPath(String croppedPath);
     }
 
@@ -108,12 +110,24 @@ public class ImageEditorFragment extends Fragment implements CropImageView.OnSet
                 onImageEditorFragmentListener.onSuccessCrop(localPath);
             } else {
                 boolean isRotate = mCropImageView.getRotatedDegrees() != 0;
-                boolean isCrop = !mCropImageView.getCropRect().equals(mCropImageView.getWholeImageRect());
-                boolean isRotateAndCrop = isRotate && isCrop;
-                UnifyTracking.eventClickSaveEditImageProduct(
-                        isRotateAndCrop ? AppEventTracking.ImageEditor.ROTATE_AND_CROP:
-                        isRotate? AppEventTracking.ImageEditor.ROTATE_ONLY:
-                                AppEventTracking.ImageEditor.CROP_ONLY);
+                boolean isCrop = false;
+                Rect cropRect = mCropImageView.getCropRect();
+                if (cropRect!= null) {
+                    isCrop = !cropRect.equals(mCropImageView.getWholeImageRect());
+                }
+                if (isRotate) {
+                    UnifyTracking.eventClickSaveEditImageProduct(AppEventTracking.ImageEditor.ROTATE);
+                }
+                if (isCrop) {
+                    UnifyTracking.eventClickSaveEditImageProduct(AppEventTracking.ImageEditor.CROP);
+                }
+
+                if (this instanceof ImageEditorWatermarkFragment) {
+                    if (((ImageEditorWatermarkFragment)this).isUseWatermark()) {
+                        UnifyTracking.eventClickSaveEditImageProduct(AppEventTracking.ImageEditor.WATERMARK);
+                    }
+                }
+
                 File file = FileUtils.getTkpdImageCacheFile(FileUtils.generateUniqueFileName());
                 croppedPath = file.getAbsolutePath();
                 mCropImageView.startCropWorkerTask(0, 0, CropImageView.RequestSizeOptions.NONE,
@@ -127,7 +141,7 @@ public class ImageEditorFragment extends Fragment implements CropImageView.OnSet
         return super.onOptionsItemSelected(item);
     }
 
-    protected boolean checkIfSameWithPrevImage(){
+    protected boolean checkIfSameWithPrevImage() {
         return mCropImageView.getRotatedDegrees() == 0 &&
                 (mCropImageView.getCropRect() == null ||
                         mCropImageView.getCropRect().equals(mCropImageView.getWholeImageRect())) &&
@@ -160,7 +174,7 @@ public class ImageEditorFragment extends Fragment implements CropImageView.OnSet
                 Bitmap bitmap = result.getBitmap();
                 if (bitmap != null) {
                     bitmap = processBitmap(bitmap);
-                    File file = FileUtils.writeImageToTkpdPath(bitmap, FileUtils.generateUniqueFileName());
+                    File file = FileUtils.writeImageToTkpdPath(bitmap);
                     if (file != null && file.exists()) {
                         String path = file.getAbsolutePath();
                         onImageEditorFragmentListener.onSuccessCrop(path);

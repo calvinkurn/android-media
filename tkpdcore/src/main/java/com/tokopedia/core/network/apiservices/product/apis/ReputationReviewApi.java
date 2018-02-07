@@ -21,7 +21,9 @@ public interface ReputationReviewApi {
 
     String ID = "product_id";
     String SHOP_ID = "shop_id";
-
+    String PARAM_SOURCE = "source";
+    String VALUE_SNEAK_PEAK = "sneak_peak";
+    String PER_PAGE = "per_page";
 
     @GET(TkpdBaseURL.Product.MOST_HELPFUL_REVIEW)
     Observable<Response<MostHelpfulReviewResponse>> getMostHelpfulReview(

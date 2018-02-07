@@ -19,7 +19,7 @@ import java.util.List;
 
 public class AnalyticsMapper {
 
-    public static String mapViewToAnalytic(UploadProductInputViewModel viewModel, int freeReturnActive, boolean isShare) {
+    public static List<String> mapViewToAnalytic(UploadProductInputViewModel viewModel, int freeReturnActive, boolean isShare) {
         List<String> listOfFields = new ArrayList<>();
         if(viewModel.getProductPhotos().getPhotos().size() > 0){
             listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_PICTURE);
@@ -69,6 +69,10 @@ public class AnalyticsMapper {
             }
         }
 
-        return StringUtils.convertListToStringDelimiter(listOfFields, ",");
+        if(listOfFields.isEmpty()){
+            listOfFields.add(AppEventTracking.AddProduct.FIELDS_OPTIONAL_EMPTY);
+        }
+
+        return listOfFields;
     }
 }

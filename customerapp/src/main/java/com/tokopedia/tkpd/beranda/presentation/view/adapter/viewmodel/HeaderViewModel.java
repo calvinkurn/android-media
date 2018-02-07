@@ -15,6 +15,8 @@ import com.tokopedia.tkpd.beranda.presentation.view.adapter.factory.HomeTypeFact
 
 public class HeaderViewModel implements Parcelable, Visitable<HomeTypeFactory> {
     public static final int TYPE_TOKOCASH_ONLY = 1;
+    public static final int TYPE_TOKOPINT_ONLY = 3;
+    public static final int TYPE_EMPTY = 4;
     public static final int TYPE_TOKOCASH_WITH_TOKOPOINT = 2;
 
     private HomeHeaderWalletAction homeHeaderWalletActionData;
@@ -32,6 +34,17 @@ public class HeaderViewModel implements Parcelable, Visitable<HomeTypeFactory> {
     }
 
     public void setHomeHeaderWalletActionData(HomeHeaderWalletAction homeHeaderWalletActionData) {
+        if (homeHeaderWalletActionData != null && tokoPointDrawerData != null
+                && tokoPointDrawerData.getOffFlag() == 0)
+            this.type = TYPE_TOKOCASH_WITH_TOKOPOINT;
+        if (homeHeaderWalletActionData == null && tokoPointDrawerData != null
+                && tokoPointDrawerData.getOffFlag() == 0)
+            this.type = TYPE_TOKOPINT_ONLY;
+        if (homeHeaderWalletActionData != null &&
+                (tokoPointDrawerData == null || tokoPointDrawerData.getOffFlag() == 1))
+            this.type = TYPE_TOKOCASH_ONLY;
+        if (homeHeaderWalletActionData == null && tokoPointDrawerData == null)
+            this.type = TYPE_EMPTY;
         this.homeHeaderWalletActionData = homeHeaderWalletActionData;
     }
 
@@ -40,6 +53,17 @@ public class HeaderViewModel implements Parcelable, Visitable<HomeTypeFactory> {
     }
 
     public void setTokoPointDrawerData(TokoPointDrawerData tokoPointDrawerData) {
+        if (tokoPointDrawerData != null && tokoPointDrawerData.getOffFlag() == 0
+                && homeHeaderWalletActionData != null)
+            this.type = TYPE_TOKOCASH_WITH_TOKOPOINT;
+        if (tokoPointDrawerData != null && tokoPointDrawerData.getOffFlag() == 0
+                && homeHeaderWalletActionData == null)
+            this.type = TYPE_TOKOPINT_ONLY;
+        if ((tokoPointDrawerData == null || tokoPointDrawerData.getOffFlag() == 1)
+                && homeHeaderWalletActionData != null)
+            this.type = TYPE_TOKOCASH_ONLY;
+        if (tokoPointDrawerData == null && homeHeaderWalletActionData == null)
+            this.type = TYPE_EMPTY;
         this.tokoPointDrawerData = tokoPointDrawerData;
     }
 

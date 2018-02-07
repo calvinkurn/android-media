@@ -240,16 +240,13 @@ public class InboxMessageDetailFragment extends BasePresenterFragment<InboxMessa
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (headerDate != null) {
-                    CommonUtils.dumper("NISNIS State " + newState + " " + headerDate.getVisibility());
-                } else  {
-                    CommonUtils.dumper("NISNIS State " + newState + " headerDate NULL");
-                }
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    headerDate.setVisibility(View.GONE);
-                } else if (!headerDate.getText().toString().equals("")) {
-                    headerDate.setVisibility(View.VISIBLE);
-                } else {
-                    headerDate.setVisibility(View.GONE);
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        headerDate.setVisibility(View.GONE);
+                    } else if (!headerDate.getText().toString().equals("")) {
+                        headerDate.setVisibility(View.VISIBLE);
+                    } else {
+                        headerDate.setVisibility(View.GONE);
+                    }
                 }
             }
 

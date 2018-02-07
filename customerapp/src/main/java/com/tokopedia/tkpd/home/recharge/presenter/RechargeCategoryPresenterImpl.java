@@ -64,15 +64,14 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
                     if (status.isMaintenance() || !isVersionMatch(status)) {
                         view.failedRenderDataRechargeCategory();
                     } else {
-                        rechargeNetworkInteractor.getCategoryData(getCategoryDataSubscriber(status.isUseCache()),
-                                status.isUseCache());
+                        rechargeNetworkInteractor.getCategoryData(getCategoryDataSubscriber());
                     }
                 }
             }
         };
     }
 
-    private Subscriber<List<Category>> getCategoryDataSubscriber(final boolean useCache) {
+    private Subscriber<List<Category>> getCategoryDataSubscriber() {
         return new Subscriber<List<Category>>() {
             @Override
             public void onCompleted() {
@@ -87,11 +86,10 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
             @Override
             public void onNext(List<Category> data) {
                 categoryList = data;
-                finishPrepareRechargeModule(useCache);
+                finishPrepareRechargeModule();
             }
         };
     }
-
 
     private boolean isVersionMatch(Status status) {
         try {
@@ -104,10 +102,10 @@ public class RechargeCategoryPresenterImpl implements RechargeCategoryPresenter 
         }
     }
 
-    private void finishPrepareRechargeModule(boolean useCache) {
+    private void finishPrepareRechargeModule() {
         if (context != null && view != null) {
             if (categoryList != null) {
-                view.renderDataRechargeCategory(categoryList, useCache);
+                view.renderDataRechargeCategory(categoryList);
             } else {
                 view.failedRenderDataRechargeCategory();
             }

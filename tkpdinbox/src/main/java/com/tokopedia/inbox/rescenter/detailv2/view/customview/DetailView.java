@@ -80,7 +80,7 @@ public class DetailView extends BaseView<DetailData, DetailResCenterFragmentView
         boolean isSeller = SessionHandler.getLoginID(getContext())
                 .equals(data.getBuyerID());
         textAwbNumber.setText(data.getAwbNumber());
-        textComplaintDate.setText(DateFormatUtils.formatDateForResoChatV2(data.getComplaintDateTimestamp()));
+        textComplaintDate.setText(data.getComplaintDateTimestamp());
         textCustomerName.setText(data.getBuyerName());
         textInvoice.setText(data.getInvoice());
         textShopName.setText(data.getShopName());

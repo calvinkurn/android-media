@@ -9,17 +9,6 @@ import android.os.Parcelable;
  */
 public class ResolutionData implements Parcelable {
 
-    public static final Parcelable.Creator<ResolutionData> CREATOR = new Parcelable.Creator<ResolutionData>() {
-        @Override
-        public ResolutionData createFromParcel(Parcel source) {
-            return new ResolutionData(source);
-        }
-
-        @Override
-        public ResolutionData[] newArray(int size) {
-            return new ResolutionData[size];
-        }
-    };
     private int id;
     private StatusData status;
     private CreateByData createBy;
@@ -30,8 +19,21 @@ public class ResolutionData implements Parcelable {
     private CreateByData updateBy;
     private String updateTime;
     private int freeReturn;
+    private String freeReturnText;
+    private String freeReturnLink;
 
-    public ResolutionData(int id, StatusData status, CreateByData createBy, String createTime, String createTimeStr, String expireTime, String expireTimeStr, CreateByData updateBy, String updateTime, int freeReturn) {
+    public ResolutionData(int id,
+                          StatusData status,
+                          CreateByData createBy,
+                          String createTime,
+                          String createTimeStr,
+                          String expireTime,
+                          String expireTimeStr,
+                          CreateByData updateBy,
+                          String updateTime,
+                          int freeReturn,
+                          String freeReturnText,
+                          String freeReturnLink) {
         this.id = id;
         this.status = status;
         this.createBy = createBy;
@@ -42,19 +44,24 @@ public class ResolutionData implements Parcelable {
         this.updateBy = updateBy;
         this.updateTime = updateTime;
         this.freeReturn = freeReturn;
+        this.freeReturnText = freeReturnText;
+        this.freeReturnLink = freeReturnLink;
     }
 
-    protected ResolutionData(Parcel in) {
-        this.id = in.readInt();
-        this.status = in.readParcelable(StatusData.class.getClassLoader());
-        this.createBy = in.readParcelable(CreateByData.class.getClassLoader());
-        this.createTime = in.readString();
-        this.createTimeStr = in.readString();
-        this.expireTime = in.readString();
-        this.expireTimeStr = in.readString();
-        this.updateBy = in.readParcelable(CreateByData.class.getClassLoader());
-        this.updateTime = in.readString();
-        this.freeReturn = in.readInt();
+    public String getFreeReturnLink() {
+        return freeReturnLink;
+    }
+
+    public void setFreeReturnLink(String freeReturnLink) {
+        this.freeReturnLink = freeReturnLink;
+    }
+
+    public String getFreeReturnText() {
+        return freeReturnText;
+    }
+
+    public void setFreeReturnText(String freeReturnText) {
+        this.freeReturnText = freeReturnText;
     }
 
     public int getId() {
@@ -154,5 +161,34 @@ public class ResolutionData implements Parcelable {
         dest.writeParcelable(this.updateBy, flags);
         dest.writeString(this.updateTime);
         dest.writeInt(this.freeReturn);
+        dest.writeString(this.freeReturnText);
+        dest.writeString(this.freeReturnLink);
     }
+
+    protected ResolutionData(Parcel in) {
+        this.id = in.readInt();
+        this.status = in.readParcelable(StatusData.class.getClassLoader());
+        this.createBy = in.readParcelable(CreateByData.class.getClassLoader());
+        this.createTime = in.readString();
+        this.createTimeStr = in.readString();
+        this.expireTime = in.readString();
+        this.expireTimeStr = in.readString();
+        this.updateBy = in.readParcelable(CreateByData.class.getClassLoader());
+        this.updateTime = in.readString();
+        this.freeReturn = in.readInt();
+        this.freeReturnText = in.readString();
+        this.freeReturnLink = in.readString();
+    }
+
+    public static final Creator<ResolutionData> CREATOR = new Creator<ResolutionData>() {
+        @Override
+        public ResolutionData createFromParcel(Parcel source) {
+            return new ResolutionData(source);
+        }
+
+        @Override
+        public ResolutionData[] newArray(int size) {
+            return new ResolutionData[size];
+        }
+    };
 }

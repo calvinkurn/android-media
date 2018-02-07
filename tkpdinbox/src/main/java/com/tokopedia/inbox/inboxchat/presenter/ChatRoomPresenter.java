@@ -1,17 +1,18 @@
 package com.tokopedia.inbox.inboxchat.presenter;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.util.PagingHandler;
@@ -22,21 +23,25 @@ import com.tokopedia.inbox.inboxchat.ChatWebSocketConstant;
 import com.tokopedia.inbox.inboxchat.ChatWebSocketListenerImpl;
 import com.tokopedia.inbox.inboxchat.domain.model.replyaction.ReplyActionData;
 import com.tokopedia.inbox.inboxchat.domain.model.websocket.WebSocketResponse;
-import com.tokopedia.inbox.inboxchat.domain.usecase.GetMessageListUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.GetReplyListUseCase;
-import com.tokopedia.inbox.inboxchat.domain.usecase.GetTemplateUseCase;
+import com.tokopedia.inbox.inboxchat.domain.usecase.SendMessageUseCase;
+import com.tokopedia.inbox.inboxchat.domain.usecase.template.GetTemplateUseCase;
 import com.tokopedia.inbox.inboxchat.domain.usecase.ReplyMessageUseCase;
 import com.tokopedia.inbox.inboxchat.presenter.subscriber.GetReplySubscriber;
 import com.tokopedia.inbox.inboxchat.viewmodel.ChatRoomViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.GetTemplateViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.MyChatViewModel;
 import com.tokopedia.inbox.inboxchat.viewmodel.OppositeChatViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.SendMessageViewModel;
+import com.tokopedia.inbox.inboxchat.viewmodel.TemplateChatModel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -77,15 +82,18 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     final static String OFFICIAL = "Official";
     final static String SELLER = "shop";
     private CountDownTimer countDownTimer;
+    private SendMessageUseCase sendMessageUseCase;
 
     @Inject
     ChatRoomPresenter(GetReplyListUseCase getReplyListUseCase,
                       ReplyMessageUseCase replyMessageUseCase,
                       GetTemplateUseCase getTemplateUseCase,
+                      SendMessageUseCase sendMessageUseCase,
                       SessionHandler sessionHandler) {
         this.getReplyListUseCase = getReplyListUseCase;
         this.replyMessageUseCase = replyMessageUseCase;
         this.getTemplateUseCase = getTemplateUseCase;
+        this.sendMessageUseCase = sendMessageUseCase;
         this.sessionHandler = sessionHandler;
     }
 
@@ -116,7 +124,14 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
             }
         };
 
-        createWebSocket();
+        if(getView().needCreateWebSocket()){
+            createWebSocket();
+        }else {
+            getView().setHeader();
+            getView().hideMainLoading();
+            getView().setTextAreaReply(true);
+            getView().hideNotifier();
+        }
         getTemplate();
     }
 
@@ -127,6 +142,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         getReplyListUseCase.unsubscribe();
         getTemplateUseCase.unsubscribe();
         replyMessageUseCase.unsubscribe();
+        sendMessageUseCase.unsubscribe();
 
     }
 
@@ -150,6 +166,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                 Intent intent = new Intent(getView().getActivity(), ShopInfoActivity.class);
                 Bundle bundle = ShopInfoActivity.createBundle(String.valueOf(id), "");
                 intent.putExtras(bundle);
+                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 getView().startActivity(intent);
             } else {
                 getView().startActivity(
@@ -223,6 +240,49 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
             }
             getView().scrollToBottom();
         }
+    }
+
+    @Override
+    public void initMessage(String message, String source, String toShopId, String toUserId) {
+        if (isValidReply()) {
+            getView().addDummyInitialMessage();
+            getView().disableAction();
+            sendMessageUseCase.execute(SendMessageUseCase.getParam(
+                    message,
+                    toShopId,
+                    toUserId,
+                    source
+            ), new Subscriber<SendMessageViewModel>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable throwable) {
+                    getView().onErrorInitMessage(ErrorHandler.getErrorMessage(throwable));
+                }
+
+                @Override
+                public void onNext(SendMessageViewModel sendMessageViewModel) {
+                    if (sendMessageViewModel.isSuccess())
+                        getView().onSuccessInitMessage();
+                    else
+                        getView().onErrorInitMessage("");
+
+                }
+            });
+
+        }
+    }
+
+    private boolean isValidMessage(String message) {
+        Boolean isValid = true;
+
+        if (message.trim().length() == 0) {
+            isValid = false;
+        }
+        return isValid;
     }
 
     public void onLoadMore() {
@@ -348,7 +408,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         }
     }
 
-    public void stopTyping(String messageId) throws JSONException {
+    public void stopTyping(String messageId) throws Exception {
         JSONObject json = new JSONObject();
         json.put("code", ChatWebSocketConstant.EVENT_TOPCHAT_END_TYPING);
         JSONObject data = new JSONObject();
@@ -416,7 +476,16 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
             @Override
             public void onNext(GetTemplateViewModel getTemplateViewModel) {
-                getView().setTemplate(getTemplateViewModel.getListTemplate());
+                if(getTemplateViewModel.isEnabled()){
+                    List<Visitable> temp = getTemplateViewModel.getListTemplate();
+                    if(temp == null) temp = new ArrayList<>();
+                    if(getView().isAllowedTemplate()) temp.add(new TemplateChatModel(false));
+                    getView().setTemplate(temp);
+                }else {
+                    List<Visitable> temp = new ArrayList<>();
+                    if(getView().isAllowedTemplate()) temp.add(new TemplateChatModel(false));
+                    getView().setTemplate(temp);
+                }
             }
         });
     }

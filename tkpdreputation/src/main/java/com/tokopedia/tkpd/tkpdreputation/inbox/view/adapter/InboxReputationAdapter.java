@@ -112,4 +112,8 @@ public class InboxReputationAdapter extends RecyclerView.Adapter<AbstractViewHol
     public List<Visitable> getlist() {
         return list;
     }
+
+    public boolean isEmpty() {
+        return list.contains(emptySearchModel);
+    }
 }

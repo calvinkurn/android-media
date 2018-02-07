@@ -12,6 +12,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.NetworkErrorHelper.RetryClickedListener;
 import com.tokopedia.core.people.customview.PeopleInfoDetailView;
@@ -198,6 +199,12 @@ public class PeopleInfoFragment extends BasePresenterFragment<PeopleInfoFragment
     @Override
     public void openDetailFavoritedShop(PeopleInfoData.UserInfo userInfo) {
         startActivity(PeopleFavoritedShop.createIntent(getActivity(), userInfo.getUserId()));
+    }
+
+    @Override
+    public void openFollowingPage(int userId) {
+        startActivity(((TkpdCoreRouter) getActivity().getApplicationContext())
+                .getKolFollowingPageIntent(getActivity(), userId));
     }
 
     @Override

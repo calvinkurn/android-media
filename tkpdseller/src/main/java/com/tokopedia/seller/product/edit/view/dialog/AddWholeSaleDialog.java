@@ -42,6 +42,7 @@ public class AddWholeSaleDialog extends DialogFragment {
     public static final String KEY_WHOLE_SALE_BASE_VALUE = "KEY_WHOLE_SALE_BASE_VALUE";
     public static final String KEY_WHOLE_SALE_PREVIOUS_VALUE = "KEY_WHOLE_SALE_PREVIOUS_VALUE";
     public static final String KEY_CURRENCY_TYPE = "KEY_CURRENCY_TYPE";
+    public static final String IS_OFFICIAL_STORE = "isOfficialStore";
     private final Locale dollarLocale = Locale.US;
     private final Locale idrLocale = new Locale("in", "ID");
     OnDismissListener onDismissListener;
@@ -59,11 +60,13 @@ public class AddWholeSaleDialog extends DialogFragment {
     private CurrencyIdrTextWatcher idrTextWatcher;
     private CurrencyUsdTextWatcher usdTextWatcher;
     private NumberFormat formatter;
+    private boolean isOfficialStore;
 
     public static AddWholeSaleDialog newInstance(
             WholesaleModel fixedPrice,
             @CurrencyTypeDef int currencyType,
-            WholesaleModel previousWholesalePrice) {
+            WholesaleModel previousWholesalePrice,
+            boolean isOfficialStore) {
         AddWholeSaleDialog addWholeSaleDialog = new AddWholeSaleDialog();
         Bundle bundle = new Bundle();
         if (previousWholesalePrice != null)
@@ -71,6 +74,7 @@ public class AddWholeSaleDialog extends DialogFragment {
 
         bundle.putParcelable(KEY_WHOLE_SALE_BASE_VALUE, fixedPrice);
         bundle.putInt(KEY_CURRENCY_TYPE, currencyType);
+        bundle.putBoolean(IS_OFFICIAL_STORE, isOfficialStore);
         addWholeSaleDialog.setArguments(bundle);
         return addWholeSaleDialog;
     }
@@ -87,6 +91,7 @@ public class AddWholeSaleDialog extends DialogFragment {
         }
         outState.putParcelable(KEY_WHOLE_SALE_BASE_VALUE, baseValue);
         outState.putInt(KEY_CURRENCY_TYPE, currencyType);
+        outState.putBoolean(IS_OFFICIAL_STORE, isOfficialStore);
     }
 
     @NonNull
@@ -278,10 +283,11 @@ public class AddWholeSaleDialog extends DialogFragment {
         }
 
         previousValue = data.getParcelable(KEY_WHOLE_SALE_PREVIOUS_VALUE);
+        isOfficialStore = data.getBoolean(IS_OFFICIAL_STORE);
     }
 
     protected void validatePrice(double currencyValue) {
-        Pair<Double, Double> minMaxPrice = ViewUtils.minMaxPrice(getActivity(), currencyType);
+        Pair<Double, Double> minMaxPrice = ViewUtils.minMaxPrice(getActivity(), currencyType, isOfficialStore);
         if (minMaxPrice.first > currencyValue || currencyValue > minMaxPrice.second) {
             wholesalePrice.setError(getString(R.string.product_error_product_price_not_valid,
                     formatter.format(minMaxPrice.first), formatter.format(minMaxPrice.second)));

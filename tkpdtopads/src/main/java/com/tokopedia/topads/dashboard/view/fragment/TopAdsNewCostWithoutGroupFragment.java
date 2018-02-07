@@ -11,6 +11,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
+import com.tokopedia.topads.dashboard.constant.TopAdsSuggestionBidInteractionTypeDef;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
@@ -57,7 +58,7 @@ public class TopAdsNewCostWithoutGroupFragment extends TopAdsNewCostFragment<Top
         // get id from view model
         List<String> ids = new ArrayList<>();
         for (TopAdsProductViewModel topAdsProductViewModel : stepperModel.getTopAdsProductViewModels()) {
-            ids.add(topAdsProductViewModel.getDepartmentId()+"");
+            ids.add(topAdsProductViewModel.getDepartmentId() + "");
         }
 
         topAdsDetailNewProductPresenter.getSuggestionBid(ids, TopAdsNetworkConstant.SOURCE_NEW_COST_WITHOUT_GROUP);
@@ -72,8 +73,7 @@ public class TopAdsNewCostWithoutGroupFragment extends TopAdsNewCostFragment<Top
 
     @Override
     protected void onClickedNext() {
-        if (firstTimeCheck()) return;
-        if(!isError()) {
+        if (!isPriceError()) {
             super.onClickedNext();
             if (stepperModel == null) {
                 stepperModel = new TopAdsCreatePromoWithoutGroupModel();
@@ -108,9 +108,9 @@ public class TopAdsNewCostWithoutGroupFragment extends TopAdsNewCostFragment<Top
     }
 
     private void trackingNewCostTopads() {
-        if(detailAd != null && detailAd.isBudget()) {
+        if (detailAd != null && detailAd.isBudget()) {
             UnifyTracking.eventTopAdsProductAddPromoWithoutGroupStep2(AppEventTracking.EventLabel.BUDGET_PER_DAY);
-        }else{
+        } else {
             UnifyTracking.eventTopAdsProductAddPromoWithoutGroupStep2(AppEventTracking.EventLabel.BUDGET_NOT_LIMITED);
         }
     }
@@ -124,19 +124,27 @@ public class TopAdsNewCostWithoutGroupFragment extends TopAdsNewCostFragment<Top
     @Override
     public void onSuggestionSuccess(GetSuggestionResponse s) {
         setSuggestionBidText(s);
-        if(isFirstTime){
-            setSuggestionBidText(maxPriceEditText, s);
-        }
+        detailAd.setSuggestionBidValue(suggestionBidValue);
+        detailAd.setSuggestionBidButton(TopAdsSuggestionBidInteractionTypeDef.SUGGESTION_NOT_IMPLEMENTED);
+        defaultSuggestionBidButtonStatus = TopAdsSuggestionBidInteractionTypeDef.SUGGESTION_NOT_IMPLEMENTED;
     }
 
     @Override
     public void onSuggestionError(@Nullable Throwable t) {
-        setDefaultSuggestionBidText();
+        detailAd.setSuggestionBidButton(TopAdsSuggestionBidInteractionTypeDef.NO_SUGGESTION);
     }
 
     @Override
-    protected void onSuggestionTitleUseClick() {
+    protected void onSuggestionBidClicked() {
+        detailAd.setSuggestionBidButton(TopAdsSuggestionBidInteractionTypeDef.SUGGESTION_IMPLEMENTED);
+    }
 
+    @Override
+    protected void onPriceChanged(double number) {
+        super.onPriceChanged(number);
+        if (suggestionBidValue != number) {
+            detailAd.setSuggestionBidButton(defaultSuggestionBidButtonStatus);
+        }
     }
 
     @Override

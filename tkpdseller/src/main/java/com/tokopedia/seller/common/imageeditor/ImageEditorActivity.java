@@ -3,8 +3,6 @@ package com.tokopedia.seller.common.imageeditor;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,13 +10,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
-import com.theartofdev.edmodo.cropper.CropImageView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.myproduct.utils.ImageDownloadHelper;
 import com.tokopedia.seller.R;
 
-import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -66,7 +62,7 @@ public class ImageEditorActivity extends AppCompatActivity implements ImageEdito
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_image_editor);
+        setContentView(R.layout.activity_no_toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);

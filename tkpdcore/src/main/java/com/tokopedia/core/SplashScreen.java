@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 
 import com.crashlytics.android.Crashlytics;
@@ -32,7 +31,6 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.PasswordGenerator.PGListener;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.welcome.WelcomeActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -65,7 +63,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        setContentView(R.layout.activity_splash_screen);
+
         mReceiver = new DownloadResultReceiver(new Handler());
         mReceiver.setReceiver(this);
         sessionHandler = new SessionHandler(this);
@@ -145,31 +143,9 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     }
 
     public void finishSplashScreen() {
-        Intent intent;
-        if (isSeller()) {
-//            if(!sessionHandler.getShopID().isEmpty() && !sessionHandler.getShopID().equals("0")) {
-//                // Means it is a Seller
-//                startActivity(new Intent(SplashScreen.this, SellerHomeActivity.class));
-//            } else {
-//                // Means it is buyer
-//                if(!TextUtils.isEmpty(sessionHandler.getLoginID())) {
-//                    intent = moveToCreateShop(this);
-//                    startActivity(intent);
-//                } else {
-//                    intent = new Intent(SplashScreen.this, WelcomeActivity.class);
-//                    startActivity(intent);
-//                }
-//            }
-            intent = new Intent(SplashScreen.this, WelcomeActivity.class);
-        } else {
-            intent = HomeRouter.getHomeActivity(this);
-        }
+        Intent intent = HomeRouter.getHomeActivity(this);
         startActivity(intent);
         finish();
-    }
-
-    private boolean isSeller() {
-        return getApplication().getClass().getSimpleName().equals("SellerMainApplication");
     }
 
     private void bypassV2Login() {

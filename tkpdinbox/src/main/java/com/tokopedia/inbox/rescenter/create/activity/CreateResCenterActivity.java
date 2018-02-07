@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.inbox.R;
@@ -171,6 +172,7 @@ public class CreateResCenterActivity extends BasePresenterActivity<CreateResCent
         } else {
             super.onBackPressed();
         }
+        UnifyTracking.eventCreateResoAbandon();
     }
 
     @Override

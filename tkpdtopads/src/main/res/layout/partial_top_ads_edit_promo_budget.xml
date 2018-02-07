@@ -7,7 +7,7 @@
 
     <TextView
         android:id="@+id/title_cost"
-        style="@style/TextView.Headline.BlackSecondary"
+        style="@style/TextView.SubHeadline.BlackSecondary"
         android:layout_marginBottom="@dimen/margin_med"
         android:text="@string/label_top_ads_budget"/>
 
@@ -38,7 +38,7 @@
 
             <TextView
                 android:id="@+id/info_limit_price"
-                style="@style/TextView.Body1.BlackSecondary"
+                style="@style/TextView.Small.BlackSecondary"
                 android:maxLines="3"
                 android:text="@string/label_top_ads_limit_price_description"/>
         </LinearLayout>

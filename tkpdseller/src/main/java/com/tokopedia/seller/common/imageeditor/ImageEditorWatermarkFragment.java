@@ -19,10 +19,11 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.common.imageeditor.component.DaggerGetShopInfoComponent;
-import com.tokopedia.seller.common.imageeditor.component.GetShopInfoComponent;
-import com.tokopedia.seller.shop.presenter.GetShopInfoPresenter;
-import com.tokopedia.seller.shop.presenter.GetShopInfoView;
+import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.common.imageeditor.di.DaggerWatermarkComponent;
+import com.tokopedia.seller.common.imageeditor.di.WatermarkComponent;
+import com.tokopedia.seller.common.imageeditor.view.presenter.WatermarkPresenter;
+import com.tokopedia.seller.common.imageeditor.view.WatermarkPresenterView;
 
 import java.io.File;
 
@@ -32,7 +33,7 @@ import javax.inject.Inject;
  * Created by hendry on 9/25/2017.
  */
 
-public class ImageEditorWatermarkFragment extends ImageEditorFragment implements GetShopInfoView, CropImageView.OnSetCropOverlayReleasedListener, CropImageView.OnSetCropOverlayMovedListener, CropImageView.OnSetCropWindowChangeListener {
+public class ImageEditorWatermarkFragment extends ImageEditorFragment implements WatermarkPresenterView, CropImageView.OnSetCropOverlayReleasedListener, CropImageView.OnSetCropOverlayMovedListener, CropImageView.OnSetCropWindowChangeListener {
 
     public static final int ROTATE_DEGREE = 90;
     private WatermarkView watermarkView;
@@ -42,7 +43,7 @@ public class ImageEditorWatermarkFragment extends ImageEditorFragment implements
     private View vWatermarkWarning;
 
     @Inject
-    public GetShopInfoPresenter getShopInfoPresenter;
+    public WatermarkPresenter watermarkPresenter;
     private MenuItem watermarkMenuItem;
 
     public static ImageEditorWatermarkFragment newInstance(String localPath) {
@@ -56,11 +57,11 @@ public class ImageEditorWatermarkFragment extends ImageEditorFragment implements
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        GetShopInfoComponent getShopInfoComponent = DaggerGetShopInfoComponent.builder().appComponent(
-                MainApplication.getInstance().getApplicationComponent()).build();
-        getShopInfoComponent.inject(this);
-        getShopInfoPresenter.attachView(this);
-        getShopInfoPresenter.getShopInfo();
+        WatermarkComponent watermarkComponent = DaggerWatermarkComponent.builder()
+                .shopComponent(((SellerModuleRouter)MainApplication.getInstance()).getShopComponent()).build();
+        watermarkComponent.inject(this);
+        watermarkPresenter.attachView(this);
+        watermarkPresenter.getShopInfo();
 
         isUseWatermark = false;
     }
@@ -69,7 +70,7 @@ public class ImageEditorWatermarkFragment extends ImageEditorFragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_image_editor_watermark, container, false);
-        watermarkView = (WatermarkView) view.findViewById(R.id.watermark_view);
+        watermarkView = view.findViewById(R.id.watermark_view);
         vWatermarkWarning = view.findViewById(R.id.tv_watermark_warning);
         vWatermarkWarning.setVisibility(View.INVISIBLE);
         return view;
@@ -114,7 +115,7 @@ public class ImageEditorWatermarkFragment extends ImageEditorFragment implements
         if (isUseWatermark) {
             Bitmap bitmap = BitmapFactory.decodeFile(croppedPath);
             bitmap = processBitmap(bitmap);
-            File file = FileUtils.writeImageToTkpdPath(bitmap, FileUtils.generateUniqueFileName());
+            File file = FileUtils.writeImageToTkpdPath(bitmap);
             if (file != null && file.exists()) {
                 onImageEditorFragmentListener.addCroppedPath(croppedPath);
                 return file.getAbsolutePath();
@@ -172,13 +173,13 @@ public class ImageEditorWatermarkFragment extends ImageEditorFragment implements
     @Override
     public void onResume() {
         super.onResume();
-        getShopInfoPresenter.attachView(this);
+        watermarkPresenter.attachView(this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        getShopInfoPresenter.detachView();
+        watermarkPresenter.detachView();
     }
 
     @Override
@@ -191,6 +192,10 @@ public class ImageEditorWatermarkFragment extends ImageEditorFragment implements
     public void onErrorGetShopInfo(Throwable t) {
         watermarkText = "";
         watermarkView.setText(watermarkText);
+    }
+
+    public boolean isUseWatermark() {
+        return isUseWatermark;
     }
 
     @Override

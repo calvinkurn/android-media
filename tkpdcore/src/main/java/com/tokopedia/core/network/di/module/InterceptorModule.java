@@ -1,6 +1,7 @@
 package com.tokopedia.core.network.di.module;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -8,7 +9,9 @@ import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.di.scope.ApplicationScope;
 import com.tokopedia.core.cache.interceptor.ApiCacheInterceptor;
+import com.tokopedia.core.network.di.qualifier.KeyDefaultQualifier;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
+import com.tokopedia.core.network.retrofit.interceptors.BearerInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.GlobalTkpdAuthInterceptor;
@@ -21,12 +24,15 @@ import com.tokopedia.core.network.retrofit.interceptors.TopAdsAuthInterceptor;
 import com.tokopedia.core.network.retrofit.response.TkpdV4ResponseError;
 import com.tokopedia.core.network.retrofit.response.TopAdsResponseError;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 
 import javax.inject.Named;
+import javax.inject.Qualifier;
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.logging.HttpLoggingInterceptor;
 
 /**
  * Created by ricoharisin on 3/22/17.
@@ -55,12 +61,30 @@ public class InterceptorModule {
 
     @ApplicationScope
     @Provides
+    public HttpLoggingInterceptor provideHttpLoggingInterceptor() {
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+        } else {
+            logging.setLevel(HttpLoggingInterceptor.Level.NONE);
+        }
+        return logging;
+    }
+
+    @ApplicationScope
+    @Provides
+    public BearerInterceptor provideBearerInterceptor(SessionHandler sessionHandler) {
+        return new BearerInterceptor(sessionHandler);
+    }
+
+    @ApplicationScope
+    @Provides
     public StandardizedInterceptor provideStandardizedInterceptor() {
         String oAuthString = "Bearer " + SessionHandler.getAccessToken();
         return new StandardizedInterceptor(oAuthString);
     }
 
-    @Named(AuthUtil.KEY.KEY_WSV4)
+    @KeyDefaultQualifier
     @ApplicationScope
     @Provides
     public GlobalTkpdAuthInterceptor provideWsV4TkpdAuthInterceptor() {
@@ -116,10 +140,8 @@ public class InterceptorModule {
     @ApplicationScope
     @Provides
     public TopAdsAuthInterceptor provideTopAdsAuthInterceptor(
-            SessionHandler sessionHandler,
-            @ApplicationContext Context context) {
-        String oAuthString = "Bearer " + sessionHandler.getAccessToken(context);
-        return new TopAdsAuthInterceptor(oAuthString);
+            SessionHandler sessionHandler) {
+        return new TopAdsAuthInterceptor(sessionHandler);
     }
 
     @TopAdsQualifier

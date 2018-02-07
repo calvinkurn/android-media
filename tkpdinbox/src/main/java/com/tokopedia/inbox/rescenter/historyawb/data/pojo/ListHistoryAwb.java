@@ -24,8 +24,8 @@ public class ListHistoryAwb {
     private String createTime;
     @SerializedName("createTimeStr")
     private String createTimeStr;
-    @SerializedName("createTimeStamp")
-    private String createTimestamp;
+    @SerializedName("createTimeFullStr")
+    private String createTimeFullStr;
     @SerializedName("remark")
     private String remark;
     @SerializedName("attachments")
@@ -113,12 +113,12 @@ public class ListHistoryAwb {
         this.button = button;
     }
 
-    public String getCreateTimestamp() {
-        return createTimestamp;
+    public String getCreateTimeFullStr() {
+        return createTimeFullStr;
     }
 
-    public void setCreateTimestamp(String createTimestamp) {
-        this.createTimestamp = createTimestamp;
+    public void setCreateTimeFullStr(String createTimeFullStr) {
+        this.createTimeFullStr = createTimeFullStr;
     }
 
     public static class Attachments {

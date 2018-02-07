@@ -70,9 +70,11 @@
 
 
         <include layout="@layout/item_detail_chat_title"
-            android:id="@+id/layout_title2"/>
+            android:id="@+id/layout_title2"
+            android:visibility="gone"/>
 
         <FrameLayout
+            android:visibility="gone"
             android:layout_marginTop="@dimen/margin_vs"
             android:id="@+id/ff_bubble_left_2"
             android:layout_width="wrap_content"
@@ -94,7 +96,8 @@
         </FrameLayout>
 
         <include layout="@layout/item_detail_chat_date"
-            android:id="@+id/layout_date_2"/>
+            android:id="@+id/layout_date_2"
+            android:visibility="gone"/>
 
     </LinearLayout>
 

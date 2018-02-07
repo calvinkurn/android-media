@@ -1,7 +1,6 @@
 package com.tokopedia.inbox.rescenter.historyaction.view.customadapter;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,10 +10,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
-import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.detailv2.view.animation.GlowingView;
 import com.tokopedia.inbox.rescenter.historyaction.view.model.HistoryActionViewItem;
+import com.tokopedia.inbox.rescenter.historyaction.view.model.HistoryActionAdapterModel;
 import com.tokopedia.inbox.rescenter.historyaction.view.presenter.HistoryActionFragmentView;
 
 import java.util.ArrayList;
@@ -29,9 +28,8 @@ public class HistoryActionAdapter extends BaseLinearRecyclerViewAdapter {
     private static final int VIEW_SHIPPING_ITEM = 100;
 
     private final HistoryActionFragmentView fragmentView;
-    private List<HistoryActionViewItem> arraylist;
+    private List<HistoryActionAdapterModel> arraylist;
     private Context context;
-    private String lastMonth, lastDay;
     private boolean isFinished;
     public static final int STATUS_FINISHED = 500;
     public static final int STATUS_CANCEL = 0;
@@ -39,16 +37,33 @@ public class HistoryActionAdapter extends BaseLinearRecyclerViewAdapter {
     public HistoryActionAdapter(HistoryActionFragmentView fragmentView) {
         this.fragmentView = fragmentView;
         this.arraylist = new ArrayList<>();
-        this.lastMonth = "";
-        this.lastDay = "";
     }
 
     public void setArraylist(List<HistoryActionViewItem> arraylist, int resolutionStatus) {
-        this.arraylist = arraylist;
+        List<HistoryActionAdapterModel> modelList = new ArrayList<>();
+        String lastMonth = "", lastDay = "";
+        for (HistoryActionViewItem viewItem : arraylist) {
+            HistoryActionAdapterModel model = new HistoryActionAdapterModel();
+            model.setItem(viewItem);
+            if (lastDay.equals(viewItem.getDateNumber()) && lastMonth.equals(viewItem.getMonth())) {
+                model.setShowLastDayAndMonth(false);
+                model.setShowDateSeparator(false);
+            } else {
+                model.setShowLastDayAndMonth(true);
+                model.setShowDateSeparator(true);
+                if (viewItem.isLatest())
+                    model.setShowDateSeparator(false);
+            }
+            lastDay = viewItem.getDateNumber();
+            lastMonth = viewItem.getMonth();
+            model.setShowGlowingView(viewItem.isLatest());
+            modelList.add(model);
+        }
+        this.arraylist = modelList;
         isFinished  = resolutionStatus == STATUS_FINISHED || resolutionStatus == STATUS_CANCEL;
     }
 
-    public List<HistoryActionViewItem> getArraylist() {
+    public List<HistoryActionAdapterModel> getArraylist() {
         return arraylist;
     }
 
@@ -100,31 +115,29 @@ public class HistoryActionAdapter extends BaseLinearRecyclerViewAdapter {
 
     private void bindShippingViewHolder(ActionViewHolder holder, int position) {
         context = holder.itemView.getContext();
-        final HistoryActionViewItem item = arraylist.get(position);
-        holder.lineSeparator.setVisibility(position == 0 ? View.GONE : View.VISIBLE);
-        renderData(holder, item);
-        renderView(holder, item);
+        final HistoryActionAdapterModel model = arraylist.get(position);
+        renderData(holder, model);
+        renderView(holder, model);
+        holder.lineIndicator.setVisibility(arraylist.size() == 1 || arraylist.size() - 1 == position ?
+                View.GONE :
+                View.VISIBLE);
     }
 
-    private void renderData(ActionViewHolder holder, HistoryActionViewItem item) {
+    private void renderData(ActionViewHolder holder, HistoryActionAdapterModel model) {
+        HistoryActionViewItem item = model.getItem();
         holder.tvUsername.setText(item.getActionByText());
         holder.tvMonth.setText(item.getMonth());
         holder.tvDateNumber.setText(item.getDateNumber());
-        holder.tvTime.setText(item.getCreateTimestampStr());
+        holder.tvTime.setText(item.getTimeNumber());
         holder.history.setText(item.getHistoryText());
-        holder.tvDateNumber.setVisibility(View.VISIBLE);
-        holder.tvMonth.setVisibility(View.VISIBLE);
-        if (lastDay.equals(holder.tvDateNumber.getText().toString()) && lastMonth.equals(holder.tvMonth.getText().toString())) {
-            holder.tvDateNumber.setVisibility(View.GONE);
-            holder.tvMonth.setVisibility(View.GONE);
-            holder.lineSeparator.setVisibility(View.GONE);
-        }
-        lastDay = holder.tvDateNumber.getText().toString();
-        lastMonth = holder.tvMonth.getText().toString();
     }
 
-    private void renderView(ActionViewHolder holder, HistoryActionViewItem item) {
-        setIndicator(holder, item);
+    private void renderView(ActionViewHolder holder, HistoryActionAdapterModel model) {
+        HistoryActionViewItem item = model.getItem();
+        setIndicator(holder, model);
+        holder.lineSeparator.setVisibility(model.isShowDateSeparator() ? View.VISIBLE : View.GONE);
+        holder.tvDateNumber.setVisibility(model.isShowLastDayAndMonth() ? View.VISIBLE : View.GONE);
+        holder.tvMonth.setVisibility(model.isShowLastDayAndMonth() ? View.VISIBLE : View.GONE);
         if (isFinished) {
             holder.tvUsername.setTextColor(ContextCompat.getColor(context, R.color.label_text_color));
             holder.history.setTextColor(ContextCompat.getColor(context, R.color.label_text_color));
@@ -140,24 +153,16 @@ public class HistoryActionAdapter extends BaseLinearRecyclerViewAdapter {
 
     }
 
-    private void setIndicator(ActionViewHolder holder, HistoryActionViewItem item) {
-        holder.lineIndicator.setVisibility(
-                holder.getAdapterPosition() == getArraylist().size() - 1 ?
-                        View.GONE : View.VISIBLE
-        );
-
-        if (isFinished) {
-            holder.indicator.setImageResource(R.drawable.ic_dot_grey_24dp);
+    private void setIndicator(ActionViewHolder holder, HistoryActionAdapterModel model) {
+        holder.indicator.setImageResource(R.drawable.ic_dot_grey_24dp);
+        holder.indicator.setVisibility(model.isShowGlowingView() ? View.GONE : View.VISIBLE);
+        holder.glowingView.setVisibility(model.isShowGlowingView() ? View.VISIBLE : View.GONE);
+        if (model.isShowGlowingView() && !isFinished) {
+            holder.glowingView.renderData(new Object());
         } else {
-            holder.indicator.setImageResource(
-                    item.isLatest() ? R.drawable.bg_circle_green : R.drawable.ic_dot_grey_24dp
-            );
-
-            holder.indicator.setVisibility(item.isLatest() ? View.GONE : View.VISIBLE);
-            holder.glowingView.setVisibility(item.isLatest() ? View.VISIBLE : View.GONE);
-            if (holder.glowingView.getVisibility() == View.VISIBLE) {
-                holder.glowingView.renderData(new Object());
-            }
+            holder.glowingView.stopAnimation();
+            holder.glowingView.setVisibility(View.GONE);
+            holder.indicator.setVisibility(View.VISIBLE);
         }
     }
 
@@ -168,6 +173,7 @@ public class HistoryActionAdapter extends BaseLinearRecyclerViewAdapter {
         } else {
             return VIEW_SHIPPING_ITEM;
         }
+
     }
 
     private boolean isLastItemPosition(int position) {
@@ -177,5 +183,12 @@ public class HistoryActionAdapter extends BaseLinearRecyclerViewAdapter {
     @Override
     public int getItemCount() {
         return arraylist.size() + super.getItemCount();
+    }
+
+    @Override
+    public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
+        if (holder instanceof ActionViewHolder) {
+            ((ActionViewHolder) holder).glowingView.renderData(new Object());
+        }
     }
 }

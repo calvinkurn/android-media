@@ -5,6 +5,7 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.exception.RuntimeHttpErrorException;
 import com.tokopedia.discovery.newdiscovery.domain.model.CatalogDomainModel;
 import com.tokopedia.discovery.newdiscovery.domain.model.CatalogItem;
+import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.model.CatalogHeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.model.CatalogViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.presenter.CatalogFragmentContract;
 
@@ -67,6 +68,7 @@ public class GetBrowseCatalogSubscriber extends rx.Subscriber<CatalogDomainModel
 
     protected List<Visitable> mappingCatalogViewModel(CatalogDomainModel domain) {
         List<Visitable> list = new ArrayList<>();
+        list.add(new CatalogHeaderViewModel());
         for (CatalogItem item : domain.getCatalogList()) {
             CatalogViewModel model = new CatalogViewModel();
             model.setID(item.getCatalogID());

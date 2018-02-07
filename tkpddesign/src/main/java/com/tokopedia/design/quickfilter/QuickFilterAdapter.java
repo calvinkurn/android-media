@@ -48,7 +48,7 @@ public class QuickFilterAdapter extends RecyclerView.Adapter {
     }
 
     private void renderItemViewHolder(final ItemViewFilter itemViewFilter, final QuickFilterItem filterItem) {
-        itemViewFilter.filterName.setText(setTextFilter(filterItem.getName()));
+        itemViewFilter.filterName.setText(filterItem.getName());
         itemViewFilter.layoutBorder.setBackgroundResource(R.drawable.bg_round_corner);
         itemViewFilter.layoutInside.setBackgroundResource(R.drawable.bg_round_corner);
         handleViewFilter(itemViewFilter, filterItem.isSelected(), filterItem);
@@ -78,18 +78,6 @@ public class QuickFilterAdapter extends RecyclerView.Adapter {
         });
     }
 
-    private String setTextFilter(String name) {
-        StringBuilder sb = new StringBuilder();
-        String[] splitName = name.split(" ");
-        for (int i = 0; i < splitName.length; i++) {
-            sb.append(splitName[i]);
-            if (i < splitName.length - 1) {
-                sb.append("\n");
-            }
-        }
-        return sb.toString();
-    }
-
     /**
      *
      * @param itemViewFilter
@@ -116,10 +104,17 @@ public class QuickFilterAdapter extends RecyclerView.Adapter {
         return filterList.size();
     }
 
-    public void addFilterTokoCashList(List<QuickFilterItem> filterList) {
+    public void addQuickFilterItems(List<QuickFilterItem> filterList) {
         this.filterList.clear();
         this.filterList.addAll(filterList);
         notifyDataSetChanged();
+    }
+
+    public interface ActionListener {
+
+        void clearFilter();
+
+        void selectFilter(String typeFilter);
     }
 
     static class ItemViewFilter extends RecyclerView.ViewHolder {
@@ -134,12 +129,5 @@ public class QuickFilterAdapter extends RecyclerView.Adapter {
             layoutInside = (LinearLayout) itemView.findViewById(R.id.layout_inside);
             filterName = (TextView) itemView.findViewById(R.id.filter_name);
         }
-    }
-
-    public interface ActionListener {
-
-        void clearFilter();
-
-        void selectFilter(String typeFilter);
     }
 }

@@ -22,7 +22,7 @@
 
         <TextView
             android:id="@+id/tag_empty_product"
-            style="@style/TextView.Caption"
+            style="@style/TextView.Micro"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
@@ -46,7 +46,7 @@
                 android:src="@drawable/ic_lock_icon_again" />
 
             <TextView
-                style="@style/TextView.Caption.WhitePrimary"
+                style="@style/TextView.Micro.WhitePrimary"
                 android:layout_gravity="bottom|center"
                 android:padding="@dimen/padding_vs"
                 android:text="@string/product_manage_label_supervision"
@@ -66,19 +66,19 @@
 
         <TextView
             android:id="@+id/text_view_title"
-            style="@style/TextView.Body1"
+            style="@style/TextView.Small"
             tools:text="@string/app_name" />
 
         <TextView
             android:id="@+id/text_view_stock"
-            style="@style/TextView.Body1.BlackDisabled"
+            style="@style/TextView.Small.BlackDisabled"
             android:layout_marginTop="@dimen/margin_ms"
             android:visibility="gone"
             tools:text="@string/app_name" />
 
         <TextView
             android:id="@+id/text_view_price"
-            style="@style/TextView.Body1.Orange"
+            style="@style/TextView.Small.Orange"
             android:layout_marginTop="@dimen/margin_ms"
             tools:text="@string/app_name" />
 
@@ -97,8 +97,19 @@
                 android:src="@drawable/ic_featured_product" />
 
             <TextView
+                android:id="@+id/text_view_variant"
+                style="@style/TextView.Micro.BlackDisabled"
+                android:layout_marginEnd="@dimen/margin_ms"
+                android:layout_marginRight="@dimen/margin_ms"
+                android:background="@drawable/bg_rect_stroke_lighter_gray"
+                android:padding="@dimen/padding_vvs"
+                android:visibility="gone"
+                tools:visibility="visible"
+                android:text="@string/product_label_variant" />
+
+            <TextView
                 android:id="@+id/text_view_cashback"
-                style="@style/TextView.Caption.BlackDisabled"
+                style="@style/TextView.Micro.BlackDisabled"
                 android:layout_marginEnd="@dimen/margin_ms"
                 android:layout_marginRight="@dimen/margin_ms"
                 android:background="@drawable/bg_rect_stroke_green"
@@ -109,7 +120,7 @@
 
             <TextView
                 android:id="@+id/text_view_wholesale"
-                style="@style/TextView.Caption.BlackDisabled"
+                style="@style/TextView.Micro.BlackDisabled"
                 android:layout_marginEnd="@dimen/margin_ms"
                 android:layout_marginRight="@dimen/margin_ms"
                 android:background="@drawable/bg_rect_stroke_lighter_gray"
@@ -119,7 +130,7 @@
 
             <TextView
                 android:id="@+id/text_view_pre_order"
-                style="@style/TextView.Caption.BlackDisabled"
+                style="@style/TextView.Micro.BlackDisabled"
                 android:layout_marginEnd="@dimen/margin_ms"
                 android:layout_marginRight="@dimen/margin_ms"
                 android:background="@drawable/bg_rect_stroke_lighter_gray"

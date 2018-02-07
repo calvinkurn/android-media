@@ -14,7 +14,6 @@ public class Operator implements Parcelable {
     public static final String DEFAULT_TYPE_CONTRACT = "operator";
     private String operatorId;
     private String operatorType;
-
     private String name;
     private String image;
     private String lastorderUrl;
@@ -110,7 +109,6 @@ public class Operator implements Parcelable {
     public void setRule(Rule rule) {
         this.rule = rule;
     }
-
 
     @Override
     public int describeContents() {

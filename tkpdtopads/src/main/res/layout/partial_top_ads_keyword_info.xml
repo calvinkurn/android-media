@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:text="@string/top_ads_keyword_phrase_match"
-        style="@style/TextView.Subheading.Bold"/>
+        style="@style/TextView.Title.Bold"/>
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/text_keyword_desc"
         android:paddingTop="2dp"
@@ -22,7 +22,7 @@
         android:textSize="15sp"
         tools:text="@string/top_ads_keyword_phrase_match_positive_description"
         android:maxLines="4"
-        style="@style/TextView.Body1.BlackDisabled"/>
+        style="@style/TextView.Small.BlackDisabled"/>
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/text_keyword_example"
         android:layout_width="match_parent"
@@ -31,5 +31,5 @@
         android:paddingTop="@dimen/margin_vs"
         tools:text="@string/top_ads_keyword_phrase_match_example"
         android:maxLines="4"
-        style="@style/TextView.Body1.BlackSecondary"/>
+        style="@style/TextView.Small.BlackSecondary"/>
 </LinearLayout>

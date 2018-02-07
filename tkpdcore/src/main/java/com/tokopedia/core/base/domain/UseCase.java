@@ -14,6 +14,10 @@ import rx.subscriptions.Subscriptions;
  * @author Kulomady on 2/1/17.
  */
 
+/**
+ * Use Usecase from tkpd usecase
+ */
+@Deprecated
 public abstract class UseCase<T> implements Interactor<T> {
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();

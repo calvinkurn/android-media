@@ -2,7 +2,10 @@ package com.tokopedia.transaction.bcaoneklik.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -60,7 +63,7 @@ public class CreditCardAuthenticationActivity extends TActivity
         dialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
         AuthenticatorPageModel authenticatorPageModel = getIntent()
                 .getParcelableExtra(CREDIT_CARD_STATUS_KEY);
-        RecyclerView mainRecyclerView = (RecyclerView) findViewById(R.id.main_recycler_view);
+        RecyclerView mainRecyclerView = findViewById(R.id.main_recycler_view);
         View submitButton = findViewById(R.id.cc_auth_setting_submit_button);
         submitButton.setOnClickListener(onSubmitButtonClickedListener(authenticatorPageModel));
         AuthenticationListAdapter adapter = new AuthenticationListAdapter(
@@ -107,5 +110,47 @@ public class CreditCardAuthenticationActivity extends TActivity
     public void showErrorMessage(String errorMessage) {
         dialog.dismiss();
         NetworkErrorHelper.showSnackbar(this, errorMessage);
+    }
+
+    @Override
+    protected void setupToolbar() {
+        toolbar = findViewById(com.tokopedia.core.R.id.app_bar);
+        toolbar.setTitle(getTitle());
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+        }
+
+        if (isLightToolbarThemes()) {
+            setLightToolbarStyle();
+        }
+    }
+
+    private void setLightToolbarStyle() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.setElevation(10);
+            toolbar.setBackgroundResource(com.tokopedia.core.R.color.white);
+        } else {
+            toolbar.setBackgroundResource(com.tokopedia.core.R.drawable.bg_white_toolbar_drop_shadow);
+        }
+
+        Drawable drawable = ContextCompat.getDrawable(
+                this, com.tokopedia.core.R.drawable.ic_toolbar_overflow_level_two_black);
+        drawable.setBounds(5, 5, 5, 5);
+        toolbar.setOverflowIcon(drawable);
+
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_black_24dp);
+
+        toolbar.setTitleTextAppearance(this, com.tokopedia.core.R.style.WebViewToolbarText);
+        toolbar.setSubtitleTextAppearance(this, com.tokopedia.core.R.style
+                .WebViewToolbarSubtitleText);
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 }

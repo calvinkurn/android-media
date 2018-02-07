@@ -244,7 +244,7 @@ public class ListHistoryAddress {
             private String createTimeStr;
             @SerializedName("byStr")
             private String byStr;
-            @SerializedName("createTimeStamp")
+            @SerializedName("createTimeFullStr")
             private String createTimestamp;
 
             public String getName() {

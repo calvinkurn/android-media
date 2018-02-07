@@ -109,7 +109,7 @@ public class RecentViewDetailProductViewHolder extends AbstractViewHolder<Recent
 //            public void onClick(View v) {
 //                viewListener.onWishlistClicked(
 //                        getAdapterPosition(),
-//                        element.getProductId(),
+//                        element.getContentId(),
 //                        element.isWishlist());
 //            }
 //        });
